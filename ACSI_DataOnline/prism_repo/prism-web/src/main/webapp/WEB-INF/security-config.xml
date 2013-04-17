@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    
+	<http pattern="/denied*" security="none" />
+	<http pattern="/images/**" security="none" />
+	<http pattern="/img/**" security="none" />
+	<http pattern="/media/**" security="none" />
+	<http pattern="/scripts/**" security="none" />
+	<http pattern="/themes/**" security="none" />
+	<http pattern="/styles/**" security="none" />
+	<http pattern="/login*" security="none" />
+	<http pattern="/loadJSPView*" security="none" />
+	<http pattern="/validatePwd*" security="none" />   
+	<http pattern="/showError.do" security="none" />
+	<http pattern="/clearAllCache.do" security="none" />
+	    
+   	<http auto-config="true">
+		<form-login login-page="/login.do" 
+					default-target-url="/validateUser.do" 
+					authentication-failure-url="/userlogin.do?login_error=1"
+					always-use-default-target='true'/>	
+		<intercept-url pattern="/login.do" access="ROLE_ANONYMOUS,ROLE_USER" />
+		<intercept-url pattern="/userlogin.do" access="ROLE_ANONYMOUS,ROLE_USER" />
+		<intercept-url pattern="/icDownload.do" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/registration.do" access="ROLE_ANONYMOUS,ROLE_USER" />
+		<intercept-url pattern="/register.do" access="ROLE_ANONYMOUS,ROLE_USER" />
+		<intercept-url pattern="/regn/**" access="ROLE_ANONYMOUS,ROLE_USER" />
+		<intercept-url pattern="/secure/**" access="ROLE_ADMIN" />	
+		<intercept-url pattern="/**" access="ROLE_ADMIN,ROLE_USER" />
+		<intercept-url pattern="/j_spring_security_switch_user" access="ROLE_ADMIN" />
+		<logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/userlogin.do"/>
+		<access-denied-handler error-page="/denied.jsp"/>		
+		<session-management invalid-session-url="/userlogin.do?sessionExpired=1">
+    		<concurrency-control max-sessions="10000" error-if-maximum-exceeded="true" />
+		</session-management>		
+	</http> 	
+	
+	<beans:bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" /> 
+   <beans:bean id="userDetailsService"
+		class="com.ctb.prism.web.manager.UserDetailsManager" /> 		
+	
+	<!-- DAO Authentication -->	
+    <!-- <authentication-manager>
+        <authentication-provider user-service-ref='userDetailsService'>
+        	<password-encoder ref="passwordEncoder"/>
+        </authentication-provider>
+    </authentication-manager>  -->
+    
+    <!--
+    Usernames/Passwords are
+        rod/koala
+        dianne/emu
+        scott/wombat
+        peter/opal
+    -->
+    <!-- Memory Authentication -->
+    <!-- <beans:bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+    <authentication-manager>
+        <authentication-provider>
+            <password-encoder ref="encoder"/>
+            <user-service>
+                <user name="rod" password="4efe081594ce25ee4efd9f7067f7f678a347bccf2de201f3adf2a3eb544850b465b4e51cdc3fcdde" authorities="supervisor, user, teller" />
+                <user name="dianne" password="957ea522524a41cbfb649a3e293d56268f840fd5b661b499b07858bc020d6d223f912e3ab303b00f" authorities="user,teller" />
+                <user name="scott" password="fb1f9e48058d30dc21c35ab4cf895e2a80f2f03fac549b51be637196dfb6b2b7276a89c65e38b7a1" authorities="user" />
+                <user name="peter" password="e175750688deee19d7179d444bfaf92129f4eea8b4503d83eb8f92a7dd9cda5fbae73638c913e420" authorities="user" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager> -->
+    
+    
+    <!-- LDAP Authentication -->
+    <!-- Kept in applicationContext-security.xml -->
+    
+</beans:beans>

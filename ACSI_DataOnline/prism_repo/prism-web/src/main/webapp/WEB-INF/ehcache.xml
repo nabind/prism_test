@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+    <defaultCache eternal="true" maxElementsInMemory="25000" overflowToDisk="false" />
+    <cache name="searchCache" maxElementsInMemory="10" eternal="true" overflowToDisk="false" memoryStoreEvictionPolicy="LFU"/> 
+     
+    <cache name="filledJasperPrint" eternal="false"
+        maxElementsInMemory="10000" overflowToDisk="true" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="72000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="msgCache" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+    
+    <cache name="compiledJrxml" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="reportInputControls" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+    
+    <cache name="defaultInputControls" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="tenantId" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="allReports" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="securityQuestions" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="orgTreeChildren" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
+    <cache name="orgUsers" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+    
+    <cache name="orgChildren" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />  
+        
+    <cache name="allAdminYear" eternal="false"
+        maxElementsInMemory="10" overflowToDisk="false" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />  
+    
+</ehcache>
