@@ -178,5 +178,9 @@ public class ParentBusinessImpl implements IParentBusiness {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) throws BusinessException{
 		return parentDAO.populateObjective(paramMap);
 	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException{
+		return parentDAO.addNewContent(paramMap);
+	}
 	//Manage Content - Parent Network - End
 }

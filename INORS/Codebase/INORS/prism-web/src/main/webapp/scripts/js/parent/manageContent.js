@@ -18,11 +18,11 @@ $(document).ready(function() {
 	}); 
 	
 	$('#addContent').live("click", function() {
-		if ($('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "0" ) {
+		if ($('#objectiveIdManageContent').val() == null || $('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "0" ) {
 			$.modal.alert(strings['script.content.addContent']);
 		}
 		else {
-			//resetModalForm("editUser");
+			resetModalForm("addNewContent");
 			//resetModalForm("addNewUser");
 			openContentModalToAdd();
 		}
@@ -34,54 +34,39 @@ $(document).ready(function() {
 function openContentModalToAdd() {
     $("#addNewContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
-	var dataUrl = 'subtestId=2001';
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : "getGradeOnAddContent.do",
-		data : dataUrl,
-		dataType : 'json',
-		cache:false,
-		success : function(data) {
-			unblockUI();
-			populateDropdownByJson($('#grade'),data);
-			$("#addContentModal").modal({
-				title: 'Add Content',
-				height: 410,
-				width: 370,
-				resizable: false,
-				draggable: false,
-				onOpen: setCKEditor(),
-				buttons: {
-					'Cancel': {
-						classes: 'glossy mid-margin-left',
-						click: function(win,e) {
+	
+	$("#addContentModal").modal({
+		title: 'Add Content',
+		height: 500,
+		width: 780,
+		resizable: true,
+		draggable: false,
+		onOpen: setCKEditor(),
+		buttons: {
+			'Cancel': {
+				classes: 'glossy mid-margin-left',
+				click: function(win,e) {
 							clickMe(e);
-									$('#addNewContent').validationEngine('hide');
-									if($.browser.msie) setTimeout("hideMessage()", 300);
-									win.closeModal(); 
-								}
-							},
-					'Save': {
-						classes: 'blue-gradient glossy mid-margin-left',
-						click: function(win,e) {
-							clickMe(e);	
-								 if($("#addNewContent").validationEngine('validate') 
-										 && ($("#addNewContent #imgHolder > #validated").hasClass("validated"))){
-									$('#addNewContent').validationEngine('hide');
-									addContentDetails($("#addNewContent"), win);
-								 }										
-								}
-							}
+							$('#addNewContent').validationEngine('hide');
+							if($.browser.msie) setTimeout("hideMessage()", 300);
+							win.closeModal(); 
 						}
-				});					
-		},
-		error : function(data) {
-			unblockUI();
-			$.modal.alert(strings['script.common.error1']);
-		}
-	});
-			
+					},
+			'Save': {
+				classes: 'blue-gradient glossy mid-margin-left',
+				click: function(win,e) {
+							clickMe(e);	
+							 if($("#addNewContent").validationEngine('validate') 
+									 && ($("#addNewContent #imgHolder > #validated").hasClass("validated"))){
+								$('#addNewContent').validationEngine('hide');
+								addNewContent($("#addNewContent"), win);
+							 }		
+							//addNewContent($("#addNewContent"), win);
+						}
+					}
+				}
+		});
+
 }
 
 function setCKEditor(){
@@ -98,21 +83,38 @@ function setCKEditor(){
 }
 
 //============Open Modal to Add Content ===============
-function addContentDetails(form, win) {
+function addNewContent(form, win) {
 	blockUI();
 	var custProdId = $('#custProdIdManageContent').val();
-	var subtObjMapId = $('#objectiveIdManageContent').val();
+	var gradeId = $('#gradeIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
+	var objectiveId = $('#objectiveIdManageContent').val();
 	var contentTypeId = $('#contentTypeIdManageContent').val();
-	var dataUrl = form.serialize()+'&custProdId='+custProdId+'&subtObjMapId='+subtObjMapId+'&contentTypeId'+contentTypeId;
+	var contentType = $('#contentTypeIdManageContent :selected').text();
+	
+	//$('#addContentModal').find('#custProdId')
+	var $addContentModal = $('#addContentModal');
+	$addContentModal.find('#custProdId').val(custProdId);
+	$addContentModal.find('#gradeId').val(gradeId);
+	$addContentModal.find('#subtestId').val(subtestId);
+	$addContentModal.find('#objectiveId').val(objectiveId);
+	$addContentModal.find('#contentTypeId').val(contentTypeId);
+	$addContentModal.find('#contentType').val(contentType);
+
+	for(name in CKEDITOR.instances)	{
+		var editorVal = CKEDITOR.instances[name].getData();
+	    $('#addContentModal #contentDescription').val(editorVal);
+	}
+	var formObj = $('#addNewContent').serialize();
+	
 	$.ajax({
 		type : "POST",
 		url : 'addNewContent.do',
-		data : dataUrl,
-		dataType: 'html',
+		data : formObj,
+		dataType: 'json',
 		cache:false,
 		success : function(data) {
-			var obj = jQuery.parseJSON(data);
-			if(obj.status != 0) {
+			if(data.value == 1) {
 				win.closeModal(); 
 				//TODO loadContentDetails();
 				$.modal.alert(strings['script.content.addSuccess']);
@@ -168,7 +170,7 @@ function populateSubtest(){
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
-				populateDropdownByJson($('#subObjMapIdManageContent'),data,1);
+				populateDropdownByJson($('#subtestIdManageContent'),data,1);
 				unblockUI();
 			},
 			error : function(data) {
@@ -182,10 +184,10 @@ function populateSubtest(){
 
 //============Load Objective id, name depending upon subtestId ===============
 function populateObjective(){
-	var subObjMapId = $('#subObjMapIdManageContent').val();
-	if(subObjMapId != 0){
+	var subtestId = $('#subtestIdManageContent').val();
+	if(subtestId != 0){
 		var gradeId = $('#gradeIdManageContent').val();
-		var dataUrl = 'subObjMapId='+subObjMapId+'&gradeId='+gradeId;
+		var dataUrl = 'subtestId='+subtestId+'&gradeId='+gradeId;
 		blockUI();
 		$.ajax({
 			type : "GET",
@@ -209,7 +211,7 @@ function populateObjective(){
 
 //----------------------------Resetting Modal Form---------------------
 
-function resetModalForm(formId)
+/*function resetModalForm(formId)
 {
 	$("#"+formId).each (function() { this.reset(); });
 	$("input#userStatus").removeAttr('checked');
@@ -217,7 +219,7 @@ function resetModalForm(formId)
 	$("#userRole option").removeAttr('selected');
 	$("#userRole option").change();
 	$("#userRole option").trigger('update-select-list');
-}
+}*/
 
 //============To populate any drop down ===============
 function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){

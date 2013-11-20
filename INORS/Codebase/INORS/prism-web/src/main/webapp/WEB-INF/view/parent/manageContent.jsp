@@ -2,6 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
+<style>
+.contentDescriptionEditorClass {
+	z-index: 999301 !important;
+}
+</style>
+
 <div class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
 		<h1><spring:message code="label.pn.manageContent"/></h1>
@@ -24,7 +30,7 @@
 					</div>
 					<div class="cyan-gradient icholder rounded-border-bottom"
 						style="border-bottom: 1px solid #CCC;">
-						<div class="refresh-report display-none"
+						<div class="refresh-report"
 							style="position: absolute; top: 5px; right: 20px;">
 							<a href="javascript:void(0)" id="searchEduCenterUsers"
 								class="button blue-gradient glossy">Search</a> 
@@ -34,7 +40,7 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%;">
+								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small"><spring:message code="label.testAdministration"/></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
@@ -55,7 +61,7 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%;">
+								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small"><spring:message code="label.grade"/></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
@@ -71,11 +77,11 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%;">
+								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small"><spring:message code="label.subtest"/></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
-											<select id="subObjMapIdManageContent" name="subObjMapId"
+											<select id="subtestIdManageContent" name="subtestId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
 											</select>
@@ -87,7 +93,7 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%;">
+								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small"><spring:message code="label.objective"/></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
@@ -103,7 +109,7 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%;">
+								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small"><spring:message code="label.content.type"/></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
@@ -127,7 +133,7 @@
 		
 		<!-- TODO for manage Content table Start -->			
 			<div class="panel-control align-right">
-				<span class="input search-input"> 
+				<span class="input search-input display-none"> 
 				<input type="text"
 					name="searchUser" id="searchUser"
 					class="input-unstyled with-tooltip"
@@ -149,7 +155,7 @@
 			</div>
 
 			<div
-				class="panel-load-target with-padding margin10 height-mid padding-none">
+				class="panel-load-target with-padding margin10 height-mid padding-none display-none">
 				<div
 					class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreUser"
@@ -196,12 +202,21 @@
 				<div class="">
 					<form:form id="addNewContent" name="addNewContent"
 						class="add-User-form small-margin-top">
+						
+						<input type="hidden" id="custProdId" name="custProdId"/>
+						<input type="hidden" id="gradeId" name="gradeId"/>
+						<input type="hidden" id="subtestId" name="subtestId"/>
+						<input type="hidden" id="objectiveId" name="objectiveId"/>
+						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
+						<input type="hidden" id="contentType" name="contentType"/>
+						
 						<p class="button-height inline-label">
 							<label class="label" for="contentName"><spring:message code="label.content.name"/><span
 								class="icon-star icon-size1 red"></span></label> <input type="text"
 								name="contentName" id="contentName" rel="contentName" style="width: 200px"
 								class="input full-width newReportName validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" />
 						</p>
+						
 						<p style="width: 329px" id="imgHolderContainer">
 							<span id="imgHolder"></span>
 						</p>
@@ -215,14 +230,14 @@
 						</p>
 
 						<p class="button-height inline-label">
-							<fieldset class="fieldset">
+							<fieldset class="fieldset" style="height: 200px">
 								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 								</legend>
 								<input type="hidden"
 									id="contentDescription"
 									name="contentDescription"/>
-								<div class="new-row">
+								<div class="new-row contentDescriptionEditorClass">
 									<textarea
 										id="contentDescriptionEditor"
 										class="manage-content-textarea validate[required]">
@@ -232,12 +247,17 @@
 						</p>
 						
 						<p class="button-height inline-label">
-							<label class="label" for="input-3"><spring:message code="label.content.grade"/></label> 
-							<select
-								id="grade" name="grade" style="width: 150px"
-								class="select multiple-as-single easy-multiple-selection check-list">
-							</select>
+							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
+								class="icon-star icon-size1 red"></span></label> 
+								<select id="profLevel" name="profLevel"
+												class="select expandable-list"
+												style="width: 150px;">
+									<option value='Pass+'/>Pass+</option>
+									<option value='Pass'/>Pass</option>
+									<option value='Did Not Pass'/>Did Not Pass</option>				
+								</select>
 						</p>
+
 						<div id="imgHolder"></div>
 					</form:form>
 				</div>

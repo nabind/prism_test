@@ -31,6 +31,7 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -1251,14 +1252,14 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - populateObjective()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
-		final long subObjMapId = ((Long) paramMap.get("subObjMapId")).longValue();
+		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
 		final long gradeId = ((Long) paramMap.get("gradeId")).longValue();
 		try{
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_OBJECTIVE + "}");
-				            cs.setLong("P_IN_SUBT_OBJ_MAPID", subObjMapId);		
+				            cs.setLong("P_IN_SUBTESTID", subtestId);		
 				            cs.setLong("P_IN_GRADEID", gradeId);	
 				            cs.registerOutParameter("P_OUT_CUR_OBJECTIVE_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
 				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
@@ -1293,6 +1294,57 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - populateObjective() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return objectValueTOList;
+	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) 
+			throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addNewContent()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		final ManageContentTO manageContentTO =  (ManageContentTO) paramMap.get("manageContentTO");
+
+		try{
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_NEW_CONTENT + "}");
+				            cs.setString("P_IN_CONTENT_DESCRIPTION", manageContentTO.getContentDescription());	
+				            cs.setString("P_IN_ARTICLE_NAME", manageContentTO.getContentName());	
+				            cs.setLong("P_IN_CUST_PROD_ID", manageContentTO.getCustProdId());
+				            cs.setLong("P_IN_SUBTESTID", manageContentTO.getSubtestId());	
+				            cs.setLong("P_IN_OBJECTIVEID", manageContentTO.getObjectiveId());
+				            cs.setString("P_IN_CATEGORY", manageContentTO.getContentType());	
+				            cs.setString("P_IN_CATEGORY_TYPE", manageContentTO.getContentTypeName());	
+				            cs.setString("P_IN_SUB_HEADER", manageContentTO.getSubHeader());	
+				            cs.setLong("P_IN_GRADEID", manageContentTO.getGradeId());	
+				            cs.setString("P_IN_PROF_LEVEL", manageContentTO.getProfLevel());	
+				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			long executionStatus = 0;
+			        			com.ctb.prism.core.transferobject.ObjectValueTO statusTO = 
+										new com.ctb.prism.core.transferobject.ObjectValueTO();
+			        			try {
+									cs.execute();
+									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									statusTO.setValue(Long.toString(executionStatus));
+									statusTO.setName("");
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return statusTO;
+				        }
+				    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addNewContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return objectValueTO;
 	}
 
 	//Manage Content - Parent Network - End

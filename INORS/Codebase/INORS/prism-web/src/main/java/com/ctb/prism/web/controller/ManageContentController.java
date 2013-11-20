@@ -19,8 +19,7 @@ import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
-import com.ctb.prism.report.transferobject.ManageMessageTO;
-import com.ctb.prism.web.form.ManageMessageForm;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.web.util.JsonUtil;
  
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
+import com.google.gson.Gson;
 
 @Controller
 public class ManageContentController {
@@ -131,17 +130,17 @@ public class ManageContentController {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - populateObjective()");
 		long t1 = System.currentTimeMillis();
 		response.setContentType("text/plain");
-		long subObjMapId = Long.parseLong(request.getParameter("subObjMapId"));
+		long subtestId = Long.parseLong(request.getParameter("subtestId"));
 		long gradeId = Long.parseLong(request.getParameter("gradeId"));
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectiveList = null;
 		String jsonString = "";
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("subObjMapId", subObjMapId);
+		paramMap.put("subtestId", subtestId);
 		paramMap.put("gradeId", gradeId);
 		try{
 			objectiveList =  parentService.populateObjective(paramMap);
 			jsonString = JsonUtil.convertToJsonAdmin(objectiveList);
-			logger.log(IAppLogger.INFO, "jsonString for subObjMapId: "+subObjMapId+" and gradeId:"+gradeId);
+			logger.log(IAppLogger.INFO, "jsonString for subtestId: "+subtestId+" and gradeId:"+gradeId);
 			logger.log(IAppLogger.INFO, jsonString);
 			response.getWriter().write(jsonString);
 	    }catch(Exception e){
@@ -152,29 +151,28 @@ public class ManageContentController {
 		}
     }
 	
-	@RequestMapping(value = "/getGradeOnAddContent", method = RequestMethod.GET)
-	public void getGradeOnAddContent(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException,BusinessException {
-		
-		logger.log(IAppLogger.INFO, "Enter: ManageContentController - populateObjective()");
+	@RequestMapping(value = "/addNewContent", method = RequestMethod.POST)
+    public void addNewContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
+    		HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - addNewContent()");
 		long t1 = System.currentTimeMillis();
-		response.setContentType("text/plain");
-		long subtestId = Long.parseLong(request.getParameter("subtestId"));
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectiveList = null;
-		String jsonString = "";
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("subtestId", subtestId);
+		paramMap.put("manageContentTO", manageContentTO);
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
 		try{
-			objectiveList =  parentService.populateObjective(paramMap);
-			jsonString = JsonUtil.convertToJsonAdmin(objectiveList);
-			logger.log(IAppLogger.INFO, "jsonString for subtestId: "+subtestId);
+			statusTO = parentService.addNewContent(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
 			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ManageContentController - populateObjective() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - addNewContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
     }
 
