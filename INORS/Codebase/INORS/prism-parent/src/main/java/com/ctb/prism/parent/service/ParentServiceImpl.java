@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.business.IParentBusiness;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -154,6 +155,10 @@ public class ParentServiceImpl implements IParentService {
 	
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException{
 		return parentBusiness.addNewContent(paramMap);
+	}
+	
+	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException {
+		return parentBusiness.loadManageContent(paramMap);
 	}
 
 	//Manage Content - Parent Network - End

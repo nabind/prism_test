@@ -151,6 +151,10 @@ public class ManageContentController {
 		}
     }
 	
+	/**
+	 * To add a content
+	 * @return
+	 */
 	@RequestMapping(value = "/addNewContent", method = RequestMethod.POST)
     public void addNewContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
     		HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
@@ -175,5 +179,44 @@ public class ManageContentController {
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - addNewContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
     }
-
+	
+	
+	/**
+	 * @author TCS
+	 * Controller method for manage content datatable population 
+	 * @return
+	 */
+	@RequestMapping(value = "/loadManageContent", method = RequestMethod.GET)
+	public void loadManageContent(HttpServletRequest req,
+			HttpServletResponse res) throws ServletException, IOException,BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - loadManageContent");
+		long t1 = System.currentTimeMillis();
+		UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("custProdId",req.getParameter("custProdId"));
+		paramMap.put("subtestId",req.getParameter("subtestId"));
+		paramMap.put("objectiveId",req.getParameter("objectiveId"));
+		paramMap.put("contentTypeId",req.getParameter("contentTypeId"));
+		paramMap.put("lastid",req.getParameter("lastid"));
+		paramMap.put("checkFirstLoad",req.getParameter("checkFirstLoad"));
+		
+		List<ManageContentTO> loadManageContentList = null;
+		String loadManageContentJson = "";
+		try{
+			loadManageContentList = parentService.loadManageContent(paramMap);
+			loadManageContentJson = JsonUtil.convertToJsonAdmin(loadManageContentList);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			logger.log(IAppLogger.INFO, "jsonString of loadManageContent:");
+			logger.log(IAppLogger.INFO, loadManageContentJson);
+			res.setContentType("application/json");
+			res.getWriter().write(loadManageContentJson);
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - loadManageContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+	}
 }

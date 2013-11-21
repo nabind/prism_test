@@ -15,6 +15,7 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.dao.IParentDAO;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -181,6 +182,10 @@ public class ParentBusinessImpl implements IParentBusiness {
 	
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException{
 		return parentDAO.addNewContent(paramMap);
+	}
+	
+	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException {
+		return parentDAO.loadManageContent(paramMap);
 	}
 	//Manage Content - Parent Network - End
 }

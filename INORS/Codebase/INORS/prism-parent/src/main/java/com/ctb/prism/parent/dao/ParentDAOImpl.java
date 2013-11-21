@@ -1313,8 +1313,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				            cs.setLong("P_IN_CUST_PROD_ID", manageContentTO.getCustProdId());
 				            cs.setLong("P_IN_SUBTESTID", manageContentTO.getSubtestId());	
 				            cs.setLong("P_IN_OBJECTIVEID", manageContentTO.getObjectiveId());
-				            cs.setString("P_IN_CATEGORY", manageContentTO.getContentType());	
-				            cs.setString("P_IN_CATEGORY_TYPE", manageContentTO.getContentTypeName());	
+				            cs.setString("P_IN_CATEGORY", manageContentTO.getContentTypeName());	
+				            cs.setString("P_IN_CATEGORY_TYPE", manageContentTO.getContentType());	
 				            cs.setString("P_IN_SUB_HEADER", manageContentTO.getSubHeader());	
 				            cs.setLong("P_IN_GRADEID", manageContentTO.getGradeId());	
 				            cs.setString("P_IN_PROF_LEVEL", manageContentTO.getProfLevel());	
@@ -1346,6 +1346,82 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return objectValueTO;
 	}
-
+	
+/**
+ * @author TCS
+ * returns content list respective of the search field selected
+ */
+	@SuppressWarnings("unchecked")
+	public List<ManageContentTO> loadManageContent(final Map<String,Object> paramMap) throws BusinessException{
+		
+		long t1 = System.currentTimeMillis();
+		List<ManageContentTO> manageContentList = null;
+		ManageContentTO manageContentTO = new ManageContentTO();
+		final long custProdId = Long.parseLong((String) paramMap.get("custProdId"));
+		final long subtestId = Long.parseLong((String) paramMap.get("subtestId"));
+		final long objectiveId = Long.parseLong((String) paramMap.get("objectiveId"));
+		final String contentTypeId = (String) paramMap.get("contentTypeId");
+		final String checkFirstLoad = (String) paramMap.get("checkFirstLoad");
+		
+		try{
+			manageContentList = (List<ManageContentTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	if(checkFirstLoad.equals("true")){
+				        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST + "}");
+					            cs.setLong("P_IN_CUST_PROD_ID", custProdId);
+					            cs.setLong("P_IN_SUBTESTID", subtestId);
+					            cs.setLong("P_IN_OBJECTIVEID ", objectiveId);
+					            cs.setString("P_IN_CATEGORY_TYPE ", contentTypeId);
+					            cs.registerOutParameter("P_OUT_CUR_METADATA_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
+					            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+					            return cs;
+				        	}else{
+			        			final long lastid = Long.parseLong((String) paramMap.get("lastid"));
+				        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST_MORE + "}");
+					            cs.setLong("p_in_cust_prod_id", custProdId);
+					            cs.setLong("p_in_subtestid", subtestId);
+					            cs.setLong("p_in_objectiveid ", objectiveId);
+					            cs.setLong("p_in_lastid ",lastid);
+					            cs.setString("P_IN_CATEGORY_TYPE ", contentTypeId);
+					            cs.registerOutParameter("p_out_cur_metadata_details", oracle.jdbc.OracleTypes.CURSOR); 
+					            cs.registerOutParameter("p_out_excep_err_msg", oracle.jdbc.OracleTypes.VARCHAR);
+					            return cs;	
+				        	}
+				        	
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			List<ManageContentTO> manageContentListResult = new ArrayList<ManageContentTO>();
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject("p_out_cur_metadata_details");
+									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+									
+									while(rs.next()){
+										ManageContentTO manageContentTO = new ManageContentTO();
+										manageContentTO.setArticleId(rs.getLong("METADATA_ID"));
+										manageContentTO.setContentId(rs.getLong("CONTENT_ID"));
+										manageContentTO.setContentName(rs.getString("NAME"));	
+										manageContentTO.setSubHeader(rs.getString("SUB_HEADER"));
+										manageContentTO.setGradeName(rs.getString("GRADE"));
+										manageContentTO.setProfLevel(rs.getString("PROFICIENCY_LEVEL"));
+										manageContentListResult.add(manageContentTO);
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return manageContentListResult;
+				        }
+				    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - loadManageContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return manageContentList;
+	}
 	//Manage Content - Parent Network - End
 }

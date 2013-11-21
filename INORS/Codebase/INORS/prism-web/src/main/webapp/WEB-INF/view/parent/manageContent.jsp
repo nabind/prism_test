@@ -30,10 +30,12 @@
 					</div>
 					<div class="cyan-gradient icholder rounded-border-bottom"
 						style="border-bottom: 1px solid #CCC;">
-						<div class="refresh-report"
-							style="position: absolute; top: 5px; right: 20px;">
-							<a href="javascript:void(0)" id="searchEduCenterUsers"
-								class="button blue-gradient glossy">Search</a> 
+						<div class="cyan-gradient icholder rounded-border-bottom"
+						style="border-bottom: 1px solid #CCC;">
+						<div id="refresh-content"
+							style="position: absolute; top: 5px; right: 20px; display: none;">
+							<a href="javascript:void(0)" id="searchContent"
+								class="button blue-gradient glossy"><spring:message code="button.content.search"/></a>
 						</div>
 						<div class="with-mid-padding mid-margin-bottom icholderinner"
 							style="min-width: 200px; overflow-x: auto">
@@ -131,9 +133,9 @@
 	
 		<div class="panel-content linen">
 		
-		<!-- TODO for manage Content table Start -->			
+					
 			<div class="panel-control align-right">
-				<span class="input search-input display-none"> 
+				<%-- <span class="input search-input"> 
 				<input type="text"
 					name="searchUser" id="searchUser"
 					class="input-unstyled with-tooltip"
@@ -142,59 +144,58 @@
 				<a href="javascript:void(0)"
 					class="button icon-search compact" id="search_icon"
 					param="search_icon_user"></a>
-				</span>
+				</span> --%>
 
 				<sec:authorize ifNotGranted="ROLE_SSO">
 					<a id="addContent" href="#" class="button glossy margin-left">
-						<span class="button-icon blue-gradient manage-btn"> <span
-							class="icon-add-user"></span>
-					</span> <spring:message code="button.content.add"/>
+						<span class="button-icon blue-gradient manage-btn"> 
+							<span class="icon-add-user"></span>
+						</span> 
+						<spring:message code="button.content.add"/>
 					</a>
 				</sec:authorize>
 
 			</div>
 
-			<div
-				class="panel-load-target with-padding margin10 height-mid padding-none display-none">
+			<!-- TODO for manage Content table Start -->
+			<div id="contentTableDiv" style="display: none;" class="panel-load-target with-padding margin10 height-mid padding-none">
 				<div
 					class="pagination panel-control margin-bottom-small rounded-border">
-					<a href="#nogo" id="moreUser"
+					<a href="#nogo" id="moreContents"
 						class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
-						title="Display more users">More</a>
+						title="Display more users"><spring:message code="button.content.more"/></a>
 				</div>
-				<div id="userTable"
-					class="report-container tabs-content padding-small"
-					style="height: 450px">
-					<div id="last_msg_loader" height="140"
-						style="position: relative; left: 0px; z-index: 1"></div>
-					<input type="hidden" name="last_user_tenant"
-						id="last_user_tenant" value="">
-					<table class="simple-table responsive-table" id="report-list">
+				<div id="contentTable"
+								class="report-container tabs-content padding-small"
+								style="height: 450px">
+								<div id="last_msg_loader" height="140"
+									style="position: relative; left: 0px; z-index: 1"></div>
+								<input type="hidden" name="lastid"
+									id="lastid" value="">
+								<table class="simple-table responsive-table" id="report-list">
 
-						<thead>
-							<tr class="abc">
-								<th scope="col" width="16%">User ID</th>
-								<th scope="col" width="25%">Full Name</th>
-								<th scope="col" width="11%" class="hide-on-tablet">Status</th>
-								<th scope="col" width="16%" class="hide-on-tablet-portrait">Education
-									Center Name</th>
-								<th scope="col" width="16%">User Roles</th>
-								<th scope="col" width="16%">Actions</th>
-							</tr>
-						</thead>
+									<thead>
+										<tr class="abc">
+											<th scope="col" width="20%"><spring:message code="label.content.name"/></th>
+											<th scope="col" width="25%"><spring:message code="label.content.subHeader"/></th>
+											<th scope="col" width="22%"><spring:message code="label.content.grade"/></th>
+											<th scope="col" width="23%"><spring:message code="label.content.profLevel"/></th>
+											<th scope="col" width="20%"><spring:message code="table.columnName.action"/></th>
+										</tr>
+									</thead>
 
-						<tbody id="user_details">
-							<tr class="abc users-list-all" id="sample">
-								<th scope="row">&nbsp;</th>
-								<th scope="row">&nbsp;</th>
-								<th scope="row" class="hide-on-tablet">&nbsp;</th>
-								<th scope="row" class="hide-on-tablet-portrait">&nbsp;</th>
-								<th scope="row">&nbsp;</th>
-								<th scope="row">&nbsp;</th>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+									<tbody id="content_details">
+										<tr class="abc content-list-all" id="sample">
+											<th scope="row">&nbsp;</th>
+											<th scope="row">&nbsp;</th>
+											<th scope="row">&nbsp;</th>
+											<th scope="row">&nbsp;</th>
+											<th scope="row">&nbsp;</th>
+											<th scope="row">&nbsp;</th>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 			</div>
 			<!-- TODO for manage Content table End -->
 

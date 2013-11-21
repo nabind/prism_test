@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -65,5 +66,6 @@ public interface IParentDAO {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String,Object> paramMap) throws BusinessException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) throws BusinessException;
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException;
+	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException;
 	//Manage Content - Parent Network - End
 }

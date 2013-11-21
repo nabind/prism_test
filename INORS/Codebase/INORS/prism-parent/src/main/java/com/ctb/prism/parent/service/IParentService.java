@@ -9,6 +9,8 @@ import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
+
 
 
 public interface IParentService {
@@ -63,6 +65,7 @@ public interface IParentService {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String,Object> paramMap) throws BusinessException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) throws BusinessException;
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException;
+	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException;
 	//Manage Content - Parent Network - End
 	
 }
