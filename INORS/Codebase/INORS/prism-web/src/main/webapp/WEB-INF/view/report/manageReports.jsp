@@ -101,7 +101,7 @@
 													<input type="hidden" class="menuName menuid" name="menuName" value="${report.menuId}" />
 												</td>
 												<c:choose>
-                                                <c:when test="${report.reportName=='System Configuration TASC'}">
+                                                <c:when test="${report.reportName=='System Configuration ISTEP'}">
                                                 <td class="vertical-center" nowrap>
 													<span class="button-group compact" width="50px">
 														<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
