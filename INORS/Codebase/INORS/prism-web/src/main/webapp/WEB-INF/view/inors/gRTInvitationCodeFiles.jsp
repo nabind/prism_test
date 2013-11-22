@@ -38,8 +38,8 @@
 		</div>
 		<div class="columns accordion with-padding" style="margin-bottom: 0">
 			<div class="">
-				<a href="/tasc/staticfiles/S2012-13 Invitation Code Layout.xls">2012-13 Invitation Code File Record Layout</a><br />
-				<a href="/tasc/staticfiles/S2011-12 Invitation Code Layout.xls">2011-12 Invitation Code File Record Layout</a>
+				<a href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls">2012-13 Invitation Code File Record Layout</a><br />
+				<a href="/inors/staticfiles/S2011-12 Invitation Code Layout.xls">2011-12 Invitation Code File Record Layout</a>
 			</div>
 			<a class="button float-right" id="downloadICFile" style="cursor: pointer;">
 				<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File
