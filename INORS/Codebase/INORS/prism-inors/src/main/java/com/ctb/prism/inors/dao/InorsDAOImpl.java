@@ -15,6 +15,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.transferobject.ObjectValueTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 
 /**
@@ -212,5 +213,38 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			}
 		}
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#getOrgNodes()
+	 */
+	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel) {
+		List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_NODES_BY_LEVEL, orgNodeLevel);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				ObjectValueTO objectValueTO = new ObjectValueTO();
+				objectValueTO.setName(fieldDetails.get("ORG_NODE_NAME").toString());
+				objectValueTO.setValue(fieldDetails.get("ORG_NODEID").toString());
+				objectValueList.add(objectValueTO);
+			}
+		}
+		return objectValueList;
+	}
+	
+	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId){
+		List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_NODES_BY_PARENT, parentOrgNodeId);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				ObjectValueTO objectValueTO = new ObjectValueTO();
+				objectValueTO.setName(fieldDetails.get("ORG_NODE_NAME").toString());
+				objectValueTO.setValue(fieldDetails.get("ORG_NODEID").toString());
+				objectValueList.add(objectValueTO);
+			}
+		}
+		return objectValueList;
 	}
 }

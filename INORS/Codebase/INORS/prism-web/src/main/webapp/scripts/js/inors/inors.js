@@ -111,16 +111,26 @@ $(document).ready(function() {
 	    changeYear: true
     });
 	
+	$('#corpDiocese').live('change',function(){
+		populateSchool();
+	});
+	
 	$("#downloadGRTFile").live("click", function() {
-		var startDate = $("#p_Start_Date").val();
-		var endDate = $("#p_End_Date").val();
-		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&layout=2013&startDate=" + startDate + "&endDate=" + endDate;
+		var testAdministration = $("#testAdministration").val();
+		var testProgram = $("#testProgram").val();
+		var corpDiocese = $("#corpDiocese").val();
+		var school = $("#school").val();
+		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
+		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&layout=2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadGRTFile").attr("href", href);
 	});
 	$("#downloadICFile").live("click", function() {
-		var startDate = $("#p_Start_Date").val();
-		var endDate = $("#p_End_Date").val();
-		var href = "downloadGRTInvitationCodeFiles.do?type=IC&layout=2013&startDate=" + startDate + "&endDate=" + endDate;
+		var testAdministration = $("#testAdministration").val();
+		var testProgram = $("#testProgram").val();
+		var corpDiocese = $("#corpDiocese").val();
+		var school = $("#school").val();
+		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
+		var href = "downloadGRTInvitationCodeFiles.do?type=IC&layout=2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadICFile").attr("href", href);
 	});
 });
@@ -424,5 +434,51 @@ function downloadBulkPdf(type, mode) {
 					});
 				}
 
+function populateSchool(){
+	var parentOrgNodeId = $('#corpDiocese').val();
+	if (parentOrgNodeId != "-1") {
+		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'populateSchool.do',
+			data : dataUrl,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				populateDropdownByJson($('#school'),data,1);
+				unblockUI();
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error']);
+				unblockUI();
+			}
+		});
+	}
+}
 
+//============To populate any drop down ===============
+function populateDropdownByJson(elementObject, jsonDataValueName, plsSelectFlag, clearFlag) {
+	elementObject.empty();
+	var option = "";
+	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
+		option += "<option value='-1'>Please Select</option>";
+	}
+	
+	if((typeof clearFlag === 'undefined')){
+		if(jsonDataValueName != null){
+			if(jsonDataValueName != ""){
+				$.each(jsonDataValueName, function(index, data) {
+					option += '<option value=' + data.value + '>' + data.name + '</option>';
+			    });
+			}else{
+				$.modal.alert(strings['script.common.empty']);
+			}
+		}
+	}
+	
+	elementObject.html(option);
+	elementObject.change();
+	elementObject.trigger('update-select-list');
+}
 		

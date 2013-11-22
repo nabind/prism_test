@@ -7,11 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRQuery;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -44,12 +44,9 @@ import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.GroupDownload;
-import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
-import com.ctb.prism.report.transferobject.ObjectValueTO;
-import com.ctb.prism.report.transferobject.ObjectValueTO;
-import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
 /**
@@ -539,6 +536,8 @@ public class InorsController {
 	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
 		ModelAndView modelAndView = new ModelAndView("inors/gRTInvitationCodeFiles");
+		List<com.ctb.prism.inors.transferobject.ObjectValueTO> corporationList = inorsService.getOrgNodes("2"); // TODO : hard-code
+		modelAndView.addObject("corporationList", corporationList);
 		
 		return modelAndView;
 	}
@@ -548,6 +547,16 @@ public class InorsController {
 	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
 		Map<String, String> paramMap = new HashMap<String, String>();
+		
+		String testAdministration = (String) request.getParameter("testAdministration");
+		String testProgram = (String) request.getParameter("testProgram");
+		String corpDiocese = (String) request.getParameter("corpDiocese");
+		String school = (String) request.getParameter("school");
+		logger.log(IAppLogger.INFO, "testAdministration=" + testAdministration
+				+ ", testProgram=" + testProgram + ", corpDiocese="
+				+ corpDiocese + ", school=" + school);
+		// TODO : Use these values as report filter
+
 		String type = (String) request.getParameter("type");
 		String layout = (String) request.getParameter("layout");
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
@@ -592,6 +601,29 @@ public class InorsController {
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
+	}
+	
+	@RequestMapping(value = "/populateSchool", method = RequestMethod.GET)
+	public void populateSchool(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchool()");
+		long t1 = System.currentTimeMillis();
+		response.setContentType("text/plain");
+		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
+		List<com.ctb.prism.inors.transferobject.ObjectValueTO> schoolList = null;
+		String jsonString = "";
+		
+		try{
+			schoolList =  inorsService.populateSchool(parentOrgNodeId);
+			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
+			logger.log(IAppLogger.INFO, "jsonString for parentOrgNodeId: " + parentOrgNodeId);
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: InorsController - populateSchool() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
 	}
 	
 	// every night @ 1 AM

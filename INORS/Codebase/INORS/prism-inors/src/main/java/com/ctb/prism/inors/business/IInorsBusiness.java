@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.ObjectValueTO;
 
 public interface IInorsBusiness {
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO);
@@ -28,4 +29,8 @@ public interface IInorsBusiness {
 	 * @return
 	 */
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap);
+
+	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel);
+
+	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId);
 }

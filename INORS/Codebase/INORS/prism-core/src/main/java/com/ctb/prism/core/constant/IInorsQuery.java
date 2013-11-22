@@ -50,5 +50,9 @@ public interface IInorsQuery {
 	public static final String GET_NODE_NAME = CustomStringUtil.appendString(
 			"select org_node_name ORG_NAME from org_node_dim where org_nodeid = ? ");
 	
+	public static final String GET_ORG_NODES_BY_LEVEL = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL = ?";
+	
+	public static final String GET_ORG_NODES_BY_PARENT = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?";
+	
 }
 

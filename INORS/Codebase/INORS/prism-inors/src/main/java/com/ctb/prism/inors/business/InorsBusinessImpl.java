@@ -624,4 +624,12 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		return inorsDAO.getDownloadData(paramMap);
 	}
+
+	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> getOrgNodes(String orgNodeLevel) {
+		return inorsDAO.getOrgNodes(orgNodeLevel);
+	}
+	
+	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> populateSchool(Long parentOrgNodeId){
+		return inorsDAO.populateSchool(parentOrgNodeId);
+	}
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.business.IInorsBusiness;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.ObjectValueTO;
 
 @Service("inorsService")
 public class InorsServiceImpl implements IInorsService {
@@ -35,6 +36,14 @@ public class InorsServiceImpl implements IInorsService {
 	 */
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		return inorsBusiness.getDownloadData(paramMap);
+	}
+
+	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel) {
+		return inorsBusiness.getOrgNodes(orgNodeLevel);
+	}
+	
+	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId){
+		return inorsBusiness.populateSchool(parentOrgNodeId);
 	}
 	
 }
