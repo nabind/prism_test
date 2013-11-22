@@ -54,6 +54,7 @@
 		<pattern>/groupDownloadFiles*</pattern>
 		<pattern>/studentFileDownload*</pattern>
 		<pattern>/downloadStudentFile*</pattern>
+		<pattern>/gRTInvitationCodeFiles*</pattern>
     </decorator>
 	
   	<decorator name="main" page="main.jsp"> 

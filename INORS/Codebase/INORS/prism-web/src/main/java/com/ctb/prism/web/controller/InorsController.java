@@ -1,15 +1,23 @@
 package com.ctb.prism.web.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jasperreports.engine.JRDataset;
+import net.sf.jasperreports.engine.JRQuery;
+import net.sf.jasperreports.engine.JasperReport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,18 +33,24 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.service.IInorsService;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.GrtTO;
+import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
-import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
-
 /**
  * @author TCS
  * 
@@ -131,6 +145,85 @@ public class InorsController {
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			//String currentOrgLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
 			String docName = CustomStringUtil.appendString(currentUser, " " ,Utils.getDateTime(), "_Querysheet.pdf");
+			
+			
+			/**/
+			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+			
+			// get compiled jasper report
+			JasperReport jasperReport = null;
+			boolean mainReportPresent = false;
+			
+			//fetch report list 
+			List<ReportTO> reportList = reportController.getCompliledJrxmlList(reportUrl);
+			
+			if(reportList != null && !reportList.isEmpty()) {
+				for(ReportTO reportTo : reportList) {
+					if(reportTo.isMainReport()) {
+						jasperReport = reportTo.getCompiledReport();
+						mainReportPresent = true;
+						break;
+					}
+				}
+				
+				if(!mainReportPresent) {
+					jasperReport = reportList.get(0).getCompiledReport();
+				}
+			} 
+			String assessmentId = request.getParameter("assessmentId");
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
+			Map<String, Object> parameters = reportController.getReportParametersFromRequest(
+					request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
+				//reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+			
+			
+			String mainQuery = jasperReport.getDatasets()[0].getQuery().getText(); //jasperReport.getQuery().getText();
+			
+			// replace all parameters with jasper parameter string
+			Map<String, String> replacableParams = new HashMap<String, String>();
+			Iterator it = parameters.entrySet().iterator();
+			try {
+				while (it.hasNext()) {
+				    Map.Entry pairs = (Map.Entry)it.next();
+				    if(pairs.getValue() != null && pairs.getValue() instanceof String) {
+				    	replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), 
+				    			(String) pairs.getValue());
+				    } else if(pairs.getValue() != null && pairs.getValue() instanceof List) {
+				    	String val = pairs.getValue().toString();
+				    	val = val.substring(1, val.length()-1);
+				    	replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()),
+				    			val);
+				    }
+				}
+			} catch (Exception e) {
+				logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.",e);
+			}
+			
+			it = request.getParameterMap().entrySet().iterator();
+			while (it.hasNext()) {
+			    try {
+					@SuppressWarnings("rawtypes")
+					Map.Entry pairs = (Map.Entry)it.next();
+					if(pairs.getValue() != null && pairs.getValue() instanceof String) {
+						if(!replacableParams.containsKey(pairs.getKey())) {
+							replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), 
+					    			(String) pairs.getValue());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			replacableParams.put("$P!{p_Start_Test_Date}", request.getParameter("p_Start_Test_Date"));
+			replacableParams.put("$P!{p_End_Test_Date}", request.getParameter("p_End_Test_Date"));
+			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Grade_Id"), "112");
+			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Product_Id"), "1001");
+			
+			String changedObject = "p_Ethnicities,p_Roster_Subtest_MultiSelect";
+			List<ObjectValueTO> allStudents = reportService.getValuesOfSingleInput(
+					mainQuery, currentUser, changedObject, "", replacableParams, reportFilterTO, true);
+			/**/
+			
 			
 			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
 			bulkDownloadTO.setQuerysheetFile(docName);
@@ -441,6 +534,64 @@ public class InorsController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/gRTInvitationCodeFiles", method = RequestMethod.GET)
+	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
+			HttpServletResponse response) throws SystemException {
+		ModelAndView modelAndView = new ModelAndView("inors/gRTInvitationCodeFiles");
+		
+		return modelAndView;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/downloadGRTInvitationCodeFiles", method = RequestMethod.GET)
+	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
+		Map<String, String> paramMap = new HashMap<String, String>();
+		String type = (String) request.getParameter("type");
+		String layout = (String) request.getParameter("layout");
+		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String startDate = (String) request.getParameter("startDate");
+		String endDate = (String) request.getParameter("endDate");
+		paramMap.put("type", type);
+		paramMap.put("layout", layout);
+		paramMap.put("userId", userId);
+		paramMap.put("startDate", startDate);
+		paramMap.put("endDate", endDate);
+		logger.log(IAppLogger.INFO, "type=" + type + ", layout=" + layout);
+		byte[] data = null;
+		// TODO : write code for zip file
+		String fileName = "";
+		String zipFileName = "";
+		if ("IC".equals(type)) {
+			List<InvitationCodeTO> icList = (List<InvitationCodeTO>) inorsService.getDownloadData(paramMap);
+			logger.log(IAppLogger.INFO, "IC : " + icList.size());
+			data = InorsDownloadUtil.createICByteArray(icList, ',');
+			fileName = InorsDownloadConstants.IC_FILE_PATH;
+			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
+		} else if ("GRT".equals(type)) {
+			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
+			logger.log(IAppLogger.INFO, "GRT : " + grtList.size());
+			data = InorsDownloadUtil.createGRTByteArray(grtList, ',');
+			fileName = InorsDownloadConstants.GRT_FILE_PATH;
+			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
+		}
+		try {
+			data = FileUtil.zipBytes(fileName, data);
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "zipBytes - ", e);
+			e.printStackTrace();
+		}
+		response.setContentType("application/force-download");
+		response.setContentLength(data.length);
+		response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
+		try {
+			FileCopyUtils.copy(data, response.getOutputStream());
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
+			e.printStackTrace();
+		}
+		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
+	}
 	
 	// every night @ 1 AM
 	@Scheduled(cron= "* * 1 * * ?")

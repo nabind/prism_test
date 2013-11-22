@@ -110,6 +110,19 @@ $(document).ready(function() {
 		changeMonth: true,
 	    changeYear: true
     });
+	
+	$("#downloadGRTFile").live("click", function() {
+		var startDate = $("#p_Start_Date").val();
+		var endDate = $("#p_End_Date").val();
+		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&layout=2013&startDate=" + startDate + "&endDate=" + endDate;
+		$("#downloadGRTFile").attr("href", href);
+	});
+	$("#downloadICFile").live("click", function() {
+		var startDate = $("#p_Start_Date").val();
+		var endDate = $("#p_End_Date").val();
+		var href = "downloadGRTInvitationCodeFiles.do?type=IC&layout=2013&startDate=" + startDate + "&endDate=" + endDate;
+		$("#downloadICFile").attr("href", href);
+	});
 });
 
 // =============== retain group download files field values =====================

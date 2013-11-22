@@ -3,15 +3,11 @@ package com.ctb.prism.inors.business;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
@@ -33,6 +29,7 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.dao.IInorsDAO;
@@ -618,5 +615,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(fos);
 	    }
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#getDownloadData(java.util.Map)
+	 */
+	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
+		return inorsDAO.getDownloadData(paramMap);
 	}
 }
