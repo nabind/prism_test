@@ -44,6 +44,7 @@ import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.GroupDownload;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
@@ -220,9 +221,9 @@ public class InorsController {
 			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Product_Id"), "1001");
 			
 			String changedObject = "p_Ethnicities,p_Roster_Subtest_MultiSelect";
-			List<ObjectValueTO> allStudents = reportService.getValuesOfSingleInput(
+			/*List<ObjectValueTO> allStudents = reportService.getValuesOfSingleInput(
 					mainQuery, currentUser, changedObject, "", replacableParams, reportFilterTO, true);
-			/**/
+			*/
 			
 			
 			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
