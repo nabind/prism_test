@@ -6,6 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.transferobject.UserTO;
+import java.util.Map;
+
 
 public interface ILoginService {
 
@@ -17,6 +19,8 @@ public interface ILoginService {
 	public String getTenant(String username);
 	
 	public boolean checkFirstTimeLogin(String username);
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
 	
 	public UserTO getUserDetails(String username);
 	

@@ -738,7 +738,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		
 		long reportId = ((Long) paramMap.get("reportId")).longValue();
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
-		
+		String reportName=((String) paramMap.get("reportName"));
+
 		@SuppressWarnings("rawtypes")
 		List placeHolderValueList = new ArrayList();
 		placeHolderValueList.add(reportId);
@@ -748,8 +749,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		
 		List<ManageMessageTO> manageMessageTOList = null;
 		try{
+			if(null!=reportName && reportName.startsWith("System Configuration"))
+			{
+				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM, 
+						placeHolderValueList.toArray(),new ManageMessageTOMapper());
+			}
+			else
+			{
 			manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST, 
 					placeHolderValueList.toArray(),new ManageMessageTOMapper());
+			}
+
 		}catch(Exception e){
 			logger.error("Error occurred in loadManageMessage():", e);
 			return null;

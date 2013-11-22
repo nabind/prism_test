@@ -6,7 +6,11 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import oracle.sql.CLOB;
+import java.sql.Clob;
+import com.ctb.prism.core.util.Utils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -263,4 +267,47 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		}
 		return userTO;
 	}
+	
+
+	/**
+	 * @author Arunava
+	 * Retrieves and returns message corresponding configured in database
+	 * @param msgtype,reportname and infoname
+	 * @return clob message
+	 */
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
+		
+		String PRE_LOG_IN=(String) paramMap.get("PRE_LOG_IN");
+		String REPORT_NAME=(String) paramMap.get("REPORT_NAME");
+		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
+		
+			return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, new Object[]{REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN }, new RowMapper<String>() {
+				public String mapRow(ResultSet rs, int col) throws SQLException {
+					
+						return convertClobToString((CLOB) rs.getClob("REPORT_MSG")).trim();
+				}
+			});
+		}
+	
+	public static String convertClobToString(final CLOB oracleClob){
+		StringBuffer stringBuffer = new StringBuffer("");
+		BufferedReader bufferedReader = null;
+		String tempString;
+		if(oracleClob != null){
+			try {
+				bufferedReader = new BufferedReader(oracleClob.getCharacterStream());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				while((tempString = bufferedReader.readLine()) != null){
+					stringBuffer.append("\n").append(tempString);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return stringBuffer.toString();
+	}
+	
 }

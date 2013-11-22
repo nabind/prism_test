@@ -13,6 +13,15 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_USER_BY_EMAIL = "SELECT * FROM DPP_USR_USER USR" +
 													" WHERE USR.USER_EMAIL = ?";
 	
+	// query to retrieve prelogin message dynamically
+	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE = "select DM.REPORT_MSG as REPORT_MSG from DASH_REPORTS DR " +
+			" join DASH_MENU_RPT_ACCESS DMRA on DR.DB_REPORTID=DMRA.DB_REPORTID " +
+			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID " +
+			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID " +
+			" where DR.REPORT_NAME= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and ROWNUM=1";
+	
+
+	
 	// query to retrieve tenant id for a particular username
 	public static final String GET_TENANT_ID = "SELECT org_nodeid FROM users users, org_users org WHERE upper(USERNAME) = upper(?) and org.userid = users.userid and rownum = 1 ";
 	
@@ -253,6 +262,23 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE DMT.CUST_PROD_ID = DM.CUST_PROD_ID(+)",
 			" AND DMT.MSG_TYPEID = DM.MSG_TYPEID(+)",
 			" AND DM.DB_REPORTID(+) = ?",
+			" AND DMT.MESSAGE_TYPE !='SCM' ",
+			" AND DMT.CUST_PROD_ID = ?",
+			" ORDER BY DMT.MESSAGE_NAME");
+	public static final String GET_MANAGE_MESSAGE_LIST_SCM = CustomStringUtil.appendString(
+			" SELECT DMT.MSG_TYPEID       MESSAGE_TYPEID,",
+			" DMT.MESSAGE_NAME  MESSAGE_NAME,",
+			" DMT.MESSAGE_TYPE  MESSAGE_TYPE,",
+			" DMT.DESCRIPTION   MESSAGE_DESC,",
+			" DM.REPORT_MSG     MESSAGE,",
+			" ?       			REPORTID,",
+			" ?      			CUST_PROD_ID,",
+			" DM.ACTIVATION_STATUS ACTIVATION_STATUS",
+			" FROM DASH_MESSAGE_TYPE DMT, DASH_MESSAGES DM",
+			" WHERE DMT.CUST_PROD_ID = DM.CUST_PROD_ID(+)",
+			" AND DMT.MSG_TYPEID = DM.MSG_TYPEID(+)",
+			" AND DM.DB_REPORTID(+) = ?",
+			" AND DMT.MESSAGE_TYPE in('SCM') ",
 			" AND DMT.CUST_PROD_ID = ?",
 			" ORDER BY DMT.MESSAGE_NAME");
 	

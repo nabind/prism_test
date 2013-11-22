@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -121,6 +122,13 @@ public class LoginController{
 		  String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		  String mess_login_error = (String)request.getParameter("login_error");
 		  String message = null;
+		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("PRE_LOG_IN", IApplicationConstants.PRE_LOG_IN);
+		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
+		  logInInfoMessage.replaceAll("<p>", "");
+		  logInInfoMessage.replaceAll("</p>", "");
 		  if("1".equalsIgnoreCase(mess_login_error)){
 			  logger.log(IAppLogger.ERROR, "Invalid Login");
 			  message = "error.login.invalidlogin";
@@ -133,8 +141,18 @@ public class LoginController{
 		  ModelAndView modelAndView = null;
 		  if(IApplicationConstants.TRUE.equals(parent)) {
 			  modelAndView = new ModelAndView("parent/login");
+			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
+			  {
+			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+			  }
+
 		  } else {
 			  modelAndView = new ModelAndView("user/login");
+			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
+			  {
+			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+			  }
+
 		  }
 		  modelAndView.addObject("message", message);
 		 

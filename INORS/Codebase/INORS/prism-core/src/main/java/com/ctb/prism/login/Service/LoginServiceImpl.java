@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.business.ILoginBusiness;
 import com.ctb.prism.login.transferobject.UserTO;
+import java.util.Map;
 
 
 @Service
@@ -31,6 +32,11 @@ public class LoginServiceImpl implements ILoginService{
 	public String getTenant(String username) {
 		return loginBusiness.getTenant(username);
 	}
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+		return loginBusiness.getSystemConfigurationMessage(paramMap);
+	}
+	
 	public boolean checkFirstTimeLogin(String username) {
 		return loginBusiness.checkFirstTimeLogin(username);
 	}

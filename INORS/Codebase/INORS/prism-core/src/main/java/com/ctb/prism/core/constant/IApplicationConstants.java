@@ -142,4 +142,9 @@ public interface IApplicationConstants {
 	public static final String LOGIN_AS = "LOGIN_AS";
 	public static final String ORG_USER_FLAG = "O";
 	public static final String EDU_USER_FLAG = "E";
+	public static final String PRE_LOG_IN = "Pre Log In";
+	public static final String HOME_PAGE = "Home Page";
+	public static final String REPORT_NAME = "System Configuration TASC";
+	public static final String MESSAGE_TYPE = "SCM";
+
 }

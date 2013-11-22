@@ -12,6 +12,8 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
+import java.util.Map;
+
 
 
 
@@ -38,6 +40,11 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public String getTenant(String username) {
 		return loginDAO.getTenantId(username);
 	}
+
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+		return loginDAO.getSystemConfigurationMessage(paramMap);
+	}
+	
 
 	public boolean checkFirstTimeLogin(String username) {
 		if(IApplicationConstants.FLAG_Y.equals( loginDAO.checkFirstTimeLogin(username) )) {
