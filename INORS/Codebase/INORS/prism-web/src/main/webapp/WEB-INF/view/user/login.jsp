@@ -142,7 +142,7 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-							<spring:message code="login.otage.message"/>
+							<c:out value="${logInInfoMessage}"/>
 						</p>
 					</div>
 					
