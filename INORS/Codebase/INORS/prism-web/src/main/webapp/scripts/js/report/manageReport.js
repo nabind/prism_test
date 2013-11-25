@@ -422,17 +422,17 @@ $('.delete-Report').live("click", function() {
 				success : function(data) {
 					if (data!=null){
 					
-						/*if(data.status =="Faliure"){
+						if(data.status =="Faliure"){
 							$.modal.alert(strings['script.manageReport.exists']);
 						}
-						if {*/
+						else {
 								win.closeModal();
 								$.modal.alert(strings['script.manageReport.addSuccess']);
 								unblockUI();
 								if (insertNewDasboardRow(data)){
 									enableSorting(true);
 								}
-						//}					
+						}					
 					}
 					unblockUI();
 					
