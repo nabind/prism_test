@@ -219,4 +219,88 @@ public class ManageContentController {
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - loadManageContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 	}
+	
+	/**
+	 * Get content details for edit depending upon article_metedata id
+	 */
+	@RequestMapping(value = "/getContentForEdit", method = RequestMethod.GET)
+    public void getContentForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - getContentForEdit()");
+		long t1 = System.currentTimeMillis();
+		long contentId = Long.parseLong(request.getParameter("contentId"));
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("contentId", contentId);
+		ManageContentTO manageContentTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			manageContentTO = parentService.getContentForEdit(paramMap); 
+			jsonString = gson.toJson(manageContentTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - getContentForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+    }
+	
+	/**
+	 * Update content/article along with metadata
+	 */
+	@RequestMapping(value = "/updateContent", method = RequestMethod.POST)
+    public void updateContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
+    		HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - updateContent()");
+		long t1 = System.currentTimeMillis();
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("manageContentTO", manageContentTO);
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			statusTO = parentService.updateContent(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - updateContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+    }
+	
+	/**
+	 * Delete content/article's meta data and delete content/article if no association present with another mete data.
+	 */
+	@RequestMapping(value = "/deleteContent", method = RequestMethod.GET)
+    public void deleteContent(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - deleteContent()");
+		long t1 = System.currentTimeMillis();
+		long contentId = Long.parseLong(request.getParameter("contentId"));
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("contentId", contentId);
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			statusTO = parentService.deleteContent(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - deleteContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+    }
 }

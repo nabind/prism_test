@@ -13,9 +13,11 @@ $(document).ready(function() {
 	 $("#editReportForm").validationEngine({promptPosition : "centerRight", scroll: false});
 	 
 	// CKEditor
+	 //This block effects other text area throughout the application - give js error
+	 /*
 	 $('textarea').each(function(){
 		CKEDITOR.inline( $(this).attr('id') );
-	});
+	});*/
 	
 	 // edit report in Manager Reports screen
 	if($('.edit-report').length > 0) {

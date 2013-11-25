@@ -2,12 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-<style>
-.contentDescriptionEditorClass {
-	z-index: 999301 !important;
-}
-</style>
-
 <div class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
 		<h1><spring:message code="label.pn.manageContent"/></h1>
@@ -157,7 +151,7 @@
 
 			</div>
 
-			<!-- TODO for manage Content table Start -->
+			<!-- Manage Content table Start -->
 			<div id="contentTableDiv" style="display: none;" class="panel-load-target with-padding margin10 height-mid padding-none">
 				<div
 					class="pagination panel-control margin-bottom-small rounded-border">
@@ -197,8 +191,9 @@
 								</table>
 							</div>
 			</div>
-			<!-- TODO for manage Content table End -->
+			<!-- Manage Content table End -->
 
+			<!-- Manage Content add start -->
 			<div id="addContentModal" class="display-none">
 				<div class="">
 					<form:form id="addNewContent" name="addNewContent"
@@ -213,9 +208,10 @@
 						
 						<p class="button-height inline-label">
 							<label class="label" for="contentName"><spring:message code="label.content.name"/><span
-								class="icon-star icon-size1 red"></span></label> <input type="text"
+								class="icon-star icon-size1 red"></span></label> 
+								<input type="text"
 								name="contentName" id="contentName" rel="contentName" style="width: 200px"
-								class="input full-width newReportName validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" />
+								class="input full-width newReportName validate[required,maxSize[250]]" />
 						</p>
 						
 						<p style="width: 329px" id="imgHolderContainer">
@@ -227,23 +223,22 @@
 								class="icon-star icon-size1 red"></span></label> 
 								<input type="text"
 								name="subHeader" id="subHeader" style="width: 200px"
-								class="input full-width newReportName validate[required,maxSize[10],minSize[3]]" />
+								class="input full-width newReportName validate[required,maxSize[250]]" />
 						</p>
 
 						<p class="button-height inline-label">
-							<fieldset class="fieldset" style="height: 200px">
+							<fieldset class="fieldset" style="height: 100%">
 								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 								</legend>
 								<input type="hidden"
 									id="contentDescription"
-									name="contentDescription"/>
-								<div class="new-row contentDescriptionEditorClass">
-									<textarea
-										id="contentDescriptionEditor"
-										class="manage-content-textarea validate[required]">
-									</textarea>
-								</div>
+									name="contentDescription"
+									class="validate[required]"/>
+								<textarea
+									id="contentDescriptionEditor"
+									class="manage-content-textarea validate[required]">
+								</textarea>
 							</fieldset>
 						</p>
 						
@@ -264,66 +259,68 @@
 				</div>
 				<%@ include file="../common/required.jsp"%>
 			</div>
+			<!-- Manage Content add end -->
 			
-			<!-- TODO for manage Content edit start -->
-			<div id="userModal" class="display-none">
+			<!-- Manage Content edit start -->
+			<div id="editContentModal" class="display-none">
 				<div class="">
-					<form:form id="editUser" name="editUser" class="edit-User-form">
-						<input type="hidden" name="Id" id="Id" />
-						<input type="hidden" name="userId" id="userId" />
+					<form:form id="editContent" name="editContent"
+						class="add-User-form small-margin-top">
+						
+						<input type="hidden" id="contentId" name="contentId"/>
 						
 						<p class="button-height inline-label">
-							<label class="label" for="userid">User Id</label> <label
-								type="text" name="userid" id="userid" style="width: 200px"
-								class="full-width newReportName"></label>
+							<label class="label" for="contentName"><spring:message code="label.content.name"/><span
+								class="icon-star icon-size1 red"></span></label> 
+								<input type="text"
+								name="contentName" id="contentName" rel="contentName" style="width: 200px"
+								class="input full-width newReportName validate[required,maxSize[250]]" />
 						</p>
+						
+						<p style="width: 329px" id="imgHolderContainer">
+							<span id="imgHolder"></span>
+						</p>
+						
 						<p class="button-height inline-label">
-							<label class="label" for="userName">Display Name<span
-								class="icon-star icon-size1 red"></span></label> <input type="text"
-								name="userName" id="userName" style="width: 200px"
-								class="input full-width newReportName validate[required,maxSize[10],minSize[3]]" />
+							<label class="label" for="subHeader"><spring:message code="label.content.subHeader"/><span
+								class="icon-star icon-size1 red"></span></label> 
+								<input type="text"
+								name="subHeader" id="subHeader" style="width: 200px"
+								class="input full-width newReportName validate[required,maxSize[250]]" />
 						</p>
+
 						<p class="button-height inline-label">
-							<label class="label" for="validation-email">Email</label> <input
-								type="text" id="validation-email" name="emailId"
-								style="width: 200px"
-								class="input full-width  validate[custom[email]]" />
+							<fieldset class="fieldset" style="height: 100%">
+								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
+									<spring:message code="label.content.description"/>
+								</legend>
+								<input type="hidden"
+									id="contentDescription"
+									name="contentDescription"
+									class="validate[required]"/>
+								<textarea
+									id="contentDescriptionEditor"
+									class="manage-content-textarea validate[required]">
+								</textarea>
+							</fieldset>
 						</p>
+						
 						<p class="button-height inline-label">
-							<label class="label" for="password">Create Password</label> <input
-								type="password" rel="editPwd" name="password" id="password"
-								style="width: 200px"
-								class="input full-width newReportName validate[maxSize[15],minSize[8]]" />
+							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
+								class="icon-star icon-size1 red"></span></label> 
+								<select id="profLevel" name="profLevel"
+												class="select expandable-list"
+												style="width: 150px;">
+												
+								</select>
 						</p>
-						<p class="button-height inline-label">
-							<label class="label" for="confPassword">Verify
-								Password</label> <input type="password" rel="editConfPwd"
-								name="confPassword" id="confPassword" style="width: 200px"
-								class="input full-width newReportName" />
-						</p>
-						<p class="button-height inline-label">
-							<label class="label" for="userStatus">Status</label> <input
-								type="checkbox" name="userStatus" id="userStatus"
-								class="switch medium wide mid-margin-right"
-								data-text-on="ENABLED" data-text-off="DISABLED">
-						</p>
-						<p class="button-height inline-label">
-							<label class="label" for="input-3">Roles</label> <select
-								id="userRole" name="userRole" style="width: 150px"
-								class="select multiple-as-single easy-multiple-selection check-list "
-								multiple>
-							</select>
-						</p>
+
+						<div id="imgHolder"></div>
 					</form:form>
-					<%@ include file="../common/required.jsp"%>
-					<p>
-						<small class="input-info">Passwords are case-sensitive.
-							They must be at least 8 characters long and include at least
-							one number, one uppercase letter, and one lowercase letter.</small>
-					</p>
 				</div>
+				<%@ include file="../common/required.jsp"%>
 			</div>
-			<!-- TODO for manage Content edit end -->
+			<!-- Manage Content edit end -->
 			
 			<div id="loader" class="display-none"></div>
 

@@ -3,7 +3,7 @@
  * Author: Tata Consultancy Services Ltd.
  * Version: 1
  */
-	
+
 $(document).ready(function() {
 	
 	if($("#contentTable").length > 0) {
@@ -31,7 +31,7 @@ $(document).ready(function() {
 	$('#subtestIdManageContent').live('change',function(){
 		refreshContent();
 		populateObjective();
-	}); 
+	});
 	
 	$('#addContent').live("click", function() {
 		if ($('#objectiveIdManageContent').val() == null || $('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "0" ) {
@@ -44,12 +44,212 @@ $(document).ready(function() {
 		}
 	});
 	
-});
+	$('#refresh-content').live('click',function(){
+		loadManageContentList();
+	});
+	
+	var tempScrollTop, currentScrollTop = 0
+	$("#moreContents").click(function() {
+		var custProdId = $('#custProdIdManageContent').val();
+		var gradeId = $('#gradeIdManageContent').val();
+		var subtestId = $('#subtestIdManageContent').val();
+		var objectiveId = $('#objectiveIdManageContent').val();
+		var contentTypeId = $('#contentTypeIdManageContent').val();
+		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+		var lastid = $("#contentTable tr:last").attr("value");
+		var checkFirstLoad=false;
+		var param = 'custProdId='+custProdId+'&subtestId='+subtestId+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
+		currentScrollTop = $("#contentTable").scrollTop();
+		if(!$(this).hasClass('disabled')) {
+			var callingAction = "";
+			var lastid = $('#lastid').val();
+				callingAction = 'loadManageContent.do';
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : callingAction,
+				data : param,
+				dataType : 'json',
+				cache:false,
+				success : function(data) {
+					if (data != null && data.length > 0){
+					getContentDetails(false,data);
+						enableSorting(true);
+						retainUniqueValue();
+						unblockUI();
+						$("#contentTable").animate({scrollTop: currentScrollTop+600}, 500);
+					} else {
+						$("#moreContents").addClass("disabled");
+						if($.browser.msie) $("#moreContents").addClass("disabled-ie");
+						retainUniqueValue();
+						unblockUI();
+					}
+					if (data != null && data.length < 14) {
+						// check if this is the last set of result
+						$("#moreContents").addClass("disabled");
+						if($.browser.msie) $("#moreContents").addClass("disabled-ie");
+					}
+				},
+				error : function(data) {
+					unblockUI();
+				}
+			});
 
-//==To remove button and table==========
-function refreshContent(){
-	$('#refresh-content').hide();
-	$('#contentTableDiv').hide();
+		} else {
+			return false;
+		}
+		tempScrollTop = currentScrollTop;
+	});
+	
+	$('.edit-content').live("click", function() {
+		resetModalForm("addNewContent");
+		//resetModalForm("addNewUser");
+		openContentModalToEdit($(this).attr("contentId"));
+	});	
+	
+	$('.delete-content').live("click", function() {
+	    var row = $(this);
+		var contentId = $(this).attr("contentId");
+		$.modal.confirm("Do you want to delete this content?" ,
+			function () {
+				deleteContentDetails(contentId, row);
+				enableSorting(true);
+			},function() {//this function closes the confirm modal on clicking cancel button
+			} 
+		);
+	});
+	
+});
+//=====document.ready End=========================================
+
+//============Open Modal to Edit Content ===============
+function openContentModalToEdit(contentId) {
+	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
+	manageIconIE('icon-star');
+	var dataUrl = 'contentId='+contentId;
+	blockUI();
+	$.ajax({
+			type : "GET",
+			url : "getContentForEdit.do",
+			data : dataUrl,
+			dataType : 'json',
+			cache:false,
+			success : function(data) {
+				unblockUI();
+				var $editContentModal = $('#editContentModal');
+				$editContentModal.find('#contentId').val(data.contentId);
+				$editContentModal.find('#contentName').val(data.contentName);
+				$editContentModal.find('#subHeader').val(data.subHeader);
+				$editContentModal.find('#contentDescriptionEditor').val(data.contentDescription);
+				
+				var profLevel = data.profLevel;
+				$editContentModal.find('#profLevel option').removeAttr('selected');
+				var option = "";
+				if(data.profLevel == 'Pass+'){
+					option += "<option selected value='Pass+'>Pass+</option><option value='Pass'/>Pass</option><option value='Did Not Pass'/>Did Not Pass</option>";
+				}else if(data.profLevel == 'Pass'){
+					option += "<option value='Pass+'>Pass+</option><option selected value='Pass'/>Pass</option><option value='Did Not Pass'/>Did Not Pass</option>";
+				}else if(data.profLevel == 'Did Not Pass'){
+					option += "<option value='Pass+'>Pass+</option><option value='Pass'/>Pass</option><option selected value='Did Not Pass'/>Did Not Pass</option>";
+				}
+				$editContentModal.find('#profLevel').html(option);
+				$editContentModal.find('#profLevel').change();
+				$editContentModal.find('#profLevel').trigger('update-select-list');
+				
+				$("#editContentModal").modal({
+					title: 'Edit Content',
+					height: 500,
+					width: 780,
+					resizable: false,
+					draggable: false,
+					onOpen: setCKEditor('edit'),
+					buttons: {
+						'Cancel': {
+							classes: 'glossy mid-margin-left',
+							click: function(win,e) {
+								$('#editContent').validationEngine('hide');
+								if($.browser.msie) setTimeout("hideMessage()", 300);
+								clickMe(e);
+								win.closeModal(); 
+							}
+						},
+						'Save': {
+							classes: 'blue-gradient glossy mid-margin-left',
+							click: function(win,e) {
+								clickMe(e);
+								if($("#editContent").validationEngine('validate')){
+									$('#editContent').validationEngine('hide');
+									updateContent($("#editContent"), win);
+								 }
+							}
+						}
+					}
+				});					
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error1']);
+			}
+		})	
+}
+
+//============Update Content ===============
+function updateContent(form, win) {
+	blockUI();
+	for(name in CKEDITOR.instances)	{
+		var editorVal = CKEDITOR.instances[name].getData();
+	    $('#editContentModal #contentDescription').val(editorVal);
+	}
+	var formObj = $('#editContent').serialize();
+	
+	$.ajax({
+		type : "POST",
+		url : 'updateContent.do',
+		data : formObj,
+		dataType: 'json',
+		cache:false,
+		success : function(data) {
+			if(data.value >= 1) {
+				win.closeModal(); 
+				loadManageContentList();
+				$.modal.alert(strings['script.content.editSuccess']);
+				unblockUI();
+			} else {
+				unblockUI();
+				$.modal.alert(strings['script.user.saveError']);
+			}
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.user.saveError']);
+		}
+	});
+}
+
+
+//=======================Delete Content Details====================
+function deleteContentDetails(contentId, row) {
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : 'deleteContent.do',
+		data : 'contentId='+contentId,
+		dataType: 'json',
+		cache:false,
+		success : function(data) {
+			if(data.value >= 1) {
+				unblockUI();
+				$.modal.alert(strings['script.content.deleteSuccess']);				
+				deleteRowValues(row);
+			} else {
+				unblockUI();
+				$.modal.alert(strings['script.user.deleteError']);
+			}
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.user.deleteError']);
+		}
+	});
 }
 
 //============Open Modal to Add Content ===============
@@ -61,9 +261,9 @@ function openContentModalToAdd() {
 		title: 'Add Content',
 		height: 500,
 		width: 780,
-		resizable: true,
+		resizable: false,
 		draggable: false,
-		onOpen: setCKEditor(),
+		onOpen: setCKEditor('add'),
 		buttons: {
 			'Cancel': {
 				classes: 'glossy mid-margin-left',
@@ -78,12 +278,10 @@ function openContentModalToAdd() {
 				classes: 'blue-gradient glossy mid-margin-left',
 				click: function(win,e) {
 							clickMe(e);	
-							 if($("#addNewContent").validationEngine('validate') 
-									 && ($("#addNewContent #imgHolder > #validated").hasClass("validated"))){
+							 if($("#addNewContent").validationEngine('validate')){
 								$('#addNewContent').validationEngine('hide');
 								addNewContent($("#addNewContent"), win);
 							 }
-							 addNewContent($("#addNewContent"), win);
 						}
 					}
 				}
@@ -91,20 +289,49 @@ function openContentModalToAdd() {
 
 }
 
-function setCKEditor(){
-	$('.manage-content-textarea').each(function(){
+function setCKEditor(purpose){
+	var $objTextArea;
+	if(purpose == 'add'){
+		$objTextArea = $('#addContentModal #contentDescriptionEditor');
+	}else if(purpose == 'edit'){
+		$objTextArea = $('#editContentModal #contentDescriptionEditor');
+	}
+	
+	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
+		CKEDITOR.replace($objTextArea.attr('id'),{
+			fullPage:true
+		});
+		//CKEDITOR.inline($objTextArea.attr('id') );
+	}else{
+		for(name in CKEDITOR.instances)	{
+			CKEDITOR.instances[name].destroy(true);
+		}	
+		CKEDITOR.replace($objTextArea.attr('id'),{
+			fullPage:true
+		});
+	}
+	
+	
+	
+	/*
+	for(name in CKEDITOR.instances){
+	    CKEDITOR.instances[name].destroy()
+	}*/
+	//TODO
+	/* Close the function to resolve CK Editor issue */
+	/*$('.manage-content-textarea').each(function(){
 		//CKEDITOR.instances[$(this).attr('id')].destroy(true);
 		if(CKEDITOR.instances[$(this).attr('id') ] == undefined) {
 			CKEDITOR.inline( $(this).attr('id') );
-			/*CKEDITOR.replace($(this).attr('id'),{
-				fullPage:true
-			});*/
+			//CKEDITOR.replace($(this).attr('id'),{
+				//fullPage:true
+			//});
 		}
 		
-	});
+	});*/
 }
 
-//============Open Modal to Add Content ===============
+//============Insert Content ===============
 function addNewContent(form, win) {
 	blockUI();
 	var custProdId = $('#custProdIdManageContent').val();
@@ -121,11 +348,14 @@ function addNewContent(form, win) {
 	$addContentModal.find('#objectiveId').val(objectiveId);
 	$addContentModal.find('#contentType').val(contentTypeId);
 	$addContentModal.find('#contentTypeName').val(contentTypeName);
-
+	
+	//TODO Remove blocked section after implementing CK Editor
+	
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 	    $('#addContentModal #contentDescription').val(editorVal);
 	}
+	
 	var formObj = $('#addNewContent').serialize();
 	
 	$.ajax({
@@ -135,11 +365,11 @@ function addNewContent(form, win) {
 		dataType: 'json',
 		cache:false,
 		success : function(data) {
-			if(data.value == 1) {
+			if(data.value >= 1) {
 				win.closeModal(); 
 				loadManageContentList();
-				$.modal.alert(strings['script.content.addSuccess']);
 				unblockUI();
+				$.modal.alert(strings['script.content.addSuccess']);
 			} else {
 				unblockUI();
 				$.modal.alert(strings['script.user.saveError']);
@@ -270,11 +500,6 @@ function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,cl
 
 //=============================AJAX CALL TO TO POPULATE CONTENTS FROM DB TABLES THROUGH PACKAGE BY ARUNAVA START=============================
 
-
-$('#refresh-content').live('click',function(){
-	loadManageContentList();
-});
-
 function loadManageContentList() {
 	
 	var custProdId = $('#custProdIdManageContent').val();
@@ -326,17 +551,15 @@ function getContentDetails(checkFirstLoad,data) {
 	}
 	$.each(data, function () { 
 	    
-		manageContent += '<tr name="articleId" id="articleId" value="'+this.articleId+'">'
-			            +'<input type="hidden" class="contentId" name="contentId" value="'+this.contentId+'">'
-			            +'<input type="hidden" class="articleId" name="articleId" value="'+this.articleId+'">'
-						+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
+		manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
+			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
 						+'<th scope="row">' + this.subHeader +'</th>'
 						+'<th scope="row">' + this.gradeName +'</th>'
 						+'<th scope="row">' + this.profLevel +'</th>'
 						+'<td class="vertical-center" nowrap>'
 						+'<span class="button-group compact" width="50px">'
-						+'<a href="#" class="button icon-pencil edit-content with-tooltip" title="Edit"></a>'
-						+'<a href="#" class="button icon-trash with-tooltip confirm delete-Content" title="Delete"></a>'
+						+'<a href="#" class="button icon-pencil edit-content with-tooltip" contentId="'+this.contentId+'" title="Edit"></a>'
+						+'<a href="#" class="button icon-trash with-tooltip confirm delete-content" contentId="'+this.contentId+'" title="Delete"></a>'
 						+'</span>'
 						+'</td>'
 					+'</tr>'
@@ -350,66 +573,16 @@ function getContentDetails(checkFirstLoad,data) {
 
 function enableContentSorting(flag) {
 	if (flag) {
-
 		var ContentTable = $("#report-list");
 		ContentTable.trigger("update");
 	}
 
 }
-
-var tempScrollTop, currentScrollTop = 0
-$("#moreContents").click(function() {
-	var custProdId = $('#custProdIdManageContent').val();
-	var gradeId = $('#gradeIdManageContent').val();
-	var subtestId = $('#subtestIdManageContent').val();
-	var objectiveId = $('#objectiveIdManageContent').val();
-	var contentTypeId = $('#contentTypeIdManageContent').val();
-	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-	var lastid = $("#contentTable tr:last").attr("value");
-	var checkFirstLoad=false;
-	var param = 'custProdId='+custProdId+'&subtestId='+subtestId+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
-	currentScrollTop = $("#contentTable").scrollTop();
-	if(!$(this).hasClass('disabled')) {
-		var callingAction = "";
-		var lastid = $('#lastid').val();
-			callingAction = 'loadManageContent.do';
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : callingAction,
-			data : param,
-			dataType : 'json',
-			cache:false,
-			success : function(data) {
-				if (data != null && data.length > 0){
-				getContentDetails(false,data);
-					enableSorting(true);
-					retainUniqueValue();
-					unblockUI();
-					$("#contentTable").animate({scrollTop: currentScrollTop+600}, 500);
-				} else {
-					$("#moreContents").addClass("disabled");
-					if($.browser.msie) $("#moreContents").addClass("disabled-ie");
-					retainUniqueValue();
-					unblockUI();
-				}
-				if (data != null && data.length < 14) {
-					// check if this is the last set of result
-					$("#moreContents").addClass("disabled");
-					if($.browser.msie) $("#moreContents").addClass("disabled-ie");
-				}
-			},
-			error : function(data) {
-				unblockUI();
-			}
-		});
-
-	} else {
-		return false;
-	}
-	tempScrollTop = currentScrollTop;
-});
 //============================= AJAX CALL TO TO POPULATE CONTENTS FROM DB TABLES THROUGH PACKAGE BY ARUNAVA END=============================
 
-
+//==To remove button and table==========
+function refreshContent(){
+	$('#refresh-content').hide();
+	$('#contentTableDiv').hide();
+}
 

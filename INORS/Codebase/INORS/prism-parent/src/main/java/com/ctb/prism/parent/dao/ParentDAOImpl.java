@@ -37,6 +37,7 @@ import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
+import oracle.sql.CLOB;
 
 
 @Repository("parentDAO")
@@ -1296,6 +1297,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return objectValueTOList;
 	}
 	
+	/**
+	 * Insert content/article along with metadata
+	 */
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) 
 			throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addNewContent()");
@@ -1347,13 +1351,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return objectValueTO;
 	}
 	
-/**
- * @author TCS
- * returns content list respective of the search field selected
- */
+	/**
+	 * returns content list respective of the search field selected
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ManageContentTO> loadManageContent(final Map<String,Object> paramMap) throws BusinessException{
-		
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - loadManageContent()");
 		long t1 = System.currentTimeMillis();
 		List<ManageContentTO> manageContentList = null;
 		ManageContentTO manageContentTO = new ManageContentTO();
@@ -1401,8 +1404,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 									
 									while(rs.next()){
 										ManageContentTO manageContentTO = new ManageContentTO();
-										manageContentTO.setArticleId(rs.getLong("METADATA_ID"));
-										manageContentTO.setContentId(rs.getLong("CONTENT_ID"));
+										manageContentTO.setContentId(rs.getLong("METADATA_ID"));
 										manageContentTO.setContentName(rs.getString("NAME"));	
 										manageContentTO.setSubHeader(rs.getString("SUB_HEADER"));
 										manageContentTO.setGradeName(rs.getString("GRADE"));
@@ -1423,5 +1425,152 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return manageContentList;
 	}
+	
+	/**
+	 * Get content details for edit depending upon article_metedata id
+	 */
+	@SuppressWarnings("unchecked")
+	public ManageContentTO getContentForEdit(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getContentForEdit()");
+		long t1 = System.currentTimeMillis();
+		ManageContentTO manageContentTO = null;
+		final long contentId = ((Long) paramMap.get("contentId")).longValue();
+		
+		try{
+			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_FOR_EDIT + "}");
+				            cs.setLong("P_IN_METADATAID", contentId);
+				            cs.registerOutParameter("P_OUT_CUR_METADATA_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			ManageContentTO manageContentTOResult = null;
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject("P_OUT_CUR_METADATA_DETAILS");
+									if(rs.next()){
+										manageContentTOResult = new ManageContentTO();
+										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
+										manageContentTOResult.setContentName(rs.getString("NAME"));	
+										manageContentTOResult.setSubHeader(rs.getString("SUB_HEADER"));
+										manageContentTOResult.setContentDescription(Utils.convertClobToString((CLOB)rs.getClob("CONTENT_DESCRIPTION")));
+										manageContentTOResult.setProfLevel(rs.getString("PROFICIENCY_LEVEL"));
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (Exception e) {
+			        				e.printStackTrace();
+			        			}
+			        			return manageContentTOResult;
+				        }
+				    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getContentForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return manageContentTO;
+	}
+	
+	/**
+	 * Update content/article along with metadata
+	 */
+	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String,Object> paramMap) 
+			throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateContent()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		final ManageContentTO manageContentTO =  (ManageContentTO) paramMap.get("manageContentTO");
+
+		try{
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.UPDATE_CONTENT + "}");
+				            cs.setLong("P_IN_METADATAID", manageContentTO.getContentId());	
+				            cs.setString("P_IN_ARTICLE_NAME", manageContentTO.getContentName());
+				            cs.setString("P_IN_SUB_HEADER", manageContentTO.getSubHeader());
+				            cs.setString("P_IN_CONTENT_DESCRIPTION", manageContentTO.getContentDescription());	
+				            cs.setString("P_IN_PROFICIENCY_LEVEL", manageContentTO.getProfLevel());	
+				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,  new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			long executionStatus = 0;
+			        			com.ctb.prism.core.transferobject.ObjectValueTO statusTO = 
+										new com.ctb.prism.core.transferobject.ObjectValueTO();
+			        			try {
+									cs.execute();
+									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									statusTO.setValue(Long.toString(executionStatus));
+									statusTO.setName("");
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return statusTO;
+				        }
+				    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return objectValueTO;
+	}
+	
+	/**
+	 * Delete content/article's meta data and delete content/article if no association present with another mete data.
+	 */
+	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) 
+			throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - deleteContent()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		final long contentId = ((Long) paramMap.get("contentId")).longValue();
+
+		try{
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.DELETE_CONTENT + "}");
+				            cs.setLong("P_IN_METADATAID", contentId);	
+				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,  new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			long executionStatus = 0;
+			        			com.ctb.prism.core.transferobject.ObjectValueTO statusTO = 
+										new com.ctb.prism.core.transferobject.ObjectValueTO();
+			        			try {
+									cs.execute();
+									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									statusTO.setValue(Long.toString(executionStatus));
+									statusTO.setName("");
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return statusTO;
+				        }
+				    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - deleteContent() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return objectValueTO;
+	}
+	
 	//Manage Content - Parent Network - End
 }

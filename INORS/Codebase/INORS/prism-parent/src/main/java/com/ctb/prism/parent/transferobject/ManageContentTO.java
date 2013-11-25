@@ -10,7 +10,6 @@ public class ManageContentTO extends BaseTO {
 
 	private static final long serialVersionUID = 1L;
 	private long contentId = 0;
-	private long articleId = 0; 
 	private String contentName = "";
 	private String subHeader = "";
 	private String gradeName = "";
@@ -29,12 +28,6 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setContentId(long contentId) {
 		this.contentId = contentId;
-	}
-	public long getArticleId() {
-		return articleId;
-	}
-	public void setArticleId(long articleId) {
-		this.articleId = articleId;
 	}
 	public String getContentName() {
 		return contentName;

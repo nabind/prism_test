@@ -187,5 +187,17 @@ public class ParentBusinessImpl implements IParentBusiness {
 	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException {
 		return parentDAO.loadManageContent(paramMap);
 	}
+	
+	public ManageContentTO getContentForEdit(final Map<String,Object> paramMap) throws BusinessException {
+		return parentDAO.getContentForEdit(paramMap);
+	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String,Object> paramMap) throws BusinessException {
+		return parentDAO.updateContent(paramMap);
+	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) throws BusinessException {
+		return parentDAO.deleteContent(paramMap);
+	}
 	//Manage Content - Parent Network - End
 }
