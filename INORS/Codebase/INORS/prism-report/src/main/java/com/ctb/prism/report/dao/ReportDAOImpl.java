@@ -534,56 +534,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.info("Exit: ReportDAOImpl - deleteReport");
 		return true;
 	}
-	
-	
-	
-	/**
-	 * add new dashboard
-	 * @param String reportName, String reportDescription, String userName,
-	 *	String reportType, String password, String assessmentType,String reportStatus, String[] userRoles
-	 *@return ReportTO
-	 */
-	public ReportTO addNewDashboard(String reportName, String reportDescription, String reportType,
-			String reportUri, String assessmentType, String reportStatus, String[] userRoles)throws Exception{
-		logger.info("Enter: ReportDAOImpl - addNewDashboard");
 		
-		ReportTO reportTo=null;
-		List<Map<String, Object>> reportMap=null;
-		
-		//Checking for existing report name is kept commented .
-		//reportMap= getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_REPORT,reportName);
-		
-				
-		try {
-		if (reportMap == null || reportMap.isEmpty()){
-			
-			long report_seq_id = getJdbcTemplatePrism().queryForLong(
-					IQueryConstants.DB_REPORT_SEQ_ID);
-			
-			if (report_seq_id != 0) {
-				getJdbcTemplatePrism()
-						.update(IQueryConstants.INSERT_REPORT,report_seq_id,
-								reportName, reportDescription, reportType,
-								reportUri, assessmentType, reportStatus);
-				if (userRoles != null) {
-					for (String role : userRoles) {
-						getJdbcTemplatePrism().update(
-								IQueryConstants.INSERT_REPORT_ROLE ,report_seq_id,
-								role, IApplicationConstants.ACTIVE_FLAG);
-					}
-				}
-			}
-			reportTo = getDashboardData(String.valueOf(report_seq_id ));
-			
-		}
-	}catch(Exception e){
-		logger.error("Error occurred while adding dashboard details.", e);
-		return null;
-		}
-	logger.info("Exit: ReportDAOImpl - addNewDashboard");
-	return reportTo;	
-	}
-	
 	/**
 	 * Returns the reportTO on add.
 	 * 
@@ -853,7 +804,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *@return ReportTO
 	 */
 	
-	//365348
+	//Arunava Datta
 	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO)throws Exception{
 		logger.info("Enter: ReportDAOImpl - addNewDashboard");
 		
@@ -868,34 +819,39 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String[] userRoles = reportParameterTO.getUserRoles();
 		String[] orgNodeLevel = reportParameterTO.getOrgNodeLevel();
 		try {
-		int userRoleLoop = 0,orgNodeLevelLoop=0;
-		
-		    long report_seq_id = getJdbcTemplatePrism().queryForLong(
-					IQueryConstants.DB_REPORT_SEQ_ID);
 			
-			getJdbcTemplatePrism()
-					.update(IQueryConstants.INSERT_REPORT,report_seq_id,
-							reportName, reportDescription, reportType,
-							reportUri,reportStatus);
-				
-					for(userRoleLoop=0;userRoleLoop<userRoles.length;userRoleLoop++)
+			List<Map<String, Object>> reportMap=null;
+			reportMap= getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_REPORT,reportName);
+			if (reportMap == null || reportMap.isEmpty())
 					{
-						for(orgNodeLevelLoop=0;orgNodeLevelLoop<orgNodeLevel.length;orgNodeLevelLoop++)
-						{
-							getJdbcTemplatePrism().update(
-											IQueryConstants.INSERT_REPORT_ROLE,
-											reportParameterTO.getMenuId(),
-											report_seq_id,
-											userRoles[userRoleLoop],
-											orgNodeLevel[orgNodeLevelLoop],
-											customerLinks,
-											report_seq_id,IApplicationConstants.ACTIVE_FLAG);
-						 }
-					  }
-			
-			reportTo = getDashboardData(String.valueOf(report_seq_id ));
-			
-	}catch(Exception e){
+				    int userRoleLoop = 0,orgNodeLevelLoop=0;
+				    long report_seq_id = getJdbcTemplatePrism().queryForLong(
+							IQueryConstants.DB_REPORT_SEQ_ID);
+					
+					getJdbcTemplatePrism()
+							.update(IQueryConstants.INSERT_REPORT,report_seq_id,
+									reportName, reportDescription, reportType,
+									reportUri,reportStatus);
+						
+							for(userRoleLoop=0;userRoleLoop<userRoles.length;userRoleLoop++)
+							{
+								for(orgNodeLevelLoop=0;orgNodeLevelLoop<orgNodeLevel.length;orgNodeLevelLoop++)
+								{
+									getJdbcTemplatePrism().update(
+													IQueryConstants.INSERT_REPORT_ROLE,
+													reportParameterTO.getMenuId(),
+													report_seq_id,
+													userRoles[userRoleLoop],
+													orgNodeLevel[orgNodeLevelLoop],
+													customerLinks,
+													report_seq_id,IApplicationConstants.ACTIVE_FLAG);
+								 }
+							  }
+					
+								reportTo = getDashboardData(String.valueOf(report_seq_id ));
+						}
+		}
+		catch(Exception e){
 		logger.error("Error occurred while adding dashboard details.", e);
 		return null;
 		}
