@@ -127,8 +127,8 @@ public class LoginController{
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
 			paramMap.put("PRE_LOG_IN", IApplicationConstants.PRE_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		  logInInfoMessage.replaceAll("<p>", "");
-		  logInInfoMessage.replaceAll("</p>", "");
+		  logInInfoMessage = logInInfoMessage.replaceAll("<p>", "");
+		  logInInfoMessage = logInInfoMessage.replaceAll("</p>", "");
 		  if("1".equalsIgnoreCase(mess_login_error)){
 			  logger.log(IAppLogger.ERROR, "Invalid Login");
 			  message = "error.login.invalidlogin";

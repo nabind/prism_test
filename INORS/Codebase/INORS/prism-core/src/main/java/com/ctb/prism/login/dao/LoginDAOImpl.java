@@ -281,12 +281,25 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		String REPORT_NAME=(String) paramMap.get("REPORT_NAME");
 		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
 		
-			return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, new Object[]{REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN }, new RowMapper<String>() {
+		String systemConfig = null;
+		
+		//Object[] params = new Object[]{REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN};
+		//int[] types = new int[]{Types.CHAR,Types.CHAR,Types.CHAR};	
+		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN);
+		
+		for (Map<String, Object> fieldDetails : lstData) {
+		
+			//systemConfig = convertClobToString((CLOB) fieldDetails.get("REPORT_MSG")).trim();
+			systemConfig = fieldDetails.get("REPORT_MSG").toString().trim();
+		}
+		
+		return systemConfig;
+			/*return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, new Object[]{REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN}, new RowMapper<String>() {
 				public String mapRow(ResultSet rs, int col) throws SQLException {
 					
 						return convertClobToString((CLOB) rs.getClob("REPORT_MSG")).trim();
 				}
-			});
+			});*/
 		}
 	
 	public static String convertClobToString(final CLOB oracleClob){
