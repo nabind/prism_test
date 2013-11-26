@@ -43,7 +43,7 @@
 											<select id="custProdIdManageContent" name="custProdId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
-												<option value='0'>Please Select</option>
+												<option value='-1'>Please Select</option>
 												<c:forEach var="customerProductTO"
 													items="${serviceMapManageContentFilter.customerProductList}">
 													<option value="${customerProductTO.value}">${customerProductTO.name}</option>
@@ -64,6 +64,7 @@
 											<select id="gradeIdManageContent" name="gradeId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
+												<option value='-1'>Please Select</option>
 											</select>
 										</p>
 									</div>
@@ -80,6 +81,7 @@
 											<select id="subtestIdManageContent" name="subtestId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
+												<option value='-1'>Please Select</option>
 											</select>
 										</p>
 									</div>
@@ -96,6 +98,7 @@
 											<select id="objectiveIdManageContent" name="objectiveId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
+												<option value='-1'>Please Select</option>
 											</select>
 										</p>
 									</div>
@@ -227,7 +230,7 @@
 						</p>
 
 						<p class="button-height inline-label">
-							<fieldset class="fieldset" style="height: 100%">
+							<fieldset class="fieldset" style="min-height:200px;">
 								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 								</legend>
@@ -238,6 +241,7 @@
 								<textarea
 									id="contentDescriptionEditor"
 									class="manage-content-textarea validate[required]">
+									Click here to add text
 								</textarea>
 							</fieldset>
 						</p>
@@ -290,7 +294,7 @@
 						</p>
 
 						<p class="button-height inline-label">
-							<fieldset class="fieldset" style="height: 100%">
+							<fieldset class="fieldset" style="min-height:200px;">
 								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 								</legend>
@@ -301,6 +305,7 @@
 								<textarea
 									id="contentDescriptionEditor"
 									class="manage-content-textarea validate[required]">
+									Click here to add text
 								</textarea>
 							</fieldset>
 						</p>

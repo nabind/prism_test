@@ -20,26 +20,32 @@ $(document).ready(function() {
 	
 	$('#custProdIdManageContent').live('change',function(){
 		refreshContent();
+		populateDropdownByJson($('#gradeIdManageContent'),null,1,'clear');
+		populateDropdownByJson($('#subtestIdManageContent'),null,1,'clear');
+		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateGrade();
 	}); 
 	
 	$('#gradeIdManageContent').live('change',function(){
 		refreshContent();
+		populateDropdownByJson($('#subtestIdManageContent'),null,1,'clear');
+		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateSubtest();
 	});
 	
 	$('#subtestIdManageContent').live('change',function(){
 		refreshContent();
+		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateObjective();
 	});
 	
 	$('#addContent').live("click", function() {
-		if ($('#objectiveIdManageContent').val() == null || $('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "0" ) {
+		if ($('#objectiveIdManageContent').val() == null || $('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "-1" ) {
 			$.modal.alert(strings['script.content.addContent']);
 		}
 		else {
 			resetModalForm("addNewContent");
-			//resetModalForm("addNewUser");
+			resetModalForm("editContent");
 			openContentModalToAdd();
 		}
 	});
@@ -124,6 +130,8 @@ $(document).ready(function() {
 
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
+	resetModalForm("addNewContent");
+	resetModalForm("editContent");
 	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
 	var dataUrl = 'contentId='+contentId;
@@ -298,17 +306,17 @@ function setCKEditor(purpose){
 	}
 	
 	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
-		CKEDITOR.replace($objTextArea.attr('id'),{
+		/*CKEDITOR.replace($objTextArea.attr('id'),{
 			fullPage:true
-		});
-		//CKEDITOR.inline($objTextArea.attr('id') );
+		});*/
+		CKEDITOR.inline($objTextArea.attr('id') );
 	}else{
-		for(name in CKEDITOR.instances)	{
+		/*for(name in CKEDITOR.instances)	{
 			CKEDITOR.instances[name].destroy(true);
 		}	
 		CKEDITOR.replace($objTextArea.attr('id'),{
 			fullPage:true
-		});
+		});*/
 	}
 	
 	
@@ -385,7 +393,7 @@ function addNewContent(form, win) {
 //============Load grade id, name depending upon custProdId ===============
 function populateGrade(){
 	var custProdId = $('#custProdIdManageContent').val();
-	if(custProdId != 0){
+	if(custProdId != -1){
 		var dataUrl = 'custProdId='+custProdId;
 		blockUI();
 		$.ajax({
@@ -404,14 +412,12 @@ function populateGrade(){
 			}
 		});
 	}
-	populateDropdownByJson($('#subObjMapIdManageContent'),null,1,'clear');
-	populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 }
 
 //============Load subtest id, name depending upon gradeId ===============
 function populateSubtest(){
 	var gradeId = $('#gradeIdManageContent').val();
-	if(gradeId != 0){
+	if(gradeId != -1){
 		var dataUrl = 'gradeId='+gradeId;
 		blockUI();
 		$.ajax({
@@ -430,13 +436,12 @@ function populateSubtest(){
 			}
 		});
 	}
-	populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 }
 
 //============Load Objective id, name depending upon subtestId ===============
 function populateObjective(){
 	var subtestId = $('#subtestIdManageContent').val();
-	if(subtestId != 0){
+	if(subtestId != -1){
 		var gradeId = $('#gradeIdManageContent').val();
 		var dataUrl = 'subtestId='+subtestId+'&gradeId='+gradeId;
 		blockUI();
@@ -478,7 +483,7 @@ function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,cl
 	elementObject.empty();
 	var option = "";
 	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='0'>Please Select</option>";
+		option += "<option value='-1'>Please Select</option>";
 	}
 	
 	if((typeof clearFlag === 'undefined')){

@@ -624,6 +624,9 @@ $(document).ready(function() {
 		$("#userRole option").removeAttr('selected');
 		$("#userRole option").change();
 		$("#userRole option").trigger('update-select-list');
+		for(name in CKEDITOR.instances)	{
+			CKEDITOR.instances[name].destroy(true);
+		}	
 	}
 	
 	
