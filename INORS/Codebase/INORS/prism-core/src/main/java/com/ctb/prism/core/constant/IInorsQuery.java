@@ -28,14 +28,11 @@ public interface IInorsQuery {
 			" log, download_type D_TYPE ",
 			" from group_download_status where jobid = ? ");
 	
-	public static final String UPDATE_STATUS = CustomStringUtil.appendString(
-			" Update GROUP_DOWNLOAD_STATUS set status = ? where jobid = ? ");
+	public static final String UPDATE_STATUS = "UPDATE GROUP_DOWNLOAD_STATUS SET STATUS = ? WHERE JOBID = ?";
 	
-	public static final String UPDATE_LOG = CustomStringUtil.appendString(
-			" Update GROUP_DOWNLOAD_STATUS set log = ? where jobid = ? ");
+	public static final String UPDATE_LOG = "UPDATE GROUP_DOWNLOAD_STATUS SET LOG = ? WHERE JOBID = ?";
 	
-	public static final String UPDATE_STATUS_AND_LOG = CustomStringUtil.appendString(
-			" Update GROUP_DOWNLOAD_STATUS set status = ? , set log = ? where jobid = ? ");
+	public static final String UPDATE_STATUS_AND_LOG = "UPDATE GROUP_DOWNLOAD_STATUS SET STATUS = ? , SET LOG = ? WHERE JOBID = ?";
 	
 	public static final String UPDATE_JOB = CustomStringUtil.appendString(
 			" Update GROUP_DOWNLOAD_STATUS set status = ?, file_location = ?, file_size = ?, log = ?,",
@@ -47,12 +44,13 @@ public interface IInorsQuery {
 			" select org.parent_org_nodeid from student_bio_dim std, org_node_dim org where std.org_nodeid = org.org_nodeid ",
 			" and student_bio_id = ? ) ");
 	
-	public static final String GET_NODE_NAME = CustomStringUtil.appendString(
-			"select org_node_name ORG_NAME from org_node_dim where org_nodeid = ? ");
+	public static final String GET_NODE_NAME = "SELECT ORG_NODE_NAME ORG_NAME FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
 	
-	public static final String GET_ORG_NODES_BY_LEVEL = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL = ?";
+	public static final String GET_DISTRICTS = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE ORG_NODEID IN (SELECT DISTINCT DISTRICTID FROM ISTEP_DATAMIG.MIG_RESULTS_GRT)";
 	
-	public static final String GET_ORG_NODES_BY_PARENT = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?";
+	public static final String GET_SCHOOLS = "SELECT ORG_NODEID, ORG_NODE_NAME FROM ORG_NODE_DIM WHERE ORG_NODEID IN (SELECT DISTINCT SCHOOLID FROM ISTEP_DATAMIG.MIG_RESULTS_GRT WHERE DISTRICTID = ?)";
+	
+	public static final String GET_RESULTS_GRT = "{call PKG_GET_MIG_RESULTS_GRT.SP_GET_MIG_RESULT_GRT(?, ?, ?)}";
 	
 }
 

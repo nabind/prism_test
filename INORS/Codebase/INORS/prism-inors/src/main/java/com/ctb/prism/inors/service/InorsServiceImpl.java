@@ -38,8 +38,8 @@ public class InorsServiceImpl implements IInorsService {
 		return inorsBusiness.getDownloadData(paramMap);
 	}
 
-	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel) {
-		return inorsBusiness.getOrgNodes(orgNodeLevel);
+	public List<ObjectValueTO> getDistricts() {
+		return inorsBusiness.getDistricts();
 	}
 	
 	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId){

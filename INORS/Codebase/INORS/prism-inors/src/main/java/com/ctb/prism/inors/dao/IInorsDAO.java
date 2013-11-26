@@ -86,7 +86,7 @@ public interface IInorsDAO {
 	 * 
 	 * @return
 	 */
-	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel);
+	public List<ObjectValueTO> getDistricts();
 
 	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> populateSchool(Long parentOrgNodeId);
 }

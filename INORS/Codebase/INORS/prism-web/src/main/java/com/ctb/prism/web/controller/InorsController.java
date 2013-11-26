@@ -536,7 +536,7 @@ public class InorsController {
 	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
 		ModelAndView modelAndView = new ModelAndView("inors/gRTInvitationCodeFiles");
-		List<com.ctb.prism.inors.transferobject.ObjectValueTO> corporationList = inorsService.getOrgNodes("2"); // TODO : hard-code
+		List<com.ctb.prism.inors.transferobject.ObjectValueTO> corporationList = inorsService.getDistricts();
 		modelAndView.addObject("corporationList", corporationList);
 		
 		return modelAndView;
@@ -548,39 +548,42 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
 		Map<String, String> paramMap = new HashMap<String, String>();
 		
+		String type = (String) request.getParameter("type");
 		String testAdministration = (String) request.getParameter("testAdministration");
+		String[] tokens = testAdministration.split("~");
+		String product = tokens[0];
+		String term = tokens[1];
+		String year = tokens[2];
 		String testProgram = (String) request.getParameter("testProgram");
 		String corpDiocese = (String) request.getParameter("corpDiocese");
 		String school = (String) request.getParameter("school");
-		logger.log(IAppLogger.INFO, "testAdministration=" + testAdministration
-				+ ", testProgram=" + testProgram + ", corpDiocese="
-				+ corpDiocese + ", school=" + school);
-		// TODO : Use these values as report filter
 
-		String type = (String) request.getParameter("type");
-		String layout = (String) request.getParameter("layout");
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-		String startDate = (String) request.getParameter("startDate");
-		String endDate = (String) request.getParameter("endDate");
+
 		paramMap.put("type", type);
-		paramMap.put("layout", layout);
+		paramMap.put("product", product);
+		paramMap.put("term", term);
+		paramMap.put("year", year);
+		paramMap.put("testProgram", testProgram);
+		paramMap.put("parentOrgNodeId", corpDiocese);
+		paramMap.put("orgNodeId", school);
 		paramMap.put("userId", userId);
-		paramMap.put("startDate", startDate);
-		paramMap.put("endDate", endDate);
-		logger.log(IAppLogger.INFO, "type=" + type + ", layout=" + layout);
+
+		logger.log(IAppLogger.INFO, "type=" + type + ", product=" + product
+				+ ", term=" + term + ", year=" + year + ", testProgram="
+				+ testProgram + ", parentOrgNodeId=" + corpDiocese
+				+ ", orgNodeId=" + school + ", userId=" + userId);
+
 		byte[] data = null;
-		// TODO : write code for zip file
 		String fileName = "";
 		String zipFileName = "";
 		if ("IC".equals(type)) {
 			List<InvitationCodeTO> icList = (List<InvitationCodeTO>) inorsService.getDownloadData(paramMap);
-			logger.log(IAppLogger.INFO, "IC : " + icList.size());
 			data = InorsDownloadUtil.createICByteArray(icList, ',');
 			fileName = InorsDownloadConstants.IC_FILE_PATH;
 			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
 		} else if ("GRT".equals(type)) {
 			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
-			logger.log(IAppLogger.INFO, "GRT : " + grtList.size());
 			data = InorsDownloadUtil.createGRTByteArray(grtList, ',');
 			fileName = InorsDownloadConstants.GRT_FILE_PATH;
 			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;

@@ -625,10 +625,16 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		return inorsDAO.getDownloadData(paramMap);
 	}
 
-	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> getOrgNodes(String orgNodeLevel) {
-		return inorsDAO.getOrgNodes(orgNodeLevel);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#getDistricts()
+	 */
+	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> getDistricts() {
+		return inorsDAO.getDistricts();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#populateSchool(java.lang.Long)
+	 */
 	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> populateSchool(Long parentOrgNodeId){
 		return inorsDAO.populateSchool(parentOrgNodeId);
 	}

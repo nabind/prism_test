@@ -30,7 +30,7 @@ public interface IInorsBusiness {
 	 */
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap);
 
-	public List<ObjectValueTO> getOrgNodes(String orgNodeLevel);
+	public List<ObjectValueTO> getDistricts();
 
 	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId);
 }

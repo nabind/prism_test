@@ -16,18 +16,18 @@
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<select id="testAdministration" name="testAdministration" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 150px;">
-										<option value="19~25" selected="selected">ISTEP Spring 2013</option>
-										<option value="20~25">IMAST Spring 2013</option>
-										<option value="21~25">IREAD-3 Spring 2013</option>
-										<option value="22~25">IREAD-3 Summer 2013</option>
-										<option value="11~24">ISTEP Spring 2012</option>
-										<option value="12~24">IMAST Spring 2012</option>
-										<option value="13~24">IREAD-3 Spring 2012</option>
-										<option value="17~24">IREAD-3 Summer 2012</option>
-										<option value="8~23">ISTEP Spring 2011</option>
-										<option value="10~23">IMAST Spring 2011</option>
-										<option value="6~22">ISTEP Spring 2010</option>
-										<option value="7~22">IMAST Spring 2010</option>
+										<option value="ISTEP~Spring~2013" selected="selected">ISTEP Spring 2013</option>
+										<option value="IMAST~Spring~2013">IMAST Spring 2013</option>
+										<option value="IREAD-3~Spring~2013">IREAD-3 Spring 2013</option>
+										<option value="IREAD-3~Summer~2013">IREAD-3 Summer 2013</option>
+										<option value="ISTEP~Spring~2012">ISTEP Spring 2012</option>
+										<option value="IMAST~Spring~2012">IMAST Spring 2012</option>
+										<option value="IREAD-3~Spring~2012">IREAD-3 Spring 2012</option>
+										<option value="IREAD-3~Summer~2012">IREAD-3 Summer 2012</option>
+										<option value="ISTEP~Spring~2011">ISTEP Spring 2011</option>
+										<option value="IMAST~Spring~2011">IMAST Spring 2011</option>
+										<option value="ISTEP~Spring~2010">ISTEP Spring 2010</option>
+										<option value="IMAST~Spring~2010">IMAST Spring 2010</option>
 									</select>
 								</p>
 							</div>

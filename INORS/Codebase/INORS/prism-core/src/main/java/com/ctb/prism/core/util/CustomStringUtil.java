@@ -106,20 +106,4 @@ public class CustomStringUtil {
 		sb.replace(index, index + 1, newValue);
 		return sb.toString();
 	}
-
-	/**
-	 * 
-	 * @param data
-	 * @param wrapChar
-	 * @return
-	 */
-	public static String wrap(String data, char wrapChar) {
-		if (data == null) {
-			data = "";
-		}
-		StringBuilder sb = new StringBuilder(data);
-		sb.insert(0, wrapChar);
-		sb.insert(sb.length(), wrapChar);
-		return sb.toString();
-	}
 }

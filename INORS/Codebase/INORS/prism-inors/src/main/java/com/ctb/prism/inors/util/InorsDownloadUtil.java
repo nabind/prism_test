@@ -14,7 +14,7 @@ import org.beanio.stream.RecordIOException;
 
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
-import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 
@@ -35,26 +35,31 @@ public class InorsDownloadUtil {
 	 * @return
 	 */
 	public static byte[] createICByteArray(final List<InvitationCodeTO> icList, final char delimiter) {
-		icList.add(0, getInvitationCodeTOHeader());
-		StreamFactory factory = StreamFactory.newInstance();
-		StreamBuilder builder = new StreamBuilder("IC").format("delimited")
-				.parser(new DelimitedParserBuilder(delimiter))
-				.addRecord(InvitationCodeTO.class);
-		factory.define(builder);
-		StringWriter stringWriter = new StringWriter();
-		BeanWriter out = factory.createWriter("IC", stringWriter);
-		try {
-			for (InvitationCodeTO ic : icList) {
-				out.write(ic);
+		if (icList != null) {
+			logger.log(IAppLogger.INFO, "IC : " + icList.size());
+			icList.add(0, getInvitationCodeTOHeader());
+			StreamFactory factory = StreamFactory.newInstance();
+			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.IC).format("delimited")
+					.parser(new DelimitedParserBuilder(delimiter))
+					.addRecord(InvitationCodeTO.class);
+			factory.define(builder);
+			StringWriter stringWriter = new StringWriter();
+			BeanWriter out = factory.createWriter(InorsDownloadConstants.IC, stringWriter);
+			try {
+				for (InvitationCodeTO ic : icList) {
+					out.write(ic);
+				}
+				out.flush();
+				out.close();
+				logger.log(IAppLogger.INFO, "IC Byte Array Created Successfully");
+			} catch (RecordIOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
 			}
-			out.flush();
-			out.close();
-			logger.log(IAppLogger.INFO, "IC Byte Array Created Successfully");
-		} catch (RecordIOException e) {
-			logger.log(IAppLogger.ERROR, "", e);
-			e.printStackTrace();
+			return stringWriter.getBuffer().toString().getBytes();
+		} else {
+			return "No Records Found".getBytes();
 		}
-		return stringWriter.getBuffer().toString().getBytes();
 	}
 
 	/**
@@ -66,26 +71,47 @@ public class InorsDownloadUtil {
 	 * @return
 	 */
 	public static byte[] createGRTByteArray(final List<GrtTO> grtList, final char delimiter) {
-		grtList.add(0, getGRTTOHeader());
-		StreamFactory factory = StreamFactory.newInstance();
-		StreamBuilder builder = new StreamBuilder("GRT").format("delimited")
-				.parser(new DelimitedParserBuilder(delimiter))
-				.addRecord(GrtTO.class);
-		factory.define(builder);
-		StringWriter stringWriter = new StringWriter();
-		BeanWriter out = factory.createWriter("GRT", stringWriter);
-		try {
-			for (GrtTO grt : grtList) {
-				out.write(grt);
+		if (grtList != null) {
+			logger.log(IAppLogger.INFO, "GRT : " + grtList.size());
+			grtList.add(0, getGRTTOHeader());
+			StreamFactory factory = StreamFactory.newInstance();
+			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.GRT).format("delimited")
+					.parser(new DelimitedParserBuilder(delimiter))
+					.addRecord(GrtTO.class);
+			factory.define(builder);
+			StringWriter stringWriter = new StringWriter();
+			BeanWriter out = factory.createWriter(InorsDownloadConstants.GRT, stringWriter);
+			try {
+				for (GrtTO grt : grtList) {
+					out.write(grt);
+				}
+				out.flush();
+				out.close();
+				logger.log(IAppLogger.INFO, "GRT Byte Array Created Successfully");
+			} catch (RecordIOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
 			}
-			out.flush();
-			out.close();
-			logger.log(IAppLogger.INFO, "GRT Byte Array Created Successfully");
-		} catch (RecordIOException e) {
-			logger.log(IAppLogger.ERROR, "", e);
-			e.printStackTrace();
+			return stringWriter.getBuffer().toString().getBytes();
+		} else {
+			return "No Records Found".getBytes();
 		}
-		return stringWriter.getBuffer().toString().getBytes();
+	}
+	
+	/**
+	 * 
+	 * @param data
+	 * @param wrapChar
+	 * @return
+	 */
+	public static String wrap(Object data, char wrapChar) {
+		if ((data == null) || ("NULL").equalsIgnoreCase(data.toString().trim())) {
+			data = "";
+		}
+		StringBuilder sb = new StringBuilder(data.toString());
+		sb.insert(0, wrapChar);
+		sb.insert(sb.length(), wrapChar);
+		return sb.toString();
 	}
 
 	/**
@@ -125,26 +151,26 @@ public class InorsDownloadUtil {
 	 */
 	public static InvitationCodeTO getMockInvitationCodeTO() {
 		InvitationCodeTO to = new InvitationCodeTO();
-		to.setCorporationorDioceseName(CustomStringUtil.wrap("ADAMS CENTRAL", '"'));
-		to.setCorporationorDioceseNumber(CustomStringUtil.wrap("0015", '"'));
-		to.setSchoolName(CustomStringUtil.wrap("ADAMS C ES M", '"'));
-		to.setSchoolNumber(CustomStringUtil.wrap("0020", '"'));
-		to.setGrade(CustomStringUtil.wrap("3", '"'));
-		to.setAdministrationName(CustomStringUtil.wrap("ISTEPS13", '"'));
-		to.setiSTEPInvitationCode(CustomStringUtil.wrap("36JP-YECJ-RTJU-8GN6", '"'));
-		to.setInvitationCodeExpirationDate(CustomStringUtil.wrap("050614", '"'));
-		to.setStudentLastName(CustomStringUtil.wrap("ABELL", '"'));
-		to.setStudentFirstName(CustomStringUtil.wrap("ASHLYN", '"'));
-		to.setStudentMiddleInitial(CustomStringUtil.wrap("", '"'));
-		to.setStudentsGender(CustomStringUtil.wrap("F", '"'));
-		to.setBirthDate(CustomStringUtil.wrap("113003", '"'));
-		to.setStudentTestNumber(CustomStringUtil.wrap("002010001", '"'));
-		to.setCorporationStudentID(CustomStringUtil.wrap("10008", '"'));
-		to.setcTBUSEBarcodeID(CustomStringUtil.wrap("21944483", '"'));
-		to.setTeacherName(CustomStringUtil.wrap("STEINER", '"'));
-		to.setcTBUSEOrgtstgpgm(CustomStringUtil.wrap("M013883003", '"'));
-		to.setcTBUSETeacherElementNumber(CustomStringUtil.wrap("0016973", '"'));
-		to.setcTBUSEStudentElementNumber(CustomStringUtil.wrap("0482387", '"'));
+		to.setCorporationorDioceseName(wrap("ADAMS CENTRAL", '"'));
+		to.setCorporationorDioceseNumber(wrap("0015", '"'));
+		to.setSchoolName(wrap("ADAMS C ES M", '"'));
+		to.setSchoolNumber(wrap("0020", '"'));
+		to.setGrade(wrap("3", '"'));
+		to.setAdministrationName(wrap("ISTEPS13", '"'));
+		to.setiSTEPInvitationCode(wrap("36JP-YECJ-RTJU-8GN6", '"'));
+		to.setInvitationCodeExpirationDate(wrap("050614", '"'));
+		to.setStudentLastName(wrap("ABELL", '"'));
+		to.setStudentFirstName(wrap("ASHLYN", '"'));
+		to.setStudentMiddleInitial(wrap("", '"'));
+		to.setStudentsGender(wrap("F", '"'));
+		to.setBirthDate(wrap("113003", '"'));
+		to.setStudentTestNumber(wrap("002010001", '"'));
+		to.setCorporationStudentID(wrap("10008", '"'));
+		to.setcTBUSEBarcodeID(wrap("21944483", '"'));
+		to.setTeacherName(wrap("STEINER", '"'));
+		to.setcTBUSEOrgtstgpgm(wrap("M013883003", '"'));
+		to.setcTBUSETeacherElementNumber(wrap("0016973", '"'));
+		to.setcTBUSEStudentElementNumber(wrap("0482387", '"'));
 		return to;
 	}
 
@@ -386,227 +412,227 @@ public class InorsDownloadUtil {
 	 */
 	public static GrtTO getMockGRTTO() {
 		GrtTO to = new GrtTO();
-		to.setL_TapeMode(CustomStringUtil.wrap("5", '"'));
-		to.setL_Orgtstgpgm(CustomStringUtil.wrap("M013883003", '"'));
-		to.setL_CorporationorDioceseName(CustomStringUtil.wrap("ADAMS CENTRAL", '"'));
-		to.setL_CorporationorDioceseNumber(CustomStringUtil.wrap("0015", '"'));
-		to.setL_SchoolName(CustomStringUtil.wrap("ADAMS C ES M", '"'));
-		to.setL_SchoolNumber(CustomStringUtil.wrap("0020", '"'));
-		to.setL_TeacherName(CustomStringUtil.wrap("STEINER", '"'));
-		to.setL_TeacherElementNumberCTBUse(CustomStringUtil.wrap("0016973", '"'));
-		to.setL_Grade(CustomStringUtil.wrap("03", '"'));
-		to.setL_City(CustomStringUtil.wrap("MONROE", '"'));
-		to.setL_State(CustomStringUtil.wrap("IN", '"'));
-		to.setL_ISTEPTestName(CustomStringUtil.wrap("ISTEPS13", '"'));
-		to.setL_ISTEPBook(CustomStringUtil.wrap("54300", '"'));
-		to.setL_ISTEPForm(CustomStringUtil.wrap("3", '"'));
-		to.setL_TestDateMMDDYY(CustomStringUtil.wrap("30413", '"'));
-		to.setL_StudentLastName(CustomStringUtil.wrap("ABELL", '"'));
-		to.setL_StudentFirstName(CustomStringUtil.wrap("ASHLYN", '"'));
-		to.setL_StudentMiddleInitial(CustomStringUtil.wrap("  ", '"'));
-		to.setL_StudentsGender(CustomStringUtil.wrap("F", '"'));
-		to.setL_BirthDateMMDDYY(CustomStringUtil.wrap("113003", '"'));
-		to.setL_ChronologicalAgeInMonths(CustomStringUtil.wrap("112", '"'));
-		to.setL_Ethnicity(CustomStringUtil.wrap("1", '"'));
-		to.setL_RaceAmericanIndianAlaskaNative(CustomStringUtil.wrap("1", '"'));
-		to.setL_RaceAsian(CustomStringUtil.wrap("1", '"'));
-		to.setL_RaceBlackorAfricanAmerican(CustomStringUtil.wrap("1", '"'));
-		to.setL_RaceNativeHawaiianorOtherPacificIslander(CustomStringUtil.wrap("1", '"'));
-		to.setL_RaceWhite(CustomStringUtil.wrap("1", '"'));
-		to.setL_Filler1(CustomStringUtil.wrap("  ", '"'));
-		to.setL_StudentTestNumberAI(CustomStringUtil.wrap("2010001", '"'));
-		to.setL_SpecialCodeJ(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ResolvedEthnicityK(CustomStringUtil.wrap("5", '"'));
-		to.setL_SpecialEducationL(CustomStringUtil.wrap("1", '"'));
-		to.setL_ExceptionalityM(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocioEconomicStatusN(CustomStringUtil.wrap("1", '"'));
-		to.setL_Section504O(CustomStringUtil.wrap("1", '"'));
-		to.setL_EnglishLearnerELP(CustomStringUtil.wrap("1", '"'));
-		to.setL_MigrantQ(CustomStringUtil.wrap("1", '"'));
-		to.setL_LocaluseR(CustomStringUtil.wrap("  ", '"'));
-		to.setL_LocaluseS(CustomStringUtil.wrap("  ", '"'));
-		to.setL_LocaluseT(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MatchUnmatchU(CustomStringUtil.wrap("1", '"'));
-		to.setL_DuplicateV(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyW(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SpecialCodeX(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SpecialCodeY(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SpecialCodeZ(CustomStringUtil.wrap("  ", '"'));
-		to.setL_AccommodationsEla(CustomStringUtil.wrap("1", '"'));
-		to.setL_AccommodationsMath(CustomStringUtil.wrap("1", '"'));
-		to.setL_AccommodationsScience(CustomStringUtil.wrap("1", '"'));
-		to.setL_AccommodationsSocialStudies(CustomStringUtil.wrap("1", '"'));
-		to.setL_CorporationUseID(CustomStringUtil.wrap("10008", '"'));
-		to.setL_CustomerUse(CustomStringUtil.wrap("  ", '"'));
-		to.setL_Filler2(CustomStringUtil.wrap("  ", '"'));
-		to.setL_Filler3(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ElaPFIndicator(CustomStringUtil.wrap("A", '"'));
-		to.setL_MathPFIndicator(CustomStringUtil.wrap("P", '"'));
-		to.setL_SciencePFIndicator(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocialStudiesPFIndicator(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ElaNumberCorrect(CustomStringUtil.wrap("58", '"'));
-		to.setL_MathNumberCorrect(CustomStringUtil.wrap("53", '"'));
-		to.setL_ScienceNumberCorrect(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocialStudiesNumberCorrect(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ElaScaleScore(CustomStringUtil.wrap("481", '"'));
-		to.setL_MathScaleScore(CustomStringUtil.wrap("514", '"'));
-		to.setL_ScienceScaleScore(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocialStudiesScaleScore(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ElaScaleScoreSEM(CustomStringUtil.wrap("13", '"'));
-		to.setL_MathScaleScoreSEM(CustomStringUtil.wrap("19", '"'));
-		to.setL_ScienceScaleScoreSEM(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocialStudiesScaleScoreSEM(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator1(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator2(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator3(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator4(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator5(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator6(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator7(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator8(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator9(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator10(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator11(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator12(CustomStringUtil.wrap("+", '"'));
-		to.setL_MasteryIndicator13(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator14(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator15(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator16(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator17(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator18(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator19(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator20(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator21(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator22(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator23(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator24(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator25(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator26(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator27(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator28(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator29(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator30(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator31(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator32(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator33(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator34(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator35(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator36(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator37(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator38(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator39(CustomStringUtil.wrap("  ", '"'));
-		to.setL_MasteryIndicator40(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI1(CustomStringUtil.wrap("84", '"'));
-		to.setL_OPIIPI2(CustomStringUtil.wrap("79", '"'));
-		to.setL_OPIIPI3(CustomStringUtil.wrap("74", '"'));
-		to.setL_OPIIPI4(CustomStringUtil.wrap("78", '"'));
-		to.setL_OPIIPI5(CustomStringUtil.wrap("73", '"'));
-		to.setL_OPIIPI6(CustomStringUtil.wrap("85", '"'));
-		to.setL_OPIIPI7(CustomStringUtil.wrap("87", '"'));
-		to.setL_OPIIPI8(CustomStringUtil.wrap("90", '"'));
-		to.setL_OPIIPI9(CustomStringUtil.wrap("91", '"'));
-		to.setL_OPIIPI10(CustomStringUtil.wrap("80", '"'));
-		to.setL_OPIIPI11(CustomStringUtil.wrap("77", '"'));
-		to.setL_OPIIPI12(CustomStringUtil.wrap("67", '"'));
-		to.setL_OPIIPI13(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI14(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI15(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI16(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI17(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI18(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI19(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI20(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI21(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI22(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI23(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI24(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI25(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI26(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI27(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI28(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI29(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI30(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI31(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI32(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI33(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI34(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI35(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI36(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI37(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI38(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI39(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPI40(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ELACRSession2ItemResponses(CustomStringUtil.wrap("54", '"'));
-		to.setL_ELACRSession3ItemResponses(CustomStringUtil.wrap("22244", '"'));
-		to.setL_MathCRSession1ItemResponses(CustomStringUtil.wrap("22121013", '"'));
-		to.setL_ScienceCRSession4ItemResponses(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SocialStudiesCRSession4ItemResponses(CustomStringUtil.wrap("  ", '"'));
-		to.setL_Filler4(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SchoolPersonnelNumberSPN1(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SchoolPersonnelNumberSPN2(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SchoolPersonnelNumberSPN3(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SchoolPersonnelNumberSPN4(CustomStringUtil.wrap("  ", '"'));
-		to.setL_SchoolPersonnelNumberSPN5(CustomStringUtil.wrap("  ", '"'));
-		to.setL_Filler5(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CGRComputerGeneratedResponsefrom(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyAppliedSkillsPPImageID(CustomStringUtil.wrap("FV24MHV7QUEHPDH8CQOC8R8RT5", '"'));
-		to.setL_CTBUseOnlyAppliedSkillsOASImageID(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyMCPPImagingid(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyMCOASimagingid(CustomStringUtil.wrap("OAS270442318266806", '"'));
-		to.setL_BarcodeIDAppliedSkills(CustomStringUtil.wrap("21944483", '"'));
-		to.setL_BarcodeIDMultipleChoice(CustomStringUtil.wrap("21944483", '"'));
-		to.setL_CTBUseOnlyTestForm(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyMCBlankbookFlag(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyTestFormAppliedSkillsFieldPilotTest(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyTestFormMCFieldPilotTest(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyFutureUseOASTestedIndicatorAppliedSkillstest(CustomStringUtil.wrap("  ", '"'));
-		to.setL_CTBUseOnlyOASTestedIndicatorMultipleChoiceTest(CustomStringUtil.wrap("0", '"'));
-		to.setL_CTBUseOnlyStructureLevel(CustomStringUtil.wrap("6", '"'));
-		to.setL_CTBUseOnlyElementNumber(CustomStringUtil.wrap("482387", '"'));
-		to.setL_ResolvedReportingStatusEla(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ResolvedReportingStatusMath(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ResolvedReportingStatusScience(CustomStringUtil.wrap("  ", '"'));
-		to.setL_ResolvedReportingStatusSocialStudies(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut1(CustomStringUtil.wrap("58", '"'));
-		to.setL_OPIIPICut2(CustomStringUtil.wrap("50", '"'));
-		to.setL_OPIIPICut3(CustomStringUtil.wrap("40", '"'));
-		to.setL_OPIIPICut4(CustomStringUtil.wrap("50", '"'));
-		to.setL_OPIIPICut5(CustomStringUtil.wrap("57", '"'));
-		to.setL_OPIIPICut6(CustomStringUtil.wrap("66", '"'));
-		to.setL_OPIIPICut7(CustomStringUtil.wrap("60", '"'));
-		to.setL_OPIIPICut8(CustomStringUtil.wrap("64", '"'));
-		to.setL_OPIIPICut9(CustomStringUtil.wrap("57", '"'));
-		to.setL_OPIIPICut10(CustomStringUtil.wrap("53", '"'));
-		to.setL_OPIIPICut11(CustomStringUtil.wrap("46", '"'));
-		to.setL_OPIIPICut12(CustomStringUtil.wrap("31", '"'));
-		to.setL_OPIIPICut13(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut14(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut15(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut16(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut17(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut18(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut19(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut20(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut21(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut22(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut23(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut24(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut25(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut26(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut27(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut28(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut29(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut30(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut31(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut32(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut33(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut34(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut35(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut36(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut37(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut38(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut39(CustomStringUtil.wrap("  ", '"'));
-		to.setL_OPIIPICut40(CustomStringUtil.wrap("  ", '"'));
+		to.setL_TapeMode(wrap("5", '"'));
+		to.setL_Orgtstgpgm(wrap("M013883003", '"'));
+		to.setL_CorporationorDioceseName(wrap("ADAMS CENTRAL", '"'));
+		to.setL_CorporationorDioceseNumber(wrap("0015", '"'));
+		to.setL_SchoolName(wrap("ADAMS C ES M", '"'));
+		to.setL_SchoolNumber(wrap("0020", '"'));
+		to.setL_TeacherName(wrap("STEINER", '"'));
+		to.setL_TeacherElementNumberCTBUse(wrap("0016973", '"'));
+		to.setL_Grade(wrap("03", '"'));
+		to.setL_City(wrap("MONROE", '"'));
+		to.setL_State(wrap("IN", '"'));
+		to.setL_ISTEPTestName(wrap("ISTEPS13", '"'));
+		to.setL_ISTEPBook(wrap("54300", '"'));
+		to.setL_ISTEPForm(wrap("3", '"'));
+		to.setL_TestDateMMDDYY(wrap("30413", '"'));
+		to.setL_StudentLastName(wrap("ABELL", '"'));
+		to.setL_StudentFirstName(wrap("ASHLYN", '"'));
+		to.setL_StudentMiddleInitial(wrap("", '"'));
+		to.setL_StudentsGender(wrap("F", '"'));
+		to.setL_BirthDateMMDDYY(wrap("113003", '"'));
+		to.setL_ChronologicalAgeInMonths(wrap("112", '"'));
+		to.setL_Ethnicity(wrap("1", '"'));
+		to.setL_RaceAmericanIndianAlaskaNative(wrap("1", '"'));
+		to.setL_RaceAsian(wrap("1", '"'));
+		to.setL_RaceBlackorAfricanAmerican(wrap("1", '"'));
+		to.setL_RaceNativeHawaiianorOtherPacificIslander(wrap("1", '"'));
+		to.setL_RaceWhite(wrap("1", '"'));
+		to.setL_Filler1(wrap("", '"'));
+		to.setL_StudentTestNumberAI(wrap("2010001", '"'));
+		to.setL_SpecialCodeJ(wrap("", '"'));
+		to.setL_ResolvedEthnicityK(wrap("5", '"'));
+		to.setL_SpecialEducationL(wrap("1", '"'));
+		to.setL_ExceptionalityM(wrap("", '"'));
+		to.setL_SocioEconomicStatusN(wrap("1", '"'));
+		to.setL_Section504O(wrap("1", '"'));
+		to.setL_EnglishLearnerELP(wrap("1", '"'));
+		to.setL_MigrantQ(wrap("1", '"'));
+		to.setL_LocaluseR(wrap("", '"'));
+		to.setL_LocaluseS(wrap("", '"'));
+		to.setL_LocaluseT(wrap("", '"'));
+		to.setL_MatchUnmatchU(wrap("1", '"'));
+		to.setL_DuplicateV(wrap("", '"'));
+		to.setL_CTBUseOnlyW(wrap("", '"'));
+		to.setL_SpecialCodeX(wrap("", '"'));
+		to.setL_SpecialCodeY(wrap("", '"'));
+		to.setL_SpecialCodeZ(wrap("", '"'));
+		to.setL_AccommodationsEla(wrap("1", '"'));
+		to.setL_AccommodationsMath(wrap("1", '"'));
+		to.setL_AccommodationsScience(wrap("1", '"'));
+		to.setL_AccommodationsSocialStudies(wrap("1", '"'));
+		to.setL_CorporationUseID(wrap("10008", '"'));
+		to.setL_CustomerUse(wrap("", '"'));
+		to.setL_Filler2(wrap("", '"'));
+		to.setL_Filler3(wrap("", '"'));
+		to.setL_ElaPFIndicator(wrap("A", '"'));
+		to.setL_MathPFIndicator(wrap("P", '"'));
+		to.setL_SciencePFIndicator(wrap("", '"'));
+		to.setL_SocialStudiesPFIndicator(wrap("", '"'));
+		to.setL_ElaNumberCorrect(wrap("58", '"'));
+		to.setL_MathNumberCorrect(wrap("53", '"'));
+		to.setL_ScienceNumberCorrect(wrap("", '"'));
+		to.setL_SocialStudiesNumberCorrect(wrap("", '"'));
+		to.setL_ElaScaleScore(wrap("481", '"'));
+		to.setL_MathScaleScore(wrap("514", '"'));
+		to.setL_ScienceScaleScore(wrap("", '"'));
+		to.setL_SocialStudiesScaleScore(wrap("", '"'));
+		to.setL_ElaScaleScoreSEM(wrap("13", '"'));
+		to.setL_MathScaleScoreSEM(wrap("19", '"'));
+		to.setL_ScienceScaleScoreSEM(wrap("", '"'));
+		to.setL_SocialStudiesScaleScoreSEM(wrap("", '"'));
+		to.setL_MasteryIndicator1(wrap("+", '"'));
+		to.setL_MasteryIndicator2(wrap("+", '"'));
+		to.setL_MasteryIndicator3(wrap("+", '"'));
+		to.setL_MasteryIndicator4(wrap("+", '"'));
+		to.setL_MasteryIndicator5(wrap("+", '"'));
+		to.setL_MasteryIndicator6(wrap("+", '"'));
+		to.setL_MasteryIndicator7(wrap("+", '"'));
+		to.setL_MasteryIndicator8(wrap("+", '"'));
+		to.setL_MasteryIndicator9(wrap("+", '"'));
+		to.setL_MasteryIndicator10(wrap("+", '"'));
+		to.setL_MasteryIndicator11(wrap("+", '"'));
+		to.setL_MasteryIndicator12(wrap("+", '"'));
+		to.setL_MasteryIndicator13(wrap("", '"'));
+		to.setL_MasteryIndicator14(wrap("", '"'));
+		to.setL_MasteryIndicator15(wrap("", '"'));
+		to.setL_MasteryIndicator16(wrap("", '"'));
+		to.setL_MasteryIndicator17(wrap("", '"'));
+		to.setL_MasteryIndicator18(wrap("", '"'));
+		to.setL_MasteryIndicator19(wrap("", '"'));
+		to.setL_MasteryIndicator20(wrap("", '"'));
+		to.setL_MasteryIndicator21(wrap("", '"'));
+		to.setL_MasteryIndicator22(wrap("", '"'));
+		to.setL_MasteryIndicator23(wrap("", '"'));
+		to.setL_MasteryIndicator24(wrap("", '"'));
+		to.setL_MasteryIndicator25(wrap("", '"'));
+		to.setL_MasteryIndicator26(wrap("", '"'));
+		to.setL_MasteryIndicator27(wrap("", '"'));
+		to.setL_MasteryIndicator28(wrap("", '"'));
+		to.setL_MasteryIndicator29(wrap("", '"'));
+		to.setL_MasteryIndicator30(wrap("", '"'));
+		to.setL_MasteryIndicator31(wrap("", '"'));
+		to.setL_MasteryIndicator32(wrap("", '"'));
+		to.setL_MasteryIndicator33(wrap("", '"'));
+		to.setL_MasteryIndicator34(wrap("", '"'));
+		to.setL_MasteryIndicator35(wrap("", '"'));
+		to.setL_MasteryIndicator36(wrap("", '"'));
+		to.setL_MasteryIndicator37(wrap("", '"'));
+		to.setL_MasteryIndicator38(wrap("", '"'));
+		to.setL_MasteryIndicator39(wrap("", '"'));
+		to.setL_MasteryIndicator40(wrap("", '"'));
+		to.setL_OPIIPI1(wrap("84", '"'));
+		to.setL_OPIIPI2(wrap("79", '"'));
+		to.setL_OPIIPI3(wrap("74", '"'));
+		to.setL_OPIIPI4(wrap("78", '"'));
+		to.setL_OPIIPI5(wrap("73", '"'));
+		to.setL_OPIIPI6(wrap("85", '"'));
+		to.setL_OPIIPI7(wrap("87", '"'));
+		to.setL_OPIIPI8(wrap("90", '"'));
+		to.setL_OPIIPI9(wrap("91", '"'));
+		to.setL_OPIIPI10(wrap("80", '"'));
+		to.setL_OPIIPI11(wrap("77", '"'));
+		to.setL_OPIIPI12(wrap("67", '"'));
+		to.setL_OPIIPI13(wrap("", '"'));
+		to.setL_OPIIPI14(wrap("", '"'));
+		to.setL_OPIIPI15(wrap("", '"'));
+		to.setL_OPIIPI16(wrap("", '"'));
+		to.setL_OPIIPI17(wrap("", '"'));
+		to.setL_OPIIPI18(wrap("", '"'));
+		to.setL_OPIIPI19(wrap("", '"'));
+		to.setL_OPIIPI20(wrap("", '"'));
+		to.setL_OPIIPI21(wrap("", '"'));
+		to.setL_OPIIPI22(wrap("", '"'));
+		to.setL_OPIIPI23(wrap("", '"'));
+		to.setL_OPIIPI24(wrap("", '"'));
+		to.setL_OPIIPI25(wrap("", '"'));
+		to.setL_OPIIPI26(wrap("", '"'));
+		to.setL_OPIIPI27(wrap("", '"'));
+		to.setL_OPIIPI28(wrap("", '"'));
+		to.setL_OPIIPI29(wrap("", '"'));
+		to.setL_OPIIPI30(wrap("", '"'));
+		to.setL_OPIIPI31(wrap("", '"'));
+		to.setL_OPIIPI32(wrap("", '"'));
+		to.setL_OPIIPI33(wrap("", '"'));
+		to.setL_OPIIPI34(wrap("", '"'));
+		to.setL_OPIIPI35(wrap("", '"'));
+		to.setL_OPIIPI36(wrap("", '"'));
+		to.setL_OPIIPI37(wrap("", '"'));
+		to.setL_OPIIPI38(wrap("", '"'));
+		to.setL_OPIIPI39(wrap("", '"'));
+		to.setL_OPIIPI40(wrap("", '"'));
+		to.setL_ELACRSession2ItemResponses(wrap("54", '"'));
+		to.setL_ELACRSession3ItemResponses(wrap("22244", '"'));
+		to.setL_MathCRSession1ItemResponses(wrap("22121013", '"'));
+		to.setL_ScienceCRSession4ItemResponses(wrap("", '"'));
+		to.setL_SocialStudiesCRSession4ItemResponses(wrap("", '"'));
+		to.setL_Filler4(wrap("", '"'));
+		to.setL_SchoolPersonnelNumberSPN1(wrap("", '"'));
+		to.setL_SchoolPersonnelNumberSPN2(wrap("", '"'));
+		to.setL_SchoolPersonnelNumberSPN3(wrap("", '"'));
+		to.setL_SchoolPersonnelNumberSPN4(wrap("", '"'));
+		to.setL_SchoolPersonnelNumberSPN5(wrap("", '"'));
+		to.setL_Filler5(wrap("", '"'));
+		to.setL_CGRComputerGeneratedResponsefrom(wrap("", '"'));
+		to.setL_CTBUseOnlyAppliedSkillsPPImageID(wrap("FV24MHV7QUEHPDH8CQOC8R8RT5", '"'));
+		to.setL_CTBUseOnlyAppliedSkillsOASImageID(wrap("", '"'));
+		to.setL_CTBUseOnlyMCPPImagingid(wrap("", '"'));
+		to.setL_CTBUseOnlyMCOASimagingid(wrap("OAS270442318266806", '"'));
+		to.setL_BarcodeIDAppliedSkills(wrap("21944483", '"'));
+		to.setL_BarcodeIDMultipleChoice(wrap("21944483", '"'));
+		to.setL_CTBUseOnlyTestForm(wrap("", '"'));
+		to.setL_CTBUseOnlyMCBlankbookFlag(wrap("", '"'));
+		to.setL_CTBUseOnlyTestFormAppliedSkillsFieldPilotTest(wrap("", '"'));
+		to.setL_CTBUseOnlyTestFormMCFieldPilotTest(wrap("", '"'));
+		to.setL_CTBUseOnlyFutureUseOASTestedIndicatorAppliedSkillstest(wrap("", '"'));
+		to.setL_CTBUseOnlyOASTestedIndicatorMultipleChoiceTest(wrap("0", '"'));
+		to.setL_CTBUseOnlyStructureLevel(wrap("6", '"'));
+		to.setL_CTBUseOnlyElementNumber(wrap("482387", '"'));
+		to.setL_ResolvedReportingStatusEla(wrap("", '"'));
+		to.setL_ResolvedReportingStatusMath(wrap("", '"'));
+		to.setL_ResolvedReportingStatusScience(wrap("", '"'));
+		to.setL_ResolvedReportingStatusSocialStudies(wrap("", '"'));
+		to.setL_OPIIPICut1(wrap("58", '"'));
+		to.setL_OPIIPICut2(wrap("50", '"'));
+		to.setL_OPIIPICut3(wrap("40", '"'));
+		to.setL_OPIIPICut4(wrap("50", '"'));
+		to.setL_OPIIPICut5(wrap("57", '"'));
+		to.setL_OPIIPICut6(wrap("66", '"'));
+		to.setL_OPIIPICut7(wrap("60", '"'));
+		to.setL_OPIIPICut8(wrap("64", '"'));
+		to.setL_OPIIPICut9(wrap("57", '"'));
+		to.setL_OPIIPICut10(wrap("53", '"'));
+		to.setL_OPIIPICut11(wrap("46", '"'));
+		to.setL_OPIIPICut12(wrap("31", '"'));
+		to.setL_OPIIPICut13(wrap("", '"'));
+		to.setL_OPIIPICut14(wrap("", '"'));
+		to.setL_OPIIPICut15(wrap("", '"'));
+		to.setL_OPIIPICut16(wrap("", '"'));
+		to.setL_OPIIPICut17(wrap("", '"'));
+		to.setL_OPIIPICut18(wrap("", '"'));
+		to.setL_OPIIPICut19(wrap("", '"'));
+		to.setL_OPIIPICut20(wrap("", '"'));
+		to.setL_OPIIPICut21(wrap("", '"'));
+		to.setL_OPIIPICut22(wrap("", '"'));
+		to.setL_OPIIPICut23(wrap("", '"'));
+		to.setL_OPIIPICut24(wrap("", '"'));
+		to.setL_OPIIPICut25(wrap("", '"'));
+		to.setL_OPIIPICut26(wrap("", '"'));
+		to.setL_OPIIPICut27(wrap("", '"'));
+		to.setL_OPIIPICut28(wrap("", '"'));
+		to.setL_OPIIPICut29(wrap("", '"'));
+		to.setL_OPIIPICut30(wrap("", '"'));
+		to.setL_OPIIPICut31(wrap("", '"'));
+		to.setL_OPIIPICut32(wrap("", '"'));
+		to.setL_OPIIPICut33(wrap("", '"'));
+		to.setL_OPIIPICut34(wrap("", '"'));
+		to.setL_OPIIPICut35(wrap("", '"'));
+		to.setL_OPIIPICut36(wrap("", '"'));
+		to.setL_OPIIPICut37(wrap("", '"'));
+		to.setL_OPIIPICut38(wrap("", '"'));
+		to.setL_OPIIPICut39(wrap("", '"'));
+		to.setL_OPIIPICut40(wrap("", '"'));
 		return to;
 	}
 }

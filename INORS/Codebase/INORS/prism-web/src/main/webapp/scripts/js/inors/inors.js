@@ -121,7 +121,7 @@ $(document).ready(function() {
 		var corpDiocese = $("#corpDiocese").val();
 		var school = $("#school").val();
 		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
-		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&layout=2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadGRTFile").attr("href", href);
 	});
 	$("#downloadICFile").live("click", function() {
@@ -130,7 +130,7 @@ $(document).ready(function() {
 		var corpDiocese = $("#corpDiocese").val();
 		var school = $("#school").val();
 		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
-		var href = "downloadGRTInvitationCodeFiles.do?type=IC&layout=2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		var href = "downloadGRTInvitationCodeFiles.do?type=IC&2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadICFile").attr("href", href);
 	});
 });
