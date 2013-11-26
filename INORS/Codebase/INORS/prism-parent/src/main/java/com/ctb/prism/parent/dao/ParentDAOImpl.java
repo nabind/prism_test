@@ -1113,11 +1113,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	System.out.println("CustomerId>>>" +loggedinUserTO.getCustomerId());
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
-				            cs.setLong("P_IN_CUSTOMERID", Long.parseLong(loggedinUserTO.getCustomerId()));				            
-				            cs.registerOutParameter("P_OUT_CUR_CUST_PROD_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
-				            return cs;
+				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
+				            //cs.setLong(1,((BigDecimal) BigDecimal.valueOf(Long.valueOf((loggedinUserTO.getCustomerId())))).longValue());
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
 			        		public Object doInCallableStatement(CallableStatement cs) {
@@ -1126,7 +1128,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rsCustProd = (ResultSet) cs.getObject("P_OUT_CUR_CUST_PROD_DETAILS");
+									rsCustProd = (ResultSet) cs.getObject(2);
 
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									while(rsCustProd.next()){
@@ -1142,7 +1144,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			return objectValueTOResult;
 				        }
 				    });
+			
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new BusinessException(e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
@@ -1163,9 +1167,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_GRADE + "}");
-				            cs.setLong("P_IN_CUST_PROD_ID", custProdId);				            
-				            cs.registerOutParameter("P_OUT_CUR_GRADE_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, custProdId);				            
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1175,7 +1179,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject("P_OUT_CUR_GRADE_DETAILS");
+									rs = (ResultSet) cs.getObject(2);
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){
@@ -1211,9 +1215,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SUBTEST + "}");
-				            cs.setLong("P_IN_GRADEID", gradeId);				            
-				            cs.registerOutParameter("P_OUT_CUR_SUBTEST_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, gradeId);				            
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1223,7 +1227,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject("P_OUT_CUR_SUBTEST_DETAILS");
+									rs = (ResultSet) cs.getObject(2);
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){
@@ -1260,10 +1264,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_OBJECTIVE + "}");
-				            cs.setLong("P_IN_SUBTESTID", subtestId);		
-				            cs.setLong("P_IN_GRADEID", gradeId);	
-				            cs.registerOutParameter("P_OUT_CUR_OBJECTIVE_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, subtestId);		
+				            cs.setLong(2, gradeId);	
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1273,7 +1277,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject("P_OUT_CUR_OBJECTIVE_DETAILS");
+									rs = (ResultSet) cs.getObject(3);
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){
@@ -1289,6 +1293,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				        }
 				    });
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new BusinessException(e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
@@ -1312,18 +1317,18 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_NEW_CONTENT + "}");
-				            cs.setString("P_IN_CONTENT_DESCRIPTION", manageContentTO.getContentDescription());	
-				            cs.setString("P_IN_ARTICLE_NAME", manageContentTO.getContentName());	
-				            cs.setLong("P_IN_CUST_PROD_ID", manageContentTO.getCustProdId());
-				            cs.setLong("P_IN_SUBTESTID", manageContentTO.getSubtestId());	
-				            cs.setLong("P_IN_OBJECTIVEID", manageContentTO.getObjectiveId());
-				            cs.setString("P_IN_CATEGORY", manageContentTO.getContentTypeName());	
-				            cs.setString("P_IN_CATEGORY_TYPE", manageContentTO.getContentType());	
-				            cs.setString("P_IN_SUB_HEADER", manageContentTO.getSubHeader());	
-				            cs.setLong("P_IN_GRADEID", manageContentTO.getGradeId());	
-				            cs.setString("P_IN_PROF_LEVEL", manageContentTO.getProfLevel());	
-				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setString(1, manageContentTO.getContentDescription());	
+				            cs.setString(2, manageContentTO.getContentName());	
+				            cs.setLong(3, manageContentTO.getCustProdId());
+				            cs.setLong(4, manageContentTO.getSubtestId());	
+				            cs.setLong(5, manageContentTO.getObjectiveId());
+				            cs.setString(6, manageContentTO.getContentTypeName());	
+				            cs.setString(7, manageContentTO.getContentType());	
+				            cs.setString(8, manageContentTO.getSubHeader());	
+				            cs.setLong(9, manageContentTO.getGradeId());	
+				            cs.setString(10, manageContentTO.getProfLevel());	
+				            cs.registerOutParameter(11, oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter(12, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1333,7 +1338,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										new com.ctb.prism.core.transferobject.ObjectValueTO();
 			        			try {
 									cs.execute();
-									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									executionStatus = cs.getLong(11);
 									statusTO.setValue(Long.toString(executionStatus));
 									statusTO.setName("");
 			        			} catch (SQLException e) {
@@ -1372,23 +1377,23 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	if(checkFirstLoad.equals("true")){
 				        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST + "}");
-					            cs.setLong("P_IN_CUST_PROD_ID", custProdId);
-					            cs.setLong("P_IN_SUBTESTID", subtestId);
-					            cs.setLong("P_IN_OBJECTIVEID ", objectiveId);
-					            cs.setString("P_IN_CATEGORY_TYPE ", contentTypeId);
-					            cs.registerOutParameter("P_OUT_CUR_METADATA_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-					            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+					            cs.setLong(1, custProdId);
+					            cs.setLong(2, subtestId);
+					            cs.setLong(3, objectiveId);
+					            cs.setString(4, contentTypeId);
+					            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
+					            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					            return cs;
 				        	}else{
 			        			final long lastid = Long.parseLong((String) paramMap.get("lastid"));
 				        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST_MORE + "}");
-					            cs.setLong("p_in_cust_prod_id", custProdId);
-					            cs.setLong("p_in_subtestid", subtestId);
-					            cs.setLong("p_in_objectiveid ", objectiveId);
-					            cs.setLong("p_in_lastid ",lastid);
-					            cs.setString("P_IN_CATEGORY_TYPE ", contentTypeId);
-					            cs.registerOutParameter("p_out_cur_metadata_details", oracle.jdbc.OracleTypes.CURSOR); 
-					            cs.registerOutParameter("p_out_excep_err_msg", oracle.jdbc.OracleTypes.VARCHAR);
+					            cs.setLong(1, custProdId);
+					            cs.setLong(2, subtestId);
+					            cs.setLong(3, objectiveId);
+					            cs.setLong(4,lastid);
+					            cs.setString(5, contentTypeId);
+					            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR); 
+					            cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					            return cs;	
 				        	}
 				        	
@@ -1399,7 +1404,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			List<ManageContentTO> manageContentListResult = new ArrayList<ManageContentTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject("p_out_cur_metadata_details");
+									if(checkFirstLoad.equals("true")) {
+										rs = (ResultSet) cs.getObject(5);
+									} else {
+										rs = (ResultSet) cs.getObject(6);
+									}
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){
@@ -1441,9 +1450,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_FOR_EDIT + "}");
-				            cs.setLong("P_IN_METADATAID", contentId);
-				            cs.registerOutParameter("P_OUT_CUR_METADATA_DETAILS", oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, contentId);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1452,7 +1461,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			ManageContentTO manageContentTOResult = null;
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject("P_OUT_CUR_METADATA_DETAILS");
+									rs = (ResultSet) cs.getObject(2);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
 										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
@@ -1493,13 +1502,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.UPDATE_CONTENT + "}");
-				            cs.setLong("P_IN_METADATAID", manageContentTO.getContentId());	
-				            cs.setString("P_IN_ARTICLE_NAME", manageContentTO.getContentName());
-				            cs.setString("P_IN_SUB_HEADER", manageContentTO.getSubHeader());
-				            cs.setString("P_IN_CONTENT_DESCRIPTION", manageContentTO.getContentDescription());	
-				            cs.setString("P_IN_PROFICIENCY_LEVEL", manageContentTO.getProfLevel());	
-				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, manageContentTO.getContentId());	
+				            cs.setString(2, manageContentTO.getContentName());
+				            cs.setString(3, manageContentTO.getSubHeader());
+				            cs.setString(4, manageContentTO.getContentDescription());	
+				            cs.setString(5, manageContentTO.getProfLevel());	
+				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,  new CallableStatementCallback<Object>()  {
@@ -1509,7 +1518,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										new com.ctb.prism.core.transferobject.ObjectValueTO();
 			        			try {
 									cs.execute();
-									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									executionStatus = cs.getLong(6);
 									statusTO.setValue(Long.toString(executionStatus));
 									statusTO.setName("");
 			        			} catch (SQLException e) {
@@ -1542,9 +1551,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.DELETE_CONTENT + "}");
-				            cs.setLong("P_IN_METADATAID", contentId);	
-				            cs.registerOutParameter("P_OUT_STATUS_NUMBER", oracle.jdbc.OracleTypes.NUMBER); 
-				            cs.registerOutParameter("P_OUT_EXCEP_ERR_MSG", oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, contentId);	
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.NUMBER); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,  new CallableStatementCallback<Object>()  {
@@ -1554,7 +1563,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										new com.ctb.prism.core.transferobject.ObjectValueTO();
 			        			try {
 									cs.execute();
-									executionStatus = cs.getLong("P_OUT_STATUS_NUMBER");
+									executionStatus = cs.getLong(2);
 									statusTO.setValue(Long.toString(executionStatus));
 									statusTO.setName("");
 			        			} catch (SQLException e) {
