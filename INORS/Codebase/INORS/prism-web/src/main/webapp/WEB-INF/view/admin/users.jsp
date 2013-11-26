@@ -58,6 +58,7 @@
 				class="panel-load-target with-padding margin10 height-mid padding-none">
 				<div class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreUser" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more users">More</a>
+					<a class="button float-right" id="downloadUsers" style="cursor: pointer;"><span class="button-icon icon-download blue-gradient report-btn">DAT</span> Download Users</a>
 				</div>
 				<div id="userTable"
 					class="report-container tabs-content padding-small"
@@ -69,11 +70,11 @@
 						<thead>
 							<tr class="abc">
 								<th scope="col" width="16%">User ID</th>
-								<th scope="col" width="25%">Full Name</th>
-								<th scope="col" width="11%" class="hide-on-tablet">Status</th>
+								<th scope="col" width="23%">Full Name</th>
+								<th scope="col" width="10%" class="hide-on-tablet">Status</th>
 								<th scope="col" width="16%" class="hide-on-tablet-portrait">Org Name</th>
-								<th scope="col" width="16%">User Roles</th>
-								<th scope="col" width="16%">Actions</th>
+								<th scope="col" width="22%">User Roles</th>
+								<th scope="col" width="13%">Actions</th>
 							</tr>
 						</thead>
 
@@ -107,25 +108,25 @@
 									<td class="roleContainerForUsers vertical-center">
 											<c:forEach var="role" items="${users.availableRoleList}">
 												<c:if test="${role.roleName == 'ROLE_ACSI'}">
-												<small class="tag blue-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag blue-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_CTB'}">
-												<small class="tag green-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag green-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_SCHOOL'}">
-												<small class="tag anthracite-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag anthracite-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_CLASS'}">
-												<small class="tag grey-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag grey-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>												
 												<c:if test="${role.roleName == 'ROLE_PARENT'}">
-												<small class="tag red-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag red-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>	
 												<c:if test="${role.roleName == 'ROLE_ADMIN'}">
-												<small class="tag orange-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag orange-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>	
 												<c:if test="${role.roleName == 'ROLE_USER'}">
-												<small class="tag black-bg role ${role.roleName}">${role.roleName}</small><br/>
+												<small class="tag black-bg role ${role.roleName}">${role.roleDescription}</small><br/>
 												</c:if>
 											</c:forEach>
 										</td>

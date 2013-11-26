@@ -299,7 +299,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" VALUES",
 			" (?, ?, ?, ?, ?, SYSDATE)");
 	
-	public static final String GET_USER_ROLE=CustomStringUtil.appendString( "SELECT RLE.ROLEID,RLE.ROLE_NAME",
+	public static final String GET_USER_ROLE=CustomStringUtil.appendString( "SELECT RLE.ROLEID,RLE.ROLE_NAME,RLE.DESCRIPTION",
 		     " FROM USER_ROLE URLE,",
 		          " ROLE RLE,",
 		          " USERS USR",

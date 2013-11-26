@@ -2001,5 +2001,66 @@ public class AdminController {
 		return userTOList;
 	}
 	
-	
+	@RequestMapping(value = "/downloadUsers", method = RequestMethod.GET)
+	public void downloadUsers(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
+		Map<String, String> paramMap = new HashMap<String, String>();
+		
+		String type = (String) request.getParameter("type");
+		String testAdministration = (String) request.getParameter("testAdministration");
+		String[] tokens = testAdministration.split("~");
+		String product = tokens[0];
+		String term = tokens[1];
+		String year = tokens[2];
+		String testProgram = (String) request.getParameter("testProgram");
+		String corpDiocese = (String) request.getParameter("corpDiocese");
+		String school = (String) request.getParameter("school");
+
+		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+
+		paramMap.put("type", type);
+		paramMap.put("product", product);
+		paramMap.put("term", term);
+		paramMap.put("year", year);
+		paramMap.put("testProgram", testProgram);
+		paramMap.put("parentOrgNodeId", corpDiocese);
+		paramMap.put("orgNodeId", school);
+		paramMap.put("userId", userId);
+
+		logger.log(IAppLogger.INFO, "type=" + type + ", product=" + product
+				+ ", term=" + term + ", year=" + year + ", testProgram="
+				+ testProgram + ", parentOrgNodeId=" + corpDiocese
+				+ ", orgNodeId=" + school + ", userId=" + userId);
+
+		byte[] data = null;
+		String fileName = "";
+		String zipFileName = "";
+		if ("IC".equals(type)) {
+			List<RoleTO> icList = (List<RoleTO>) adminService.getDownloadData(paramMap);
+			data = InorsDownloadUtil.createICByteArray(icList, ',');
+			fileName = InorsDownloadConstants.IC_FILE_PATH;
+			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
+		} else if ("GRT".equals(type)) {
+			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
+			data = InorsDownloadUtil.createGRTByteArray(grtList, ',');
+			fileName = InorsDownloadConstants.GRT_FILE_PATH;
+			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
+		}
+		try {
+			data = FileUtil.zipBytes(fileName, data);
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "zipBytes - ", e);
+			e.printStackTrace();
+		}
+		response.setContentType("application/force-download");
+		response.setContentLength(data.length);
+		response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
+		try {
+			FileCopyUtils.copy(data, response.getOutputStream());
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
+			e.printStackTrace();
+		}
+		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
+	}
 }

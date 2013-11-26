@@ -324,7 +324,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							rleTo.setRoleId(((BigDecimal) roleDetails.get("ROLEID"))
 									.longValue());
 							rleTo.setRoleName((String) (roleDetails.get("ROLE_NAME")));
-							
+							rleTo.setRoleDescription((String) (roleDetails.get("DESCRIPTION")));
 							RoleTOs.add(rleTo);
 						}
 						to.setAvailableRoleList(RoleTOs);

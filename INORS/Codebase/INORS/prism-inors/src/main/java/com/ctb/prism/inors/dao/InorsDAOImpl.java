@@ -456,7 +456,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					});
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - getGRTList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return grtList;
 	}
@@ -476,7 +476,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			List<InvitationCodeTO> icData = new ArrayList<InvitationCodeTO>();
 			if (YEAR_2012.equals(year) || YEAR_2013.equals(year)) {
 				// TODO : database code instead of mock objects
-				icData.add(InorsDownloadUtil.getMockInvitationCodeTO());
+				icData = getICList(orgNodeId);
 			}
 			return icData;
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
@@ -489,11 +489,72 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	private List<InvitationCodeTO> getICList(final String orgNodeId) {
+
+		long t1 = System.currentTimeMillis();
+		List<InvitationCodeTO> icList = null;
+		try {
+			icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
+							cs.setLong("P_IN_SCHOOLID", Long.parseLong(orgNodeId));
+							cs.registerOutParameter("P_OUT_CUR_INVITATION_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject("P_OUT_CUR_INVITATION_DETAILS");
+								InvitationCodeTO to = null;
+								while (rs.next()) {
+									to = new InvitationCodeTO();
+									to.setCorporationorDioceseName(wrap(rs.getString("DISTRICT_NAME"), '"'));
+									to.setCorporationorDioceseNumber(wrap(rs.getString("DISTRICT_NUMBER"), '"'));
+									to.setSchoolName(wrap(rs.getString("SCHOOL_NAME"), '"'));
+									to.setSchoolNumber(wrap(rs.getString("SCHOOL_NUMBER"), '"'));
+									to.setGrade(wrap(rs.getString("GRADE_NAME"), '"'));
+									to.setAdministrationName(wrap("", '"')); // TODO
+									to.setiSTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
+									to.setInvitationCodeExpirationDate(wrap(rs.getString("EXPIRATION_DATE"), '"'));
+									to.setStudentLastName(wrap(rs.getString("LAST_NAME"), '"'));
+									to.setStudentFirstName(wrap(rs.getString("FIRST_NAME"), '"'));
+									to.setStudentMiddleInitial(wrap(rs.getString("MIDDLE_NAME"), '"'));
+									to.setStudentsGender(wrap(rs.getString("GENDER_CODE"), '"'));
+									to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
+									to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
+									to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
+									to.setcTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
+									to.setTeacherName(wrap("", '"')); // TODO
+									to.setcTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
+									to.setcTBUSETeacherElementNumber(wrap("", '"')); // TODO
+									to.setcTBUSEStudentElementNumber(wrap("", '"')); // TODO
+									icTOList.add(to);
+								}
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return icTOList;
+						}
+					});
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return icList;
+	
+	}
+
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getDistricts()
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ObjectValueTO> getDistricts() {
-		List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+		/*List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DISTRICTS);
 		if (lstData.size() > 0) {
@@ -504,11 +565,52 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				objectValueList.add(objectValueTO);
 			}
 		}
-		return objectValueList;
+		return objectValueList;*/
+
+		long t1 = System.currentTimeMillis();
+		List<ObjectValueTO> districtList = null;
+		try {
+			districtList = (List<ObjectValueTO>) getJdbcTemplatePrism().execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
+							cs.registerOutParameter("P_OUT_CUR_ORG_NODE_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject("P_OUT_CUR_ORG_NODE_DETAILS");
+								ObjectValueTO to = null;
+								while (rs.next()) {
+									to = new ObjectValueTO();
+									to.setValue(rs.getString("ORG_NODEID"));
+									to.setName(rs.getString("ORG_NODE_NAME"));
+									objectValueList.add(to);
+								}
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return objectValueList;
+						}
+					});
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - getDistricts() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return districtList;
+	
 	}
 	
-	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId){
-		List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#populateSchool(java.lang.Long)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ObjectValueTO> populateSchool(final Long parentOrgNodeId){
+		/*List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SCHOOLS, parentOrgNodeId);
 		if (lstData.size() > 0) {
@@ -519,7 +621,43 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				objectValueList.add(objectValueTO);
 			}
 		}
-		return objectValueList;
+		return objectValueList;*/
+		long t1 = System.currentTimeMillis();
+		List<ObjectValueTO> districtList = null;
+		try {
+			districtList = (List<ObjectValueTO>) getJdbcTemplatePrism().execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
+							cs.setLong("P_IN_DISTRICTID", parentOrgNodeId);							
+							cs.registerOutParameter("P_OUT_CUR_ORG_NODE_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject("P_OUT_CUR_ORG_NODE_DETAILS");
+								ObjectValueTO to = null;
+								while (rs.next()) {
+									to = new ObjectValueTO();
+									to.setValue(rs.getString("ORG_NODEID"));
+									to.setName(rs.getString("ORG_NODE_NAME"));
+									objectValueList.add(to);
+								}
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return objectValueList;
+						}
+					});
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - populateSchool() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return districtList;
 	}
 
 	
