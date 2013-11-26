@@ -109,7 +109,7 @@ $(document).ready(function() {
 	
 	$('.edit-content').live("click", function() {
 		resetModalForm("addNewContent");
-		//resetModalForm("addNewUser");
+		resetModalForm("editContent");
 		openContentModalToEdit($(this).attr("contentId"));
 	});	
 	
@@ -130,12 +130,9 @@ $(document).ready(function() {
 
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
-	resetModalForm("addNewContent");
-	resetModalForm("editContent");
 	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
 	var dataUrl = 'contentId='+contentId;
-	blockUI();
 	$.ajax({
 			type : "GET",
 			url : "getContentForEdit.do",
@@ -143,7 +140,6 @@ function openContentModalToEdit(contentId) {
 			dataType : 'json',
 			cache:false,
 			success : function(data) {
-				unblockUI();
 				var $editContentModal = $('#editContentModal');
 				$editContentModal.find('#contentId').val(data.contentId);
 				$editContentModal.find('#contentName').val(data.contentName);
@@ -154,11 +150,11 @@ function openContentModalToEdit(contentId) {
 				$editContentModal.find('#profLevel option').removeAttr('selected');
 				var option = "";
 				if(data.profLevel == 'Pass+'){
-					option += "<option selected value='Pass+'>Pass+</option><option value='Pass'/>Pass</option><option value='Did Not Pass'/>Did Not Pass</option>";
+					option += "<option selected value='Pass+'>Pass+</option><option value='Pass'>Pass</option><option value='Did Not Pass'>Did Not Pass</option>";
 				}else if(data.profLevel == 'Pass'){
-					option += "<option value='Pass+'>Pass+</option><option selected value='Pass'/>Pass</option><option value='Did Not Pass'/>Did Not Pass</option>";
+					option += "<option value='Pass+'>Pass+</option><option selected value='Pass'>Pass</option><option value='Did Not Pass'>Did Not Pass</option>";
 				}else if(data.profLevel == 'Did Not Pass'){
-					option += "<option value='Pass+'>Pass+</option><option value='Pass'/>Pass</option><option selected value='Did Not Pass'/>Did Not Pass</option>";
+					option += "<option value='Pass+'>Pass+</option><option value='Pass'>Pass</option><option selected value='Did Not Pass'>Did Not Pass</option>";
 				}
 				$editContentModal.find('#profLevel').html(option);
 				$editContentModal.find('#profLevel').change();
@@ -306,37 +302,13 @@ function setCKEditor(purpose){
 	}
 	
 	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
-		/*CKEDITOR.replace($objTextArea.attr('id'),{
-			fullPage:true
-		});*/
 		CKEDITOR.inline($objTextArea.attr('id') );
 	}else{
-		/*for(name in CKEDITOR.instances)	{
+		for(name in CKEDITOR.instances)	{
 			CKEDITOR.instances[name].destroy(true);
 		}	
-		CKEDITOR.replace($objTextArea.attr('id'),{
-			fullPage:true
-		});*/
+		CKEDITOR.inline($objTextArea.attr('id') );
 	}
-	
-	
-	
-	/*
-	for(name in CKEDITOR.instances){
-	    CKEDITOR.instances[name].destroy()
-	}*/
-	//TODO
-	/* Close the function to resolve CK Editor issue */
-	/*$('.manage-content-textarea').each(function(){
-		//CKEDITOR.instances[$(this).attr('id')].destroy(true);
-		if(CKEDITOR.instances[$(this).attr('id') ] == undefined) {
-			CKEDITOR.inline( $(this).attr('id') );
-			//CKEDITOR.replace($(this).attr('id'),{
-				//fullPage:true
-			//});
-		}
-		
-	});*/
 }
 
 //============Insert Content ===============
