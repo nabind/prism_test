@@ -172,7 +172,7 @@ public interface IReportQuery {
            
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
-	" select * from Group_Download_Status where jobid not in(select jobid from Group_Download_Status where Deletion_status=1)");
+	"select * from job_tracking where userid=?");
 	
 	// query to update report table
 	public static final String UPDATE_REPORT = CustomStringUtil.appendString(

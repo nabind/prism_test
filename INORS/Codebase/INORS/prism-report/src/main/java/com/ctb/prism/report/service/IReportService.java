@@ -16,6 +16,7 @@ import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
 public interface IReportService {
@@ -45,7 +46,7 @@ public interface IReportService {
 	public ReportTO getReport(String reportIdentifier) throws SystemException;
 	public Map<String,Object> loadManageMessage(final Map<String,Object> paramMap) throws SystemException;
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException;
-	public List<GroupDownload> getAllGroupDownloadFiles()throws SystemException;
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException;
 	public boolean deleteGroupFiles(String Id) throws Exception;
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException;
 }

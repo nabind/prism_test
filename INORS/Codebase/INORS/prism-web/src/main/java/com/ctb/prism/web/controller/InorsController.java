@@ -47,8 +47,10 @@ import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
+import com.ctb.prism.login.transferobject.UserTO
 /**
  * @author TCS
  * 
@@ -73,12 +75,15 @@ public class InorsController {
 	
 	@Autowired private JmsMessageProducer messageProducer;
 	
-	//365348 for Group Download Listing
+	//Arunava Datta for Group Download Listing
 	@RequestMapping(value = "/groupDownloadFiles", method = RequestMethod.GET)
 	public ModelAndView groupDownloadFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
 		ModelAndView modelAndView = new ModelAndView("inors/groupDownloadFiles");
-		List<GroupDownload> groupList = reportService.getAllGroupDownloadFiles();
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		List<JobTrackingTO> groupList = reportService.getAllGroupDownloadFiles(paramMap);
 		if(groupList != null && !groupList.isEmpty()) {
 			modelAndView.addObject("groupList", groupList);
 		}

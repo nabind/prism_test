@@ -23,6 +23,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 
 @Service("reportService")
 public class ReportServiceImpl implements IReportService {
@@ -111,8 +112,8 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.saveManageMessage(manageMessageTOList);
 	}
 	
-	public List<GroupDownload> getAllGroupDownloadFiles()throws SystemException{
-		return reportBusiness.getAllGroupDownloadFiles();
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException{
+		return reportBusiness.getAllGroupDownloadFiles(paramMap);
 	}
 	
 	@Transactional (propagation = Propagation.REQUIRES_NEW)

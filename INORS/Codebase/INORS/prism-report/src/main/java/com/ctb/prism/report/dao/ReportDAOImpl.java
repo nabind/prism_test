@@ -9,11 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -48,6 +50,8 @@ import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
+import java.sql.Timestamp;
 
 /**
  * This class is responsible for reading and writing to database.
@@ -859,63 +863,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	return reportTo;	
 	}
 	
-	public List<GroupDownload> getAllGroupDownloadFiles()
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)
 	{
 		logger.info( "Enter: ReportDAOImpl - getAllGroupDownloadFiles");
-		
-		List<GroupDownload> allGroupFiles = null;
-		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_LIST);
+		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		List<JobTrackingTO> allGroupFiles = null;
+		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_LIST,loggedinUserTO.getUserId());
 		if ( dataList != null && dataList.size() > 0 )
 		{
-			allGroupFiles = new ArrayList<GroupDownload>();
+			allGroupFiles = new ArrayList<JobTrackingTO>();
 			for (Map<String, Object> data : dataList)
 			{
-				GroupDownload to = new GroupDownload();
-				if((Timestamp)data.get("COMPLETION_DATE")!=null)
-				{
-				java.sql.Timestamp ts =(Timestamp)data.get("COMPLETION_DATE");
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(ts);
-				cal.add(Calendar.DAY_OF_WEEK,5);
-				ts.setTime(cal.getTime().getTime());
-				ts = new Timestamp(cal.getTime().getTime());
-				
-				to.setExpirationDate(ts);
-				}
-				else
-				{
-					to.setExpirationDate((Timestamp)data.get("COMPLETION_DATE"));
-				}
-					if(((String) data.get("DOWNLOAD_TYPE")).equals("IC"))
-					{
-				to.setFileType("Invitation Letter");
-					}
-					else if(((String) data.get("DOWNLOAD_TYPE")).equals("GD"))
-					{
-				to.setFileType("Group Download");
-					}
-					else
-					{
-				to.setFileType("Generic Download");
-					}
-				to.setGeneratedFile(((String) data.get("PDF_FILE_NAME"))+".zip");
-				to.setSize((String) data.get("FILE_SIZE"));
-				to.setJobId(((BigDecimal) data.get("JOBID")).longValue());
-					if(((String) data.get("STATUS")).equals("CP"))
-					{
-				to.setDownload("CP");
-					}
-					else if(((String) data.get("STATUS")).equals("progress"))
-					{
-				to.setDownload("Progress");
-					}
-					else
-					{
-				to.setDownload("Unknown");
-					}
-				
-				allGroupFiles.add(to);
-				
+   				    JobTrackingTO to = new JobTrackingTO();
+   				    String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"),"MM/dd/yyyy HH:mm:ss");
+   				    String updatedDate =getFormattedDate((Timestamp) data.get("updated_date_time"),"MM/dd/yyyy HH:mm:ss");
+				    to.setJobId( ((BigDecimal) data.get("job_id")).longValue());
+				    to.setRequestFilename((String) data.get("request_filename"));
+				    to.setCreatedDateTime(createdDate);
+				    to.setUpdatedDateTime(updatedDate);
+				    to.setRequestType((String) data.get("request_type"));
+				    to.setJobStatus((String) data.get("job_status"));
+    				allGroupFiles.add(to);
 			}
 		}
 		logger.info( "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
@@ -932,5 +900,18 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Returns the date in a defined format
+	 * @author Arunava Datta
+	 * @param pTimestamp
+	 * @param pFormat  examples: dd-MM-yyyy
+	 * @return
+	 * @see http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html
+	 */
+	public static String getFormattedDate(Timestamp pTimestamp, String pFormat) {
+		DateFormat dF = new java.text.SimpleDateFormat(pFormat);
+		return dF.format(pTimestamp.getTime());
 	}
 }

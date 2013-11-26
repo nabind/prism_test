@@ -13,7 +13,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -356,8 +356,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return saveFlag;
 	}
 	
-	public List<GroupDownload> getAllGroupDownloadFiles()throws SystemException{
-		return reportDAO.getAllGroupDownloadFiles();
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException{
+		return reportDAO.getAllGroupDownloadFiles(paramMap);
 	}
 	
 	public boolean deleteGroupFiles(String Id)

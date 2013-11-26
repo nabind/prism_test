@@ -20,33 +20,37 @@
 
 									<thead>
 										<tr>
-											<th scope="col" width="25%">Expiration Date</th>
-											<th scope="col" width="15%">File Type</th>
-											<th scope="col" width="25%">Generated File</th>
-											<th scope="col" width="20%">Size</th>
-											<th scope="col" width="15%">Status</th>
-											<th scope="col" width="15%">Actions</th>
+											<th scope="col" width="20%">Request File Name</th>
+											<th scope="col" width="20%">Created Date</th>
+											<th scope="col" width="20%">Completed Date</th>
+											<th scope="col" width="20%">Request Type</th>
+											<th scope="col" width="20%">Job Status</th>
 										</tr>
 									</thead>
 
 									<tbody id ="deleteGroupFiles">
 										<c:forEach var="group" items="${groupList}">
 											<tr id="${group.jobId}">
-												<td scope="row">${group.expirationDate}<br>
+											    <td scope="row">${group.requestFilename}<br>
 											    </td>
-											    <td scope="row">${group.fileType}<br>
+												<td scope="row">${group.createdDateTime}<br>
 											    </td>
-											    <td scope="row"><br>
-											    <a href="#">${group.generatedFile}</a> 
+												<td scope="row">${group.updatedDateTime}<br>
 											    </td>
-											    <td scope="row">${group.size}<br>
-											    </td>
-											    <td scope="row">${group.download}<br>
-											    </td>
-											    <td scope="row"><br>
-												<a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles"
-															title="Delete"></a>
-											    </td>
+											    <td scope="row">${group.requestType}<br>
+											    <td>
+											    <c:choose>
+                                                <c:when test="${group.jobStatus=='IP'}">
+                                                <span class="loader working"></span>
+    											</c:when>
+    											<c:when test="${group.jobStatus=='CO'}">
+                                                <input type="button" name="downloadbutton" id="downloadbutton" value="Download">
+    											</c:when>
+												<c:otherwise>
+												${group.jobStatus}
+      											</c:otherwise>
+	                                            </c:choose>
+	                                            </td>
 											</tr>
 										</c:forEach>
 									</tbody>

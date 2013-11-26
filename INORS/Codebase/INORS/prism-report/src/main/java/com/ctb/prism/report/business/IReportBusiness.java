@@ -6,7 +6,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownload;
@@ -43,7 +43,7 @@ public interface IReportBusiness {
 	public ReportTO getReport(String reportIdentifier) throws SystemException;
 	public Map<String, Object> loadManageMessage(final Map<String,Object> paramMap) throws SystemException;
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTO) throws SystemException;
-	public List<GroupDownload> getAllGroupDownloadFiles()throws SystemException;
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException;
 	public boolean deleteGroupFiles(String Id)	throws Exception;
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException;
 }
