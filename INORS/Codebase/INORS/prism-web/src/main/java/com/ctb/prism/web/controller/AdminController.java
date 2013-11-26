@@ -2003,8 +2003,8 @@ public class AdminController {
 	
 	@RequestMapping(value = "/downloadUsers", method = RequestMethod.GET)
 	public void downloadUsers(HttpServletRequest request, HttpServletResponse response) {
-		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
-		Map<String, String> paramMap = new HashMap<String, String>();
+		logger.log(IAppLogger.INFO, "Enter: AdminController.downloadUsers");
+		/*Map<String, String> paramMap = new HashMap<String, String>();
 		
 		String type = (String) request.getParameter("type");
 		String testAdministration = (String) request.getParameter("testAdministration");
@@ -2060,7 +2060,7 @@ public class AdminController {
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
 			e.printStackTrace();
-		}
-		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
+		}*/
+		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 }
