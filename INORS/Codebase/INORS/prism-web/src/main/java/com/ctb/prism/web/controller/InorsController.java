@@ -50,7 +50,7 @@ import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
-import com.ctb.prism.login.transferobject.UserTO
+import com.ctb.prism.login.transferobject.UserTO;
 /**
  * @author TCS
  * 
