@@ -1113,8 +1113,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				        	System.out.println("CustomerId>>>" +loggedinUserTO.getCustomerId());
-				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
 				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
 				            //cs.setLong(1,((BigDecimal) BigDecimal.valueOf(Long.valueOf((loggedinUserTO.getCustomerId())))).longValue());
 				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
