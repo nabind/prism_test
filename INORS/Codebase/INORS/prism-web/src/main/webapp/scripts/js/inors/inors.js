@@ -457,28 +457,4 @@ function populateSchool(){
 	}
 }
 
-//============To populate any drop down ===============
-function populateDropdownByJson(elementObject, jsonDataValueName, plsSelectFlag, clearFlag) {
-	elementObject.empty();
-	var option = "";
-	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select</option>";
-	}
-	
-	if((typeof clearFlag === 'undefined')){
-		if(jsonDataValueName != null){
-			if(jsonDataValueName != ""){
-				$.each(jsonDataValueName, function(index, data) {
-					option += '<option value=' + data.value + '>' + data.name + '</option>';
-			    });
-			}else{
-				$.modal.alert(strings['script.common.empty']);
-			}
-		}
-	}
-	
-	elementObject.html(option);
-	elementObject.change();
-	elementObject.trigger('update-select-list');
-}
 		
