@@ -499,7 +499,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
-							cs.setLong("P_IN_SCHOOLID", Long.parseLong(orgNodeId));
+							cs.setLong("P_IN_ORG_NODEID", Long.parseLong(orgNodeId));
 							cs.registerOutParameter("P_OUT_CUR_INVITATION_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
 							return cs;
 						}
@@ -628,7 +628,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			districtList = (List<ObjectValueTO>) getJdbcTemplatePrism().execute(
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
+							CallableStatement cs = con.prepareCall(IQueryConstants.GET_SCHOOLS);
 							cs.setLong("P_IN_DISTRICTID", parentOrgNodeId);							
 							cs.registerOutParameter("P_OUT_CUR_ORG_NODE_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
 							return cs;

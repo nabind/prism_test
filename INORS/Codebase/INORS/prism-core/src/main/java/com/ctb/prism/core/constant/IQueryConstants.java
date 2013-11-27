@@ -780,5 +780,42 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			"SELECT DECODE(COUNT(*), 0, 'O', 'E') AS USER_TYPE FROM EDU_CENTER_USER_LINK WHERE USERID IN (SELECT USERID FROM USERS WHERE UPPER(USERNAME) = UPPER(?))"
 			);
     
+	public static final String GET_USER_DATA = CustomStringUtil.appendString(
+			"SELECT U.USERNAME,",
+			"   U.LAST_NAME",
+			"   || ' '",
+			"   || U.FIRST_NAME                                                    AS FULLNAME,",
+			"   DECODE(U.ACTIVATION_STATUS, 'AC', 'ENABLED', 'IN', 'DISABLED', '') AS STATUS,",
+			"   OND.ORG_NODE_NAME,",
+			"   OND.ORG_LABEL,",
+			"   A.DESCRIPTIONS",
+			" FROM",
+			"   (SELECT DISTINCT OM.USERID,",
+			"     OM.ORG_NODEID,",
+			"     OM.ORG_NODE_NAME,",
+			"     OM.ORG_NODE_LEVEL,",
+			"     OTS.ORG_LABEL",
+			"   FROM ORGUSER_MAPPING OM,",
+			"     ORG_TP_STRUCTURE OTS",
+			"   WHERE OM.ORG_NODE_LEVEL = OTS.ORG_LEVEL",
+			"   ) OND,",
+			"   USERS U,",
+			"   (SELECT U1.USERID,",
+			"     LISTAGG(RO.DESCRIPTION, ', ') WITHIN GROUP(",
+			"   ORDER BY RO.DESCRIPTION) AS DESCRIPTIONS",
+			"   FROM USER_ROLE UR,",
+			"     ROLE RO,",
+			"     USERS U1",
+			"   WHERE UR.USERID = U1.USERID",
+			"   AND RO.ROLEID   = UR.ROLEID",
+			"   GROUP BY U1.USERID",
+			"   ) A",
+			" WHERE OND.ORG_NODEID     = ?",
+			" AND U.USERID             = OND.USERID",
+			" AND A.USERID             = U.USERID",
+			" AND U.ACTIVATION_STATUS != 'SS'",
+			" AND OND.ORG_NODE_LEVEL  IN (1, 3)",
+			" ORDER BY U.USERID"
+			);
 }
 

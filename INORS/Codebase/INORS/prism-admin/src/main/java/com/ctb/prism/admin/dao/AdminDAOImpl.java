@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +24,7 @@ import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.StgOrgTO;
 import com.ctb.prism.admin.transferobject.StudentDataTO;
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.admin.util.StudentDataConstants;
 import com.ctb.prism.admin.util.StudentDataUtil;
@@ -37,12 +37,12 @@ import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
 
@@ -2015,4 +2015,52 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return eduCenterTOList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserData(java.util.Map)
+	 */
+	public List<UserDataTO> getUserData(Map<String, String> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
+		String orgNodeId = (String) paramMap.get("tenantId");
+		String adminYear = (String) paramMap.get("adminYear");
+		String userId = (String) paramMap.get("userId");
+		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId + ", adminYear=" + adminYear + ", userId=" + userId);
+
+		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, Long.parseLong(orgNodeId));
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				UserDataTO to = new UserDataTO();
+				to.setUserId(fieldDetails.get("USERNAME").toString());
+				to.setFullName(fieldDetails.get("FULLNAME").toString());
+				to.setStatus(fieldDetails.get("STATUS").toString());
+				to.setOrgName(fieldDetails.get("ORG_NODE_NAME").toString());
+				to.setUserRoles(getRolesWithLabel(fieldDetails.get("ORG_LABEL").toString(), fieldDetails.get("DESCRIPTIONS").toString()));
+				userDataList.add(to);
+			}
+		} else {
+			logger.log(IAppLogger.INFO, "No user found in database");
+		}
+		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData()");
+		return userDataList;
+	}
+	
+	/**
+	 * Appends the label before each role
+	 * 
+	 * @param label
+	 * @param userRoles
+	 * @return
+	 */
+	private static String getRolesWithLabel(String label, String userRoles) {
+		StringBuilder buff = new StringBuilder();
+		String[] roles = userRoles.split(",");
+		for (String role : roles) {
+			buff.append(label);
+			buff.insert(buff.length(), " ");
+			buff.insert(buff.length(), role);
+			buff.insert(buff.length(), ", ");
+		}
+		buff.delete(buff.length() - 2, buff.length());
+		return buff.toString();
+	}
 }

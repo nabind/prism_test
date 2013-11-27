@@ -12,6 +12,7 @@ import org.beanio.builder.DelimitedParserBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.beanio.stream.RecordIOException;
 
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
@@ -634,5 +635,43 @@ public class InorsDownloadUtil {
 		to.setL_OPIIPICut39(wrap("", '"'));
 		to.setL_OPIIPICut40(wrap("", '"'));
 		return to;
+	}
+	
+	public static byte[] createUserByteArray(List<UserDataTO> userList, char delimiter){
+		if (userList != null) {
+			logger.log(IAppLogger.INFO, "Users : " + userList.size());
+			userList.add(0, getUserDataTOHeader());
+			StreamFactory factory = StreamFactory.newInstance();
+			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.IC).format("delimited")
+					.parser(new DelimitedParserBuilder(delimiter))
+					.addRecord(UserDataTO.class);
+			factory.define(builder);
+			StringWriter stringWriter = new StringWriter();
+			BeanWriter out = factory.createWriter(InorsDownloadConstants.IC, stringWriter);
+			try {
+				for (UserDataTO user : userList) {
+					out.write(user);
+				}
+				out.flush();
+				out.close();
+				logger.log(IAppLogger.INFO, "User Byte Array Created Successfully");
+			} catch (RecordIOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
+			}
+			return stringWriter.getBuffer().toString().getBytes();
+		} else {
+			return "No Records Found".getBytes();
+		}
+	}
+
+	private static UserDataTO getUserDataTOHeader() {
+		UserDataTO userDataTO = new UserDataTO();
+		userDataTO.setUserId("User Id");
+		userDataTO.setFullName("Full Name");
+		userDataTO.setStatus("Status");
+		userDataTO.setOrgName("Org Name");
+		userDataTO.setUserRoles("User Roles");
+		return userDataTO;
 	}
 }

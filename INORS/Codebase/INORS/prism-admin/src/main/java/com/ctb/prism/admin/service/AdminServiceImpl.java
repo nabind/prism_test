@@ -16,6 +16,7 @@ import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.StgOrgTO;
 import com.ctb.prism.admin.transferobject.StudentDataTO;
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
@@ -194,4 +195,10 @@ public class AdminServiceImpl implements IAdminService {
 		return adminBusiness.loadEduCenterUsers(paramMap);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.service.IAdminService#getUserData(java.util.Map)
+	 */
+	public List<UserDataTO> getUserData(Map<String, String> paramMap){
+		return adminBusiness.getUserData(paramMap);
+	}
 }

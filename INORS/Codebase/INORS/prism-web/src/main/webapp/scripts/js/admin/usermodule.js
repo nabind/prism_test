@@ -91,10 +91,10 @@
 		
 		$("#downloadUsers").live("click", function() {
 			var tenantId = $('input#last_user_tenant').val().split("_");
-			var AdminYear = $("#AdminYear").val();
-			alert("tenantId="+tenantId[0]+"\nAdminYear="+AdminYear);
-			//var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
-			//$("#downloadUsers").attr("href", href);
+			var adminYear = $("#AdminYear").val();
+			//alert("tenantId="+tenantId[0]+"\nadminYear="+adminYear);
+			var href = "downloadUsers.do?tenantId=" + tenantId[0] + "&adminYear=" + adminYear;
+			$("#downloadUsers").attr("href", href);
 		});
 	});
 	

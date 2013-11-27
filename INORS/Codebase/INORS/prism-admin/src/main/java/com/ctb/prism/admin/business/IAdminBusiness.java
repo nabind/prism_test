@@ -10,6 +10,7 @@ import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.StgOrgTO;
 import com.ctb.prism.admin.transferobject.StudentDataTO;
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
@@ -79,5 +80,7 @@ public interface IAdminBusiness {
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException;
 	public Map<String,Object> getEducationCenter(final Map<String,Object> paramMap)throws SystemException;
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException;
+
+	public List<UserDataTO> getUserData(Map<String, String> paramMap);
 	
 }

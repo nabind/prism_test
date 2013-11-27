@@ -3,7 +3,6 @@ package com.ctb.prism.web.controller;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +25,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.EduCenterTO;
+import com.ctb.prism.admin.transferobject.ObjectValueTO;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.StudentDataTO;
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.admin.util.StudentDataUtil;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -38,8 +39,9 @@ import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
-import com.ctb.prism.admin.transferobject.ObjectValueTO;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -2004,49 +2006,26 @@ public class AdminController {
 	@RequestMapping(value = "/downloadUsers", method = RequestMethod.GET)
 	public void downloadUsers(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: AdminController.downloadUsers");
-		/*Map<String, String> paramMap = new HashMap<String, String>();
+		Map<String, String> paramMap = new HashMap<String, String>();
 		
-		String type = (String) request.getParameter("type");
-		String testAdministration = (String) request.getParameter("testAdministration");
-		String[] tokens = testAdministration.split("~");
-		String product = tokens[0];
-		String term = tokens[1];
-		String year = tokens[2];
-		String testProgram = (String) request.getParameter("testProgram");
-		String corpDiocese = (String) request.getParameter("corpDiocese");
-		String school = (String) request.getParameter("school");
-
+		String tenantId = (String) request.getParameter("tenantId");
+		String adminYear = (String) request.getParameter("adminYear");
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 
-		paramMap.put("type", type);
-		paramMap.put("product", product);
-		paramMap.put("term", term);
-		paramMap.put("year", year);
-		paramMap.put("testProgram", testProgram);
-		paramMap.put("parentOrgNodeId", corpDiocese);
-		paramMap.put("orgNodeId", school);
+		paramMap.put("tenantId", tenantId);
+		paramMap.put("adminYear", adminYear);
 		paramMap.put("userId", userId);
 
-		logger.log(IAppLogger.INFO, "type=" + type + ", product=" + product
-				+ ", term=" + term + ", year=" + year + ", testProgram="
-				+ testProgram + ", parentOrgNodeId=" + corpDiocese
-				+ ", orgNodeId=" + school + ", userId=" + userId);
+		logger.log(IAppLogger.INFO, "tenantId=" + tenantId + ", adminYear=" + adminYear
+				+ ", userId=" + userId);
 
 		byte[] data = null;
-		String fileName = "";
-		String zipFileName = "";
-		if ("IC".equals(type)) {
-			List<RoleTO> icList = (List<RoleTO>) adminService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.createICByteArray(icList, ',');
-			fileName = InorsDownloadConstants.IC_FILE_PATH;
-			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
-		} else if ("GRT".equals(type)) {
-			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.createGRTByteArray(grtList, ',');
-			fileName = InorsDownloadConstants.GRT_FILE_PATH;
-			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
-		}
+		String fileName = "Users.xlsx"; // TODO - remove hard code
+		String zipFileName = "Users.zip"; // TODO - remove hard code
+		List<UserDataTO> userList = (List<UserDataTO>) adminService.getUserData(paramMap);
+		data = InorsDownloadUtil.createUserByteArray(userList, '\t');
 		try {
+			data = FileUtil.xlsxBytes(data, "\t");
 			data = FileUtil.zipBytes(fileName, data);
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "zipBytes - ", e);
@@ -2060,7 +2039,7 @@ public class AdminController {
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
 			e.printStackTrace();
-		}*/
+		}
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 }

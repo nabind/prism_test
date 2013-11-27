@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.prism.admin.transferobject.EduCenterTO;
+import com.ctb.prism.admin.transferobject.ObjectValueTO;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.StgOrgTO;
 import com.ctb.prism.admin.transferobject.StudentDataTO;
+import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
-import com.ctb.prism.admin.transferobject.ObjectValueTO;
 
 public interface IAdminService {
 
@@ -79,4 +80,12 @@ public interface IAdminService {
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException;
 	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException;
+	
+	/**
+	 * This method returns the user data
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<UserDataTO> getUserData(Map<String, String> paramMap);
 }

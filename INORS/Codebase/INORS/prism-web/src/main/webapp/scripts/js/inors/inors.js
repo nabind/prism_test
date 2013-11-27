@@ -446,7 +446,11 @@ function populateSchool(){
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
-				populateDropdownByJson($('#school'),data,1);
+				if(data.length > 0) {
+					populateSchoolDropdownByJson($('#school'),data,1);
+				} else {
+					$.modal.alert("No School Found for this Corp/Diocese");
+				}
 				unblockUI();
 			},
 			error : function(data) {
@@ -457,4 +461,27 @@ function populateSchool(){
 	}
 }
 
-		
+function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
+	elementObject.empty();
+	var option = "";
+	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
+		option += "<option value='-1'>Please Select</option>";
+	}
+	
+	if((typeof clearFlag === 'undefined')) {
+		if(jsonDataValueName != null) {
+			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
+				$.each(jsonDataValueName, function(index, data) {
+					option += '<option value='+data.value+'>'+data.name+'</option>';
+			    });
+			}else{
+				alert("here");
+				$.modal.alert(strings['script.common.empty']);
+			}
+		}
+	}
+	
+	elementObject.html(option);
+	elementObject.change();
+	elementObject.trigger('update-select-list');
+}
