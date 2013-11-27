@@ -14,6 +14,7 @@ public class RoleTO extends BaseTO {
 	private long roleId;
 	private String roleName;
 	private String roleDescription;
+	private String label;
 	private String defaultSelection;
 	private boolean enabled;
 	private List<UserTO> userList = new ArrayList<UserTO>();
@@ -64,6 +65,14 @@ public class RoleTO extends BaseTO {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 }

@@ -599,25 +599,25 @@
 		var roleTag='<td class="roleContainerForUsers vertical-center">';
 			$.each(availableRoles, function (){
 				if(this.roleName== 'ROLE_ACSI'){
-					roleTag +='<small class="tag blue-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag blue-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_CTB'){
-					roleTag +='<small class="tag green-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag green-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_SCHOOL'){
-					roleTag +='<small class="tag anthracite-bg  role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag anthracite-bg  role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_CLASS'){
-					roleTag +='<small class="tag grey-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag grey-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_PARENT'){
-					roleTag +='<small class="tag red-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag red-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_ADMIN'){
-					roleTag +='<small class="tag orange-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag orange-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 				if(this.roleName== 'ROLE_USER'){
-					roleTag +='<small class="tag black-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
+					roleTag +='<small class="tag black-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 			});
 			roleTag +="</td>";

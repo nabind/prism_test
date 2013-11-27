@@ -299,13 +299,13 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" VALUES",
 			" (?, ?, ?, ?, ?, SYSDATE)");
 	
-	public static final String GET_USER_ROLE=CustomStringUtil.appendString( "SELECT RLE.ROLEID,RLE.ROLE_NAME,RLE.DESCRIPTION",
-		     " FROM USER_ROLE URLE,",
-		          " ROLE RLE,",
-		          " USERS USR",
-		     " WHERE USR.USERID=?",
-		       " AND URLE.USERID=USR.USERID", 
-		       " AND RLE.ROLEID=URLE.ROLEID");
+	public static final String GET_USER_ROLE = CustomStringUtil.appendString(
+			"SELECT RLE.ROLEID,RLE.ROLE_NAME,OTS.ORG_LABEL,RLE.DESCRIPTION",
+			" FROM USER_ROLE URLE, ROLE RLE, USERS USR, ORG_USERS OU, ORG_TP_STRUCTURE OTS",
+			" WHERE USR.USERID=?",
+			" AND URLE.USERID =USR.USERID AND RLE.ROLEID  =URLE.ROLEID",
+			" AND USR.USERID=OU.USERID AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL"
+			);
 
 	public static final String GET_PRODUCT_NAME=CustomStringUtil.appendString(
 			"SELECT B.PRODUCT_NAME FROM CUST_PRODUCT_LINK A,PRODUCT B ",
