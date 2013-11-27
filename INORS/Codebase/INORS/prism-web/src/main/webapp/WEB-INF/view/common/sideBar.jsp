@@ -109,6 +109,9 @@
 							<li>
 								<a href="manageRole.do">Manage Roles</a>
 							</li>
+							<li>
+								<a href="manageContent.do">Manage Content</a>
+							</li>
 						</sec:authorize>
 						</sec:authorize>
 			<sec:authorize ifAnyGranted="ROLE_EDU_ADMIN">

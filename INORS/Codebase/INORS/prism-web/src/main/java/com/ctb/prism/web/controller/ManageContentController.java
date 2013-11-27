@@ -44,7 +44,7 @@ public class ManageContentController {
 	@Autowired
 	private IPropertyLookup propertyLookup;
 	
-	@RequestMapping(value = "/getManageContentFilter", method = RequestMethod.GET)
+	@RequestMapping(value = "/manageContent", method = RequestMethod.GET)
 	public ModelAndView getManageContentFilter(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException,BusinessException{
 		

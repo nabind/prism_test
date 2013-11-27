@@ -2338,7 +2338,7 @@ li.message-menu {
 		#shortcuts > li > a,
 		#shortcuts > li > span {
 			display: block;
-			background-image: url(../img/standard/shortcuts.png);
+			background-image: url(../img/standard/shortcuts_new.png);
 			background-repeat: no-repeat;
 			width: 70px;
 			height: 5px;
@@ -2361,6 +2361,7 @@ li.message-menu {
 			.shortcut-stats		{ background-position: -66px -355px; }
 			.shortcut-settings	{ background-position: -66px -425px; }
 			.shortcut-notes		{ background-position: -66px -495px; }
+			.shortcut-content	{ background-position: -66px -565px; }
 
 			span.shortcut-dashboard	{ background-position: 1px -5px; }
 			span.shortcut-messages	{ background-position: 1px -75px; }
@@ -2370,6 +2371,7 @@ li.message-menu {
 			span.shortcut-stats		{ background-position: 1px -355px; }
 			span.shortcut-settings	{ background-position: 1px -425px; }
 			span.shortcut-notes		{ background-position: 1px -495px; }
+			span.shortcut-content	{ background-position: 1px -565px; }
 
 /* Sidebar/drop-down menu */
 #menu {

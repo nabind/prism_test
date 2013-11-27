@@ -43,6 +43,12 @@
 			<li class="current"><a href="dashboards.do" class="shortcut-dashboard" title="Home">Home</a></li>
 			<li><a href="myAccount.do" class="shortcut-stats" title="My Account">My Account</a></li>
 		</sec:authorize>
+		
+		<sec:authorize ifAnyGranted="ROLE_CTB">
+			<c:if test="${product ne tascProduct}">
+				<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
+			</c:if>
+		</sec:authorize>
 		<!-- 
 		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
 		<li><a href="form.html" class="shortcut-agenda" title="Settings">Settings</a></li>

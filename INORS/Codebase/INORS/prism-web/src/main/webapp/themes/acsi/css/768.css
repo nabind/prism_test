@@ -239,6 +239,7 @@ h2 {
 			.shortcut-stats,		span.shortcut-stats		{ background-position: 0 -350px; }
 			.shortcut-settings,		span.shortcut-settings	{ background-position: 0 -420px; }
 			.shortcut-notes,		span.shortcut-notes		{ background-position: 0 -490px; }
+			.shortcut-content,		span.shortcut-content	{ background-position: 0 -560px; }
 			#shortcuts > li > a:before,
 			#shortcuts > li:after {
 				display: block;
@@ -249,7 +250,7 @@ h2 {
 				}
 				#shortcuts > li > a:before {
 					background-color: white;
-					background-image: url(../img/standard/shortcuts.png);
+					background-image: url(../img/standard/shortcuts_new.png);
 					right: 0;
 					width: 64px;
 					-webkit-border-radius: 7px 0 0 7px;
@@ -349,6 +350,7 @@ h2 {
 				a.shortcut-stats:before		{ background-position: -70px -355px; }
 				a.shortcut-settings:before	{ background-position: -70px -425px; }
 				a.shortcut-notes:before		{ background-position: -70px -495px; }
+				a.shortcut-content:before	{ background-position: -70px -565px; }
 
 #menu {
 	position: fixed;
