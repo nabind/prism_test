@@ -2,7 +2,7 @@ package com.ctb.prism.report.transferobject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import oracle.sql.CLOB;
+import java.sql.Clob;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.ctb.prism.core.logger.IAppLogger;
@@ -19,7 +19,7 @@ public class ManageMessageTOMapper implements RowMapper<ManageMessageTO> {
 		String message = "";
 		ManageMessageTO manageMessageTO = new ManageMessageTO();
 		try{
-			message = Utils.convertClobToString((CLOB) rs.getClob("MESSAGE")).trim();
+			message = Utils.convertClobToString((Clob) rs.getClob("MESSAGE")).trim();
 			manageMessageTO.setMessage(("".equals(message)) ? IApplicationConstants.EMPTY_MESSAGE : message);
 			manageMessageTO.setMessageTypeDesc(rs.getString("MESSAGE_DESC").trim());
 			manageMessageTO.setMessageTypeName(rs.getString("MESSAGE_NAME").trim());

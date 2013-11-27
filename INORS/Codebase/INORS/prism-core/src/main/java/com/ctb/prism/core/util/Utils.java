@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.sql.SQLException;
 
-import oracle.sql.CLOB;
+import java.sql.Clob;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
@@ -230,7 +230,7 @@ public final class Utils
 	 * @param Oracle CLOB
 	 * @return String
 	 */
-	public static String convertClobToString(final CLOB oracleClob) throws SQLException, IOException{
+	public static String convertClobToString(final Clob oracleClob) throws SQLException, IOException{
 		StringBuffer stringBuffer = new StringBuffer("");
 		BufferedReader bufferedReader = null;
 		String tempString;
