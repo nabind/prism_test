@@ -210,9 +210,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
-							cs.setLong("P_IN_DISTRICTID", Long.parseLong(parentOrgNodeId));
-							cs.setLong("P_IN_SCHOOLID", Long.parseLong(orgNodeId));
-							cs.registerOutParameter("P_OUT_CUR_MIG_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							cs.setLong(1, Long.parseLong(parentOrgNodeId));
+							cs.setLong(2, Long.parseLong(orgNodeId));
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -221,7 +221,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject("P_OUT_CUR_MIG_DETAILS");
+								rs = (ResultSet) cs.getObject(3);
 								GrtTO to = null;
 								while (rs.next()) {
 									to = new GrtTO();
@@ -499,8 +499,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
-							cs.setLong("P_IN_ORG_NODEID", Long.parseLong(orgNodeId));
-							cs.registerOutParameter("P_OUT_CUR_INVITATION_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							cs.setLong(1, Long.parseLong(orgNodeId));
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -509,7 +509,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject("P_OUT_CUR_INVITATION_DETAILS");
+								rs = (ResultSet) cs.getObject(2);
 								InvitationCodeTO to = null;
 								while (rs.next()) {
 									to = new InvitationCodeTO();
@@ -574,7 +574,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
-							cs.registerOutParameter("P_OUT_CUR_ORG_NODE_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -583,7 +583,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject("P_OUT_CUR_ORG_NODE_DETAILS");
+								rs = (ResultSet) cs.getObject(1);
 								ObjectValueTO to = null;
 								while (rs.next()) {
 									to = new ObjectValueTO();
@@ -629,8 +629,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_SCHOOLS);
-							cs.setLong("P_IN_DISTRICTID", parentOrgNodeId);							
-							cs.registerOutParameter("P_OUT_CUR_ORG_NODE_DETAILS", oracle.jdbc.OracleTypes.CURSOR);
+							cs.setLong(1, parentOrgNodeId);							
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -639,7 +639,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject("P_OUT_CUR_ORG_NODE_DETAILS");
+								rs = (ResultSet) cs.getObject(2);
 								ObjectValueTO to = null;
 								while (rs.next()) {
 									to = new ObjectValueTO();
