@@ -17,7 +17,11 @@ $(document).ready(function() {
 				sortList: [[0,1]]
 			});
 		}
+		$('.clearfix').addClass('menu-hidden');
+		$("ul#shortcuts li").removeClass("current");
+		$(".shortcut-content").parent().addClass("current");
 	}
+	
 	
 	$('#custProdIdManageContent').live('change',function(){
 		hideContentElements();
