@@ -3,460 +3,235 @@
  */
 package com.ctb.prism.inors.transferobject;
 
-import org.beanio.annotation.Field;
-import org.beanio.annotation.Record;
-
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
- * @author 165505
+ * @author Amitabha Roy
  * 
  */
-@Record(minOccurs = 0)
 public class GrtTO extends BaseTO {
 	private static final long serialVersionUID = 552878178979935978L;
 
-	@Field(at = 0)
 	private String l_TapeMode;
-	@Field(at = 1)
 	private String l_Orgtstgpgm;
-	@Field(at = 2)
 	private String l_CorporationorDioceseName;
-	@Field(at = 3)
 	private String l_CorporationorDioceseNumber;
-	@Field(at = 4)
 	private String l_SchoolName;
-	@Field(at = 5)
 	private String l_SchoolNumber;
-	@Field(at = 6)
 	private String l_TeacherName;
-	@Field(at = 7)
 	private String l_TeacherElementNumberCTBUse;
-	@Field(at = 8)
 	private String l_Grade;
-	@Field(at = 9)
 	private String l_City;
-	@Field(at = 10)
 	private String l_State;
-	@Field(at = 11)
 	private String l_ISTEPTestName;
-	@Field(at = 12)
 	private String l_ISTEPBook;
-	@Field(at = 13)
 	private String l_ISTEPForm;
-	@Field(at = 14)
 	private String l_TestDateMMDDYY;
-	@Field(at = 15)
 	private String l_StudentLastName;
-	@Field(at = 16)
 	private String l_StudentFirstName;
-	@Field(at = 17)
 	private String l_StudentMiddleInitial;
-	@Field(at = 18)
 	private String l_StudentsGender;
-	@Field(at = 19)
 	private String l_BirthDateMMDDYY;
-	@Field(at = 20)
 	private String l_ChronologicalAgeInMonths;
-	@Field(at = 21)
 	private String l_Ethnicity;
-	@Field(at = 22)
 	private String l_RaceAmericanIndianAlaskaNative;
-	@Field(at = 23)
 	private String l_RaceAsian;
-	@Field(at = 24)
 	private String l_RaceBlackorAfricanAmerican;
-	@Field(at = 25)
 	private String l_RaceNativeHawaiianorOtherPacificIslander;
-	@Field(at = 26)
 	private String l_RaceWhite;
-	@Field(at = 27)
 	private String l_Filler1;
-	@Field(at = 28)
 	private String l_StudentTestNumberAI;
-	@Field(at = 29)
 	private String l_SpecialCodeJ;
-	@Field(at = 30)
 	private String l_ResolvedEthnicityK;
-	@Field(at = 31)
 	private String l_SpecialEducationL;
-	@Field(at = 32)
 	private String l_ExceptionalityM;
-	@Field(at = 33)
 	private String l_SocioEconomicStatusN;
-	@Field(at = 34)
 	private String l_Section504O;
-	@Field(at = 35)
 	private String l_EnglishLearnerELP;
-	@Field(at = 36)
 	private String l_MigrantQ;
-	@Field(at = 37)
 	private String l_LocaluseR;
-	@Field(at = 38)
 	private String l_LocaluseS;
-	@Field(at = 39)
 	private String l_LocaluseT;
-	@Field(at = 40)
 	private String l_MatchUnmatchU;
-	@Field(at = 41)
 	private String l_DuplicateV;
-	@Field(at = 42)
 	private String l_CTBUseOnlyW;
-	@Field(at = 43)
 	private String l_SpecialCodeX;
-	@Field(at = 44)
 	private String l_SpecialCodeY;
-	@Field(at = 45)
 	private String l_SpecialCodeZ;
-	@Field(at = 46)
 	private String l_AccommodationsEla;
-	@Field(at = 47)
 	private String l_AccommodationsMath;
-	@Field(at = 48)
 	private String l_AccommodationsScience;
-	@Field(at = 49)
 	private String l_AccommodationsSocialStudies;
-	@Field(at = 50)
 	private String l_CorporationUseID;
-	@Field(at = 51)
 	private String l_CustomerUse;
-	@Field(at = 52)
 	private String l_Filler2;
-	@Field(at = 53)
 	private String l_Filler3;
-	@Field(at = 54)
 	private String l_ElaPFIndicator;
-	@Field(at = 55)
 	private String l_MathPFIndicator;
-	@Field(at = 56)
 	private String l_SciencePFIndicator;
-	@Field(at = 57)
 	private String l_SocialStudiesPFIndicator;
-	@Field(at = 58)
 	private String l_ElaNumberCorrect;
-	@Field(at = 59)
 	private String l_MathNumberCorrect;
-	@Field(at = 60)
 	private String l_ScienceNumberCorrect;
-	@Field(at = 61)
 	private String l_SocialStudiesNumberCorrect;
-	@Field(at = 62)
 	private String l_ElaScaleScore;
-	@Field(at = 63)
 	private String l_MathScaleScore;
-	@Field(at = 64)
 	private String l_ScienceScaleScore;
-	@Field(at = 65)
 	private String l_SocialStudiesScaleScore;
-	@Field(at = 66)
 	private String l_ElaScaleScoreSEM;
-	@Field(at = 67)
 	private String l_MathScaleScoreSEM;
-	@Field(at = 68)
 	private String l_ScienceScaleScoreSEM;
-	@Field(at = 69)
 	private String l_SocialStudiesScaleScoreSEM;
-	@Field(at = 70)
 	private String l_MasteryIndicator1;
-	@Field(at = 71)
 	private String l_MasteryIndicator2;
-	@Field(at = 72)
 	private String l_MasteryIndicator3;
-	@Field(at = 73)
 	private String l_MasteryIndicator4;
-	@Field(at = 74)
 	private String l_MasteryIndicator5;
-	@Field(at = 75)
 	private String l_MasteryIndicator6;
-	@Field(at = 76)
 	private String l_MasteryIndicator7;
-	@Field(at = 77)
 	private String l_MasteryIndicator8;
-	@Field(at = 78)
 	private String l_MasteryIndicator9;
-	@Field(at = 79)
 	private String l_MasteryIndicator10;
-	@Field(at = 80)
 	private String l_MasteryIndicator11;
-	@Field(at = 81)
 	private String l_MasteryIndicator12;
-	@Field(at = 82)
 	private String l_MasteryIndicator13;
-	@Field(at = 83)
 	private String l_MasteryIndicator14;
-	@Field(at = 84)
 	private String l_MasteryIndicator15;
-	@Field(at = 85)
 	private String l_MasteryIndicator16;
-	@Field(at = 86)
 	private String l_MasteryIndicator17;
-	@Field(at = 87)
 	private String l_MasteryIndicator18;
-	@Field(at = 88)
 	private String l_MasteryIndicator19;
-	@Field(at = 89)
 	private String l_MasteryIndicator20;
-	@Field(at = 90)
 	private String l_MasteryIndicator21;
-	@Field(at = 91)
 	private String l_MasteryIndicator22;
-	@Field(at = 92)
 	private String l_MasteryIndicator23;
-	@Field(at = 93)
 	private String l_MasteryIndicator24;
-	@Field(at = 94)
 	private String l_MasteryIndicator25;
-	@Field(at = 95)
 	private String l_MasteryIndicator26;
-	@Field(at = 96)
 	private String l_MasteryIndicator27;
-	@Field(at = 97)
 	private String l_MasteryIndicator28;
-	@Field(at = 98)
 	private String l_MasteryIndicator29;
-	@Field(at = 99)
 	private String l_MasteryIndicator30;
-	@Field(at = 100)
 	private String l_MasteryIndicator31;
-	@Field(at = 101)
 	private String l_MasteryIndicator32;
-	@Field(at = 102)
 	private String l_MasteryIndicator33;
-	@Field(at = 103)
 	private String l_MasteryIndicator34;
-	@Field(at = 104)
 	private String l_MasteryIndicator35;
-	@Field(at = 105)
 	private String l_MasteryIndicator36;
-	@Field(at = 106)
 	private String l_MasteryIndicator37;
-	@Field(at = 107)
 	private String l_MasteryIndicator38;
-	@Field(at = 108)
 	private String l_MasteryIndicator39;
-	@Field(at = 109)
 	private String l_MasteryIndicator40;
-	@Field(at = 110)
 	private String l_OPIIPI1;
-	@Field(at = 111)
 	private String l_OPIIPI2;
-	@Field(at = 112)
 	private String l_OPIIPI3;
-	@Field(at = 113)
 	private String l_OPIIPI4;
-	@Field(at = 114)
 	private String l_OPIIPI5;
-	@Field(at = 115)
 	private String l_OPIIPI6;
-	@Field(at = 116)
 	private String l_OPIIPI7;
-	@Field(at = 117)
 	private String l_OPIIPI8;
-	@Field(at = 118)
 	private String l_OPIIPI9;
-	@Field(at = 119)
 	private String l_OPIIPI10;
-	@Field(at = 120)
 	private String l_OPIIPI11;
-	@Field(at = 121)
 	private String l_OPIIPI12;
-	@Field(at = 122)
 	private String l_OPIIPI13;
-	@Field(at = 123)
 	private String l_OPIIPI14;
-	@Field(at = 124)
 	private String l_OPIIPI15;
-	@Field(at = 125)
 	private String l_OPIIPI16;
-	@Field(at = 126)
 	private String l_OPIIPI17;
-	@Field(at = 127)
 	private String l_OPIIPI18;
-	@Field(at = 128)
 	private String l_OPIIPI19;
-	@Field(at = 129)
 	private String l_OPIIPI20;
-	@Field(at = 130)
 	private String l_OPIIPI21;
-	@Field(at = 131)
 	private String l_OPIIPI22;
-	@Field(at = 132)
 	private String l_OPIIPI23;
-	@Field(at = 133)
 	private String l_OPIIPI24;
-	@Field(at = 134)
 	private String l_OPIIPI25;
-	@Field(at = 135)
 	private String l_OPIIPI26;
-	@Field(at = 136)
 	private String l_OPIIPI27;
-	@Field(at = 137)
 	private String l_OPIIPI28;
-	@Field(at = 138)
 	private String l_OPIIPI29;
-	@Field(at = 139)
 	private String l_OPIIPI30;
-	@Field(at = 140)
 	private String l_OPIIPI31;
-	@Field(at = 141)
 	private String l_OPIIPI32;
-	@Field(at = 142)
 	private String l_OPIIPI33;
-	@Field(at = 143)
 	private String l_OPIIPI34;
-	@Field(at = 144)
 	private String l_OPIIPI35;
-	@Field(at = 145)
 	private String l_OPIIPI36;
-	@Field(at = 146)
 	private String l_OPIIPI37;
-	@Field(at = 147)
 	private String l_OPIIPI38;
-	@Field(at = 148)
 	private String l_OPIIPI39;
-	@Field(at = 149)
 	private String l_OPIIPI40;
-	@Field(at = 150)
 	private String l_ELACRSession2ItemResponses;
-	@Field(at = 151)
 	private String l_ELACRSession3ItemResponses;
-	@Field(at = 152)
 	private String l_MathCRSession1ItemResponses;
-	@Field(at = 153)
 	private String l_ScienceCRSession4ItemResponses;
-	@Field(at = 154)
 	private String l_SocialStudiesCRSession4ItemResponses;
-	@Field(at = 155)
 	private String l_Filler4;
-	@Field(at = 156)
 	private String l_SchoolPersonnelNumberSPN1;
-	@Field(at = 157)
 	private String l_SchoolPersonnelNumberSPN2;
-	@Field(at = 158)
 	private String l_SchoolPersonnelNumberSPN3;
-	@Field(at = 159)
 	private String l_SchoolPersonnelNumberSPN4;
-	@Field(at = 160)
 	private String l_SchoolPersonnelNumberSPN5;
-	@Field(at = 161)
 	private String l_Filler5;
-	@Field(at = 162)
 	private String l_CGRComputerGeneratedResponsefrom;
-	@Field(at = 163)
 	private String l_CTBUseOnlyAppliedSkillsPPImageID;
-	@Field(at = 164)
 	private String l_CTBUseOnlyAppliedSkillsOASImageID;
-	@Field(at = 165)
 	private String l_CTBUseOnlyMCPPImagingid;
-	@Field(at = 166)
 	private String l_CTBUseOnlyMCOASimagingid;
-	@Field(at = 167)
 	private String l_BarcodeIDAppliedSkills;
-	@Field(at = 168)
 	private String l_BarcodeIDMultipleChoice;
-	@Field(at = 169)
 	private String l_CTBUseOnlyTestForm;
-	@Field(at = 170)
 	private String l_CTBUseOnlyMCBlankbookFlag;
-	@Field(at = 171)
 	private String l_CTBUseOnlyTestFormAppliedSkillsFieldPilotTest;
-	@Field(at = 172)
 	private String l_CTBUseOnlyTestFormMCFieldPilotTest;
-	@Field(at = 173)
 	private String l_CTBUseOnlyFutureUseOASTestedIndicatorAppliedSkillstest;
-	@Field(at = 174)
 	private String l_CTBUseOnlyOASTestedIndicatorMultipleChoiceTest;
-	@Field(at = 175)
 	private String l_CTBUseOnlyStructureLevel;
-	@Field(at = 176)
 	private String l_CTBUseOnlyElementNumber;
-	@Field(at = 177)
 	private String l_ResolvedReportingStatusEla;
-	@Field(at = 178)
 	private String l_ResolvedReportingStatusMath;
-	@Field(at = 179)
 	private String l_ResolvedReportingStatusScience;
-	@Field(at = 180)
 	private String l_ResolvedReportingStatusSocialStudies;
-	@Field(at = 181)
 	private String l_OPIIPICut1;
-	@Field(at = 182)
 	private String l_OPIIPICut2;
-	@Field(at = 183)
 	private String l_OPIIPICut3;
-	@Field(at = 184)
 	private String l_OPIIPICut4;
-	@Field(at = 185)
 	private String l_OPIIPICut5;
-	@Field(at = 186)
 	private String l_OPIIPICut6;
-	@Field(at = 187)
 	private String l_OPIIPICut7;
-	@Field(at = 188)
 	private String l_OPIIPICut8;
-	@Field(at = 189)
 	private String l_OPIIPICut9;
-	@Field(at = 190)
 	private String l_OPIIPICut10;
-	@Field(at = 191)
 	private String l_OPIIPICut11;
-	@Field(at = 192)
 	private String l_OPIIPICut12;
-	@Field(at = 193)
 	private String l_OPIIPICut13;
-	@Field(at = 194)
 	private String l_OPIIPICut14;
-	@Field(at = 195)
 	private String l_OPIIPICut15;
-	@Field(at = 196)
 	private String l_OPIIPICut16;
-	@Field(at = 197)
 	private String l_OPIIPICut17;
-	@Field(at = 198)
 	private String l_OPIIPICut18;
-	@Field(at = 199)
 	private String l_OPIIPICut19;
-	@Field(at = 200)
 	private String l_OPIIPICut20;
-	@Field(at = 201)
 	private String l_OPIIPICut21;
-	@Field(at = 202)
 	private String l_OPIIPICut22;
-	@Field(at = 203)
 	private String l_OPIIPICut23;
-	@Field(at = 204)
 	private String l_OPIIPICut24;
-	@Field(at = 205)
 	private String l_OPIIPICut25;
-	@Field(at = 206)
 	private String l_OPIIPICut26;
-	@Field(at = 207)
 	private String l_OPIIPICut27;
-	@Field(at = 208)
 	private String l_OPIIPICut28;
-	@Field(at = 209)
 	private String l_OPIIPICut29;
-	@Field(at = 210)
 	private String l_OPIIPICut30;
-	@Field(at = 211)
 	private String l_OPIIPICut31;
-	@Field(at = 212)
 	private String l_OPIIPICut32;
-	@Field(at = 213)
 	private String l_OPIIPICut33;
-	@Field(at = 214)
 	private String l_OPIIPICut34;
-	@Field(at = 215)
 	private String l_OPIIPICut35;
-	@Field(at = 216)
 	private String l_OPIIPICut36;
-	@Field(at = 217)
 	private String l_OPIIPICut37;
-	@Field(at = 218)
 	private String l_OPIIPICut38;
-	@Field(at = 219)
 	private String l_OPIIPICut39;
-	@Field(at = 220)
 	private String l_OPIIPICut40;
 
 	/**

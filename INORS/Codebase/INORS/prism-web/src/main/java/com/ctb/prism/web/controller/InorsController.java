@@ -42,15 +42,14 @@ import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
+import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
-import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
-import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
-import com.ctb.prism.login.transferobject.UserTO;
 /**
  * @author TCS
  * 
@@ -536,7 +535,16 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Retaining from values");
 		return null;
 	}
-	
+
+	/**
+	 * Displays the GRT/IC File Download page with pre populated corporation
+	 * list
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SystemException
+	 */
 	@RequestMapping(value = "/gRTInvitationCodeFiles", method = RequestMethod.GET)
 	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
@@ -546,7 +554,14 @@ public class InorsController {
 		
 		return modelAndView;
 	}
-	
+
+	/**
+	 * Downloads GRT or Invitation Code files from the browser based on user
+	 * inputs
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/downloadGRTInvitationCodeFiles", method = RequestMethod.GET)
 	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
@@ -584,12 +599,12 @@ public class InorsController {
 		String zipFileName = "";
 		if ("IC".equals(type)) {
 			List<InvitationCodeTO> icList = (List<InvitationCodeTO>) inorsService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.createICByteArray(icList, ',');
+			data = InorsDownloadUtil.getICBytes(year, icList, ",");
 			fileName = InorsDownloadConstants.IC_FILE_PATH;
 			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
 		} else if ("GRT".equals(type)) {
 			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.createGRTByteArray(grtList, ',');
+			data = InorsDownloadUtil.getGRTBytes(year, grtList, ",");
 			fileName = InorsDownloadConstants.GRT_FILE_PATH;
 			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
 		}
@@ -599,18 +614,19 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, "zipBytes - ", e);
 			e.printStackTrace();
 		}
-		response.setContentType("application/force-download");
-		response.setContentLength(data.length);
-		response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
-		try {
-			FileCopyUtils.copy(data, response.getOutputStream());
-		} catch (IOException e) {
-			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
-			e.printStackTrace();
-		}
+		FileUtil.browserDownload(response, data, zipFileName);
 		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
 	}
-	
+
+	/**
+	 * Creates a json for all the school under a corporation
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 */
 	@RequestMapping(value = "/populateSchool", method = RequestMethod.GET)
 	public void populateSchool(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchool()");

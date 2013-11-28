@@ -2039,8 +2039,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					public CallableStatement createCallableStatement(
 							Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DATA);
-						cs.setLong("P_IN_ORG_NODEID", Long.parseLong(orgNodeId));
-						cs.registerOutParameter("P_OUT_CUR_USER_DATA", oracle.jdbc.OracleTypes.CURSOR);
+						cs.setLong(1, Long.parseLong(orgNodeId));
+						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -2049,7 +2049,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						List<UserDataTO> userList = new ArrayList<UserDataTO>();
 						try {
 							cs.execute();
-							rs = (ResultSet) cs.getObject("P_OUT_CUR_USER_DATA");
+							rs = (ResultSet) cs.getObject(2);
 							while (rs.next()) {
 								UserDataTO to = new UserDataTO();
 								to.setUserId(rs.getString("USERNAME"));

@@ -24,12 +24,12 @@ import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 import com.ctb.prism.inors.transferobject.ObjectValueTO;
-import com.ctb.prism.inors.util.InorsDownloadUtil;
 
 /**
  * This class is responsible for reading and writing to database.
@@ -200,9 +200,20 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		}
 		return bulkDownloadTO;
 	}
-	
+
+	/**
+	 * Fetches the IC list from the database. All field level data are wrapped
+	 * using double quotes. Field level data validations may apply to specific
+	 * field to support multiple layouts. Setter methods set valid data for that
+	 * layout to achieve better performance and to avoid multiple getter or
+	 * setter calls.
+	 * 
+	 * @param orgNodeId
+	 * @param parentOrgNodeId
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	private List<GrtTO> getGRTList(final String orgNodeId, final String parentOrgNodeId) {
+	private List<GrtTO> getGRTList(final String orgNodeId, final String parentOrgNodeId, final String year) {
 		long t1 = System.currentTimeMillis();
 		List<GrtTO> grtList = null;
 		try {
@@ -236,7 +247,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 									to.setL_Grade(wrap("", '"')); // TODO
 									to.setL_City(wrap(rs.getString("CITY"), '"'));
 									to.setL_State(wrap(rs.getString("STATE"), '"'));
-									to.setL_ISTEPTestName(wrap(rs.getString("ISTEP_TEST_NAME"), '"')); // ISTEP_TEST_NAME
+									to.setL_ISTEPTestName(wrap(CustomStringUtil.appendString(rs.getString("ISTEP_TEST_NAME"), "S", year.substring(2)), '"')); // ISTEP_TEST_NAME
 									to.setL_ISTEPBook(wrap(rs.getString("ISTEP_BOOK_NUM"), '"')); // ISTEP_BOOK_NUM
 									to.setL_ISTEPForm(wrap(rs.getString("ISTEP_FORM"), '"')); // ISTEP_FORM
 									to.setL_TestDateMMDDYY(wrap(rs.getString("TEST_DATE"), '"')); // TEST_DATE
@@ -473,25 +484,27 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		String orgNodeId = paramMap.get("orgNodeId");
 		logger.log(IAppLogger.INFO, "type=" + type + ", year=" + year + ", parentOrgNodeId=" + parentOrgNodeId + ", orgNodeId=" + orgNodeId);
 		if (InorsDownloadConstants.IC.equals(type)) {
-			List<InvitationCodeTO> icData = new ArrayList<InvitationCodeTO>();
-			if (YEAR_2012.equals(year) || YEAR_2013.equals(year)) {
-				// TODO : database code instead of mock objects
-				icData = getICList(orgNodeId);
-			}
-			return icData;
+			return getICList(orgNodeId, year);
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
-			List<GrtTO> grtData = new ArrayList<GrtTO>();
-			if (YEAR_2010.equals(year) || YEAR_2011.equals(year) || YEAR_2012.equals(year) || YEAR_2013.equals(year)) {
-				grtData = getGRTList(orgNodeId, parentOrgNodeId);
-			}
-			return grtData;
+			return getGRTList(orgNodeId, parentOrgNodeId, year);
+		} else {
+			return null;
 		}
-		return null;
 	}
-	
-	@SuppressWarnings("unchecked")
-	private List<InvitationCodeTO> getICList(final String orgNodeId) {
 
+	/**
+	 * Fetches the IC list from the database. All field level data are wrapped
+	 * using double quotes. Field level data validations may apply to specific
+	 * field to support multiple layouts. Setter methods set valid data for that
+	 * layout to achieve better performance and to avoid multiple getter or
+	 * setter calls.
+	 * 
+	 * @param orgNodeId
+	 * @param year
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<InvitationCodeTO> getICList(final String orgNodeId, final String year) {
 		long t1 = System.currentTimeMillis();
 		List<InvitationCodeTO> icList = null;
 		try {
@@ -518,8 +531,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 									to.setSchoolName(wrap(rs.getString("SCHOOL_NAME"), '"'));
 									to.setSchoolNumber(wrap(rs.getString("SCHOOL_NUMBER"), '"'));
 									to.setGrade(wrap(rs.getString("GRADE_NAME"), '"'));
-									to.setAdministrationName(wrap("", '"')); // TODO
-									to.setiSTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
+									to.setAdministrationName(wrap(CustomStringUtil.appendString(rs.getString("PRODUCT_NAME"), "S", year.substring(2)), '"')); // TODO
+									to.setISTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
 									to.setInvitationCodeExpirationDate(wrap(rs.getString("EXPIRATION_DATE"), '"'));
 									to.setStudentLastName(wrap(rs.getString("LAST_NAME"), '"'));
 									to.setStudentFirstName(wrap(rs.getString("FIRST_NAME"), '"'));
@@ -528,11 +541,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 									to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
 									to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
 									to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
-									to.setcTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
+									to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
 									to.setTeacherName(wrap("", '"')); // TODO
-									to.setcTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
-									to.setcTBUSETeacherElementNumber(wrap("", '"')); // TODO
-									to.setcTBUSEStudentElementNumber(wrap("", '"')); // TODO
+									to.setCTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
+									to.setCTBUSETeacherElementNumber(wrap("", '"')); // TODO
+									to.setCTBUSEStudentElementNumber(wrap("", '"')); // TODO
 									icTOList.add(to);
 								}
 							} catch (SQLException e) {
@@ -546,7 +559,6 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return icList;
-	
 	}
 
 	/* (non-Javadoc)
@@ -554,19 +566,6 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ObjectValueTO> getDistricts() {
-		/*List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DISTRICTS);
-		if (lstData.size() > 0) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				ObjectValueTO objectValueTO = new ObjectValueTO();
-				objectValueTO.setName(fieldDetails.get("ORG_NODE_NAME").toString());
-				objectValueTO.setValue(fieldDetails.get("ORG_NODEID").toString());
-				objectValueList.add(objectValueTO);
-			}
-		}
-		return objectValueList;*/
-
 		long t1 = System.currentTimeMillis();
 		List<ObjectValueTO> districtList = null;
 		try {
@@ -610,18 +609,6 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ObjectValueTO> populateSchool(final Long parentOrgNodeId){
-		/*List<ObjectValueTO> objectValueList = new ArrayList<ObjectValueTO>();
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SCHOOLS, parentOrgNodeId);
-		if (lstData.size() > 0) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				ObjectValueTO objectValueTO = new ObjectValueTO();
-				objectValueTO.setName(fieldDetails.get("ORG_NODE_NAME").toString());
-				objectValueTO.setValue(fieldDetails.get("ORG_NODEID").toString());
-				objectValueList.add(objectValueTO);
-			}
-		}
-		return objectValueList;*/
 		long t1 = System.currentTimeMillis();
 		List<ObjectValueTO> districtList = null;
 		try {

@@ -3,82 +3,36 @@
  */
 package com.ctb.prism.inors.transferobject;
 
-import org.beanio.annotation.Field;
-import org.beanio.annotation.Record;
-
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
- * @author 165505
+ * @author Amitabha Roy
  * 
  */
 
-@Record(minOccurs = 0)
 public class InvitationCodeTO extends BaseTO {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1267397904584405251L;
 
-	@Field(at = 0)
 	private String corporationorDioceseName;
-
-	@Field(at = 1)
 	private String corporationorDioceseNumber;
-
-	@Field(at = 2)
 	private String schoolName;
-
-	@Field(at = 3)
 	private String schoolNumber;
-
-	@Field(at = 4)
 	private String grade;
-
-	@Field(at = 5)
 	private String administrationName;
-
-	@Field(at = 6)
 	private String iSTEPInvitationCode;
-
-	@Field(at = 7)
 	private String invitationCodeExpirationDate;
-
-	@Field(at = 8)
 	private String studentLastName;
-
-	@Field(at = 9)
 	private String studentFirstName;
-
-	@Field(at = 10)
 	private String studentMiddleInitial;
-
-	@Field(at = 11)
 	private String studentsGender;
-
-	@Field(at = 12)
 	private String birthDate;
-
-	@Field(at = 13)
 	private String studentTestNumber;
-
-	@Field(at = 14)
 	private String corporationStudentID;
-
-	@Field(at = 15)
 	private String cTBUSEBarcodeID;
-
-	@Field(at = 16)
 	private String teacherName;
-
-	@Field(at = 17)
 	private String cTBUSEOrgtstgpgm;
-
-	@Field(at = 18)
 	private String cTBUSETeacherElementNumber;
-
-	@Field(at = 19)
 	private String cTBUSEStudentElementNumber;
 
 	/**
@@ -174,7 +128,7 @@ public class InvitationCodeTO extends BaseTO {
 	/**
 	 * @return the iSTEPInvitationCode
 	 */
-	public String getiSTEPInvitationCode() {
+	public String getISTEPInvitationCode() {
 		return iSTEPInvitationCode;
 	}
 
@@ -182,7 +136,7 @@ public class InvitationCodeTO extends BaseTO {
 	 * @param iSTEPInvitationCode
 	 *            the iSTEPInvitationCode to set
 	 */
-	public void setiSTEPInvitationCode(String iSTEPInvitationCode) {
+	public void setISTEPInvitationCode(String iSTEPInvitationCode) {
 		this.iSTEPInvitationCode = iSTEPInvitationCode;
 	}
 
@@ -310,7 +264,7 @@ public class InvitationCodeTO extends BaseTO {
 	/**
 	 * @return the cTBUSEBarcodeID
 	 */
-	public String getcTBUSEBarcodeID() {
+	public String getCTBUSEBarcodeID() {
 		return cTBUSEBarcodeID;
 	}
 
@@ -318,7 +272,7 @@ public class InvitationCodeTO extends BaseTO {
 	 * @param cTBUSEBarcodeID
 	 *            the cTBUSEBarcodeID to set
 	 */
-	public void setcTBUSEBarcodeID(String cTBUSEBarcodeID) {
+	public void setCTBUSEBarcodeID(String cTBUSEBarcodeID) {
 		this.cTBUSEBarcodeID = cTBUSEBarcodeID;
 	}
 
@@ -340,7 +294,7 @@ public class InvitationCodeTO extends BaseTO {
 	/**
 	 * @return the cTBUSEOrgtstgpgm
 	 */
-	public String getcTBUSEOrgtstgpgm() {
+	public String getCTBUSEOrgtstgpgm() {
 		return cTBUSEOrgtstgpgm;
 	}
 
@@ -348,14 +302,14 @@ public class InvitationCodeTO extends BaseTO {
 	 * @param cTBUSEOrgtstgpgm
 	 *            the cTBUSEOrgtstgpgm to set
 	 */
-	public void setcTBUSEOrgtstgpgm(String cTBUSEOrgtstgpgm) {
+	public void setCTBUSEOrgtstgpgm(String cTBUSEOrgtstgpgm) {
 		this.cTBUSEOrgtstgpgm = cTBUSEOrgtstgpgm;
 	}
 
 	/**
 	 * @return the cTBUSETeacherElementNumber
 	 */
-	public String getcTBUSETeacherElementNumber() {
+	public String getCTBUSETeacherElementNumber() {
 		return cTBUSETeacherElementNumber;
 	}
 
@@ -363,14 +317,14 @@ public class InvitationCodeTO extends BaseTO {
 	 * @param cTBUSETeacherElementNumber
 	 *            the cTBUSETeacherElementNumber to set
 	 */
-	public void setcTBUSETeacherElementNumber(String cTBUSETeacherElementNumber) {
+	public void setCTBUSETeacherElementNumber(String cTBUSETeacherElementNumber) {
 		this.cTBUSETeacherElementNumber = cTBUSETeacherElementNumber;
 	}
 
 	/**
 	 * @return the cTBUSEStudentElementNumber
 	 */
-	public String getcTBUSEStudentElementNumber() {
+	public String getCTBUSEStudentElementNumber() {
 		return cTBUSEStudentElementNumber;
 	}
 
@@ -378,7 +332,7 @@ public class InvitationCodeTO extends BaseTO {
 	 * @param cTBUSEStudentElementNumber
 	 *            the cTBUSEStudentElementNumber to set
 	 */
-	public void setcTBUSEStudentElementNumber(String cTBUSEStudentElementNumber) {
+	public void setCTBUSEStudentElementNumber(String cTBUSEStudentElementNumber) {
 		this.cTBUSEStudentElementNumber = cTBUSEStudentElementNumber;
 	}
 }

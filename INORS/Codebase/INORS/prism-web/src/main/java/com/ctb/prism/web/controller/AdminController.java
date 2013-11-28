@@ -41,6 +41,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -2016,30 +2017,19 @@ public class AdminController {
 		paramMap.put("adminYear", adminYear);
 		paramMap.put("userId", userId);
 
-		logger.log(IAppLogger.INFO, "tenantId=" + tenantId + ", adminYear=" + adminYear
-				+ ", userId=" + userId);
+		logger.log(IAppLogger.INFO, "tenantId=" + tenantId + ", adminYear=" + adminYear + ", userId=" + userId);
 
 		byte[] data = null;
-		String fileName = "Users.xlsx"; // TODO - remove hard code
-		String zipFileName = "Users.zip"; // TODO - remove hard code
 		List<UserDataTO> userList = (List<UserDataTO>) adminService.getUserData(paramMap);
-		data = InorsDownloadUtil.createUserByteArray(userList, '\t');
+		data = InorsDownloadUtil.getUserDataBytes(userList, "\t");
 		try {
 			data = FileUtil.xlsxBytes(data, "\t");
-			data = FileUtil.zipBytes(fileName, data);
+			data = FileUtil.zipBytes(InorsDownloadConstants.USERS_FILE_PATH, data);
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "zipBytes - ", e);
 			e.printStackTrace();
 		}
-		response.setContentType("application/force-download");
-		response.setContentLength(data.length);
-		response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
-		try {
-			FileCopyUtils.copy(data, response.getOutputStream());
-		} catch (IOException e) {
-			logger.log(IAppLogger.ERROR, "downloadGRTInvitationCodeFiles - ", e);
-			e.printStackTrace();
-		}
+		FileUtil.browserDownload(response, data, InorsDownloadConstants.USERS_ZIP_FILE_PATH);
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 }

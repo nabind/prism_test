@@ -3,14 +3,14 @@
  */
 package com.ctb.prism.inors.util;
 
-import java.io.StringWriter;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 import java.util.List;
 
-import org.beanio.BeanWriter;
-import org.beanio.StreamFactory;
-import org.beanio.builder.DelimitedParserBuilder;
-import org.beanio.builder.StreamBuilder;
+import javax.servlet.http.HttpServletResponse;
+
 import org.beanio.stream.RecordIOException;
+import org.springframework.util.FileCopyUtils;
 
 import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -20,7 +20,7 @@ import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 
 /**
- * @author 165505
+ * @author Amitabha Roy
  * 
  */
 public class InorsDownloadUtil {
@@ -28,27 +28,71 @@ public class InorsDownloadUtil {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDownloadUtil.class.getName());
 
 	/**
-	 * This method does not create any file in disk. It converts a List of
-	 * InvitationCodeTO to a byte array.
+	 * Creates a byte array from the IC list based of layout identified by the
+	 * year. There will be a single <code>InvitationCodeTO</code> for all
+	 * layouts. If a layout does not contain any particular field then that
+	 * field will not be written to to <code>CharArrayWriter</code>.
 	 * 
+	 * It is assumed that valid values had been set to the
+	 * <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter
+	 * methods. This method will only call the getter methods.
+	 * <em>Thus there will be only one setter call from DAO and one getter
+	 * call from here.</em>
+	 * 
+	 * @param year
 	 * @param icList
 	 * @param delimiter
 	 * @return
 	 */
-	public static byte[] createICByteArray(final List<InvitationCodeTO> icList, final char delimiter) {
+	public static byte[] getICBytes(final String year, final List<InvitationCodeTO> icList, final String delimiter) {
 		if (icList != null) {
 			logger.log(IAppLogger.INFO, "IC : " + icList.size());
+			logger.log(IAppLogger.INFO, "year : " + year);
 			icList.add(0, getInvitationCodeTOHeader());
-			StreamFactory factory = StreamFactory.newInstance();
-			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.IC).format("delimited")
-					.parser(new DelimitedParserBuilder(delimiter))
-					.addRecord(InvitationCodeTO.class);
-			factory.define(builder);
-			StringWriter stringWriter = new StringWriter();
-			BeanWriter out = factory.createWriter(InorsDownloadConstants.IC, stringWriter);
+			
+			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (InvitationCodeTO ic : icList) {
-					out.write(ic);
+					out.write(ic.getCorporationorDioceseName());
+					out.write(delimiter);
+					out.write(ic.getCorporationorDioceseNumber());
+					out.write(delimiter);
+					out.write(ic.getSchoolName());
+					out.write(delimiter);
+					out.write(ic.getSchoolNumber());
+					out.write(delimiter);
+					out.write(ic.getGrade());
+					out.write(delimiter);
+					out.write(ic.getAdministrationName());
+					out.write(delimiter);
+					out.write(ic.getISTEPInvitationCode());
+					out.write(delimiter);
+					out.write(ic.getInvitationCodeExpirationDate());
+					out.write(delimiter);
+					out.write(ic.getStudentLastName());
+					out.write(delimiter);
+					out.write(ic.getStudentFirstName());
+					out.write(delimiter);
+					out.write(ic.getStudentMiddleInitial());
+					out.write(delimiter);
+					out.write(ic.getStudentsGender());
+					out.write(delimiter);
+					out.write(ic.getBirthDate());
+					out.write(delimiter);
+					out.write(ic.getStudentTestNumber());
+					out.write(delimiter);
+					out.write(ic.getCorporationStudentID());
+					out.write(delimiter);
+					out.write(ic.getCTBUSEBarcodeID());
+					out.write(delimiter);
+					out.write(ic.getTeacherName());
+					out.write(delimiter);
+					out.write(ic.getCTBUSEOrgtstgpgm());
+					out.write(delimiter);
+					out.write(ic.getCTBUSETeacherElementNumber());
+					out.write(delimiter);
+					out.write(ic.getCTBUSEStudentElementNumber());
+					out.write("\n");
 				}
 				out.flush();
 				out.close();
@@ -56,35 +100,485 @@ public class InorsDownloadUtil {
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();
+			} catch (IOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
 			}
-			return stringWriter.getBuffer().toString().getBytes();
+			return out.toString().getBytes();
 		} else {
 			return "No Records Found".getBytes();
 		}
 	}
 
 	/**
-	 * This method does not create any file in disk. It converts a List of GrtTO
-	 * to a byte array.
+	 * Creates a byte array from the GRT list based of layout identified by the
+	 * year. There will be a single <code>GrtTO</code> for all layouts. If a
+	 * layout does not contain any particular field then that field will not be
+	 * written to to <code>CharArrayWriter</code>.
 	 * 
+	 * It is assumed that valid values had been set to the
+	 * <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter
+	 * methods. This method will only call the getter methods.
+	 * <em>Thus there will be only one setter call from DAO and one getter
+	 * call from here.</em>
+	 * 
+	 * @param year
 	 * @param grtList
 	 * @param delimiter
 	 * @return
 	 */
-	public static byte[] createGRTByteArray(final List<GrtTO> grtList, final char delimiter) {
+	public static byte[] getGRTBytes(String year, final List<GrtTO> grtList, final String delimiter) {
 		if (grtList != null) {
 			logger.log(IAppLogger.INFO, "GRT : " + grtList.size());
+			logger.log(IAppLogger.INFO, "year : " + year);
 			grtList.add(0, getGRTTOHeader());
-			StreamFactory factory = StreamFactory.newInstance();
-			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.GRT).format("delimited")
-					.parser(new DelimitedParserBuilder(delimiter))
-					.addRecord(GrtTO.class);
-			factory.define(builder);
-			StringWriter stringWriter = new StringWriter();
-			BeanWriter out = factory.createWriter(InorsDownloadConstants.GRT, stringWriter);
+			
+			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (GrtTO grt : grtList) {
-					out.write(grt);
+					out.write(grt.getL_TapeMode());
+					out.write(delimiter);
+					out.write(grt.getL_Orgtstgpgm());
+					out.write(delimiter);
+					out.write(grt.getL_CorporationorDioceseName());
+					out.write(delimiter);
+					out.write(grt.getL_CorporationorDioceseNumber());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolName());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolNumber());
+					out.write(delimiter);
+					out.write(grt.getL_TeacherName());
+					out.write(delimiter);
+					out.write(grt.getL_TeacherElementNumberCTBUse());
+					out.write(delimiter);
+					out.write(grt.getL_Grade());
+					out.write(delimiter);
+					out.write(grt.getL_City());
+					out.write(delimiter);
+					out.write(grt.getL_State());
+					out.write(delimiter);
+					out.write(grt.getL_ISTEPTestName());
+					out.write(delimiter);
+					out.write(grt.getL_ISTEPBook());
+					out.write(delimiter);
+					out.write(grt.getL_ISTEPForm());
+					out.write(delimiter);
+					out.write(grt.getL_TestDateMMDDYY());
+					out.write(delimiter);
+					out.write(grt.getL_StudentLastName());
+					out.write(delimiter);
+					out.write(grt.getL_StudentFirstName());
+					out.write(delimiter);
+					out.write(grt.getL_StudentMiddleInitial());
+					out.write(delimiter);
+					out.write(grt.getL_StudentsGender());
+					out.write(delimiter);
+					out.write(grt.getL_BirthDateMMDDYY());
+					out.write(delimiter);
+					out.write(grt.getL_ChronologicalAgeInMonths());
+					out.write(delimiter);
+					out.write(grt.getL_Ethnicity());
+					out.write(delimiter);
+					out.write(grt.getL_RaceAmericanIndianAlaskaNative());
+					out.write(delimiter);
+					out.write(grt.getL_RaceAsian());
+					out.write(delimiter);
+					out.write(grt.getL_RaceBlackorAfricanAmerican());
+					out.write(delimiter);
+					out.write(grt.getL_RaceNativeHawaiianorOtherPacificIslander());
+					out.write(delimiter);
+					out.write(grt.getL_RaceWhite());
+					out.write(delimiter);
+					out.write(grt.getL_Filler1());
+					out.write(delimiter);
+					out.write(grt.getL_StudentTestNumberAI());
+					out.write(delimiter);
+					out.write(grt.getL_SpecialCodeJ());
+					out.write(delimiter);
+					out.write(grt.getL_ResolvedEthnicityK());
+					out.write(delimiter);
+					out.write(grt.getL_SpecialEducationL());
+					out.write(delimiter);
+					out.write(grt.getL_ExceptionalityM());
+					out.write(delimiter);
+					out.write(grt.getL_SocioEconomicStatusN());
+					out.write(delimiter);
+					out.write(grt.getL_Section504O());
+					out.write(delimiter);
+					out.write(grt.getL_EnglishLearnerELP());
+					out.write(delimiter);
+					out.write(grt.getL_MigrantQ());
+					out.write(delimiter);
+					out.write(grt.getL_LocaluseR());
+					out.write(delimiter);
+					out.write(grt.getL_LocaluseS());
+					out.write(delimiter);
+					out.write(grt.getL_LocaluseT());
+					out.write(delimiter);
+					out.write(grt.getL_MatchUnmatchU());
+					out.write(delimiter);
+					out.write(grt.getL_DuplicateV());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyW());
+					out.write(delimiter);
+					out.write(grt.getL_SpecialCodeX());
+					out.write(delimiter);
+					out.write(grt.getL_SpecialCodeY());
+					out.write(delimiter);
+					out.write(grt.getL_SpecialCodeZ());
+					out.write(delimiter);
+					out.write(grt.getL_AccommodationsEla());
+					out.write(delimiter);
+					out.write(grt.getL_AccommodationsMath());
+					out.write(delimiter);
+					out.write(grt.getL_AccommodationsScience());
+					out.write(delimiter);
+					out.write(grt.getL_AccommodationsSocialStudies());
+					out.write(delimiter);
+					out.write(grt.getL_CorporationUseID());
+					out.write(delimiter);
+					out.write(grt.getL_CustomerUse());
+					out.write(delimiter);
+					out.write(grt.getL_Filler2());
+					out.write(delimiter);
+					out.write(grt.getL_Filler3());
+					out.write(delimiter);
+					out.write(grt.getL_ElaPFIndicator());
+					out.write(delimiter);
+					out.write(grt.getL_MathPFIndicator());
+					out.write(delimiter);
+					out.write(grt.getL_SciencePFIndicator());
+					out.write(delimiter);
+					out.write(grt.getL_SocialStudiesPFIndicator());
+					out.write(delimiter);
+					out.write(grt.getL_ElaNumberCorrect());
+					out.write(delimiter);
+					out.write(grt.getL_MathNumberCorrect());
+					out.write(delimiter);
+					out.write(grt.getL_ScienceNumberCorrect());
+					out.write(delimiter);
+					out.write(grt.getL_SocialStudiesNumberCorrect());
+					out.write(delimiter);
+					out.write(grt.getL_ElaScaleScore());
+					out.write(delimiter);
+					out.write(grt.getL_MathScaleScore());
+					out.write(delimiter);
+					out.write(grt.getL_ScienceScaleScore());
+					out.write(delimiter);
+					out.write(grt.getL_SocialStudiesScaleScore());
+					out.write(delimiter);
+					out.write(grt.getL_ElaScaleScoreSEM());
+					out.write(delimiter);
+					out.write(grt.getL_MathScaleScoreSEM());
+					out.write(delimiter);
+					out.write(grt.getL_ScienceScaleScoreSEM());
+					out.write(delimiter);
+					out.write(grt.getL_SocialStudiesScaleScoreSEM());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator1());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator2());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator3());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator4());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator5());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator6());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator7());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator8());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator9());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator10());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator11());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator12());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator13());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator14());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator15());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator16());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator17());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator18());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator19());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator20());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator21());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator22());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator23());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator24());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator25());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator26());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator27());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator28());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator29());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator30());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator31());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator32());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator33());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator34());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator35());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator36());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator37());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator38());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator39());
+					out.write(delimiter);
+					out.write(grt.getL_MasteryIndicator40());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI1());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI2());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI3());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI4());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI5());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI6());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI7());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI8());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI9());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI10());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI11());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI12());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI13());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI14());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI15());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI16());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI17());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI18());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI19());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI20());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI21());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI22());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI23());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI24());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI25());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI26());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI27());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI28());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI29());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI30());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI31());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI32());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI33());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI34());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI35());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI36());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI37());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI38());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI39());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPI40());
+					out.write(delimiter);
+					out.write(grt.getL_ELACRSession2ItemResponses());
+					out.write(delimiter);
+					out.write(grt.getL_ELACRSession3ItemResponses());
+					out.write(delimiter);
+					out.write(grt.getL_MathCRSession1ItemResponses());
+					out.write(delimiter);
+					out.write(grt.getL_ScienceCRSession4ItemResponses());
+					out.write(delimiter);
+					out.write(grt.getL_SocialStudiesCRSession4ItemResponses());
+					out.write(delimiter);
+					out.write(grt.getL_Filler4());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolPersonnelNumberSPN1());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolPersonnelNumberSPN2());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolPersonnelNumberSPN3());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolPersonnelNumberSPN4());
+					out.write(delimiter);
+					out.write(grt.getL_SchoolPersonnelNumberSPN5());
+					out.write(delimiter);
+					out.write(grt.getL_Filler5());
+					out.write(delimiter);
+					out.write(grt.getL_CGRComputerGeneratedResponsefrom());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyAppliedSkillsPPImageID());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyAppliedSkillsOASImageID());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyMCPPImagingid());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyMCOASimagingid());
+					out.write(delimiter);
+					out.write(grt.getL_BarcodeIDAppliedSkills());
+					out.write(delimiter);
+					out.write(grt.getL_BarcodeIDMultipleChoice());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyTestForm());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyMCBlankbookFlag());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyTestFormAppliedSkillsFieldPilotTest());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyTestFormMCFieldPilotTest());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyFutureUseOASTestedIndicatorAppliedSkillstest());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyOASTestedIndicatorMultipleChoiceTest());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyStructureLevel());
+					out.write(delimiter);
+					out.write(grt.getL_CTBUseOnlyElementNumber());
+					out.write(delimiter);
+					out.write(grt.getL_ResolvedReportingStatusEla());
+					out.write(delimiter);
+					out.write(grt.getL_ResolvedReportingStatusMath());
+					out.write(delimiter);
+					out.write(grt.getL_ResolvedReportingStatusScience());
+					out.write(delimiter);
+					out.write(grt.getL_ResolvedReportingStatusSocialStudies());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut1());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut2());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut3());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut4());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut5());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut6());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut7());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut8());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut9());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut10());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut11());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut12());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut13());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut14());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut15());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut16());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut17());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut18());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut19());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut20());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut21());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut22());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut23());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut24());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut25());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut26());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut27());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut28());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut29());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut30());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut31());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut32());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut33());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut34());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut35());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut36());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut37());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut38());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut39());
+					out.write(delimiter);
+					out.write(grt.getL_OPIIPICut40());
+					out.write(delimiter);
+					out.write("\n");
 				}
 				out.flush();
 				out.close();
@@ -92,14 +586,18 @@ public class InorsDownloadUtil {
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();
+			} catch (IOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
 			}
-			return stringWriter.getBuffer().toString().getBytes();
+			return out.toString().getBytes();
 		} else {
 			return "No Records Found".getBytes();
 		}
 	}
-	
+
 	/**
+	 * This method is used to enclose the data with double quote
 	 * 
 	 * @param data
 	 * @param wrapChar
@@ -116,9 +614,10 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Method to create TO representation of the header record.
+	 * Method to create TO representation of the header record. It is used to
+	 * write the header inside the file.
 	 * 
-	 * @return
+	 * @return TO representation of the header record
 	 */
 	private static InvitationCodeTO getInvitationCodeTOHeader() {
 		InvitationCodeTO header = new InvitationCodeTO();
@@ -128,7 +627,7 @@ public class InorsDownloadUtil {
 		header.setSchoolNumber("School Number");
 		header.setGrade("Grade");
 		header.setAdministrationName("Administration Name");
-		header.setiSTEPInvitationCode("ISTEP Invitation Code");
+		header.setISTEPInvitationCode("ISTEP Invitation Code");
 		header.setInvitationCodeExpirationDate("Invitation Code Expiration Date (MMDDYY)");
 		header.setStudentLastName("Student Last Name");
 		header.setStudentFirstName("Student First Name");
@@ -137,16 +636,17 @@ public class InorsDownloadUtil {
 		header.setBirthDate("Birth Date (MMDDYY)");
 		header.setStudentTestNumber("Student Test Number");
 		header.setCorporationStudentID("Corporation Student ID");
-		header.setcTBUSEBarcodeID("CTB USE: Barcode ID (PreID)");
+		header.setCTBUSEBarcodeID("CTB USE: Barcode ID (PreID)");
 		header.setTeacherName("Teacher Name");
-		header.setcTBUSEOrgtstgpgm("CTB USE: Org-tstg-pgm");
-		header.setcTBUSETeacherElementNumber("CTB USE: Teacher Element Number");
-		header.setcTBUSEStudentElementNumber("CTB USE: Student Element Number");
+		header.setCTBUSEOrgtstgpgm("CTB USE: Org-tstg-pgm");
+		header.setCTBUSETeacherElementNumber("CTB USE: Teacher Element Number");
+		header.setCTBUSEStudentElementNumber("CTB USE: Student Element Number");
 		return header;
 	}
 
 	/**
-	 * Returns mock TO
+	 * Returns mock TO. It should be used for test purpose only where database
+	 * connection is not available.
 	 * 
 	 * @return
 	 */
@@ -158,7 +658,7 @@ public class InorsDownloadUtil {
 		to.setSchoolNumber(wrap("0020", '"'));
 		to.setGrade(wrap("3", '"'));
 		to.setAdministrationName(wrap("ISTEPS13", '"'));
-		to.setiSTEPInvitationCode(wrap("36JP-YECJ-RTJU-8GN6", '"'));
+		to.setISTEPInvitationCode(wrap("36JP-YECJ-RTJU-8GN6", '"'));
 		to.setInvitationCodeExpirationDate(wrap("050614", '"'));
 		to.setStudentLastName(wrap("ABELL", '"'));
 		to.setStudentFirstName(wrap("ASHLYN", '"'));
@@ -167,18 +667,19 @@ public class InorsDownloadUtil {
 		to.setBirthDate(wrap("113003", '"'));
 		to.setStudentTestNumber(wrap("002010001", '"'));
 		to.setCorporationStudentID(wrap("10008", '"'));
-		to.setcTBUSEBarcodeID(wrap("21944483", '"'));
+		to.setCTBUSEBarcodeID(wrap("21944483", '"'));
 		to.setTeacherName(wrap("STEINER", '"'));
-		to.setcTBUSEOrgtstgpgm(wrap("M013883003", '"'));
-		to.setcTBUSETeacherElementNumber(wrap("0016973", '"'));
-		to.setcTBUSEStudentElementNumber(wrap("0482387", '"'));
+		to.setCTBUSEOrgtstgpgm(wrap("M013883003", '"'));
+		to.setCTBUSETeacherElementNumber(wrap("0016973", '"'));
+		to.setCTBUSEStudentElementNumber(wrap("0482387", '"'));
 		return to;
 	}
 
 	/**
-	 * Method to create TO representation of the header record.
+	 * Method to create TO representation of the header record. It is used to
+	 * write the header inside the file.
 	 * 
-	 * @return
+	 * @return TO representation of the header record
 	 */
 	public static GrtTO getGRTTOHeader() {
 		GrtTO header = new GrtTO();
@@ -407,7 +908,8 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Returns mock TO
+	 * Returns mock TO. It should be used for test purpose only where database
+	 * connection is not available.
 	 * 
 	 * @return
 	 */
@@ -636,21 +1138,32 @@ public class InorsDownloadUtil {
 		to.setL_OPIIPICut40(wrap("", '"'));
 		return to;
 	}
-	
-	public static byte[] createUserByteArray(List<UserDataTO> userList, char delimiter){
+
+	/**
+	 * Creates a byte array from the UserData list
+	 * 
+	 * @param userList
+	 * @param delimiter
+	 * @return
+	 */
+	public static byte[] getUserDataBytes(List<UserDataTO> userList, String delimiter){
 		if (userList != null) {
-			logger.log(IAppLogger.INFO, "Users : " + userList.size());
+			logger.log(IAppLogger.INFO, "User : " + userList.size());
 			userList.add(0, getUserDataTOHeader());
-			StreamFactory factory = StreamFactory.newInstance();
-			StreamBuilder builder = new StreamBuilder(InorsDownloadConstants.IC).format("delimited")
-					.parser(new DelimitedParserBuilder(delimiter))
-					.addRecord(UserDataTO.class);
-			factory.define(builder);
-			StringWriter stringWriter = new StringWriter();
-			BeanWriter out = factory.createWriter(InorsDownloadConstants.IC, stringWriter);
+			
+			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (UserDataTO user : userList) {
-					out.write(user);
+					out.write(user.getUserId());
+					out.write(delimiter);
+					out.write(user.getFullName());
+					out.write(delimiter);
+					out.write(user.getStatus());
+					out.write(delimiter);
+					out.write(user.getOrgName());
+					out.write(delimiter);
+					out.write(user.getUserRoles());
+					out.write("\n");
 				}
 				out.flush();
 				out.close();
@@ -658,20 +1171,29 @@ public class InorsDownloadUtil {
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();
+			} catch (IOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
 			}
-			return stringWriter.getBuffer().toString().getBytes();
+			return out.toString().getBytes();
 		} else {
 			return "No Records Found".getBytes();
 		}
 	}
 
+	/**
+	 * Method to create TO representation of the header record. It is used to
+	 * write the header inside the file.
+	 * 
+	 * @return TO representation of the header record
+	 */
 	private static UserDataTO getUserDataTOHeader() {
-		UserDataTO userDataTO = new UserDataTO();
-		userDataTO.setUserId("User Id");
-		userDataTO.setFullName("Full Name");
-		userDataTO.setStatus("Status");
-		userDataTO.setOrgName("Org Name");
-		userDataTO.setUserRoles("User Roles");
-		return userDataTO;
+		UserDataTO header = new UserDataTO();
+		header.setUserId("User Id");
+		header.setFullName("Full Name");
+		header.setStatus("Status");
+		header.setOrgName("Org Name");
+		header.setUserRoles("User Roles");
+		return header;
 	}
 }
