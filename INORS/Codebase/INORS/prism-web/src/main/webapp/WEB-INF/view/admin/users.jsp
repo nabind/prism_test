@@ -51,14 +51,13 @@
 					Add User
 				</a>
 				</sec:authorize>
-
+				<a class="button float-right" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> Download Users</a>
 			</div>
 			
 			<div
 				class="panel-load-target with-padding margin10 height-mid padding-none">
 				<div class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreUser" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more users">More</a>
-					<a class="button float-right" id="downloadUsers" style="cursor: pointer;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> Download Users</a>
 				</div>
 				<div id="userTable"
 					class="report-container tabs-content padding-small"

@@ -7,10 +7,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.beanio.stream.RecordIOException;
-import org.springframework.util.FileCopyUtils;
 
 import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -96,7 +93,7 @@ public class InorsDownloadUtil {
 				}
 				out.flush();
 				out.close();
-				logger.log(IAppLogger.INFO, "IC Byte Array Created Successfully");
+				logger.log(IAppLogger.INFO, "IC bytes created");
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();
@@ -136,6 +133,7 @@ public class InorsDownloadUtil {
 			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (GrtTO grt : grtList) {
+					// Biographic Data
 					out.write(grt.getL_TapeMode());
 					out.write(delimiter);
 					out.write(grt.getL_Orgtstgpgm());
@@ -178,20 +176,27 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_ChronologicalAgeInMonths());
 					out.write(delimiter);
-					out.write(grt.getL_Ethnicity());
-					out.write(delimiter);
-					out.write(grt.getL_RaceAmericanIndianAlaskaNative());
-					out.write(delimiter);
-					out.write(grt.getL_RaceAsian());
-					out.write(delimiter);
-					out.write(grt.getL_RaceBlackorAfricanAmerican());
-					out.write(delimiter);
-					out.write(grt.getL_RaceNativeHawaiianorOtherPacificIslander());
-					out.write(delimiter);
-					out.write(grt.getL_RaceWhite());
-					out.write(delimiter);
+					// Added in 2011
+					if ((InorsDownloadConstants.YEAR_2013.equals(year))
+							|| (InorsDownloadConstants.YEAR_2012.equals(year))
+							|| (InorsDownloadConstants.YEAR_2011.equals(year))) {
+						out.write(grt.getL_Ethnicity());
+						out.write(delimiter);
+						out.write(grt.getL_RaceAmericanIndianAlaskaNative());
+						out.write(delimiter);
+						out.write(grt.getL_RaceAsian());
+						out.write(delimiter);
+						out.write(grt.getL_RaceBlackorAfricanAmerican());
+						out.write(delimiter);
+						out.write(grt.getL_RaceNativeHawaiianorOtherPacificIslander());
+						out.write(delimiter);
+						out.write(grt.getL_RaceWhite());
+						out.write(delimiter);
+					}
 					out.write(grt.getL_Filler1());
 					out.write(delimiter);
+
+					// Student Special Codes
 					out.write(grt.getL_StudentTestNumberAI());
 					out.write(delimiter);
 					out.write(grt.getL_SpecialCodeJ());
@@ -206,7 +211,7 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_Section504O());
 					out.write(delimiter);
-					out.write(grt.getL_EnglishLearnerELP());
+					out.write(grt.getL_EnglishLearnerELP()); // TODO : Header has a different name in 2010
 					out.write(delimiter);
 					out.write(grt.getL_MigrantQ());
 					out.write(delimiter);
@@ -252,6 +257,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_SocialStudiesPFIndicator());
 					out.write(delimiter);
+
+					// ISTEP Subject Area Number Correct 
 					out.write(grt.getL_ElaNumberCorrect());
 					out.write(delimiter);
 					out.write(grt.getL_MathNumberCorrect());
@@ -260,6 +267,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_SocialStudiesNumberCorrect());
 					out.write(delimiter);
+
+					// ISTEP Subject Area Scale Score
 					out.write(grt.getL_ElaScaleScore());
 					out.write(delimiter);
 					out.write(grt.getL_MathScaleScore());
@@ -276,6 +285,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_SocialStudiesScaleScoreSEM());
 					out.write(delimiter);
+
+					// ISTEP Academic Standards
 					out.write(grt.getL_MasteryIndicator1());
 					out.write(delimiter);
 					out.write(grt.getL_MasteryIndicator2());
@@ -356,6 +367,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_MasteryIndicator40());
 					out.write(delimiter);
+
+					// ISTEP OPI/IPI
 					out.write(grt.getL_OPIIPI1());
 					out.write(delimiter);
 					out.write(grt.getL_OPIIPI2());
@@ -436,6 +449,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_OPIIPI40());
 					out.write(delimiter);
+
+					// ISTEP Item Responses (G 3, 4, 5, 6, 7, 8)
 					out.write(grt.getL_ELACRSession2ItemResponses());
 					out.write(delimiter);
 					out.write(grt.getL_ELACRSession3ItemResponses());
@@ -448,6 +463,8 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_Filler4());
 					out.write(delimiter);
+
+					// CTB Use & ID Fields
 					out.write(grt.getL_SchoolPersonnelNumberSPN1());
 					out.write(delimiter);
 					out.write(grt.getL_SchoolPersonnelNumberSPN2());
@@ -490,99 +507,107 @@ public class InorsDownloadUtil {
 					out.write(delimiter);
 					out.write(grt.getL_CTBUseOnlyElementNumber());
 					out.write(delimiter);
-					out.write(grt.getL_ResolvedReportingStatusEla());
-					out.write(delimiter);
-					out.write(grt.getL_ResolvedReportingStatusMath());
-					out.write(delimiter);
-					out.write(grt.getL_ResolvedReportingStatusScience());
-					out.write(delimiter);
-					out.write(grt.getL_ResolvedReportingStatusSocialStudies());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut1());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut2());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut3());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut4());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut5());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut6());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut7());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut8());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut9());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut10());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut11());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut12());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut13());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut14());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut15());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut16());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut17());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut18());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut19());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut20());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut21());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut22());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut23());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut24());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut25());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut26());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut27());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut28());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut29());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut30());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut31());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut32());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut33());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut34());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut35());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut36());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut37());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut38());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut39());
-					out.write(delimiter);
-					out.write(grt.getL_OPIIPICut40());
-					out.write(delimiter);
+					// Added in 2011
+					if ((InorsDownloadConstants.YEAR_2013.equals(year))
+							|| (InorsDownloadConstants.YEAR_2012.equals(year))
+							|| (InorsDownloadConstants.YEAR_2011.equals(year))) {
+						out.write(grt.getL_ResolvedReportingStatusEla());
+						out.write(delimiter);
+						out.write(grt.getL_ResolvedReportingStatusMath());
+						out.write(delimiter);
+						out.write(grt.getL_ResolvedReportingStatusScience());
+						out.write(delimiter);
+						out.write(grt.getL_ResolvedReportingStatusSocialStudies());
+						out.write(delimiter);
+					}
+					// Added in 2013
+					if (InorsDownloadConstants.YEAR_2013.equals(year)) {
+						out.write(grt.getL_OPIIPICut1());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut2());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut3());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut4());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut5());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut6());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut7());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut8());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut9());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut10());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut11());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut12());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut13());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut14());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut15());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut16());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut17());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut18());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut19());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut20());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut21());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut22());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut23());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut24());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut25());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut26());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut27());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut28());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut29());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut30());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut31());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut32());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut33());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut34());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut35());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut36());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut37());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut38());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut39());
+						out.write(delimiter);
+						out.write(grt.getL_OPIIPICut40());
+						out.write(delimiter);
+					}
 					out.write("\n");
 				}
 				out.flush();
 				out.close();
-				logger.log(IAppLogger.INFO, "GRT Byte Array Created Successfully");
+				logger.log(IAppLogger.INFO, "GRT bytes created");
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();

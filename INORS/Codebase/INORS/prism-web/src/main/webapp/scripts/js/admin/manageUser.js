@@ -527,6 +527,11 @@ $(document).ready(function() {
 							dataType : 'json',
 							cache:false,
 							success : function(data) {
+								if (data != null && data.length > 14){
+									$(".pagination").show(200);
+								} else {
+									$(".pagination").hide(200);
+								}
 								getUserDetails(true, data);
 								enableSorting(true);
 								unblockUI();

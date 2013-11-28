@@ -536,9 +536,9 @@
 				cache:false,
 				success : function(data) {
 					if (data != null && data.length > 14){
-						$("#moreUser").show(200);
+						$(".pagination").show(200);
 					} else {
-						$("#moreUser").hide(200);
+						$(".pagination").hide(200);
 					}
 					getUserDetails(true, data);
 					enableSorting(true);
