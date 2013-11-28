@@ -3,6 +3,7 @@
  * Author: Tata Consultancy Services Ltd.
  * Version: 1
  */
+var ANIMATION_TIME = 200;
 
 $(document).ready(function() {
 	
@@ -507,11 +508,11 @@ function loadManageContentList() {
 			cache:false,
 			success : function(data) {
 				if (data != null && data.length > 14){
-					$(".pagination").show(200);
+					$(".pagination").show(ANIMATION_TIME);
 					$("#moreContents").removeClass("disabled");
 					if($.browser.msie) $("#moreContents").removeClass("disabled-ie");
 				} else {
-					$(".pagination").hide(200);
+					$(".pagination").hide(ANIMATION_TIME);
 					$("#moreContents").addClass("disabled");
 					if($.browser.msie) $("#moreContents").addClass("disabled-ie");
 				}

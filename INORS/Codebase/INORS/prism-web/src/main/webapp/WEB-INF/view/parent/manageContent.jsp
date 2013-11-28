@@ -173,8 +173,7 @@
 
 			<!-- Manage Content table Start -->
 			<div id="contentTableDiv" style="display: none;" class="panel-load-target with-padding margin10 height-mid padding-none">
-				<div
-					class="pagination panel-control margin-bottom-small rounded-border">
+				<div style="display: none;" class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreContents"
 						class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
 						title='<spring:message code="title.content.more"/>'>
