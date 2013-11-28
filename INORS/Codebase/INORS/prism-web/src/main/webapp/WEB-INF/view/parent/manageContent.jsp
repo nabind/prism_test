@@ -323,7 +323,7 @@
 									name="contentDescription"
 									class="validate[required]"/>
 								<textarea
-									id="contentDescriptionEditor"
+									id="contentDescriptionEditorEdit"
 									class="manage-content-textarea validate[required]">
 										<spring:message code="textarea.content.defaultText"/>
 								</textarea>

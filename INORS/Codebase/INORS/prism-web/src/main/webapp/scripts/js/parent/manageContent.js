@@ -159,7 +159,7 @@ function openContentModalToEdit(contentId) {
 				$editContentModal.find('#contentId').val(data.contentId);
 				$editContentModal.find('#contentName').val(data.contentName);
 				$editContentModal.find('#subHeader').val(data.subHeader);
-				$editContentModal.find('#contentDescriptionEditor').val(data.contentDescription);
+				$editContentModal.find('#contentDescriptionEditorEdit').val(data.contentDescription);
 				
 				var profLevel = data.profLevel;
 				$editContentModal.find('#profLevel option').removeAttr('selected');
@@ -311,9 +311,9 @@ function openContentModalToAdd() {
 function setCKEditor(purpose){
 	var $objTextArea;
 	if(purpose == 'add'){
-		$objTextArea = $('#addContentModal #contentDescriptionEditor');
+		$objTextArea = $('#contentDescriptionEditor');
 	}else if(purpose == 'edit'){
-		$objTextArea = $('#editContentModal #contentDescriptionEditor');
+		$objTextArea = $('#contentDescriptionEditorEdit');
 	}
 	
 	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
