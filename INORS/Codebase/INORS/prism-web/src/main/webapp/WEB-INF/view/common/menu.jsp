@@ -3,7 +3,7 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	
 	<!-- Side tabs shortcuts -->
-	<c:set var="tascProduct" value="${PDCT_NAME}"/>
+	<c:set var="inorsProduct" value="${PDCT_NAME}"/>
 	<c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 	<ul id="shortcuts" role="complementary" class="children-tooltip " style="margin-top:34px; top:35px"  >
 		<sec:authorize ifNotGranted="ROLE_PARENT">
@@ -45,9 +45,7 @@
 		</sec:authorize>
 		
 		<sec:authorize ifAnyGranted="ROLE_CTB">
-			<c:if test="${product ne tascProduct}">
-				<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
-			</c:if>
+			<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
 		</sec:authorize>
 		<!-- 
 		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
