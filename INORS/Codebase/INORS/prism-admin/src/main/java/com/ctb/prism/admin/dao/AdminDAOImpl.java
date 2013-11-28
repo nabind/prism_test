@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +18,8 @@ import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.admin.transferobject.EduCenterTO;
@@ -2019,28 +2025,47 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserData(java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<UserDataTO> getUserData(Map<String, String> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
-		String orgNodeId = (String) paramMap.get("tenantId");
+		final String orgNodeId = (String) paramMap.get("tenantId");
 		String adminYear = (String) paramMap.get("adminYear");
 		String userId = (String) paramMap.get("userId");
 		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId + ", adminYear=" + adminYear + ", userId=" + userId);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, Long.parseLong(orgNodeId));
-		if ((lstData != null) && (!lstData.isEmpty())) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				UserDataTO to = new UserDataTO();
-				to.setUserId(fieldDetails.get("USERNAME").toString());
-				to.setFullName(fieldDetails.get("FULLNAME").toString());
-				to.setStatus(fieldDetails.get("STATUS").toString());
-				to.setOrgName(fieldDetails.get("ORG_NODE_NAME").toString());
-				to.setUserRoles(getRolesWithLabel(fieldDetails.get("ORG_LABEL").toString(), fieldDetails.get("DESCRIPTIONS").toString()));
-				userDataList.add(to);
-			}
-		} else {
-			logger.log(IAppLogger.INFO, "No user found in database");
-		}
+		userDataList = (ArrayList<UserDataTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(
+							Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DATA);
+						cs.setLong("P_IN_ORG_NODEID", Long.parseLong(orgNodeId));
+						cs.registerOutParameter("P_OUT_CUR_USER_DATA", oracle.jdbc.OracleTypes.CURSOR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<UserDataTO> userList = new ArrayList<UserDataTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject("P_OUT_CUR_USER_DATA");
+							while (rs.next()) {
+								UserDataTO to = new UserDataTO();
+								to.setUserId(rs.getString("USERNAME"));
+								to.setFullName(rs.getString("FULLNAME"));
+								to.setStatus(rs.getString("STATUS"));
+								to.setOrgName(rs.getString("ORG_NODE_NAME"));
+								to.setUserRoles(getRolesWithLabel(rs.getString("ORG_LABEL"), rs.getString("DESCRIPTION")));
+								userList.add(to);
+							}
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return userList;
+					}
+				});
+		
 		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData()");
 		return userDataList;
 	}
