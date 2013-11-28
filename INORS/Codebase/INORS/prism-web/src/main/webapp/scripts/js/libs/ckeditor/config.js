@@ -9,7 +9,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.uiColor = '#AADC6E';
 	
 	config.toolbar = 'Custom';
-	 
+	config.baseFloatZIndex = 999999; 
 	config.toolbar_Full =
 	[
 		{ name: 'document', items : [ 'Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates' ] },
