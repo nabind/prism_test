@@ -146,7 +146,7 @@
 				<sec:authorize ifNotGranted="ROLE_SSO">
 					<a id="addContent" href="#" class="button glossy margin-left">
 						<span class="button-icon blue-gradient manage-btn"> 
-							<span class="icon-add-user"></span>
+							<span class="icon-page-list"></span>
 						</span> 
 						<spring:message code="button.content.add"/>
 					</a>
