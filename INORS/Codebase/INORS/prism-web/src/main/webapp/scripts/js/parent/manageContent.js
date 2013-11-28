@@ -19,7 +19,7 @@ $(document).ready(function() {
 	}
 	
 	$('#custProdIdManageContent').live('change',function(){
-		refreshContent();
+		hideContentElements();
 		populateDropdownByJson($('#gradeIdManageContent'),null,1,'clear');
 		populateDropdownByJson($('#subtestIdManageContent'),null,1,'clear');
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
@@ -27,16 +27,26 @@ $(document).ready(function() {
 	}); 
 	
 	$('#gradeIdManageContent').live('change',function(){
-		refreshContent();
+		hideContentElements();
 		populateDropdownByJson($('#subtestIdManageContent'),null,1,'clear');
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateSubtest();
 	});
 	
 	$('#subtestIdManageContent').live('change',function(){
-		refreshContent();
+		hideContentElements();
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateObjective();
+	});
+	
+	$('#objectiveIdManageContent').live('change',function(){
+		hideContentElements();
+		showContentElements();
+	});
+	
+	$('#contentTypeIdManageContent').live('change',function(){
+		hideContentElements();
+		showContentElements();
 	});
 	
 	$('#addContent').live("click", function() {
@@ -64,7 +74,7 @@ $(document).ready(function() {
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 		var lastid = $("#contentTable tr:last").attr("value");
 		var checkFirstLoad=false;
-		var param = 'custProdId='+custProdId+'&subtestId='+subtestId+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
+		var paramUrl = 'custProdId='+custProdId+'&subtestId='+subtestId+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
 		currentScrollTop = $("#contentTable").scrollTop();
 		if(!$(this).hasClass('disabled')) {
 			var callingAction = "";
@@ -74,12 +84,12 @@ $(document).ready(function() {
 			$.ajax({
 				type : "GET",
 				url : callingAction,
-				data : param,
+				data : paramUrl,
 				dataType : 'json',
 				cache:false,
 				success : function(data) {
 					if (data != null && data.length > 0){
-					getContentDetails(false,data);
+						getContentDetails(false,data);
 						enableSorting(true);
 						retainUniqueValue();
 						unblockUI();
@@ -425,7 +435,6 @@ function populateObjective(){
 			cache:false,
 			success : function(data) {
 				populateDropdownByJson($('#objectiveIdManageContent'),data,1);
-				$('#refresh-content').show();
 				unblockUI();
 			},
 			error : function(data) {
@@ -499,22 +508,21 @@ function loadManageContentList() {
 			success : function(data) {
 				if (data != null && data.length > 14){
 					$(".pagination").show(200);
-				} else {
-					$(".pagination").hide(200);
-				}
-				getContentDetails(checkFirstLoad,data);
-				enableSorting(true);
-				if (data != null && data.length > 14){
 					$("#moreContents").removeClass("disabled");
 					if($.browser.msie) $("#moreContents").removeClass("disabled-ie");
 				} else {
+					$(".pagination").hide(200);
 					$("#moreContents").addClass("disabled");
 					if($.browser.msie) $("#moreContents").addClass("disabled-ie");
+				}
+				if ( data != null || data != ""){
+					getContentDetails(checkFirstLoad,data);
+					enableSorting(true);
 				}
 				unblockUI();
 			},
 			error : function(data) {
-				$.modal.alert('Error while searching the content');
+				$.modal.alert(strings['script.common.error']);
 				unblockUI();
 			}
 		});
@@ -557,9 +565,21 @@ function enableContentSorting(flag) {
 }
 //============================= AJAX CALL TO TO POPULATE CONTENTS FROM DB TABLES THROUGH PACKAGE BY ARUNAVA END=============================
 
-//==To remove button and table==========
-function refreshContent(){
+//==To hide add,search buttons and table==========
+function hideContentElements(){
 	$('#refresh-content').hide();
+	$('#addContentDiv').hide();
 	$('#contentTableDiv').hide();
 }
+
+//==To show add,search buttons==========
+function showContentElements(){
+	var objectiveId = $('#objectiveIdManageContent').val();
+	if(objectiveId != -1){
+		$('#refresh-content').show();
+		$('#addContentDiv').show();
+	}
+}
+
+
 

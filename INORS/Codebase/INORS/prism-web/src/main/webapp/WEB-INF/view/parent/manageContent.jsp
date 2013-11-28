@@ -37,7 +37,10 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
-									<h6 class="margin-bottom-small"><spring:message code="label.testAdministration"/></h6>
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.testAdministration"/>
+										<span class="icon-star icon-size1 red"></span>
+									</h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="custProdIdManageContent" name="custProdId"
@@ -58,7 +61,10 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
-									<h6 class="margin-bottom-small"><spring:message code="label.grade"/></h6>
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.grade"/>
+										<span class="icon-star icon-size1 red"></span>
+									</h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="gradeIdManageContent" name="gradeId"
@@ -75,7 +81,10 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
-									<h6 class="margin-bottom-small"><spring:message code="label.subtest"/></h6>
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.subtest"/>
+										<span class="icon-star icon-size1 red"></span>
+									</h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="subtestIdManageContent" name="subtestId"
@@ -92,7 +101,10 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
-									<h6 class="margin-bottom-small"><spring:message code="label.objective"/></h6>
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.objective"/>
+										<span class="icon-star icon-size1 red"></span>
+									</h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="objectiveIdManageContent" name="objectiveId"
@@ -109,7 +121,9 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
-									<h6 class="margin-bottom-small"><spring:message code="label.content.type"/></h6>
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.content.type"/>
+									</h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="contentTypeIdManageContent" name="contentTypeId"
@@ -144,12 +158,15 @@
 				</span> --%>
 
 				<sec:authorize ifNotGranted="ROLE_SSO">
+				<div id="addContentDiv" style="display: none;" >
 					<a id="addContent" href="#" class="button glossy margin-left">
 						<span class="button-icon blue-gradient manage-btn"> 
 							<span class="icon-page-list"></span>
 						</span> 
 						<spring:message code="button.content.add"/>
 					</a>
+				</div>
+					
 				</sec:authorize>
 
 			</div>
@@ -160,7 +177,9 @@
 					class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreContents"
 						class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
-						title="Display more users"><spring:message code="button.content.more"/></a>
+						title='<spring:message code="title.content.more"/>'>
+							<spring:message code="button.content.more"/>
+						</a>
 				</div>
 				<div id="contentTable"
 								class="report-container tabs-content padding-small"
@@ -222,16 +241,18 @@
 						</p>
 						
 						<p class="button-height inline-label">
-							<label class="label" for="subHeader"><spring:message code="label.content.subHeader"/><span
-								class="icon-star icon-size1 red"></span></label> 
-								<input type="text"
-								name="subHeader" id="subHeader" style="width: 200px"
-								class="input full-width newReportName validate[required,maxSize[250]]" />
+							<label class="label" for="subHeader">
+								<spring:message code="label.content.subHeader"/>
+								<span class="icon-star icon-size1 red"></span>
+							</label> 
+							<input type="text"
+							name="subHeader" id="subHeader" style="width: 200px"
+							class="input full-width newReportName validate[required,maxSize[250]]" />
 						</p>
 
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="min-height:200px;">
-								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
+								<legend class="legend" style="padding-left:2px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 								</legend>
 								<input type="hidden"
@@ -241,7 +262,7 @@
 								<textarea
 									id="contentDescriptionEditor"
 									class="manage-content-textarea validate[required]">
-									Click here to add text
+										<spring:message code="textarea.content.defaultText"/>
 								</textarea>
 							</fieldset>
 						</p>
@@ -305,7 +326,7 @@
 								<textarea
 									id="contentDescriptionEditor"
 									class="manage-content-textarea validate[required]">
-									Click here to add text
+										<spring:message code="textarea.content.defaultText"/>
 								</textarea>
 							</fieldset>
 						</p>
