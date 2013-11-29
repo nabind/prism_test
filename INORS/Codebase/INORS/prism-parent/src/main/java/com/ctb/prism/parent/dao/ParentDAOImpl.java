@@ -37,7 +37,7 @@ import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
-import oracle.sql.CLOB;
+import java.sql.Clob;
 
 
 @Repository("parentDAO")
@@ -1466,7 +1466,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
 										manageContentTOResult.setContentName(rs.getString("NAME"));	
 										manageContentTOResult.setSubHeader(rs.getString("SUB_HEADER"));
-										manageContentTOResult.setContentDescription(Utils.convertClobToString((CLOB)rs.getClob("CONTENT_DESCRIPTION")));
+										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
 										manageContentTOResult.setProfLevel(rs.getString("PROFICIENCY_LEVEL"));
 									}
 			        			} catch (SQLException e) {
