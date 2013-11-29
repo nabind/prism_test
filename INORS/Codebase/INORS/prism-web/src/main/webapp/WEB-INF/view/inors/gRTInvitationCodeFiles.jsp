@@ -71,22 +71,14 @@
 			</div>
 		</div>
 	</form:form>
-	<div class="columns accordion with-padding" style="margin-bottom: 0">
-		<div class="">
-			<a href="/tasc/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls">2012-13 GRT File Record Layout</a><br />
-			<a href="/tasc/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls">2011-12 GRT File Record Layout</a><br />
-			<a href="/tasc/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls">2010-11 GRT File Record Layout</a><br />
-			<a href="/tasc/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls">2009-10 GRT File Record Layout</a>
-		</div>
+	<div id="grtDiv" class="columns accordion with-padding" style="margin-bottom: 0">
+		<div id="grtLinks" class=""></div>
 		<a class="button float-right" id="downloadGRTFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate GRT File
 		</a>
 	</div>
-	<div class="columns accordion with-padding" style="margin-bottom: 0">
-		<div class="">
-			<a href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls">2012-13 Invitation Code File Record Layout</a><br />
-			<a href="/inors/staticfiles/S2011-12 Invitation Code Layout.xls">2011-12 Invitation Code File Record Layout</a>
-		</div>
+	<div id="icDiv" class="columns accordion with-padding" style="margin-bottom: 0">
+		<div id="icLinks" class=""></div>
 		<a class="button float-right" id="downloadICFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File
 		</a>

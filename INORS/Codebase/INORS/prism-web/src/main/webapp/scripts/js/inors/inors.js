@@ -115,6 +115,11 @@ $(document).ready(function() {
 		populateSchool();
 	});
 	
+	showHideDivs();
+	$('#testAdministration').live('change',function(){
+		showHideDivs();
+	});
+	
 	$("#downloadGRTFile").live("click", function() {
 		var testAdministration = $("#testAdministration").val();
 		var testProgram = $("#testProgram").val();
@@ -485,4 +490,35 @@ function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectF
 	elementObject.html(option);
 	elementObject.change();
 	elementObject.trigger('update-select-list');
+}
+
+function showHideDivs() {
+	var testAdministration = $("#testAdministration").val();
+	if (testAdministration) {
+		var tokens = testAdministration.split("~");
+		// alert(tokens[2]);
+		if ("2010" == tokens[2]) {
+			$("#icDiv").hide();
+			$("#grtDiv").show();
+			$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
+		} else if ("2011" == tokens[2]) {
+			$("#icDiv").hide();
+			$("#grtDiv").show();
+			$("#grtLinks").html('<a class="button" id="grt2011" href="/inors/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2010-11 GRT File Record Layout</a><br />');
+		} else if ("2012" == tokens[2]) {
+			$("#icDiv").show();
+			$("#grtDiv").show();
+			$("#icLinks").html('<a class="button" id="ic2012" href="/inors/staticfiles/S2011-12 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 Invitation Code File Record Layout</a>');
+			$("#grtLinks").html('<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a><br />');
+		} else if ("2013" == tokens[2]) {
+			$("#icDiv").show();
+			$("#grtDiv").show();
+			$("#icLinks").html('<a class="button" id="ic2013" href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a><br />');
+			$("#grtLinks").html('<a class="button" id="grt2013" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 GRT File Record Layout</a><br />');
+		} else {
+			$("#icDiv").hide();
+			$("#grtDiv").hide();
+			$.modal.alert('Unknown Test Administration');
+		}
+	}
 }
