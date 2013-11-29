@@ -57,8 +57,7 @@ $(document).ready(function() {
 	$('#addContent').live("click", function() {
 		if ($('#objectiveIdManageContent').val() == null || $('#objectiveIdManageContent').val() == "" || $('#objectiveIdManageContent').val() == "-1" ) {
 			$.modal.alert(strings['script.content.addContent']);
-		}
-		else {
+		}else {
 			resetModalForm("addNewContent");
 			resetModalForm("editContent");
 			openContentModalToAdd();
@@ -214,34 +213,45 @@ function openContentModalToEdit(contentId) {
 //============Update Content ===============
 function updateContent(form, win) {
 	blockUI();
+	var updateContentFlag = true;
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
+		if(editorVal == ""){
+			updateContentFlag = false;
+			break;
+		}
 	    $('#editContentModal #contentDescription').val(editorVal);
 	}
-	var formObj = $('#editContent').serialize();
 	
-	$.ajax({
-		type : "POST",
-		url : 'updateContent.do',
-		data : formObj,
-		dataType: 'json',
-		cache:false,
-		success : function(data) {
-			if(data.value >= 1) {
-				win.closeModal(); 
-				loadManageContentList();
-				$.modal.alert(strings['script.content.editSuccess']);
-				unblockUI();
-			} else {
+	if(updateContentFlag == true){
+		var formObj = $('#editContent').serialize();
+		$.ajax({
+			type : "POST",
+			url : 'updateContent.do',
+			data : formObj,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.value >= 1) {
+					win.closeModal(); 
+					loadManageContentList();
+					$.modal.alert(strings['script.content.editSuccess']);
+					unblockUI();
+				} else {
+					unblockUI();
+					$.modal.alert(strings['script.user.saveError']);
+				}
+			},
+			error : function(data) {
 				unblockUI();
 				$.modal.alert(strings['script.user.saveError']);
 			}
-		},
-		error : function(data) {
-			unblockUI();
-			$.modal.alert(strings['script.user.saveError']);
-		}
-	});
+		});
+	}else{
+		unblockUI();
+		$.modal.alert(strings['error.contentDesc.required']);
+	}
+	
 }
 
 
@@ -329,52 +339,58 @@ function setCKEditor(purpose){
 //============Insert Content ===============
 function addNewContent(form, win) {
 	blockUI();
-	var custProdId = $('#custProdIdManageContent').val();
-	var gradeId = $('#gradeIdManageContent').val();
-	var subtestId = $('#subtestIdManageContent').val();
-	var objectiveId = $('#objectiveIdManageContent').val();
-	var contentTypeId = $('#contentTypeIdManageContent').val();
-	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-	
-	var $addContentModal = $('#addContentModal');
-	$addContentModal.find('#custProdId').val(custProdId);
-	$addContentModal.find('#gradeId').val(gradeId);
-	$addContentModal.find('#subtestId').val(subtestId);
-	$addContentModal.find('#objectiveId').val(objectiveId);
-	$addContentModal.find('#contentType').val(contentTypeId);
-	$addContentModal.find('#contentTypeName').val(contentTypeName);
-	
-	//TODO Remove blocked section after implementing CK Editor
-	
+	var addNewContentFlag = true;
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
+		if(editorVal == ""){
+			addNewContentFlag = false;
+			break;
+		}
 	    $('#addContentModal #contentDescription').val(editorVal);
 	}
-	
-	var formObj = $('#addNewContent').serialize();
-	
-	$.ajax({
-		type : "POST",
-		url : 'addNewContent.do',
-		data : formObj,
-		dataType: 'json',
-		cache:false,
-		success : function(data) {
-			if(data.value >= 1) {
-				win.closeModal(); 
-				loadManageContentList();
-				unblockUI();
-				$.modal.alert(strings['script.content.addSuccess']);
-			} else {
+	if(addNewContentFlag == true){
+		var custProdId = $('#custProdIdManageContent').val();
+		var gradeId = $('#gradeIdManageContent').val();
+		var subtestId = $('#subtestIdManageContent').val();
+		var objectiveId = $('#objectiveIdManageContent').val();
+		var contentTypeId = $('#contentTypeIdManageContent').val();
+		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+		
+		var $addContentModal = $('#addContentModal');
+		$addContentModal.find('#custProdId').val(custProdId);
+		$addContentModal.find('#gradeId').val(gradeId);
+		$addContentModal.find('#subtestId').val(subtestId);
+		$addContentModal.find('#objectiveId').val(objectiveId);
+		$addContentModal.find('#contentType').val(contentTypeId);
+		$addContentModal.find('#contentTypeName').val(contentTypeName);
+		
+		var formObj = $('#addNewContent').serialize();
+		$.ajax({
+			type : "POST",
+			url : 'addNewContent.do',
+			data : formObj,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.value >= 1) {
+					win.closeModal(); 
+					loadManageContentList();
+					unblockUI();
+					$.modal.alert(strings['script.content.addSuccess']);
+				} else {
+					unblockUI();
+					$.modal.alert(strings['script.user.saveError']);
+				}
+			},
+			error : function(data) {
 				unblockUI();
 				$.modal.alert(strings['script.user.saveError']);
 			}
-		},
-		error : function(data) {
-			unblockUI();
-			$.modal.alert(strings['script.user.saveError']);
-		}
-	});
+		});
+	}else{
+		unblockUI();
+		$.modal.alert(strings['error.contentDesc.required']);
+	}
 }
 
 //============Load grade id, name depending upon custProdId ===============

@@ -56,4 +56,5 @@
 	strings['script.content.addSuccess'] = "<spring:message code='script.content.addSuccess' javaScriptEscape='true' />";
 	strings['script.content.editSuccess'] = "<spring:message code='script.content.editSuccess' javaScriptEscape='true' />";
 	strings['script.content.deleteSuccess'] = "<spring:message code='script.content.deleteSuccess' javaScriptEscape='true' />";
+	strings['error.contentDesc.required'] = "<spring:message code='error.contentDesc.required' javaScriptEscape='true' />";
 </script>
