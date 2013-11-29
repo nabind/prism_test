@@ -251,8 +251,9 @@
 
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="min-height:200px;">
-								<legend class="legend" style="padding-left:2px" for="contentDescriptionEditor">
+								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
+									<span class="icon-star icon-size1 red"></span>
 								</legend>
 								<input type="hidden"
 									id="contentDescription"
@@ -315,8 +316,9 @@
 
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="min-height:200px;">
-								<legend class="legend" style="padding-left:0px" for="contentDescriptionEditor">
+								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
+									<span class="icon-star icon-size1 red"></span>
 								</legend>
 								<input type="hidden"
 									id="contentDescription"
