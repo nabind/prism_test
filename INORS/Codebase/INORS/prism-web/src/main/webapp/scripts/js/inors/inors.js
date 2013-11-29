@@ -450,6 +450,7 @@ function populateSchool(){
 					populateSchoolDropdownByJson($('#school'),data,1);
 				} else {
 					$.modal.alert("No School Found for this Corp/Diocese");
+					populateSchoolDropdownByJson($('#school'),null,1,1);
 				}
 				unblockUI();
 			},
