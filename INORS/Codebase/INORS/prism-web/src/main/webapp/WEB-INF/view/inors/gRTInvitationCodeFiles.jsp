@@ -20,14 +20,14 @@
 										<option value="IMAST~Spring~2013">IMAST Spring 2013</option>
 										<option value="IREAD-3~Spring~2013">IREAD-3 Spring 2013</option>
 										<option value="IREAD-3~Summer~2013">IREAD-3 Summer 2013</option>
-										<option value="ISTEP~Spring~2012">ISTEP Spring 2012</option>
+										<%-- option value="ISTEP~Spring~2012">ISTEP Spring 2012</option>
 										<option value="IMAST~Spring~2012">IMAST Spring 2012</option>
 										<option value="IREAD-3~Spring~2012">IREAD-3 Spring 2012</option>
 										<option value="IREAD-3~Summer~2012">IREAD-3 Summer 2012</option>
 										<option value="ISTEP~Spring~2011">ISTEP Spring 2011</option>
 										<option value="IMAST~Spring~2011">IMAST Spring 2011</option>
 										<option value="ISTEP~Spring~2010">ISTEP Spring 2010</option>
-										<option value="IMAST~Spring~2010">IMAST Spring 2010</option>
+										<option value="IMAST~Spring~2010">IMAST Spring 2010</option--%>
 									</select>
 								</p>
 							</div>
@@ -66,18 +66,26 @@
 								</p>
 							</div>
 						</div>
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Today's Date(mm-dd,yyyy)</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<input id="today" name="today" tupe="text" value="" disabled="disabled" />
+								</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</form:form>
-	<div id="grtDiv" class="columns accordion with-padding" style="margin-bottom: 0">
+	<div id="grtDiv" class="columns accordion with-padding hidden" style="margin-bottom: 0">
 		<div id="grtLinks" class=""></div>
 		<a class="button float-right" id="downloadGRTFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate GRT File
 		</a>
 	</div>
-	<div id="icDiv" class="columns accordion with-padding" style="margin-bottom: 0">
+	<div id="icDiv" class="columns accordion with-padding hidden" style="margin-bottom: 0">
 		<div id="icLinks" class=""></div>
 		<a class="button float-right" id="downloadICFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File
