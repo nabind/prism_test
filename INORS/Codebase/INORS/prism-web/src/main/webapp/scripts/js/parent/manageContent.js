@@ -12,7 +12,7 @@ $(document).ready(function() {
 		if(allContents != null && allContents.length > 0) {
 			$('#report-list').tablesorter({
 				headers: {
-					5: { sorter: false }
+					4: { sorter: false }
 				},
 				sortList: [[0,1]]
 			});
@@ -601,6 +601,3 @@ function showContentElements(){
 		$('#addContentDiv').show();
 	}
 }
-
-
-
