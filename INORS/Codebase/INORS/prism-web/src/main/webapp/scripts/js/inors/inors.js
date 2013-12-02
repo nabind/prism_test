@@ -473,12 +473,13 @@ function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectF
 	elementObject.empty();
 	var option = "";
 	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select</option>";
+		option += "<option value='-1'>Please Select Corp/Diocese</option>";
 	}
 	
 	if((typeof clearFlag === 'undefined')) {
 		if(jsonDataValueName != null) {
 			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
+				option += '<option value="ALL">All Schools</option>';
 				$.each(jsonDataValueName, function(index, data) {
 					option += '<option value='+data.value+'>'+data.name+'</option>';
 			    });

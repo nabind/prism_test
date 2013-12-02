@@ -2023,7 +2023,7 @@ public class AdminController {
 		List<UserDataTO> userList = (List<UserDataTO>) adminService.getUserData(paramMap);
 		data = InorsDownloadUtil.getUserDataBytes(userList, "\t");
 		try {
-			data = FileUtil.xlsxBytes(data, "\t");
+			data = FileUtil.xlsxBytes(data, "\t", true);
 			data = FileUtil.zipBytes(InorsDownloadConstants.USERS_FILE_PATH, data);
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "zipBytes - ", e);

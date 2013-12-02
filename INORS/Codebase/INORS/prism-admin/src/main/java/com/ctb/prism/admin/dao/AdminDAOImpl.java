@@ -2056,7 +2056,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 								to.setFullName(rs.getString("FULLNAME"));
 								to.setStatus(rs.getString("STATUS"));
 								to.setOrgName(rs.getString("ORG_NODE_NAME"));
-								to.setUserRoles(getRolesWithLabel(rs.getString("ORG_LABEL"), rs.getString("DESCRIPTION")));
+								//to.setUserRoles(getRolesWithLabel(rs.getString("ORG_LABEL"), rs.getString("DESCRIPTION")));
+								to.setUserRoles(rs.getString("DESCRIPTION"));
 								userList.add(to);
 							}
 						} catch (SQLException e) {

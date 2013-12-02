@@ -14,6 +14,12 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -44,7 +50,19 @@ public class FileUtil {
 	 * @param fileName
 	 */
 	public static void browserDownload(HttpServletResponse response, byte[] data, String fileName) {
-		response.setContentType("application/force-download");
+		browserDownload(response, data, fileName, "application/force-download");
+	}
+
+	/**
+	 * Method to download a file through client browser.
+	 * 
+	 * @param response
+	 * @param data
+	 * @param fileName
+	 * @param contentType
+	 */
+	public static void browserDownload(HttpServletResponse response, byte[] data, String fileName, String contentType) {
+		response.setContentType(contentType);
 		response.setContentLength(data.length);
 		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 		try {
@@ -87,7 +105,7 @@ public class FileUtil {
 	 * @param delimiter
 	 * @return
 	 */
-	public static byte[] xlsxBytes(byte[] input, String delimiter) {
+	public static byte[] xlsxBytes(byte[] input, String delimiter, boolean headerStyle) {
 		InputStream is = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		BufferedReader bfReader = null;
@@ -98,13 +116,54 @@ public class FileUtil {
 			XSSFSheet sheet = workBook.createSheet("sheet1");
 			String currentLine = null;
 			int rowNum = 0;
+			XSSFFont font = workBook.createFont();
+			font.setFontHeightInPoints((short) 10);
+			font.setFontName("Arial");
+			font.setColor(IndexedColors.WHITE.getIndex());
+			font.setBold(true);
+			font.setItalic(false);
+			XSSFCellStyle  hStyle = workBook.createCellStyle();
+			XSSFCellStyle  style = workBook.createCellStyle();
+			if (style == null) {
+				style = workBook.createCellStyle();
+				hStyle = workBook.createCellStyle();
+			}
+			style.setBorderRight(CellStyle.BORDER_THIN);
+			style.setBorderBottom(CellStyle.BORDER_THIN);
+			hStyle.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			hStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			hStyle.setFont(font);
+			
 			while ((currentLine = bfReader.readLine()) != null) {
 				String str[] = currentLine.split(delimiter);
 				XSSFRow currentRow = sheet.createRow(rowNum++);
+				
+				
 				for (int i = 0; i < str.length; i++) {
-					currentRow.createCell(i).setCellValue(str[i]);
+					XSSFCell currentCell = currentRow.createCell(i);
+					currentCell.setCellValue(str[i]);
+					if (rowNum == 1) {
+						currentCell.setCellStyle(hStyle);
+					} else {
+						//currentRow.setRowStyle(style);
+					}
 				}
+				
 			}
+		//	if(headerStyle){
+				//workBook = styleHeader(workBook);
+		//	}
+			
+			//increase row height to accomodate two lines of text
+		    //row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
+
+		    //adjust column width to fit the content
+			sheet.autoSizeColumn(0);
+			sheet.autoSizeColumn(1);
+			sheet.autoSizeColumn(2);
+			sheet.autoSizeColumn(3);
+			sheet.autoSizeColumn(4);
+			
 			workBook.write(baos);
 			logger.log(IAppLogger.INFO, "xlsx bytes created");
 		} catch (IOException e) {
@@ -126,5 +185,25 @@ public class FileUtil {
 			}
 		}
 		return baos.toByteArray();
+	}
+
+	private static XSSFWorkbook styleHeader(XSSFWorkbook wb) {
+		Row row = wb.getSheet("sheet1").getRow(0);
+		CellStyle style = null;
+
+		XSSFFont font = wb.createFont();
+		font.setFontHeightInPoints((short) 10);
+		font.setFontName("Arial");
+		font.setColor(IndexedColors.WHITE.getIndex());
+		font.setBold(true);
+		font.setItalic(false);
+
+		style = row.getRowStyle();
+		if (style == null) style = wb.createCellStyle();
+		style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setAlignment(CellStyle.ALIGN_CENTER);
+		style.setFont(font);
+		return wb;
 	}
 }
