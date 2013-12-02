@@ -527,12 +527,13 @@ function loadManageContentList() {
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
-				if (data != null && data.length > 14){
-					$(".pagination").show(ANIMATION_TIME);
+				$('#contentTableDiv').show();
+				if (data != null && data != "" && data.length > 14){
+					$("#moreDiv").show(ANIMATION_TIME);
 					$("#moreContents").removeClass("disabled");
 					if($.browser.msie) $("#moreContents").removeClass("disabled-ie");
 				} else {
-					$(".pagination").hide(ANIMATION_TIME);
+					$("#moreDiv").hide(ANIMATION_TIME);
 					$("#moreContents").addClass("disabled");
 					if($.browser.msie) $("#moreContents").addClass("disabled-ie");
 				}
@@ -570,7 +571,6 @@ function getContentDetails(checkFirstLoad,data) {
 						+'</td>'
 					+'</tr>'
 	});
-	$('#contentTableDiv').show();
 	$("#content_details").append(manageContent);
 	$("#report-list").trigger("update");
 	$(".headerSortDown").removeClass("headerSortDown");
