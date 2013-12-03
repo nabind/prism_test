@@ -315,7 +315,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 				leastNode.getOrgCode(),// 4
 				leastNode.getOrgLabel(), // 5
 				leastNode.getOrgLevel(),// 6
-				null, // org node id //7
+				leastNode.getOrgNodeId(), // org node id //7
 				studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // 8, 9
 				studentDataLoadTO.getPartitionName() // 10
 		    );
