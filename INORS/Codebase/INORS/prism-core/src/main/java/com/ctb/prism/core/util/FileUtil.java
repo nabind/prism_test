@@ -116,54 +116,27 @@ public class FileUtil {
 			XSSFSheet sheet = workBook.createSheet("sheet1");
 			String currentLine = null;
 			int rowNum = 0;
-			XSSFFont font = workBook.createFont();
-			font.setFontHeightInPoints((short) 10);
-			font.setFontName("Arial");
-			font.setColor(IndexedColors.WHITE.getIndex());
-			font.setBold(true);
-			font.setItalic(false);
-			XSSFCellStyle  hStyle = workBook.createCellStyle();
-			XSSFCellStyle  style = workBook.createCellStyle();
-			if (style == null) {
-				style = workBook.createCellStyle();
-				hStyle = workBook.createCellStyle();
-			}
-			style.setBorderRight(CellStyle.BORDER_THIN);
-			style.setBorderBottom(CellStyle.BORDER_THIN);
-			hStyle.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-			hStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-			hStyle.setFont(font);
-			
+
+			// write the excell sheet contents
 			while ((currentLine = bfReader.readLine()) != null) {
 				String str[] = currentLine.split(delimiter);
 				XSSFRow currentRow = sheet.createRow(rowNum++);
-				
-				
 				for (int i = 0; i < str.length; i++) {
 					XSSFCell currentCell = currentRow.createCell(i);
 					currentCell.setCellValue(str[i]);
-					if (rowNum == 1) {
-						currentCell.setCellStyle(hStyle);
-					} else {
-						//currentRow.setRowStyle(style);
+					if (headerStyle && rowNum == 1) {
+						currentCell.setCellStyle(getHeaderStyle(workBook));
 					}
 				}
-				
 			}
-		//	if(headerStyle){
-				//workBook = styleHeader(workBook);
-		//	}
-			
-			//increase row height to accomodate two lines of text
-		    //row.setHeightInPoints((2*sheet.getDefaultRowHeightInPoints()));
 
-		    //adjust column width to fit the content
-			sheet.autoSizeColumn(0);
-			sheet.autoSizeColumn(1);
-			sheet.autoSizeColumn(2);
-			sheet.autoSizeColumn(3);
-			sheet.autoSizeColumn(4);
-			
+			// adjust column width to fit the content
+			short minColIx = sheet.getRow(0).getFirstCellNum();
+			short maxColIx = sheet.getRow(0).getLastCellNum();
+			for (short colIx = minColIx; colIx < maxColIx; colIx++) {
+				sheet.autoSizeColumn(colIx);
+			}
+
 			workBook.write(baos);
 			logger.log(IAppLogger.INFO, "xlsx bytes created");
 		} catch (IOException e) {
@@ -187,23 +160,24 @@ public class FileUtil {
 		return baos.toByteArray();
 	}
 
-	private static XSSFWorkbook styleHeader(XSSFWorkbook wb) {
-		Row row = wb.getSheet("sheet1").getRow(0);
-		CellStyle style = null;
-
-		XSSFFont font = wb.createFont();
+	/**
+	 * This method is responsible for setting header font, bold, color,
+	 * background.
+	 * 
+	 * @param workBook
+	 * @return
+	 */
+	private static XSSFCellStyle getHeaderStyle(XSSFWorkbook workBook) {
+		XSSFFont font = workBook.createFont();
 		font.setFontHeightInPoints((short) 10);
 		font.setFontName("Arial");
 		font.setColor(IndexedColors.WHITE.getIndex());
 		font.setBold(true);
 		font.setItalic(false);
-
-		style = row.getRowStyle();
-		if (style == null) style = wb.createCellStyle();
-		style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		style.setAlignment(CellStyle.ALIGN_CENTER);
-		style.setFont(font);
-		return wb;
+		XSSFCellStyle hStyle = workBook.createCellStyle();
+		hStyle.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		hStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		hStyle.setFont(font);
+		return hStyle;
 	}
 }
