@@ -78,7 +78,7 @@ public interface IUserQuery {
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" ) HIER  ",
 			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 ", 
-			" AND orguser.adminid = ? AND orguser.ORG_NODE_LEVEL NOT IN (0,4) AND  USR.ACTIVATION_STATUS != 'SS' ",
+			" AND orguser.adminid = ?  AND  USR.ACTIVATION_STATUS != 'SS' ",
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
 			" ORDER BY UPPER(ABC.USERNAME)");	
@@ -98,7 +98,6 @@ public interface IUserQuery {
 			" ) HIER  ",
 			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",  
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
-			" and orguser.ORG_NODE_LEVEL in (1,3)", 
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
 			" ORDER BY UPPER(ABC.USERNAME)");
@@ -118,7 +117,6 @@ public interface IUserQuery {
 			" ) HIER  ",
 			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",  
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
-			" and orguser.ORG_NODE_LEVEL in (1,3) ", 
 			" AND (UPPER(USR.USERNAME) LIKE UPPER(?)  ",
 			"   OR UPPER(USR.LAST_NAME)  LIKE UPPER(?)  ",
 			" 	OR UPPER(USR.FIRST_NAME) LIKE UPPER(?))  ",
