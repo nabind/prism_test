@@ -2034,39 +2034,18 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId + ", adminYear=" + adminYear + ", userId=" + userId);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		userDataList = (ArrayList<UserDataTO>) getJdbcTemplatePrism().execute(
-				new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(
-							Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DATA);
-						cs.setLong(1, Long.parseLong(orgNodeId));
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						ResultSet rs = null;
-						List<UserDataTO> userList = new ArrayList<UserDataTO>();
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(2);
-							while (rs.next()) {
-								UserDataTO to = new UserDataTO();
-								to.setUserId(rs.getString("USERNAME"));
-								to.setFullName(rs.getString("FULLNAME"));
-								to.setStatus(rs.getString("STATUS"));
-								to.setOrgName(rs.getString("ORG_NODE_NAME"));
-								//to.setUserRoles(getRolesWithLabel(rs.getString("ORG_LABEL"), rs.getString("DESCRIPTION")));
-								to.setUserRoles(rs.getString("DESCRIPTION"));
-								userList.add(to);
-							}
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						return userList;
-					}
-				});
-		
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgNodeId);
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				UserDataTO to = new UserDataTO();
+				to.setUserId(fieldDetails.get("USERNAME").toString());
+				to.setFullName(fieldDetails.get("FULLNAME").toString());
+				to.setStatus(fieldDetails.get("STATUS").toString());
+				to.setOrgName(fieldDetails.get("ORG_NODE_NAME").toString());
+				to.setUserRoles(getRolesWithLabel(fieldDetails.get("ORG_LABEL").toString(), fieldDetails.get("DESCRIPTION").toString()));
+				userDataList.add(to);
+			}
+		}
 		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData()");
 		return userDataList;
 	}

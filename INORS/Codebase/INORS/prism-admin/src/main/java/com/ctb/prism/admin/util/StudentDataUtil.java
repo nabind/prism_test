@@ -311,10 +311,10 @@ public class StudentDataUtil {
 		return str.substring(str.length() - 4);
 	}
 	
-	public static String getXMLString() {
+	public static String getXMLString(StudentListTO to) {
 		XStream xs = new XStream(new StaxDriver(new XmlFriendlyNameCoder("_-", "_")));
 		xs.autodetectAnnotations(true);
-		String xml = xs.toXML(mockStudentList()); // Pass the actual object here
+		String xml = xs.toXML(to);
 		System.out.println(xml);
 		return xml;
 	}

@@ -779,7 +779,5 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			"UNION ",
 			"SELECT DECODE(COUNT(*), 0, 'O', 'E') AS USER_TYPE FROM EDU_CENTER_USER_LINK WHERE USERID IN (SELECT USERID FROM USERS WHERE UPPER(USERNAME) = UPPER(?))"
 			);
-    
-	public static final String GET_USER_DATA = "{CALL PKG_PRF_ORG_USR.SP_GET_USER_DATA(?, ?)}";
 }
 

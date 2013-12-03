@@ -12,11 +12,11 @@ import com.ctb.prism.core.transferobject.BaseTO;
 public class UserDataTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 
-	private String userId;
-	private String fullName;
-	private String status;
-	private String orgName;
-	private String userRoles;
+	private String userId = "";
+	private String fullName = "";
+	private String status = "";
+	private String orgName = "";
+	private String userRoles = "";
 
 	/**
 	 * @return the userId
