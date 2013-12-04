@@ -217,6 +217,7 @@ function updateContent(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
+			$('.mandatoryDescription').show();
 			updateContentFlag = false;
 			break;
 		}
@@ -249,7 +250,6 @@ function updateContent(form, win) {
 		});
 	}else{
 		unblockUI();
-		$.modal.alert(strings['error.contentDesc.required']);
 	}
 	
 }
@@ -343,7 +343,7 @@ function addNewContent(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
-   		    jQuery('#mandatoryDescription').show();
+			$('.mandatoryDescription').show();
 			addNewContentFlag = false;
 			break;
 		}

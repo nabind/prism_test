@@ -247,7 +247,9 @@
 							name="subHeader" id="subHeader" style="width: 200px"
 							class="input full-width newReportName" />
 						</p>
-
+						
+						
+                        <div class="mandatoryDescription" style="display:none">This field is required</div>
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="width:700px;min-height:200px;">
 								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
@@ -311,7 +313,7 @@
 								name="subHeader" id="subHeader" style="width: 200px"
 								class="input full-width newReportName" />
 						</p>
-
+                       <div class="mandatoryDescription" style="display:none">This field is required</div>
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="width:700px;min-height:200px;">
 								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
