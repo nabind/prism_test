@@ -237,6 +237,7 @@ function updateContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					$.modal.alert(strings['script.content.editSuccess']);
+					$('.mandatoryDescription').hide();
 					unblockUI();
 				} else {
 					unblockUI();
@@ -348,6 +349,7 @@ function addNewContent(form, win) {
 			break;
 		}
 	    $('#addContentModal #contentDescription').val(editorVal);
+	    
 	}
 	if(addNewContentFlag == true){
 		var custProdId = $('#custProdIdManageContent').val();
@@ -377,7 +379,9 @@ function addNewContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					unblockUI();
+					$('.mandatoryDescription').hide();
 					$.modal.alert(strings['script.content.addSuccess']);
+					
 				} else {
 					unblockUI();
 					$.modal.alert(strings['script.user.saveError']);
