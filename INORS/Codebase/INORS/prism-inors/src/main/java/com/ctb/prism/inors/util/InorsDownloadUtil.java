@@ -1192,7 +1192,7 @@ public class InorsDownloadUtil {
 				}
 				out.flush();
 				out.close();
-				logger.log(IAppLogger.INFO, "User Byte Array Created Successfully");
+				logger.log(IAppLogger.INFO, "User Byte Array [" + out.size() + "] Created Successfully");
 			} catch (RecordIOException e) {
 				logger.log(IAppLogger.ERROR, "", e);
 				e.printStackTrace();

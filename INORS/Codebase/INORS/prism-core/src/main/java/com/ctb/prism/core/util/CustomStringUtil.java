@@ -1,5 +1,7 @@
 package com.ctb.prism.core.util;
 
+import java.util.concurrent.TimeUnit;
+
 public class CustomStringUtil {
 
 	public static String manageString(String value) {
@@ -105,5 +107,21 @@ public class CustomStringUtil {
 		int index = query.indexOf(c);
 		sb.replace(index, index + 1, newValue);
 		return sb.toString();
+	}
+
+	/**
+	 * Converts millisecond to hour:minute:second format
+	 * 
+	 * @param millis
+	 * @return
+	 */
+	public static String getHMSTimeFormat(long millis) {
+		String hms = String.format(
+			"%02d:%02d:%02d",
+			TimeUnit.MILLISECONDS.toHours(millis),
+			TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+			TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+		);
+		return hms;
 	}
 }

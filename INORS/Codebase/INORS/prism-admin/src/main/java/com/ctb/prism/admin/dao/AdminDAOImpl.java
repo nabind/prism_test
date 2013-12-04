@@ -2027,6 +2027,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<UserDataTO> getUserData(Map<String, String> paramMap){
+		long start = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
 		final String orgNodeId = (String) paramMap.get("tenantId");
 		String adminYear = (String) paramMap.get("adminYear");
@@ -2046,7 +2047,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				userDataList.add(to);
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData()");
+		long end = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData() : " + CustomStringUtil.getHMSTimeFormat(end - start));
 		return userDataList;
 	}
 	

@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -67,7 +66,7 @@ public class FileUtil {
 		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 		try {
 			FileCopyUtils.copy(data, response.getOutputStream());
-			logger.log(IAppLogger.INFO, fileName + " written to output stream");
+			logger.log(IAppLogger.INFO, fileName + "[" + data.length + "] written to output stream");
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, fileName + " - ", e);
 			e.printStackTrace();
@@ -92,7 +91,7 @@ public class FileUtil {
 		zos.write(input);
 		zos.closeEntry();
 		zos.close();
-		logger.log(IAppLogger.INFO, "zip bytes created");
+		logger.log(IAppLogger.INFO, "zip bytes [" + baos.size() + "] created");
 		return baos.toByteArray();
 	}
 
@@ -138,7 +137,7 @@ public class FileUtil {
 			}
 
 			workBook.write(baos);
-			logger.log(IAppLogger.INFO, "xlsx bytes created");
+			logger.log(IAppLogger.INFO, "xlsx bytes [" + baos.size() + "] created");
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
