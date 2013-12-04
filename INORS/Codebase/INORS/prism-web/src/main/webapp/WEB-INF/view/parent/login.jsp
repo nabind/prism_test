@@ -75,7 +75,7 @@
 <body style="" class="">
 	<a href="#" id="open-menu" class=""><span>Login</span></a>
 	<div id="logo" class="newStyle" style="border-bottom: 1px solid #CCC">
-		<h1><span class="logo-title"> <a href="#"> <img alt="" src="<spring:theme code="contract.logo.ctb" />"> </a></span>
+		<h1><span class="logo-title"> <a href="#"> <img alt="" src="<spring:theme code="contract.logo.header" />"> </a></span>
 		<br>
 		<span class="description"> </span></h1>
 	</div>
@@ -84,7 +84,7 @@
 	<div class="columnss">
 		<div class="seven-columns">
 			<div>
-				<img alt="" src="<spring:theme code="login.welcome" />">
+				<img alt="" src="themes/acsi/img/login_welcome_adult.jpg">
 			</div>
 			<div class="boxsshade">
 				<div class="rowTwo">

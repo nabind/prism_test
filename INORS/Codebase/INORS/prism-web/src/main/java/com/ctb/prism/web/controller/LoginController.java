@@ -106,6 +106,47 @@ public class LoginController{
 		return null;
 	}
 	
+	
+	/**
+	 * This method is to display landing page
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	 @RequestMapping(value = "/landing", method = RequestMethod.GET)
+	 public ModelAndView loadLandingPage(HttpServletRequest request,
+		  HttpServletResponse response) throws ServletException, IOException {
+		 
+		  logger.log(IAppLogger.INFO, "Enter: LoginController - loadLandingPage");
+		  //String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
+		 // String mess_login_error = (String)request.getParameter("login_error");
+		//  String message = null;
+		 /* if("1".equalsIgnoreCase(mess_login_error)){
+			  logger.log(IAppLogger.ERROR, "Invalid Login");
+			  message = "error.login.invalidlogin";
+		  } else if("2".equalsIgnoreCase(mess_login_error)){
+			  logger.log(IAppLogger.ERROR, "Session Expired");
+			  message = "error.login.sessionexpired";
+		  } else {
+			  //this is proper login
+		  }*/
+		  ModelAndView modelAndView = new ModelAndView("common/landing");
+		/*  if(IApplicationConstants.TRUE.equals(parent)) {
+			  modelAndView = new ModelAndView("parent/login");
+		  } else {
+			  modelAndView = new ModelAndView("user/login");
+		  }*/
+		  //modelAndView.addObject("message", message);
+		 
+		  logger.log(IAppLogger.INFO,
+					"Exit: LoginController - loadLandingPage");
+		  return modelAndView;
+	  }
+	
+	
+	
 	/**
 	 * This method is to display login page
 	 * @param request
@@ -176,6 +217,15 @@ public class LoginController{
 		  logger.log(IAppLogger.INFO, "Enter: LoginController - userlogin");
 		  String mess_login_error = (String)request.getParameter("login_error");
 		  String message = null;
+		  
+		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("PRE_LOG_IN", IApplicationConstants.PRE_LOG_IN);
+		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
+		  logInInfoMessage = logInInfoMessage.replaceAll("<p>", "");
+		  logInInfoMessage = logInInfoMessage.replaceAll("</p>", "");
+		  
 		  if("1".equalsIgnoreCase(mess_login_error)){
 			  logger.log(IAppLogger.ERROR, "Invalid Login");
 			  message = "error.login.invalidlogin";
@@ -188,6 +238,11 @@ public class LoginController{
 		  ModelAndView modelAndView = null;
 		  modelAndView = new ModelAndView("user/userlogin");
 		  modelAndView.addObject("message", message);
+		  
+		  if(null!=logInInfoMessage && "".equals(logInInfoMessage))
+		  {
+			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+		  }
 		 
 		  logger.log(IAppLogger.INFO,
 					"Exit: LoginController - userlogin");

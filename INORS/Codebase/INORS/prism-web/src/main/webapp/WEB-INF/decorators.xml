@@ -29,6 +29,7 @@
 		<pattern>/jquery/*</pattern>
 		<pattern>/ajaxJSP/*</pattern>
 		<pattern>/StudentDataloadService*</pattern>
+		<pattern>/landing*</pattern>
 	</excludes>
 	
 	<decorator name="report" page="reporttemplate.jsp">

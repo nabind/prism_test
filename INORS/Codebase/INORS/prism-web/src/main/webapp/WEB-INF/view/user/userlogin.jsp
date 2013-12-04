@@ -9,7 +9,7 @@
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta charset="utf-8">
-  <title>ACSI : Login</title>
+  <title><spring:message code="title.tab.login"/></title>
   <link rel="shortcut icon" href="themes/acsi/img/favicons/favicon.ico">
   <%@ include file="../common/commonStyle.jsp"%>
   <spring:theme code="theme.name" var="themeName"/>
@@ -156,11 +156,10 @@
 					</div>
 					<div class="boxsshade scrollable">
 						<div class="rowTwo">
-							<h1 class="h1style">Hello <span class="acsicol">ACSI</span> Schools:</h1>
-							<div class="loginMsg">
-								<p style="line-height:120%">Welcome to <i>ACSI Data Online</i>! This exciting, new data tool is included in your ACSI Scoring Package. In fact, it is in this system that you will first access your testing program data: PDFs of the paper reports.  Beyond the PDF format, you have access to data that can be aggregated and disaggregated by important categories, as well as dashboards that display key testing data graphically. The purpose of ACSI Data Online is to provide you with views into your testing data that will give insights into student learning. Our goal is to facilitate instructional effectiveness through effective data analysis.</p>
-								<p style="line-height:120%">To begin the data journey, first download the Quick Start Guide PDF.  A more detailed User's Guide is also available. We encourage you to experience ACSI Data Online through its continual use. Also, we invite you to continue to provide us with your feedback by contacting ACSI Customer Service at 800.367.0798.</p>
-								<p style="line-height:100%">The ACSI Assessment Team</p>
+							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
+							<div class="loginMsg" height="auto">
+								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
+								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
 							</div>
 							<div class="loginBtn margin-top margin-bottom-medium">
 								<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
@@ -188,13 +187,13 @@
 									<li><span class="icon-user mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-										<!--  	<a href="#" class="icon-play login-username-help">Forgot Username <span class="icon-question"></span></a>-->
+											 <a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 									<li><span class="icon-lock mid-margin-right"></span>
 										<span class="input-unstyled  no-padding">
 											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-										<!--  	<a href="#" class="icon-play login-password-help">Forgot Password <span class="icon-question"></span></a>-->
+											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 								</ul>
@@ -211,7 +210,7 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto">
-							ACSI Data Online is available from 3am Sunday to 3am Saturday Pacific Time. Between the hours of 11pm and 3am users may experience slowness or system outages due to nightly maintenance. Saturdays are reserved for maintenance that may require outages.
+							${logInInfoMessage}
 						</p>
 					</div>
 					<div align="center">
@@ -232,11 +231,10 @@
 					<div class="boxsshade">
 						<div class="rowTwo">
 							<!--<h1 class="h1style">Welcome to <span class="acsicol">ACSI Data Online for Parents!</span></h1>-->
-							<h1><span class="acsicol">ACSI Data Online for Parents</span></h1>
-							<div class="loginMsg" style="text-align:justify">
-								<p style="line-height:120%" >The <i>Association of Christian Schools International</i> (ACSI) is committed to supporting academic success and to promoting the growth of all students. You play a vital role in your children's education.  This site has been created to better assist you in supporting your children in their academic achievement. Through this site, you will create an account to view your children's assessment results and to access important resources created to help you understand and interpret their performance.<br><br>--The ACSI Assessment Team
-								<!--The <i>Association of Christian Schools International</i> is committed to supporting academic success and to promoting the growth of all students. You can help by playing an active role in your child's education. Create an account on this site to access personalized resources, activities, and information, which will help support your child's education throughout the year.</p>
-								<p style="line-height:120%">This site provides your child's assessment results to help you understand strengths and learning needs. You will be able to see the results as soon as they are available. Also, you can review your child's progress year after year.</p>-->
+							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
+							<div class="loginMsg" height="auto">
+								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
+								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
 							</div>
 							
 						</div>
@@ -273,7 +271,7 @@
 								<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								<h3>ACSI Assessment</h3>
+								<h3>INORS Assessment</h3>
 								
 								<p style="line-height:120%">You will be able to navigate through your children's assessment results by selecting the TABS titled "RESOURCES", "YOUR CHILDREN", and "MANAGE ACCOUNT". </p>
 							</div>
@@ -299,6 +297,8 @@
 										<span class="input-unstyled no-padding">
 											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
 											<a href="#" class="icon-play login-username-help">Forgot Username <span class="icon-question"></span></a>
+										
+										
 										</span>
 									</li>
 									<li><span class="icon-lock mid-margin-right"></span>
@@ -319,18 +319,9 @@
 						</div>
 					</div>
 					<div class="margin-top">
-						<div class="wrapped relative white-gradient" style="height: auto">
-							ACSI Data Online for Parents is generally available 24 hours a day.<br> Routine maintenance occurs:
-							<ul class="bullet-list">
-								<Li>
-									nightly: 11 P.M. to 3 A.M. Pacific time
-								</li>
-								<li>
-									weekly: 3 A.M. Saturday to 3 A.M. Sunday Pacific time.
-								</li>
-							</ul>  
-							<p>Maintenance may briefly affect availability or performance.</p>
-						</div>
+						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
+							${logInInfoMessage}
+						</p>
 					</div>
 					
 					<div class="margin-bottom-medium margin-top">
