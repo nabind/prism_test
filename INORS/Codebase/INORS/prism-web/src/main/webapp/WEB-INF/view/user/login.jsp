@@ -142,7 +142,7 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-							<c:out value="${logInInfoMessage}"/>
+							${logInInfoMessage}
 						</p>
 					</div>
 					
