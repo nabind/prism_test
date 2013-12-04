@@ -242,15 +242,15 @@
 						<p class="button-height inline-label">
 							<label class="label" for="subHeader">
 								<spring:message code="label.content.subHeader"/>
-								<span class="icon-star icon-size1 red"></span>
+								</span>
 							</label> 
 							<input type="text"
 							name="subHeader" id="subHeader" style="width: 200px"
-							class="input full-width newReportName validate[required,maxSize[250]]" />
+							class="input full-width newReportName" />
 						</p>
 
 						<p class="button-height inline-label">
-							<fieldset class="fieldset" style="min-height:200px;">
+							<fieldset class="fieldset" style="width:700px;min-height:200px;">
 								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
 									<spring:message code="label.content.description"/>
 									<span class="icon-star icon-size1 red"></span>
