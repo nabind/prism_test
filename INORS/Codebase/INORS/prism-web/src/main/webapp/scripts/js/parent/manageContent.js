@@ -343,6 +343,7 @@ function addNewContent(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
+   		    jQuery('#mandatoryDescription').show();
 			addNewContentFlag = false;
 			break;
 		}
@@ -388,8 +389,7 @@ function addNewContent(form, win) {
 			}
 		});
 	}else{
-		unblockUI();
-		$.modal.alert(strings['error.contentDesc.required']);
+		 unblockUI();
 	}
 }
 
