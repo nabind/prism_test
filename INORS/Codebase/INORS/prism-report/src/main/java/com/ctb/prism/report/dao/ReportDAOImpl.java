@@ -392,6 +392,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setReportName((String) data.get("REPORT_NAME"));
 				to.setReportDescription((String) data.get("REPORT_DESC"));
 				to.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
+				to.setReportOriginalUrl((String) data.get("REPORT_FOLDER_URI"));
 				to.setReportType((String) data.get("REPORT_TYPE"));
 				to.setEnabled(((String)data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
 				to.setAllOrgNode((String) data.get("ORG_NODE_LEVEL"));

@@ -23,6 +23,7 @@ public class ReportTO extends BaseTO {
 	private long reportId;
 	private String reportName;
 	private String reportUrl;
+	private String reportOriginalUrl;
 	private String producttName;
 	private long productId;
 	private String reportType;
@@ -249,11 +250,14 @@ public class ReportTO extends BaseTO {
 		return reportUrl;
 	}
 	public void setReportUrl(String reportUrl) {
+		String originalReportUrl=reportUrl;
 		if(reportUrl != null && reportUrl.indexOf("|") != -1) {
 			setCustomUrl(reportUrl.substring(reportUrl.indexOf("|")+1, reportUrl.length()));
 			this.reportUrl = reportUrl.substring(0, reportUrl.indexOf("|"));
+			setReportOriginalUrl(originalReportUrl);
 		} else {
 			this.reportUrl = reportUrl;
+			setReportOriginalUrl(originalReportUrl);
 		}
 	}
 	public List<IApplicationConstants.ROLE_TYPE> getRoles() {
@@ -325,6 +329,12 @@ public class ReportTO extends BaseTO {
 	}
 	public void setProductId(long productId) {
 		this.productId = productId;
+	}
+	public String getReportOriginalUrl() {
+		return reportOriginalUrl;
+	}
+	public void setReportOriginalUrl(String reportOriginalUrl) {
+		this.reportOriginalUrl = reportOriginalUrl;
 	}
 	
 }

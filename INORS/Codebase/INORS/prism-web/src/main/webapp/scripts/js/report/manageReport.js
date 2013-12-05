@@ -66,7 +66,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("input#reportId").val(data[0].reportId);
 			$("input#reportName").val(data[0].reportName);
 			$("input#reportDescription").val(data[0].reportDescription);
-			$("input#reportUrl").val(data[0].reportUrl);
+			$("input#reportUrl").val(data[0].reportOriginalUrl);
 			$("input#menuType").val(data[0].menuType);
 			$("input#reportType").val(data[0].reportType);
 			$("input#customerType").val(data[0].customerType);
