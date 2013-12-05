@@ -1208,15 +1208,17 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - populateSubtest()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		final long gradeId = ((Long) paramMap.get("gradeId")).longValue();
 		try{
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SUBTEST + "}");
-				            cs.setLong(1, gradeId);				            
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(1, custProdId);	
+				            cs.setLong(2, gradeId);				            
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1226,7 +1228,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(2);
+									rs = (ResultSet) cs.getObject(3);
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){

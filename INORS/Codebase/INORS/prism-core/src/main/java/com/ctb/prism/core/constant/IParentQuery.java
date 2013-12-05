@@ -481,7 +481,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
 	    
 	    public static final String GET_GRADE = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_GRADE_DETAILS(?,?,?)");
 	    
-	    public static final String GET_SUBTEST = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_SUBTEST_DETAILS(?,?,?)");
+	    public static final String GET_SUBTEST = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_SUBTEST_DETAILS(?,?,?,?)");
 	    
 	    public static final String GET_OBJECTIVE = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS(?,?,?,?)");
 	    

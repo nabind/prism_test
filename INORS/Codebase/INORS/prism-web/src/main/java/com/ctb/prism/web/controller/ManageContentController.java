@@ -104,10 +104,12 @@ public class ManageContentController {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - populateSubtest()");
 		long t1 = System.currentTimeMillis();
 		response.setContentType("text/plain");
+		long custProdId = Long.parseLong(request.getParameter("custProdId"));
 		long gradeId = Long.parseLong(request.getParameter("gradeId"));
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> subtestList = null;
 		String jsonString = "";
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("custProdId", custProdId);
 		paramMap.put("gradeId", gradeId);
 		try{
 			subtestList =  parentService.populateSubtest(paramMap);

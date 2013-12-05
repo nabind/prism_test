@@ -423,9 +423,10 @@ function populateGrade(){
 
 //============Load subtest id, name depending upon gradeId ===============
 function populateSubtest(){
+	var custProdId = $('#custProdIdManageContent').val();
 	var gradeId = $('#gradeIdManageContent').val();
 	if(gradeId != -1){
-		var dataUrl = 'gradeId='+gradeId;
+		var dataUrl = 'gradeId='+gradeId+'&custProdId='+custProdId;;
 		blockUI();
 		$.ajax({
 			type : "GET",
