@@ -13,6 +13,11 @@ import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.util.Utils;
 
+/**
+ * This class produces messages for asynchronous jobs
+ * @author amit_dhara
+ */
+
 @Component
 public class JmsMessageProducer {
 	private static final Logger LOG = Logger.getLogger(JmsMessageProducer.class);
@@ -40,11 +45,21 @@ public class JmsMessageProducer {
 		}
 	}
 	
+	/**
+	 * This method is creates message and push into amazon SQS
+	 * @param jobId
+	 * @throws JMSException
+	 */
 	public void sendJobForProcessing(final long jobId) throws JMSException {
-		jmsTemplate.send(new MessageCreator() {
+		LOG.info("Sending message to SQS for job : " + jobId);
+		/*jmsTemplate.send(new MessageCreator() {
 			public Message createMessage(Session session) throws JMSException {
 				return session.createTextMessage("job-id:" + jobId);
 			}
 		});
+		*/
+		
+		jmsTemplate.convertAndSend("job-id:" + jobId);
+		LOG.info("Message sent to SQS");
 	}
 }
