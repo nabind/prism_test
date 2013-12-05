@@ -103,6 +103,7 @@
 												<c:choose>
                                                 <c:when test="${report.reportName=='System Configuration'}">
                                                 <td class="vertical-center" nowrap>
+                                                <input type="hidden" class="scmCopyButtonHide" name="scmCopyButtonHide" value="scmCopyButtonHide" />
 													<span class="button-group compact" width="50px">
 														<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
 															class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>

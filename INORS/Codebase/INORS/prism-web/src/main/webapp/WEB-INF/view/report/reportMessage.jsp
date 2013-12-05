@@ -17,7 +17,11 @@
 			<div class="float-right">
 				<a href="javascript:void(0)" id="editManageMessageButtonSave" 
 							class="button blue-gradient glossy" reportId="${serviceMapManageMessage.reportId}">Save</a>
+				<c:choose>
+                <c:when test="${serviceMapManageMessage.reportName!='System Configuration'}">			
 				<a href="javascript:void(0);" class="button blue-gradient glossy" id="copyMessage"> Copy Message </a>
+				</c:when>
+				</c:choose>
 				<a href="manageReports.do" id="editManageMessageButtonCancel" 
 							class="button white-gradient glossy">Cancel</a>
 			</div>

@@ -28,6 +28,10 @@ public class ManageMessageTOMapper implements RowMapper<ManageMessageTO> {
 			manageMessageTO.setReportId(rs.getLong("REPORTID"));
 			manageMessageTO.setActivationStatus(null != rs.getString("ACTIVATION_STATUS") ? rs.getString("ACTIVATION_STATUS").trim() : IApplicationConstants.DEFAULT_VALUE_DRM_CHECKBOX);
 			manageMessageTO.setCustProdIdHidden(rs.getLong("CUST_PROD_ID"));
+			if((null!=rs.getString("MESSAGE_TYPE").trim()) && (rs.getString("MESSAGE_TYPE").trim().equals("SCM")))
+			{
+				manageMessageTO.setReportName(IApplicationConstants.REPORT_NAME);
+			}
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "Error occurred in ManageMessageTOMapper: "+e);
 			e.printStackTrace();

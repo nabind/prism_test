@@ -30,6 +30,7 @@ public class ManageMessageTO extends BaseTO {
 	private long custProdIdHidden = 0;
 	private long orgNodeLevelIdHidden = 0;
 	private long roleIdHidden = 0;
+	private String reportName = "";
 	
 	
 	public long getReportId() {
@@ -56,6 +57,14 @@ public class ManageMessageTO extends BaseTO {
 	public void setMessageTypeDesc(String messageTypeDesc) {
 		this.messageTypeDesc = messageTypeDesc;
 	}
+	
+	public String getReportName() {
+		return reportName;
+	}
+	public void setReportName(String reportName) {
+		this.reportName = reportName;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
