@@ -281,7 +281,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		String REPORT_NAME=(String) paramMap.get("REPORT_NAME");
 		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
 		
-		String systemConfig = null;
+		String systemConfig = "";
 		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, REPORT_NAME,MESSAGE_TYPE,PRE_LOG_IN);
 		
 			if(!lstData.isEmpty()){
