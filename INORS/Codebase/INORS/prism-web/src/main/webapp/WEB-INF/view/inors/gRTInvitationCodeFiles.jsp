@@ -79,13 +79,13 @@
 			</div>
 		</div>
 	</form:form>
-	<div id="grtDiv" class="columns accordion with-padding hidden" style="margin-bottom: 0">
+	<div id="grtDiv" class="columns accordion with-padding" style="margin-bottom: 0">
 		<div id="grtLinks" class=""></div>
 		<a class="button float-right" id="downloadGRTFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate GRT File
 		</a>
 	</div>
-	<div id="icDiv" class="columns accordion with-padding hidden" style="margin-bottom: 0">
+	<div id="icDiv" class="columns accordion with-padding" style="margin-bottom: 0">
 		<div id="icLinks" class=""></div>
 		<a class="button float-right" id="downloadICFile" style="cursor: pointer;">
 			<span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File
