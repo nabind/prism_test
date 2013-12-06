@@ -4280,6 +4280,19 @@ a:link {
 .invisible {
 	visibility: hidden;
 }
+.customError{
+    background: -moz-linear-gradient(center top , #E24913, #D52607) repeat scroll 0 0 transparent;
+    border: 1px solid #931A03;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 0 6px #000000;
+    color: white;
+    padding: 6px 8px;
+    position: relative;
+    width: 150px;
+}
+.customError {
+    cursor: pointer;
+}
 
 /*Added Custom for PRISM */
 #title-bar {
