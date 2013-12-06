@@ -143,6 +143,12 @@ $(document).ready(function() {
 //=====document.ready End=========================================
 
 //============Open Modal to Edit Content ===============
+
+$('.mandatoryDescription').live('click',function(){
+	$('.mandatoryDescription').hide();
+});
+
+
 function openContentModalToEdit(contentId) {
 	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
