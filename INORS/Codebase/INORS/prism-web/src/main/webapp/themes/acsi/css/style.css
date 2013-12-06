@@ -4327,3 +4327,7 @@ a:link {
 	-moz-border-radius: 0;
 	border-radius: 0;
 }
+
+.space-40px {
+	width: 40px;
+}

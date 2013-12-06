@@ -13,6 +13,105 @@
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<input type="hidden" value="/public/ISTEP/Reports/Dummy_Student_Report_files" name="reportUrl" >
 	
+	<div class="mid-margin-bottom">
+			<div class="reportFilterCriteria1 panel-control rounded-border">
+				<span id="filter-icon" class="icon-leaf icon-size2"></span> <b>Report Filters</b>
+			</div>
+			<div class="cyan-gradient icholder rounded-border-bottom" style="border-bottom: 1px solid #CCC;">
+				<div class="with-mid-padding mid-margin-bottom icholderinner" style="min-width: 200px; overflow-x: auto">
+					<div class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer" style="height: 10px; min-width: 720px">
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Test Administration</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="testAdministration" name="testAdministration" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value="ISTEP~Spring~2013" selected="selected">ISTEP Spring 2013</option>
+										<option value="IMAST~Spring~2013">IMAST Spring 2013</option>
+										<option value="IREAD-3~Spring~2013">IREAD-3 Spring 2013</option>
+										<option value="IREAD-3~Summer~2013">IREAD-3 Summer 2013</option>
+										<%-- option value="ISTEP~Spring~2012">ISTEP Spring 2012</option>
+										<option value="IMAST~Spring~2012">IMAST Spring 2012</option>
+										<option value="IREAD-3~Spring~2012">IREAD-3 Spring 2012</option>
+										<option value="IREAD-3~Summer~2012">IREAD-3 Summer 2012</option>
+										<option value="ISTEP~Spring~2011">ISTEP Spring 2011</option>
+										<option value="IMAST~Spring~2011">IMAST Spring 2011</option>
+										<option value="ISTEP~Spring~2010">ISTEP Spring 2010</option>
+										<option value="IMAST~Spring~2010">IMAST Spring 2010</option--%>
+									</select>
+								</p>
+							</div>
+						</div>
+						<div class="space-40px"></div>
+						
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Corp/Diocese</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="corpDiocese" name="corpDiocese" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select</option>
+										<c:forEach var="corpDioceseVar" items="${corporationList}">
+											<option value="${corpDioceseVar.value}">${corpDioceseVar.name}</option>
+										</c:forEach>
+									</select>
+								</p>
+							</div>
+						</div>
+						<div class="space-40px"></div>
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Grade</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="school" name="school" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select Corp/Diocese</option>
+									</select>
+								</p>
+							</div>
+						</div>
+						
+						
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Test Program</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="testProgram" name="testProgram" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value="1" selected="selected">Public Schools</option>
+										<option value="2">Non Public Schools</option>
+									</select>
+								</p>
+							</div>
+						</div>
+						<div class="space-40px"></div>
+						
+						
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">School</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="school" name="school" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select Corp/Diocese</option>
+									</select>
+								</p>
+							</div>
+						</div>
+						<div class="space-40px"></div>
+						<div class="three-columns report-inputs">
+							<h6 class="margin-bottom-small">Class</h6>
+							<div class="float-left margin-right margin-bottom">
+								<p class="button-height">
+									<select id="testProgram" name="testProgram" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value="1" selected="selected">Public Schools</option>
+										<option value="2">Non Public Schools</option>
+									</select>
+								</p>
+							</div>
+						</div>
+						
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	
 	<dl class="download-instructions accordion same-height">
 		<dt class="closed"><span class="icon-plus-round tracked"></span> <span class="icon-minus-round tracked" style="display:none"></span> Instructions</dt>
 		<dd style="height: 136px; display: none;" class="accordion-body">
@@ -37,10 +136,12 @@
 			%>
 			<select name="groupFile" id="groupFile" class="select compact expandable-list">
 				<option value="1" <%if("1".equals(groupFileVal)) {%>selected="selected"<%} %>>Individual Student Report</option>
+				<option value="4">Student PDF's</option>
 				<c:if test="${groupDownload.istepPlus}">
 					<option value="2" <%if("2".equals(groupFileVal)) {%>selected="selected"<%} %>>Image Prints</option>
-					<option value="3" <%if("3".equals(groupFileVal)) {%>selected="selected"<%} %>>Both</option>
+					<option value="3" <%if("3".equals(groupFileVal)) {%>selected="selected"<%} %>>Both (IP .ISR)</option>
 				</c:if>
+				<option value="5">Invitation Code Letter</option>
 			</select>
 		</p>
 		
@@ -89,13 +190,17 @@
 		<p class="message small-margin-bottom orange-gradient" style="margin-bottom: 10px !important">
 			Note: For those schools that administered the online ISTEP+ Applied Skills assessment, the combined PDFs group download feature to "Generate Group File of Both" should not be used. Please contact the CTB/Indiana Helpdesk for more information.
 		</p>
-		<a href="" class="downloadBulkPdf button" id="downloadBulkPdfSeperate" >
+		<a href="" class="downloadBulkPdf button" id="downloadBulkPdfSeperate" style="margin-left: 0px; float: left;">
 			<span class="button-icon icon-download blue-gradient report-btn">Separate PDFs</span>
 			Generate Download File
 		</a>
-		<a href="" class="downloadBulkPdf button" id="downloadBulkPdf" style="margin-left: 20px; float: right">
+		<a href="" class="downloadBulkPdf button" id="downloadBulkPdf" style="margin-left: 10px; float: left;">
 			<span class="button-icon icon-download blue-gradient report-btn">Combined PDFs</span>
 			Generate Download File
+		</a>
+		<a href="" class="downloadBulkPdf button" id="downloadSinglePdf" style="margin-left: 0px; float: right;">
+			<span class="button-icon icon-download blue-gradient report-btn">PDF</span>
+			Single Student
 		</a>
 	</div>
 	</form:form>

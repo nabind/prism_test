@@ -66,14 +66,14 @@
 								</p>
 							</div>
 						</div>
-						<div class="three-columns report-inputs">
+						<!-- <div class="three-columns report-inputs">
 							<h6 class="margin-bottom-small">Today's Date(mm-dd,yyyy)</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<input id="today" name="today" tupe="text" value="" disabled="disabled" />
 								</p>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
