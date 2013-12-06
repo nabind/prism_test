@@ -186,6 +186,7 @@ function openContentModalToEdit(contentId) {
 							classes: 'glossy mid-margin-left',
 							click: function(win,e) {
 								$('#editContent').validationEngine('hide');
+								$('.mandatoryDescription').hide();
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								clickMe(e);
 								win.closeModal(); 
