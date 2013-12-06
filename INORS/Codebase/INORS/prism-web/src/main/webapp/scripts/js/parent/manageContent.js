@@ -301,6 +301,7 @@ function openContentModalToAdd() {
 				click: function(win,e) {
 							clickMe(e);
 							$('#addNewContent').validationEngine('hide');
+							$('.mandatoryDescription').hide();
 							if($.browser.msie) setTimeout("hideMessage()", 300);
 							win.closeModal(); 
 						}
