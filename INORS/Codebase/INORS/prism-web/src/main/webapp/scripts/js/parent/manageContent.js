@@ -60,8 +60,16 @@ $(document).ready(function() {
 		}else {
 			resetModalForm("addNewContent");
 			resetModalForm("editContent");
+			resetModalForm("modifyStandardForm");
 			openContentModalToAdd();
 		}
+	});
+	
+	$('#modifyStandardButton').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		openModifyStandardModalToEdit();
 	});
 	
 	$('#refresh-content').live('click',function(){
@@ -139,16 +147,127 @@ $(document).ready(function() {
 		);
 	});
 	
+	$('.mandatoryDescription').live('click',function(){
+		$('.mandatoryDescription').hide();
+	});
+	
 });
 //=====document.ready End=========================================
 
+//============Open Modal to Edit Description of Standard ===============
+function openModifyStandardModalToEdit() {
+	blockUI();
+	var objectiveId = $('#objectiveIdManageContent').val();
+	var dataUrl = 'objectiveId='+objectiveId;
+	$.ajax({
+			type : "GET",
+			url : "modifyStandardForEdit.do",
+			data : dataUrl,
+			dataType : 'json',
+			cache:false,
+			success : function(data) {
+				var custProdName = $('#custProdIdManageContent :selected').text();
+				var gradeName = $('#gradeIdManageContent :selected').text();
+				var subtestName = $('#subtestIdManageContent :selected').text();
+				var objectiveName = $('#objectiveIdManageContent :selected').text();
+				var contentTypeId = $('#contentTypeIdManageContent').val();
+				var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+				
+				var $modifyStandardModal = $('#modifyStandardModal');
+				$modifyStandardModal.find('#testAdministrationText').text(custProdName);
+				$modifyStandardModal.find('#gradeText').text(gradeName);
+				$modifyStandardModal.find('#subtestText').text(subtestName);
+				$modifyStandardModal.find('#objectiveText').text(objectiveName);
+				$modifyStandardModal.find('#objectiveId').val(objectiveId);
+				if(data != null && data.contentDescription != ""){
+					$modifyStandardModal.find('#objectiveDescriptionEditor').val(data.contentDescription);
+				}
+				
+				$("#modifyStandardModal").modal({
+					title: 'Modify Standard Description',
+					height: 500,
+					width: 780,
+					resizable: false,
+					draggable: false,
+					onOpen: setCKEditor('modifyStandard'),
+					buttons: {
+						'Cancel': {
+							classes: 'glossy mid-margin-left',
+							click: function(win,e) {
+										clickMe(e);
+										$('.mandatoryDescription').hide();
+										if($.browser.msie) setTimeout("hideMessage()", 300);
+										win.closeModal(); 
+									}
+								},
+						'Save': {
+							classes: 'blue-gradient glossy mid-margin-left',
+							click: function(win,e) {
+										clickMe(e);	
+										modifyStandard($("#modifyStandardForm"), win);
+									}
+								}
+							}
+					});					
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error1']);
+				unblockUI();
+			}
+		}); 
+}
+
+//============Insert/Update Standard Description ===============
+function modifyStandard(form, win) {
+	blockUI();
+	var descriptionFlag = true;
+	for(name in CKEDITOR.instances)	{
+		var editorVal = CKEDITOR.instances[name].getData();
+		if(editorVal == ""){
+			$('.mandatoryDescription').show();
+			descriptionFlag = false;
+			break;
+		}
+	    $('#modifyStandardModal #contentDescription').val(editorVal);
+	}
+	
+	if(descriptionFlag == true){
+		var contentTypeId = $('#contentTypeIdManageContent').val();
+		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+		var modifyStandardModal = $('#modifyStandardModal');
+		modifyStandardModal.find('#contentType').val(contentTypeId);
+		modifyStandardModal.find('#contentTypeName').val(contentTypeName);
+		var formObj = $('#modifyStandardForm').serialize();
+		$.ajax({
+			type : "POST",
+			url : 'addNewContent.do',
+			data : formObj,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.value >= 1) {
+					win.closeModal(); 
+					unblockUI();
+					$('.mandatoryDescription').hide();
+					$.modal.alert(strings['script.content.addSuccess']);
+				} else {
+					unblockUI();
+					$.modal.alert(strings['script.user.saveError']);
+				}
+			},
+			error : function(data) {
+				unblockUI();
+				$.modal.alert(strings['script.user.saveError']);
+			}
+		});
+	}else{
+		 unblockUI();
+	}
+}
+
+
+
 //============Open Modal to Edit Content ===============
-
-$('.mandatoryDescription').live('click',function(){
-	$('.mandatoryDescription').hide();
-});
-
-
 function openContentModalToEdit(contentId) {
 	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
@@ -169,12 +288,36 @@ function openContentModalToEdit(contentId) {
 				var profLevel = data.profLevel;
 				$editContentModal.find('#profLevel option').removeAttr('selected');
 				var option = "";
-				if(data.profLevel == 'Pass+'){
-					option += "<option selected value='Pass+'>Pass+</option><option value='Pass'>Pass</option><option value='Did Not Pass'>Did Not Pass</option>";
-				}else if(data.profLevel == 'Pass'){
-					option += "<option value='Pass+'>Pass+</option><option selected value='Pass'>Pass</option><option value='Did Not Pass'>Did Not Pass</option>";
-				}else if(data.profLevel == 'Did Not Pass'){
-					option += "<option value='Pass+'>Pass+</option><option value='Pass'>Pass</option><option selected value='Did Not Pass'>Did Not Pass</option>";
+				if(data.profLevel == 'A'){
+					option += "<option selected value='A'/>Pass</option>";
+					option += "<option value='B'/>Did Not Pass</option>";
+					option += "<option value='U'/>Undifined</option>";	
+					option += "<option value='N'/>DNR</option>";		
+					option += "<option value='P'/>Pass+</option>";
+				}else if(data.profLevel == 'B'){
+					option += "<option value='A'/>Pass</option>";
+					option += "<option selected value='B'/>Did Not Pass</option>";
+					option += "<option value='U'/>Undifined</option>";	
+					option += "<option value='N'/>DNR</option>";		
+					option += "<option value='P'/>Pass+</option>";
+				}else if(data.profLevel == 'U'){
+					option += "<option value='A'/>Pass</option>";
+					option += "<option value='B'/>Did Not Pass</option>";
+					option += "<option selected value='U'/>Undifined</option>";	
+					option += "<option value='N'/>DNR</option>";		
+					option += "<option value='P'/>Pass+</option>";
+				}else if(data.profLevel == 'N'){
+					option += "<option value='A'/>Pass</option>";
+					option += "<option value='B'/>Did Not Pass</option>";
+					option += "<option value='U'/>Undifined</option>";	
+					option += "<option selected value='N'/>DNR</option>";		
+					option += "<option value='P'/>Pass+</option>";
+				}else if(data.profLevel == 'P'){
+					option += "<option value='A'/>Pass</option>";
+					option += "<option value='B'/>Did Not Pass</option>";
+					option += "<option value='U'/>Undifined</option>";	
+					option += "<option value='N'/>DNR</option>";		
+					option += "<option selected value='P'/>Pass+</option>";
 				}
 				$editContentModal.find('#profLevel').html(option);
 				$editContentModal.find('#profLevel').change();
@@ -182,7 +325,7 @@ function openContentModalToEdit(contentId) {
 				
 				$("#editContentModal").modal({
 					title: 'Edit Content',
-					height: 500,
+					height: 550,
 					width: 780,
 					resizable: false,
 					draggable: false,
@@ -214,7 +357,7 @@ function openContentModalToEdit(contentId) {
 			error : function(data) {
 				$.modal.alert(strings['script.common.error1']);
 			}
-		})	
+		});	
 }
 
 //============Update Content ===============
@@ -296,7 +439,7 @@ function openContentModalToAdd() {
 	
 	$("#addContentModal").modal({
 		title: 'Add Content',
-		height: 500,
+		height: 550,
 		width: 780,
 		resizable: false,
 		draggable: false,
@@ -333,6 +476,8 @@ function setCKEditor(purpose){
 		$objTextArea = $('#contentDescriptionEditor');
 	}else if(purpose == 'edit'){
 		$objTextArea = $('#contentDescriptionEditorEdit');
+	}else if(purpose == 'modifyStandard'){
+		$objTextArea = $('#objectiveDescriptionEditor');
 	}
 	
 	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
@@ -343,6 +488,7 @@ function setCKEditor(purpose){
 		}	
 		CKEDITOR.inline($objTextArea.attr('id') );
 	}
+	unblockUI();
 }
 
 //============Insert Content ===============
@@ -357,8 +503,8 @@ function addNewContent(form, win) {
 			break;
 		}
 	    $('#addContentModal #contentDescription').val(editorVal);
-	    
 	}
+	
 	if(addNewContentFlag == true){
 		var custProdId = $('#custProdIdManageContent').val();
 		var gradeId = $('#gradeIdManageContent').val();
@@ -603,14 +749,20 @@ function enableContentSorting(flag) {
 function hideContentElements(){
 	$('#refresh-content').hide();
 	$('#addContentDiv').hide();
+	$('#modifyStandardDiv').hide();
 	$('#contentTableDiv').hide();
 }
 
 //==To show add,search buttons==========
 function showContentElements(){
 	var objectiveId = $('#objectiveIdManageContent').val();
+	var contentTypeId = $('#contentTypeIdManageContent').val();
 	if(objectiveId != -1){
-		$('#refresh-content').show();
-		$('#addContentDiv').show();
+		if(contentTypeId == 'STD'){
+			$('#modifyStandardDiv').show();
+		}else{
+			$('#refresh-content').show();
+			$('#addContentDiv').show();
+		}
 	}
 }

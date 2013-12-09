@@ -46,7 +46,7 @@
 											<select id="custProdIdManageContent" name="custProdId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
-												<option value='-1'><spring:message code="label.select"/></option>
+												<option value='-1'><spring:message code="dropDown.default.text"/></option>
 												<c:forEach var="customerProductTO"
 													items="${serviceMapManageContentFilter.customerProductList}">
 													<option value="${customerProductTO.value}">${customerProductTO.name}</option>
@@ -70,7 +70,7 @@
 											<select id="gradeIdManageContent" name="gradeId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
-												<option value='-1'><spring:message code="label.select"/></option>
+												<option value='-1'><spring:message code="dropDown.default.text"/></option>
 											</select>
 										</p>
 									</div>
@@ -90,7 +90,7 @@
 											<select id="subtestIdManageContent" name="subtestId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
-												<option value='-1'><spring:message code="label.select"/></option>
+												<option value='-1'><spring:message code="dropDown.default.text"/></option>
 											</select>
 										</p>
 									</div>
@@ -110,7 +110,7 @@
 											<select id="objectiveIdManageContent" name="objectiveId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
-												<option value='-1'><spring:message code="label.select"/></option>
+												<option value='-1'><spring:message code="dropDown.default.text"/></option>
 											</select>
 										</p>
 									</div>
@@ -131,6 +131,7 @@
 												style="width: 150px;">
 												<option value='<spring:message code="val.contentType.act"/>'><spring:message code="name.contentType.act"/></option>
 												<option value='<spring:message code="val.contentType.ind"/>'><spring:message code="name.contentType.ind"/></option>
+												<option value='<spring:message code="val.contentType.std"/>'><spring:message code="label.objective"/></option>
 											</select>
 										</p>
 									</div>
@@ -164,6 +165,14 @@
 							<span class="icon-page-list"></span>
 						</span> 
 						<spring:message code="button.content.add"/>
+					</a>
+				</div>
+				<div id="modifyStandardDiv" style="display: none;" >
+					<a id="modifyStandardButton" href="#" class="button glossy margin-left">
+						<span class="button-icon blue-gradient manage-btn"> 
+							<span class="icon-page-list"></span>
+						</span> 
+						<spring:message code="button.modify.standard"/>
 					</a>
 				</div>
 					
@@ -249,7 +258,9 @@
 						</p>
 						
 						
-                        <div class="mandatoryDescription customError" style="display:none"><spring:message code="label.content.fieldRequired"/></div>
+                        <div class="mandatoryDescription customError" style="display:none">
+                        	<spring:message code="error.field.required"/>
+                        </div>
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="width:700px;min-height:200px;">
 								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
@@ -274,9 +285,11 @@
 								<select id="profLevel" name="profLevel"
 												class="select expandable-list"
 												style="width: 150px;">
-									<option value='Pass+'/>Pass+</option>
-									<option value='Pass'/>Pass</option>
-									<option value='Did Not Pass'/>Did Not Pass</option>				
+									<option value='A'/>Pass</option>
+									<option value='B'/>Did Not Pass</option>
+									<option value='U'/>Undifined</option>	
+									<option value='N'/>DNR</option>		
+									<option value='P'/>Pass+</option>		
 								</select>
 						</p>
 
@@ -313,7 +326,9 @@
 								name="subHeader" id="subHeader" style="width: 200px"
 								class="input full-width newReportName" />
 						</p>
-                       <div class="mandatoryDescription customError" style="display:none"><spring:message code="label.content.fieldRequired"/></div>
+                       	<div class="mandatoryDescription customError" style="display:none">
+                       		<spring:message code="error.field.required"/>
+                       	</div>
 						<p class="button-height inline-label">
 							<fieldset class="fieldset" style="width:700px;min-height:200px;">
 								<legend class="legend" style="padding-left:5px" for="contentDescriptionEditor">
@@ -334,12 +349,11 @@
 						
 						<p class="button-height inline-label">
 							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
-								class="icon-star icon-size1 red"></span></label> 
-								<select id="profLevel" name="profLevel"
-												class="select expandable-list"
-												style="width: 150px;">
-												
-								</select>
+								class="icon-star icon-size1 red"></span>
+							</label> 
+							<select id="profLevel" name="profLevel" 
+								class="select expandable-list" style="width: 150px;">			
+							</select>
 						</p>
 
 						<div id="imgHolder"></div>
@@ -348,6 +362,72 @@
 				<%@ include file="../common/required.jsp"%>
 			</div>
 			<!-- Manage Content edit end -->
+			
+			<!-- Modify Standard - start -->
+			<div id="modifyStandardModal" class="display-none">
+				<div class="">
+					<form:form id="modifyStandardForm" name="modifyStandardForm"
+						class="add-User-form small-margin-top">
+						
+						<input type="hidden" id="objectiveId" name="objectiveId"/>
+						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
+						<input type="hidden" id="contentType" name="contentType"/>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.testAdministration"/>
+							</label> 
+							<span id="testAdministrationText"></span>
+						</p>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.grade"/>
+							</label> 
+							<span id="gradeText"></span>
+						</p>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.subtest"/>
+							</label> 
+							<span id="subtestText"></span>
+						</p>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.objective"/>
+							</label> 
+							<span id="objectiveText"></span>
+						</p>
+                       	
+                       	<div class="mandatoryDescription customError" style="display:none">
+                       		<spring:message code="error.field.required"/>
+                       	</div>
+						<p class="button-height inline-label">
+							<fieldset class="fieldset" style="width:700px;min-height:200px;">
+								<legend class="legend" style="padding-left:5px">
+									<spring:message code="label.content.description"/>
+									<span class="icon-star icon-size1 red"></span>
+								</legend>
+								<input type="hidden"
+									id="contentDescription"
+									name="contentDescription"
+									class="validate[required]"/>
+								<textarea
+									id="objectiveDescriptionEditor"
+									class="manage-content-textarea validate[required]">
+										<spring:message code="textarea.content.defaultText"/>
+								</textarea>
+							</fieldset>
+						</p>
+						
+						<div id="imgHolder"></div>
+					</form:form>
+				</div>
+				<%@ include file="../common/required.jsp"%>
+			</div>
+			<!-- Modify Standard - end -->
 			
 			<div id="loader" class="display-none"></div>
 

@@ -1582,5 +1582,53 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return objectValueTO;
 	}
 	
+	/**
+	 * Get content details for edit depending upon article_metedata id
+	 */
+	@SuppressWarnings("unchecked")
+	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyStandardForEdit()");
+		long t1 = System.currentTimeMillis();
+		ManageContentTO manageContentTO = null;
+		final long objectiveId = ((Long) paramMap.get("objectiveId")).longValue();
+		
+		try{
+			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_OBJECTIVE_DETAILS_FOR_EDIT + "}");
+				            cs.setLong(1, objectiveId);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            return cs;
+				        }
+				    } , new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			ManageContentTO manageContentTOResult = null;
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(2);
+									if(rs.next()){
+										manageContentTOResult = new ManageContentTO();
+										manageContentTOResult.setObjectiveId(rs.getLong("OBJECTIVEID"));
+										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (Exception e) {
+			        				e.printStackTrace();
+			        			}
+			        			return manageContentTOResult;
+					        }
+					    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return manageContentTO;
+	}
+	
 	//Manage Content - Parent Network - End
 }

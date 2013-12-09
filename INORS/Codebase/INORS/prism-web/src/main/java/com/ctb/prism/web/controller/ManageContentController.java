@@ -305,4 +305,32 @@ public class ManageContentController {
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - deleteContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
     }
+	
+	/**
+	 * Get Objective Description for edit depending upon objectiveId
+	 */
+	@RequestMapping(value = "/modifyStandardForEdit", method = RequestMethod.GET)
+    public void modifyStandardForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - modifyStandardForEdit()");
+		long t1 = System.currentTimeMillis();
+		long objectiveId = Long.parseLong(request.getParameter("objectiveId"));
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("objectiveId", objectiveId);
+		ManageContentTO manageContentTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			manageContentTO = parentService.modifyStandardForEdit(paramMap); 
+			jsonString = gson.toJson(manageContentTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+    }
 }

@@ -172,6 +172,10 @@ public class ParentServiceImpl implements IParentService {
 	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) throws BusinessException {
 		return parentBusiness.deleteContent(paramMap);
 	}
+	
+	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
+		return parentBusiness.modifyStandardForEdit(paramMap);
+	}
 
 	//Manage Content - Parent Network - End
 	

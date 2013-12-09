@@ -496,5 +496,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
 	    public static final String UPDATE_CONTENT = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_UPDATE_CONTENT_DETAILS(?,?,?,?,?,?,?)");
 	    
 	    public static final String DELETE_CONTENT = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_DELETE_CONTENT_DETAILS(?,?,?)");
+	    
+	    public static final String GET_OBJECTIVE_DETAILS_FOR_EDIT = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS_EDIT(?,?)");
 }
 
