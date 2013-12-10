@@ -148,7 +148,7 @@ $(document).ready(function() {
 	});
 	
 	$('.mandatoryDescription').live('click',function(){
-		$('.mandatoryDescription').hide();
+		$('.mandatoryDescription').hide(ANIMATION_TIME);
 	});
 	
 });
@@ -195,7 +195,7 @@ function openModifyStandardModalToEdit() {
 							classes: 'glossy mid-margin-left',
 							click: function(win,e) {
 										clickMe(e);
-										$('.mandatoryDescription').hide();
+										$('.mandatoryDescription').hide(ANIMATION_TIME);
 										if($.browser.msie) setTimeout("hideMessage()", 300);
 										win.closeModal(); 
 									}
@@ -224,7 +224,7 @@ function modifyStandard(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
-			$('.mandatoryDescription').show();
+			$('.mandatoryDescription').show(ANIMATION_TIME);
 			descriptionFlag = false;
 			break;
 		}
@@ -248,7 +248,7 @@ function modifyStandard(form, win) {
 				if(data.value >= 1) {
 					win.closeModal(); 
 					unblockUI();
-					$('.mandatoryDescription').hide();
+					$('.mandatoryDescription').hide(ANIMATION_TIME);
 					$.modal.alert(strings['script.content.addSuccess']);
 				} else {
 					unblockUI();
@@ -335,7 +335,7 @@ function openContentModalToEdit(contentId) {
 							classes: 'glossy mid-margin-left',
 							click: function(win,e) {
 								$('#editContent').validationEngine('hide');
-								$('.mandatoryDescription').hide();
+								$('.mandatoryDescription').hide(ANIMATION_TIME);
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								clickMe(e);
 								win.closeModal(); 
@@ -367,7 +367,7 @@ function updateContent(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
-			$('.mandatoryDescription').show();
+			$('.mandatoryDescription').show(ANIMATION_TIME);
 			updateContentFlag = false;
 			break;
 		}
@@ -387,7 +387,7 @@ function updateContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					$.modal.alert(strings['script.content.editSuccess']);
-					$('.mandatoryDescription').hide();
+					$('.mandatoryDescription').hide(ANIMATION_TIME);
 					unblockUI();
 				} else {
 					unblockUI();
@@ -450,7 +450,7 @@ function openContentModalToAdd() {
 				click: function(win,e) {
 							clickMe(e);
 							$('#addNewContent').validationEngine('hide');
-							$('.mandatoryDescription').hide();
+							$('.mandatoryDescription').hide(ANIMATION_TIME);
 							if($.browser.msie) setTimeout("hideMessage()", 300);
 							win.closeModal(); 
 						}
@@ -498,7 +498,7 @@ function addNewContent(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		if(editorVal == ""){
-			$('.mandatoryDescription').show();
+			$('.mandatoryDescription').show(ANIMATION_TIME);
 			addNewContentFlag = false;
 			break;
 		}
@@ -533,7 +533,7 @@ function addNewContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					unblockUI();
-					$('.mandatoryDescription').hide();
+					$('.mandatoryDescription').hide(ANIMATION_TIME);
 					$.modal.alert(strings['script.content.addSuccess']);
 					
 				} else {

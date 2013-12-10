@@ -258,7 +258,7 @@
 						</p>
 						
 						
-                        <div class="mandatoryDescription customError" style="display:none">
+                        <div class="mandatoryDescription message small-margin-bottom red-gradient customError" style="display:none">
                         	<spring:message code="error.field.required"/>
                         </div>
 						<p class="button-height inline-label">
@@ -326,7 +326,7 @@
 								name="subHeader" id="subHeader" style="width: 200px"
 								class="input full-width newReportName" />
 						</p>
-                       	<div class="mandatoryDescription customError" style="display:none">
+                       	<div class="mandatoryDescription message small-margin-bottom red-gradient customError" style="display:none">
                        		<spring:message code="error.field.required"/>
                        	</div>
 						<p class="button-height inline-label">
@@ -401,7 +401,7 @@
 							<span id="objectiveText"></span>
 						</p>
                        	
-                       	<div class="mandatoryDescription customError" style="display:none">
+                       	<div class="mandatoryDescription message small-margin-bottom red-gradient customError" style="display:none">
                        		<spring:message code="error.field.required"/>
                        	</div>
 						<p class="button-height inline-label">
