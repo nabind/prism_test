@@ -269,6 +269,7 @@ function modifyStandard(form, win) {
 
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
+	blockUI();
 	$("#editContent").validationEngine({promptPosition : "centerRight", scroll: false});
 	manageIconIE('icon-star');
 	var dataUrl = 'contentId='+contentId;
@@ -289,35 +290,35 @@ function openContentModalToEdit(contentId) {
 				$editContentModal.find('#profLevel option').removeAttr('selected');
 				var option = "";
 				if(data.profLevel == 'A'){
-					option += "<option selected value='A'/>Pass</option>";
-					option += "<option value='B'/>Did Not Pass</option>";
-					option += "<option value='U'/>Undifined</option>";	
-					option += "<option value='N'/>DNR</option>";		
-					option += "<option value='P'/>Pass+</option>";
+					option += "<option selected value='A'>Pass</option>";
+					option += "<option value='B'>Did Not Pass</option>";
+					option += "<option value='U'>Undefined</option>";	
+					option += "<option value='N'>DNR</option>";		
+					option += "<option value='P'>Pass+</option>";
 				}else if(data.profLevel == 'B'){
-					option += "<option value='A'/>Pass</option>";
-					option += "<option selected value='B'/>Did Not Pass</option>";
-					option += "<option value='U'/>Undifined</option>";	
-					option += "<option value='N'/>DNR</option>";		
-					option += "<option value='P'/>Pass+</option>";
+					option += "<option value='A'>Pass</option>";
+					option += "<option selected value='B'>Did Not Pass</option>";
+					option += "<option value='U'>Undefined</option>";	
+					option += "<option value='N'>DNR</option>";		
+					option += "<option value='P'>Pass+</option>";
 				}else if(data.profLevel == 'U'){
-					option += "<option value='A'/>Pass</option>";
-					option += "<option value='B'/>Did Not Pass</option>";
-					option += "<option selected value='U'/>Undifined</option>";	
-					option += "<option value='N'/>DNR</option>";		
-					option += "<option value='P'/>Pass+</option>";
+					option += "<option value='A'>Pass</option>";
+					option += "<option value='B'>Did Not Pass</option>";
+					option += "<option selected value='U'>Undefined</option>";	
+					option += "<option value='N'>DNR</option>";		
+					option += "<option value='P'>Pass+</option>";
 				}else if(data.profLevel == 'N'){
-					option += "<option value='A'/>Pass</option>";
-					option += "<option value='B'/>Did Not Pass</option>";
-					option += "<option value='U'/>Undifined</option>";	
-					option += "<option selected value='N'/>DNR</option>";		
-					option += "<option value='P'/>Pass+</option>";
+					option += "<option value='A'>Pass</option>";
+					option += "<option value='B'>Did Not Pass</option>";
+					option += "<option value='U'>Undefined</option>";	
+					option += "<option selected value='N'>DNR</option>";		
+					option += "<option value='P'>Pass+</option>";
 				}else if(data.profLevel == 'P'){
-					option += "<option value='A'/>Pass</option>";
-					option += "<option value='B'/>Did Not Pass</option>";
-					option += "<option value='U'/>Undifined</option>";	
-					option += "<option value='N'/>DNR</option>";		
-					option += "<option selected value='P'/>Pass+</option>";
+					option += "<option value='A'>Pass</option>";
+					option += "<option value='B'>Did Not Pass</option>";
+					option += "<option value='U'>Undefined</option>";	
+					option += "<option value='N'>DNR</option>";		
+					option += "<option selected value='P'>Pass+</option>";
 				}
 				$editContentModal.find('#profLevel').html(option);
 				$editContentModal.find('#profLevel').change();
@@ -355,9 +356,11 @@ function openContentModalToEdit(contentId) {
 				});					
 			},
 			error : function(data) {
+				unblockUI();
 				$.modal.alert(strings['script.common.error1']);
 			}
 		});	
+	unblockUI();
 }
 
 //============Update Content ===============
@@ -721,7 +724,7 @@ function getContentDetails(checkFirstLoad,data) {
 			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
 						+'<th scope="row">' + this.subHeader +'</th>'
 						+'<th scope="row">' + this.gradeName +'</th>'
-						+'<th scope="row">' + this.profLevel +'</th>'
+						+'<th scope="row">' + getProfLevelName(this.profLevel) +'</th>'
 						+'<td class="vertical-center" nowrap>'
 						+'<span class="button-group compact" width="50px">'
 						+'<a href="#" class="button icon-pencil edit-content with-tooltip" contentId="'+this.contentId+'" title="Edit"></a>'
@@ -765,4 +768,21 @@ function showContentElements(){
 			$('#addContentDiv').show();
 		}
 	}
+}
+
+//==Get profeciency level name==========
+function getProfLevelName(profLevel){
+	var profLevelName = "";
+	if(profLevel == 'A'){
+		profLevelName = 'Pass'; 
+	}else if(profLevel == 'B'){
+		profLevelName = 'Did Not Pass';
+	}else if(profLevel == 'U'){
+		profLevelName = 'Undefined';
+	}else if(profLevel == 'N'){
+		profLevelName = 'DNR';
+	}else if(profLevel == 'P'){
+		profLevelName = 'Pass+';
+	}
+	return profLevelName;
 }

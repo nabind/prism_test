@@ -285,11 +285,11 @@
 								<select id="profLevel" name="profLevel"
 												class="select expandable-list"
 												style="width: 150px;">
-									<option value='A'/>Pass</option>
-									<option value='B'/>Did Not Pass</option>
-									<option value='U'/>Undifined</option>	
-									<option value='N'/>DNR</option>		
-									<option value='P'/>Pass+</option>		
+									<option value='A'>Pass</option>
+									<option value='B'>Did Not Pass</option>
+									<option value='U'>Undefined</option>	
+									<option value='N'>DNR</option>		
+									<option value='P'>Pass+</option>		
 								</select>
 						</p>
 
