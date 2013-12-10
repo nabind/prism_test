@@ -195,7 +195,7 @@ function openModifyStandardModalToEdit() {
 							classes: 'glossy mid-margin-left',
 							click: function(win,e) {
 										clickMe(e);
-										$('.mandatoryDescription').hide(ANIMATION_TIME);
+										$('.mandatoryDescription').hide();
 										if($.browser.msie) setTimeout("hideMessage()", 300);
 										win.closeModal(); 
 									}
@@ -248,7 +248,7 @@ function modifyStandard(form, win) {
 				if(data.value >= 1) {
 					win.closeModal(); 
 					unblockUI();
-					$('.mandatoryDescription').hide(ANIMATION_TIME);
+					$('.mandatoryDescription').hide();
 					$.modal.alert(strings['script.content.addSuccess']);
 				} else {
 					unblockUI();
@@ -336,7 +336,7 @@ function openContentModalToEdit(contentId) {
 							classes: 'glossy mid-margin-left',
 							click: function(win,e) {
 								$('#editContent').validationEngine('hide');
-								$('.mandatoryDescription').hide(ANIMATION_TIME);
+								$('.mandatoryDescription').hide();
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								clickMe(e);
 								win.closeModal(); 
@@ -390,7 +390,7 @@ function updateContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					$.modal.alert(strings['script.content.editSuccess']);
-					$('.mandatoryDescription').hide(ANIMATION_TIME);
+					$('.mandatoryDescription').hide();
 					unblockUI();
 				} else {
 					unblockUI();
@@ -453,7 +453,7 @@ function openContentModalToAdd() {
 				click: function(win,e) {
 							clickMe(e);
 							$('#addNewContent').validationEngine('hide');
-							$('.mandatoryDescription').hide(ANIMATION_TIME);
+							$('.mandatoryDescription').hide();
 							if($.browser.msie) setTimeout("hideMessage()", 300);
 							win.closeModal(); 
 						}
@@ -536,7 +536,7 @@ function addNewContent(form, win) {
 					win.closeModal(); 
 					loadManageContentList();
 					unblockUI();
-					$('.mandatoryDescription').hide(ANIMATION_TIME);
+					$('.mandatoryDescription').hide();
 					$.modal.alert(strings['script.content.addSuccess']);
 					
 				} else {
