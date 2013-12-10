@@ -491,13 +491,13 @@
 	
 	<div id="forgotPassword" class="display-none">
 			<div class="">
-			<form:form id ="forgotPasswordContainer"  name="forgotPasswordContainer">
+			<div id ="forgotPasswordContainer"  name="forgotPasswordContainer">
 				<p class="button-height inline-label">
 					<label class="label isIE" for="username">Username</label>
 					<input type="text" name="f_username" id="f_username" style="width:200px;margin:3px" class="input" />
 				</p>
 				<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidUsernameMsg">The Username entered is not valid. Make sure you have entered correct username.</p>
-				</form:form>
+				</div>
 			</div>
 			
 		<div id="forgotUserName" class="display-none">
