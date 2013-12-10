@@ -560,31 +560,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 								try {
 									cs.execute();
 									rs = (ResultSet) cs.getObject(2);
-									InvitationCodeTO to = null;
-									while (rs.next()) {
-										to = new InvitationCodeTO();
-										to.setCorporationorDioceseName(wrap(rs.getString("DISTRICT_NAME"), '"'));
-										to.setCorporationorDioceseNumber(wrap(rs.getString("DISTRICT_NUMBER"), '"'));
-										to.setSchoolName(wrap(rs.getString("SCHOOL_NAME"), '"'));
-										to.setSchoolNumber(wrap(rs.getString("SCHOOL_NUMBER"), '"'));
-										to.setGrade(wrap(rs.getString("GRADE_NAME"), '"'));
-										to.setAdministrationName(wrap(CustomStringUtil.appendString(rs.getString("PRODUCT_NAME"), "S", year.substring(2)), '"')); // TODO
-										to.setISTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
-										to.setInvitationCodeExpirationDate(wrap(rs.getString("EXPIRATION_DATE"), '"'));
-										to.setStudentLastName(wrap(rs.getString("LAST_NAME"), '"'));
-										to.setStudentFirstName(wrap(rs.getString("FIRST_NAME"), '"'));
-										to.setStudentMiddleInitial(wrap(rs.getString("MIDDLE_NAME"), '"'));
-										to.setStudentsGender(wrap(rs.getString("GENDER_CODE"), '"'));
-										to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
-										to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
-										to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
-										to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
-										to.setTeacherName(wrap(rs.getString("XXX"), '"')); // TODO
-										to.setCTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
-										to.setCTBUSETeacherElementNumber(wrap(rs.getString("XXX"), '"')); // TODO
-										to.setCTBUSEStudentElementNumber(wrap(rs.getString("XXX"), '"')); // TODO
-										icTOList.add(to);
-									}
+									icTOList = getICTOList(rs);
 								} catch (SQLException e) {
 									e.printStackTrace();
 								}
@@ -607,31 +583,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							try {
 								cs.execute();
 								rs = (ResultSet) cs.getObject(2);
-								InvitationCodeTO to = null;
-								while (rs.next()) {
-									to = new InvitationCodeTO();
-									to.setCorporationorDioceseName(wrap(rs.getString("DISTRICT_NAME"), '"'));
-									to.setCorporationorDioceseNumber(wrap(rs.getString("DISTRICT_NUMBER"), '"'));
-									to.setSchoolName(wrap(rs.getString("SCHOOL_NAME"), '"'));
-									to.setSchoolNumber(wrap(rs.getString("SCHOOL_NUMBER"), '"'));
-									to.setGrade(wrap(rs.getString("GRADE_NAME"), '"'));
-									to.setAdministrationName(wrap(CustomStringUtil.appendString(rs.getString("PRODUCT_NAME"), "S", year.substring(2)), '"')); // TODO
-									to.setISTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
-									to.setInvitationCodeExpirationDate(wrap(rs.getString("EXPIRATION_DATE"), '"'));
-									to.setStudentLastName(wrap(rs.getString("LAST_NAME"), '"'));
-									to.setStudentFirstName(wrap(rs.getString("FIRST_NAME"), '"'));
-									to.setStudentMiddleInitial(wrap(rs.getString("MIDDLE_NAME"), '"'));
-									to.setStudentsGender(wrap(rs.getString("GENDER_CODE"), '"'));
-									to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
-									to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
-									to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
-									to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
-									to.setTeacherName(wrap("", '"')); // TODO
-									to.setCTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
-									to.setCTBUSETeacherElementNumber(wrap("", '"')); // TODO
-									to.setCTBUSEStudentElementNumber(wrap("", '"')); // TODO
-									icTOList.add(to);
-								}
+								icTOList = getICTOList(rs);
 							} catch (SQLException e) {
 								e.printStackTrace();
 							}
@@ -644,6 +596,42 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return icList;
+	}
+
+	/**
+	 * Creates a List of InvitationCodeTO from a ResultSet
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException 
+	 */
+	private List<InvitationCodeTO> getICTOList(ResultSet rs) throws SQLException {
+		List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
+		while (rs.next()) {
+			InvitationCodeTO to = new InvitationCodeTO();
+			to.setCorporationorDioceseName(wrap(rs.getString("DISTRICT_NAME"), '"'));
+			to.setCorporationorDioceseNumber(wrap(rs.getString("DISTRICT_NUMBER"), '"'));
+			to.setSchoolName(wrap(rs.getString("SCHOOL_NAME"), '"'));
+			to.setSchoolNumber(wrap(rs.getString("SCHOOL_NUMBER"), '"'));
+			to.setGrade(wrap(rs.getString("GRADE_NAME"), '"'));
+			to.setAdministrationName(wrap(rs.getString("PRODUCT_NAME"), '"')); // TODO
+			to.setISTEPInvitationCode(wrap(rs.getString("INVITATION_CODE"), '"'));
+			to.setInvitationCodeExpirationDate(wrap(rs.getString("EXPIRATION_DATE"), '"'));
+			to.setStudentLastName(wrap(rs.getString("LAST_NAME"), '"'));
+			to.setStudentFirstName(wrap(rs.getString("FIRST_NAME"), '"'));
+			to.setStudentMiddleInitial(wrap(rs.getString("MIDDLE_NAME"), '"'));
+			to.setStudentsGender(wrap(rs.getString("GENDER_CODE"), '"'));
+			to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
+			to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
+			to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
+			to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
+			to.setTeacherName(wrap(rs.getString("Teacher_Name"), '"')); // TODO
+			to.setCTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
+			to.setCTBUSETeacherElementNumber(wrap(rs.getString("Teacher_Element_Number"), '"')); // TODO
+			to.setCTBUSEStudentElementNumber(wrap(rs.getString("Student_Element_Number"), '"')); // TODO
+			icTOList.add(to);
+		}
+		return icTOList;
 	}
 
 	/* (non-Javadoc)
