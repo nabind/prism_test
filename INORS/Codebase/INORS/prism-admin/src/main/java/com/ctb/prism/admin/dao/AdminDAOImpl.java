@@ -515,6 +515,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		try {
 			boolean ldapFlag = true;
 			if (password != null && !"".equals(password)) {
+				
+				//Check if password contains part of user name
+				if(password.equalsIgnoreCase(userName) 
+						|| password.toLowerCase().indexOf(userName.toLowerCase()) != -1
+						|| userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
+					throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
+				}
+				
 				if(IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 					ldapFlag = ldapManager.updateUser(userId, userId, userId, password);
 				} else {
@@ -678,6 +686,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				// code to insert user in DAO only
 				List<Map<String, Object>> userMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_USER, userName);
 				if (userMap == null || userMap.isEmpty()) { // user not present in DB so insert new
+					
+					//Check if password contains part of user name
+					if(password.equalsIgnoreCase(userName) 
+							|| password.toLowerCase().indexOf(userName.toLowerCase()) != -1
+							|| userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
+						throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
+					}
+					
 					long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
 					if (user_seq_id != 0) {
 						String salt = PasswordGenerator.getNextSalt();
