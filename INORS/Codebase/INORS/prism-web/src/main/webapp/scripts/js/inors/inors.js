@@ -413,6 +413,80 @@ function downloadBulkPdf(type, mode) {
 			
 		});	
 		
+		//=============================Download Group Files ON CLICK======================
+		
+		function eraseCache(){
+			  window.location = window.location.href+'?eraseCache=true';
+			}
+		
+		$('.download-GroupFiles').live("click", function() {
+			var row =  $(this);
+			var jobId = row.attr("jobId");
+			var filePath = row.attr("filePath");
+			var fileName = row.attr("fileName");
+			var availability = downloadGroupFilesDetails(row,jobId,filePath,fileName);
+			if(availability == true) {
+				var href = "downloadGroupDownloadFiles.do?"+'jobId='+jobId+'&fileName='+fileName+'&filePath='+filePath;
+				$(".download-GroupFiles").attr("href", href);
+			} else {
+				$(".download-GroupFiles").attr("href", "#");
+				$.modal.alert('File not found in the filepath mentioned');
+			}
+		});
+		
+		function downloadGroupFilesDetails(row,jobId,filePath,fileName) {
+			var availability = false;
+				$.ajax({
+					type : "GET",
+					url : 'checkFileAvailability.do',
+					data : "filePath="+filePath,
+					dataType: 'html',
+					async : false,
+					success : function(data) {
+						var obj = jQuery.parseJSON(data);
+						if(obj.status == 'Success') {
+							availability = true;
+						}
+					}
+				});
+				return availability;
+			}
+		
+		$('.view-requestdetails').live("click", function() {
+			var row = $(this);
+			var jobId = $(this).attr("jobId");
+			viewrequestDetails(jobId);
+		});
+		
+		function viewrequestDetails(jobId)
+		{
+				    manageIconIE('icon-star');
+				    var param = "jobId=" + jobId;	
+				    blockUI();
+				    $.ajax({
+						type : "GET",
+						url : "getRequestDetailViewData.do", 
+						data : param,
+						dataType : 'json',
+						cache:false,
+						success : function(data) {
+							unblockUI();
+							$("textarea#requestSummary").val(data[0].requestSummary);
+							$("#viewRequestDetail").modal({
+								title: 'View Request Details',
+								height: 350,
+								width: 600,
+								resizable: true,
+								draggable: true,
+							});		
+								
+						},
+						error : function(data) {
+							$.modal.alert(strings['script.common.error1']);
+						}
+					})	
+		}
+		
 		//=============================AJAX CALL TO DELETE Group Files FROM DB TABLES=============================
 			function deleteGroupFilesDetails(jobId,row) {
 					blockUI();
@@ -425,7 +499,7 @@ function downloadBulkPdf(type, mode) {
 						success : function(data) {
 							var obj = jQuery.parseJSON(data);
 							if(obj.status == 'Success') {
-								$.modal.alert('Report deleted successfully.');
+								$.modal.alert('Job deleted successfully.');
 								unblockUI();
 								deleteRowValues(row);//this method is present in manageUser.js
 							} else {
@@ -440,6 +514,17 @@ function downloadBulkPdf(type, mode) {
 						}
 					});
 				}
+			function deleteRowValues(row) {
+				row.closest("tr").remove();
+			}
+			
+			// ================ Remove duplicate icons in IE ============================
+			function manageIconIE(icon) {
+				if($.browser.msie) {
+					$('.'+icon).html('');
+					$('.'+icon+' > .empty').hide();
+				}
+			}
 
 function populateSchool(){
 	var parentOrgNodeId = $('#corpDiocese').val();

@@ -115,6 +115,9 @@ public class ReportServiceImpl implements IReportService {
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException{
 		return reportBusiness.getAllGroupDownloadFiles(paramMap);
 	}
+	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException{
+		return reportBusiness.getRequestDetail(paramMap);
+	}
 	
 	@Transactional (propagation = Propagation.REQUIRES_NEW)
 	public boolean deleteGroupFiles(String Id) throws Exception {

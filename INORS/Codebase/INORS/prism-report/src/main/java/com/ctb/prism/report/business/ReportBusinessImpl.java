@@ -360,6 +360,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return reportDAO.getAllGroupDownloadFiles(paramMap);
 	}
 	
+	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException{
+		return reportDAO.getRequestDetail(paramMap);
+	}
+	
+	
 	public boolean deleteGroupFiles(String Id)
 	throws Exception {
 

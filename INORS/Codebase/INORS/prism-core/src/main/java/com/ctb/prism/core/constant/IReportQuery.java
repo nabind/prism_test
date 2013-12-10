@@ -172,8 +172,11 @@ public interface IReportQuery {
            
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
-	"select * from job_tracking where userid=?");
+	"select * from job_tracking where job_status != 'DL' and userid=? order by created_date_time desc");
 	
+	// query to group download request Details
+	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(
+	"select * from job_tracking where job_Id=?");
 	// query to update report table
 	public static final String UPDATE_REPORT = CustomStringUtil.appendString(
 			"UPDATE DASHBOARD_REPORTS SET REPORT_NAME = ?, REPORT_FOLDER_URI  = ?, " ,
@@ -232,6 +235,6 @@ public interface IReportQuery {
 	public static final String REPORT_TYPE = CustomStringUtil.appendString("select REPORT_TYPE as TYPE, DB_REPORTID as ID, " +
 			" REPORT_FOLDER_URI As URI from dash_reports WHERE (REPORT_FOLDER_URI = ? OR DB_REPORTID = ?) ");
 
-	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update GROUP_DOWNLOAD_STATUS set DELETION_STATUS=1,status='DL'where jobid=?");
+	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL' where job_id=?");
 }
 

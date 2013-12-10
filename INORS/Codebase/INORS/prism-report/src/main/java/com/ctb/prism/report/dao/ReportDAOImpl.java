@@ -864,6 +864,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	return reportTo;	
 	}
 	
+	/**
+	 * @author Arunava
+	 * @param paramMap
+	 * @return
+	 */
+	//Arunava Datta for Group Download listing
+
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)
 	{
 		logger.info( "Enter: ReportDAOImpl - getAllGroupDownloadFiles");
@@ -875,22 +882,99 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			allGroupFiles = new ArrayList<JobTrackingTO>();
 			for (Map<String, Object> data : dataList)
 			{
-   				    JobTrackingTO to = new JobTrackingTO();
-   				    String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"),"MM/dd/yyyy HH:mm:ss");
-   				    String updatedDate =getFormattedDate((Timestamp) data.get("updated_date_time"),"MM/dd/yyyy HH:mm:ss");
-				    to.setJobId( ((BigDecimal) data.get("job_id")).longValue());
-				    to.setRequestFilename((String) data.get("request_filename"));
+				    JobTrackingTO to = new JobTrackingTO();
+				    String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"),"MM/dd/yyyy HH:mm:ss");
+			        to.setJobId( ((BigDecimal) data.get("job_id")).longValue());
+				    Timestamp ts =(Timestamp)data.get("updated_date_time");
+				    Calendar cal = Calendar.getInstance();
+				    cal.setTime(ts);
+				    cal.add(Calendar.DAY_OF_WEEK,(Integer.parseInt((String) paramMap.get("gdfExpiryTime"))));
+				    ts.setTime(cal.getTime().getTime());
+				    ts = new Timestamp(cal.getTime().getTime());
+				    String updatedDate =getFormattedDate(ts,"MM/dd/yyyy HH:mm:ss");
+				    if(null!=((String) data.get("file_size")) || ((String) data.get("file_size")) !=""){
+				    to.setFileSize((String) data.get("file_size"));
+				    }else{
+				    to.setFileSize(" ");	
+				    }
+				    String filePath=(String) data.get("request_filename");
+				    String fileName="";
+				    if (filePath.lastIndexOf("\\") >=0)
+				    {
+				    	fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
+				    }
+				    else
+				    {
+				    	fileName = filePath.substring(filePath.lastIndexOf("/")+1);
+				    }
+				    //fileName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
+				    to.setRequestFilename(fileName);
+				    to.setFilePath(filePath);
 				    to.setCreatedDateTime(createdDate);
 				    to.setUpdatedDateTime(updatedDate);
 				    to.setRequestType((String) data.get("request_type"));
 				    to.setJobStatus((String) data.get("job_status"));
-    				allGroupFiles.add(to);
+					allGroupFiles.add(to);
 			}
 		}
 		logger.info( "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
 		return allGroupFiles;
 	}
-	
+
+	/**
+	 * @author Arunava
+	 * @param paramMap
+	 * @return
+	 */
+	//Arunava Datta for Group Download listing
+
+	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)
+	{
+		logger.info( "Enter: ReportDAOImpl - getRequestDetail");
+		List<JobTrackingTO> allGroupFiles = null;
+		String jobId = (String) paramMap.get("jobId");
+		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_REQUEST_VIEW,jobId);
+		if ( dataList != null && dataList.size() > 0 )
+		{
+			allGroupFiles = new ArrayList<JobTrackingTO>();
+			for (Map<String, Object> data : dataList)
+			{
+				    JobTrackingTO to = new JobTrackingTO();
+				    String filePath=(String) data.get("request_filename");
+				    //String extractStartdate = getFormattedDate((Timestamp) data.get("extract_startdate"),"MM/dd/yyyy HH:mm:ss");
+				    //String extractEnddate = getFormattedDate((Timestamp) data.get("extract_enddate"),"MM/dd/yyyy HH:mm:ss");
+				    String fileName = "";
+				    if (filePath.lastIndexOf("\\") >=0)
+				    {
+				    	fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
+				    }
+				    else
+				    {
+				    	fileName = filePath.substring(filePath.lastIndexOf("/")+1);
+				    }
+				    to.setRequestFilename(fileName);
+				    to.setRequestType((String) data.get("request_type"));
+				    to.setRequestDetails((String) data.get("request_details"));
+				    to.setRequestSummary((String) data.get("request_summary"));
+				    to.setExtractCategory((String) data.get("extract_category"));
+				    //to.setExtractStartdate(extractStartdate);
+				    //to.setExtractEnddate(extractEnddate);
+				    to.setJobName((String) data.get("job_name"));
+					allGroupFiles.add(to);
+			}
+		}
+		logger.info( "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
+		return allGroupFiles;
+	}
+
+	/**
+	 * @author Arunava
+	 * @param id
+	 * @return
+	 * @throws SystemException
+	 */
+	//Arunava Datta for Group Download deleting
+
 	@TriggersRemove(cacheName="orgUsers", removeAll=true)
 	public boolean deleteGroupFiles(String Id)
 			throws Exception {
@@ -902,17 +986,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns the date in a defined format
 	 * @author Arunava Datta
 	 * @param pTimestamp
 	 * @param pFormat  examples: dd-MM-yyyy
 	 * @return
-	 * @see http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html
-	 */
-	public static String getFormattedDate(Timestamp pTimestamp, String pFormat) {
-		DateFormat dF = new java.text.SimpleDateFormat(pFormat);
-		return dF.format(pTimestamp.getTime());
-	}
+	 * @see http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html*/
+		public static String getFormattedDate(Timestamp pTimestamp, String pFormat) {
+			DateFormat dF = new java.text.SimpleDateFormat(pFormat);
+			return dF.format(pTimestamp.getTime());
+		}
 }

@@ -1,8 +1,7 @@
 package com.ctb.prism.report.transferobject;
 
-import java.sql.Timestamp;
-
 import com.ctb.prism.core.transferobject.BaseTO;
+
 
 /**
  * Transfer object holds details of a report. Report name, report URL, the roles who can access the report etc.
@@ -34,6 +33,7 @@ public class JobTrackingTO extends BaseTO {
 	private String otherRequestparams;
 	private String fileSize;
 	private String userName;
+	private String filePath;
 	
 	public String getUserName() {
 		return userName;
@@ -174,6 +174,12 @@ public class JobTrackingTO extends BaseTO {
 	}
 	public void setUpdatedDateTime(String updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
+	}
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

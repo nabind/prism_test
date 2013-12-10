@@ -54,5 +54,6 @@ public interface IReportDAO {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws SystemException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)throws SystemException;
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap) throws SystemException;
+	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap) throws SystemException;
 	public boolean deleteGroupFiles(String Id) throws Exception;
 }

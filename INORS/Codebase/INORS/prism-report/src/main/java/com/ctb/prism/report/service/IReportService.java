@@ -47,6 +47,7 @@ public interface IReportService {
 	public Map<String,Object> loadManageMessage(final Map<String,Object> paramMap) throws SystemException;
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException;
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException;
+	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException;
 	public boolean deleteGroupFiles(String Id) throws Exception;
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException;
 }

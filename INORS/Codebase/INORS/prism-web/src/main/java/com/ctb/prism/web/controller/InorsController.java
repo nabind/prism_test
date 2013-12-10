@@ -1,5 +1,6 @@
 package com.ctb.prism.web.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,22 +75,41 @@ public class InorsController {
 	
 	@Autowired private JmsMessageProducer messageProducer;
 	
+	/**
+	 * @author Arunava
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SystemException
+	 */
 	//Arunava Datta for Group Download Listing
 	@RequestMapping(value = "/groupDownloadFiles", method = RequestMethod.GET)
 	public ModelAndView groupDownloadFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
 		ModelAndView modelAndView = new ModelAndView("inors/groupDownloadFiles");
+		String grpList="";
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("gdfExpiryTime", propertyLookup.get("gdfExpiryTime"));
 		List<JobTrackingTO> groupList = reportService.getAllGroupDownloadFiles(paramMap);
 		if(groupList != null && !groupList.isEmpty()) {
 			modelAndView.addObject("groupList", groupList);
+			grpList = JsonUtil.convertToJsonAdmin(groupList);
 		}
-		String grpList = JsonUtil.convertToJsonAdmin(groupList);
+		
 		logger.log(IAppLogger.DEBUG, grpList);
 		return modelAndView;
 	}
+	
+	/**
+	 * @author Arunava
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SystemException
+	 */
+	//Arunava Datta for Group Download deleting
 	@RequestMapping(value="/deleteGroupDownloadFiles", method=RequestMethod.GET )
 	public ModelAndView deleteGroupDownloadFiles(HttpServletRequest req, HttpServletResponse res) {
 		try {
@@ -111,6 +131,85 @@ public class InorsController {
 		}
 		return null;
 	}
+	/**
+	 * @author Arunava
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SystemException
+	 */
+	//Arunava Datta for Group Download file downloading
+		@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
+		public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response){
+			logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
+	
+				String Id = (String)request.getParameter("jobId");
+				String filePath = (String)request.getParameter("filePath");
+				String fileName = (String)request.getParameter("fileName");
+				String extensionType="";
+				if(-1 == fileName.lastIndexOf(".")){
+				extensionType=".pdf";
+				}else{	
+				extensionType=fileName.substring(fileName.lastIndexOf(".")+1);
+				}
+				File file  = new File (filePath);
+				try{	
+					byte[] data = FileCopyUtils.copyToByteArray(file);
+					response.setContentType("application/"+extensionType);
+					response.setContentLength(data.length);
+					response.setHeader("Content-Disposition", "attachment; filename="+fileName);
+					FileCopyUtils.copy(data, response.getOutputStream());
+				} catch (Exception e) {
+				    logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
+				    e.printStackTrace();
+				}
+			logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
+		}
+	
+		//Arunava Datta for Group Download file validation
+		@RequestMapping(value="/checkFileAvailability", method=RequestMethod.GET )
+		public ModelAndView checkFileAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
+			
+				logger.log(IAppLogger.INFO, "Enter: InorsController - checkFileAvailability");
+				String filePath = (String)req.getParameter("filePath");
+				File file  = new File (filePath);
+				String status = "Fail";
+				try {	
+					byte[] data = FileCopyUtils.copyToByteArray(file);
+					status = "Success";
+					res.setContentType("text/plain");
+					res.getWriter().write( "{\"status\":\""+status+"\"}" );
+       		       } 
+				catch (Exception e) {
+				logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
+				res.setContentType("text/plain");
+				res.getWriter().write( "{\"status\":\""+status+"\"}" );
+			}
+			return null;
+		}
+		
+		//For getting the required data for a particular request while viewing
+		@RequestMapping(value="/getRequestDetailViewData", method=RequestMethod.GET )
+		public ModelAndView getRequestDetailViewData(HttpServletRequest req, HttpServletResponse res) {
+			try {
+				String jobId = (String)req.getParameter("jobId");
+				Map<String,Object> paramMap = new HashMap<String,Object>(); 
+				paramMap.put("jobId", jobId);
+				ModelAndView modelAndView = new ModelAndView("report/groupDownloadFiles");
+				List<JobTrackingTO> requestList = reportService.getRequestDetail(paramMap);
+				String replist = JsonUtil.convertToJsonAdmin(requestList);
+				modelAndView.addObject("requestView", requestList);
+	            String requestViewJsonString = JsonUtil.convertToJsonAdmin(requestList);
+				logger.log(IAppLogger.INFO, requestViewJsonString);
+				res.setContentType("application/json");
+				res.getWriter().write(requestViewJsonString);
+			} catch (Exception exception) {
+				logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			} finally {
+				logger.log(IAppLogger.INFO, "Exit: ReportController - getRequestDetailViewData Details");
+			}
+			return null;
+		}
 	
 	/**
 	 * 
