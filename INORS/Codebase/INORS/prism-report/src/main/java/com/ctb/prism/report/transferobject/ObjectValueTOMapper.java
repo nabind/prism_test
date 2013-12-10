@@ -1,4 +1,4 @@
-package com.ctb.prism.core.transferobject;
+package com.ctb.prism.report.transferobject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,21 +10,15 @@ import com.ctb.prism.core.logger.LogFactory;
 
 public class ObjectValueTOMapper implements RowMapper<ObjectValueTO> {
 	
-	private static final IAppLogger logger = 
-			LogFactory.getLoggerInstance(ObjectValueTOMapper.class.getName());
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ObjectValueTOMapper.class.getName());
  
 	public ObjectValueTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ObjectValueTO objectValueTO = new ObjectValueTO();
 		try{
-			objectValueTO.setValue(rs.getString("VALUE"));
-			objectValueTO.setName(rs.getString("NAME"));
-			try{
-				objectValueTO.setOther(rs.getString("OTHER"));
-			}catch(Exception e){
-				logger.log(IAppLogger.WARN, "No column name is specified for OTHER: " + e);
-			}
+			objectValueTO.setValue(rs.getString(1));
+			objectValueTO.setName(rs.getString(2));
 		}catch(Exception e){
-			logger.log(IAppLogger.ERROR, "Error occurred in ObjectValueTOMapper: "+e);
+			logger.log(IAppLogger.ERROR, "Error occurred in Report ObjectValueTOMapper: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return objectValueTO;

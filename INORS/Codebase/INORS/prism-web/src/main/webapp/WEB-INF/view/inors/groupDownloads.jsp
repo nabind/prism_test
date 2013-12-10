@@ -24,30 +24,21 @@
 							<h6 class="margin-bottom-small">Test Administration</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="testAdministration" name="testAdministration" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value="ISTEP~Spring~2013" selected="selected">ISTEP Spring 2013</option>
-										<option value="IMAST~Spring~2013">IMAST Spring 2013</option>
-										<option value="IREAD-3~Spring~2013">IREAD-3 Spring 2013</option>
-										<option value="IREAD-3~Summer~2013">IREAD-3 Summer 2013</option>
-										<%-- option value="ISTEP~Spring~2012">ISTEP Spring 2012</option>
-										<option value="IMAST~Spring~2012">IMAST Spring 2012</option>
-										<option value="IREAD-3~Spring~2012">IREAD-3 Spring 2012</option>
-										<option value="IREAD-3~Summer~2012">IREAD-3 Summer 2012</option>
-										<option value="ISTEP~Spring~2011">ISTEP Spring 2011</option>
-										<option value="IMAST~Spring~2011">IMAST Spring 2011</option>
-										<option value="ISTEP~Spring~2010">ISTEP Spring 2010</option>
-										<option value="IMAST~Spring~2010">IMAST Spring 2010</option--%>
+									<select id="testAdministrationGD" name="testAdministrationGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select</option>
+										<c:forEach var="testAdministrationVar" items="${testAdministrationList}">
+											<option value="${testAdministrationVar.value}">${testAdministrationVar.name}</option>
+										</c:forEach>
 									</select>
 								</p>
 							</div>
 						</div>
 						<div class="space-40px"></div>
-						
 						<div class="three-columns report-inputs">
 							<h6 class="margin-bottom-small">Corp/Diocese</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="corpDiocese" name="corpDiocese" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+									<select id="corpDioceseGD" name="corpDioceseGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
 										<option value='-1'>Please Select</option>
 										<c:forEach var="corpDioceseVar" items="${corporationList}">
 											<option value="${corpDioceseVar.value}">${corpDioceseVar.name}</option>
@@ -61,33 +52,32 @@
 							<h6 class="margin-bottom-small">Grade</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="school" name="school" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select Corp/Diocese</option>
+									<select id="gradeGD" name="gradeGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select</option>
+										<c:forEach var="gradeVar" items="${gradeList}">
+											<option value="${gradeVar.value}">${gradeVar.name}</option>
+										</c:forEach>
 									</select>
 								</p>
 							</div>
 						</div>
-						
-						
 						<div class="three-columns report-inputs">
 							<h6 class="margin-bottom-small">Test Program</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="testProgram" name="testProgram" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value="1" selected="selected">Public Schools</option>
-										<option value="2">Non Public Schools</option>
+									<select id="testProgramGD" name="testProgramGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value="PUBLIC" selected="selected">Public Schools</option>
+										<option value="NON-PUBLIC">Non Public Schools</option>
 									</select>
 								</p>
 							</div>
 						</div>
 						<div class="space-40px"></div>
-						
-						
 						<div class="three-columns report-inputs">
 							<h6 class="margin-bottom-small">School</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="school" name="school" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+									<select id="schoolGD" name="schoolGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
 										<option value='-1'>Please Select Corp/Diocese</option>
 									</select>
 								</p>
@@ -98,15 +88,12 @@
 							<h6 class="margin-bottom-small">Class</h6>
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
-									<select id="testProgram" name="testProgram" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value="1" selected="selected">Public Schools</option>
-										<option value="2">Non Public Schools</option>
+									<select id="classGD" name="classGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
+										<option value='-1'>Please Select School</option>
 									</select>
 								</p>
 							</div>
 						</div>
-						
-						
 					</div>
 				</div>
 			</div>
@@ -158,7 +145,7 @@
 		</p>
 	</div>
 	
-	<div class="columns accordion with-padding tree-container">
+	<!--div class="columns accordion with-padding tree-container">
 		<div class="four-columns">School</div>
 		<div class="four-columns">Class</div>
 		<div class="four-columns">Student</div>
@@ -166,8 +153,23 @@
 			
 		</div>
 		<input type="text" name="selectedNodes" id="selectedNodes" style="display:none">
+	</div-->
+
+	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px;">
+		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable hidden" id="studentTableGD">
+			<thead>
+				<tr role="row">
+					<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
+						<input name="check-all" id="check-all" value="1" type="checkbox">
+					</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 356px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
+				</tr>
+			</thead>
+			<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
+			</tbody>
+		</table>
 	</div>
-	
+
 	<div class="columns accordion with-padding">
 		<p class="inline-label">
 			<label for="fileName" class="label" style="width: 345px !important;">Name of Generated File (50 characters maximum): </label>
@@ -190,15 +192,15 @@
 		<p class="message small-margin-bottom orange-gradient" style="margin-bottom: 10px !important">
 			Note: For those schools that administered the online ISTEP+ Applied Skills assessment, the combined PDFs group download feature to "Generate Group File of Both" should not be used. Please contact the CTB/Indiana Helpdesk for more information.
 		</p>
-		<a href="" class="downloadBulkPdf button" id="downloadBulkPdfSeperate" style="margin-left: 0px; float: left;">
+		<a href="#" class="downloadBulkPdf button" id="downloadSeparatePdfsGD" style="margin-left: 0px; float: left;">
 			<span class="button-icon icon-download blue-gradient report-btn">Separate PDFs</span>
 			Generate Download File
 		</a>
-		<a href="" class="downloadBulkPdf button" id="downloadBulkPdf" style="margin-left: 10px; float: left;">
+		<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsGD" style="margin-left: 10px; float: left;">
 			<span class="button-icon icon-download blue-gradient report-btn">Combined PDFs</span>
 			Generate Download File
 		</a>
-		<a href="" class="downloadBulkPdf button" id="downloadSinglePdf" style="margin-left: 0px; float: right;">
+		<a href="#" class="downloadBulkPdf button" id="downloadSinglePdfsGD" style="margin-left: 0px; float: right;">
 			<span class="button-icon icon-download blue-gradient report-btn">PDF</span>
 			Single Student
 		</a>

@@ -1,19 +1,16 @@
 package com.ctb.prism.report.dao;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.ctb.prism.report.transferobject.JobTrackingTO;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
@@ -56,4 +53,28 @@ public interface IReportDAO {
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap) throws SystemException;
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap) throws SystemException;
 	public boolean deleteGroupFiles(String Id) throws Exception;
+
+	/**
+	 * Creates the list of test administrations
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getTestAdministrations();
+
+	/**
+	 * Creates the list of
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getDistricts();
+
+	/**
+	 * Creates the list of
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getGrades();
+	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId);
+	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId);
+	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId);
 }

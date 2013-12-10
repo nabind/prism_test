@@ -140,6 +140,35 @@ $(document).ready(function() {
 	$("#testAdministration").live("change", function(event) {
 		showHideDivs();
 	});
+	// Group Download
+	$("#testAdministrationGD").live("change", function(event) {
+	});
+	$('#corpDioceseGD').live('change',function(){
+		populateSchoolGD();
+	});
+	$('#schoolGD').live('change',function(){
+		populateClassGD();
+	});
+	$('#classGD').live('change',function(){
+		populateStudentTableGD();
+	});
+	$('#check-all').change(function() {
+	    var checkboxes = $(this).closest('form').find(':checkbox');
+	    if($(this).is(':checked')) {
+	        checkboxes.attr('checked', 'checked');
+	    } else {
+	        checkboxes.removeAttr('checked');
+	    }
+	});
+	$("#downloadSeparatePdfsGD").live("click", function() {
+		groupDownloadFunction('P');
+	});
+	$("#downloadCombinedPdfsGD").live("click", function() {
+		groupDownloadFunction('C');
+	});
+	$("#downloadSinglePdfsGD").live("click", function() {
+		groupDownloadFunction('S');
+	});
 });
 
 // =============== retain group download files field values =====================
@@ -554,6 +583,92 @@ function populateSchool(){
 	}
 }
 
+function populateSchoolGD(){
+	var parentOrgNodeId = $('#corpDioceseGD').val();
+	if (parentOrgNodeId != "-1") {
+		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'populateSchoolGD.do',
+			data : dataUrl,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.length > 0) {
+					populateSchoolDropdownByJson($('#schoolGD'),data,1);
+				} else {
+					$.modal.alert("No School Found for this Corp/Diocese");
+					populateSchoolDropdownByJson($('#schoolGD'),null,1,1);
+				}
+				unblockUI();
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error']);
+				unblockUI();
+			}
+		});
+	}
+}
+
+function populateClassGD(){
+	var parentOrgNodeId = $('#schoolGD').val();
+	if (parentOrgNodeId != "-1") {
+		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'populateClassGD.do',
+			data : dataUrl,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.length > 0) {
+					populateClassDropdownByJson($('#classGD'),data,1);
+				} else {
+					$.modal.alert("No Class Found for this School");
+					populateClassDropdownByJson($('#classGD'),null,1,1);
+				}
+				unblockUI();
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error']);
+				unblockUI();
+			}
+		});
+	}
+}
+
+function populateStudentTableGD(){
+	var orgNodeId = $('#classGD').val();
+	if (orgNodeId != "-1") {
+		var dataUrl = 'orgNodeId=' + orgNodeId;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'populateStudentTableGD.do',
+			data : dataUrl,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.length > 0) {
+					populateStudentTableByJson(data);
+					$("#studentTableGD").removeClass('hidden');
+					$("#studentTableGD").show();
+				} else {
+					$.modal.alert("No Class Found for this School");
+					$("#studentTableGD").hide();
+				}
+				unblockUI();
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error']);
+				unblockUI();
+			}
+		});
+	}
+}
+
 function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
 	elementObject.empty();
 	var option = "";
@@ -569,7 +684,6 @@ function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectF
 					option += '<option value='+data.value+'>'+data.name+'</option>';
 			    });
 			}else{
-				alert("here");
 				$.modal.alert(strings['script.common.empty']);
 			}
 		}
@@ -580,12 +694,66 @@ function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectF
 	elementObject.trigger('update-select-list');
 }
 
+function populateClassDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
+	elementObject.empty();
+	var option = "";
+	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
+		option += "<option value='-1'>Please Select School</option>";
+	}
+	
+	if((typeof clearFlag === 'undefined')) {
+		if(jsonDataValueName != null) {
+			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
+				option += '<option value="ALL">All Classes</option>';
+				$.each(jsonDataValueName, function(index, data) {
+					option += '<option value='+data.value+'>'+data.name+' ('+data.value+')</option>';
+			    });
+			}else{
+				$.modal.alert(strings['script.common.empty']);
+			}
+		}
+	}
+	
+	elementObject.html(option);
+	elementObject.change();
+	elementObject.trigger('update-select-list');
+}
+
+function populateStudentTableByJson(json) {
+	var elementObject = $('#studentListGD');
+	elementObject.empty();
+	var rows = "";
+	var count = 0;
+	if (json != null) {
+		if ((json != "") && (json.length > 0)) {
+			$.each(json, function(index, data) {
+				count = count + 1;
+				if (count%2 == 0)
+					rows += '<tr class="even">';
+				else
+					rows += '<tr class="odd">';
+				rows += '<th scope="row" class="checkbox-cell  sorting_1"><input name="checked[]" id="check-student-' + data.value+ '" value="'+data.value+'" type="checkbox" /></th>';
+				rows += '<td>' + data.name + '</td>';
+				rows += '</tr>';
+			});
+		} else {
+			$.modal.alert(strings['script.common.empty']);
+		}
+	}
+	elementObject.html(rows);
+}
+
 function showHideDivs() {
 	var schoolId = $("#school").val();
 	if((schoolId) && schoolId != '-1') {
+		$("#icDiv").removeClass('hidden');
+		$("#grtDiv").removeClass('hidden');
+		$("#icDiv").show();
+		$("#grtDiv").show();
 		var testAdministration = $("#testAdministration").val();
 		if (testAdministration) {
 			var tokens = testAdministration.split("~");
+			// alert(tokens);
 			if ("2010" == tokens[2]) {
 				$("#icLinks").html('');
 				$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
@@ -603,6 +771,8 @@ function showHideDivs() {
 				}
 				$("#grtLinks").html('<a class="button" id="grt2013" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 GRT File Record Layout</a><br />');
 			} else {
+				$("#icDiv").hide();
+				$("#grtDiv").hide();
 				$.modal.alert('Unknown Test Administration');
 			}
 		}
@@ -610,4 +780,75 @@ function showHideDivs() {
 		$("#icDiv").hide();
 		$("#grtDiv").hide();
 	}
+}
+
+/*
+ * GroupDownloadTO Constructor
+ */
+function GroupDownloadTO(button, testAdministration, testProgram, district,
+		school, klass, grade, students, groupFile, collationHierarchy,
+		fileName, email) {
+	this.button = button;
+	this.testAdministration = testAdministration;
+	this.testProgram = testProgram;
+	this.district = district;
+	this.school = school;
+	this.klass = klass;
+	this.grade = grade;
+	this.students = students;
+	this.groupFile = groupFile;
+	this.collationHierarchy = collationHierarchy;
+	this.fileName = fileName;
+	this.email = email;
+}
+
+function groupDownloadFunction(button) {
+	var testAdministration = $("#testAdministrationGD").val();
+	var testProgram = $("#testProgramGD").val();
+	var district = $("#corpDioceseGD").val();
+	var school = $("#schoolGD").val();
+	var klass = $("#classGD").val();
+	var grade = $("#gradeGD").val();
+	var students = $("input[id^=check-student-]:checked").map(
+			function() {
+				return this.value;
+			}
+		).get().join(",");
+	var groupFile = $("#groupFile").val();
+	var collationHierarchy = $("#collationHierarchy").val();
+	var fileName = $("#fileName").val();
+	var email = $("#email").val();
+	//var url = "groupDownloadFunction.do?testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&district=" + district + "&school=" + school + "&class=" + klass + "&grade=" + grade + "&students=" + students + "&groupFile=" + groupFile + "&collationHierarchy=" + collationHierarchy + "&fileName=" + fileName + "&email=" + email;
+	var json = new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
+	/*if(button == "P")
+		alert("Separate");
+	else if(button == "C")
+		alert("Combined");
+	else if(button == "S")
+		alert("Single");
+	else
+		alert("Unknown Button");*/
+	//alert(JSON.stringify(json));
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : 'groupDownloadFunction.do',
+		data : json,
+		dataType : 'json',
+		cache : false,
+		success : function(data) {
+			if (data.length > 0) {
+				alert(JSON.stringify(data));
+			} else {
+				$.modal.alert("No File Found");
+				$("#studentTableGD").hide();
+			}
+			unblockUI();
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error']);
+			unblockUI();
+		}
+	});
+	
 }

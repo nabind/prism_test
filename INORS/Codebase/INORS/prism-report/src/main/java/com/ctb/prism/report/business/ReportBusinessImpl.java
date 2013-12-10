@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
@@ -370,5 +371,38 @@ public class ReportBusinessImpl implements IReportBusiness {
 
        return reportDAO.deleteGroupFiles(Id);
    }
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getTestAdministrations()
+	 */
+	public List<ObjectValueTO> getTestAdministrations() {
+		return reportDAO.getTestAdministrations();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getDistricts()
+	 */
+	public List<ObjectValueTO> getDistricts() {
+		return reportDAO.getDistricts();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getGrades()
+	 */
+	public List<ObjectValueTO> getGrades() {
+		return reportDAO.getGrades();
+	}
+
+	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
+		return reportDAO.populateSchoolGD(parentOrgNodeId);
+	}
+
+	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
+		return reportDAO.populateClassGD(parentOrgNodeId);
+	}
+
+	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
+		return reportDAO.populateStudentTableGD(orgNodeId);
+	}
 
 }

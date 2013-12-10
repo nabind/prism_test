@@ -435,6 +435,18 @@ public class InorsController {
 			modelAndView.addObject("rootOrgId", corp);
 			
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+			
+			// Test Administration Dropdown
+			List<com.ctb.prism.report.transferobject.ObjectValueTO> testAdministrationList = reportService.getTestAdministrations();
+			modelAndView.addObject("testAdministrationList", testAdministrationList);
+			
+			// Corp/Diocese Dropdown
+			List<com.ctb.prism.report.transferobject.ObjectValueTO> corporationList = reportService.getDistricts();
+			modelAndView.addObject("corporationList", corporationList);
+			
+			// Grade Dropdown
+			List<com.ctb.prism.report.transferobject.ObjectValueTO> gradeList = reportService.getGrades();
+			modelAndView.addObject("gradeList", gradeList);
 					
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
@@ -728,7 +740,7 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/populateSchool", method = RequestMethod.GET)
 	public void populateSchool(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
-		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchool()");
+		logger.log(IAppLogger.INFO, "Enter: populateSchool()");
 		long t1 = System.currentTimeMillis();
 		response.setContentType("text/plain");
 		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
@@ -742,10 +754,10 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, jsonString);
 			response.getWriter().write(jsonString);
 	    }catch(Exception e){
-			logger.log(IAppLogger.ERROR, "", e);
+			logger.log(IAppLogger.ERROR, e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: InorsController - populateSchool() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: populateSchool() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 	

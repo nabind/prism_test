@@ -128,6 +128,39 @@ public class ReportServiceImpl implements IReportService {
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException{
 		return reportBusiness.getReportMessageFilter(paramMap);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getTestAdministrations()
+	 */
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getTestAdministrations() {
+		return reportBusiness.getTestAdministrations();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getDistricts()
+	 */
+	public List<ObjectValueTO> getDistricts() {
+		return reportBusiness.getDistricts();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getGrades()
+	 */
+	public List<ObjectValueTO> getGrades() {
+		return reportBusiness.getGrades();
+	}
+
+	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
+		return reportBusiness.populateSchoolGD(parentOrgNodeId);
+	}
+
+	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
+		return reportBusiness.populateClassGD(parentOrgNodeId);
+	}
+
+	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
+		return reportBusiness.populateStudentTableGD(orgNodeId);
+	}
 	
 	
 

@@ -2,20 +2,17 @@ package com.ctb.prism.report.dao;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.*;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -24,25 +21,23 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.CallableStatementCallback;
-import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
 import org.springframework.stereotype.Repository;
 
-import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ManageMessageTOMapper;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
@@ -50,8 +45,6 @@ import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
-import com.ctb.prism.report.transferobject.JobTrackingTO;
-import java.sql.Timestamp;
 
 /**
  * This class is responsible for reading and writing to database.
@@ -998,4 +991,89 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			DateFormat dF = new java.text.SimpleDateFormat(pFormat);
 			return dF.format(pTimestamp.getTime());
 		}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getTestAdministrations()
+	 */
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getTestAdministrations() {
+		return getObjectValueTOList(IQueryConstants.GET_TEST_ADMINISTRATIONS_GD);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getDistricts()
+	 */
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getDistricts() {
+		return getObjectValueTOList(IQueryConstants.GET_DISTRICTS_GD, new Object[]{"PUBLIC"});
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getGrades()
+	 */
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getGrades() {
+		return getObjectValueTOList(IQueryConstants.GET_GRADES_GD);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#populateSchoolGD(java.lang.Long)
+	 */
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
+		return getObjectValueTOList(IQueryConstants.GET_SCHOOLS_GD, new Object[]{"PUBLIC", parentOrgNodeId});
+	}
+	
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
+		return getObjectValueTOList(IQueryConstants.GET_CLASSES_GD, new Object[]{"PUBLIC", parentOrgNodeId});
+	}
+	
+	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
+		return getObjectValueTOList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{orgNodeId});
+	}
+
+	/**
+	 * Utility method to run database query and create list of ObjectValueTO
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private List<com.ctb.prism.report.transferobject.ObjectValueTO> getObjectValueTOList(
+			String query) {
+		List<com.ctb.prism.report.transferobject.ObjectValueTO> list = getJdbcTemplatePrism()
+				.query(query,
+						new com.ctb.prism.report.transferobject.ObjectValueTOMapper() {
+							public ObjectValueTO mapRow(ResultSet rs, int col)
+									throws SQLException {
+								ObjectValueTO to = new ObjectValueTO();
+								to.setValue(rs.getString(1));
+								to.setName(rs.getString(2));
+								return to;
+							}
+						});
+		return list;
+	}
+
+	/**
+	 * Overloaded utility method to run database query and create list of
+	 * ObjectValueTO. Query params can be passed.
+	 * 
+	 * @param query
+	 * @param params
+	 * @return
+	 */
+	private List<com.ctb.prism.report.transferobject.ObjectValueTO> getObjectValueTOList(
+			String query, Object[] params) {
+		List<com.ctb.prism.report.transferobject.ObjectValueTO> list = getJdbcTemplatePrism()
+				.query(query,
+						params,
+						new com.ctb.prism.report.transferobject.ObjectValueTOMapper() {
+							public ObjectValueTO mapRow(ResultSet rs, int col)
+									throws SQLException {
+								ObjectValueTO to = new ObjectValueTO();
+								to.setValue(rs.getString(1));
+								to.setName(rs.getString(2));
+								return to;
+							}
+						});
+		return list;
+	}
 }

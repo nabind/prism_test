@@ -6,11 +6,11 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import com.ctb.prism.report.transferobject.JobTrackingTO;
+
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownload;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
@@ -47,4 +47,28 @@ public interface IReportBusiness {
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException;
 	public boolean deleteGroupFiles(String Id)	throws Exception;
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException;
+
+	/**
+	 * Creates the list of test administrations
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getTestAdministrations();
+
+	/**
+	 * Creates the list of districts
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getDistricts();
+
+	/**
+	 * Creates the list of grades
+	 * 
+	 * @return
+	 */
+	public List<ObjectValueTO> getGrades();
+	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId);
+	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId);
+	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId);
 }

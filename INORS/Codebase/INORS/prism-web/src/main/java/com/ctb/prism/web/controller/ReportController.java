@@ -15,27 +15,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.JRXhtmlExporter;
+
 import net.sf.jasperreports.engine.util.JRProperties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -46,6 +54,7 @@ import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
@@ -1730,5 +1739,116 @@ public class ReportController extends BaseDAO {
 		return null;
 	}
 	
+	@RequestMapping(value = "/populateSchoolGD", method = RequestMethod.GET)
+	public void populateSchoolGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchoolGD()");
+		long t1 = System.currentTimeMillis();
+		response.setContentType("text/plain");
+		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
+		List<ObjectValueTO> schoolList = null;
+		String jsonString = "";
+		
+		try{
+			schoolList =  reportService.populateSchoolGD(parentOrgNodeId);
+			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
+			logger.log(IAppLogger.INFO, "jsonString for parentOrgNodeId: " + parentOrgNodeId);
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: InorsController - populateSchoolGD() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+	}
 	
+	@RequestMapping(value = "/populateClassGD", method = RequestMethod.GET)
+	@ResponseBody
+	public String populateClassGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: populateClass()");
+		long t1 = System.currentTimeMillis();
+		response.setContentType("text/plain");
+		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
+		List<ObjectValueTO> classList = null;
+		String jsonString = "";
+		try {
+			classList = reportService.populateClassGD(parentOrgNodeId);
+			jsonString = JsonUtil.convertToJsonAdmin(classList);
+			logger.log(IAppLogger.INFO, "parentOrgNodeId: " + parentOrgNodeId);
+			logger.log(IAppLogger.INFO, jsonString);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return jsonString;
+	}
+	
+	@RequestMapping(value = "/populateStudentTableGD", method = RequestMethod.GET)
+	@ResponseBody
+	public String populateStudentTableGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: populateClass()");
+		long t1 = System.currentTimeMillis();
+		response.setContentType("text/plain");
+		Long orgNodeId = Long.parseLong(request.getParameter("orgNodeId"));
+		List<ObjectValueTO> classList = null;
+		String jsonString = "";
+		try {
+			classList = reportService.populateStudentTableGD(orgNodeId);
+			jsonString = JsonUtil.convertToJsonAdmin(classList);
+			logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
+			logger.log(IAppLogger.INFO, jsonString);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return jsonString;
+	}
+	
+	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
+	@ResponseBody
+	public String groupDownloadFunction(@ModelAttribute GroupDownloadTO to,
+			HttpServletResponse response) throws ServletException, IOException,
+			BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+		long t1 = System.currentTimeMillis();
+		String button = to.getButton();
+		String testAdministration = to.getTestAdministration();
+		String testProgram = to.getTestProgram();
+		String district = to.getDistrict();
+		String school = to.getSchool();
+		String klass = to.getKlass();
+		String grade = to.getGrade();
+		String students = to.getStudents();
+		String groupFile = to.getGroupFile();
+		String collationHierarchy = to.getCollationHierarchy();
+		String fileName = to.getFileName();
+		String email = to.getEmail();
+		String jsonString = "{\"Status\" : \"Error\"}";
+		try {
+			logger.log(IAppLogger.INFO, "button=" + button);
+			logger.log(IAppLogger.INFO, "testAdministration=" + testAdministration);
+			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+			logger.log(IAppLogger.INFO, "district=" + district);
+			logger.log(IAppLogger.INFO, "school=" + school);
+			logger.log(IAppLogger.INFO, "klass=" + klass);
+			logger.log(IAppLogger.INFO, "grade=" + grade);
+			logger.log(IAppLogger.INFO, "students=" + students);
+			logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+			logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+			logger.log(IAppLogger.INFO, "fileName=" + fileName);
+			logger.log(IAppLogger.INFO, "email=" + email);
+			// TODO : Write code to download file from server
+			jsonString = "{\"Status\" : \"Success\"}";
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return jsonString;
+	}
 }
