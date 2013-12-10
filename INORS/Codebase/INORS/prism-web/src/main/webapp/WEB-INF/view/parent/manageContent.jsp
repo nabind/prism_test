@@ -34,7 +34,7 @@
 						<div class="with-mid-padding mid-margin-bottom icholderinner"
 							style="min-width: 200px; overflow-x: auto">
 							<div
-								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer"
 								style="height: 10px;">
 								<div class="three-columns report-inputs" style="width: 15%">
 									<h6 class="margin-bottom-small">
@@ -58,9 +58,9 @@
 							</div>
 							
 							<div
-								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
 									<h6 class="margin-bottom-small">
 										<spring:message code="label.grade"/>
 										<span class="icon-star icon-size1 red"></span>
@@ -78,9 +78,9 @@
 							</div>
 						
 							<div
-								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
 									<h6 class="margin-bottom-small">
 										<spring:message code="label.subtest"/>
 										<span class="icon-star icon-size1 red"></span>
@@ -98,9 +98,9 @@
 							</div>
 						
 							<div
-								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
 									<h6 class="margin-bottom-small">
 										<spring:message code="label.objective"/>
 										<span class="icon-star icon-size1 red"></span>
@@ -120,7 +120,7 @@
 							<div
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px;">
-								<div class="three-columns report-inputs" style="width: 15%">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
 									<h6 class="margin-bottom-small">
 										<spring:message code="label.content.type"/>
 									</h6>
