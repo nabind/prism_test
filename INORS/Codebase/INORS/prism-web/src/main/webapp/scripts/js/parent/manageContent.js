@@ -719,10 +719,13 @@ function getContentDetails(checkFirstLoad,data) {
 		$("#content_details").find("tr").remove();
 	}
 	$.each(data, function () { 
-	    
+		var subHeaderVar = "";
+	    if(this.subHeader != undefined){
+	    	subHeaderVar = this.subHeader;
+	    }
 		manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
 			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
-						+'<th scope="row">' + this.subHeader +'</th>'
+						+'<th scope="row">' + subHeaderVar +'</th>'
 						+'<th scope="row">' + this.gradeName +'</th>'
 						+'<th scope="row">' + getProfLevelName(this.profLevel) +'</th>'
 						+'<td class="vertical-center" nowrap>'
