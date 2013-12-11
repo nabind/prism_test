@@ -42,10 +42,10 @@ public class AdminServiceImpl implements IAdminService {
 
 	}
 
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam)
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
 			throws Exception {
 
-		return adminBusiness.getUserDetailsOnClick(nodeid,currorg,adminYear, searchParam);
+		return adminBusiness.getUserDetailsOnClick(nodeid,currorg,adminYear, searchParam,customerid);
 
 	}
 

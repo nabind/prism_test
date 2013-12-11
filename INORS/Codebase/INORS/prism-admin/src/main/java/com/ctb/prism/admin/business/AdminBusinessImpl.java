@@ -50,10 +50,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 
 	}
 
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam)
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
 			throws Exception {
 
-		return adminDAO.getUserDetailsOnClick(nodeid,currorg,adminYear, searchParam);
+		return adminDAO.getUserDetailsOnClick(nodeid,currorg,adminYear, searchParam,customerid);
 
 	}
 

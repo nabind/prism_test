@@ -440,13 +440,13 @@ public class AdminController {
 	public @ResponseBody
 	String userDetails(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
 		List<UserTO> UserTOs = new ArrayList<UserTO>();
 		String currentOrg = (String) request.getSession().getAttribute(
 				IApplicationConstants.CURRORG);
 		List<ObjectValueTO> adminList = null;
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - userDetails");
+			String customerid = (String)request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			String nodeId = (String) request.getParameter("tenantId");
 			String adminYear = (String) request.getParameter("AdminYear");
 			
@@ -466,11 +466,12 @@ public class AdminController {
 			logger.log(IAppLogger.INFO, "userDetails Node ID:;;;;;;;" + nodeId);
 			if (nodeId != null) {
 				if(currentOrg.equals(nodeId) ){
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam ,customerid);
 				} else if (nodeId.indexOf("_") > 0){
-					UserTOs = adminService.getUserDetailsOnClick(nodeId,  nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId,  nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam 
+							,customerid);
 				} else{
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam ,customerid);
 				}
 			}
 

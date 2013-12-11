@@ -24,7 +24,7 @@ public interface IAdminService {
 	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid)
 			throws Exception;
 
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam)
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
 			throws Exception;
 
 	public UserTO getEditUserData(Map<String,Object> paramMap) throws Exception;

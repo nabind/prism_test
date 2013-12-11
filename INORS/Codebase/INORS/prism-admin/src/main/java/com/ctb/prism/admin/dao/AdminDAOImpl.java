@@ -281,7 +281,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Cacheable(cacheName="orgUsers")
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId,String currorg, String adminYear, String searchParam) {
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId,String currorg, String adminYear, String searchParam,String customerid) {
 
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
@@ -304,7 +304,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		} else {
 			tenantId = nodeId;
 			lstData = getJdbcTemplatePrism().queryForList(
-					IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD,tenantId,adminYear);
+					IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD,customerid,tenantId,adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size()+"");
 		}
 
