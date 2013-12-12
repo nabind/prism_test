@@ -120,15 +120,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 */
 	public ParentTO validateIC(String invitationCode) {
 
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.VALIDATE_INVITATION_CODE,
-						invitationCode);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_INVITATION_CODE,invitationCode);
 		ParentTO parentTO = null;
 		if (lstData.size() > 0) {
 			parentTO = new ParentTO();
 			for (Map<String, Object> fieldDetails : lstData) {
-				parentTO.setTotalAttemptedCalim(((BigDecimal) fieldDetails.get("TOTAL_ATTEMPT_IC_CLAIM")).longValue());
-				parentTO.setTotalAvailableCalim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE_IC_CLAIM")).longValue());
+				parentTO.setTotalAttemptedCalim(((BigDecimal) fieldDetails.get("TOTAL_ATTEMPT")).longValue());
+				parentTO.setTotalAvailableCalim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
 				parentTO.setIcExpirationStatus((String) (fieldDetails.get("EXPIRATION_STATUS")));
 				parentTO.setIcActivationStatus((String) (fieldDetails.get("ACTIVATION_STATUS")));
 			}
@@ -190,6 +188,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		if( addToLdapStatus ) {
 			long user_seq_id = getJdbcTemplatePrism().queryForLong(
 					IQueryConstants.USER_SEQ_ID);
+			long orgUserSeqId = getJdbcTemplatePrism().queryForLong(
+					IQueryConstants.USER_SEQ_ID);
 			int count = 0;
 			if(IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				count = getJdbcTemplatePrism().update(
@@ -215,6 +215,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 								parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N,
 								SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt)),
 								salt);
+				
+				getJdbcTemplatePrism()
+				.update(IQueryConstants.INSERT_ORG_USER_PARENT,
+						orgUserSeqId, user_seq_id, parentTO.getInvitationCode(),parentTO.getInvitationCode(), IApplicationConstants.ACTIVE_FLAG);
 			}
 			logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
 
@@ -222,8 +226,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER,parentTO.getUserName(),"ROLE_USER");
 				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER,parentTO.getUserName(),"ROLE_PARENT");
 				logger.log(IAppLogger.DEBUG, "ADD_ROLE_TO_REGISTERED_USER DONE");
-					
-				boolean isSavedInvitationCodeClaim = saveInvitationCodeClaim(user_seq_id, parentTO);
+				System.out.println("user_seq_id ::::" +user_seq_id);	
+				boolean isSavedInvitationCodeClaim = saveInvitationCodeClaim(orgUserSeqId, parentTO);
 					
 				if (isSavedInvitationCodeClaim) {
 					boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(parentTO.getInvitationCode());
@@ -250,11 +254,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @return boolean
 	 */
-	public boolean saveInvitationCodeClaim(long userid, ParentTO parentTO) {
+	public boolean saveInvitationCodeClaim(long orgUserSeqId, ParentTO parentTO) {
 
 		int count = getJdbcTemplatePrism().update(
-				IQueryConstants.INSERT_INVITATION_CODE_CLAIM_DATA, userid,
-				parentTO.getInvitationCode());
+				IQueryConstants.INSERT_INVITATION_CODE_CLAIM_DATA,
+				parentTO.getInvitationCode(), orgUserSeqId);
 		logger.log(IAppLogger.DEBUG, "INSERT_INVITATION_CODE_CLAIM_DATA Done");
 		if (count > 0) {
 			return Boolean.TRUE;
@@ -337,12 +341,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentTO.setStudentName((String) data.get("STUDENT_NAME"));
 				studentTO.setStudentBioId(((BigDecimal) data.get("STUDENT_BIO_ID"))
 						.longValue());
-				studentTO.setStructureElement(((BigDecimal) data.get("STRUCTURE_ELEMENT")).longValue());
-				studentTO.setAdministration((String) data.get("ADMIN_SEASON_YEAR"));
-				studentTO.setOrgId(((BigDecimal) data.get("ORG_ID")).longValue());
+				studentTO.setAdministration((String) data.get("ADMIN_SEASON"));
 				studentTO.setGrade((String) data.get("STUDENTGRADE"));
-				//studentTO.setClikedOrgId(((BigDecimal) data.get("CLICKED_ORG")).longValue());
-				try{studentTO.setClikedOrgId(Long.parseLong(clickedTreeNode));} catch(Exception ex){}
 				studentTO.setAdminid(((BigDecimal) data.get("ADMINID")).toString());
 				children.add(studentTO);
 			}

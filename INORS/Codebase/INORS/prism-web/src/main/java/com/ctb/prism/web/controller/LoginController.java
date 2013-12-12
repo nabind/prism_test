@@ -166,7 +166,7 @@ public class LoginController{
 		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
-			paramMap.put("PRE_LOG_IN", IApplicationConstants.PRE_LOG_IN);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PRE_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  if(null!=logInInfoMessage )
 		  {
@@ -219,12 +219,13 @@ public class LoginController{
 		 
 		  logger.log(IAppLogger.INFO, "Enter: LoginController - userlogin");
 		  String mess_login_error = (String)request.getParameter("login_error");
+		  String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		  String message = null;
 		  
 		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
-			paramMap.put("PRE_LOG_IN", IApplicationConstants.PRE_LOG_IN);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PRE_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  
 		  if(null!=logInInfoMessage ) {
@@ -241,15 +242,24 @@ public class LoginController{
 		  } else {
 			  //this is proper login
 		  }
-		  ModelAndView modelAndView = null;
-		  modelAndView = new ModelAndView("user/userlogin");
-		  modelAndView.addObject("message", message);
 		  
-		  if(null!=logInInfoMessage && "".equals(logInInfoMessage))
-		  {
+		  ModelAndView modelAndView = null;
+		  if(IApplicationConstants.TRUE.equals(parent)) {
+			  modelAndView = new ModelAndView("parent/login");
+			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
+			  {
 			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+			  }
+
+		  } else {
+			  modelAndView = new ModelAndView("user/userlogin");
+			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
+			  {
+			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+			  }
+
 		  }
-		 
+		  modelAndView.addObject("message", message);
 		  logger.log(IAppLogger.INFO,
 					"Exit: LoginController - userlogin");
 		  return modelAndView;
@@ -275,15 +285,23 @@ public class LoginController{
 	 @RequestMapping(value="/childData", method=RequestMethod.GET)
 	 public ModelAndView parentReports(HttpServletRequest req, HttpServletResponse res) throws IOException{
 		 ReportTO homeReport = new ReportTO();
-		 //homeReport.setReportUrl("/public/PN/Reports/Terranova3_Student_Report_Dashboard_files_files");
-		 //homeReport.setReportName("TerraNova3 Student Report");
-		 //homeReport.setAssessmentName("101");
 		 homeReport.setStudentBioId(req.getParameter("childId"));
-		 
 		 req.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
 		 req.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, req.getParameter("childId"));
-		 List<AssessmentTO> assessmentList = reportService.getAssessments(true);
-		 for(AssessmentTO assessment : assessmentList) {
+		 
+		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
+		  String overviewInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
+		  if(null!=overviewInfoMessage )
+		  {
+			  overviewInfoMessage = overviewInfoMessage.replaceAll("<p>", "");
+			  overviewInfoMessage = overviewInfoMessage.replaceAll("</p>", "");
+		  }
+		 
+		/* List<AssessmentTO> subtestList = reportService.getAssessments(true);
+		 for(AssessmentTO assessment : subtestList) {
 			 if(assessment.getAssessmentId() == 101) {
 				 for(ReportTO report : assessment.getReports()) {
 					 homeReport.setReportUrl(report.getReportUrl());
@@ -294,11 +312,11 @@ public class LoginController{
 				 }
 				 break;
 			 }
-		 }
+		 }*/
 		 
-		 ModelAndView modelAndView = new ModelAndView("user/welcome");
-		 modelAndView.addObject("assessmentList", assessmentList);
-		 modelAndView.addObject("homeReport", homeReport);
+		 ModelAndView modelAndView = new ModelAndView("parent/children");
+		 modelAndView.addObject("overviewInfoMessage", overviewInfoMessage);
+		 //modelAndView.addObject("subtestList", subtestList);
 		 return modelAndView;
 	 }
 	 
@@ -314,7 +332,6 @@ public class LoginController{
 	  public ModelAndView validateUser(HttpServletRequest req, HttpServletResponse res) throws IOException{
 		 	logger.log(IAppLogger.INFO,
 					"Enter: LoginController - validateUser");
-		 	
 		 	ModelAndView modelAndView = null;
 		 	String orgLvl = null;
 		 	try {
@@ -395,6 +412,13 @@ public class LoginController{
 					req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
 					req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
 					String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+					
+				 	 if(user.getOrgNodeLevel() ==0)
+				 	 {
+				 		req.getSession().setAttribute("PARENT_LOGIN",IApplicationConstants.PARENT_LOGIN); 
+				 	 }
+
+					
 					boolean isSwitchUser = false;
 					// check if user logs-in first time
 					if(switchUser != null && switchUser.trim().length() > 0) {
@@ -449,10 +473,20 @@ public class LoginController{
 					}
 					// open home page based on user role
 					if(homeReport.isRegularUser()) {
-						homeReport.setProductName("TerraNova 3 : ");
-						modelAndView = new ModelAndView("user/welcome");
-						modelAndView.addObject("homeReport", homeReport);
-					} else if(homeReport.isAccessDenied()) {
+						
+						 if((null !=req.getSession().getAttribute("PARENT_LOGIN")) 
+									&& ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN"))))
+							{
+								modelAndView = new ModelAndView("parent/parentWelcome");
+							}
+						 else
+						 {
+							    homeReport.setProductName("TerraNova 3 : ");
+								modelAndView = new ModelAndView("user/welcome");
+								modelAndView.addObject("homeReport", homeReport);
+						 }
+					}
+					else if(homeReport.isAccessDenied()) {
 						modelAndView = new ModelAndView("error/accessDenied");
 					} else {
 						modelAndView = new ModelAndView(homeReport.getOtherUrl());

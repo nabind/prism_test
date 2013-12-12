@@ -13,9 +13,9 @@ public interface IParentQuery {
 	public static final String VALIDATE_INVITATION_CODE = CustomStringUtil
 	.appendString(
 			" SELECT INV.ICID," ,
-			" INV.TOTAL_AVAILABLE_IC_CLAIM," , 
-			" INV.TOTAL_ATTEMPT_IC_CLAIM," ,
-			" DECODE(SIGN(INV.INVITATION_EXPIRATION_DATE - SYSDATE),-1,'IN','AC') AS EXPIRATION_STATUS," ,
+			" INV.TOTAL_AVAILABLE," , 
+			" INV.TOTAL_ATTEMPT," ,
+			" DECODE(SIGN(INV.EXPIRATION_DATE - SYSDATE),-1,'IN','AC') AS EXPIRATION_STATUS," ,
 			" INV.ACTIVATION_STATUS AS ACTIVATION_STATUS",
 			" FROM INVITATION_CODE INV" ,
 			" WHERE INV.INVITATION_CODE = ?" ,
@@ -40,54 +40,54 @@ public interface IParentQuery {
 			" (USERID,   USERNAME,   DISPLAY_USERNAME, " ,
 			"  LAST_NAME,   FIRST_NAME,   MIDDLE_NAME, " ,
 			"  EMAIL_ADDRESS,   PHONE_NO,   COUNTRY, " ,
-			"  ZIPCODE,  STREET, CITY, STATE, ORG_ID, " ,
-			"  ORG_LEVEL,   IS_FIRSTTIME_LOGIN,  ADMINID, " ,
+			"  ZIPCODE,  STREET, CITY, STATE,CUSTOMERID, " ,
+			"  IS_FIRSTTIME_LOGIN,IS_NEW_USER, " ,
 			"  ACTIVATION_STATUS,   CREATED_DATE_TIME)" ,
 			"  VALUES  (?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?,?," ,
-			"  (select DISTINCT level3_jasper_orgid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?), " ,
-			"  0, ?,  (SELECT adminid FROM ADMIN_DIM ADM WHERE ADM.IS_CURRENT_ADMIN = 'Y'), " ,
+			"  (select DISTINCT inv.customerid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?),?,'Y', " ,
 			"  'AC',   SYSDATE)");
 	
 	public static final String INSERT_USER_DATA_WITH_PASSWD = CustomStringUtil.appendString(
-			" INSERT INTO USERS  " ,
-			" (USERID,   USERNAME,   DISPLAY_USERNAME, " ,
-			"  LAST_NAME,   FIRST_NAME,   MIDDLE_NAME, " ,
-			"  EMAIL_ADDRESS,   PHONE_NO,   COUNTRY, " ,
-			"  ZIPCODE,  STREET, CITY, STATE, ORG_ID, " ,
-			"  ORG_LEVEL,   IS_FIRSTTIME_LOGIN,  ADMINID, " ,
-			"  ACTIVATION_STATUS,   CREATED_DATE_TIME, PASSWORD, SALT)" ,
-			"  VALUES  (?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?,?," ,
-			"  (select DISTINCT level3_jasper_orgid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?), " ,
-			"  0, ?,  (SELECT adminid FROM ADMIN_DIM ADM WHERE ADM.IS_CURRENT_ADMIN = 'Y'), " ,
-			"  'AC',   SYSDATE, ?, ?)");
-	
+				" INSERT INTO USERS  " ,
+				" (USERID,   USERNAME,   DISPLAY_USERNAME, " ,
+				"  LAST_NAME,   FIRST_NAME,   MIDDLE_NAME, " ,
+				"  EMAIL_ADDRESS,   PHONE_NO,   COUNTRY, " ,
+				"  ZIPCODE,  STREET, CITY, STATE,CUSTOMERID," ,
+				"  IS_FIRSTTIME_LOGIN,IS_NEW_USER,  " ,
+				"  ACTIVATION_STATUS,   CREATED_DATE_TIME, PASSWORD, SALT)" ,
+				"  VALUES  (?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?,?," ,
+				"  (select DISTINCT inv.customerid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?),?,'Y'," ,
+				"  'AC',   SYSDATE, ?, ?)");
+	public static final String INSERT_ORG_USER_PARENT = CustomStringUtil.appendString(
+			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID,ORG_NODEID,ORG_NODE_LEVEL,ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
+			" (?, ?,(select org_nodeid from invitation_code where invitation_code=?),'0', (select adminid from invitation_code where invitation_code=?), ?, sysdate )");
 	//Query to assign user role to the new registered user
 	public static final String ADD_ROLE_TO_REGISTERED_USER = CustomStringUtil.appendString(
-			"INSERT INTO USER_ROLE VALUES ((SELECT USERID FROM USERS WHERE upper(USERNAME) LIKE upper(?)),(SELECT ROLE_ID FROM ROLE WHERE ROLE_NAME LIKE ?),SYSDATE,SYSDATE)");
+			"INSERT INTO USER_ROLE VALUES ((SELECT USERID FROM USERS WHERE upper(USERNAME) LIKE upper(?)),(SELECT ROLEID FROM ROLE WHERE ROLE_NAME LIKE ?),SYSDATE,SYSDATE)");
 		
 	
 	public static final String INSERT_INVITATION_CODE_CLAIM_DATA =  CustomStringUtil.appendString(
 			" INSERT INTO INVITATION_CODE_CLAIM  " ,
-			" (INVITATION_CODE_CLAIM_ID,   ORG_USER_ID,   ICID, " ,
-			" ACTIVATION_STATUS,   CREATED_DATE_TIME)" ,
+			" (ICID,ORG_USER_ID, " ,
+			" ACTIVATION_STATUS,CLAIM_DATE,UPDATED_DATE_TIME)" ,
 			" VALUES  " ,
-			" (INVITATION_CODE_CLAIM_ID_SEQ.NEXTVAL,   ?,   (SELECT ICID FROM INVITATION_CODE INV where INV.ACTIVATION_STATUS = 'AC' and INV.INVITATION_CODE = ? and rownum = 1), " ,
-			" 'AC',  SYSDATE)");
+			" ((SELECT ICID FROM INVITATION_CODE INV where INV.ACTIVATION_STATUS = 'AC' and INV.INVITATION_CODE = ? and rownum = 1),?," ,
+			" 'AC',SYSDATE, SYSDATE)");	
 	
 	public static final String UPDATE_INVITATION_CODE_CLAIM_COUNT =CustomStringUtil.appendString(
 			" UPDATE INVITATION_CODE " ,
-			" SET TOTAL_ATTEMPT_IC_CLAIM = (SELECT TOTAL_ATTEMPT_IC_CLAIM " ,
+			" SET TOTAL_ATTEMPT = (SELECT TOTAL_ATTEMPT " ,
 			" FROM INVITATION_CODE " ,
 			" WHERE INVITATION_CODE = ? AND ACTIVATION_STATUS = 'AC')+1 " ,
 			" WHERE INVITATION_CODE = ?	");
 	public static final String UPDATE_AVAILABLE_INVITATION_CODE_CLAIM_COUNT =CustomStringUtil.appendString(
 			" UPDATE INVITATION_CODE " ,
-			" SET TOTAL_AVAILABLE_IC_CLAIM = (SELECT TOTAL_AVAILABLE_IC_CLAIM " ,
+			" SET TOTAL_AVAILABLE = (SELECT TOTAL_AVAILABLE " ,
 			" FROM INVITATION_CODE " ,
 			" WHERE INVITATION_CODE = ? AND ACTIVATION_STATUS = 'AC')-1 " ,
 			" WHERE INVITATION_CODE = ?	");
 	public static final String CHECK_AVAILABLE_INVITATION_CODE_CLAIM_COUNT =CustomStringUtil.appendString(
-			" SELECT (IC.TOTAL_AVAILABLE_IC_CLAIM - TOTAL_ATTEMPT_IC_CLAIM) AS CLAIM_AVAILABILITY",
+			" SELECT (IC.TOTAL_AVAILABLE - TOTAL_ATTEMPT) AS CLAIM_AVAILABILITY",
 			" FROM INVITATION_CODE IC", 
 			" WHERE UPPER(IC.INVITATION_CODE) = UPPER(?) AND IC.ACTIVATION_STATUS = 'AC' ");
 	
@@ -203,13 +203,15 @@ public interface IParentQuery {
            " GRADE_DIM GRD,",
            " INVITATION_CODE IC,",
            " INVITATION_CODE_CLAIM ICC,",
-           " USERS U",              
+           " ORG_USERS OU,",
+           " USERS U ",              
 	    " WHERE ST.ADMINID = AD.ADMINID",
 	       " AND ST.ADMINID = IC.ADMINID",
 	       " AND ST.GRADEID=GRD.GRADEID",
 	       " AND ST.ADMINID = IC.ADMINID",
 	       " AND IC.ICID = ICC.ICID",
-	       " AND ICC.ORG_USER_ID = U.USERID",
+	       " AND ICC.ORG_USER_ID = OU.ORG_USER_ID" +
+	       " AND OU.USERID = U.USERID ",
 	       " and ic.org_nodeid = st.org_nodeid ",
 	       " and icc.activation_status = 'AC' ",
 	       " AND IC.activation_status = 'AC'",
