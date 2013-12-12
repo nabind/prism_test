@@ -885,7 +885,7 @@ function closeProgress(reportUrl, id, firstCall) {
 
 //============================= Populate input controls =============================
 function setInputControl(data, containerObj) {
-		
+	if (data && data != null) {
 	$(containerObj).html(data.inputDom);
 	// initialize date picker
 	//$(containerObj).find('.datepicker').glDatePicker();
@@ -894,6 +894,7 @@ function setInputControl(data, containerObj) {
 	    changeYear: true
     });
 	//$('.select').trigger();
+	}
 }
 function setInputControlForStudentRoster(data, containerObj){
 

@@ -1,6 +1,5 @@
 package com.ctb.prism.report.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownload;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
-import com.ctb.prism.report.transferobject.JobTrackingTO;
 
 @Service("reportService")
 public class ReportServiceImpl implements IReportService {
@@ -129,39 +128,51 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.getReportMessageFilter(paramMap);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getTestAdministrations()
 	 */
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getTestAdministrations() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations() {
 		return reportBusiness.getTestAdministrations();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getDistricts()
 	 */
-	public List<ObjectValueTO> getDistricts() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
 		return reportBusiness.getDistricts();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getGrades()
 	 */
-	public List<ObjectValueTO> getGrades() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
 		return reportBusiness.getGrades();
 	}
 
-	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
-		return reportBusiness.populateSchoolGD(parentOrgNodeId);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#populateSchoolGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
+		return reportBusiness.populateSchoolGD(to);
 	}
 
-	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
-		return reportBusiness.populateClassGD(parentOrgNodeId);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
+		return reportBusiness.populateClassGD(to);
 	}
 
-	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
-		return reportBusiness.populateStudentTableGD(orgNodeId);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+		return reportBusiness.populateStudentTableGD(to);
 	}
-	
-	
-
 }

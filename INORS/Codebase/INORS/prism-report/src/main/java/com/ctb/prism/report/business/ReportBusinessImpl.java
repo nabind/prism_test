@@ -14,19 +14,18 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.dao.IReportDAO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownload;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
@@ -372,37 +371,61 @@ public class ReportBusinessImpl implements IReportBusiness {
        return reportDAO.deleteGroupFiles(Id);
    }
 
-	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getTestAdministrations()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.business.IReportBusiness#getTestAdministrations()
 	 */
-	public List<ObjectValueTO> getTestAdministrations() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations() {
 		return reportDAO.getTestAdministrations();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getDistricts()
 	 */
-	public List<ObjectValueTO> getDistricts() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
 		return reportDAO.getDistricts();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getGrades()
 	 */
-	public List<ObjectValueTO> getGrades() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
 		return reportDAO.getGrades();
 	}
 
-	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
-		return reportDAO.populateSchoolGD(parentOrgNodeId);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.business.IReportBusiness#populateSchoolGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
+		return reportDAO.populateSchoolGD(to);
 	}
 
-	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
-		return reportDAO.populateClassGD(parentOrgNodeId);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.business.IReportBusiness#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
+		return reportDAO.populateClassGD(to);
 	}
 
-	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
-		return reportDAO.populateStudentTableGD(orgNodeId);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.business.IReportBusiness#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+		return reportDAO.populateStudentTableGD(to);
 	}
-
 }

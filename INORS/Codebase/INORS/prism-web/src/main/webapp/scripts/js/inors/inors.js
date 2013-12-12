@@ -110,11 +110,22 @@ $(document).ready(function() {
 		changeMonth: true,
 	    changeYear: true
     });
-	
-	$('#corpDiocese').live('change',function(){
-		populateSchool();
+
+	// GRT/IC File Download
+	populateGrtDropdownsOnLoad();
+	$("#testAdministration").live("change", function(event) {
+		showHideDivs();
 	});
-	
+	$("#testProgram").live("change", function(event) {
+	});
+	$('#corpDiocese').live('change',function(){
+		var testProgram = $("#testProgram").val();
+		var corpDiocese = $("#corpDiocese").val();
+		populateSchoolGrt(testProgram, corpDiocese);
+	});
+	$("#school").live("change", function(event) {
+		showHideDivs();
+	});
 	$("#downloadGRTFile").live("click", function() {
 		var testAdministration = $("#testAdministration").val();
 		var testProgram = $("#testProgram").val();
@@ -133,13 +144,8 @@ $(document).ready(function() {
 		var href = "downloadGRTInvitationCodeFiles.do?type=IC&2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadICFile").attr("href", href);
 	});
-	$('#today').val($.datepicker.formatDate('mm-dd,yy', new Date()));
-	$("#school").live("change", function(event) {
-		showHideDivs();
-	});
-	$("#testAdministration").live("change", function(event) {
-		showHideDivs();
-	});
+	// $('#today').val($.datepicker.formatDate('mm-dd,yy', new Date()));
+
 	// Group Download
 	$("#testAdministrationGD").live("change", function(event) {
 	});
@@ -555,6 +561,107 @@ function downloadBulkPdf(type, mode) {
 				}
 			}
 
+function populateGrtDropdownsOnLoad() {
+	var testAdministration = $("#testAdministration").val();
+	if (testAdministration && testAdministration != "-1") { // then populate test program
+		var json = [ {
+			"value" : "1",
+			"name" : "Public Schools"
+		}, {
+			"value" : "0",
+			"name" : "Non Public Schools"
+		} ];
+		populateDropdownByIdWithJson($("#testProgram"), json);
+	}
+	var testProgram = $("#testProgram").val();
+	if (testProgram && testProgram != "-1") { // then populate district
+		// alert("testProgram=" + testProgram);
+		populateDistrictGrt(testProgram);
+	}
+	var corpDiocese = $("#corpDiocese").val();
+	if (corpDiocese && corpDiocese != "-1") { // then populate school
+		// alert("corpDiocese=" + corpDiocese);
+		populateSchoolGrt(testProgram, corpDiocese);
+	}
+	var school = $("#school").val();
+	if (school) { // then display download links
+		// alert("school=" + school);
+	}
+}
+
+function populateDropdownByIdWithJson(id, json, selectValue, selectText) {
+	id.empty();
+	var option = "";
+	if (selectValue && selectText){
+		option += '<option value=' + selectValue + '>' + selectText + '</option>';
+	}
+	if ((json != null) && (json != "") && (json.length > 0)) {
+		$.each(json, function(index, data) {
+			option += '<option value=' + data.value + '>' + data.name + '</option>';
+		});
+	}
+	id.html(option);
+	id.change();
+	id.trigger('update-select-list');
+}
+
+function populateDistrictGrt(testProgram) {
+	var dataUrl = 'testProgram=' + testProgram;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : 'populateDistrictGrt.do',
+		data : dataUrl,
+		dataType : 'json',
+		cache : false,
+		async : false,
+		success : function(data) {
+			if ((data != null) && (data.length > 0)) {
+				populateDropdownByIdWithJson($("#corpDiocese"), data, "-1", "Please Select");
+			} else {
+				$.modal.alert("No District Found for Test Program");
+				populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select");
+			}
+			unblockUI();
+		},
+		error : function(data) {
+			populateDropdownByIdWithJson($("#corpDiocese"), null, "-1",
+					"Please Select");
+			unblockUI();
+			$.modal.alert(strings['script.common.error']);
+		}
+	});
+}
+
+function populateSchoolGrt(testProgram, districtId) {
+	var dataUrl = 'testProgram=' + testProgram + '&districtId=' + districtId;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : 'populateSchoolGrt.do',
+		data : dataUrl,
+		dataType : 'json',
+		cache : false,
+		async : false,
+		success : function(data) {
+			if ((data != null) && (data.length > 0)) {
+				populateDropdownByIdWithJson($("#school"), data, "-1", "Please Select");
+			} else {
+				if (districtId != "-1") {
+					$.modal.alert("No School Found for this Corp/Diocese");
+				}
+				populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
+			}
+			unblockUI();
+		},
+		error : function(data) {
+			populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
+			unblockUI();
+			$.modal.alert(strings['script.common.error']);
+		}
+	});
+}
+
 function populateSchool(){
 	var parentOrgNodeId = $('#corpDiocese').val();
 	if (parentOrgNodeId != "-1") {
@@ -596,10 +703,10 @@ function populateSchoolGD(){
 			cache:false,
 			success : function(data) {
 				if(data.length > 0) {
-					populateSchoolDropdownByJson($('#schoolGD'),data,1);
+					populateSchoolDropdownByJson($('#schoolGD'), data);
 				} else {
 					$.modal.alert("No School Found for this Corp/Diocese");
-					populateSchoolDropdownByJson($('#schoolGD'),null,1,1);
+					populateSchoolDropdownByJson($('#schoolGD'), null, 1, 1);
 				}
 				unblockUI();
 			},
@@ -614,12 +721,12 @@ function populateSchoolGD(){
 function populateClassGD(){
 	var parentOrgNodeId = $('#schoolGD').val();
 	if (parentOrgNodeId != "-1") {
-		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
+		var json = getGroupDownloadTO(); // Object will be converted to Json during $.ajax call
 		blockUI();
 		$.ajax({
 			type : "GET",
 			url : 'populateClassGD.do',
-			data : dataUrl,
+			data : json,
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
@@ -673,7 +780,7 @@ function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectF
 	elementObject.empty();
 	var option = "";
 	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select Corp/Diocese</option>";
+		option += "<option value='-1'>Please Select</option>";
 	}
 	
 	if((typeof clearFlag === 'undefined')) {
@@ -698,13 +805,13 @@ function populateClassDropdownByJson(elementObject,jsonDataValueName,plsSelectFl
 	elementObject.empty();
 	var option = "";
 	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select School</option>";
+		option += "<option value='-1'>Please Select</option>";
 	}
 	
 	if((typeof clearFlag === 'undefined')) {
 		if(jsonDataValueName != null) {
 			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
-				option += '<option value="ALL">All Classes</option>';
+				// option += '<option value="ALL">All Classes</option>';
 				$.each(jsonDataValueName, function(index, data) {
 					option += '<option value='+data.value+'>'+data.name+' ('+data.value+')</option>';
 			    });
@@ -802,7 +909,7 @@ function GroupDownloadTO(button, testAdministration, testProgram, district,
 	this.email = email;
 }
 
-function groupDownloadFunction(button) {
+function getGroupDownloadTO() {
 	var testAdministration = $("#testAdministrationGD").val();
 	var testProgram = $("#testProgramGD").val();
 	var district = $("#corpDioceseGD").val();
@@ -818,8 +925,29 @@ function groupDownloadFunction(button) {
 	var collationHierarchy = $("#collationHierarchy").val();
 	var fileName = $("#fileName").val();
 	var email = $("#email").val();
+	var to = new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
+	return to;
+}
+
+function groupDownloadFunction(button) {
+	/*var testAdministration = $("#testAdministrationGD").val();
+	var testProgram = $("#testProgramGD").val();
+	var district = $("#corpDioceseGD").val();
+	var school = $("#schoolGD").val();
+	var klass = $("#classGD").val();
+	var grade = $("#gradeGD").val();
+	var students = $("input[id^=check-student-]:checked").map(
+			function() {
+				return this.value;
+			}
+		).get().join(",");
+	var groupFile = $("#groupFile").val();
+	var collationHierarchy = $("#collationHierarchy").val();
+	var fileName = $("#fileName").val();
+	var email = $("#email").val();
 	//var url = "groupDownloadFunction.do?testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&district=" + district + "&school=" + school + "&class=" + klass + "&grade=" + grade + "&students=" + students + "&groupFile=" + groupFile + "&collationHierarchy=" + collationHierarchy + "&fileName=" + fileName + "&email=" + email;
-	var json = new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
+	*/var json = getGroupDownloadTO();
+	//new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
 	/*if(button == "P")
 		alert("Separate");
 	else if(button == "C")

@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
@@ -53,22 +54,40 @@ public interface IReportService {
 	 * 
 	 * @return
 	 */
-	public List<ObjectValueTO> getTestAdministrations();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations();
 
 	/**
 	 * Creates the list of districts
 	 * 
 	 * @return
 	 */
-	public List<ObjectValueTO> getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts();
 
 	/**
 	 * Creates the list of grades
 	 * 
 	 * @return
 	 */
-	public List<ObjectValueTO> getGrades();
-	public List<ObjectValueTO> populateSchoolGD(Long parentOrgNodeId);
-	public List<ObjectValueTO> populateClassGD(Long parentOrgNodeId);
-	public List<ObjectValueTO> populateStudentTableGD(Long orgNodeId);
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades();
+
+	/**
+	 * 
+	 * @param to
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to);
+
+	/**
+	 * 
+	 * @param to
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to);
+
+	/**
+	 * 
+	 * @param to
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
 }

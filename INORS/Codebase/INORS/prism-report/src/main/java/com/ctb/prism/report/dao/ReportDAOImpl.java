@@ -37,6 +37,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
@@ -999,83 +1000,45 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getTestAdministrations()
 	 */
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getTestAdministrations() {
-		return getObjectValueTOList(IQueryConstants.GET_TEST_ADMINISTRATIONS_GD);
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations() {
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_TEST_ADMINISTRATIONS_GD, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#getDistricts()
 	 */
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getDistricts() {
-		return getObjectValueTOList(IQueryConstants.GET_DISTRICTS_GD, new Object[]{"PUBLIC"});
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_DISTRICTS_GD, new Object[]{"PUBLIC"}, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#getGrades()
 	 */
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> getGrades() {
-		return getObjectValueTOList(IQueryConstants.GET_GRADES_GD);
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_GRADES_GD, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateSchoolGD(java.lang.Long)
 	 */
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateSchoolGD(Long parentOrgNodeId) {
-		return getObjectValueTOList(IQueryConstants.GET_SCHOOLS_GD, new Object[]{"PUBLIC", parentOrgNodeId});
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_SCHOOLS_GD, new Object[]{"PUBLIC", to.getDistrict()}, new ObjectValueTOMapper());
 	}
 	
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateClassGD(Long parentOrgNodeId) {
-		return getObjectValueTOList(IQueryConstants.GET_CLASSES_GD, new Object[]{"PUBLIC", parentOrgNodeId});
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_CLASSES_GD, new Object[]{"PUBLIC", to.getSchool()}, new ObjectValueTOMapper());
 	}
 	
-	public List<com.ctb.prism.report.transferobject.ObjectValueTO> populateStudentTableGD(Long orgNodeId) {
-		return getObjectValueTOList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{orgNodeId});
-	}
-
-	/**
-	 * Utility method to run database query and create list of ObjectValueTO
-	 * 
-	 * @param query
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	private List<com.ctb.prism.report.transferobject.ObjectValueTO> getObjectValueTOList(
-			String query) {
-		List<com.ctb.prism.report.transferobject.ObjectValueTO> list = getJdbcTemplatePrism()
-				.query(query,
-						new com.ctb.prism.report.transferobject.ObjectValueTOMapper() {
-							public ObjectValueTO mapRow(ResultSet rs, int col)
-									throws SQLException {
-								ObjectValueTO to = new ObjectValueTO();
-								to.setValue(rs.getString(1));
-								to.setName(rs.getString(2));
-								return to;
-							}
-						});
-		return list;
-	}
-
-	/**
-	 * Overloaded utility method to run database query and create list of
-	 * ObjectValueTO. Query params can be passed.
-	 * 
-	 * @param query
-	 * @param params
-	 * @return
-	 */
-	private List<com.ctb.prism.report.transferobject.ObjectValueTO> getObjectValueTOList(
-			String query, Object[] params) {
-		List<com.ctb.prism.report.transferobject.ObjectValueTO> list = getJdbcTemplatePrism()
-				.query(query,
-						params,
-						new com.ctb.prism.report.transferobject.ObjectValueTOMapper() {
-							public ObjectValueTO mapRow(ResultSet rs, int col)
-									throws SQLException {
-								ObjectValueTO to = new ObjectValueTO();
-								to.setValue(rs.getString(1));
-								to.setName(rs.getString(2));
-								return to;
-							}
-						});
-		return list;
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+		if(IApplicationConstants.VALUE_ALL.equals(to.getKlass()))
+			return getJdbcTemplatePrism().query(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[]{to.getSchool()}, new ObjectValueTOMapper());
+		else
+			return getJdbcTemplatePrism().query(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{to.getKlass()}, new ObjectValueTOMapper());
 	}
 }

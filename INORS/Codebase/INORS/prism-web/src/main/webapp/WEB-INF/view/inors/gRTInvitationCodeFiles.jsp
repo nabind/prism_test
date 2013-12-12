@@ -37,8 +37,6 @@
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<select id="testProgram" name="testProgram" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 150px;">
-										<option value="PUBLIC" selected="selected">Public Schools</option>
-										<option value="NON-PUBLIC">Non Public Schools</option>
 									</select>
 								</p>
 							</div>
@@ -48,10 +46,7 @@
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<select id="corpDiocese" name="corpDiocese" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 150px;">
-										<option value='-1'>Please Select</option>
-										<c:forEach var="corpDioceseVar" items="${corporationList}">
-											<option value="${corpDioceseVar.value}">${corpDioceseVar.name}</option>
-										</c:forEach>
+										<option value='-1'>Please Select Test Program</option>
 									</select>
 								</p>
 							</div>

@@ -1743,79 +1743,60 @@ public class ReportController extends BaseDAO {
 	}
 	
 	@RequestMapping(value = "/populateSchoolGD", method = RequestMethod.GET)
-	public void populateSchoolGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+	@ResponseBody
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(@ModelAttribute GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchoolGD()");
 		long t1 = System.currentTimeMillis();
-		response.setContentType("text/plain");
-		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
-		List<ObjectValueTO> schoolList = null;
-		String jsonString = "";
-		
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = null;
 		try{
-			schoolList =  reportService.populateSchoolGD(parentOrgNodeId);
-			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
-			logger.log(IAppLogger.INFO, "jsonString for parentOrgNodeId: " + parentOrgNodeId);
-			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
+			schoolList =  reportService.populateSchoolGD(to);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 		}finally{
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: InorsController - populateSchoolGD() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return schoolList;
 	}
 	
 	@RequestMapping(value = "/populateClassGD", method = RequestMethod.GET)
 	@ResponseBody
-	public String populateClassGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(@ModelAttribute GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: populateClass()");
 		long t1 = System.currentTimeMillis();
-		response.setContentType("text/plain");
-		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
-		List<ObjectValueTO> classList = null;
-		String jsonString = "";
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> classList = null;
 		try {
-			classList = reportService.populateClassGD(parentOrgNodeId);
-			jsonString = JsonUtil.convertToJsonAdmin(classList);
-			logger.log(IAppLogger.INFO, "parentOrgNodeId: " + parentOrgNodeId);
-			logger.log(IAppLogger.INFO, jsonString);
+			classList = reportService.populateClassGD(to);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return jsonString;
+		return classList;
 	}
 	
 	@RequestMapping(value = "/populateStudentTableGD", method = RequestMethod.GET)
 	@ResponseBody
-	public String populateStudentTableGD(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(@ModelAttribute GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: populateClass()");
 		long t1 = System.currentTimeMillis();
-		response.setContentType("text/plain");
-		Long orgNodeId = Long.parseLong(request.getParameter("orgNodeId"));
-		List<ObjectValueTO> classList = null;
-		String jsonString = "";
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentList = null;
 		try {
-			classList = reportService.populateStudentTableGD(orgNodeId);
-			jsonString = JsonUtil.convertToJsonAdmin(classList);
-			logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
-			logger.log(IAppLogger.INFO, jsonString);
+			studentList = reportService.populateStudentTableGD(to);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: "
+					+ String.valueOf(t2 - t1) + "ms");
 		}
-		return jsonString;
+		return studentList;
 	}
 	
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
 	@ResponseBody
-	public String groupDownloadFunction(@ModelAttribute GroupDownloadTO to,
-			HttpServletResponse response) throws ServletException, IOException,
-			BusinessException {
+	public String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response)  {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		long t1 = System.currentTimeMillis();
 		String button = to.getButton();

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.ObjectValueTO;
 
 public interface IInorsBusiness {
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO);
@@ -30,7 +29,17 @@ public interface IInorsBusiness {
 	 */
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap);
 
-	public List<ObjectValueTO> getDistricts();
+	/**
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap);
 
-	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId);
+	/**
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap);
 }

@@ -38,12 +38,18 @@ public class InorsServiceImpl implements IInorsService {
 		return inorsBusiness.getDownloadData(paramMap);
 	}
 
-	public List<ObjectValueTO> getDistricts() {
-		return inorsBusiness.getDistricts();
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.service.IInorsService#populateDistrictGrt(java.util.Map)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap) {
+		return inorsBusiness.populateDistrictGrt(paramMap);
 	}
 	
-	public List<ObjectValueTO> populateSchool(Long parentOrgNodeId){
-		return inorsBusiness.populateSchool(parentOrgNodeId);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.service.IInorsService#populateSchoolGrt(java.util.Map)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
+		return inorsBusiness.populateSchoolGrt(paramMap);
 	}
 	
 }

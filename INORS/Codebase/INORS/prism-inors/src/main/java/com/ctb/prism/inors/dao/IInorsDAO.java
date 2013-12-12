@@ -82,11 +82,16 @@ public interface IInorsDAO {
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap);
 
 	/**
-	 * Returns the ORG_NODE_NAME-ORG_NODEID list by ORG_NODE_LEVEL
 	 * 
+	 * @param paramMap
 	 * @return
 	 */
-	public List<ObjectValueTO> getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap);
 
-	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> populateSchool(Long parentOrgNodeId);
+	/**
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap);
 }

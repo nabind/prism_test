@@ -617,7 +617,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	    }
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#getDownloadData(java.util.Map)
 	 */
@@ -628,14 +627,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#getDistricts()
 	 */
-	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> getDistricts() {
-		return inorsDAO.getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap) {
+		return inorsDAO.populateDistrictGrt(paramMap);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#populateSchool(java.lang.Long)
 	 */
-	public List<com.ctb.prism.inors.transferobject.ObjectValueTO> populateSchool(Long parentOrgNodeId){
-		return inorsDAO.populateSchool(parentOrgNodeId);
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
+		return inorsDAO.populateSchoolGrt(paramMap);
 	}
 }

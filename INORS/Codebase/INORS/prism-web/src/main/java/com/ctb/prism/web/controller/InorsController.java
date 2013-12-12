@@ -437,15 +437,15 @@ public class InorsController {
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 			
 			// Test Administration Dropdown
-			List<com.ctb.prism.report.transferobject.ObjectValueTO> testAdministrationList = reportService.getTestAdministrations();
+			List<com.ctb.prism.core.transferobject.ObjectValueTO> testAdministrationList = reportService.getTestAdministrations();
 			modelAndView.addObject("testAdministrationList", testAdministrationList);
 			
 			// Corp/Diocese Dropdown
-			List<com.ctb.prism.report.transferobject.ObjectValueTO> corporationList = reportService.getDistricts();
+			List<com.ctb.prism.core.transferobject.ObjectValueTO> corporationList = reportService.getDistricts();
 			modelAndView.addObject("corporationList", corporationList);
 			
 			// Grade Dropdown
-			List<com.ctb.prism.report.transferobject.ObjectValueTO> gradeList = reportService.getGrades();
+			List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = reportService.getGrades();
 			modelAndView.addObject("gradeList", gradeList);
 					
 		} catch (Exception e) {
@@ -660,8 +660,8 @@ public class InorsController {
 	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
 			HttpServletResponse response) throws SystemException {
 		ModelAndView modelAndView = new ModelAndView("inors/gRTInvitationCodeFiles");
-		List<com.ctb.prism.inors.transferobject.ObjectValueTO> corporationList = inorsService.getDistricts();
-		modelAndView.addObject("corporationList", corporationList);
+		// List<com.ctb.prism.core.transferobject.ObjectValueTO> corporationList = inorsService.getDistricts();
+		// modelAndView.addObject("corporationList", corporationList);
 		
 		return modelAndView;
 	}
@@ -728,6 +728,27 @@ public class InorsController {
 		FileUtil.browserDownload(response, data, zipFileName);
 		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
 	}
+	
+	@RequestMapping(value = "/populateDistrictGrt", method = RequestMethod.GET)
+	public @ResponseBody String populateDistrictGrt(HttpServletRequest request) {
+		logger.log(IAppLogger.INFO, "Enter: populateDistrictGrt()");
+		long t1 = System.currentTimeMillis();
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("testProgram", request.getParameter("testProgram"));
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> districtList = null;
+		String jsonString = "";
+		try{
+			districtList = inorsService.populateDistrictGrt(paramMap);
+			jsonString = JsonUtil.convertToJsonAdmin(districtList);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateDistrictGrt() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return jsonString;
+	}
 
 	/**
 	 * Creates a json for all the school under a corporation
@@ -738,27 +759,25 @@ public class InorsController {
 	 * @throws IOException
 	 * @throws BusinessException
 	 */
-	@RequestMapping(value = "/populateSchool", method = RequestMethod.GET)
-	public void populateSchool(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BusinessException {
-		logger.log(IAppLogger.INFO, "Enter: populateSchool()");
+	@RequestMapping(value = "/populateSchoolGrt", method = RequestMethod.GET)
+	public @ResponseBody String populateSchoolGrt(HttpServletRequest request) {
+		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
 		long t1 = System.currentTimeMillis();
-		response.setContentType("text/plain");
-		Long parentOrgNodeId = Long.parseLong(request.getParameter("parentOrgNodeId"));
-		List<com.ctb.prism.inors.transferobject.ObjectValueTO> schoolList = null;
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("districtId", request.getParameter("districtId"));
+		paramMap.put("testProgram", request.getParameter("testProgram"));
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = null;
 		String jsonString = "";
-		
 		try{
-			schoolList =  inorsService.populateSchool(parentOrgNodeId);
+			schoolList =  inorsService.populateSchoolGrt(paramMap);
 			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
-			logger.log(IAppLogger.INFO, "jsonString for parentOrgNodeId: " + parentOrgNodeId);
-			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateSchool() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Exit: populateSchoolGrt() took time: ", String.valueOf(t2 - t1), "ms"));
 		}
+		return jsonString;
 	}
 	
 	// every night @ 1 AM

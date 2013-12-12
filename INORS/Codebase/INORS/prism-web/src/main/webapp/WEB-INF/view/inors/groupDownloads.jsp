@@ -25,7 +25,6 @@
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<select id="testAdministrationGD" name="testAdministrationGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select</option>
 										<c:forEach var="testAdministrationVar" items="${testAdministrationList}">
 											<option value="${testAdministrationVar.value}">${testAdministrationVar.name}</option>
 										</c:forEach>
