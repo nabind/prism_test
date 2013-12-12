@@ -1661,6 +1661,8 @@ public class ReportController extends BaseDAO {
 	@RequestMapping(value = "/addDashboard", method = RequestMethod.POST)
 	public ModelAndView addDashboard(HttpServletRequest req,
 			HttpServletResponse res) {
+		
+		UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		logger.log(IAppLogger.INFO, "Enter: ReportController - addDashboard");
 		try {
 			
@@ -1674,6 +1676,7 @@ public class ReportController extends BaseDAO {
 			reportParameterTO.setAssessmentName((String) req.getParameter("assessmentType"));
 			reportParameterTO.setLinkName(Long.valueOf(req.getParameter("customerType")));
 			reportParameterTO.setMenuId(req.getParameter("menuType"));
+			reportParameterTO.setCustomerId(loggedinUserTO.getCustomerId());
 			
 			if ("1".equals((String) req.getParameter("reportStatus"))) {
 				reportParameterTO.setReportStatus(IApplicationConstants.ACTIVE_FLAG);

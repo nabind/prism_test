@@ -252,7 +252,7 @@ public interface IUserQuery {
 	public static final String DB_REPORT_SEQ_ID = "SELECT DB_REPORT_ID_SEQ.NEXTVAL AS REPORT_SEQ_ID FROM DUAL";
 	
 	public static final String CHECK_EXISTING_USER = "SELECT userid as USER_ID FROM USERS WHERE upper(USERNAME) = upper(?)";
-	public static final String CHECK_EXISTING_REPORT = "SELECT DB_REPORTID AS DB_REPORT_ID FROM DASH_REPORTS  WHERE REPORT_NAME=?";
+	public static final String CHECK_EXISTING_REPORT = "SELECT DB_REPORTID AS DB_REPORT_ID FROM DASH_REPORTS  WHERE REPORT_NAME=? AND report_folder_uri=?";
 	
 	// search users
 	public static final String SEARCH_USER = CustomStringUtil

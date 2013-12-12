@@ -46,7 +46,14 @@ public class ReportParameterTO extends BaseTO {
 	private List<ObjectValueTO> customerProductList;
 	private List<ObjectValueTO> orgNodeLevelList;
 	private List<ObjectValueTO> adminYear;
+	private String customerId;
 	
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
 	private String[] userRoles;
 	private String[] orgNodeLevel;
 	

@@ -366,15 +366,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public List<ReportTO> getAllReportList(Map<String,Object> paramMap)
 	{
 		logger.info( "Enter: ReportDAOImpl - getAllReportList");
-		
+		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<ReportTO> reports = null;
 		List<Map<String,Object>> dataList=null;
 		if(paramMap.get("editReport")!=null && paramMap.get("editReport").equals("editReport"))
 				{
-					 dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS,paramMap.get("reportId"),paramMap.get("reportId"),IApplicationConstants.DEFAULT_LEVELID_VALUE);
+					 dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS,loggedinUserTO.getCustomerId(),paramMap.get("reportId"),loggedinUserTO.getCustomerId(),paramMap.get("reportId"),IApplicationConstants.DEFAULT_LEVELID_VALUE);
 				}
 		else    {
-			         dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST,IApplicationConstants.DEFAULT_LEVELID_VALUE);
+			         dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST,loggedinUserTO.getCustomerId(),loggedinUserTO.getCustomerId(),IApplicationConstants.DEFAULT_LEVELID_VALUE);
 		        }
 		if ( dataList != null && dataList.size() > 0 )
 		{
@@ -540,10 +540,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	private ReportTO getDashboardData(String reportid) {
+	private ReportTO getDashboardData(String reportid,String customerid) {
 				
 		ReportTO to = null;
-		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS,reportid,reportid,IApplicationConstants.DEFAULT_LEVELID_VALUE);
+		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS,customerid,reportid,customerid,reportid,IApplicationConstants.DEFAULT_LEVELID_VALUE);
 		if ( dataList != null && dataList.size() > 0 )
 		{
 			to = new ReportTO();
@@ -817,10 +817,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		Long customerLinks = reportParameterTO.getLinkName();
 		String[] userRoles = reportParameterTO.getUserRoles();
 		String[] orgNodeLevel = reportParameterTO.getOrgNodeLevel();
+		String customerId = reportParameterTO.getCustomerId();
 		try {
 			
 			List<Map<String, Object>> reportMap=null;
-			reportMap= getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_REPORT,reportName);
+			reportMap= getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_REPORT,reportName,reportUri);
 			if (reportMap == null || reportMap.isEmpty())
 					{
 				    int userRoleLoop = 0,orgNodeLevelLoop=0;
@@ -847,7 +848,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								 }
 							  }
 					
-								reportTo = getDashboardData(String.valueOf(report_seq_id ));
+								reportTo = getDashboardData(String.valueOf(report_seq_id ),customerId);
 						}
 		}
 		catch(Exception e){
