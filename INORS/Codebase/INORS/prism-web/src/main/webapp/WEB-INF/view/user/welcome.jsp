@@ -1,9 +1,9 @@
 
 		<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
 
-		<!--<hgroup id="main-title" class="thin">
+		<!-- <hgroup id="main-title" class="thin">
 			<h1>Medias</h1>
-		</hgroup>-->
+		</hgroup> -->
 
 		
 		<div class="right-column">
