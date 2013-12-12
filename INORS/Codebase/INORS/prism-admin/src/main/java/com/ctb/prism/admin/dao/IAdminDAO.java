@@ -26,7 +26,7 @@ public interface IAdminDAO {
 	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid)
 	throws Exception;
 	
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid)
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid,String orgMode)
 			throws Exception;
 
 	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
@@ -76,7 +76,7 @@ public interface IAdminDAO {
 	
 	public boolean saveRole(String roleId, String roleName, String roleDescription) throws Exception;
 	
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId)throws Exception;
+	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId,String orgMode)throws Exception;
 	public ArrayList<OrgTreeTO> getOrgTree(String nodeid,boolean isFirstLoad, String adminYear, long customerId) throws Exception;
 	public String getOrganizationTreeOnRedirect(String selectedOrgId,String parentOrgId,String userId,long customerId, boolean isRedirected) throws Exception;
 

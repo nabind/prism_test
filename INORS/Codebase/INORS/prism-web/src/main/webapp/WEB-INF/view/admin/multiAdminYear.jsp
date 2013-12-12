@@ -6,18 +6,20 @@
 
 <%
 String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 %>
 
 <div class="panel-control">
 	<div class="float-left">
 		<a href="#nogo" id="hideHierarchy" class="button icon-backward with-tooltip" title="Hide Hierarchy"></a>
 	</div>
-	<c:set var="title" value="Select administration to refresh the hierarchy."></c:set>
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
+	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
 	<div class="float-right">
-		<select style="width: 160px;" name="AdminYear" id="AdminYear" 
-			title="${title}"
-			class="select silver-gradient glossy with-tooltip" onchange="reloadOrgTree($(this))"
+		<select style="width: 100px;" name="AdminYear" id="AdminYear" 
+			title='Select organization mode to refresh the hierarchy.'
+			class="select silver-gradient glossy with-tooltip expandable-list" 
+			onchange="reloadOrgTree($(this))"
 			tabindex="-1">
 			<c:forEach var="adminYears" items="${adminList}" varStatus="loopCount" >
 				<c:if test="${selectedYear eq adminYears.value}">
@@ -28,6 +30,18 @@ String adminYear = (String) request.getSession().getAttribute(IApplicationConsta
 				</c:if>
 			</c:forEach>
 		</select>
+		<select style="width: 100px;" name="orgMode" id="orgMode" 
+			title='Select administration to refresh the hierarchy.'
+			class="select silver-gradient glossy with-tooltip expandable-list" 
+			onchange="reloadOrgTree($(this))">
+				<c:if test="${selectedOrgMode eq 'PUBLIC'}">
+					<option value="PUBLIC" selected>Public</option>
+					<option value="NON PUBLIC">Non Public</option>
+				</c:if>
+				<c:if test="${selectedOrgMode eq 'NON PUBLIC'}">
+					<option value="PUBLIC">Public</option>
+					<option value="NON PUBLIC" selected>Non Public</option>
+				</c:if>
+		</select>
 	</div>
 </div>
-			

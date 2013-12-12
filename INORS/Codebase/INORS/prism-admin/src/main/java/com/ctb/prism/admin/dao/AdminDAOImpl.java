@@ -97,7 +97,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid) {
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid,String orgMode) {
 
 		ArrayList<OrgTO> OrgTOs = new ArrayList<OrgTO>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
@@ -128,7 +128,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Cacheable(cacheName = "orgTreeChildren")
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId)throws Exception 
+	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId,String orgMode)throws Exception 
 	{
 		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
 		List<Map<String, Object>> lstData=null;

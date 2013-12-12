@@ -793,9 +793,13 @@
 		$("#AdminYear").removeTooltip(true, true);
 		$("#AdminYear").mouseenter();
 		$("#AdminYear").mouseleave();
+		
+		$("#orgMode").removeTooltip(true, true);
+		$("#orgMode").mouseenter();
+		$("#orgMode").mouseleave();
 		// END : patch to remove tooltip
 		var adminYear = $(selectedObj).val();
-		var queryData = "AdminYear="+adminYear;
+		var queryData = "AdminYear="+adminYear+"&orgMode="+$("#orgMode").val();
 		$.ajax({
 			type : "GET",
 			url : "updateAdminYear.do",

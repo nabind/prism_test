@@ -35,10 +35,10 @@ public class AdminServiceImpl implements IAdminService {
 
 	}
 	
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid)
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid,String orgMode)
 			throws Exception {
 
-		return adminBusiness.getOrganizationDetailsOnClick(nodeid);
+		return adminBusiness.getOrganizationDetailsOnClick(nodeid,orgMode);
 
 	}
 
@@ -151,8 +151,8 @@ public class AdminServiceImpl implements IAdminService {
 	public boolean saveRole(String roleId, String roleName, String roleDescription) throws Exception{
 		return  adminBusiness.saveRole(roleId, roleName, roleDescription);
 	}
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId)throws Exception {
-		return adminBusiness.getOrganizationTree(nodeid,currOrg,isFirstLoad, adminYear, customerId);
+	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId, String orgMode)throws Exception {
+		return adminBusiness.getOrganizationTree(nodeid,currOrg,isFirstLoad, adminYear, customerId,orgMode);
 	}
 	
 	public ArrayList<OrgTreeTO> getOrgTree(String nodeid,boolean isFirstLoad, String adminYear, long customerId)throws Exception {

@@ -392,6 +392,7 @@ public class AdminController {
 				IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		try {
 			logger.log(IAppLogger.INFO,
 					"Enter: AdminController - tenantHierarchy");
@@ -400,14 +401,14 @@ public class AdminController {
 			if(isTree)
 			{
 				if (nodeid != null) {
-					OrgTreeTOs = adminService.getOrganizationTree(nodeid,currentOrg,false,adminYear,currCustomer);
+					OrgTreeTOs = adminService.getOrganizationTree(nodeid,currentOrg,false,adminYear,currCustomer,orgMode);
 				}
 				 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
 			}
 			else
 			{
 				if (nodeid != null) {
-					OrgTOs = adminService.getOrganizationDetailsOnClick(nodeid);
+					OrgTOs = adminService.getOrganizationDetailsOnClick(nodeid,orgMode);
 				}
 				 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTOs);
 			}
@@ -1805,7 +1806,9 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - updateAdminYear");
 		try {
 			String adminYear= req.getParameter("AdminYear");
+			String orgMode= req.getParameter("orgMode");
 			req.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
+			req.getSession().setAttribute(IApplicationConstants.ORG_MODE, orgMode);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 
