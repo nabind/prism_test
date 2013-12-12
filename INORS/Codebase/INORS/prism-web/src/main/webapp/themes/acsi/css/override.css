@@ -940,3 +940,14 @@ div#nav ul li a {
 	color:#222625;
 	font-size: 15px;
 	}
+
+.inline-label {
+		padding-left: 120px;
+		}
+		.inline-label > .label{
+			float: left;
+			width: 140px;
+			margin-left: -120px;
+			line-height: inherit;
+			//line-height:expression(this.parentNode.currentStyle['line-height']);
+		}	
