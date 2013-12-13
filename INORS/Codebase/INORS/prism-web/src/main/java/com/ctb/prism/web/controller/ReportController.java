@@ -1285,6 +1285,11 @@ public class ReportController extends BaseDAO {
 				    			(String) pairs.getValue());
 				    }
 				}
+				// Update replacable params with request parameters -- TODO need to check for multiselect values
+				for(InputControlTO inputTO : allInputControls) {
+					String param = req.getParameter(inputTO.getLabelId());
+					replacableParams.put(CustomStringUtil.getJasperParameterString(inputTO.getLabelId()), param);
+				}
 			} catch (Exception e) {
 				logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.",e);
 			}

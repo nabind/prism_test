@@ -11,17 +11,17 @@
 
 	<bean id="connectionFactory" class="org.skyscreamer.nevado.jms.NevadoConnectionFactory">
 		<property name="sqsConnectorFactory" ref="sqsConnectorFactory" />
-		<property name="awsAccessKey" value="AKIAJ44U4M6HC3GLJIXQ" />
-		<property name="awsSecretKey" value="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" />
-		<property name="awsSQSEndpoint" value="sqs.us-east-1.amazonaws.com" />
+		<property name="awsAccessKey" value="${aws.accessKey}" />
+		<property name="awsSecretKey" value="${aws.secretKey}" />
+		<property name="awsSQSEndpoint" value="${aws.endPoint}" />
 	</bean>
 
 	<bean id="prism_job_queue" class="org.skyscreamer.nevado.jms.destination.NevadoQueue">
-		<constructor-arg value="prism_job_queue" />
+		<constructor-arg value="${aws.queueName}" />
 	</bean>
 
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="defaultDestinationName" value="prism_job_queue" />
+		<property name="defaultDestinationName" value="${aws.queueName}" />
 		<property name="connectionFactory" ref="connectionFactory" />
 	</bean>
 
