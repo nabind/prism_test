@@ -196,14 +196,16 @@
 									style="position: relative; left: 0px; z-index: 1"></div>
 								<input type="hidden" name="lastid"
 									id="lastid" value="">
+									
+								<!-- As per requirement, proficiency level does not depend upon content -->
 								<table class="simple-table responsive-table" id="report-list">
-
+									
 									<thead>
 										<tr class="abc">
 											<th scope="col" width="20%"><spring:message code="label.content.name"/></th>
 											<th scope="col" width="25%"><spring:message code="label.content.subHeader"/></th>
 											<th scope="col" width="22%"><spring:message code="label.content.grade"/></th>
-											<th scope="col" width="23%"><spring:message code="label.content.profLevel"/></th>
+											<!--<th scope="col" width="23%"><spring:message code="label.content.profLevel"/></th>-->
 											<th scope="col" width="20%"><spring:message code="table.columnName.action"/></th>
 										</tr>
 									</thead>
@@ -214,7 +216,7 @@
 											<th scope="row">&nbsp;</th>
 											<th scope="row">&nbsp;</th>
 											<th scope="row">&nbsp;</th>
-											<th scope="row">&nbsp;</th>
+											<!--<th scope="row">&nbsp;</th>-->
 											<th scope="row">&nbsp;</th>
 										</tr>
 									</tbody>
@@ -279,6 +281,8 @@
 							</fieldset>
 						</p>
 						
+						<!-- As per requirement, proficiency level does not depend upon content -->
+						<!-- 
 						<p class="button-height inline-label">
 							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
 								class="icon-star icon-size1 red"></span></label> 
@@ -292,7 +296,7 @@
 									<option value='P'>Pass+</option>		
 								</select>
 						</p>
-
+						-->
 						<div id="imgHolder"></div>
 					</form:form>
 				</div>
@@ -347,6 +351,8 @@
 							</fieldset>
 						</p>
 						
+						<!-- As per requirement, proficiency level does not depend upon content -->
+						<!-- 
 						<p class="button-height inline-label">
 							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
 								class="icon-star icon-size1 red"></span>
@@ -355,7 +361,7 @@
 								class="select expandable-list" style="width: 150px;">			
 							</select>
 						</p>
-
+						-->
 						<div id="imgHolder"></div>
 					</form:form>
 				</div>

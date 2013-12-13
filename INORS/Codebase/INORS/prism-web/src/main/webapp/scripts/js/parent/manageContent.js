@@ -12,7 +12,7 @@ $(document).ready(function() {
 		if(allContents != null && allContents.length > 0) {
 			$('#report-list').tablesorter({
 				headers: {
-					4: { sorter: false }
+					3: { sorter: false }
 				},
 				sortList: [[0,1]]
 			});
@@ -326,7 +326,7 @@ function openContentModalToEdit(contentId) {
 				
 				$("#editContentModal").modal({
 					title: 'Edit Content',
-					height: 550,
+					height: 430,
 					width: 780,
 					resizable: false,
 					draggable: false,
@@ -442,7 +442,7 @@ function openContentModalToAdd() {
 	
 	$("#addContentModal").modal({
 		title: 'Add Content',
-		height: 550,
+		height: 430,
 		width: 780,
 		resizable: false,
 		draggable: false,
@@ -490,6 +490,7 @@ function setCKEditor(purpose){
 			CKEDITOR.instances[name].destroy(true);
 		}	
 		CKEDITOR.inline($objTextArea.attr('id') );
+		//CKEDITOR.replace($objTextArea.attr('id') );
 	}
 	unblockUI();
 }
@@ -723,6 +724,8 @@ function getContentDetails(checkFirstLoad,data) {
 	    if(this.subHeader != undefined){
 	    	subHeaderVar = this.subHeader;
 	    }
+	    /* As per requirement, proficiency level does not depend upon content */
+	    /*
 		manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
 			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
 						+'<th scope="row">' + subHeaderVar +'</th>'
@@ -734,7 +737,19 @@ function getContentDetails(checkFirstLoad,data) {
 						+'<a href="#" class="button icon-trash with-tooltip confirm delete-content" contentId="'+this.contentId+'" title="Delete"></a>'
 						+'</span>'
 						+'</td>'
-					+'</tr>'
+					+'</tr>';
+					*/
+	    manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
+					     	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
+							+'<th scope="row">' + subHeaderVar +'</th>'
+							+'<th scope="row">' + this.gradeName +'</th>'
+							+'<td class="vertical-center" nowrap>'
+							+'<span class="button-group compact" width="50px">'
+							+'<a href="#" class="button icon-pencil edit-content with-tooltip" contentId="'+this.contentId+'" title="Edit"></a>'
+							+'<a href="#" class="button icon-trash with-tooltip confirm delete-content" contentId="'+this.contentId+'" title="Delete"></a>'
+							+'</span>'
+							+'</td>'
+						+'</tr>';
 	});
 	$("#content_details").append(manageContent);
 	$("#report-list").trigger("update");
