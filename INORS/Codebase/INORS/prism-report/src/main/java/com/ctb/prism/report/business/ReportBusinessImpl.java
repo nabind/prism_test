@@ -386,8 +386,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getDistricts()
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
-		return reportDAO.getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
+		return reportDAO.populateDistrictGD(to);
 	}
 
 	/*
@@ -395,8 +395,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getGrades()
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
-		return reportDAO.getGrades();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
+		return reportDAO.populateGradeGD(to);
 	}
 
 	/*

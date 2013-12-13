@@ -32,6 +32,8 @@ import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
@@ -54,7 +56,7 @@ import com.googlecode.ehcache.annotations.TriggersRemove;
  */
 @Repository("reportDAO")
 public class ReportDAOImpl extends BaseDAO implements IReportDAO {
-	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportDAOImpl.class.getName());
 	/**
 	 * This method returns report print object filled with data
 	 * @param jasperReport
@@ -65,7 +67,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@Cacheable(cacheName = "filledJasperPrint")
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
-		logger.info( CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", 
+		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", 
 				jasperReport.getName()));
 		try {
 			conn = getPrismConnection();
@@ -81,7 +83,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
-		logger.info( CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", 
+		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", 
 				jasperReport.getName()));
 		try {
 			conn = getPrismConnection();
@@ -98,7 +100,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	
 	public JasperReport getReportJasperObject(final String reportPath) {
-		logger.info( "Enter: ReportDAOImpl - getReportJasperObject");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 		
 		Object[] param = new String[]{ reportPath };
 		return getJdbcTemplate().queryForObject(IQueryConstants.GET_JASPER_REPORT_OBJECT, param, new RowMapper<JasperReport>() {
@@ -107,16 +109,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				try {
 					jasperReport = JasperCompileManager.compileReport(rs.getBinaryStream(1));
 				} catch (JRException e) {
-					logger.warn("Could not compile report jrxml retrieved from database for report "+ reportPath, e);
+					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report "+ reportPath, e);
 				}
-				logger.info("Exit: ReportDAOImpl - getReportJasperObject");
+				logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");
 				return jasperReport;
 			}
 		});
 	}
 	
 	public JasperReport getReportJasperObjectForName(final String reportname) {
-		logger.info( "Enter: ReportDAOImpl - getReportJasperObject");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 		
 		Object[] param = new String[]{ reportname };
 		return getJdbcTemplate().queryForObject(IQueryConstants.GET_JASPER_REPORT_OBJECT_FOR_NAME, param, new RowMapper<JasperReport>() {
@@ -125,9 +127,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				try {
 					jasperReport = JasperCompileManager.compileReport(rs.getBinaryStream(1));
 				} catch (JRException e) {
-					logger.warn("Could not compile report jrxml retrieved from database for report "+ reportname, e);
+					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report "+ reportname, e);
 				}
-				logger.info("Exit: ReportDAOImpl - getReportJasperObject");
+				logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");
 				return jasperReport;
 			}
 		});
@@ -135,13 +137,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	
 	@TriggersRemove(cacheName="compiledJrxml", removeAll=true)
 	public void removeReportCache() {
-		logger.info( "Removed report cache");
+		logger.log(IAppLogger.INFO, "Removed report cache");
 	}
 	
 	@TriggersRemove(cacheName={"msgCache", "compiledJrxml", "reportInputControls", "defaultInputControls",
 			"tenantId", "orgChildren", "securityQuestions", "orgTreeChildren", "orgUsers", "allAdminYear", "filledJasperPrint"}, removeAll=true)
 	public void removeCache() {
-		logger.info( "Removed all cache");
+		logger.log(IAppLogger.INFO, "Removed all cache");
 	}
 	/**
 	 * This method is to fetch all reports (including subreports)
@@ -149,8 +151,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return List of ReportTO
 	 */
 	@Cacheable(cacheName = "compiledJrxml")
-	public  List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
-		logger.info( "Enter: ReportDAOImpl - getReportJasperObject");
+	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 		
 		Object[] param = new String[]{ reportPath };
 		return getJdbcTemplate().query(IQueryConstants.GET_JASPER_REPORT_OBJECT, param, 
@@ -185,16 +187,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							logger.warn("Could not compile report jrxml retrieved from database for report "+ reportPath, e);
+							logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report "+ reportPath, e);
 						}
-						logger.info("Exit: ReportDAOImpl - getReportJasperObject");
+						logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");
 						return reportTo;
 					}
 				});
 	}
 	
 	/*public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
-		logger.info( "Enter: ReportDAOImpl - getReportJasperObject");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 		List<ReportTO> reportList = null;
 		Object[] param = new String[]{ reportPath };
 		List<Map<String, Object>> lstData = getJdbcTemplate().queryForList(IQueryConstants.GET_JASPER_REPORT_OBJECT, param);
@@ -229,7 +231,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	@Cacheable(cacheName = "reportInputControls")
 	public List<InputControlTO> getInputControlDetails(String reportPath){
-		logger.info( "Enter: ReportDAOImpl - getInputControlDetails");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getInputControlDetails");
 		
 		List<InputControlTO> inputControlTOs = null;
 		Object[] param = new String[]{ reportPath };
@@ -271,12 +273,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		
-		logger.info( "Exit: ReportDAOImpl - getInputControlDetails");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getInputControlDetails");
 		return inputControlTOs;
 	}
 	
 	public List<InputControlTO> getAllInputControls() {
-		logger.info( "Enter: ReportDAOImpl - getAllInputControls");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllInputControls");
 		
 		List<InputControlTO> inputControlTOs = null;
 		//Object[] param = new String[]{ reportPath };
@@ -291,7 +293,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				inputControlTOs.add(to);
 			}
 		}
-		logger.info( "Exit: ReportDAOImpl - getAllInputControls");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllInputControls");
 		return inputControlTOs;
 	}
 	
@@ -303,7 +305,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@Cacheable(cacheName = "defaultInputControls")
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
 		if(query == null) return null;
-		logger.info(query);
+		logger.log(IAppLogger.INFO, query);
 		List<ObjectValueTO> list = getJdbcTemplatePrism().query(query, new RowMapper<ObjectValueTO>() {
 			public ObjectValueTO mapRow(ResultSet rs, int col) throws SQLException {
 				ObjectValueTO to = new ObjectValueTO();
@@ -342,7 +344,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public String getTenantId( String userName )
 	{	
 		String userType = getUserType(userName);
-		logger.info( "Enter: ReportDAOImpl - userType = " + userType);
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - userType = " + userType);
 		
 		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
 			return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_EDU_TENANT_ID, new Object[]{ /*userParameter[0]*/userName }, new RowMapper<String>() {
@@ -366,7 +368,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	//@Cacheable(cacheName = "allReports")
 	public List<ReportTO> getAllReportList(Map<String,Object> paramMap)
 	{
-		logger.info( "Enter: ReportDAOImpl - getAllReportList");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<ReportTO> reports = null;
 		List<Map<String,Object>> dataList=null;
@@ -374,7 +376,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				{
 					 dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS,loggedinUserTO.getCustomerId(),paramMap.get("reportId"),loggedinUserTO.getCustomerId(),paramMap.get("reportId"),IApplicationConstants.DEFAULT_LEVELID_VALUE);
 				}
-		else    {
+		else  {
 			         dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST,loggedinUserTO.getCustomerId(),loggedinUserTO.getCustomerId(),IApplicationConstants.DEFAULT_LEVELID_VALUE);
 		        }
 		if ( dataList != null && dataList.size() > 0 )
@@ -420,7 +422,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				reports.add(to);
 			}
 		}
-		logger.info( "Exit: ReportDAOImpl - getAllReportList");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllReportList");
 		return reports;
 	}
 	
@@ -436,7 +438,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	@TriggersRemove(cacheName="allReports", removeAll=true)
 	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
-		logger.info("Enter: ReportDAOImpl - updateReport");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
 		try {
 			// update report table
 			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_REPORT, reportName, reportUrl, isEnabled, reportId);
@@ -453,10 +455,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				//if(strRole.length() >= 3) strRole = strRole.substring(0, strRole.length() - 3);
 			}
 		} catch (Exception e) {
-			logger.error("Error occurred while updating report details.", e);
+			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
 			return false;
 		}
-		logger.info("Exit: ReportDAOImpl - updateReport");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - updateReport");
 		return true;
 	}
 	
@@ -466,7 +468,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	public List<AssessmentTO> getAssessments(boolean parentReports)
 	{
-		logger.info( "Enter: ReportDAOImpl - getAssessments");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 		
 		List<AssessmentTO> assessments = null;
 		
@@ -514,13 +516,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		
-		logger.info( "Exit: ReportDAOImpl - getAssessments");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAssessments");
 		return assessments;
 	}
 	
 	
 	public boolean deleteReport(String reportId) throws SystemException {
-		logger.info("Enter: ReportDAOImpl - deleteReport");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
 		try {
 			// delete from report_role table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_ROLE, reportId);
@@ -528,10 +530,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			// delete from report table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT, reportId);
 		}catch (Exception e) {
-			logger.error("Error occurred while updating report details.", e);
+			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
 			return false;
 		}
-		logger.info("Exit: ReportDAOImpl - deleteReport");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - deleteReport");
 		return true;
 	}
 		
@@ -637,22 +639,22 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getAdminYear(final Map<String,Object> paramMap)
 			throws SystemException {
-		logger.info("Enter: ReportDAOImpl - getAdminYear()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAdminYear()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		try{
 			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.ALL_ADMIN_YEAR,new ObjectValueTOMapper());
 		}catch(Exception e){
-			logger.error("Error occurred in getAdminYear():", e);
+			logger.log(IAppLogger.ERROR, "Error occurred in getAdminYear():", e);
 			throw new SystemException(e);
 		}
-		logger.info("Exit: ReportDAOImpl - getAdminYear()");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAdminYear()");
 		return objectValueTOList;
 	}
 	
 	@Cacheable(cacheName = "customerProductCache")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
 			throws SystemException {
-		logger.info("Enter: ReportDAOImpl - getCustomerProduct()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List placeHolderValueList = new ArrayList();
@@ -662,24 +664,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.CUST_PROD,placeHolderValueList.toArray(),
 					new ObjectValueTOMapper());
 		}catch(Exception e){
-			logger.error("Error occurred in getCustomerProduct():", e);
+			logger.log(IAppLogger.ERROR, "Error occurred in getCustomerProduct():", e);
 			throw new SystemException(e);
 		}
-		logger.info("Exit: ReportDAOImpl - getCustomerProduct()");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getCustomerProduct()");
 		return objectValueTOList;
 	}
 	
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)
 			throws SystemException {
-		logger.info("Enter: ReportDAOImpl - getOrgNodeLevel()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getOrgNodeLevel()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		try{
 			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.ALL_ORG_NODE_LEVEL,new ObjectValueTOMapper());
 		}catch(Exception e){
-			logger.error("Error occurred in getOrgNodeLevel():", e);
+			logger.log(IAppLogger.ERROR, "Error occurred in getOrgNodeLevel():", e);
 			throw new SystemException(e);
 		}
-		logger.info("Exit: ReportDAOImpl - getOrgNodeLevel()");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getOrgNodeLevel()");
 		return objectValueTOList;
 	}
 
@@ -712,7 +714,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 
 		}catch(Exception e){
-			logger.error("Error occurred in loadManageMessage():", e);
+			logger.log(IAppLogger.ERROR, "Error occurred in loadManageMessage():", e);
 			return null;
 		}
 		return manageMessageTOList;
@@ -721,7 +723,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList)
 			throws SystemException {
-		logger.info("Enter: ReportDAOImpl - saveManageMessage()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - saveManageMessage()");
 		int insertDMFlag = 1;
 		int successFlag = 0;
 		
@@ -759,7 +761,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 			
 		}catch(Exception e){
-			logger.error("Error occurred in saveManageMessage():", e);
+			logger.log(IAppLogger.ERROR, "Error occurred in saveManageMessage():", e);
 			e.printStackTrace();
 			successFlag = 0;
 			throw new SystemException(e);
@@ -768,14 +770,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				throw new SystemException("Exception: ReportDAOImpl - saveManageMessage()");
 			}
 		}
-		logger.info("Exit: ReportDAOImpl - saveManageMessage()");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - saveManageMessage()");
 		return successFlag;
 	}
 	
 	//365348
 	public boolean updateReportNew(ReportTO reportTO) 
 	{
-		logger.info("Enter: ReportDAOImpl - updateReport");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
 		try {
 			    int userRoleLoop=0,orgLevelLoop=0;
 			    getJdbcTemplatePrism().update(IQueryConstants.UPDATE_REPORT_NEW,reportTO.getReportName(),reportTO.getReportDescription(),reportTO.getReportUrl(),reportTO.getReportStatus(),reportTO.getReportType(), reportTO.getReportId());
@@ -789,10 +791,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 									 }
 						    }
 		} catch (Exception e) {
-			logger.error("Error occurred while updating report details.", e);
+			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
 			return false;
 		}
-		logger.info("Exit: ReportDAOImpl - updateReport");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - updateReport");
 		return true;
 	}
 	
@@ -806,7 +808,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	
 	//Arunava Datta
 	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO)throws Exception{
-		logger.info("Enter: ReportDAOImpl - addNewDashboard");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard");
 		
 		ReportTO reportTo=null;
 		String reportName = reportParameterTO.getReportName();
@@ -853,10 +855,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						}
 		}
 		catch(Exception e){
-		logger.error("Error occurred while adding dashboard details.", e);
+		logger.log(IAppLogger.ERROR, "Error occurred while adding dashboard details.", e);
 		return null;
 		}
-	logger.info("Exit: ReportDAOImpl - addNewDashboard");
+	logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - addNewDashboard");
 	return reportTo;	
 	}
 	
@@ -869,7 +871,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)
 	{
-		logger.info( "Enter: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllGroupDownloadFiles");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<JobTrackingTO> allGroupFiles = null;
 		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_LIST,loggedinUserTO.getUserId());
@@ -913,7 +915,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					allGroupFiles.add(to);
 			}
 		}
-		logger.info( "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
 		return allGroupFiles;
 	}
 
@@ -926,7 +928,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)
 	{
-		logger.info( "Enter: ReportDAOImpl - getRequestDetail");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getRequestDetail");
 		List<JobTrackingTO> allGroupFiles = null;
 		String jobId = (String) paramMap.get("jobId");
 		List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_REQUEST_VIEW,jobId);
@@ -959,7 +961,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					allGroupFiles.add(to);
 			}
 		}
-		logger.info( "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
 		return allGroupFiles;
 	}
 
@@ -987,7 +989,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * Returns the date in a defined format
 	 * @author Arunava Datta
 	 * @param pTimestamp
-	 * @param pFormat  examples: dd-MM-yyyy
+	 * @param pFormat examples: dd-MM-yyyy
 	 * @return
 	 * @see http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html*/
 		public static String getFormattedDate(Timestamp pTimestamp, String pFormat) {
@@ -1007,14 +1009,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#getDistricts()
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_DISTRICTS_GD, new Object[]{"PUBLIC"}, new ObjectValueTOMapper());
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
+		String testProgram = getOrgMode(to.getTestProgram());
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_DISTRICTS_GD, new Object[] { testProgram }, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#getGrades()
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
 		return getJdbcTemplatePrism().query(IQueryConstants.GET_GRADES_GD, new ObjectValueTOMapper());
 	}
 	
@@ -1022,23 +1026,44 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateSchoolGD(java.lang.Long)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_SCHOOLS_GD, new Object[]{"PUBLIC", to.getDistrict()}, new ObjectValueTOMapper());
+		String testProgram = getOrgMode(to.getTestProgram());
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		String districtId = to.getDistrict();
+		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_SCHOOLS_GD, new Object[]{testProgram, districtId}, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_CLASSES_GD, new Object[]{"PUBLIC", to.getSchool()}, new ObjectValueTOMapper());
+		String testProgram = getOrgMode(to.getTestProgram());
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		String schoolId = to.getSchool();
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
+		return getJdbcTemplatePrism().query(IQueryConstants.GET_CLASSES_GD, new Object[]{testProgram, schoolId}, new ObjectValueTOMapper());
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+		String schoolId = to.getSchool();
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
+		String classId = to.getKlass();
+		logger.log(IAppLogger.INFO, "classId = " + classId);
 		if(IApplicationConstants.VALUE_ALL.equals(to.getKlass()))
-			return getJdbcTemplatePrism().query(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[]{to.getSchool()}, new ObjectValueTOMapper());
+			return getJdbcTemplatePrism().query(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[]{schoolId}, new ObjectValueTOMapper());
 		else
-			return getJdbcTemplatePrism().query(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{to.getKlass()}, new ObjectValueTOMapper());
+			return getJdbcTemplatePrism().query(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{classId}, new ObjectValueTOMapper());
+	}
+	
+	private String getOrgMode(String testProgram) {
+		if ("1".equals(testProgram))
+			return "PUBLIC";
+		else if ("0".equals(testProgram))
+			return "NON-PUBLIC";
+		else
+			return "";
 	}
 }

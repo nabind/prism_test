@@ -1742,56 +1742,118 @@ public class ReportController extends BaseDAO {
 		return null;
 	}
 	
-	@RequestMapping(value = "/populateSchoolGD", method = RequestMethod.GET)
-	@ResponseBody
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: InorsController - populateSchoolGD()");
+	@RequestMapping(value = "/populateTestAdministrationGD", method = RequestMethod.GET)
+	public @ResponseBody String populateTestAdministrationGD() {
+		logger.log(IAppLogger.INFO, "Enter: populateTestAdministrationGD()");
 		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = null;
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> admList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
 		try{
-			schoolList =  reportService.populateSchoolGD(to);
+			admList =  reportService.getTestAdministrations();
+			logger.log(IAppLogger.INFO, "Test Administrations: " + admList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(admList);
 	    }catch(Exception e){
-			logger.log(IAppLogger.ERROR, "", e);
+			logger.log(IAppLogger.ERROR, "populateTestAdministrationGD() :" + e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: InorsController - populateSchoolGD() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: populateTestAdministrationGD() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		return schoolList;
+		return jsonString;
+	}
+	
+	@RequestMapping(value = "/populateDistrictGD", method = RequestMethod.GET)
+	public @ResponseBody String populateDistrictGD(@ModelAttribute GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateDistrictGD()");
+		long t1 = System.currentTimeMillis();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> districtList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
+		try{
+			districtList =  reportService.populateDistrictGD(to);
+			logger.log(IAppLogger.INFO, "Districts: " + districtList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(districtList);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "populateSchoolGD() :" + e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateDistrictGD() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
+	}
+	
+	@RequestMapping(value = "/populateSchoolGD", method = RequestMethod.GET)
+	public @ResponseBody String populateSchoolGD(@ModelAttribute GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateSchoolGD()");
+		long t1 = System.currentTimeMillis();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
+		try{
+			schoolList =  reportService.populateSchoolGD(to);
+			logger.log(IAppLogger.INFO, "Schools: " + schoolList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "populateSchoolGD() :" + e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateSchoolGD() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
 	}
 	
 	@RequestMapping(value = "/populateClassGD", method = RequestMethod.GET)
-	@ResponseBody
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateClass()");
+	public @ResponseBody String populateClassGD(@ModelAttribute GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateClassGD()");
 		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> classList = null;
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> classList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
 		try {
 			classList = reportService.populateClassGD(to);
+			logger.log(IAppLogger.INFO, "Classes: " + classList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(classList);
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			logger.log(IAppLogger.ERROR, "populateClassGD() :" + e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateClassGD() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return classList;
+		return jsonString;
+	}
+	
+	@RequestMapping(value = "/populateGradeGD", method = RequestMethod.GET)
+	public @ResponseBody String populateGradeGD(@ModelAttribute GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateGradeGD()");
+		long t1 = System.currentTimeMillis();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
+		try {
+			gradeList = reportService.populateGradeGD(to);
+			logger.log(IAppLogger.INFO, "Grades: " + gradeList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(gradeList);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "populateGradeGD() :" + e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateGradeGD() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return jsonString;
 	}
 	
 	@RequestMapping(value = "/populateStudentTableGD", method = RequestMethod.GET)
-	@ResponseBody
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateClass()");
+	public @ResponseBody String populateStudentTableGD(@ModelAttribute GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateStudentTableGD()");
 		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentList = null;
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+		String jsonString = "";
 		try {
 			studentList = reportService.populateStudentTableGD(to);
+			logger.log(IAppLogger.INFO, "Students: " + studentList.size());
+			jsonString = JsonUtil.convertToJsonAdmin(studentList);
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			logger.log(IAppLogger.ERROR, "populateStudentTableGD() :" + e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateClass() took time: "
-					+ String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return studentList;
+		return jsonString;
 	}
 	
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)

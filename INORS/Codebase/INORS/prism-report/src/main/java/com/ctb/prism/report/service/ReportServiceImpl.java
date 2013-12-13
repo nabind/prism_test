@@ -137,22 +137,18 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.getTestAdministrations();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#getDistricts()
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#populateDistrictGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts() {
-		return reportBusiness.getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
+		return reportBusiness.populateDistrictGD(to);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#getGrades()
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#populateGradeGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades() {
-		return reportBusiness.getGrades();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
+		return reportBusiness.populateGradeGD(to);
 	}
 
 	/* (non-Javadoc)

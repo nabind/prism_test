@@ -702,6 +702,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
 		long t1 = System.currentTimeMillis();
 		final Long testProgram = Long.parseLong(paramMap.get("testProgram"));
 		logger.log(IAppLogger.INFO, "testProgram: " + testProgram);
@@ -742,7 +743,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			logger.log(IAppLogger.INFO, "Schools: " + schoolList.size());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - populateSchool() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateSchoolGrt() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return schoolList;
 	}

@@ -39,9 +39,6 @@
 								<p class="button-height">
 									<select id="corpDioceseGD" name="corpDioceseGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
 										<option value='-1'>Please Select</option>
-										<c:forEach var="corpDioceseVar" items="${corporationList}">
-											<option value="${corpDioceseVar.value}">${corpDioceseVar.name}</option>
-										</c:forEach>
 									</select>
 								</p>
 							</div>
@@ -65,8 +62,6 @@
 							<div class="float-left margin-right margin-bottom">
 								<p class="button-height">
 									<select id="testProgramGD" name="testProgramGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value="PUBLIC" selected="selected">Public Schools</option>
-										<option value="NON-PUBLIC">Non Public Schools</option>
 									</select>
 								</p>
 							</div>
@@ -203,6 +198,7 @@
 			<span class="button-icon icon-download blue-gradient report-btn">PDF</span>
 			Single Student
 		</a>
+		<input type="hidden" name="buttonGD" id="buttonGD" />
 	</div>
 	</form:form>
 </div>

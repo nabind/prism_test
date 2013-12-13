@@ -435,19 +435,6 @@ public class InorsController {
 			modelAndView.addObject("rootOrgId", corp);
 			
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
-			
-			// Test Administration Dropdown
-			List<com.ctb.prism.core.transferobject.ObjectValueTO> testAdministrationList = reportService.getTestAdministrations();
-			modelAndView.addObject("testAdministrationList", testAdministrationList);
-			
-			// Corp/Diocese Dropdown
-			List<com.ctb.prism.core.transferobject.ObjectValueTO> corporationList = reportService.getDistricts();
-			modelAndView.addObject("corporationList", corporationList);
-			
-			// Grade Dropdown
-			List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = reportService.getGrades();
-			modelAndView.addObject("gradeList", gradeList);
-					
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 
@@ -648,22 +635,14 @@ public class InorsController {
 	}
 
 	/**
-	 * Displays the GRT/IC File Download page with pre populated corporation
+	 * Displays the GRT/IC File Download page with pre-populated corporation
 	 * list
 	 * 
-	 * @param request
-	 * @param response
 	 * @return
-	 * @throws SystemException
 	 */
 	@RequestMapping(value = "/gRTInvitationCodeFiles", method = RequestMethod.GET)
-	public ModelAndView gRTInvitationCodeFiles(HttpServletRequest request,
-			HttpServletResponse response) throws SystemException {
-		ModelAndView modelAndView = new ModelAndView("inors/gRTInvitationCodeFiles");
-		// List<com.ctb.prism.core.transferobject.ObjectValueTO> corporationList = inorsService.getDistricts();
-		// modelAndView.addObject("corporationList", corporationList);
-		
-		return modelAndView;
+	public ModelAndView gRTInvitationCodeFiles() {
+		return new ModelAndView("inors/gRTInvitationCodeFiles");
 	}
 
 	/**

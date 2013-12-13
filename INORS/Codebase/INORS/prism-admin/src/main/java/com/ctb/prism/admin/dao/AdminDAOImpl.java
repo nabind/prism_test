@@ -2041,7 +2041,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserData(java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
 	public List<UserDataTO> getUserData(Map<String, String> paramMap){
 		long start = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
@@ -2067,9 +2066,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData() : " + CustomStringUtil.getHMSTimeFormat(end - start));
 		return userDataList;
 	}
-	
+
 	/**
-	 * Appends the label before each role
+	 * Appends the label before each role. If the role contains "ADMIN" then
+	 * only one role is returned.
 	 * 
 	 * @param label
 	 * @param userRoles
@@ -2079,6 +2079,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		StringBuilder buff = new StringBuilder();
 		String[] roles = userRoles.split(",");
 		for (String role : roles) {
+			String[] roleTokens = role.split(" ");
+			for (String token : roleTokens) {
+				if ("ADMIN".equalsIgnoreCase(token)) {
+					return role;
+				}
+			}
 			buff.append(label);
 			buff.insert(buff.length(), " ");
 			buff.insert(buff.length(), role);

@@ -61,14 +61,14 @@ public interface IReportBusiness {
 	 * 
 	 * @return
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getDistricts();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to);
 
 	/**
 	 * Creates the list of grades
 	 * 
 	 * @return
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getGrades();
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to);
 
 	/**
 	 * 

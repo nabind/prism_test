@@ -117,6 +117,8 @@ $(document).ready(function() {
 		showHideDivs();
 	});
 	$("#testProgram").live("change", function(event) {
+		var testProgram = $("#testProgram").val();
+		populateDistrictGrt(testProgram)
 	});
 	$('#corpDiocese').live('change',function(){
 		var testProgram = $("#testProgram").val();
@@ -131,7 +133,6 @@ $(document).ready(function() {
 		var testProgram = $("#testProgram").val();
 		var corpDiocese = $("#corpDiocese").val();
 		var school = $("#school").val();
-		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadGRTFile").attr("href", href);
 	});
@@ -140,39 +141,54 @@ $(document).ready(function() {
 		var testProgram = $("#testProgram").val();
 		var corpDiocese = $("#corpDiocese").val();
 		var school = $("#school").val();
-		//alert("testAdministration="+testAdministration+"\ntestProgram="+testProgram+"\ncorpDiocese="+corpDiocese+"\nschool="+school);
 		var href = "downloadGRTInvitationCodeFiles.do?type=IC&2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadICFile").attr("href", href);
 	});
-	// $('#today').val($.datepicker.formatDate('mm-dd,yy', new Date()));
 
 	// Group Download
+	populateGDDropdownsOnLoad();
 	$("#testAdministrationGD").live("change", function(event) {
 	});
-	$('#corpDioceseGD').live('change',function(){
-		populateSchoolGD();
+	$("#testProgramGD").live("change", function(event) {
+		var testProgram = $("#testProgramGD").val();
+		if (testProgram && testProgram != "-1") { // then populate Corp/Diocese
+			populateDistrictGD(testProgram)
+		}
 	});
-	$('#schoolGD').live('change',function(){
-		populateClassGD();
+	$('#corpDioceseGD').live('change', function() {
+		var corpDiocese = $("#corpDioceseGD").val();
+		if (corpDiocese && corpDiocese != "-1") { // then populate school
+			populateSchoolGD(corpDiocese);
+		}
 	});
-	$('#classGD').live('change',function(){
+	$('#schoolGD').live('change', function() {
+		var schoolId = $("#schoolGD").val();
+		if (schoolId && schoolId != "-1") { // then populate class
+			populateClassGD(schoolId);
+		}
+	});
+	$('#classGD').live('change', function() {
 		populateStudentTableGD();
 	});
+	populateGradeGD();
 	$('#check-all').change(function() {
-	    var checkboxes = $(this).closest('form').find(':checkbox');
-	    if($(this).is(':checked')) {
-	        checkboxes.attr('checked', 'checked');
-	    } else {
-	        checkboxes.removeAttr('checked');
-	    }
+		var checkboxes = $(this).closest('form').find(':checkbox');
+		if ($(this).is(':checked')) {
+			checkboxes.attr('checked', 'checked');
+		} else {
+			checkboxes.removeAttr('checked');
+		}
 	});
 	$("#downloadSeparatePdfsGD").live("click", function() {
+		$("#buttonGD").val("P");
 		groupDownloadFunction('P');
 	});
 	$("#downloadCombinedPdfsGD").live("click", function() {
+		$("#buttonGD").val("C");
 		groupDownloadFunction('C');
 	});
 	$("#downloadSinglePdfsGD").live("click", function() {
+		$("#buttonGD").val("S");
 		groupDownloadFunction('S');
 	});
 });
@@ -561,200 +577,336 @@ function downloadBulkPdf(type, mode) {
 				}
 			}
 
-function populateGrtDropdownsOnLoad() {
-	var testAdministration = $("#testAdministration").val();
-	if (testAdministration && testAdministration != "-1") { // then populate test program
-		var json = [ {
-			"value" : "1",
-			"name" : "Public Schools"
-		}, {
-			"value" : "0",
-			"name" : "Non Public Schools"
-		} ];
-		populateDropdownByIdWithJson($("#testProgram"), json);
-	}
-	var testProgram = $("#testProgram").val();
-	if (testProgram && testProgram != "-1") { // then populate district
-		// alert("testProgram=" + testProgram);
-		populateDistrictGrt(testProgram);
-	}
-	var corpDiocese = $("#corpDiocese").val();
-	if (corpDiocese && corpDiocese != "-1") { // then populate school
-		// alert("corpDiocese=" + corpDiocese);
-		populateSchoolGrt(testProgram, corpDiocese);
-	}
-	var school = $("#school").val();
-	if (school) { // then display download links
-		// alert("school=" + school);
-	}
+/**
+ * Custom Ajax call. Returns a json from the server.
+ * 
+ * @param requestType
+ *            http request type: "GET", "POST", "PUT" or "DELETE"
+ * @param requestUrl
+ *            utl to the request. Example: populateDistrictGrt.do
+ * @param inputData
+ *            data to be sent to the server
+ * @param outputDataType
+ *            type of the response data
+ * @param browserCache
+ *            boolean. Whether the output will be cached by the browser.
+ * @param asyncRequest
+ *            boolean. Whether the request is asynchronous.
+ * @param errMsg
+ *            meaasage on $.ajax error. Example: "Server responds in Error"
+ * @returns json server response data
+ * @author <a href="mailto:amitabha.roy@tcs.com">Amitabha Roy</a>
+ */
+function customAjaxCall(requestType, requestUrl, inputData, outputDataType, browserCache, asyncRequest, errMsg) {
+	var json = {};
+	if (asyncRequest == false)
+		blockUI();
+	$.ajax({
+		type : requestType,
+		url : requestUrl,
+		data : inputData,
+		dataType : outputDataType,
+		cache : browserCache,
+		async : asyncRequest,
+		success : function(data) {
+			json = data;
+			if (asyncRequest == false)
+				unblockUI();
+		},
+		error : function(data) {
+			if (asyncRequest == false)
+				unblockUI();
+			$.modal.alert(errMsg);
+		}
+	});
+	return json;
 }
 
-function populateDropdownByIdWithJson(id, json, selectValue, selectText) {
-	id.empty();
+/**
+ * Populates a Dropdown. Written to be used in pages:
+ * <ul>
+ * <li>GRT/IC File Download</li>
+ * <li>Group Download</li>
+ * </ul>
+ * 
+ * @param element
+ *            html dropdown element.
+ * @param json
+ *            the json data from which the dropdown will be populated
+ * @param selectValue
+ *            value of the selectText
+ * @param selectText
+ *            optional "Please Select" option in the dropdown
+ * @param showId
+ *            boolean. Whether to show the value along with the text in the
+ *            dropdown
+ */
+function populateDropdownByIdWithJson(element, json, selectValue, selectText, showId) {
+	element.empty();
 	var option = "";
 	if (selectValue && selectText){
 		option += '<option value=' + selectValue + '>' + selectText + '</option>';
 	}
 	if ((json != null) && (json != "") && (json.length > 0)) {
 		$.each(json, function(index, data) {
-			option += '<option value=' + data.value + '>' + data.name + '</option>';
+			if (showId && showId == true) {
+				option += '<option value='+data.value+'>'+data.name+' ('+data.value+')</option>';
+			} else {
+				option += '<option value=' + data.value + '>' + data.name + '</option>';
+			}
 		});
 	}
-	id.html(option);
-	id.change();
-	id.trigger('update-select-list');
+	element.html(option);
+	element.change();
+	element.trigger('update-select-list');
 }
 
+/**
+ * This function loads the values for all dropdowns in "GRT/IC File Download"
+ * page in case of page onLoad handler.
+ */
+function populateGrtDropdownsOnLoad() {
+	var testAdministration = $("#testAdministration").val();
+	if (testAdministration && testAdministration != "-1") { // then populate test program
+		populateTestProgramGrt();
+	}
+	var testProgram = $("#testProgram").val();
+	if (testProgram && testProgram != "-1") { // then populate district
+		populateDistrictGrt(testProgram);
+	}
+	var corpDiocese = $("#corpDiocese").val();
+	if (corpDiocese && corpDiocese != "-1") { // then populate school
+		populateSchoolGrt(testProgram, corpDiocese);
+	}
+	var school = $("#school").val();
+	if (school) { // then display download links
+		// No code here
+		// It will be handled by the onChange handler of $("#school")
+	}
+}
+
+function populateTestProgramGrt() {
+	// As of now hard coded, but we can call customAjaxCall() to hit the database.
+	var json = [ {
+		"value" : "1",
+		"name" : "Public Schools"
+	}, {
+		"value" : "0",
+		"name" : "Non Public Schools"
+	} ];
+	populateDropdownByIdWithJson($("#testProgram"), json);
+}
+
+/**
+ * Populates the "Corp/Diocese" drop down in "GRT/IC File Download" page
+ * 
+ * @param testProgram
+ */
 function populateDistrictGrt(testProgram) {
-	var dataUrl = 'testProgram=' + testProgram;
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : 'populateDistrictGrt.do',
-		data : dataUrl,
-		dataType : 'json',
-		cache : false,
-		async : false,
-		success : function(data) {
-			if ((data != null) && (data.length > 0)) {
-				populateDropdownByIdWithJson($("#corpDiocese"), data, "-1", "Please Select");
-			} else {
-				$.modal.alert("No District Found for Test Program");
-				populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select");
-			}
-			unblockUI();
-		},
-		error : function(data) {
-			populateDropdownByIdWithJson($("#corpDiocese"), null, "-1",
-					"Please Select");
-			unblockUI();
-			$.modal.alert(strings['script.common.error']);
+	if (testProgram == "-1") {
+		populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select Test Program");
+	} else {
+		var dataUrl = "testProgram=" + testProgram;
+		var json = customAjaxCall("GET", "populateDistrictGrt.do", dataUrl, "json", false, false, "Server responds in Error");
+		if ((json != null) && (json.length > 0)) {
+			populateDropdownByIdWithJson($("#corpDiocese"), json, "-1", "Please Select");
+		} else {
+			$.modal.alert("No Corp/Diocese Found for Test Program");
+			populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select Test Program");
 		}
-	});
+	}
 }
 
+/**
+ * Populates the "School" drop down in "GRT/IC File Download" page
+ * 
+ * @param testProgram
+ * @param districtId
+ */
 function populateSchoolGrt(testProgram, districtId) {
-	var dataUrl = 'testProgram=' + testProgram + '&districtId=' + districtId;
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : 'populateSchoolGrt.do',
-		data : dataUrl,
-		dataType : 'json',
-		cache : false,
-		async : false,
-		success : function(data) {
-			if ((data != null) && (data.length > 0)) {
-				populateDropdownByIdWithJson($("#school"), data, "-1", "Please Select");
-			} else {
-				if (districtId != "-1") {
-					$.modal.alert("No School Found for this Corp/Diocese");
-				}
-				populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
-			}
-			unblockUI();
-		},
-		error : function(data) {
+	if (districtId == "-1") {
+		populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
+	} else {
+		var dataUrl = 'testProgram=' + testProgram + '&districtId=' + districtId;
+		var json = customAjaxCall("GET", "populateSchoolGrt.do", dataUrl, "json", false, false, "Server responds in Error");
+		if ((json != null) && (json.length > 0)) {
+			populateDropdownByIdWithJson($("#school"), json, "-1", "Please Select");
+		} else {
+			$.modal.alert("No Corp/Diocese Found for Test Program");
 			populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
-			unblockUI();
-			$.modal.alert(strings['script.common.error']);
 		}
-	});
-}
-
-function populateSchool(){
-	var parentOrgNodeId = $('#corpDiocese').val();
-	if (parentOrgNodeId != "-1") {
-		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : 'populateSchool.do',
-			data : dataUrl,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if(data.length > 0) {
-					populateSchoolDropdownByJson($('#school'),data,1);
-				} else {
-					$.modal.alert("No School Found for this Corp/Diocese");
-					populateSchoolDropdownByJson($('#school'),null,1,1);
-				}
-				unblockUI();
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error']);
-				unblockUI();
-			}
-		});
 	}
 }
 
-function populateSchoolGD(){
-	var parentOrgNodeId = $('#corpDioceseGD').val();
-	if (parentOrgNodeId != "-1") {
-		var dataUrl = 'parentOrgNodeId=' + parentOrgNodeId;
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : 'populateSchoolGD.do',
-			data : dataUrl,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if(data.length > 0) {
-					populateSchoolDropdownByJson($('#schoolGD'), data);
-				} else {
-					$.modal.alert("No School Found for this Corp/Diocese");
-					populateSchoolDropdownByJson($('#schoolGD'), null, 1, 1);
-				}
-				unblockUI();
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error']);
-				unblockUI();
-			}
-		});
+/**
+ * This function loads the values for all dropdowns in "Group Download" page in
+ * case of page onLoad handler.
+ */
+function populateGDDropdownsOnLoad() {
+	populateTestAdministrationGD(); // Default
+	var testAdministration = $("#testAdministrationGD").val();
+	//alert(testAdministration);
+	if (testAdministration && testAdministration != "-1") { // then populate test program
+		populateTestProgramGD();
+	}
+	var testProgram = $("#testProgramGD").val();
+	if (testProgram && testProgram != "-1") { // then populate district
+		populateDistrictGD(testProgram);
+	}
+	var corpDiocese = $("#corpDioceseGD").val();
+	if (corpDiocese && corpDiocese != "-1") { // then populate school
+		populateSchoolGD(corpDiocese);
+	}
+	var school = $("#schoolGD").val();
+	if (school) { // then display class
+		populateClassGD(school);
+	}
+	var klass = $("#classGD").val();
+	if (klass) { // then display student table
+		populateStudentTableGD();
 	}
 }
 
-function populateClassGD(){
-	var parentOrgNodeId = $('#schoolGD').val();
-	if (parentOrgNodeId != "-1") {
-		var json = getGroupDownloadTO(); // Object will be converted to Json during $.ajax call
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : 'populateClassGD.do',
-			data : json,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if(data.length > 0) {
-					populateClassDropdownByJson($('#classGD'),data,1);
-				} else {
-					$.modal.alert("No Class Found for this School");
-					populateClassDropdownByJson($('#classGD'),null,1,1);
-				}
-				unblockUI();
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error']);
-				unblockUI();
-			}
-		});
+/**
+ * Populates the Test Administration dropdown
+ */
+function populateTestAdministrationGD() {
+	var json = customAjaxCall("GET", "populateTestAdministrationGD.do", "", "json", false, false, "Server responds in Error");
+	if ((json != null) && (json.length > 0)) {
+		populateDropdownByIdWithJson($("#testAdministrationGD"), json);
+	} else {
+		$.modal.alert("No Test Administration Found");
+		populateDropdownByIdWithJson($("#testAdministrationGD"), null, "-1", "Please Select");
+	}
+
+}
+
+/**
+ * Populates the Test Program dropdown
+ */
+function populateTestProgramGD() {
+	// As of now hard coded, but we can call customAjaxCall() to hit the database.
+	var json = [ {
+		"value" : "1",
+		"name" : "Public Schools"
+	}, {
+		"value" : "0",
+		"name" : "Non Public Schools"
+	} ];
+	populateDropdownByIdWithJson($("#testProgramGD"), json);
+}
+
+/**
+ * Populates the "Corp/Diocese" drop down in "Group Download" page
+ * 
+ * @param testProgram
+ *            value of the "Test Program" dropdown
+ */
+function populateDistrictGD(testProgram) {
+	populateDropdownGD(testProgram, "-1", "Please Select", "-1",
+			"Please Select Test Program", $("#corpDioceseGD"), "GET",
+			"populateDistrictGD.do", "json", false, false,
+			"Server responds in Error", "No Corp/Diocese Found for Test Program", false);
+}
+
+/**
+ * 
+ * @param parentVal
+ *            value of parent dropdown
+ * @param selectValue
+ *            value for selectText = -1
+ * @param selectText
+ *            Example: "Please Select"
+ * @param selectNullValue
+ *            value for selectNullText = -1
+ * @param selectNullText
+ *            Example: "Please Select Test Program"
+ * @param element
+ *            html dropdown element. Example: $("#corpDioceseGD")
+ * @param requestType
+ *            Example:
+ * @param requestUrl
+ *            Example: "populateSchoolGD.do"
+ * @param outputDataType
+ *            Example: "json"
+ * @param browserCache
+ *            boolean
+ * @param asyncRequest
+ *            boolean
+ * @param errMsg
+ *            meaasage on $.ajax error. Example: "Server responds in Error"
+ * @param emptyMsg
+ *            Example: "No Corp/Diocese Found for Test Program"
+ * @param showId
+ *            boolean. Whether to show the value along with the text in the
+ *            dropdown
+ * @author <a href="mailto:amitabha.roy@tcs.com">Amitabha Roy</a>
+ */
+function populateDropdownGD(parentVal, selectValue, selectText,
+		selectNullValue, selectNullText, element, requestType, requestUrl,
+		outputDataType, browserCache, asyncRequest, errMsg, emptyMsg, showId) {
+	if (parentVal == selectNullValue) {
+		populateDropdownByIdWithJson(element, null, selectNullValue, selectNullText, showId);
+	} else {
+		var transferObject = getGroupDownloadTO();
+		var responseJson = customAjaxCall(requestType, requestUrl,
+				transferObject, outputDataType, browserCache, asyncRequest,
+				errMsg);
+		if ((responseJson != null) && (responseJson.length > 0)) {
+			populateDropdownByIdWithJson(element, responseJson, selectValue, selectText, showId);
+		} else {
+			$.modal.alert(emptyMsg);
+			populateDropdownByIdWithJson(element, null, selectNullValue, selectNullText, showId);
+		}
 	}
 }
 
+/**
+ * Populates the School dropdown
+ * 
+ * @param districtId
+ */
+function populateSchoolGD(districtId) {
+	populateDropdownGD(districtId, "-1", "Please Select", "-1",
+			"Please Select Corp/Diocese", $("#schoolGD"), "GET",
+			"populateSchoolGD.do", "json", false, false,
+			"Server responds in Error", "No School Found for this Corp/Diocese", false);
+}
+
+/**
+ * Populates the Class dropdown
+ * 
+ * @param schoolId
+ */
+function populateClassGD(schoolId) {
+	populateDropdownGD(schoolId, "-1", "Please Select", "-1",
+			"Please Select School", $("#classGD"), "GET",
+			"populateClassGD.do", "json", false, false,
+			"Server responds in Error", "No Class Found for this School", true);
+}
+
+/**
+ * Populates the Grade dropdown
+ */
+function populateGradeGD() {
+	populateDropdownGD("", "-1", "Please Select", "-1",
+			"Please Select", $("#gradeGD"), "GET",
+			"populateGradeGD.do", "json", false, false,
+			"Server responds in Error", "No Data Found", false);
+}
+
+/**
+ * Populates the Student Table
+ */
 function populateStudentTableGD(){
 	var orgNodeId = $('#classGD').val();
 	if (orgNodeId != "-1") {
-		var dataUrl = 'orgNodeId=' + orgNodeId;
+		var transferObject = getGroupDownloadTO();
 		blockUI();
 		$.ajax({
 			type : "GET",
 			url : 'populateStudentTableGD.do',
-			data : dataUrl,
+			data : transferObject,
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
@@ -763,7 +915,7 @@ function populateStudentTableGD(){
 					$("#studentTableGD").removeClass('hidden');
 					$("#studentTableGD").show();
 				} else {
-					$.modal.alert("No Class Found for this School");
+					$.modal.alert("No Student Found for this Class");
 					$("#studentTableGD").hide();
 				}
 				unblockUI();
@@ -776,56 +928,10 @@ function populateStudentTableGD(){
 	}
 }
 
-function populateSchoolDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
-	elementObject.empty();
-	var option = "";
-	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select</option>";
-	}
-	
-	if((typeof clearFlag === 'undefined')) {
-		if(jsonDataValueName != null) {
-			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
-				option += '<option value="ALL">All Schools</option>';
-				$.each(jsonDataValueName, function(index, data) {
-					option += '<option value='+data.value+'>'+data.name+'</option>';
-			    });
-			}else{
-				$.modal.alert(strings['script.common.empty']);
-			}
-		}
-	}
-	
-	elementObject.html(option);
-	elementObject.change();
-	elementObject.trigger('update-select-list');
-}
-
-function populateClassDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
-	elementObject.empty();
-	var option = "";
-	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select</option>";
-	}
-	
-	if((typeof clearFlag === 'undefined')) {
-		if(jsonDataValueName != null) {
-			if ((jsonDataValueName != "") && (jsonDataValueName.length > 0)) {
-				// option += '<option value="ALL">All Classes</option>';
-				$.each(jsonDataValueName, function(index, data) {
-					option += '<option value='+data.value+'>'+data.name+' ('+data.value+')</option>';
-			    });
-			}else{
-				$.modal.alert(strings['script.common.empty']);
-			}
-		}
-	}
-	
-	elementObject.html(option);
-	elementObject.change();
-	elementObject.trigger('update-select-list');
-}
-
+/**
+ * 
+ * @param json
+ */
 function populateStudentTableByJson(json) {
 	var elementObject = $('#studentListGD');
 	elementObject.empty();
@@ -850,6 +956,9 @@ function populateStudentTableByJson(json) {
 	elementObject.html(rows);
 }
 
+/**
+ * Show/Hide GRT/IC Layout/Download Links/Buttons
+ */
 function showHideDivs() {
 	var schoolId = $("#school").val();
 	if((schoolId) && schoolId != '-1') {
@@ -860,7 +969,6 @@ function showHideDivs() {
 		var testAdministration = $("#testAdministration").val();
 		if (testAdministration) {
 			var tokens = testAdministration.split("~");
-			// alert(tokens);
 			if ("2010" == tokens[2]) {
 				$("#icLinks").html('');
 				$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
@@ -889,12 +997,10 @@ function showHideDivs() {
 	}
 }
 
-/*
+/**
  * GroupDownloadTO Constructor
  */
-function GroupDownloadTO(button, testAdministration, testProgram, district,
-		school, klass, grade, students, groupFile, collationHierarchy,
-		fileName, email) {
+function GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email) {
 	this.button = button;
 	this.testAdministration = testAdministration;
 	this.testProgram = testProgram;
@@ -909,7 +1015,12 @@ function GroupDownloadTO(button, testAdministration, testProgram, district,
 	this.email = email;
 }
 
+/**
+ * 
+ * @returns {GroupDownloadTO}
+ */
 function getGroupDownloadTO() {
+	var button = $("#buttonGD").val();
 	var testAdministration = $("#testAdministrationGD").val();
 	var testProgram = $("#testProgramGD").val();
 	var district = $("#corpDioceseGD").val();
@@ -929,34 +1040,12 @@ function getGroupDownloadTO() {
 	return to;
 }
 
+/**
+ * 
+ * @param button
+ */
 function groupDownloadFunction(button) {
-	/*var testAdministration = $("#testAdministrationGD").val();
-	var testProgram = $("#testProgramGD").val();
-	var district = $("#corpDioceseGD").val();
-	var school = $("#schoolGD").val();
-	var klass = $("#classGD").val();
-	var grade = $("#gradeGD").val();
-	var students = $("input[id^=check-student-]:checked").map(
-			function() {
-				return this.value;
-			}
-		).get().join(",");
-	var groupFile = $("#groupFile").val();
-	var collationHierarchy = $("#collationHierarchy").val();
-	var fileName = $("#fileName").val();
-	var email = $("#email").val();
-	//var url = "groupDownloadFunction.do?testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&district=" + district + "&school=" + school + "&class=" + klass + "&grade=" + grade + "&students=" + students + "&groupFile=" + groupFile + "&collationHierarchy=" + collationHierarchy + "&fileName=" + fileName + "&email=" + email;
-	*/var json = getGroupDownloadTO();
-	//new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
-	/*if(button == "P")
-		alert("Separate");
-	else if(button == "C")
-		alert("Combined");
-	else if(button == "S")
-		alert("Single");
-	else
-		alert("Unknown Button");*/
-	//alert(JSON.stringify(json));
+	var json = getGroupDownloadTO();
 	blockUI();
 	$.ajax({
 		type : "GET",
@@ -978,5 +1067,4 @@ function groupDownloadFunction(button) {
 			unblockUI();
 		}
 	});
-	
 }
