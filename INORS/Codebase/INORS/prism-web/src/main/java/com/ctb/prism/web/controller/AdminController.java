@@ -341,7 +341,7 @@ public class AdminController {
 			if (currentOrg != null) {
 				if(isTree)
 				{
-					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer);
+					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
 					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
@@ -1191,7 +1191,7 @@ public class AdminController {
 				}
 				modelAndView.addObject("adminList", adminList);
 				if(isTree) {
-					orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true, adminYear,currCustomer);
+					orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true, adminYear,currCustomer, "");
 					hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(nodeId,currentOrg,userId,currCustomer,true);
 					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 					//modelAndView.addObject("organizationTreeList", orgTreeTOs);
@@ -1263,7 +1263,7 @@ public class AdminController {
 				modelAndView.addObject("adminList", adminList);
 				if(isTree)
 				{	
-					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer);
+					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
 					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
@@ -1325,7 +1325,7 @@ public class AdminController {
 				modelAndView.addObject("adminList", adminList);
 				if(isTree)
 				{
-					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer);
+					OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
 					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
@@ -1694,7 +1694,7 @@ public class AdminController {
 						}
 					modelAndView.addObject("adminList", adminList);
 					if(isTree) {
-						orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer);
+						orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");
 						hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(nodeId,currentOrg,userId,currCustomer,true);
 						modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 						logger.log(IAppLogger.DEBUG, "hierarchialOrgIds................"+hierarchialOrgIds);
