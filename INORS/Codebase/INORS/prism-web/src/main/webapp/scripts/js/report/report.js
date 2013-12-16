@@ -937,7 +937,7 @@ function getCascading(selectedObj) {
 	}
 	var reportUrl = $(selectedObj).attr('param');
 	var tabCount = $(selectedObj).attr('count');
-	blockUI('new-tab'+tabCount+'');
+	blockUI('filterHolder-'+tabCount+'');
 	var assessmentId = $(selectedObj).attr('assessment');
 	var dataURL = 'reportUrl='+reportUrl+'&changedObj='+inputId+'&changedValue='+$(selectedObj).val()+'&count='+tabCount+'&assessmentId='+assessmentId;
 	
@@ -968,18 +968,18 @@ function getCascading(selectedObj) {
 						$("input#p_Subtest3_MaxScore").val("");
 					}
 					if(objectVal.value == "") {
-						unblockUI('new-tab'+tabCount+'');
+						unblockUI('filterHolder-'+tabCount+'');
 					}
 				});
 			} else {
 				//unblockUI();
-				unblockUI('new-tab'+tabCount+'');
+				unblockUI('filterHolder-'+tabCount+'');
 			}
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error']);
 			//unblockUI();
-			unblockUI('new-tab'+tabCount+'');
+			unblockUI('filterHolder-'+tabCount+'');
 		}
 	});
 	}

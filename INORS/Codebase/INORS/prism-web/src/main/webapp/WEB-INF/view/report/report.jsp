@@ -16,7 +16,7 @@
 			<c:if test="${homeReport.studentBioId == null}">
 			<c:if test="${homeReport.hideFilter != 'hide'}">
 			<form:form method="GET" class="report-form report-form-${homeReport.tabCount}" tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}">
-				<div class="mid-margin-bottom">
+				<div class="mid-margin-bottom" id="filterHolder-${homeReport.tabCount}" style="position:relative">
 					<div class="reportFilterCriteria panel-control rounded-border report-filter report-filter-${homeReport.tabCount}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}" tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 						<span id="filter-icon" class="icon-leaf icon-size2"></span> <b>${name} Filter Options</b>
 						<c:if test="${homeReport.refreshButtonClass != 'customRefresh'}">

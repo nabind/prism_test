@@ -489,7 +489,12 @@ public class LoginController{
 					else if(homeReport.isAccessDenied()) {
 						modelAndView = new ModelAndView("error/accessDenied");
 					} else {
-						modelAndView = new ModelAndView(homeReport.getOtherUrl());
+						// custom url - without report filter
+						modelAndView = new ModelAndView("user/welcome");
+						homeReport.setHideFilter("hide");
+						homeReport.setReportApiUrl(homeReport.getOtherUrl());
+						homeReport.setReportName("Home");
+						modelAndView.addObject("homeReport", homeReport);
 					}
 					req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
 				}
@@ -990,6 +995,37 @@ public class LoginController{
 		return null;
 	}
 	
+	/**
+	 * Inors home page 
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/inorsHome", method = RequestMethod.GET)
+	public ModelAndView inorsHome(HttpServletRequest req,
+			HttpServletResponse res) throws IOException {
+		
+		ModelAndView modelAndView = new ModelAndView("user/inorsHome");
+		return modelAndView;
+	}
 	
+	/**
+	 * Load user specific dynamic login page message
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/loadHomePage", method = RequestMethod.GET)
+	public @ResponseBody String loadHomePage(HttpServletRequest req,
+			HttpServletResponse res) throws IOException {
+		
+		// TODO get home page message based on logged in user
+		res.setContentType("application/json");
+		res.getWriter().write( "<h2>Welcome to the Indiana Online Reporting System</h2>"+
+								"<p>The online reports available on this site can help you learn how results from the Indiana Statewide Testing for Educational Progress-Plus (ISTEP+), Indiana Modified Achievement Standards Test (IMAST), and the Indiana Reading Evaluation And Determination (IREAD-3) assessments can be used to analyze curriculum strengths and needs in your district or school.</p>" );			
+		return null;
+	}
 	
 } 

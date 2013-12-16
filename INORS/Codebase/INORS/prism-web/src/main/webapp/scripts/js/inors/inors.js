@@ -16,7 +16,8 @@ var tempIndex = 0;
 var chkTreeContainerObj;
 
 $(document).ready(function() {
-	createTree();
+	// get home page message - after page is loaded
+	openInorsHomePage();
 	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
@@ -192,6 +193,25 @@ $(document).ready(function() {
 		groupDownloadFunction('S');
 	});
 });
+
+// =============== get inors home page message =====================
+function openInorsHomePage() {
+	if($("#inorsHome").length > 0) {
+		$.ajax({
+			type : "GET",
+			url : "loadHomePage.do",
+			data : null,
+			dataType : 'html',
+			cache:false,
+			success : function(data) {
+				$("#inorsHome").html(data);						
+			},
+			error : function(data) {
+				$("#inorsHome").html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}
+		});
+	}
+}
 
 // =============== retain group download files field values =====================
 function retainDownloadValues() {
