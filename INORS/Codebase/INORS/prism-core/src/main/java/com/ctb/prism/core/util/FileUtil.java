@@ -112,7 +112,7 @@ public class FileUtil {
 			is = new ByteArrayInputStream(input);
 			bfReader = new BufferedReader(new InputStreamReader(is));
 			XSSFWorkbook workBook = new XSSFWorkbook();
-			XSSFSheet sheet = workBook.createSheet("sheet1");
+			XSSFSheet sheet = workBook.createSheet("sheet");
 			String currentLine = null;
 			int rowNum = 0;
 
