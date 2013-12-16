@@ -97,11 +97,18 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid,String orgMode) {
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String,Object> paramMap) {
 
+		    String nodeid=(String)paramMap.get("nodeid");
+			String currOrg=(String)paramMap.get("currOrg");
+			boolean isFirstLoad=(Boolean)paramMap.get("isFirstLoad");
+			String adminYear=(String)paramMap.get("adminYear");
+			long customerId=Long.valueOf(paramMap.get("customerId").toString());
+			String orgMode=(String)paramMap.get("orgMode");
+		
 		ArrayList<OrgTO> OrgTOs = new ArrayList<OrgTO>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.GET_TENANT_DETAILS, nodeid);
+				.queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear,orgMode,nodeid,customerId);
 		if (lstData.size() > 0) {
 			OrgTOs = new ArrayList<OrgTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
@@ -128,31 +135,37 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Cacheable(cacheName = "orgTreeChildren")
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId,String orgMode)throws Exception 
+	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String,Object> paramMap)throws Exception 
 	{
+		
+		String nodeId=(String)paramMap.get("nodeid");
+		String currOrg=(String)paramMap.get("currOrg");
+		boolean isFirstLoad=(Boolean)paramMap.get("isFirstLoad");
+		String adminYear=(String)paramMap.get("adminYear");
+		long customerId=Long.valueOf(paramMap.get("customerId").toString());
+		String orgMode=(String)paramMap.get("orgMode");
+		
 		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
 		List<Map<String, Object>> lstData=null;
 		if (isFirstLoad)
 		{
 			lstData= getJdbcTemplatePrism()
-			.queryForList(IQueryConstants.GET_CURR_TENANT_DETAILS, nodeid,customerId);
+			.queryForList(IQueryConstants.GET_CURR_TENANT_DETAILS, nodeId,customerId);
 		}
 		else
-		{	if(nodeid.indexOf("_") > 0){
-				String orgParentId=nodeid.substring(0, nodeid.indexOf("_"));
-				String orgLevel=nodeid.substring((nodeid.indexOf("_") + 1),
-										nodeid.length());
+		{	if(nodeId.indexOf("_") > 0){
+				String orgParentId=nodeId.substring(0, nodeId.indexOf("_"));
+				String orgLevel=nodeId.substring((nodeId.indexOf("_") + 1),
+						nodeId.length());
 				if(!("1".equals(orgLevel))){
 					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI,orgParentId,currOrg,customerId);
 					logger.log(IAppLogger.DEBUG, "Tree for non TASC Users...Currorg="+currOrg);
 				}else{
-					lstData = getJdbcTemplatePrism()
-					.queryForList(IQueryConstants.GET_TENANT_DETAILS, orgParentId,customerId);
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear,orgMode,orgParentId,customerId);
 				}
 				
 			}else{
-				lstData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.GET_TENANT_DETAILS, nodeid,customerId);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear,orgMode,nodeId,customerId);
 			}
 			
 		}
@@ -226,18 +239,27 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	public ArrayList<OrgTreeTO> getOrgTree(String nodeid,boolean isFirstLoad, String adminYear, long customerId)throws Exception 
+	public ArrayList<OrgTreeTO> getOrgTree(Map<String,Object> paramMap)throws Exception 
 	{
 		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
+		
+		String nodeId=(String)paramMap.get("nodeid");
+		String currOrg=(String)paramMap.get("currOrg");
+		boolean isFirstLoad=(Boolean)paramMap.get("isFirstLoad");
+		String adminYear=(String)paramMap.get("adminYear");
+		long customerId=Long.valueOf(paramMap.get("customerId").toString());
+		String orgMode=(String)paramMap.get("orgMode");
+		
+		
 		List<Map<String, Object>> lstData;
 		if (isFirstLoad)
 		{
-			lstData= getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_LIST, nodeid, nodeid,customerId, nodeid,customerId);
+			lstData= getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_LIST, nodeId, nodeId,customerId,orgMode,nodeId,customerId);
 		}
 		else
 		{
 			lstData = getJdbcTemplatePrism()
-			.queryForList(IQueryConstants.GET_ORG_CHILDREN_LIST, nodeid, adminYear, customerId, nodeid, adminYear, customerId);
+			.queryForList(IQueryConstants.GET_ORG_CHILDREN_LIST, nodeId, adminYear,orgMode,customerId, nodeId, adminYear, customerId);
 		}
 		
 		if (lstData.size() > 0) {
@@ -1323,6 +1345,57 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return adminYearList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
+			throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getCustomerProduct()");
+		List<com.ctb.prism.admin.transferobject.ObjectValueTO> objectValueTOList = null;
+		long t1 = System.currentTimeMillis();
+		final com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO)paramMap.get("loggedinUserTO");
+		try{
+			objectValueTOList = (List<com.ctb.prism.admin.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
+				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsCustProd = null;
+			        			List<com.ctb.prism.admin.transferobject.ObjectValueTO> objectValueTOResult 
+			        							= new ArrayList<com.ctb.prism.admin.transferobject.ObjectValueTO>();
+			        			try {
+									cs.execute();
+									rsCustProd = (ResultSet) cs.getObject(2);
+
+									com.ctb.prism.admin.transferobject.ObjectValueTO objectValueTO = null;
+									while(rsCustProd.next()){
+										objectValueTO = new com.ctb.prism.admin.transferobject.ObjectValueTO();
+										objectValueTO.setValue(rsCustProd.getString("VALUE"));
+										objectValueTO.setName(rsCustProd.getString("NAME"));
+										objectValueTOResult.add(objectValueTO);
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return objectValueTOResult;
+				        }
+				    });
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return objectValueTOList;
+	}
+	
 	/*
 	 * Add organization by web service
 	 */
@@ -1402,14 +1475,23 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Cacheable(cacheName = "hierarchyForDownload")
-	public ArrayList<OrgTreeTO> getHierarchy(String nodeid, String adminYear, long customerId, String selectedLevelOrgId)throws Exception 
+	public ArrayList<OrgTreeTO> getHierarchy(Map<String,Object> paramMap)throws Exception 
 	{
+		//String nodeid, String adminYear, long customerId, String selectedLevelOrgId
+		    String nodeId=(String)paramMap.get("nodeid");
+			String currOrg=(String)paramMap.get("currOrg");
+			boolean isFirstLoad=(Boolean)paramMap.get("isFirstLoad");
+			String adminYear=(String)paramMap.get("adminYear");
+			long customerId=Long.valueOf(paramMap.get("customerId").toString());
+			String orgMode=(String)paramMap.get("orgMode");
+			String selectedLevelOrgId=(String)paramMap.get("selectedLevelOrgId");
+			
 		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
 		List<Map<String, Object>> lstData=null;
 		if("-1".equals(selectedLevelOrgId)) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, nodeid, /*adminYear,*/ customerId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear,orgMode,nodeId,customerId);
 		} else {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, nodeid, selectedLevelOrgId, /*adminYear,*/ customerId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, nodeId, selectedLevelOrgId, /*adminYear,*/ customerId);
 		}
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {

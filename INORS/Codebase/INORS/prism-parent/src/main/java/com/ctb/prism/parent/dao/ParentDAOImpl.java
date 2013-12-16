@@ -522,7 +522,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				{
 					to.setParentAccount(Collections.<ParentTO>emptyList());
 				}
-				to.setStructureElement(((BigDecimal) fieldDetails.get("TESTELEMENTID")).longValue());
+				to.setStructureElement((String)(fieldDetails.get("TESTELEMENTID")));
 				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
 				to.setStudentMode((String) (fieldDetails.get("STUDENT_MODE")));
@@ -630,7 +630,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					{
 						to.setParentAccount(Collections.<ParentTO>emptyList());
 					}
-					to.setStructureElement(((BigDecimal) fieldDetails.get("TESTELEMENT")).longValue());
+					to.setStructureElement((String) (fieldDetails.get("TESTELEMENT")));
 					to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 					to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 					to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
@@ -665,7 +665,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					to.setStudentBioId(((BigDecimal) fieldDetails.get("STUDENT_BIO_ID"))
 							.longValue());
 					to.setParentAccount(getParentAccountDetails(((Long)(to.getStudentBioId())).toString(),customerId));
-					to.setStructureElement(((BigDecimal) fieldDetails.get("STUDENT_STRUC_ELEMENT")).longValue());
+					to.setStructureElement((String) (fieldDetails.get("STUDENT_STRUC_ELEMENT")));
 					to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 					to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 					to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));

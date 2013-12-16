@@ -37,7 +37,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" Parent_Org_Nodeid,",
 			" to_char(?)  AS SELECTED_ORG_ID,",
 			" Org_Node_Level,",
-			" (Select Nvl(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = ? And Customerid = ?) Child_Org_No,",
+			" (Select Nvl(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = ? And Customerid = ? and org_mode=?) Child_Org_No,",
 			" (Select Nvl(Sum(Count(1)), 0) From Users u, Org_Users o Where u.Userid = o.Userid And u.activation_status in ('AC','SS')",
 			" And o.Org_Nodeid = d.Org_Nodeid Group By o.Org_Nodeid) User_No",
 			" From Org_Node_Dim d",
@@ -65,7 +65,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" Parent_Org_Nodeid ,",
 			" to_char(?)   AS SELECTED_ORG_ID,",
 			" Org_Node_Level,",
-			" (Select Nvl(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = Org_Nodeid And Customerid = ?) Child_Org_No,",
+			" (Select Nvl(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = Org_Nodeid And Customerid = ? and org_mode=?) Child_Org_No,",
 			" (Select Nvl(Sum(Count(1)), 0) From Users u, Org_Users o Where u.Userid = o.Userid And u.activation_status in ('AC','SS') ",   
 			"  And o.Org_Nodeid = d.Org_Nodeid Group By o.Org_Nodeid) User_No, ",   
 			" From Org_Node_Dim d",
@@ -131,12 +131,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_USER_COUNT = CustomStringUtil.appendString("SELECT COUNT.USER_NO, ADM.ADMIN_NAME FROM ",
 			" (SELECT NVL(SUM(COUNT(1)),0) USER_NO,1 AS MATCH FROM USERS U,ORG_USERS O WHERE U.USERID = O.USERID ",
 			" AND O.ORG_NODEID IN (SELECT ORG_NODEID ",
-			" FROM ORG_NODE_DIM WHERE ADMINID = ? CONNECT BY NOCYCLE PRIOR ORG_NODEID = PARENT_ORG_NODEID  START WITH ORG_NODEID  = ?) ",
-			" AND O.ADMINID = ?  ",
+			" FROM ORG_NODE_DIM WHERE ADMINID = (select adminid from cust_product_link where cust_prod_id=?) CONNECT BY NOCYCLE PRIOR ORG_NODEID = PARENT_ORG_NODEID  START WITH ORG_NODEID  = ?) ",
+			" AND O.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)  ",
 			//" AND U.USER_TYPE <> ? ",
 			" AND U.CUSTOMERID = ? ",
 			" GROUP BY ORG_NODEID)COUNT, ",
-			" (SELECT 1 AS MATCH,ADM.ADMIN_NAME FROM  ADMIN_DIM ADM WHERE ADM.ADMINID = ?) ADM ",
+			" (SELECT 1 AS MATCH,ADM.ADMIN_NAME FROM  ADMIN_DIM ADM WHERE ADM.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)) ADM ",
 			" WHERE COUNT.MATCH=ADM.MATCH"); 
        
 	

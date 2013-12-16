@@ -500,7 +500,7 @@ public class InorsController {
 			String grade = (String) parameters.get("p_gradeid");
 			
 			if (nodeid != null) {
-				orgTreeTOs = adminService.getHierarchy(nodeid, adminYear, currCustomer, ("3".equals(nodeLevel) ) ? orgClass : "-1");
+				orgTreeTOs = adminService.getHierarchy(parameters);
 				
 				if(orgTreeTOs != null && orgTreeTOs.isEmpty() && nodeid.indexOf("_") == -1) {
 					List<com.ctb.prism.admin.transferobject.ObjectValueTO> studentList = adminService.getAllStudents(adminYear, nodeid, customer, grade);

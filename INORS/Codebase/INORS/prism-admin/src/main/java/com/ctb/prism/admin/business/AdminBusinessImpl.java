@@ -43,10 +43,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 
 	}
 	
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid, String orgMode)
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String,Object> paramMap)
 			throws Exception {
 
-		return adminDAO.getOrganizationDetailsOnClick(nodeid,orgMode);
+		return adminDAO.getOrganizationDetailsOnClick(paramMap);
 
 	}
 
@@ -151,12 +151,12 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	public boolean saveRole(String roleId, String roleName, String roleDescription) throws Exception{
 		return  adminDAO.saveRole(roleId, roleName, roleDescription);
 	}
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean flgFirstLoad, String adminYear, long customerId,String orgMode)throws Exception 
+	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String,Object> paramMap)throws Exception 
 	{
-		return adminDAO.getOrganizationTree(nodeid,currOrg,flgFirstLoad, adminYear, customerId,orgMode);
+		return adminDAO.getOrganizationTree(paramMap);
 	}
-	public ArrayList<OrgTreeTO> getOrgTree(String nodeid,boolean isFirstLoad, String adminYear, long customerId)throws Exception {
-		return adminDAO.getOrgTree(nodeid,isFirstLoad, adminYear, customerId);
+	public ArrayList<OrgTreeTO> getOrgTree(Map<String,Object> paramMap)throws Exception {
+		return adminDAO.getOrgTree(paramMap);
 	}
 	public String getOrganizationTreeOnRedirect(String selectedOrgId,String parentOrgId,String userId,long customerId, boolean isRedirected) throws Exception{
 		return adminDAO.getOrganizationTreeOnRedirect(selectedOrgId,parentOrgId,userId,customerId,isRedirected);
@@ -177,8 +177,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 		return adminDAO.getAllStudents(adminYear, nodeId, customerId, gradeId);
 	}
 	
-	public ArrayList<OrgTreeTO> getHierarchy(String nodeid, String adminYear, long customerId, String school)throws Exception {
-		return adminDAO.getHierarchy(nodeid, adminYear, customerId, school);
+	public ArrayList<OrgTreeTO> getHierarchy(Map<String,Object> paramMap)throws Exception {
+		return adminDAO.getHierarchy(paramMap);
 	}
 	
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException {
@@ -202,5 +202,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap) {
 		return adminDAO.getUserData(paramMap);
+	}
+	
+	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap) throws BusinessException
+	{
+		return adminDAO.getCustomerProduct(paramMap);
 	}
 }

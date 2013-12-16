@@ -13,7 +13,7 @@ public class StudentTO extends BaseTO{
 	private String administration;
 	private String studentTestNumber;
 	private List<ParentTO> parentAccount;
-	private long structureElement;
+	private String structureElement;
 	private long studentBioId;
 	private String invitationcode;
 	private String activationStatus;
@@ -66,11 +66,11 @@ public class StudentTO extends BaseTO{
 		this.parentAccount = parentAccount;
 	}
 	
-	public long getStructureElement() {
+	public String getStructureElement() {
 		return structureElement;
 	}
 	
-	public void setStructureElement(long structureElement) {
+	public void setStructureElement(String structureElement) {
 		this.structureElement = structureElement;
 	}
 	

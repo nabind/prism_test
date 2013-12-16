@@ -31,6 +31,7 @@ public class UserTO extends BaseTO{
 	private String customerId;
 	private String product;
 	private String userType;
+	private String adminId;
 	
 	public String getOrgNodeLevelStr() {
 		return orgNodeLevelStr;
@@ -163,6 +164,12 @@ public class UserTO extends BaseTO{
 	 */
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+	public String getAdminId() {
+		return adminId;
 	}
 	
 }

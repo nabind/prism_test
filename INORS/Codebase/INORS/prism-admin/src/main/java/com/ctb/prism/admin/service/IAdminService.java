@@ -21,7 +21,7 @@ public interface IAdminService {
 	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid)
 			throws Exception;
 	
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(String nodeid,String orgMode)
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String,Object> paramMap)
 			throws Exception;
 
 	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
@@ -67,8 +67,8 @@ public interface IAdminService {
 	public boolean deleteRole(String roleid) throws Exception;
 
 	public RoleTO getRoleDetailsById(String roleid) throws Exception;
-	public ArrayList<OrgTreeTO> getOrganizationTree(String nodeid,String currOrg,boolean isFirstLoad, String adminYear, long customerId, String orgMode) throws Exception;
-	public ArrayList<OrgTreeTO> getOrgTree(String nodeid,boolean isFirstLoad, String adminYear, long customerId) throws Exception;
+	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String,Object> paramMap) throws Exception;
+	public ArrayList<OrgTreeTO> getOrgTree(Map<String,Object> paramMap) throws Exception;
 	public String getOrganizationTreeOnRedirect(String selectedOrgId,String parentOrgId,String userId,long customerId, boolean isRedirected) throws Exception;
 	
 	public String resetPassword(String userName) throws Exception;
@@ -76,7 +76,7 @@ public interface IAdminService {
 	public List<ObjectValueTO> getAllAdmin() throws Exception;
 	public String addOrganization(StgOrgTO stgOrgTO);
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId);
-	public ArrayList<OrgTreeTO> getHierarchy(String nodeid, String adminYear, long customerId, String school)throws Exception;
+	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap)throws Exception;
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException;
 	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException;
@@ -88,4 +88,6 @@ public interface IAdminService {
 	 * @return
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap);
+	
+	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
 }

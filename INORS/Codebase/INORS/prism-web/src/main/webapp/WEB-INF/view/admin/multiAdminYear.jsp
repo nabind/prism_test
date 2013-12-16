@@ -34,14 +34,8 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 			title='Select administration to refresh the hierarchy.'
 			class="select silver-gradient glossy with-tooltip expandable-list" 
 			onchange="reloadOrgTree($(this))">
-				<c:if test="${selectedOrgMode eq 'PUBLIC'}">
 					<option value="PUBLIC" selected>Public</option>
 					<option value="NON PUBLIC">Non Public</option>
-				</c:if>
-				<c:if test="${selectedOrgMode eq 'NON PUBLIC'}">
-					<option value="PUBLIC">Public</option>
-					<option value="NON PUBLIC" selected>Non Public</option>
-				</c:if>
 		</select>
 	</div>
 </div>

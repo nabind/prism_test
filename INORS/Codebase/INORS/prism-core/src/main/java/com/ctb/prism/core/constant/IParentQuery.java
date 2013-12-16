@@ -295,7 +295,7 @@ public interface IParentQuery {
 															" From Student_Bio_Dim Std, Grade_Dim Grd,Org_Node_Dim Org",
 															" Where Org.Org_Nodeid = Std.Org_Nodeid",
 															" And Std.Gradeid = Grd.Gradeid",
-															" And std.Adminid= ?",
+															" And std.Adminid= (select adminid from cust_product_link where cust_prod_id=?)",
 															" And org.org_nodeid In (Select org_lstnodeid From org_lstnode_link  Where org_nodeid =?)",
 															" And org.customerId = std.customerId",
 															" And org.customerId = ?",
@@ -320,7 +320,7 @@ public interface IParentQuery {
 			" STD.EXT_STUDENT_ID AS EXTSTUDENTID,",
 			" STD.GRADEID,STD.ORG_NODEID,STD.CUSTOMERID",
 			" FROM STUDENT_BIO_DIM STD",
-			" WHERE STD.ADMINID = ?",
+			" WHERE STD.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)",
 			" AND STD.CUSTOMERID = ?) ST,",
 			" GRADE_DIM GRD, ORG_NODE_DIM ORG",
 			" WHERE ORG.ORG_NODEID = ST.ORG_NODEID",
@@ -344,7 +344,7 @@ public interface IParentQuery {
 			" TO_CHAR(STD.STUDENT_BIO_ID) AS ROWIDENTIFIER,",
 			" STD.STUDENT_BIO_ID AS STUDENT_BIO_ID, STD.TEST_ELEMENT_ID AS TESTELEMENTID,",
 			" STD.INT_STUDENT_ID AS INTSTUDENTID,STD.EXT_STUDENT_ID AS EXTSTUDENTID,STD.GRADEID,STD.ORG_NODEID,STD.CUSTOMERID",
-			" FROM STUDENT_BIO_DIM STD WHERE STD.ADMINID = ? AND STD.CUSTOMERID = ?) ST,",
+			" FROM STUDENT_BIO_DIM STD WHERE STD.ADMINID = (select adminid from cust_product_link where cust_prod_id=?) AND STD.CUSTOMERID = ?) ST,",
 			" GRADE_DIM GRD, ORG_NODE_DIM ORG",
 			" WHERE ORG.ORG_NODEID = ST.ORG_NODEID AND ST.GRADEID = GRD.GRADEID",
 			" AND ORG.CUSTOMERID = ST.CUSTOMERID AND ORG.CUSTOMERID = ? ",
@@ -370,9 +370,9 @@ public interface IParentQuery {
 	
 	public static final String GET_ASSESSMENT_LIST = CustomStringUtil.appendString(
 															 " SELECT STD.STUDENT_BIO_ID, ",
-															 " IC.INVITATION_CODE,TO_CHAR(IC.INVITATION_EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
-															 " IC.TOTAL_AVAILABLE_IC_CLAIM,",
-															 " DECODE(SIGN(IC.INVITATION_EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
+															 " IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
+															 " IC.total_available,",
+															 " DECODE(SIGN(IC.EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
 															 " ADM.ADMIN_SEASON || ' ' || ADM.ADMIN_YEAR AS ASSESSMENT_YEAR ",
 															 " FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, ADMIN_DIM ADM",
 															 " WHERE IC.ADMINID = STD.ADMINID  ",
@@ -394,7 +394,7 @@ public interface IParentQuery {
 				   " STD.TEST_ELEMENT_ID AS TESTELEMENT,",
 				   " STD.GRADEID, STD.ORG_NODEID, STD.CUSTOMERID",
 				   " FROM STUDENT_BIO_DIM STD",
-				   " WHERE STD.ADMINID = ?) ST, GRADE_DIM GRD,ORG_NODE_DIM ORG",
+				   " WHERE STD.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)) ST, GRADE_DIM GRD,ORG_NODE_DIM ORG",
 				   " WHERE ORG.ORG_NODEID = ST.ORG_NODEID",
 				   " AND ST.GRADEID = GRD.GRADEID ",
 				   " AND ORG.ORG_NODEID In (Select org_lstnodeid From org_lstnode_link  Where org_nodeid =?)",
@@ -442,7 +442,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
         " ORDER BY UPPER(ABC.STUDENTNAME)");
 
 		public static final String UPDATE_ASSESSMENT = CustomStringUtil.appendString(
-			"UPDATE INVITATION_CODE IC SET  IC.TOTAL_AVAILABLE_IC_CLAIM = ?, IC.INVITATION_EXPIRATION_DATE= TO_DATE(?,'mm/dd/yyyy')",
+			"UPDATE INVITATION_CODE IC SET  IC.total_available = ?, IC.EXPIRATION_DATE= TO_DATE(?,'mm/dd/yyyy')",
 			" WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ",
 			" AND IC.ADMINID = (SELECT STD.ADMINID  FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?)");
 		
@@ -470,7 +470,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
 	    
 	    public static final String ADD_NEW_INVITATION_CODE =  CustomStringUtil.appendString(
 				"insert into INVITATION_CODE",
-					  " select NVITATION_CODE_ID_SEQ.Nextval, (select sf_gen_invite_code from DUAL), student_struc_element, total_available_ic_claim, total_attempt_ic_claim, org_nodeid, adminid, invitation_expiration_date, 'AC', created_by_id, sysdate, sysdate, 'N'", 
+					  " select NVITATION_CODE_ID_SEQ.Nextval, (select sf_gen_invite_code from DUAL), student_struc_element, total_available, total_attempt, org_nodeid, adminid, EXPIRATION_DATE, 'AC', created_by_id, sysdate, sysdate, 'N'", 
 					  " from INVITATION_CODE",
 					  " where invitation_code = ? and activation_status = 'AC' AND ADMINID = (SELECT STD.ADMINID  FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?) ");
 

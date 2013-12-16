@@ -111,7 +111,7 @@ public interface IUserQuery {
 			" WHERE ORGUSER.USERID = USR.USERID",
 			" AND HIER.ORG_NODEID = ORGUSER.ORG_NODEID",
 			" AND ORGUSER.ORG_NODE_LEVEL <> 0",
-			" AND ORGUSER.ADMINID = ?",
+			" AND ORGUSER.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)",
 			" AND USR.ACTIVATION_STATUS != 'SS'",
 			" ORDER BY UPPER(USR.USERNAME)) ABC",
 			" WHERE RECRD_CNT <= 15",
@@ -242,7 +242,7 @@ public interface IUserQuery {
 	
 	public static final String INSERT_ORG_USER = CustomStringUtil.appendString(
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
-			" (?, ?, ?, ?, ?, ?, sysdate )");
+			" (?, ?, ?, ?, (select adminid from cust_product_link where cust_prod_id=?),?, sysdate )");
 	
 	public static final String INSERT_USER_WITH_PASSWORD = CustomStringUtil.appendString(
 			" INSERT INTO USERS (USERID, USERNAME, ",
@@ -274,7 +274,7 @@ public interface IUserQuery {
 					" OR UPPER(USR.FIRST_NAME) LIKE UPPER(?)) ",
 					" AND HIER.ORG_NODE_LEVEL <> 0 ",
 					" AND USR.ACTIVATION_STATUS != 'SS' ",
-					" AND orgUsers.adminid = ? ", 
+					" AND orgUsers.adminid = (select adminid from cust_product_link where cust_prod_id=?) ", 
 					" AND orgUsers.ORG_NODEID = HIER.ORG_NODEID ",
 					" AND ORGUSERS.USERID = USR.USERID AND ROWNUM <= ? ");
 	
@@ -309,7 +309,7 @@ public interface IUserQuery {
 			" WHERE UPPER(USR.USERNAME) LIKE UPPER(?) ",
 			" AND orgUsers.ORG_NODE_LEVEL <> 0 ",
 			" AND USR.ACTIVATION_STATUS != 'SS' ",
-			" AND orgUsers.adminid = ? ", 
+			" AND orgUsers.adminid = (select adminid from cust_product_link where cust_prod_id=?) ", 
 			" AND orgUsers.ORG_NODEID = HIER.ORG_NODEID " +
 			" AND ORGUSERS.USERID = USR.USERID AND ROWNUM <= ? ");
 	
