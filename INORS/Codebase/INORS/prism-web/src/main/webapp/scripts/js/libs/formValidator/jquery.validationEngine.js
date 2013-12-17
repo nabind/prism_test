@@ -1686,7 +1686,7 @@
 		// Name of the event triggering field validation
 		validationEventTrigger: "blur",
 		// Automatically scroll viewport to the first error
-		scroll: true,
+		scroll: false,
 		// Focus on the first input
 		focusFirstField:true,
 		// Opening box position, possible locations are: topLeft,
