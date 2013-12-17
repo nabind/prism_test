@@ -62,6 +62,7 @@
 	<script src="scripts/js/libs/formValidator/jquery.validationEngine.js"></script>
 	<script src="scripts/js/libs/formValidator/languages/jquery.validationEngine-en.js"></script>
 	<script src="scripts/js/libs/formValidator/other-validations.js"></script>
+	<script src="scripts/js/libs/jquery.smoothDivScroll-1.3.js"></script>
 	
 	<!-- CKEditor -->
 	<script src="scripts/js/libs/ckeditor/ckeditor.js"></script>

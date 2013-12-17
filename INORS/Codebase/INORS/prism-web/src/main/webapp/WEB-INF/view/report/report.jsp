@@ -1,12 +1,93 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<style>
+/* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
+
+			/* Invisible left hotspot */
+			div.scrollingHotSpotLeft
+			{
+				/* The hotspots have a minimum width of 100 pixels and if there is room the will grow
+				and occupy 15% of the scrollable area (30% combined). Adjust it to your own taste. */
+				/*min-width: 75px;*/
+				width: 2%;
+				height: 100%;
+				/* There is a big background image and it's used to solve some problems I experienced
+				in Internet Explorer 6. */
+				background-image: url(themes/acsi/img/sdscroll/big_transparent.gif);
+				background-repeat: repeat;
+				background-position: center center;
+				position: absolute;
+				z-index: 200;
+				left: 0;
+				/*  The first url is for Firefox and other browsers, the second is for Internet Explorer */
+				cursor: url(themes/acsi/img/sdscroll/cursors/cursor_arrow_left.png), url(themes/acsi/img/sdscroll/cursors/cursor_arrow_left.cur),w-resize;
+			}
+
+			/* Visible left hotspot */
+			div.scrollingHotSpotLeftVisible
+			{
+				background-image: url(themes/acsi/img/sdscroll/arrow_left.gif);				
+				background-color: #ccc;
+				background-repeat: no-repeat;
+				opacity: 0.35; /* Standard CSS3 opacity setting */
+				-moz-opacity: 0.35; /* Opacity for really old versions of Mozilla Firefox (0.9 or older) */
+				filter: alpha(opacity = 35); /* Opacity for Internet Explorer. */
+				zoom: 1; /* Trigger "hasLayout" in Internet Explorer 6 or older versions */
+			}
+
+			/* Invisible right hotspot */
+			div.scrollingHotSpotRight
+			{
+				/*min-width: 75px;*/
+				width: 5%;
+				height: 100%;
+				background-image: url(themes/acsi/img/sdscroll/big_transparent.gif);
+				background-repeat: repeat;
+				background-position: center center;
+				position: absolute;
+				z-index: 200;
+				right: 0;
+				cursor: url(themes/acsi/img/sdscroll/cursors/cursor_arrow_right.png), url(themes/acsi/img/sdscroll/cursors/cursor_arrow_right.cur),e-resize;
+			}
+
+			/* Visible right hotspot */
+			div.scrollingHotSpotRightVisible
+			{
+				background-image: url(themes/acsi/img/sdscroll/arrow_right.gif);
+				background-color: #ccc;
+				background-repeat: no-repeat;
+				opacity: 0.35;
+				filter: alpha(opacity = 35);
+				-moz-opacity: 0.35;
+				zoom: 1;
+			}
+
+			/* The scroll wrapper is always the same width and height as the containing element (div).
+			   Overflow is hidden because you don't want to show all of the scrollable area.
+			*/
+			div.scrollWrapper
+			{
+				position: relative;
+				overflow: hidden;
+				width: 100%;
+				height: 100%;
+			}
+
+			div.scrollableArea
+			{
+				position: relative;
+				width: auto;
+				height: 100%;
+			}
+</style>
+
 <link rel="stylesheet" href="scripts/js/libs/theme/jquery-ui-redmond.css">
 <div class="content-panel" style="padding-left:0px; border: none">
 	<div class="report-panel-content linen linen-custom">
 		
 		<div class="panel-control panel-control-report align-right padding-right"></div>
 		
-		<div class="panel-load-target scrollable with-padding report-layout padding-none">
+		<div class="panel-load-target with-padding report-layout padding-none">
 			<c:if test="${homeReport.refreshButtonClass == 'customRefresh'}">
 				<c:set var="name" scope="page" value=""/>
 			</c:if>	
@@ -58,11 +139,11 @@
 					<a href="#nogo" class="page_last paginate button compact icon-next grey-gradient glossy with-tooltip" title="Last" page="" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}"></a>
 				</div>
 			</c:if>			
-			<div id="reportContainer" class="report-container report-container-${homeReport.tabCount} tabs-content padding-small">
+			<div id="reportContainer" class="report-container-${homeReport.tabCount} tabs-content padding-small">
 				<div class="reportLoading" id="loading${homeReport.tabCount}">
 					<div style="width:100%; text-align: center;"></div>
 				</div>
-				
+				<div class="iframeWrapper iframeWrapper-${homeReport.tabCount}">
 					<iframe id='report-iframe-${homeReport.tabCount}' class="report-frame report-frame-${homeReport.tabCount}" onLoad="closeProgress('${homeReport.reportUrl}', '${homeReport.tabCount}')"
 						src="${homeReport.reportApiUrl}.do?assessmentId=${homeReport.assessmentName}&reportId=${homeReport.reportId}&reportUrl=${homeReport.reportUrl}&reportName=${homeReport.reportName}&studentId=${homeReport.studentBioId}&reportType=${homeReport.reportType}" 
 						frameborder="0"
@@ -70,7 +151,7 @@
 						marginheight="0"
 						scrolling="${homeReport.scrolling}">
 					</iframe>
-				
+				</siv>
 			</div>
 		</div>
 		

@@ -739,11 +739,13 @@ function checkpagination(reportUrl, tabCount) {
 				} else {
 					$(".iframeWrapper").css({'background':'none', 'padding-top':'0px', 'cursor': 'default'});
 				}
-
-				$(iFrameContainerObj).customScroll({
+				/*$(iFrameContainerObj).customScroll({
 					horizontal : true,
 					showOnHover : false,
 					animate : false
+				});*/
+				$(iFrameContainerObj).smoothDivScroll({
+					manualContinuousScrolling: true
 				});
 				if(newcall && obj != null && obj.paginate == "true") {
 					$(currentObj).css('display', 'block');
