@@ -120,26 +120,18 @@ public class LoginController{
 		  HttpServletResponse response) throws ServletException, IOException {
 		 
 		  logger.log(IAppLogger.INFO, "Enter: LoginController - loadLandingPage");
-		  //String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
-		 // String mess_login_error = (String)request.getParameter("login_error");
-		//  String message = null;
-		 /* if("1".equalsIgnoreCase(mess_login_error)){
-			  logger.log(IAppLogger.ERROR, "Invalid Login");
-			  message = "error.login.invalidlogin";
-		  } else if("2".equalsIgnoreCase(mess_login_error)){
-			  logger.log(IAppLogger.ERROR, "Session Expired");
-			  message = "error.login.sessionexpired";
-		  } else {
-			  //this is proper login
-		  }*/
+		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
+		  String commonLogInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  ModelAndView modelAndView = new ModelAndView("common/landing");
-		/*  if(IApplicationConstants.TRUE.equals(parent)) {
-			  modelAndView = new ModelAndView("parent/login");
-		  } else {
-			  modelAndView = new ModelAndView("user/login");
-		  }*/
-		  //modelAndView.addObject("message", message);
-		 
+		  if(null!=commonLogInInfoMessage )
+		  {
+			  commonLogInInfoMessage = commonLogInInfoMessage.replaceAll("<p>", "");
+			  commonLogInInfoMessage = commonLogInInfoMessage.replaceAll("</p>", "");
+			  modelAndView.addObject("commonLogInInfoMessage", commonLogInInfoMessage);
+		  }
 		  logger.log(IAppLogger.INFO,
 					"Exit: LoginController - loadLandingPage");
 		  return modelAndView;
@@ -166,7 +158,7 @@ public class LoginController{
 		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.PRE_LOG_IN);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  if(null!=logInInfoMessage )
 		  {
@@ -222,16 +214,8 @@ public class LoginController{
 		  String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		  String message = null;
 		  
-		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.PRE_LOG_IN);
-		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		  
-		  if(null!=logInInfoMessage ) {
-			  logInInfoMessage = logInInfoMessage.replaceAll("<p>", "");
-			  logInInfoMessage = logInInfoMessage.replaceAll("</p>", "");
-		  }
+		  Map<String,Object> paramMapParent = new HashMap<String,Object>(); 
+		  Map<String,Object> paramMapTeacher = new HashMap<String,Object>();
 		  
 		  if("1".equalsIgnoreCase(mess_login_error)){
 			  logger.log(IAppLogger.ERROR, "Invalid Login");
@@ -242,22 +226,25 @@ public class LoginController{
 		  } else {
 			  //this is proper login
 		  }
-		  
 		  ModelAndView modelAndView = null;
 		  if(IApplicationConstants.TRUE.equals(parent)) {
+			  paramMapParent.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			  paramMapParent.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			  paramMapParent.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
+			  String parentLoginInfoMessage=loginService.getSystemConfigurationMessage(paramMapParent);
 			  modelAndView = new ModelAndView("user/userlogin");
-			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
+			  if(null!=parentLoginInfoMessage || "" !=parentLoginInfoMessage)
 			  {
-			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
+				  modelAndView.addObject("parentLoginInfoMessage", parentLoginInfoMessage);
 			  }
 
 		  } else {
+			  paramMapTeacher.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			  paramMapTeacher.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			  paramMapTeacher.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
+			  String teacherLoginInfoMessage=loginService.getSystemConfigurationMessage(paramMapTeacher);
 			  modelAndView = new ModelAndView("user/userlogin");
-			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
-			  {
-			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
-			  }
-
+			  modelAndView.addObject("teacherLoginInfoMessage", teacherLoginInfoMessage);
 		  }
 		  modelAndView.addObject("message", message);
 		  logger.log(IAppLogger.INFO,
@@ -1022,9 +1009,19 @@ public class LoginController{
 			HttpServletResponse res) throws IOException {
 		
 		// TODO get home page message based on logged in user
+		
+		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
+		  String inorsHomePageInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
+		  if(null!=inorsHomePageInfoMessage )
+		  {
+			  inorsHomePageInfoMessage = inorsHomePageInfoMessage.replaceAll("<p>", "");
+			  inorsHomePageInfoMessage = inorsHomePageInfoMessage.replaceAll("</p>", "");
+		  }
 		res.setContentType("application/json");
-		res.getWriter().write( "<h2>Welcome to the Indiana Online Reporting System</h2>"+
-								"<p>The online reports available on this site can help you learn how results from the Indiana Statewide Testing for Educational Progress-Plus (ISTEP+), Indiana Modified Achievement Standards Test (IMAST), and the Indiana Reading Evaluation And Determination (IREAD-3) assessments can be used to analyze curriculum strengths and needs in your district or school.</p>" );			
+		res.getWriter().write(inorsHomePageInfoMessage);			
 		return null;
 	}
 	
