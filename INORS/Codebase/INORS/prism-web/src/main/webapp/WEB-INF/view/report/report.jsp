@@ -151,7 +151,7 @@
 						marginheight="0"
 						scrolling="${homeReport.scrolling}">
 					</iframe>
-				</siv>
+				</div>
 			</div>
 		</div>
 		
