@@ -161,6 +161,21 @@
 								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
 								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
 							</div>
+							
+							<div class="seven-columns" style="margin-top:15px;margin-bottom:30px">
+					        <div class="boxshade scrollable" style="height: 125px">
+						    <div class="columns">
+							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
+							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
+							</div>
+							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
+							<h3>INORS Assessment</h3>
+							<p style="line-height:120%"><p style="line-height:120%">${teacherLoginInfoMessage}</p>
+							</div>
+							</div>
+					       </div>
+				           </div>
+				           
 							<div class="loginBtn margin-top margin-bottom-medium">
 								<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
 									Download Quick Start Guide PDF
@@ -210,14 +225,14 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto">
-							${teacherLoginInfoMessage}
+							<%-- <spring:message code="login.otage.message"/> --%>
 						</p>
 					</div>
 					<div align="center">
 						<a onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/ACSIDataOnline_ReportFilters.pdf',800,600)" href="#nogo">
 							<img alt="Understand Report Filter Navigation" src="themes/acsi/img/Report-filter.jpg" width="40%" height="40%"/>
 						</a>
-					</div>					
+					</div>	
 				</div>
 			</section>
 		</c:when>
@@ -265,15 +280,14 @@
 					</div>
 				</div>-->
 				<div class="seven-columns" style="margin-top:15px;margin-bottom:30px">
-					<div class="boxshade scrollable" style="height: 125px">
+					<div class="boxshade scrollable" style="height: 125px,width:100px;">
 						<div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
 								<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
 								<h3>INORS Assessment</h3>
-								
-								<p style="line-height:120%">You will be able to navigate through your children's assessment results by selecting the TABS titled "RESOURCES", "YOUR CHILDREN", and "MANAGE ACCOUNT". </p>
+								<p style="line-height:120%">${parentLoginInfoMessage}</p>
 							</div>
 							
 						</div>
@@ -320,7 +334,7 @@
 					</div>
 					<div class="margin-top">
 						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-							${logInInfoMessage}
+						
 						</p>
 					</div>
 					
