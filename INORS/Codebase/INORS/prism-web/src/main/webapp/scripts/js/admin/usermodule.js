@@ -595,8 +595,25 @@
 	}*/
 	
 	//============================THIS FUNCTION CREATES THE ROLE TAGS FOR THE USER TABLE IN "MANAGE USERS" PAGE==========================
+	function hasAdmin(availableRoles){
+		var isAdmin = false;
+		for (var j=0; j<availableRoles.length; j++){
+			var tokens = availableRoles[j].roleName.split("_");
+			//alert(tokens);
+			//for (var i=0; i<tokens.length; i++){
+				if (tokens[1] == "ADMIN"){
+					return true;
+				}
+			//}
+		};
+		return isAdmin;
+	}
 	function createUserRolesTag(availableRoles){
+		var hasAdminRole = hasAdmin(availableRoles);
 		var roleTag='<td class="roleContainerForUsers vertical-center">';
+		//alert("roles=" + JSON.stringify(availableRoles));
+		//alert(hasAdminRole);
+		if(hasAdminRole == false) {
 			$.each(availableRoles, function (){
 				if(this.roleName== 'ROLE_ACSI'){
 					roleTag +='<small class="tag blue-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
@@ -620,9 +637,16 @@
 					roleTag +='<small class="tag black-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
 				}
 			});
-			roleTag +="</td>";
-			return roleTag;
+		} else {
+			$.each(availableRoles, function (){
+				if(this.roleName== 'ROLE_ADMIN'){
+					roleTag +='<small class="tag orange-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
+				}
+			});
 		}
+		roleTag +="</td>";
+		return roleTag;
+	}
 	
 	
 	function createUserTypeTag(userType) {
