@@ -210,7 +210,7 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto">
-							${logInInfoMessage}
+							${teacherLoginInfoMessage}
 						</p>
 					</div>
 					<div align="center">

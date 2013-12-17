@@ -147,6 +147,11 @@
 			<a href="userlogin.do?theme=parent&parent=true" class="button blue-gradient full-width">Login</a>
 		</div>
 		<div class="two-columns"></div>
+		<div class="margin-bottom-medium">
+						<p class="wrapped relative white-gradient" style="height: auto">
+							${commonLogInInfoMessage}
+						</p>
+		</div>
 	</div>
 				
 	<footer class="margin-top">Copyright &copy; by CTB/McGraw-Hill LLC. All rights reserved. <br/>TerraNova is a trademark of The McGraw-Hill Companies. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>

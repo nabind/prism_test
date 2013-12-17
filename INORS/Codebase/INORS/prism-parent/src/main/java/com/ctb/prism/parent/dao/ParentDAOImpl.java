@@ -390,11 +390,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-				//to.setClikedOrgId(((BigDecimal) fieldDetails.get("CLICKED_ORG")).longValue());
 				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
-				to.setOrgName((String) (fieldDetails.get("ORG_NAME")));
 				parentTOs.add(to);
 			}
 		}
@@ -437,11 +434,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-				//to.setClikedOrgId(((BigDecimal) fieldDetails.get("CLICKED_ORG")).longValue());
 				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
-				to.setOrgName((String) (fieldDetails.get("ORG_NAME")));
 				parentTOs.add(to);
 			}
 		}
@@ -670,11 +664,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 					to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
 					to.setInvitationcode((String) (fieldDetails.get("INVITATIONCODE")));
-					to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-					//to.setClikedOrgId(((BigDecimal) fieldDetails.get("CLICKED_ORG")).longValue());
 					try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
 					to. setActivationStatus((String) (fieldDetails.get("ACTIVATIONSTATUS")));
-					to.setOrgName((String) (fieldDetails.get("ORG_NAME")));
 					studentTOs.add(to);
 				}
 			}
@@ -702,7 +693,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentTO.setInvitationcode((String) fieldDetails.get("INVITATION_CODE"));
 				studentTO.setExpirationDate((String) fieldDetails.get("EXPIRATION_DATE"));
 				studentTO.setIcExpirationStatus((String) fieldDetails.get("EXPIRATION_STATUS"));
-				studentTO.setTotalAvailableClaim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE_IC_CLAIM")).longValue());
+				studentTO.setTotalAvailableClaim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
 				assessmentList.add(studentTO);
 			}
 		}

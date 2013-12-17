@@ -198,7 +198,7 @@ public interface IUserQuery {
 	
 	public static final String GET_ROLE = CustomStringUtil.appendString(
 			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME ",
-			" FROM ROLE RE WHERE RE.ROLE_NAME <> ?");
+			" FROM ROLE RE WHERE RE.ROLE_NAME <> ? and RE.ROLE_NAME !='ROLE_PARENT'");
 	
 	public static final String GET_USER_DETAILS_ON_EDIT = CustomStringUtil
 	.appendString(" SELECT USR.USERID AS ID, ",
@@ -313,7 +313,7 @@ public interface IUserQuery {
 			" AND orgUsers.ORG_NODEID = HIER.ORG_NODEID " +
 			" AND ORGUSERS.USERID = USR.USERID AND ROWNUM <= ? ");
 	
-	public static final String ALL_ROLE = CustomStringUtil.appendString("select ROLEID, ROLE_NAME from ROLE ");
+	public static final String ALL_ROLE = CustomStringUtil.appendString("select ROLEID, ROLE_NAME from ROLE where ROLE_NAME !='ROLE_PARENT' ");
 	
 	public static final String ALL_ASSESSMENTS = CustomStringUtil.appendString("select ASSESSMENTID as ID, ASSESSMENT_NAME as NAME from ASSESSMENT_DIM ");
 	
