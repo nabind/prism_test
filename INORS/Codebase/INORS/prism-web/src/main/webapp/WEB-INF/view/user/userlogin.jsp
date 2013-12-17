@@ -162,19 +162,17 @@
 								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
 							</div>
 							
-							<div class="seven-columns" style="margin-top:15px;margin-bottom:30px">
-					        <div class="boxshade scrollable" style="height: 125px">
+					        <div class="boxshade" style="height: 185px">
 						    <div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
 							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
 							<h3>INORS Assessment</h3>
-							<p style="line-height:120%"><p style="line-height:120%">${teacherLoginInfoMessage}</p>
+							<p style="line-height:120%">${teacherLoginInfoMessage}</p>
 							</div>
 							</div>
 					       </div>
-				           </div>
 				           
 							<div class="loginBtn margin-top margin-bottom-medium">
 								<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
@@ -334,7 +332,7 @@
 					</div>
 					<div class="margin-top">
 						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-						
+						<%-- <spring:message code="login.otage.message"/> --%>
 						</p>
 					</div>
 					
