@@ -245,7 +245,7 @@ public class LoginController{
 		  
 		  ModelAndView modelAndView = null;
 		  if(IApplicationConstants.TRUE.equals(parent)) {
-			  modelAndView = new ModelAndView("parent/login");
+			  modelAndView = new ModelAndView("user/userlogin");
 			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
 			  {
 			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
