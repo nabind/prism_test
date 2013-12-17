@@ -39,7 +39,8 @@
 	<script src="scripts/js/setup.js"></script>
 
 	<!-- Template functions -->
-	<script src="scripts/js/developr.input.js"></script>
+	<script src="scripts/js/developr.all.js"></script>
+	<!-- <script src="scripts/js/developr.input.js"></script>
 	<script src="scripts/js/developr.accordions.js"></script>
 	<script src="scripts/js/developr.message.js"></script>
 	<script src="scripts/js/developr.modal.js"></script>
@@ -49,8 +50,8 @@
 	<script src="scripts/js/developr.progress-slider.js"></script>
 	<script src="scripts/js/developr.tooltip.js"></script>
 	<script src="scripts/js/developr.content-panel.js"></script>
-	<script src="scripts/js/developr.tabs.js"></script>		<!-- Must be loaded last -->
-	<script src="scripts/js/developr.table.js"></script>
+	<script src="scripts/js/developr.tabs.js"></script>		Must be loaded last
+	<script src="scripts/js/developr.table.js"></script> -->
 	
 	<!-- Plugins -->
 	<script src="scripts/js/libs/jquery.tablesorter.min.js"></script>
@@ -66,7 +67,8 @@
 	<script src="scripts/js/libs/ckeditor/ckeditor.js"></script>
 	
 	<!-- Custom functions -->
-	<script src="scripts/js/report/report.js"></script>
+	<script src="scripts/js/custom.all.js"></script>
+	<!-- <script src="scripts/js/report/report.js"></script>
 	<script src="scripts/js/report/manageReport.js"></script>
 	<script src="scripts/js/report/manageMessage.js"></script>
 	<script src="scripts/js/admin/manageUser.js"></script>
@@ -78,4 +80,4 @@
 	<script src="scripts/js/parent/imageSlide.js" type="text/javascript" ></script>
 	<script src="scripts/js/parent/manageStudent.js"></script>
 	<script src="scripts/js/parent/manageContent.js"></script>
-	<script src="scripts/js/inors/inors.js"></script>
+	<script src="scripts/js/inors/inors.js"></script> -->

@@ -94,6 +94,7 @@
 					<path>/inors</path>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
@@ -105,9 +106,121 @@
 					</execution>
 				</executions>
 				<configuration>
+		          <nosuffix>true</nosuffix>
+		          <aggregations>
+		            <aggregation>
+		              <!-- remove files after aggregation (default: false)
+		              <removeIncluded>true</removeIncluded>
+		              -->
+		              <!-- insert new line after each concatenation (default: false) -->
+		              <insertNewLine>true</insertNewLine>
+		              <!-- <inputDir>${basedir}/src/main/webapp/scripts/js</inputDir> -->
+		              <output>${basedir}/src/main/webapp/scripts/js/developr.all.js</output>
+		              <!-- files to include, path relative to output's directory or absolute path-->
+		              <!--inputDir>base directory for non absolute includes, default to parent dir of output</inputDir-->
+		              <includes>
+		                <!-- <include>${basedir}/src/licenses/license.js</include> -->
+		                <include>**/developr.input.js</include>
+						<include>**/developr.accordions.js</include>
+						<include>**/developr.message.js</include>
+						<include>**/developr.modal.js</include>
+						<include>**/developr.collapsible.js</include>
+						<include>**/developr.notify.js</include>
+						<include>**/developr.scroll.js</include>
+						<include>**/developr.progress-slider.js</include>
+						<include>**/developr.tooltip.js</include>
+						<include>**/developr.content-panel.js</include>
+						<include>**/developr.tabs.js</include>		
+						<include>**/developr.table.js</include>
+		              </includes>
+		              <!-- files to exclude, path relative to output's directory -->
+		              <!-- <excludes>
+		                <exclude>**/*.css</exclude>
+		              </excludes> -->
+		              <!-- -->
+		            </aggregation>
+		            
+		            <aggregation>
+		              <insertNewLine>true</insertNewLine>
+		              <output>${basedir}/src/main/webapp/scripts/js/custom.all.js</output>
+		              <includes>
+						<include>**/report/report.js</include>
+						<include>**/report/manageReport.js</include>
+						<include>**/report/manageMessage.js</include>
+						<include>**/admin/manageUser.js</include>
+						<include>**/admin/usermodule.js</include>
+						<include>**/admin/manageOrganizations.js</include>
+						<include>**/admin/manageRole.js</include>
+						<include>**/parent/parent.js</include>
+						<include>**/parent/manageParent.js</include>
+						<include>**/parent/imageSlide.js</include>
+						<include>**/parent/manageStudent.js</include>
+						<include>**/parent/manageContent.js</include>
+						<include>**/inors/inors.js</include>
+		              </includes>
+		            </aggregation>
+		            <!--
+		            <aggregation>
+		              <insertNewLine>true</insertNewLine>
+		              <output>${basedir}/src/main/webapp/themes/acsi/css/reset_style_color.all.css</output>
+		              <includes>
+						<include>**/reset.css</include>
+						<include>**/css/style.css</include>
+						<include>**/colors.css</include>
+		              </includes>
+		            </aggregation>
+		            
+		            <aggregation>
+		              <insertNewLine>true</insertNewLine>
+		              <output>${basedir}/src/main/webapp/themes/acsi/css/additional.all.css</output>
+		              <includes>
+						<include>**/progress-slider.css</include>
+						<include>**/switches.css</include>
+						<include>**/files.css</include>
+						<include>**/form.css</include>
+						<include>**/table.css</include>
+						<include>**/modal.css</include>
+						<include>**/calendars.css</include>
+						<include>**/datatable.css</include>
+						<include>**/validationEngine.css</include>
+						<include>**/apple/style.css</include>
+		              </includes>
+		            </aggregation>
+		            -->
+		            <!-- <aggregation>
+		              <insertNewLine>true</insertNewLine>
+		              <output>${basedir}/src/main/webapp/themes/acsi/css/additional.all.css</output>
+		              <includes>
+						<include>${progress-slider.css}</include>
+						<include>${switches.css}</include>
+						<include>${files.css}</include>
+						<include>${form.css}</include>
+						<include>${table.css}</include>
+						<include>${modal.css}</include>
+						<include>${calendars.css}</include>
+						<include>${datatable.css}</include>
+						<include>${validationEngine.css}</include>
+						<include>${tree.apple.style}</include>
+		              </includes>
+		            </aggregation> -->
+		            
+		            
+		            
+		            
+		          </aggregations>
+		          <jswarn>false</jswarn>
+		          <excludes>
+	                <exclude>**/CLEditor/**/*.js</exclude>
+	                <exclude>**/ckeditor/**/*.js</exclude>
+	                <exclude>**/DataTables/**/*.js</exclude>
+	                <exclude>**/formValidator/**/*.js</exclude>
+	                <exclude>**/*.min.js</exclude>
+	              </excludes>
+		        </configuration>
+				<!-- <configuration>
 					<encoding>UTF-8</encoding>
-					<outputDirectory>${basedir}/target/inors/js</outputDirectory>
-					<webappDirectory>${basedir}/target/inors</webappDirectory>
+					<outputDirectory>${basedir}/target/tasc/js</outputDirectory>
+					<webappDirectory>${basedir}/target/tasc</webappDirectory>
 					<nosuffix>true</nosuffix>
 					<jswarn>false</jswarn>
 					<excludes>
@@ -119,8 +232,9 @@
 			           	<exclude>**/google-code-prettify/*.js</exclude>
 			        </excludes>
 			        <gzip>false</gzip>
-				</configuration>
+				</configuration> -->
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
