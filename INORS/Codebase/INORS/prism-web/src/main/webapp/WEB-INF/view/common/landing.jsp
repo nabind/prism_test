@@ -155,8 +155,10 @@
 		</div>
 	</div>
 				
-	<footer class="margin-top">Copyright &copy; by CTB/McGraw-Hill LLC. All rights reserved. <br/>TerraNova is a trademark of The McGraw-Hill Companies. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>
-  
+	<footer class="margin-top">
+		<div class="float-center"><spring:message code="footer.copyright"/></div>
+		<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
+	</footer>    
   
 	<%@ include	file="../common/minimalScripts.jsp"%>	
 	
