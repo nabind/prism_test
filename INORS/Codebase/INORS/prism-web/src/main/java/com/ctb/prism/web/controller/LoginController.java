@@ -121,8 +121,8 @@ public class LoginController{
 		 
 		  logger.log(IAppLogger.INFO, "Enter: LoginController - loadLandingPage");
 		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		  String commonLogInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  ModelAndView modelAndView = new ModelAndView("common/landing");
@@ -156,8 +156,8 @@ public class LoginController{
 		  String mess_login_error = (String)request.getParameter("login_error");
 		  String message = null;
 		  Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  if(null!=logInInfoMessage )
@@ -228,8 +228,8 @@ public class LoginController{
 		  }
 		  ModelAndView modelAndView = null;
 		  if(IApplicationConstants.TRUE.equals(parent)) {
-			  paramMapParent.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			  paramMapParent.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			  paramMapParent.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			  paramMapParent.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			  paramMapParent.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
 			  String parentLoginInfoMessage=loginService.getSystemConfigurationMessage(paramMapParent);
 			  modelAndView = new ModelAndView("user/userlogin");
@@ -239,8 +239,8 @@ public class LoginController{
 			  }
 
 		  } else {
-			  paramMapTeacher.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			  paramMapTeacher.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			  paramMapTeacher.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			  paramMapTeacher.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			  paramMapTeacher.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			  String teacherLoginInfoMessage=loginService.getSystemConfigurationMessage(paramMapTeacher);
 			  modelAndView = new ModelAndView("user/userlogin");
@@ -269,6 +269,47 @@ public class LoginController{
 		 return validateUser(req, res);
 	 }
 	 
+
+	 @RequestMapping(value="/childData", method=RequestMethod.GET)
+	 public ModelAndView parentReports(HttpServletRequest req, HttpServletResponse res) throws IOException{
+		 ReportTO homeReport = new ReportTO();
+		 homeReport.setStudentBioId(req.getParameter("childId"));
+		 req.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
+		 req.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, req.getParameter("childId"));
+		 
+		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
+		  String overviewInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
+		  if(null!=overviewInfoMessage )
+		  {
+			  overviewInfoMessage = overviewInfoMessage.replaceAll("<p>", "");
+			  overviewInfoMessage = overviewInfoMessage.replaceAll("</p>", "");
+		  }
+		 
+		/* List<AssessmentTO> subtestList = reportService.getAssessments(true);
+		 for(AssessmentTO assessment : subtestList) {
+			 if(assessment.getAssessmentId() == 101) {
+				 for(ReportTO report : assessment.getReports()) {
+					 homeReport.setReportUrl(report.getReportUrl());
+					 homeReport.setReportName(report.getReportName());
+					 homeReport.setAssessmentName(""+assessment.getAssessmentId());
+					 homeReport.setReportId(report.getReportId());
+					 break;
+				 }
+				 break;
+			 }
+		 }*/
+		 
+		 ModelAndView modelAndView = new ModelAndView("parent/children");
+		 modelAndView.addObject("overviewInfoMessage", overviewInfoMessage);
+		 //modelAndView.addObject("subtestList", subtestList);
+		 return modelAndView;
+	 }
+	 
+	 
+
 	 /**
 	  * This method is invoked after successful authentication
 	  * @param req
@@ -972,8 +1013,8 @@ public class LoginController{
 		// TODO get home page message based on logged in user
 		
 		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
+			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
 		  String inorsHomePageInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  if(null!=inorsHomePageInfoMessage )
