@@ -450,5 +450,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
 	    public static final String GET_OBJECTIVE_DETAILS_FOR_EDIT = CustomStringUtil.appendString("PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS_EDIT(?,?)");
 	    
 	    public static final String GET_STUDENT_SUBTEST = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_SUBTEST_DETAILS(?,?,?)");
+	    
+	    public static final String GET_STUDENT_SUBTEST = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_SUBTEST_DETAILS(?,?,?)");
 }
 
