@@ -10,7 +10,6 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	config.toolbar = 'Custom';
 	config.baseFloatZIndex = 999999; 
-	config.enterMode = "";
 	config.toolbar_Full =
 	[
 		{ name: 'document', items : [ 'Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates' ] },
