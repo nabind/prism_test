@@ -155,11 +155,11 @@ public interface IParentQuery {
 	// Query to retrieve list of children of the logged in parent.
 	public static final String SEARCH_CHILDREN = CustomStringUtil.appendString(
 		"SELECT ST.LAST_NAME || ',' || ST.FIRST_NAME || ' ' || ST.MIDDLE_NAME AS STUDENT_NAME,",
-           " ST.STUDENT_BIO_ID,",
+           " ST.STUDENT_BIO_ID STUDENT_BIO_ID,",
            " GRD.GRADE_NAME AS STUDENTGRADE,",
            " AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,",
            " AD.ADMIN_SEQ,",
-           " AD.ADMINID",
+           " AD.ADMINID ADMINID",
         " FROM STUDENT_BIO_DIM  ST,",
            " ADMIN_DIM AD,",
            " GRADE_DIM GRD,",
@@ -169,10 +169,9 @@ public interface IParentQuery {
            " USERS U ",              
 	    " WHERE ST.ADMINID = AD.ADMINID",
 	       " AND ST.ADMINID = IC.ADMINID",
-	       " AND ST.GRADEID=GRD.GRADEID",
-	       " AND ST.ADMINID = IC.ADMINID",
+	       " AND ST.GRADEID = GRD.GRADEID",
 	       " AND IC.ICID = ICC.ICID",
-	       " AND ICC.ORG_USER_ID = OU.ORG_USER_ID" +
+	       " AND ICC.ORG_USER_ID = OU.ORG_USER_ID",
 	       " AND OU.USERID = U.USERID ",
 	       " and ic.org_nodeid = st.org_nodeid ",
 	       " and icc.activation_status = 'AC' ",

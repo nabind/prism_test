@@ -341,7 +341,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentTO.setStudentName((String) data.get("STUDENT_NAME"));
 				studentTO.setStudentBioId(((BigDecimal) data.get("STUDENT_BIO_ID"))
 						.longValue());
-				studentTO.setAdministration((String) data.get("ADMIN_SEASON"));
+				studentTO.setAdministration((String) data.get("ADMIN_SEASON_YEAR"));
 				studentTO.setGrade((String) data.get("STUDENTGRADE"));
 				studentTO.setAdminid(((BigDecimal) data.get("ADMINID")).toString());
 				children.add(studentTO);
