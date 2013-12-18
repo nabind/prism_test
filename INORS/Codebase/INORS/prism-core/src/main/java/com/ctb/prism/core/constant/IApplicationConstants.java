@@ -151,7 +151,9 @@ public interface IApplicationConstants {
 	public static final String INORS_HOME_PAGE = "Inors Home Page";
 	public static final String TEACHER_LOG_IN = "Teacher Log In";
 	public static final String PARENT_LOG_IN = "Parent Log In";
-	public static final String REPORT_NAME = "System Configuration";
-	public static final String MESSAGE_TYPE = "SCM";
+	public static final String GENERIC_REPORT_NAME = "Generic System Configuration";
+	public static final String PRODUCT_SPECIFIC_REPORT_NAME = "Product Specific System Configuration";
+	public static final String GENERIC_MESSAGE_TYPE = "GSCM";
+	public static final String PRODUCT_SPECIFIC_MESSAGE_TYPE = "PSCM";
 
 }

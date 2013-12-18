@@ -18,7 +18,7 @@
 				<a href="javascript:void(0)" id="editManageMessageButtonSave" 
 							class="button blue-gradient glossy" reportId="${serviceMapManageMessage.reportId}">Save</a>
 				<c:choose>
-                <c:when test="${serviceMapManageMessage.reportName!='System Configuration'}">			
+                <c:when test="${serviceMapManageMessage.reportName!='Generic System Configuration'}">			
 				<a href="javascript:void(0);" class="button blue-gradient glossy" id="copyMessage"> Copy Message </a>
 				</c:when>
 				</c:choose>

@@ -263,10 +263,11 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE DMT.CUST_PROD_ID = DM.CUST_PROD_ID(+)",
 			" AND DMT.MSG_TYPEID = DM.MSG_TYPEID(+)",
 			" AND DM.DB_REPORTID(+) = ?",
-			" AND DMT.MESSAGE_TYPE !='SCM' ",
+			" AND DMT.MESSAGE_TYPE not in ('PSCM','GSCM') ",
 			" AND DMT.CUST_PROD_ID = ?",
 			" ORDER BY DMT.MESSAGE_NAME");
-	public static final String GET_MANAGE_MESSAGE_LIST_SCM = CustomStringUtil.appendString(
+	
+	public static final String GET_MANAGE_MESSAGE_LIST_SCM_PRODUCT_SPECIFIC = CustomStringUtil.appendString(
 			" SELECT DMT.MSG_TYPEID       MESSAGE_TYPEID,",
 			" DMT.MESSAGE_NAME  MESSAGE_NAME,",
 			" DMT.MESSAGE_TYPE  MESSAGE_TYPE,",
@@ -279,7 +280,24 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE DMT.CUST_PROD_ID = DM.CUST_PROD_ID(+)",
 			" AND DMT.MSG_TYPEID = DM.MSG_TYPEID(+)",
 			" AND DM.DB_REPORTID(+) = ?",
-			" AND DMT.MESSAGE_TYPE in('SCM') ",
+			" AND DMT.MESSAGE_TYPE in('PSCM') ",
+			" AND DMT.CUST_PROD_ID = ?",
+			" ORDER BY DMT.MESSAGE_NAME");
+	
+	public static final String GET_MANAGE_MESSAGE_LIST_SCM_GENERIC = CustomStringUtil.appendString(
+			" SELECT DMT.MSG_TYPEID       MESSAGE_TYPEID,",
+			" DMT.MESSAGE_NAME  MESSAGE_NAME,",
+			" DMT.MESSAGE_TYPE  MESSAGE_TYPE,",
+			" DMT.DESCRIPTION   MESSAGE_DESC,",
+			" DM.REPORT_MSG     MESSAGE,",
+			" ?       			REPORTID,",
+			" ?      			CUST_PROD_ID,",
+			" DM.ACTIVATION_STATUS ACTIVATION_STATUS",
+			" FROM DASH_MESSAGE_TYPE DMT, DASH_MESSAGES DM",
+			" WHERE DMT.CUST_PROD_ID = DM.CUST_PROD_ID(+)",
+			" AND DMT.MSG_TYPEID = DM.MSG_TYPEID(+)",
+			" AND DM.DB_REPORTID(+) = ?",
+			" AND DMT.MESSAGE_TYPE in('GSCM') ",
 			" AND DMT.CUST_PROD_ID = ?",
 			" ORDER BY DMT.MESSAGE_NAME");
 	

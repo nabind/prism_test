@@ -34,6 +34,9 @@
 								type="hidden" name="reportUrl" id="reportUrl"
 								value="${serviceMapReportMessageFilter.reportUrl}" />
 						</div>
+						
+						<c:choose>
+                		<c:when test="${serviceMapReportMessageFilter.reportName!='Generic System Configuration'}">			
 						<div class="with-mid-padding mid-margin-bottom icholderinner"
 							style="min-width: 200px; overflow-x: auto">
 							<div
@@ -56,6 +59,11 @@
 								</div>
 							</div>
 						</div>
+						</c:when>
+						<c:when test="${serviceMapReportMessageFilter.reportName=='Generic System Configuration'}">
+						<input id="custProdId" name="custProdId" value=5001 style="visibility: hidden;">
+						</c:when>	
+				    </c:choose>
 					</div>
 				</div>
 			</form:form>
