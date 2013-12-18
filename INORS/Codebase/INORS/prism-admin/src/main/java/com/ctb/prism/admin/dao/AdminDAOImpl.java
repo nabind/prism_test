@@ -1345,57 +1345,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return adminYearList;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
-			throws BusinessException {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getCustomerProduct()");
-		List<com.ctb.prism.admin.transferobject.ObjectValueTO> objectValueTOList = null;
-		long t1 = System.currentTimeMillis();
-		final com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO)paramMap.get("loggedinUserTO");
-		try{
-			objectValueTOList = (List<com.ctb.prism.admin.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
-				    new CallableStatementCreator() {
-				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
-				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-				            return cs;				      			            
-				        }
-				    } ,   new CallableStatementCallback<Object>()  {
-			        		public Object doInCallableStatement(CallableStatement cs) {
-			        			ResultSet rsCustProd = null;
-			        			List<com.ctb.prism.admin.transferobject.ObjectValueTO> objectValueTOResult 
-			        							= new ArrayList<com.ctb.prism.admin.transferobject.ObjectValueTO>();
-			        			try {
-									cs.execute();
-									rsCustProd = (ResultSet) cs.getObject(2);
-
-									com.ctb.prism.admin.transferobject.ObjectValueTO objectValueTO = null;
-									while(rsCustProd.next()){
-										objectValueTO = new com.ctb.prism.admin.transferobject.ObjectValueTO();
-										objectValueTO.setValue(rsCustProd.getString("VALUE"));
-										objectValueTO.setName(rsCustProd.getString("NAME"));
-										objectValueTOResult.add(objectValueTO);
-									}
-									
-			        			} catch (SQLException e) {
-			        				e.printStackTrace();
-			        			}
-			        			return objectValueTOResult;
-				        }
-				    });
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
-		}finally{
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
-		}
-		return objectValueTOList;
-	}
-	
 	/*
 	 * Add organization by web service
 	 */

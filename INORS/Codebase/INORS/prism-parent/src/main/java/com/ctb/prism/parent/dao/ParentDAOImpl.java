@@ -389,9 +389,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						.longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
-				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
+				to.setStatus((String) (fieldDetails.get("STATUS")));				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
 				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
+
 				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
 				parentTOs.add(to);
@@ -411,7 +411,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @param tenantId
 	 *            parentId of the logged in user
 	 */
-	public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh){
+public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh){
 		
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
 		List<Map<String, Object>> parentlist = null;
@@ -1093,58 +1093,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 	
 	//Manage Content - Parent Network - Start
-	//Populate filters to search content
-	@SuppressWarnings("unchecked")
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
-			throws BusinessException {
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getCustomerProduct()");
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		long t1 = System.currentTimeMillis();
-		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		try{
-			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
-				    new CallableStatementCreator() {
-				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
-				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
-				            //cs.setLong(1,((BigDecimal) BigDecimal.valueOf(Long.valueOf((loggedinUserTO.getCustomerId())))).longValue());
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-				            return cs;				      			            
-				        }
-				    } ,   new CallableStatementCallback<Object>()  {
-			        		public Object doInCallableStatement(CallableStatement cs) {
-			        			ResultSet rsCustProd = null;
-			        			List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOResult 
-			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-			        			try {
-									cs.execute();
-									rsCustProd = (ResultSet) cs.getObject(2);
-
-									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
-									while(rsCustProd.next()){
-										objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
-										objectValueTO.setValue(rsCustProd.getString("VALUE"));
-										objectValueTO.setName(rsCustProd.getString("NAME"));
-										objectValueTOResult.add(objectValueTO);
-									}
-									
-			        			} catch (SQLException e) {
-			        				e.printStackTrace();
-			        			}
-			        			return objectValueTOResult;
-				        }
-				    });
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
-		}finally{
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
-		}
-		return objectValueTOList;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String,Object> paramMap) 
@@ -1623,4 +1571,61 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 	
 	//Manage Content - Parent Network - End
+	
+	
+	//Parent Network - Start
+	
+	/*
+	 * Get Student's sub test
+	 */
+	@SuppressWarnings("unchecked")
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getStudentSubtest(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentSubtest()");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
+		long t1 = System.currentTimeMillis();
+		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId")); 
+		
+		try{
+			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
+				            cs.setLong(1, studentBioId);		
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOResult 
+			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(2);
+									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+									
+									while(rs.next()){
+										objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+										objectValueTO.setValue(rs.getString("VALUE"));
+										objectValueTO.setName(rs.getString("NAME"));
+										objectValueTOResult.add(objectValueTO);
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return objectValueTOResult;
+				        }
+				    });
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getStudentSubtest() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return objectValueTOList;
+	}
+	
+	//Parent Network - End
 }

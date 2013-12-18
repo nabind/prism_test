@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.BusinessException;
+import com.ctb.prism.core.transferobject.ObjectValueTO;
+import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.dao.IParentDAO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
@@ -31,6 +33,9 @@ public class ParentBusinessImpl implements IParentBusiness {
 	
 	@Autowired
 	private IParentDAO parentDAO;
+	
+	@Autowired
+	private ILoginDAO loginDAO;
 	
 	public List getSecretQuestions() {
 		return parentDAO.getSecretQuestions();
@@ -162,7 +167,7 @@ public class ParentBusinessImpl implements IParentBusiness {
 	//Manage Content - Parent Network - Start
 	//Populate filters to search content
 	public Map<String, Object> getManageContentFilter(Map<String, Object> paramMap) throws BusinessException {
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = parentDAO.getCustomerProduct(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = loginDAO.getCustomerProduct(paramMap);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("customerProductList", customerProductList);
 		return returnMap;
@@ -204,4 +209,17 @@ public class ParentBusinessImpl implements IParentBusiness {
 		return parentDAO.modifyStandardForEdit(paramMap);
 	}
 	//Manage Content - Parent Network - End
+	
+	//Parent Network - Start
+	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException{
+		String studentOverviewMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentSubtest = parentDAO.getStudentSubtest(paramMap);
+		
+		Map<String,Object> childDataMap = new HashMap<String, Object>();
+		childDataMap.put("studentOverviewMessage", studentOverviewMessage);
+		childDataMap.put("studentSubtest", studentSubtest);
+		return childDataMap;
+	}
+	
+	//Parent Network - End
 }

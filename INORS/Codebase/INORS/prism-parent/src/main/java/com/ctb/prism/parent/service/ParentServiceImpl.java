@@ -179,4 +179,9 @@ public class ParentServiceImpl implements IParentService {
 
 	//Manage Content - Parent Network - End
 	
+	//Parent Network - Start
+	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException{
+		return parentBusiness.getChildData(paramMap);
+	}
+	//Parent Network - End
 }

@@ -269,45 +269,6 @@ public class LoginController{
 		 return validateUser(req, res);
 	 }
 	 
-	 @RequestMapping(value="/childData", method=RequestMethod.GET)
-	 public ModelAndView parentReports(HttpServletRequest req, HttpServletResponse res) throws IOException{
-		 ReportTO homeReport = new ReportTO();
-		 homeReport.setStudentBioId(req.getParameter("childId"));
-		 req.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
-		 req.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, req.getParameter("childId"));
-		 
-		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MESSAGE_TYPE);
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
-		  String overviewInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		  if(null!=overviewInfoMessage )
-		  {
-			  overviewInfoMessage = overviewInfoMessage.replaceAll("<p>", "");
-			  overviewInfoMessage = overviewInfoMessage.replaceAll("</p>", "");
-		  }
-		 
-		/* List<AssessmentTO> subtestList = reportService.getAssessments(true);
-		 for(AssessmentTO assessment : subtestList) {
-			 if(assessment.getAssessmentId() == 101) {
-				 for(ReportTO report : assessment.getReports()) {
-					 homeReport.setReportUrl(report.getReportUrl());
-					 homeReport.setReportName(report.getReportName());
-					 homeReport.setAssessmentName(""+assessment.getAssessmentId());
-					 homeReport.setReportId(report.getReportId());
-					 break;
-				 }
-				 break;
-			 }
-		 }*/
-		 
-		 ModelAndView modelAndView = new ModelAndView("parent/children");
-		 modelAndView.addObject("overviewInfoMessage", overviewInfoMessage);
-		 //modelAndView.addObject("subtestList", subtestList);
-		 return modelAndView;
-	 }
-	 
-	 
 	 /**
 	  * This method is invoked after successful authentication
 	  * @param req

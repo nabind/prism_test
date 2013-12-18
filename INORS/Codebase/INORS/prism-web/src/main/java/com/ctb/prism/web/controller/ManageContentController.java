@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
@@ -158,7 +159,8 @@ public class ManageContentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/addNewContent", method = RequestMethod.POST)
-    public void addNewContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
+	public @ResponseBody 
+	String addNewContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
     		HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - addNewContent()");
 		long t1 = System.currentTimeMillis();
@@ -172,7 +174,7 @@ public class ManageContentController {
 			jsonString = gson.toJson(statusTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
+			//response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -180,6 +182,7 @@ public class ManageContentController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - addNewContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return jsonString;
     }
 	
 	
@@ -189,7 +192,8 @@ public class ManageContentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/loadManageContent", method = RequestMethod.GET)
-	public void loadManageContent(HttpServletRequest req,
+	public @ResponseBody 
+	String  loadManageContent(HttpServletRequest req,
 			HttpServletResponse res) throws ServletException, IOException,BusinessException {
 		
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - loadManageContent");
@@ -216,10 +220,11 @@ public class ManageContentController {
 			logger.log(IAppLogger.INFO, "jsonString of loadManageContent:");
 			logger.log(IAppLogger.INFO, loadManageContentJson);
 			res.setContentType("application/json");
-			res.getWriter().write(loadManageContentJson);
+			//res.getWriter().write(loadManageContentJson);
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - loadManageContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return loadManageContentJson;
 	}
 	
 	/**

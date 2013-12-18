@@ -72,4 +72,7 @@ public interface IParentService {
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException;
 	//Manage Content - Parent Network - End
 	
+	//Parent Network - Start
+	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException;
+	//Parent Network - End
 }

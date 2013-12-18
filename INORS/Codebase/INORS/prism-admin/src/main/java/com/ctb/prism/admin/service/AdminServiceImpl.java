@@ -202,7 +202,7 @@ public class AdminServiceImpl implements IAdminService {
 		return adminBusiness.getUserData(paramMap);
 	}
 	
-	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap) throws BusinessException
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap) throws BusinessException
 	{
 		return adminBusiness.getCustomerProduct(paramMap);
 	}

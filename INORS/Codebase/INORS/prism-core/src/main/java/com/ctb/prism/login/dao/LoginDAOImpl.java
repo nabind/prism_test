@@ -1,9 +1,12 @@
 package com.ctb.prism.login.dao;
 
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.io.BufferedReader;
@@ -11,6 +14,9 @@ import java.io.IOException;
 import oracle.sql.CLOB;
 import java.sql.Clob;
 import com.ctb.prism.core.util.Utils;
+
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Repository;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -270,13 +277,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	
 
 	/**
-	 * @author Arunava
+	 * @author TCS
 	 * Retrieves and returns message corresponding configured in database
 	 * @param msgtype,reportname and infoname
-	 * @return clob message
+	 * @return message
 	 */
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
-		
+		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
+		long t1 = System.currentTimeMillis();
 		String MESSAGE_NAME=(String) paramMap.get("MESSAGE_NAME");
 		String REPORT_NAME=(String) paramMap.get("REPORT_NAME");
 		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
@@ -294,29 +302,66 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					}
 			}
 		}
-		
+			
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: "+String.valueOf(t2 - t1)+"ms");
 		return systemConfig;
-		}
+	}
 	
-	public static String convertClobToString(final CLOB oracleClob){
-		StringBuffer stringBuffer = new StringBuffer("");
-		BufferedReader bufferedReader = null;
-		String tempString;
-		if(oracleClob != null){
-			try {
-				bufferedReader = new BufferedReader(oracleClob.getCharacterStream());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			try {
-				while((tempString = bufferedReader.readLine()) != null){
-					stringBuffer.append("\n").append(tempString);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	/*
+	 * Get custprodid along with product
+	 * */
+	@Cacheable(cacheName = "customerProductCache")
+	@SuppressWarnings("unchecked")
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
+			throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getCustomerProduct()");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
+		long t1 = System.currentTimeMillis();
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		try{
+			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
+				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
+				            //cs.setLong(1,((BigDecimal) BigDecimal.valueOf(Long.valueOf((loggedinUserTO.getCustomerId())))).longValue());
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsCustProd = null;
+			        			List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOResult 
+			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			        			try {
+									cs.execute();
+									rsCustProd = (ResultSet) cs.getObject(2);
+
+									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+									while(rsCustProd.next()){
+										objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+										objectValueTO.setValue(rsCustProd.getString("VALUE"));
+										objectValueTO.setName(rsCustProd.getString("NAME"));
+										objectValueTOResult.add(objectValueTO);
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return objectValueTOResult;
+				        }
+				    });
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		return stringBuffer.toString();
+		return objectValueTOList;
 	}
 	
 }

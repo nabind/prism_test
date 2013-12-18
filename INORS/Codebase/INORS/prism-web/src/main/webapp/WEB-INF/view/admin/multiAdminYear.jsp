@@ -17,7 +17,7 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
 	<div class="float-right">
 		<select style="width: 100px;" name="AdminYear" id="AdminYear" 
-			title='Select organization mode to refresh the hierarchy.'
+			title='Select administration to refresh the hierarchy.'
 			class="select silver-gradient glossy with-tooltip expandable-list" 
 			onchange="reloadOrgTree($(this))"
 			tabindex="-1">
@@ -31,7 +31,7 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 			</c:forEach>
 		</select>
 		<select style="width: 100px;" name="orgMode" id="orgMode" 
-			title='Select administration to refresh the hierarchy.'
+			title='Select organization mode to refresh the hierarchy.'
 			class="select silver-gradient glossy with-tooltip expandable-list" 
 			onchange="reloadOrgTree($(this))">
 					<option value="PUBLIC" selected>Public</option>

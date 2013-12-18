@@ -23,6 +23,7 @@ import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.admin.transferobject.ObjectValueTO;
 
 /**
@@ -35,6 +36,9 @@ public class AdminBusinessImpl implements IAdminBusiness {
 
 	@Autowired
 	private IAdminDAO adminDAO;
+	
+	@Autowired
+	private ILoginDAO loginDAO;
 
 	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid)
 		throws Exception {
@@ -204,8 +208,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 		return adminDAO.getUserData(paramMap);
 	}
 	
-	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap) throws BusinessException
-	{
-		return adminDAO.getCustomerProduct(paramMap);
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap) throws BusinessException{
+		return loginDAO.getCustomerProduct(paramMap);
 	}
 }

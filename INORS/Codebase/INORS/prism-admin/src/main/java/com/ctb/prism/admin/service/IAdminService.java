@@ -89,5 +89,5 @@ public interface IAdminService {
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap);
 	
-	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
 }

@@ -49,7 +49,6 @@ public interface IReportDAO {
 	public List<ManageMessageTO> loadManageMessage(final Map<String,Object> paramMap) throws SystemException;
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getAdminYear(final Map<String,Object> paramMap)throws SystemException;
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws SystemException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)throws SystemException;
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap) throws SystemException;
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap) throws SystemException;

@@ -61,7 +61,6 @@ public interface IParentDAO {
 	
 	//Manage Content - Parent Network - Start
 	//Populate filters to search content
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String,Object> paramMap) throws BusinessException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String,Object> paramMap) throws BusinessException;
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) throws BusinessException;
@@ -72,4 +71,8 @@ public interface IParentDAO {
 	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) throws BusinessException;
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException;
 	//Manage Content - Parent Network - End
+	
+	//Parent Network - Start
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getStudentSubtest(final Map<String,Object> paramMap) throws BusinessException;
+	//Parent Network - End
 }

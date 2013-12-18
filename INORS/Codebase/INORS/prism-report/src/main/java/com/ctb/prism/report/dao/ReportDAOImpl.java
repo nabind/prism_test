@@ -651,26 +651,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return objectValueTOList;
 	}
 	
-	@Cacheable(cacheName = "customerProductCache")
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
-			throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getCustomerProduct()");
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		List placeHolderValueList = new ArrayList();
-		placeHolderValueList.add(loggedinUserTO.getCustomerId());
-		try{
-			
-			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.CUST_PROD,placeHolderValueList.toArray(),
-					new ObjectValueTOMapper());
-		}catch(Exception e){
-			logger.log(IAppLogger.ERROR, "Error occurred in getCustomerProduct():", e);
-			throw new SystemException(e);
-		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getCustomerProduct()");
-		return objectValueTOList;
-	}
-	
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)
 			throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getOrgNodeLevel()");
@@ -702,17 +682,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		
 		List<ManageMessageTO> manageMessageTOList = null;
 		try{
-			if(null!=reportName && reportName.startsWith("System Configuration"))
-			{
+			if(null!=reportName && reportName.startsWith("System Configuration")){
 				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM, 
 						placeHolderValueList.toArray(),new ManageMessageTOMapper());
-			}
-			else
-			{
-			manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST, 
+			}else{
+				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST, 
 					placeHolderValueList.toArray(),new ManageMessageTOMapper());
 			}
-
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "Error occurred in loadManageMessage():", e);
 			return null;

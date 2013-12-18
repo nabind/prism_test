@@ -93,6 +93,4 @@ public interface IAdminDAO {
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException;
 
 	public List<UserDataTO> getUserData(Map<String, String> paramMap);
-	
-	public List<com.ctb.prism.admin.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
 }

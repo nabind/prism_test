@@ -120,11 +120,11 @@ $(document).ready(function() {
 					var userContent = '';
 					var menuContent = '';
 					$.each(data, function () { 
-						userContent += '<a href="childData.do?childId='+this.studentBioId+'" style="color: #fff; font-weight: bold">'
+						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="childData.do?childId='+this.studentBioId+'"> '+this.studentName+' (Grade: '+this.grade+')</a></li>';
+						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId+'"> '+this.studentName+' (Grade: '+this.grade+')</a></li>';
 					});
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");

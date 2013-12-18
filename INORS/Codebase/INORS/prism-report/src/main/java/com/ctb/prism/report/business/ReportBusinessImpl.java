@@ -20,6 +20,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.dao.IReportDAO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -40,6 +41,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 
 	@Autowired
 	private IReportDAO reportDAO;
+	
+	@Autowired
+	private ILoginDAO loginDAO;
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -289,7 +293,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			
 			
 			try {
-				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProduct = reportDAO.getCustomerProduct(paramMap);
+				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProduct = loginDAO.getCustomerProduct(paramMap);
 				allReports.get(0).setCustomerProductList(customerProduct);
 			} catch (SystemException e) {
 				// TODO Auto-generated catch block
@@ -338,7 +342,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	}
 	
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException{
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = reportDAO.getCustomerProduct(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = loginDAO.getCustomerProduct(paramMap);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("customerProductList", customerProductList);
 		return returnMap;

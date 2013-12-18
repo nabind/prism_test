@@ -2,7 +2,9 @@ package com.ctb.prism.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -28,6 +30,7 @@ import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 
 @Controller
@@ -503,6 +506,5 @@ public class ParentController extends BaseDAO {
 		}
 		return null;
 	}
-	
 		
 }

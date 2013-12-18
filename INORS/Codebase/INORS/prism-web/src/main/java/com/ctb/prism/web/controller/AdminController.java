@@ -97,11 +97,11 @@ public class AdminController {
 		try {
 			String adminYear = (String) request.getParameter("AdminYear");
 			if (currentOrg != null) {
-				List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 				if(adminYear == null) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 					if(adminYear == null) {
-						for(ObjectValueTO object : customerProductList) {
+						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
 						}
@@ -342,11 +342,11 @@ public class AdminController {
 					IApplicationConstants.CURRORG);
 			String adminYear = (String) request.getParameter("AdminYear");
 			//List<ObjectValueTO> adminList = adminService.getAllAdmin();
-			List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+			List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 			if(adminYear == null) {
 				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				if(adminYear == null) {
-					for(ObjectValueTO object : customerProductList) {
+					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 						adminYear = object.getValue();
 						break;
 					}
@@ -490,8 +490,8 @@ public class AdminController {
 				   	adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 					if(adminYear == null) {
 						//adminList = adminService.getAllAdmin();	
-						List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
-						for(ObjectValueTO object : customerProductList) {
+						List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
 						}
@@ -1218,11 +1218,11 @@ public class AdminController {
 			if (nodeId != null) {
 				modelAndView = new ModelAndView("admin/users");
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
-				List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 				if(adminYear == null) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 					if(adminYear == null) {
-						for(ObjectValueTO object : customerProductList) {
+						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
 						}
@@ -1301,11 +1301,11 @@ public class AdminController {
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			if (currentOrg != null) {
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
-				List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 				if(adminYear == null) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 					if(adminYear == null) {
-						for(ObjectValueTO object : customerProductList) {
+						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
 						}
@@ -1374,11 +1374,11 @@ public class AdminController {
 			
 			if (currentOrg != null) {
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
-				List<ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 				if(adminYear == null) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 					if(adminYear == null) {
-						for(ObjectValueTO object : customerProductList) {
+						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
 						}
@@ -1732,7 +1732,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView("parent/manageStudent");
 		String hierarchialOrgIds = null;
 		String adminYear = (String) request.getParameter("AdminYear");
-		List<ObjectValueTO> customerProductList =null;	
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList =null;	
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
@@ -1755,7 +1755,7 @@ public class AdminController {
 							if(adminYear == null) {
 								adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 								if(adminYear == null) {
-									for(ObjectValueTO object : customerProductList) {
+									for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 										adminYear = object.getValue();
 										break;
 									}
