@@ -385,11 +385,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			parentTOs = new ArrayList<ParentTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
 				ParentTO to = new ParentTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USER_ID"))
+				to.setUserId(((BigDecimal) fieldDetails.get("USERID"))
 						.longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
+				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
+				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
 				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
 				parentTOs.add(to);
@@ -429,8 +431,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			parentTOs = new ArrayList<ParentTO>();
 			for (Map<String, Object> fieldDetails : parentlist) {
 				ParentTO to = new ParentTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USER_ID"))
-						.longValue());
+				to.setUserId(((BigDecimal) fieldDetails.get("USERID")).longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
