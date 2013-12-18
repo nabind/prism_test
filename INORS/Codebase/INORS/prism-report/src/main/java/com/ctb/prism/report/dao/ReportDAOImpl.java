@@ -651,26 +651,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return objectValueTOList;
 	}
 	
-	@Cacheable(cacheName = "customerProductCache")
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
-			throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getCustomerProduct()");
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		List placeHolderValueList = new ArrayList();
-		placeHolderValueList.add(loggedinUserTO.getCustomerId());
-		try{
-			
-			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.CUST_PROD,placeHolderValueList.toArray(),
-					new ObjectValueTOMapper());
-		}catch(Exception e){
-			logger.log(IAppLogger.ERROR, "Error occurred in getCustomerProduct():", e);
-			throw new SystemException(e);
-		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getCustomerProduct()");
-		return objectValueTOList;
-	}
-	
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)
 			throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getOrgNodeLevel()");
