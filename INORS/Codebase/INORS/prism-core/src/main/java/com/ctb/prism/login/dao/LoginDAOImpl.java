@@ -277,7 +277,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	
 
 	/**
-	 * @author TCS
+	 * @author Arunavo
 	 * Retrieves and returns message corresponding configured in database
 	 * @param msgtype,reportname and infoname
 	 * @return message
@@ -309,7 +309,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	}
 	
 	/*
-	 * Get custprodid along with product
+	 * Get custprodid along with product - By Joy
 	 * */
 	@Cacheable(cacheName = "customerProductCache")
 	@SuppressWarnings("unchecked")
@@ -325,7 +325,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
 				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
-				            //cs.setLong(1,((BigDecimal) BigDecimal.valueOf(Long.valueOf((loggedinUserTO.getCustomerId())))).longValue());
 				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
 				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;				      			            

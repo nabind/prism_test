@@ -57,6 +57,7 @@ public class ParentNetworkController {
 		ModelAndView modelAndView = new ModelAndView("parent/studentSubtest");
 		Map<String,Object> childDataMap = null;
 		String studentBioId = request.getParameter("studentBioId");
+		String studentName = request.getParameter("studentName");
 		
 		request.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
 		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
@@ -69,6 +70,7 @@ public class ParentNetworkController {
 		
 		try{
 			childDataMap = parentService.getChildData(paramMap);
+			childDataMap.put("studentName", studentName);
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");

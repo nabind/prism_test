@@ -15,7 +15,8 @@
 
 		<div class="right-column-200px">
 
-			<div class="right-column" style="min-width: 250px; width:22%"><div class="" style="height: auto; margin-top:-45px;">
+			<div class="right-column" style="min-width: 250px; width:22%">
+			<div class="" style="height: auto; margin-top:-45px;">
 				<h3 style="position:relative">Your Children</h3>
 				<!--<p class="big-message blue-gradient">-->
 				<p class="big-message blue-gradient" style="color : #fff">
@@ -23,11 +24,6 @@
 					Select your child's name below to see their assessment results:
 					<br/><br/>
 					<span class="children-list"></span>
-					<!--a href="" style="color: #fff; font-weight: bold">Randy Balser</a>
-					<br/>Spring 2010 ISTEP+,Grade 3
-					<br/><br/>
-					<a href="" style="color: #fff; font-weight: bold">Emily A Smith</a>
-					<br/>Spring 2010 ISTEP+,Grade 5-->
 				</p>
 			</div></div>
 

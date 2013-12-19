@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 //============To show dynamic content in HTML===============
 function showContent($container){
-	var taVal = $('#taContent');
+	var taVal = $('#taContent').val();
 	$container.html(taVal);
 }
 

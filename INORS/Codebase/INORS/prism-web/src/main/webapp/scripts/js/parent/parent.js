@@ -120,7 +120,8 @@ $(document).ready(function() {
 					var userContent = '';
 					var menuContent = '';
 					$.each(data, function () { 
-						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId+'" style="color: #fff; font-weight: bold">'
+						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId
+									+'&studentName='+this.studentName+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
