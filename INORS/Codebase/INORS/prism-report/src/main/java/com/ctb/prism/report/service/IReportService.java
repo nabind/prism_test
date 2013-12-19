@@ -90,4 +90,11 @@ public interface IReportService {
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
+
+	/**
+	 * 
+	 * @param to
+	 * @return
+	 */
+	public List<String> getFilePathGD(GroupDownloadTO to);
 }

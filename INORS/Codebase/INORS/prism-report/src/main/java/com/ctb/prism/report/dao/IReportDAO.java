@@ -1,5 +1,6 @@
 package com.ctb.prism.report.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -95,4 +96,11 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
+	
+	/**
+	 * 
+	 * @param students 
+	 * @return
+	 */
+	public List<String> getICLetterPaths(String students);
 }

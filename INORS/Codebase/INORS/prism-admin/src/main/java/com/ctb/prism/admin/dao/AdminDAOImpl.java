@@ -381,7 +381,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				UserTOs.add(to);
 			}
 		}
-
+		logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
 		return UserTOs;
 	}
 

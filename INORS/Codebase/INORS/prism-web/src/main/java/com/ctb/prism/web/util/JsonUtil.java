@@ -35,10 +35,13 @@ public class JsonUtil {
 		return jsonStr.toString();
 	}
 	
-	public static String convertToJsonAdmin(List TOlist) {
+	@SuppressWarnings("rawtypes")
+	public static String convertToJsonAdmin(List toList) {
+		if(toList == null){
+			return "[]";
+		}
 		StringBuilder jsonStr = new StringBuilder(); 
 		int count = 0;
-		//logger.log(IAppLogger.DEBUG, "Hiiiiiiiiiiiiiiiiii");
 		jsonStr.append("[");
 		//XStream xstream = new XStream(new JettisonMappedXmlDriver());//new JettisonMappedXmlDriver()
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -47,7 +50,7 @@ public class JsonUtil {
 		    }
 		});
         xstream.setMode(XStream.NO_REFERENCES);
-		for(Iterator itr = TOlist.iterator(); itr.hasNext();) {
+		for(Iterator itr = toList.iterator(); itr.hasNext();) {
 			if(count > 0) {
 				jsonStr.append(",");
 			}

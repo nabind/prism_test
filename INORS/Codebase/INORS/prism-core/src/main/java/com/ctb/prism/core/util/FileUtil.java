@@ -6,9 +6,11 @@ package com.ctb.prism.core.util;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,6 +28,10 @@ import org.springframework.util.FileCopyUtils;
 
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfReader;
 
 /**
  * This class contains various file handling utility methods:
@@ -33,6 +39,7 @@ import com.ctb.prism.core.logger.LogFactory;
  * <li>Download a file through client browser</li>
  * <li>Prepare byte array to create a Zip file</li>
  * <li>Prepare byte array to create an Excell file</li>
+ * <li>Prepare byte array to merge a list of Pdf files</li>
  * </ul>
  * 
  * @author Amitabha Roy
@@ -178,5 +185,56 @@ public class FileUtil {
 		hStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		hStyle.setFont(font);
 		return hStyle;
+	}
+
+	/**
+	 * Gets the contents of the given input File into a new byte array.
+	 * 
+	 * @param filePath
+	 *            Location of the input file
+	 * @return byte array representation of the input file
+	 */
+	public static byte[] getBytes(String filePath) {
+		logger.log(IAppLogger.INFO, "filePath = " + filePath);
+		if (filePath != null && !filePath.isEmpty()) {
+			try {
+				File in = new File(filePath);
+				return FileCopyUtils.copyToByteArray(in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return "".getBytes();
+	}
+
+	public static byte[] getMergedPdfBytes(List<String> files) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		if (files != null && !files.isEmpty()) {
+			try {
+				Document document = new Document();
+				PdfCopy copy = new PdfCopy(document, baos);
+				document.open();
+				PdfReader reader;
+				int n;
+				// loop over the documents you want to concatenate
+				for (String file : files) {
+					reader = new PdfReader(file);
+					// loop over the pages in that document
+					n = reader.getNumberOfPages();
+					for (int page = 0; page < n;) {
+						copy.addPage(copy.getImportedPage(reader, ++page));
+					}
+					copy.freeReader(reader);
+					reader.close();
+				}
+				document.close();
+				logger.log(IAppLogger.INFO, "merged pdf bytes [" + baos.size() + "] created");
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return baos.toByteArray();
 	}
 }

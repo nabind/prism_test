@@ -51,5 +51,12 @@ public class InorsServiceImpl implements IInorsService {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
 		return inorsBusiness.populateSchoolGrt(paramMap);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.service.IInorsService#getProductNameById(java.lang.Long)
+	 */
+	public String getProductNameById(Long productId) {
+		return inorsBusiness.getProductNameById(productId);
+	}
 	
 }

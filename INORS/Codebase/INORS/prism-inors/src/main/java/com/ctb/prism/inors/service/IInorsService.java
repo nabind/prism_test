@@ -35,4 +35,12 @@ public interface IInorsService {
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap);
 
+	/**
+	 * Gets the Product name for a given Product id.
+	 * 
+	 * @param productId
+	 * @return
+	 */
+	public String getProductNameById(Long productId);
+
 }

@@ -65,9 +65,9 @@ public class CommonController extends BaseDAO {
 	 */
 	@RequestMapping(value = "/showError", method = RequestMethod.GET)
 	public ModelAndView loadErrorPage(HttpServletRequest req, HttpServletResponse res) {
-		logger.log(IAppLogger.INFO, "Enter: UserController - loadJSPView");
+		logger.log(IAppLogger.INFO, "Enter: loadErrorPage()");
 		ModelAndView mv = new ModelAndView("error/error");
-		logger.log(IAppLogger.INFO, "Exit: UserController - loadJSPView");
+		logger.log(IAppLogger.INFO, "Exit: loadErrorPage()");
 		return mv;
 	}
 	
@@ -78,7 +78,7 @@ public class CommonController extends BaseDAO {
 	 */
 	@RequestMapping(value = "/loadJSPView", method = RequestMethod.GET)
 	public ModelAndView loadJSPView(@RequestParam("path") String jspPath) {
-		logger.log(IAppLogger.INFO, "Enter: UserController - loadJSPView");
+		logger.log(IAppLogger.INFO, "Enter: loadJSPView() = " + jspPath);
 		ModelAndView mv = new ModelAndView(jspPath);
 		logger.log(IAppLogger.INFO, "Exit: UserController - loadJSPView");
 		return mv;

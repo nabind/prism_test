@@ -209,19 +209,20 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<GrtTO> getGRTList(final String testProgram, final String districtId, final String schoolId) {
+	private List<GrtTO> getGRTList(final String productId, final String testProgram, final String districtId, final String schoolId) {
 		long t1 = System.currentTimeMillis();
-		List<GrtTO> grtList = null;
+		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
 			if ("ALL".equals(schoolId)){
 				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(
 						new CallableStatementCreator() {
 							public CallableStatement createCallableStatement(Connection con) throws SQLException {
 								CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
-								cs.setLong(1, Long.parseLong(districtId));
-								cs.setLong(2, Long.parseLong(testProgram));
-								cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.setLong(1, Long.parseLong(productId));
+								cs.setLong(2, Long.parseLong(districtId));
+								cs.setLong(3, Long.parseLong(testProgram));
+								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -230,7 +231,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 								List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 								try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(3);
+									rs = (ResultSet) cs.getObject(4);
 									grtTOResult = getGrtListFromResultSet(rs);
 								} catch (SQLException e) {
 									e.printStackTrace();
@@ -243,11 +244,12 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
-							cs.setLong(1, Long.parseLong(districtId));
-							cs.setLong(2, Long.parseLong(schoolId));
-							cs.setLong(3, Long.parseLong(testProgram));
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(1, Long.parseLong(productId));
+							cs.setLong(2, Long.parseLong(districtId));
+							cs.setLong(3, Long.parseLong(schoolId));
+							cs.setLong(4, Long.parseLong(testProgram));
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -256,7 +258,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject(4);
+								rs = (ResultSet) cs.getObject(5);
 								grtTOResult = getGrtListFromResultSet(rs);
 							} catch (SQLException e) {
 								e.printStackTrace();
@@ -271,6 +273,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - getGRTList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
+		logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size());
 		return grtList;
 	}
 
@@ -519,6 +522,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		String type = paramMap.get("type");
 		logger.log(IAppLogger.INFO, "type = " + type);
+		String productId = paramMap.get("productId");
+		logger.log(IAppLogger.INFO, "productId = " + productId);
 		String testProgram = paramMap.get("testProgram");
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		String districtId = paramMap.get("parentOrgNodeId");
@@ -526,9 +531,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		String schoolId = paramMap.get("orgNodeId");
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		if (InorsDownloadConstants.IC.equals(type)) {
-			return getICList(testProgram, districtId, schoolId);
+			return getICList(productId, testProgram, districtId, schoolId);
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
-			return getGRTList(testProgram, districtId, schoolId);
+			return getGRTList(productId, testProgram, districtId, schoolId);
 		} else {
 			return null;
 		}
@@ -547,7 +552,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<InvitationCodeTO> getICList(final String testProgram, final String districtId, final String schoolId) {
+	private List<InvitationCodeTO> getICList(final String productId, final String testProgram, final String districtId, final String schoolId) {
 		long t1 = System.currentTimeMillis();
 		List<InvitationCodeTO> icList = null;
 		try {
@@ -556,10 +561,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						new CallableStatementCreator() {
 							public CallableStatement createCallableStatement(Connection con) throws SQLException {
 								CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
-								cs.setLong(1, Long.parseLong(testProgram));
-								cs.setLong(2, Long.parseLong(districtId));
-								cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.setLong(1, Long.parseLong(productId));
+								cs.setLong(2, Long.parseLong(testProgram));
+								cs.setLong(3, Long.parseLong(districtId));
+								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -568,7 +574,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 								List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
 								try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(3);
+									rs = (ResultSet) cs.getObject(4);
 									icTOList = getICTOList(rs);
 								} catch (SQLException e) {
 									e.printStackTrace();
@@ -581,10 +587,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
-							cs.setLong(1, Long.parseLong(testProgram));
-							cs.setLong(2, Long.parseLong(schoolId));
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(1, Long.parseLong(productId));
+							cs.setLong(2, Long.parseLong(testProgram));
+							cs.setLong(3, Long.parseLong(schoolId));
+							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -593,7 +600,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject(3);
+								rs = (ResultSet) cs.getObject(4);
 								icTOList = getICTOList(rs);
 							} catch (SQLException e) {
 								e.printStackTrace();
@@ -606,6 +613,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
+		logger.log(IAppLogger.INFO, "icList.size(): " + icList.size());
 		return icList;
 	}
 
@@ -746,6 +754,20 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			logger.log(IAppLogger.INFO, "Exit: populateSchoolGrt() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return schoolList;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#getProductNameById(java.lang.Long)
+	 */
+	public String getProductNameById(Long productId) {
+		String productName = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				productName = fieldDetails.get("PRODUCT_NAME").toString();
+			}
+		}
+		return productName;
 	}
 	
 }

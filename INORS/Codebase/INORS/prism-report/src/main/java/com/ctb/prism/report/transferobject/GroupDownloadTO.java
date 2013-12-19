@@ -3,6 +3,7 @@
  */
 package com.ctb.prism.report.transferobject;
 
+import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
@@ -202,5 +203,47 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		buf.append("button=");
+		buf.append(button);
+		buf.append("\n");
+		buf.append("testAdministration=");
+		buf.append(testAdministration);
+		buf.append("\n");
+		buf.append("testProgram=");
+		buf.append(testProgram);
+		buf.append("\n");
+		buf.append("district=");
+		buf.append(district);
+		buf.append("\n");
+		buf.append("school=");
+		buf.append(school);
+		buf.append("\n");
+		buf.append("klass=");
+		buf.append(klass);
+		buf.append("\n");
+		buf.append("grade=");
+		buf.append(grade);
+		buf.append("\n");
+		buf.append("students=");
+		buf.append(students);
+		buf.append("\n");
+		buf.append("groupFile=");
+		buf.append(groupFile);
+		buf.append("\n");
+		buf.append("collationHierarchy=");
+		buf.append(collationHierarchy);
+		buf.append("\n");
+		buf.append("fileName=");
+		buf.append(fileName);
+		buf.append("\n");
+		buf.append("email=");
+		buf.append(email);
+		buf.append("\n");
+		return buf.toString();
 	}
 }

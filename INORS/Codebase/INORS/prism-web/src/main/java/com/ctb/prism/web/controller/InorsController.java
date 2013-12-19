@@ -377,7 +377,7 @@ public class InorsController {
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		request.setAttribute("icDownload", "true");
-		return getOrganizations(bulkDownloadTO, request, response);
+		return groupDownloadForm(bulkDownloadTO, request, response);
 	}
 	
 	/**
@@ -387,8 +387,8 @@ public class InorsController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/groupDownloads", method = RequestMethod.GET)
-	public ModelAndView getOrganizations(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
+	@RequestMapping(value = "/groupDownloadForm", method = RequestMethod.GET)
+	public ModelAndView groupDownloadForm(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		
@@ -413,12 +413,12 @@ public class InorsController {
 		try {
 			String adminYear = (String) request.getParameter("AdminYear");
 			Map<String, Object> parameters = null;
-			if(IApplicationConstants.TRUE.equals(request.getParameter("filter"))) {
-				@SuppressWarnings("unchecked")
-				List<InputControlTO> allInputControls = (List<InputControlTO>) request.getSession().getAttribute(
-						IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl);
-				parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, "false");
-			} else {
+		////	if(IApplicationConstants.TRUE.equals(request.getParameter("filter"))) {
+			////	@SuppressWarnings("unchecked")
+				////List<InputControlTO> allInputControls = (List<InputControlTO>) request.getSession().getAttribute(
+					////	IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl);
+			////	parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, "false");
+			////} else {
 				// get all input controls for report
 				List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 				
@@ -427,12 +427,30 @@ public class InorsController {
 
 				// get parameter values for report
 				parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-			}
+		////	}
 			adminYear =  (String) parameters.get("p_adminYear");
-			String school = (String) parameters.get("p_school");
-			String corp = (String) parameters.get("p_corp");
-			String orgClass = (String) parameters.get("p_class");
-			modelAndView.addObject("rootOrgId", corp);
+			String testAdministrationVal = (String) request.getParameter("p_test_administration");
+			String testProgram = (String) request.getParameter("p_test_program");
+			String corpDiocese = (String) request.getParameter("p_corpdiocese");
+			String school = (String) request.getParameter("p_school");
+			String klass = (String) request.getParameter("p_class");
+			String grade = (String) request.getParameter("p_grade_ppr");
+			
+			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+			logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+			logger.log(IAppLogger.INFO, "school=" + school);
+			logger.log(IAppLogger.INFO, "klass=" + klass);
+			logger.log(IAppLogger.INFO, "grade=" + grade);
+			
+			modelAndView.addObject("testAdministrationVal", testAdministrationVal);
+			modelAndView.addObject("testProgram", testProgram);
+			modelAndView.addObject("corpDiocese", corpDiocese);
+			modelAndView.addObject("school", school);
+			modelAndView.addObject("klass", klass);
+			modelAndView.addObject("grade", grade);
+			
+			modelAndView.addObject("rootOrgId", corpDiocese);
 			
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 		} catch (Exception e) {
@@ -640,9 +658,50 @@ public class InorsController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/gRTInvitationCodeFiles", method = RequestMethod.GET)
-	public ModelAndView gRTInvitationCodeFiles() {
-		return new ModelAndView("inors/gRTInvitationCodeFiles");
+	@RequestMapping(value = "/grtICFileForm", method = RequestMethod.GET)
+	public ModelAndView grtICFileForm(HttpServletRequest request) {
+		logger.log(IAppLogger.INFO, "Enter: grtICFileForm()");
+		ModelAndView modelAndView = new ModelAndView("inors/grtICFileForm");
+		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		String testProgram = (String) request.getParameter("p_test_program");
+		String corpDiocese = (String) request.getParameter("p_corpdiocese");
+		String school = (String) request.getParameter("p_school");
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		String productName = "";
+		try {
+			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+		} catch (Exception e) {
+			logger.log(IAppLogger.WARN, e.getMessage());
+		}
+		logger.log(IAppLogger.INFO, "productName=" + productName);
+		
+		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
+		modelAndView.addObject("testAdministrationText", productName);
+		modelAndView.addObject("testProgram", testProgram);
+		modelAndView.addObject("corpDiocese", corpDiocese);
+		modelAndView.addObject("school", school);
+
+		String reportUrl = (String) request.getParameter("reportUrl");
+
+		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+
+		Map<String, Object> parameters = null;
+
+		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+
+		// get default parameters for logged-in user
+		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl);
+
+		// get parameter values for report
+		parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+		logger.log(IAppLogger.INFO, "parameters = " + parameters);
+		request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+
+		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
+		return modelAndView;
 	}
 
 	/**
@@ -655,18 +714,35 @@ public class InorsController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/downloadGRTInvitationCodeFiles", method = RequestMethod.GET)
 	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
-		logger.log(IAppLogger.INFO, "Enter: InorsController.downloadGRTInvitationCodeFiles");
+		logger.log(IAppLogger.INFO, "Enter: downloadGRTInvitationCodeFiles()");
 		Map<String, String> paramMap = new HashMap<String, String>();
 		
 		String type = (String) request.getParameter("type");
-		String testAdministration = (String) request.getParameter("testAdministration");
-		String[] tokens = testAdministration.split("~");
-		String product = tokens[0];
-		String term = tokens[1];
-		String year = tokens[2];
+		String testAdministrationVal = (String) request.getParameter("testAdministrationVal");
 		String testProgram = (String) request.getParameter("testProgram");
 		String corpDiocese = (String) request.getParameter("corpDiocese");
 		String school = (String) request.getParameter("school");
+
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		
+		String productName = "";
+		try {
+			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+		} catch (Exception e) {
+			logger.log(IAppLogger.WARN, e.getMessage());
+		}
+		logger.log(IAppLogger.INFO, "productName=" + productName);
+		String[] tokens = productName.split(" ");
+		String product = tokens[0];
+		String term = tokens[1];
+		String year = tokens[2];
+		
+		logger.log(IAppLogger.INFO, "product=" + product);
+		logger.log(IAppLogger.INFO, "term=" + term);
+		logger.log(IAppLogger.INFO, "year=" + year);
 
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 
@@ -674,15 +750,11 @@ public class InorsController {
 		paramMap.put("product", product);
 		paramMap.put("term", term);
 		paramMap.put("year", year);
+		paramMap.put("productId", testAdministrationVal);
 		paramMap.put("testProgram", testProgram);
 		paramMap.put("parentOrgNodeId", corpDiocese);
 		paramMap.put("orgNodeId", school);
 		paramMap.put("userId", userId);
-
-		logger.log(IAppLogger.INFO, "type=" + type + ", product=" + product
-				+ ", term=" + term + ", year=" + year + ", testProgram="
-				+ testProgram + ", parentOrgNodeId=" + corpDiocese
-				+ ", orgNodeId=" + school + ", userId=" + userId);
 
 		byte[] data = null;
 		String fileName = "";
@@ -705,7 +777,7 @@ public class InorsController {
 			e.printStackTrace();
 		}
 		FileUtil.browserDownload(response, data, zipFileName);
-		logger.log(IAppLogger.INFO, "Exit: InorsController.downloadGRTInvitationCodeFiles");
+		logger.log(IAppLogger.INFO, "Exit: downloadGRTInvitationCodeFiles()");
 	}
 	
 	@RequestMapping(value = "/populateDistrictGrt", method = RequestMethod.GET)

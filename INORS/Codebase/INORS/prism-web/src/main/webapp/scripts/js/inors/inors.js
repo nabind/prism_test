@@ -26,6 +26,7 @@ $(document).ready(function() {
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");
 		blockUI('new-tab'+tabCount+'');
+		var apiUrl = $(this).attr("apiurl");
 		var reportUrl = $(this).attr("param");
 		var reportName = $(this).attr("reportName");
 		var reportId = $(this).attr("reportId");
@@ -33,7 +34,7 @@ $(document).ready(function() {
 		var obj = $('.report-frame-'+count);
 		
 		var dataURL = reportUrl + '&reportId='+reportId + '&reportName='+reportName+'&filter=true&' + $(formObj).serialize();
-		$(obj).attr('src','groupDownloads.do?reportUrl='+dataURL);
+		$(obj).attr('src', apiUrl + '?reportUrl='+dataURL);
 	});
 	
 	$("#downloadBulkPdf").live("click", function() {
@@ -122,76 +123,57 @@ $(document).ready(function() {
 
 	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
-	//populateGrtDropdownsOnLoad();
-	
-	
-	$("#testAdministration").live("change", function(event) {
+	showHideDivs();
+	$("#p_test_administration").live("change", function(event) {
+		var testAdm = $("#p_test_administration").val();
+	});
+	$("#p_test_program").live("change", function(event) {
+	});
+	$('#p_corpdiocese').live('change',function(){
+	});
+	$("#p_school").live("change", function(event) {
+		var testAdministrationVal = $("#q_testAdministrationVal").val();
+		var testProgram = $("#q_testProgram").val();
+		var corpDiocese = $("#q_corpDiocese").val();
+		var school = $("#q_school").val();
+		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		$(".customRefresh").click();
 		showHideDivs();
 	});
-	$("#testProgram").live("change", function(event) {
-		var testProgram = $("#testProgram").val();
-		populateDistrictGrt(testProgram)
-	});
-	$('#corpDiocese').live('change',function(){
-		var testProgram = $("#testProgram").val();
-		var corpDiocese = $("#corpDiocese").val();
-		populateSchoolGrt(testProgram, corpDiocese);
-	});
-	$("#school").live("change", function(event) {
-		showHideDivs();
-	});
+	var hrefParams = "";
 	$("#downloadGRTFile").live("click", function() {
-		var testAdministration = $("#testAdministration").val();
-		var testProgram = $("#testProgram").val();
-		var corpDiocese = $("#corpDiocese").val();
-		var school = $("#school").val();
-		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		var testAdministrationVal = $("#q_testAdministrationVal").val();
+		var testProgram = $("#q_testProgram").val();
+		var corpDiocese = $("#q_corpDiocese").val();
+		var school = $("#q_school").val();
+		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadGRTFile").attr("href", href);
 	});
 	$("#downloadICFile").live("click", function() {
-		var testAdministration = $("#testAdministration").val();
-		var testProgram = $("#testProgram").val();
-		var corpDiocese = $("#corpDiocese").val();
-		var school = $("#school").val();
-		var href = "downloadGRTInvitationCodeFiles.do?type=IC&2013&testAdministration=" + testAdministration + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		var testAdministrationVal = $("#q_testAdministrationVal").val();
+		var testProgram = $("#q_testProgram").val();
+		var corpDiocese = $("#q_corpDiocese").val();
+		var school = $("#q_school").val();
+		var href = "downloadGRTInvitationCodeFiles.do?type=IC&2013&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadICFile").attr("href", href);
 	});
 
-	/* Extra action call in happening - Commented the function  */
 	// Group Download
-	//populateGDDropdownsOnLoad();
-	
 	$("#testAdministrationGD").live("change", function(event) {
 	});
 	
 	$("#testProgramGD").live("change", function(event) {
-		var testProgram = $("#testProgramGD").val();
-		if (testProgram && testProgram != "-1") { // then populate Corp/Diocese
-			populateDistrictGD(testProgram)
-		}
 	});
 	
 	$('#corpDioceseGD').live('change', function() {
-		var corpDiocese = $("#corpDioceseGD").val();
-		if (corpDiocese && corpDiocese != "-1") { // then populate school
-			populateSchoolGD(corpDiocese);
-		}
 	});
 	
 	$('#schoolGD').live('change', function() {
-		var schoolId = $("#schoolGD").val();
-		if (schoolId && schoolId != "-1") { // then populate class
-			populateClassGD(schoolId);
-		}
 	});
 	
 	$('#classGD').live('change', function() {
 		populateStudentTableGD();
 	});
-	
-	/* Extra action call in happening - Commented the function  */
-	//populateGradeGD();
-	
 	$('#check-all').change(function() {
 		var checkboxes = $(this).closest('form').find(':checkbox');
 		if ($(this).is(':checked')) {
@@ -261,7 +243,7 @@ function downloadBulkPdf(type, mode) {
 	$(".success-message").hide(200);
 	blockUI();
 	
-	if(type != 'CR' && $('.jstree-checked').length == 0) {
+	if(type != 'CR' && $('.jstree-checked').length == 0 && chkTreeContainerObj) {
 		// check default school
 		chkTreeContainerObj.jstree("check_all");
 	}
@@ -1003,15 +985,15 @@ function populateStudentTableByJson(json) {
  * Show/Hide GRT/IC Layout/Download Links/Buttons
  */
 function showHideDivs() {
-	var schoolId = $("#school").val();
-	if((schoolId) && schoolId != '-1') {
+	var schoolId = $("#q_school").val();
+	if((schoolId) && schoolId != '-2') {
 		$("#icDiv").removeClass('hidden');
 		$("#grtDiv").removeClass('hidden');
 		$("#icDiv").show();
 		$("#grtDiv").show();
-		var testAdministration = $("#testAdministration").val();
-		if (testAdministration) {
-			var tokens = testAdministration.split("~");
+		var testAdministrationText = $("#q_testAdministrationText").val();
+		if (testAdministrationText) {
+			var tokens = testAdministrationText.split(" ");
 			if ("2010" == tokens[2]) {
 				$("#icLinks").html('');
 				$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
@@ -1098,7 +1080,7 @@ function groupDownloadFunction(button) {
 		cache : false,
 		success : function(data) {
 			if (data.length > 0) {
-				alert(JSON.stringify(data));
+				alert("Test Alert: " + JSON.stringify(data));
 			} else {
 				$.modal.alert("No File Found");
 				$("#studentTableGD").hide();
@@ -1106,8 +1088,8 @@ function groupDownloadFunction(button) {
 			unblockUI();
 		},
 		error : function(data) {
-			$.modal.alert(strings['script.common.error']);
 			unblockUI();
+			//$.modal.alert(strings['script.common.error']);
 		}
 	});
 }

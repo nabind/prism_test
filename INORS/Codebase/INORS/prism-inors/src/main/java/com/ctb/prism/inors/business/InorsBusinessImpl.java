@@ -637,4 +637,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
 		return inorsDAO.populateSchoolGrt(paramMap);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#getProductNameById(java.lang.Long)
+	 */
+	public String getProductNameById(Long productId) {
+		return inorsDAO.getProductNameById(productId);
+	}
 }

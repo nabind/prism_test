@@ -171,4 +171,11 @@ public class ReportServiceImpl implements IReportService {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
 		return reportBusiness.populateStudentTableGD(to);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getFilePathGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<String> getFilePathGD(GroupDownloadTO to) {
+		return reportBusiness.getFilePathGD(to);
+	}
 }

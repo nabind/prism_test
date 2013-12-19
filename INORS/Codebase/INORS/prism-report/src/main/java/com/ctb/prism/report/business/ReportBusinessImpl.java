@@ -432,4 +432,38 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
 		return reportDAO.populateStudentTableGD(to);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getFilePathGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<String> getFilePathGD(GroupDownloadTO to) {
+		List<String> filePaths = new ArrayList<String>();
+		if ("5".equals(to.getGroupFile())) { // Invitation Code Letter
+			filePaths = reportDAO.getICLetterPaths(to.getStudents());
+			logger.log(IAppLogger.INFO, "IC File Paths: " + filePaths);
+		} else if ("4".equals(to.getGroupFile())) { // Student PDF's
+			// TOTO
+		} else if ("3".equals(to.getGroupFile())) { // Both (IP .ISR)
+			// TOTO
+		} else if ("2".equals(to.getGroupFile())) { // Image Prints
+			// TOTO
+		} else if ("1".equals(to.getGroupFile())) { // Individual Student Report
+			// TOTO
+		}
+		filePaths = getMockFilePaths();
+		return filePaths;
+	}
+
+	/**
+	 * Used for test purpose only. Not for production environment. Hope that '/'
+	 * would work for both windows and linux environment. Needs testing.
+	 * 
+	 * @return
+	 */
+	private List<String> getMockFilePaths() {
+		List<String> filePaths = new ArrayList<String>();
+		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.pdf");
+		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.6.pdf");
+		return filePaths;
+	}
 }

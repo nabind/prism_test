@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
@@ -49,6 +51,8 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.EmailSender;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
@@ -388,12 +392,14 @@ public class ReportController extends BaseDAO {
 			modelAndView.addObject("reportMsg", IApplicationConstants.EMPTY_REPORT);
 			modelAndView.addObject("Exception",exception.getMessage());
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			exception.printStackTrace();
 			return modelAndView;
 		} catch (Exception exception) {
 			ModelAndView modelAndView = new ModelAndView("report/emptyReport");
 			modelAndView.addObject("reportName", (reportName != null)? reportName : "Error rendering report. Please try later.");
 			modelAndView.addObject("reportMsg", IApplicationConstants.EMPTY_REPORT);
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			exception.printStackTrace();
 			return modelAndView;
 		} finally {
 			//if(conn != null) try {conn.close();} catch (SQLException e) {}
@@ -1860,46 +1866,54 @@ public class ReportController extends BaseDAO {
 		}
 		return jsonString;
 	}
-	
+
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
-	@ResponseBody
-	public String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response)  {
-		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+	public void groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) {
 		long t1 = System.currentTimeMillis();
-		String button = to.getButton();
-		String testAdministration = to.getTestAdministration();
-		String testProgram = to.getTestProgram();
-		String district = to.getDistrict();
-		String school = to.getSchool();
-		String klass = to.getKlass();
-		String grade = to.getGrade();
-		String students = to.getStudents();
-		String groupFile = to.getGroupFile();
-		String collationHierarchy = to.getCollationHierarchy();
+		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+		logger.log(IAppLogger.INFO, to.toString());
 		String fileName = to.getFileName();
 		String email = to.getEmail();
-		String jsonString = "{\"Status\" : \"Error\"}";
 		try {
-			logger.log(IAppLogger.INFO, "button=" + button);
-			logger.log(IAppLogger.INFO, "testAdministration=" + testAdministration);
-			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
-			logger.log(IAppLogger.INFO, "district=" + district);
-			logger.log(IAppLogger.INFO, "school=" + school);
-			logger.log(IAppLogger.INFO, "klass=" + klass);
-			logger.log(IAppLogger.INFO, "grade=" + grade);
-			logger.log(IAppLogger.INFO, "students=" + students);
-			logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
-			logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
-			logger.log(IAppLogger.INFO, "fileName=" + fileName);
-			logger.log(IAppLogger.INFO, "email=" + email);
-			// TODO : Write code to download file from server
-			jsonString = "{\"Status\" : \"Success\"}";
+			String zipFileName = fileName + ".zip";
+			List<String> filePaths = reportService.getFilePathGD(to);
+			// Merge Pdf files
+			byte[] input = FileUtil.getMergedPdfBytes(filePaths);
+			// Zip the file
+			byte[] data = FileUtil.zipBytes(zipFileName, input);
+			// Send email
+			if ((email != null) && (!email.isEmpty())) {
+				notificationMailGD(email);
+			}
+			// Download the file
+			FileUtil.browserDownload(response, data, zipFileName);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return jsonString;
+	}
+
+	/**
+	 * This method is used to send a notification mail after Group Download
+	 * 
+	 * @param email
+	 */
+	private void notificationMailGD(String email) {
+		try {
+			Properties prop = new Properties();
+			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			String subject = propertyLookup.get("mail.gd.subject");
+			String mailBody = propertyLookup.get("mail.gd.body");
+			logger.log(IAppLogger.INFO, "Email triggered...");
+			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			logger.log(IAppLogger.INFO, "Email sent to : " + email);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
+		}
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.ObjectValueTO;
 
 public interface IInorsDAO {
 
@@ -94,4 +93,12 @@ public interface IInorsDAO {
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap);
+
+	/**
+	 * Gets the Product name for a given Product id.
+	 * 
+	 * @param productId
+	 * @return
+	 */
+	public String getProductNameById(Long productId);
 }

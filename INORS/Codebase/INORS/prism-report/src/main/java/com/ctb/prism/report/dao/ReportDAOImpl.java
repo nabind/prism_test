@@ -1063,4 +1063,18 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		else
 			return "";
 	}
+
+	public List<String> getICLetterPaths(String students) {
+		List<String> icLetterPaths = new ArrayList<String>();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objValues = getJdbcTemplatePrism()
+				.query(CustomStringUtil.replaceCharacterInString('?', students,
+						IQueryConstants.GET_IC_FILE_PATHS),
+						new ObjectValueTOMapper());
+		logger.log(IAppLogger.INFO, "IC Letters : " + objValues.size());
+		for (com.ctb.prism.core.transferobject.ObjectValueTO to : objValues) {
+			icLetterPaths.add(to.getName());
+		}
+		return icLetterPaths;
+
+	}
 }

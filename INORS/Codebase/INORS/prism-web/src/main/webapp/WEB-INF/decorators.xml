@@ -50,12 +50,12 @@
     </decorator>
     
     <decorator name="inors" page="inorstemplate.jsp">
-		<pattern>/groupDownloads*</pattern>
+		<pattern>/groupDownloadForm*</pattern>
 		<pattern>/icLetterDownloads*</pattern>
 		<pattern>/groupDownloadFiles*</pattern>
 		<pattern>/studentFileDownload*</pattern>
 		<pattern>/downloadStudentFile*</pattern>
-		<pattern>/gRTInvitationCodeFiles*</pattern>
+		<pattern>/grtICFileForm*</pattern>
 		<pattern>/inorsHome*</pattern>
     </decorator>
 	

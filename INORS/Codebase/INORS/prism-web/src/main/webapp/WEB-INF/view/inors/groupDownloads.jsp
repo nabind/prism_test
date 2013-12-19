@@ -11,87 +11,7 @@
 	<form:form method="POST" id="groupDownload" modelAttribute="groupDownload">
 	<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF File Generation has been requested.<br/>Click on 'Group Download Files' for Status of request(s).</p>
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
-	<input type="hidden" value="/public/ISTEP/Reports/Dummy_Student_Report_files" name="reportUrl" >
-	
-	<div class="mid-margin-bottom">
-			<div class="reportFilterCriteria1 panel-control rounded-border">
-				<span id="filter-icon" class="icon-leaf icon-size2"></span> <b>Report Filters</b>
-			</div>
-			<div class="cyan-gradient icholder rounded-border-bottom" style="border-bottom: 1px solid #CCC;">
-				<div class="with-mid-padding mid-margin-bottom icholderinner" style="min-width: 200px; overflow-x: auto">
-					<div class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer" style="height: 10px; min-width: 720px">
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">Test Administration</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="testAdministrationGD" name="testAdministrationGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<c:forEach var="testAdministrationVar" items="${testAdministrationList}">
-											<option value="${testAdministrationVar.value}">${testAdministrationVar.name}</option>
-										</c:forEach>
-									</select>
-								</p>
-							</div>
-						</div>
-						<div class="space-40px"></div>
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">Corp/Diocese</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="corpDioceseGD" name="corpDioceseGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select</option>
-									</select>
-								</p>
-							</div>
-						</div>
-						<div class="space-40px"></div>
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">Grade</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="gradeGD" name="gradeGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select</option>
-										<c:forEach var="gradeVar" items="${gradeList}">
-											<option value="${gradeVar.value}">${gradeVar.name}</option>
-										</c:forEach>
-									</select>
-								</p>
-							</div>
-						</div>
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">Test Program</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="testProgramGD" name="testProgramGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-									</select>
-								</p>
-							</div>
-						</div>
-						<div class="space-40px"></div>
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">School</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="schoolGD" name="schoolGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select Corp/Diocese</option>
-									</select>
-								</p>
-							</div>
-						</div>
-						<div class="space-40px"></div>
-						<div class="three-columns report-inputs">
-							<h6 class="margin-bottom-small">Class</h6>
-							<div class="float-left margin-right margin-bottom">
-								<p class="button-height">
-									<select id="classGD" name="classGD" class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list" style="width: 200px;">
-										<option value='-1'>Please Select School</option>
-									</select>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	
 	<dl class="download-instructions accordion same-height">
 		<dt class="closed"><span class="icon-plus-round tracked"></span> <span class="icon-minus-round tracked" style="display:none"></span> Instructions</dt>
@@ -201,4 +121,11 @@
 		<input type="hidden" name="buttonGD" id="buttonGD" />
 	</div>
 	</form:form>
+	<input type="hidden" id="q_testAdministrationVal" value="${testAdministrationVal}" />
+	<input type="hidden" id="q_testAdministrationText" value="${testAdministrationText}" />
+	<input type="hidden" id="q_testProgram" value="${testProgram}" />
+	<input type="hidden" id="q_corpDiocese" value="${corpDiocese}" />
+	<input type="hidden" id="q_school" value="${school}" />
+	<input type="hidden" id="q_klass" value="${klass}" />
+	<input type="hidden" id="q_grade" value="${grade}" />
 </div>
