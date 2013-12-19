@@ -239,12 +239,12 @@
 			<div class="columnss">
 				<div class="seven-columns">
 					<div>
-						<img alt="" src="themes/acsi/img/Parent_login_welcome_img.jpg" />
+						<img alt="" src="themes/acsi/img/login_welcome_inors.bmp" >
 					</div>
 					<div class="boxsshade">
 						<div class="rowTwo">
 							<!--<h1 class="h1style">Welcome to <span class="acsicol">ACSI Data Online for Parents!</span></h1>-->
-							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
+							<h1 class="h1style"><spring:message code="pnlogin.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
 								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
