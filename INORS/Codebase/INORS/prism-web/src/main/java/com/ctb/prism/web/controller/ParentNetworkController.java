@@ -34,7 +34,7 @@ import com.google.gson.Gson;
 @Controller
 public class ParentNetworkController {
 	
-	private static final IAppLogger logger = LogFactory.getLoggerInstance(ManageContentController.class.getName());
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentNetworkController.class.getName());
 	
 	@Autowired
 	private Utils utils;
@@ -54,7 +54,7 @@ public class ParentNetworkController {
 		
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getChildData()");
 		long t1 = System.currentTimeMillis();
-		ModelAndView modelAndView = new ModelAndView("parent/children");
+		ModelAndView modelAndView = new ModelAndView("parent/studentSubtest");
 		Map<String,Object> childDataMap = null;
 		String studentBioId = request.getParameter("studentBioId");
 		

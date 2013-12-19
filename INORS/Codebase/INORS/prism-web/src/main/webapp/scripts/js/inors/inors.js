@@ -16,6 +16,7 @@ var tempIndex = 0;
 var chkTreeContainerObj;
 
 $(document).ready(function() {
+	
 	// get home page message - after page is loaded
 	openInorsHomePage();
 	
@@ -67,15 +68,18 @@ $(document).ready(function() {
 		$(document).click();
 		retainDownloadValues();
 	});
+	
 	$("#collationHierarchy").live("change", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		$(document).click();
 		retainDownloadValues();
 	});
+	
 	$("#fileName").live("blur", function(event) {
 		retainDownloadValues();
 	});
+	
 	$("#email").live("blur", function(event) {
 		retainDownloadValues();
 	});
@@ -86,18 +90,21 @@ $(document).ready(function() {
 		var href = "downloadStudentFile.do?type=XML&startDate=" + startDate + "&endDate=" + endDate;
 		$("#downloadStudentFileXML").attr("href", href);
 	});
+	
 	$("#downloadStudentFileCSV").live("click", function() {
 		var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=CSV&startDate=" + startDate + "&endDate=" + endDate;
 		$("#downloadStudentFileCSV").attr("href", href);
 	});
+	
 	$("#downloadStudentFileDAT").live("click", function() {
 		var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=DAT&startDate=" + startDate + "&endDate=" + endDate;
 		$("#downloadStudentFileDAT").attr("href", href);
 	});
+	
 	/*$(".jqdatepicker").glDatePicker({
 		onClick: function(target, cell, date, data) {
 			var shortMonths = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC");
@@ -107,13 +114,17 @@ $(document).ready(function() {
 			}
 		}            
 	});*/
+	
 	$('.jqdatepicker').datepicker({
 		changeMonth: true,
 	    changeYear: true
     });
 
+	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
-	populateGrtDropdownsOnLoad();
+	//populateGrtDropdownsOnLoad();
+	
+	
 	$("#testAdministration").live("change", function(event) {
 		showHideDivs();
 	});
@@ -146,32 +157,41 @@ $(document).ready(function() {
 		$("#downloadICFile").attr("href", href);
 	});
 
+	/* Extra action call in happening - Commented the function  */
 	// Group Download
-	populateGDDropdownsOnLoad();
+	//populateGDDropdownsOnLoad();
+	
 	$("#testAdministrationGD").live("change", function(event) {
 	});
+	
 	$("#testProgramGD").live("change", function(event) {
 		var testProgram = $("#testProgramGD").val();
 		if (testProgram && testProgram != "-1") { // then populate Corp/Diocese
 			populateDistrictGD(testProgram)
 		}
 	});
+	
 	$('#corpDioceseGD').live('change', function() {
 		var corpDiocese = $("#corpDioceseGD").val();
 		if (corpDiocese && corpDiocese != "-1") { // then populate school
 			populateSchoolGD(corpDiocese);
 		}
 	});
+	
 	$('#schoolGD').live('change', function() {
 		var schoolId = $("#schoolGD").val();
 		if (schoolId && schoolId != "-1") { // then populate class
 			populateClassGD(schoolId);
 		}
 	});
+	
 	$('#classGD').live('change', function() {
 		populateStudentTableGD();
 	});
-	populateGradeGD();
+	
+	/* Extra action call in happening - Commented the function  */
+	//populateGradeGD();
+	
 	$('#check-all').change(function() {
 		var checkboxes = $(this).closest('form').find(':checkbox');
 		if ($(this).is(':checked')) {
@@ -180,14 +200,17 @@ $(document).ready(function() {
 			checkboxes.removeAttr('checked');
 		}
 	});
+	
 	$("#downloadSeparatePdfsGD").live("click", function() {
 		$("#buttonGD").val("P");
 		groupDownloadFunction('P');
 	});
+	
 	$("#downloadCombinedPdfsGD").live("click", function() {
 		$("#buttonGD").val("C");
 		groupDownloadFunction('C');
 	});
+	
 	$("#downloadSinglePdfsGD").live("click", function() {
 		$("#buttonGD").val("S");
 		groupDownloadFunction('S');

@@ -1,6 +1,6 @@
 /**
  * This js file is to manage report module
- * Author: Tata Consultancy Services Ltd.
+ * Author: Joy
  * Version: 1
  */
 $(document).ready(function() {

@@ -1,6 +1,6 @@
 /**
  * This js file is to manage content module
- * Author: Tata Consultancy Services Ltd.
+ * Author: Joy
  * Version: 1
  */
 var ANIMATION_TIME = 200;

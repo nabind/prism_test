@@ -157,6 +157,7 @@
 						<include>**/parent/manageStudent.js</include>
 						<include>**/parent/manageContent.js</include>
 						<include>**/inors/inors.js</include>
+						<include>**/parent/parentNetwork.js</include>
 		              </includes>
 		            </aggregation>
 		            <!--
