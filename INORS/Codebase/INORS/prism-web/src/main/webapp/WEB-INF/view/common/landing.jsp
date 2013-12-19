@@ -141,7 +141,7 @@
 			<p class="big-message white-gradient" style="height:50px">
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-butterfly"></span>
-				<strong>ACSI Data Online for Parents</strong><br>
+				<strong><spring:message code="pnlogin.page.welcome"/></strong><br>
 				Parents/Guardians click here
 			</p>
 			<a href="userlogin.do?theme=parent&parent=true" class="button blue-gradient full-width">Login</a>
