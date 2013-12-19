@@ -422,7 +422,9 @@ public class LoginController{
 						homeReport = getBestHomeURLForUser(authorities,orgLvl);
 					}
 					// open home page based on user role
-					if(homeReport.isRegularUser()) {
+					if(homeReport.isRegularUser() || 
+							((null !=req.getSession().getAttribute("PARENT_LOGIN")) 
+									&& ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN")))) ) {
 						
 						 if((null !=req.getSession().getAttribute("PARENT_LOGIN")) 
 									&& ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN"))))
