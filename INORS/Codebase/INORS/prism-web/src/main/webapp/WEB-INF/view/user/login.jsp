@@ -89,7 +89,7 @@
 					</div>
 					<div class="boxsshade scrollable" style="padding:1px;">
 						<div class="rowTwo">
-							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
+							<h1 class="h1style" style="margin: 0"><spring:message code="login.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
 								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
