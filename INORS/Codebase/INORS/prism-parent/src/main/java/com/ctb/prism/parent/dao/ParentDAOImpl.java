@@ -1650,6 +1650,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = null;
+				            //TODO - Set Proc name
 				            if(IApplicationConstants.CONTENT_TYPE_ACT.equals(contentType)){
 				            	cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
 				            }else if(IApplicationConstants.CONTENT_TYPE_IND.equals(contentType)){
@@ -1674,12 +1675,13 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 									
 									while(rs.next()){
 										articleTypeDetailsTO = new ManageContentTO();
-										//TODO
+										//TODO - Set Data
 										articleTypeDetailsTO.setObjectiveId(0);
 										articleTypeDetailsTO.setObjectiveName("");
 										articleTypeDetailsTO.setContentId(0);
 										articleTypeDetailsTO.setContentName("");
 										articleTypeDetailsTO.setSubHeader("");
+										articleTypeDetailsTO.setProfLevel("");
 										articleTypeDetailsResult.add(articleTypeDetailsTO);
 									}
 			        			} catch (SQLException e) {
@@ -1695,7 +1697,59 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getArticleTypeDetails() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		return objectValueTOList;
+		return articleTypeDetailsList;
+	}
+	
+	/**
+	 * Get Article description depending upon article id and type/category  - By Joy
+	 */
+	@SuppressWarnings("unchecked")
+	public ManageContentTO getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyStandardForEdit()");
+		long t1 = System.currentTimeMillis();
+		ManageContentTO manageContentTO = null;
+		final long articleId = Long.parseLong((String) paramMap.get("articleId")); 
+		final String contentType = (String) paramMap.get("contentType");
+		
+		try{
+			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	//TODO - - Set Proc name
+			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_OBJECTIVE_DETAILS_FOR_EDIT + "}");
+				            cs.setLong(1, articleId);
+				            cs.setString(2, contentType);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            return cs;
+				        }
+				    } , new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			ManageContentTO manageContentTOResult = null;
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(2);
+									if(rs.next()){
+										manageContentTOResult = new ManageContentTO();
+										//TODO - Set Data
+										manageContentTOResult.setObjectiveId(rs.getLong("OBJECTIVEID"));
+										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (Exception e) {
+			        				e.printStackTrace();
+			        			}
+			        			return manageContentTOResult;
+					        }
+					    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return manageContentTO;
 	}
 	
 	//Parent Network - End
