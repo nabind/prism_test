@@ -145,7 +145,6 @@ public interface IApplicationConstants {
 	public static final String EDU_USER_FLAG = "E";
 	
 	//System Configuration Message
-	
 	public static final String COMMON_LOG_IN = "Common Log In";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
 	public static final String INORS_HOME_PAGE = "Inors Home Page";
@@ -156,4 +155,8 @@ public interface IApplicationConstants {
 	public static final String GENERIC_MESSAGE_TYPE = "GSCM";
 	public static final String PRODUCT_SPECIFIC_MESSAGE_TYPE = "PSCM";
 
+	//Article/Content type
+	public static final String CONTENT_TYPE_ACT = "ACT";
+	public static final String CONTENT_TYPE_IND = "IND";
+	public static final String CONTENT_TYPE_STD = "STD";
 }
