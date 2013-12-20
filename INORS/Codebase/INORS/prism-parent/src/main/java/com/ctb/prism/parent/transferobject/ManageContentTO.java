@@ -3,7 +3,7 @@ package com.ctb.prism.parent.transferobject;
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
- * @author TCS
+ * @author Joy
  * version 1.1
  */
 public class ManageContentTO extends BaseTO {
