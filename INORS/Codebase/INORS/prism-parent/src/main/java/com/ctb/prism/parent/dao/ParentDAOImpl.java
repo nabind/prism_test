@@ -38,6 +38,7 @@ import com.ctb.prism.parent.transferobject.StudentTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
 import java.sql.Clob;
+import com.ctb.prism.parent.transferobject.StudentStandardTO;
 
 
 @Repository("parentDAO")
@@ -1630,7 +1631,6 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		return objectValueTOList;
 	}
 	
-	
 	/*
 	 * Get Standard and associated activity/indicator.
 	 * It may or may not depends upon Student   - By Joy
@@ -1752,5 +1752,6 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		return manageContentTO;
 	}
 	
+
 	//Parent Network - End
 }

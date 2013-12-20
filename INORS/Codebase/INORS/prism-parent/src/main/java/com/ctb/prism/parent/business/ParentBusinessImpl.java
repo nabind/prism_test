@@ -21,6 +21,7 @@ import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
+import com.ctb.prism.parent.transferobject.StudentStandardTO;
 
 
 /**
@@ -219,6 +220,12 @@ public class ParentBusinessImpl implements IParentBusiness {
 		childDataMap.put("studentOverviewMessage", studentOverviewMessage);
 		childDataMap.put("studentSubtest", studentSubtest);
 		return childDataMap;
+	}
+	public List<ManageContentTO>  getArticleTypeDetails(final Map<String,Object> paramMap) throws BusinessException{
+		return parentDAO.getArticleTypeDetails(paramMap);
+	}
+	public ManageContentTO  getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
+		return parentDAO.getArticleDescription(paramMap);
 	}
 	
 	//Parent Network - End

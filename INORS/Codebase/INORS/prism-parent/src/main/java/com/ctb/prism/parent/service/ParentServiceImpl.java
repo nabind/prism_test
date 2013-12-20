@@ -15,6 +15,7 @@ import com.ctb.prism.parent.business.IParentBusiness;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
+import com.ctb.prism.parent.transferobject.StudentStandardTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
 
 
@@ -183,5 +184,13 @@ public class ParentServiceImpl implements IParentService {
 	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException{
 		return parentBusiness.getChildData(paramMap);
 	}
+	
+	public List<ManageContentTO>  getArticleTypeDetails(final Map<String,Object> paramMap) throws BusinessException{
+		return parentBusiness.getArticleTypeDetails(paramMap);
+	}
+	public ManageContentTO  getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
+		return parentBusiness.getArticleDescription(paramMap);
+	}
+	
 	//Parent Network - End
 }

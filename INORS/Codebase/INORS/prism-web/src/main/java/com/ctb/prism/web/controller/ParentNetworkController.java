@@ -1,5 +1,6 @@
 package com.ctb.prism.web.controller;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,10 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
+import com.ctb.prism.webservice.transferobject.StudentDetailsTO;
+import com.ctb.prism.parent.transferobject.StudentStandardTO;
  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,7 +62,7 @@ public class ParentNetworkController {
 		Map<String,Object> childDataMap = null;
 		String studentBioId = request.getParameter("studentBioId");
 		String studentName = request.getParameter("studentName");
-		
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		request.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
 		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
 		
@@ -66,7 +70,9 @@ public class ParentNetworkController {
 		paramMap.put("REPORT_NAME",  IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
+		paramMap.put("customerId", loggedinUserTO.getCustomerId());
 		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("userId", loggedinUserTO.getUserId());
 		
 		try{
 			childDataMap = parentService.getChildData(paramMap);
@@ -81,4 +87,76 @@ public class ParentNetworkController {
 		modelAndView.addObject("childDataMap", childDataMap);
 		return modelAndView;
 	}
+	
+	/**
+	 * @author Arunava
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * Get Student's standards
+	 */
+	
+	@RequestMapping(value="/getArticleTypeDetails", method=RequestMethod.GET)
+	public ModelAndView getArticleTypeDetails(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getArticleTypeDetails()");
+		long t1 = System.currentTimeMillis();
+		ModelAndView modelAndView = new ModelAndView("parent/studentStandards");
+		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId")); 
+		final long subtestId = Long.parseLong((String) paramMap.get("subtestId")); 
+		final long gradeId = Long.parseLong((String) paramMap.get("gradeId")); 
+		final String contentType = (String) paramMap.get("contentType");
+		String studentName = (String) paramMap.get("studentName");
+		List<ManageContentTO> articleTypeDetailsList=null;
+		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("studentName", studentName);
+		paramMap.put("gradeId", gradeId);
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("contentType", contentType);
+		try{
+			articleTypeDetailsList = parentService.getArticleTypeDetails(paramMap);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getArticleTypeDetails() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		modelAndView.addObject("studentName", studentName);
+		modelAndView.addObject("articleTypeDetailsList", articleTypeDetailsList);
+		return modelAndView;
+	}
+	public ModelAndView getArticleDescription(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getArticleDescription()");
+		long t1 = System.currentTimeMillis();
+		ModelAndView modelAndView = new ModelAndView("parent/contentDetails");
+		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		final long articleId = Long.parseLong((String) paramMap.get("articleId")); 
+		final String contentType = (String) paramMap.get("contentType");
+		ManageContentTO manageContentTO=null;
+		paramMap.put("articleId", articleId);
+		paramMap.put("contentType", contentType);
+		try{
+			manageContentTO = parentService.getArticleDescription(paramMap);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getArticleDescription() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		modelAndView.addObject("articleTypeDescription", manageContentTO);
+		return modelAndView;
+	}
+
+
+
+
 }
