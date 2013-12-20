@@ -22,6 +22,7 @@ public class ManageContentTO extends BaseTO {
 	private long gradeId = 0; 
 	private long subtestId = 0; 
 	private long objectiveId = 0;
+	private String objectiveName = "";
 	
 	public long getContentId() {
 		return contentId;
@@ -100,6 +101,12 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setObjectiveId(long objectiveId) {
 		this.objectiveId = objectiveId;
+	}
+	public String getObjectiveName() {
+		return objectiveName;
+	}
+	public void setObjectiveName(String objectiveName) {
+		this.objectiveName = objectiveName;
 	}
 }
 
