@@ -145,7 +145,7 @@
 				</div>
 				<div class="iframeWrapper iframeWrapper-${homeReport.tabCount}">
 					<iframe id='report-iframe-${homeReport.tabCount}' class="report-frame report-frame-${homeReport.tabCount}" onLoad="closeProgress('${homeReport.reportUrl}', '${homeReport.tabCount}')"
-						src="${homeReport.reportApiUrl}?assessmentId=${homeReport.assessmentName}&reportId=${homeReport.reportId}&reportUrl=${homeReport.reportUrl}&reportName=${homeReport.reportName}&studentId=${homeReport.studentBioId}&reportType=${homeReport.reportType}" 
+						src="${homeReport.reportApiUrl}.do?assessmentId=${homeReport.assessmentName}&reportId=${homeReport.reportId}&reportUrl=${homeReport.reportUrl}&reportName=${homeReport.reportName}&studentId=${homeReport.studentBioId}&reportType=${homeReport.reportType}" 
 						frameborder="0"
 						marginwidth="0"
 						marginheight="0"
