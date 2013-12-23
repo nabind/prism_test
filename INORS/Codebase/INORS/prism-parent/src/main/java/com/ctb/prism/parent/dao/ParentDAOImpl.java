@@ -23,8 +23,6 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
-import com.ctb.prism.core.transferobject.ObjectValueTO;
-import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
@@ -38,7 +36,6 @@ import com.ctb.prism.parent.transferobject.StudentTO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
 import java.sql.Clob;
-import com.ctb.prism.parent.transferobject.StudentStandardTO;
 
 
 @Repository("parentDAO")
@@ -1095,7 +1092,10 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	
 	//Manage Content - Parent Network - Start  - By Joy
 	
-	// - By Joy
+	/**
+	 * @author Joy
+	 * To populate grade
+	 */
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String,Object> paramMap) 
 			throws BusinessException{
@@ -1144,7 +1144,10 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		return objectValueTOList;
 	}
 	
-	// - By Joy
+	/**
+	 * @author Joy
+	 * To populate subtest
+	 */
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String,Object> paramMap) 
 			throws BusinessException{
@@ -1195,7 +1198,10 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		return objectValueTOList;
 	}
 	
-	// - By Joy
+	/**
+	 * @author Joy
+	 * To populate Objective
+	 */
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) 
 			throws BusinessException{
@@ -1248,6 +1254,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Insert content/article along with metadata - By Joy
 	 */
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) 
@@ -1302,6 +1309,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * returns content list respective of the search field selected - By Joy
 	 */
 	@SuppressWarnings("unchecked")
@@ -1381,6 +1389,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Get content details for edit depending upon article_metedata id  - By Joy
 	 */
 	@SuppressWarnings("unchecked")
@@ -1433,6 +1442,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Update content/article along with metadata  - By Joy
 	 */
 	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String,Object> paramMap) 
@@ -1482,6 +1492,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Delete content/article's meta data and delete content/article if no association present with another mete data.  - By Joy
 	 */
 	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) 
@@ -1527,6 +1538,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Get content details for edit depending upon article_metedata id  - By Joy
 	 */
 	@SuppressWarnings("unchecked")
@@ -1580,6 +1592,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	//Parent Network - Start
 	
 	/*
+	 * @author Joy
 	 * Get Student's sub test - By Joy
 	 */
 	@SuppressWarnings("unchecked")
@@ -1632,6 +1645,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/*
+	 * @author Joy
 	 * Get Standard and associated activity/indicator.
 	 * It may or may not depends upon Student   - By Joy
 	 */
@@ -1649,18 +1663,13 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			articleTypeDetailsList = (List<ManageContentTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				            CallableStatement cs = null;
-				            //TODO - Set Proc name
-				            if(IApplicationConstants.CONTENT_TYPE_ACT.equals(contentType)){
-				            	cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
-				            }else if(IApplicationConstants.CONTENT_TYPE_IND.equals(contentType)){
-				            	cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
-				            }
+				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_TYPE_DETAILS + "}");
 				            cs.setLong(1, studentBioId);
 				            cs.setLong(2, subtestId);
 				            cs.setLong(3, gradeId);
-				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setString(4, contentType);
+				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1670,18 +1679,17 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			        							= new ArrayList<ManageContentTO>();
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(4);
+									rs = (ResultSet) cs.getObject(5);
 									ManageContentTO articleTypeDetailsTO = null;
 									
 									while(rs.next()){
 										articleTypeDetailsTO = new ManageContentTO();
-										//TODO - Set Data
-										articleTypeDetailsTO.setObjectiveId(0);
-										articleTypeDetailsTO.setObjectiveName("");
-										articleTypeDetailsTO.setContentId(0);
-										articleTypeDetailsTO.setContentName("");
-										articleTypeDetailsTO.setSubHeader("");
-										articleTypeDetailsTO.setProfLevel("");
+										articleTypeDetailsTO.setObjectiveId(rs.getLong("STANDARD_ID"));
+										articleTypeDetailsTO.setObjectiveName(rs.getString("STANDARD_NAME"));
+										articleTypeDetailsTO.setContentId(rs.getLong("ARTICLEID"));
+										articleTypeDetailsTO.setContentName(rs.getString("ARTICLE_NAME"));
+										articleTypeDetailsTO.setSubHeader(rs.getString("ARTICLE_SUB_HEADER"));
+										articleTypeDetailsTO.setProfLevel(rs.getString("PROFICENCY_LEVEL"));
 										articleTypeDetailsResult.add(articleTypeDetailsTO);
 									}
 			        			} catch (SQLException e) {
@@ -1701,11 +1709,12 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 	}
 	
 	/**
+	 * @author Joy
 	 * Get Article description depending upon article id and type/category  - By Joy
 	 */
 	@SuppressWarnings("unchecked")
 	public ManageContentTO getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyStandardForEdit()");
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
 		final long articleId = Long.parseLong((String) paramMap.get("articleId")); 
@@ -1715,11 +1724,11 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				        	//TODO - - Set Proc name
-			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_OBJECTIVE_DETAILS_FOR_EDIT + "}");
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_DESCRIPTION + "}");
 				            cs.setLong(1, articleId);
 				            cs.setString(2, contentType);
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } , new CallableStatementCallback<Object>()  {
@@ -1728,11 +1737,11 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			        			ManageContentTO manageContentTOResult = null;
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(2);
+									rs = (ResultSet) cs.getObject(3);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
-										//TODO - Set Data
-										manageContentTOResult.setObjectiveId(rs.getLong("OBJECTIVEID"));
+										manageContentTOResult.setContentId(rs.getLong("ARTICLEID"));
+										manageContentTOResult.setContentName(rs.getString("ARTICLE_NAME"));
 										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
 									}
 			        			} catch (SQLException e) {
@@ -1747,11 +1756,71 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			throw new BusinessException(e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getArticleDescription() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return manageContentTO;
 	}
 	
-
+	
+	/**
+	 * @author Joy
+	 * Get grade and associated subtest depends upon logged in customerId for current admin year
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ManageContentTO> getGradeSubtestInfo(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getGradeSubtestInfo()");
+		List<ManageContentTO> gradeSubtestList = null;
+		long t1 = System.currentTimeMillis();
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		
+		try{
+			gradeSubtestList = (List<ManageContentTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				            CallableStatement cs = null;
+				            //TODO - Set Proc name
+				            cs = con.prepareCall("{call " + IQueryConstants.GET_GRADE_SUBTEST_INFO + "}");
+				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			List<ManageContentTO> gradeSubtestResult 
+			        							= new ArrayList<ManageContentTO>();
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(2);
+									ManageContentTO gradeSubtestTO = null;
+									
+									while(rs.next()){
+										gradeSubtestTO = new ManageContentTO();
+										//TODO - Set Data
+										gradeSubtestTO.setGradeId(0);
+										gradeSubtestTO.setGradeName("");
+										gradeSubtestTO.setSubtestId(0);
+										gradeSubtestTO.getSubtestName("");
+										gradeSubtestResult.add(gradeSubtestTO);
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (Exception e) {
+			        				e.printStackTrace();
+			        			}
+			        			return gradeSubtestResult;
+				        }
+				    });
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getGradeSubtestInfo() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return gradeSubtestList;
+	}
+	
 	//Parent Network - End
 }
