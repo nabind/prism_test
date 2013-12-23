@@ -13,7 +13,7 @@
 </hgroup>
 <style>
 	.label {width: 160px !important}
-	.button.full-width {text-align: center;width: 27%}
+	.button.full-width {text-align: center;width: 70%}
 	div.scrollingHotSpotLeft, div.scrollingHotSpotRight {display: none}
 </style>
 <div class="" style="background-color: #FFF">
