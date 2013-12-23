@@ -1278,7 +1278,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				            cs.setString(7, manageContentTO.getContentType());	
 				            cs.setString(8, manageContentTO.getSubHeader());	
 				            cs.setLong(9, manageContentTO.getGradeId());	
-				            cs.setString(10, manageContentTO.getProfLevel());	
+				            cs.setString(10, manageContentTO.getPerformanceLevel());	
 				            cs.registerOutParameter(11, oracle.jdbc.OracleTypes.NUMBER); 
 				            cs.registerOutParameter(12, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
@@ -1370,7 +1370,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 										manageContentTO.setContentName(rs.getString("NAME"));	
 										manageContentTO.setSubHeader(rs.getString("SUB_HEADER"));
 										manageContentTO.setGradeName(rs.getString("GRADE"));
-										manageContentTO.setProfLevel(rs.getString("PROFICIENCY_LEVEL"));
+										manageContentTO.setPerformanceLevel(rs.getString("PROFICIENCY_LEVEL"));
 										manageContentListResult.add(manageContentTO);
 									}
 			        			} catch (SQLException e) {
@@ -1422,7 +1422,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 										manageContentTOResult.setContentName(rs.getString("NAME"));	
 										manageContentTOResult.setSubHeader(rs.getString("SUB_HEADER"));
 										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
-										manageContentTOResult.setProfLevel(rs.getString("PROFICIENCY_LEVEL"));
+										manageContentTOResult.setPerformanceLevel(rs.getString("PROFICIENCY_LEVEL"));
 									}
 			        			} catch (SQLException e) {
 			        				e.printStackTrace();
@@ -1461,7 +1461,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				            cs.setString(2, manageContentTO.getContentName());
 				            cs.setString(3, manageContentTO.getSubHeader());
 				            cs.setString(4, manageContentTO.getContentDescription());	
-				            cs.setString(5, manageContentTO.getProfLevel());	
+				            cs.setString(5, manageContentTO.getPerformanceLevel());	
 				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.NUMBER); 
 				            cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
@@ -1689,7 +1689,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 										articleTypeDetailsTO.setContentId(rs.getLong("ARTICLEID"));
 										articleTypeDetailsTO.setContentName(rs.getString("ARTICLE_NAME"));
 										articleTypeDetailsTO.setSubHeader(rs.getString("ARTICLE_SUB_HEADER"));
-										articleTypeDetailsTO.setProfLevel(rs.getString("PROFICENCY_LEVEL"));
+										articleTypeDetailsTO.setProficiencyLevel(rs.getString("PROFICENCY_LEVEL"));
 										articleTypeDetailsResult.add(articleTypeDetailsTO);
 									}
 			        			} catch (SQLException e) {

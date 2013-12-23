@@ -281,12 +281,12 @@
 							</fieldset>
 						</p>
 						
-						<!-- As per requirement, proficiency level does not depend upon content -->
+						<!-- As per requirement, Performance level does not depend upon content -->
 						<!-- 
 						<p class="button-height inline-label">
-							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
+							<label class="label" for="performanceLevel"><spring:message code="label.content.performanceLevel"/><span
 								class="icon-star icon-size1 red"></span></label> 
-								<select id="profLevel" name="profLevel"
+								<select id="performanceLevel" name="performanceLevel"
 												class="select expandable-list"
 												style="width: 150px;">
 									<option value='A'>Pass</option>

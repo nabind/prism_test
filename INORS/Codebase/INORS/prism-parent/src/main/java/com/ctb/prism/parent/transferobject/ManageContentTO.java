@@ -13,7 +13,7 @@ public class ManageContentTO extends BaseTO {
 	private String contentName = "";
 	private String subHeader = "";
 	private String gradeName = "";
-	private String profLevel = "";
+	private String performanceLevel = "";
 	private String contentDescription = "";
 	private long subObjMapId = 0;
 	private long custProdId = 0;
@@ -24,6 +24,7 @@ public class ManageContentTO extends BaseTO {
 	private long objectiveId = 0;
 	private String objectiveName = "";
 	private String subtestName = "";
+	private String proficiencyLevel = "";
 	
 	public long getContentId() {
 		return contentId;
@@ -48,12 +49,6 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setGradeName(String gradeName) {
 		this.gradeName = gradeName;
-	}
-	public String getProfLevel() {
-		return profLevel;
-	}
-	public void setProfLevel(String profLevel) {
-		this.profLevel = profLevel;
 	}
 	public String getContentDescription() {
 		return contentDescription;
@@ -114,6 +109,18 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setSubtestName(String subtestName) {
 		this.subtestName = subtestName;
+	}
+	public String getPerformanceLevel() {
+		return performanceLevel;
+	}
+	public void setPerformanceLevel(String performanceLevel) {
+		this.performanceLevel = performanceLevel;
+	}
+	public String getProficiencyLevel() {
+		return proficiencyLevel;
+	}
+	public void setProficiencyLevel(String proficiencyLevel) {
+		this.proficiencyLevel = proficiencyLevel;
 	}
 }
 

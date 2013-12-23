@@ -286,43 +286,43 @@ function openContentModalToEdit(contentId) {
 				$editContentModal.find('#subHeader').val(data.subHeader);
 				$editContentModal.find('#contentDescriptionEditorEdit').val(data.contentDescription);
 				
-				var profLevel = data.profLevel;
-				$editContentModal.find('#profLevel option').removeAttr('selected');
+				var performanceLevel = data.performanceLevel;
+				$editContentModal.find('#performanceLevel option').removeAttr('selected');
 				var option = "";
-				if(data.profLevel == 'A'){
+				if(data.performanceLevel == 'A'){
 					option += "<option selected value='A'>Pass</option>";
 					option += "<option value='B'>Did Not Pass</option>";
 					option += "<option value='U'>Undefined</option>";	
 					option += "<option value='N'>DNR</option>";		
 					option += "<option value='P'>Pass+</option>";
-				}else if(data.profLevel == 'B'){
+				}else if(data.performanceLevel == 'B'){
 					option += "<option value='A'>Pass</option>";
 					option += "<option selected value='B'>Did Not Pass</option>";
 					option += "<option value='U'>Undefined</option>";	
 					option += "<option value='N'>DNR</option>";		
 					option += "<option value='P'>Pass+</option>";
-				}else if(data.profLevel == 'U'){
+				}else if(data.performanceLevel == 'U'){
 					option += "<option value='A'>Pass</option>";
 					option += "<option value='B'>Did Not Pass</option>";
 					option += "<option selected value='U'>Undefined</option>";	
 					option += "<option value='N'>DNR</option>";		
 					option += "<option value='P'>Pass+</option>";
-				}else if(data.profLevel == 'N'){
+				}else if(data.performanceLevel == 'N'){
 					option += "<option value='A'>Pass</option>";
 					option += "<option value='B'>Did Not Pass</option>";
 					option += "<option value='U'>Undefined</option>";	
 					option += "<option selected value='N'>DNR</option>";		
 					option += "<option value='P'>Pass+</option>";
-				}else if(data.profLevel == 'P'){
+				}else if(data.performanceLevel == 'P'){
 					option += "<option value='A'>Pass</option>";
 					option += "<option value='B'>Did Not Pass</option>";
 					option += "<option value='U'>Undefined</option>";	
 					option += "<option value='N'>DNR</option>";		
 					option += "<option selected value='P'>Pass+</option>";
 				}
-				$editContentModal.find('#profLevel').html(option);
-				$editContentModal.find('#profLevel').change();
-				$editContentModal.find('#profLevel').trigger('update-select-list');
+				$editContentModal.find('#performanceLevel').html(option);
+				$editContentModal.find('#performanceLevel').change();
+				$editContentModal.find('#performanceLevel').trigger('update-select-list');
 				
 				$("#editContentModal").modal({
 					title: 'Edit Content',
@@ -724,13 +724,13 @@ function getContentDetails(checkFirstLoad,data) {
 	    if(this.subHeader != undefined){
 	    	subHeaderVar = this.subHeader;
 	    }
-	    /* As per requirement, proficiency level does not depend upon content */
+	    /* As per requirement, Performance level does not depend upon content */
 	    /*
 		manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
 			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
 						+'<th scope="row">' + subHeaderVar +'</th>'
 						+'<th scope="row">' + this.gradeName +'</th>'
-						+'<th scope="row">' + getProfLevelName(this.profLevel) +'</th>'
+						+'<th scope="row">' + getPerformanceLevelName(this.performanceLevel) +'</th>'
 						+'<td class="vertical-center" nowrap>'
 						+'<span class="button-group compact" width="50px">'
 						+'<a href="#" class="button icon-pencil edit-content with-tooltip" contentId="'+this.contentId+'" title="Edit"></a>'
@@ -788,19 +788,19 @@ function showContentElements(){
 	}
 }
 
-//==Get profeciency level name==========
-function getProfLevelName(profLevel){
-	var profLevelName = "";
-	if(profLevel == 'A'){
-		profLevelName = 'Pass'; 
-	}else if(profLevel == 'B'){
-		profLevelName = 'Did Not Pass';
-	}else if(profLevel == 'U'){
-		profLevelName = 'Undefined';
-	}else if(profLevel == 'N'){
-		profLevelName = 'DNR';
-	}else if(profLevel == 'P'){
-		profLevelName = 'Pass+';
+//==Get Performance level name==========
+function getPerformanceLevelName(performanceLevel){
+	var performanceLevelName = "";
+	if(performanceLevel == 'A'){
+		performanceLevelName = 'Pass'; 
+	}else if(performanceLevel == 'B'){
+		performanceLevelName = 'Did Not Pass';
+	}else if(performanceLevel == 'U'){
+		performanceLevelName = 'Undefined';
+	}else if(performanceLevel == 'N'){
+		performanceLevelName = 'DNR';
+	}else if(performanceLevel == 'P'){
+		performanceLevelName = 'Pass+';
 	}
-	return profLevelName;
+	return performanceLevelName;
 }
