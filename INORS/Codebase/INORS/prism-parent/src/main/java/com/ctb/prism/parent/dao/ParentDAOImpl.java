@@ -1801,7 +1801,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 										gradeSubtestTO.setGradeId(0);
 										gradeSubtestTO.setGradeName("");
 										gradeSubtestTO.setSubtestId(0);
-										gradeSubtestTO.getSubtestName("");
+										gradeSubtestTO.setSubtestName("");
 										gradeSubtestResult.add(gradeSubtestTO);
 									}
 			        			} catch (SQLException e) {
