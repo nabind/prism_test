@@ -24,7 +24,6 @@ import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 import com.ctb.prism.webservice.transferobject.StudentDetailsTO;
-import com.ctb.prism.parent.transferobject.StudentStandardTO;
  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,11 +61,11 @@ public class ParentNetworkController {
 		Map<String,Object> childDataMap = null;
 		String studentBioId = request.getParameter("studentBioId");
 		String studentName = request.getParameter("studentName");
-		String gradeId = request.getParameter("gradeId");
+		long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		request.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
 		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
-		request.getSession().setAttribute(IApplicationConstants.GRADE_ID, gradeId);
+		request.getSession().setAttribute(IApplicationConstants.STUDENT_GRADEID, studentGradeId);
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("REPORT_NAME",  IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
@@ -111,13 +110,13 @@ public class ParentNetworkController {
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		final long studentBioId = Long.parseLong((String) request.getSession().getAttribute(IApplicationConstants.STUDENT_BIO_ID)); 
 		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
-		final long gradeId =Long.parseLong((String) request.getSession().getAttribute(IApplicationConstants.GRADE_ID));
+		final long studentGradeId = (Long) request.getSession().getAttribute(IApplicationConstants.STUDENT_GRADEID);
 		final String contentType = IApplicationConstants.CONTENT_TYPE_ACT;
 		final String studentName = (String) paramMap.get("studentName");
 		List<ManageContentTO> articleTypeDetailsList=null;
 		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("studentName", studentName);
-		paramMap.put("gradeId", gradeId);
+		paramMap.put("studentGradeId", studentGradeId);
 		paramMap.put("subtestId", subtestId);
 		paramMap.put("contentType", contentType);
 		try{
@@ -133,6 +132,7 @@ public class ParentNetworkController {
 		modelAndView.addObject("articleTypeDetailsList", articleTypeDetailsList);
 		return modelAndView;
 	}
+	
 	public ModelAndView getArticleDescription(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 

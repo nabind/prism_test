@@ -325,9 +325,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Retrieves the list of the children of the logged in parent.
 	 * This information is displayed in the home page of the parent login.
 	 * @param userName User Name of the logged in parent 
+	 * Updated by Joy on 23-DEC-2013
 	 */
-	public List<StudentTO> getChildrenList( String userName,String clickedTreeNode, String adminYear ) {
-		List<StudentTO> children = null;
+	@SuppressWarnings("unchecked")
+	public List<StudentTO> getChildrenList(final String userName,String clickedTreeNode, String adminYear ) {
+		/*List<StudentTO> children = null;
 		List<Map<String,Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_CHILDREN, userName);
 		logger.log(IAppLogger.DEBUG, "outside...... list");
 		if ( list != null && list.size() > 0 )
@@ -341,12 +343,59 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						.longValue());
 				studentTO.setAdministration((String) data.get("ADMIN_SEASON_YEAR"));
 				studentTO.setGrade((String) data.get("STUDENTGRADE"));
-				studentTO.setGradeId((String) data.get("STUDENTGRADEID"));
 				studentTO.setAdminid(((BigDecimal) data.get("ADMINID")).toString());
 				children.add(studentTO);
 			}
 		}
-		return children;
+		return children;*/
+		
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getChildrenList()");
+		long t1 = System.currentTimeMillis();
+		List<StudentTO> studentList = null;
+		
+		try{
+			studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
+					            cs.setString(1, userName);
+					            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+					            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					            return cs;
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			List<StudentTO> studentResult = new ArrayList<StudentTO>();
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(2);
+									StudentTO studentTO = null;
+									while(rs.next()){
+										studentTO = new StudentTO();
+										studentTO.setStudentName(rs.getString("STUDENT_NAME"));
+										studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+										studentTO.setAdministration(rs.getString("ADMIN_SEASON_YEAR"));
+										studentTO.setGrade(rs.getString("STUDENT_GRADE"));
+										studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
+										studentTO.setAdminid(rs.getString("ADMINID"));
+										studentResult.add(studentTO);
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return studentResult;
+				        }
+				    });
+		}catch(Exception e){
+			//Unable to throw the exception from this method - Need code change
+			//throw new BusinessException(e.getMessage());
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getChildrenList() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return studentList;
 	}
 	
 	/**
@@ -1655,9 +1704,9 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleTypeDetails()");
 		List<ManageContentTO> articleTypeDetailsList = null;
 		long t1 = System.currentTimeMillis();
-		final long studentBioId = (Long)paramMap.get("studentBioId"); 
-		final long subtestId =(Long)paramMap.get("subtestId"); 
-		final long gradeId = (Long)paramMap.get("gradeId"); 
+		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId")); 
+		final long subtestId = Long.parseLong((String) paramMap.get("subtestId")); 
+		final long studentGradeId = Long.parseLong((String) paramMap.get("studentGradeId")); 
 		final String contentType = (String) paramMap.get("contentType");
 		
 		try{
@@ -1667,7 +1716,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				            CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_TYPE_DETAILS + "}");
 				            cs.setLong(1, studentBioId);
 				            cs.setLong(2, subtestId);
-				            cs.setLong(3, gradeId);
+				            cs.setLong(3, studentGradeId);
 				            cs.setString(4, contentType);
 				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
 				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);

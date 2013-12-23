@@ -6,7 +6,7 @@
 $(document).ready(function() {
 	showContent($('#studentOverviewMessage'));
 });
-//=====document.ready End=========================================
+//=====document.ready End===================================
 
 //============To show dynamic content in HTML===============
 function showContent($container){
