@@ -8,23 +8,23 @@ public class StudentTO extends BaseTO{
 
 
 	private static final long serialVersionUID = 1L;
-	private String studentName;
-	private String grade;
-	private String gradeId;
-	private String administration;
-	private String studentTestNumber;
+	private String studentName = "";
+	private String grade = "";
+	private String administration = "";
+	private String studentTestNumber = "";
 	private List<ParentTO> parentAccount;
-	private String structureElement;
-	private long studentBioId;
-	private String invitationcode;
-	private String activationStatus;
-	private String orgName;
-	private long orgId;
-	private String icExpirationStatus;
-	private String expirationDate;
-	private long totalAvailableClaim;
-	private String adminid;
-	private String studentMode;
+	private String structureElement = "";
+	private long studentBioId = 0;
+	private String invitationcode = "";
+	private String activationStatus = "";
+	private String orgName = "";
+	private long orgId = 0;
+	private String icExpirationStatus = "";
+	private String expirationDate = "";
+	private long totalAvailableClaim = 0;
+	private String adminid = "";
+	private String studentMode = "";
+	private long studentGradeId = 0;
 	
 	
 	public String getAdminid() {
@@ -131,10 +131,10 @@ public class StudentTO extends BaseTO{
 	public void setStudentMode(String studentMode) {
 		this.studentMode = studentMode;
 	}
-	public String getGradeId() {
-		return gradeId;
+	public long getStudentGradeId() {
+		return studentGradeId;
 	}
-	public void setGradeId(String gradeId) {
-		this.gradeId = gradeId;
+	public void setStudentGradeId(long studentGradeId) {
+		this.studentGradeId = studentGradeId;
 	}
 }
