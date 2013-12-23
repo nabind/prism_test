@@ -157,6 +157,7 @@ public interface IParentQuery {
 		"SELECT ST.LAST_NAME || ',' || ST.FIRST_NAME || ' ' || ST.MIDDLE_NAME AS STUDENT_NAME,",
            " ST.STUDENT_BIO_ID STUDENT_BIO_ID,",
            " GRD.GRADE_NAME AS STUDENTGRADE,",
+           " GRD.GRADEID AS STUDENTGRADEID,",
            " AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,",
            " AD.ADMIN_SEQ,",
            " AD.ADMINID ADMINID",

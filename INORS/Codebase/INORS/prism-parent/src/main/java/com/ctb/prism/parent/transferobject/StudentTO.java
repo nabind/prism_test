@@ -10,6 +10,7 @@ public class StudentTO extends BaseTO{
 	private static final long serialVersionUID = 1L;
 	private String studentName;
 	private String grade;
+	private String gradeId;
 	private String administration;
 	private String studentTestNumber;
 	private List<ParentTO> parentAccount;
@@ -129,5 +130,11 @@ public class StudentTO extends BaseTO{
 	}
 	public void setStudentMode(String studentMode) {
 		this.studentMode = studentMode;
+	}
+	public String getGradeId() {
+		return gradeId;
+	}
+	public void setGradeId(String gradeId) {
+		this.gradeId = gradeId;
 	}
 }

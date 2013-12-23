@@ -123,9 +123,9 @@ $(document).ready(function() {
 						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId
 									+'&studentName='+this.studentName+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
-									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+									+ this.administration + ', Grade: ' +this.grade + ', gradeId: ' +this.gradeId + '<br/><br/>';
 						
-						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId+'"> '+this.studentName+' (Grade: '+this.grade+')</a></li>';
+						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId+'"> '+this.studentName+' (Grade: '+this.grade+'), gradeId: ' +this.gradeId</a></li>';
 					});
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");

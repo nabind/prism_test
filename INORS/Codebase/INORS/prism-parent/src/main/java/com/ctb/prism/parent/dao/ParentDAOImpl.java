@@ -341,6 +341,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						.longValue());
 				studentTO.setAdministration((String) data.get("ADMIN_SEASON_YEAR"));
 				studentTO.setGrade((String) data.get("STUDENTGRADE"));
+				studentTO.setGradeId((String) data.get("STUDENTGRADEID"));
 				studentTO.setAdminid(((BigDecimal) data.get("ADMINID")).toString());
 				children.add(studentTO);
 			}
@@ -1654,9 +1655,9 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleTypeDetails()");
 		List<ManageContentTO> articleTypeDetailsList = null;
 		long t1 = System.currentTimeMillis();
-		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId")); 
-		final long subtestId = Long.parseLong((String) paramMap.get("subtestId")); 
-		final long gradeId = Long.parseLong((String) paramMap.get("gradeId")); 
+		final long studentBioId = (Long)paramMap.get("studentBioId"); 
+		final long subtestId =(Long)paramMap.get("subtestId"); 
+		final long gradeId = (Long)paramMap.get("gradeId"); 
 		final String contentType = (String) paramMap.get("contentType");
 		
 		try{
