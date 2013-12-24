@@ -28,10 +28,13 @@
 		function closeProgress(reportUrl, id) {
 			
 		}
+		//Added for disabling browser back
+		window.history.forward();
+		function noBack() { window.history.forward(); }
 		</script>
 	</head>
 	
-	<body class="clearfix with-menu with-shortcuts">
+	<body class="clearfix with-menu with-shortcuts" onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 		<!-- Prompt IE 6 users to install Chrome Frame -->
 		<!--[if lt IE 7]><p class="message red-gradient simpler">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 			<a href="#nogo" class="display-none" id="hiddenLink">Hidden link</a>
