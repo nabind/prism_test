@@ -1704,9 +1704,9 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleTypeDetails()");
 		List<ManageContentTO> articleTypeDetailsList = null;
 		long t1 = System.currentTimeMillis();
-		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId")); 
-		final long subtestId = Long.parseLong((String) paramMap.get("subtestId")); 
-		final long studentGradeId = Long.parseLong((String) paramMap.get("studentGradeId")); 
+		final long studentBioId = (Long)paramMap.get("studentBioId"); 
+		final long subtestId = (Long) paramMap.get("subtestId"); 
+		final long studentGradeId = (Long)paramMap.get("studentGradeId"); 
 		final String contentType = (String) paramMap.get("contentType");
 		
 		try{
