@@ -6,6 +6,13 @@
 	
 		<div id="standardHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
-			<h2>Description ${articleTypeDescription.contentDescription}</h2>		
+			<h2>Description ${articleTypeDescription.contentName}</h2>		
 		</div>
+		
+		<div>
+		<textarea id="taContent" style="display:none;">
+			${articleTypeDescription.contentDescrription}
+		</textarea>
+		</div>
+		
 </div>
