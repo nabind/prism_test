@@ -3,18 +3,10 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <div class="margin-bottom-medium">
-	<c:if test="${studentName}==0}">
-		<div id="standardHeader" class="wrapped relative white-gradient"
-			style="height: auto; text-align: justify">	
-			<h2>Overview of Action Plan</h2>		
-		</div>
-	</c:if>
-	<c:if test="${studentName}==1}">
 		<div id="standardHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
 			<h2>Overview of Action Plan for ${studentName}</h2>		
 		</div>
-	</c:if>
 </div>
 
 
@@ -26,7 +18,7 @@
 						style="color: #fff; height: auto; width:22%" >
 						<dl>
 							<c:forEach var="loopstudentStandartList"
-								items="${studentStandartList.standard}"
+								items="${articleTypeDetailsList.standard}"
 								varStatus="loopstudentStandartList">
 									<dd style="min-height: 50px;">
 										

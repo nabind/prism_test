@@ -8,7 +8,7 @@
 		</textarea>
 		<div id="somHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
-			<h2>Overview of Action Plan for ${childDataMap.studentName}</h2>		
+			<h2>Overview of Action Plan for ${studentName}</h2>		
 		</div>
 		<div id="studentOverviewMessage" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">			
@@ -20,10 +20,9 @@
 					items="${childDataMap.studentSubtest}"
 					varStatus="loopSubtestTO">
 						<dd style="min-height: 50px;">
-							- <a href="javascript:void(0)" 
+							 <a href="getArticleTypeDetails.do?subtestId='${subtestTO.value}'&studentName='${studentName}'" 
 								style="color: #fff; font-weight: bold"
-								id="subtest-${loopSubtestTO.count}" 
-								subtestId="${subtestTO.value}">
+								id="subtestIdLink">
 									${subtestTO.name}
 							</a>
 						</dd>
