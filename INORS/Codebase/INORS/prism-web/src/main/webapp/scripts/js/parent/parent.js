@@ -122,6 +122,7 @@ $(document).ready(function() {
 					$.each(data, function () { 
 						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId
 									+'&studentName='+this.studentName
+									+'&studentGradeName='+this.grade
 									+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';

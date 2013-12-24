@@ -33,7 +33,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
-
+/**
+ * @author Joy
+ * version 1.1
+ */
 @Controller
 public class ParentNetworkController {
 	
@@ -62,10 +65,12 @@ public class ParentNetworkController {
 		String studentBioId = request.getParameter("studentBioId");
 		String studentName = request.getParameter("studentName");
 		long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
+		String studentGradeName = request.getParameter("studentGradeName");
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		request.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
+		
+		//Don't use this Parent Network flow. This is required for report. 
 		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
-		request.getSession().setAttribute(IApplicationConstants.STUDENT_GRADEID, studentGradeId);
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("REPORT_NAME",  IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
@@ -78,6 +83,9 @@ public class ParentNetworkController {
 		try{
 			childDataMap = parentService.getChildData(paramMap);
 			childDataMap.put("studentName", studentName);
+			childDataMap.put("studentGradeId", studentGradeId);
+			childDataMap.put("studentBioId", studentBioId);
+			childDataMap.put("studentGradeName", studentGradeName);
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -86,6 +94,59 @@ public class ParentNetworkController {
 			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getChildData() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		modelAndView.addObject("childDataMap", childDataMap);
+		return modelAndView;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * Get Standards/objective and associated activities for selected subtest,grade.
+	 */
+	@RequestMapping(value="/getStandardActivity", method=RequestMethod.GET)
+	public ModelAndView getStandardActivity(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardActivity()");
+		long t1 = System.currentTimeMillis();
+		
+		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		final long studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
+		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
+		final long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
+		final String studentGradeName = request.getParameter("studentGradeName");
+		final String studentName = request.getParameter("studentName");
+		
+		ModelAndView modelAndView = new ModelAndView("parent/standardActivity");
+		if(studentBioId != 0){
+			modelAndView.addObject("studentName", studentName);
+		}else{
+			modelAndView.addObject("studentName", "-1");
+		}
+		
+		List<ManageContentTO> standardActivityDetailsList=null;
+		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("studentName", studentName);
+		paramMap.put("studentGradeId", studentGradeId);
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("contentType", IApplicationConstants.CONTENT_TYPE_ACT);
+		
+		try{
+			standardActivityDetailsList = parentService.getArticleTypeDetails(paramMap);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getStandardActivity() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		
+		modelAndView.addObject("standardActivityDetailsList", standardActivityDetailsList);
+		modelAndView.addObject("studentGradeName", studentGradeName);
 		return modelAndView;
 	}
 	
@@ -99,20 +160,19 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get Student's standards
 	 */
-	
-	@RequestMapping(value="/getArticleTypeDetails", method=RequestMethod.GET)
-	public ModelAndView getArticleTypeDetails(HttpServletRequest request, HttpServletResponse response) 
+	//TODO - Arunavo -> Please modify the method accordingly
+	@RequestMapping(value="/getStandardIndicator", method=RequestMethod.GET)
+	public ModelAndView getStandardIndicator(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException{
-
-		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getArticleTypeDetails()");
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardIndicator()");
 		long t1 = System.currentTimeMillis();
-		ModelAndView modelAndView = new ModelAndView("parent/studentStandards");
+		ModelAndView modelAndView = new ModelAndView("parent/standardIndicator");
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		final long studentBioId = Long.parseLong((String) request.getSession().getAttribute(IApplicationConstants.STUDENT_BIO_ID)); 
 		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
-		final long studentGradeId = (Long) request.getSession().getAttribute(IApplicationConstants.STUDENT_GRADEID);
-		final String contentType = IApplicationConstants.CONTENT_TYPE_ACT;
-		final String studentName = request.getParameter("studentName");
+		final long studentGradeId = 0;
+		final String contentType = IApplicationConstants.CONTENT_TYPE_IND;
+		final String studentName = (String) paramMap.get("studentName");
 		List<ManageContentTO> articleTypeDetailsList=null;
 		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("studentName", studentName);
@@ -126,13 +186,24 @@ public class ParentNetworkController {
 			throw new BusinessException("Problem Occured");
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getArticleTypeDetails() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getStandardIndicator() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		modelAndView.addObject("studentName", studentName);
 		modelAndView.addObject("articleTypeDetailsList", articleTypeDetailsList);
 		return modelAndView;
 	}
 	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * Get description of any article like Standard/Activity/Indicator.
+	 */
+	@RequestMapping(value="/getArticleDescription", method=RequestMethod.GET)
 	public ModelAndView getArticleDescription(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 

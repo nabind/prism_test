@@ -160,5 +160,4 @@ public interface IApplicationConstants {
 	public static final String CONTENT_TYPE_IND = "IND";
 	public static final String CONTENT_TYPE_STD = "STD";
 	
-	public static final String STUDENT_GRADEID = "studentGradeId";
 }

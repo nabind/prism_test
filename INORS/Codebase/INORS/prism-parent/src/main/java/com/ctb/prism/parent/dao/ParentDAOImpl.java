@@ -1704,9 +1704,9 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleTypeDetails()");
 		List<ManageContentTO> articleTypeDetailsList = null;
 		long t1 = System.currentTimeMillis();
-		final long studentBioId = (Long)paramMap.get("studentBioId"); 
-		final long subtestId = (Long) paramMap.get("subtestId"); 
-		final long studentGradeId = (Long)paramMap.get("studentGradeId"); 
+		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue(); 
+		final long subtestId = ((Long) paramMap.get("subtestId")); 
+		final long studentGradeId = ((Long)paramMap.get("studentGradeId")); 
 		final String contentType = (String) paramMap.get("contentType");
 		
 		try{
@@ -1767,7 +1767,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
-		final long articleId = Long.parseLong((String) paramMap.get("articleId")); 
+		final long articleId = ((Long) paramMap.get("articleId")).longValue(); 
 		final String contentType = (String) paramMap.get("contentType");
 		
 		try{

@@ -20,7 +20,7 @@
 					items="${childDataMap.studentSubtest}"
 					varStatus="loopSubtestTO">
 						<dd style="min-height: 50px;">
-							 <a href="getArticleTypeDetails.do?subtestId='${subtestTO.value}'&studentName='${studentName}'" 
+							 <a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
 								style="color: #fff; font-weight: bold"
 								id="subtestIdLink">
 									${subtestTO.name}
