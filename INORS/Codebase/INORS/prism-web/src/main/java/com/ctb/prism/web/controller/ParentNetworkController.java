@@ -112,7 +112,7 @@ public class ParentNetworkController {
 		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
 		final long studentGradeId = (Long) request.getSession().getAttribute(IApplicationConstants.STUDENT_GRADEID);
 		final String contentType = IApplicationConstants.CONTENT_TYPE_ACT;
-		final String studentName = (String) paramMap.get("studentName");
+		final String studentName = request.getParameter("studentName");
 		List<ManageContentTO> articleTypeDetailsList=null;
 		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("studentName", studentName);
