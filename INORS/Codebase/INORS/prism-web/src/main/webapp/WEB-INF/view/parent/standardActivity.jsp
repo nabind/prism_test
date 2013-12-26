@@ -21,43 +21,66 @@
 			Such support can significantly increase your child's appreciation for learning and his or her confidence when tackling new challenges. 
 			The activities are organized in easy-to-follow steps that utilize everyday materials likely available in your home.			
 	</div>
-	<div id="standardActivityDeatils" class="wrapped relative white-gradient" style="height: auto; text-align: justify" >
-		<div style="float: left; height:auto; clear: both;">
-			<div style="float: left; height: auto; width: 50%">
-				Standards
+	<div id="standardActivityDeatils" class="wrapped relative white-gradient" style="height: auto;float:left;width:98%;text-align: justify" >
+		<div class="simple-div-table wrapped">
+			<div class="simple-div-table-col">
+				<h4>Standards</h4>
 			</div>
-			<div style="float: left; height: auto; width: 50%">
-				Activities
+			<div class="simple-div-table-col">
+				<h4>Activities</h4>
 			</div>
 		</div>
+		<div>
+			&nbsp;
+		</div>
+		<c:set var="curStandardId" value="0" />
 		<c:forEach var="standardActivityTO" items="${standardActivityDetailsList}">
-			<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
-			<div style="float: left; height:auto; clear: both;">
-				<div style="float: left; height: auto; width: 50%">
-					<a href="getArticleDescription.do?articleId=${standardActivityTO.objectiveId}&contentType='STD'" 
-								style="color: #fff; font-weight: bold"
-								id="subtestIdLink">
-									${standardActivityTO.objectiveName}
-					</a>
-					<p>${standardActivityTO.proficiencyLevel}</p>
+			<c:if test="${curStandardId != standardActivityTO.objectiveId}">
+				<div class="simple-div-table wrapped">
+					<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
+					<div class="simple-div-table-col">
+						<a href="getArticleDescription.do?articleId=${standardActivityTO.objectiveId}&contentType='STD'" 
+									style="font-weight: bold"
+									id="subtestIdLink">
+										${standardActivityTO.objectiveName}
+						</a>
+						<p>
+							<c:choose>
+								<c:when test="${standardActivityTO.proficiencyLevel == 1}">
+									Proficient
+								</c:when>
+								<c:when test="${standardActivityTO.proficiencyLevel == 0}">
+									Below Proficient
+								</c:when>
+								<c:otherwise>
+									Unknown
+								</c:otherwise>
+							</c:choose>
+						</p>
+					</div>
+					<div class="simple-div-table-col">
+						<dl>
+							<c:forEach var="activityTO" items="${standardActivityDetailsList}">
+								<c:if test="${standardId == activityTO.objectiveId}">
+									<c:set var="curStandardId" value="${activityTO.objectiveId}" />
+									<dd> 
+										<a href="getArticleDescription.do?articleId=${activityTO.contentId}&contentType='ACT'" 
+											style="font-weight: bold"
+											id="subtestIdLink">
+												${activityTO.contentName}
+										</a>
+										<p>${activityTO.subHeader}</p>
+									</dd>
+									<br>
+								</c:if>
+							</c:forEach>
+						</dl>
+					</div>
 				</div>
-				<div style="float: left; height: auto; width: 50%">
-					<dl>
-						<c:forEach var="activityTO" items="${standardActivityDetailsList}">
-							<c:if test="${standardId == activityTO.objectiveId}">
-								<dd> 
-									<a href="getArticleDescription.do?articleId=${activityTO.contentId}&contentType='ACT'" 
-										style="color: #fff; font-weight: bold"
-										id="subtestIdLink">
-											${activityTO.contentName}
-									</a>
-									<p>${activityTO.subHeader}</p>
-								</dd>
-							</c:if>
-						</c:forEach>
-					</dl>
+				<div>
+					&nbsp;
 				</div>
-			</div>
+			</c:if>
 		</c:forEach>
 	</div>
 </div>

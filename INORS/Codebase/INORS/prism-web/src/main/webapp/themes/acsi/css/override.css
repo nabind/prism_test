@@ -944,10 +944,26 @@ div#nav ul li a {
 .inline-label {
 		padding-left: 120px;
 		}
-		.inline-label > .label{
+.inline-label > .label{
 			float: left;
 			width: 140px;
 			margin-left: -120px;
 			line-height: inherit;
 			//line-height:expression(this.parentNode.currentStyle['line-height']);
-		}	
+}
+
+/*Introduce style for div table - By Joy*/
+.simple-div-table{
+	float: left; 
+	clear: both; 
+	background-color: #FFFFFF;
+	width: 99%;
+	padding: 5px !important;
+	text-align: justify;
+}
+.simple-div-table-col{
+	float: left; 
+	width: 50%;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}
