@@ -16,10 +16,9 @@
 	</div>
 	<div id="standardIndicatorMessage" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">
-			In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 
-			These activities give you the opportunity to help your child improve his or her skills in a fun and engaging way. 
-			Such support can significantly increase your child's appreciation for learning and his or her confidence when tackling new challenges. 
-			The activities are organized in easy-to-follow steps that utilize everyday materials likely available in your home.			
+			
+			Space for Message from Parent Network Site for standards
+				
 	</div>
 	<div id="standardIndicatorDeatils" class="wrapped relative white-gradient" style="height: auto; text-align: justify" >
 		<div style="float: left; height:auto; clear: both;">

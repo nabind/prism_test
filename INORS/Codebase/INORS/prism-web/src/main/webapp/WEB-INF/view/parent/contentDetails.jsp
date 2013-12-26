@@ -11,7 +11,7 @@
 		
 		<div>
 		<textarea id="taContent" style="display:none;">
-			${articleTypeDescription.contentDescrription}
+			${articleTypeDescription.contentDescription}
 		</textarea>
 		</div>
 		
