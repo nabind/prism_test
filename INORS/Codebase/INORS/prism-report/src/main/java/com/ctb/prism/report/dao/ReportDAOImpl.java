@@ -1013,8 +1013,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		catch (Exception e) {
-			logger.log(IAppLogger.INFO, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
-			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ", e);
 		}
 	}
 

@@ -236,7 +236,7 @@ public interface IReportQuery {
 	public static final String REPORT_TYPE = CustomStringUtil.appendString("select REPORT_TYPE as TYPE, DB_REPORTID as ID, " +
 	" REPORT_FOLDER_URI As URI from dash_reports WHERE (REPORT_FOLDER_URI = ? OR DB_REPORTID = ?) ");
 
-	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL' where job_id=?");
+	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL',updated_date_time=SYSDATE where job_id=?");
 	public static final String GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString("select request_filename,job_id from job_tracking where SYSDATE>=created_date_time+?");
 }
 

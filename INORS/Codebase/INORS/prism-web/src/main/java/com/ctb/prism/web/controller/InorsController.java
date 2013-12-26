@@ -59,22 +59,22 @@ import com.ctb.prism.web.util.JsonUtil;
 @Controller
 public class InorsController {
 	private static final IAppLogger logger = LogFactory
-			.getLoggerInstance(InorsController.class.getName());
+	.getLoggerInstance(InorsController.class.getName());
 
 	@Autowired private IInorsService inorsService;
-	
+
 	@Autowired private IAdminService adminService;
-	
+
 	@Autowired private IReportService reportService;
-		
+
 	@Autowired private IReportFilterTOFactory reportFilterFactory;
-	
+
 	@Autowired private ReportController reportController;
-	
+
 	@Autowired private IPropertyLookup propertyLookup;
-	
+
 	@Autowired private JmsMessageProducer messageProducer;
-	
+
 	/**
 	 * @author Arunava
 	 * @param request
@@ -97,11 +97,11 @@ public class InorsController {
 			modelAndView.addObject("groupList", groupList);
 			grpList = JsonUtil.convertToJsonAdmin(groupList);
 		}
-		
+
 		logger.log(IAppLogger.DEBUG, grpList);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * @author Arunava
 	 * @param request
@@ -139,78 +139,78 @@ public class InorsController {
 	 * @throws SystemException
 	 */
 	//Arunava Datta for Group Download file downloading
-		@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
-		public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response){
-			logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
-	
-				String Id = (String)request.getParameter("jobId");
-				String filePath = (String)request.getParameter("filePath");
-				String fileName = (String)request.getParameter("fileName");
-				String extensionType="";
-				if(-1 == fileName.lastIndexOf(".")){
-				extensionType=".pdf";
-				}else{	
-				extensionType=fileName.substring(fileName.lastIndexOf(".")+1);
-				}
-				File file  = new File (filePath);
-				try{	
-					byte[] data = FileCopyUtils.copyToByteArray(file);
-					response.setContentType("application/"+extensionType);
-					response.setContentLength(data.length);
-					response.setHeader("Content-Disposition", "attachment; filename="+fileName);
-					FileCopyUtils.copy(data, response.getOutputStream());
-				} catch (Exception e) {
-				    logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
-				    e.printStackTrace();
-				}
-			logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
+	@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
+	public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response){
+		logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
+
+		String Id = (String)request.getParameter("jobId");
+		String filePath = (String)request.getParameter("filePath");
+		String fileName = (String)request.getParameter("fileName");
+		String extensionType="";
+		if(-1 == fileName.lastIndexOf(".")){
+			extensionType=".pdf";
+		}else{	
+			extensionType=fileName.substring(fileName.lastIndexOf(".")+1);
 		}
-	
-		//Arunava Datta for Group Download file validation
-		@RequestMapping(value="/checkFileAvailability", method=RequestMethod.GET )
-		public ModelAndView checkFileAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
-			
-				logger.log(IAppLogger.INFO, "Enter: InorsController - checkFileAvailability");
-				String filePath = (String)req.getParameter("filePath");
-				File file  = new File (filePath);
-				String status = "Fail";
-				try {	
-					byte[] data = FileCopyUtils.copyToByteArray(file);
-					status = "Success";
-					res.setContentType("text/plain");
-					res.getWriter().write( "{\"status\":\""+status+"\"}" );
-       		       } 
-				catch (Exception e) {
-				logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
-				res.setContentType("text/plain");
-				res.getWriter().write( "{\"status\":\""+status+"\"}" );
-			}
-			return null;
+		File file  = new File (filePath);
+		try{	
+			byte[] data = FileCopyUtils.copyToByteArray(file);
+			response.setContentType("application/"+extensionType);
+			response.setContentLength(data.length);
+			response.setHeader("Content-Disposition", "attachment; filename="+fileName);
+			FileCopyUtils.copy(data, response.getOutputStream());
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
+			e.printStackTrace();
 		}
-		
-		//For getting the required data for a particular request while viewing
-		@RequestMapping(value="/getRequestDetailViewData", method=RequestMethod.GET )
-		public ModelAndView getRequestDetailViewData(HttpServletRequest req, HttpServletResponse res) {
-			try {
-				String jobId = (String)req.getParameter("jobId");
-				Map<String,Object> paramMap = new HashMap<String,Object>(); 
-				paramMap.put("jobId", jobId);
-				ModelAndView modelAndView = new ModelAndView("report/groupDownloadFiles");
-				List<JobTrackingTO> requestList = reportService.getRequestDetail(paramMap);
-				String replist = JsonUtil.convertToJsonAdmin(requestList);
-				modelAndView.addObject("requestView", requestList);
-	            String requestViewJsonString = JsonUtil.convertToJsonAdmin(requestList);
-				logger.log(IAppLogger.INFO, requestViewJsonString);
-				res.setContentType("application/json");
-				res.getWriter().write(requestViewJsonString);
-			} catch (Exception exception) {
-				logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
-			} finally {
-				logger.log(IAppLogger.INFO, "Exit: ReportController - getRequestDetailViewData Details");
-			}
-			return null;
+		logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
+	}
+
+	//Arunava Datta for Group Download file validation
+	@RequestMapping(value="/checkFileAvailability", method=RequestMethod.GET )
+	public ModelAndView checkFileAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+		logger.log(IAppLogger.INFO, "Enter: InorsController - checkFileAvailability");
+		String filePath = (String)req.getParameter("filePath");
+		File file  = new File (filePath);
+		String status = "Fail";
+		try {	
+			byte[] data = FileCopyUtils.copyToByteArray(file);
+			status = "Success";
+			res.setContentType("text/plain");
+			res.getWriter().write( "{\"status\":\""+status+"\"}" );
+		} 
+		catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
+			res.setContentType("text/plain");
+			res.getWriter().write( "{\"status\":\""+status+"\"}" );
 		}
-	
+		return null;
+	}
+
+	//For getting the required data for a particular request while viewing
+	@RequestMapping(value="/getRequestDetailViewData", method=RequestMethod.GET )
+	public ModelAndView getRequestDetailViewData(HttpServletRequest req, HttpServletResponse res) {
+		try {
+			String jobId = (String)req.getParameter("jobId");
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("jobId", jobId);
+			ModelAndView modelAndView = new ModelAndView("report/groupDownloadFiles");
+			List<JobTrackingTO> requestList = reportService.getRequestDetail(paramMap);
+			String replist = JsonUtil.convertToJsonAdmin(requestList);
+			modelAndView.addObject("requestView", requestList);
+			String requestViewJsonString = JsonUtil.convertToJsonAdmin(requestList);
+			logger.log(IAppLogger.INFO, requestViewJsonString);
+			res.setContentType("application/json");
+			res.getWriter().write(requestViewJsonString);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} finally {
+			logger.log(IAppLogger.INFO, "Exit: ReportController - getRequestDetailViewData Details");
+		}
+		return null;
+	}
+
 	/**
 	 * 
 	 * @param request
@@ -246,18 +246,18 @@ public class InorsController {
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			//String currentOrgLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
 			String docName = CustomStringUtil.appendString(currentUser, " " ,Utils.getDateTime(), "_Querysheet.pdf");
-			
-			
+
+
 			/**/
 			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
-			
+
 			// get compiled jasper report
 			JasperReport jasperReport = null;
 			boolean mainReportPresent = false;
-			
+
 			//fetch report list 
 			List<ReportTO> reportList = reportController.getCompliledJrxmlList(reportUrl);
-			
+
 			if(reportList != null && !reportList.isEmpty()) {
 				for(ReportTO reportTo : reportList) {
 					if(reportTo.isMainReport()) {
@@ -266,7 +266,7 @@ public class InorsController {
 						break;
 					}
 				}
-				
+
 				if(!mainReportPresent) {
 					jasperReport = reportList.get(0).getCompiledReport();
 				}
@@ -275,40 +275,40 @@ public class InorsController {
 			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
 			Map<String, Object> parameters = reportController.getReportParametersFromRequest(
 					request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
-				//reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-			
-			
+			//reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+
+
 			String mainQuery = jasperReport.getDatasets()[0].getQuery().getText(); //jasperReport.getQuery().getText();
-			
+
 			// replace all parameters with jasper parameter string
 			Map<String, String> replacableParams = new HashMap<String, String>();
 			Iterator it = parameters.entrySet().iterator();
 			try {
 				while (it.hasNext()) {
-				    Map.Entry pairs = (Map.Entry)it.next();
-				    if(pairs.getValue() != null && pairs.getValue() instanceof String) {
-				    	replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), 
-				    			(String) pairs.getValue());
-				    } else if(pairs.getValue() != null && pairs.getValue() instanceof List) {
-				    	String val = pairs.getValue().toString();
-				    	val = val.substring(1, val.length()-1);
-				    	replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()),
-				    			val);
-				    }
+					Map.Entry pairs = (Map.Entry)it.next();
+					if(pairs.getValue() != null && pairs.getValue() instanceof String) {
+						replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), 
+								(String) pairs.getValue());
+					} else if(pairs.getValue() != null && pairs.getValue() instanceof List) {
+						String val = pairs.getValue().toString();
+						val = val.substring(1, val.length()-1);
+						replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()),
+								val);
+					}
 				}
 			} catch (Exception e) {
 				logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.",e);
 			}
-			
+
 			it = request.getParameterMap().entrySet().iterator();
 			while (it.hasNext()) {
-			    try {
+				try {
 					@SuppressWarnings("rawtypes")
 					Map.Entry pairs = (Map.Entry)it.next();
 					if(pairs.getValue() != null && pairs.getValue() instanceof String) {
 						if(!replacableParams.containsKey(pairs.getKey())) {
 							replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), 
-					    			(String) pairs.getValue());
+									(String) pairs.getValue());
 						}
 					}
 				} catch (Exception e) {
@@ -319,18 +319,18 @@ public class InorsController {
 			replacableParams.put("$P!{p_End_Test_Date}", request.getParameter("p_End_Test_Date"));
 			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Grade_Id"), "112");
 			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Product_Id"), "1001");
-			
+
 			String changedObject = "p_Ethnicities,p_Roster_Subtest_MultiSelect";
 			/*List<ObjectValueTO> allStudents = reportService.getValuesOfSingleInput(
 					mainQuery, currentUser, changedObject, "", replacableParams, reportFilterTO, true);
-			*/
-			
-			
+			 */
+
+
 			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
 			bulkDownloadTO.setQuerysheetFile(docName);
 			bulkDownloadTO.setUdatedBy((currentUserId == null)? 0 : Long.valueOf(currentUserId));
 			bulkDownloadTO.setUsername(currentUser);
-			
+
 			bulkDownloadTO.setCustomerId(customer);
 			bulkDownloadTO.setReportUrl(reportUrl);
 			bulkDownloadTO.setRequestType(request.getParameter("fileType"));
@@ -349,29 +349,29 @@ public class InorsController {
 					"&p_Is_Bulk=", "1",
 					"&p_Start_Test_Date=" + bulkDownloadTO.getStartDate(), 
 					"&p_End_Test_Date=", bulkDownloadTO.getEndDate()));
-			
+
 			bulkDownloadTO = inorsService.createJob(bulkDownloadTO);
-			
+
 			String querysheetFile = PdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
-			
+
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(bulkDownloadTO.getJobId());
-			
+
 			if(bulkDownloadTO.getJobId() != 0) status = "Success";
-			
+
 			response.setContentType("application/json");
 			response.getWriter().write("");
 			response.getWriter().write( "{\"status\":\""+status+"\"}" );
-			
+
 		} catch (Exception ex) {
 			logger.log(IAppLogger.ERROR, ex.getMessage(), ex);
 			response.getWriter().write( "{\"status\":\""+status+"\"}" );
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	@RequestMapping(value = "/icLetterDownloads", method = RequestMethod.GET)
 	public ModelAndView icLetterDownloads(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
 			HttpServletRequest request,
@@ -379,7 +379,7 @@ public class InorsController {
 		request.setAttribute("icDownload", "true");
 		return groupDownloadForm(bulkDownloadTO, request, response);
 	}
-	
+
 	/**
 	 * Entry method for group download screen
 	 * 
@@ -391,8 +391,8 @@ public class InorsController {
 	public ModelAndView groupDownloadForm(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		
-		
+
+
 		ModelAndView modelAndView = null;
 		boolean icDownload = false;
 		if("true".equals((String) request.getAttribute("icDownload"))) {
@@ -402,7 +402,7 @@ public class InorsController {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
 		String reportUrl = (String) request.getParameter("reportUrl");
-		
+
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentOrg =(String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
@@ -413,21 +413,21 @@ public class InorsController {
 		try {
 			String adminYear = (String) request.getParameter("AdminYear");
 			Map<String, Object> parameters = null;
-		////	if(IApplicationConstants.TRUE.equals(request.getParameter("filter"))) {
+			////	if(IApplicationConstants.TRUE.equals(request.getParameter("filter"))) {
 			////	@SuppressWarnings("unchecked")
-				////List<InputControlTO> allInputControls = (List<InputControlTO>) request.getSession().getAttribute(
-					////	IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl);
+			////List<InputControlTO> allInputControls = (List<InputControlTO>) request.getSession().getAttribute(
+			////	IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl);
 			////	parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, "false");
 			////} else {
-				// get all input controls for report
-				List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
-				
-				// get default parameters for logged-in user
-				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl);
+			// get all input controls for report
+			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
-				// get parameter values for report
-				parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-		////	}
+			// get default parameters for logged-in user
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl);
+
+			// get parameter values for report
+			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+			////	}
 			adminYear =  (String) parameters.get("p_adminYear");
 			String testAdministrationVal = (String) request.getParameter("p_test_administration");
 			String testProgram = (String) request.getParameter("p_test_program");
@@ -435,28 +435,28 @@ public class InorsController {
 			String school = (String) request.getParameter("p_school");
 			String klass = (String) request.getParameter("p_class");
 			String grade = (String) request.getParameter("p_grade_ppr");
-			
+
 			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 			logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 			logger.log(IAppLogger.INFO, "school=" + school);
 			logger.log(IAppLogger.INFO, "klass=" + klass);
 			logger.log(IAppLogger.INFO, "grade=" + grade);
-			
+
 			modelAndView.addObject("testAdministrationVal", testAdministrationVal);
 			modelAndView.addObject("testProgram", testProgram);
 			modelAndView.addObject("corpDiocese", corpDiocese);
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("klass", klass);
 			modelAndView.addObject("grade", grade);
-			
+
 			modelAndView.addObject("rootOrgId", corpDiocese);
-			
+
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 
-		
+
 		if(request.getSession().getAttribute("retainBulkDownloadTO") != null) {
 			BulkDownloadTO tempTo = (BulkDownloadTO) request.getSession().getAttribute("retainBulkDownloadTO");
 			bulkDownloadTO.setFileName(tempTo.getFileName());
@@ -472,12 +472,12 @@ public class InorsController {
 			bulkDownloadTO.setEmail(email);
 		}
 		bulkDownloadTO.setIstepPlus(true); // TODO set this value based on administration selected
-		
-		
+
+
 		modelAndView.addObject("reportUrl", reportUrl);
 		return modelAndView;
 	}
-	
+
 	/**
 	 * Get school -class - student hierarchy for tree
 	 * 
@@ -491,7 +491,7 @@ public class InorsController {
 	public @ResponseBody
 	String getTenantHierarchy(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
+
 		List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		String orgJsonString;
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
@@ -503,7 +503,7 @@ public class InorsController {
 			String nodeLevel = (String) request.getParameter("nodeLevel");
 			String adminYear = (String) request.getParameter("AdminYear");
 			String reportUrl = (String) request.getParameter("reportUrl");
-			
+
 			Map<String, Object> parameters = null;
 			parameters = (Map<String, Object>) request.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl);
 			while(parameters == null) {
@@ -516,22 +516,22 @@ public class InorsController {
 			String corp = (String) parameters.get("p_corp");
 			String orgClass = (String) parameters.get("p_class");
 			String grade = (String) parameters.get("p_gradeid");
-			
+
 			if (nodeid != null) {
 				orgTreeTOs = adminService.getHierarchy(parameters);
-				
+
 				if(orgTreeTOs != null && orgTreeTOs.isEmpty() && nodeid.indexOf("_") == -1) {
 					List<com.ctb.prism.admin.transferobject.ObjectValueTO> studentList = adminService.getAllStudents(adminYear, nodeid, customer, grade);
-					
+
 					for(com.ctb.prism.admin.transferobject.ObjectValueTO obj : studentList) {
 						OrgTO to = new OrgTO();
 						OrgTreeTO treeTo = new OrgTreeTO();
-									
+
 						to.setId((obj.getValue() == null)? 0 : Long.valueOf(obj.getValue()));
 						to.setParentTenantId(Long.valueOf(nodeid));
 						to.setOrgLevel(-1);
 						to.setClassName("jstree-leaf");
-						
+
 						treeTo.setState("leaf");
 						treeTo.setOrgTreeId(Long.valueOf(nodeid));
 						treeTo.setData(obj.getName());
@@ -542,7 +542,7 @@ public class InorsController {
 				}
 			}
 			orgJsonString = JsonUtil.convertToJsonAdmin(orgTreeTOs);
-			
+
 			logger.log(IAppLogger.DEBUG, orgJsonString);
 			response.setContentType("application/json");
 			response.getWriter().write(orgJsonString);
@@ -552,7 +552,7 @@ public class InorsController {
 
 		return null;
 	}
-	
+
 	/**
 	 * Download job initiation for requested students 
 	 * 
@@ -567,7 +567,7 @@ public class InorsController {
 	String downloadBulkPdf(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
 			HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
+
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentOrg = (String) request.getSession().getAttribute( IApplicationConstants.CURRORG);
@@ -582,7 +582,7 @@ public class InorsController {
 			String adminYear = (String) request.getParameter("AdminYear");
 			String reportUrl = (String) request.getParameter("reportUrl");
 			String docName = CustomStringUtil.appendString(currentUser, " " ,Utils.getDateTime(), "_Querysheet.pdf");
-			
+
 			String school = null, corp = null, orgClass = null, testProgram = null, grade = null;
 			if(!"CR".equals(fileType)) {
 				Map<String, Object> parameters = null;
@@ -592,7 +592,7 @@ public class InorsController {
 					Thread.sleep(2000);
 					parameters = (Map<String, Object>) request.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl);
 				}
-				
+
 				adminYear =  (String) parameters.get("p_adminYear");
 				school = (String) parameters.get("p_school");
 				corp = (String) parameters.get("p_corp");
@@ -613,16 +613,16 @@ public class InorsController {
 			bulkDownloadTO.setReportUrl(reportUrl);
 			bulkDownloadTO.setRequestType(fileType);
 			bulkDownloadTO.setDownloadMode(request.getParameter("mode"));
-			
+
 			bulkDownloadTO = inorsService.createJob(bulkDownloadTO);
-			
+
 			String querysheetFile = PdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
-			
+
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(bulkDownloadTO.getJobId());
-			
+
 			if(bulkDownloadTO.getJobId() != 0) status = "Success";
-			
+
 			response.setContentType("application/json");
 			response.getWriter().write("");
 			response.getWriter().write( "{\"status\":\""+status+"\"}" );
@@ -633,7 +633,7 @@ public class InorsController {
 
 		return null;
 	}
-	
+
 	/**
 	 * This method is to retain form values
 	 * @param bulkDownloadTO
@@ -677,7 +677,7 @@ public class InorsController {
 			logger.log(IAppLogger.WARN, e.getMessage());
 		}
 		logger.log(IAppLogger.INFO, "productName=" + productName);
-		
+
 		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
 		modelAndView.addObject("testAdministrationText", productName);
 		modelAndView.addObject("testProgram", testProgram);
@@ -716,7 +716,7 @@ public class InorsController {
 	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: downloadGRTInvitationCodeFiles()");
 		Map<String, String> paramMap = new HashMap<String, String>();
-		
+
 		String type = (String) request.getParameter("type");
 		String testAdministrationVal = (String) request.getParameter("testAdministrationVal");
 		String testProgram = (String) request.getParameter("testProgram");
@@ -727,7 +727,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
-		
+
 		String productName = "";
 		try {
 			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
@@ -739,7 +739,7 @@ public class InorsController {
 		String product = tokens[0];
 		String term = tokens[1];
 		String year = tokens[2];
-		
+
 		logger.log(IAppLogger.INFO, "product=" + product);
 		logger.log(IAppLogger.INFO, "term=" + term);
 		logger.log(IAppLogger.INFO, "year=" + year);
@@ -779,7 +779,7 @@ public class InorsController {
 		FileUtil.browserDownload(response, data, zipFileName);
 		logger.log(IAppLogger.INFO, "Exit: downloadGRTInvitationCodeFiles()");
 	}
-	
+
 	@RequestMapping(value = "/populateDistrictGrt", method = RequestMethod.GET)
 	public @ResponseBody String populateDistrictGrt(HttpServletRequest request) {
 		logger.log(IAppLogger.INFO, "Enter: populateDistrictGrt()");
@@ -791,7 +791,7 @@ public class InorsController {
 		try{
 			districtList = inorsService.populateDistrictGrt(paramMap);
 			jsonString = JsonUtil.convertToJsonAdmin(districtList);
-	    }catch(Exception e){
+		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, e.getMessage());
 			e.printStackTrace();
 		}finally{
@@ -822,7 +822,7 @@ public class InorsController {
 		try{
 			schoolList =  inorsService.populateSchoolGrt(paramMap);
 			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
-	    }catch(Exception e){
+		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
@@ -830,7 +830,7 @@ public class InorsController {
 		}
 		return jsonString;
 	}
-	
+
 	/**
 	 * @author Amit Dhara,Arunava Datta
 	 * Scheduler
@@ -839,14 +839,14 @@ public class InorsController {
 	 *  @RequestMapping(value = "/doSomething", method = RequestMethod.GET) -- > For testing enable this and hit the URL as doSomething.do
 	 * @throws Exception 
 	 */
-	
+
 	@Scheduled(cron= "* * 1 * * ?")
 	public void doSomething() throws Exception {
-	    
+
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES --------------- ");
 		String gdfExpiryTime=propertyLookup.get("gdfExpiryTime");
 		reportService.deleteScheduledGroupFiles(gdfExpiryTime);
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 	}
-	
+
 }
