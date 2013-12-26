@@ -46,7 +46,7 @@
 						<c:forEach var="IndicatorTO" items="${standardIndicatorDetailsList}">
 							<c:if test="${standardId == IndicatorTO.objectiveId}">
 								<dd> 
-									<a href="getArticleDescription.do?articleId=${IndicatorTO.contentId}&contentType='ACT'" 
+									<a href="getArticleDescription.do?articleId=${IndicatorTO.contentId}&contentType='IND'" 
 										style="color: #fff; font-weight: bold"
 										id="subtestIdLink">
 											${IndicatorTO.contentName}
