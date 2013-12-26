@@ -6,12 +6,12 @@
 	
 		<div id="standardHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
-			<h2>Description ${articleTypeDescription.contentName}</h2>		
+			<h2>Name : ${articleTypeDescription.contentName}</h2>		
 		</div>
 		
 		<div>
 		<textarea id="taContent" style="display:none;">
-			${articleTypeDescription.contentDescription}
+			Description : ${articleTypeDescription.contentDescription}
 		</textarea>
 		</div>
 		

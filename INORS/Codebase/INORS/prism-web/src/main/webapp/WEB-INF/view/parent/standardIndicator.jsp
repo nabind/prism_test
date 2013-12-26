@@ -7,18 +7,25 @@
 		style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${studentName == '-1'}">
-				<h2>Skill-Building Activities</h2>
+				<h2>Standards</h2>
 			</c:when>
 			<c:otherwise>
-				<h2>Skill-Building Activities for ${studentName}</h2>
+				<h2>Standards for ${studentName}</h2>
 			</c:otherwise>
 		</c:choose>		
 	</div>
 	<div id="standardIndicatorMessage" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">
+			<h3>Standards</h3>
 			
-			Space for Message from Parent Network Site for standards
-				
+            To read the standards your child is working toward, click on each standard number below. 
+            The standards are organized so you can see how they align to the topics on the test. 
+            These standards describe in detail what your child is expected to achieve this year based on 
+            understanding the skills he or she needs to progress in school. 
+            
+            To learn more about what standards are and why they are important, choose Why Standards Matter 
+            under the Explore Links section of the Parent Network Home page.
+
 	</div>
 	<div id="standardIndicatorDeatils" class="wrapped relative white-gradient" style="height: auto; text-align: justify" >
 		<div style="float: left; height:auto; clear: both;">
