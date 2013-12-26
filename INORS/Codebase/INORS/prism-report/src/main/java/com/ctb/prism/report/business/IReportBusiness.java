@@ -47,6 +47,7 @@ public interface IReportBusiness {
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException;
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException;
 	public boolean deleteGroupFiles(String Id)	throws Exception;
+	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception;
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException;
 
 	/**

@@ -831,11 +831,22 @@ public class InorsController {
 		return jsonString;
 	}
 	
-	// every night @ 1 AM
+	/**
+	 * @author Amit Dhara,Arunava Datta
+	 * Scheduler
+	 *  every night @ 1 AM
+	 *  Group Download files deletion and job tracking update if exp date >= SYSDATE Scheduler
+	 *  @RequestMapping(value = "/doSomething", method = RequestMethod.GET) -- > For testing enable this and hit the URL as doSomething.do
+	 * @throws Exception 
+	 */
+	
 	@Scheduled(cron= "* * 1 * * ?")
-	public void doSomething() {
-	    // something that should execute periodically
-		logger.log(IAppLogger.INFO, "CRON JOB @ 1 AM ----- f r o m  Scheduled method --------------- ");
+	public void doSomething() throws Exception {
+	    
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES --------------- ");
+		String gdfExpiryTime=propertyLookup.get("gdfExpiryTime");
+		reportService.deleteScheduledGroupFiles(gdfExpiryTime);
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 	}
 	
 }

@@ -54,6 +54,7 @@ public interface IReportDAO {
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap) throws SystemException;
 	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap) throws SystemException;
 	public boolean deleteGroupFiles(String Id) throws Exception;
+	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception;
 
 	/**
 	 * Creates the list of test administrations

@@ -124,6 +124,13 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.deleteGroupFiles(Id);
 	}
 	
+	public void deleteScheduledGroupFiles(String gdfExpiryTime)
+	throws Exception {
+
+       reportBusiness.deleteScheduledGroupFiles(gdfExpiryTime);
+   }
+
+	
 	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException{
 		return reportBusiness.getReportMessageFilter(paramMap);
 	}

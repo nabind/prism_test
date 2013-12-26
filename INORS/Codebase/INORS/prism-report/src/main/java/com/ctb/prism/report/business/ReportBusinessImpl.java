@@ -374,6 +374,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 
        return reportDAO.deleteGroupFiles(Id);
    }
+	public void deleteScheduledGroupFiles(String gdfExpiryTime)
+	throws Exception {
+
+      reportDAO.deleteScheduledGroupFiles(gdfExpiryTime);
+   }
 
 	/*
 	 * (non-Javadoc)

@@ -1,5 +1,6 @@
 package com.ctb.prism.report.dao;
 
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -676,7 +677,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List placeHolderValueList = new ArrayList();
 		List<ManageMessageTO> manageMessageTOList = null;
 		try{
-			if(null!=reportName && (reportName.equalsIgnoreCase("Generic System Configuration"))) 
+			if(null!=reportName && (reportName.equalsIgnoreCase(IApplicationConstants.GENERIC_REPORT_NAME))) 
 					
 			{
 				placeHolderValueList.add(reportId);
@@ -688,7 +689,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM_GENERIC, 
 						placeHolderValueList.toArray(),new ManageMessageTOMapper());
 			}
-			else if(null!=reportName && (reportName.equalsIgnoreCase("Product Specific System Configuration"))) 
+			else if(null!=reportName && (reportName.equalsIgnoreCase(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME))) 
 					
 			{
 				placeHolderValueList.add(reportId);
@@ -970,7 +971,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	//Arunava Datta for Group Download deleting
 
-	@TriggersRemove(cacheName="orgUsers", removeAll=true)
 	public boolean deleteGroupFiles(String Id)
 			throws Exception {
 		try {
@@ -981,6 +981,45 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return true;
 	}
+	
+	/**
+	 * @author Arunava
+	 * @param id
+	 * @return
+	 * @throws SystemException
+	 * For GDF deleting by scheduler
+	 */
+	
+	public void deleteScheduledGroupFiles(String gdfExpiryTime)	throws Exception {
+  try {
+	          int gdfExpiryTimeFromPropertyFileBuffer=Integer.parseInt(gdfExpiryTime);
+			  logger.log(IAppLogger.INFO, "Enter Scheduled method for GROUP DOWNLOAD FILES--------------- ");
+			  List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST,gdfExpiryTimeFromPropertyFileBuffer);
+						if ( dataList != null && dataList.size() > 0 )
+						{
+							for (Map<String, Object> data : dataList)
+							{
+								    String filePath=(String) data.get("request_filename");
+								    long jobId=((BigDecimal) data.get("job_id")).longValue();
+								    System.out.println("FILE PATH :::::::::::::"+filePath);
+								    System.out.println("JOB ID :::::::::::::"+jobId);
+						            File file  = new File (filePath);
+								    if(file.exists())
+								    {
+								    	file.delete();
+								    	System.out.println("FILE DELETE BLOCK :::::::::::::");
+								    }
+					                getJdbcTemplatePrism().update(IReportQuery.DELETE_GROUP_FILES,jobId);
+					                System.out.println("UPDATE TABLE FOR DELETE:::::::::::::");
+				           }
+							 logger.log(IAppLogger.INFO, "Exit Scheduled method for GROUP DOWNLOAD FILES--------------- ");
+						}
+        }
+    catch (Exception e) {
+    	logger.log(IAppLogger.INFO, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
+    }
+}
+	
 
 	/**
 	 * Returns the date in a defined format
