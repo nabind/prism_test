@@ -15,7 +15,7 @@
 		<style>
 			.otherspan {
 				vertical-align:middle !important;
-				line-height: 11px !important;
+				
 			}
 			.ie7span {
 				vertical-align:top !important;
