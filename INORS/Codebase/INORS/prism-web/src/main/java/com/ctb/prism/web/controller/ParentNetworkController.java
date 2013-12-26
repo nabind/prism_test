@@ -166,21 +166,30 @@ public class ParentNetworkController {
 			throws ServletException, IOException,BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardIndicator()");
 		long t1 = System.currentTimeMillis();
-		ModelAndView modelAndView = new ModelAndView("parent/standardIndicator");
+		
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		final long studentBioId = Long.parseLong((String) request.getSession().getAttribute(IApplicationConstants.STUDENT_BIO_ID)); 
+		final long studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
 		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
-		final long studentGradeId = 0;
-		final String contentType = IApplicationConstants.CONTENT_TYPE_IND;
-		final String studentName = (String) paramMap.get("studentName");
-		List<ManageContentTO> articleTypeDetailsList=null;
+		final long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
+		final String studentGradeName = request.getParameter("studentGradeName");
+		final String studentName = request.getParameter("studentName");
+		
+		ModelAndView modelAndView = new ModelAndView("parent/standardIndicator");
+		if(studentBioId != 0){
+			modelAndView.addObject("studentName", studentName);
+		}else{
+			modelAndView.addObject("studentName", "-1");
+		}
+		
+		List<ManageContentTO> standardIndicatorDetailsList=null;
 		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("studentName", studentName);
 		paramMap.put("studentGradeId", studentGradeId);
 		paramMap.put("subtestId", subtestId);
-		paramMap.put("contentType", contentType);
+		paramMap.put("contentType", IApplicationConstants.CONTENT_TYPE_IND);
+		
 		try{
-			articleTypeDetailsList = parentService.getArticleTypeDetails(paramMap);
+			standardIndicatorDetailsList = parentService.getArticleTypeDetails(paramMap);
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -188,9 +197,13 @@ public class ParentNetworkController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getStandardIndicator() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		modelAndView.addObject("studentName", studentName);
-		modelAndView.addObject("articleTypeDetailsList", articleTypeDetailsList);
+		
+		modelAndView.addObject("standardIndicatorDetailsList", standardIndicatorDetailsList);
+		modelAndView.addObject("studentGradeName", studentGradeName);
 		return modelAndView;
+		
+		
+		
 	}
 	
 	/**
@@ -211,8 +224,8 @@ public class ParentNetworkController {
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/contentDetails");
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		final long articleId = Long.parseLong((String) paramMap.get("articleId")); 
-		final String contentType = (String) paramMap.get("contentType");
+		final long articleId = Long.parseLong(request.getParameter("articleId")); 
+		final String contentType = (String)request.getParameter("contentType");
 		ManageContentTO manageContentTO=null;
 		paramMap.put("articleId", articleId);
 		paramMap.put("contentType", contentType);
