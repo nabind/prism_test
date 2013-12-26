@@ -205,7 +205,7 @@
 											<th scope="col" width="20%"><spring:message code="label.content.name"/></th>
 											<th scope="col" width="25%"><spring:message code="label.content.subHeader"/></th>
 											<th scope="col" width="22%"><spring:message code="label.content.grade"/></th>
-											<!--<th scope="col" width="23%"><spring:message code="label.content.profLevel"/></th>-->
+											<!--<th scope="col" width="23%"><spring:message code="label.content.performanceLevel"/></th>-->
 											<th scope="col" width="20%"><spring:message code="table.columnName.action"/></th>
 										</tr>
 									</thead>
@@ -354,10 +354,10 @@
 						<!-- As per requirement, proficiency level does not depend upon content -->
 						<!-- 
 						<p class="button-height inline-label">
-							<label class="label" for="subHeader"><spring:message code="label.content.profLevel"/><span
+							<label class="label" for="subHeader"><spring:message code="label.content.performanceLevel"/><span
 								class="icon-star icon-size1 red"></span>
 							</label> 
-							<select id="profLevel" name="profLevel" 
+							<select id="performanceLevel" name="performanceLevel" 
 								class="select expandable-list" style="width: 150px;">			
 							</select>
 						</p>
