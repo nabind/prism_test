@@ -80,7 +80,7 @@
 				</ul>
 				<sec:authorize ifNotGranted="ROLE_EDU_ADMIN">
 				<sec:authorize ifAnyGranted="ROLE_ADMIN">
-					<ul class="big-menu blue-gradient display-none" id="adminMenu">
+					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
 						<%@ include file="resources.jsp"%>
 						<li>
 							<a href="userModule.do">Manage Users</a>
@@ -124,15 +124,15 @@
 				</sec:authorize>
 				
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
-					<ul class="big-menu blue-gradient" id="parentMenu">
+					<ul class="big-menu blue-gradient collapsible" id="parentMenu">
 						<li class="with-right-arrow" id="select-tooltip-1">
 							<span>Your Children</span>
-							<div id="select-context-1" class="secondLevelMenu display-none">
+							<!--<div id="select-context-1" class="secondLevelMenu display-none">-->
 								<ul class="big-menu report-menu white-gradient" id="child_list">
 									<!-- <li class="mid-margin-left font-12 small-line-height"><a class=""href="#nogo"> Randy Balser</a></li>
 									<li class="mid-margin-left font-12 small-line-height no-shadow"><a class="" href="#nogo"> Emily A Smith</a></li> -->
 								</ul>
-							</div>
+							<!--</div>-->
 						</li>
 						
 						<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">

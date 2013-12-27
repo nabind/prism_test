@@ -1,6 +1,7 @@
 package com.ctb.prism.login.business;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,8 +13,6 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
-import java.util.Map;
-
 
 
 
@@ -58,11 +57,19 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.getUserDetails(username);
 	}
 	
-	public UserTO getUsersForSSO(String orgId) throws Exception {
-		return loginDAO.getUsersForSSO(orgId);
+	public UserTO getUsersForSSO(UserTO userTO) throws Exception {
+		return loginDAO.getUsersForSSO(userTO);
 	}
 	
 	public UserTO getOrgLevel(UserTO userTO) {
 		return loginDAO.getOrgLevel(userTO);
+	}
+	
+	public boolean checkUserAvailability(String username) {
+		return loginDAO.checkUserAvailability(username);
+	}
+	
+	public void addNewUser(Map<String,Object> paramMap) throws Exception {
+		loginDAO.addNewUser(paramMap);
 	}
 }

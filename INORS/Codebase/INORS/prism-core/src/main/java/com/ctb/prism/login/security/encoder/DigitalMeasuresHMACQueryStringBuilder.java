@@ -324,7 +324,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					);
 			System.out.println(queryString.toString());
 			*/
-			String param = "customer_id=12160&org_node_code=000000001&hierarchy_level=1&application_name=OAS&time_stamp=2014-11-19T18%3A33%3A44Z&user_role=Admin&user_name=SSOWSUSER";
+			String param = "customer_id=14829&org_node_code=000000001&hierarchy_level=1&application_name=OAS&time_stamp=2014-11-19T18%3A33%3A44Z&user_role=Admin&user_name=SSOWSUSER";
 			String signature = hmc.getAuthenticationCode(param.toString());
 			System.out.println( URLEncoder.encode(signature, "UTF-8"));
 			

@@ -20,6 +20,9 @@ public interface ILoginDAO {
 	public String checkFirstTimeLogin(String username);
 	public UserTO getUserDetails(String username);
 	public UserTO getUsersForSSO(String orgId) throws Exception;
-	public UserTO getOrgLevel(UserTO userTO);
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
+	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
+	public UserTO getOrgLevel(UserTO userTO);
+	public boolean checkUserAvailability(String username);
+	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 }

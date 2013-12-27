@@ -1,6 +1,7 @@
 package com.ctb.prism.login.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -24,6 +25,8 @@ public interface ILoginService {
 	
 	public UserTO getUserDetails(String username);
 	
-	public UserTO getUsersForSSO(String orgId) throws Exception;
+	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
 	public UserTO getOrgLevel(UserTO userTO);
+	public boolean checkUserAvailability(String username);
+	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 }

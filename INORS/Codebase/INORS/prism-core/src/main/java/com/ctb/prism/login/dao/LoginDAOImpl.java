@@ -9,11 +9,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedReader;
-import java.io.IOException;
-import oracle.sql.CLOB;
-import java.sql.Clob;
-import com.ctb.prism.core.util.Utils;
 
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -29,10 +24,14 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.transferobject.ObjectValueTO;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.PasswordGenerator;
+import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository
 public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
@@ -167,7 +166,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
 				user.setCustomerId(((BigDecimal) fieldDetails.get("CUSTID")).toString());
 				user.setUserEmail((fieldDetails.get("EMAIL") != null) ? fieldDetails.get("EMAIL").toString() : "");
-				user.setProduct(fieldDetails.get("PRODUCT").toString());
+				//user.setProduct(fieldDetails.get("PRODUCT").toString());
 				user.setUserType(userType);
 			}
 		}
@@ -361,6 +360,132 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return objectValueTOList;
+	}
+	
+	/**
+	 * get user list for SSO organization
+	 * @param role id
+	 * @return user details
+	 */
+	public UserTO getUsersForSSO(UserTO userTO) {
+
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(
+				IQueryConstants.GET_USERS_FOR_SSO_ORG, userTO.getCustomerId(), userTO.getOrgCode());
+		logger.log(IAppLogger.DEBUG, lstData.size()+"");
+
+		if (lstData.size() > 0) {
+
+			for (Map<String, Object> fieldDetails : lstData) {
+				userTO.setCustomerId(((BigDecimal)(fieldDetails.get("CUSTOMERID"))).toString());
+				userTO.setOrgId(((BigDecimal)(fieldDetails.get("NODEID"))).toString());
+			}
+		}
+		return userTO;
+	}
+	
+	/**
+	 * check provided user availability
+	 * 
+	 * @return boolean
+	 */
+	public boolean checkUserAvailability(String username) {
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
+		if (lstData == null || lstData.isEmpty()) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+	
+	/**
+	 * add new user
+	 * @param String userId, String tenantId, String userName,
+			String emailId, String password, String userStatus,
+			String[] userRoles
+	 * @return UserTO
+	 */
+	@TriggersRemove(cacheName="orgUsers", removeAll=true)
+	public void addNewUser(Map<String,Object> paramMap) throws Exception {
+		//UserTO to = null;
+		String userName = (String) paramMap.get("userName");
+		String password = (String) paramMap.get("password");
+		String userDisplayName = (String) paramMap.get("userDisplayName");
+		String emailId = (String) paramMap.get("emailId");
+		String userStatus = (String) paramMap.get("userStatus");
+		String customerId = (String) paramMap.get("customer");
+		String tenantId = (String) paramMap.get("tenantId");
+		String orgLevel = (String) paramMap.get("orgLevel");
+		String adminYear =  (String) paramMap.get("adminYear");
+		String[] userRoles =  (String[]) paramMap.get("userRoles");
+		String purpose = (String) paramMap.get("purpose");
+		
+		try {
+			ObjectValueTO currAdmin = getCurrentAdmin();
+			adminYear = currAdmin.getValue();
+			
+			// code to insert user in DAO only
+			List<Map<String, Object>> userMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_USER, userName);
+			if (userMap == null || userMap.isEmpty()) { // user not present in DB so insert new
+				
+				long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+				if (user_seq_id != 0) {
+					String salt = PasswordGenerator.getNextSalt();
+					getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_WITH_PASSWORD,
+									user_seq_id, userName, userDisplayName, emailId, 
+									userStatus, IApplicationConstants.FLAG_N,
+									SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
+									salt, IApplicationConstants.FLAG_N, customerId);
+					if(IApplicationConstants.PURPOSE.equals(purpose)) {
+						//Insert into edu_center_user_link
+						String eduCenterId = (String) paramMap.get("eduCenterId");
+						getJdbcTemplatePrism().update(IQueryConstants.INSERT_EDU_CENTER_USER,
+								eduCenterId, user_seq_id);
+					} else {
+						// insert into org_users
+						long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+						getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER,
+								orgUserSeqId, user_seq_id, tenantId,
+								orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
+					}
+					
+					if (userRoles != null) {
+						/*getJdbcTemplatePrism().update(
+								IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);*/
+						for (String role : userRoles) {
+							getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, user_seq_id);
+						}
+					}
+				}
+				String nodeId = String.valueOf(user_seq_id);
+				paramMap.put("nodeId", nodeId);
+				//to = getEditUserData(paramMap);
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error occurred while adding user details.", e);
+			throw new Exception(e);
+		}
+		//return to;
+	}
+	
+	/**
+	 * get user list for selected role
+	 * @param role id
+	 * @return List of users
+	 */
+	public ObjectValueTO getCurrentAdmin() throws SystemException {
+		ObjectValueTO to = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CURR_ADMIN_YEAR);
+		logger.log(IAppLogger.DEBUG, lstData.size()+"");
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				to = new ObjectValueTO();
+				to.setValue( ((BigDecimal) (fieldDetails.get("ADMINID"))).toString() );
+				to.setName((String) (fieldDetails.get("ADMIN_NAME")));
+			}
+		}
+		
+		return to;
 	}
 	
 }

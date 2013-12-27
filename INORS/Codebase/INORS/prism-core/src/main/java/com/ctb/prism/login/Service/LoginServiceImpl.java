@@ -1,6 +1,7 @@
 package com.ctb.prism.login.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.business.ILoginBusiness;
 import com.ctb.prism.login.transferobject.UserTO;
-import java.util.Map;
 
 
 @Service
@@ -43,11 +43,17 @@ public class LoginServiceImpl implements ILoginService{
 	public UserTO getUserDetails(String username) {
 		return loginBusiness.getUserDetails(username);
 	}
-	public UserTO getUsersForSSO(String orgId) throws Exception {
-		return loginBusiness.getUsersForSSO(orgId);
+	public UserTO getUsersForSSO(UserTO userTO) throws Exception {
+		return loginBusiness.getUsersForSSO(userTO);
 	}
 	public UserTO getOrgLevel(UserTO userTO) {
 		return loginBusiness.getOrgLevel(userTO);
+	}
+	public boolean checkUserAvailability(String username) {
+		return loginBusiness.checkUserAvailability(username);
+	}
+	public void addNewUser(Map<String,Object> paramMap) throws Exception {
+		loginBusiness.addNewUser(paramMap);
 	}
 	
 }

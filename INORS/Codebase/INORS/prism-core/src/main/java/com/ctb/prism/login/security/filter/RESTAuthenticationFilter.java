@@ -1,10 +1,14 @@
+
 package com.ctb.prism.login.security.filter;
 
 import groovy.util.logging.Slf4j;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,6 +29,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -59,6 +64,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private List<String> alternateAuthenticationUrls;
     private boolean isWebServiceCall = false;
     private boolean postOnly = true;
+    
+    String RANDOM_STRING = "9rc^wH7KRg[B";
     
 	@Autowired
     DigitalMeasuresHMACQueryStringBuilder hmac;
@@ -131,18 +138,38 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 					UserTO userTO = new UserTO();
 					userTO.setCustomerId(customerId);
 					userTO.setOrgNodeLevelStr(orgLevel);
-					userTO.setOrgCode(orgNode);
+					userTO.setOrgCode(CustomStringUtil.appendString("0~", URLDecoder.decode(orgNode, "UTF-8")));
+					// get prism customer id and orgnode id
 					userTO = loginService.getOrgLevel(userTO);
 					if(userTO != null) {
 						// customer id org level and orgnode id is valid - which are received from request
-						userTO.setUserName(DUMMY_SSO_USERNAME);
+						
+						// create sso user in prism
+						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, customerId, RANDOM_STRING);
+						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
+						if(loginService.checkUserAvailability(ssoUsername)) {
+							// if user  not present into system
+							Map<String,Object> paramMap = new HashMap<String,Object>();
+							paramMap.put("userName", ssoUsername);
+							paramMap.put("password", RANDOM_STRING);
+							paramMap.put("userDisplayName", (userName.length() > 10 )? userName.subSequence(0, 10) : userName);
+							paramMap.put("userStatus", IApplicationConstants.SS_FLAG);
+							paramMap.put("customer", userTO.getCustomerId());
+							paramMap.put("tenantId", userTO.getOrgId());
+							paramMap.put("orgLevel", orgLevel);
+							paramMap.put("userRoles", new String[]{"ROLE_USER"});
+							loginService.addNewUser(paramMap);
+							logger.info("SSO user is created : " + ssoUsername);
+						}
+						
+						userTO.setUserName(ssoUsername);
 						
 						request.getSession().setAttribute(IApplicationConstants.SSO_ORG, userTO.getOrgId());
 						request.getSession().setAttribute(IApplicationConstants.SSO_ORG_LEVEL, userTO.getOrgNodeLevel());
-						request.getSession().setAttribute(IApplicationConstants.SSO_ADMIN, ADMIN.equals(role));
+						request.getSession().setAttribute(IApplicationConstants.SSO_ADMIN, ADMIN.equalsIgnoreCase(role));
 						
 						// Authenticate user
-			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), DUMMY_SSO_PASSWORD);
+			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_STRING);
 						//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
 				
 				        // Allow subclasses to set the "details" property

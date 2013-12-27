@@ -200,6 +200,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 																		          " AND PANS.PH_ANSWERID =?");
     
     public static final String ADMIN_YEAR_LIST = "select adminid, admin_name, is_current_admin,admin_season from admin_dim Where is_current_admin = 'Y' order by admin_seq desc";
+    public static final String CURR_ADMIN_YEAR = "select adminid, admin_name, is_current_admin,admin_season from admin_dim Where is_current_admin = 'Y'";
     
     		public static final String VALIDATE_SECURITY_ANSWERS= CustomStringUtil.appendString(
     		" SELECT (NVL((SUM (COUNT (U.USERNAME))),-1)) AS USERCOUNT",
@@ -241,12 +242,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 
 	public static final String GET_USERS_FOR_SSO_ORG = CustomStringUtil.appendString(
-			"SELECT OU.USERID AS USERID, OU.USERNAME as USERNAME FROM USERS OU WHERE",
-			" OU.USERID = ? AND ROWNUM=1 Order By USERNAME Desc");
+			" select p.customerid CUSTOMERID, org.org_nodeid NODEID from test_program p, org_node_dim org where tp_code = ?",
+			" and  org_node_code = ? and rownum = 1");
 	
 	public static final String GET_ORG_LEVEL = CustomStringUtil.appendString(
-			" select org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL",
-			" from org_node_dim where org_node_code = ? ",
+			" select org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL, customerid CUSTOMERID",
+			" from org_node_dim where org_node_code_path = ? ",
 			" AND customerid = ( select customerid from test_program where tp_code = ? and rownum = 1) ",
 			" AND org_node_level = ? AND ROWNUM=1");
 	

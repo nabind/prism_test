@@ -1,12 +1,12 @@
 package com.ctb.prism.login.business;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.transferobject.UserTO;
-import java.util.Map;
 
 public interface ILoginBusiness {
 
@@ -23,6 +23,8 @@ public interface ILoginBusiness {
 	
 	public UserTO getUserDetails(String username);
 	
-	public UserTO getUsersForSSO(String orgId) throws Exception;
+	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
 	public UserTO getOrgLevel(UserTO userTO);
+	public boolean checkUserAvailability(String username);
+	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 }
