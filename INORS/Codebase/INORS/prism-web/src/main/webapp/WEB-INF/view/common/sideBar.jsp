@@ -125,14 +125,33 @@
 				
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
 					<ul class="big-menu blue-gradient collapsible" id="parentMenu">
+						
 						<li class="with-right-arrow" id="select-tooltip-1">
 							<span>Your Children</span>
-							<!--<div id="select-context-1" class="secondLevelMenu display-none">-->
 								<ul class="big-menu report-menu white-gradient" id="child_list">
-									<!-- <li class="mid-margin-left font-12 small-line-height"><a class=""href="#nogo"> Randy Balser</a></li>
-									<li class="mid-margin-left font-12 small-line-height no-shadow"><a class="" href="#nogo"> Emily A Smith</a></li> -->
 								</ul>
-							<!--</div>-->
+						</li>
+						
+						<li class="with-right-arrow" id="select-tooltip-10">
+							<span>Overview</span>
+								<ul class="big-menu report-menu white-gradient" id="overView_list">
+								<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
+								id="subtestIdLink">${subtestTO.name}</a></li>
+								</c:forEach>
+								<li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Everyday Activities</a></li>
+								<li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">About the Tests</a></li>
+								</ul>
+						</li>
+						<li class="with-right-arrow" id="select-tooltip-10">
+							<span>Explore</span>
+								<ul class="big-menu report-menu white-gradient">
+								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Why Standards Matter</a></li>
+								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Browse Content </a></li>
+								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">English Guide to the Student Report </a></li>
+								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Spanish Guide to the Student Report  </a></li> 
+								</ul>
 						</li>
 						
 						<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
@@ -174,7 +193,6 @@
 						</li>
 						</c:if>
 						<%@ include file="resources.jsp"%>
-						
 					</ul>
 				</sec:authorize>
 			</div>
