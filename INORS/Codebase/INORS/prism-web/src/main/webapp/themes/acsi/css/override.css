@@ -967,3 +967,15 @@ div#nav ul li a {
 	padding-top: 5px !important;
 	padding-bottom: 5px !important;
 }
+.proficient{
+background: url(../img/below_target.gif) 0px 0 no-repeat;
+padding-bottom: 3px;
+width: 51px;
+height: 17px;
+}
+.below-proficient{
+background: url(../img/at_or_above_target.gif) 0px 0 no-repeat;
+padding-bottom: 3px;
+width: 51px;
+height: 17px;
+}
