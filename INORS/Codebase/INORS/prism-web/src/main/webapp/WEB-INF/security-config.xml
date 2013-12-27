@@ -55,7 +55,7 @@
 		<beans:property name="authenticationManager" ref="defaultAuthenticationManager"/>	
 		<beans:property name="authenticationFailureHandler">
 	        <beans:bean class="com.ctb.prism.login.security.provider.CustomSimpleUrlAuthenticationFailureHandler">
-	            <beans:property name="failureUrl" value="/login.do?login_error=1"/>	            
+	            <beans:property name="failureUrl" value="/userlogin.do?login_error=1"/>	            
 	        </beans:bean>
 	    </beans:property>	
 	    <beans:property name="authenticationSuccessHandler">
