@@ -136,10 +136,25 @@
 							<span>Overview</span>
 								<ul class="big-menu report-menu white-gradient" id="overView_list">
 								<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
-									<li class="mid-margin-left font-12 small-line-height">
-										<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
-										id="subtestIdLink">${subtestTO.name}</a>
-									</li>
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
+								id="subtestIdLink">${subtestTO.name}</a>
+								<ul class="big-menu report-menu white-gradient">
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
+								id="subtestIdLink">- Skill Building Activities</a>
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="getStandardIndicator.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
+								id="subtestIdLink">- Standards</a>
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="#" 
+								id="">- Resources</a>
+								<li class="mid-margin-left font-12 small-line-height">
+								<a href="#" 
+								id="">- Results</a>
+								</ul>
+								
+								</li>
 								</c:forEach>
 								<li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Everyday Activities</a></li>
 								<li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">About the Tests</a></li>
@@ -149,15 +164,17 @@
 							<span>Explore</span>
 								<ul class="big-menu report-menu white-gradient">
 								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Why Standards Matter</a></li>
-								 <li class="mid-margin-left font-12 small-line-height"> 
-								 	<a href="#"  id="">Browse Content </a>
-								 	<ul>
-								 		<li><a href="#"  id="">Overview</a></li>
-								 		<li><a href="#"  id="">Skill-Building Activities</a></li>
-								 		<li><a href="#"  id="">Standards</a></li>
-								 		<li><a href="#"  id="">Resources</a></li>
-								 		<li><a href="#"  id="">Everyday Activities</a></li>
-								 		<li><a href="#"  id="">About the Tests</a></li>
+								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">Browse Content </a>
+								 <ul class="big-menu report-menu white-gradient">
+								 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Overview</a></li>
+								 		<li class="mid-margin-left font-12 small-line-height">
+								 		<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
+								        id="subtestIdLink"> - Skill-Building Activities</a>
+								        </li>
+								 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Standards</a></li>
+								 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Resources</a></li>
+								 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Everyday Activities</a></li>
+								 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- About the Tests</a></li>
 								 	</ul>
 								 </li>
 								 <li class="mid-margin-left font-12 small-line-height"> <a href="#"  id="">English Guide to the Student Report </a></li>
