@@ -43,7 +43,7 @@
 				<div class="simple-div-table wrapped">
 					<c:set var="standardId" value="${standardIndicatorTO.objectiveId}" />
 					<div class="simple-div-table-col">
-						<a href="getArticleDescription.do?articleId=${standardIndicatorTO.objectiveId}&contentType='STD'" 
+						<a href="getArticleDescription.do?articleId=${standardIndicatorTO.objectiveId}&contentType=STD" 
 									style="font-weight: bold"
 									id="subtestIdLink">
 										${standardIndicatorTO.objectiveName}
@@ -68,7 +68,7 @@
 								<c:if test="${standardId == IndicatorTO.objectiveId}">
 									<c:set var="curStandardId" value="${IndicatorTO.objectiveId}" />
 									<dd> 
-										<a href="getArticleDescription.do?articleId=${IndicatorTO.contentId}&contentType='ACT'" 
+										<a href="getArticleDescription.do?articleId=${IndicatorTO.contentId}&contentType=ACT" 
 											style="font-weight: bold"
 											id="subtestIdLink">
 												${IndicatorTO.contentName}
