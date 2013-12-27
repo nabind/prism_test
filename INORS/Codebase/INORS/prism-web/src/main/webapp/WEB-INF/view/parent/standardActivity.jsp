@@ -39,23 +39,23 @@
 				<div class="simple-div-table wrapped">
 					<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
 					<div class="simple-div-table-col">
-						<a href="getArticleDescription.do?articleId=${standardActivityTO.objectiveId}&contentType=STD" 
-									style="font-weight: bold"
-									id="subtestIdLink">
-										${standardActivityTO.objectiveName}
-						</a>
 						<p>
-							<c:choose>
-								<c:when test="${standardActivityTO.proficiencyLevel == 1}">
-									<p class="proficient"></p>
-									<p>Proficient</p>
-								</c:when>
-								<c:when test="${standardActivityTO.proficiencyLevel == 0}">
-									<p class="below-proficient"></p>
-									<p>Below Proficient</p>
-								</c:when>
-							</c:choose>
+							<a href="getArticleDescription.do?articleId=${standardActivityTO.objectiveId}&contentType=STD" 
+										style="font-weight: bold"
+										id="subtestIdLink">
+											${standardActivityTO.objectiveName}
+							</a>
 						</p>
+						<c:choose>
+							<c:when test="${standardActivityTO.proficiencyLevel == 1}">
+								<p class="proficient"></p>
+								<p>Proficient</p>
+							</c:when>
+							<c:when test="${standardActivityTO.proficiencyLevel == 0}">
+								<p class="below-proficient"></p>
+								<p>Below Proficient</p>
+							</c:when>
+						</c:choose>
 					</div>
 					<div class="simple-div-table-col">
 						<dl>
