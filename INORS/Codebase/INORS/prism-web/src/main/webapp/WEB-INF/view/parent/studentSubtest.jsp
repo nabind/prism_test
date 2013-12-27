@@ -8,7 +8,7 @@
 		</textarea>
 		<div id="somHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
-			<h2>Overview of Action Plan for ${studentName}</h2>		
+			<h2>Overview of Action Plan for ${childDataMap.studentName}</h2>		
 		</div>
 		<div id="studentOverviewMessage" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">			
