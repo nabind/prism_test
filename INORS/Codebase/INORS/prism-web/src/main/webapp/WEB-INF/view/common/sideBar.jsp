@@ -137,7 +137,7 @@
 								<ul class="big-menu report-menu white-gradient" id="overView_list">
 									
 									<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
-										<li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #7FFFD4">
+										<li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	">
 											<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
 											id="subtestIdLink">${subtestTO.name}</a>
 													
@@ -168,11 +168,11 @@
 									   </li>
 								    </c:forEach>
 								  
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 										<a href="#"  id="">Everyday Activities</a>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 										<a href="#"  id="">About the Tests</a>
 									 </li>
 									 
@@ -184,11 +184,11 @@
 								
 								<ul class="big-menu report-menu white-gradient">
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 									 	<a href="#"  id="">Why Standards Matter</a>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	"> 
 									 	<a href="#"  id="">Browse Content </a>
 											 <ul class="big-menu report-menu white-gradient">
 											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Overview</a></li>
@@ -203,11 +203,11 @@
 											 	</ul>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 									 	<a href="#"  id="">English Guide to the Student Report </a>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #7FFFD4"> 
+									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 									 	<a href="#"  id="">Spanish Guide to the Student Report  </a>
 									 </li>
 									  
