@@ -47,14 +47,13 @@
 						<p>
 							<c:choose>
 								<c:when test="${standardActivityTO.proficiencyLevel == 1}">
-									Proficient
+									<p class="proficient"></p>
+									<p>Proficient</p>
 								</c:when>
 								<c:when test="${standardActivityTO.proficiencyLevel == 0}">
-									Below Proficient
+									<p class="below-proficient"></p>
+									<p>Below Proficient</p>
 								</c:when>
-								<c:otherwise>
-									Unknown
-								</c:otherwise>
 							</c:choose>
 						</p>
 					</div>
