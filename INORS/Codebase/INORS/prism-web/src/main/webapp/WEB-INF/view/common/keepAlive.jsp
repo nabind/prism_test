@@ -91,8 +91,7 @@
 		// ----------------------- FETCH REPORT MENU -----------------------
 		<sec:authorize ifAnyGranted="ROLE_PARENT">
 			openAdminMenu();
-			/* Extra action call in happening - Commented the function  */
-			//refreshChildrenList();
+			refreshChildrenList();
 		</sec:authorize>
 		<sec:authorize ifNotGranted="ROLE_PARENT">
 			if($('.report-frame').length > 0) fetchReportMenu();
