@@ -2,17 +2,16 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
-<div class="margin-bottom-medium">
+<div class="margin-bottom-medium" style="min-height: 425px;">
 	
-		<div id="standardHeader" class="wrapped relative white-gradient"
+		<div id="contentDetailsHeader" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">	
-			<h2>Name : ${articleTypeDescription.contentName}</h2>		
+			<h2>${articleTypeDescription.contentName}</h2>		
 		</div>
-		
-		<div>
 		<textarea id="taContent" style="display:none;">
-			Description : ${articleTypeDescription.contentDescription}
+			${articleTypeDescription.contentDescription}
 		</textarea>
+		<div id="contentDescription" class="wrapped relative white-gradient"
+			style="height: auto; text-align: justify">			
 		</div>
-		
 </div>

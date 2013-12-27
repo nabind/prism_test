@@ -1786,7 +1786,8 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			        			ResultSet rs = null;
 			        			ManageContentTO manageContentTOResult = null;
 			        			try {
-									cs.execute();
+			        				
+			        				cs.execute();
 									rs = (ResultSet) cs.getObject(3);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
@@ -1828,7 +1829,6 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				            CallableStatement cs = null;
-				            //TODO - Set Proc name
 				            cs = con.prepareCall("{call " + IQueryConstants.GET_GRADE_SUBTEST_INFO + "}");
 				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));
 				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 

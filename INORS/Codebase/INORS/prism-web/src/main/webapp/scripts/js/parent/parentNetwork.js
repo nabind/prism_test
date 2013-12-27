@@ -5,6 +5,7 @@
  */
 $(document).ready(function() {
 	showContent($('#studentOverviewMessage'));
+	showContent($('#contentDescription'));
 });
 //=====document.ready End===================================
 
@@ -14,3 +15,7 @@ function showContent($container){
 	$container.html(taVal);
 }
 
+function historyBack() {
+	window.history.back();
+	return false;
+} 
