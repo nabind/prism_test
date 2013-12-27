@@ -127,7 +127,11 @@ $(document).ready(function() {
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId+'"> '+this.studentName+' (Grade: '+this.grade+')</a></li>';
+						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
+						+'&studentName='+this.studentName
+						+'&studentGradeName='+this.grade
+						+'&studentGradeId='+this.studentGradeId+'">'
+						+this.studentName+', (Grade: '+this.grade+')</a></li>';
 					});
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
