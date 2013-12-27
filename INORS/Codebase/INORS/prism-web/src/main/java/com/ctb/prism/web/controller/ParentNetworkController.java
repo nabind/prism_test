@@ -2,11 +2,9 @@ package com.ctb.prism.web.controller;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +19,13 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
-import com.ctb.prism.report.transferobject.ReportTO;
-import com.ctb.prism.web.util.JsonUtil;
-import com.ctb.prism.webservice.transferobject.StudentDetailsTO;
  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import com.google.gson.Gson;
+
 /**
  * @author Joy
  * version 1.1
