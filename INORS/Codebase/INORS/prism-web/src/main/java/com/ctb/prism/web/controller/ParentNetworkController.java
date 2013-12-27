@@ -87,6 +87,7 @@ public class ParentNetworkController {
 			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getChildData() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		modelAndView.addObject("childDataMap", childDataMap);
+		request.getSession().setAttribute(IApplicationConstants.CHILD_MAP, childDataMap);
 		return modelAndView;
 	}
 	

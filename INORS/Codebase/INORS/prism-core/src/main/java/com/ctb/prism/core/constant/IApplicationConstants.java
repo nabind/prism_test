@@ -159,5 +159,6 @@ public interface IApplicationConstants {
 	public static final String CONTENT_TYPE_ACT = "ACT";
 	public static final String CONTENT_TYPE_IND = "IND";
 	public static final String CONTENT_TYPE_STD = "STD";
+	public static final String CHILD_MAP = "CHILD_MAP";
 	
 }

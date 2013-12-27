@@ -6,7 +6,7 @@
         <c:set var="tascProduct" value="${PDCT_NAME}"/>
 	    <c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 		<c:set var="currOrg" value="<%=request.getSession().getAttribute(IApplicationConstants.CURRORG) %>"/>
-		
+		<c:set var="childDataMap" value="<%=request.getSession().getAttribute(IApplicationConstants.CHILD_MAP) %>"/>
 		<!-- This wrapper is used by several responsive layouts -->
 		<div id="menu-content">
 
