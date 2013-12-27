@@ -84,9 +84,9 @@
 		<!-- State user page -->
 			<div class="columnss">
 				<div class="seven-columns">
-					<div>
+					<%-- <div>
 						<img alt="" src="<spring:theme code="login.welcome" />" />
-					</div>
+					</div> --%>
 					<div class="boxsshade scrollable" style="padding:1px;">
 						<div class="rowTwo">
 							<h1 class="h1style" style="margin: 0"><spring:message code="login.page.welcome"/></h1>
