@@ -47,7 +47,7 @@
 							</c:when>
 							<c:when test="${menuId == 4}">
 								<p>
-									<a href="getEverydayActivity.do?studentGradeId=${gradeSubtestTO.gradeId}&studentGradeName=${gradeSubtestTO.gradeName}" 
+									<a href="getEveryDayActivitiesDetails.do?studentGradeId=${gradeSubtestTO.gradeId}&studentGradeName=${gradeSubtestTO.gradeName}" 
 										style="font-weight: bold"
 										id="gradeIdLink">
 											${gradeSubtestTO.gradeName}
@@ -73,14 +73,14 @@
 									<dd> 
 										<c:choose>
 											<c:when test="${menuId == 1}">
-												<a href="getStandardActivity.do?subtestId=${subtestTO.subtestId}&studentGradeId=${subtestTO.gradeId}&studentGradeName=${subtestTO.gradeName}" 
+												<a href="getStandardActivity.do?subtestId=${subtestTO.subtestId}&studentName=&studentGradeId=${subtestTO.gradeId}&studentBioId=0&studentGradeName=${subtestTO.gradeName}"
 													style="font-weight: bold"
 													id="subtestIdLink">
 														${subtestTO.subtestName}
 												</a>
 											</c:when>
 											<c:when test="${menuId == 2}">
-												<a href="getStandardIndicator.do?subtestId=${subtestTO.subtestId}&studentGradeId=${subtestTO.gradeId}&studentGradeName=${subtestTO.gradeName}" 
+												<a href="getStandardIndicator.do?subtestId=${subtestTO.subtestId}&studentName=&studentGradeId=${subtestTO.gradeId}&studentBioId=0&studentGradeName=${subtestTO.gradeName}" 
 													style="font-weight: bold"
 													id="subtestIdLink">
 														${subtestTO.subtestName}
