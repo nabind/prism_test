@@ -235,5 +235,25 @@ public class ParentNetworkController {
 		modelAndView.addObject("articleTypeDescription", manageContentTO);
 		return modelAndView;
 	}
+	
+	@RequestMapping(value="/getBrowseContent", method=RequestMethod.GET)
+	public ModelAndView getBrowseContent(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getBrowseContent()");
+		ModelAndView modelAndView = new ModelAndView("parent/browseContents");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value="/getStandardMatters", method=RequestMethod.GET)
+	public ModelAndView getStandardMatters(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardMatters()");
+		ModelAndView modelAndView = new ModelAndView("parent/exploreStudentStandardMatter");
+		return modelAndView;
+	}
+	
+
 
 }

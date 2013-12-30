@@ -185,11 +185,11 @@
 								<ul class="big-menu report-menu white-gradient">
 									 
 									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
-									 	<a href="#"  id="">Why Standards Matter</a>
+									 	<a href="getStandardMatters.do"  id="">Why Standards Matter</a>
 									 </li>
 									 
 									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	"> 
-									 	<a href="#"  id="">Browse Content </a>
+									 	<a href="getBrowseContent.do"  id="">Browse Content </a>
 											 <ul class="big-menu report-menu white-gradient">
 											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Overview</a></li>
 											 		<li class="mid-margin-left font-12 small-line-height">
