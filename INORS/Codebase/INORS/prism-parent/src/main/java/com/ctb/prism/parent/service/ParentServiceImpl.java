@@ -187,8 +187,13 @@ public class ParentServiceImpl implements IParentService {
 	public List<ManageContentTO>  getArticleTypeDetails(final Map<String,Object> paramMap) throws BusinessException{
 		return parentBusiness.getArticleTypeDetails(paramMap);
 	}
+	
 	public ManageContentTO  getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
 		return parentBusiness.getArticleDescription(paramMap);
+	}
+	
+	public List<ManageContentTO>  getGradeSubtestInfo(final Map<String,Object> paramMap) throws BusinessException{
+		return parentBusiness.getGradeSubtestInfo(paramMap);
 	}
 	
 	//Parent Network - End

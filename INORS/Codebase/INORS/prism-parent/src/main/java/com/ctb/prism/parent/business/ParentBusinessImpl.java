@@ -220,11 +220,17 @@ public class ParentBusinessImpl implements IParentBusiness {
 		childDataMap.put("studentSubtest", studentSubtest);
 		return childDataMap;
 	}
+	
 	public List<ManageContentTO>  getArticleTypeDetails(final Map<String,Object> paramMap) throws BusinessException{
 		return parentDAO.getArticleTypeDetails(paramMap);
 	}
+	
 	public ManageContentTO  getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
 		return parentDAO.getArticleDescription(paramMap);
+	}
+	
+	public List<ManageContentTO>  getGradeSubtestInfo(final Map<String,Object> paramMap) throws BusinessException{
+		return parentDAO.getGradeSubtestInfo(paramMap);
 	}
 	
 	//Parent Network - End

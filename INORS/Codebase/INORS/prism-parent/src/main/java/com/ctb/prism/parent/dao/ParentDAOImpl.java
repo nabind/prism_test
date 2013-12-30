@@ -1847,11 +1847,10 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 									
 									while(rs.next()){
 										gradeSubtestTO = new ManageContentTO();
-										//TODO - Set Data
-										gradeSubtestTO.setGradeId(0);
-										gradeSubtestTO.setGradeName("");
-										gradeSubtestTO.setSubtestId(0);
-										gradeSubtestTO.setSubtestName("");
+										gradeSubtestTO.setGradeId(rs.getLong("GRADE_ID"));
+										gradeSubtestTO.setGradeName(rs.getString("GRADE_NAME"));
+										gradeSubtestTO.setSubtestId(rs.getLong("SUBTEST_ID"));
+										gradeSubtestTO.setSubtestName(rs.getString("SUBTEST_NAME"));
 										gradeSubtestResult.add(gradeSubtestTO);
 									}
 			        			} catch (SQLException e) {

@@ -69,6 +69,7 @@ public interface IParentBusiness {
 	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException;
 	public List<ManageContentTO>  getArticleTypeDetails( final Map<String,Object> paramMap) throws BusinessException;
 	public ManageContentTO  getArticleDescription( final Map<String,Object> paramMap) throws BusinessException;
+	public List<ManageContentTO> getGradeSubtestInfo(final Map<String,Object> paramMap) throws BusinessException;
 	//Parent Network - End
 	
 }

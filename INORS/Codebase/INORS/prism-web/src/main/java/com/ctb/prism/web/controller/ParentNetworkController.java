@@ -154,7 +154,6 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get Student's standards
 	 */
-	//TODO - Arunavo -> Please modify the method accordingly
 	@RequestMapping(value="/getStandardIndicator", method=RequestMethod.GET)
 	public ModelAndView getStandardIndicator(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException{
@@ -241,7 +240,7 @@ public class ParentNetworkController {
 	throws ServletException, IOException,BusinessException{
 
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getBrowseContent()");
-		ModelAndView modelAndView = new ModelAndView("parent/browseContents");
+		ModelAndView modelAndView = new ModelAndView("parent/browseContent");
 		return modelAndView;
 	}
 	
@@ -273,6 +272,43 @@ public class ParentNetworkController {
 		return modelAndView;
 	}
 	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * Get grade and subtest/subject combination for different menu.
+	 */
+	@RequestMapping(value="/getGradeSubtestInfo", method=RequestMethod.GET)
+	public ModelAndView getGradeSubtestInfo(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
 
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getGradeSubtestInfo()");
+		long t1 = System.currentTimeMillis();
+		ModelAndView modelAndView = new ModelAndView("parent/gradeSubject");
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		final long menuId = Long.parseLong(request.getParameter("menuId")); 
+		final String menuName = (String)request.getParameter("menuName");
+		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		
+		List<ManageContentTO> gradeSubtestList=null;
+		try{
+			gradeSubtestList = parentService.getGradeSubtestInfo(paramMap);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getGradeSubtestInfo() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		modelAndView.addObject("gradeSubtestList", gradeSubtestList);
+		modelAndView.addObject("menuId", menuId);
+		modelAndView.addObject("menuName", menuName);
+		return modelAndView;
+	}
 
 }
