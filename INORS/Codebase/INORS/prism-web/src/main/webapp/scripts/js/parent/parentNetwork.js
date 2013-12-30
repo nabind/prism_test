@@ -18,4 +18,10 @@ function showContent($container){
 function historyBack() {
 	window.history.back();
 	return false;
-} 
+}
+
+
+/*$('#browseContent').live("click", function() {
+		var href = "getBrowseContent.do";
+		$(".browseContent").attr("href", href);
+});*/
