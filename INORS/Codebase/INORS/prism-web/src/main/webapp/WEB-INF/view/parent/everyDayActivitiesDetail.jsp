@@ -2,7 +2,7 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 <div id="" style="height: auto; width: auto">
-	<h3>Everyday Activities: Grade 3</h3>
+	<h3>Everyday Activities: ${gradeName}</h3>
 
 	<div>
 		<p>Your day-to-day involvement in your child’s education makes an

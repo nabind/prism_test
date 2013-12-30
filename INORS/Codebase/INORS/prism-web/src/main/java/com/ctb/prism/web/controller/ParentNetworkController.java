@@ -253,22 +253,14 @@ public class ParentNetworkController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value="/getEveryDayActivities", method=RequestMethod.GET)
-	public ModelAndView getEveryDayActivities(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException, IOException,BusinessException{
-
-		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getEveryDayActivities()");
-		ModelAndView modelAndView = new ModelAndView("parent/everyDayActivities");
-		return modelAndView;
-	}
-	
+		
 	@RequestMapping(value="/getEveryDayActivitiesDetails", method=RequestMethod.GET)
 	public ModelAndView getEveryDayActivitiesDetails(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getEveryDayActivitiesDetails()");
 		ModelAndView modelAndView = new ModelAndView("parent/everyDayActivitiesDetail");
-		//modelAndView.addObject("gradeName",request.getParameter("gradeName"));
+		modelAndView.addObject("gradeName",request.getParameter("studentGradeName"));
 		return modelAndView;
 	}
 	
