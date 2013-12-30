@@ -391,7 +391,7 @@ $(document).ready(function() {
 	    $("#userRole").find("option").remove();
 		var masterRole = "";
 		$.each(data[0].masterRoleList, function(index, value){
-			masterRole += '<option value="'+ data[0].masterRoleList[index].roleName +'" >' +data[0].masterRoleList[index].roleName+'</option>';
+			masterRole += '<option value="'+ data[0].masterRoleList[index].roleName +'" >' +data[0].masterRoleList[index].roleDescription+'</option>';
 		});
 		$("#userRole").append(masterRole);		
 		$("#userRole").change(function(){
@@ -404,7 +404,7 @@ $(document).ready(function() {
 	function createRoleListOnAdd(data) {
 	    var masterRole = "";
 		$.each(data, function(index, value){
-			masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleName+'</option>';
+			masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
 		});
 		//alert(masterRole);
 		$("#addUserRole").empty().append(masterRole);
@@ -415,44 +415,41 @@ $(document).ready(function() {
 	}	
 	//=========================SAVE EDIT USER DETAILS========================================
 	function updateUserDetails(form, win, row) {
-		blockUI();
-		$.ajax({
-			type : "POST",
-			url : 'updateUser.do',
-			data : form.serialize(),
-			dataType: 'html',
-			cache:false,
-			success : function(data) {
-				unblockUI();
-				var obj = jQuery.parseJSON(data);
-				if (obj.status == 'equalsUserName')	{
-					$.modal.alert(strings['script.user.passwordLikeUsername']);
-				}
-				else if(obj.status == 'invalidPwd'){
-					$.modal.alert(strings['script.user.passwordPolicy']);
-				}
-				else if(obj.status == 'LDAP_ERROR'){
-					$.modal.alert(obj.message);
-				}
-				else if(obj.status == 'Success') {
-					win.closeModal(); 
-					$.modal.alert(strings['script.user.updateSuccess']);
-					var purpose = $("#purpose").val();
-					if(purpose == 'eduCenterUsers'){
-						loadEduCenterUsers();
-					}else{
-						updateRowValues(row);
-					}
+	blockUI();
+	$.ajax({
+		type : "POST",
+		url : 'updateUser.do',
+		data : form.serialize(),
+		dataType : 'html',
+		cache : false,
+		success : function(data) {
+			unblockUI();
+			var obj = jQuery.parseJSON(data);
+			if (obj.status == 'equalsUserName') {
+				$.modal.alert(strings['script.user.passwordLikeUsername']);
+			} else if (obj.status == 'invalidPwd') {
+				$.modal.alert(strings['script.user.passwordPolicy']);
+			} else if (obj.status == 'LDAP_ERROR') {
+				$.modal.alert(obj.message);
+			} else if (obj.status == 'Success') {
+				win.closeModal();
+				$.modal.alert(strings['script.user.updateSuccess']);
+				var purpose = $("#purpose").val();
+				if (purpose == 'eduCenterUsers') {
+					loadEduCenterUsers();
 				} else {
-					$.modal.alert(strings['script.user.saveError']);
+					updateRowValues(row);
 				}
-			},
-			error : function(data) {
-				unblockUI();
+			} else {
 				$.modal.alert(strings['script.user.saveError']);
 			}
-		});
-	}
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.user.saveError']);
+		}
+	});
+}
 	
 	//=======================DELETE USER DETAILS====================
 	function deleteUserDetails(userId, userName, row) {

@@ -499,7 +499,7 @@ public class AdminController {
 			}
 			String searchParam = (String) request.getParameter("searchParam");
 			if("Search".equals(searchParam)) searchParam = "";
-			logger.log(IAppLogger.INFO, "userDetails Node ID:;;;;;;;" + nodeId);
+			logger.log(IAppLogger.INFO, "Node ID: " + nodeId);
 			if (nodeId != null) {
 				if(currentOrg.equals(nodeId) ){
 					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam ,customerid);
@@ -510,7 +510,7 @@ public class AdminController {
 					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam ,customerid);
 				}
 			}
-
+			logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
 			String userJsonString = JsonUtil.convertToJsonAdmin(UserTOs);
 			
 			logger.log(IAppLogger.INFO, userJsonString);

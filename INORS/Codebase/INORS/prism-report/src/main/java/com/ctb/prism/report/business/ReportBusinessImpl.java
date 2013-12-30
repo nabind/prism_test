@@ -36,8 +36,7 @@ import com.ctb.prism.report.transferobject.ReportTO;
 @Component("reportBusiness")
 public class ReportBusinessImpl implements IReportBusiness {
 	
-	private static final IAppLogger logger = 
-		LogFactory.getLoggerInstance(ReportBusinessImpl.class.getName());
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportBusinessImpl.class.getName());
 
 	@Autowired
 	private IReportDAO reportDAO;
@@ -51,35 +50,60 @@ public class ReportBusinessImpl implements IReportBusiness {
 	@Autowired
 	private IReportFilterTOFactory reportFilterFactory;
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
+	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		if((jasperReport != null && "Invitation_Pdf".equals(jasperReport.getName().trim()) ) 
-				|| "false".equals(propertyLookup.get("jasper.filled.report.cache")))  {
+		if ((jasperReport != null && "Invitation_Pdf".equals(jasperReport.getName().trim())) || "false".equals(propertyLookup.get("jasper.filled.report.cache"))) {
 			return reportDAO.getFilledReportNoCache(jasperReport, parameters);
 		} else {
 			return reportDAO.getFilledReport(jasperReport, parameters);
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#removeReportCache()
+	 */
 	public void removeReportCache() {
 		reportDAO.removeReportCache();
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#removeCache()
+	 */
 	public void removeCache() {
 		reportDAO.removeCache();
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportJasperObject(java.lang.String)
+	 */
 	public JasperReport getReportJasperObject(String reportPath) {
 		return reportDAO.getReportJasperObject(reportPath);
 	}
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportJasperObjectForName(java.lang.String)
+	 */
 	public JasperReport getReportJasperObjectForName(String reportname) {
 		return reportDAO.getReportJasperObjectForName(reportname);
 	}
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportJasperObjectList(java.lang.String)
+	 */
 	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
 		return reportDAO.getReportJasperObjectList(reportPath);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getInputControlDetails(java.lang.String)
+	 */
 	public List<InputControlTO> getInputControlDetails(String reportPath){
 		return reportDAO.getInputControlDetails(reportPath);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAllInputControls()
+	 */
 	public List<InputControlTO> getAllInputControls() {
 		return reportDAO.getAllInputControls();
 	}
@@ -93,8 +117,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param reportUrl
 	 */
 	//@Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl )
-	{
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl ) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
@@ -110,12 +133,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 			e1.printStackTrace();
 		}
 		
-		for (InputControlTO ito : tos)
-		{
+		for (InputControlTO ito : tos) {
 			String labelId = ito.getLabelId();
 			String query = ito.getQuery();
-			if ( query != null )
-			{
+			if ( query != null ) {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'",userName,"'"));
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
@@ -269,20 +290,25 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getValuesOfSingleInput(java.lang.String)
+	 */
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
 		return reportDAO.getValuesOfSingleInput(query);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAllReportList(java.util.Map)
+	 */
 	public List<ReportTO> getAllReportList(Map<String,Object> paramMap) {
 		List<ReportTO> allReports = reportDAO.getAllReportList(paramMap);
 		if(allReports != null && !allReports.isEmpty()) {
 			List<ObjectValueTO> roles = reportDAO.getAllRoles();
 			allReports.get(0).setObjectList(roles);
-			
+
 			List<ObjectValueTO> assessments = reportDAO.getAllAssessments();
 			allReports.get(0).setObjectList2(assessments);
-			
-			
+
 			try {
 				List<com.ctb.prism.core.transferobject.ObjectValueTO> adminyear = reportDAO.getAdminYear(null);
 				allReports.get(0).setAdminYear(adminyear);
@@ -290,8 +316,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 			try {
 				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProduct = loginDAO.getCustomerProduct(paramMap);
 				allReports.get(0).setCustomerProductList(customerProduct);
@@ -299,9 +324,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
-			
+
 			try {
 				List<com.ctb.prism.core.transferobject.ObjectValueTO> orgNodeLevel = reportDAO.getOrgNodeLevel(null);
 				allReports.get(0).setOrgNodeLevelList(orgNodeLevel);
@@ -309,76 +332,107 @@ public class ReportBusinessImpl implements IReportBusiness {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
 		}
 		return allReports;
 	}
-	
-		public boolean updateReport(String reportId, String reportName,
-			String reportUrl, String isEnabled, String[] roles) {
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateReport(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+	 */
+	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
 		return reportDAO.updateReport(reportId, reportName, reportUrl, isEnabled, roles);
 	}
-		
-		
-		public boolean updateReportNew(ReportTO reportTO)
-		{
-			return reportDAO.updateReportNew(reportTO);
-		}
-	
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateReportNew(com.ctb.prism.report.transferobject.ReportTO)
+	 */
+	public boolean updateReportNew(ReportTO reportTO) {
+		return reportDAO.updateReportNew(reportTO);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(boolean)
+	 */
 	public List<AssessmentTO> getAssessments(boolean parentReports) {
 		return reportDAO.getAssessments(parentReports);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#deleteReport(java.lang.String)
+	 */
 	public boolean deleteReport(String reportId) throws SystemException {
 		return reportDAO.deleteReport(reportId);
 	}
-	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO)throws Exception{
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#addNewDashboard(com.ctb.prism.report.transferobject.ReportParameterTO)
+	 */
+	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO) throws Exception {
 		return reportDAO.addNewDashboard(reportParameterTO);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReport(java.lang.String)
+	 */
 	public ReportTO getReport(String reportIdentifier) throws SystemException {
 		return reportDAO.getReport(reportIdentifier);
 	}
-	
-	public Map<String,Object> getReportMessageFilter(final Map<String,Object> paramMap) throws SystemException{
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportMessageFilter(java.util.Map)
+	 */
+	public Map<String, Object> getReportMessageFilter(final Map<String, Object> paramMap) throws SystemException {
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = loginDAO.getCustomerProduct(paramMap);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("customerProductList", customerProductList);
 		return returnMap;
 	}
-	
-	public Map<String, Object> loadManageMessage(final Map<String,Object> paramMap) throws SystemException {
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#loadManageMessage(java.util.Map)
+	 */
+	public Map<String, Object> loadManageMessage(final Map<String, Object> paramMap) throws SystemException {
 		List<ManageMessageTO> manageMessageTOList = reportDAO.loadManageMessage(paramMap);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("manageMessageTOList", manageMessageTOList);
 		return returnMap;
 	}
-	
-	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException{
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#saveManageMessage(java.util.List)
+	 */
+	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException {
 		int saveFlag = reportDAO.saveManageMessage(manageMessageTOList);
 		return saveFlag;
 	}
-	
-	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap)throws SystemException{
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAllGroupDownloadFiles(java.util.Map)
+	 */
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String, Object> paramMap) throws SystemException {
 		return reportDAO.getAllGroupDownloadFiles(paramMap);
 	}
-	
-	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap)throws SystemException{
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getRequestDetail(java.util.Map)
+	 */
+	public List<JobTrackingTO> getRequestDetail(Map<String, Object> paramMap) throws SystemException {
 		return reportDAO.getRequestDetail(paramMap);
 	}
-	
-	
-	public boolean deleteGroupFiles(String Id)
-	throws Exception {
 
-       return reportDAO.deleteGroupFiles(Id);
-   }
-	public void deleteScheduledGroupFiles(String gdfExpiryTime)
-	throws Exception {
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#deleteGroupFiles(java.lang.String)
+	 */
+	public boolean deleteGroupFiles(String Id) throws Exception {
+		return reportDAO.deleteGroupFiles(Id);
+	}
 
-      reportDAO.deleteScheduledGroupFiles(gdfExpiryTime);
-   }
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#deleteScheduledGroupFiles(java.lang.String)
+	 */
+	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception {
+		reportDAO.deleteScheduledGroupFiles(gdfExpiryTime);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -439,36 +493,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getFilePathGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<String> getFilePathGD(GroupDownloadTO to) {
-		List<String> filePaths = new ArrayList<String>();
-		if ("5".equals(to.getGroupFile())) { // Invitation Code Letter
-			filePaths = reportDAO.getICLetterPaths(to.getStudents());
-			logger.log(IAppLogger.INFO, "IC File Paths: " + filePaths);
-		} else if ("4".equals(to.getGroupFile())) { // Student PDF's
-			// TOTO
-		} else if ("3".equals(to.getGroupFile())) { // Both (IP .ISR)
-			// TOTO
-		} else if ("2".equals(to.getGroupFile())) { // Image Prints
-			// TOTO
-		} else if ("1".equals(to.getGroupFile())) { // Individual Student Report
-			// TOTO
-		}
-		filePaths = getMockFilePaths();
-		return filePaths;
+	public List<String> getGDFilePaths(GroupDownloadTO to) {
+		return reportDAO.getGDFilePaths(to);
 	}
 
-	/**
-	 * Used for test purpose only. Not for production environment. Hope that '/'
-	 * would work for both windows and linux environment. Needs testing.
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	private List<String> getMockFilePaths() {
-		List<String> filePaths = new ArrayList<String>();
-		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.pdf");
-		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.6.pdf");
-		return filePaths;
+	public String createJobTracking(GroupDownloadTO to) {
+		return reportDAO.createJobTracking(to);
 	}
 }

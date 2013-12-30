@@ -1,15 +1,9 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<style>
-	li.jstree-open > ul {
-		padding-left: 29% !important;
-	}
-</style>
-
 <div class="content-panel" style="padding-left:0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="groupDownload" modelAttribute="groupDownload">
-	<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF File Generation has been requested.<br/>Click on 'Group Download Files' for Status of request(s).</p>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><strong>PDF File Generation has been requested. Click on 'Group Download Files' for Status of request(s).</strong></p>
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	
@@ -31,46 +25,26 @@
 	<div class="columns accordion with-padding">
 		<p class="inline-label">
 			<label for="groupFile" class="label">Generate Group File of: </label>
-			<c:set var="groupFileVal" value="${groupDownload.groupFile}"/>
-			<%
-				String groupFileVal = (String) pageContext.getAttribute("groupFileVal");
-			%>
 			<select name="groupFile" id="groupFile" class="select compact expandable-list">
-				<option value="1" <%if("1".equals(groupFileVal)) {%>selected="selected"<%} %>>Individual Student Report</option>
-				<option value="4">Student PDF's</option>
-				<c:if test="${groupDownload.istepPlus}">
-					<option value="2" <%if("2".equals(groupFileVal)) {%>selected="selected"<%} %>>Image Prints</option>
-					<option value="3" <%if("3".equals(groupFileVal)) {%>selected="selected"<%} %>>Both (IP .ISR)</option>
-				</c:if>
-				<option value="5">Invitation Code Letter</option>
+				<option value="1">Individual Student Report</option>
+				<option value="2">Image Prints</option>
+				<option value="3">Both (IP and ISR)</option>
+				<option value="4">Invitation Code Letter</option>
+				<option value="5">Student PDF's</option>
 			</select>
 		</p>
 		
 		<p class="inline-label">
 			<label for="collationHierarchy" class="label">Collation Hierarchy: </label>
-			<c:set var="collationHierarchyVal" value="${groupDownload.collationHierarchy}"/>
-			<%
-				String collationHierarchyVal = (String) pageContext.getAttribute("collationHierarchyVal");
-			%>
 			<select name="collationHierarchy" id="collationHierarchy" class="select compact expandable-list">
-				<option value="1" <%if("1".equals(collationHierarchyVal)) {%>selected="selected"<%} %>>School, Class, Student Last Name, First Name, Middle Initial</option>
-				<option value="2" <%if("2".equals(collationHierarchyVal)) {%>selected="selected"<%} %>>Student Last Name, First Name, Middle Initial</option>
+				<option value="1">School, Class, Student Last Name, First Name, Middle Initial</option>
+				<option value="2">Student Last Name, First Name, Middle Initial</option>
 			</select>
 		</p>
 	</div>
-	
-	<!--div class="columns accordion with-padding tree-container">
-		<div class="four-columns">School</div>
-		<div class="four-columns">Class</div>
-		<div class="four-columns">Student</div>
-		<div id="chkTreeViewForOrg" class="jstree jstree-0 jstree-focused jstree-apple" rootid="${rootOrgId}" reportUrl="${reportUrl}" style="width: 95%">
-			
-		</div>
-		<input type="text" name="selectedNodes" id="selectedNodes" style="display:none">
-	</div-->
 
 	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px;">
-		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable hidden" id="studentTableGD">
+		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableGD">
 			<thead>
 				<tr role="row">
 					<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
@@ -87,7 +61,7 @@
 	<div class="columns accordion with-padding">
 		<p class="inline-label">
 			<label for="fileName" class="label" style="width: 345px !important;">Name of Generated File (50 characters maximum): </label>
-			<input name="fileName" type="text" value="${groupDownload.fileName}" id="fileName" class="input validate[required]" maxlength="50" style="width:187px;">
+			<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required]" maxlength="50" style="width:187px;">
 			<span class="info-spot">
 				<span class="icon-info-round"></span>
 				<span class="info-bubble" style="width: 123px;">
@@ -98,7 +72,7 @@
 		
 		<p class="inline-label">
 			<label for="email" class="label" style="width: 345px !important;">Email address for notification of Generated File complete: </label>
-			<input name="email" type="text" value="${groupDownload.email}" id="email" class="input validate[required,custom[email]]" maxlength="30" style="width:187px;">
+			<input name="email" type="text" value="${email}" id="email" class="input validate[required,custom[email]]" maxlength="30" style="width:187px;">
 		</p>
 	</div>
 	

@@ -190,8 +190,8 @@ public interface IUserQuery {
 	public static final String GET_ROLE_DEFAULT = " SELECT ROLEID AS ROLE_ID, ROLE_NAME FROM ROLE WHERE ROLE_NAME IN ( 'ROLE_USER') ";
 	
 	public static final String GET_ROLE = CustomStringUtil.appendString(
-			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME ",
-			" FROM ROLE RE WHERE RE.ROLE_NAME <> ? and RE.ROLE_NAME !='ROLE_PARENT'");
+			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME, RE.DESCRIPTION",
+			" FROM ROLE RE WHERE RE.ROLE_NAME <> ? and RE.ROLE_NAME !='ROLE_PARENT' ORDER BY RE.ROLEID");
 	
 	public static final String GET_USER_DETAILS_ON_EDIT = CustomStringUtil
 	.appendString(" SELECT USR.USERID AS ID, ",
@@ -202,7 +202,7 @@ public interface IUserQuery {
 			" WHERE USR.USERID = ?");
 	
 	public static final String GET_USER_ROLE_ON_EDIT = CustomStringUtil
-	.appendString(" SELECT RLE.ROLEID AS ROLE_ID, RLE.ROLE_NAME AS ROLENAME ",
+	.appendString(" SELECT RLE.ROLEID AS ROLE_ID, RLE.ROLE_NAME AS ROLENAME, RLE.DESCRIPTION",
 				  " FROM ROLE RLE, USER_ROLE URLE  ",
 				  " WHERE URLE.USERID = ? ",
 				  " AND URLE.ROLEID = RLE.ROLEID");

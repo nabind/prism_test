@@ -107,25 +107,25 @@
 									<td class="roleContainerForUsers vertical-center">
 											<c:forEach var="role" items="${users.availableRoleList}">
 												<c:if test="${role.roleName == 'ROLE_ACSI'}">
-												<small class="tag blue-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag blue-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_CTB'}">
-												<small class="tag green-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag green-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_SCHOOL'}">
-												<small class="tag anthracite-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag anthracite-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>
 												<c:if test="${role.roleName == 'ROLE_CLASS'}">
-												<small class="tag grey-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag grey-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>												
 												<c:if test="${role.roleName == 'ROLE_PARENT'}">
-												<small class="tag red-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag red-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>	
 												<c:if test="${role.roleName == 'ROLE_ADMIN'}">
-												<small class="tag orange-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag orange-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>	
 												<c:if test="${role.roleName == 'ROLE_USER'}">
-												<small class="tag black-bg role ${role.roleName}">${role.roleDescription}</small><br/>
+												<small class="tag black-bg role ${role.roleName}">${role.label} ${role.roleDescription}</small><br/>
 												</c:if>
 											</c:forEach>
 										</td>

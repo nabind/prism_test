@@ -13,7 +13,8 @@ import com.ctb.prism.core.transferobject.BaseTO;
 public class GroupDownloadTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 	private String button;
-	private String testAdministration;
+	private String testAdministrationVal;
+	private String testAdministrationText;
 	private String testProgram;
 	private String district;
 	private String school;
@@ -41,18 +42,33 @@ public class GroupDownloadTO extends BaseTO {
 	}
 
 	/**
-	 * @return the testAdministration
+	 * @return the testAdministrationVal
 	 */
-	public String getTestAdministration() {
-		return testAdministration;
+	public String getTestAdministrationVal() {
+		return testAdministrationVal;
 	}
 
 	/**
-	 * @param testAdministration
-	 *            the testAdministration to set
+	 * @param testAdministrationVal
+	 *            the testAdministrationVal to set
 	 */
-	public void setTestAdministration(String testAdministration) {
-		this.testAdministration = testAdministration;
+	public void setTestAdministrationVal(String testAdministrationVal) {
+		this.testAdministrationVal = testAdministrationVal;
+	}
+
+	/**
+	 * @return the testAdministrationText
+	 */
+	public String getTestAdministrationText() {
+		return testAdministrationText;
+	}
+
+	/**
+	 * @param testAdministrationText
+	 *            the testAdministrationText to set
+	 */
+	public void setTestAdministrationText(String testAdministrationText) {
+		this.testAdministrationText = testAdministrationText;
 	}
 
 	/**
@@ -208,11 +224,15 @@ public class GroupDownloadTO extends BaseTO {
 	@Override
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
+		buf.append("\n");
 		buf.append("button=");
 		buf.append(button);
 		buf.append("\n");
-		buf.append("testAdministration=");
-		buf.append(testAdministration);
+		buf.append("testAdministrationVal=");
+		buf.append(testAdministrationVal);
+		buf.append("\n");
+		buf.append("testAdministrationText=");
+		buf.append(testAdministrationText);
 		buf.append("\n");
 		buf.append("testProgram=");
 		buf.append(testProgram);
@@ -243,7 +263,6 @@ public class GroupDownloadTO extends BaseTO {
 		buf.append("\n");
 		buf.append("email=");
 		buf.append(email);
-		buf.append("\n");
 		return buf.toString();
 	}
 }

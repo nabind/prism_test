@@ -1,6 +1,5 @@
 package com.ctb.prism.report.dao;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -19,41 +18,185 @@ import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
 public interface IReportDAO {
+	/**
+	 * 
+	 */
 	public void removeReportCache();
+
+	/**
+	 * 
+	 */
 	public void removeCache();
-	
+
+	/**
+	 * @param jasperReport
+	 * @param parameters
+	 * @return
+	 * @throws Exception
+	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
+
+	/**
+	 * @param jasperReport
+	 * @param parameters
+	 * @return
+	 * @throws Exception
+	 */
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
-	JasperReport getReportJasperObject(String reportPath);
+
+	/**
+	 * @param reportPath
+	 * @return
+	 */
+	public JasperReport getReportJasperObject(String reportPath);
+
+	/**
+	 * @param reportname
+	 * @return
+	 */
 	public JasperReport getReportJasperObjectForName(String reportname);
+
+	/**
+	 * @param reportPath
+	 * @return
+	 * @throws JRException
+	 */
 	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException;
-	
-	List<InputControlTO> getInputControlDetails(String reportPath);
+
+	/**
+	 * @param reportPath
+	 * @return
+	 */
+	public List<InputControlTO> getInputControlDetails(String reportPath);
+
+	/**
+	 * @return
+	 */
 	public List<InputControlTO> getAllInputControls();
-	
+
+	/**
+	 * @param query
+	 * @return
+	 */
 	public List<ObjectValueTO> getValuesOfSingleInput(String query);
-	
-	
-	public List<ReportTO> getAllReportList(Map<String,Object> paramMap);
-	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles );
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportTO> getAllReportList(Map<String, Object> paramMap);
+
+	/**
+	 * @param reportId
+	 * @param reportName
+	 * @param reportUrl
+	 * @param isEnabled
+	 * @param roles
+	 * @return
+	 */
+	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles);
+
+	/**
+	 * @param reportTO
+	 * @return
+	 */
 	public boolean updateReportNew(ReportTO reportTO);
-	public boolean deleteReport(String reportId)throws SystemException;
-	
-	List<AssessmentTO> getAssessments(boolean parentReports);
-	
-	
-	public String getTenantId( String userName );
-	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO)throws Exception;
+
+	/**
+	 * @param reportId
+	 * @return
+	 * @throws SystemException
+	 */
+	public boolean deleteReport(String reportId) throws SystemException;
+
+	/**
+	 * @param parentReports
+	 * @return
+	 */
+	public List<AssessmentTO> getAssessments(boolean parentReports);
+
+	/**
+	 * @param userName
+	 * @return
+	 */
+	public String getTenantId(String userName);
+
+	/**
+	 * @param reportParameterTO
+	 * @return
+	 * @throws Exception
+	 */
+	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO) throws Exception;
+
+	/**
+	 * @return
+	 */
 	public List<ObjectValueTO> getAllRoles();
+
+	/**
+	 * @return
+	 */
 	public List<ObjectValueTO> getAllAssessments();
+
+	/**
+	 * @param reportIdentifier
+	 * @return
+	 */
 	public ReportTO getReport(String reportIdentifier);
-	public List<ManageMessageTO> loadManageMessage(final Map<String,Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<ManageMessageTO> loadManageMessage(final Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param manageMessageTOList
+	 * @return
+	 * @throws SystemException
+	 */
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException;
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getAdminYear(final Map<String,Object> paramMap)throws SystemException;
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String,Object> paramMap)throws SystemException;
-	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String,Object> paramMap) throws SystemException;
-	public List<JobTrackingTO> getRequestDetail(Map<String,Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getAdminYear(final Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<JobTrackingTO> getRequestDetail(Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param Id
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean deleteGroupFiles(String Id) throws Exception;
+
+	/**
+	 * @param gdfExpiryTime
+	 * @throws Exception
+	 */
 	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception;
 
 	/**
@@ -64,21 +207,18 @@ public interface IReportDAO {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations();
 
 	/**
-	 * Creates the list of
-	 * 
+	 * @param to
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to);
 
 	/**
-	 * Creates the list of
-	 * 
+	 * @param to
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to);
 
 	/**
-	 * 
 	 * @param to
 	 * @return
 	 */
@@ -97,11 +237,16 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
-	
+
 	/**
-	 * 
-	 * @param students 
+	 * @param to
 	 * @return
 	 */
-	public List<String> getICLetterPaths(String students);
+	public String createJobTracking(GroupDownloadTO to);
+
+	/**
+	 * @param to
+	 * @return
+	 */
+	public List<String> getGDFilePaths(GroupDownloadTO to);
 }

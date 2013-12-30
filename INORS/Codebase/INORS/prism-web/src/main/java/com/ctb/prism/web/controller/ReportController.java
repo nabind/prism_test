@@ -1,12 +1,14 @@
 package com.ctb.prism.web.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,27 +26,22 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-
-import com.ctb.prism.login.transferobject.UserTO;
-import com.ctb.prism.report.service.JRXhtmlExporter;
-
 import net.sf.jasperreports.engine.util.JRProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -53,17 +49,19 @@ import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
+import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
+import com.ctb.prism.report.service.JRXhtmlExporter;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
-import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 
 
@@ -1867,31 +1865,113 @@ public class ReportController extends BaseDAO {
 		return jsonString;
 	}
 
+	/**
+	 * 
+	 * @param to
+	 * @param response
+	 * @return {"handler" : "success/failure", "type" ; "sync/async"}
+	 */
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
-	public void groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) {
+	public @ResponseBody String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) {
 		long t1 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+		String handler = "";
+		String type = "";
+		String downloadFileName = "";
+		String jobTrackingId = "";
 		logger.log(IAppLogger.INFO, to.toString());
 		String fileName = to.getFileName();
-		String email = to.getEmail();
+		String pdfFileName = fileName + ".pdf";
+		String zipFileName = fileName + ".zip";
 		try {
-			String zipFileName = fileName + ".zip";
-			List<String> filePaths = reportService.getFilePathGD(to);
-			// Merge Pdf files
-			byte[] input = FileUtil.getMergedPdfBytes(filePaths);
-			// Zip the file
-			byte[] data = FileUtil.zipBytes(zipFileName, input);
+			List<String> filePaths = reportService.getGDFilePaths(to);
+			String button = to.getButton();
+			if ("SS".equals(button)) {
+				// Synchronous : Immediate download for Single Student
+				type = "sync";
+				if ((filePaths != null) && (!filePaths.isEmpty())) {
+					downloadFileName = filePaths.get(0);
+				}
+			} else {
+				// Asynchronous : Create Process Id
+				type = "async";
+				// TODO : Uncomment the following line
+				// jobTrackingId = reportService.createJobTracking(to);
+				// logger.log(IAppLogger.INFO, "jobTrackingId = " +
+				// jobTrackingId);
+
+				// TODO : Make the following part Asynchronous
+				if ("CP".equals(button)) {
+					// Combined Pdf
+					// Merge Pdf files
+					byte[] input = FileUtil.getMergedPdfBytes(filePaths);
+
+					// Create Pdf file in disk
+					FileUtil.createFile(pdfFileName, input);
+
+					// Now read the pdf file from disk
+					byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(pdfFileName));
+
+					// Zip the pdf file
+					byte[] zipData = FileUtil.zipBytes(zipFileName, data);
+
+					// Create Zip file in disk
+					FileUtil.createFile(zipFileName, zipData);
+
+					// Delete the Pdf file from disk
+					logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
+				} else if ("SP".equals(button)) {
+					// Separate Pdfs
+					// Create Zip file in disk from all the pdf files
+					FileUtil.createZipFile(zipFileName, filePaths);
+				}
+				downloadFileName = zipFileName;
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction(): " + String.valueOf(t2 - t1) + "ms");
+		}
+		String jsonString = CustomStringUtil.appendString("{\"handler\": \"",
+				handler, "\", \"type\": \"", type,
+				"\", \"downloadFileName\": \"", downloadFileName,
+				"\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
+		logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
+		return jsonString;
+	}
+
+	@RequestMapping(value = "/downloadZippedPdf", method = RequestMethod.GET)
+	public void downloadZippedPdf(HttpServletRequest request, HttpServletResponse response) {
+		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
+
+		String fileName = request.getParameter("fileName");
+		String email = request.getParameter("email");
+		logger.log(IAppLogger.INFO, "fileName=" + fileName);
+		logger.log(IAppLogger.INFO, "email=" + email);
+		String pdfFileName = fileName + ".pdf";
+		String zipFileName = fileName + ".zip";
+		try {
+			// Read the zip file
+			byte[] input = FileUtil.getBytes(zipFileName);
+
+			// Download the file
+			FileUtil.browserDownload(response, input, zipFileName);
+
 			// Send email
 			if ((email != null) && (!email.isEmpty())) {
 				notificationMailGD(email);
 			}
-			// Download the file
-			FileUtil.browserDownload(response, data, zipFileName);
+
+			// Delete the zip file from disk
+			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: downloadZippedPdf(): " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 

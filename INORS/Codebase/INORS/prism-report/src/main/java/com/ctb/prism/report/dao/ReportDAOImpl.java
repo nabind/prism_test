@@ -306,7 +306,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@Cacheable(cacheName = "defaultInputControls")
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
 		if(query == null) return null;
-		logger.log(IAppLogger.INFO, query);
+		logger.log(IAppLogger.DEBUG, query);
 		List<ObjectValueTO> list = getJdbcTemplatePrism().query(query, new RowMapper<ObjectValueTO>() {
 			public ObjectValueTO mapRow(ResultSet rs, int col) throws SQLException {
 				ObjectValueTO to = new ObjectValueTO();
@@ -1081,16 +1081,33 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 		String schoolId = to.getSchool();
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		String classId = to.getKlass();
 		logger.log(IAppLogger.INFO, "classId = " + classId);
-		if(IApplicationConstants.VALUE_ALL.equals(to.getKlass()))
-			return getJdbcTemplatePrism().query(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[]{schoolId}, new ObjectValueTOMapper());
-		else
-			return getJdbcTemplatePrism().query(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[]{classId}, new ObjectValueTOMapper());
+		if ("-1".equals(classId)) {
+			if ((schoolId != null) && (!"undefined".equalsIgnoreCase(schoolId))) {
+				logger.log(IAppLogger.INFO, "ALL classes");
+				studentList = getJdbcTemplatePrism().query(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[] { schoolId }, new ObjectValueTOMapper());
+			}
+		} else {
+			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
+				studentList = getJdbcTemplatePrism().query(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { classId }, new ObjectValueTOMapper());
+			}
+		}
+		logger.log(IAppLogger.INFO, "studentList.size() = " + studentList.size());
+		return studentList;
 	}
 
+	/**
+	 * Perhaps this method is no longer in use. Is should be handled in
+	 * database.
+	 * 
+	 * @param testProgram
+	 * @return
+	 * @deprecated
+	 */
 	private String getOrgMode(String testProgram) {
 		if ("1".equals(testProgram))
 			return "PUBLIC";
@@ -1100,17 +1117,164 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			return "";
 	}
 
-	public List<String> getICLetterPaths(String students) {
-		List<String> icLetterPaths = new ArrayList<String>();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objValues = getJdbcTemplatePrism()
-		.query(CustomStringUtil.replaceCharacterInString('?', students,
-				IQueryConstants.GET_IC_FILE_PATHS),
-				new ObjectValueTOMapper());
-		logger.log(IAppLogger.INFO, "IC Letters : " + objValues.size());
-		for (com.ctb.prism.core.transferobject.ObjectValueTO to : objValues) {
-			icLetterPaths.add(to.getName());
-		}
-		return icLetterPaths;
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public String createJobTracking(GroupDownloadTO to) {
+		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
+		logger.log(IAppLogger.INFO, "job_id = " + job_id);
+		String userid = null;
+		String job_name = null;
+		String extract_startdate = null;
+		String extract_enddate = null;
+		String extract_category = "GD";
+		String extract_filetype = "PDF";
+		String request_type = 	to.getButton();
+		String request_summary = null;
+		String request_details = null;
+		String request_filename = null;
+		String request_email = null;
+		String job_log = null;
+		String job_status = "Initiated";
+		String adminid = null;
+		String customerid = null;
+		String created_date_time = "SYSDATE";
+		String updated_date_time = "SYSDATE";
+		String other_request_params = null;
+		String file_size = null;
+		int count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING,
+				job_id, userid,
+				job_name,
+				extract_startdate, extract_enddate,
+				extract_category, extract_filetype, request_type, request_summary,
+				request_details,
+				request_filename, request_email, job_log, job_status,
+				adminid, customerid,
+				created_date_time, updated_date_time,
+				other_request_params, file_size);
+		logger.log(IAppLogger.INFO, "count = " + count);
+		return job_id.toString();
+	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
+	 */
+	public List<String> getGDFilePaths(GroupDownloadTO to) {
+		List<String> filePaths = new ArrayList<String>();
+		String students = to.getStudents();
+		String groupFile = to.getGroupFile();
+		if ("5".equals(groupFile)) {
+			// Student PDF's
+			filePaths = getStudentPdfPaths(students);
+		} else if ("4".equals(groupFile)) {
+			// Invitation Code Letter
+			filePaths = getICLetterPaths(students);
+		} else if ("3".equals(groupFile)) {
+			// Both (IP and ISR)
+			filePaths = getBothPaths(students);
+		} else if ("2".equals(groupFile)) {
+			// Image Prints
+			filePaths = getIPPaths(students);
+		} else if ("1".equals(groupFile)) {
+			// Individual Student Report
+			filePaths = getISRPaths(students);
+		}
+		// TODO : Comment out or delete the next line after testing
+		if (filePaths == null || filePaths.isEmpty()) filePaths = getMockFilePaths();
+		logger.log(IAppLogger.INFO, "filePaths.size(): " + filePaths.size());
+		return filePaths;
+	}
+
+	/**
+	 * Gets the list of IC letter paths.
+	 * 
+	 * @param students
+	 * @return
+	 */
+	private List<String> getICLetterPaths(String students) {
+		List<String> icLetterPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_IC_FILE_PATHS));
+		logger.log(IAppLogger.INFO, "IC Letters : " + icLetterPaths.size());
+		return icLetterPaths;
+	}
+
+	/**
+	 * Gets the list of Student Pdf paths.
+	 * 
+	 * @param students
+	 * @return
+	 */
+	private List<String> getStudentPdfPaths(String students) {
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		logger.log(IAppLogger.INFO, "Student Pdfs : " + studentPdfPaths.size());
+		return studentPdfPaths;
+	}
+
+	/**
+	 * Gets the list of Individual Student Report paths.
+	 * 
+	 * @param students
+	 * @return
+	 */
+	private List<String> getISRPaths(String students) {
+		// TODO : Change the query
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		logger.log(IAppLogger.INFO, "ISRs : " + studentPdfPaths.size());
+		return studentPdfPaths;
+	}
+
+	/**
+	 * Gets the list of Image Print paths.
+	 * 
+	 * @param students
+	 * @return
+	 */
+	private List<String> getIPPaths(String students) {
+		// TODO : Change the query
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		logger.log(IAppLogger.INFO, "Image Prints : " + studentPdfPaths.size());
+		return studentPdfPaths;
+	}
+
+	/**
+	 * Gets the list of both Image Print and Individual Student Report paths.
+	 * 
+	 * @param students
+	 * @return
+	 */
+	private List<String> getBothPaths(String students) {
+		// TODO : Change the query
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		logger.log(IAppLogger.INFO, "Size : " + studentPdfPaths.size());
+		return studentPdfPaths;
+	}
+
+	/**
+	 * Runs a query and returns a list of Strings.
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private List<String> getResults(String query){
+		List<String> results = new ArrayList<String>();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objValues = getJdbcTemplatePrism().query(query, new ObjectValueTOMapper());
+		for (com.ctb.prism.core.transferobject.ObjectValueTO to : objValues) {
+			results.add(to.getName());
+		}
+		logger.log(IAppLogger.INFO, "Results : " + results.size());
+		return results;
+	}
+
+	/**
+	 * Used for test purpose only. Not for production environment. Hope that '/'
+	 * would work for both windows and linux environment. Needs testing.
+	 * 
+	 * @return
+	 */
+	private List<String> getMockFilePaths() {
+		List<String> filePaths = new ArrayList<String>();
+		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.pdf");
+		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.6.pdf");
+		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.1.pdf");
+		return filePaths;
 	}
 }

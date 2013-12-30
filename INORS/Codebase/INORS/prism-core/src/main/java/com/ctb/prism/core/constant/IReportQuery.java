@@ -238,5 +238,19 @@ public interface IReportQuery {
 
 	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL',updated_date_time=SYSDATE where job_id=?");
 	public static final String GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString("select request_filename,job_id from job_tracking where job_status!='DL' and SYSDATE>=created_date_time+?");
+
+	public static final String GET_PROCESS_SEQ = "SELECT SEQ_ISTEP_PROCESS_ID.NEXTVAL STAGING_SEQ FROM DUAL";
+	public static final String INSERT_JOB_TRACKING = CustomStringUtil.appendString(
+					"INSERT INTO JOB_TRACKING",
+					" (JOB_ID, USERID,",
+					" JOB_NAME,",
+					" EXTRACT_STARTDATE, EXTRACT_ENDDATE,",
+					" EXTRACT_CATEGORY, EXTRACT_FILETYPE, REQUEST_TYPE, REQUEST_SUMMARY,",
+					" REQUEST_DETAILS,",
+					" REQUEST_FILENAME, REQUEST_EMAIL, JOB_LOG, JOB_STATUS,",
+					" ADMINID, CUSTOMERID,",
+					" CREATED_DATE_TIME, UPDATED_DATE_TIME,",
+					" OTHER_REQUEST_PARAMS, FILE_SIZE) VALUES ",
+					"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 }
 

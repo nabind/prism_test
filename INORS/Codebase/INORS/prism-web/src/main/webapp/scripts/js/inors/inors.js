@@ -62,12 +62,14 @@ $(document).ready(function() {
 		$(".icon-minus-round").toggle();
 	});
 	
+	showHideDownloadButtons();
 	// this is to retain group download files field values
 	$("#groupFile").live("change", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		$(document).click();
 		retainDownloadValues();
+		showHideDownloadButtons();
 	});
 	
 	$("#collationHierarchy").live("change", function(event) {
@@ -140,7 +142,6 @@ $(document).ready(function() {
 		$(".customRefresh").click();
 		showHideDivs();
 	});
-	var hrefParams = "";
 	$("#downloadGRTFile").live("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
 		var testProgram = $("#q_testProgram").val();
@@ -182,20 +183,18 @@ $(document).ready(function() {
 			checkboxes.removeAttr('checked');
 		}
 	});
-	
+				
+	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").live("click", function() {
-		$("#buttonGD").val("P");
-		groupDownloadFunction('P');
+		groupDownloadSubmit('SP');
 	});
-	
+	// Asynchronous : Submit to Group Download Files
 	$("#downloadCombinedPdfsGD").live("click", function() {
-		$("#buttonGD").val("C");
-		groupDownloadFunction('C');
+		groupDownloadSubmit('CP');
 	});
-	
+	// Synchronous : Immediate download
 	$("#downloadSinglePdfsGD").live("click", function() {
-		$("#buttonGD").val("S");
-		groupDownloadFunction('S');
+		groupDownloadSubmit('SS');
 	});
 });
 
@@ -689,6 +688,8 @@ function populateDropdownByIdWithJson(element, json, selectValue, selectText, sh
 /**
  * This function loads the values for all dropdowns in "GRT/IC File Download"
  * page in case of page onLoad handler.
+ * 
+ * @unused
  */
 function populateGrtDropdownsOnLoad() {
 	var testAdministration = $("#testAdministration").val();
@@ -710,6 +711,9 @@ function populateGrtDropdownsOnLoad() {
 	}
 }
 
+/**
+ * @unused
+ */
 function populateTestProgramGrt() {
 	// As of now hard coded, but we can call customAjaxCall() to hit the database.
 	var json = [ {
@@ -726,6 +730,7 @@ function populateTestProgramGrt() {
  * Populates the "Corp/Diocese" drop down in "GRT/IC File Download" page
  * 
  * @param testProgram
+ * @unused
  */
 function populateDistrictGrt(testProgram) {
 	if (testProgram == "-1") {
@@ -747,6 +752,7 @@ function populateDistrictGrt(testProgram) {
  * 
  * @param testProgram
  * @param districtId
+ * @unused
  */
 function populateSchoolGrt(testProgram, districtId) {
 	if (districtId == "-1") {
@@ -766,6 +772,7 @@ function populateSchoolGrt(testProgram, districtId) {
 /**
  * This function loads the values for all dropdowns in "Group Download" page in
  * case of page onLoad handler.
+ * @unused
  */
 function populateGDDropdownsOnLoad() {
 	populateTestAdministrationGD(); // Default
@@ -794,6 +801,7 @@ function populateGDDropdownsOnLoad() {
 
 /**
  * Populates the Test Administration dropdown
+ * @unused
  */
 function populateTestAdministrationGD() {
 	var json = customAjaxCall("GET", "populateTestAdministrationGD.do", "", "json", false, false, "Server responds in Error");
@@ -808,6 +816,7 @@ function populateTestAdministrationGD() {
 
 /**
  * Populates the Test Program dropdown
+ * @unused
  */
 function populateTestProgramGD() {
 	// As of now hard coded, but we can call customAjaxCall() to hit the database.
@@ -826,6 +835,7 @@ function populateTestProgramGD() {
  * 
  * @param testProgram
  *            value of the "Test Program" dropdown
+ * @unused
  */
 function populateDistrictGD(testProgram) {
 	populateDropdownGD(testProgram, "-1", "Please Select", "-1",
@@ -866,6 +876,7 @@ function populateDistrictGD(testProgram) {
  *            boolean. Whether to show the value along with the text in the
  *            dropdown
  * @author <a href="mailto:amitabha.roy@tcs.com">Amitabha Roy</a>
+ * @unused Kept for reference
  */
 function populateDropdownGD(parentVal, selectValue, selectText,
 		selectNullValue, selectNullText, element, requestType, requestUrl,
@@ -890,6 +901,7 @@ function populateDropdownGD(parentVal, selectValue, selectText,
  * Populates the School dropdown
  * 
  * @param districtId
+ * @unused
  */
 function populateSchoolGD(districtId) {
 	populateDropdownGD(districtId, "-1", "Please Select", "-1",
@@ -902,6 +914,7 @@ function populateSchoolGD(districtId) {
  * Populates the Class dropdown
  * 
  * @param schoolId
+ * @unused
  */
 function populateClassGD(schoolId) {
 	populateDropdownGD(schoolId, "-1", "Please Select", "-1",
@@ -912,6 +925,7 @@ function populateClassGD(schoolId) {
 
 /**
  * Populates the Grade dropdown
+ * @unused
  */
 function populateGradeGD() {
 	populateDropdownGD("", "-1", "Please Select", "-1",
@@ -922,34 +936,43 @@ function populateGradeGD() {
 
 /**
  * Populates the Student Table
+ * @Impotrant
  */
-function populateStudentTableGD(){
-	var orgNodeId = $('#classGD').val();
-	if (orgNodeId != "-1") {
-		var transferObject = getGroupDownloadTO();
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : 'populateStudentTableGD.do',
-			data : transferObject,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if(data.length > 0) {
-					populateStudentTableByJson(data);
-					$("#studentTableGD").removeClass('hidden');
-					$("#studentTableGD").show();
-				} else {
-					$.modal.alert("No Student Found for this Class");
-					$("#studentTableGD").hide();
+function populateStudentTableGD() {
+	$(".error-message").hide(200);
+	var formEle = $("#groupDownload");
+	if(formEle) {
+		var orgNodeId = $('#q_klass').val();
+		if (orgNodeId != "-2") {
+			var transferObject = getGroupDownloadTO();
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : 'populateStudentTableGD.do',
+				data : transferObject,
+				dataType: 'json',
+				cache:false,
+				success : function(data) {
+					if(data && data.length && data.length > 0) {
+						populateStudentTableByJson(data);
+						//$("#studentTableGD").removeClass('hidden');
+						//$("#studentTableGD").show();
+					} else {
+						// $.modal.alert("No Student Found for this Class");
+						$(".error-message").html("No Student Found for this Class");
+						$(".error-message").show(200);
+						//$("#studentTableGD").hide();
+					}
+					unblockUI();
+				},
+				error : function(data) {
+					// $.modal.alert(strings['script.common.error']);
+					$(".error-message").html("No Student Found for this Class");
+					$(".error-message").show(200);
+					unblockUI();
 				}
-				unblockUI();
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error']);
-				unblockUI();
-			}
-		});
+			});
+		}
 	}
 }
 
@@ -1025,9 +1048,12 @@ function showHideDivs() {
 /**
  * GroupDownloadTO Constructor
  */
-function GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email) {
+function GroupDownloadTO(button, testAdministrationVal, testAdministrationText,
+		testProgram, district, school, klass, grade, students, groupFile,
+		collationHierarchy, fileName, email) {
 	this.button = button;
-	this.testAdministration = testAdministration;
+	this.testAdministrationVal = testAdministrationVal;
+	this.testAdministrationText = testAdministrationText;
 	this.testProgram = testProgram;
 	this.district = district;
 	this.school = school;
@@ -1046,50 +1072,167 @@ function GroupDownloadTO(button, testAdministration, testProgram, district, scho
  */
 function getGroupDownloadTO() {
 	var button = $("#buttonGD").val();
-	var testAdministration = $("#testAdministrationGD").val();
-	var testProgram = $("#testProgramGD").val();
-	var district = $("#corpDioceseGD").val();
-	var school = $("#schoolGD").val();
-	var klass = $("#classGD").val();
-	var grade = $("#gradeGD").val();
-	var students = $("input[id^=check-student-]:checked").map(
-			function() {
-				return this.value;
-			}
-		).get().join(",");
+	var testAdministrationVal = $("#q_testAdministrationVal").val();
+	var testAdministrationText = $("#q_testAdministrationText").val();
+	var testProgram = $("#q_testProgram").val();
+	var district = $("#q_corpDiocese").val();
+	var school = $("#q_school").val();
+	var klass = $("#q_klass").val();
+	var grade = $("#q_grade").val();
+	var students = $("input[id^=check-student-]:checked").map(function() {
+		return this.value;
+	}).get().join(",");
 	var groupFile = $("#groupFile").val();
 	var collationHierarchy = $("#collationHierarchy").val();
 	var fileName = $("#fileName").val();
 	var email = $("#email").val();
-	var to = new GroupDownloadTO(button, testAdministration, testProgram, district, school, klass, grade, students, groupFile, collationHierarchy, fileName, email);
+	var to = new GroupDownloadTO(button, testAdministrationVal,
+			testAdministrationText, testProgram, district, school, klass,
+			grade, students, groupFile, collationHierarchy, fileName, email);
 	return to;
 }
 
 /**
+ * Does not actually submit the form, but it feels alike.
  * 
  * @param button
  */
-function groupDownloadFunction(button) {
+function groupDownloadSubmit(button) {
+	displayGroupDownloadStatus(undefined);
+	$("#buttonGD").val(button);
+	var status = false;
 	var json = getGroupDownloadTO();
+	if ((button == "SP") || (button == "CP") || (button == "SS")) {
+		var errMsg = valudateGroupDownloadForm(button, json);
+		if(errMsg == "") {
+			// Ajax Call
+			var serverResponseData = groupDownloadFunction(json);
+			// {
+			// "handler": "success/failure",
+			// "type": "sync/async",
+			// "downloadFileName": "download-file-name",
+			// "jobTrackingId": "job-tracking-id"
+			// }
+			if (serverResponseData) {
+				if (serverResponseData.handler == "success") {
+					status = true;
+					if (serverResponseData.type == "sync") {
+						// Synchronous : Immediate download - only for Single
+						// Student
+						status = undefined;
+						var href = "downloadSingleStudentPdf.do?fileName=" + json.fileName + "&email=" + json.email;
+						// Href Call
+						$("#downloadSinglePdfsGD").attr("href", href);
+					} else {
+						// Asynchronous : No action needed
+						$("#downloadSinglePdfsGD").attr("href", "#");
+					}
+				}
+				displayGroupDownloadStatus(status);
+			}
+		}else {
+			$.modal.alert(errMsg);
+		}
+	} else {
+		$.modal.alert('Unknown Request Type');
+	}
+}
+
+/**
+ * Show or hide the status message divs.
+ * 
+ * @param status
+ */
+function displayGroupDownloadStatus(status){
+	if (status == true) {
+		$(".success-message").show(200);
+		$(".error-message").hide(200);
+	} else if (status == false) {
+		$(".success-message").hide(200);
+		$(".error-message").show(200);
+	} else {
+		$(".success-message").hide(200);
+		$(".error-message").hide(200);
+	}
+}
+
+/**
+ * 
+ * @param jsonInputData
+ * @returns {"handler" : "success/failure", "type" ; "sync/async", "downloadFileName" : "file-name", "jobTrackingId" : "tracking-id"}
+ */
+function groupDownloadFunction(jsonInputData) {
+	var jsonOutputData = "";
 	blockUI();
 	$.ajax({
 		type : "GET",
 		url : 'groupDownloadFunction.do',
-		data : json,
+		data : jsonInputData,
 		dataType : 'json',
 		cache : false,
+		async : false,
 		success : function(data) {
-			if (data.length > 0) {
-				alert("Test Alert: " + JSON.stringify(data));
+			if (data) {
+				jsonOutputData = data;
 			} else {
-				$.modal.alert("No File Found");
-				$("#studentTableGD").hide();
+				prepareTheCombinedPdfOnFailure();
 			}
 			unblockUI();
 		},
 		error : function(data) {
+			if (data.status == "200") {
+				jsonOutputData = data;
+			} else {
+				prepareTheCombinedPdfOnFailure();
+			}
 			unblockUI();
-			//$.modal.alert(strings['script.common.error']);
 		}
 	});
+	return jsonOutputData;
+}
+
+/**
+ * Callback method: Failure in prepareTheCombinedPdf()
+ */
+function prepareTheCombinedPdfOnFailure() {
+	$.modal.alert("No File Found");
+	//$("#studentTableGD").hide();
+}
+
+function showHideDownloadButtons() {
+	var groupFile = $("#groupFile").val();
+	if (groupFile) {
+		if (groupFile == "5") { // Student PDF's
+			$("#downloadSeparatePdfsGD").hide();
+			$("#downloadCombinedPdfsGD").hide();
+			$("#downloadSinglePdfsGD").show();
+		} else if ((groupFile == "1") || (groupFile == "2") || (groupFile == "3")) {
+			$("#downloadSeparatePdfsGD").show();
+			$("#downloadCombinedPdfsGD").show();
+			$("#downloadSinglePdfsGD").hide();
+		} else {
+			$("#downloadSeparatePdfsGD").show();
+			$("#downloadCombinedPdfsGD").show();
+			$("#downloadSinglePdfsGD").show();
+		}
+	}
+}
+
+function valudateGroupDownloadForm(button, json) {
+	var errMsg = "";
+	var students = json.students;
+	// alert(students);
+	var studentIds = students.split(',');
+	if (students.length == 0) {
+		errMsg = "Please select student";
+		return errMsg;
+	}
+	if (button == "SS") {
+
+		if (studentIds.length > 1) {
+			errMsg = "Please select only one student";
+			return errMsg;
+		}
+	}
+	return errMsg;
 }

@@ -97,12 +97,14 @@ public class CustomStringUtil {
 	 * This method replaces a character from a String
 	 * 
 	 * @param c
+	 *            Character to be replaced
 	 * @param newValue
+	 *            The new string value for the character.
 	 * @param query
-	 * @return replaced string
+	 *            Input string.
+	 * @return Replaced string
 	 */
-	public static String replaceCharacterInString(char c, String newValue,
-			String query) {
+	public static String replaceCharacterInString(char c, String newValue, String query) {
 		StringBuffer sb = new StringBuffer(query);
 		int index = query.indexOf(c);
 		sb.replace(index, index + 1, newValue);

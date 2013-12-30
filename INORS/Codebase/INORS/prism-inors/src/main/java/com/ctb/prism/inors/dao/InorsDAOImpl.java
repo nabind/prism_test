@@ -209,7 +209,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<GrtTO> getGRTList(final String productId, final String testProgram, final String districtId, final String schoolId) {
+	private List<GrtTO> getGRTList(final String userName, final String productId, final String testProgram, final String districtId, final String schoolId) {
 		long t1 = System.currentTimeMillis();
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
@@ -219,10 +219,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							public CallableStatement createCallableStatement(Connection con) throws SQLException {
 								CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
 								cs.setLong(1, Long.parseLong(productId));
-								cs.setLong(2, Long.parseLong(districtId));
-								cs.setLong(3, Long.parseLong(testProgram));
-								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.setString(2, userName);
+								cs.setLong(3, Long.parseLong(districtId));
+								cs.setLong(4, Long.parseLong(testProgram));
+								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+								cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -231,7 +232,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 								List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 								try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(4);
+									rs = (ResultSet) cs.getObject(5);
 									grtTOResult = getGrtListFromResultSet(rs);
 								} catch (SQLException e) {
 									e.printStackTrace();
@@ -245,11 +246,12 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
 							cs.setLong(1, Long.parseLong(productId));
-							cs.setLong(2, Long.parseLong(districtId));
-							cs.setLong(3, Long.parseLong(schoolId));
-							cs.setLong(4, Long.parseLong(testProgram));
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setString(2, userName);
+							cs.setLong(3, Long.parseLong(districtId));
+							cs.setLong(4, Long.parseLong(schoolId));
+							cs.setLong(5, Long.parseLong(testProgram));
+							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -258,7 +260,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject(5);
+								rs = (ResultSet) cs.getObject(6);
 								grtTOResult = getGrtListFromResultSet(rs);
 							} catch (SQLException e) {
 								e.printStackTrace();
@@ -522,6 +524,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		String type = paramMap.get("type");
 		logger.log(IAppLogger.INFO, "type = " + type);
+		String userName = paramMap.get("userName");
+		logger.log(IAppLogger.INFO, "userName = " + userName);
 		String productId = paramMap.get("productId");
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 		String testProgram = paramMap.get("testProgram");
@@ -533,7 +537,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		if (InorsDownloadConstants.IC.equals(type)) {
 			return getICList(productId, testProgram, districtId, schoolId);
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
-			return getGRTList(productId, testProgram, districtId, schoolId);
+			return getGRTList(userName, productId, testProgram, districtId, schoolId);
 		} else {
 			return null;
 		}

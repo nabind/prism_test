@@ -373,52 +373,34 @@ public class InorsController {
 
 
 	@RequestMapping(value = "/icLetterDownloads", method = RequestMethod.GET)
-	public ModelAndView icLetterDownloads(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
-			HttpServletRequest request,
-			HttpServletResponse response) {
+	public ModelAndView icLetterDownloads(HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("icDownload", "true");
-		return groupDownloadForm(bulkDownloadTO, request, response);
+		return groupDownloadForm(request, response);
 	}
 
 	/**
-	 * Entry method for group download screen
+	 * Entry method for group download screen. This method takes care of the
+	 * text box and drop down values.
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 */
 	@RequestMapping(value = "/groupDownloadForm", method = RequestMethod.GET)
-	public ModelAndView groupDownloadForm(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, 
-			HttpServletRequest request,
-			HttpServletResponse response) {
-
+	public ModelAndView groupDownloadForm(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView modelAndView = null;
-		boolean icDownload = false;
 		if("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
-			icDownload = true;
 		} else {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
 		String reportUrl = (String) request.getParameter("reportUrl");
 
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String currentOrg =(String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
-		String orgJsonString;
-		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
-		List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		try {
-			String adminYear = (String) request.getParameter("AdminYear");
 			Map<String, Object> parameters = null;
-			////	if(IApplicationConstants.TRUE.equals(request.getParameter("filter"))) {
-			////	@SuppressWarnings("unchecked")
-			////List<InputControlTO> allInputControls = (List<InputControlTO>) request.getSession().getAttribute(
-			////	IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl);
-			////	parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, "false");
-			////} else {
 			// get all input controls for report
 			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
@@ -427,14 +409,21 @@ public class InorsController {
 
 			// get parameter values for report
 			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-			////	}
-			adminYear =  (String) parameters.get("p_adminYear");
+
 			String testAdministrationVal = (String) request.getParameter("p_test_administration");
 			String testProgram = (String) request.getParameter("p_test_program");
 			String corpDiocese = (String) request.getParameter("p_corpdiocese");
 			String school = (String) request.getParameter("p_school");
 			String klass = (String) request.getParameter("p_class");
 			String grade = (String) request.getParameter("p_grade_ppr");
+			String fileName = (String) request.getParameter("fileName");
+			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
+				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+					fileName = fileNameConventionGD(fileName, currentUser);
+					request.getSession().setAttribute("FILE_NAME_GD", fileName);
+				}
+			}
 
 			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
@@ -442,6 +431,8 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "school=" + school);
 			logger.log(IAppLogger.INFO, "klass=" + klass);
 			logger.log(IAppLogger.INFO, "grade=" + grade);
+			logger.log(IAppLogger.INFO, "fileName=" + fileName);
+			logger.log(IAppLogger.INFO, "email=" + email);
 
 			modelAndView.addObject("testAdministrationVal", testAdministrationVal);
 			modelAndView.addObject("testProgram", testProgram);
@@ -449,33 +440,30 @@ public class InorsController {
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("klass", klass);
 			modelAndView.addObject("grade", grade);
-
-			modelAndView.addObject("rootOrgId", corpDiocese);
+			modelAndView.addObject("fileName", fileName);
+			modelAndView.addObject("email", email);
 
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 
-
-		if(request.getSession().getAttribute("retainBulkDownloadTO") != null) {
-			BulkDownloadTO tempTo = (BulkDownloadTO) request.getSession().getAttribute("retainBulkDownloadTO");
-			bulkDownloadTO.setFileName(tempTo.getFileName());
-			bulkDownloadTO.setEmail(tempTo.getEmail());
-			bulkDownloadTO.setGroupFile(tempTo.getGroupFile());
-			bulkDownloadTO.setCollationHierarchy(tempTo.getCollationHierarchy());
-		} else {
-			if(icDownload) {
-				bulkDownloadTO.setFileName(CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", "IC"));
-			} else {
-				bulkDownloadTO.setFileName(CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime()));
-			}
-			bulkDownloadTO.setEmail(email);
-		}
-		bulkDownloadTO.setIstepPlus(true); // TODO set this value based on administration selected
-
-
 		modelAndView.addObject("reportUrl", reportUrl);
 		return modelAndView;
+	}
+
+	/**
+	 * This method creates, modifies or alters the file name as per the business
+	 * logic.
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	private String fileNameConventionGD(String fileName, String currentUser) {
+		if((fileName != null) && (!fileName.equalsIgnoreCase("null"))) return fileName;
+		String generatedFileName = "";
+		generatedFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
+		logger.log(IAppLogger.INFO, "generatedFileName=" + generatedFileName);
+		return generatedFileName;
 	}
 
 	/**
@@ -723,6 +711,7 @@ public class InorsController {
 		String corpDiocese = (String) request.getParameter("corpDiocese");
 		String school = (String) request.getParameter("school");
 
+		logger.log(IAppLogger.INFO, "type=" + type);
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
@@ -745,6 +734,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "year=" + year);
 
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String userName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 
 		paramMap.put("type", type);
 		paramMap.put("product", product);
@@ -755,6 +745,7 @@ public class InorsController {
 		paramMap.put("parentOrgNodeId", corpDiocese);
 		paramMap.put("orgNodeId", school);
 		paramMap.put("userId", userId);
+		paramMap.put("userName", userName);
 
 		byte[] data = null;
 		String fileName = "";

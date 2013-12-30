@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -207,6 +209,13 @@ public class FileUtil {
 		return "".getBytes();
 	}
 
+	/**
+	 * Merges multiple Pdf files into a single Pdf file.
+	 * 
+	 * @param files
+	 *            List of Pdf file paths
+	 * @return A merged Pdf bytes
+	 */
 	public static byte[] getMergedPdfBytes(List<String> files) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		if (files != null && !files.isEmpty()) {
@@ -236,5 +245,64 @@ public class FileUtil {
 			}
 		}
 		return baos.toByteArray();
+	}
+
+	/**
+	 * Creates a file in disk.
+	 * 
+	 * @param fileName
+	 * @param input
+	 */
+	public static void createFile(String fileName, byte[] input) {
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(fileName);
+			fos.write(input);
+			FileCopyUtils.copy(input, new FileOutputStream(fileName));
+		} catch (FileNotFoundException e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			try {
+				fos.close();
+			} catch (Exception e) {
+				logger.log(IAppLogger.ERROR, e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * Creates a Zip file from the list of file paths.
+	 * 
+	 * @param zipFileName
+	 * @param filePaths
+	 */
+	public static void createZipFile(String zipFileName, List<String> filePaths) {
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+		try {
+			fos = new FileOutputStream(zipFileName);
+			zos = new ZipOutputStream(fos);
+			for (String filePath : filePaths) {
+				ZipEntry entry = new ZipEntry(filePath);
+				byte[] input = getBytes(filePath);
+				entry.setSize(input.length);
+				zos.putNextEntry(entry);
+				zos.write(input);
+				zos.closeEntry();
+			}
+		} catch (FileNotFoundException e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			try {
+				fos.close();
+				zos.close();
+			} catch (IOException e) {
+				logger.log(IAppLogger.ERROR, e.getMessage());
+			}
+		}
 	}
 }

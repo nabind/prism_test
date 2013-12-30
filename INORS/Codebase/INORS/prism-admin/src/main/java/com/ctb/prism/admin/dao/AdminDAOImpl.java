@@ -392,7 +392,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public UserTO getEditUserData(Map<String,Object> paramMap) {
-
 		UserTO to = new UserTO();
 		List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
 		RoleTO roleTO = null;
@@ -402,15 +401,15 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		List<RoleTO> masterRoleList = null;
 		masterRoleList = getMasterRoleList("user", nodeId, customerId);
 		
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
-		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
+		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId);
 		for (Map<String, Object> fieldDetails : lstRoleData) {
 			roleTO = new RoleTO();
 			String roleName=((String) (fieldDetails.get("ROLENAME")));
+			String roleDescription=((String) (fieldDetails.get("DESCRIPTION")));
 			//if (!(IApplicationConstants.DEFAULT_USER_ROLE.equals(roleName))){
 				roleTO.setRoleName(roleName);
+				roleTO.setRoleDescription(roleDescription);
 				availableRoleList.add(roleTO);
 			//}			
 		}
@@ -480,8 +479,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			masterRoleTO = new RoleTO();
 			String roleName = (String) (fieldDetails.get("ROLE_NAME"));
 			masterRoleTO.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
-			masterRoleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID"))
-					.longValue());
+			masterRoleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
+			masterRoleTO.setRoleDescription(fieldDetails.get("DESCRIPTION").toString());
 			
 		/*	if (user_org_level == 1) {
 				if (IApplicationConstants.ROLE_TYPE.ROLE_ACSI.toString().equals(roleName)) {
@@ -1090,21 +1089,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return list of role
 	 */
 	public ArrayList<RoleTO> getRoleDetails() {
-
 		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
-
 		List<Map<String, Object>> lstData = null;
-
-		lstData = getJdbcTemplatePrism().queryForList(
-				IQueryConstants.GET_ROLE_DETAILS);
-
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_DETAILS);
 		if (lstData.size() > 0) {
 			RoleTOs = new ArrayList<RoleTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
 				RoleTO to = new RoleTO();
-
-				to.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID"))
-						.longValue());
+				to.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
 				to.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
 				to.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
 				RoleTOs.add(to);
@@ -1119,26 +1111,17 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return RoleTO
 	 */
 	public RoleTO getRoleDetailsById(String roleid) {
-
 		RoleTO roleTO = new RoleTO();
-
 		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(
-				IQueryConstants.GET_ROLE_DETAILS_BY_ID, roleid);
-
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_DETAILS_BY_ID, roleid);
 		if (lstData.size() > 0) {
-
 			for (Map<String, Object> fieldDetails : lstData) {
-
-				roleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID"))
-						.longValue());
+				roleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
 				roleTO.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
 				roleTO.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
-
 			}
 		}
 		roleTO.setUserList(getUsersForSelectedRole(roleid));
-
 		return roleTO;
 	}
 
@@ -1183,21 +1166,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			String roleDescription = roleTo.getRoleDescription();
 
 			// update role table
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ROLE,
-					roleName, roleDescription, roleId);
+			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ROLE, roleName, roleDescription, roleId);
 
 			if (roleTo.getUserList().size() > 0) {
 				// delete users from user role table
-				getJdbcTemplatePrism().update(
-						IQueryConstants.DELETE_ROLE_FROM_USER_ROLE_TABLE,
-						roleId);
+				getJdbcTemplatePrism().update(IQueryConstants.DELETE_ROLE_FROM_USER_ROLE_TABLE, roleId);
 				userTOs = (ArrayList<UserTO>) roleTo.getUserList();
 				for (UserTO userTo : userTOs) {
 					long userId = userTo.getUserId();
 					// insert users into user role table
-					getJdbcTemplatePrism().update(
-							IQueryConstants.INSERT_INTO_USER_ROLE, userId,
-							roleId);
+					getJdbcTemplatePrism().update(IQueryConstants.INSERT_INTO_USER_ROLE, userId, roleId);
 				}
 			}
 		} catch (Exception e) {
@@ -2081,7 +2059,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId + ", adminYear=" + adminYear + ", userId=" + userId);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgNodeId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgNodeId, orgNodeId);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserDataTO to = new UserDataTO();
