@@ -6,7 +6,7 @@
         <c:set var="tascProduct" value="${PDCT_NAME}"/>
 	    <c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 		<c:set var="currOrg" value="<%=request.getSession().getAttribute(IApplicationConstants.CURRORG) %>"/>
-		<c:set var="childDataMap" value="<%=request.getSession().getAttribute(IApplicationConstants.CHILD_MAP) %>"/>
+		
 		<!-- This wrapper is used by several responsive layouts -->
 		<div id="menu-content">
 
@@ -132,52 +132,47 @@
 								</ul>
 						</li>
 						
-					<li class="with-right-arrow" id="select-tooltip-10">
-							<span>Overview</span>
-								<ul class="big-menu report-menu white-gradient" id="overView_list">
-									
-									<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
-										<li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	">
-											<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
-											id="subtestIdLink">${subtestTO.name}</a>
-													
-													<ul class="big-menu report-menu white-gradient">
-															
-															<li class="mid-margin-left font-12 small-line-height">
-																<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
-																id="subtestIdLink">- Skill Building Activities</a>
-															</li>
-															
-															<li class="mid-margin-left font-12 small-line-height">
-																<a href="getStandardIndicator.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
-																id="subtestIdLink">- Standards</a>
-															</li>	
-															
-															<li class="mid-margin-left font-12 small-line-height">
-																<a href="#" 
-																id="">- Resources</a>
-															</li>
-																
-															<li class="mid-margin-left font-12 small-line-height">
-																<a href="#" 
-																id="">- Results</a>
-															</li>	
-													
-								 	 				</ul>
-								
-									   </li>
-								    </c:forEach>
-								  
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
-										<a href="#"  id="">Everyday Activities</a>
-									 </li>
-									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
-										<a href="#"  id="">About the Tests</a>
-									 </li>
-									 
-								</ul>
+						<c:if test="${not empty childDataMap}">
+						<li class="" id="select-tooltip-10">
+							<a href="#nogo" >Overview</a>
 						</li>
+						</c:if>
+						
+						<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
+							<li class="with-right-arrow">
+								<a href="#nogo" 
+								id="subtestIdLink">${subtestTO.name}</a>
+										<ul class="big-menu report-menu white-gradient">
+												<li class="mid-margin-left font-12 small-line-height">
+													<a class="activitydata" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
+													id="subtestIdLink">Skill Building Activities</a>
+												</li>
+												
+												<li class="mid-margin-left font-12 small-line-height">
+													<a class="standardsdata" href="#nogo"  subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
+													id="subtestIdLink">Standards</a>
+												</li>	
+												
+												<li class="mid-margin-left font-12 small-line-height">
+													<a href="#" 
+													id="">Resources</a>
+												</li>
+													
+												<li class="mid-margin-left font-12 small-line-height">
+													<a href="#" 
+													id="">Results</a>
+												</li>	
+										</ul>
+						   </li>
+						</c:forEach>
+						<c:if test="${not empty childDataMap}">
+						<li class="" id="select-tooltip-10">
+							<a href="#nogo" >Everyday Activities</a>
+						</li>
+						<li class="" id="select-tooltip-10">
+							<a href="#nogo" >About the Tests</a>
+						</li>
+						</c:if>
 						
 						<li class="with-right-arrow" id="select-tooltip-10">
 							<span>Explore</span>

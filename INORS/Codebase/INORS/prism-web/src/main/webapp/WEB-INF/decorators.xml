@@ -32,6 +32,12 @@
 		<pattern>/landing*</pattern>
 	</excludes>
 	
+	<decorator name="parentnetwork" page="parentnetwork.jsp">
+		<pattern>/getStandardActivity*</pattern>
+		<pattern>/getStandardIndicator*</pattern>
+		<pattern>/getArticleDescription*</pattern>
+    </decorator>
+	
 	<decorator name="report" page="reporttemplate.jsp">
 		<pattern>/openReportHtml*</pattern>
     </decorator>

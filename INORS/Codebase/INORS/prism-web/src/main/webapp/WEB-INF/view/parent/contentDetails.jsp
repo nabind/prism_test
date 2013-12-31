@@ -3,15 +3,18 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <div class="margin-bottom-medium" style="min-height: 425px;">
-	
-		<div id="contentDetailsHeader" class="wrapped relative white-gradient"
+	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
+		<div id="contentDetailsHeader" class="relative"
 			style="height: auto; text-align: justify">	
-			<h2>${articleTypeDescription.contentName}</h2>		
+			<h1>${articleTypeDescription.contentName}</h1>		
 		</div>
-		<textarea id="taContent" style="display:none;">
-			${articleTypeDescription.contentDescription}
-		</textarea>
-		<div id="contentDescription" class="wrapped relative white-gradient"
-			style="height: auto; text-align: justify">			
-		</div>
+	</hgroup>
+	<textarea id="taContent" style="display:none;">
+		${articleTypeDescription.contentDescription}
+	</textarea>
+	<div id="contentDescription" class="relative"
+		style="height: auto; text-align: justify">			
+	</div>
 </div>
+
+

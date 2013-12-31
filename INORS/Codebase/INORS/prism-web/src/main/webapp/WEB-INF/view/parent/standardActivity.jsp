@@ -2,19 +2,22 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
-<div class="margin-bottom-medium">
-	<div id="standardActivityHeader" class="wrapped relative white-gradient"
+<div class="margin-bottom-medium" style="min-height:800px">
+	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
+	<div id="standardActivityHeader" class="relative"
 		style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${studentName == '-1'}">
-				<h2>Skill-Building Activities</h2>
+				<h1>Skill-Building Activities</h1>
 			</c:when>
 			<c:otherwise>
-				<h2>Skill-Building Activities for ${studentName}</h2>
+				<h1>Skill-Building Activities for ${studentName}</h1>
 			</c:otherwise>
-		</c:choose>		
+		</c:choose>
+		<h3 style="margin:0">Subtest: </h3>
 	</div>
-	<div id="standardActivityMessage" class="wrapped relative white-gradient"
+	</hgroup>
+	<div id="standardActivityMessage" class="relative"
 			style="height: auto; text-align: justify">
 			In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 
 			These activities give you the opportunity to help your child improve his or her skills in a fun and engaging way. 
@@ -40,7 +43,7 @@
 					<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
 					<div class="simple-div-table-col">
 						<p>
-							<a href="getArticleDescription.do?articleId=${standardActivityTO.objectiveId}&contentType=STD" 
+							<a class="articledata" href="#nogo" articleId="${standardActivityTO.objectiveId}" contentType="STD" 
 										style="font-weight: bold"
 										id="subtestIdLink">
 											${standardActivityTO.objectiveName}
@@ -63,7 +66,7 @@
 								<c:if test="${standardId == activityTO.objectiveId}">
 									<c:set var="curStandardId" value="${activityTO.objectiveId}" />
 									<dd> 
-										<a href="getArticleDescription.do?articleId=${activityTO.contentId}&contentType=ACT" 
+										<a class="articledata" href="#nogo" articleId="${activityTO.contentId}" contentType="ACT" 
 											style="font-weight: bold"
 											id="subtestIdLink">
 												${activityTO.contentName}

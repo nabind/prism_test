@@ -124,13 +124,16 @@ html {
     position: absolute !important;
 }
 .main-footer {
-	position:relative; 
+	/*position:relative; */
 	z-index: 2;
-	top: 0px;
+	/*top: 0px;*/
 	height: 50px;
 	background: url(../img/effects/dashboard-top-shadow.png) no-repeat center top;
 	background-position-y: 25px;
 	background-position: 50% 25px;
+	width: 850px;
+	right: 25%;
+	position:absolute !important;
 }
 .main-footer > div > a {
 	color: white !important;

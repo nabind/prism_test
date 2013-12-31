@@ -2,19 +2,22 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
-<div class="margin-bottom-medium">
-	<div id="standardIndicatorHeader" class="wrapped relative white-gradient"
+<div class="margin-bottom-medium" style="min-height:800px">
+	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
+	<div id="standardIndicatorHeader" class="relative"
 		style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${studentName == '-1'}">
-				<h2>Standards</h2>
+				<h1>Standards</h1>
 			</c:when>
 			<c:otherwise>
-				<h2>Standards for ${studentName}</h2>
+				<h1>Standards for ${studentName}</h1>
 			</c:otherwise>
 		</c:choose>		
+		<h3 style="margin:0">Subtest: </h3>
 	</div>
-	<div id="standardIndicatorMessage" class="wrapped relative white-gradient"
+	</hgroup>
+	<div id="standardIndicatorMessage" class="relative"
 			style="height: auto; text-align: justify">
 			
 			I To read the standards your child is working toward, click on each standard number below. 
@@ -43,7 +46,7 @@
 				<div class="simple-div-table wrapped">
 					<c:set var="standardId" value="${standardIndicatorTO.objectiveId}" />
 					<div class="simple-div-table-col">
-						<a href="getArticleDescription.do?articleId=${standardIndicatorTO.objectiveId}&contentType=STD" 
+						<a class="articledata" href="#nogo" articleId="${standardIndicatorTO.objectiveId}" contentType="STD" 
 									style="font-weight: bold"
 									id="subtestIdLink">
 										${standardIndicatorTO.objectiveName}
@@ -68,7 +71,7 @@
 								<c:if test="${standardId == IndicatorTO.objectiveId}">
 									<c:set var="curStandardId" value="${IndicatorTO.objectiveId}" />
 									<dd> 
-										<a href="getArticleDescription.do?articleId=${IndicatorTO.contentId}&contentType=ACT" 
+										<a class="articledata" href="#nogo" articleId="${IndicatorTO.objectiveId}" contentType="ACT" 
 											style="font-weight: bold"
 											id="subtestIdLink">
 												${IndicatorTO.contentName}
