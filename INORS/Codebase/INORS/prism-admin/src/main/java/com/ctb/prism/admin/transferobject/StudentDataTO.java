@@ -5,6 +5,10 @@ import org.beanio.annotation.Record;
 
 import com.ctb.prism.core.transferobject.BaseTO;
 
+/**
+ * @author TCS
+ *
+ */
 @Record(minOccurs = 1)
 public class StudentDataTO extends BaseTO {
 	private static final long serialVersionUID = -307431328130789728L;
@@ -1841,8 +1845,7 @@ public class StudentDataTO extends BaseTO {
 		return prepare_Purchased_My_Own_Study_Books;
 	}
 
-	public void setPrepare_Purchased_My_Own_Study_Books(
-			String prepare_Purchased_My_Own_Study_Books) {
+	public void setPrepare_Purchased_My_Own_Study_Books(String prepare_Purchased_My_Own_Study_Books) {
 		this.prepare_Purchased_My_Own_Study_Books = prepare_Purchased_My_Own_Study_Books;
 	}
 
@@ -2234,8 +2237,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_1;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_1(
-			String reading_std_Obj_Mstry_Scr_1) {
+	public void setReading_std_Obj_Mstry_Scr_1(String reading_std_Obj_Mstry_Scr_1) {
 		this.reading_std_Obj_Mstry_Scr_1 = reading_std_Obj_Mstry_Scr_1;
 	}
 
@@ -2243,8 +2245,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_1;
 	}
 
-	public void setReading_not_All_items_atmpt_1(
-			String reading_not_All_items_atmpt_1) {
+	public void setReading_not_All_items_atmpt_1(String reading_not_All_items_atmpt_1) {
 		this.reading_not_All_items_atmpt_1 = reading_not_All_items_atmpt_1;
 	}
 
@@ -2252,8 +2253,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_2;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_2(
-			String reading_std_Obj_Mstry_Scr_2) {
+	public void setReading_std_Obj_Mstry_Scr_2(String reading_std_Obj_Mstry_Scr_2) {
 		this.reading_std_Obj_Mstry_Scr_2 = reading_std_Obj_Mstry_Scr_2;
 	}
 
@@ -2261,8 +2261,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_2;
 	}
 
-	public void setReading_not_All_items_atmpt_2(
-			String reading_not_All_items_atmpt_2) {
+	public void setReading_not_All_items_atmpt_2(String reading_not_All_items_atmpt_2) {
 		this.reading_not_All_items_atmpt_2 = reading_not_All_items_atmpt_2;
 	}
 
@@ -2270,8 +2269,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_3;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_3(
-			String reading_std_Obj_Mstry_Scr_3) {
+	public void setReading_std_Obj_Mstry_Scr_3(String reading_std_Obj_Mstry_Scr_3) {
 		this.reading_std_Obj_Mstry_Scr_3 = reading_std_Obj_Mstry_Scr_3;
 	}
 
@@ -2279,8 +2277,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_3;
 	}
 
-	public void setReading_not_All_items_atmpt_3(
-			String reading_not_All_items_atmpt_3) {
+	public void setReading_not_All_items_atmpt_3(String reading_not_All_items_atmpt_3) {
 		this.reading_not_All_items_atmpt_3 = reading_not_All_items_atmpt_3;
 	}
 
@@ -2288,8 +2285,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_4;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_4(
-			String reading_std_Obj_Mstry_Scr_4) {
+	public void setReading_std_Obj_Mstry_Scr_4(String reading_std_Obj_Mstry_Scr_4) {
 		this.reading_std_Obj_Mstry_Scr_4 = reading_std_Obj_Mstry_Scr_4;
 	}
 
@@ -2297,8 +2293,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_4;
 	}
 
-	public void setReading_not_All_items_atmpt_4(
-			String reading_not_All_items_atmpt_4) {
+	public void setReading_not_All_items_atmpt_4(String reading_not_All_items_atmpt_4) {
 		this.reading_not_All_items_atmpt_4 = reading_not_All_items_atmpt_4;
 	}
 
@@ -2306,8 +2301,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_5;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_5(
-			String reading_std_Obj_Mstry_Scr_5) {
+	public void setReading_std_Obj_Mstry_Scr_5(String reading_std_Obj_Mstry_Scr_5) {
 		this.reading_std_Obj_Mstry_Scr_5 = reading_std_Obj_Mstry_Scr_5;
 	}
 
@@ -2315,8 +2309,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_5;
 	}
 
-	public void setReading_not_All_items_atmpt_5(
-			String reading_not_All_items_atmpt_5) {
+	public void setReading_not_All_items_atmpt_5(String reading_not_All_items_atmpt_5) {
 		this.reading_not_All_items_atmpt_5 = reading_not_All_items_atmpt_5;
 	}
 
@@ -2324,8 +2317,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_6;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_6(
-			String reading_std_Obj_Mstry_Scr_6) {
+	public void setReading_std_Obj_Mstry_Scr_6(String reading_std_Obj_Mstry_Scr_6) {
 		this.reading_std_Obj_Mstry_Scr_6 = reading_std_Obj_Mstry_Scr_6;
 	}
 
@@ -2333,8 +2325,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_6;
 	}
 
-	public void setReading_not_All_items_atmpt_6(
-			String reading_not_All_items_atmpt_6) {
+	public void setReading_not_All_items_atmpt_6(String reading_not_All_items_atmpt_6) {
 		this.reading_not_All_items_atmpt_6 = reading_not_All_items_atmpt_6;
 	}
 
@@ -2342,8 +2333,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_7;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_7(
-			String reading_std_Obj_Mstry_Scr_7) {
+	public void setReading_std_Obj_Mstry_Scr_7(String reading_std_Obj_Mstry_Scr_7) {
 		this.reading_std_Obj_Mstry_Scr_7 = reading_std_Obj_Mstry_Scr_7;
 	}
 
@@ -2351,8 +2341,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_7;
 	}
 
-	public void setReading_not_All_items_atmpt_7(
-			String reading_not_All_items_atmpt_7) {
+	public void setReading_not_All_items_atmpt_7(String reading_not_All_items_atmpt_7) {
 		this.reading_not_All_items_atmpt_7 = reading_not_All_items_atmpt_7;
 	}
 
@@ -2360,8 +2349,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_std_Obj_Mstry_Scr_8;
 	}
 
-	public void setReading_std_Obj_Mstry_Scr_8(
-			String reading_std_Obj_Mstry_Scr_8) {
+	public void setReading_std_Obj_Mstry_Scr_8(String reading_std_Obj_Mstry_Scr_8) {
 		this.reading_std_Obj_Mstry_Scr_8 = reading_std_Obj_Mstry_Scr_8;
 	}
 
@@ -2369,8 +2357,7 @@ public class StudentDataTO extends BaseTO {
 		return reading_not_All_items_atmpt_8;
 	}
 
-	public void setReading_not_All_items_atmpt_8(
-			String reading_not_All_items_atmpt_8) {
+	public void setReading_not_All_items_atmpt_8(String reading_not_All_items_atmpt_8) {
 		this.reading_not_All_items_atmpt_8 = reading_not_All_items_atmpt_8;
 	}
 
@@ -2426,8 +2413,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_std_Obj_Mstry_Scr_1;
 	}
 
-	public void setWriting_std_Obj_Mstry_Scr_1(
-			String writing_std_Obj_Mstry_Scr_1) {
+	public void setWriting_std_Obj_Mstry_Scr_1(String writing_std_Obj_Mstry_Scr_1) {
 		this.writing_std_Obj_Mstry_Scr_1 = writing_std_Obj_Mstry_Scr_1;
 	}
 
@@ -2435,8 +2421,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_not_All_items_atmpt_1;
 	}
 
-	public void setWriting_not_All_items_atmpt_1(
-			String writing_not_All_items_atmpt_1) {
+	public void setWriting_not_All_items_atmpt_1(String writing_not_All_items_atmpt_1) {
 		this.writing_not_All_items_atmpt_1 = writing_not_All_items_atmpt_1;
 	}
 
@@ -2444,8 +2429,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_std_Obj_Mstry_Scr_2;
 	}
 
-	public void setWriting_std_Obj_Mstry_Scr_2(
-			String writing_std_Obj_Mstry_Scr_2) {
+	public void setWriting_std_Obj_Mstry_Scr_2(String writing_std_Obj_Mstry_Scr_2) {
 		this.writing_std_Obj_Mstry_Scr_2 = writing_std_Obj_Mstry_Scr_2;
 	}
 
@@ -2453,8 +2437,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_not_All_items_atmpt_2;
 	}
 
-	public void setWriting_not_All_items_atmpt_2(
-			String writing_not_All_items_atmpt_2) {
+	public void setWriting_not_All_items_atmpt_2(String writing_not_All_items_atmpt_2) {
 		this.writing_not_All_items_atmpt_2 = writing_not_All_items_atmpt_2;
 	}
 
@@ -2462,8 +2445,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_std_Obj_Mstry_Scr_3;
 	}
 
-	public void setWriting_std_Obj_Mstry_Scr_3(
-			String writing_std_Obj_Mstry_Scr_3) {
+	public void setWriting_std_Obj_Mstry_Scr_3(String writing_std_Obj_Mstry_Scr_3) {
 		this.writing_std_Obj_Mstry_Scr_3 = writing_std_Obj_Mstry_Scr_3;
 	}
 
@@ -2471,8 +2453,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_not_All_items_atmpt_3;
 	}
 
-	public void setWriting_not_All_items_atmpt_3(
-			String writing_not_All_items_atmpt_3) {
+	public void setWriting_not_All_items_atmpt_3(String writing_not_All_items_atmpt_3) {
 		this.writing_not_All_items_atmpt_3 = writing_not_All_items_atmpt_3;
 	}
 
@@ -2480,8 +2461,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_std_Obj_Mstry_Scr_4;
 	}
 
-	public void setWriting_std_Obj_Mstry_Scr_4(
-			String writing_std_Obj_Mstry_Scr_4) {
+	public void setWriting_std_Obj_Mstry_Scr_4(String writing_std_Obj_Mstry_Scr_4) {
 		this.writing_std_Obj_Mstry_Scr_4 = writing_std_Obj_Mstry_Scr_4;
 	}
 
@@ -2489,8 +2469,7 @@ public class StudentDataTO extends BaseTO {
 		return writing_not_All_items_atmpt_4;
 	}
 
-	public void setWriting_not_All_items_atmpt_4(
-			String writing_not_All_items_atmpt_4) {
+	public void setWriting_not_All_items_atmpt_4(String writing_not_All_items_atmpt_4) {
 		this.writing_not_All_items_atmpt_4 = writing_not_All_items_atmpt_4;
 	}
 
@@ -2738,8 +2717,7 @@ public class StudentDataTO extends BaseTO {
 		return science_std_Obj_Mstry_Scr_1;
 	}
 
-	public void setScience_std_Obj_Mstry_Scr_1(
-			String science_std_Obj_Mstry_Scr_1) {
+	public void setScience_std_Obj_Mstry_Scr_1(String science_std_Obj_Mstry_Scr_1) {
 		this.science_std_Obj_Mstry_Scr_1 = science_std_Obj_Mstry_Scr_1;
 	}
 
@@ -2747,8 +2725,7 @@ public class StudentDataTO extends BaseTO {
 		return science_not_All_items_atmpt_1;
 	}
 
-	public void setScience_not_All_items_atmpt_1(
-			String science_not_All_items_atmpt_1) {
+	public void setScience_not_All_items_atmpt_1(String science_not_All_items_atmpt_1) {
 		this.science_not_All_items_atmpt_1 = science_not_All_items_atmpt_1;
 	}
 
@@ -2756,8 +2733,7 @@ public class StudentDataTO extends BaseTO {
 		return science_std_Obj_Mstry_Scr_2;
 	}
 
-	public void setScience_std_Obj_Mstry_Scr_2(
-			String science_std_Obj_Mstry_Scr_2) {
+	public void setScience_std_Obj_Mstry_Scr_2(String science_std_Obj_Mstry_Scr_2) {
 		this.science_std_Obj_Mstry_Scr_2 = science_std_Obj_Mstry_Scr_2;
 	}
 
@@ -2765,8 +2741,7 @@ public class StudentDataTO extends BaseTO {
 		return science_not_All_items_atmpt_2;
 	}
 
-	public void setScience_not_All_items_atmpt_2(
-			String science_not_All_items_atmpt_2) {
+	public void setScience_not_All_items_atmpt_2(String science_not_All_items_atmpt_2) {
 		this.science_not_All_items_atmpt_2 = science_not_All_items_atmpt_2;
 	}
 
@@ -2774,8 +2749,7 @@ public class StudentDataTO extends BaseTO {
 		return science_std_Obj_Mstry_Scr_3;
 	}
 
-	public void setScience_std_Obj_Mstry_Scr_3(
-			String science_std_Obj_Mstry_Scr_3) {
+	public void setScience_std_Obj_Mstry_Scr_3(String science_std_Obj_Mstry_Scr_3) {
 		this.science_std_Obj_Mstry_Scr_3 = science_std_Obj_Mstry_Scr_3;
 	}
 
@@ -2783,8 +2757,7 @@ public class StudentDataTO extends BaseTO {
 		return science_not_All_items_atmpt_3;
 	}
 
-	public void setScience_not_All_items_atmpt_3(
-			String science_not_All_items_atmpt_3) {
+	public void setScience_not_All_items_atmpt_3(String science_not_All_items_atmpt_3) {
 		this.science_not_All_items_atmpt_3 = science_not_All_items_atmpt_3;
 	}
 
@@ -2792,8 +2765,7 @@ public class StudentDataTO extends BaseTO {
 		return science_std_Obj_Mstry_Scr_4;
 	}
 
-	public void setScience_std_Obj_Mstry_Scr_4(
-			String science_std_Obj_Mstry_Scr_4) {
+	public void setScience_std_Obj_Mstry_Scr_4(String science_std_Obj_Mstry_Scr_4) {
 		this.science_std_Obj_Mstry_Scr_4 = science_std_Obj_Mstry_Scr_4;
 	}
 
@@ -2801,8 +2773,7 @@ public class StudentDataTO extends BaseTO {
 		return science_not_All_items_atmpt_4;
 	}
 
-	public void setScience_not_All_items_atmpt_4(
-			String science_not_All_items_atmpt_4) {
+	public void setScience_not_All_items_atmpt_4(String science_not_All_items_atmpt_4) {
 		this.science_not_All_items_atmpt_4 = science_not_All_items_atmpt_4;
 	}
 
@@ -2810,8 +2781,7 @@ public class StudentDataTO extends BaseTO {
 		return science_std_Obj_Mstry_Scr_5;
 	}
 
-	public void setScience_std_Obj_Mstry_Scr_5(
-			String science_std_Obj_Mstry_Scr_5) {
+	public void setScience_std_Obj_Mstry_Scr_5(String science_std_Obj_Mstry_Scr_5) {
 		this.science_std_Obj_Mstry_Scr_5 = science_std_Obj_Mstry_Scr_5;
 	}
 
@@ -2819,8 +2789,7 @@ public class StudentDataTO extends BaseTO {
 		return science_not_All_items_atmpt_5;
 	}
 
-	public void setScience_not_All_items_atmpt_5(
-			String science_not_All_items_atmpt_5) {
+	public void setScience_not_All_items_atmpt_5(String science_not_All_items_atmpt_5) {
 		this.science_not_All_items_atmpt_5 = science_not_All_items_atmpt_5;
 	}
 
@@ -2884,8 +2853,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_1;
 	}
 
-	public void setSocial_not_All_items_atmpt_1(
-			String social_not_All_items_atmpt_1) {
+	public void setSocial_not_All_items_atmpt_1(String social_not_All_items_atmpt_1) {
 		this.social_not_All_items_atmpt_1 = social_not_All_items_atmpt_1;
 	}
 
@@ -2901,8 +2869,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_2;
 	}
 
-	public void setSocial_not_All_items_atmpt_2(
-			String social_not_All_items_atmpt_2) {
+	public void setSocial_not_All_items_atmpt_2(String social_not_All_items_atmpt_2) {
 		this.social_not_All_items_atmpt_2 = social_not_All_items_atmpt_2;
 	}
 
@@ -2918,8 +2885,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_3;
 	}
 
-	public void setSocial_not_All_items_atmpt_3(
-			String social_not_All_items_atmpt_3) {
+	public void setSocial_not_All_items_atmpt_3(String social_not_All_items_atmpt_3) {
 		this.social_not_All_items_atmpt_3 = social_not_All_items_atmpt_3;
 	}
 
@@ -2935,8 +2901,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_4;
 	}
 
-	public void setSocial_not_All_items_atmpt_4(
-			String social_not_All_items_atmpt_4) {
+	public void setSocial_not_All_items_atmpt_4(String social_not_All_items_atmpt_4) {
 		this.social_not_All_items_atmpt_4 = social_not_All_items_atmpt_4;
 	}
 
@@ -2952,8 +2917,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_5;
 	}
 
-	public void setSocial_not_All_items_atmpt_5(
-			String social_not_All_items_atmpt_5) {
+	public void setSocial_not_All_items_atmpt_5(String social_not_All_items_atmpt_5) {
 		this.social_not_All_items_atmpt_5 = social_not_All_items_atmpt_5;
 	}
 
@@ -2969,8 +2933,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_6;
 	}
 
-	public void setSocial_not_All_items_atmpt_6(
-			String social_not_All_items_atmpt_6) {
+	public void setSocial_not_All_items_atmpt_6(String social_not_All_items_atmpt_6) {
 		this.social_not_All_items_atmpt_6 = social_not_All_items_atmpt_6;
 	}
 
@@ -2986,8 +2949,7 @@ public class StudentDataTO extends BaseTO {
 		return social_not_All_items_atmpt_7;
 	}
 
-	public void setSocial_not_All_items_atmpt_7(
-			String social_not_All_items_atmpt_7) {
+	public void setSocial_not_All_items_atmpt_7(String social_not_All_items_atmpt_7) {
 		this.social_not_All_items_atmpt_7 = social_not_All_items_atmpt_7;
 	}
 
