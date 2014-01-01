@@ -29,6 +29,8 @@ public interface IReportDAO {
 	public void removeCache();
 
 	/**
+	 * This method returns report print object filled with data.
+	 * 
 	 * @param jasperReport
 	 * @param parameters
 	 * @return
@@ -37,6 +39,8 @@ public interface IReportDAO {
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
 
 	/**
+	 * Same report - without putting the same in cache.
+	 * 
 	 * @param jasperReport
 	 * @param parameters
 	 * @return
@@ -45,6 +49,8 @@ public interface IReportDAO {
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
 
 	/**
+	 * Returns {@link JasperReport} object of a particular report by compiling the JRXML file retrieved from database.
+	 * 
 	 * @param reportPath
 	 * @return
 	 */
@@ -57,13 +63,18 @@ public interface IReportDAO {
 	public JasperReport getReportJasperObjectForName(String reportname);
 
 	/**
+	 * This method is to fetch all reports (including subreports).
+	 * 
 	 * @param reportPath
+	 *            Report URL
 	 * @return
 	 * @throws JRException
 	 */
 	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException;
 
 	/**
+	 * Returns the input control details of a particular report
+	 * 
 	 * @param reportPath
 	 * @return
 	 */
@@ -75,12 +86,16 @@ public interface IReportDAO {
 	public List<InputControlTO> getAllInputControls();
 
 	/**
+	 * Fetch all values for a single input control.
+	 * 
 	 * @param query
 	 * @return
 	 */
 	public List<ObjectValueTO> getValuesOfSingleInput(String query);
 
 	/**
+	 * Returns the information( report id, report name, report url, the user roles who can access the report etc) of all reports.
+	 * 
 	 * @param paramMap
 	 * @return
 	 */
@@ -116,6 +131,8 @@ public interface IReportDAO {
 	public List<AssessmentTO> getAssessments(boolean parentReports);
 
 	/**
+	 * Retrieves and returns tenantId corresponding to the userName.
+	 * 
 	 * @param userName
 	 * @return
 	 */

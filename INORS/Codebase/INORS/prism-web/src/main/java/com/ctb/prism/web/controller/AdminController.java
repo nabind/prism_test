@@ -544,8 +544,7 @@ public class AdminController {
 		List<UserTO> UserTOs = new ArrayList<UserTO>();
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		try {
-			logger.log(IAppLogger.INFO,
-					"Enter: AdminController - getEditUserData");
+			logger.log(IAppLogger.INFO, "Enter: AdminController - getEditUserData");
 			String nodeId = (String) request.getParameter("tenantId");
 			String purpose = (String) request.getParameter("purpose");
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
@@ -568,8 +567,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO,
-					"Exit: AdminController - getEditUserData");
+			logger.log(IAppLogger.INFO, "Exit: AdminController - getEditUserData");
 		}
 
 		return null;

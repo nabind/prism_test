@@ -279,13 +279,13 @@ $(document).ready(function() {
 		});	
 		
 	}
-		
+
 	//======================ENABLES THE CHECKBOX IN MODAL=====================================
 	function enableStaus(modalId,checkboxId)
 	{
 		$("#"+modalId+" "+"#"+checkboxId).closest("span").addClass("checked");
 	}
-
+	
 	//======================OPEN EDIT USER SCREEN==========================================
 	function openUserModaltoEdit(userId,tenantId) {
 	var row = $("#"+tenantId + '_' +userId);
@@ -309,7 +309,6 @@ $(document).ready(function() {
 				$("input#userId").val(data[0].userName);
 				$("label#userid").text(data[0].userName);
 				$("input#validation-email").val(data[0].emailId);
-				
 				var roles = data[0].availableRoleList;
 				
 				$("#userRole option").removeAttr('selected');
@@ -317,16 +316,17 @@ $(document).ready(function() {
 				if(typeof roles != "undefined") {
 					$.each(roles, function(index, value) {
 						//alert(roles[index].roleName);
-						$("#userRole option").each(function() {				
-							if($(this).val() == roles[index].roleName) {
+						$("#userRole option").each(function() {
+							var flag = isFoundInList($(this).val(), data[0].masterRoleList)
+							// if($(this).val() == roles[index].roleName) { // TODO : check logic
+							if (flag == true) {
 								$(this).attr('selected', 'true');
 							} 
 							$(this).change();
 							$(this).trigger('update-select-list');
 						});
 					});
-				}
-				else {
+				} else {
 					$("#userRole option").change();
 					$("#userRole option").trigger('update-select-list');
 				}
@@ -362,19 +362,14 @@ $(document).ready(function() {
 							classes: 'blue-gradient glossy mid-margin-left',
 							click: function(win,e) {
 								clickMe(e);
-								if ($("#editUser").validationEngine('validate'))
-									{
-									if ($("input[rel^='editPwd']").val() == $("input[rel^='editConfPwd']").val())
-									{
+								if ($("#editUser").validationEngine('validate')) {
+									if ($("input[rel^='editPwd']").val() == $("input[rel^='editConfPwd']").val()) {
 										$('#editUser').validationEngine('hide');
 										updateUserDetails($(".edit-User-form"), win, row);
-									}
-									else 
-									{
+									} else {
 										$.modal.alert(strings['script.user.passwordMismatch']);
 									}
 								}
-								
 							}
 						}
 					}
@@ -389,11 +384,11 @@ $(document).ready(function() {
 	function createRoleListOnEdit(data) {
 		
 	    $("#userRole").find("option").remove();
-		var masterRole = "";
-		$.each(data[0].masterRoleList, function(index, value){
-			masterRole += '<option value="'+ data[0].masterRoleList[index].roleName +'" >' +data[0].masterRoleList[index].roleDescription+'</option>';
+		var availableRole = "";
+		$.each(data[0].availableRoleList, function(index, value){
+			availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
 		});
-		$("#userRole").append(masterRole);		
+		$("#userRole").append(availableRole);		
 		$("#userRole").change(function(){
 			$("#userRole option[value='ROLE_USER']").attr('selected', true);
 		});
@@ -447,13 +442,13 @@ $(document).ready(function() {
 		error : function(data) {
 			unblockUI();
 			$.modal.alert(strings['script.user.saveError']);
-		}
-	});
-}
-	
-	//=======================DELETE USER DETAILS====================
+			}
+		});
+	}
+		
+		//=======================DELETE USER DETAILS====================
 	function deleteUserDetails(userId, userName, row) {
-
+	
 		$.ajax({
 			type : "GET",
 			url : 'deleteUser.do',
@@ -554,7 +549,7 @@ $(document).ready(function() {
 	}
 	
 	//----------------------------UPDATE ROW IF UPDATE SUCCESS ---------------------
-
+	
 	function updateRowValues(row) {
 		var roletag = '<small class="tag _BGCOLOR_ _CLASS_ ">_VALUE_</small>'
 		var completeRoleTagHtml = '';
@@ -578,45 +573,68 @@ $(document).ready(function() {
 		
 		/*row.find('td:eq(1) small').removeClass();
 		row.find('td:eq(1) small').addClass(statusClass);*/
+		var hasAdminRole = false;
 		$("#editUser #userRole option").each(function() {
 			if($(this).attr('selected') == true ||$(this).attr('selected')=="selected") {
-			var roleClass = 'role' + ' ' + $(this).val();
-			var roleTagTemp = roletag +'<br/>';
-			roleTagTemp = roleTagTemp.replace(/_CLASS_/g, roleClass);
-			roleTagTemp = roleTagTemp.replace(/_VALUE_/g, $(this).val());
-			
-			if($(this).val()=="ROLE_ACSI")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "blue-bg");
-			else if ($(this).val()=="ROLE_CTB")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "green-bg");
-			else if ($(this).val()=="ROLE_SCHOOL")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "anthracite-bg");
-			else if ($(this).val()=="ROLE_CLASS")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");	
-			else if ($(this).val()=="ROLE_PARENT")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
-			else if ($(this).val()=="ROLE_ADMIN")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
-			else if ($(this).val()=="ROLE_USER")
-			roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "black-bg");
-			
-			completeRoleTagHtml = completeRoleTagHtml + roleTagTemp;
-			
+				var tokens = $(this).val().split("_");
+				if (tokens[1] == "ADMIN") {
+					hasAdminRole = true;
+				}
 			}
 		});
-		
+		if(hasAdminRole == false) {
+			$("#editUser #userRole option").each(function() {
+				if($(this).attr('selected') == true ||$(this).attr('selected')=="selected") {
+				var roleClass = 'role' + ' ' + $(this).val();
+				var roleTagTemp = roletag +'<br/>';
+				roleTagTemp = roleTagTemp.replace(/_CLASS_/g, roleClass);
+				roleTagTemp = roleTagTemp.replace(/_VALUE_/g, $(this).text());
+				
+				if($(this).val()=="ROLE_ACSI")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "blue-bg");
+				else if ($(this).val()=="ROLE_CTB")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "green-bg");
+				else if ($(this).val()=="ROLE_SCHOOL")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "anthracite-bg");
+				else if ($(this).val()=="ROLE_CLASS")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");	
+				else if ($(this).val()=="ROLE_PARENT")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
+				else if ($(this).val()=="ROLE_ADMIN")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
+				else if ($(this).val()=="ROLE_USER")
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "black-bg");
+				
+				completeRoleTagHtml = completeRoleTagHtml + roleTagTemp;
+				
+				}
+			});
+		} else {
+			$("#editUser #userRole option").each(function() {
+				if($(this).attr('selected') == true ||$(this).attr('selected')=="selected") {
+					if ($(this).val()=="ROLE_ADMIN") {
+						var roleClass = 'role' + ' ' + $(this).val();
+						var roleTagTemp = roletag +'<br/>';
+						roleTagTemp = roleTagTemp.replace(/_CLASS_/g, roleClass);
+						roleTagTemp = roleTagTemp.replace(/_VALUE_/g, $(this).text());
+						roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
+						completeRoleTagHtml = completeRoleTagHtml + roleTagTemp;
+					}
+				}
+			});
+		}
 		row.find('.roleContainerForUsers').html(completeRoleTagHtml);
+			
+			
+			
+	  }
 		
-		
-		
-  }
-	
 	//----------------------------DELETE THE ROW IF THE DATA IS DELETED SUCCESSFULLY ---------------------
-
+	
 	function deleteRowValues(row) {
 		row.closest("tr").remove();
 	}	
-  	//----------------------------Resetting Modal Form---------------------
+	//----------------------------Resetting Modal Form---------------------
 	
 	function resetModalForm(formId)
 	{
@@ -635,22 +653,22 @@ $(document).ready(function() {
 	//------ auto completing the search field
 	$("#searchUser").autocomplete({
 		source: function(request, response) {
-            $.ajax({
-                url: "searchUserAutoComplete.do",
-                cache:false,
-                dataType: "json",
-                data: {
-                    term : request.term,
-                    selectedOrg : $("a.jstree-clicked").parent().attr("id"),
-                    AdminYear : $("#AdminYear").val(),
-                    purpose : $('#purpose').val(),
-                    eduCenterId : $('#eduCenterId').val()
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
+	        $.ajax({
+	            url: "searchUserAutoComplete.do",
+	            cache:false,
+	            dataType: "json",
+	            data: {
+	                term : request.term,
+	                selectedOrg : $("a.jstree-clicked").parent().attr("id"),
+	                AdminYear : $("#AdminYear").val(),
+	                purpose : $('#purpose').val(),
+	                eduCenterId : $('#eduCenterId').val()
+	            },
+	            success: function(data) {
+	                response(data);
+	            }
+	        });
+	    },
 		minLength:3,
 		position:{my:"right top",at:"right bottom"},
 		open: function(event, ui) {
@@ -703,8 +721,7 @@ $(document).ready(function() {
 			searchUser($("#searchUser").val(),'N');
 		}
 	});
-	
-	
+
 	//------------------This function searches the user with the typed user name and populates the user details in the table 
 	function searchUser(searchString,isExactSearch) {
 			blockUI();
@@ -749,4 +766,10 @@ $(document).ready(function() {
 		if($.browser.msie) $("#moreUser").addClass("disabled-ie");
 	}
 	
-	
+	function isFoundInList(value, list){
+		var isFound = false;
+		for(var i=0; i<list.length; i++) {
+			if(value == list[i].roleName) return true;
+		}
+		return isFound;
+	}

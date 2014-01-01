@@ -486,7 +486,7 @@ $(document).ready(function() {
 			var roleClass = 'role' + ' ' + $(this).val();
 			var roleTagTemp = roletag +'<br/>';
 			roleTagTemp = roleTagTemp.replace(/_CLASS_/g, roleClass);
-			roleTagTemp = roleTagTemp.replace(/_VALUE_/g, $(this).val());
+			roleTagTemp = roleTagTemp.replace(/_VALUE_/g, $(this).text());
 			
 			if($(this).val()=="ROLE_ACSI")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "blue-bg");
