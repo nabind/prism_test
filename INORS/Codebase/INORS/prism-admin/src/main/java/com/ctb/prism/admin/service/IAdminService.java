@@ -18,69 +18,271 @@ import com.ctb.prism.core.exception.SystemException;
 
 public interface IAdminService {
 
-	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid)
-			throws Exception;
-	
-	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String,Object> paramMap)
-			throws Exception;
+	/**
+	 * @param nodeid
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid) throws Exception;
 
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid,String currorg, String adminYear, String searchParam,String customerid)
-			throws Exception;
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String, Object> paramMap) throws Exception;
 
-	public UserTO getEditUserData(Map<String,Object> paramMap) throws Exception;
+	/**
+	 * @param nodeid
+	 * @param currorg
+	 * @param adminYear
+	 * @param searchParam
+	 * @param customerid
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid) throws Exception;
 
-	public boolean updateUser(String Id, String userId, String userName,
-			String emailId, String password, String userStatus,
-			String[] userRoles) throws BusinessException, Exception;
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public UserTO getEditUserData(Map<String, Object> paramMap) throws Exception;
 
-	public boolean deleteUser(Map<String,Object> paramMap)
-			throws Exception;
+	/**
+	 * @param Id
+	 * @param userId
+	 * @param userName
+	 * @param emailId
+	 * @param password
+	 * @param userStatus
+	 * @param userRoles
+	 * @return
+	 * @throws BusinessException
+	 * @throws Exception
+	 */
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception;
 
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean deleteUser(Map<String, Object> paramMap) throws Exception;
+
+	/**
+	 * @param orgLevel
+	 * @param customerId
+	 * @return
+	 */
 	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId);
 
-	public UserTO addNewUser(Map<String,Object> paramMap) throws BusinessException, Exception;
-	
-	public ArrayList <UserTO> searchUser(String userName, String parentId, String adminYear,String isExactSearch);
-	
-	public List<EduCenterTO> searchEduUser(Map<String,Object> paramMap);
-	
-	public String searchUserAutoComplete(Map<String,Object> paramMap);
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws BusinessException
+	 * @throws Exception
+	 */
+	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception;
 
+	/**
+	 * @param userName
+	 * @param parentId
+	 * @param adminYear
+	 * @param isExactSearch
+	 * @return
+	 */
+	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public List<EduCenterTO> searchEduUser(Map<String, Object> paramMap);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String searchUserAutoComplete(Map<String, Object> paramMap);
+
+	/**
+	 * @param tenantId
+	 * @param adminYear
+	 * @param customerId
+	 * @return
+	 */
 	public List<OrgTO> getOrganizationList(String tenantId, String adminYear, long customerId);
 
+	/**
+	 * @param parentTenantId
+	 * @param adminYear
+	 * @param searchParam
+	 * @param customerId
+	 * @return
+	 */
 	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId);
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId);
-	
 
+	/**
+	 * @param tenantId
+	 * @param adminYear
+	 * @param customerId
+	 * @return
+	 */
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId);
+
+	/**
+	 * @param orgName
+	 * @param tenantId
+	 * @param adminYear
+	 * @param customerId
+	 * @return
+	 */
 	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId);
 
+	/**
+	 * @param orgName
+	 * @param tenantId
+	 * @param adminYear
+	 * @param customerId
+	 * @return
+	 */
 	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId);
 
+	/**
+	 * @param roleId
+	 * @param userName
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean associateUserToRole(String roleId, String userName) throws Exception;
+
+	/**
+	 * @param roleId
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean deleteUserFromRole(String roleId, String userId) throws Exception;
+
+	/**
+	 * @param roleId
+	 * @param roleName
+	 * @param roleDescription
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean saveRole(String roleId, String roleName, String roleDescription) throws Exception;
+
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public ArrayList<RoleTO> getRoleDetails() throws Exception;
 
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid)
-			throws Exception;
+	/**
+	 * @param roleid
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception;
 
+	/**
+	 * @param roleid
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean deleteRole(String roleid) throws Exception;
 
+	/**
+	 * @param roleid
+	 * @return
+	 * @throws Exception
+	 */
 	public RoleTO getRoleDetailsById(String roleid) throws Exception;
-	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String,Object> paramMap) throws Exception;
-	public ArrayList<OrgTreeTO> getOrgTree(Map<String,Object> paramMap) throws Exception;
-	public String getOrganizationTreeOnRedirect(String selectedOrgId,String parentOrgId,String userId,long customerId, boolean isRedirected) throws Exception;
-	
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception;
+
+	/**
+	 * @param selectedOrgId
+	 * @param parentOrgId
+	 * @param userId
+	 * @param customerId
+	 * @param isRedirected
+	 * @return
+	 * @throws Exception
+	 */
+	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception;
+
+	/**
+	 * @param userName
+	 * @return
+	 * @throws Exception
+	 */
 	public String resetPassword(String userName) throws Exception;
-	
+
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public List<ObjectValueTO> getAllAdmin() throws Exception;
+
+	/**
+	 * @param stgOrgTO
+	 * @return
+	 */
 	public String addOrganization(StgOrgTO stgOrgTO);
+
+	/**
+	 * @param adminYear
+	 * @param nodeId
+	 * @param customerId
+	 * @param gradeId
+	 * @return
+	 */
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId);
-	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap)throws Exception;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap) throws Exception;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
 	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
-	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException;
-	
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException;
+
 	/**
 	 * This method returns the user data
 	 * 
@@ -88,6 +290,11 @@ public interface IAdminService {
 	 * @return
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap);
-	
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)throws BusinessException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws BusinessException
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String, Object> paramMap) throws BusinessException;
 }
