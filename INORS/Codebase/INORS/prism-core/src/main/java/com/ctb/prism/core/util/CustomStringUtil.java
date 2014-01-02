@@ -2,8 +2,18 @@ package com.ctb.prism.core.util;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class contains various utility methods for String manipulation.
+ * 
+ * @author TCS
+ * 
+ */
 public class CustomStringUtil {
 
+	/**
+	 * @param value
+	 * @return
+	 */
 	public static String manageString(String value) {
 		if (value.length() > 18) {
 			value = value.substring(0, 15) + "...";
@@ -11,6 +21,10 @@ public class CustomStringUtil {
 		return value;
 	}
 
+	/**
+	 * @param someString
+	 * @return
+	 */
 	public static String capitalizeFirstCharacter(String someString) {
 		if (someString == null)
 			return null;
@@ -22,6 +36,10 @@ public class CustomStringUtil {
 		return buf.toString();
 	}
 
+	/**
+	 * @param strings
+	 * @return
+	 */
 	public static String appendString(String... strings) {
 		StringBuffer buf = new StringBuffer();
 		for (String n : strings) {
@@ -30,12 +48,20 @@ public class CustomStringUtil {
 		return buf.toString();
 	}
 
+	/**
+	 * @param input
+	 * @return
+	 */
 	public static String escapeQuote(String input) {
 		if (input == null)
 			return null;
 		return input.replaceAll("\"", "'");
 	}
 
+	/**
+	 * @param inputControlId
+	 * @return
+	 */
 	public static String getJasperParameterString(String inputControlId) {
 		return CustomStringUtil.appendString("$P{", inputControlId, "}");
 	}
@@ -44,12 +70,14 @@ public class CustomStringUtil {
 	 * Replaces all occurrences of a sub-string in a string.
 	 * 
 	 * @param text
-	 *            The string where it will replace <code>oldsub</code> with
-	 *            <code>newsub</code>.
+	 *            The string where it will replace <code>oldsub</code> with <code>newsub</code>.
+	 * @param oldsub
+	 * @param newsub
+	 * @param caseInsensitive
+	 * @param firstOnly
 	 * @return String The string after the replacements.
 	 */
-	public static String replace(String text, String oldsub, String newsub,
-			boolean caseInsensitive, boolean firstOnly) {
+	public static String replace(String text, String oldsub, String newsub, boolean caseInsensitive, boolean firstOnly) {
 		StringBuffer buf;
 		int tln;
 		int oln = oldsub.length();
@@ -118,12 +146,8 @@ public class CustomStringUtil {
 	 * @return
 	 */
 	public static String getHMSTimeFormat(long millis) {
-		String hms = String.format(
-			"%02d:%02d:%02d",
-			TimeUnit.MILLISECONDS.toHours(millis),
-			TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-			TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-		);
+		String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+				TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 		return hms;
 	}
 }

@@ -83,8 +83,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates a zip byte array from a byte array. The zip byte array can be
-	 * used to create a zip file.
+	 * Creates a zip byte array from a byte array. The zip byte array can be used to create a zip file.
 	 * 
 	 * @param filename
 	 * @param input
@@ -105,12 +104,11 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates a xlsx byte array from a byte array. The xlsx byte array can be
-	 * used to create an Excel Microsoft Office Open XML Format Spreadsheet
-	 * file.
+	 * Creates a xlsx byte array from a byte array. The xlsx byte array can be used to create an Excel Microsoft Office Open XML Format Spreadsheet file.
 	 * 
 	 * @param input
 	 * @param delimiter
+	 * @param headerStyle
 	 * @return
 	 */
 	public static byte[] xlsxBytes(byte[] input, String delimiter, boolean headerStyle) {
@@ -169,8 +167,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * This method is responsible for setting header font, bold, color,
-	 * background.
+	 * This method is responsible for setting header font, bold, color, background.
 	 * 
 	 * @param workBook
 	 * @return
