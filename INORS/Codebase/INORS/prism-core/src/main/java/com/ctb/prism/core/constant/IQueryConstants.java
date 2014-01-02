@@ -26,7 +26,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" join DASH_MENU_RPT_ACCESS DMRA on DR.DB_REPORTID=DMRA.DB_REPORTID ",
 			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID ",
 			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID ",
-			" where DR.DB_REPORTID= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
+			" where DR.DB_REPORTID= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
 	
 	
 	// query to retrieve tenant id for a particular username

@@ -1246,7 +1246,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
 		
 		String systemConfig = "";
-		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_MORE_INFO,REPORT_ID,MESSAGE_NAME);
+		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_MORE_INFO,REPORT_ID,MESSAGE_TYPE,MESSAGE_NAME);
 		
 			if(!lstData.isEmpty()){
 				for (Map<String, Object> fieldDetails : lstData) {
