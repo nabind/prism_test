@@ -182,8 +182,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Returns the organizationList to create a tree structure on redirecting
-	 * from manage organozations page while clicked on the number of usres .
+	 * Returns the organizationList to create a tree structure on redirecting from manage organozations page while clicked on the number of usres .
 	 * 
 	 * 
 	 * @param nodeid
@@ -212,8 +211,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Returns the organizationList to create a tree structure. for manage
-	 * organizations
+	 * Returns the organizationList to create a tree structure. for manage organizations
 	 * 
 	 * @param nodeid
 	 * @return
@@ -548,7 +546,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			String Id = (String) paramMap.get("Id");
 			String userName = (String) paramMap.get("userName");
 			String purpose = (String) paramMap.get("purpose");
-
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_ANSWER_DATA, Id);
 
 			// delete the roles assigned to the user from user_role table
@@ -569,12 +566,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapManager.deleteUser(userName, userName, userName);
 			}
-
 			// } else {
-
 			// return false;
 			// }
-
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while deleting user details.", e);
 			throw new Exception(e);
@@ -582,13 +576,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	/**
-	 * add new user
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param String
-	 *            userId, String tenantId, String userName, String emailId,
-	 *            String password, String userStatus, String[] userRoles
-	 * @return UserTO
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#addNewUser(java.util.Map)
 	 */
 	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
@@ -605,7 +596,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String adminYear = (String) paramMap.get("adminYear");
 		String[] userRoles = (String[]) paramMap.get("userRoles");
 		String purpose = (String) paramMap.get("purpose");
-
 		try {
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				// As discussed,no need to handle edu_center_user for
@@ -619,10 +609,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							if (user_seq_id != 0) {
 								getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER, user_seq_id, userName, userDisplayName, emailId, userStatus, IApplicationConstants.FLAG_Y,
 										IApplicationConstants.FLAG_Y, customerId);
-
 								long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
 								getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER, orgUserSeqId, user_seq_id, tenantId, orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
-
 								if (userRoles != null) {
 									getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
 									for (String role : userRoles) {
@@ -667,10 +655,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 						if (userRoles != null) {
 							/*
-							 * getJdbcTemplatePrism().update(
-							 * IQueryConstants.INSERT_USER_ROLE,
-							 * IApplicationConstants.DEFAULT_USER_ROLE,
-							 * user_seq_id);
+							 * getJdbcTemplatePrism().update( IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
 							 */
 							for (String role : userRoles) {
 								getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, user_seq_id);
@@ -693,8 +678,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Searches and returns the users(s) with given name (like operator).
-	 * Performs case insensitive searching.
+	 * Searches and returns the users(s) with given name (like operator). Performs case insensitive searching.
 	 * 
 	 * @param userName
 	 *            Search String treated as organization name
@@ -703,20 +687,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public ArrayList<UserTO> searchUser(String userName, String tenantId, String adminYear, String isExactSearch) {
-
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
 		List<Map<String, Object>> userslist = null;
-
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
 			userName = CustomStringUtil.appendString("%", userName, "%");
 			// List<OrgTO> orgList = null;
 			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, tenantId, userName, userName, userName, adminYear, "15");
 		} else {
 			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT, tenantId, userName, adminYear, "15");
-
 		}
-
 		if (userslist.size() > 0) {
 			UserTOs = new ArrayList<UserTO>();
 			for (Map<String, Object> fieldDetails : userslist) {
@@ -725,8 +705,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
 				to.setUserId(userId);
 				/*
-				 * to.setUserId(((BigDecimal) fieldDetails.get("USER_ID"))
-				 * .longValue());
+				 * to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")) .longValue());
 				 */
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
@@ -738,8 +717,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				try {
 					to.setLoggedInOrgId(Long.parseLong(tenantId));
 				} catch (NumberFormatException e) {
+					// TODO : ??
 				}
-
 				// fetching role for each users
 				if ((String.valueOf(userId) != null) && ((String) (fieldDetails.get("USERNAME")) != null)) {
 					List<Map<String, Object>> roleList = null;
@@ -751,24 +730,19 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							RoleTO rleTo = new RoleTO();
 							rleTo.setRoleId(((BigDecimal) roleDetails.get("ROLEID")).longValue());
 							rleTo.setRoleName((String) (roleDetails.get("ROLE_NAME")));
-
 							RoleTOs.add(rleTo);
 						}
 						to.setAvailableRoleList(RoleTOs);
 					}
-
 				}
-
 				UserTOs.add(to);
 			}
 		}
-
 		return UserTOs;
 	}
 
 	/**
-	 * Searches and returns the education users(s) with given name (like
-	 * operator). Performs case insensitive searching.
+	 * Searches and returns the education users(s) with given name (like operator). Performs case insensitive searching.
 	 * 
 	 * @param userName
 	 *            Search String treated as organization name
@@ -781,7 +755,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String userName = (String) paramMap.get("userName");
 		String tenantId = (String) paramMap.get("tenantId");
 		String isExactSearch = (String) paramMap.get("isExactSearch");
-
 		List<EduCenterTO> eduCenterTOList = null;
 		@SuppressWarnings("rawtypes")
 		List placeHolderValueList = new ArrayList();
@@ -805,9 +778,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Searches and returns the user names(use like operator) as a JSON string.
-	 * Performs case insensitive searching. This method is used to perform auto
-	 * complete in search box.
+	 * Searches and returns the user names(use like operator) as a JSON string. Performs case insensitive searching. This method is used to perform auto complete in search box.
 	 * 
 	 * @param userName
 	 *            Search String treated as organization name
@@ -815,22 +786,18 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            parentId of the logged in user
 	 */
 	public String searchUserAutoComplete(Map<String, Object> paramMap) {
-
 		String userName = (String) paramMap.get("term");
 		String tenantId = (String) paramMap.get("selectedOrg");
 		String adminYear = (String) paramMap.get("adminYear");
 		String purpose = (String) paramMap.get("purpose");
-
 		userName = CustomStringUtil.appendString("%", userName, "%");
 		String userListJsonString = null;
 		List<Map<String, Object>> listOfUser = null;
-
 		if (IApplicationConstants.PURPOSE.equals(purpose)) {
 			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, "100");
 		} else {
 			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, tenantId, userName, userName, userName, adminYear, "100");
 		}
-
 		if (listOfUser != null && listOfUser.size() > 0) {
 			userListJsonString = "[";
 			for (Map<String, Object> data : listOfUser) {
@@ -851,10 +818,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	public List<OrgTO> getOrganizationList(String tenantId, String adminYear, long customerId) {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getOrganizationList");
-
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_LIST, tenantId, tenantId, adminYear, customerId, tenantId, adminYear, customerId);
 		List<OrgTO> orgList = getOrgList(lstData, adminYear);
-
 		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getOrganizationList");
 		return orgList;
 	}
@@ -873,7 +838,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String orgId = "";
 		List<OrgTO> orgList = null;
 		List<Map<String, Object>> lstData = null;
-
 		if (nodeId.indexOf("_") > 0) {
 			orgId = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
 			parentTenantId = nodeId.substring(0, nodeId.indexOf("_"));
@@ -892,7 +856,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			orgList = getOrgList(lstData, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
-
 		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getOrganizationChildren");
 		return orgList;
 	}
@@ -940,14 +903,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			orgTO = new OrgTO();
 			orgTO.setNoOfUsers(((BigDecimal) userCount.get("USER_NO")).longValue());
 			orgTO.setAdminName((String) userCount.get("ADMIN_NAME"));
-
 		}
 		return orgTO;
 	}
 
 	/**
-	 * Searches and returns the organization(s) with given name (like operator).
-	 * Performs case insensitive searching.
+	 * Searches and returns the organization(s) with given name (like operator). Performs case insensitive searching.
 	 * 
 	 * @param orgName
 	 *            Search String treated as organization name
@@ -968,7 +929,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				orgTO.setNoOfChildOrgs(Long.valueOf(data.get("CHILD_ORG_NO").toString()));
 				// orgTO.setNoOfUsers(((BigDecimal)
 				// data.get("USER_NO")).longValue());
-
 				orgList.add(orgTO);
 			}
 		}
@@ -976,9 +936,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Searches and returns the organization names(use like operator) as a JSON
-	 * string. Performs case insensitive searching. This method is used to
-	 * perform auto complete in search box.
+	 * Searches and returns the organization names(use like operator) as a JSON string. Performs case insensitive searching. This method is used to perform auto complete in search box.
 	 * 
 	 * @param orgName
 	 *            Search String treated as organization name
@@ -1132,13 +1090,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	/**
-	 * Associate user for that role in database through associate button in edit
-	 * role popup screen
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param roleName
-	 * @param roleDescription
-	 * @param roleId
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#associateUserToRole(java.lang.String, java.lang.String)
 	 */
 	public boolean associateUserToRole(String roleId, String userName) {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - associateUserToRole");
@@ -1154,12 +1109,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	/**
-	 * Delete user for that role in database through delete button in edit role
-	 * popup screen
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param roleId
-	 * @param userId
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#deleteUserFromRole(java.lang.String, java.lang.String)
 	 */
 	public boolean deleteUserFromRole(String roleId, String userId) {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - deleteUserFromRole");
@@ -1175,13 +1128,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	/**
-	 * Updates the particular role information in database through save button
-	 * in edit role popup screen
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param roleName
-	 * @param roleDescription
-	 * @param roleId
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#saveRole(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean saveRole(String roleId, String roleName, String roleDescription) {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - updateRole");
@@ -1197,14 +1147,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	/**
-	 * Reset the user password into ldap/dao
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param userName
-	 * @return password
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#resetPassword(java.lang.String)
 	 */
 	public String resetPassword(String userName) throws Exception {
-
 		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 			boolean isUpdated = ldapManager.updateUser(userName, userName, userName, password);
@@ -1222,12 +1170,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		}
 	}
 
-	/**
-	 * get user list for selected role
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param role
-	 *            id
-	 * @return List of users
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllAdmin()
 	 */
 	@Cacheable(cacheName = "allAdminYear")
 	public List<ObjectValueTO> getAllAdmin() throws SystemException {
@@ -1247,7 +1193,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/*
-	 * Add organization by web service
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#addOrganization(com.ctb.prism.admin.transferobject.StgOrgTO)
 	 */
 	public String addOrganization(StgOrgTO stgOrgTO) {
 		BufferedReader read = null;
@@ -1255,7 +1203,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		int isInserted = getJdbcTemplatePrism().update(IOrgQuery.INSERT_STG_ORG_NODE, stgOrgTO.getOrgNodeId(), stgOrgTO.getOrgNodeName(), stgOrgTO.getOrgNodeCode(), stgOrgTO.getOrgNodeLevel(),
 				stgOrgTO.getStrucElement(), stgOrgTO.getSpecialCodes(), stgOrgTO.getOrgMode(), stgOrgTO.getParentOrgNodeId(), stgOrgTO.getOrgNodeCodePath(), stgOrgTO.getEmail(),
 				stgOrgTO.getAdminId(), stgOrgTO.getCustomerId());
-
 		if (isInserted > 0) {
 			try {
 				System.out.println("Before Proc Call");
@@ -1267,7 +1214,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				File file = new File("/home/prism");
 				String[] commands = new String[] { "/bin/bash", "CallInformatica.sh" };
 				Process proc = Runtime.getRuntime().exec(commands, null, file);
-
 				System.out.println("After Proc Call");
 				read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				try {
@@ -1298,8 +1244,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return b.getString("soad.acknowledgement.AddOrgFailure");
 	}
 
-	/**
-	 * Get list of students for a leaf nodes
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllStudents(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Cacheable(cacheName = "studentsForDownload")
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId) {
@@ -1318,16 +1266,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return studentList;
 	}
 
-	/**
-	 * Returns the organizationList to create a tree structure.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param nodeid
-	 * @return
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getHierarchy(java.util.Map)
 	 */
 	@Cacheable(cacheName = "hierarchyForDownload")
 	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap) throws Exception {
-		// String nodeid, String adminYear, long customerId, String
-		// selectedLevelOrgId
 		String nodeId = (String) paramMap.get("nodeid");
 		String currOrg = (String) paramMap.get("currOrg");
 		boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
@@ -1348,10 +1293,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if ("-1".equals(selectedLevelOrgId)) {
 			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgMode, nodeId, customerId);
 		} else {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, nodeId, selectedLevelOrgId, /*
-																																	 * adminYear
-																																	 * ,
-																																	 */customerId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, nodeId, selectedLevelOrgId, customerId);
 		}
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
@@ -1373,31 +1315,27 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return OrgTreeTOs;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#downloadStudentFile(java.util.Map)
+	 */
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - downloadStudentFile()");
 		String userId = (String) paramMap.get("userId");
 		String startDate = (String) paramMap.get("startDate");
 		String endDate = (String) paramMap.get("endDate");
-
 		SimpleDateFormat sdf = new SimpleDateFormat(StudentDataConstants.DATE_FORMAT);
 		Date today = new Date();
-
 		if ((startDate == null) || (startDate.equals("null")) || (startDate.length() < 1)) {
 			startDate = StudentDataConstants.MINUS_INFINITY_DATE;
 		}
 		if ((endDate == null) || (endDate.equals("null")) || (endDate.length() < 1)) {
 			endDate = sdf.format(today);
 		}
-		// startDate = CustomStringUtil.appendString("'", startDate, "'");
-		// endDate = CustomStringUtil.appendString("'", endDate, "'");
 		logger.log(IAppLogger.INFO, "userId=" + userId + ",startString=" + startDate + ",endString=" + endDate);
-
 		List<StudentDataTO> studentDataList = new ArrayList<StudentDataTO>();
-		List<Map<String, Object>> studentSSFDataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DATA, userId, /* "01/01/1900" */
-		startDate, /* "10/31/2013 */endDate);
-		// List<Map<String, Object>> studentSSFDataList =
-		// getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DATA,
-		// userId, userId, startDate, endDate, startDate, endDate);
+		List<Map<String, Object>> studentSSFDataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DATA, userId, startDate, endDate);
 		if (!studentSSFDataList.isEmpty()) {
 			for (Map<String, Object> fieldDetails : studentSSFDataList) {
 				StudentDataTO s = new StudentDataTO();
@@ -1894,12 +1832,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return studentDataList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEducationCenter(java.util.Map)
+	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getEducationCenter()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
 		List placeHolderValueList = new ArrayList();
-
 		try {
 			if (IApplicationConstants.SS_FLAG.equals(loggedinUserTO.getUserStatus())) {
 				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
@@ -1920,6 +1862,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return objectValueTOList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#loadEduCenterUsers(java.util.Map)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {
 
@@ -1946,7 +1893,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					placeHolderValueList.add(userName);
 					placeHolderValueList.add(searchParam);
 					placeHolderValueList.add(IApplicationConstants.RECORD_PER_PAGE);
-					eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL_SEARCH, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+					eduCenterTOList = getJdbcTemplatePrism()
+							.query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL_SEARCH, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
 				} else {
 					placeHolderValueList.add(loggedinUserTO.getCustomerId());
 					placeHolderValueList.add(eduCenterId);
@@ -2001,8 +1949,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/**
-	 * Appends the label before each role. If the role contains "ADMIN" then
-	 * only one role is returned.
+	 * Appends the label before each role. If the role contains "ADMIN" then only one role is returned.
 	 * 
 	 * @param label
 	 * @param userRoles
