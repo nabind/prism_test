@@ -6,11 +6,26 @@ import java.util.Map;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
+/**
+ * @author TCS
+ * 
+ */
 public interface IInorsService {
+	/**
+	 * @param jobId
+	 */
 	public void batchPDFDownload(String jobId);
 
+	/**
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO);
 
+	/**
+	 * @param jobId
+	 * @return
+	 */
 	public BulkDownloadTO getJob(String jobId);
 
 	/**

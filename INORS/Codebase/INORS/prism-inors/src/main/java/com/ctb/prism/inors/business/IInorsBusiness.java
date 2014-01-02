@@ -6,19 +6,56 @@ import java.util.Map;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
+/**
+ * @author TCS
+ * 
+ */
 public interface IInorsBusiness {
+	/**
+	 * Create a new job.
+	 * 
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO);
 
+	/**
+	 * Get job details.
+	 * 
+	 * @param jobId
+	 * @return
+	 */
 	public BulkDownloadTO getJob(String jobId);
 
+	/**
+	 * Method to download batch PDF in asynchronous mode.
+	 * 
+	 * @param jobId
+	 */
 	public void batchPDFDownload(String jobId);
 
+	/**
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO updateStatus(BulkDownloadTO bulkDownloadTO);
 
+	/**
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO updateJobLog(BulkDownloadTO bulkDownloadTO);
 
+	/**
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO);
 
+	/**
+	 * @param bulkDownloadTO
+	 * @return
+	 */
 	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO);
 
 	/**

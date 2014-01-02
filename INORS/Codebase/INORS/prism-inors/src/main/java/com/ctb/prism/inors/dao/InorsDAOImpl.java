@@ -25,102 +25,77 @@ import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
-import com.ctb.prism.inors.transferobject.ObjectValueTO;
 
 /**
- * This class is responsible for reading and writing to database.
- * The transactions through this class should be related to report only.
+ * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
+ * 
+ * @author TCS
+ * 
  */
 @Repository("inorsDAO")
 public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDAOImpl.class.getName());
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#createJob(com.ctb.prism.inors.
-	 * transferobject.BulkDownloadTO)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#createJob(com.ctb.prism.inors. transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO) {
 		long jobId = getJdbcTemplatePrism().queryForLong(IQueryConstants.JOB_SEQ_ID);
-		getJdbcTemplatePrism().update(IQueryConstants.CREATE_JOB, 
-				jobId,
-				bulkDownloadTO.getFileName(),
-				bulkDownloadTO.getQuerysheetFile(),
-				bulkDownloadTO.getUdatedBy(),
-				bulkDownloadTO.getSelectedNodes(),
-				bulkDownloadTO.getStudentCount(),
-				bulkDownloadTO.getEmail(),
-				bulkDownloadTO.getReportUrl(),
-				bulkDownloadTO.getTestAdministration(),
-				bulkDownloadTO.getCustomerId(),
-				bulkDownloadTO.getGrade(),
-				bulkDownloadTO.getRequestType(),
-				bulkDownloadTO.getGroupFile(),
-				bulkDownloadTO.getCollationHierarchy(),
+		getJdbcTemplatePrism().update(IQueryConstants.CREATE_JOB, jobId, bulkDownloadTO.getFileName(), bulkDownloadTO.getQuerysheetFile(), bulkDownloadTO.getUdatedBy(),
+				bulkDownloadTO.getSelectedNodes(), bulkDownloadTO.getStudentCount(), bulkDownloadTO.getEmail(), bulkDownloadTO.getReportUrl(), bulkDownloadTO.getTestAdministration(),
+				bulkDownloadTO.getCustomerId(), bulkDownloadTO.getGrade(), bulkDownloadTO.getRequestType(), bulkDownloadTO.getGroupFile(), bulkDownloadTO.getCollationHierarchy(),
 				bulkDownloadTO.getDownloadMode());
-		bulkDownloadTO.setJobId(jobId);	
+		bulkDownloadTO.setJobId(jobId);
 		return bulkDownloadTO;
-	} 
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateStatus(com.ctb.prism.inors.
-	 * transferobject.BulkDownloadTO)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateStatus(com.ctb.prism.inors. transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO updateStatus(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS, 
-				bulkDownloadTO.getStatus(),
-				bulkDownloadTO.getJobId());
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS, bulkDownloadTO.getStatus(), bulkDownloadTO.getJobId());
 		bulkDownloadTO.setDbStatus(true);
 		return bulkDownloadTO;
-	} 
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJobLog(com.ctb.prism.inors.
-	 * transferobject.BulkDownloadTO)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJobLog(com.ctb.prism.inors. transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO updateJobLog(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_LOG, 
-				bulkDownloadTO.getLog(),
-				bulkDownloadTO.getJobId());
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_LOG, bulkDownloadTO.getLog(), bulkDownloadTO.getJobId());
 		bulkDownloadTO.setDbStatus(true);
 		return bulkDownloadTO;
-	} 
-	
-	
-	/* (non-Javadoc)
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJobStatusAnsLog(com.ctb.prism.inors.transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS_AND_LOG, 
-				bulkDownloadTO.getStatus(),
-				bulkDownloadTO.getLog(),
-				bulkDownloadTO.getJobId());
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS_AND_LOG, bulkDownloadTO.getStatus(), bulkDownloadTO.getLog(), bulkDownloadTO.getJobId());
 		bulkDownloadTO.setDbStatus(true);
 		return bulkDownloadTO;
-	} 
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJob(com.ctb.prism.inors.
-	 * transferobject.BulkDownloadTO)
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJob(com.ctb.prism.inors. transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, 
-				bulkDownloadTO.getStatus(),
-				bulkDownloadTO.getFileLocation(),
-				bulkDownloadTO.getFileSize(),
-				bulkDownloadTO.getLog(),
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, bulkDownloadTO.getStatus(), bulkDownloadTO.getFileLocation(), bulkDownloadTO.getFileSize(), bulkDownloadTO.getLog(),
 				bulkDownloadTO.getJobId());
 		bulkDownloadTO.setDbStatus(true);
 		return bulkDownloadTO;
-	} 
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -134,7 +109,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				bulkDownloadTO = new BulkDownloadTO();
-				bulkDownloadTO.setJobId( ((BigDecimal) (fieldDetails.get("ID"))).longValue() );
+				bulkDownloadTO.setJobId(((BigDecimal) (fieldDetails.get("ID"))).longValue());
 				bulkDownloadTO.setFileName((String) (fieldDetails.get("FILE_NAME")));
 				bulkDownloadTO.setFileLocation((String) (fieldDetails.get("LOC")));
 				bulkDownloadTO.setQuerysheetFile((String) (fieldDetails.get("QSHEET")));
@@ -142,13 +117,13 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				bulkDownloadTO.setSelectedNodes((String) (fieldDetails.get("DETAILS")));
 				bulkDownloadTO.setStatus((String) (fieldDetails.get("status")));
 				bulkDownloadTO.setPercentageDone(((BigDecimal) (fieldDetails.get("PERCT"))).toString());
-				bulkDownloadTO.setRequestedDate(((java.sql.Timestamp)(fieldDetails.get("REQ_DT"))).toString());
-				bulkDownloadTO.setCompletedDate( (fieldDetails.get("COMP_DT") != null) ? ((java.sql.Timestamp)(fieldDetails.get("COMP_DT"))).toString() : null);
+				bulkDownloadTO.setRequestedDate(((java.sql.Timestamp) (fieldDetails.get("REQ_DT"))).toString());
+				bulkDownloadTO.setCompletedDate((fieldDetails.get("COMP_DT") != null) ? ((java.sql.Timestamp) (fieldDetails.get("COMP_DT"))).toString() : null);
 				bulkDownloadTO.setFileSize((String) (fieldDetails.get("SIZ")));
 				bulkDownloadTO.setEmail((String) (fieldDetails.get("email")));
 				bulkDownloadTO.setCustomerId(((BigDecimal) (fieldDetails.get("customerid"))).toString());
-				bulkDownloadTO.setGrade( (fieldDetails.get("gradeid") != null) ? ((BigDecimal) (fieldDetails.get("gradeid"))).toString() : "");
-				bulkDownloadTO.setTestAdministration( (fieldDetails.get("adminid") != null) ? ((BigDecimal) (fieldDetails.get("adminid"))).toString() : "");
+				bulkDownloadTO.setGrade((fieldDetails.get("gradeid") != null) ? ((BigDecimal) (fieldDetails.get("gradeid"))).toString() : "");
+				bulkDownloadTO.setTestAdministration((fieldDetails.get("adminid") != null) ? ((BigDecimal) (fieldDetails.get("adminid"))).toString() : "");
 				bulkDownloadTO.setReportUrl((String) (fieldDetails.get("URL")));
 				bulkDownloadTO.setRequestType((String) (fieldDetails.get("TYPE")));
 				bulkDownloadTO.setLog((String) (fieldDetails.get("log")));
@@ -198,11 +173,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	}
 
 	/**
-	 * Fetches the GRT list from the database. All field level data are wrapped
-	 * using double quotes. Field level data validations may apply to specific
-	 * field to support multiple layouts. Setter methods set valid data for that
-	 * layout to achieve better performance and to avoid multiple getter or
-	 * setter calls.
+	 * Fetches the GRT list from the database. All field level data are wrapped using double quotes. Field level data validations may apply to specific field to support multiple layouts. Setter
+	 * methods set valid data for that layout to achieve better performance and to avoid multiple getter or setter calls.
 	 * 
 	 * @param orgNodeId
 	 * @param parentOrgNodeId
@@ -213,63 +185,60 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		long t1 = System.currentTimeMillis();
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
-			if ("ALL".equals(schoolId)){
-				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(
-						new CallableStatementCreator() {
-							public CallableStatement createCallableStatement(Connection con) throws SQLException {
-								CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
-								cs.setLong(1, Long.parseLong(productId));
-								cs.setString(2, userName);
-								cs.setLong(3, Long.parseLong(districtId));
-								cs.setLong(4, Long.parseLong(testProgram));
-								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
-								return cs;
-							}
-						}, new CallableStatementCallback<Object>() {
-							public Object doInCallableStatement(CallableStatement cs) {
-								ResultSet rs = null;
-								List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
-								try {
-									cs.execute();
-									rs = (ResultSet) cs.getObject(5);
-									grtTOResult = getGrtListFromResultSet(rs);
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-								return grtTOResult;
-							}
-						});
+			if ("ALL".equals(schoolId)) {
+				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setString(2, userName);
+						cs.setLong(3, Long.parseLong(districtId));
+						cs.setLong(4, Long.parseLong(testProgram));
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(5);
+							grtTOResult = getGrtListFromResultSet(rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return grtTOResult;
+					}
+				});
 			} else {
-				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(
-					new CallableStatementCreator() {
-						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
-							cs.setLong(1, Long.parseLong(productId));
-							cs.setString(2, userName);
-							cs.setLong(3, Long.parseLong(districtId));
-							cs.setLong(4, Long.parseLong(schoolId));
-							cs.setLong(5, Long.parseLong(testProgram));
-							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
-							return cs;
+				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setString(2, userName);
+						cs.setLong(3, Long.parseLong(districtId));
+						cs.setLong(4, Long.parseLong(schoolId));
+						cs.setLong(5, Long.parseLong(testProgram));
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(6);
+							grtTOResult = getGrtListFromResultSet(rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
 						}
-					}, new CallableStatementCallback<Object>() {
-						public Object doInCallableStatement(CallableStatement cs) {
-							ResultSet rs = null;
-							List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
-							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(6);
-								grtTOResult = getGrtListFromResultSet(rs);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-							return grtTOResult;
-						}
+						return grtTOResult;
+					}
 
-						
-					});
+				});
 			}
 		} finally {
 			long t2 = System.currentTimeMillis();
@@ -325,14 +294,14 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			to.setL_ExceptionalityM(wrap(rs.getString("EXCEPTIONALITY_M"), '"'));
 			to.setL_SocioEconomicStatusN(wrap(rs.getString("SOCIOECONOMIC_STATUS_N"), '"'));
 			to.setL_Section504O(wrap(rs.getString("SECTION_504_O"), '"'));
-			to.setL_EnglishLearnerELP(wrap(rs.getString("ENGLISH_LEARNER_P"), '"')); // TODO - 
+			to.setL_EnglishLearnerELP(wrap(rs.getString("ENGLISH_LEARNER_P"), '"')); // TODO -
 			to.setL_MigrantQ(wrap(rs.getString("MIGRANT_Q"), '"'));
 			to.setL_LocaluseR(wrap(rs.getString("LOCAL_USE_R"), '"'));
 			to.setL_LocaluseS(wrap(rs.getString("LOCAL_USE_S"), '"'));
 			to.setL_LocaluseT(wrap(rs.getString("LOCAL_USE_T"), '"'));
 			to.setL_MatchUnmatchU(wrap(rs.getString("MATCH_UNMATCH_U"), '"'));
 			to.setL_DuplicateV(wrap(rs.getString("DUPLICATE_V"), '"'));
-			to.setL_CTBUseOnlyW(wrap(rs.getString("CTB_USE_ONLY_W"), '"')); // TODO - 
+			to.setL_CTBUseOnlyW(wrap(rs.getString("CTB_USE_ONLY_W"), '"')); // TODO -
 			to.setL_SpecialCodeX(wrap(rs.getString("SPECIAL_CODE_X"), '"'));
 			to.setL_SpecialCodeY(wrap(rs.getString("SPECIAL_CODE_Y"), '"'));
 			to.setL_SpecialCodeZ(wrap(rs.getString("SPECIAL_CODE_Z"), '"'));
@@ -544,15 +513,12 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	}
 
 	/**
-	 * Fetches the IC list from the database. All field level data are wrapped
-	 * using double quotes. Field level data validations may apply to specific
-	 * field to support multiple layouts. Setter methods set valid data for that
-	 * layout to achieve better performance and to avoid multiple getter or
-	 * setter calls.
+	 * Fetches the IC list from the database. All field level data are wrapped using double quotes. Field level data validations may apply to specific field to support multiple layouts. Setter methods
+	 * set valid data for that layout to achieve better performance and to avoid multiple getter or setter calls.
 	 * 
 	 * @param orgNodeId
 	 * @param year
-	 * @param year2 
+	 * @param year2
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -560,58 +526,56 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		long t1 = System.currentTimeMillis();
 		List<InvitationCodeTO> icList = null;
 		try {
-			if("ALL".equals(schoolId)){
-				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(
-						new CallableStatementCreator() {
-							public CallableStatement createCallableStatement(Connection con) throws SQLException {
-								CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
-								cs.setLong(1, Long.parseLong(productId));
-								cs.setLong(2, Long.parseLong(testProgram));
-								cs.setLong(3, Long.parseLong(districtId));
-								cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-								return cs;
-							}
-						}, new CallableStatementCallback<Object>() {
-							public Object doInCallableStatement(CallableStatement cs) {
-								ResultSet rs = null;
-								List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
-								try {
-									cs.execute();
-									rs = (ResultSet) cs.getObject(4);
-									icTOList = getICTOList(rs);
-								} catch (SQLException e) {
-									e.printStackTrace();
-								}
-								return icTOList;
-							}
-						});
+			if ("ALL".equals(schoolId)) {
+				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setLong(2, Long.parseLong(testProgram));
+						cs.setLong(3, Long.parseLong(districtId));
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(4);
+							icTOList = getICTOList(rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return icTOList;
+					}
+				});
 			} else {
-				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(
-					new CallableStatementCreator() {
-						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
-							cs.setLong(1, Long.parseLong(productId));
-							cs.setLong(2, Long.parseLong(testProgram));
-							cs.setLong(3, Long.parseLong(schoolId));
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-							return cs;
+				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setLong(2, Long.parseLong(testProgram));
+						cs.setLong(3, Long.parseLong(schoolId));
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(4);
+							icTOList = getICTOList(rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
 						}
-					}, new CallableStatementCallback<Object>() {
-						public Object doInCallableStatement(CallableStatement cs) {
-							ResultSet rs = null;
-							List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
-							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(4);
-								icTOList = getICTOList(rs);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-							return icTOList;
-						}
-					});
+						return icTOList;
+					}
+				});
 			}
 		} finally {
 			long t2 = System.currentTimeMillis();
@@ -626,7 +590,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @param rs
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	private List<InvitationCodeTO> getICTOList(ResultSet rs) throws SQLException {
 		List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
@@ -657,7 +621,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return icTOList;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getDistricts()
 	 */
 	@SuppressWarnings("unchecked")
@@ -667,53 +633,53 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		logger.log(IAppLogger.INFO, "testProgram: " + testProgram);
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> districtList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 		try {
-			districtList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
-					new CallableStatementCreator() {
-						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
-							cs.setLong(1, testProgram);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-							return cs;
+			districtList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
+					cs.setLong(1, testProgram);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(2);
+						com.ctb.prism.core.transferobject.ObjectValueTO to = null;
+						while (rs.next()) {
+							to = new com.ctb.prism.core.transferobject.ObjectValueTO();
+							to.setValue(rs.getString(1));
+							to.setName(rs.getString(2));
+							to.setOther(rs.getString(3));
+							objectValueList.add(to);
 						}
-					}, new CallableStatementCallback<Object>() {
-						public Object doInCallableStatement(CallableStatement cs) {
-							ResultSet rs = null;
-							List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(2);
-								com.ctb.prism.core.transferobject.ObjectValueTO to = null;
-								while (rs.next()) {
-									to = new com.ctb.prism.core.transferobject.ObjectValueTO();
-									to.setValue(rs.getString(1));
-									to.setName(rs.getString(2));
-									to.setOther(rs.getString(3));
-									objectValueList.add(to);
-								}
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-							return objectValueList;
-						}
-					});
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return objectValueList;
+				}
+			});
 			logger.log(IAppLogger.INFO, "Districts: " + districtList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: getDistricts() took time: " + CustomStringUtil.getHMSTimeFormat(t2 - t1));
 		}
 		return districtList;
-	
+
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#populateSchool(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap){
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
 		long t1 = System.currentTimeMillis();
 		final Long testProgram = Long.parseLong(paramMap.get("testProgram"));
@@ -722,36 +688,35 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		logger.log(IAppLogger.INFO, "districtId: " + districtId);
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 		try {
-			schoolList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
-					new CallableStatementCreator() {
-						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.GET_SCHOOLS);
-							cs.setLong(1, districtId);
-							cs.setLong(2, testProgram);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-							return cs;
+			schoolList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.GET_SCHOOLS);
+					cs.setLong(1, districtId);
+					cs.setLong(2, testProgram);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(3);
+						com.ctb.prism.core.transferobject.ObjectValueTO to = null;
+						while (rs.next()) {
+							to = new com.ctb.prism.core.transferobject.ObjectValueTO();
+							to.setValue(rs.getString("SCHOOL_ID"));
+							to.setName(rs.getString("SCHOOL_NAME"));
+							objectValueList.add(to);
 						}
-					}, new CallableStatementCallback<Object>() {
-						public Object doInCallableStatement(CallableStatement cs) {
-							ResultSet rs = null;
-							List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(3);
-								com.ctb.prism.core.transferobject.ObjectValueTO to = null;
-								while (rs.next()) {
-									to = new com.ctb.prism.core.transferobject.ObjectValueTO();
-									to.setValue(rs.getString("SCHOOL_ID"));
-									to.setName(rs.getString("SCHOOL_NAME"));
-									objectValueList.add(to);
-								}
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-							return objectValueList;
-						}
-					});
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return objectValueList;
+				}
+			});
 			logger.log(IAppLogger.INFO, "Schools: " + schoolList.size());
 		} finally {
 			long t2 = System.currentTimeMillis();
@@ -760,7 +725,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return schoolList;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getProductNameById(java.lang.Long)
 	 */
 	public String getProductNameById(Long productId) {
@@ -773,5 +740,5 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		}
 		return productName;
 	}
-	
+
 }

@@ -6,6 +6,10 @@ import java.util.Map;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
+/**
+ * @author TCS
+ *
+ */
 public interface IInorsDAO {
 
 	/**
