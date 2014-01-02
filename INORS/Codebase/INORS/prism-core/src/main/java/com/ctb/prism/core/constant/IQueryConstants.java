@@ -20,8 +20,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID ",
 			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID ",
 			" where DR.REPORT_NAME= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
+	// query to retrieve more info message dynamically
+	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE_MORE_INFO =  CustomStringUtil.appendString(
+			"select DM.REPORT_MSG as REPORT_MSG from DASH_REPORTS DR ",
+			" join DASH_MENU_RPT_ACCESS DMRA on DR.DB_REPORTID=DMRA.DB_REPORTID ",
+			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID ",
+			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID ",
+			" where DR.DB_REPORTID= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
 	
-
 	
 	// query to retrieve tenant id for a particular username
 	public static final String GET_TENANT_ID = "SELECT org_nodeid FROM users users, org_users org WHERE upper(USERNAME) = upper(?) and org.userid = users.userid and rownum = 1 ";

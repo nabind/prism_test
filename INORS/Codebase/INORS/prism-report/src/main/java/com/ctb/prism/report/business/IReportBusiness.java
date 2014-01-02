@@ -246,4 +246,6 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public String createJobTracking(GroupDownloadTO to);
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
 }

@@ -551,4 +551,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String createJobTracking(GroupDownloadTO to) {
 		return reportDAO.createJobTracking(to);
 	}
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+		return reportDAO.getSystemConfigurationMessage(paramMap);
+	}
 }

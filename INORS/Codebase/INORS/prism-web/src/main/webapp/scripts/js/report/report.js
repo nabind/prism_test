@@ -71,6 +71,13 @@ $(document).ready(function() {
 		downloadXls($(this).attr('count'), $(this).attr('param'), $(this).attr('assessment'));
 	});
 	
+	$(".moreinfo-button-xls").live("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		moreInfo($(this).attr("reportId"));
+	});
+	
 	// ============================= Remove report tab =============================
 	$(".closereport").live("click", function(e) {
 		e.stopImmediatePropagation();
@@ -1024,4 +1031,42 @@ function download(count, reportUrl, assessmentId, type) {
 	
 }
 
+function moreInfo(reportId)
+{
+	$.modal({
+		url: 'reportMoreInfo.do?reportId='+reportId,
+		useIframe: true,
+		title: 'More Info',
+		height: 550,
+		width: 500,
+		resizable: false,
+		draggable: false
+	});
+}
+
+function getfaq()
+{
+	$.modal({
+		url: 'https://inorsredteamtest.turnleaf.com/FAQ.aspx',
+		useIframe: true,
+		title: 'FAQ',
+		height: 650,
+		width: 700,
+		resizable: false,
+		draggable: false
+	});
+}
+
+function getHelp()
+{
+	$.modal({
+		url: 'http://help.turnleaf.com/INORS/wf_flashinstall.htm',
+		useIframe: true,
+		title: 'HELP',
+		height: 650,
+		width: 700,
+		resizable: false,
+		draggable: false
+	});
+}
 

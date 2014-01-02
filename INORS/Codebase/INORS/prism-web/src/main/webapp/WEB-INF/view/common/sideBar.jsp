@@ -62,6 +62,15 @@
 					<li><a href="j_spring_security_logout" title="Logout"><span class="icon-extract"></span></a></li>
 				</sec:authorize>
 			</ul>
+				
+			<ul id="access" class="children-tooltip">
+					<li>
+							<a href="Javascript:getfaq();" title="FAQ"><span class="icon-directions icon-size2"></span></a>
+					</li>
+					<li>
+							<a href="Javascript:getHelp();" title="HELP"><span class="icon-read icon-size2"></span></a>
+					</li>
+			</ul>	
 
 			<div class="" id="prismMenu">
 				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">

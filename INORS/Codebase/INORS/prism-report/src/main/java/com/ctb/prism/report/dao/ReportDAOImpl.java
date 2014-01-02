@@ -1231,4 +1231,36 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.1.pdf");
 		return filePaths;
 	}
+	
+	/**
+	 * @author Arunavo
+	 * Retrieves and returns message corresponding configured in database
+	 * @param msgtype,reportname and infoname
+	 * @return message
+	 */
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
+		long t1 = System.currentTimeMillis();
+		String MESSAGE_NAME=(String) paramMap.get("MESSAGE_NAME");
+		String REPORT_ID=(String) paramMap.get("REPORT_ID");
+		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
+		
+		String systemConfig = "";
+		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_MORE_INFO,REPORT_ID,MESSAGE_NAME);
+		
+			if(!lstData.isEmpty()){
+				for (Map<String, Object> fieldDetails : lstData) {
+					if(fieldDetails.get("REPORT_MSG")!= null || fieldDetails.get("REPORT_MSG")!="")
+					{
+						if(null!=fieldDetails.get("REPORT_MSG")){
+							systemConfig = fieldDetails.get("REPORT_MSG").toString().trim();
+						}
+					}
+			}
+		}
+			
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: "+String.valueOf(t2 - t1)+"ms");
+		return systemConfig;
+	}
 }

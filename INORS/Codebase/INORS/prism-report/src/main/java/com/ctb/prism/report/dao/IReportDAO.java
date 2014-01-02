@@ -266,4 +266,6 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public List<String> getGDFilePaths(GroupDownloadTO to);
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
 }

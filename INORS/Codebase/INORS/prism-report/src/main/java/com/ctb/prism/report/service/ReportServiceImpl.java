@@ -342,4 +342,8 @@ public class ReportServiceImpl implements IReportService {
 	public String createJobTracking(GroupDownloadTO to) {
 		return reportBusiness.createJobTracking(to);
 	}
+	
+	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+		return reportBusiness.getSystemConfigurationMessage(paramMap);
+	}
 }

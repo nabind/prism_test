@@ -2028,4 +2028,30 @@ public class ReportController extends BaseDAO {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
 		}
 	}
+	
+	/**
+	 * Arunava Datta
+	 * More Info implementation Report wise
+	 */
+	
+	//For getting the required more info data
+	@RequestMapping(value="/reportMoreInfo", method=RequestMethod.GET )
+	public ModelAndView reportMoreInfo(HttpServletRequest req, HttpServletResponse res) {
+		 logger.log(IAppLogger.INFO, "Enter: ReportController - reportMoreInfo");
+		 ModelAndView modelAndView=new ModelAndView("parent/moreInfo");
+		 try
+		 {
+		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("REPORT_ID",req.getParameter("reportId"));
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
+		  String infoMessage=reportService.getSystemConfigurationMessage(paramMap);
+		  modelAndView.addObject("infoMessage", infoMessage);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} finally {
+			logger.log(IAppLogger.INFO, "Exit: ReportController - reportMoreInfo");
+		}
+		return modelAndView;
+	}
 }
