@@ -11,7 +11,6 @@ import com.ctb.prism.webservice.transferobject.StudentListTO;
  * Dao for storing usability
  * 
  * @author d-abir_dutta
- * @author d-abir_dutta
  */
 public interface IUsabilityDAO {
 
@@ -43,8 +42,10 @@ public interface IUsabilityDAO {
 	/**
 	 * Create process for Online Staging data load
 	 * 
-	 * @param studentListTO - all web service data
-	 * @param studentDataLoadTO - contains partition name
+	 * @param studentListTO
+	 *            - all web service data
+	 * @param studentDataLoadTO
+	 *            - contains partition name
 	 * @return studentDataLoadTO - contains process name
 	 * @throws Exception
 	 */
@@ -53,18 +54,23 @@ public interface IUsabilityDAO {
 	/**
 	 * Insert org hierarchy and lst node
 	 * 
-	 * @param studentListTO - all web service data
-	 * @param studentDataLoadTO - contains partition name and process id
+	 * @param studentListTO
+	 *            - all web service data
+	 * @param studentDataLoadTO
+	 *            - contains partition name and process id
 	 * @return studentDataLoadTO - with success indicator
 	 * @throws Exception
 	 */
 	public StudentDataLoadTO insertOrgHierarchy(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
 
 	/**
+	 * Insert student BIO, SURVEY-BIO and DEMO details
 	 * 
 	 * @param studentListTO
+	 *            - all web service data
 	 * @param studentDataLoadTO
-	 * @return
+	 *            - contains partition name and process id
+	 * @return - with success indicator
 	 * @throws Exception
 	 */
 	public StudentDataLoadTO insertStudentBio(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;

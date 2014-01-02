@@ -52,23 +52,24 @@ import com.ctb.prism.webservice.transferobject.SurveyBioTO;
 /**
  * @author d-abir_dutta
  * @author Amitabha Roy
- *
+ * 
  */
 @Repository
 public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
-	
+
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityDAOImpl.class.getName());
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - saveUsabilityData");
-		
+
 		try {
-			int count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_USABILITY_LOG, 
-				usability.getReportUrl(),usability.getReportId(),usability.getReportName(),
-				usability.getUsername(),usability.getCurrentOrg());
+			int count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_USABILITY_LOG, usability.getReportUrl(), usability.getReportId(), usability.getReportName(), usability.getUsername(),
+					usability.getCurrentOrg());
 			logger.log(IAppLogger.INFO, "saveUsabilityData - count = " + count);
 			logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - saveUsabilityData");
 			return true;
@@ -78,7 +79,9 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#updateStagingData(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
 	public StudentDataLoadTO updateStagingData(final StudentListTO studentListTO, final StudentDataLoadTO studentDataLoadTO) throws Exception {
@@ -96,22 +99,21 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#updatePartition(java.lang.String)
 	 */
 	public synchronized void updatePartition(String partitionName) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - updatePartition");
-		int count = getJdbcTemplatePrism().update(
-		        IQueryConstants.UPDATE_PARTITION, 
-		        IApplicationConstants.INACTIVE_FLAG, 
-		        IApplicationConstants.ACTIVE_FLAG,
-		        partitionName
-		    );
+		int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PARTITION, IApplicationConstants.INACTIVE_FLAG, IApplicationConstants.ACTIVE_FLAG, partitionName);
 		logger.log(IAppLogger.INFO, "updatePartition - count = " + count);
 		logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - updatePartition");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#checkPartition()
 	 */
 	public synchronized String checkPartition() throws Exception {
@@ -119,16 +121,13 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_PARTITION, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
 				String partitionName = (rs.getString(1));
-				int count = getJdbcTemplatePrism().update(
-			        IQueryConstants.UPDATE_PARTITION, 
-			        IApplicationConstants.ACTIVE_FLAG, 
-			        IApplicationConstants.INACTIVE_FLAG,
-			        partitionName
-			    );
+				int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PARTITION, IApplicationConstants.ACTIVE_FLAG, IApplicationConstants.INACTIVE_FLAG, partitionName);
 				logger.log(IAppLogger.INFO, "checkPartition - count = " + count);
 				logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - checkPartition");
-				if(count > 0) return partitionName;
-				else return null;
+				if (count > 0)
+					return partitionName;
+				else
+					return null;
 			}
 		});
 	}
@@ -143,37 +142,36 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		return getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_STAGING_SEQ);
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#createProces(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
-	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO)
-			throws Exception {
+	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - createProces");
-		
+
 		long stagingSeq = getStagingSeq();
-		int count = getJdbcTemplatePrism().update(
-	        IQueryConstants.CREATE_PROCESS_STATUS, stagingSeq, studentDataLoadTO.getPartitionName()
-	    );
+		int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_PROCESS_STATUS, stagingSeq, studentDataLoadTO.getPartitionName());
 		logger.log(IAppLogger.INFO, "createProces - count = " + count);
 		studentDataLoadTO.setProcessId(stagingSeq);
 		logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - createProces");
 		return studentDataLoadTO;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#insertOrgHierarchy(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
-	public StudentDataLoadTO insertOrgHierarchy(final StudentListTO studentListTO, final StudentDataLoadTO studentDataLoadTO)
-			throws Exception {
+	public StudentDataLoadTO insertOrgHierarchy(final StudentListTO studentListTO, final StudentDataLoadTO studentDataLoadTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - insertOrgHierarchy");
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
-		for(final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
+		for (final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
 			final CustHierarchyDetailsTO custHierarchyDetailsTO = rosterDetailsTO.getCustHierarchyDetailsTO();
-			if(custHierarchyDetailsTO.isDataChanged()) {
+			if (custHierarchyDetailsTO.isDataChanged()) {
 				// create org details
 				createOrgDetails(custHierarchyDetailsTO.getCollOrgDetailsTO(), custHierarchyDetailsTO, studentDataLoadTO);
-				
+
 				// create least node hierarchy details
 				createLeastNodeHireDetails(custHierarchyDetailsTO.getCollOrgDetailsTO(), custHierarchyDetailsTO, studentDataLoadTO);
 			}
@@ -182,7 +180,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - insertOrgHierarchy");
 		return studentDataLoadTO;
 	}
-	
+
 	/**
 	 * 
 	 * @param orgDetailsList
@@ -190,7 +188,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 * @param parentOrgNodeId
 	 * @return
 	 */
-	private String getOrgNodeCodePath(List<OrgDetailsTO> orgDetailsList, String orgNodeId, String parentOrgNodeId){
+	private String getOrgNodeCodePath(List<OrgDetailsTO> orgDetailsList, String orgNodeId, String parentOrgNodeId) {
 		Collections.sort(orgDetailsList, new OrgDetailsTOComparator());
 		StringBuilder orgNodePath = new StringBuilder();
 		orgNodePath.insert(0, orgNodeId);
@@ -202,7 +200,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		orgNodePath.insert(0, "0~");
 		return orgNodePath.toString();
 	}
-	
+
 	/**
 	 * 
 	 * @param orgDetailsList
@@ -219,12 +217,12 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		}
 		return s;
 	}
-	
+
 	/**
 	 * Comparator to sort OrgDetailsTO by Parent Org Code
-	 *
+	 * 
 	 */
-	class OrgDetailsTOComparator implements Comparator<OrgDetailsTO> {
+	static class OrgDetailsTOComparator implements Comparator<OrgDetailsTO> {
 		public int compare(OrgDetailsTO first, OrgDetailsTO second) {
 			String firstParentOrgCode = first.getParentOrgCode().toUpperCase();
 			String secondParentOrgCode = second.getParentOrgCode().toUpperCase();
@@ -232,18 +230,18 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			return firstParentOrgCode.compareTo(secondParentOrgCode);
 		}
 	}
-	
+
 	/**
 	 * This method makes a list of all orgNodeId-ParentOrgNodeId pairs, both from xml and database
 	 * 
 	 * @param orgDetailsTOList
 	 * @return
 	 */
-	private List<OrgDetailsTO> getExistingOrgMap(List<OrgDetailsTO> orgDetailsTOList){
+	private List<OrgDetailsTO> getExistingOrgMap(List<OrgDetailsTO> orgDetailsTOList) {
 		OrgDetailsTO orgDetailsTO = null;
 		List<OrgDetailsTO> orgMapList = new ArrayList<OrgDetailsTO>(orgDetailsTOList);
 		List<Map<String, Object>> orgListMap = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_MAP);
-		if ((orgListMap !=null) && (!orgListMap.isEmpty())){
+		if ((orgListMap != null) && (!orgListMap.isEmpty())) {
 			for (Map<String, Object> data : orgListMap) {
 				orgDetailsTO = new OrgDetailsTO();
 				orgDetailsTO.setOrgNodeId(data.get("ORG_NODEID").toString());
@@ -277,14 +275,15 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 				ps.setString(8, orgDetailsTO.getOrgCode()); // special codes
 				ps.setString(9, "OL"); // org mode
 				ps.setString(10, orgDetailsTO.getParentOrgCode());
-				ps.setString(11, orgNodeCodePath/*orgDetailsTO.getParentOrgCode() + "~" + orgDetailsTO.getOrgCode()*/); // org node code path
+				ps.setString(11, orgNodeCodePath/* orgDetailsTO.getParentOrgCode() + "~" + orgDetailsTO.getOrgCode() */); // org node code path
 				ps.setString(12, orgDetailsTO.getOrgName()); // org tp - get from test_program for OL and cust id
-				ps.setString(13, custHierarchyDetailsTO.getCustomerId()); // customer id 
+				ps.setString(13, custHierarchyDetailsTO.getCustomerId()); // customer id
 				ps.setString(14, custHierarchyDetailsTO.getTestName()); // product id
 				ps.setLong(15, studentDataLoadTO.getProcessId());
 				ps.setString(16, studentDataLoadTO.getPartitionName());
 				ps.setLong(17, Long.parseLong(orgDetailsTO.getOrgNodeId()));
 			}
+
 			public int getBatchSize() {
 				return orgDetailsTOList.size();
 			}
@@ -301,53 +300,48 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 */
 	private void createLeastNodeHireDetails(List<OrgDetailsTO> orgDetailsTOList, CustHierarchyDetailsTO custHierarchyDetailsTO, StudentDataLoadTO studentDataLoadTO) {
 		OrgDetailsTO leastNode = null;
-		for(OrgDetailsTO orgDetailsTO : orgDetailsTOList) {
-			if((orgDetailsTO.getOrgLevel() != null) && (orgDetailsTO.getOrgLevel().equals(custHierarchyDetailsTO.getMaxHierarchy()))) {
+		for (OrgDetailsTO orgDetailsTO : orgDetailsTOList) {
+			if ((orgDetailsTO.getOrgLevel() != null) && (orgDetailsTO.getOrgLevel().equals(custHierarchyDetailsTO.getMaxHierarchy()))) {
 				leastNode = orgDetailsTO;
 				break;
 			}
 		}
 		if (leastNode != null) {
-			int count = getJdbcTemplatePrism().update(
-		        IQueryConstants.CREATE_LSTNODE_HIER_DETAILS,
-		        studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // 1 & 2
-				leastNode.getOrgName(),// 3
-				leastNode.getOrgCode(),// 4
-				leastNode.getOrgLabel(), // 5
-				leastNode.getOrgLevel(),// 6
-				leastNode.getOrgNodeId(), // org node id //7
-				studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // 8, 9
-				studentDataLoadTO.getPartitionName() // 10
-		    );
+			int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_LSTNODE_HIER_DETAILS, studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // 1 & 2
+					leastNode.getOrgName(),// 3
+					leastNode.getOrgCode(),// 4
+					leastNode.getOrgLabel(), // 5
+					leastNode.getOrgLevel(),// 6
+					leastNode.getOrgNodeId(), // org node id //7
+					studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // 8, 9
+					studentDataLoadTO.getPartitionName() // 10
+					);
 			logger.log(IAppLogger.INFO, "createLeastNodeHireDetails - count = " + count);
 		} else
 			logger.log(IAppLogger.INFO, "createLeastNodeHireDetails - skipping least node creation");
 	}
 
-	/**
-	 * Insert student BIO, SURVEY-BIO and DEMO details
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param studentListTO - all web service data
-	 * @param studentDataLoadTO - contains partition name and process id
-	 * @return studentDataLoadTO - with success indicator
+	 * @see com.ctb.prism.core.dao.IUsabilityDAO#insertStudentBio(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
 	public StudentDataLoadTO insertStudentBio(StudentListTO studentListTO, final StudentDataLoadTO studentDataLoadTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - insertStudentBio");
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
-		for(final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
+		for (final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
 			StudentDetailsTO studentDetailsTO = rosterDetailsTO.getStudentDetailsTO();
-			
+
 			// create student bio details
-			createStudentBioDetails(studentDetailsTO.getStudentBioTO(), studentDataLoadTO, rosterDetailsTO.getRosterId(),
-					rosterDetailsTO.getCustHierarchyDetailsTO());
-			
+			createStudentBioDetails(studentDetailsTO.getStudentBioTO(), studentDataLoadTO, rosterDetailsTO.getRosterId(), rosterDetailsTO.getCustHierarchyDetailsTO());
+
 			// create student demo details
 			try {
 				createStudentDemoDetails(studentDetailsTO.getStudentDemoTO(), studentDataLoadTO);
 			} catch (Exception e) {
 				logger.log(IAppLogger.ERROR, "createStudentDemoDetails - " + e.getMessage());
 			}
-			
+
 			// create survey bio details
 			try {
 				createStudentSurveyBioDetails(studentDetailsTO.getStudentSurveyBioTO(), studentDataLoadTO);
@@ -367,39 +361,38 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 * @param studentBioTO
 	 * @param studentDataLoadTO
 	 * @param rosterId
+	 * @param custHierarchyDetailsTO
 	 */
-	private void createStudentBioDetails(StudentBioTO studentBioTO, StudentDataLoadTO studentDataLoadTO
-			, String rosterId, CustHierarchyDetailsTO custHierarchyDetailsTO) {
-		if(studentBioTO.isDataChanged()) {
+	private void createStudentBioDetails(StudentBioTO studentBioTO, StudentDataLoadTO studentDataLoadTO, String rosterId, CustHierarchyDetailsTO custHierarchyDetailsTO) {
+		if (studentBioTO.isDataChanged()) {
 			long studentBioId = getStagingSeq();
-			int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_STG_BIO_DETAILS,
-					studentBioId, //1
-			        studentBioTO.getFirstName(), //2
-			        studentBioTO.getMiddleInit(), //3
-			        studentBioTO.getLastName(), //4
-			        studentBioTO.getBirthDate(), //5
-			        studentBioTO.getGender(), //6
-			        studentBioTO.getGrade(), //7
-			        null, // EDU_CENTER,", //8
-			        null, // BARCODE,", //9
-			        studentBioTO.getOasStudentId(), // SPECIAL_CODES,", //10
-			        "OL", // STUDENT_MODE,", //11
-			        studentBioTO.getOasStudentId(), // STRUC_ELEMENT,", //12
-			        rosterId, // TEST_ELEMENT_ID,", //13
-			        studentBioTO.getOasStudentId(), // INT_STUDENT_ID,", //14
-			        studentBioTO.getExamineeId(), // EXT_STUDENT_ID,", //15
-			        studentBioTO.getOasStudentId(), // LITHOCODE,", //16
-			        studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // STU_LSTNODE_HIER_ID //17 & 17.2
-			        null, // IS_BIO_UPDATE_CMPL //18
-			        studentDataLoadTO.getProcessId(), //19
-			        IApplicationConstants.FLAG_Y, //  NEED_PRISM_CONSUME //20
-			        studentDataLoadTO.getPartitionName() //21
-			    );
+			int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_STG_BIO_DETAILS, studentBioId, // 1
+					studentBioTO.getFirstName(), // 2
+					studentBioTO.getMiddleInit(), // 3
+					studentBioTO.getLastName(), // 4
+					studentBioTO.getBirthDate(), // 5
+					studentBioTO.getGender(), // 6
+					studentBioTO.getGrade(), // 7
+					null, // EDU_CENTER,", //8
+					null, // BARCODE,", //9
+					studentBioTO.getOasStudentId(), // SPECIAL_CODES,", //10
+					"OL", // STUDENT_MODE,", //11
+					studentBioTO.getOasStudentId(), // STRUC_ELEMENT,", //12
+					rosterId, // TEST_ELEMENT_ID,", //13
+					studentBioTO.getOasStudentId(), // INT_STUDENT_ID,", //14
+					studentBioTO.getExamineeId(), // EXT_STUDENT_ID,", //15
+					studentBioTO.getOasStudentId(), // LITHOCODE,", //16
+					studentDataLoadTO.getProcessId(), custHierarchyDetailsTO.getMaxHierarchy(), // STU_LSTNODE_HIER_ID //17 & 17.2
+					null, // IS_BIO_UPDATE_CMPL //18
+					studentDataLoadTO.getProcessId(), // 19
+					IApplicationConstants.FLAG_Y, // NEED_PRISM_CONSUME //20
+					studentDataLoadTO.getPartitionName() // 21
+					);
 			logger.log(IAppLogger.INFO, "StudentBio - count = " + count);
 			studentDataLoadTO.setStudentBioDetailsId(studentBioId);
-		}		
+		}
 	}
-	
+
 	/**
 	 * Create DEMO details
 	 * 
@@ -407,21 +400,21 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 * @param studentDataLoadTO
 	 * @param contentCode
 	 */
-	private void insertIntoStgStdDemoDetails(List<DemoTO> demoList, StudentDataLoadTO studentDataLoadTO, String contentCode){
+	private void insertIntoStgStdDemoDetails(List<DemoTO> demoList, StudentDataLoadTO studentDataLoadTO, String contentCode) {
 		Connection dsConnection = null;
 		PreparedStatement dsPstmt = null;
 		Context envContext = null;
 		try {
-            envContext = new InitialContext();
-            Context initContext  = (Context)envContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource)initContext.lookup("jdbc/prism");
-            dsConnection = ds.getConnection();
-            dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_DEMO_DETAILS);
+			envContext = new InitialContext();
+			Context initContext = (Context) envContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource) initContext.lookup("jdbc/prism");
+			dsConnection = ds.getConnection();
+			dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_DEMO_DETAILS);
 			for (DemoTO demoTO : demoList) {
 				dsPstmt.setString(1, demoTO.getDemoName());
 				dsPstmt.setString(2, demoTO.getDemovalue());
 				dsPstmt.setLong(3, studentDataLoadTO.getStudentBioDetailsId());
-				dsPstmt.setString(4, contentCode); 
+				dsPstmt.setString(4, contentCode);
 				dsPstmt.setString(5, IApplicationConstants.FLAG_Y); // TODO : CHECK
 				dsPstmt.setLong(6, studentDataLoadTO.getProcessId());
 				dsPstmt.setString(7, studentDataLoadTO.getPartitionName());
@@ -430,11 +423,11 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			}
 			int[] counts = dsPstmt.executeBatch();
 			logger.log(IAppLogger.INFO, "createStudentDemoDetails - counts = " + counts);
-        }  catch (SQLException e) {
-        	logger.log(IAppLogger.ERROR, "SQLException in createStudentDemoDetails - " + e.getMessage());
-        } catch (NamingException e) {
-        	logger.log(IAppLogger.ERROR, "NamingException in createStudentDemoDetails - " + e.getMessage());
-        } finally {
+		} catch (SQLException e) {
+			logger.log(IAppLogger.ERROR, "SQLException in createStudentDemoDetails - " + e.getMessage());
+		} catch (NamingException e) {
+			logger.log(IAppLogger.ERROR, "NamingException in createStudentDemoDetails - " + e.getMessage());
+		} finally {
 			try {
 				dsPstmt.close();
 			} catch (Exception e) {
@@ -447,9 +440,9 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			}
 		}
 	}
-	
+
 	/**
-	 * Insert Student DEMO details 
+	 * Insert Student DEMO details
 	 * 
 	 * @param studentDemoTO
 	 * @param studentDataLoadTO
@@ -479,29 +472,29 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			insertIntoStgStdDemoDetails(demoList, studentDataLoadTO, null);
 		}
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#insertContent(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
-	public StudentDataLoadTO insertContent(StudentListTO studentListTO,
-			StudentDataLoadTO studentDataLoadTO) throws Exception {
+	public StudentDataLoadTO insertContent(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - insertContent");
 		final Long studentBioDetailsId = studentDataLoadTO.getStudentBioDetailsId();
 		final Long processId = studentDataLoadTO.getProcessId();
 		final String partitionName = studentDataLoadTO.getPartitionName();
 		final long stagingSeq = studentDataLoadTO.getProcessId();
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
-		for(final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
+		for (final RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
 			List<ContentDetailsTO> contentDetails = rosterDetailsTO.getCollContentDetailsTO();
-			for(ContentDetailsTO contentDetailsTO : contentDetails) {
-				if(contentDetailsTO.isDataChanged()) {
+			for (ContentDetailsTO contentDetailsTO : contentDetails) {
+				if (contentDetailsTO.isDataChanged()) {
 					// create content/subtest details
 					createContentDetails(contentDetailsTO, studentDataLoadTO, stagingSeq);
 
 					// create subtest accommodations
 					try {
-						createSubtestAccomodations(contentDetailsTO.getContentCode(), contentDetailsTO.getSubtestAccommodationsTO(), studentDataLoadTO);						
+						createSubtestAccomodations(contentDetailsTO.getContentCode(), contentDetailsTO.getSubtestAccommodationsTO(), studentDataLoadTO);
 					} catch (Exception e) {
 						logger.log(IAppLogger.ERROR, "createSubtestAccomodations - " + e.getMessage());
 						// e.printStackTrace();
@@ -509,10 +502,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 
 					// create item Responses
 					try {
-						createItemResponses(rosterDetailsTO.getStudentDetailsTO().getStudentBioTO(),
-								contentDetailsTO.getContentCode(), 
-								contentDetailsTO.getItemResponsesDetailsTO(), 
-								studentDataLoadTO);						
+						createItemResponses(rosterDetailsTO.getStudentDetailsTO().getStudentBioTO(), contentDetailsTO.getContentCode(), contentDetailsTO.getItemResponsesDetailsTO(), studentDataLoadTO);
 					} catch (Exception e) {
 						logger.log(IAppLogger.ERROR, "createItemResponses - " + e.getMessage());
 						// e.printStackTrace();
@@ -532,7 +522,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	}
 
 	/**
-	 * Update OBJECTIVE SCORES 
+	 * Update OBJECTIVE SCORES
 	 * 
 	 * @param objectiveScoreList
 	 * @param studentBioDetailsId
@@ -544,17 +534,16 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		List<Integer> counts = new ArrayList<Integer>();
 		for (ObjectiveScoreTO objectiveScoreTO : objectiveScoreList) {
 			int count = getJdbcTemplatePrism().update(
-				CustomStringUtil.replaceCharacterInString('~', getStgStdObjectiveDetailsColumnName(objectiveScoreTO.getScoreType()), IQueryConstants.UPDATE_STG_OBJECTIVE_DETAILS), // Update query
-				objectiveScoreTO.getValue(), // value
-				studentBioDetailsId, processId, partitionName);
+					CustomStringUtil.replaceCharacterInString('~', getStgStdObjectiveDetailsColumnName(objectiveScoreTO.getScoreType()), IQueryConstants.UPDATE_STG_OBJECTIVE_DETAILS), // Update query
+					objectiveScoreTO.getValue(), // value
+					studentBioDetailsId, processId, partitionName);
 			counts.add(count);
 		}
 		logger.log(IAppLogger.INFO, "ContentScoreDetails - counts = " + counts);
 	}
-	
+
 	/**
-	 * This method is used to convert xml field name to a valid table column
-	 * name. 
+	 * This method is used to convert xml field name to a valid table column name.
 	 * 
 	 * @param fieldName
 	 *            xml field name
@@ -575,10 +564,9 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		}
 		return columnName;
 	}
-	
+
 	/**
-	 * This method is used to convert xml field name to a valid table column
-	 * name.
+	 * This method is used to convert xml field name to a valid table column name.
 	 * 
 	 * @param fieldName
 	 *            xml field name
@@ -595,7 +583,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	}
 
 	/**
-	 * Insert OBJECTIVE details 
+	 * Insert OBJECTIVE details
 	 * 
 	 * @param objectiveScoreDetailsTOList
 	 * @param contentDetailsTO
@@ -604,27 +592,26 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 * @param processId
 	 * @param partitionName
 	 */
-	private void createObjectiveDetails(List<ObjectiveScoreDetailsTO> objectiveScoreDetailsTOList, ContentDetailsTO contentDetailsTO, StudentDataLoadTO studentDataLoadTO, Long studentBioDetailsId, Long processId, String partitionName) {
-		for(ObjectiveScoreDetailsTO objectiveScoreDetailsTO : objectiveScoreDetailsTOList) {
-			int count = getJdbcTemplatePrism().update(
-		        IQueryConstants.CREATE_STG_OBJECTIVE_DETAILS,
-		        studentDataLoadTO.getStudentBioDetailsId(), //1
-		        contentDetailsTO.getContentCode(), // content name //2
-		        null, // test form //3
-		        contentDetailsTO.getDateTestTaken(), //4
-		        objectiveScoreDetailsTO.getObjectiveCode(), /*objectiveScoreDetailsTO.getObjectiveName(),*/ //5
-		        studentDataLoadTO.getProcessId(), //6
-		        studentDataLoadTO.getPartitionName() //7
-		    );
+	private void createObjectiveDetails(List<ObjectiveScoreDetailsTO> objectiveScoreDetailsTOList, ContentDetailsTO contentDetailsTO, StudentDataLoadTO studentDataLoadTO, Long studentBioDetailsId,
+			Long processId, String partitionName) {
+		for (ObjectiveScoreDetailsTO objectiveScoreDetailsTO : objectiveScoreDetailsTOList) {
+			int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_STG_OBJECTIVE_DETAILS, studentDataLoadTO.getStudentBioDetailsId(), // 1
+					contentDetailsTO.getContentCode(), // content name //2
+					null, // test form //3
+					contentDetailsTO.getDateTestTaken(), // 4
+					objectiveScoreDetailsTO.getObjectiveCode(), /* objectiveScoreDetailsTO.getObjectiveName(), */// 5
+					studentDataLoadTO.getProcessId(), // 6
+					studentDataLoadTO.getPartitionName() // 7
+					);
 			logger.log(IAppLogger.INFO, "insertContent - count = " + count);
-			
+
 			// update objective scores
 			updateObjectiveScores(objectiveScoreDetailsTO.getCollObjectiveScoreTO(), studentBioDetailsId, processId, partitionName);
-		}		
+		}
 	}
 
 	/**
-	 * Update SUBTEST SCORES 
+	 * Update SUBTEST SCORES
 	 * 
 	 * @param contentScoreDetailsTO
 	 * @param studentBioDetailsId
@@ -635,45 +622,41 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		final List<ContentScoreTO> contentScoreList = contentScoreDetailsTO.getCollContentScoreTO();
 		// TODO : Check batch update instead of for-loop for dynamic sql
 		for (ContentScoreTO contentScoreTO : contentScoreList) {
-			getJdbcTemplatePrism().update(
-				CustomStringUtil.replaceCharacterInString('~', getStgStdSubtestDetailsColumnName(contentScoreTO.getScoreType()), IQueryConstants.UPDATE_STG_SUBTEST_DETAILS), // Update query
-				contentScoreTO.getScoreValue(), // value
-				studentBioDetailsId,
-				processId,
-				partitionName
-			);
+			getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('~', getStgStdSubtestDetailsColumnName(contentScoreTO.getScoreType()), IQueryConstants.UPDATE_STG_SUBTEST_DETAILS), // Update
+																																																		// query
+					contentScoreTO.getScoreValue(), // value
+					studentBioDetailsId, processId, partitionName);
 		}
-		//logger.log(IAppLogger.INFO, "ContentScoreDetails - counts = " + counts);
+		// logger.log(IAppLogger.INFO, "ContentScoreDetails - counts = " + counts);
 	}
 
 	/**
 	 * Insert ITEM_RESPONSE details
 	 * 
+	 * @param studentBioTO
+	 * @param contentCode
 	 * @param itemResponsesDetailsTO
-	 * @param studentBioDetailsId
-	 * @param processId
-	 * @param partitionName
+	 * @param studentDataLoadTO
 	 */
-	private void createItemResponses(StudentBioTO studentBioTO, String contentCode, 
-			ItemResponsesDetailsTO itemResponsesDetailsTO, StudentDataLoadTO studentDataLoadTO) {
+	private void createItemResponses(StudentBioTO studentBioTO, String contentCode, ItemResponsesDetailsTO itemResponsesDetailsTO, StudentDataLoadTO studentDataLoadTO) {
 		Connection dsConnection = null;
 		PreparedStatement dsPstmt = null;
 		Context envContext = null;
 		try {
-            envContext = new InitialContext();
-            Context initContext  = (Context)envContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource)initContext.lookup("jdbc/prism");
-            dsConnection = ds.getConnection();
+			envContext = new InitialContext();
+			Context initContext = (Context) envContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource) initContext.lookup("jdbc/prism");
+			dsConnection = ds.getConnection();
 
-            dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_ITEM_RESPONSE_DETAILS);
+			dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_ITEM_RESPONSE_DETAILS);
 
-            List<ItemResponseTO> itemResponseList = itemResponsesDetailsTO.getItemResponseTO();
+			List<ItemResponseTO> itemResponseList = itemResponsesDetailsTO.getItemResponseTO();
 			for (ItemResponseTO itemResponseTO : itemResponseList) {
 				dsPstmt.setLong(1, studentDataLoadTO.getStudentBioDetailsId());
 				dsPstmt.setString(2, contentCode); // TODO : CONTENT_CODE
 				dsPstmt.setString(3, itemResponseTO.getScoreValue());
 				dsPstmt.setString(4, null); // TODO : TEST_FORM
-				dsPstmt.setString(5, studentBioTO.getGrade());  // TODO : GRADE
+				dsPstmt.setString(5, studentBioTO.getGrade()); // TODO : GRADE
 				dsPstmt.setString(6, itemResponseTO.getItemSetType());
 				dsPstmt.setString(7, itemResponseTO.getItemCode());
 				dsPstmt.setString(8, null); // TODO : ITEM_NAME
@@ -685,11 +668,11 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			}
 			int[] counts = dsPstmt.executeBatch();
 			logger.log(IAppLogger.INFO, "createItemResponses - counts = " + counts.length);
-        }  catch (SQLException e) {
-        	logger.log(IAppLogger.ERROR, "SQLException in createItemResponses - " + e.getMessage());
-        } catch (NamingException e) {
-        	logger.log(IAppLogger.ERROR, "NamingException in createItemResponses - " + e.getMessage());
-        } finally {
+		} catch (SQLException e) {
+			logger.log(IAppLogger.ERROR, "SQLException in createItemResponses - " + e.getMessage());
+		} catch (NamingException e) {
+			logger.log(IAppLogger.ERROR, "NamingException in createItemResponses - " + e.getMessage());
+		} finally {
 			try {
 				dsPstmt.close();
 			} catch (Exception e) {
@@ -701,7 +684,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 				logger.log(IAppLogger.WARN, "createItemResponses - " + e.getMessage());
 			}
 		}
-	
+
 	}
 
 	/**
@@ -731,32 +714,30 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 * @param subtestDetailsId
 	 */
 	private void createContentDetails(ContentDetailsTO contentDetailsTO, StudentDataLoadTO studentDataLoadTO, long subtestDetailsId) {
-		int count = getJdbcTemplatePrism().update(
-	        IQueryConstants.CREATE_STG_SUBTEST_DETAILS,
-	        //subtestDetailsId, //1
-	        studentDataLoadTO.getStudentBioDetailsId(), //2
-	        contentDetailsTO.getStatusCode(), //3
-	        contentDetailsTO.getContentCode(), // content name //4
-	        contentDetailsTO.getScoringMethod(), // scoring status //5
-	        null, // test form //6
-	        contentDetailsTO.getDateTestTaken(), //7
-	        studentDataLoadTO.getProcessId(), //8
-	        IApplicationConstants.FLAG_Y, //9
-	        studentDataLoadTO.getPartitionName() //10
-	    );
+		int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_STG_SUBTEST_DETAILS,
+		// subtestDetailsId, //1
+				studentDataLoadTO.getStudentBioDetailsId(), // 2
+				contentDetailsTO.getStatusCode(), // 3
+				contentDetailsTO.getContentCode(), // content name //4
+				contentDetailsTO.getScoringMethod(), // scoring status //5
+				null, // test form //6
+				contentDetailsTO.getDateTestTaken(), // 7
+				studentDataLoadTO.getProcessId(), // 8
+				IApplicationConstants.FLAG_Y, // 9
+				studentDataLoadTO.getPartitionName() // 10
+				);
 		logger.log(IAppLogger.INFO, "ContentDetails - count = " + count);
 		studentDataLoadTO.setSubtestDetailsId(subtestDetailsId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#insertItems(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
 	 */
-	public StudentDataLoadTO insertItems(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO)
-			throws Exception {
+	public StudentDataLoadTO insertItems(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - insertItems");
-		int count = getJdbcTemplatePrism().update(
-	        IQueryConstants.CREATE_STG_ITEM_RESPONSE_DETAILS
-	    );	
+		int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_STG_ITEM_RESPONSE_DETAILS);
 		logger.log(IAppLogger.INFO, "insertItems - count = " + count);
 		logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - insertItems");
 		return null;
