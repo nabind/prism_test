@@ -36,6 +36,21 @@
 				$("#blockDiv"+obj).remove();
 			}
 		}
+		
+		function openWindowNoControl(url) {
+			window.open(url, 'Window', 'width=600,height=400,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no');
+		}
+
+		function openWindowNoControlRRF(url) {
+			window.open(url, 'Window', 'width=810,height=705,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no');
+		}
+
+		function openWindowNoControlWithMessage(url, msg) {
+			var answer = confirm(msg)
+
+			if (answer)
+				window.open(url, 'Window', 'width=810,height=705,resizable=yes,scrollbars=yes,toolbar=no,location=no,directories=no,status=no,menubar=no');
+		}
 	</script>
 	<script src="scripts/js/setup.js"></script>
 
