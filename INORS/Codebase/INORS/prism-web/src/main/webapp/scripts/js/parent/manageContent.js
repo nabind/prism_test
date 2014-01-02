@@ -1,5 +1,5 @@
 /**
- * This js file is to manage content module
+ * This js file is to manage content module - Start
  * Author: Joy
  * Version: 1
  */
@@ -61,6 +61,7 @@ $(document).ready(function() {
 			resetModalForm("addNewContent");
 			resetModalForm("editContent");
 			resetModalForm("modifyStandardForm");
+			resetModalForm("modifyGenericForm");
 			openContentModalToAdd();
 		}
 	});
@@ -69,7 +70,32 @@ $(document).ready(function() {
 		resetModalForm("addNewContent");
 		resetModalForm("editContent");
 		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
 		openModifyStandardModalToEdit();
+	});
+	
+	$('#modifyRscDiv').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
+		openModifyGenericModalToEdit('RSC');
+	});
+	
+	$('#modifyEdaButton').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
+		openModifyGenericModalToEdit('EDA');
+	});
+	
+	$('#modifyAttButton').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
+		openModifyGenericModalToEdit('ATT');
 	});
 	
 	$('#refresh-content').live('click',function(){
@@ -153,6 +179,143 @@ $(document).ready(function() {
 	
 });
 //=====document.ready End=========================================
+
+//============Open Modal to Edit Description of Resource, Everyday Activity and About the Test ===============
+function openModifyGenericModalToEdit(type) {
+	blockUI();
+	var custProdId = $('#custProdIdManageContent').val();
+	var gradeId = $('#gradeIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
+	var objectiveId = $('#objectiveIdManageContent').val();
+	var contentTypeId = $('#contentTypeIdManageContent').val();
+	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+	if(type != 'RSC'){
+		subtestId = 0;
+	}
+	var dataUrl = 'gradeId='+gradeId+'&subtestId='+subtestId+'&type='+type;
+	$.ajax({
+			type : "GET",
+			url : "modifyGenericForEdit.do",
+			data : dataUrl,
+			dataType : 'json',
+			cache:false,
+			success : function(data) {
+				var custProdName = $('#custProdIdManageContent :selected').text();
+				var gradeName = $('#gradeIdManageContent :selected').text();
+				var subtestName = $('#subtestIdManageContent :selected').text();
+				
+				var $modifyGenericModal = $('#modifyGenericModal');
+				$modifyGenericModal.find('#testAdministrationText').text(custProdName);
+				$modifyGenericModal.find('#gradeText').text(gradeName);
+				if(type == 'RSC'){
+					$('#p_subtest').show();
+					$modifyGenericModal.find('#subtestText').text(subtestName);
+				}else{
+					$('#p_subtest').hide();
+				}
+				
+				if(data != null && data.contentDescription != ""){
+					$modifyGenericModal.find('#genericDescriptionEditor').val(data.contentDescription);
+				}
+				
+				var modalTitle = '';
+				if(type == 'RSC'){
+					modalTitle+='Modify Resource Description';
+				}else if(type == 'EDA'){
+					modalTitle+='Modify Everyday Activity Description';
+				}else if(type == 'ATT'){
+					modalTitle+='Modify About the Test  Description';
+				}
+				
+				$("#modifyGenericModal").modal({
+					title: modalTitle,
+					height: 500,
+					width: 780,
+					resizable: false,
+					draggable: false,
+					onOpen: setCKEditor('modifyGeneric'),
+					buttons: {
+						'Cancel': {
+							classes: 'glossy mid-margin-left',
+							click: function(win,e) {
+										clickMe(e);
+										$('.mandatoryDescription').hide();
+										if($.browser.msie) setTimeout("hideMessage()", 300);
+										win.closeModal(); 
+									}
+								},
+						'Save': {
+							classes: 'blue-gradient glossy mid-margin-left',
+							click: function(win,e) {
+										clickMe(e);	
+										modifyGeneric($("#modifyGenericForm"), win);
+									}
+								}
+							}
+					});					
+			},
+			error : function(data) {
+				$.modal.alert(strings['script.common.error1']);
+				unblockUI();
+			}
+		}); 
+}
+
+//============Insert/Update Description of Resource/Everyday Activity/About the Test ===============
+function modifyGeneric(form, win) {
+	blockUI();
+	var descriptionFlag = true;
+	for(name in CKEDITOR.instances)	{
+		var editorVal = CKEDITOR.instances[name].getData();
+		if(editorVal == ""){
+			$('.mandatoryDescription').show(ANIMATION_TIME);
+			descriptionFlag = false;
+			break;
+		}
+	    $('#modifyGenericModal #contentDescription').val(editorVal);
+	}
+	
+	if(descriptionFlag == true){
+		var custProdId = $('#custProdIdManageContent').val();
+		var gradeId = $('#gradeIdManageContent').val();
+		var subtestId = $('#subtestIdManageContent').val();
+		var contentTypeId = $('#contentTypeIdManageContent').val();
+		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+		
+		var $modifyGenericModal = $('#modifyGenericModal');
+		$modifyGenericModal.find('#custProdId').val(custProdId);
+		$modifyGenericModal.find('#gradeId').val(gradeId);
+		$modifyGenericModal.find('#subtestId').val(subtestId);
+		$modifyGenericModal.find('#contentType').val(contentTypeId);
+		$modifyGenericModal.find('#contentTypeName').val(contentTypeName);
+		
+		var formObj = $('#modifyGenericForm').serialize();
+		$.ajax({
+			type : "POST",
+			url : 'addNewContent.do',
+			data : formObj,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				if(data.value >= 1) {
+					win.closeModal(); 
+					unblockUI();
+					$('.mandatoryDescription').hide();
+					$.modal.alert(strings['script.content.addSuccess']);
+				} else {
+					unblockUI();
+					$.modal.alert(strings['script.user.saveError']);
+				}
+			},
+			error : function(data) {
+				unblockUI();
+				$.modal.alert(strings['script.user.saveError']);
+			}
+		});
+	}else{
+		 unblockUI();
+	}
+}
 
 //============Open Modal to Edit Description of Standard ===============
 function openModifyStandardModalToEdit() {
@@ -481,6 +644,8 @@ function setCKEditor(purpose){
 		$objTextArea = $('#contentDescriptionEditorEdit');
 	}else if(purpose == 'modifyStandard'){
 		$objTextArea = $('#objectiveDescriptionEditor');
+	}else if(purpose == 'modifyGeneric'){
+		$objTextArea = $('#genericDescriptionEditor');
 	}
 	
 	if(CKEDITOR.instances[$objTextArea.attr('id') ] == undefined){
@@ -771,21 +936,42 @@ function hideContentElements(){
 	$('#refresh-content').hide();
 	$('#addContentDiv').hide();
 	$('#modifyStandardDiv').hide();
+	$('#modifyRscDiv').hide();
+	$('#modifyEdaDiv').hide();
+	$('#modifyAttDiv').hide();
 	$('#contentTableDiv').hide();
 }
 
-//==To show add,search buttons==========
+//==To show add,search, *description buttons==========
 function showContentElements(){
 	var objectiveId = $('#objectiveIdManageContent').val();
+	var gradeId = $('#gradeIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
 	var contentTypeId = $('#contentTypeIdManageContent').val();
-	if(objectiveId != -1){
-		if(contentTypeId == 'STD'){
-			$('#modifyStandardDiv').show();
-		}else{
-			$('#refresh-content').show();
-			$('#addContentDiv').show();
+	
+	if(gradeId != -1){
+		if(contentTypeId == 'EDA'){
+			$('#modifyEdaDiv').show();
+		}else if(contentTypeId == 'ATT'){
+			$('#modifyAttDiv').show();
+		}
+		
+		if(subtestId != -1){
+			if(contentTypeId == 'RSC'){
+				$('#modifyRscDiv').show();
+			}
+			
+			if(objectiveId != -1){
+				if(contentTypeId == 'STD'){
+					$('#modifyStandardDiv').show();
+				}else if(contentTypeId == 'ACT' || contentTypeId == 'IND'){
+					$('#refresh-content').show();
+					$('#addContentDiv').show();
+				}
+			}
 		}
 	}
+	
 }
 
 //==Get Performance level name==========
@@ -804,3 +990,9 @@ function getPerformanceLevelName(performanceLevel){
 	}
 	return performanceLevelName;
 }
+
+/**
+ * This js file is to manage content module - End
+ * Author: Joy
+ * Version: 1
+ */

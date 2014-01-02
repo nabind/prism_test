@@ -194,9 +194,6 @@ public class ParentNetworkController {
 		modelAndView.addObject("standardIndicatorDetailsList", standardIndicatorDetailsList);
 		modelAndView.addObject("studentGradeName", studentGradeName);
 		return modelAndView;
-		
-		
-		
 	}
 	
 	/**

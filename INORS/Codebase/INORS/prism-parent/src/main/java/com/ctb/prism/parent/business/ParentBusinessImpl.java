@@ -208,6 +208,11 @@ public class ParentBusinessImpl implements IParentBusiness {
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentDAO.modifyStandardForEdit(paramMap);
 	}
+	
+	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException {
+		return parentDAO.modifyGenericForEdit(paramMap);
+	}
+	
 	//Manage Content - Parent Network - End
 	
 	//Parent Network - Start

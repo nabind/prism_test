@@ -176,6 +176,10 @@ public class ParentServiceImpl implements IParentService {
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentBusiness.modifyStandardForEdit(paramMap);
 	}
+	
+	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException {
+		return parentBusiness.modifyGenericForEdit(paramMap);
+	}
 
 	//Manage Content - Parent Network - End
 	

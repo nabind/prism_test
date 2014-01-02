@@ -132,6 +132,9 @@
 												<option value='<spring:message code="val.contentType.act"/>'><spring:message code="name.contentType.act"/></option>
 												<option value='<spring:message code="val.contentType.ind"/>'><spring:message code="name.contentType.ind"/></option>
 												<option value='<spring:message code="val.contentType.std"/>'><spring:message code="label.objective"/></option>
+												<option value='<spring:message code="val.contentType.rsc"/>'><spring:message code="name.contentType.rsc"/></option>
+												<option value='<spring:message code="val.contentType.eda"/>'><spring:message code="name.contentType.eda"/></option>
+												<option value='<spring:message code="val.contentType.att"/>'><spring:message code="name.contentType.att"/></option>
 											</select>
 										</p>
 									</div>
@@ -159,25 +162,47 @@
 				</span> --%>
 
 				<sec:authorize ifNotGranted="ROLE_SSO">
-				<div id="addContentDiv" style="display: none;" >
-					<a id="addContent" href="#" class="button glossy margin-left">
-						<span class="button-icon blue-gradient manage-btn"> 
-							<span class="icon-page-list"></span>
-						</span> 
-						<spring:message code="button.content.add"/>
-					</a>
-				</div>
-				<div id="modifyStandardDiv" style="display: none;" >
-					<a id="modifyStandardButton" href="#" class="button glossy margin-left">
-						<span class="button-icon blue-gradient manage-btn"> 
-							<span class="icon-page-list"></span>
-						</span> 
-						<spring:message code="button.modify.standard"/>
-					</a>
-				</div>
-					
+					<div id="addContentDiv" style="display: none;" >
+						<a id="addContent" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.content.add"/>
+						</a>
+					</div>
+					<div id="modifyStandardDiv" style="display: none;" >
+						<a id="modifyStandardButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.standard"/>
+						</a>
+					</div>
+					<div id="modifyRscDiv" style="display: none;" >
+						<a id="modifyRscButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.rsc"/>
+						</a>
+					</div>
+					<div id="modifyEdaDiv" style="display: none;" >
+						<a id="modifyEdaButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.eda"/>
+						</a>
+					</div>
+					<div id="modifyAttDiv" style="display: none;" >
+						<a id="modifyAttButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.att"/>
+						</a>
+					</div>
 				</sec:authorize>
-
 			</div>
 
 			<!-- Manage Content table Start -->
@@ -434,6 +459,67 @@
 				<%@ include file="../common/required.jsp"%>
 			</div>
 			<!-- Modify Standard - end -->
+			
+			<!-- Modify Everyday Activity and About the Test - start -->
+			<div id="modifyGenericModal" class="display-none">
+				<div class="">
+					<form:form id="modifyGenericForm" name="modifyGenericForm"
+						class="add-User-form small-margin-top">
+						
+						<input type="hidden" id="custProdId" name="custProdId"/>
+						<input type="hidden" id="gradeId" name="gradeId"/>
+						<input type="hidden" id="subtestId" name="subtestId"/>
+						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
+						<input type="hidden" id="contentType" name="contentType"/>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.testAdministration"/>
+							</label> 
+							<span id="testAdministrationText"></span>
+						</p>
+						
+						<p class="button-height inline-label">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.grade"/>
+							</label> 
+							<span id="gradeText"></span>
+						</p>
+						
+						<p id="p_subtest" class="button-height inline-label" style="display:none;">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.subtest"/>
+							</label> 
+							<span id="subtestText"></span>
+						</p>
+						
+						<div class="mandatoryDescription message small-margin-bottom red-gradient customError" style="display:none">
+                       		<spring:message code="error.field.required"/>
+                       	</div>
+						<p class="button-height inline-label">
+							<fieldset class="fieldset" style="width:700px;min-height:200px;">
+								<legend class="legend" style="padding-left:5px">
+									<spring:message code="label.content.description"/>
+									<span class="icon-star icon-size1 red"></span>
+								</legend>
+								<input type="hidden"
+									id="contentDescription"
+									name="contentDescription"
+									class="validate[required]"/>
+								<textarea
+									id="genericDescriptionEditor"
+									class="manage-content-textarea validate[required]">
+										<spring:message code="textarea.content.defaultText"/>
+								</textarea>
+							</fieldset>
+						</p>
+						
+						<div id="imgHolder"></div>
+					</form:form>
+				</div>
+				<%@ include file="../common/required.jsp"%>
+			</div>
+			<!-- Modify Everyday Activity and About the Test - end -->
 			
 			<div id="loader" class="display-none"></div>
 

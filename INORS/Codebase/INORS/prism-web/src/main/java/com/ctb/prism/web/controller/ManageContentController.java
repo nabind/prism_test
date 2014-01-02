@@ -1,11 +1,9 @@
 package com.ctb.prism.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +28,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
+
+/**
+ * @author Joy
+ * version 1.1
+ */
 
 @Controller
 public class ManageContentController {
@@ -174,7 +177,6 @@ public class ManageContentController {
 			jsonString = gson.toJson(statusTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			//response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -219,8 +221,6 @@ public class ManageContentController {
 		}finally{
 			logger.log(IAppLogger.INFO, "jsonString of loadManageContent:");
 			logger.log(IAppLogger.INFO, loadManageContentJson);
-			res.setContentType("application/json");
-			//res.getWriter().write(loadManageContentJson);
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - loadManageContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
@@ -231,7 +231,8 @@ public class ManageContentController {
 	 * Get content details for edit depending upon article_metedata id
 	 */
 	@RequestMapping(value = "/getContentForEdit", method = RequestMethod.GET)
-    public void getContentForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+	public @ResponseBody 
+	String getContentForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - getContentForEdit()");
 		long t1 = System.currentTimeMillis();
 		long contentId = Long.parseLong(request.getParameter("contentId"));
@@ -245,7 +246,6 @@ public class ManageContentController {
 			jsonString = gson.toJson(manageContentTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -253,13 +253,15 @@ public class ManageContentController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - getContentForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return jsonString;
     }
 	
 	/**
 	 * Update content/article along with metadata
 	 */
 	@RequestMapping(value = "/updateContent", method = RequestMethod.POST)
-    public void updateContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
+	public @ResponseBody 
+	String updateContent(@ModelAttribute("manageContentTO") ManageContentTO manageContentTO,
     		HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - updateContent()");
 		long t1 = System.currentTimeMillis();
@@ -281,13 +283,15 @@ public class ManageContentController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - updateContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return jsonString;
     }
 	
 	/**
 	 * Delete content/article's meta data and delete content/article if no association present with another mete data.
 	 */
 	@RequestMapping(value = "/deleteContent", method = RequestMethod.GET)
-    public void deleteContent(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+	public @ResponseBody 
+	String deleteContent(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - deleteContent()");
 		long t1 = System.currentTimeMillis();
 		long contentId = Long.parseLong(request.getParameter("contentId"));
@@ -301,7 +305,6 @@ public class ManageContentController {
 			jsonString = gson.toJson(statusTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -309,13 +312,15 @@ public class ManageContentController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - deleteContent() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return jsonString;
     }
 	
 	/**
 	 * Get Objective Description for edit depending upon objectiveId
 	 */
 	@RequestMapping(value = "/modifyStandardForEdit", method = RequestMethod.GET)
-    public void modifyStandardForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+	public @ResponseBody 
+	String modifyStandardForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - modifyStandardForEdit()");
 		long t1 = System.currentTimeMillis();
 		long objectiveId = Long.parseLong(request.getParameter("objectiveId"));
@@ -329,7 +334,6 @@ public class ManageContentController {
 			jsonString = gson.toJson(manageContentTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
@@ -337,5 +341,40 @@ public class ManageContentController {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
+		return jsonString;
+    }
+    
+    /**
+     * @author Joy
+	 * Get Description of Resource, Everyday Activity and About the Test
+	 */
+	@RequestMapping(value = "/modifyGenericForEdit", method = RequestMethod.GET)
+	public @ResponseBody 
+	String modifyGenericForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - modifyGenericForEdit()");
+		long t1 = System.currentTimeMillis();
+		long gradeId = Long.parseLong(request.getParameter("gradeId"));
+		long subtestId = Long.parseLong(request.getParameter("subtestId"));
+		String type = request.getParameter("type");
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("gradeId", gradeId);
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("type", type);
+		ManageContentTO manageContentTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			manageContentTO = parentService.modifyGenericForEdit(paramMap); 
+			jsonString = gson.toJson(manageContentTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - modifyGenericForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
     }
 }

@@ -69,6 +69,7 @@ public interface IParentDAO {
 	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String,Object> paramMap) throws BusinessException;
 	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) throws BusinessException;
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException;
+	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException;
 	//Manage Content - Parent Network - End
 	
 	//Parent Network - Start

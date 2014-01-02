@@ -1636,6 +1636,59 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		return manageContentTO;
 	}
 	
+	/**
+	 * @author Joy
+	 * Get Description of Resource, Everyday Activity and About the Test  - By Joy
+	 */
+	@SuppressWarnings("unchecked")
+	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyGenericForEdit()");
+		long t1 = System.currentTimeMillis();
+		ManageContentTO manageContentTO = null;
+		final long gradeId = ((Long) paramMap.get("gradeId")).longValue();
+		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
+		final String type = (String) paramMap.get("type");
+		
+		try{
+			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_GENERIC_DETAILS_FOR_EDIT + "}");
+				            cs.setLong(1, gradeId);
+				            cs.setLong(2, subtestId);
+				            cs.setString(3, type);
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
+				            return cs;
+				        }
+				    } , new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rs = null;
+			        			ManageContentTO manageContentTOResult = null;
+			        			try {
+									cs.execute();
+									rs = (ResultSet) cs.getObject(4);
+									if(rs.next()){
+										manageContentTOResult = new ManageContentTO();
+										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
+										manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob)rs.getClob("CONTENT_DESCRIPTION")));
+									}
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (Exception e) {
+			        				e.printStackTrace();
+			        			}
+			        			return manageContentTOResult;
+					        }
+					    });
+		}catch(Exception e){
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - modifyGenericForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return manageContentTO;
+	}
+	
 	//Manage Content - Parent Network - End
 	
 	
