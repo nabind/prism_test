@@ -5,13 +5,17 @@ package com.ctb.prism.core.exception;
  * @version 1.0
  */
 public class ExceptionResolver {
-	
-	public static SystemException resolve (Exception ex) {		
+
+	/**
+	 * @param ex
+	 * @return
+	 */
+	public static SystemException resolve(Exception ex) {
 		if (ex instanceof BusinessException)
-			return (BusinessException)ex;		
-		else if ( ex instanceof SystemException )
-			return (SystemException)ex;
+			return (BusinessException) ex;
+		else if (ex instanceof SystemException)
+			return (SystemException) ex;
 		else
 			return new SystemException(ex);
-	}	
+	}
 }

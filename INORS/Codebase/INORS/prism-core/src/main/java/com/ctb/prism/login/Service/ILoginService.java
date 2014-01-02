@@ -7,26 +7,77 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.transferobject.UserTO;
-import java.util.Map;
 
-
+/**
+ * @author TCS
+ * 
+ */
 public interface ILoginService {
 
+	/**
+	 * @return
+	 */
 	public boolean selectTest();
+
+	/**
+	 * @param userEmail
+	 * @return
+	 * @throws SystemException
+	 */
 	public UserTO getUserByEmail(String userEmail) throws SystemException;
-	
+
+	/**
+	 * @param username
+	 * @return
+	 */
 	public List<GrantedAuthority> getGrantedAuthorities(String username);
-	
+
+	/**
+	 * @param username
+	 * @return
+	 */
 	public String getTenant(String username);
-	
+
+	/**
+	 * @param username
+	 * @return
+	 */
 	public boolean checkFirstTimeLogin(String username);
-	
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
-	
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
+
+	/**
+	 * @param username
+	 * @return
+	 */
 	public UserTO getUserDetails(String username);
-	
+
+	/**
+	 * @param userTO
+	 * @return
+	 * @throws Exception
+	 */
 	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
+
+	/**
+	 * @param userTO
+	 * @return
+	 */
 	public UserTO getOrgLevel(UserTO userTO);
+
+	/**
+	 * @param username
+	 * @return
+	 */
 	public boolean checkUserAvailability(String username);
-	public void addNewUser(Map<String,Object> paramMap) throws Exception;
+
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public void addNewUser(Map<String, Object> paramMap) throws Exception;
 }
