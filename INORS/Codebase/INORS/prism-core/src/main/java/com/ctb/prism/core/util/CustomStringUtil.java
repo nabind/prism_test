@@ -65,6 +65,10 @@ public class CustomStringUtil {
 	public static String getJasperParameterString(String inputControlId) {
 		return CustomStringUtil.appendString("$P{", inputControlId, "}");
 	}
+	
+	public static String getJasperParameterStringRegx(String inputControlId) {
+		return CustomStringUtil.appendString("\\$[P][{]", inputControlId, "[}]");
+	}
 
 	/**
 	 * Replaces all occurrences of a sub-string in a string.

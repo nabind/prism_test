@@ -74,7 +74,7 @@ public interface IReportService {
 	 * @param reportUrl
 	 * @return
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams);
 
 	/**
 	 * @param query

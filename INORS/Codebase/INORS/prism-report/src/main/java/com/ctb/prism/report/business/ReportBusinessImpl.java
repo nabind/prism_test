@@ -137,7 +137,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param reportUrl
 	 */
 	// @Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl) {
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, 
+			String combAssessmentId, String reportUrl, Map<String, Object> sessionParams) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
@@ -159,6 +160,28 @@ public class ReportBusinessImpl implements IReportBusiness {
 			if (query != null) {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
+				
+				// added new for remember i/p control
+				if(sessionParams != null) {
+					boolean sessionArray = false;
+					Iterator it = sessionParams.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry pairs = (Map.Entry) it.next();
+						if (pairs.getValue() != null && pairs.getValue() instanceof List<?>) {
+							sessionArray = true;
+						} else {
+							sessionArray = false;
+						}
+						
+						query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+								(sessionArray) ? replaceSpecial(query, (List<String>) pairs.getValue()) 
+										: ((String) sessionParams.get((String) pairs.getKey()) != null)? 
+												(String) sessionParams.get((String) pairs.getKey()) : "-99");
+						
+					}
+				}
+				// END : added new for remember i/p control
+				
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
@@ -222,6 +245,52 @@ public class ReportBusinessImpl implements IReportBusiness {
 					replacedQuery = tempQuery.replace(trimPart, builder.toString());
 					if (replacedQuery.indexOf("$X{IN") != -1) {
 						replacedQuery = replaceSpecial(replacedQuery, clazz, obj);
+					}
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return inQuery;
+		}
+		return replacedQuery.length() == 0 ? inQuery : replacedQuery;
+	}
+	
+	/**
+	 * Replace special for session input controls
+	 * @param inQuery
+	 * @param inputCollection
+	 * @return
+	 */
+	private String replaceSpecial(String inQuery, List<String> inputCollection) {
+		String tempQuery = inQuery;
+		String trimPart = "";
+		String replacedQuery = "";
+		try {
+			if (tempQuery.indexOf("$X{IN") != -1) {
+				trimPart = tempQuery.substring(tempQuery.indexOf("$X{IN"), tempQuery.indexOf("}") + 1);
+				String part = tempQuery.substring(tempQuery.indexOf("$X{IN") + 3, tempQuery.indexOf("}"));
+				String[] parts = part.split(",");
+				if (parts.length == 3) {
+					
+					StringBuilder builder = new StringBuilder();
+					builder.append(parts[1]).append(" ").append(parts[0]).append(" ");
+					boolean isFirst = true;
+					builder.append(" (");
+					if (inputCollection != null && inputCollection.size() == 0) {
+						builder.append("-99");
+					} else {
+						for (String objectValue : inputCollection) {
+							if (!isFirst)
+								builder.append(",");
+							isFirst = false;
+							builder.append("'").append(objectValue).append("'");
+						}
+					}
+					builder.append(") ");
+
+					replacedQuery = tempQuery.replace(trimPart, builder.toString());
+					if (replacedQuery.indexOf("$X{IN") != -1) {
+						replacedQuery = replaceSpecial(replacedQuery, inputCollection);
 					}
 				}
 			}

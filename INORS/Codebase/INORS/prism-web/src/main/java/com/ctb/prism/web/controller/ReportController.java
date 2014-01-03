@@ -488,7 +488,8 @@ public class ReportController extends BaseDAO {
 				req.getSession().removeAttribute(sessionParam);
 			} else {
 				// get default parameters for logged-in user
-				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
+				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, 
+						(Map<String, Object>) req.getSession().getAttribute("inputControls"));
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
@@ -1076,7 +1077,8 @@ public class ReportController extends BaseDAO {
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
+					(Map<String, Object>) req.getSession().getAttribute("inputControls"));
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1234,7 +1236,8 @@ public class ReportController extends BaseDAO {
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
+					(Map<String, Object>) req.getSession().getAttribute("inputControls"));
 			// get default parameters for logged-in user
 			/*
 			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);

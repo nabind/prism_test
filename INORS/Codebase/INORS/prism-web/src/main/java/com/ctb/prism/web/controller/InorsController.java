@@ -291,7 +291,8 @@ public class InorsController {
 				}
 			}
 			String assessmentId = request.getParameter("assessmentId");
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
+					(Map<String, Object>) request.getSession().getAttribute("inputControls"));
 			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
 			// reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 
@@ -405,7 +406,8 @@ public class InorsController {
 			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl,
+					(Map<String, Object>) request.getSession().getAttribute("inputControls"));
 
 			// get parameter values for report
 			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
@@ -672,7 +674,8 @@ public class InorsController {
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
 		// get default parameters for logged-in user
-		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl);
+		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl,
+				(Map<String, Object>) request.getSession().getAttribute("inputControls"));
 
 		// get parameter values for report
 		parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);

@@ -113,8 +113,8 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getDefaultFilter(java.util .List, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl) {
-		return reportBusiness.getDefaultFilter(tos, userName, assessmentId, combAssessmentId, reportUrl);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams) {
+		return reportBusiness.getDefaultFilter(tos, userName, assessmentId, combAssessmentId, reportUrl, sessionParams);
 	}
 
 	/*
