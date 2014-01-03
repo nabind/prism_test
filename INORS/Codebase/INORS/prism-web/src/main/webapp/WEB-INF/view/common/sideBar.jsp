@@ -63,7 +63,9 @@
 				</sec:authorize>
 			</ul>
 				
-			<ul id="access" class="children-tooltip">
+			<!-- Commented as of now
+			
+			 <ul id="access" class="children-tooltip">
 					<li>
 							<a href="Javascript:getfaq();" title="FAQ"><span class="icon-directions icon-size2"></span></a>
 					</li>
@@ -71,6 +73,8 @@
 							<a href="Javascript:getHelp();" title="HELP"><span class="icon-read icon-size2"></span></a>
 					</li>
 			</ul>	
+			
+			 -->
 
 			<div class="" id="prismMenu">
 				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
