@@ -223,7 +223,7 @@
 					
 					<div class="margin-bottom-medium">
 						<p class="wrapped relative white-gradient" style="height: auto">
-							<%-- <spring:message code="login.otage.message"/> --%>
+							 <spring:message code="login.otage.message"/>
 						</p>
 					</div>
 					<div align="center">
@@ -332,7 +332,7 @@
 					</div>
 					<div class="margin-top">
 						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-						<%-- <spring:message code="login.otage.message"/> --%>
+						<spring:message code="login.otage.message"/>
 						</p>
 					</div>
 					
