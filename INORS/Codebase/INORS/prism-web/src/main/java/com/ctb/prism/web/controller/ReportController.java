@@ -49,6 +49,8 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.report.api.FillManagerImpl;
+import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
@@ -1594,8 +1596,16 @@ public class ReportController extends BaseDAO {
 		}
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading report as ", type));
 		try {
-			// get jasperprint object from controller
-			JasperPrint jasperPrint = (JasperPrint) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
+			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
+			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
+			JasperPrint jasperPrint = null;
+			if(sessionObj != null) {
+				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
+				Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
+				if(isPrinterFriendly) parameterValues.put("p_Is3D", IApplicationConstants.FLAG_N);
+				IFillManager fillManager = new FillManagerImpl();
+				jasperPrint = fillManager.fillReport(jasperReport, parameterValues);
+			}
 			// get jasper print object
 			if (jasperPrint == null)
 				jasperPrint = getJasperPrintObject(filter, reportUrl, assessmentId, req, drilldown, isPrinterFriendly);

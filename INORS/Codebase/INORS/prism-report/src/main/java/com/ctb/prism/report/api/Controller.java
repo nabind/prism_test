@@ -25,6 +25,7 @@ package com.ctb.prism.report.api;
  */
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -222,7 +223,11 @@ public class Controller
 				//jasperPrint = JasperFillManager.fillReport(jasperReport, webReportContext.getParameterValues(), conn);
 				IFillManager fillManager = new FillManagerImpl();
 				jasperPrint = fillManager.fillReport(jasperReport, webReportContext.getParameterValues());
-				request.getSession().setAttribute("apiJasperPrint"+reportUri, jasperPrint);
+				
+				Map<String, Object> sessionObj = new HashMap<String, Object>();
+				sessionObj.put("jasperReport", jasperReport);
+				sessionObj.put("parameterValues", webReportContext.getParameterValues());
+				request.getSession().setAttribute("apiJasperPrint"+reportUri, sessionObj);
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
