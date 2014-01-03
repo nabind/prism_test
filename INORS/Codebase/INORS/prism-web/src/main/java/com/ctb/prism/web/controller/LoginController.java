@@ -126,12 +126,7 @@ public class LoginController{
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		  String commonLogInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		  ModelAndView modelAndView = new ModelAndView("common/landing");
-		  if(null!=commonLogInInfoMessage )
-		  {
-			  commonLogInInfoMessage = commonLogInInfoMessage.replaceAll("<p>", "");
-			  commonLogInInfoMessage = commonLogInInfoMessage.replaceAll("</p>", "");
-			  modelAndView.addObject("commonLogInInfoMessage", commonLogInInfoMessage);
-		  }
+		  modelAndView.addObject("commonLogInInfoMessage", commonLogInInfoMessage);
 		  logger.log(IAppLogger.INFO,
 					"Exit: LoginController - loadLandingPage");
 		  return modelAndView;
@@ -160,11 +155,6 @@ public class LoginController{
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		  String logInInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		  if(null!=logInInfoMessage )
-		  {
-			  logInInfoMessage = logInInfoMessage.replaceAll("<p>", "");
-			  logInInfoMessage = logInInfoMessage.replaceAll("</p>", "");
-		  }
 		  if("1".equalsIgnoreCase(mess_login_error)){
 			  logger.log(IAppLogger.ERROR, "Invalid Login");
 			  message = "error.login.invalidlogin";
@@ -177,18 +167,11 @@ public class LoginController{
 		  ModelAndView modelAndView = null;
 		  if(IApplicationConstants.TRUE.equals(parent)) {
 			  modelAndView = new ModelAndView("parent/login");
-			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
-			  {
 			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
-			  }
 
 		  } else {
 			  modelAndView = new ModelAndView("user/login");
-			  if(null!=logInInfoMessage || "" !=logInInfoMessage)
-			  {
 			  modelAndView.addObject("logInInfoMessage", logInInfoMessage);
-			  }
-
 		  }
 		  modelAndView.addObject("message", message);
 		 
@@ -976,15 +959,10 @@ public class LoginController{
 		// TODO get home page message based on logged in user
 		
 		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
+			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
-		  String inorsHomePageInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		  if(null!=inorsHomePageInfoMessage )
-		  {
-			  inorsHomePageInfoMessage = inorsHomePageInfoMessage.replaceAll("<p>", "");
-			  inorsHomePageInfoMessage = inorsHomePageInfoMessage.replaceAll("</p>", "");
-		  }
+		String inorsHomePageInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
 		res.setContentType("application/json");
 		res.getWriter().write(inorsHomePageInfoMessage);			
 		return null;
