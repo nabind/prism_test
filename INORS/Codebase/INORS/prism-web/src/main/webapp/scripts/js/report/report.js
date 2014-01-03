@@ -1037,10 +1037,10 @@ function moreInfo(reportId)
 		url: 'reportMoreInfo.do?reportId='+reportId,
 		useIframe: true,
 		title: 'More Info',
-		height: 550,
-		width: 500,
-		resizable: false,
-		draggable: false
+		height: 650,
+		width: 1000,
+		resizable: true,
+		draggable: true
 	});
 }
 
@@ -1051,9 +1051,9 @@ function getfaq()
 		useIframe: true,
 		title: 'FAQ',
 		height: 650,
-		width: 700,
-		resizable: false,
-		draggable: false
+		width: 1000,
+		resizable: true,
+		draggable: true
 	});
 }
 
@@ -1064,9 +1064,9 @@ function getHelp()
 		useIframe: true,
 		title: 'HELP',
 		height: 650,
-		width: 700,
-		resizable: false,
-		draggable: false
+		width: 1000,
+		resizable: true,
+		draggable: true
 	});
 }
 
