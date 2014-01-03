@@ -823,6 +823,7 @@ public class InorsController {
 	 * @throws Exception
 	 */
 
+	@RequestMapping(value = "/doSomething", method = RequestMethod.GET)
 	@Scheduled(cron = "* * 1 * * ?")
 	public void doSomething() throws Exception {
 
