@@ -15,10 +15,10 @@
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+	<!-- <servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>/image</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 	<servlet>
 		<servlet-name>jaxws-servlet</servlet-name>
@@ -57,7 +57,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>ImageServlet</servlet-name>
-		<servlet-class>net.sf.jasperreports.web.servlets.ImageServlet</servlet-class>
+		<servlet-class>com.ctb.prism.report.api.CustomImageServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>OldImageServlet</servlet-name>
@@ -76,9 +76,13 @@
 		<servlet-name>ResourceServlet</servlet-name>
 		<url-pattern>/servlets/resource</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
+	<!-- <servlet-mapping>
 		<servlet-name>ImageServlet</servlet-name>
 		<url-pattern>/servlets/image</url-pattern>
+	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>ImageServlet</servlet-name>
+		<url-pattern>/image</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>OldImageServlet</servlet-name>
