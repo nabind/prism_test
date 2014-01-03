@@ -946,7 +946,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			int gdfExpiryTimeRange = Integer.parseInt(gdfExpiryTime);
 			logger.log(IAppLogger.INFO, "Entering Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 			List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST, gdfExpiryTimeRange);
-			String appendLog=" File is deleted by cron job as the file is expired : "+Utils.getDateTime();
+			String appendLog=" ... File is deleted by cron job as the file is expired : "+Utils.getDateTime();
 			if (dataList != null && dataList.size() > 0) {
 				for (Map<String, Object> data : dataList) {
 					String filePath = (String) data.get("request_filename");

@@ -822,8 +822,7 @@ public class InorsController {
 	 * @RequestMapping(value = "/doSomething", method = RequestMethod.GET) -- > For testing enable this and hit the URL as doSomething.do
 	 * @throws Exception
 	 */
-
-	@RequestMapping(value = "/doSomething", method = RequestMethod.GET)
+	
 	@Scheduled(cron = "* * 1 * * ?")
 	public void doSomething() throws Exception {
 
