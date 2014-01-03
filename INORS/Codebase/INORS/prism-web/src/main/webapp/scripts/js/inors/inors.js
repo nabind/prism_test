@@ -1206,14 +1206,17 @@ function showHideDownloadButtons() {
 			$("#downloadSeparatePdfsGD").hide();
 			$("#downloadCombinedPdfsGD").hide();
 			$("#downloadSinglePdfsGD").show();
+			$("#nameMailDiv").hide();
 		} else if ((groupFile == "1") || (groupFile == "2") || (groupFile == "3")) {
 			$("#downloadSeparatePdfsGD").show();
 			$("#downloadCombinedPdfsGD").show();
 			$("#downloadSinglePdfsGD").hide();
+			$("#nameMailDiv").show();
 		} else {
 			$("#downloadSeparatePdfsGD").show();
 			$("#downloadCombinedPdfsGD").show();
 			$("#downloadSinglePdfsGD").show();
+			$("#nameMailDiv").show();
 		}
 	}
 }

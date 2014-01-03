@@ -22,15 +22,15 @@
 		<span class="tag" id="studCount">0</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
 	</div>
 	
-	<div class="columns accordion with-padding">
+	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
 			<label for="groupFile" class="label">Generate Group File of: </label>
 			<select name="groupFile" id="groupFile" class="select compact expandable-list">
+			    <option value="5">Student PDF's</option>
 				<option value="1">Individual Student Report</option>
 				<option value="2">Image Prints</option>
 				<option value="3">Both (IP and ISR)</option>
 				<option value="4">Invitation Code Letter</option>
-				<option value="5">Student PDF's</option>
 			</select>
 		</p>
 		
