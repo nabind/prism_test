@@ -2,9 +2,7 @@ package com.ctb.prism.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -30,11 +27,10 @@ import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
-import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 
 @Controller
-public class ParentController extends BaseDAO {
+public class ParentController {
 
 	private static final IAppLogger logger = LogFactory
 			.getLoggerInstance(ParentController.class.getName());
