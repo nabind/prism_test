@@ -565,7 +565,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				{
 					to.setParentAccount(Collections.<ParentTO>emptyList());
 				}
-				to.setStructureElement((String)(fieldDetails.get("TESTELEMENTID")));
+				to.setStructureElement(String.valueOf((BigDecimal)(fieldDetails.get("TESTELEMENTID"))));
 				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
 				to.setStudentMode((String) (fieldDetails.get("STUDENT_MODE")));
