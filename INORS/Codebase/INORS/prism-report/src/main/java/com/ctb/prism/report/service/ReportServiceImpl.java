@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
@@ -319,16 +320,16 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#populateStudentTableGD(com .ctb.prism.report.transferobject.GroupDownloadTO)
+	 * @see com.ctb.prism.report.service.IReportService#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
 		return reportBusiness.populateStudentTableGD(to);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#getGDFilePaths(com.ctb.prism .report.transferobject.GroupDownloadTO)
+	 * @see com.ctb.prism.report.service.IReportService#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<String> getGDFilePaths(GroupDownloadTO to) {
 		return reportBusiness.getGDFilePaths(to);
@@ -337,13 +338,28 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#createJobTracking(com.ctb .prism.report.transferobject.GroupDownloadTO)
+	 * @see com.ctb.prism.report.service.IReportService#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String createJobTracking(GroupDownloadTO to) {
 		return reportBusiness.createJobTracking(to);
 	}
-	
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getSystemConfigurationMessage(java.util.Map)
+	 */
+	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
 		return reportBusiness.getSystemConfigurationMessage(paramMap);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getProcessDataGD(java.lang.String)
+	 */
+	public String getProcessDataGD(String processId) {
+		return reportBusiness.getProcessDataGD(processId);
 	}
 }

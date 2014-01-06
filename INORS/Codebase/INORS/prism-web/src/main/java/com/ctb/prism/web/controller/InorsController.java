@@ -1,14 +1,16 @@
 package com.ctb.prism.web.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,12 +30,13 @@ import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.exception.BusinessException;
+import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
@@ -45,6 +48,8 @@ import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
+import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
@@ -291,8 +296,8 @@ public class InorsController {
 				}
 			}
 			String assessmentId = request.getParameter("assessmentId");
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
-					(Map<String, Object>) request.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService
+					.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) request.getSession().getAttribute("inputControls"));
 			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
 			// reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 
@@ -406,8 +411,8 @@ public class InorsController {
 			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl,
-					(Map<String, Object>) request.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
+					.getAttribute("inputControls"));
 
 			// get parameter values for report
 			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
@@ -444,11 +449,216 @@ public class InorsController {
 			modelAndView.addObject("fileName", fileName);
 			modelAndView.addObject("email", email);
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+
+			List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+			GroupDownloadTO to = new GroupDownloadTO();
+			to.setSchool(school);
+			to.setKlass(klass);
+			studentList = populateStudentTableGD(to);
+			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
+			modelAndView.addObject("studentList", studentList);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		}
 		modelAndView.addObject("reportUrl", reportUrl);
+
 		return modelAndView;
+	}
+
+	/**
+	 * 
+	 * @param to
+	 * @return
+	 */
+	private List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: populateStudentTableGD()");
+		long t1 = System.currentTimeMillis();
+		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+		try {
+			studentList = reportService.populateStudentTableGD(to);
+			logger.log(IAppLogger.INFO, "Students: " + studentList.size());
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "populateStudentTableGD() :" + e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return studentList;
+	}
+
+	/**
+	 * This method will create a Job Tracking Id and call processGroupDownload(processId)
+	 * 
+	 * @param to
+	 * @param response
+	 * @return {"handler" : "success/failure", "type" ; "sync/async"}
+	 * @throws SystemException
+	 */
+	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
+	public @ResponseBody
+	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) throws SystemException {
+		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+		String handler = "";
+		String type = "";
+		String downloadFileName = "";
+		String jobTrackingId = "";
+		logger.log(IAppLogger.INFO, to.toString());
+		try {
+			if ("SS".equals(to.getButton())) { // TODO: Delete this button
+				// Synchronous : Immediate download for Single Student
+				type = "sync";
+				List<String> filePaths = reportService.getGDFilePaths(to);
+				if ((filePaths != null) && (!filePaths.isEmpty())) {
+					downloadFileName = filePaths.get(0);
+				}
+			} else {
+				// Asynchronous : Create Process Id
+				type = "async";
+				jobTrackingId = reportService.createJobTracking(to);
+				logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction(): " + String.valueOf(t2 - t1) + "ms");
+		}
+		String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
+				jobTrackingId, "\"}");
+		logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
+
+		// TODO : JMS Integration for processGroupDownload() method
+		processGroupDownload(jobTrackingId);
+
+		return jsonString;
+	}
+
+	/**
+	 * This method will be called using JMS.
+	 * 
+	 * @param processId
+	 * @param button
+	 * @param fileName
+	 * @param filePaths
+	 */
+	private void processGroupDownload(String processId) {
+		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
+		String clobStr = reportService.getProcessDataGD(processId);
+		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
+		String[] tokens = clobStr.split("\\|");
+		List<String> filePaths = new ArrayList<String>();
+		if (tokens.length == 4) { // IMPORTANT : Number of parameters needed in this method.
+			String button = tokens[0];
+			String fileName = tokens[1];
+			GroupDownloadTO to = new GroupDownloadTO();
+			to.setGroupFile(tokens[2]);
+			to.setStudents(tokens[3]);
+			filePaths = reportService.getGDFilePaths(to);
+			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
+			if (!filePaths.isEmpty()) {
+				String pdfFileName = fileName + ".pdf";
+				String zipFileName = fileName + ".zip";
+				try {
+					if ("CP".equals(button)) {
+						// Combined Pdf
+						// Merge Pdf files
+						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
+
+						// Create Pdf file in disk
+						FileUtil.createFile(pdfFileName, input);
+
+						// Now read the pdf file from disk
+						byte[] data;
+
+						data = FileCopyUtils.copyToByteArray(new FileInputStream(pdfFileName));
+
+						// Zip the pdf file
+						byte[] zipData = FileUtil.zipBytes(zipFileName, data);
+
+						// Create Zip file in disk
+						FileUtil.createFile(zipFileName, zipData);
+
+						// Delete the Pdf file from disk
+						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
+					} else if ("SP".equals(button)) {
+						// Separate Pdfs
+						// Create Zip file in disk from all the pdf files
+						FileUtil.createZipFile(zipFileName, filePaths);
+					}
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "No File to download");
+			}
+		} else {
+			logger.log(IAppLogger.WARN, "Invalid Clob (Student) Data to Process");
+		}
+		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
+	}
+
+	/**
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/downloadZippedPdf", method = RequestMethod.GET)
+	public void downloadZippedPdf(HttpServletRequest request, HttpServletResponse response) {
+		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
+
+		String fileName = request.getParameter("fileName");
+		String email = request.getParameter("email");
+		logger.log(IAppLogger.INFO, "fileName=" + fileName);
+		logger.log(IAppLogger.INFO, "email=" + email);
+		String zipFileName = fileName + ".zip";
+		try {
+			// Read the zip file
+			byte[] input = FileUtil.getBytes(zipFileName);
+
+			// Download the file
+			FileUtil.browserDownload(response, input, zipFileName);
+
+			// Send email
+			if ((email != null) && (!email.isEmpty())) {
+				notificationMailGD(email);
+			}
+
+			// Delete the zip file from disk
+			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: downloadZippedPdf(): " + String.valueOf(t2 - t1) + "ms");
+		}
+	}
+
+	/**
+	 * This method is used to send a notification mail after Group Download
+	 * 
+	 * @param email
+	 */
+	private void notificationMailGD(String email) {
+		try {
+			Properties prop = new Properties();
+			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			String subject = propertyLookup.get("mail.gd.subject");
+			String mailBody = propertyLookup.get("mail.gd.body");
+			logger.log(IAppLogger.INFO, "Email triggered...");
+			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			logger.log(IAppLogger.INFO, "Email sent to : " + email);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -674,8 +884,8 @@ public class InorsController {
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
 		// get default parameters for logged-in user
-		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl,
-				(Map<String, Object>) request.getSession().getAttribute("inputControls"));
+		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
+				.getAttribute("inputControls"));
 
 		// get parameter values for report
 		parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
@@ -822,7 +1032,7 @@ public class InorsController {
 	 * @RequestMapping(value = "/doSomething", method = RequestMethod.GET) -- > For testing enable this and hit the URL as doSomething.do
 	 * @throws Exception
 	 */
-	
+
 	@Scheduled(cron = "* * 1 * * ?")
 	public void doSomething() throws Exception {
 

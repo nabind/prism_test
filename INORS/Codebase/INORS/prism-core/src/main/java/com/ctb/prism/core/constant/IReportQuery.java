@@ -244,14 +244,10 @@ public interface IReportQuery {
 	public static final String INSERT_JOB_TRACKING = CustomStringUtil.appendString(
 					"INSERT INTO JOB_TRACKING",
 					" (JOB_ID, USERID,",
-					" JOB_NAME,",
-					" EXTRACT_STARTDATE, EXTRACT_ENDDATE,",
-					" EXTRACT_CATEGORY, EXTRACT_FILETYPE, REQUEST_TYPE, REQUEST_SUMMARY,",
+					" JOB_NAME, EXTRACT_CATEGORY, EXTRACT_FILETYPE, REQUEST_TYPE, REQUEST_SUMMARY,",
 					" REQUEST_DETAILS,",
 					" REQUEST_FILENAME, REQUEST_EMAIL, JOB_LOG, JOB_STATUS,",
-					" ADMINID, CUSTOMERID,",
-					" CREATED_DATE_TIME, UPDATED_DATE_TIME,",
-					" OTHER_REQUEST_PARAMS, FILE_SIZE) VALUES ",
-					"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					" ADMINID, CUSTOMERID) VALUES ",
+					"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 }
 

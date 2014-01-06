@@ -23,6 +23,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.dao.IReportDAO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
@@ -137,8 +138,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param reportUrl
 	 */
 	// @Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, 
-			String combAssessmentId, String reportUrl, Map<String, Object> sessionParams) {
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
@@ -160,9 +160,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 			if (query != null) {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
-				
+
 				// added new for remember i/p control
-				if(sessionParams != null) {
+				if (sessionParams != null) {
 					boolean sessionArray = false;
 					Iterator it = sessionParams.entrySet().iterator();
 					while (it.hasNext()) {
@@ -172,16 +172,14 @@ public class ReportBusinessImpl implements IReportBusiness {
 						} else {
 							sessionArray = false;
 						}
-						
-						query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-								(sessionArray) ? replaceSpecial(query, (List<String>) pairs.getValue()) 
-										: ((String) sessionParams.get((String) pairs.getKey()) != null)? 
-												(String) sessionParams.get((String) pairs.getKey()) : "-99");
-						
+
+						query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), (sessionArray) ? replaceSpecial(query, (List<String>) pairs.getValue())
+								: ((String) sessionParams.get((String) pairs.getKey()) != null) ? (String) sessionParams.get((String) pairs.getKey()) : "-99");
+
 					}
 				}
 				// END : added new for remember i/p control
-				
+
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
@@ -254,9 +252,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 		return replacedQuery.length() == 0 ? inQuery : replacedQuery;
 	}
-	
+
 	/**
 	 * Replace special for session input controls
+	 * 
 	 * @param inQuery
 	 * @param inputCollection
 	 * @return
@@ -271,7 +270,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				String part = tempQuery.substring(tempQuery.indexOf("$X{IN") + 3, tempQuery.indexOf("}"));
 				String[] parts = part.split(",");
 				if (parts.length == 3) {
-					
+
 					StringBuilder builder = new StringBuilder();
 					builder.append(parts[1]).append(" ").append(parts[0]).append(" ");
 					boolean isFirst = true;
@@ -599,7 +598,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to) {
+	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
 		return reportDAO.populateStudentTableGD(to);
 	}
 
@@ -620,8 +619,22 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String createJobTracking(GroupDownloadTO to) {
 		return reportDAO.createJobTracking(to);
 	}
-	
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getSystemConfigurationMessage(java.util.Map)
+	 */
+	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
 		return reportDAO.getSystemConfigurationMessage(paramMap);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getProcessDataGD(java.lang.String)
+	 */
+	public String getProcessDataGD(String processId) {
+		return reportDAO.getProcessDataGD(processId);
 	}
 }

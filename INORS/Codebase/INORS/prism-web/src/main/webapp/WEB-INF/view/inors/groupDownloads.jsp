@@ -22,11 +22,10 @@
 		<span class="tag" id="studCount">0</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
 	</div>
 	
-	<div class="columns accordion with-padding" id="nameMailDiv">
+	<div class="columns accordion with-padding">
 		<p class="inline-label">
 			<label for="groupFile" class="label">Generate Group File of: </label>
 			<select name="groupFile" id="groupFile" class="select compact expandable-list">
-			    <option value="5">Student PDF's</option>
 				<option value="1">Individual Student Report</option>
 				<option value="2">Image Prints</option>
 				<option value="3">Both (IP and ISR)</option>
@@ -51,14 +50,48 @@
 						<input name="check-all" id="check-all" value="1" type="checkbox">
 					</th>
 					<th aria-label="Text: activate to sort column ascending" style="width: 356px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">IC</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ISR</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">IP</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Both(IP and ISR)</th>
 				</tr>
 			</thead>
 			<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
+				<c:forEach var="student" items="${studentList}">
+					<tr id="">
+					    <td scope="row" class="checkbox-cell  sorting_1"><input name="checked[]" id="check-student-${student.id}" value="${student.id}" type="checkbox" /></td>
+					    <td>${student.name}</td>
+					    <td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
+					    	<c:choose>
+					    	<c:when test="${student.ic==''}">NA</c:when>
+							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.ic}">Download</a></c:otherwise>
+							</c:choose>
+						</td>
+						<td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
+							<c:choose>
+							<c:when test="${student.isr==''}">NA</c:when>
+							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.isr}">Download</a></c:otherwise>
+							</c:choose>
+						</td>
+						<td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
+							<c:choose>
+							<c:when test="${student.ip==''}">NA</c:when>
+							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.ip}">Download</a></c:otherwise>
+							</c:choose>
+						</td>
+						<td aria-label="Text: activate to sort column ascending" style="width: 100px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
+							<c:choose>
+							<c:when test="${student.both==''}">NA</c:when>
+							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.both}">Download</a></c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 	</div>
 
-	<div class="columns accordion with-padding">
+	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
 			<label for="fileName" class="label" style="width: 345px !important;">Name of Generated File (50 characters maximum): </label>
 			<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required]" maxlength="50" style="width:187px;">

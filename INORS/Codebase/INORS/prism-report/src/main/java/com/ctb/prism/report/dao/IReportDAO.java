@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
@@ -253,7 +254,7 @@ public interface IReportDAO {
 	 * @param to
 	 * @return
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
+	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to);
 
 	/**
 	 * @param to
@@ -267,5 +268,15 @@ public interface IReportDAO {
 	 */
 	public List<String> getGDFilePaths(GroupDownloadTO to);
 	
+	/**
+	 * @param paramMap
+	 * @return
+	 */
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
+
+	/**
+	 * @param processId
+	 * @return
+	 */
+	public String getProcessDataGD(String processId);
 }

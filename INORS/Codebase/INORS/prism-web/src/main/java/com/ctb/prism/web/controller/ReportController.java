@@ -1,7 +1,5 @@
 package com.ctb.prism.web.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -15,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,23 +28,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.core.util.EmailSender;
-import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
@@ -57,7 +49,6 @@ import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.service.JRXhtmlExporter;
 import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
@@ -490,8 +481,8 @@ public class ReportController extends BaseDAO {
 				req.getSession().removeAttribute(sessionParam);
 			} else {
 				// get default parameters for logged-in user
-				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, 
-						(Map<String, Object>) req.getSession().getAttribute("inputControls"));
+				Object reportFilterTO = reportService
+						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
@@ -1079,8 +1070,7 @@ public class ReportController extends BaseDAO {
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
-					(Map<String, Object>) req.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1238,8 +1228,7 @@ public class ReportController extends BaseDAO {
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl,
-					(Map<String, Object>) req.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
 			// get default parameters for logged-in user
 			/*
 			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
@@ -1599,10 +1588,11 @@ public class ReportController extends BaseDAO {
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
 			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
 			JasperPrint jasperPrint = null;
-			if(sessionObj != null) {
+			if (sessionObj != null) {
 				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
 				Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
-				if(isPrinterFriendly) parameterValues.put("p_Is3D", IApplicationConstants.FLAG_N);
+				if (isPrinterFriendly)
+					parameterValues.put("p_Is3D", IApplicationConstants.FLAG_N);
 				IFillManager fillManager = new FillManagerImpl();
 				jasperPrint = fillManager.fillReport(jasperReport, parameterValues);
 			}
@@ -1765,301 +1755,21 @@ public class ReportController extends BaseDAO {
 	}
 
 	/**
-	 * @return
+	 * Arunava Datta More Info implementation Report wise
 	 */
-	@RequestMapping(value = "/populateTestAdministrationGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateTestAdministrationGD() {
-		logger.log(IAppLogger.INFO, "Enter: populateTestAdministrationGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> admList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			admList = reportService.getTestAdministrations();
-			logger.log(IAppLogger.INFO, "Test Administrations: " + admList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(admList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateTestAdministrationGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateTestAdministrationGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
 
-	/**
-	 * @param to
-	 * @return
-	 */
-	@RequestMapping(value = "/populateDistrictGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateDistrictGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateDistrictGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> districtList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			districtList = reportService.populateDistrictGD(to);
-			logger.log(IAppLogger.INFO, "Districts: " + districtList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(districtList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateSchoolGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateDistrictGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	@RequestMapping(value = "/populateSchoolGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateSchoolGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateSchoolGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			schoolList = reportService.populateSchoolGD(to);
-			logger.log(IAppLogger.INFO, "Schools: " + schoolList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateSchoolGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateSchoolGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	@RequestMapping(value = "/populateClassGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateClassGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateClassGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> classList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			classList = reportService.populateClassGD(to);
-			logger.log(IAppLogger.INFO, "Classes: " + classList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(classList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateClassGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateClassGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	@RequestMapping(value = "/populateGradeGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateGradeGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateGradeGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			gradeList = reportService.populateGradeGD(to);
-			logger.log(IAppLogger.INFO, "Grades: " + gradeList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(gradeList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateGradeGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateGradeGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	@RequestMapping(value = "/populateStudentTableGD", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateStudentTableGD(@ModelAttribute GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: populateStudentTableGD()");
-		long t1 = System.currentTimeMillis();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> studentList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
-		String jsonString = "";
-		try {
-			studentList = reportService.populateStudentTableGD(to);
-			logger.log(IAppLogger.INFO, "Students: " + studentList.size());
-			jsonString = JsonUtil.convertToJsonAdmin(studentList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "populateStudentTableGD() :" + e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * 
-	 * @param to
-	 * @param response
-	 * @return {"handler" : "success/failure", "type" ; "sync/async"}
-	 */
-	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
-	public @ResponseBody
-	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) {
-		long t1 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
-		String handler = "";
-		String type = "";
-		String downloadFileName = "";
-		String jobTrackingId = "";
-		logger.log(IAppLogger.INFO, to.toString());
-		String fileName = to.getFileName();
-		String pdfFileName = fileName + ".pdf";
-		String zipFileName = fileName + ".zip";
-		try {
-			List<String> filePaths = reportService.getGDFilePaths(to);
-			String button = to.getButton();
-			if ("SS".equals(button)) {
-				// Synchronous : Immediate download for Single Student
-				type = "sync";
-				if ((filePaths != null) && (!filePaths.isEmpty())) {
-					downloadFileName = filePaths.get(0);
-				}
-			} else {
-				// Asynchronous : Create Process Id
-				type = "async";
-				// TODO : Uncomment the following line
-				// jobTrackingId = reportService.createJobTracking(to);
-				// logger.log(IAppLogger.INFO, "jobTrackingId = " +
-				// jobTrackingId);
-
-				// TODO : Make the following part Asynchronous
-				if ("CP".equals(button)) {
-					// Combined Pdf
-					// Merge Pdf files
-					byte[] input = FileUtil.getMergedPdfBytes(filePaths);
-
-					// Create Pdf file in disk
-					FileUtil.createFile(pdfFileName, input);
-
-					// Now read the pdf file from disk
-					byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(pdfFileName));
-
-					// Zip the pdf file
-					byte[] zipData = FileUtil.zipBytes(zipFileName, data);
-
-					// Create Zip file in disk
-					FileUtil.createFile(zipFileName, zipData);
-
-					// Delete the Pdf file from disk
-					logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
-				} else if ("SP".equals(button)) {
-					// Separate Pdfs
-					// Create Zip file in disk from all the pdf files
-					FileUtil.createZipFile(zipFileName, filePaths);
-				}
-				downloadFileName = zipFileName;
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
-			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction(): " + String.valueOf(t2 - t1) + "ms");
-		}
-		String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
-				jobTrackingId, "\"}");
-		logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
-		return jsonString;
-	}
-
-	/**
-	 * @param request
-	 * @param response
-	 */
-	@RequestMapping(value = "/downloadZippedPdf", method = RequestMethod.GET)
-	public void downloadZippedPdf(HttpServletRequest request, HttpServletResponse response) {
-		long t1 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
-
-		String fileName = request.getParameter("fileName");
-		String email = request.getParameter("email");
-		logger.log(IAppLogger.INFO, "fileName=" + fileName);
-		logger.log(IAppLogger.INFO, "email=" + email);
-		String pdfFileName = fileName + ".pdf";
-		String zipFileName = fileName + ".zip";
-		try {
-			// Read the zip file
-			byte[] input = FileUtil.getBytes(zipFileName);
-
-			// Download the file
-			FileUtil.browserDownload(response, input, zipFileName);
-
-			// Send email
-			if ((email != null) && (!email.isEmpty())) {
-				notificationMailGD(email);
-			}
-
-			// Delete the zip file from disk
-			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: downloadZippedPdf(): " + String.valueOf(t2 - t1) + "ms");
-		}
-	}
-
-	/**
-	 * This method is used to send a notification mail after Group Download
-	 * 
-	 * @param email
-	 */
-	private void notificationMailGD(String email) {
-		try {
-			Properties prop = new Properties();
-			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
-			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
-			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
-			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-			String subject = propertyLookup.get("mail.gd.subject");
-			String mailBody = propertyLookup.get("mail.gd.body");
-			logger.log(IAppLogger.INFO, "Email triggered...");
-			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
-			logger.log(IAppLogger.INFO, "Email sent to : " + email);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
-		}
-	}
-	
-	/**
-	 * Arunava Datta
-	 * More Info implementation Report wise
-	 */
-	
-	//For getting the required more info data
-	@RequestMapping(value="/reportMoreInfo", method=RequestMethod.GET )
+	// For getting the required more info data
+	@RequestMapping(value = "/reportMoreInfo", method = RequestMethod.GET)
 	public ModelAndView reportMoreInfo(HttpServletRequest req, HttpServletResponse res) {
-		 logger.log(IAppLogger.INFO, "Enter: ReportController - reportMoreInfo");
-		 ModelAndView modelAndView=new ModelAndView("parent/moreInfo");
-		 try
-		 {
-		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("REPORT_ID",req.getParameter("reportId"));
+		logger.log(IAppLogger.INFO, "Enter: ReportController - reportMoreInfo");
+		ModelAndView modelAndView = new ModelAndView("parent/moreInfo");
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("REPORT_ID", req.getParameter("reportId"));
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MORE_INFO_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
-		  String infoMessage=reportService.getSystemConfigurationMessage(paramMap);
-		  modelAndView.addObject("infoMessage", infoMessage);
+			String infoMessage = reportService.getSystemConfigurationMessage(paramMap);
+			modelAndView.addObject("infoMessage", infoMessage);
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {

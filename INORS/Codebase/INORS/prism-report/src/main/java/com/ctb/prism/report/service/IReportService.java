@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
+import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
@@ -92,7 +93,8 @@ public interface IReportService {
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz) throws SystemException;
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz)
+			throws SystemException;
 
 	/**
 	 * @param paramMap
@@ -231,7 +233,7 @@ public interface IReportService {
 	 * @param to
 	 * @return
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateStudentTableGD(GroupDownloadTO to);
+	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to);
 
 	/**
 	 * 
@@ -246,7 +248,17 @@ public interface IReportService {
 	 * @return
 	 */
 	public String createJobTracking(GroupDownloadTO to);
-	
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
-	
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
+
+	/**
+	 * @param processId
+	 * @return
+	 */
+	public String getProcessDataGD(String processId);
+
 }

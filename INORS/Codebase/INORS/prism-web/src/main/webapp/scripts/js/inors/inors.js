@@ -1205,7 +1205,7 @@ function showHideDownloadButtons() {
 		if (groupFile == "5") { // Student PDF's
 			$("#downloadSeparatePdfsGD").hide();
 			$("#downloadCombinedPdfsGD").hide();
-			$("#downloadSinglePdfsGD").show();
+			$("#downloadSinglePdfsGD").hide(); // TODO : Delete button
 			$("#nameMailDiv").hide();
 		} else if ((groupFile == "1") || (groupFile == "2") || (groupFile == "3")) {
 			$("#downloadSeparatePdfsGD").show();
@@ -1215,7 +1215,7 @@ function showHideDownloadButtons() {
 		} else {
 			$("#downloadSeparatePdfsGD").show();
 			$("#downloadCombinedPdfsGD").show();
-			$("#downloadSinglePdfsGD").show();
+			$("#downloadSinglePdfsGD").hide();
 			$("#nameMailDiv").show();
 		}
 	}

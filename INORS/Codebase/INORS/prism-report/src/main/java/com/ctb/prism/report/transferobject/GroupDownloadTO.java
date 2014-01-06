@@ -3,7 +3,6 @@
  */
 package com.ctb.prism.report.transferobject;
 
-import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
