@@ -198,6 +198,11 @@ public interface IUserQuery {
 			" AND UR.ROLEID=RE.ROLEID AND OU.ORG_NODE_LEVEL=OTS.ORG_LEVEL",
 			" AND RE.ROLE_NAME <> ? AND RE.ROLE_NAME != 'ROLE_PARENT' ORDER BY RE.ROLEID");
 	
+	public static final String GET_ROLE_ADD = CustomStringUtil.appendString(
+			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME, RE.DESCRIPTION DESCRIPTION ",
+			" FROM ROLE RE WHERE RE.ROLE_NAME <> ? and RE.ROLE_NAME <> 'ROLE_PARENT'");
+	
+	
 	public static final String GET_USER_DETAILS_ON_EDIT = CustomStringUtil
 	.appendString(" SELECT USR.USERID AS ID, ",
 			" USR.DISPLAY_USERNAME AS USERNAME, ",
