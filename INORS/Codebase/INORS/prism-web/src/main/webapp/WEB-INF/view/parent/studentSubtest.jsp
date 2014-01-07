@@ -24,7 +24,7 @@
 					items="${childDataMap.studentSubtest}"
 					varStatus="loopSubtestTO">
 						<dd style="min-height: 50px;">
-							 <a class="activitydata" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
+							 <a class="standard-activity" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
 								style="color: #fff; font-weight: bold"
 								id="subtestIdLink">
 									${subtestTO.name}

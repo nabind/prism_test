@@ -4,18 +4,16 @@
 
 <div class="margin-bottom-medium" style="min-height:800px">
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
-	<div id="standardActivityHeader" class="relative"
-		style="height: auto; text-align: justify">
-		<c:choose>
-			<c:when test="${studentName == '-1'}">
-				<h1>Skill-Building Activities</h1>
-			</c:when>
-			<c:otherwise>
-				<h1>Skill-Building Activities for ${studentName}</h1>
-			</c:otherwise>
-		</c:choose>
-		<h3 style="margin:0">Subtest: </h3>
-	</div>
+		<div id="standardActivityHeader" class="relative" style="height: auto; text-align: justify">
+			<c:choose>
+				<c:when test="${studentName == '-1'}">
+					<h1>Skill-Building Activities</h1>
+				</c:when>
+				<c:otherwise>
+					<h1>Skill-Building Activities for ${studentName}</h1>
+				</c:otherwise>
+			</c:choose>
+		</div>
 	</hgroup>
 	<div id="standardActivityMessage" class="relative"
 			style="height: auto; text-align: justify">

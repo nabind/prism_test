@@ -1822,6 +1822,8 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 		ManageContentTO manageContentTO = null;
 		final long articleId = ((Long) paramMap.get("articleId")).longValue(); 
 		final String contentType = (String) paramMap.get("contentType");
+		final long subtestId = ((Long) paramMap.get("subtestId")).longValue(); 
+		final long studentGradeId = ((Long) paramMap.get("studentGradeId")).longValue(); 
 		
 		try{
 			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(
@@ -1829,9 +1831,11 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_DESCRIPTION + "}");
 				            cs.setLong(1, articleId);
-				            cs.setString(2, contentType);
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setLong(2, studentGradeId);
+				            cs.setLong(3, subtestId);
+				            cs.setString(4, contentType);
+				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } , new CallableStatementCallback<Object>()  {
@@ -1841,7 +1845,7 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 			        			try {
 			        				
 			        				cs.execute();
-									rs = (ResultSet) cs.getObject(3);
+									rs = (ResultSet) cs.getObject(5);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
 										manageContentTOResult.setContentId(rs.getLong("ARTICLEID"));

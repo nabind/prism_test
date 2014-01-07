@@ -213,12 +213,30 @@ public class ParentNetworkController {
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/contentDetails");
-		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		final long articleId = Long.parseLong(request.getParameter("articleId")); 
-		final String contentType = (String)request.getParameter("contentType");
-		ManageContentTO manageContentTO=null;
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		long articleId = 0;
+		String contentType = "";
+		long subtestId = 0; 
+		long studentGradeId = 0;
+		String studentGradeName = "";
+		long menuId = 0;
+		
+		articleId = Long.parseLong(request.getParameter("articleId")); 
+		contentType = (String)request.getParameter("contentType");
+		studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
+		studentGradeName = request.getParameter("studentGradeName");
+		menuId = Long.parseLong(request.getParameter("menuId")); 
+		String menuName = (String)request.getParameter("menuName");
+		if(menuId ==  Long.parseLong(propertyLookup.get("menuId.content.rsc"))){
+			subtestId = Long.parseLong(request.getParameter("subtestId")); 
+		}
+		ManageContentTO manageContentTO = null;
+		
 		paramMap.put("articleId", articleId);
 		paramMap.put("contentType", contentType);
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("studentGradeId", studentGradeId);
+		
 		try{
 			manageContentTO = parentService.getArticleDescription(paramMap);
 		}catch(Exception e){
@@ -229,6 +247,10 @@ public class ParentNetworkController {
 			logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - getArticleDescription() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		modelAndView.addObject("articleTypeDescription", manageContentTO);
+		modelAndView.addObject("menuId", menuId);
+		modelAndView.addObject("menuName", menuName);
+		modelAndView.addObject("studentGradeName", studentGradeName);
+		
 		return modelAndView;
 	}
 	
@@ -251,8 +273,8 @@ public class ParentNetworkController {
 	}
 	
 		
-	@RequestMapping(value="/getEveryDayActivitiesDetails", method=RequestMethod.GET)
-	public ModelAndView getEveryDayActivitiesDetails(HttpServletRequest request, HttpServletResponse response) 
+	@RequestMapping(value="/getEverydayActivity", method=RequestMethod.GET)
+	public ModelAndView getEverydayActivity(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getEveryDayActivitiesDetails()");
@@ -279,9 +301,9 @@ public class ParentNetworkController {
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/gradeSubject");
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		final long menuId = Long.parseLong(request.getParameter("menuId")); 
-		final String menuName = (String)request.getParameter("menuName");
-		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		long menuId = Long.parseLong(request.getParameter("menuId")); 
+		String menuName = (String)request.getParameter("menuName");
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		
 		List<ManageContentTO> gradeSubtestList=null;

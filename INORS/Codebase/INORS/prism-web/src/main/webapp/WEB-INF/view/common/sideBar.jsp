@@ -154,21 +154,26 @@
 						<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
 							<li class="with-right-arrow">
 								<a href="#nogo" 
-								id="subtestIdLink">${subtestTO.name}</a>
+								id="">${subtestTO.name}</a>
 										<ul class="big-menu report-menu white-gradient">
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="activitydata" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
-													id="subtestIdLink">Skill Building Activities</a>
+													<a class="standard-activity" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
+													id="">Skill Building Activities</a>
 												</li>
 												
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="standardsdata" href="#nogo"  subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
-													id="subtestIdLink">Standards</a>
+													<a class="standard-indicator" href="#nogo"  subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
+													id="">Standards</a>
 												</li>	
 												
 												<li class="mid-margin-left font-12 small-line-height">
-													<a href="#" 
-													id="">Resources</a>
+													<a class="subtest-link" action="getArticleDescription" subtestId="${subtestTO.subtestId}"
+													studentGradeId="${subtestTO.gradeId}" studentGradeName="${subtestTO.gradeName}" 
+													menuId = '<spring:message code="menuId.content.rsc"/>'  
+													menuName = '<spring:message code="menuName.content.rsc"/>'
+													contentType = '<spring:message code="val.contentType.rsc"/>' 
+													style="font-weight: bold"
+													href="#nogo" id="">Resources</a>
 												</li>
 													
 												<li class="mid-margin-left font-12 small-line-height">
@@ -180,7 +185,12 @@
 						</c:forEach>
 						<c:if test="${not empty childDataMap}">
 						<li class="" id="select-tooltip-10">
-							<a href="#nogo" >Everyday Activities</a>
+							<a class="grade-link" action="getArticleDescription" studentGradeId="${gradeSubtestTO.gradeId}" 
+										studentGradeName="${gradeSubtestTO.gradeName}" menuId = '<spring:message code="menuId.content.eda"/>' 
+										menuName = '<spring:message code="menuName.content.eda"/>' 
+										contentType = '<spring:message code="val.contentType.eda"/>' 
+										style="font-weight: bold"
+										href="#nogo" id="">-  <spring:message code="menuName.content.eda"/></a>
 						</li>
 						<li class="" id="select-tooltip-10">
 							<a href="#nogo" >About the Tests</a>
@@ -199,10 +209,15 @@
 									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	"> 
 									 	<a href="getBrowseContent.do"  id="">Browse Content </a>
 											 <ul class="big-menu report-menu white-gradient">
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Overview</a></li>
+											 		<li class="mid-margin-left font-12 small-line-height"><a href="getBrowseContent.do"  id="">- Overview</a></li>
 											 		<li class="mid-margin-left font-12 small-line-height">
-											 		<a href="getStandardActivity.do?subtestId=${subtestTO.value}&studentName=${childDataMap.studentName}&studentGradeId=${childDataMap.studentGradeId}&studentBioId=${childDataMap.studentBioId}&studentGradeName=${childDataMap.studentGradeName}" 
-											        id="subtestIdLink"> - Skill-Building Activities</a>
+											 		<a class="standard-activity" href="#nogo" 
+											 			subtestId="${subtestTO.value}" 
+											 			studentName="${childDataMap.studentName}" 
+											 			studentGradeId="${childDataMap.studentGradeId}" 
+											 			studentGradeName="${childDataMap.studentGradeName}"> 
+											 				- Skill-Building Activities
+											 		</a>
 											        </li>
 											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Standards</a></li>
 											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Resources</a></li>

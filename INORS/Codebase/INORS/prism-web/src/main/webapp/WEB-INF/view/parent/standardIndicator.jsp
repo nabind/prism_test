@@ -4,8 +4,7 @@
 
 <div class="margin-bottom-medium" style="min-height:800px">
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
-	<div id="standardIndicatorHeader" class="relative"
-		style="height: auto; text-align: justify">
+	<div id="standardIndicatorHeader" class="relative" style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${studentName == '-1'}">
 				<h1>Standards</h1>
@@ -14,7 +13,6 @@
 				<h1>Standards for ${studentName}</h1>
 			</c:otherwise>
 		</c:choose>		
-		<h3 style="margin:0">Subtest: </h3>
 	</div>
 	</hgroup>
 	<div id="standardIndicatorMessage" class="relative"

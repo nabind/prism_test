@@ -452,7 +452,7 @@ public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil
 	    
 	    public static final String GET_ARTICLE_TYPE_DETAILS = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_ARTICLE_TYPE_DETAILS(?,?,?,?,?,?)");
 	    
-	    public static final String GET_ARTICLE_DESCRIPTION = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_ARTICLE_DESCRIPTION(?,?,?,?)");
+	    public static final String GET_ARTICLE_DESCRIPTION = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_ARTICLE_DESCRIPTION(?,?,?,?,?,?)");
 	    
 	    public static final String GET_GRADE_SUBTEST_INFO = CustomStringUtil.appendString("PKG_PARENT_NETWORK.SP_GET_GRADE_SUBTEST_DETAILS(?,?,?)");
 	    

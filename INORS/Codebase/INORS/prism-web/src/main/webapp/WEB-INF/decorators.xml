@@ -36,6 +36,7 @@
 		<pattern>/getStandardActivity*</pattern>
 		<pattern>/getStandardIndicator*</pattern>
 		<pattern>/getArticleDescription*</pattern>
+		<pattern>/getGradeSubtestInfo*</pattern>
     </decorator>
 	
 	<decorator name="report" page="reporttemplate.jsp">
