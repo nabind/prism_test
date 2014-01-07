@@ -158,10 +158,12 @@ public interface IAdminBusiness {
 
 	/**
 	 * @param roleid
+	 * @param currentOrg
+	 * @param customer
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception;
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception;
 
 	/**
 	 * @param roleid
@@ -175,7 +177,7 @@ public interface IAdminBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid) throws Exception;
+	public RoleTO getRoleDetailsById(String roleid,String currentOrg, String customer) throws Exception;
 
 	/**
 	 * @param roleId

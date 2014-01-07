@@ -186,7 +186,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception;
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception;
 
 	/**
 	 * @param roleid
@@ -200,7 +200,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid) throws Exception;
+	public RoleTO getRoleDetailsById(String roleid,String currentOrg, String customer) throws Exception;
 
 	/**
 	 * @param paramMap

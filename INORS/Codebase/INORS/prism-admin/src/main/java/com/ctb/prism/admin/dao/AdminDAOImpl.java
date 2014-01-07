@@ -988,9 +988,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param role
 	 * @return RoleTO
 	 */
-	public RoleTO getRoleDetailsById(String roleid) {
+	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) {
 		RoleTO roleTO = new RoleTO();
 		List<Map<String, Object>> lstData = null;
+		try {
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_DETAILS_BY_ID, roleid);
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
@@ -999,7 +1000,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				roleTO.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
 			}
 		}
-		roleTO.setUserList(getUsersForSelectedRole(roleid));
+		
+			roleTO.setUserList(getUsersForSelectedRole(roleid,currentOrg,customer));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return roleTO;
 	}
 
@@ -1009,12 +1015,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param roleid
 	 * @return List of users
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) {
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception {
 
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 
 		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USERS_FOR_SELECTED_ROLE, roleid);
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USERS_FOR_SELECTED_ROLE, roleid, 
+				Long.valueOf(customer).longValue(),Long.valueOf(customer).longValue(), Long.valueOf(currentOrg).longValue());
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 
 		if (lstData.size() > 0) {

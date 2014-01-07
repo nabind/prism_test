@@ -164,10 +164,12 @@ public interface IAdminDAO {
 
 	/**
 	 * @param roleid
+	 * @param currentOrg
+	 * @param customer
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception;
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception;
 
 	/**
 	 * @param roleid
@@ -181,7 +183,7 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid) throws Exception;
+	public RoleTO getRoleDetailsById(String roleid,  String currentOrg, String customer) throws Exception;
 
 	/**
 	 * Associate user for that role in database through associate button in edit role popup screen.

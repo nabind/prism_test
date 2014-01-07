@@ -980,12 +980,16 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - editRole");
 		List<RoleTO> roleList = new ArrayList<RoleTO>();
 		RoleTO roleTo = new RoleTO();
+		
+		String currentOrg = (String) request.getSession().getAttribute(
+				IApplicationConstants.CURRORG);
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 	
 		try {
 		String roleId = (String)request.getParameter("roleId");
 		//String roleId = "2000005";
 		if (roleId != null) {
-			roleTo = adminService.getRoleDetailsById(roleId);
+			roleTo = adminService.getRoleDetailsById(roleId, currentOrg,  customer);
 			roleList.add(roleTo);
 		}
 		
@@ -1101,6 +1105,9 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - associateUser");
 		List<RoleTO> roleList = new ArrayList<RoleTO>();
 		RoleTO roleTo = new RoleTO();
+		String currentOrg = (String) request.getSession().getAttribute(
+				IApplicationConstants.CURRORG);
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 		try {
 			String roleId = (String) request.getParameter("roleId");
@@ -1114,7 +1121,7 @@ public class AdminController {
 					if (roleId != null && userName != null) {
 						boolean isSaved = adminService.associateUserToRole(roleId, userName);
 						if (isSaved) {
-							roleTo = adminService.getRoleDetailsById(roleId);
+							roleTo = adminService.getRoleDetailsById(roleId,currentOrg,customer);
 							roleList.add(roleTo);
 						}
 					}
@@ -1158,6 +1165,10 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - dissociateUser");
 		List<RoleTO> roleList = new ArrayList<RoleTO>();
 		RoleTO roleTo = new RoleTO();
+		
+		String currentOrg = (String) request.getSession().getAttribute(
+				IApplicationConstants.CURRORG);
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 		try {
 			String roleId = (String) request.getParameter("roleId");
@@ -1166,7 +1177,7 @@ public class AdminController {
 			if (roleId != null && userId != null) {
 				boolean isDeleted = adminService.deleteUserFromRole(roleId, userId);
 				if (isDeleted) {
-					roleTo = adminService.getRoleDetailsById(roleId);
+					roleTo = adminService.getRoleDetailsById(roleId,currentOrg,customer);
 					roleList.add(roleTo);
 				}
 			}

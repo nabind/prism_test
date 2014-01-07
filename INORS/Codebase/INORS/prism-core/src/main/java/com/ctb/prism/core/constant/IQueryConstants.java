@@ -151,7 +151,18 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String GET_ROLE_DETAILS_BY_ID = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION  FROM ROLE WHERE ROLEID = ?";
 	
-	public static final String GET_USERS_FOR_SELECTED_ROLE = "select ou.userid user_id, ou.username, org.org_NODE_level from users ou, user_role ur, org_users org where ou.userid = ur.userid and ou.userid = org.userid and ur.roleid = ?";
+	/*public static final String GET_USERS_FOR_SELECTED_ROLE = "select ou.userid user_id, ou.username, org.org_NODE_level from users ou, user_role ur, org_users org where ou.userid = ur.userid and ou.userid = org.userid and ur.roleid = ?";*/
+	
+	public static final String GET_USERS_FOR_SELECTED_ROLE =CustomStringUtil.appendString(
+			"SELECT OU.USERID USER_ID, OU.USERNAME, ORG.ORG_NODE_LEVEL ",
+			" FROM USERS OU, USER_ROLE UR, ORG_USERS ORG ",
+			" WHERE OU.USERID = UR.USERID ",
+			" AND OU.USERID = ORG.USERID ",
+			" AND UR.ROLEID = ?",
+			" AND OU.CUSTOMERID = ?",
+			" AND ORG.ORG_NODEID IN (SELECT ORG_NODEID FROM ORG_NODE_DIM WHERE CUSTOMERID = ? ",
+			" CONNECT BY NOCYCLE PRIOR ORG_NODEID = PARENT_ORG_NODEID START WITH ORG_NODEID = ?)");
+	
 	
 	public static final String DELETE_ROLE_FROM_ROLES_TABLE ="DELETE FROM ROLE WHERE ROLEID = ?";
 	

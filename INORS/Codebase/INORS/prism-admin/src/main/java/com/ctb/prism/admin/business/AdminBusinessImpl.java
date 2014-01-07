@@ -197,8 +197,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getUsersForSelectedRole(java.lang.String)
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception {
-		return adminDAO.getUsersForSelectedRole(roleid);
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception{
+		return adminDAO.getUsersForSelectedRole(roleid, currentOrg,  customer);
 	}
 
 	/*
@@ -215,8 +215,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getRoleDetailsById(java.lang.String)
 	 */
-	public RoleTO getRoleDetailsById(String roleid) throws Exception {
-		return adminDAO.getRoleDetailsById(roleid);
+	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception {
+		return adminDAO.getRoleDetailsById(roleid,currentOrg,customer);
 	}
 
 	/*

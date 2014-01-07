@@ -190,8 +190,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getUsersForSelectedRole(java.lang.String)
 	 */
-	public ArrayList<UserTO> getUsersForSelectedRole(String roleid) throws Exception {
-		return adminBusiness.getUsersForSelectedRole(roleid);
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer) throws Exception {
+		return adminBusiness.getUsersForSelectedRole(roleid, currentOrg, customer);
 	}
 
 	/*
@@ -209,8 +209,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getRoleDetailsById(java.lang.String)
 	 */
-	public RoleTO getRoleDetailsById(String roleid) throws Exception {
-		return adminBusiness.getRoleDetailsById(roleid);
+	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception {
+		return adminBusiness.getRoleDetailsById(roleid,currentOrg,customer);
 	}
 
 	/*
