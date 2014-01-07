@@ -637,4 +637,13 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String getProcessDataGD(String processId) {
 		return reportDAO.getProcessDataGD(processId);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getConventionalFileNameGD(java.lang.Long)
+	 */
+	public String getConventionalFileNameGD(Long studentBioId) {
+		return reportDAO.getConventionalFileNameGD(studentBioId);
+	}
 }

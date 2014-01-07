@@ -279,4 +279,10 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public String getProcessDataGD(String processId);
+
+	/**
+	 * @param studentBioId
+	 * @return
+	 */
+	public String getConventionalFileNameGD(Long studentBioId);
 }

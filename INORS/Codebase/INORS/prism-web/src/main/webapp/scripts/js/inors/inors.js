@@ -160,20 +160,11 @@ $(document).ready(function() {
 	});
 
 	// Group Download
-	$("#testAdministrationGD").live("change", function(event) {
-	});
-	
-	$("#testProgramGD").live("change", function(event) {
-	});
-	
-	$('#corpDioceseGD').live('change', function() {
-	});
-	
-	$('#schoolGD').live('change', function() {
-	});
-	
-	$('#classGD').live('change', function() {
-		populateStudentTableGD();
+	$("#studentTableGDSelect").live("change", function(event) {
+		var num = $("#studentTableGDSelect").val();
+		// alert("num=" + num);
+		$("#studentTableGDSelectedVal").html(num);
+		// alert("html=" + $("#studentTableGDSelectedVal").html());
 	});
 	$('#check-all').change(function() {
 		var checkboxes = $(this).closest('form').find(':checkbox');

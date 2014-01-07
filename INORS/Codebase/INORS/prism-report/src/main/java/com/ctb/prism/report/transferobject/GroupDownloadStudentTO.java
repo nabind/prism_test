@@ -11,6 +11,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
  */
 public class GroupDownloadStudentTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
+	private Integer rowNum;
 	private String id;
 	private String name;
 	private String klass;
@@ -19,6 +20,21 @@ public class GroupDownloadStudentTO extends BaseTO {
 	private String ip;
 	private String both;
 	private String ic;
+
+	/**
+	 * @return the rowNum
+	 */
+	public Integer getRowNum() {
+		return rowNum;
+	}
+
+	/**
+	 * @param rowNum
+	 *            the rowNum to set
+	 */
+	public void setRowNum(Integer rowNum) {
+		this.rowNum = rowNum;
+	}
 
 	/**
 	 * @return the id

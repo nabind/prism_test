@@ -261,4 +261,10 @@ public interface IReportService {
 	 */
 	public String getProcessDataGD(String processId);
 
+	/**
+	 * @param studentBioId
+	 * @return
+	 */
+	public String getConventionalFileNameGD(Long studentBioId);
+
 }

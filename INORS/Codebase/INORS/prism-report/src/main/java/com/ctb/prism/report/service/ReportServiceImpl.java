@@ -362,4 +362,13 @@ public class ReportServiceImpl implements IReportService {
 	public String getProcessDataGD(String processId) {
 		return reportBusiness.getProcessDataGD(processId);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getConventionalFileNameGD(java.lang.Long)
+	 */
+	public String getConventionalFileNameGD(Long studentBioId) {
+		return reportBusiness.getConventionalFileNameGD(studentBioId);
+	}
 }

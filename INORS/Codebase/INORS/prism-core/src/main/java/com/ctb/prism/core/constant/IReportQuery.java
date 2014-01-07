@@ -249,5 +249,32 @@ public interface IReportQuery {
 					" REQUEST_FILENAME, REQUEST_EMAIL, JOB_LOG, JOB_STATUS,",
 					" ADMINID, CUSTOMERID) VALUES ",
 					"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	
+	public static final String GET_FILENAME_GD = CustomStringUtil.appendString(
+			"SELECT DISTINCT 'IN'||",
+			" FACT.TEST_DATE||'.'||",
+			" FACT.ISTEP_TEST_NAME||'.'||",
+			" FACT.ORGTSTGPGM||'.'||",
+			" DISTRICT.ORG_NODE_NAME||'.'||",
+			" DISTRICT.ORG_NODEID ||'.'||",
+			" SCHOOL.ORG_NODE_NAME ||'.'||",
+			" SCHOOL.ORG_NODEID ||'.'||",
+			" FACT.GRADEID",
+			" /*StudentElementNo ||'.'||",
+			" ReSortID */ FILE_NAME",
+			" FROM ORG_NODE_DIM DISTRICT,",
+			" ORG_NODE_DIM SCHOOL,",
+			" ORG_LSTNODE_LINK LINK1,",
+			" ORG_LSTNODE_LINK LINK2,",
+			" RESULTS_GRT_FACT FACT",
+			" WHERE FACT.STUDENT_BIO_ID = ?",
+			" AND FACT.ORG_NODEID = LINK2.ORG_LSTNODEID",
+			" AND LINK2.ORG_NODEID = DISTRICT.ORG_NODEID",
+			" AND DISTRICT.ORG_NODE_LEVEL = 2",
+			" AND DISTRICT.ORG_NODEID = SCHOOL.PARENT_ORG_NODEID",
+			" AND SCHOOL.ORG_NODEID = LINK1.ORG_NODEID",
+			" AND LINK1.ORG_LSTNODEID = FACT.ORG_NODEID",
+			" AND SCHOOL.ORG_NODE_LEVEL = 3"
+			);
 }
 

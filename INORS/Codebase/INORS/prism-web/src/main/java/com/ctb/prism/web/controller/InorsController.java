@@ -98,6 +98,7 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/groupDownloadFiles", method = RequestMethod.GET)
 	public ModelAndView groupDownloadFiles(HttpServletRequest request, HttpServletResponse response) throws SystemException {
+		logger.log(IAppLogger.INFO, "Enter: groupDownloadFiles()");
 		ModelAndView modelAndView = new ModelAndView("inors/groupDownloadFiles");
 		String grpList = "";
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
@@ -111,6 +112,7 @@ public class InorsController {
 		}
 
 		logger.log(IAppLogger.DEBUG, grpList);
+		logger.log(IAppLogger.INFO, "Exit: groupDownloadFiles()");
 		return modelAndView;
 	}
 
@@ -124,8 +126,8 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/deleteGroupDownloadFiles", method = RequestMethod.GET)
 	public ModelAndView deleteGroupDownloadFiles(HttpServletRequest req, HttpServletResponse res) {
+		logger.log(IAppLogger.INFO, "Enter: deleteGroupDownloadFiles()");
 		try {
-			logger.log(IAppLogger.INFO, "Enter: InorsController - deleteGroupDownloadFiles");
 			String Id = (String) req.getParameter("jobId");
 			logger.log(IAppLogger.INFO, "Id of the file to delete is ........................." + Id);
 			boolean isDeleted = reportService.deleteGroupFiles(Id);
@@ -135,12 +137,10 @@ public class InorsController {
 				status = "Success";
 			}
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
-
-			logger.log(IAppLogger.INFO, "Enter: InorsController - deleteGroupDownloadFiles");
-
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error deleting Group File", e);
 		}
+		logger.log(IAppLogger.INFO, "Exit: deleteGroupDownloadFiles()");
 		return null;
 	}
 
@@ -156,7 +156,6 @@ public class InorsController {
 	@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
 	public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
-
 		String Id = (String) request.getParameter("jobId");
 		String filePath = (String) request.getParameter("filePath");
 		String fileName = (String) request.getParameter("fileName");
@@ -191,8 +190,7 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/checkFileAvailability", method = RequestMethod.GET)
 	public ModelAndView checkFileAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
-		logger.log(IAppLogger.INFO, "Enter: InorsController - checkFileAvailability");
+		logger.log(IAppLogger.INFO, "Enter: checkFileAvailability()");
 		String filePath = (String) req.getParameter("filePath");
 		File file = new File(filePath);
 		String status = "Fail";
@@ -206,18 +204,20 @@ public class InorsController {
 			res.setContentType("text/plain");
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
+		logger.log(IAppLogger.INFO, "Exit: checkFileAvailability()");
 		return null;
 	}
 
 	/**
-	 * For getting the required data for a particular request while viewing.
-	 * Arunava Datta
+	 * For getting the required data for a particular request while viewing. Arunava Datta
+	 * 
 	 * @param req
 	 * @param res
 	 * @return
 	 */
 	@RequestMapping(value = "/getRequestDetailViewData", method = RequestMethod.GET)
 	public ModelAndView getRequestDetailViewData(HttpServletRequest req, HttpServletResponse res) {
+		logger.log(IAppLogger.INFO, "Enter: getRequestDetailViewData()");
 		try {
 			String jobId = (String) req.getParameter("jobId");
 			Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -233,7 +233,7 @@ public class InorsController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ReportController - getRequestDetailViewData Details");
+			logger.log(IAppLogger.INFO, "Exit: getRequestDetailViewData()");
 		}
 		return null;
 	}
@@ -247,8 +247,10 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/downloadCandicateReportPage", method = RequestMethod.GET)
 	public ModelAndView bulkCandidateReportDownload(HttpServletRequest request, HttpServletResponse response) throws SystemException {
+		logger.log(IAppLogger.INFO, "Enter: bulkCandidateReportDownload()");
 		ModelAndView modelAndView = new ModelAndView("inors/bulkCandidateReport");
 		modelAndView.addObject("reportUrl", "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files");
+		logger.log(IAppLogger.INFO, "Exit: bulkCandidateReportDownload()");
 		return modelAndView;
 	}
 
@@ -262,6 +264,7 @@ public class InorsController {
 	@RequestMapping(value = "/downloadCandicateReport", method = RequestMethod.GET)
 	public @ResponseBody
 	String downloadCandicateReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: downloadCandicateReport()");
 		String status = "Error";
 		try {
 			String startDate = request.getParameter("p_Start_Date");
@@ -377,12 +380,15 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, ex.getMessage(), ex);
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
+		logger.log(IAppLogger.INFO, "Exit: downloadCandicateReport()");
 		return null;
 	}
 
 	@RequestMapping(value = "/icLetterDownloads", method = RequestMethod.GET)
 	public ModelAndView icLetterDownloads(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: icLetterDownloads()");
 		request.setAttribute("icDownload", "true");
+		logger.log(IAppLogger.INFO, "Exit: icLetterDownloads()");
 		return groupDownloadForm(request, response);
 	}
 
@@ -395,23 +401,25 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/groupDownloadForm", method = RequestMethod.GET)
 	public ModelAndView groupDownloadForm(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: groupDownloadForm()");
 		ModelAndView modelAndView = null;
-		
+
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		//Amitabha to pass the reportId.As of now its hard coded.
-		paramMap.put("REPORT_ID","963");
+		String reportId = (String) request.getParameter("reportId");
+		logger.log(IAppLogger.INFO, "reportId=" + reportId);
+		paramMap.put("REPORT_ID", reportId);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
-		String groupDownloadInstructionMessage  = reportService.getSystemConfigurationMessage(paramMap);
+		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
 		String reportUrl = (String) request.getParameter("reportUrl");
-        
+		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
 		try {
 			Map<String, Object> parameters = null;
 			// get all input controls for report
@@ -432,6 +440,7 @@ public class InorsController {
 			String grade = (String) request.getParameter("p_grade_ppr");
 			String groupFile = (String) request.getParameter("p_generate_file");
 			String collationHierarchy = (String) request.getParameter("p_collation");
+
 			String fileName = (String) request.getParameter("fileName");
 			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
@@ -439,6 +448,11 @@ public class InorsController {
 					fileName = fileNameConventionGD(fileName, currentUser);
 					request.getSession().setAttribute("FILE_NAME_GD", fileName);
 				}
+			}
+
+			String email = (String) request.getParameter("email");
+			if ((email == null) || (email.equalsIgnoreCase("null"))) {
+				email = (String) request.getSession().getAttribute("EMAIL_GD");
 			}
 			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
@@ -473,9 +487,9 @@ public class InorsController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		}
-		modelAndView.addObject("groupDownloadInstructionMessage",groupDownloadInstructionMessage);
+		modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
 		modelAndView.addObject("reportUrl", reportUrl);
-
+		logger.log(IAppLogger.INFO, "Exit: groupDownloadForm()");
 		return modelAndView;
 	}
 
@@ -495,7 +509,7 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, "populateStudentTableGD() :" + e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD(): " + String.valueOf(t2 - t1) + "ms");
 		}
 		return studentList;
 	}
@@ -511,7 +525,6 @@ public class InorsController {
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
 	public @ResponseBody
 	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) throws SystemException {
-		long t1 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String handler = "";
 		String type = "";
@@ -519,25 +532,20 @@ public class InorsController {
 		String jobTrackingId = "";
 		logger.log(IAppLogger.INFO, to.toString());
 		try {
-			if ("SS".equals(to.getButton())) { // TODO: Delete this button
-				// Synchronous : Immediate download for Single Student
-				type = "sync";
-				List<String> filePaths = reportService.getGDFilePaths(to);
-				if ((filePaths != null) && (!filePaths.isEmpty())) {
-					downloadFileName = filePaths.get(0);
-				}
-			} else {
-				// Asynchronous : Create Process Id
-				type = "async";
+			/*
+			 * if ("SS".equals(to.getButton())) { // TODO: Delete this button // Synchronous : Immediate download for Single Student type = "sync"; List<String> filePaths =
+			 * reportService.getGDFilePaths(to); if ((filePaths != null) && (!filePaths.isEmpty())) { downloadFileName = filePaths.get(0); } } else {
+			 */
+			// Asynchronous : Create Process Id
+			type = "async";
+			if ((to.getStudents() != null) && (!to.getStudents().isEmpty())) {
 				jobTrackingId = reportService.createJobTracking(to);
-				logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
 			}
+			logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
+			/* } */
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction(): " + String.valueOf(t2 - t1) + "ms");
 		}
 		String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
 				jobTrackingId, "\"}");
@@ -545,7 +553,7 @@ public class InorsController {
 
 		// TODO : JMS Integration for processGroupDownload() method
 		processGroupDownload(jobTrackingId);
-
+		logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction()");
 		return jsonString;
 	}
 
@@ -572,10 +580,10 @@ public class InorsController {
 			filePaths = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 			if (!filePaths.isEmpty()) {
-				String pdfFileName = fileName + ".pdf";
-				String zipFileName = fileName + ".zip";
 				try {
 					if ("CP".equals(button)) {
+						String pdfFileName = fileName + ".pdf";
+						String zipFileName = fileName + ".zip";
 						// Combined Pdf
 						// Merge Pdf files
 						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
@@ -597,15 +605,16 @@ public class InorsController {
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 					} else if ("SP".equals(button)) {
+						// TODO : Rename all files as per convention before zipping in case of IC
+						// fileName = reportService.getConventionalFileNameGD(studentBioId);
+						String zipFileName = fileName + ".zip";
 						// Separate Pdfs
 						// Create Zip file in disk from all the pdf files
 						FileUtil.createZipFile(zipFileName, filePaths);
 					}
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -659,6 +668,7 @@ public class InorsController {
 	 * @param email
 	 */
 	private void notificationMailGD(String email) {
+		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
@@ -673,6 +683,7 @@ public class InorsController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
 		}
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 
 	/**
@@ -683,11 +694,13 @@ public class InorsController {
 	 * @return
 	 */
 	private String fileNameConventionGD(String fileName, String currentUser) {
+		logger.log(IAppLogger.INFO, "Enter: fileNameConventionGD()");
 		if ((fileName != null) && (!fileName.equalsIgnoreCase("null")))
 			return fileName;
 		String generatedFileName = "";
 		generatedFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
 		logger.log(IAppLogger.INFO, "generatedFileName=" + generatedFileName);
+		logger.log(IAppLogger.INFO, "Exit: fileNameConventionGD()");
 		return generatedFileName;
 	}
 
@@ -703,7 +716,7 @@ public class InorsController {
 	@RequestMapping(value = "/groupDownloadHierarchy", method = RequestMethod.GET)
 	public @ResponseBody
 	String getTenantHierarchy(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		logger.log(IAppLogger.INFO, "Enter: getTenantHierarchy()");
 		List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		String orgJsonString;
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
@@ -761,7 +774,7 @@ public class InorsController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		}
-
+		logger.log(IAppLogger.INFO, "Exit: getTenantHierarchy()");
 		return null;
 	}
 
@@ -777,6 +790,7 @@ public class InorsController {
 	@RequestMapping(value = "/downloadBulkPdf", method = RequestMethod.GET)
 	public @ResponseBody
 	String downloadBulkPdf(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: downloadBulkPdf()");
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
@@ -840,6 +854,7 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
+		logger.log(IAppLogger.INFO, "Exit: downloadBulkPdf()");
 		return null;
 	}
 
@@ -855,8 +870,17 @@ public class InorsController {
 	@RequestMapping(value = "/retainDownloadValues", method = RequestMethod.GET)
 	public @ResponseBody
 	String retainDownloadValues(@ModelAttribute("groupDownload") BulkDownloadTO bulkDownloadTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: retainDownloadValues()");
 		request.getSession().setAttribute("retainBulkDownloadTO", bulkDownloadTO);
-		logger.log(IAppLogger.INFO, "Retaining from values");
+
+		String fileName = request.getParameter("fileName");
+		String email = request.getParameter("email");
+		logger.log(IAppLogger.INFO, "fileName=" + fileName);
+		logger.log(IAppLogger.INFO, "email=" + email);
+		request.getSession().setAttribute("FILE_NAME_GD", fileName);
+		request.getSession().setAttribute("EMAIL_GD", email);
+
+		logger.log(IAppLogger.INFO, "Exit: retainDownloadValues()");
 		return null;
 	}
 
@@ -990,6 +1014,7 @@ public class InorsController {
 	/**
 	 * @param request
 	 * @return
+	 * @deprecated
 	 */
 	@RequestMapping(value = "/populateDistrictGrt", method = RequestMethod.GET)
 	public @ResponseBody
@@ -1008,7 +1033,7 @@ public class InorsController {
 			e.printStackTrace();
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateDistrictGrt() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: populateDistrictGrt(): " + String.valueOf(t2 - t1) + "ms");
 		}
 		return jsonString;
 	}
@@ -1018,6 +1043,7 @@ public class InorsController {
 	 * 
 	 * @param request
 	 * @return
+	 * @deprecated
 	 */
 	@RequestMapping(value = "/populateSchoolGrt", method = RequestMethod.GET)
 	public @ResponseBody
@@ -1036,7 +1062,7 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Exit: populateSchoolGrt() took time: ", String.valueOf(t2 - t1), "ms"));
+			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Exit: populateSchoolGrt(): ", String.valueOf(t2 - t1), "ms"));
 		}
 		return jsonString;
 	}
@@ -1049,7 +1075,6 @@ public class InorsController {
 
 	@Scheduled(cron = "* * 1 * * ?")
 	public void doSomething() throws Exception {
-
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES --------------- ");
 		String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
 		reportService.deleteScheduledGroupFiles(gdfExpiryTime);

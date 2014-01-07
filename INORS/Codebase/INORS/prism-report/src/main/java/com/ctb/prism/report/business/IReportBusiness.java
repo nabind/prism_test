@@ -256,4 +256,10 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public String getProcessDataGD(String processId);
+
+	/**
+	 * @param studentBioId
+	 * @return
+	 */
+	public String getConventionalFileNameGD(Long studentBioId);
 }

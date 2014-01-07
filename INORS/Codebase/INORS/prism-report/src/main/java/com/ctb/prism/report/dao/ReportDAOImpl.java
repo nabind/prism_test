@@ -1,8 +1,8 @@
 package com.ctb.prism.report.dao;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,7 +31,6 @@ import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
 import org.springframework.stereotype.Repository;
 
-import com.amazonaws.util.StringInputStream;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
@@ -214,7 +213,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					try {
 						throw new JRException(e.getMessage());
 					} catch (JRException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report " + reportPath, e);
@@ -1063,9 +1061,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { classId });
 			}
 		}
+		Integer rowNum = 0;
 		if (dataList != null && dataList.size() > 0) {
 			for (Map<String, Object> data : dataList) {
 				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
+				student.setRowNum(++rowNum);
 				student.setId(data.get("ID").toString());
 				student.setName(data.get("NAME").toString());
 				student.setKlass(data.get("CLASS").toString());
@@ -1075,8 +1075,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String ip = data.get("IP").toString().trim();
 				student.setIsr(isr);
 				student.setIp(ip);
-				if (isr.length() > 0 && ip.length() > 0)
-					student.setBoth(""); // TODO
 				studentList.add(student);
 			}
 		}
@@ -1106,33 +1104,34 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public String createJobTracking(GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: createJobTracking()");
+		String button = to.getButton();
+		String fileName = to.getFileName();
+		String groupFile = to.getGroupFile();
+		String students = to.getStudents();
 		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
+		logger.log(IAppLogger.INFO, "button = " + button);
+		logger.log(IAppLogger.INFO, "fileName = " + fileName);
+		logger.log(IAppLogger.INFO, "groupFile = " + groupFile);
+		logger.log(IAppLogger.INFO, "students = " + students);
+
 		Long userid = null;
 		String job_name = null;
-		// TODO : recheck hard coded values
-		String extract_category = "PD"; // As per requirement email
-		String extract_filetype = "";
-		String groupFile = to.getGroupFile();
-		if ("4".equals(groupFile)) {
-			extract_filetype = "ICL"; // Invitation Code Letter
-		} else if ("3".equals(groupFile)) {
-			extract_filetype = "BOTH"; // Both (IP and ISR)
-		} else if ("2".equals(groupFile)) {
-			extract_filetype = "IPR"; // Image Prints
-		} else if ("1".equals(groupFile)) {
-			extract_filetype = "ISR"; // Individual Student Report
-		}
+		String extract_category = "AE"; // As per requirement email
+		String extract_filetype = groupFile;
+
+		/*
+		 * if ("4".equals(groupFile)) { extract_filetype = "ICL"; // Invitation Code Letter } else if ("3".equals(groupFile)) { extract_filetype = "BOTH"; // Both (IP and ISR) } else if
+		 * ("2".equals(groupFile)) { extract_filetype = "IPR"; // Image Prints } else if ("1".equals(groupFile)) { extract_filetype = "ISR"; // Individual Student Report }
+		 */
+		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
 		String request_type = "GDF"; // As per requirement email
 		String request_summary = null;
-		String request_details_str = to.getButton() + "|" + to.getFileName() + "|" + to.getGroupFile() + "|" + to.getStudents();
+		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + students;
 		InputStream is = null;
-		try {
-			is = new StringInputStream(request_details_str);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		is = new ByteArrayInputStream(request_details_str.getBytes());
+
 		LobHandler lobHandler = new DefaultLobHandler();
 		String request_filename = null;
 		String request_email = null;
@@ -1147,6 +1146,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				new int[] { Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
 						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC });
 		logger.log(IAppLogger.INFO, "count = " + count);
+		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
 		return job_id.toString();
 	}
 
@@ -1156,25 +1156,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<String> getGDFilePaths(GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: getGDFilePaths()");
 		List<String> filePaths = new ArrayList<String>();
 		String students = to.getStudents();
 		String groupFile = to.getGroupFile();
-		if ("4".equals(groupFile)) {
+		logger.log(IAppLogger.INFO, "students: " + students);
+		logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
+		if ("ICL".equals(groupFile)) {
 			// Invitation Code Letter
 			filePaths = getICLetterPaths(students);
-		} else if ("3".equals(groupFile)) {
+		} else if ("BOTH".equals(groupFile)) {
 			// Both (IP and ISR)
 			filePaths = getBothPaths(students);
-		} else if ("2".equals(groupFile)) {
+		} else if ("IPR".equals(groupFile)) {
 			// Image Prints
 			filePaths = getIPPaths(students);
-		} else if ("1".equals(groupFile)) {
+		} else if ("ISR".equals(groupFile)) {
 			// Individual Student Report
 			filePaths = getISRPaths(students);
 		}
-		// TODO : Comment out or delete the next line after testing
-		// if (filePaths == null || filePaths.isEmpty()) filePaths = getMockFilePaths();
 		logger.log(IAppLogger.INFO, "filePaths.size(): " + filePaths.size());
+		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
 		return filePaths;
 	}
 
@@ -1303,5 +1305,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		return clobStr;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getConventionalFileNameGD(java.lang.Long)
+	 */
+	public String getConventionalFileNameGD(Long studentBioId) {
+		String conventionalFileName = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_FILENAME_GD, studentBioId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				conventionalFileName = (String) fieldDetails.get("FILE_NAME");
+			}
+		}
+		return conventionalFileName;
 	}
 }
