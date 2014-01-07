@@ -333,8 +333,6 @@ public interface IUserQuery {
 	public static final String ALL_ORG_NODE_LEVEL = CustomStringUtil.appendString(
 			" SELECT DISTINCT ORG_LEVEL VALUE, ORG_LABEL NAME",
 			" FROM ORG_TP_STRUCTURE",
-			" UNION ",
-			" SELECT -99 VALUE,'Education Center' NAME FROM DUAL",
 			" ORDER BY VALUE ");
 	
 	public static final String INSERT_EDU_CENTER_USER = CustomStringUtil.appendString(
