@@ -21,26 +21,6 @@
 	<div class="columns with-padding" style="padding-left:23px !important;">
 		<span class="tag" id="studCount">0</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
 	</div>
-	
-	<div class="columns accordion with-padding">
-		<p class="inline-label">
-			<label for="groupFile" class="label">Generate Group File of: </label>
-			<select name="groupFile" id="groupFile" class="select compact expandable-list">
-				<option value="1">Individual Student Report</option>
-				<option value="2">Image Prints</option>
-				<option value="3">Both (IP and ISR)</option>
-				<option value="4">Invitation Code Letter</option>
-			</select>
-		</p>
-		
-		<p class="inline-label">
-			<label for="collationHierarchy" class="label">Collation Hierarchy: </label>
-			<select name="collationHierarchy" id="collationHierarchy" class="select compact expandable-list">
-				<option value="1">School, Class, Student Last Name, First Name, Middle Initial</option>
-				<option value="2">Student Last Name, First Name, Middle Initial</option>
-			</select>
-		</p>
-	</div>
 
 	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px;">
 		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableGD">
@@ -49,41 +29,34 @@
 					<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
 						<input name="check-all" id="check-all" value="1" type="checkbox">
 					</th>
-					<th aria-label="Text: activate to sort column ascending" style="width: 356px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
-					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">IC</th>
-					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ISR</th>
-					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">IP</th>
-					<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Both(IP and ISR)</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 350px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Class</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Grade</th>
+					<th aria-label="Text: activate to sort column ascending" style="width: 100px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Single Student</th>
 				</tr>
 			</thead>
 			<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
 				<c:forEach var="student" items="${studentList}">
 					<tr id="">
-					    <td scope="row" class="checkbox-cell  sorting_1"><input name="checked[]" id="check-student-${student.id}" value="${student.id}" type="checkbox" /></td>
-					    <td>${student.name}</td>
-					    <td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
+					    <td scope="row" class="checkbox-cell  sorting_1 vertical-center"><input name="checked[]" id="check-student-${student.id}" value="${student.id}" type="checkbox" /></td>
+					    <td class="vertical-center">${student.name}</td>
+					    <td class="vertical-center">${student.klass}</td>
+					    <td class="vertical-center">${student.grade}</td>
+					    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
+					    	<span class="button-group compact">
 					    	<c:choose>
-					    	<c:when test="${student.ic==''}">NA</c:when>
-							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.ic}">Download</a></c:otherwise>
+						    	<c:when test="${student.ic==''}"><a class="button icon-forbidden red with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button icon-down-fat green with-tooltip" title="Invitation Code File" href="downloadZippedPdf.do?fileName=${student.ic}">Download</a></c:otherwise>
 							</c:choose>
-						</td>
-						<td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
 							<c:choose>
-							<c:when test="${student.isr==''}">NA</c:when>
-							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.isr}">Download</a></c:otherwise>
+								<c:when test="${student.isr==''}"><a class="button icon-forbidden red with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button icon-down green with-tooltip" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}">Download</a></c:otherwise>
 							</c:choose>
-						</td>
-						<td aria-label="Text: activate to sort column ascending" style="width: 25px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
 							<c:choose>
-							<c:when test="${student.ip==''}">NA</c:when>
-							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.ip}">Download</a></c:otherwise>
+								<c:when test="${student.ip==''}"><a class="button icon-forbidden red with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button icon-down-round green with-tooltip" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}">Download</a></c:otherwise>
 							</c:choose>
-						</td>
-						<td aria-label="Text: activate to sort column ascending" style="width: 100px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
-							<c:choose>
-							<c:when test="${student.both==''}">NA</c:when>
-							<c:otherwise><a href="downloadZippedPdf.do?fileName=${student.both}">Download</a></c:otherwise>
-							</c:choose>
+							</span>
 						</td>
 					</tr>
 				</c:forEach>
@@ -117,14 +90,14 @@
 			<span class="button-icon icon-download blue-gradient report-btn">Separate PDFs</span>
 			Generate Download File
 		</a>
-		<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsGD" style="margin-left: 10px; float: left;">
+		<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsGD" style="margin-left: 10px; float: right;">
 			<span class="button-icon icon-download blue-gradient report-btn">Combined PDFs</span>
 			Generate Download File
 		</a>
-		<a href="#" class="downloadBulkPdf button" id="downloadSinglePdfsGD" style="margin-left: 0px; float: right;">
+		<!-- <a href="#" class="downloadBulkPdf button" id="downloadSinglePdfsGD" style="margin-left: 0px; float: right;">
 			<span class="button-icon icon-download blue-gradient report-btn">PDF</span>
 			Single Student
-		</a>
+		</a> -->
 		<input type="hidden" name="buttonGD" id="buttonGD" />
 	</div>
 	</form:form>
@@ -135,4 +108,6 @@
 	<input type="hidden" id="q_school" value="${school}" />
 	<input type="hidden" id="q_klass" value="${klass}" />
 	<input type="hidden" id="q_grade" value="${grade}" />
+	<input type="hidden" id="q_groupFile" value="${groupFile}" />
+	<input type="hidden" id="q_collationHierarchy" value="${collationHierarchy}" />
 </div>

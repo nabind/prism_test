@@ -13,6 +13,8 @@ public class GroupDownloadStudentTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
+	private String klass;
+	private String grade;
 	private String isr;
 	private String ip;
 	private String both;
@@ -46,6 +48,36 @@ public class GroupDownloadStudentTO extends BaseTO {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the klass
+	 */
+	public String getKlass() {
+		return klass;
+	}
+
+	/**
+	 * @param klass
+	 *            the klass to set
+	 */
+	public void setKlass(String klass) {
+		this.klass = klass;
+	}
+
+	/**
+	 * @return the grade
+	 */
+	public String getGrade() {
+		return grade;
+	}
+
+	/**
+	 * @param grade
+	 *            the grade to set
+	 */
+	public void setGrade(String grade) {
+		this.grade = grade;
 	}
 
 	/**
@@ -107,4 +139,5 @@ public class GroupDownloadStudentTO extends BaseTO {
 	public void setIc(String ic) {
 		this.ic = ic;
 	}
+
 }

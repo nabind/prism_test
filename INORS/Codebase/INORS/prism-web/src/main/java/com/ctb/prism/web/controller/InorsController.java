@@ -423,6 +423,8 @@ public class InorsController {
 			String school = (String) request.getParameter("p_school");
 			String klass = (String) request.getParameter("p_class");
 			String grade = (String) request.getParameter("p_grade_ppr");
+			String groupFile = (String) request.getParameter("p_generate_file");
+			String collationHierarchy = (String) request.getParameter("p_collation");
 			String fileName = (String) request.getParameter("fileName");
 			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
@@ -437,6 +439,8 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "school=" + school);
 			logger.log(IAppLogger.INFO, "klass=" + klass);
 			logger.log(IAppLogger.INFO, "grade=" + grade);
+			logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+			logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 			logger.log(IAppLogger.INFO, "fileName=" + fileName);
 			logger.log(IAppLogger.INFO, "email=" + email);
 
@@ -446,6 +450,8 @@ public class InorsController {
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("klass", klass);
 			modelAndView.addObject("grade", grade);
+			modelAndView.addObject("groupFile", groupFile);
+			modelAndView.addObject("collationHierarchy", collationHierarchy);
 			modelAndView.addObject("fileName", fileName);
 			modelAndView.addObject("email", email);
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);

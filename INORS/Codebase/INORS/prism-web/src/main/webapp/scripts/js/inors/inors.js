@@ -193,9 +193,9 @@ $(document).ready(function() {
 		groupDownloadSubmit('CP');
 	});
 	// Synchronous : Immediate download
-	$("#downloadSinglePdfsGD").live("click", function() {
-		groupDownloadSubmit('SS');
-	});
+	// $("#downloadSinglePdfsGD").live("click", function() {
+	// groupDownloadSubmit('SS');
+	//	});
 });
 
 // =============== get inors home page message =====================
@@ -1082,8 +1082,8 @@ function getGroupDownloadTO() {
 	var students = $("input[id^=check-student-]:checked").map(function() {
 		return this.value;
 	}).get().join(",");
-	var groupFile = $("#groupFile").val();
-	var collationHierarchy = $("#collationHierarchy").val();
+	var groupFile = $("#q_groupFile").val();
+	var collationHierarchy = $("#q_collationHierarchy").val();
 	var fileName = $("#fileName").val();
 	var email = $("#email").val();
 	var to = new GroupDownloadTO(button, testAdministrationVal,
@@ -1120,12 +1120,12 @@ function groupDownloadSubmit(button) {
 						// Synchronous : Immediate download - only for Single
 						// Student
 						status = undefined;
-						var href = "downloadSingleStudentPdf.do?fileName=" + json.fileName + "&email=" + json.email;
+						// var href = "downloadSingleStudentPdf.do?fileName=" + json.fileName + "&email=" + json.email;
 						// Href Call
-						$("#downloadSinglePdfsGD").attr("href", href);
+						// $("#downloadSinglePdfsGD").attr("href", href);
 					} else {
 						// Asynchronous : No action needed
-						$("#downloadSinglePdfsGD").attr("href", "#");
+						// $("#downloadSinglePdfsGD").attr("href", "#");
 					}
 				}
 				displayGroupDownloadStatus(status);
@@ -1200,22 +1200,22 @@ function prepareTheCombinedPdfOnFailure() {
 }
 
 function showHideDownloadButtons() {
-	var groupFile = $("#groupFile").val();
+	var groupFile = $("#q_groupFile").val();
 	if (groupFile) {
 		if (groupFile == "5") { // Student PDF's
 			$("#downloadSeparatePdfsGD").hide();
 			$("#downloadCombinedPdfsGD").hide();
-			$("#downloadSinglePdfsGD").hide(); // TODO : Delete button
+			// $("#downloadSinglePdfsGD").hide(); // TODO : Delete button
 			$("#nameMailDiv").hide();
 		} else if ((groupFile == "1") || (groupFile == "2") || (groupFile == "3")) {
 			$("#downloadSeparatePdfsGD").show();
 			$("#downloadCombinedPdfsGD").show();
-			$("#downloadSinglePdfsGD").hide();
+			// $("#downloadSinglePdfsGD").hide();
 			$("#nameMailDiv").show();
 		} else {
 			$("#downloadSeparatePdfsGD").show();
 			$("#downloadCombinedPdfsGD").show();
-			$("#downloadSinglePdfsGD").hide();
+			// $("#downloadSinglePdfsGD").hide();
 			$("#nameMailDiv").show();
 		}
 	}

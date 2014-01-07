@@ -1068,6 +1068,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
 				student.setId(data.get("ID").toString());
 				student.setName(data.get("NAME").toString());
+				student.setKlass(data.get("CLASS").toString());
+				student.setGrade(data.get("GRADE").toString());
 				student.setIc(data.get("IC").toString().trim());
 				String isr = data.get("ISR").toString().trim();
 				String ip = data.get("IP").toString().trim();
