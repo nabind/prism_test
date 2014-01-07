@@ -1766,7 +1766,7 @@ public class ReportController extends BaseDAO {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("REPORT_ID", req.getParameter("reportId"));
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.MORE_INFO_MESSAGE_TYPE);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
 			String infoMessage = reportService.getSystemConfigurationMessage(paramMap);
 			modelAndView.addObject("infoMessage", infoMessage);
