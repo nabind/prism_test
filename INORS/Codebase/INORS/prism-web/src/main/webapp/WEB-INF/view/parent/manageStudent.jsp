@@ -55,13 +55,10 @@
 								<th scope="col" width="20%">Student Name</th>
 								<th scope="col" width="15%">Grade</th>
 								<!--th scope="col" width="16%">Student Test Number</th-->
-								<c:if test="$(isAdultEducation} == 'No'">
-									<th scope="col" width="20%">Parent User ID</th>
-								</c:if>								
-								<th scope="col" width="25%">${schoolOrgLevel}</th>
-								<c:if test="$(isAdultEducation} == 'No'">
-									<th scope="col" width="20%" class="">Actions</th>
-								</c:if>
+								<th scope="col" width="20%">Parent User ID</th>													
+								<th scope="col" width="25%">School Name</th>
+								<th scope="col" width="20%" class="">Actions</th>
+								
 							</tr>
 						</thead>
 
@@ -70,13 +67,9 @@
 								<th scope="col" width="20%"></th>
 								<th scope="col" width="15%"></th>
 								<!--th scope="col" width="16%">Student Test Number</th-->
-								<c:if test="$(isAdultEducation} == 'No'">
-									<th scope="col" width="20%"></th>
-								</c:if>
+								<th scope="col" width="20%"></th>
 								<th scope="col" width="25%"></th>
-								<c:if test="$(isAdultEducation} == 'No'">
-									<th scope="col" width="20%" class=""></th>
-								</c:if>
+								<th scope="col" width="20%" class=""></th>								
 							</tr>
 							<%-- <c:forEach var="student" items="${studentList}" varStatus="loopCount" >
 									<c:if test="${loopCount.last}">
