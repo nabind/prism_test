@@ -9,12 +9,8 @@
 	
 	<dl class="download-instructions accordion same-height">
 		<dt class="closed"><span class="icon-plus-round tracked"></span> <span class="icon-minus-round tracked" style="display:none"></span> Instructions</dt>
-		<dd style="height: 136px; display: none;" class="accordion-body">
-			<div class="with-padding">
-				<p>First section content</p>
-				<p>The accordion plugin may also equalize the sections' height, just by adding a class - as for this example.</p>
-				<p>Give it a try!</p>
-			</div>
+		<dd style="height: auto; display: none;" class="accordion-body">
+				${groupDownloadInstructionMessage}
 		</dd>
 	</dl>
 	

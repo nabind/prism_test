@@ -396,13 +396,20 @@ public class InorsController {
 	@RequestMapping(value = "/groupDownloadForm", method = RequestMethod.GET)
 	public ModelAndView groupDownloadForm(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView modelAndView = null;
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		//Amitabha to pass the reportId.As of now its hard coded.
+		paramMap.put("REPORT_ID","963");
+		paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
+		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
+		String groupDownloadInstructionMessage  = reportService.getSystemConfigurationMessage(paramMap);
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
 		String reportUrl = (String) request.getParameter("reportUrl");
-
+        
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
 		try {
@@ -466,6 +473,7 @@ public class InorsController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		}
+		modelAndView.addObject("groupDownloadInstructionMessage",groupDownloadInstructionMessage);
 		modelAndView.addObject("reportUrl", reportUrl);
 
 		return modelAndView;
