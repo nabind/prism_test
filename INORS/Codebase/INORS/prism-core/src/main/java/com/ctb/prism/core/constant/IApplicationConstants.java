@@ -161,6 +161,7 @@ public interface IApplicationConstants {
 	public static final String PRODUCT_SPECIFIC_MESSAGE_TYPE = "PSCM";
 	public static final String MORE_INFO_MESSAGE_TYPE = "MI";
 	public static final String MORE_INFO = "More Info";
+	public static final String GROUP_DOWNLOAD_INSTRUCTION = "Group Download Instruction";
 	//Article/Content type
 	public static final String CONTENT_TYPE_ACT = "ACT";
 	public static final String CONTENT_TYPE_IND = "IND";
