@@ -378,11 +378,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<ReportTO> reports = null;
 		List<Map<String, Object>> dataList = null;
 		if (paramMap.get("editReport") != null && paramMap.get("editReport").equals("editReport")) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, loggedinUserTO.getCustomerId(), paramMap.get("reportId"), loggedinUserTO.getCustomerId(),
-					paramMap.get("reportId"), IApplicationConstants.DEFAULT_LEVELID_VALUE);
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, loggedinUserTO.getCustomerId(), paramMap.get("reportId"));
 		} else {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST, loggedinUserTO.getCustomerId(), loggedinUserTO.getCustomerId(),
-					IApplicationConstants.DEFAULT_LEVELID_VALUE);
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST, loggedinUserTO.getCustomerId());
 		}
 		if (dataList != null && dataList.size() > 0) {
 			reports = new ArrayList<ReportTO>();
