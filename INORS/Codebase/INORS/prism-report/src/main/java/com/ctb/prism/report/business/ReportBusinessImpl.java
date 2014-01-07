@@ -643,7 +643,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getConventionalFileNameGD(java.lang.Long)
 	 */
-	public String getConventionalFileNameGD(Long studentBioId) {
-		return reportDAO.getConventionalFileNameGD(studentBioId);
+	public String getConventionalFileNameGD(Long orgNodeId) {
+		return reportDAO.getConventionalFileNameGD(orgNodeId);
 	}
 }

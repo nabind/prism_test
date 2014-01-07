@@ -139,6 +139,7 @@ public class InorsController {
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error deleting Group File", e);
+			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: deleteGroupDownloadFiles()");
 		return null;
@@ -201,6 +202,7 @@ public class InorsController {
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
+			e.printStackTrace();
 			res.setContentType("text/plain");
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
@@ -230,8 +232,9 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, requestViewJsonString);
 			res.setContentType("application/json");
 			res.getWriter().write(requestViewJsonString);
-		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+			e.printStackTrace();
 		} finally {
 			logger.log(IAppLogger.INFO, "Exit: getRequestDetailViewData()");
 		}
@@ -322,6 +325,7 @@ public class InorsController {
 				}
 			} catch (Exception e) {
 				logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.", e);
+				e.printStackTrace();
 			}
 
 			it = request.getParameterMap().entrySet().iterator();
@@ -378,6 +382,7 @@ public class InorsController {
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		} catch (Exception ex) {
 			logger.log(IAppLogger.ERROR, ex.getMessage(), ex);
+			ex.printStackTrace();
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
 		logger.log(IAppLogger.INFO, "Exit: downloadCandicateReport()");
@@ -437,23 +442,10 @@ public class InorsController {
 			String corpDiocese = (String) request.getParameter("p_corpdiocese");
 			String school = (String) request.getParameter("p_school");
 			String klass = (String) request.getParameter("p_class");
-			String grade = (String) request.getParameter("p_grade_ppr");
+			String grade = (String) request.getParameter("p_grade");
 			String groupFile = (String) request.getParameter("p_generate_file");
 			String collationHierarchy = (String) request.getParameter("p_collation");
 
-			String fileName = (String) request.getParameter("fileName");
-			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
-				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-					fileName = fileNameConventionGD(fileName, currentUser);
-					request.getSession().setAttribute("FILE_NAME_GD", fileName);
-				}
-			}
-
-			String email = (String) request.getParameter("email");
-			if ((email == null) || (email.equalsIgnoreCase("null"))) {
-				email = (String) request.getSession().getAttribute("EMAIL_GD");
-			}
 			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 			logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
@@ -462,6 +454,22 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "grade=" + grade);
 			logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 			logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+
+			String fileName = (String) request.getParameter("fileName");
+			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
+				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+					fileName = fileNameConventionGD("CP", currentUser, fileName, groupFile)[0];
+					request.getSession().setAttribute("FILE_NAME_GD", fileName);
+				}
+			}
+			String email = (String) request.getParameter("email");
+			if ((email == null) || (email.equalsIgnoreCase("null"))) {
+				email = (String) request.getSession().getAttribute("EMAIL_GD");
+				if ((email == null) || (email.equalsIgnoreCase("null"))) {
+					email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
+				}
+			}
 			logger.log(IAppLogger.INFO, "fileName=" + fileName);
 			logger.log(IAppLogger.INFO, "email=" + email);
 
@@ -481,11 +489,14 @@ public class InorsController {
 			GroupDownloadTO to = new GroupDownloadTO();
 			to.setSchool(school);
 			to.setKlass(klass);
+			to.setGrade(grade);
 			studentList = populateStudentTableGD(to);
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 			modelAndView.addObject("studentList", studentList);
+			modelAndView.addObject("studentCount", studentList.size());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+			e.printStackTrace();
 		}
 		modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
 		modelAndView.addObject("reportUrl", reportUrl);
@@ -507,6 +518,7 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "populateStudentTableGD() :" + e.getMessage());
+			e.printStackTrace();
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD(): " + String.valueOf(t2 - t1) + "ms");
@@ -574,17 +586,28 @@ public class InorsController {
 		if (tokens.length == 4) { // IMPORTANT : Number of parameters needed in this method.
 			String button = tokens[0];
 			String fileName = tokens[1];
+			String groupFile = tokens[2];
+			String school = tokens[3];
+			String students = tokens[4];
+			logger.log(IAppLogger.INFO, "button: " + button);
+			logger.log(IAppLogger.INFO, "fileName: " + fileName);
+			logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
+			logger.log(IAppLogger.INFO, "school: " + school);
+			logger.log(IAppLogger.INFO, "students: " + students);
+
 			GroupDownloadTO to = new GroupDownloadTO();
-			to.setGroupFile(tokens[2]);
-			to.setStudents(tokens[3]);
+			to.setGroupFile(groupFile);
+			to.setStudents(students);
 			filePaths = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 			if (!filePaths.isEmpty()) {
 				try {
 					if ("CP".equals(button)) {
+						// The default naming convention is: Username + Date Time Stamp
 						String pdfFileName = fileName + ".pdf";
 						String zipFileName = fileName + ".zip";
-						// Combined Pdf
+						logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
+
 						// Merge Pdf files
 						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
 
@@ -605,10 +628,14 @@ public class InorsController {
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 					} else if ("SP".equals(button)) {
-						// TODO : Rename all files as per convention before zipping in case of IC
-						// fileName = reportService.getConventionalFileNameGD(studentBioId);
-						String zipFileName = fileName + ".zip";
-						// Separate Pdfs
+						// TODO : convention implementation
+						Long orgNodeId = Long.parseLong(school);
+						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
+						fileName = reportService.getConventionalFileNameGD(orgNodeId);
+						String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
+						String zipFileName = fileNames[0] + ".zip";
+						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
+
 						// Create Zip file in disk from all the pdf files
 						FileUtil.createZipFile(zipFileName, filePaths);
 					}
@@ -641,11 +668,14 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "email=" + email);
 		String zipFileName = fileName + ".zip";
 		try {
-			// Read the zip file
-			byte[] input = FileUtil.getBytes(zipFileName);
+			// Now read the pdf file from disk
+			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
+
+			// Zip the pdf file
+			byte[] zipData = FileUtil.zipBytes(zipFileName, data);
 
 			// Download the file
-			FileUtil.browserDownload(response, input, zipFileName);
+			FileUtil.browserDownload(response, zipData, zipFileName);
 
 			// Send email
 			if ((email != null) && (!email.isEmpty())) {
@@ -656,6 +686,7 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: downloadZippedPdf(): " + String.valueOf(t2 - t1) + "ms");
@@ -682,26 +713,47 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
+			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 
 	/**
-	 * This method creates, modifies or alters the file name as per the business logic.
-	 * 
-	 * @param fileName
+	 * @param button
 	 * @param currentUser
+	 * @param fileName
+	 * @param groupFile
 	 * @return
 	 */
-	private String fileNameConventionGD(String fileName, String currentUser) {
+	private String[] fileNameConventionGD(String button, String currentUser, String fileName, String groupFile) {
 		logger.log(IAppLogger.INFO, "Enter: fileNameConventionGD()");
-		if ((fileName != null) && (!fileName.equalsIgnoreCase("null")))
-			return fileName;
-		String generatedFileName = "";
-		generatedFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
-		logger.log(IAppLogger.INFO, "generatedFileName=" + generatedFileName);
+		if ((groupFile == null) || (groupFile.equalsIgnoreCase("null"))) {
+			groupFile = "";
+		}
+		String[] generatedFileNames = new String[2];
+		if ("CP".equals(button)) {
+			if ((fileName != null) && (!fileName.equalsIgnoreCase("null"))) {
+				generatedFileNames[0] = fileName;
+			} else {
+				if (!groupFile.isEmpty()) {
+					generatedFileNames[0] = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
+				} else {
+					generatedFileNames[0] = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
+				}
+			}
+		} else if ("SP".equals(button)) {
+			if ("ISR".equals(groupFile)) {
+				generatedFileNames[0] = CustomStringUtil.appendString("1-", fileName, groupFile);
+			} else if ("IPR".equals(groupFile)) {
+				generatedFileNames[0] = CustomStringUtil.appendString("1-", fileName, groupFile);
+			} else if ("BOTH".equals(groupFile)) {
+				generatedFileNames[0] = CustomStringUtil.appendString("1a-", fileName, ".ISR");
+				generatedFileNames[1] = CustomStringUtil.appendString("1b-", fileName, ".IPR");
+			}
+		}
+		logger.log(IAppLogger.INFO, "generatedFileNames=" + generatedFileNames);
 		logger.log(IAppLogger.INFO, "Exit: fileNameConventionGD()");
-		return generatedFileName;
+		return generatedFileNames;
 	}
 
 	/**
@@ -771,8 +823,9 @@ public class InorsController {
 			logger.log(IAppLogger.DEBUG, orgJsonString);
 			response.setContentType("application/json");
 			response.getWriter().write(orgJsonString);
-		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: getTenantHierarchy()");
 		return null;
@@ -850,8 +903,9 @@ public class InorsController {
 			response.setContentType("application/json");
 			response.getWriter().write("");
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
-		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+			e.printStackTrace();
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
 		logger.log(IAppLogger.INFO, "Exit: downloadBulkPdf()");
@@ -907,6 +961,7 @@ public class InorsController {
 			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
 		} catch (Exception e) {
 			logger.log(IAppLogger.WARN, e.getMessage());
+			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "productName=" + productName);
 
@@ -962,6 +1017,7 @@ public class InorsController {
 			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
 		} catch (Exception e) {
 			logger.log(IAppLogger.WARN, e.getMessage());
+			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "productName=" + productName);
 		String[] tokens = productName.split(" ");
@@ -1060,6 +1116,7 @@ public class InorsController {
 			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Exit: populateSchoolGrt(): ", String.valueOf(t2 - t1), "ms"));

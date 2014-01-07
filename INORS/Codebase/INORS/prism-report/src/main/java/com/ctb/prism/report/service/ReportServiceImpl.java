@@ -368,7 +368,7 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getConventionalFileNameGD(java.lang.Long)
 	 */
-	public String getConventionalFileNameGD(Long studentBioId) {
-		return reportBusiness.getConventionalFileNameGD(studentBioId);
+	public String getConventionalFileNameGD(Long orgNodeId) {
+		return reportBusiness.getConventionalFileNameGD(orgNodeId);
 	}
 }

@@ -228,7 +228,7 @@ public interface IReportQuery {
 					"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	
 	public static final String GET_FILENAME_GD = CustomStringUtil.appendString(
-			"SELECT DISTINCT 'IN'||",
+			" SELECT DISTINCT 'IN'||",
 			" FACT.TEST_DATE||'.'||",
 			" FACT.ISTEP_TEST_NAME||'.'||",
 			" FACT.ORGTSTGPGM||'.'||",
@@ -237,21 +237,22 @@ public interface IReportQuery {
 			" SCHOOL.ORG_NODE_NAME ||'.'||",
 			" SCHOOL.ORG_NODEID ||'.'||",
 			" FACT.GRADEID",
-			" /*StudentElementNo ||'.'||",
-			" ReSortID */ FILE_NAME",
+			" /*STUDENTELEMENTNO ||'.'||",
+			" RESORTID */ FILE_NAME",
 			" FROM ORG_NODE_DIM DISTRICT,",
 			" ORG_NODE_DIM SCHOOL,",
 			" ORG_LSTNODE_LINK LINK1,",
 			" ORG_LSTNODE_LINK LINK2,",
 			" RESULTS_GRT_FACT FACT",
-			" WHERE FACT.STUDENT_BIO_ID = ?",
+			" WHERE FACT.ORG_NODEID IN (SELECT DISTINCT ORG_NODEID FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID=?)",
 			" AND FACT.ORG_NODEID = LINK2.ORG_LSTNODEID",
 			" AND LINK2.ORG_NODEID = DISTRICT.ORG_NODEID",
 			" AND DISTRICT.ORG_NODE_LEVEL = 2",
 			" AND DISTRICT.ORG_NODEID = SCHOOL.PARENT_ORG_NODEID",
 			" AND SCHOOL.ORG_NODEID = LINK1.ORG_NODEID",
 			" AND LINK1.ORG_LSTNODEID = FACT.ORG_NODEID",
-			" AND SCHOOL.ORG_NODE_LEVEL = 3"
+			" AND SCHOOL.ORG_NODE_LEVEL = 3",
+			" AND ROWNUM=1"
 			);
 }
 

@@ -267,12 +267,12 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public List<String> getGDFilePaths(GroupDownloadTO to);
-	
+
 	/**
 	 * @param paramMap
 	 * @return
 	 */
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
+	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
 
 	/**
 	 * @param processId
@@ -281,8 +281,8 @@ public interface IReportDAO {
 	public String getProcessDataGD(String processId);
 
 	/**
-	 * @param studentBioId
+	 * @param orgNodeId
 	 * @return
 	 */
-	public String getConventionalFileNameGD(Long studentBioId);
+	public String getConventionalFileNameGD(Long orgNodeId);
 }

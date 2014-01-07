@@ -13,7 +13,7 @@
 		</dd>
 	</dl>
 	<div class="columns with-padding" style="padding-left:23px !important;">
-		<span class="tag" id="studCount">0</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
+		<span class="tag" id="studCount">${studentCount}</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
 	</div>
 	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px;">
 		<div class="dataTables_header">
@@ -36,7 +36,7 @@
 						<option value="50">50</option>
 						<option value="100">100</option>
 					</select>
-				</span> entries</label>
+				</span> Students</label>
 				</div>
 			<div id="sorting-advanced_filter" class="dataTables_filter">
 				<label>Search: <input aria-controls="sorting-advanced" type="text"></label>
@@ -64,16 +64,22 @@
 					    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
 					    	<span class="button-group compact">
 					    	<c:choose>
-						    	<c:when test="${student.ic==''}"><a class="button compact icon-forbidden red-gradient disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download blue glossy with-tooltip" title="Invitation Code File" href="downloadZippedPdf.do?fileName=${student.ic}">Download</a></c:otherwise>
+						    	<c:when test="${student.ic==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+						    	<c:when test="${student.ic==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+						    	<c:when test="${student.ic=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button compact icon-download blue glossy with-tooltip" title="Invitation Code File" href="downloadZippedPdf.do?fileName=${student.ic}&fileName0=${fileName}"></a></c:otherwise>
 							</c:choose>
 							<c:choose>
-								<c:when test="${student.isr==''}"><a class="button compact icon-forbidden red-gradient disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download green glossy with-tooltip" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}">Download</a></c:otherwise>
+								<c:when test="${student.isr==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:when test="${student.isr==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:when test="${student.isr=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button compact icon-download green glossy with-tooltip" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}&fileName0=${fileName}"></a></c:otherwise>
 							</c:choose>
 							<c:choose>
-								<c:when test="${student.ip==''}"><a class="button compact icon-forbidden red-gradient disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download orange glossy with-tooltip" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}">Download</a></c:otherwise>
+								<c:when test="${student.ip==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:when test="${student.ip==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:when test="${student.ip=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
+								<c:otherwise><a class="button compact icon-download orange glossy with-tooltip" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}&fileName0=${fileName}"></a></c:otherwise>
 							</c:choose>
 							</span>
 						</td>
@@ -82,7 +88,7 @@
 			</tbody>
 		</table>
 		<div class="dataTables_footer">
-			<div id="sorting-advanced_info" class="dataTables_info">Showing 1 to 10 of 18 entries</div>
+			<div id="sorting-advanced_info" class="dataTables_info">Showing 1 to 10 of ${studentCount} Students</div>
 			<div id="sorting-advanced_paginate" class="dataTables_paginate paging_full_numbers">
 				<a id="sorting-advanced_first" tabindex="0" class="first paginate_button paginate_button_disabled">First</a>
 				<a id="sorting-advanced_previous" tabindex="0" class="previous paginate_button paginate_button_disabled">Previous</a>

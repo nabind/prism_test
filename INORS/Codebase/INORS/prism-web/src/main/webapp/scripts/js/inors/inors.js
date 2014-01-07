@@ -138,7 +138,34 @@ $(document).ready(function() {
 		var testProgram = $("#q_testProgram").val();
 		var corpDiocese = $("#q_corpDiocese").val();
 		var school = $("#q_school").val();
+		if(school) {
+			if (school == "-1") { // All
+				var schoolCount = $('#p_school > option').length;
+				$("#schoolCount").val(schoolCount);
+			} else if (school == "-2") { // None Available
+				$("#schoolCount").val("0");
+			} else { // One Selected
+				$("#schoolCount").val("1");
+			}
+			alert("schoolCount=" + $("#schoolCount").val());
+		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
+		// $(".customRefresh").click();
+		showHideDivs();
+	});
+	$("#p_class").live("change", function(event) {
+		var klass = $("#q_klass").val();
+		if(klass){
+			if (klass == "-1") { // All
+				var klassCount = $('#p_class > option').length;
+				$("#classCount").val(klassCount);
+			} else if (klass == "-2") { // None Available
+				$("#classCount").val("0");
+			} else { // One Selected
+				$("#classCount").val("1");
+			}
+			alert("klassCount=" + $("#classCount").val());
+		}
 		$(".customRefresh").click();
 		showHideDivs();
 	});

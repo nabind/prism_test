@@ -1043,40 +1043,61 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 		String schoolId = to.getSchool();
-		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		String classId = to.getKlass();
+		String gradeId = to.getGrade();
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		logger.log(IAppLogger.INFO, "classId = " + classId);
+		logger.log(IAppLogger.INFO, "gradeId = " + gradeId);
 		List<Map<String, Object>> dataList = null;
-		if ("-1".equals(classId) || "-2".equals(classId)) { // TODO : -2 is None Available
+		// if ("-1".equals(classId) || "-2".equals(classId)) { // TODO : -2 is None Available
+		if ("-1".equals(classId)) {
 			if ((schoolId != null) && (!"undefined".equalsIgnoreCase(schoolId))) {
 				logger.log(IAppLogger.INFO, "ALL classes");
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[] { schoolId });
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[] { gradeId, schoolId });
 			}
 		} else {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { classId });
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { gradeId, classId });
 			}
 		}
 		Integer rowNum = 0;
 		if (dataList != null && dataList.size() > 0) {
 			for (Map<String, Object> data : dataList) {
+				rowNum = rowNum + 1;
+				String id = data.get("ID").toString();
+				String name = (String) data.get("NAME");
+				String klass = (String) data.get("CLASS");
+				String grade = (String) data.get("GRADE");
+				String ic = (String) data.get("IC");
+				String isr = (String) data.get("ISR");
+				String ip = (String) data.get("IP");
+
+				logger.log(IAppLogger.INFO, "rowNum = " + rowNum);
+				logger.log(IAppLogger.INFO, "id = " + id);
+				logger.log(IAppLogger.INFO, "name = " + name);
+				logger.log(IAppLogger.INFO, "klass = " + klass);
+				logger.log(IAppLogger.INFO, "grade = " + grade);
+				logger.log(IAppLogger.INFO, "ic = " + ic);
+				logger.log(IAppLogger.INFO, "isr = " + isr);
+				logger.log(IAppLogger.INFO, "ip = " + ip);
+
 				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
-				student.setRowNum(++rowNum);
-				student.setId(data.get("ID").toString());
-				student.setName(data.get("NAME").toString());
-				student.setKlass(data.get("CLASS").toString());
-				student.setGrade(data.get("GRADE").toString());
-				student.setIc(data.get("IC").toString().trim());
-				String isr = data.get("ISR").toString().trim();
-				String ip = data.get("IP").toString().trim();
+				student.setRowNum(rowNum);
+				student.setId(id);
+				student.setName(name);
+				student.setKlass(klass);
+				student.setGrade(grade);
+				student.setIc(ic);
 				student.setIsr(isr);
 				student.setIp(ip);
 				studentList.add(student);
 			}
 		}
 		logger.log(IAppLogger.INFO, "studentList.size() = " + studentList.size());
+		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		return studentList;
 	}
 
@@ -1107,11 +1128,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String fileName = to.getFileName();
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
+		String orgNodeId = to.getSchool();
 		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
 		logger.log(IAppLogger.INFO, "button = " + button);
 		logger.log(IAppLogger.INFO, "fileName = " + fileName);
 		logger.log(IAppLogger.INFO, "groupFile = " + groupFile);
+		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
 		logger.log(IAppLogger.INFO, "students = " + students);
 
 		Long userid = null;
@@ -1126,7 +1149,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
 		String request_type = "GDF"; // As per requirement email
 		String request_summary = null;
-		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + students;
+		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + orgNodeId + "|" + students;
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
 
@@ -1236,26 +1259,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return
 	 */
 	private List<String> getResults(String query) {
+		logger.log(IAppLogger.INFO, "Enter: getResults()");
 		List<String> results = new ArrayList<String>();
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objValues = getJdbcTemplatePrism().query(query, new ObjectValueTOMapper());
 		for (com.ctb.prism.core.transferobject.ObjectValueTO to : objValues) {
 			results.add(to.getName());
 		}
 		logger.log(IAppLogger.INFO, "Results : " + results.size());
+		logger.log(IAppLogger.INFO, "Exit: getResults()");
 		return results;
-	}
-
-	/**
-	 * Used for test purpose only. Not for production environment. Hope that '/' would work for both windows and linux environment. Needs testing.
-	 * 
-	 * @return
-	 */
-	private List<String> getMockFilePaths() {
-		List<String> filePaths = new ArrayList<String>();
-		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.pdf");
-		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.6.pdf");
-		filePaths.add("C:/Amitabha/temp/TASC-PRISM OPERATIONAL Data Model V1.5.1.pdf");
-		return filePaths;
 	}
 
 	/**
@@ -1265,7 +1277,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return message
 	 */
 	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
+		logger.log(IAppLogger.INFO, "Enter: getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
 		String MESSAGE_NAME = (String) paramMap.get("MESSAGE_NAME");
 		String REPORT_ID = (String) paramMap.get("REPORT_ID");
@@ -1284,7 +1296,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		long t2 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: " + String.valueOf(t2 - t1) + "ms");
+		logger.log(IAppLogger.INFO, "Exit: getSystemConfigurationMessage(): " + String.valueOf(t2 - t1) + "ms");
 		return systemConfig;
 	}
 
@@ -1294,14 +1306,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#getProcessDataGD(java.lang.String)
 	 */
 	public String getProcessDataGD(String processId) {
+		logger.log(IAppLogger.INFO, "Enter: getProcessDataGD()");
 		String clobStr = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT REQUEST_DETAILS FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
-
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				clobStr = (String) fieldDetails.get("REQUEST_DETAILS");
 			}
 		}
+		logger.log(IAppLogger.INFO, "Exit: getProcessDataGD()");
 		return clobStr;
 	}
 
@@ -1310,14 +1323,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getConventionalFileNameGD(java.lang.Long)
 	 */
-	public String getConventionalFileNameGD(Long studentBioId) {
+	public String getConventionalFileNameGD(Long orgNodeId) {
+		logger.log(IAppLogger.INFO, "Enter: getConventionalFileNameGD()");
 		String conventionalFileName = null;
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_FILENAME_GD, studentBioId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_FILENAME_GD, orgNodeId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				conventionalFileName = (String) fieldDetails.get("FILE_NAME");
 			}
 		}
+		logger.log(IAppLogger.INFO, "Exit: getConventionalFileNameGD()");
 		return conventionalFileName;
 	}
 }

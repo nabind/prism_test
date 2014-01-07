@@ -258,8 +258,8 @@ public interface IReportBusiness {
 	public String getProcessDataGD(String processId);
 
 	/**
-	 * @param studentBioId
+	 * @param orgNodeId
 	 * @return
 	 */
-	public String getConventionalFileNameGD(Long studentBioId);
+	public String getConventionalFileNameGD(Long orgNodeId);
 }
