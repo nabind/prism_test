@@ -304,7 +304,7 @@ function downloadBulkPdf(type, mode) {
 }
 
 //======================================CREATE  TREE STURCTURE================================
-	function createTree() {	
+	/*function createTree() {	
 		chkTreeContainerObj =$("#chkTreeViewForOrg");
 		$(function (){
 			$("#slide_menu_user").removeClass("navigable");
@@ -371,7 +371,7 @@ function downloadBulkPdf(type, mode) {
 					},
 					 
 					"themes": { theme: "apple", dots: true },
-					"plugins" : [ "themes", "json_data", "checkbox", "ui" ]		
+					"plugins" : [ "themes", "json_data", "ui" ]		
 					
 				});
 		});
@@ -492,7 +492,7 @@ function downloadBulkPdf(type, mode) {
 				jsTreeClassName = "";
 			}
 			return html;
-		}
+		}*/
 		//=============================DELETE Group Files ON CLICK======================
 		$('.delete-GroupFiles').live("click", function() {
 		    var row = $(this);
