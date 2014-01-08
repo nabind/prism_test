@@ -52,11 +52,11 @@
 						<input type="text"  style="display:none"  name="lastStudentId" id="lastStudentId" value="" />
 						<thead>
 							<tr class="abc">
-								<th scope="col" width="20%">Student Name</th>
-								<th scope="col" width="15%">Grade</th>
+								<th scope="col" width="25%">Student Name</th>
+								<th scope="col" width="13%">Grade</th>
 								<!--th scope="col" width="16%">Student Test Number</th-->
 								<th scope="col" width="20%">Parent User ID</th>													
-								<th scope="col" width="25%">School Name</th>
+								<th scope="col" width="22%">School Name</th>
 								<th scope="col" width="20%" class="">Actions</th>
 								
 							</tr>
@@ -64,11 +64,11 @@
 
 						<tbody id="student_details">
 							<tr class="abc">
-								<th scope="col" width="20%"></th>
-								<th scope="col" width="15%"></th>
+								<th scope="col" width="25%"></th>
+								<th scope="col" width="13%"></th>
 								<!--th scope="col" width="16%">Student Test Number</th-->
 								<th scope="col" width="20%"></th>
-								<th scope="col" width="25%"></th>
+								<th scope="col" width="22%"></th>
 								<th scope="col" width="20%" class=""></th>								
 							</tr>
 							<%-- <c:forEach var="student" items="${studentList}" varStatus="loopCount" >
