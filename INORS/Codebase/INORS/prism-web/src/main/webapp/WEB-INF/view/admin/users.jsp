@@ -68,12 +68,12 @@
 
 						<thead>
 							<tr class="abc">
-								<th scope="col" width="16%">User ID</th>
-								<th scope="col" width="23%">Full Name</th>
+								<th scope="col" width="15%">User ID</th>
+								<th scope="col" width="20%">Full Name</th>
 								<th scope="col" width="10%" class="hide-on-tablet">Status</th>
-								<th scope="col" width="16%" class="hide-on-tablet-portrait">Org Name</th>
-								<th scope="col" width="22%">User Roles</th>
-								<th scope="col" width="13%">Actions</th>
+								<th scope="col" width="15%" class="hide-on-tablet-portrait">Org Name</th>
+								<th scope="col" width="20%">User Roles</th>
+								<th scope="col" width="20%">Actions</th>
 							</tr>
 						</thead>
 
