@@ -258,36 +258,45 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return OrgTreeTOs;
 	}
 
-	/**
-	 * Returns the userList on load.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param nodeid
-	 * @return
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Cacheable(cacheName = "orgUsers")
 	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerid) {
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
+		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
+		logger.log(IAppLogger.INFO, "currorg=" + currorg);
+		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
+		logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
+		logger.log(IAppLogger.INFO, "customerid=" + customerid);
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
 		String userName = "";
 		String tenantId = "";
-		List<Map<String, Object>> lstData = null;
+		List<Map<String, Object>> lstData = new ArrayList<Map<String, Object>>();
 		if (nodeId.indexOf("_") > 0) {
 			userName = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
 			tenantId = nodeId.substring(0, nodeId.indexOf("_"));
-			logger.log(IAppLogger.DEBUG, "userName=" + userName);
+			logger.log(IAppLogger.INFO, "userName=" + userName);
+			logger.log(IAppLogger.INFO, "tenantId=" + tenantId);
 			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, tenantId, userName, searchParam, searchParam, searchParam);
+				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
+				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, tenantId, adminYear, userName, searchParam, searchParam,
+						searchParam);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, tenantId, userName);
+				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, tenantId, adminYear, userName);
 			}
 		} else {
+			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
 			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, tenantId, adminYear);
-			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
-
+		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		if (lstData.size() > 0) {
 			UserTOs = new ArrayList<UserTO>();
 			for (Map<String, Object> fieldDetails : lstData) {

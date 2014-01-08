@@ -470,11 +470,9 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "/getUserDetails", method = RequestMethod.GET)
 	public @ResponseBody
-	String userDetails(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	String userDetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List<UserTO> UserTOs = new ArrayList<UserTO>();
-		String currentOrg = (String) request.getSession().getAttribute(
-				IApplicationConstants.CURRORG);
+		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
@@ -501,13 +499,12 @@ public class AdminController {
 			if("Search".equals(searchParam)) searchParam = "";
 			logger.log(IAppLogger.INFO, "Node ID: " + nodeId);
 			if (nodeId != null) {
-				if(currentOrg.equals(nodeId) ){
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam ,customerid);
-				} else if (nodeId.indexOf("_") > 0){
-					UserTOs = adminService.getUserDetailsOnClick(nodeId,  nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam 
-							,customerid);
-				} else{
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam ,customerid);
+				if (currentOrg.equals(nodeId)) {
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam, customerid);
+				} else if (nodeId.indexOf("_") > 0) {
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam, customerid);
+				} else {
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam, customerid);
 				}
 			}
 			logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());

@@ -107,7 +107,7 @@ public interface IUserQuery {
 			" AND ORGUSER.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)",
 			" AND USR.ACTIVATION_STATUS != 'SS'",
 			" ORDER BY UPPER(USR.USERNAME)) ABC",
-			" WHERE RECRD_CNT <= 15",
+			" WHERE ROWNUM <= 15",
 			" ORDER BY UPPER(ABC.USERNAME)");
 	
 	public static final String GET_USER_DETAILS_ON_SCROLL=	CustomStringUtil
@@ -118,11 +118,12 @@ public interface IUserQuery {
 			" USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME, ",
 			" USR.ACTIVATION_STATUS AS STATUS, HIER.ORG_NODE_NAME, ",
 			" HIER.ORG_NODEID,  HIER.PARENT_ORG_NODEID ",
-			" FROM USERS USR, org_users orgUser, (SELECT *  FROM org_node_dim",
+			" FROM USERS USR, org_users orgUser, (SELECT *  FROM org_node_dim WHERE CUSTOMERID = ?", // new DAO param added
 			" START WITH ORG_nodeID = ?   ",
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" ) HIER  ",
-			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",  
+			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",
+			" AND ORGUSER.ADMINID = (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUST_PROD_ID=?)", // new dao param added
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
@@ -136,11 +137,12 @@ public interface IUserQuery {
 			" USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME, ", 
 			" USR.ACTIVATION_STATUS AS STATUS, HIER.ORG_NODE_NAME,  ",
 			" HIER.ORG_NODEID,  HIER.PARENT_ORG_NODEID ",
-			" FROM USERS USR, org_users orgUser, (SELECT *  FROM org_node_dim",
+			" FROM USERS USR, org_users orgUser, (SELECT *  FROM org_node_dim WHERE CUSTOMERID = ?", // new DAO param added
 			" START WITH ORG_nodeID = ? ",
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" ) HIER  ",
-			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",  
+			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",
+			" AND ORGUSER.ADMINID = (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUST_PROD_ID=?)", // new dao param added
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
 			" AND (UPPER(USR.USERNAME) LIKE UPPER(?)  ",
 			"   OR UPPER(USR.LAST_NAME)  LIKE UPPER(?)  ",

@@ -134,7 +134,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" ORDER BY O.org_nodeid  ) a ",
 			"  WHERE  ROWNUM <= 15"); 
 	
-	public static final String GET_USER_COUNT = CustomStringUtil.appendString("SELECT COUNT.USER_NO, ADM.ADMIN_NAME FROM ",
+	public static final String GET_USER_COUNT = CustomStringUtil.appendString(
+			"SELECT COUNT.USER_NO, ADM.ADMIN_NAME FROM ",
 			" (SELECT NVL(SUM(COUNT(1)),0) USER_NO,1 AS MATCH FROM USERS U,ORG_USERS O WHERE U.USERID = O.USERID ",
 			" AND O.ORG_NODEID IN (SELECT ORG_NODEID ",
 			" FROM ORG_NODE_DIM WHERE ADMINID = (select adminid from cust_product_link where cust_prod_id=?) CONNECT BY NOCYCLE PRIOR ORG_NODEID = PARENT_ORG_NODEID  START WITH ORG_NODEID  = ?) ",

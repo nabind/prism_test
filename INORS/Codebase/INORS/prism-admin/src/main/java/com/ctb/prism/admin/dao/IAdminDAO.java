@@ -37,6 +37,8 @@ public interface IAdminDAO {
 	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String, Object> paramMap) throws Exception;
 
 	/**
+	 * Returns the userList on load.
+	 * 
 	 * @param nodeid
 	 * @param currorg
 	 * @param adminYear
@@ -183,7 +185,7 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid,  String currentOrg, String customer) throws Exception;
+	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception;
 
 	/**
 	 * Associate user for that role in database through associate button in edit role popup screen.
