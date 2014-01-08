@@ -73,6 +73,7 @@
 		<script src="scripts/js/libs/jquery-ui.min.js"></script>
 		<script src="scripts/js/developr.input.js"></script>
 		<script src="scripts/js/developr.modal.js"></script>
+		<script src="scripts/js/developr.tooltip.js"></script>
 		<script src="scripts/js/libs/jsTree/jquery.jstree.js"></script>
 		<script src="scripts/js/libs/formValidator/jquery.validationEngine.js"></script>
 		<script src="scripts/js/libs/formValidator/languages/jquery.validationEngine-en.js"></script>
