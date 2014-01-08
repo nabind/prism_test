@@ -354,7 +354,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		masterRoleList = getMasterRoleList("user", nodeId, customerId);
 
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
-		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId);
+		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
 		for (Map<String, Object> fieldDetails : lstRoleData) {
 			roleTO = new RoleTO();
 			String roleName = ((String) (fieldDetails.get("ROLENAME")));
