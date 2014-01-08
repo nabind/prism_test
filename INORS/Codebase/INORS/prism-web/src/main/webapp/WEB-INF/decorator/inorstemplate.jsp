@@ -68,7 +68,8 @@
 			}
 		}
 	</script>
-		
+		<script src="scripts/js/libs/jquery.tablesorter.min.js"></script>
+		<script src="scripts/js/libs/DataTables/jquery.dataTables.min.js"></script>
 		<script src="scripts/js/libs/jquery-ui.min.js"></script>
 		<script src="scripts/js/developr.input.js"></script>
 		<script src="scripts/js/developr.modal.js"></script>

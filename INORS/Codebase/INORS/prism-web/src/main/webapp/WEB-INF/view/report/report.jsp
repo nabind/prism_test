@@ -39,7 +39,7 @@
 			div.scrollingHotSpotRight
 			{
 				/*min-width: 75px;*/
-				width: 5%;
+				width: 2%;
 				height: 100%;
 				background-image: url(themes/acsi/img/sdscroll/big_transparent.gif);
 				background-repeat: repeat;

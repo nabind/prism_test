@@ -20,7 +20,7 @@ $(document).ready(function() {
 	// get home page message - after page is loaded
 	openInorsHomePage();
 	
-	$(".customRefresh").live("click", function(event) {
+	$(".customRefresh").on("click", function(event) {
 		event.stopImmediatePropagation();
 		$(document).click();
 		var count = $(this).attr("count");
@@ -37,26 +37,26 @@ $(document).ready(function() {
 		$(obj).attr('src', apiUrl + '?reportUrl='+dataURL);
 	});
 	
-	$("#downloadBulkPdf").live("click", function() {
+	$("#downloadBulkPdf").on("click", function() {
 		downloadBulkPdf('M', 'GD');
 	});
-	$("#downloadBulkPdfSeperate").live("click", function() {
+	$("#downloadBulkPdfSeperate").on("click", function() {
 		downloadBulkPdf('S', 'GD');
 	});
 	
-	$("#downloadBulkICPdf").live("click", function() {
+	$("#downloadBulkICPdf").on("click", function() {
 		downloadBulkPdf('M', 'IC');
 	});
-	$("#downloadBulkICPdfSeperate").live("click", function() {
+	$("#downloadBulkICPdfSeperate").on("click", function() {
 		downloadBulkPdf('S', 'IC');
 	});
 	
-	$("#downloadCandidateReport").live("click", function() {
+	$("#downloadCandidateReport").on("click", function() {
 		downloadBulkPdf('CR', 'CR');
 	});
 	
 	
-	$(".download-instructions").live("click", function() {
+	$(".download-instructions").on("click", function() {
 		$(".accordion-body").slideToggle(500);
 		$(".icon-plus-round").toggle();
 		$(".icon-minus-round").toggle();
@@ -64,7 +64,7 @@ $(document).ready(function() {
 	
 	showHideDownloadButtons();
 	// this is to retain group download files field values
-	$("#groupFile").live("change", function(event) {
+	$("#groupFile").on("change", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		$(document).click();
@@ -72,36 +72,36 @@ $(document).ready(function() {
 		showHideDownloadButtons();
 	});
 	
-	$("#collationHierarchy").live("change", function(event) {
+	$("#collationHierarchy").on("change", function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		$(document).click();
 		retainDownloadValues();
 	});
 	
-	$("#fileName").live("blur", function(event) {
+	$("#fileName").on("blur", function(event) {
 		retainDownloadValues();
 	});
 	
-	$("#email").live("blur", function(event) {
+	$("#email").on("blur", function(event) {
 		retainDownloadValues();
 	});
 	
-	$("#downloadStudentFileXML").live("click", function() {
+	$("#downloadStudentFileXML").on("click", function() {
 		var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=XML&startDate=" + startDate + "&endDate=" + endDate;
 		$("#downloadStudentFileXML").attr("href", href);
 	});
 	
-	$("#downloadStudentFileCSV").live("click", function() {
+	$("#downloadStudentFileCSV").on("click", function() {
 		var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=CSV&startDate=" + startDate + "&endDate=" + endDate;
 		$("#downloadStudentFileCSV").attr("href", href);
 	});
 	
-	$("#downloadStudentFileDAT").live("click", function() {
+	$("#downloadStudentFileDAT").on("click", function() {
 		var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=DAT&startDate=" + startDate + "&endDate=" + endDate;
@@ -126,14 +126,14 @@ $(document).ready(function() {
 	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
 	showHideDivs();
-	$("#p_test_administration").live("change", function(event) {
+	$("#p_test_administration").on("change", function(event) {
 		var testAdm = $("#p_test_administration").val();
 	});
-	$("#p_test_program").live("change", function(event) {
+	$("#p_test_program").on("change", function(event) {
 	});
-	$('#p_corpdiocese').live('change',function(){
+	$('#p_corpdiocese').on('change',function(){
 	});
-	$("#p_school").live("change", function(event) {
+	$("#p_school").on("change", function(event) {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
 		var testProgram = $("#q_testProgram").val();
 		var corpDiocese = $("#q_corpDiocese").val();
@@ -153,7 +153,7 @@ $(document).ready(function() {
 		// $(".customRefresh").click();
 		showHideDivs();
 	});
-	$("#p_class").live("change", function(event) {
+	$("#p_class").on("change", function(event) {
 		var klass = $("#q_klass").val();
 		if(klass){
 			if (klass == "-1") { // All
@@ -169,7 +169,7 @@ $(document).ready(function() {
 		$(".customRefresh").click();
 		showHideDivs();
 	});
-	$("#downloadGRTFile").live("click", function() {
+	$("#downloadGRTFile").on("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
 		var testProgram = $("#q_testProgram").val();
 		var corpDiocese = $("#q_corpDiocese").val();
@@ -177,7 +177,7 @@ $(document).ready(function() {
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		$("#downloadGRTFile").attr("href", href);
 	});
-	$("#downloadICFile").live("click", function() {
+	$("#downloadICFile").on("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
 		var testProgram = $("#q_testProgram").val();
 		var corpDiocese = $("#q_corpDiocese").val();
@@ -187,7 +187,7 @@ $(document).ready(function() {
 	});
 
 	// Group Download
-	$("#studentTableGDSelect").live("change", function(event) {
+	$("#studentTableGDSelect").on("change", function(event) {
 		var num = $("#studentTableGDSelect").val();
 		// alert("num=" + num);
 		$("#studentTableGDSelectedVal").html(num);
@@ -203,17 +203,23 @@ $(document).ready(function() {
 	});
 				
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadSeparatePdfsGD").live("click", function() {
+	$("#downloadSeparatePdfsGD").on("click", function() {
 		groupDownloadSubmit('SP');
 	});
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadCombinedPdfsGD").live("click", function() {
+	$("#downloadCombinedPdfsGD").on("click", function() {
 		groupDownloadSubmit('CP');
 	});
 	// Synchronous : Immediate download
-	// $("#downloadSinglePdfsGD").live("click", function() {
+	// $("#downloadSinglePdfsGD").on("click", function() {
 	// groupDownloadSubmit('SS');
 	//	});
+	
+	// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
+	$("#studentTableGD").dataTable({
+		'sPaginationType': 'full_numbers'
+	});
+	
 });
 
 // =============== get inors home page message =====================
@@ -494,7 +500,7 @@ function downloadBulkPdf(type, mode) {
 			return html;
 		}*/
 		//=============================DELETE Group Files ON CLICK======================
-		$('.delete-GroupFiles').live("click", function() {
+		$('.delete-GroupFiles').on("click", function() {
 		    var row = $(this);
 			var jobId = $(this).attr("jobId");
 			$.modal.confirm("Confirm delete?" ,
@@ -512,7 +518,7 @@ function downloadBulkPdf(type, mode) {
 			  window.location = window.location.href+'?eraseCache=true';
 			}
 		
-		$('.download-GroupFiles').live("click", function() {
+		$('.download-GroupFiles').on("click", function() {
 			var row =  $(this);
 			var jobId = row.attr("jobId");
 			var filePath = row.attr("filePath");
@@ -545,7 +551,7 @@ function downloadBulkPdf(type, mode) {
 				return availability;
 			}
 		
-		$('.view-requestdetails').live("click", function() {
+		$('.view-requestdetails').on("click", function() {
 			var row = $(this);
 			var jobId = $(this).attr("jobId");
 			viewrequestDetails(jobId);

@@ -12,36 +12,8 @@
 				${groupDownloadInstructionMessage}
 		</dd>
 	</dl>
-	<div class="columns with-padding" style="padding-left:23px !important;">
-		<span class="tag" id="studCount">${studentCount}</span> Student(s) in <span class="tag" id="classCount">0</span> Class(es) in <span class="tag" id="schoolCount">0</span> school(s) have been selected.	
-	</div>
+	
 	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px;">
-		<div class="dataTables_header">
-			<div class="dataTables_length" id="sorting-advanced_length">
-				<label>Show <span class="select blue-gradient glossy replacement" style="width: 46px;" tabindex="0">
-					<span class="select-value" id="studentTableGDSelectedVal" >10</span>
-					<span class="select-arrow"></span>
-					<span style="" class="drop-down custom-scroll">
-						<span class="selected">10</span>
-						<span>25</span>
-						<span>50</span>
-						<span>100</span>
-						<div style="display: none;" class="custom-vscrollbar">
-							<div></div>
-						</div>
-					</span>
-					<select style="display: none;" tabindex="-1" class="" aria-controls="sorting-advanced" size="1" name="sorting-advanced_length" id="studentTableGDSelect" >
-						<option selected="selected" value="10">10</option>
-						<option value="25">25</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
-				</span> Students</label>
-				</div>
-			<div id="sorting-advanced_filter" class="dataTables_filter">
-				<label>Search: <input aria-controls="sorting-advanced" type="text"></label>
-			</div>
-		</div>
 		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableGD">
 			<thead>
 				<tr role="row">
@@ -87,16 +59,6 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<div class="dataTables_footer">
-			<div id="sorting-advanced_info" class="dataTables_info">Showing 1 to 10 of ${studentCount} Students</div>
-			<div id="sorting-advanced_paginate" class="dataTables_paginate paging_full_numbers">
-				<a id="sorting-advanced_first" tabindex="0" class="first paginate_button paginate_button_disabled">First</a>
-				<a id="sorting-advanced_previous" tabindex="0" class="previous paginate_button paginate_button_disabled">Previous</a>
-				<span><a tabindex="0" class="paginate_active">1</a><a tabindex="0" class="paginate_button">2</a></span>
-				<a id="sorting-advanced_next" tabindex="0" class="next paginate_button">Next</a>
-				<a id="sorting-advanced_last" tabindex="0" class="last paginate_button">Last</a>
-			</div>
-		</div>
 	</div>
 	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
