@@ -13,63 +13,32 @@
 		<property name="sqsConnectorFactory" ref="sqsConnectorFactory" />
 		<property name="awsAccessKey" value="${aws.accessKey}" />
 		<property name="awsSecretKey" value="${aws.secretKey}" />
-		<property name="awsSQSEndpoint" value="${aws.endPoint}" />
 	</bean>
 
 	<bean id="prism_job_queue" class="org.skyscreamer.nevado.jms.destination.NevadoQueue">
 		<constructor-arg value="${aws.queueName}" />
 	</bean>
+	
+	<bean id="cachedConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory"
+		p:targetConnectionFactory-ref="connectionFactory"
+		p:sessionCacheSize="10" />
 
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="defaultDestinationName" value="${aws.queueName}" />
-		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
 	</bean>
 
 	<bean id="messageListner" class="com.ctb.prism.web.jms.JmsMessageListener" />
 
-	<bean id="listener"
-		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
-		<property name="delegate" ref="messageListner" />
-		<property name="defaultListenerMethod" value="onSQSMessage" />
-		<property name="defaultResponseDestination" ref="prism_job_queue" />
-	</bean>
-
-	<bean id="container"
-		class="org.springframework.jms.listener.SimpleMessageListenerContainer">
-		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="messageListener" ref="listener" />
-		<property name="destination" ref="prism_job_queue" />
-	</bean>
-	
-	
-	<!-- A connection to ActiveMQ 
-	<bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" p:brokerURL="tcp://10.160.23.12:61616" />
-
-	A cached connection to wrap the ActiveMQ connection 
-	<bean id="cachedConnectionFactory"
-		class="org.springframework.jms.connection.CachingConnectionFactory"
-		p:targetConnectionFactory-ref="amqConnectionFactory"
-		p:sessionCacheSize="10" />
-
-	A destination in ActiveMQ 
-	<bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="FOO.TEST" />
-	</bean>
-
-	A JmsTemplate instance that uses the cached connection and destination 
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"
-		p:connectionFactory-ref="cachedConnectionFactory"
-		p:defaultDestination-ref="destination" />
-
-	A POJO that implements the JMS message listener 
-	<bean id="simpleMessageListener" class="com.ctb.prism.web.jms.JmsMessageListener" /> 
-
-	The Spring message listener container configuration 
-	<jms:listener-container container-type="default"
-		connection-factory="amqConnectionFactory" acknowledge="auto">
-		<jms:listener destination="FOO.TEST" ref="simpleMessageListener" method="onMessage" />
-	</jms:listener-container> -->
-	
+	<bean id="jmsConsumerConnectionFactory" 
+          class="org.springframework.jms.connection.CachingConnectionFactory"
+          p:targetConnectionFactory-ref="connectionFactory"
+		  p:sessionCacheSize="10" />
+        
+	<jms:listener-container container-type="default" connection-factory="jmsConsumerConnectionFactory" acknowledge="auto">
+		<jms:listener destination="${aws.queueName}" ref="messageListner" method="onSQSMessage" />
+	</jms:listener-container>
 	
 	
 	
