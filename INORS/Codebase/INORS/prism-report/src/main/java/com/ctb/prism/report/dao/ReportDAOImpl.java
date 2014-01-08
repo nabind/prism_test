@@ -544,8 +544,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	private ReportTO getDashboardData(String reportid, String customerid) {
 
 		ReportTO to = null;
-		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, customerid, reportid, customerid, reportid,
-				IApplicationConstants.DEFAULT_LEVELID_VALUE);
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, customerid, reportid);
 		if (dataList != null && dataList.size() > 0) {
 			to = new ReportTO();
 			for (Map<String, Object> data : dataList) {
