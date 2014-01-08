@@ -182,11 +182,11 @@
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="userStatus">Status</label>
-					<input type="checkbox" name="userStatus" id="userStatus" class="switch medium wide mid-margin-right" data-text-on="ENABLED" data-text-off="DISABLED">
+					<input type="checkbox" name="userStatus" id="userStatus" class="switch medium wide mid-margin-right" data-text-on="ENABLED" data-text-off="DISABLED" tabindex="-1" checked="">
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="input-3">Roles</label>
-					<select id="userRole" name="userRole" style="width:150px" class="select multiple-as-single easy-multiple-selection check-list " multiple>
+					<select id="userRole" name="userRole" style="width:150px" class="select multiple-as-single easy-multiple-selection check-list expandable-list" multiple>
 					</select>
 				</p>																
 			</form:form>
@@ -227,12 +227,12 @@
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="userStatus">Status</label>
-					<input type="checkbox" name="userStatusCheck" id="userStatusCheck" rel="userStatusCheck" class="switch medium wide mid-margin-right" data-text-on="ENABLED" data-text-off="DISABLED" >
+					<input type="checkbox" name="userStatusCheck" id="userStatusCheck" rel="userStatusCheck" class="switch medium wide mid-margin-right" data-text-on="ENABLED" data-text-off="DISABLED" tabindex="-1" checked="">
 				</p>
 				
 				<p class="button-height inline-label">
 					<label class="label" for="input-3">Roles</label>
-					<select id="addUserRole" name="userRole" style="width:150px" class="select multiple-as-single easy-multiple-selection check-list " multiple>				
+					<select id="addUserRole" name="userRole" style="width:150px" class="select multiple-as-single easy-multiple-selection check-list expandable-list" multiple>				
 					</select>
 				</p>
 					<div id ="imgHolder"></div>	
