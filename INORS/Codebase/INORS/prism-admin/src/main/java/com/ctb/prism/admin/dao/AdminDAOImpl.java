@@ -360,7 +360,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String customerId = (String) paramMap.get("customer");
 
 		List<RoleTO> masterRoleList = null;
-		masterRoleList = getMasterRoleList("user", nodeId, customerId);
+		String purpose = "edit";
+		masterRoleList = getMasterRoleList("user", nodeId, customerId,purpose);
 
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
 		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
@@ -393,7 +394,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) {
-		return getMasterRoleList("org", orgLevel, customerId);
+		String purpose = "add";
+		return getMasterRoleList("org", orgLevel, customerId,purpose);
 	}
 
 	/**
@@ -403,7 +405,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            ,userId
 	 * @return
 	 */
-	private List<RoleTO> getMasterRoleList(String argType, String userid, String customerId) {
+	private List<RoleTO> getMasterRoleList(String argType, String userid, String customerId,String purpose) {
 		logger.log(IAppLogger.INFO, "argType=" + argType);
 		logger.log(IAppLogger.INFO, "userid=" + userid);
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
@@ -423,7 +425,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			user_org_level = Long.valueOf(userid);
 		}
 
-		lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE, userid, userid, userid, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+		if("add".equals(purpose)){
+			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_ADD, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+		}else{
+			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE, userid, userid, userid, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+		}
+		
 
 		/*
 		 * if (user_org_level == 1) { lstMasterRoleData =
