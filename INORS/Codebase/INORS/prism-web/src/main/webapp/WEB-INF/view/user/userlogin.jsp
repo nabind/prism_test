@@ -169,7 +169,7 @@
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
 							<h3>INORS Assessment</h3>
-							<p style="line-height:120%">${teacherLoginInfoMessage}</p>
+							${teacherLoginInfoMessage}
 							</div>
 							</div>
 					       </div>
@@ -285,7 +285,7 @@
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
 								<h3>INORS Assessment</h3>
-								<p style="line-height:120%">${parentLoginInfoMessage}</p>
+								${parentLoginInfoMessage}
 							</div>
 							
 						</div>
