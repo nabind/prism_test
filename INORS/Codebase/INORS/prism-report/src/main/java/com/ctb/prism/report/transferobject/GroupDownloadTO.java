@@ -24,6 +24,15 @@ public class GroupDownloadTO extends BaseTO {
 	private String collationHierarchy;
 	private String fileName;
 	private String email;
+	private String userid;
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
 
 	/**
 	 * @return the button

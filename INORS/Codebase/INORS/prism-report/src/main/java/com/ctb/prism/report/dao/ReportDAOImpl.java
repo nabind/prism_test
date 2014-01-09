@@ -1136,9 +1136,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
 		logger.log(IAppLogger.INFO, "students = " + students);
 
-		Long userid = null;
+		Long userid = (to.getUserid() != null) ? Long.valueOf(to.getUserid()) : 0;
 		String job_name = null;
-		String extract_category = "AE"; // As per requirement email
+		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;
 
 		/*
@@ -1146,7 +1146,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		 * ("2".equals(groupFile)) { extract_filetype = "IPR"; // Image Prints } else if ("1".equals(groupFile)) { extract_filetype = "ISR"; // Individual Student Report }
 		 */
 		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
-		String request_type = "GDF"; // As per requirement email
+		String request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
 		String request_summary = null;
 		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + orgNodeId + "|" + students;
 		InputStream is = null;

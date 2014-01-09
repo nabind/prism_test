@@ -536,7 +536,8 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
 	public @ResponseBody
-	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletResponse response) throws SystemException {
+	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletRequest request, 
+			HttpServletResponse response) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String handler = "";
 		String type = "";
@@ -551,6 +552,8 @@ public class InorsController {
 			// Asynchronous : Create Process Id
 			type = "async";
 			if ((to.getStudents() != null) && (!to.getStudents().isEmpty())) {
+				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+				to.setUserid(currentUser);
 				jobTrackingId = reportService.createJobTracking(to);
 			}
 			logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
@@ -583,7 +586,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		String[] tokens = clobStr.split("\\|");
 		List<String> filePaths = new ArrayList<String>();
-		if (tokens.length == 4) { // IMPORTANT : Number of parameters needed in this method.
+		if (tokens.length == 5) { // IMPORTANT : Number of parameters needed in this method.
 			String button = tokens[0];
 			String fileName = tokens[1];
 			String groupFile = tokens[2];
@@ -663,16 +666,17 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
 
 		String fileName = request.getParameter("fileName");
+		String fileType = request.getParameter("fileType");
 		String email = request.getParameter("email");
 		logger.log(IAppLogger.INFO, "fileName=" + fileName);
 		logger.log(IAppLogger.INFO, "email=" + email);
-		String zipFileName = fileName + ".zip";
+		String zipFileName = fileType + ".zip";
 		try {
 			// Now read the pdf file from disk
 			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
 
 			// Zip the pdf file
-			byte[] zipData = FileUtil.zipBytes(zipFileName, data);
+			byte[] zipData = FileUtil.zipBytes(fileName, data);
 
 			// Download the file
 			FileUtil.browserDownload(response, zipData, zipFileName);
