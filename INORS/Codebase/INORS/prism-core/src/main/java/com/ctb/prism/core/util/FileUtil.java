@@ -146,7 +146,7 @@ public class FileUtil {
 			workBook.write(baos);
 			logger.log(IAppLogger.INFO, "xlsx bytes [" + baos.size() + "] created");
 		} catch (IOException e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} finally {
 			try {
 				if (is != null) {
@@ -257,14 +257,14 @@ public class FileUtil {
 			fos.write(input);
 			FileCopyUtils.copy(input, new FileOutputStream(fileName));
 		} catch (FileNotFoundException e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} finally {
 			try {
 				fos.close();
 			} catch (Exception e) {
-				logger.log(IAppLogger.ERROR, e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -289,17 +289,32 @@ public class FileUtil {
 				zos.write(input);
 				zos.closeEntry();
 			}
+			zos.flush();
+			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
 		} catch (FileNotFoundException e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
 		} finally {
 			try {
 				fos.close();
-				zos.close();
+				// zos.close();
 			} catch (IOException e) {
-				logger.log(IAppLogger.ERROR, e.getMessage());
+				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Returns the length of the file.
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	public static long fileSize(String filePath) {
+		long size = 0;
+		File file = new File(filePath);
+		size = file.length();
+		return size;
 	}
 }

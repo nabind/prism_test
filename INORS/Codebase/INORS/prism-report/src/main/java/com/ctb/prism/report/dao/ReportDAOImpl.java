@@ -1074,14 +1074,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String isr = (String) data.get("ISR");
 				String ip = (String) data.get("IP");
 
-				logger.log(IAppLogger.INFO, "rowNum = " + rowNum);
-				logger.log(IAppLogger.INFO, "id = " + id);
-				logger.log(IAppLogger.INFO, "name = " + name);
-				logger.log(IAppLogger.INFO, "klass = " + klass);
-				logger.log(IAppLogger.INFO, "grade = " + grade);
-				logger.log(IAppLogger.INFO, "ic = " + ic);
-				logger.log(IAppLogger.INFO, "isr = " + isr);
-				logger.log(IAppLogger.INFO, "ip = " + ip);
+				logger.log(IAppLogger.DEBUG, "rowNum = " + rowNum);
+				logger.log(IAppLogger.DEBUG, "id = " + id);
+				logger.log(IAppLogger.DEBUG, "name = " + name);
+				logger.log(IAppLogger.DEBUG, "klass = " + klass);
+				logger.log(IAppLogger.DEBUG, "grade = " + grade);
+				logger.log(IAppLogger.DEBUG, "ic = " + ic);
+				logger.log(IAppLogger.DEBUG, "isr = " + isr);
+				logger.log(IAppLogger.DEBUG, "ip = " + ip);
 
 				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
 				student.setRowNum(rowNum);
@@ -1124,50 +1124,93 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public String createJobTracking(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: createJobTracking()");
 		String button = to.getButton();
+		String testAdministrationVal = to.getTestAdministrationVal();
 		String fileName = to.getFileName();
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
-		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
-		logger.log(IAppLogger.INFO, "job_id = " + job_id);
+		String currUserId = to.getUserId();
+		String currAdminId = to.getAdminId();
+		String currCustomerId = to.getCustomerId();
+
 		logger.log(IAppLogger.INFO, "button = " + button);
+		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "fileName = " + fileName);
 		logger.log(IAppLogger.INFO, "groupFile = " + groupFile);
-		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
 		logger.log(IAppLogger.INFO, "students = " + students);
+		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
+		logger.log(IAppLogger.INFO, "currUserId = " + currUserId);
+		logger.log(IAppLogger.INFO, "currAdminId = " + currAdminId);
+		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 
-		Long userid = (to.getUserid() != null) ? Long.valueOf(to.getUserid()) : 0;
-		String job_name = null;
+		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
+		Long userId = (currUserId != null) ? Long.valueOf(currUserId) : 0;
+		String job_name = groupFile;
 		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;
-
-		/*
-		 * if ("4".equals(groupFile)) { extract_filetype = "ICL"; // Invitation Code Letter } else if ("3".equals(groupFile)) { extract_filetype = "BOTH"; // Both (IP and ISR) } else if
-		 * ("2".equals(groupFile)) { extract_filetype = "IPR"; // Image Prints } else if ("1".equals(groupFile)) { extract_filetype = "ISR"; // Individual Student Report }
-		 */
-		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
 		String request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
-		String request_summary = null;
-		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + orgNodeId + "|" + students;
+		String request_summary = "Group Download - " + groupFile;
+		String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + orgNodeId + "|" + students; // See: InorsController.processGroupDownload()
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
-
 		LobHandler lobHandler = new DefaultLobHandler();
 		String request_filename = null;
-		String request_email = null;
+		String request_email = to.getEmail();
 		String job_log = null;
-		String job_status = "DL";
-		Long adminid = null;
-		Long customerid = null;
+		String job_status = IApplicationConstants.JOB_STATUS.IP.toString();
+		Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
+		Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
+
+		logger.log(IAppLogger.INFO, "job_id = " + job_id);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "job_name = " + job_name);
+		logger.log(IAppLogger.INFO, "extract_category = " + extract_category);
+		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
+		logger.log(IAppLogger.INFO, "request_type = " + request_type);
+		logger.log(IAppLogger.INFO, "request_summary = " + request_summary);
+		logger.log(IAppLogger.INFO, "request_filename = " + request_filename);
+		logger.log(IAppLogger.INFO, "request_email = " + request_email);
+		logger.log(IAppLogger.INFO, "job_log = " + job_log);
+		logger.log(IAppLogger.INFO, "job_status = " + job_status);
+		logger.log(IAppLogger.INFO, "customerid = " + customerid);
+		logger.log(IAppLogger.INFO, "productId = " + productId);
+
 		int count = getJdbcTemplatePrism().update(
 				IQueryConstants.INSERT_JOB_TRACKING,
-				new Object[] { job_id, userid, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
-						request_filename, request_email, job_log, job_status, adminid, customerid },
+				new Object[] { job_id, userId, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
+						request_filename, request_email, job_log, job_status, customerid, productId, customerid },
 				new int[] { Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
-						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC });
+						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC });
 		logger.log(IAppLogger.INFO, "count = " + count);
 		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
 		return job_id.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#updateJobTracking(java.util.Map)
+	 */
+	public int updateJobTracking(Map<String, String> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
+		int updateCount = 0;
+
+		String request_filename = paramMap.get("requestFileName");
+		String job_log = paramMap.get("jobLog");
+		String job_status = paramMap.get("jobStatus");
+		String file_size = paramMap.get("fileSize");
+		String job_id = paramMap.get("jobId");
+		logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
+		logger.log(IAppLogger.INFO, "job_log: " + job_log);
+		logger.log(IAppLogger.INFO, "job_status: " + job_status);
+		logger.log(IAppLogger.INFO, "file_size: " + file_size);
+		logger.log(IAppLogger.INFO, "job_id: " + job_id);
+
+		updateCount = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB_TRACKING, request_filename, job_log, job_status, file_size, job_id);
+		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
+
+		logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
+		return updateCount;
 	}
 
 	/*

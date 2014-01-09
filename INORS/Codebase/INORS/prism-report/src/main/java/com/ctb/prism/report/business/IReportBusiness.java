@@ -262,4 +262,12 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public String getConventionalFileNameGD(Long orgNodeId);
+
+	/**
+	 * Updates the JOB_TRACKING table.
+	 * 
+	 * @param paramMap
+	 * @return Update Count
+	 */
+	public int updateJobTracking(Map<String, String> paramMap);
 }

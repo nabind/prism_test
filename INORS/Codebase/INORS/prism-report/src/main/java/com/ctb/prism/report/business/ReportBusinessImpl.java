@@ -646,4 +646,13 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String getConventionalFileNameGD(Long orgNodeId) {
 		return reportDAO.getConventionalFileNameGD(orgNodeId);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateJobTracking(java.util.Map)
+	 */
+	public int updateJobTracking(Map<String, String> paramMap) {
+		return reportDAO.updateJobTracking(paramMap);
+	}
 }

@@ -147,13 +147,18 @@ $(document).ready(function() {
 			} else { // One Selected
 				$("#schoolCount").val("1");
 			}
-			alert("schoolCount=" + $("#schoolCount").val());
+			//alert("schoolCount=" + $("#schoolCount").val());
 		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		// $(".customRefresh").click();
 		showHideDivs();
 	});
 	$("#p_class").on("change", function(event) {
+		var klassOptionsString = "";
+		$("#p_class option").each(function() {
+			klassOptionsString = klassOptionsString + $(this).val() + ",";
+		});
+		$("#klassOptionsString").val(klassOptionsString);
 		var klass = $("#q_klass").val();
 		if(klass){
 			if (klass == "-1") { // All
@@ -164,9 +169,9 @@ $(document).ready(function() {
 			} else { // One Selected
 				$("#classCount").val("1");
 			}
-			alert("klassCount=" + $("#classCount").val());
+			//alert("klassCount=" + $("#classCount").val());
 		}
-		$(".customRefresh").click();
+		// $(".customRefresh").click();
 		showHideDivs();
 	});
 	$("#downloadGRTFile").on("click", function() {
@@ -1127,7 +1132,7 @@ function groupDownloadSubmit(button) {
 	var status = false;
 	var json = getGroupDownloadTO();
 	if ((button == "SP") || (button == "CP") || (button == "SS")) {
-		var errMsg = valudateGroupDownloadForm(button, json);
+		var errMsg = validateGroupDownloadForm(button, json);
 		if(errMsg == "") {
 			// Ajax Call
 			var serverResponseData = groupDownloadFunction(json);
@@ -1151,8 +1156,12 @@ function groupDownloadSubmit(button) {
 						// Asynchronous : No action needed
 						// $("#downloadSinglePdfsGD").attr("href", "#");
 					}
+				} else {
+					status = false;
 				}
 				displayGroupDownloadStatus(status);
+			} else {
+				$.modal.alert("Invalid Server Response");
 			}
 		}else {
 			$.modal.alert(errMsg);
@@ -1168,13 +1177,13 @@ function groupDownloadSubmit(button) {
  * @param status
  */
 function displayGroupDownloadStatus(status){
-	if (status == true) {
+	if (status == true) { // Success
 		$(".success-message").show(200);
 		$(".error-message").hide(200);
-	} else if (status == false) {
+	} else if (status == false) { // Error
 		$(".success-message").hide(200);
 		$(".error-message").show(200);
-	} else {
+	} else { // No Message
 		$(".success-message").hide(200);
 		$(".error-message").hide(200);
 	}
@@ -1245,21 +1254,69 @@ function showHideDownloadButtons() {
 	}
 }
 
-function valudateGroupDownloadForm(button, json) {
+/**
+ * Form Validation for Group Download.
+ * 
+ * @param button
+ * @param json
+ * @returns {String}
+ */
+function validateGroupDownloadForm(button, json) {
 	var errMsg = "";
+
+	// File Name
+	var fileName = $("#fileName").val();
+	if (fileName) {
+		if (fileName.length == 0) {
+			errMsg = "Please enter valid file name";
+			return errMsg;
+		}
+	} else {
+		errMsg = "Please enter valid file name";
+		return errMsg;
+	}
+	// Email
+	var email = $("#email").val();
+	var isValidEmail = validateEmail(email);
+	if (isValidEmail == false) {
+		errMsg = "Please enter valid email address";
+		return errMsg;
+	} else {
+		if (email.length == 0) {
+			errMsg = "Please enter valid email address";
+			return errMsg;
+		}
+	}
+
+	// Student
 	var students = json.students;
-	// alert(students);
 	var studentIds = students.split(',');
 	if (students.length == 0) {
 		errMsg = "Please select student";
 		return errMsg;
 	}
-	if (button == "SS") {
 
+	// Button
+	if (button == "SS") {
 		if (studentIds.length > 1) {
 			errMsg = "Please select only one student";
 			return errMsg;
 		}
 	}
 	return errMsg;
+}
+
+/**
+ * Email Validator.
+ * 
+ * @param $email
+ * @returns {Boolean}
+ */
+function validateEmail($email) {
+	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	if (!emailReg.test($email)) {
+		return false;
+	} else {
+		return true;
+	}
 }

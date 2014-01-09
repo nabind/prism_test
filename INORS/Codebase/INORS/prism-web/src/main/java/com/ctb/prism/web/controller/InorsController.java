@@ -536,8 +536,7 @@ public class InorsController {
 	 */
 	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
 	public @ResponseBody
-	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletRequest request, 
-			HttpServletResponse response) throws SystemException {
+	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletRequest request, HttpServletResponse response) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String handler = "";
 		String type = "";
@@ -545,19 +544,22 @@ public class InorsController {
 		String jobTrackingId = "";
 		logger.log(IAppLogger.INFO, to.toString());
 		try {
-			/*
-			 * if ("SS".equals(to.getButton())) { // TODO: Delete this button // Synchronous : Immediate download for Single Student type = "sync"; List<String> filePaths =
-			 * reportService.getGDFilePaths(to); if ((filePaths != null) && (!filePaths.isEmpty())) { downloadFileName = filePaths.get(0); } } else {
-			 */
 			// Asynchronous : Create Process Id
 			type = "async";
 			if ((to.getStudents() != null) && (!to.getStudents().isEmpty())) {
-				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-				to.setUserid(currentUser);
+				String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+				String adminId = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+				String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+				logger.log(IAppLogger.INFO, "currentUserId = " + currentUserId);
+				logger.log(IAppLogger.INFO, "adminId = " + adminId);
+				logger.log(IAppLogger.INFO, "customerId = " + customerId);
+				to.setUserId(currentUserId);
+				to.setAdminId(adminId);
+				to.setCustomerId(customerId);
 				jobTrackingId = reportService.createJobTracking(to);
 			}
 			logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
-			/* } */
+			handler = "success";
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 			e.printStackTrace();
@@ -582,10 +584,16 @@ public class InorsController {
 	 */
 	private void processGroupDownload(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
+		Map<String, String> paramMap = new HashMap<String, String>();
+		String requestFileName = null;
+		String jobLog = null;
+		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
+		Long fileSize = null;
 		String clobStr = reportService.getProcessDataGD(processId);
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		String[] tokens = clobStr.split("\\|");
 		List<String> filePaths = new ArrayList<String>();
+		// See : ReportDaoImpl.createJobTracking()
 		if (tokens.length == 5) { // IMPORTANT : Number of parameters needed in this method.
 			String button = tokens[0];
 			String fileName = tokens[1];
@@ -603,6 +611,7 @@ public class InorsController {
 			to.setStudents(students);
 			filePaths = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
+
 			if (!filePaths.isEmpty()) {
 				try {
 					if ("CP".equals(button)) {
@@ -618,9 +627,7 @@ public class InorsController {
 						FileUtil.createFile(pdfFileName, input);
 
 						// Now read the pdf file from disk
-						byte[] data;
-
-						data = FileCopyUtils.copyToByteArray(new FileInputStream(pdfFileName));
+						byte[] data = FileCopyUtils.copyToByteArray(new File(pdfFileName));
 
 						// Zip the pdf file
 						byte[] zipData = FileUtil.zipBytes(zipFileName, data);
@@ -630,6 +637,11 @@ public class InorsController {
 
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
+
+						requestFileName = zipFileName;
+						fileSize = new Long(zipData.length);
+						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+						jobLog = "Asynchoronous Combined Pdf";
 					} else if ("SP".equals(button)) {
 						// TODO : convention implementation
 						Long orgNodeId = Long.parseLong(school);
@@ -641,18 +653,35 @@ public class InorsController {
 
 						// Create Zip file in disk from all the pdf files
 						FileUtil.createZipFile(zipFileName, filePaths);
+
+						requestFileName = zipFileName;
+						fileSize = FileUtil.fileSize(zipFileName);
+						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+						jobLog = "Asynchoronous Separate Pdfs";
 					}
 				} catch (FileNotFoundException e) {
+					jobLog = e.getMessage();
 					e.printStackTrace();
 				} catch (IOException e) {
+					jobLog = e.getMessage();
 					e.printStackTrace();
 				}
 			} else {
-				logger.log(IAppLogger.INFO, "No File to download");
+				jobLog = "No File to download";
+				logger.log(IAppLogger.INFO, jobLog);
 			}
 		} else {
-			logger.log(IAppLogger.WARN, "Invalid Clob (Student) Data to Process");
+			jobLog = "Invalid Clob (Student) Data to Process";
+			logger.log(IAppLogger.WARN, jobLog);
 		}
+
+		paramMap.put("requestFileName", requestFileName);
+		paramMap.put("jobLog", jobLog);
+		paramMap.put("jobStatus", jobStatus);
+		paramMap.put("fileSize", fileSize.toString());
+		paramMap.put("jobId", processId);
+		int updateCount = reportService.updateJobTracking(paramMap);
+		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 	}
 
@@ -672,6 +701,13 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "email=" + email);
 		String zipFileName = fileType + ".zip";
 		try {
+			fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
+			File pdfFile = new File(fileName);
+			if (!pdfFile.canRead()) {
+				logger.log(IAppLogger.WARN, "No Read Permission");
+			} else {
+				logger.log(IAppLogger.INFO, "Can Read File");
+			}
 			// Now read the pdf file from disk
 			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
 

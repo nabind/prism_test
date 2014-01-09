@@ -103,4 +103,5 @@
 	<input type="hidden" id="q_grade" value="${grade}" />
 	<input type="hidden" id="q_groupFile" value="${groupFile}" />
 	<input type="hidden" id="q_collationHierarchy" value="${collationHierarchy}" />
+	<input type="hidden" id="klassOptionsString" />
 </div>
