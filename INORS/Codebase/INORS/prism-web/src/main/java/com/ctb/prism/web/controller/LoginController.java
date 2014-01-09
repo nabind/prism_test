@@ -946,6 +946,7 @@ public class LoginController{
 	}
 	
 	/**
+	 * Changed by Arunava Datta
 	 * Load user specific dynamic login page message
 	 * @param req
 	 * @param res
@@ -953,19 +954,18 @@ public class LoginController{
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/loadHomePage", method = RequestMethod.GET)
-	public @ResponseBody String loadHomePage(HttpServletRequest req,
+	public ModelAndView loadHomePage(HttpServletRequest req,
 			HttpServletResponse res) throws IOException {
 		
 		// TODO get home page message based on logged in user
-		
+	    ModelAndView modelAndView = new ModelAndView("user/inorsHome");
 		 Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
 		String inorsHomePageInfoMessage=loginService.getSystemConfigurationMessage(paramMap);
-		res.setContentType("application/json");
-		res.getWriter().write(inorsHomePageInfoMessage);			
-		return null;
+		modelAndView.addObject("inorsHomePageInfoMessage", inorsHomePageInfoMessage);	
+		return modelAndView;
 	}
 	
 } 
