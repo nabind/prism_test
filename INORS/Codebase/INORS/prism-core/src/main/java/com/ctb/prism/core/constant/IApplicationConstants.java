@@ -106,6 +106,7 @@ public interface IApplicationConstants {
 	
 	public static final String ADMIN_YEAR = "AdminYear";
 	public static final String ORG_MODE = "ORG_MODE";
+	public static final String ORG_MODE_DEFAULT = "PUBLC";
 	
 	public static final String APP_LDAP = "LDAP";
 	public static final String APP_DAO = "DAO";

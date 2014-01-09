@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 
 <%
@@ -34,8 +34,8 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 			title='Select organization mode to refresh the hierarchy.'
 			class="select silver-gradient glossy with-tooltip expandable-list" 
 			onchange="reloadOrgTree($(this))">
-					<option value="PUBLIC" selected>Public</option>
-					<option value="NON PUBLIC">Non Public</option>
+					<option value='<spring:message code="orgMode.val.public"/>' selected><spring:message code="orgMode.name.public"/></option>
+					<option value='<spring:message code="orgMode.val.nonPublic"/>'><spring:message code="orgMode.name.nonPublic"/></option>
 		</select>
 	</div>
 </div>

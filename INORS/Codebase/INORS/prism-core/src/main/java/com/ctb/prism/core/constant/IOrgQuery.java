@@ -36,12 +36,25 @@ public interface IOrgQuery {
 			" AND OND.ORG_MODE = ? AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");
 	
 	
-	public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
+	/*public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
 	.appendString(" SELECT ORG_NODEID,",
 			" ORG_NODE_NAME ,PARENT_ORG_NODEID,",
 			" ORG_NODE_LEVEL FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?",
 			" AND ORG_NODEID= ? AND CUSTOMERID = ?",
-			" ORDER BY ORG_NODE_NAME");
+			" ORDER BY ORG_NODE_NAME");*/
+	
+	public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
+			.appendString(" SELECT OND.ORG_NODEID,",
+							" OND.ORG_NODE_NAME,",
+							" OND.PARENT_ORG_NODEID,",
+							" OND.ORG_NODE_LEVEL",
+							" FROM ORG_NODE_DIM OND, ORG_PRODUCT_LINK OPL",
+							" WHERE OPL.ORG_NODEID = OND.ORG_NODEID",
+							" AND OPL.CUST_PROD_ID = ?",
+							" AND OND.ORG_MODE = ?",
+							" AND PARENT_ORG_NODEID = ?",
+							" AND CUSTOMERID = ?",
+							" ORDER BY ORG_NODE_NAME");
 	
 	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
 	.appendString("SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,O.ORG_NODE_NAME,O.PARENT_ORG_NODEID,O.ORG_NODE_LEVEL",

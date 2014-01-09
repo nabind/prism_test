@@ -346,6 +346,9 @@ public class LoginController{
 					req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
 					String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
 					
+					//Due to introduction of Org Mode - By Joy
+					req.getSession().setAttribute(IApplicationConstants.ORG_MODE, propertyLookup.get("orgMode.val.public"));
+					
 				 	 if(user.getOrgNodeLevel() ==0)
 				 	 {
 				 		req.getSession().setAttribute("PARENT_LOGIN",IApplicationConstants.PARENT_LOGIN); 
