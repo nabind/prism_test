@@ -18,7 +18,7 @@ var chkTreeContainerObj;
 $(document).ready(function() {
 	
 	// get home page message - after page is loaded
-	openInorsHomePage();
+	//openInorsHomePage();
 	
 	$(".customRefresh").on("click", function(event) {
 		event.stopImmediatePropagation();
@@ -223,7 +223,7 @@ $(document).ready(function() {
 });
 
 // =============== get inors home page message =====================
-function openInorsHomePage() {
+/*function openInorsHomePage() {
 	if($("#inorsHome").length > 0) {
 		$.ajax({
 			type : "GET",
@@ -239,7 +239,7 @@ function openInorsHomePage() {
 			}
 		});
 	}
-}
+}*/
 
 // =============== retain group download files field values =====================
 function retainDownloadValues() {

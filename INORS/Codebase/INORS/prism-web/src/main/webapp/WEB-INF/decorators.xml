@@ -64,7 +64,7 @@
 		<pattern>/studentFileDownload*</pattern>
 		<pattern>/downloadStudentFile*</pattern>
 		<pattern>/grtICFileForm*</pattern>
-		<pattern>/inorsHome*</pattern>
+		<pattern>/loadHomePage*</pattern>
     </decorator>
 	
   	<decorator name="main" page="main.jsp"> 
