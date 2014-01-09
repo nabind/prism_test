@@ -37,7 +37,52 @@ $(document).ready(function() {
 			
 		});
 	}
-		//searchUserOnEditPopup()
+// Arunava to implement more in Manage Role
+	
+	$("#moreRole").click(function() {
+		currentScrollTop = $("#roleTable").scrollTop();
+		if(!$(this).hasClass('disabled')) {
+			var lastUserId = $("#roleTable tr:last").attr("id");
+			var roleId = $("#roleId").val();
+			callingAction = 'editRole.do?moreRole=true';
+			var paramUrl = 'lastUserId='+lastUserId+'&roleId='+roleId;
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : callingAction,
+				data : paramUrl,
+				dataType : 'json',
+				cache:false,
+				success : function(data) {
+					if (data != null && data.length > 0){
+						getRoleDetails(data);
+						enableSorting(true);
+						retainUniqueValue();
+						unblockUI();
+						$("#roleTable").animate({scrollTop: currentScrollTop+600}, 500);
+					} else {
+						//$("#moreRole").addClass("disabled");
+						if($.browser.msie) $("#moreRole").addClass("disabled-ie");
+						retainUniqueValue();
+						unblockUI();
+					}
+					if (data != null && data.length < 14) {
+						//$("#moreRole").addClass("disabled");
+						if($.browser.msie) $("#moreRole").addClass("disabled-ie");
+					}
+				},
+				error : function(data) {
+					unblockUI();
+				}
+			});
+
+		} else {
+			return false;
+		}
+		tempScrollTop = currentScrollTop;
+	});
+	
+	
 });
 // *********** END DOCUMENT.READY ************
 
@@ -76,7 +121,7 @@ function openModalRoleDetails(jsonData, roleId) {
 		title: 'Edit Role',
 		resizable: false,
 		draggable: false,
-		height: 350,
+		height: 550,
 		width: 550,
 		buttons: {
 			'Cancel': {
@@ -304,4 +349,40 @@ $('.delete-Role').live("click", function() {
 				}
 			});
 		}
+	
+	function getRoleDetails(data) {
+		var roleContent = '';
+		
+		$("#userList").val(this.userList);
+		
+		$.each(data, function () {
+			
+			$.each(this.userList, function (index, value) { 
+				roleContent += '<tr id ='+ value.userId +' class="reportName" >'
+									+'<td>' + value.userId +'</td>'
+									+'<td>'+ value.userName +'</td>'
+									+'<td class=""><div class="controls">'
+										+'<span class="button-group compact children-tooltip">'
+											+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="Remove from association">Delete</a>'
+										+'</span>'
+									+'</div></td>'
+								+'</tr>';
+			});
+		    
+	});
+		$("#role_users_popup").append(roleContent);
+		$("#report-list").trigger("update");
+		$(".headerSortDown").removeClass("headerSortDown");
+		$(".headerSortUp").removeClass("headerSortUp");
+	}
+
+	function enableSorting(flag) {
+		if (flag) {
+			var roleTable = $("#report-list");
+			roleTable.trigger("update");
+		}
+
+	}
+	
+	
 

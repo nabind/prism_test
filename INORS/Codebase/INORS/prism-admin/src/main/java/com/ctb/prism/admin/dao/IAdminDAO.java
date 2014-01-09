@@ -185,7 +185,7 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception;
+	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception;
 
 	/**
 	 * Associate user for that role in database through associate button in edit role popup screen.

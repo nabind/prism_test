@@ -209,8 +209,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getRoleDetailsById(java.lang.String)
 	 */
-	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception {
-		return adminBusiness.getRoleDetailsById(roleid,currentOrg,customer);
+	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception {
+		return adminBusiness.getRoleDetailsById(paramMap);
 	}
 
 	/*

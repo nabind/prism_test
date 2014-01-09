@@ -41,9 +41,9 @@
 										<td class="vertical-center">${role.roleDescription}</td>
 										<td class="vertical-center">
 											<span class="button-group compact">
-												<a href="#"	class="button icon-pencil with-tooltip edit-role" title="Edit" 
+												<a href="#"	roleId="${role.roleId}" class="button icon-pencil with-tooltip edit-role" title="Edit" 
 													roleId="${role.roleId}"></a>
-												<a  href="#" roleId="${role.roleId}"	 roleName="${role.roleName}" class="button icon-trash with-tooltip confirm delete-Role"
+												<a  href="#" roleId="${role.roleId}" roleName="${role.roleName}" class="button icon-trash with-tooltip confirm delete-Role"
 													title="Delete"></a>
 											</span>
 										</td>
@@ -76,10 +76,14 @@
 						&nbsp;<a href="#" class="button associate-user"  roleId="${role.roleId}">Associate</a>
 						
 					</p>
-
+                   
 					<div>
 						<h4>List of users associated with this role:</h4>
-						<div class="scrollable" style="height:180px">
+						 <div class="pagination panel-control margin-bottom-small rounded-border">
+					  <a href="#nogo" id="moreRole" class="page_next paginate button compact icon-forward green-gradient glossy with-tooltip" title="Display more users">More</a>
+				    </div>
+						<div class="scrollable" style="height:180px" id="roleTable">
+						<input type="hidden" name="lastid" id="lastid" value="">
 							<table class="simple-table responsive-table" id="report-list">
 
 								<thead>

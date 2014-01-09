@@ -215,8 +215,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getRoleDetailsById(java.lang.String)
 	 */
-	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) throws Exception {
-		return adminDAO.getRoleDetailsById(roleid,currentOrg,customer);
+	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception {
+		return adminDAO.getRoleDetailsById(paramMap);
 	}
 
 	/*

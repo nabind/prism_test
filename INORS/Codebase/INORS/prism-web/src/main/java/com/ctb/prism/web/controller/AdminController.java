@@ -981,14 +981,27 @@ public class AdminController {
 		String currentOrg = (String) request.getSession().getAttribute(
 				IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-	
-		try {
 		String roleId = (String)request.getParameter("roleId");
-		//String roleId = "2000005";
-		if (roleId != null) {
-			roleTo = adminService.getRoleDetailsById(roleId, currentOrg,  customer);
-			roleList.add(roleTo);
-		}
+		String lastUserId = (String)request.getParameter("lastUserId");
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		
+		try {
+			String moreRole = (String)request.getParameter("moreRole");
+			if(null==moreRole)
+			{
+				moreRole="false";
+			}
+		
+			paramMap.put("roleId", roleId);
+			paramMap.put("currentOrg", currentOrg);
+			paramMap.put("customer", customer);
+			paramMap.put("moreRole", moreRole);
+			paramMap.put("lastUserId", lastUserId);
+
+			if (roleId != null) {
+				roleTo = adminService.getRoleDetailsById(paramMap);
+				roleList.add(roleTo);
+			}
 		
 		String roleJsonString = JsonUtil.convertToJsonAdmin(roleList);
 		response.setContentType("application/json");
@@ -1110,6 +1123,10 @@ public class AdminController {
 			String roleId = (String) request.getParameter("roleId");
 			//String userName = (String) request.getParameter("userId");
 			String userName = (String) request.getParameter("userName");
+			Map<String,Object> paramMap = new HashMap<String,Object>();
+			paramMap.put("roleId", roleId);
+			paramMap.put("currentOrg", currentOrg);
+			paramMap.put("customer", customer);
 			
 			if(!parentService.checkUserAvailability(userName)) {
 				logger.log(IAppLogger.INFO, "****Username matched with database****");	
@@ -1118,7 +1135,7 @@ public class AdminController {
 					if (roleId != null && userName != null) {
 						boolean isSaved = adminService.associateUserToRole(roleId, userName);
 						if (isSaved) {
-							roleTo = adminService.getRoleDetailsById(roleId,currentOrg,customer);
+							roleTo = adminService.getRoleDetailsById(paramMap);
 							roleList.add(roleTo);
 						}
 					}
@@ -1166,15 +1183,19 @@ public class AdminController {
 		String currentOrg = (String) request.getSession().getAttribute(
 				IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-
+		Map<String,Object> paramMap = new HashMap<String,Object>();
 		try {
 			String roleId = (String) request.getParameter("roleId");
 			String userId = (String) request.getParameter("userId");
 
+			paramMap.put("roleId", roleId);
+			paramMap.put("currentOrg", currentOrg);
+			paramMap.put("customer", customer);
+			
 			if (roleId != null && userId != null) {
 				boolean isDeleted = adminService.deleteUserFromRole(roleId, userId);
 				if (isDeleted) {
-					roleTo = adminService.getRoleDetailsById(roleId,currentOrg,customer);
+					roleTo = adminService.getRoleDetailsById(paramMap);
 					roleList.add(roleTo);
 				}
 			}

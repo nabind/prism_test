@@ -200,7 +200,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(String roleid,String currentOrg, String customer) throws Exception;
+	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap

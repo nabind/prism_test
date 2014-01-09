@@ -1006,7 +1006,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param role
 	 * @return RoleTO
 	 */
-	public RoleTO getRoleDetailsById(String roleid, String currentOrg, String customer) {
+	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) {
+		
+		String roleid=(String) paramMap.get("roleId");
+		String currentOrg=(String) paramMap.get("currentOrg");
+		String customer=(String) paramMap.get("customer");
+		String moreRole=(String) paramMap.get("moreRole");
+		
 		RoleTO roleTO = new RoleTO();
 		List<Map<String, Object>> lstData = null;
 		try {
@@ -1019,7 +1025,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			}
 		}
 		
+		if(moreRole.equals("true"))
+		{
+			String lastUserId=(String) paramMap.get("lastUserId");
+			roleTO.setUserList(getUsersForSelectedRole(roleid,currentOrg,customer,lastUserId));
+		}
+		else
+		{
 			roleTO.setUserList(getUsersForSelectedRole(roleid,currentOrg,customer));
+		}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1040,6 +1055,32 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		List<Map<String, Object>> lstData = null;
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USERS_FOR_SELECTED_ROLE, roleid, 
 				Long.valueOf(customer).longValue(),Long.valueOf(customer).longValue(), Long.valueOf(currentOrg).longValue());
+		logger.log(IAppLogger.DEBUG, lstData.size() + "");
+
+		if (lstData.size() > 0) {
+
+			for (Map<String, Object> fieldDetails : lstData) {
+				UserTO to = new UserTO();
+				to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")).longValue());
+				to.setUserName((String) (fieldDetails.get("USERNAME")));
+				UserTOs.add(to);
+			}
+		}
+		return UserTOs;
+	}
+	/**
+	 * get user list for selected role
+	 * 
+	 * @param roleid
+	 * @return List of users
+	 */
+	public ArrayList<UserTO> getUsersForSelectedRole(String roleid, String currentOrg, String customer,String last_user_id) throws Exception {
+
+		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
+
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_MORE_USERS_FOR_SELECTED_ROLE, roleid, 
+				Long.valueOf(customer).longValue(),Long.valueOf(last_user_id).longValue(),Long.valueOf(customer).longValue(), Long.valueOf(currentOrg).longValue());
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 
 		if (lstData.size() > 0) {
