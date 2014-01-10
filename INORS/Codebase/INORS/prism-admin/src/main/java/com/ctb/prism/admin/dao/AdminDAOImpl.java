@@ -127,7 +127,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	@Cacheable(cacheName = "orgTreeChildren")
+	/*@Cacheable(cacheName = "orgTreeChildren")*/
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTree()");
 		String nodeId = (String) paramMap.get("nodeid");
@@ -153,7 +153,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				String orgParentId = nodeId.substring(0, nodeId.indexOf("_"));
 				String orgLevel = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
 				if (!("1".equals(orgLevel))) {
-					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, currOrg, customerId, orgLevel);
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, orgParentId, currOrg, customerId);
 					logger.log(IAppLogger.DEBUG, "Tree for non TASC Users...Currorg=" + currOrg);
 				} else {
 					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgMode, orgParentId, customerId);
