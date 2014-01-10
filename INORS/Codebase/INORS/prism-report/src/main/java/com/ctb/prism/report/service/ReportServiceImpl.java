@@ -284,42 +284,6 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#populateDistrictGD(com.ctb .prism.report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
-		return reportBusiness.populateDistrictGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#populateGradeGD(com.ctb.prism .report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
-		return reportBusiness.populateGradeGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#populateSchoolGD(com.ctb. prism.report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
-		return reportBusiness.populateSchoolGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#populateClassGD(com.ctb.prism .report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
-		return reportBusiness.populateClassGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.service.IReportService#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {

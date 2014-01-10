@@ -397,84 +397,86 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return studentList;
 	}
-	
-	/**
-	 * Returns the parentList on load.
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param orgId
-	 * @return
+	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam) {
-
+		logger.log(IAppLogger.INFO, "Enter: getParentList()");
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
 		String userName = "";
 		String tenantId = "";
 		List<Map<String, Object>> lstData = null;
 		if (orgId.indexOf("_") > 0) {
-			userName = orgId.substring((orgId.indexOf("_") + 1),orgId.length());
+			userName = orgId.substring((orgId.indexOf("_") + 1), orgId.length());
 			tenantId = orgId.substring(0, orgId.indexOf("_"));
-			if(searchParam != null && searchParam.trim().length() > 0) {
+			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism().queryForList(
-						IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, tenantId, userName, 
-						searchParam, searchParam, searchParam);
+				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
+				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+				logger.log(IAppLogger.INFO, "userName = " + userName);
+				logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, tenantId, userName, searchParam, searchParam, searchParam);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(
-						IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL, tenantId, userName);
+				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
+				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+				logger.log(IAppLogger.INFO, "userName = " + userName);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL, tenantId, userName);
 			}
 		} else {
 			tenantId = orgId;
-			lstData = getJdbcTemplatePrism().queryForList(
-					IQueryConstants.GET_PARENT_DETAILS_ON_FIRST_LOAD, tenantId);
-			logger.log(IAppLogger.DEBUG, lstData.size()+"");
+			logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_FIRST_LOAD");
+			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_FIRST_LOAD, tenantId);
+			logger.log(IAppLogger.DEBUG, "lstData.size() = " + lstData.size());
 		}
-
 		if (lstData.size() > 0) {
 			parentTOs = new ArrayList<ParentTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
 				ParentTO to = new ParentTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USERID"))
-						.longValue());
+				to.setUserId(((BigDecimal) fieldDetails.get("USERID")).longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
-				to.setStatus((String) (fieldDetails.get("STATUS")));				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
+				to.setStatus((String) (fieldDetails.get("STATUS")));
+				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
 				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
 
-				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
+				try {
+					to.setClikedOrgId(Long.parseLong(tenantId));
+				} catch (Exception ex) {
+				}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
 				parentTOs.add(to);
 			}
 		}
-
+		logger.log(IAppLogger.DEBUG, "parentTOs.size() = " + parentTOs.size());
+		logger.log(IAppLogger.INFO, "Exit: getParentList()");
 		return parentTOs;
-	}	
-	
-	/**
-	 * Searches and returns the parent names(use like operator) as a JSON
-	 * string. Performs case insensitive searching. This method is used to
-	 * perform auto complete in search box.
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param parentName
-	 *            Search String treated as parent name
-	 * @param tenantId
-	 *            parentId of the logged in user
+	 * @see com.ctb.prism.parent.dao.IParentDAO#searchParent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh){
-		
+	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh) {
+		logger.log(IAppLogger.INFO, "Enter: searchParent()");
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
 		List<Map<String, Object>> parentlist = null;
-		
-		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSeacrh)){
+		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSeacrh)) {
 			parentName = CustomStringUtil.appendString("%", parentName, "%");
-			parentlist = getJdbcTemplatePrism().queryForList(
-					IQueryConstants.SEARCH_PARENT, tenantId, parentName,parentName,parentName, "15");
-		}	else{
-			parentlist = getJdbcTemplatePrism().queryForList(
-					IQueryConstants.SEARCH_PARENT_EXACT, tenantId, parentName, "15");
+			logger.log(IAppLogger.INFO, "SEARCH_PARENT");
+			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+			logger.log(IAppLogger.INFO, "parentName = " + parentName);
+			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT, tenantId, parentName, parentName, parentName, "15");
+		} else {
+			logger.log(IAppLogger.INFO, "SEARCH_PARENT_EXACT");
+			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+			logger.log(IAppLogger.INFO, "parentName = " + parentName);
+			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT_EXACT, tenantId, parentName, "15");
 		}
-		
-		 
-		
 		if (parentlist.size() > 0) {
 			parentTOs = new ArrayList<ParentTO>();
 			for (Map<String, Object> fieldDetails : parentlist) {
@@ -483,11 +485,17 @@ public ArrayList <ParentTO> searchParent(String parentName, String tenantId, Str
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
-				try{to.setClikedOrgId(Long.parseLong(tenantId));} catch(Exception ex){}
+				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
+				try {
+					to.setClikedOrgId(Long.parseLong(tenantId));
+				} catch (Exception ex) {
+				}
 				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
 				parentTOs.add(to);
 			}
 		}
+		logger.log(IAppLogger.DEBUG, "parentTOs.size() = " + parentTOs.size());
+		logger.log(IAppLogger.INFO, "Exit: searchParent()");
 		return parentTOs;
 	}
 	

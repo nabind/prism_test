@@ -225,31 +225,6 @@ public interface IReportDAO {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations();
 
 	/**
-	 * @param to
-	 * @return
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to);
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to);
-
-	/**
-	 * @param to
-	 * @return
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to);
-
-	/**
-	 * 
-	 * @param to
-	 * @return
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to);
-
-	/**
 	 * 
 	 * @param to
 	 * @return

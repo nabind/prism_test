@@ -993,73 +993,46 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.dao.IReportDAO#getDistricts()
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
-		String testProgram = getOrgMode(to.getTestProgram());
-		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_DISTRICTS_GD, new Object[] { testProgram }, new ObjectValueTOMapper());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.dao.IReportDAO#getGrades()
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_GRADES_GD, new ObjectValueTOMapper());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.dao.IReportDAO#populateSchoolGD(java.lang.Long)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
-		String testProgram = getOrgMode(to.getTestProgram());
-		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
-		String districtId = to.getDistrict();
-		logger.log(IAppLogger.INFO, "districtId = " + districtId);
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_SCHOOLS_GD, new Object[] { testProgram, districtId }, new ObjectValueTOMapper());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.dao.IReportDAO#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
-		String testProgram = getOrgMode(to.getTestProgram());
-		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
-		String schoolId = to.getSchool();
-		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
-		return getJdbcTemplatePrism().query(IQueryConstants.GET_CLASSES_GD, new Object[] { testProgram, schoolId }, new ObjectValueTOMapper());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+
 		String schoolId = to.getSchool();
 		String classId = to.getKlass();
 		String gradeId = to.getGrade();
+		String testProgram = to.getTestProgram();
+		if (testProgram == null) {
+			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
+			return studentList;
+		}
+		String orgMode = IApplicationConstants.ORG_MODE_DESC[Integer.parseInt(testProgram)];
+
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		logger.log(IAppLogger.INFO, "classId = " + classId);
 		logger.log(IAppLogger.INFO, "gradeId = " + gradeId);
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
+
 		List<Map<String, Object>> dataList = null;
-		// if ("-1".equals(classId) || "-2".equals(classId)) { // TODO : -2 is None Available
 		if ("-1".equals(classId)) {
 			if ((schoolId != null) && (!"undefined".equalsIgnoreCase(schoolId))) {
 				logger.log(IAppLogger.INFO, "ALL classes");
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_STUDENT_TABLE_GD, new Object[] { gradeId, schoolId });
+				String stateOrgNodeId = getAncestorOrgNodeId(schoolId, 1);
+				String testAdministrationVal = to.getTestAdministrationVal();
+				String districtId = to.getDistrict();
+
+				logger.log(IAppLogger.INFO, "stateOrgNodeId = " + stateOrgNodeId);
+				logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
+				logger.log(IAppLogger.INFO, "districtId = " + districtId);
+
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_STUDENT_TABLE_GD,
+						new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, gradeId });
 			}
 		} else {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { gradeId, classId });
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { orgMode, classId, gradeId });
 			}
 		}
 		Integer rowNum = 0;
@@ -1098,22 +1071,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "studentList.size() = " + studentList.size());
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		return studentList;
-	}
-
-	/**
-	 * Perhaps this method is no longer in use. Is should be handled in database.
-	 * 
-	 * @param testProgram
-	 * @return
-	 * @deprecated
-	 */
-	private String getOrgMode(String testProgram) {
-		if ("1".equals(testProgram))
-			return "PUBLIC";
-		else if ("0".equals(testProgram))
-			return "NON-PUBLIC";
-		else
-			return "";
 	}
 
 	/*
@@ -1377,4 +1334,46 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getConventionalFileNameGD()");
 		return conventionalFileName;
 	}
+
+	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel) {
+		String ancestorOrgNodeId = "-1";
+		if (orgNodeId == null) {
+			return ancestorOrgNodeId;
+		}
+		String orgNodeIdPath = getOrgNodeIdPath(orgNodeId);
+		logger.log(IAppLogger.INFO, "orgNodeIdPath = " + orgNodeIdPath);
+		String[] ancestorIds = orgNodeIdPath.split("~");
+		if (ancestorIds.length >= ancestorLevel) {
+			ancestorOrgNodeId = ancestorIds[ancestorLevel];
+		}
+		return ancestorOrgNodeId;
+	}
+
+	public String getOrgNodeIdPath(String orgNodeId) {
+		if (orgNodeId == null) {
+			return "0";
+		}
+		StringBuilder orgNodeIdPath = new StringBuilder();
+		orgNodeIdPath.insert(0, orgNodeId);
+		String parentOrgNodeId = getParentOrgNodeId(orgNodeId);
+		while ((parentOrgNodeId != null) && (!"0".equals(parentOrgNodeId))) {
+			orgNodeIdPath.insert(0, "~");
+			orgNodeIdPath.insert(0, parentOrgNodeId);
+			parentOrgNodeId = getParentOrgNodeId(parentOrgNodeId);
+		}
+		orgNodeIdPath.insert(0, "0~");
+		return orgNodeIdPath.toString();
+	}
+
+	public String getParentOrgNodeId(String orgNodeId) {
+		String parentOrgNodeId = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				parentOrgNodeId = fieldDetails.get("PARENT_ORG_NODEID").toString();
+			}
+		}
+		return parentOrgNodeId;
+	}
+
 }

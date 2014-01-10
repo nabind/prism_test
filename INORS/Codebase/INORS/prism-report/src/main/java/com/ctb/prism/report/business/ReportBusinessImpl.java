@@ -560,42 +560,6 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#getDistricts()
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGD(GroupDownloadTO to) {
-		return reportDAO.populateDistrictGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#getGrades()
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGradeGD(GroupDownloadTO to) {
-		return reportDAO.populateGradeGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#populateSchoolGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGD(GroupDownloadTO to) {
-		return reportDAO.populateSchoolGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#populateClassGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateClassGD(GroupDownloadTO to) {
-		return reportDAO.populateClassGD(to);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
