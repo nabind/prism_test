@@ -998,7 +998,9 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "school=" + school);
 		String productName = "";
 		try {
-			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+			if ((testAdministrationVal != null) && ("null".equalsIgnoreCase(testAdministrationVal))) {
+				productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.WARN, e.getMessage());
 			e.printStackTrace();
