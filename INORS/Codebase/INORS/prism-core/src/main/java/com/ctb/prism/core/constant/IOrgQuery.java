@@ -54,7 +54,8 @@ public interface IOrgQuery {
 							" AND OND.ORG_MODE = ?",
 							" AND PARENT_ORG_NODEID = ?",
 							" AND CUSTOMERID = ?",
-							" ORDER BY ORG_NODE_NAME");
+							" AND OND.ORG_NODE_LEVEL > ?",
+							" ORDER BY ORG_NODE_NAME ");
 	
 	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
 	.appendString("SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,O.ORG_NODE_NAME,O.PARENT_ORG_NODEID,O.ORG_NODE_LEVEL",
