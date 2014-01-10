@@ -156,10 +156,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, orgParentId, currOrg, customerId);
 					logger.log(IAppLogger.DEBUG, "Tree for non TASC Users...Currorg=" + currOrg);
 				} else {
-					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgMode, orgParentId, customerId);
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgParentId, customerId);
 				}
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgMode, nodeId, customerId);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, nodeId, customerId);
 			}
 		}
 		if (lstData.size() > 0) {
