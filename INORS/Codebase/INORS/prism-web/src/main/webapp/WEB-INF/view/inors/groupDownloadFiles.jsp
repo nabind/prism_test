@@ -37,30 +37,50 @@
 
 									<tbody id ="deleteGroupFiles">
 										<c:forEach var="group" items="${groupList}">
-										<%-- <th scope="row"><span class="reportName">${group.jobId}</span>
-												</th> --%>
 											<tr id="${group.jobId}">
 											    <td scope="row">
-											    <a href="#"	 jobId="${group.jobId}" class="view-requestdetails"
-												title="View Request Detail">${group.requestFilename}</a>
+											    	<a href="#"	 jobId="${group.jobId}" class="view-requestdetails" title="View Request Detail">${group.requestFilename}</a>
 											    </td>
 												<td scope="row">${group.createdDateTime}<br>
 											    </td>
 												<td scope="row">${group.updatedDateTime}<br>
 											    </td>
 											    <td scope="row">
-											    <c:choose>
-    											<c:when test="${group.jobStatus=='ER'}">
-    											<span class="icon-cross-round icon-size2 red" title="Error"></span>
-    											</c:when>
-    											<c:when test="${group.jobStatus=='CO'}">
-                                                <a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="icon-download icon-size2 with-tooltip confirm download-GroupFiles"
-															title="Download File" style="cursor: pointer;"></a>
-    											</c:when>
-												<c:otherwise>
-												 <span class="loader working" title="In Progress"></span>
-      											</c:otherwise>
-	                                            </c:choose>
+												    <c:choose>
+		    											<c:when test="${group.requestType=='GDF'}">
+		    												<span class="info-spot">
+																<span class="icon-info-round"></span>
+																<span class="info-bubble" style="width: 350px;">
+																	<%-- ${group.jobLog} --%>
+																	Generated File Name: ${group.filePath}<br />
+																	Date of File Generation Request: ${group.createdDateTime}<br />
+																	Test Administration: <br />
+																	Test Program: <br />
+																	Corp/Diocese: <br />
+																	School: <br />
+																	Grage: <br />
+																	Class: <br /><br /><br />
+																	1 Student(s) have been selected.<br /><br /><br />
+																	File Type: <br />
+																	Request Type: 
+																</span>
+															</span>
+		    											</c:when>
+		    											<c:otherwise>
+															 <span class=" title="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		      											</c:otherwise>
+		                                            </c:choose>
+		                                            <c:choose>
+		    											<c:when test="${group.jobStatus=='ER'}">
+		    												<span class="icon-cross-round icon-size2 red" title="Error"></span>
+		    											</c:when>
+		    											<c:when test="${group.jobStatus=='CO'}">
+		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
+		    											</c:when>
+														<c:otherwise>
+															 <span class="loader working" title="In Progress"></span>
+		      											</c:otherwise>
+		                                            </c:choose>
 	                                            </td>
 	                                            <td scope="row">${group.fileSize}<br>
 	                                            <td>
