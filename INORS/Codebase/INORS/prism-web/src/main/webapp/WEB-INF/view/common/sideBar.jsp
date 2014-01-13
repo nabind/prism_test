@@ -119,9 +119,9 @@
 							<li>
 								<a href="manageReports.do">Manage Reports</a>
 							</li>
-							<li>
+							<!-- <li>
 								<a href="manageRole.do">Manage Roles</a>
-							</li>
+							</li> -->
 							<li>
 								<a href="manageContent.do">Manage Content</a>
 							</li>

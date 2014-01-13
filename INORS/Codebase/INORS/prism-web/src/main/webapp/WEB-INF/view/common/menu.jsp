@@ -26,7 +26,7 @@
 							<li><a href="manageEducationCenter.do" class="shortcut-medias" title="Manage Education Center Users">Manage Education Center Users</a></li>
 						</c:if>
 						<li><a href="manageReports.do" class="shortcut-dashboard" title="Manage Reports">Manage Reports</a></li>
-						<li><a href="manageRole.do" class="shortcut-notes" title="Manage Roles">Manage Roles</a></li>
+						<!-- <li><a href="manageRole.do" class="shortcut-notes" title="Manage Roles">Manage Roles</a></li> -->
 					</sec:authorize>
 				</sec:authorize>
 			</sec:authorize>
