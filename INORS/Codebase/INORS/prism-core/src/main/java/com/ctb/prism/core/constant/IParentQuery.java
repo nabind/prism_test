@@ -304,6 +304,7 @@ public interface IParentQuery {
 			" AND IC.ACTIVATION_STATUS = 'AC' ",
 			" AND IC.ADMINID=STD.ADMINID",
 			" AND ADM.ADMINID=IC.ADMINID",
+			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
 			" AND STD.STUDENT_BIO_ID = ?");
 
 	public static final String SEARCH_STUDENT = CustomStringUtil.appendString(
