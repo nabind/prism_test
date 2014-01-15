@@ -162,6 +162,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 
 				// added new for remember i/p control
+				/*
 				if (sessionParams != null) {
 					boolean sessionArray = false;
 					Iterator it = sessionParams.entrySet().iterator();
@@ -178,6 +179,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 
 					}
 				}
+				*/
 				// END : added new for remember i/p control
 
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
