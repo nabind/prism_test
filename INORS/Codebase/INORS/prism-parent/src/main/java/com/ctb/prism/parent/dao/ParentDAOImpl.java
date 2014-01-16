@@ -1063,18 +1063,20 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 	/**
 	 * Add invitation code to existing parent account
-	 * 
+	 * Need to store org_user_id instead of userid 
+	 * Modified By Joy
 	 * @return boolean
 	 */
 	public boolean addInvitationToAccount(String userName, String invitationCode) {
 		int count = getJdbcTemplatePrism().update(
-				IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT, userName,
+				IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT,userName, invitationCode,
 				invitationCode);
 		if (count > 0) {
 			boolean isUpdatedInvitationCodeClaimCount=updateInvitationCodeClaimCount(invitationCode);
-			if (isUpdatedInvitationCodeClaimCount) {
+			return isUpdatedInvitationCodeClaimCount;
+			/*if (isUpdatedInvitationCodeClaimCount) {
 				return updateOrgIdForParent(userName, invitationCode);
-			}
+			}*/
 		}
 		return Boolean.FALSE;
 	}
@@ -1083,8 +1085,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Update Invitation code claim count
 	 * 
 	 * @return boolean
+	 * There exists 1-N mapping between parent and org.
+	 * As per current data model, the method is not required. 
+	 * Blocked by Joy
 	 */
-	public boolean updateOrgIdForParent(String userName, String invitationCode) {
+	/*public boolean updateOrgIdForParent(String userName, String invitationCode) {
 	
 		int count = getJdbcTemplatePrism().update(
 				IQueryConstants.UPDATE_PARENT_USER_ORG, invitationCode, userName);
@@ -1096,7 +1101,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	
 		
 		return Boolean.FALSE;
-	}
+	}*/
 	
 	/**
 	 * Retrieves and returns school id (leve3_jasper_orgid) for given student bio id

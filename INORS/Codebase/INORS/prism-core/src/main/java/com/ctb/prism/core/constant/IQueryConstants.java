@@ -253,7 +253,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
     
     public static final String GET_ALL_USERS_BY_EMAIL = "SELECT USERNAME,FIRST_NAME,LAST_NAME FROM users WHERE EMAIL_ADDRESS=? and ACTIVATION_STATUS IN ('AC','SS')";
     
-    public static final String UPDATE_PARENT_USER_ORG = "Update Users Set Org_Id = (Select o.level3_jasper_orgid From Invitation_Code i,org_node_dim o  Where i.Activation_Status IN ('AC','SS') And i.Invitation_Code = ? And i.ORG_NODEID =o.org_nodeid And Rownum = 1) Where Upper(Username) = Upper(?)";
+    /*
+     * There exists 1-N mapping between parent and org.
+	 * As per current data model, the method is not required. 
+	 * Blocked by Joy
+     * */
+    //public static final String UPDATE_PARENT_USER_ORG = "Update Users Set Org_Id = (Select o.level3_jasper_orgid From Invitation_Code i,org_node_dim o  Where i.Activation_Status IN ('AC','SS') And i.Invitation_Code = ? And i.ORG_NODEID =o.org_nodeid And Rownum = 1) Where Upper(Username) = Upper(?)";
 
     
  // query to insert report role relation in report_role table
