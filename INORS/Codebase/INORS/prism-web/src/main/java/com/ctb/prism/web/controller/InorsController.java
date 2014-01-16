@@ -490,6 +490,9 @@ public class InorsController {
 			to.setSchool(school);
 			to.setKlass(klass);
 			to.setGrade(grade);
+			to.setTestProgram(testProgram);
+			to.setTestAdministrationVal(testAdministrationVal);
+			to.setDistrict(corpDiocese);
 			studentList = populateStudentTableGD(to);
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 			modelAndView.addObject("studentList", studentList);
