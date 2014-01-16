@@ -66,8 +66,8 @@ public class ParentNetworkController {
 		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("REPORT_NAME",  IApplicationConstants.GENERIC_REPORT_NAME);
-		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+		paramMap.put("REPORT_NAME",  IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+		paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
 		paramMap.put("customerId", loggedinUserTO.getCustomerId());
 		paramMap.put("studentBioId", studentBioId);
