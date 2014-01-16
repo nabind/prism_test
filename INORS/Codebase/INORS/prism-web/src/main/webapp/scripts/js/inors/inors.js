@@ -20,7 +20,7 @@ $(document).ready(function() {
 	// get home page message - after page is loaded
 	//openInorsHomePage();
 	
-	$(".customRefresh").on("click", function(event) {
+	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
 		$(document).click();
 		var count = $(this).attr("count");
