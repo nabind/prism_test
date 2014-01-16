@@ -15,11 +15,11 @@
 		<style>
 			.otherspan {
 				vertical-align:middle !important;
-				
+				line-height: 15px !important;
 			}
 			.ie7span {
 				vertical-align:top !important;
-				line-height: 20px !important;
+				line-height: 23px !important;
 			}
 			.text {
 				font-family: Arial;
