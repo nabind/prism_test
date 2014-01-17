@@ -7,7 +7,7 @@
 		<br/><br/>
 		<b>Thank you !!</b>
 		<br/><br/>
-		You have successfully registered with ACSI Data Online for Parents. <a href="login.do"><small class="tag blue-bg">Click here</small></a> to login using the credential you have chosen. 
+		You have successfully registered with ACSI Data Online for Parents. <a href="userlogin.do"><small class="tag blue-bg">Click here</small></a> to login using the credential you have chosen. 
 		<br/><br/>
 	</p>		
 
