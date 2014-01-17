@@ -61,7 +61,7 @@ public interface IParentQuery {
 			" 'AC', SYSDATE, ?, ?)");
 	public static final String INSERT_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID,ORG_NODEID,ORG_NODE_LEVEL,ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
-			" (?, ?,(select org_nodeid from invitation_code where invitation_code=?),'0', (select adminid from invitation_code where invitation_code=?), ?, sysdate )");
+			" (?, ?,(SELECT N.PARENT_ORG_NODEID FROM INVITATION_CODE M,ORG_NODE_DIM N  WHERE M.ORG_NODEID= N.ORG_NODEID AND M.INVITATION_CODE = ?),'0', (select adminid from invitation_code where invitation_code=?), ?, sysdate )");
 
 	/**
 	 * Query to assign user role to the new registered user
@@ -292,13 +292,15 @@ public interface IParentQuery {
 			" FROM INVITATION_CODE_CLAIM ICC,",
 			" INVITATION_CODE IC, ",
 			" USERS USR,",
-			" STUDENT_BIO_DIM STD",
+			" STUDENT_BIO_DIM STD,",
+			" ORG_USERS       ORG",
 			" WHERE STD.STUDENT_BIO_ID = ?",
 			" AND STD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID",
 			" AND IC.ICID = ICC.ICID",
 			" AND IC.ADMINID = STD.ADMINID",
 			" AND IC.ACTIVATION_STATUS = 'AC'",
-			" AND ICC.ORG_USER_ID = USR.USERID",
+			" AND ICC.ORG_USER_ID = ORG.ORG_USER_ID ",
+			" AND ORG.USERID = USR.USERID",
 			" AND USR.CUSTOMERID = STD.CUSTOMERID",
 			" AND USR.CUSTOMERID = ?");
 
