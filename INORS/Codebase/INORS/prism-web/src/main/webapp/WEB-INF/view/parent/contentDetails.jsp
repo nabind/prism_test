@@ -23,9 +23,11 @@
 	<div id="contentDescription" class="relative"
 		style="height: auto; text-align: justify">			
 	</div>
+	<!-- 
 	<a style="font-weight: bold" href="#nogo" id="backLink">
 		Go back
 	</a>
+	 -->
 </div>
 
 
