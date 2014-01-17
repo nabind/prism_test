@@ -12,9 +12,13 @@ import com.prism.util.CustomStringUtil;
 public interface Constants {
 	public static final String PROPERTIES_FILE = "inors.properties";
 
-	public static String LOGIN_PDF = "L";
-	public static String ALL_PDF = "A";
-	public static String IC_PDF = "I";
+	public static enum ARGS_OPTIONS {
+		L, A, I
+	};
+
+	public static enum ORG_STATUS {
+		SU, ER, CP, IP
+	};
 
 	public static final boolean THROW_EXCEPTION_ON_LOAD_FAILURE = true;
 	public static final boolean LOAD_AS_RESOURCE_BUNDLE = false;
@@ -58,7 +62,7 @@ public interface Constants {
 
 	public static final String GET_SCHOOL_USERS_WITH_ROLES = "SELECT R.DESCRIPTION FROM USER_ROLE UR, ROLE R WHERE UR.USERID = ? AND UR.ROLEID = R.ROLEID ORDER BY DESCRIPTION";
 
-	public static final String GET_PROCESS_ID_NO_CONDITION = "SELECT U.PROCESSID FROM ORG_PROCESS_STATUS U WHERE U.STRUC_ELEMENT = ? ";
+	public static final String GET_PROCESS_ID_NO_CONDITION = "SELECT PROCESSID FROM ORG_PROCESS_STATUS WHERE STRUC_ELEMENT = ?";
 
 	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT ADMINID FROM ADMIN_DIM WHERE CURRENT_ADMIN = 'Y'";
 
@@ -66,4 +70,11 @@ public interface Constants {
 			"    ORG_NODE_DIM ORG,ADMIN_DIM ADM,GRADE_DIM GRD ", " WHERE  ORG.LEVEL3_JASPER_ORGID=? ", "     AND IC.STUDENT_STRUC_ELEMENT = STD.STRUCTURE_ELEMENT ",
 			"     AND STD.ORG_NODEID = ORG.ORG_NODEID ", "     AND  STD.ADMINID = ADM.ADMINID ", "     AND STD.GRADEID = GRD.GRADEID ", "     AND IC.ACTIVATION_STATUS = 'AC' ",
 			"     AND IC.NEW_CODE = 'Y' ", "     AND IC.ADMINID = STD.ADMINID ", "     AND IC.ADMINID = (SELECT ADMINID FROM ADMIN_DIM WHERE CURRENT_ADMIN = 'Y')");
+
+	public static final String GET_ORG_LABEL_MAP = CustomStringUtil.appendString("SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL",
+			" FROM (SELECT  DISTINCT ORG_LEVEL,ORG_LABEL FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP", " GROUP BY TEMP.ORG_LEVEL");
+
+	public static final String UPDATE_PROCESS_STATUS = "UPDATE ORG_PROCESS_STATUS SET PROCESS_STATUS = ?, UPDATED_DATE_TIME = SYSDATE WHERE PROCESSID = ?";
+
+	public static final String UPDATE_MAIL_STATUS = "UPDATE ORG_PROCESS_STATUS SET TARGET_EMAIL_STATUS = ?, UPDATED_DATE_TIME = SYSDATE WHERE PROCESSID = ?";
 }

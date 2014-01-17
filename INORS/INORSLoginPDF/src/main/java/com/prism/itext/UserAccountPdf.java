@@ -1,12 +1,18 @@
 package com.prism.itext;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -34,17 +40,9 @@ public class UserAccountPdf {
 	private static boolean ARCHIVE_NEEDED = false;
 	private static String DDMMYY = "";
 	private static Map<Integer, String> orgMap = null;
-	private static String SUCCESS_STATUS = "SU";
-	private static String ERROR_STATUS = "ER";
-	private static String COMPLETE_STATUS = "CP";
-	private static String INPROGRESS_STATUS = "IP";
-	private static String UTILITY_STATUS = "IP";
 
 	public static void main(String[] args) {
 		logger.info("Program Starts...");
-		// args = new String[2];
-		// args[0] = "i";
-		// args[1] = "362010";
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
 			String flag = args[0];
@@ -66,18 +64,25 @@ public class UserAccountPdf {
 					ARCHIVE_NEEDED = true;
 				}
 				for (String id : ids) {
-					if (flag.equalsIgnoreCase("L")) {
+					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
 						processLoginPdf(prop, dao, id);
-					} else if (flag.equalsIgnoreCase("I")) {
+					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
-					} else if (flag.equalsIgnoreCase("A")) {
+					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
 						processLoginPdf(prop, dao, id);
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 					}
+				}
+				if (ARCHIVE_NEEDED) {
+					File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
+					if (!arc.exists())
+						arc.mkdir();
+					String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"), prop.getProperty("schoolaArc"), DDMMYY, ".ZIP");
+					archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
 				}
 			}
 		}
@@ -112,32 +117,32 @@ public class UserAccountPdf {
 							// removeFile(encDocLocation);
 							logger.info("Mail sent successfully to " + school.getEmail());
 							// update staging status
-							dao.updateProcessStatus(processId, COMPLETE_STATUS);
+							dao.updateProcessStatus(processId, Constants.ORG_STATUS.CP.toString());
 							logger.info("Updated Process Status to complete");
 
-							dao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
+							dao.updateMailStatus(processId, Constants.ORG_STATUS.SU.toString(), Constants.ORG_STATUS.IP.toString());
 							logger.info("Updated Mail Status to success");
 						} else {
 							logger.info("Failed sending mail. Updating status.");
-							dao.updateProcessStatus(processId, ERROR_STATUS);
-							dao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+							dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
+							dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
 						}
 					} else {
 						logger.debug("failed sending mail .. no school mail id is defined.");
 						logger.info("Failed sending mail .. no school mail id is defined.");
-						dao.updateProcessStatus(processId, ERROR_STATUS);
-						dao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+						dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
+						dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
 					}
 				}
 			}
 		} catch (Exception e) {
 			logger.info("Error processing : Java exception : " + e.getMessage());
 			try {
-				dao.updateProcessStatus(processId, ERROR_STATUS);
+				dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
 			} catch (Exception ex) {
 			}
 			try {
-				dao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+				dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
 			} catch (Exception ex) {
 			}
 			e.printStackTrace();
@@ -258,7 +263,8 @@ public class UserAccountPdf {
 			printHelp("Both Param 1 and Param 2 are required.");
 			return false;
 		} else {
-			if (args[0].equalsIgnoreCase("L") || args[0].equalsIgnoreCase("I") || args[0].equalsIgnoreCase("A")) {
+			if (args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString()) || args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())
+					|| args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 				return true;
 			} else {
 				printHelp("Param 1 is not valid. Please provide L/I/A");
@@ -504,6 +510,72 @@ public class UserAccountPdf {
 				pdf.delete();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * Archive files
+	 * 
+	 * @param docLocation
+	 * @param arcFilePath
+	 */
+	private static void archiveFiles(String docLocation, String arcFilePath) {
+		ZipOutputStream zos = null;
+		FileOutputStream fos = null;
+		FileInputStream in = null;
+		try {
+			fos = new FileOutputStream(arcFilePath);
+			zos = new ZipOutputStream(fos);
+
+			File folder = new File(docLocation);
+			File[] listOfFiles = folder.listFiles();
+			for (File f : listOfFiles) {
+				if (f.isFile())
+					addToZipFile(f, zos);
+			}
+
+			for (File f : listOfFiles) {
+				if (f.isFile()) {
+					logger.debug(CustomStringUtil.appendString("Deleting file : ", f.getAbsolutePath()));
+					removeFile(f.getAbsolutePath());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(zos);
+			IOUtils.closeQuietly(fos);
+			IOUtils.closeQuietly(in);
+		}
+	}
+
+	/**
+	 * Add entries into zip
+	 * 
+	 * @param f
+	 * @param zos
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static void addToZipFile(File f, ZipOutputStream zos) throws FileNotFoundException, IOException {
+		logger.debug("Writing '" + f.getName() + "' to zip file");
+		FileInputStream fis = null;
+		try {
+			File file = new File(f.getAbsolutePath());
+			fis = new FileInputStream(file);
+			ZipEntry zipEntry = new ZipEntry(f.getName());
+			zos.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while ((length = fis.read(bytes)) >= 0) {
+				zos.write(bytes, 0, length);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			zos.closeEntry();
+			IOUtils.closeQuietly(fis);
 		}
 	}
 }

@@ -53,7 +53,7 @@ public class PdfGenerator {
 	static {
 		BaseFont bf2 = null;
 		try {
-			bf2 = BaseFont.createFont("./resources/COUR.TTF", BaseFont.CP1252, BaseFont.EMBEDDED);
+			bf2 = BaseFont.createFont("src\\main\\resources\\COUR.TTF", BaseFont.CP1252, BaseFont.EMBEDDED);
 			fontCourier = new Font(bf2, 12);
 			tableFont = new Font(bf2, 12);
 		} catch (Exception e) {
@@ -83,20 +83,16 @@ public class PdfGenerator {
 	 * @param isInitialLoad
 	 * @param migration
 	 * @param state
-	 * @param orgLabelMap 
+	 * @param orgLabelMap
 	 * @return
 	 */
-	public static String generatePdf(Properties prop, OrgTO school,
-			java.util.List<OrgTO> teachers, boolean schoolUserPresent,
-			boolean isInitialLoad, boolean migration, boolean state, Map<String, String> orgLabelMap) {
+	public static String generatePdf(Properties prop, OrgTO school, java.util.List<OrgTO> teachers, boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state,
+			Map<String, String> orgLabelMap) {
 		Document document = null;
 		String docName = null;
 		try {
 			document = new Document(PageSize.A4, 50.0F, 50.0F, 20.0F, 75.0F);
-			docName = prop.getProperty("pdfGenPath") + File.separator
-					+ prop.getProperty("tempPdfLocation")
-					+ prop.getProperty("districtText")
-					+ prop.getProperty("schoolText")
+			docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
 					+ school.getDateStrWtYear() + ".pdf";
 
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(docName));
@@ -156,7 +152,7 @@ public class PdfGenerator {
 		document.addCreator("ISTEP-CTB");
 		document.addSubject("Login credential details");
 	}
-	
+
 	/**
 	 * Add login information and title in the first screen
 	 * 
@@ -168,9 +164,7 @@ public class PdfGenerator {
 	 * @param state
 	 * @throws DocumentException
 	 */
-	private static void addLoginInstruction(Document document, Properties prop,
-			OrgTO school, boolean returningSchool, boolean migration,
-			boolean state) throws DocumentException {
+	private static void addLoginInstruction(Document document, Properties prop, OrgTO school, boolean returningSchool, boolean migration, boolean state) throws DocumentException {
 		document.add(new Paragraph(prop.getProperty("title") + school.getElementName()));
 		List list = new List(true, 20);
 		ListItem listItem;
@@ -197,7 +191,7 @@ public class PdfGenerator {
 			document.add(new Paragraph(prop.getProperty("TXT_FOUR"), font));
 		}
 
-		//document.add(new Paragraph("\nUser Logins", fontBold));
+		// document.add(new Paragraph("\nUser Logins", fontBold));
 		document.add(new Paragraph("\nInstructions to Log-in:", fontBold));
 		list = new List(false, 20);
 		// list.setListSymbol(new Chunk("\u2022",
@@ -223,10 +217,10 @@ public class PdfGenerator {
 
 			listItem = new ListItem(prop.getProperty("BLT2"), font);
 			list.add(listItem);
-			
+
 			listItem = new ListItem(prop.getProperty("BLT3"), font);
 			list.add(listItem);
-			
+
 			listItem = new ListItem(prop.getProperty("BLT3A"), font);
 			list.add(listItem);
 		}
@@ -305,8 +299,7 @@ public class PdfGenerator {
 		if (ORG_NODE_LEVEL_EDU.equals(orgNodeLevel)) {
 			userType = "Education Center";
 			c1 = new PdfPCell(new Phrase(userType, tableHeaderFont));
-		}
-		else {
+		} else {
 			userType = labelOneText;
 			c1 = new PdfPCell(new Phrase(userType, tableHeaderFont));
 		}
@@ -321,10 +314,9 @@ public class PdfGenerator {
 			c1.setBackgroundColor(Color.lightGray);
 			table.addCell(c1);
 
-			/*c1 = new PdfPCell(new Phrase(userType + " Code", tableHeaderFont));
-			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c1.setBackgroundColor(Color.lightGray);
-			table.addCell(c1);*/
+			/*
+			 * c1 = new PdfPCell(new Phrase(userType + " Code", tableHeaderFont)); c1.setHorizontalAlignment(Element.ALIGN_CENTER); c1.setBackgroundColor(Color.lightGray); table.addCell(c1);
+			 */
 		} else if (ORG_NODE_LEVEL_SITE.equals(orgNodeLevel)) {
 			userType = labelThreeText;
 			c1 = new PdfPCell(new Phrase(labelTwoText + " Name", tableHeaderFont));
@@ -332,20 +324,18 @@ public class PdfGenerator {
 			c1.setBackgroundColor(Color.lightGray);
 			table.addCell(c1);
 
-			/*c1 = new PdfPCell(new Phrase(labelTwoText + " Code", tableHeaderFont));
-			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c1.setBackgroundColor(Color.lightGray);
-			table.addCell(c1);*/
+			/*
+			 * c1 = new PdfPCell(new Phrase(labelTwoText + " Code", tableHeaderFont)); c1.setHorizontalAlignment(Element.ALIGN_CENTER); c1.setBackgroundColor(Color.lightGray); table.addCell(c1);
+			 */
 
 			c1 = new PdfPCell(new Phrase(userType + " Name", tableHeaderFont));
 			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
 			c1.setBackgroundColor(Color.lightGray);
 			table.addCell(c1);
 
-			/*c1 = new PdfPCell(new Phrase(userType + " Code", tableHeaderFont));
-			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			c1.setBackgroundColor(Color.lightGray);
-			table.addCell(c1);*/
+			/*
+			 * c1 = new PdfPCell(new Phrase(userType + " Code", tableHeaderFont)); c1.setHorizontalAlignment(Element.ALIGN_CENTER); c1.setBackgroundColor(Color.lightGray); table.addCell(c1);
+			 */
 		}
 
 		c1 = new PdfPCell(new Phrase("User Roles", tableHeaderFont));
@@ -386,26 +376,30 @@ public class PdfGenerator {
 				table.addCell(new Phrase(stateName, tableFont));
 
 			String countyName = schUser.getCountyName();
-			if (countyName == null) countyName = "";
-			
+			if (countyName == null)
+				countyName = "";
+
 			Integer countyCode = schUser.getCountyCode();
 			String countryCodeString = "";
-			if (countyCode != null) countryCodeString = countyCode.toString();
-			
+			if (countyCode != null)
+				countryCodeString = countyCode.toString();
+
 			Integer testingSiteCode = schUser.getTestingSiteCode();
 			String testingSiteCodeString = "";
-			if (testingSiteCode != null) testingSiteCodeString = testingSiteCode.toString();
-			
+			if (testingSiteCode != null)
+				testingSiteCodeString = testingSiteCode.toString();
+
 			String testingSiteName = schUser.getTestingSiteName();
-			if (testingSiteName == null) testingSiteName = "";
+			if (testingSiteName == null)
+				testingSiteName = "";
 			if (ORG_NODE_LEVEL_COUNTY.equals(orgNodeLevel)) {
 				table.addCell(new Phrase(countyName, tableFont));
-				//table.addCell(new Phrase(countryCodeString, tableFont));
+				// table.addCell(new Phrase(countryCodeString, tableFont));
 			} else if (ORG_NODE_LEVEL_SITE.equals(orgNodeLevel)) {
 				table.addCell(new Phrase(countyName, tableFont));
-				//table.addCell(new Phrase(countryCodeString, tableFont));
+				// table.addCell(new Phrase(countryCodeString, tableFont));
 				table.addCell(new Phrase(testingSiteName, tableFont));
-				//table.addCell(new Phrase(testingSiteCodeString, tableFont));
+				// table.addCell(new Phrase(testingSiteCodeString, tableFont));
 			}
 
 			int adminIndex = getAdminIndex(schUser.getRoles());
@@ -429,7 +423,6 @@ public class PdfGenerator {
 	 * @return
 	 */
 	private static String getUserListAsString(java.util.List<String> roles, String userType) {
-		System.out.println(roles);
 		StringBuilder roleString = new StringBuilder();
 		for (String role : roles) {
 			roleString.insert(roleString.length(), CustomStringUtil.appendString(userType, " ", role, ", "));
@@ -461,9 +454,7 @@ public class PdfGenerator {
 	 * @param returningSchool
 	 * @throws DocumentException
 	 */
-	private static void addTeacherLogins(Document document,
-			java.util.List<OrgTO> teachers, boolean returningSchool)
-			throws DocumentException {
+	private static void addTeacherLogins(Document document, java.util.List<OrgTO> teachers, boolean returningSchool) throws DocumentException {
 		if (!returningSchool) {
 			document.newPage();
 		}
@@ -504,8 +495,7 @@ public class PdfGenerator {
 	}
 
 	/**
-	 * Create new page for each teacher user and add login information along
-	 * with list of 5 students (alphabetically)
+	 * Create new page for each teacher user and add login information along with list of 5 students (alphabetically)
 	 * 
 	 * @param document
 	 * @param prop
@@ -516,9 +506,7 @@ public class PdfGenerator {
 	 * @param studentRequired
 	 * @throws DocumentException
 	 */
-	private static void addTeacherPage(Document document, Properties prop,
-			OrgTO tech, String schoolName, boolean schoolUserPresent,
-			boolean newPagerRequired, boolean studentRequired,
+	private static void addTeacherPage(Document document, Properties prop, OrgTO tech, String schoolName, boolean schoolUserPresent, boolean newPagerRequired, boolean studentRequired,
 			Map<String, String> orgLabelMap) throws DocumentException {
 		if (newPagerRequired) {
 			document.newPage();
@@ -527,37 +515,40 @@ public class PdfGenerator {
 		String labelOneText = orgLabelMap.get(ORG_NODE_LEVEL_STATE);
 		String labelTwoText = orgLabelMap.get(ORG_NODE_LEVEL_COUNTY);
 		String labelThreeText = orgLabelMap.get(ORG_NODE_LEVEL_SITE);
-		
+
 		String stateName = tech.getStateName();
-		if (stateName == null) stateName = "";
+		if (stateName == null)
+			stateName = "";
 		String testingSiteName = tech.getTestingSiteName();
-		if (testingSiteName == null) testingSiteName = "";
+		if (testingSiteName == null)
+			testingSiteName = "";
 		String countyName = tech.getCountyName();
-		if (countyName == null) countyName = "";
-		
+		if (countyName == null)
+			countyName = "";
+
 		if (!schoolUserPresent) {
 			userType = labelThreeText;
-			document.add(new Paragraph("\n" +userType+ ": " + schoolName, font));
+			document.add(new Paragraph("\n" + userType + ": " + schoolName, font));
 		}
 		if (ORG_NODE_LEVEL_EDU.equals(tech.getOrgNodeLevel())) {
 			userType = "Education Center";
 			document.add(new Paragraph(userType + " Name: " + tech.getElementName(), font));
-		}else{
+		} else {
 			userType = labelOneText;
 			document.add(new Paragraph(userType + " Name: " + stateName, font));
 		}
 		if (ORG_NODE_LEVEL_COUNTY.equals(tech.getOrgNodeLevel())) {
 			userType = labelTwoText;
 			document.add(new Paragraph(userType + " Name: " + countyName, font));
-			//document.add(new Paragraph(userType + " Code: " + tech.getCountyCode(), font));
+			// document.add(new Paragraph(userType + " Code: " + tech.getCountyCode(), font));
 		} else if (ORG_NODE_LEVEL_SITE.equals(tech.getOrgNodeLevel())) {
 			userType = labelThreeText;
 			document.add(new Paragraph(labelTwoText + " Name: " + countyName, font));
-			//document.add(new Paragraph(labelTwoText + " Code: " + tech.getCountyCode(), font));
+			// document.add(new Paragraph(labelTwoText + " Code: " + tech.getCountyCode(), font));
 			document.add(new Paragraph(userType + " Name: " + testingSiteName, font));
-			//document.add(new Paragraph(userType + " Code: " + tech.getTestingSiteCode(), font));
+			// document.add(new Paragraph(userType + " Code: " + tech.getTestingSiteCode(), font));
 		}
-		
+
 		String roleString = getUserListAsString(tech.getRoleList(), userType);
 
 		document.add(new Paragraph("User Roles: " + roleString, font));
@@ -577,10 +568,10 @@ public class PdfGenerator {
 
 		listItem = new ListItem(prop.getProperty("BLT2"), font);
 		list.add(listItem);
-		
+
 		listItem = new ListItem(prop.getProperty("BLT3"), font);
 		list.add(listItem);
-		
+
 		listItem = new ListItem(prop.getProperty("BLT3A"), font);
 		list.add(listItem);
 
@@ -607,7 +598,7 @@ public class PdfGenerator {
 			}
 			document.add(t);
 		}
-		
+
 		document.add(new Paragraph(prop.getProperty("HELP"), font));
 	}
 }

@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.prism.dao;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,17 +32,6 @@ public class CommonDAOImpl implements CommonDAO {
 
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	/**
-	 * @param schoolId
-	 * @return
-	 * @deprecated
-	 */
-	public Integer getClassCount(Long schoolId) {
-		Integer count = jdbcTemplate.queryForObject("select count(*) from org_node_dim where parent_org_nodeid=" + schoolId, Integer.class);
-		logger.info("count=" + count);
-		return count;
 	}
 
 	/*
@@ -83,6 +67,12 @@ public class CommonDAOImpl implements CommonDAO {
 		return school;
 	}
 
+	/**
+	 * @param schoolId
+	 * @param hierarchical
+	 * @return
+	 * @throws Exception
+	 */
 	private List<UserTO> getSchoolUsers(String schoolId, boolean hierarchical) throws Exception {
 		List<UserTO> users = new ArrayList<UserTO>();
 		String query = Constants.GET_SCHOOL_USERS;
@@ -109,6 +99,11 @@ public class CommonDAOImpl implements CommonDAO {
 		return getSchoolUsersWithRoles(users);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.prism.dao.CommonDAO#getOrgNodeCodePath(java.lang.String)
+	 */
 	public String getOrgNodeCodePath(String orgNodeId) throws Exception {
 		StringBuilder orgNodeCodePath = new StringBuilder();
 		orgNodeCodePath.insert(0, orgNodeId);
@@ -122,6 +117,11 @@ public class CommonDAOImpl implements CommonDAO {
 		return orgNodeCodePath.toString();
 	}
 
+	/**
+	 * @param orgNodeId
+	 * @return
+	 * @throws Exception
+	 */
 	private String getParentOrgNodeId(String orgNodeId) throws Exception {
 		String parentOrgNodeId = null;
 		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_PARENT_ORG_NODEID, orgNodeId);
@@ -134,13 +134,10 @@ public class CommonDAOImpl implements CommonDAO {
 		return parentOrgNodeId;
 	}
 
-	/**
-	 * Creates the organization Map where the organization id is the key and the organization name is the value.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param userList
-	 * 
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#getOrgMap(java.util.List)
 	 */
 	public Map<Integer, String> getOrgMap(List<UserTO> userList) {
 		Map<Integer, String> orgMap = new HashMap<Integer, String>();
@@ -156,7 +153,7 @@ public class CommonDAOImpl implements CommonDAO {
 	}
 
 	/**
-	 * Creates a comma separated list of all org_node_ids
+	 * Creates a comma separated list of all org_node_ids.
 	 * 
 	 * @param userList
 	 * @return
@@ -176,12 +173,10 @@ public class CommonDAOImpl implements CommonDAO {
 		return ids;
 	}
 
-	/**
-	 * Update new user flag for all users in the userList
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param userList
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#updateNewuserFlag(java.util.List)
 	 */
 	public int[] updateNewuserFlag(final List<UserTO> userList) {
 		int[] updateCount = jdbcTemplate.batchUpdate(Constants.UPDATE_NEW_USER_FLAG, new BatchPreparedStatementSetter() {
@@ -199,12 +194,10 @@ public class CommonDAOImpl implements CommonDAO {
 		return updateCount;
 	}
 
-	/**
-	 * Fetch Education Center information
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param eduCenterId
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#getSupportEmailForCustomer(java.lang.String)
 	 */
 	public String getSupportEmailForCustomer(String customerId) {
 		String supportEmail = null;
@@ -219,13 +212,13 @@ public class CommonDAOImpl implements CommonDAO {
 	}
 
 	/**
-	 * Populates the Role List for all the users
+	 * Populates the Role List for all the users.
 	 * 
 	 * @param users
 	 * @return
 	 * @throws Exception
 	 */
-	public List<UserTO> getSchoolUsersWithRoles(List<UserTO> users) {
+	private List<UserTO> getSchoolUsersWithRoles(List<UserTO> users) {
 		for (UserTO user : users) {
 			List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_SCHOOL_USERS_WITH_ROLES, user.getUserId());
 			if (dataList != null && dataList.size() > 0) {
@@ -239,25 +232,27 @@ public class CommonDAOImpl implements CommonDAO {
 		return users;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.prism.dao.CommonDAO#getOrgLabelMap()
+	 */
 	public Map<String, String> getOrgLabelMap() {
 		Map<String, String> orgLabelMap = new HashMap<String, String>();
-		// TODO
-		/*
-		 * Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null; try { conn = driver.connect(DATA_SOURCE, null); String query =
-		 * CustomStringUtil.appendString("SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL",
-		 * " FROM (SELECT  DISTINCT ORG_LEVEL,ORG_LABEL FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP", " GROUP BY TEMP.ORG_LEVEL"); pstmt = conn.prepareCall(query); rs = pstmt.executeQuery(); while
-		 * (rs.next()) { orgLabelMap.put(rs.getString(1), rs.getString(2)); } } catch (SQLException e) { e.printStackTrace(); } finally { try { rs.close(); } catch (Exception e2) { } try {
-		 * pstmt.close(); } catch (Exception e2) { } try { conn.close(); } catch (Exception e2) { } }
-		 */
+		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_ORG_LABEL_MAP);
+		logger.info("Map size: " + dataList.size());
+		if (dataList != null && dataList.size() > 0) {
+			for (Map<String, Object> data : dataList) {
+				orgLabelMap.put(((BigDecimal) data.get("ORG_LEVEL")).toString(), (String) data.get("ORG_LABEL"));
+			}
+		}
 		return orgLabelMap;
 	}
 
-	/**
-	 * get process id - without any condition
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param structElement
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#getProcessIdNoCondition(java.lang.String)
 	 */
 	public long getProcessIdNoCondition(String structElement) {
 		long processId = 0;
@@ -271,11 +266,10 @@ public class CommonDAOImpl implements CommonDAO {
 		return processId;
 	}
 
-	/**
-	 * get current admin year
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#getCurrentAdminYear()
 	 */
 	public String getCurrentAdminYear() {
 		String adminid = null;
@@ -289,13 +283,10 @@ public class CommonDAOImpl implements CommonDAO {
 		return adminid;
 	}
 
-	/**
-	 * check if new students are added
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param jasperOrgId
-	 *            , adminId
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#newStudentsLoaded(java.lang.String)
 	 */
 	public boolean newStudentsLoaded(String jasperOrgId) {
 		int newStudCount = 0;
@@ -309,25 +300,21 @@ public class CommonDAOImpl implements CommonDAO {
 		return (newStudCount > 0) ? true : false;
 	}
 
-	/**
-	 * This is to update process status
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * 
+	 * @see com.prism.dao.CommonDAO#updateProcessStatus(long, java.lang.String)
 	 */
-	@Override
 	public int updateProcessStatus(long processId, String status) {
-		return jdbcTemplate.update("UPDATE ORG_PROCESS_STATUS SET PROCESS_STATUS = ?, updated_date_time = SYSDATE WHERE processid = ?", status, processId);
+		return jdbcTemplate.update(Constants.UPDATE_PROCESS_STATUS, status, processId);
 	}
 
-	/**
-	 * This is to update mail sending status
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param allUsers
-	 * @return
-	 * @throws Exception
+	 * @see com.prism.dao.CommonDAO#updateMailStatus(long, java.lang.String, java.lang.String)
 	 */
-	@Override
 	public int updateMailStatus(long processId, String status, String prevStatus) {
-		return jdbcTemplate.update("UPDATE ORG_PROCESS_STATUS SET TARGET_EMAIL_STATUS = ?, UPDATED_DATE_TIME = SYSDATE WHERE PROCESSID = ?", status, processId);
+		return jdbcTemplate.update(Constants.UPDATE_MAIL_STATUS, status, processId);
 	}
 }

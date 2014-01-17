@@ -182,7 +182,7 @@
 				<configuration>
 					<mainClass>${exec-mainClass}</mainClass>
 					<arguments>
-						<argument>I</argument>
+						<argument>L</argument>
 						<argument>362010</argument>
 					</arguments>
 				</configuration>
