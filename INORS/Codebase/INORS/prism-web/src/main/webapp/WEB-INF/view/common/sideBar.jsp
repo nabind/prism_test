@@ -167,8 +167,8 @@
 												</li>	
 												
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="subtest-link" action="getArticleDescription" subtestId="${subtestTO.subtestId}"
-													studentGradeId="${subtestTO.gradeId}" studentGradeName="${subtestTO.gradeName}" 
+													<a class="subtest-link" action="getArticleDescription" subtestId="${subtestTO.value}"
+													studentGradeId="${childDataMap.studentGradeId}" studentGradeName="${childDataMap.studentGradeName}" 
 													menuId = '<spring:message code="menuId.content.rsc"/>'  
 													menuName = '<spring:message code="menuName.content.rsc"/>'
 													contentType = '<spring:message code="val.contentType.rsc"/>' 
@@ -185,8 +185,8 @@
 						</c:forEach>
 						<c:if test="${not empty childDataMap}">
 						<li class="" id="select-tooltip-10">
-							<a class="grade-link" action="getArticleDescription" studentGradeId="${gradeSubtestTO.gradeId}" 
-										studentGradeName="${gradeSubtestTO.gradeName}" menuId = '<spring:message code="menuId.content.eda"/>' 
+							<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
+										studentGradeName="${childDataMap.studentGradeName}" menuId = '<spring:message code="menuId.content.eda"/>' 
 										menuName = '<spring:message code="menuName.content.eda"/>' 
 										contentType = '<spring:message code="val.contentType.eda"/>' 
 										style="font-weight: bold"
