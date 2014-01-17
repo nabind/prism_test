@@ -30,7 +30,8 @@ public interface IParentQuery {
 			" AND ADM.ADMINID = STD.ADMINID ",
 			" and ic.org_nodeid = std.org_nodeid ",
 			" AND GRD.GRADEID = STD.GRADEID AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.INVITATION_CODE = ? ");
+			" AND IC.INVITATION_CODE = ? ",
+			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID");
 
 	/**
 	 * Query to insert newly registered user
