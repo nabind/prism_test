@@ -5,7 +5,6 @@
  */
 $(document).ready(function() {
 	showContent($('#studentOverviewMessage'));
-	showContent($('#contentDescription'));
 	
 	$(".standard-activity").live('click', function() {
 		getGenericPage('getStandardActivity', $(this));
@@ -17,6 +16,7 @@ $(document).ready(function() {
 	
 	$(".articledata").live('click', function() {
 		getGenericPage('getArticleDescription', $(this));
+		showContent($('#contentDescription'));
 	});
 	
 	$('.browse-content').live('click', function() {
