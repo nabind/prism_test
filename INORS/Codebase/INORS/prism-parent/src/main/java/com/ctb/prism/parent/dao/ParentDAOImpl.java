@@ -565,7 +565,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				
 				to.setStudentBioId(studentBioId);
 				
-				if(!checkTASCProduct(customerId) && getParentAccountDetails(String.valueOf(studentBioId), customerId)!=null)
+				if(getParentAccountDetails(String.valueOf(studentBioId), customerId)!=null)
 				{
 					to.setParentAccount(getParentAccountDetails(String.valueOf(studentBioId),customerId));
 				}
@@ -673,7 +673,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					StudentTO to = new StudentTO();
 					long studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue();
 					to.setStudentBioId(studentBioId);
-					if(!checkTASCProduct(customerId) && getParentAccountDetails(String.valueOf(studentBioId), customerId)!=null)
+					if(getParentAccountDetails(String.valueOf(studentBioId), customerId)!=null)
 					{
 						to.setParentAccount(getParentAccountDetails(String.valueOf(studentBioId),customerId));
 					}
@@ -681,7 +681,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					{
 						to.setParentAccount(Collections.<ParentTO>emptyList());
 					}
-					to.setStructureElement((String) (fieldDetails.get("TESTELEMENT")));
+					to.setStructureElement(String.valueOf((BigDecimal)fieldDetails.get("TESTELEMENT")));
 					to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 					to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 					to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
@@ -1144,14 +1144,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return Boolean.FALSE;
 	}
 	
-	public boolean checkTASCProduct(long customerId) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(
-				IQueryConstants.GET_PRODUCT_NAME, customerId);
-		if (lstData == null || lstData.isEmpty()) {
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-	}
 	
 	//Manage Content - Parent Network - Start  - By Joy
 	
