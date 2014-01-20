@@ -223,7 +223,7 @@ $(document).ready(function() {
 	// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
 		'aoColumnDefs': [
-			{ 'bSortable': false, 'aTargets': [ 0, 4 ] }
+			{ 'bSortable': false, 'aTargets': [ 0, 3, 4 ] }
 		],
 		 'sPaginationType': 'full_numbers'
 	});
