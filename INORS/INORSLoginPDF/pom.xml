@@ -4,7 +4,7 @@
 
 	<groupId>com.prism</groupId>
 	<artifactId>INORSLoginPDF</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>INORSLoginPDF</name>
@@ -182,8 +182,8 @@
 				<configuration>
 					<mainClass>${exec-mainClass}</mainClass>
 					<arguments>
-						<argument>L</argument>
-						<argument>362010</argument>
+						<argument>I</argument>
+						<argument>362651</argument>
 					</arguments>
 				</configuration>
 			</plugin>
