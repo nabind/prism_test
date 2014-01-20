@@ -222,7 +222,10 @@ $(document).ready(function() {
 	
 	// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
-		'sPaginationType': 'full_numbers'
+		'aoColumnDefs': [
+			{ 'bSortable': false, 'aTargets': [ 0, 4 ] }
+		],
+		 'sPaginationType': 'full_numbers'
 	});
 	
 });
