@@ -681,6 +681,9 @@ public class InorsController {
 		paramMap.put("requestFileName", requestFileName);
 		paramMap.put("jobLog", jobLog);
 		paramMap.put("jobStatus", jobStatus);
+		if (fileSize == null) {
+			fileSize = 0L;
+		}
 		paramMap.put("fileSize", fileSize.toString());
 		paramMap.put("jobId", processId);
 		int updateCount = reportService.updateJobTracking(paramMap);

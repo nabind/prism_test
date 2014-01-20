@@ -1208,7 +1208,7 @@ function groupDownloadFunction(jsonInputData) {
 			if (data) {
 				jsonOutputData = data;
 			} else {
-				prepareTheCombinedPdfOnFailure();
+				$.modal.alert("No File Found");
 			}
 			unblockUI();
 		},
@@ -1216,20 +1216,12 @@ function groupDownloadFunction(jsonInputData) {
 			if (data.status == "200") {
 				jsonOutputData = data;
 			} else {
-				prepareTheCombinedPdfOnFailure();
+				$.modal.alert("No File Found");
 			}
 			unblockUI();
 		}
 	});
 	return jsonOutputData;
-}
-
-/**
- * Callback method: Failure in prepareTheCombinedPdf()
- */
-function prepareTheCombinedPdfOnFailure() {
-	$.modal.alert("No File Found");
-	//$("#studentTableGD").hide();
 }
 
 function showHideDownloadButtons() {
