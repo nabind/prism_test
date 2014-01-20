@@ -14,7 +14,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.lowagie.text.pdf.PdfEncryptor;
@@ -27,8 +26,8 @@ import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 import com.prism.util.CustomStringUtil;
+import com.prism.util.FileUtil;
 import com.prism.util.PropertyFile;
-import com.prism.util.ReportPDF;
 
 /**
  * @author Amitabha Roy
@@ -42,6 +41,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
+		args = new String[] { "I", "362651" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -55,7 +55,7 @@ public class UserAccountPdf {
 				String[] ids = new String[length];
 				// Creates a new array with args[1] to args[last element]
 				System.arraycopy(args, 1, ids, 0, length);
-				ApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
+				ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
 				CommonDAO dao = applicationContext.getBean("commonDAO", CommonDAO.class);
 				if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
 					ENCRYPTION_NEEDED = true;
@@ -84,6 +84,11 @@ public class UserAccountPdf {
 					String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"), prop.getProperty("schoolaArc"), DDMMYY, ".ZIP");
 					archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
 				}
+				try {
+					applicationContext.close();
+				} catch (Exception e) {
+					logger.warn("Error in closing Application Context");
+				}
 			}
 		}
 		logger.info("The End!");
@@ -91,60 +96,42 @@ public class UserAccountPdf {
 
 	private static String processIcLetterPdf(Properties prop, CommonDAO dao, String schoolId) {
 		logger.info("Processing for IC Letter...");
-		long processId = 0;
 		String letterLoc = "";
 		try {
 			OrgTO school = dao.getSchoolDetails(schoolId);
-			if (school != null) {
-				processId = dao.getProcessIdNoCondition(school.getStructureElement());
-			}
-			if (processId > 0 || true) {
-				String adminid = dao.getCurrentAdminYear();
-				if (dao.newStudentsLoaded(schoolId)) {
-					logger.info("New students found");
-					letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminid);
-					logger.debug("AC letter created @ " + letterLoc);
+			List<String> pdfPathList = dao.getIcLetterPathList(schoolId);
+			if (!pdfPathList.isEmpty()) {
+				logger.info(pdfPathList.size() + " students found");
+				if (!pdfPathList.isEmpty()) {
+					String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
+							+ school.getDateStrWtYear() + "_IC.zip";
+					letterLoc = FileUtil.saveLetterFromFileServer(docName, pdfPathList);
+					logger.debug("IC letter created @ " + letterLoc);
 				} else {
-					logger.info("No new students found");
+					logger.info("No pdf found");
 				}
-				if (letterLoc != null && letterLoc.trim().length() > 0) {
-					// send pdf to school
-					/* Fetch support email from customer table */
-					String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
-					if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-						if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
-							logger.debug("	IC mail sent successfully ... for process id : " + processId);
-							// removeFile(encDocLocation);
-							logger.info("Mail sent successfully to " + school.getEmail());
-							// update staging status
-							dao.updateProcessStatus(processId, Constants.ORG_STATUS.CP.toString());
-							logger.info("Updated Process Status to complete");
-
-							dao.updateMailStatus(processId, Constants.ORG_STATUS.SU.toString(), Constants.ORG_STATUS.IP.toString());
-							logger.info("Updated Mail Status to success");
-						} else {
-							logger.info("Failed sending mail. Updating status.");
-							dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
-							dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
-						}
+			} else {
+				logger.info("No new students found");
+			}
+			if (letterLoc != null && !letterLoc.isEmpty()) {
+				// send pdf to school
+				/* Fetch support email from customer table */
+				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
+				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
+					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
+						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
+						// removeFile(encDocLocation);
+						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
-						logger.debug("failed sending mail .. no school mail id is defined.");
-						logger.info("Failed sending mail .. no school mail id is defined.");
-						dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
-						dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
+						logger.info("Failed sending mail. Updating status.");
 					}
+				} else {
+					logger.debug("failed sending mail .. no school mail id is defined.");
+					logger.info("Failed sending mail .. no school mail id is defined.");
 				}
 			}
 		} catch (Exception e) {
 			logger.info("Error processing : Java exception : " + e.getMessage());
-			try {
-				dao.updateProcessStatus(processId, Constants.ORG_STATUS.ER.toString());
-			} catch (Exception ex) {
-			}
-			try {
-				dao.updateMailStatus(processId, Constants.ORG_STATUS.ER.toString(), Constants.ORG_STATUS.IP.toString());
-			} catch (Exception ex) {
-			}
 			e.printStackTrace();
 			return "";
 		}
@@ -441,7 +428,6 @@ public class UserAccountPdf {
 	 * @param OrgLevel
 	 * @return mail sent (true)successfully/(false)failed
 	 */
-	@SuppressWarnings("unused")
 	private static boolean sendPasswordMail(String level3OrgId, Properties prop, String toMailAddr, String OrgLevel, String supportEmail) {
 		logger.debug("sending password mail... ");
 		boolean mailSent = false;

@@ -252,69 +252,20 @@ public class CommonDAOImpl implements CommonDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.prism.dao.CommonDAO#getProcessIdNoCondition(java.lang.String)
+	 * @see com.prism.dao.CommonDAO#getIcLetterPathList(java.lang.String)
 	 */
-	public long getProcessIdNoCondition(String structElement) {
-		long processId = 0;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_PROCESS_ID_NO_CONDITION, structElement);
+	public List<String> getIcLetterPathList(String schoolId) {
+		List<String> pdfList = new ArrayList<String>();
+		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_IC_LETTER_PATH_LIST, schoolId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
-				processId = ((BigDecimal) fieldDetails.get("PROCESSID")).longValue();
-				break;
+				String pdfPath = (String) fieldDetails.get("IC_FILE_LOC");
+				if (pdfPath != null && !"null".equalsIgnoreCase(pdfPath) && !pdfPath.isEmpty()) {
+					pdfList.add(pdfPath);
+				}
 			}
 		}
-		return processId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.prism.dao.CommonDAO#getCurrentAdminYear()
-	 */
-	public String getCurrentAdminYear() {
-		String adminid = null;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_CURRENT_ADMIN_YEAR);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				adminid = (String) fieldDetails.get("ADMINID");
-				break;
-			}
-		}
-		return adminid;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.prism.dao.CommonDAO#newStudentsLoaded(java.lang.String)
-	 */
-	public boolean newStudentsLoaded(String jasperOrgId) {
-		int newStudCount = 0;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.NEW_STUDENTS_LOADED, jasperOrgId);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				newStudCount = ((BigDecimal) fieldDetails.get("PROCESSID")).intValue();
-				break;
-			}
-		}
-		return (newStudCount > 0) ? true : false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.prism.dao.CommonDAO#updateProcessStatus(long, java.lang.String)
-	 */
-	public int updateProcessStatus(long processId, String status) {
-		return jdbcTemplate.update(Constants.UPDATE_PROCESS_STATUS, status, processId);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.prism.dao.CommonDAO#updateMailStatus(long, java.lang.String, java.lang.String)
-	 */
-	public int updateMailStatus(long processId, String status, String prevStatus) {
-		return jdbcTemplate.update(Constants.UPDATE_MAIL_STATUS, status, processId);
+		logger.info("pdfList.size(): " + pdfList.size());
+		return pdfList;
 	}
 }
