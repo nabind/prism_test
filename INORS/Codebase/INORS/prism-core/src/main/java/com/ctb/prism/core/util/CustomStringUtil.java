@@ -157,7 +157,9 @@ public class CustomStringUtil {
 	public static String replaceCharacterInString(char c, String newValue, String query) {
 		StringBuffer sb = new StringBuffer(query);
 		int index = query.indexOf(c);
-		sb.replace(index, index + 1, newValue);
+		if (index != -1) {
+			sb.replace(index, index + 1, newValue);
+		}
 		return sb.toString();
 	}
 
