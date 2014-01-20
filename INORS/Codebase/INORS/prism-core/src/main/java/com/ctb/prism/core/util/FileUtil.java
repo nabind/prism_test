@@ -289,7 +289,7 @@ public class FileUtil {
 				zos.write(input);
 				zos.closeEntry();
 			}
-			zos.flush();
+			zos.close();
 			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
