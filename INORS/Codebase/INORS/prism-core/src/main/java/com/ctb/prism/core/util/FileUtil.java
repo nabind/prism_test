@@ -85,15 +85,21 @@ public class FileUtil {
 	/**
 	 * Creates a zip byte array from a byte array. The zip byte array can be used to create a zip file.
 	 * 
-	 * @param filename
+	 * @param filePath
 	 * @param input
 	 * @return
 	 * @throws IOException
 	 */
-	public static byte[] zipBytes(String filename, byte[] input) throws IOException {
+	public static byte[] zipBytes(String filePath, byte[] input) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
-		ZipEntry entry = new ZipEntry(filename);
+		logger.log(IAppLogger.INFO, "filePath = " + filePath);
+		String fileName = getFileNameFromFilePath(filePath);
+		if (fileName == null) {
+			logger.log(IAppLogger.WARN, "Skipping " + filePath);
+			return "".getBytes();
+		}
+		ZipEntry entry = new ZipEntry(fileName);
 		entry.setSize(input.length);
 		zos.putNextEntry(entry);
 		zos.write(input);
@@ -282,8 +288,15 @@ public class FileUtil {
 			fos = new FileOutputStream(zipFileName);
 			zos = new ZipOutputStream(fos);
 			for (String filePath : filePaths) {
-				ZipEntry entry = new ZipEntry(filePath);
+				logger.log(IAppLogger.INFO, "filePath = " + filePath);
+				String fileName = getFileNameFromFilePath(filePath);
+				if (fileName == null) {
+					logger.log(IAppLogger.WARN, "Skipping " + filePath);
+					continue;
+				}
+				ZipEntry entry = new ZipEntry(fileName);
 				byte[] input = getBytes(filePath);
+				logger.log(IAppLogger.INFO, input.length + " bytes read");
 				entry.setSize(input.length);
 				zos.putNextEntry(entry);
 				zos.write(input);
@@ -316,5 +329,24 @@ public class FileUtil {
 		File file = new File(filePath);
 		size = file.length();
 		return size;
+	}
+
+	/**
+	 * Returns the file name from the file path.
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	public static String getFileNameFromFilePath(String filePath) {
+		String fileName = null;
+		int index = filePath.lastIndexOf('\\');
+		if (index != -1) {
+			fileName = filePath.substring(index + 1);
+		}
+		index = filePath.lastIndexOf('/');
+		if (index != -1) {
+			fileName = filePath.substring(index + 1);
+		}
+		return fileName;
 	}
 }

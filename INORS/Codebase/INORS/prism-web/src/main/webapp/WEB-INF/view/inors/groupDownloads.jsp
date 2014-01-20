@@ -39,19 +39,19 @@
 						    	<c:when test="${student.ic==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 						    	<c:when test="${student.ic==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 						    	<c:when test="${student.ic=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download blue glossy with-tooltip" title="Invitation Code Letter" href="downloadZippedPdf.do?fileName=${student.ic}&fileType=Invitation Code Letter"></a></c:otherwise>
+								<c:otherwise><a class="button compact icon-download blue glossy with-tooltip" title="Invitation Code Letter" href="downloadZippedPdf.do?fileName=${student.ic}&fileType=Invitation_Code_Letter"></a></c:otherwise>
 							</c:choose>
 							<c:choose>
 								<c:when test="${student.isr==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 								<c:when test="${student.isr==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 								<c:when test="${student.isr=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download green glossy with-tooltip" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}&fileType=Individual Student Report"></a></c:otherwise>
+								<c:otherwise><a class="button compact icon-download green glossy with-tooltip" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}&fileType=Individual_Student_Report"></a></c:otherwise>
 							</c:choose>
 							<c:choose>
 								<c:when test="${student.ip==''}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 								<c:when test="${student.ip==' '}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
 								<c:when test="${student.ip=='null'}"><a class="button compact icon-forbidden red disabled with-tooltip" title="Not Available" href="#"></a></c:when>
-								<c:otherwise><a class="button compact icon-download orange glossy with-tooltip" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}&fileType=Image Print"></a></c:otherwise>
+								<c:otherwise><a class="button compact icon-download orange glossy with-tooltip" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}&fileType=Image_Print"></a></c:otherwise>
 							</c:choose>
 							</span>
 						</td>

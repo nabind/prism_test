@@ -701,13 +701,14 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
 
 		String fileName = request.getParameter("fileName");
+		// IMPORTANT : fileName should be with forward slash ('/') format in database : C:/Temp/GroupDownload/1111.pdf
 		String fileType = request.getParameter("fileType");
 		String email = request.getParameter("email");
 		logger.log(IAppLogger.INFO, "fileName=" + fileName);
 		logger.log(IAppLogger.INFO, "email=" + email);
 		String zipFileName = fileType + ".zip";
 		try {
-			fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
+			// fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
 			File pdfFile = new File(fileName);
 			if (!pdfFile.canRead()) {
 				logger.log(IAppLogger.WARN, "No Read Permission");
