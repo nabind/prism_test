@@ -62,7 +62,7 @@
 	</div>
 	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
-			<label for="fileName" class="label" style="width: 345px !important;">Name of Generated File (50 characters maximum): </label>
+			<label for="fileName" class="label" style="width: 345px !important; float: left;">Name of Generated File (50 characters maximum): </label>
 			<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required]" maxlength="50" style="width:200px;">
 			<span class="info-spot">
 				<span class="icon-info-round"></span>
@@ -72,7 +72,7 @@
 			</span>
 		</p>
 		<p class="inline-label">
-			<label for="email" class="label" style="width: 345px !important;">Email address for notification of Generated File complete: </label>
+			<label for="email" class="label" style="width: 345px !important; float: left;">Email address for notification of Generated File complete: </label>
 			<input name="email" type="text" value="${email}" id="email" class="input validate[required,custom[email]]" maxlength="30" style="width:200px;">
 		</p>
 	</div>
