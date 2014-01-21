@@ -206,6 +206,16 @@ $(document).ready(function() {
 			checkboxes.removeAttr('checked');
 		}
 	});
+
+	$("input[id^=check-student-]").change(function() {
+		var checkedStudents = $("input[id^=check-student-]:checked");
+		var totalStudents = $("input[id^=check-student-]");
+		if(checkedStudents.length == totalStudents.length){
+			$('#check-all').attr('checked', 'checked');
+		} else {
+			$('#check-all').removeAttr('checked');
+		}
+	});
 				
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").on("click", function() {
