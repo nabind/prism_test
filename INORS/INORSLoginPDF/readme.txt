@@ -37,7 +37,12 @@ Step 2: Copy "dependency" folder in C:\Utility. It will contain the following ja
 	spring-security-crypto-3.1.0.RELEASE.jar
 	spring-tx-4.0.0.RELEASE.jar
 
-Step 3: Run the following command from C:\Utility
+Step 3: Copy the following files in C:\Utility
+	COUR.TTF
+	logoCTBTASC.png
+	TASCLogo.png
+
+Step 4: Run the following command from C:\Utility
 
 C:\Utility>java -cp inors-login-pdf-0.0.1.jar;./dependency/activation-1.1.1.jar;./dependency/aopalliance-1.0.jar;./dependency/bcmail-jdk14-1.38.jar;./dependency/bcmail-jdk14-138.jar;./dependency/bcprov-jdk14-1.38.jar;./dependency/bcprov-jdk14-138.jar;./dependency/bctsp-jdk14-1.38.jar;./dependency/commons-dbcp-1.4.jar;./dependency/commons-io-2.4.jar;./dependency/commons-logging-1.1.1.jar;./dependency/commons-pool-1.5.4.jar;./dependency/itext-2.1.7.jar;./dependency/log4j-1.2.17.jar;./dependency/mail-1.4.7.jar;./dependency/ojdbc5-11.2.0.2.jar;./dependency/spring-aop-4.0.0.RELEASE.jar;./dependency/spring-beans-4.0.0.RELEASE.jar;./dependency/spring-context-4.0.0.RELEASE.jar;./dependency/spring-core-4.0.0.RELEASE.jar;./dependency/spring-expression-4.0.0.RELEASE.jar;./dependency/spring-jdbc-4.0.0.RELEASE.jar;./dependency/spring-security-core-3.1.0.RELEASE.jar;./dependency/spring-security-crypto-3.1.0.RELEASE.jar;./dependency/spring-tx-4.0.0.RELEASE.jar com.prism.itext.UserAccountPdf I 362651
 
@@ -65,4 +70,6 @@ What is New?
 *************
 Version 0.0.2
 	1. Support for multiple admin year
-
+Version 0.0.3
+	1. Resource path modified
+	2. DB properties removed from inors.properties
