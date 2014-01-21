@@ -228,6 +228,7 @@ $(document).ready(function() {
 		 'sPaginationType': 'full_numbers'
 	});
 	
+	$('#groupDownload').validationEngine();
 });
 
 // =============== get inors home page message =====================

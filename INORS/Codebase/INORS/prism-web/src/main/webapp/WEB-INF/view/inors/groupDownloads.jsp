@@ -63,7 +63,7 @@
 	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
 			<label for="fileName" class="label" style="width: 345px !important; float: left;">Name of Generated File (50 characters maximum): </label>
-			<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required]" maxlength="50" style="width:200px;">
+			<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required, custom[fileNameGD, maxSize[50]]" maxlength="50" style="width:200px;">
 			<span class="info-spot">
 				<span class="icon-info-round"></span>
 				<span class="info-bubble" style="width: 123px;">
