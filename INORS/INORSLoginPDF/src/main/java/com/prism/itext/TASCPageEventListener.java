@@ -75,7 +75,7 @@ public class TASCPageEventListener extends PdfPageEventHelper {
 	@Override
 	public void onStartPage(PdfWriter writer, Document document) {
 		try {
-			Image _img = Image.getInstance(String.format("src\\main\\resources\\logoCTBTASC.png"));
+			Image _img = Image.getInstance(String.format("logoCTBTASC.png"));
 			_img.scalePercent(50);
 			document.add(_img);
 		} catch (BadElementException e) {

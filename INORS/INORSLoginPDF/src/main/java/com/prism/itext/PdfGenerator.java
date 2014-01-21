@@ -46,14 +46,15 @@ public class PdfGenerator {
 	private static Font tableHeaderFont = FontFactory.getFont("Arial", 9.0F, 1, new Color(0, 0, 0));
 	private static Font tableFont = FontFactory.getFont("Arial", 8.0F, 0, new Color(0, 0, 0));
 	private static final String ORG_NODE_LEVEL_STATE = "1";
-	private static final String ORG_NODE_LEVEL_COUNTY = "2";
-	private static final String ORG_NODE_LEVEL_SITE = "3";
+	private static final String ORG_NODE_LEVEL_DISTRICT = "2";
+	private static final String ORG_NODE_LEVEL_SCHOOL = "3";
+	private static final String ORG_NODE_LEVEL_CLASS = "4"; // TODO : Implement Logic
 	private static final String ORG_NODE_LEVEL_EDU = "-99";
 
 	static {
 		BaseFont bf2 = null;
 		try {
-			bf2 = BaseFont.createFont("src\\main\\resources\\COUR.TTF", BaseFont.CP1252, BaseFont.EMBEDDED);
+			bf2 = BaseFont.createFont("COUR.TTF", BaseFont.CP1252, BaseFont.EMBEDDED);
 			fontCourier = new Font(bf2, 12);
 			tableFont = new Font(bf2, 12);
 		} catch (Exception e) {
@@ -263,12 +264,12 @@ public class PdfGenerator {
 			table.setWidths(colsWidthState);
 			table.setWidthPercentage(100);
 			return table;
-		} else if (ORG_NODE_LEVEL_COUNTY.equals(orgNodeLevel)) {
+		} else if (ORG_NODE_LEVEL_DISTRICT.equals(orgNodeLevel)) {
 			PdfPTable table = new PdfPTable(5);
 			table.setWidths(colsWidthStateCounty);
 			table.setWidthPercentage(100);
 			return table;
-		} else if (ORG_NODE_LEVEL_SITE.equals(orgNodeLevel)) {
+		} else if (ORG_NODE_LEVEL_SCHOOL.equals(orgNodeLevel) || ORG_NODE_LEVEL_CLASS.equals(orgNodeLevel)) { // TODO : Implement Logic
 			PdfPTable table = new PdfPTable(6);
 			table.setWidths(colsWidthTestingSite);
 			table.setWidthPercentage(100);
@@ -291,8 +292,8 @@ public class PdfGenerator {
 		document.add(new Paragraph("\n"));
 
 		String labelOneText = orgLabelMap.get(ORG_NODE_LEVEL_STATE);
-		String labelTwoText = orgLabelMap.get(ORG_NODE_LEVEL_COUNTY);
-		String labelThreeText = orgLabelMap.get(ORG_NODE_LEVEL_SITE);
+		String labelTwoText = orgLabelMap.get(ORG_NODE_LEVEL_DISTRICT);
+		String labelThreeText = orgLabelMap.get(ORG_NODE_LEVEL_SCHOOL);
 		String userType = "";
 
 		PdfPCell c1 = null;
@@ -307,7 +308,7 @@ public class PdfGenerator {
 		c1.setBackgroundColor(Color.lightGray);
 		table.addCell(c1);
 
-		if (ORG_NODE_LEVEL_COUNTY.equals(orgNodeLevel)) {
+		if (ORG_NODE_LEVEL_DISTRICT.equals(orgNodeLevel)) {
 			userType = labelTwoText;
 			c1 = new PdfPCell(new Phrase(userType + " Name", tableHeaderFont));
 			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -317,7 +318,7 @@ public class PdfGenerator {
 			/*
 			 * c1 = new PdfPCell(new Phrase(userType + " Code", tableHeaderFont)); c1.setHorizontalAlignment(Element.ALIGN_CENTER); c1.setBackgroundColor(Color.lightGray); table.addCell(c1);
 			 */
-		} else if (ORG_NODE_LEVEL_SITE.equals(orgNodeLevel)) {
+		} else if (ORG_NODE_LEVEL_SCHOOL.equals(orgNodeLevel) || ORG_NODE_LEVEL_CLASS.equals(orgNodeLevel)) { // TODO : Implement Logic
 			userType = labelThreeText;
 			c1 = new PdfPCell(new Phrase(labelTwoText + " Name", tableHeaderFont));
 			c1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -392,10 +393,10 @@ public class PdfGenerator {
 			String testingSiteName = schUser.getTestingSiteName();
 			if (testingSiteName == null)
 				testingSiteName = "";
-			if (ORG_NODE_LEVEL_COUNTY.equals(orgNodeLevel)) {
+			if (ORG_NODE_LEVEL_DISTRICT.equals(orgNodeLevel)) {
 				table.addCell(new Phrase(countyName, tableFont));
 				// table.addCell(new Phrase(countryCodeString, tableFont));
-			} else if (ORG_NODE_LEVEL_SITE.equals(orgNodeLevel)) {
+			} else if (ORG_NODE_LEVEL_SCHOOL.equals(orgNodeLevel) || ORG_NODE_LEVEL_CLASS.equals(orgNodeLevel)) { // TODO : Implement Logic
 				table.addCell(new Phrase(countyName, tableFont));
 				// table.addCell(new Phrase(countryCodeString, tableFont));
 				table.addCell(new Phrase(testingSiteName, tableFont));
@@ -513,8 +514,8 @@ public class PdfGenerator {
 		}
 		String userType = "";
 		String labelOneText = orgLabelMap.get(ORG_NODE_LEVEL_STATE);
-		String labelTwoText = orgLabelMap.get(ORG_NODE_LEVEL_COUNTY);
-		String labelThreeText = orgLabelMap.get(ORG_NODE_LEVEL_SITE);
+		String labelTwoText = orgLabelMap.get(ORG_NODE_LEVEL_DISTRICT);
+		String labelThreeText = orgLabelMap.get(ORG_NODE_LEVEL_SCHOOL);
 
 		String stateName = tech.getStateName();
 		if (stateName == null)
@@ -537,11 +538,11 @@ public class PdfGenerator {
 			userType = labelOneText;
 			document.add(new Paragraph(userType + " Name: " + stateName, font));
 		}
-		if (ORG_NODE_LEVEL_COUNTY.equals(tech.getOrgNodeLevel())) {
+		if (ORG_NODE_LEVEL_DISTRICT.equals(tech.getOrgNodeLevel())) {
 			userType = labelTwoText;
 			document.add(new Paragraph(userType + " Name: " + countyName, font));
 			// document.add(new Paragraph(userType + " Code: " + tech.getCountyCode(), font));
-		} else if (ORG_NODE_LEVEL_SITE.equals(tech.getOrgNodeLevel())) {
+		} else if (ORG_NODE_LEVEL_SCHOOL.equals(tech.getOrgNodeLevel()) || ORG_NODE_LEVEL_CLASS.equals(tech.getOrgNodeLevel())) { // TODO : Implement Logic
 			userType = labelThreeText;
 			document.add(new Paragraph(labelTwoText + " Name: " + countyName, font));
 			// document.add(new Paragraph(labelTwoText + " Code: " + tech.getCountyCode(), font));

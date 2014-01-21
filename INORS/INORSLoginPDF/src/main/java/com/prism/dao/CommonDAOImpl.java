@@ -143,7 +143,6 @@ public class CommonDAOImpl implements CommonDAO {
 		Map<Integer, String> orgMap = new HashMap<Integer, String>();
 		String ids = getIds(userList);
 		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(CustomStringUtil.replaceCharacterInString('?', ids, Constants.GET_ORG_MAP));
-		logger.info("Map size: " + dataList.size());
 		if (dataList != null && dataList.size() > 0) {
 			for (Map<String, Object> data : dataList) {
 				orgMap.put(((BigDecimal) data.get("ORG_NODEID")).intValue(), (String) data.get("ORG_NODE_NAME"));
@@ -240,7 +239,6 @@ public class CommonDAOImpl implements CommonDAO {
 	public Map<String, String> getOrgLabelMap() {
 		Map<String, String> orgLabelMap = new HashMap<String, String>();
 		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_ORG_LABEL_MAP);
-		logger.info("Map size: " + dataList.size());
 		if (dataList != null && dataList.size() > 0) {
 			for (Map<String, Object> data : dataList) {
 				orgLabelMap.put(((BigDecimal) data.get("ORG_LEVEL")).toString(), (String) data.get("ORG_LABEL"));

@@ -41,7 +41,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "362651" };
+		// args = new String[] { "L", "362010" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -149,7 +149,7 @@ public class UserAccountPdf {
 			if (school != null && school.getUsers() != null && school.getUsers().size() > 0) {
 				schoolUserPresent = true;
 				DDMMYY = school.getDateStrWtYear();
-				logger.info("New school user found. count .. " + school.getUsers().size());
+				logger.info(school.getUsers().size() + " new school user found.");
 			} else {
 				logger.info("No new school user found. ");
 			}
