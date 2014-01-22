@@ -59,6 +59,20 @@ public interface IParentQuery {
 			" VALUES (?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?,?,",
 			" (select DISTINCT inv.customerid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?),?,'Y',",
 			" 'AC', SYSDATE, ?, ?)");
+	
+	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
+			" SELECT ORG_USER_ID",
+			" FROM ORG_USERS OU",
+			" WHERE OU.USERID = ?",
+			" AND OU.ORG_NODEID =",
+			" (SELECT N.PARENT_ORG_NODEID",
+			" FROM INVITATION_CODE M, ORG_NODE_DIM N",
+			" WHERE M.ORG_NODEID = N.ORG_NODEID",
+			" AND M.INVITATION_CODE = ?)");
+	
+	public static final String GET_USERID_PARENT = CustomStringUtil.appendString(
+			" SELECT USERID FROM USERS U WHERE UPPER(U.USERNAME) = UPPER(?)");
+	
 	public static final String INSERT_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID,ORG_NODEID,ORG_NODE_LEVEL,ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
 			" (?, ?,(SELECT N.PARENT_ORG_NODEID FROM INVITATION_CODE M,ORG_NODE_DIM N  WHERE M.ORG_NODEID= N.ORG_NODEID AND M.INVITATION_CODE = ?),'0', (select adminid from invitation_code where invitation_code=?), ?, sysdate )");
@@ -100,22 +114,22 @@ public interface IParentQuery {
 			" IC.ICID = ICC.ICID AND",
 			" IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ");
 
-	public static final String ADD_INVITATION_CODE_TO_ACCOUNT = CustomStringUtil
-			.appendString(
-					" INSERT INTO INVITATION_CODE_CLAIM ",
-					" (INVITATION_CODE_CLAIM_ID, ORG_USER_ID, ICID, ",
-					" ACTIVATION_STATUS, CLAIM_DATE)",
-					" VALUES ",
+	public static final String ADD_INVITATION_CODE_TO_ACCOUNT = CustomStringUtil.appendString(
+					" INSERT INTO INVITATION_CODE_CLAIM",
+					" (INVITATION_CODE_CLAIM_ID,",
+					" ORG_USER_ID,",
+					" ICID,",
+					" ACTIVATION_STATUS,",
+					" CLAIM_DATE)",
+					" VALUES",
 					" (INVITATION_CODE_CLAIM_ID_SEQ.NEXTVAL,",
-					" (	SELECT OU.ORG_USER_ID",
-						" FROM USERS U, ORG_USERS OU, INVITATION_CODE IC",
-						" WHERE U.USERID = OU.USERID",
-						" AND OU.ORG_NODEID = IC.ORG_NODEID",
-						/*" AND OU.ORG_NODE_LEVEL = 0",*/
-						" AND UPPER(U.USERNAME) = UPPER(?)",
-						" AND IC.INVITATION_CODE = ?),",
-					" (SELECT ICID FROM INVITATION_CODE IC WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC'), ",
-					" 'AC', SYSDATE)");
+					" ?,",
+					" (SELECT ICID",
+					" FROM INVITATION_CODE IC",
+					" WHERE IC.INVITATION_CODE = ?",
+					" AND IC.ACTIVATION_STATUS = 'AC'),",
+					" 'AC',",
+					" SYSDATE)");
 
 	public static final String GET_PARENT_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
 			"SELECT ABC.USERID, ABC.USERNAME,ABC.FULLNAME, ABC.STATUS, TO_CHAR(ABC.LAST_LOGIN_ATTEMPT,'MM/DD/YY') AS LAST_LOGIN_ATTEMPT,",

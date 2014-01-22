@@ -130,10 +130,12 @@ public class ParentBusinessImpl implements IParentBusiness {
 	public ParentTO manageParentAccountDetails(String username){
 		return parentDAO.manageParentAccountDetails( username );
 	}
+	
 	//Added by Ravi for Manage Profile
 	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException {
 		return parentDAO.updateUserProfile(parentTO);
 	}
+	
 	//Added by Ravi for Claim New Invitation
 	public boolean addInvitationToAccount(String userName, String invitationCode) {
 		if(!parentDAO.checkInvitationCodeClaim(userName, invitationCode)) {

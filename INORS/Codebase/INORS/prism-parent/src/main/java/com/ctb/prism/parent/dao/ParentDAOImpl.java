@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -329,26 +330,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<StudentTO> getChildrenList(final String userName,String clickedTreeNode, String adminYear ) {
-		/*List<StudentTO> children = null;
-		List<Map<String,Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_CHILDREN, userName);
-		logger.log(IAppLogger.DEBUG, "outside...... list");
-		if ( list != null && list.size() > 0 )
-		{
-			logger.log(IAppLogger.DEBUG, "Inside...... list");
-			children = new ArrayList<StudentTO>();
-			for (Map<String, Object> data : list) {
-				StudentTO studentTO = new StudentTO();
-				studentTO.setStudentName((String) data.get("STUDENT_NAME"));
-				studentTO.setStudentBioId(((BigDecimal) data.get("STUDENT_BIO_ID"))
-						.longValue());
-				studentTO.setAdministration((String) data.get("ADMIN_SEASON_YEAR"));
-				studentTO.setGrade((String) data.get("STUDENTGRADE"));
-				studentTO.setAdminid(((BigDecimal) data.get("ADMINID")).toString());
-				children.add(studentTO);
-			}
-		}
-		return children;*/
-		
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getChildrenList()");
 		long t1 = System.currentTimeMillis();
 		List<StudentTO> studentList = null;
@@ -1061,6 +1042,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return Boolean.TRUE;
 	}
+	
 	/**
 	 * Add invitation code to existing parent account
 	 * Need to store org_user_id instead of userid 
@@ -1068,17 +1050,64 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @return boolean
 	 */
 	public boolean addInvitationToAccount(String userName, String invitationCode) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
+		long t1 = System.currentTimeMillis();
+
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userName", userName);
+		paramMap.put("invitationCode", invitationCode);
+		
+		long orgUserid = getOrgUserId(paramMap);
+		
 		int count = getJdbcTemplatePrism().update(
-				IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT,userName, invitationCode,
+				IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT,
+				orgUserid, 
 				invitationCode);
 		if (count > 0) {
-			boolean isUpdatedInvitationCodeClaimCount=updateInvitationCodeClaimCount(invitationCode);
+			boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(invitationCode);
 			return isUpdatedInvitationCodeClaimCount;
-			/*if (isUpdatedInvitationCodeClaimCount) {
-				return updateOrgIdForParent(userName, invitationCode);
-			}*/
 		}
+		
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addInvitationToAccount() took time: "+String.valueOf(t2 - t1)+"ms");
 		return Boolean.FALSE;
+	}
+	
+	/**
+	 * Get OrgUserId depending upon student's school and parent userid.
+	 * Add a record if the data does not exists.
+	 * @author Joy
+	 * @return long
+	 */
+	private long getOrgUserId(final Map<String,Object> paramMap) {
+		
+		String userName = (String) paramMap.get("userName");
+		String invitationCode = (String) paramMap.get("invitationCode");
+		long orgUserid = 0;
+		
+		long userid = getJdbcTemplatePrism().queryForLong(
+				IQueryConstants.GET_USERID_PARENT,userName);
+		
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(
+				IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
+		if (lstData.size() > 0){
+			for (Map<String, Object> fieldDetails : lstData) {
+				orgUserid = ((BigDecimal)fieldDetails.get("ORG_USER_ID")).longValue();
+			}
+		}else{
+			orgUserid = getJdbcTemplatePrism().queryForLong(
+					IQueryConstants.USER_SEQ_ID);
+			
+			// Insert data in ORG_USERS
+			getJdbcTemplatePrism().update(
+					IQueryConstants.INSERT_ORG_USER_PARENT,
+					orgUserid, 
+					userid, 
+					invitationCode,
+					invitationCode, 
+					IApplicationConstants.ACTIVE_FLAG);
+		}
+		return orgUserid;
 	}
 	
 	/**
@@ -1372,7 +1401,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - loadManageContent()");
 		long t1 = System.currentTimeMillis();
 		List<ManageContentTO> manageContentList = null;
-		ManageContentTO manageContentTO = new ManageContentTO();
 		final long custProdId = Long.parseLong((String) paramMap.get("custProdId"));
 		final long subtestId = Long.parseLong((String) paramMap.get("subtestId"));
 		final long objectiveId = Long.parseLong((String) paramMap.get("objectiveId"));
@@ -1404,7 +1432,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					            cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					            return cs;	
 				        	}
-				        	
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
 			        		public Object doInCallableStatement(CallableStatement cs) {
@@ -1417,7 +1444,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 									} else {
 										rs = (ResultSet) cs.getObject(6);
 									}
-									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									
 									while(rs.next()){
 										ManageContentTO manageContentTO = new ManageContentTO();
@@ -1447,7 +1473,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @author Joy
 	 * Get content details for edit depending upon article_metedata id  - By Joy
 	 */
-	@SuppressWarnings("unchecked")
 	public ManageContentTO getContentForEdit(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getContentForEdit()");
 		long t1 = System.currentTimeMillis();
@@ -1596,7 +1621,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @author Joy
 	 * Get content details for edit depending upon article_metedata id  - By Joy
 	 */
-	@SuppressWarnings("unchecked")
 	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyStandardForEdit()");
 		long t1 = System.currentTimeMillis();
@@ -1645,7 +1669,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @author Joy
 	 * Get Description of Resource, Everyday Activity and About the Test  - By Joy
 	 */
-	@SuppressWarnings("unchecked")
 	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyGenericForEdit()");
 		long t1 = System.currentTimeMillis();
@@ -1820,7 +1843,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @author Joy
 	 * Get Article description depending upon article id and type/category  - By Joy
 	 */
-	@SuppressWarnings("unchecked")
 	public ManageContentTO getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
