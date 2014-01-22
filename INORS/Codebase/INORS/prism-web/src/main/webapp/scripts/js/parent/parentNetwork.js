@@ -16,7 +16,6 @@ $(document).ready(function() {
 	
 	$(".articledata").live('click', function() {
 		getGenericPage('getArticleDescription', $(this));
-		showContent($('#contentDescription'));
 	});
 	
 	$('.browse-content').live('click', function() {
@@ -51,6 +50,9 @@ function getGenericPage(action, obj) {
 		success : function(data) {
 			unblockUI();
 			$(".main-section").html(data);
+			if(action == 'getArticleDescription'){
+				showContent($('#contentDescription'));
+			}
 		},
 		error : function(data) {						
 			unblockUI();
