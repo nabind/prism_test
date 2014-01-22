@@ -157,23 +157,43 @@
 								id="">${subtestTO.name}</a>
 										<ul class="big-menu report-menu white-gradient">
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="standard-activity" href="#nogo" subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
-													id="">Skill Building Activities</a>
+													<a class="standard-activity" href="#nogo" 
+														subtestId="${subtestTO.value}" 
+														studentName="${childDataMap.studentName}" 
+														studentGradeId="${childDataMap.studentGradeId}" 
+														studentGradeName="${childDataMap.studentGradeName}" 
+														studentBioId="${childDataMap.studentBioId}" 
+														id="">
+															<spring:message code="menuName.content.stdAct"/>
+													</a>
 												</li>
 												
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="standard-indicator" href="#nogo"  subtestId="${subtestTO.value}" studentName="${childDataMap.studentName}" studentGradeId="${childDataMap.studentGradeId}" studentBioId="${childDataMap.studentBioId}" studentGradeName="${childDataMap.studentGradeName}" 
-													id="">Standards</a>
+													<a class="standard-indicator" href="#nogo"  
+														subtestId="${subtestTO.value}" 
+														studentName="${childDataMap.studentName}" 
+														studentGradeId="${childDataMap.studentGradeId}" 
+														studentGradeName="${childDataMap.studentGradeName}" 
+														studentBioId="${childDataMap.studentBioId}" 
+														id="">
+															<spring:message code="menuName.content.stdInd"/>
+													</a>
 												</li>	
 												
 												<li class="mid-margin-left font-12 small-line-height">
-													<a class="subtest-link" action="getArticleDescription" subtestId="${subtestTO.value}"
-													studentGradeId="${childDataMap.studentGradeId}" studentGradeName="${childDataMap.studentGradeName}" 
-													menuId = '<spring:message code="menuId.content.rsc"/>'  
-													menuName = '<spring:message code="menuName.content.rsc"/>'
-													contentType = '<spring:message code="val.contentType.rsc"/>' 
-													style="font-weight: bold"
-													href="#nogo" id="">Resources</a>
+													<a class="articledata" href="#nogo" 
+														subtestId="${subtestTO.value}"
+														studentName="${childDataMap.studentName}" 
+														studentGradeId="${childDataMap.studentGradeId}" 
+														studentGradeName="${childDataMap.studentGradeName}" 
+														studentBioId="${childDataMap.studentBioId}" 
+														menuId = '<spring:message code="menuId.content.rsc"/>'  
+														menuName = '<spring:message code="menuName.content.rsc"/>'
+														contentType = '<spring:message code="val.contentType.rsc"/>' 
+														style="font-weight: bold"
+														id="">
+															<spring:message code="menuName.content.rsc"/>
+													</a>
 												</li>
 													
 												<li class="mid-margin-left font-12 small-line-height">
@@ -186,14 +206,21 @@
 						<c:if test="${not empty childDataMap}">
 						<li class="" id="select-tooltip-10">
 							<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
-										studentGradeName="${childDataMap.studentGradeName}" menuId = '<spring:message code="menuId.content.eda"/>' 
+										studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
+										menuId = '<spring:message code="menuId.content.eda"/>' 
 										menuName = '<spring:message code="menuName.content.eda"/>' 
 										contentType = '<spring:message code="val.contentType.eda"/>' 
 										style="font-weight: bold"
 										href="#nogo" id="">-  <spring:message code="menuName.content.eda"/></a>
 						</li>
 						<li class="" id="select-tooltip-10">
-							<a href="#nogo" >About the Tests</a>
+							<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
+										studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
+										menuId = '<spring:message code="menuId.content.att"/>' 
+										menuName = '<spring:message code="menuName.content.att"/>' 
+										contentType = '<spring:message code="val.contentType.att"/>' 
+										style="font-weight: bold"
+										href="#nogo" id="">-  <spring:message code="menuName.content.att"/></a>
 						</li>
 						</c:if>
 						
@@ -211,18 +238,40 @@
 											 <ul class="big-menu report-menu white-gradient">
 											 		<li class="mid-margin-left font-12 small-line-height"><a href="getBrowseContent.do"  id="">- Overview</a></li>
 											 		<li class="mid-margin-left font-12 small-line-height">
-											 		<a class="standard-activity" href="#nogo" 
-											 			subtestId="${subtestTO.value}" 
-											 			studentName="${childDataMap.studentName}" 
-											 			studentGradeId="${childDataMap.studentGradeId}" 
-											 			studentGradeName="${childDataMap.studentGradeName}"> 
-											 				- Skill-Building Activities
-											 		</a>
+											 		<a class="browse-content" href="#nogo" 
+           												menuId='<spring:message code="menuId.content.stdAct"/>' 
+										           		menuName='<spring:message code="menuName.content.stdAct"/>'  
+										           		id=""> -  <spring:message code="menuName.content.stdAct"/>
+										           	</a>
 											        </li>
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Standards</a></li>
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Resources</a></li>
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- Everyday Activities</a></li>
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="#"  id="">- About the Tests</a></li>
+											 		<li class="mid-margin-left font-12 small-line-height">
+											 			<a class="browse-content" href="#nogo" 
+															menuId='<spring:message code="menuId.content.stdInd"/>' 
+											           		menuName='<spring:message code="menuName.content.stdInd"/>'  
+											         		id=""> -  <spring:message code="menuName.content.stdInd"/> 
+											         	</a>
+											 		</li>
+											 		<li class="mid-margin-left font-12 small-line-height">
+											 			<a class="browse-content" href="#nogo" 
+															menuId='<spring:message code="menuId.content.rsc"/>' 
+											           		menuName='<spring:message code="menuName.content.rsc"/>'
+											           		id=""> -  <spring:message code="menuName.content.rsc"/>
+											           	</a>
+													</li>
+											 		<li class="mid-margin-left font-12 small-line-height">
+											 			<a class="browse-content" href="#nogo" 
+															menuId='<spring:message code="menuId.content.eda"/>' 
+											           		menuName='<spring:message code="menuName.content.eda"/>'
+											           		id=""> -  <spring:message code="menuName.content.eda"/> 
+											           	</a>
+													</li>
+											 		<li class="mid-margin-left font-12 small-line-height">
+											 			<a class="browse-content" href="#nogo"
+															menuId='<spring:message code="menuId.content.att"/>' 
+											           		menuName='<spring:message code="menuName.content.att"/>' 
+															id=""> -  <spring:message code="menuName.content.att"/> 
+														</a>
+													</li>
 											 	</ul>
 									 </li>
 									 
