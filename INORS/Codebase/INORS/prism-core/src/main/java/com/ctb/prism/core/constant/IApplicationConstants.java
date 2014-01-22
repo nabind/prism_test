@@ -77,6 +77,7 @@ public interface IApplicationConstants {
 	public static final String CURRORGLVL = "CURRORGLVL";
 	public static final String AUTHORITIES = "AUTHORITIES";
 	public static final String PREV_ADMIN = "PREV_ADMIN";
+	public static final String PREV_ADMIN_DISPNAME ="PREV_ADMIN_DISPNAME";
 	public static final String SSO_PREV_ADMIN = "SSO_PREV_ADMIN";
 	public static final String EMAIL = "EMAIL";
 

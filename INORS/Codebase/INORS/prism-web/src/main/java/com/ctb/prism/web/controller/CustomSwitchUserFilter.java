@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.MessageSource;
@@ -33,8 +34,6 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -43,6 +42,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.switchuser.AuthenticationSwitchUserEvent;
 import org.springframework.security.web.authentication.switchuser.SwitchUserAuthorityChanger;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
@@ -50,6 +50,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.UserDetailsManager;
 import com.ctb.prism.login.transferobject.UserTO;
 
@@ -77,6 +79,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 	private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
 	private AuthenticationSuccessHandler successHandler;
 	private AuthenticationFailureHandler failureHandler;
+	
+	@Autowired
+	private ILoginService loginService;
 
 	// ~ Methods
 	// ========================================================================================================
@@ -125,7 +130,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 						prevAdmin = userDetails.getUsername();
 					}
 				}
-				
+				//Get details of prev admin user details
+				UserTO prevAdminuserDetails = loginService.getUserByEmail(prevAdmin);
+				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, prevAdmin);
 				// ADDED FOR SSO (and then using LOGIN-AS)
 				String ssoOrg = (String) request.getSession().getAttribute(IApplicationConstants.SSO_ORG);
@@ -143,6 +150,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			} catch (AuthenticationException e) {
 				logger.debug("Switch User failed", e);
 				failureHandler.onAuthenticationFailure(request, response, e);
+			} catch (SystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 			return;
