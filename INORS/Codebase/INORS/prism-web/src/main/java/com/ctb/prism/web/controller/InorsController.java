@@ -985,6 +985,21 @@ public class InorsController {
 		return null;
 	}
 
+	@RequestMapping(value = "/clearGDCache", method = RequestMethod.GET)
+	public void clearGDCache(HttpServletRequest request) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: clearGDCache()");
+		request.getSession().removeAttribute("retainBulkDownloadTO");
+		request.getSession().removeAttribute("p_test_administration");
+		request.getSession().removeAttribute("p_test_program");
+		request.getSession().removeAttribute("p_corpdiocese");
+		request.getSession().removeAttribute("p_school");
+		request.getSession().removeAttribute("p_class");
+		request.getSession().removeAttribute("p_grade");
+		request.getSession().removeAttribute("p_generate_file");
+		request.getSession().removeAttribute("p_collation");
+		logger.log(IAppLogger.INFO, "Exit: clearGDCache()");
+	}
+
 	/**
 	 * Displays the GRT/IC File Download page with pre-populated corporation list.
 	 * 
@@ -1005,7 +1020,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "school=" + school);
 		String productName = "";
 		try {
-			if ((testAdministrationVal != null) && ("null".equalsIgnoreCase(testAdministrationVal))) {
+			if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
 				productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
 			}
 		} catch (Exception e) {

@@ -185,7 +185,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		long t1 = System.currentTimeMillis();
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
-			if ("ALL".equals(schoolId)) {
+			if ("-1".equals(schoolId)) {
 				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);

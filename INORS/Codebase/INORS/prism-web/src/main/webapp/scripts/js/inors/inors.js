@@ -267,8 +267,25 @@ function retainDownloadValues() {
 		type : "GET",
 		url : 'retainDownloadValues.do',
 		data : $(formObj).serialize(),
-		dataType: 'json',
-		cache:false,
+		dataType : 'json',
+		cache : false,
+		success : function(data) {
+			// do nothing
+		},
+		error : function(data) {
+			// do nothing
+		}
+	});
+}
+
+function clearGDCache() {
+	var formObj = $('#groupDownload');
+	$.ajax({
+		type : "GET",
+		url : 'clearGDCache.do',
+		data : $(formObj).serialize(),
+		dataType : 'json',
+		cache : false,
 		success : function(data) {
 			// do nothing
 		},
@@ -1178,6 +1195,10 @@ function groupDownloadSubmit(button) {
 				$.modal.alert("Invalid Server Response");
 			}
 		}else {
+			if(errMsg == "Please select student"){
+				clearGDCache();
+				location.reload();
+			}
 			$.modal.alert(errMsg);
 		}
 	} else {
