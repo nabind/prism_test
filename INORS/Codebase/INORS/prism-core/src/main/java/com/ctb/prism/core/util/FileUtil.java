@@ -145,6 +145,7 @@ public class FileUtil {
 			// adjust column width to fit the content
 			short minColIx = sheet.getRow(0).getFirstCellNum();
 			short maxColIx = sheet.getRow(0).getLastCellNum();
+			logger.log(IAppLogger.INFO, "minColIx=" + minColIx + ", maxColIx=" + maxColIx);
 			for (short colIx = minColIx; colIx < maxColIx; colIx++) {
 				sheet.autoSizeColumn(colIx);
 			}
@@ -338,7 +339,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String getFileNameFromFilePath(String filePath) {
-		String fileName = null;
+		String fileName = filePath;
 		int index = filePath.lastIndexOf('\\');
 		if (index != -1) {
 			fileName = filePath.substring(index + 1);

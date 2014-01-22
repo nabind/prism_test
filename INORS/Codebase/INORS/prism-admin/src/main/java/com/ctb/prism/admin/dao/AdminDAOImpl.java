@@ -1991,13 +1991,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<UserDataTO> getUserData(Map<String, String> paramMap) {
 		long start = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
-		final String orgNodeId = (String) paramMap.get("tenantId");
-		String adminYear = (String) paramMap.get("adminYear");
 		String userId = (String) paramMap.get("userId");
-		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId + ", adminYear=" + adminYear + ", userId=" + userId);
+		String orgNodeId = (String) paramMap.get("tenantId");
+		String adminYear = (String) paramMap.get("adminYear");
+
+		logger.log(IAppLogger.INFO, "userId=" + userId);
+		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId);
+		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgNodeId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, userId, orgNodeId, adminYear);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserDataTO to = new UserDataTO();
@@ -2005,7 +2008,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				to.setFullName(fieldDetails.get("FULLNAME").toString());
 				to.setStatus(fieldDetails.get("STATUS").toString());
 				to.setOrgName(fieldDetails.get("ORG_NODE_NAME").toString());
-				to.setUserRoles(getRolesWithLabel(fieldDetails.get("ORG_LABEL").toString(), fieldDetails.get("DESCRIPTION").toString()));
+				to.setUserRoles(getRolesWithLabel((String) fieldDetails.get("ORG_LABEL"), (String) fieldDetails.get("DESCRIPTION")));
 				userDataList.add(to);
 			}
 		}
@@ -2022,6 +2025,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	private static String getRolesWithLabel(String label, String userRoles) {
+		if (userRoles == null || "null".equalsIgnoreCase(userRoles)) {
+			return "";
+		}
 		StringBuilder buff = new StringBuilder();
 		String[] roles = userRoles.split(",");
 		for (String role : roles) {

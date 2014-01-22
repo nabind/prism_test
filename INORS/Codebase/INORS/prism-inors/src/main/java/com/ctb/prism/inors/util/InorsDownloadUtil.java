@@ -5,13 +5,16 @@ package com.ctb.prism.inors.util;
 
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.beanio.stream.RecordIOException;
 
 import com.ctb.prism.admin.transferobject.UserDataTO;
+import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
@@ -25,14 +28,10 @@ public class InorsDownloadUtil {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDownloadUtil.class.getName());
 
 	/**
-	 * Creates a byte array from the IC list based of layout identified by the
-	 * year. There will be a single <code>InvitationCodeTO</code> for all
-	 * layouts. If a layout does not contain any particular field then that
-	 * field will not be written to to <code>CharArrayWriter</code>.
+	 * Creates a byte array from the IC list based of layout identified by the year. There will be a single <code>InvitationCodeTO</code> for all layouts. If a layout does not contain any particular
+	 * field then that field will not be written to to <code>CharArrayWriter</code>.
 	 * 
-	 * It is assumed that valid values had been set to the
-	 * <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter
-	 * methods. This method will only call the getter methods.
+	 * It is assumed that valid values had been set to the <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter methods. This method will only call the getter methods.
 	 * <em>Thus there will be only one setter call from DAO and one getter
 	 * call from here.</em>
 	 * 
@@ -46,7 +45,7 @@ public class InorsDownloadUtil {
 			logger.log(IAppLogger.INFO, "IC : " + icList.size());
 			logger.log(IAppLogger.INFO, "year : " + year);
 			icList.add(0, getInvitationCodeTOHeader());
-			
+
 			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (InvitationCodeTO ic : icList) {
@@ -108,14 +107,10 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Creates a byte array from the GRT list based of layout identified by the
-	 * year. There will be a single <code>GrtTO</code> for all layouts. If a
-	 * layout does not contain any particular field then that field will not be
-	 * written to to <code>CharArrayWriter</code>.
+	 * Creates a byte array from the GRT list based of layout identified by the year. There will be a single <code>GrtTO</code> for all layouts. If a layout does not contain any particular field then
+	 * that field will not be written to to <code>CharArrayWriter</code>.
 	 * 
-	 * It is assumed that valid values had been set to the
-	 * <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter
-	 * methods. This method will only call the getter methods.
+	 * It is assumed that valid values had been set to the <code>InvitationCodeTO</code> from <code>DAO layer</code> using setter methods. This method will only call the getter methods.
 	 * <em>Thus there will be only one setter call from DAO and one getter
 	 * call from here.</em>
 	 * 
@@ -129,7 +124,7 @@ public class InorsDownloadUtil {
 			logger.log(IAppLogger.INFO, "GRT : " + grtList.size());
 			logger.log(IAppLogger.INFO, "year : " + year);
 			grtList.add(0, getGRTTOHeader());
-			
+
 			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (GrtTO grt : grtList) {
@@ -177,9 +172,7 @@ public class InorsDownloadUtil {
 					out.write(grt.getL_ChronologicalAgeInMonths());
 					out.write(delimiter);
 					// Added in 2011
-					if ((InorsDownloadConstants.YEAR_2013.equals(year))
-							|| (InorsDownloadConstants.YEAR_2012.equals(year))
-							|| (InorsDownloadConstants.YEAR_2011.equals(year))) {
+					if ((InorsDownloadConstants.YEAR_2013.equals(year)) || (InorsDownloadConstants.YEAR_2012.equals(year)) || (InorsDownloadConstants.YEAR_2011.equals(year))) {
 						out.write(grt.getL_Ethnicity());
 						out.write(delimiter);
 						out.write(grt.getL_RaceAmericanIndianAlaskaNative());
@@ -258,7 +251,7 @@ public class InorsDownloadUtil {
 					out.write(grt.getL_SocialStudiesPFIndicator());
 					out.write(delimiter);
 
-					// ISTEP Subject Area Number Correct 
+					// ISTEP Subject Area Number Correct
 					out.write(grt.getL_ElaNumberCorrect());
 					out.write(delimiter);
 					out.write(grt.getL_MathNumberCorrect());
@@ -508,9 +501,7 @@ public class InorsDownloadUtil {
 					out.write(grt.getL_CTBUseOnlyElementNumber());
 					out.write(delimiter);
 					// Added in 2011
-					if ((InorsDownloadConstants.YEAR_2013.equals(year))
-							|| (InorsDownloadConstants.YEAR_2012.equals(year))
-							|| (InorsDownloadConstants.YEAR_2011.equals(year))) {
+					if ((InorsDownloadConstants.YEAR_2013.equals(year)) || (InorsDownloadConstants.YEAR_2012.equals(year)) || (InorsDownloadConstants.YEAR_2011.equals(year))) {
 						out.write(grt.getL_ResolvedReportingStatusEla());
 						out.write(delimiter);
 						out.write(grt.getL_ResolvedReportingStatusMath());
@@ -639,8 +630,7 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Method to create TO representation of the header record. It is used to
-	 * write the header inside the file.
+	 * Method to create TO representation of the header record. It is used to write the header inside the file.
 	 * 
 	 * @return TO representation of the header record
 	 */
@@ -670,8 +660,7 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Returns mock TO. It should be used for test purpose only where database
-	 * connection is not available.
+	 * Returns mock TO. It should be used for test purpose only where database connection is not available.
 	 * 
 	 * @return
 	 */
@@ -701,8 +690,7 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Method to create TO representation of the header record. It is used to
-	 * write the header inside the file.
+	 * Method to create TO representation of the header record. It is used to write the header inside the file.
 	 * 
 	 * @return TO representation of the header record
 	 */
@@ -933,8 +921,7 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Returns mock TO. It should be used for test purpose only where database
-	 * connection is not available.
+	 * Returns mock TO. It should be used for test purpose only where database connection is not available.
 	 * 
 	 * @return
 	 */
@@ -1171,11 +1158,11 @@ public class InorsDownloadUtil {
 	 * @param delimiter
 	 * @return
 	 */
-	public static byte[] getUserDataBytes(List<UserDataTO> userList, String delimiter){
+	public static byte[] getUserDataBytes(List<UserDataTO> userList, String delimiter) {
 		if (userList != null) {
 			logger.log(IAppLogger.INFO, "User : " + userList.size());
 			userList.add(0, getUserDataTOHeader());
-			
+
 			CharArrayWriter out = new CharArrayWriter();
 			try {
 				for (UserDataTO user : userList) {
@@ -1207,8 +1194,7 @@ public class InorsDownloadUtil {
 	}
 
 	/**
-	 * Method to create TO representation of the header record. It is used to
-	 * write the header inside the file.
+	 * Method to create TO representation of the header record. It is used to write the header inside the file.
 	 * 
 	 * @return TO representation of the header record
 	 */
@@ -1220,5 +1206,28 @@ public class InorsDownloadUtil {
 		header.setOrgName("Org Name");
 		header.setUserRoles("User Roles");
 		return header;
+	}
+
+	/**
+	 * Converts List<UserTO> to List<UserDataTO>.
+	 * 
+	 * @param userList
+	 * @return
+	 */
+	public static List<UserDataTO> getUserDataList(List<UserTO> userList) {
+		List<UserDataTO> userDataList = new ArrayList<UserDataTO>();
+		for (UserTO userTO : userList) {
+			UserDataTO userDataTO = new UserDataTO();
+			userDataTO.setUserId(String.valueOf(userTO.getUserId()));
+			userDataTO.setFullName(userTO.getUserName());
+			userDataTO.setStatus(userTO.getStatus());
+			userDataTO.setOrgName(userTO.getTenantName());
+			String userRoles = userTO.getAvailableRoleList().toString();
+			userRoles = CustomStringUtil.replaceCharacterInString('[', "", userRoles);
+			userRoles = CustomStringUtil.replaceCharacterInString(']', "", userRoles);
+			userDataTO.setUserRoles("User Roles");
+			userDataList.add(userDataTO);
+		}
+		return userDataList;
 	}
 }

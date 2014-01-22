@@ -845,6 +845,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"), "MM/dd/yyyy HH:mm:ss");
 				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
 				Timestamp ts = (Timestamp) data.get("updated_date_time");
+				if (ts == null) {
+					ts = (Timestamp) data.get("created_date_time");
+				}
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(ts);
 				cal.add(Calendar.DAY_OF_WEEK, (Integer.parseInt((String) paramMap.get("gdfExpiryTime"))));
@@ -858,10 +861,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				}
 				String filePath = (String) data.get("request_filename");
 				String fileName = "";
-				if (filePath.lastIndexOf("\\") >= 0) {
-					fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+				if (filePath == null || "null".equalsIgnoreCase(filePath)) {
+					filePath = "";
 				} else {
-					fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+					if (filePath.lastIndexOf("\\") >= 0) {
+						fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+					} else {
+						fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+					}
 				}
 				// fileName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
 				to.setRequestFilename(fileName);
