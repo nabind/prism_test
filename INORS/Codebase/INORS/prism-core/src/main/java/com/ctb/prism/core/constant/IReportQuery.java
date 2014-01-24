@@ -14,7 +14,7 @@ public interface IReportQuery {
 	public static final String GET_JASPER_REPORT_OBJECT = CustomStringUtil.appendString(
 			"SELECT FR.FILE_TYPE, FR.DATA DATA, re.label LABEL FROM JIRESOURCEFOLDER RF, JIRESOURCE RE, JIFILERESOURCE FR" ,
 	" WHERE RF.URI LIKE ? AND RF.ID = RE.PARENT_FOLDER AND RE.ID = FR.ID and (FR.FILE_TYPE = 'jrxml' OR FR.FILE_TYPE = 'img') ",
-	" ORDER BY RE.ID "); //  and (ROWNUM  <=1 or re.label = 'Main jrxml') //Added order by in order to maintain subreport order in the report
+	" ORDER BY RE.LABEL "); //  and (ROWNUM  <=1 or re.label = 'Main jrxml') //Added order by in order to maintain subreport order in the report
 
 	// query to retrieve JRXML from database for given file name
 	public static final String GET_JASPER_REPORT_OBJECT_FOR_NAME = CustomStringUtil.appendString(
