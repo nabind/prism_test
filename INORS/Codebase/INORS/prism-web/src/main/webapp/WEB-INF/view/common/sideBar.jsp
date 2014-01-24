@@ -141,13 +141,15 @@
 						
 						<li class="with-right-arrow" id="select-tooltip-1">
 							<span>Your Children</span>
-								<ul class="big-menu report-menu white-gradient" id="child_list">
+								<ul class="big-menu report-menu white-gradient collapsible" id="child_list">
 								</ul>
 						</li>
 						
 						<c:if test="${not empty childDataMap}">
 						<li class="" id="select-tooltip-10">
-							<a href="#nogo" >Overview</a>
+							<a href="getChildData.do?studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
+								Overview
+							</a>
 						</li>
 						</c:if>
 						
@@ -155,7 +157,7 @@
 							<li class="with-right-arrow">
 								<a href="#nogo" 
 								id="">${subtestTO.name}</a>
-										<ul class="big-menu report-menu white-gradient">
+										<ul class="big-menu report-menu white-gradient collapsible">
 												<li class="mid-margin-left font-12 small-line-height">
 													<a class="standard-activity" href="#nogo" 
 														subtestId="${subtestTO.value}" 
@@ -204,30 +206,32 @@
 						   </li>
 						</c:forEach>
 						<c:if test="${not empty childDataMap}">
-						<li class="" id="select-tooltip-10">
-							<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
-										studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
-										menuId = '<spring:message code="menuId.content.eda"/>' 
-										menuName = '<spring:message code="menuName.content.eda"/>' 
-										contentType = '<spring:message code="val.contentType.eda"/>' 
-										style="font-weight: bold"
-										href="#nogo" id="">-  <spring:message code="menuName.content.eda"/></a>
-						</li>
-						<li class="" id="select-tooltip-10">
-							<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
-										studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
-										menuId = '<spring:message code="menuId.content.att"/>' 
-										menuName = '<spring:message code="menuName.content.att"/>' 
-										contentType = '<spring:message code="val.contentType.att"/>' 
-										style="font-weight: bold"
-										href="#nogo" id="">-  <spring:message code="menuName.content.att"/></a>
-						</li>
+							<li class="" id="select-tooltip-10">
+								<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
+											studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
+											menuId = '<spring:message code="menuId.content.eda"/>' 
+											menuName = '<spring:message code="menuName.content.eda"/>' 
+											contentType = '<spring:message code="val.contentType.eda"/>' 
+											style="font-weight: bold"
+											href="#nogo" id="">-  <spring:message code="menuName.content.eda"/>
+								</a>
+							</li>
+							<li class="" id="select-tooltip-10">
+								<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
+											studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
+											menuId = '<spring:message code="menuId.content.att"/>' 
+											menuName = '<spring:message code="menuName.content.att"/>' 
+											contentType = '<spring:message code="val.contentType.att"/>' 
+											style="font-weight: bold"
+											href="#nogo" id="">-  <spring:message code="menuName.content.att"/>
+								</a>
+							</li>
 						</c:if>
 						
 						<li class="with-right-arrow" id="select-tooltip-10">
 							<span>Explore</span>
 								
-								<ul class="big-menu report-menu white-gradient">
+								<ul class="big-menu report-menu white-gradient collapsible">
 									 
 									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
 									 	<a href="getStandardMatters.do"  id="">Why Standards Matter</a>
@@ -235,14 +239,15 @@
 									 
 									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	"> 
 									 	<a href="getBrowseContent.do"  id="">Browse Content </a>
-											 <ul class="big-menu report-menu white-gradient">
-											 		<li class="mid-margin-left font-12 small-line-height"><a href="getBrowseContent.do"  id="">- Overview</a></li>
+											 <ul class="big-menu report-menu white-gradient collapsible">
 											 		<li class="mid-margin-left font-12 small-line-height">
-											 		<a class="browse-content" href="#nogo" 
-           												menuId='<spring:message code="menuId.content.stdAct"/>' 
-										           		menuName='<spring:message code="menuName.content.stdAct"/>'  
-										           		id=""> -  <spring:message code="menuName.content.stdAct"/>
-										           	</a>
+											 			<a href="getBrowseContent.do"  id="">- Overview</a></li>
+											 		<li class="mid-margin-left font-12 small-line-height">
+												 		<a class="browse-content" href="#nogo" 
+	           												menuId='<spring:message code="menuId.content.stdAct"/>' 
+											           		menuName='<spring:message code="menuName.content.stdAct"/>'  
+											           		id=""> -  <spring:message code="menuName.content.stdAct"/>
+											           	</a>
 											        </li>
 											 		<li class="mid-margin-left font-12 small-line-height">
 											 			<a class="browse-content" href="#nogo" 
