@@ -1431,7 +1431,7 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, orgJsonString);
 				}
 				
-				if (product.equals(IApplicationConstants.TASC_PRODUCT)){
+				if (IApplicationConstants.TASC_PRODUCT.equals(product)){
 					modelAndView.addObject("schoolOrgLevel",IApplicationConstants.TESTING_SITE);
 					modelAndView.addObject("isAdultEducation","Yes");
 				} else {
