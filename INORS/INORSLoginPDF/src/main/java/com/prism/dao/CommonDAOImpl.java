@@ -42,11 +42,12 @@ public class CommonDAOImpl implements CommonDAO {
 	public OrgTO getSchoolDetails(String schoolId) throws Exception {
 		logger.info("School Id: " + schoolId);
 		OrgTO school = new OrgTO();
+		logger.info("Fetching School Data ...");
 		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_SCHOOL_DETAILS, schoolId);
 		if ((dataList != null) && (!dataList.isEmpty())) {
-			logger.info("Schools: " + dataList.size());
+			// logger.info("Schools: " + dataList.size());
 			for (Map<String, Object> data : dataList) {
-				school.setElementName((String) data.get("ORG_NODE_NAME")); // 2
+				school.setElementName(((String) data.get("ORG_NODE_NAME")).trim()); // 2
 				school.setOrgNodeId(((BigDecimal) data.get("ORG_NODEID")).toString()); // 1
 				school.setOrgNodeLevel(((BigDecimal) data.get("ORG_NODE_LEVEL")).toString()); // 4
 				school.setJasperOrgId(((BigDecimal) data.get("ORG_NODEID")).toString()); // 1
@@ -74,6 +75,7 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @throws Exception
 	 */
 	private List<UserTO> getSchoolUsers(String schoolId, boolean hierarchical) throws Exception {
+		logger.info("Fetching School User Data ...");
 		List<UserTO> users = new ArrayList<UserTO>();
 		String query = Constants.GET_SCHOOL_USERS;
 		if (hierarchical) {
@@ -175,9 +177,9 @@ public class CommonDAOImpl implements CommonDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.prism.dao.CommonDAO#updateNewuserFlag(java.util.List)
+	 * @see com.prism.dao.CommonDAO#updateNewUserFlag(java.util.List)
 	 */
-	public int[] updateNewuserFlag(final List<UserTO> userList) {
+	public int[] updateNewUserFlag(final List<UserTO> userList) {
 		int[] updateCount = jdbcTemplate.batchUpdate(Constants.UPDATE_NEW_USER_FLAG, new BatchPreparedStatementSetter() {
 			public void setValues(PreparedStatement pstmt, int i) throws SQLException {
 				UserTO user = userList.get(i);
@@ -218,6 +220,7 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @throws Exception
 	 */
 	private List<UserTO> getSchoolUsersWithRoles(List<UserTO> users) {
+		logger.info("Fetching School User Role Data ...");
 		for (UserTO user : users) {
 			List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_SCHOOL_USERS_WITH_ROLES, user.getUserId());
 			if (dataList != null && dataList.size() > 0) {
@@ -265,5 +268,40 @@ public class CommonDAOImpl implements CommonDAO {
 		}
 		logger.info("pdfList.size(): " + pdfList.size());
 		return pdfList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.prism.dao.CommonDAO#getCurrentAdminYear()
+	 */
+	public String getCurrentAdminYear() {
+		String currentAdminYear = null;
+		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_CURRENT_ADMIN_YEAR);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				currentAdminYear = ((BigDecimal) fieldDetails.get("ADMINID")).toString();
+				break;
+			}
+		}
+		return currentAdminYear;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.prism.dao.CommonDAO#getStudentIdList(java.lang.String)
+	 */
+	public List<String> getStudentIdList(String schoolId) {
+		List<String> studentIdList = new ArrayList<String>();
+		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_STUDENT_ID_LIST, schoolId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				String studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).toString();
+				studentIdList.add(studentBioId);
+			}
+		}
+		logger.info("studentIdList.size(): " + studentIdList.size());
+		return studentIdList;
 	}
 }

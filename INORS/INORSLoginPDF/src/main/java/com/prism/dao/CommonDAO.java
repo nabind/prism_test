@@ -36,7 +36,7 @@ public interface CommonDAO {
 	 * @param userList
 	 * @return
 	 */
-	public int[] updateNewuserFlag(final List<UserTO> userList);
+	public int[] updateNewUserFlag(final List<UserTO> userList);
 
 	/**
 	 * Fetch Education Center information.
@@ -51,12 +51,23 @@ public interface CommonDAO {
 	 */
 	public Map<String, String> getOrgLabelMap();
 
-
-
 	/**
 	 * @param schoolId
 	 * @return
 	 */
 	public List<String> getIcLetterPathList(String schoolId);
+
+	/**
+	 * Get current admin year.
+	 * 
+	 * @return
+	 */
+	public String getCurrentAdminYear();
+
+	/**
+	 * @param schoolId
+	 * @return
+	 */
+	public List<String> getStudentIdList(String schoolId);
 
 }

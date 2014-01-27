@@ -65,7 +65,7 @@ public class FileUtil {
 			fos = new FileOutputStream(zipFile);
 			zos = new ZipOutputStream(fos);
 			for (String filePath : filePaths) {
-				logger.info("filePath = " + filePath);
+				logger.info("Adding " + filePath);
 				String fileName = getFileNameFromFilePath(filePath);
 				if (fileName == null) {
 					logger.warn("Skipping " + filePath);
@@ -73,7 +73,7 @@ public class FileUtil {
 				}
 				ZipEntry entry = new ZipEntry(fileName);
 				byte[] input = getBytes(filePath);
-				logger.info(input.length + " bytes read");
+				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
 				entry.setSize(input.length);
 				zos.putNextEntry(entry);
 				zos.write(input);
@@ -114,5 +114,52 @@ public class FileUtil {
 			fileName = filePath.substring(index + 1);
 		}
 		return fileName;
+	}
+
+	/**
+	 * Cleans up temp files.
+	 * 
+	 * @param file
+	 */
+	public static void removeFile(String file) {
+		try {
+			File pdf = new File(file);
+			if (pdf.exists())
+				pdf.delete();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * Cleans up temp files.
+	 * 
+	 * @param file
+	 */
+	public static void removeFile(List<String> files) {
+		for (String file : files) {
+			try {
+				File pdf = new File(file);
+				if (pdf.exists())
+					pdf.delete();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @param bytes
+	 * @param si
+	 * @return
+	 */
+	public static String humanReadableByteCount(long bytes, boolean si) {
+		int unit = si ? 1000 : 1024;
+		if (bytes < unit)
+			return bytes + " B";
+		int exp = (int) (Math.log(bytes) / Math.log(unit));
+		// String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
 }

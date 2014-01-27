@@ -28,6 +28,7 @@ import com.prism.to.UserTO;
 import com.prism.util.CustomStringUtil;
 import com.prism.util.FileUtil;
 import com.prism.util.PropertyFile;
+import com.prism.util.ReportPDF;
 
 /**
  * @author Amitabha Roy
@@ -41,7 +42,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "L", "362010" };
+		// args = new String[] { "I", "665838" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -99,20 +100,25 @@ public class UserAccountPdf {
 		String letterLoc = "";
 		try {
 			OrgTO school = dao.getSchoolDetails(schoolId);
-			List<String> pdfPathList = dao.getIcLetterPathList(schoolId);
-			if (!pdfPathList.isEmpty()) {
-				logger.info(pdfPathList.size() + " students found");
-				if (!pdfPathList.isEmpty()) {
-					String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
-							+ school.getDateStrWtYear() + "_IC.zip";
-					letterLoc = FileUtil.saveLetterFromFileServer(docName, pdfPathList);
-					logger.debug("IC letter created @ " + letterLoc);
-				} else {
-					logger.info("No pdf found");
-				}
-			} else {
-				logger.info("No new students found");
+			String adminId = dao.getCurrentAdminYear();
+			// List<String> studentIdList = dao.getStudentIdList(schoolId);
+			List<String> pdfPathList = new ArrayList<String>();
+
+			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
+					+ school.getDateStrWtYear() + "_IC.zip";
+			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
+			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"");
+			if ((letterLoc != null) && (!letterLoc.isEmpty())) {
+				pdfPathList.add(letterLoc);
 			}
+			// }
+			if (!pdfPathList.isEmpty()) {
+				letterLoc = FileUtil.saveLetterFromFileServer(docName, pdfPathList);
+				logger.debug("IC letter created @ " + letterLoc);
+			} else {
+				logger.info("No pdf found");
+			}
+
 			if (letterLoc != null && !letterLoc.isEmpty()) {
 				// send pdf to school
 				/* Fetch support email from customer table */
@@ -123,15 +129,15 @@ public class UserAccountPdf {
 						// removeFile(encDocLocation);
 						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
-						logger.info("Failed sending mail. Updating status.");
+						logger.warn("FAILED: sending mail. Updating status.");
 					}
 				} else {
-					logger.debug("failed sending mail .. no school mail id is defined.");
-					logger.info("Failed sending mail .. no school mail id is defined.");
+					logger.warn("FAILED: sending mail .. no school mail id is defined.");
 				}
 			}
+			FileUtil.removeFile(pdfPathList);
 		} catch (Exception e) {
-			logger.info("Error processing : Java exception : " + e.getMessage());
+			logger.error("Error processing : Java exception : " + e.getMessage());
 			e.printStackTrace();
 			return "";
 		}
@@ -183,7 +189,7 @@ public class UserAccountPdf {
 				} else {
 					// update org_user table set newuser = N
 					logger.debug("Updating USERS table with password and reseting new user flag ");
-					dao.updateNewuserFlag(school.getUsers());
+					dao.updateNewUserFlag(school.getUsers());
 					if (encDocLocation != null && encDocLocation.trim().length() > 0) {
 						logger.info("Updated Process Status to success");
 						/* Fetch support email from customer table */
@@ -197,14 +203,14 @@ public class UserAccountPdf {
 								logger.info("Updated Process Status to complete");
 								logger.info("Updated Mail Status to success");
 							} else {
-								logger.info("Failed sending mail. Updating status.");
+								logger.warn("FAILED: sending mail. Updating status.");
 							}
 						} else {
 							logger.debug("Sending mail to Support group only .. no school mail id is defined.");
 							if (sendMail(schoolId, false, migration, prop, supportEmail, encDocLocation, null, null, schoolUserPresent, false, null)) {
 								logger.info("Mail sent successfully to " + supportEmail);
 							} else {
-								logger.info("Failed sending mail. Updating status.");
+								logger.warn("FAILED: sending mail. Updating status.");
 							}
 						}
 						// Sending password email for PDF opening
@@ -338,7 +344,7 @@ public class UserAccountPdf {
 
 		if (encrypt) {
 			String encLocation = encryptPdf(prop, docLocation, school.getOrgNodeId(), school.getCustomerCode(), school.getElementName(), state, school.getOrgNodeLevel());
-			removeFile(docLocation);
+			FileUtil.removeFile(docLocation);
 			return encLocation;
 		} else {
 			return docLocation;
@@ -372,8 +378,7 @@ public class UserAccountPdf {
 			EmailSender.sendMail(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
-			logger.debug("Mail sending failed ..." + e.getMessage());
-			logger.info("Mail sending failed " + e.getMessage());
+			logger.warn("Mail sending failed " + e.getMessage());
 		}
 		return mailSent;
 	}
@@ -400,7 +405,7 @@ public class UserAccountPdf {
 					if (sendPasswordMail(level3OrgId, prop, school.getEmail(), school.getOrgNodeLevel(), supportEmail)) {
 						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
-						logger.info("Failed sending mail. Updating status.");
+						logger.warn("FAILED: sending mail. Updating status.");
 					}
 				} else {
 					/* Changed for the new requirement where mail will be send to support group if no school email is present */
@@ -409,12 +414,12 @@ public class UserAccountPdf {
 					if (sendPasswordMail(level3OrgId, prop, supportEmail, school.getOrgNodeLevel(), null)) {
 						logger.info("Mail sent successfully to " + supportEmail);
 					} else {
-						logger.info("Failed sending mail. Updating status.");
+						logger.warn("FAILED: sending mail. Updating status.");
 					}
 				}
 			}
 		} catch (Exception e) {
-			logger.info("Error processing : Java exception : " + e.getMessage());
+			logger.error("Error processing : Java exception : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return true;
@@ -447,8 +452,7 @@ public class UserAccountPdf {
 			EmailSender.sendMail(prop, toMailAddr, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
-			logger.debug("Mail sending failed ..." + e.getMessage());
-			logger.info("Mail sending failed " + e.getMessage());
+			logger.error("Mail sending failed " + e.getMessage());
 		}
 		return mailSent;
 	}
@@ -466,7 +470,7 @@ public class UserAccountPdf {
 	 * @return
 	 */
 	private static String encryptPdf(Properties prop, String docLocation, String orgid, String customerCode, String elementName, boolean state, final String orgNodeLevel) {
-		logger.debug("encrypting pdf... ");
+		logger.debug("Encrypting pdf... ");
 		String docName = null;
 		StringBuffer docBuff = new StringBuffer();
 		try {
@@ -482,21 +486,6 @@ public class UserAccountPdf {
 			return null;
 		}
 		return docName;
-	}
-
-	/**
-	 * Cleans up temp files.
-	 * 
-	 * @param file
-	 */
-	private static void removeFile(String file) {
-		try {
-			File pdf = new File(file);
-			if (pdf.exists())
-				pdf.delete();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	/**
@@ -523,7 +512,7 @@ public class UserAccountPdf {
 			for (File f : listOfFiles) {
 				if (f.isFile()) {
 					logger.debug(CustomStringUtil.appendString("Deleting file : ", f.getAbsolutePath()));
-					removeFile(f.getAbsolutePath());
+					FileUtil.removeFile(f.getAbsolutePath());
 				}
 			}
 		} catch (Exception e) {
