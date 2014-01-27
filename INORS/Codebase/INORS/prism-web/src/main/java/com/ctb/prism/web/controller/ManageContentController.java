@@ -353,10 +353,12 @@ public class ManageContentController {
 	String modifyGenericForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - modifyGenericForEdit()");
 		long t1 = System.currentTimeMillis();
+		long custProdId = Long.parseLong(request.getParameter("custProdId"));
 		long gradeId = Long.parseLong(request.getParameter("gradeId"));
 		long subtestId = Long.parseLong(request.getParameter("subtestId"));
 		String type = request.getParameter("type");
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("custProdId", custProdId);
 		paramMap.put("gradeId", gradeId);
 		paramMap.put("subtestId", subtestId);
 		paramMap.put("type", type);
