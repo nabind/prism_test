@@ -113,7 +113,7 @@ function openModalToViewAssessments(studentBioId) {
 							'Create Letter':{
 								classes: 'blue-gradient glossy createLetter',
 								click: function(win) {
-									window.open('download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Reports/Invitation_Pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+studentBioId);
+									window.open('download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+studentBioId);
 								}
 							}
 					}
