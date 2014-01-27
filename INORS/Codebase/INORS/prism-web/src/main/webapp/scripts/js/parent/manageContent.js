@@ -192,7 +192,7 @@ function openModifyGenericModalToEdit(type) {
 	if(type != 'RSC'){
 		subtestId = 0;
 	}
-	var dataUrl = 'gradeId='+gradeId+'&subtestId='+subtestId+'&type='+type;
+	var dataUrl = 'custProdId='+custProdId+'&gradeId='+gradeId+'&subtestId='+subtestId+'&type='+type;
 	$.ajax({
 			type : "GET",
 			url : "modifyGenericForEdit.do",

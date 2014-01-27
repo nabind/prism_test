@@ -1673,6 +1673,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyGenericForEdit()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		final long gradeId = ((Long) paramMap.get("gradeId")).longValue();
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
 		final String type = (String) paramMap.get("type");
@@ -1682,10 +1683,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 			        		CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_GENERIC_DETAILS_FOR_EDIT + "}");
-				            cs.setLong(1, gradeId);
-				            cs.setLong(2, subtestId);
-				            cs.setString(3, type);
-				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
+			        		cs.setLong(1, custProdId);
+				            cs.setLong(2, gradeId);
+				            cs.setLong(3, subtestId);
+				            cs.setString(4, type);
+				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
 				            return cs;
 				        }
 				    } , new CallableStatementCallback<Object>()  {
@@ -1694,7 +1696,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			ManageContentTO manageContentTOResult = null;
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(4);
+									rs = (ResultSet) cs.getObject(5);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
 										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
@@ -1847,6 +1849,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
+		final long customerId = Long.parseLong((String) paramMap.get("customerId"));
+		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue(); 
 		final long articleId = ((Long) paramMap.get("articleId")).longValue(); 
 		final String contentType = (String) paramMap.get("contentType");
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue(); 
@@ -1857,12 +1861,14 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_DESCRIPTION + "}");
-				            cs.setLong(1, articleId);
-				            cs.setLong(2, studentGradeId);
-				            cs.setLong(3, subtestId);
-				            cs.setString(4, contentType);
-				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+				        	cs.setLong(1, customerId);
+				        	cs.setLong(2, studentBioId);
+				            cs.setLong(3, articleId);
+				            cs.setLong(4, studentGradeId);
+				            cs.setLong(5, subtestId);
+				            cs.setString(6, contentType);
+				            cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;
 				        }
 				    } , new CallableStatementCallback<Object>()  {
@@ -1872,7 +1878,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			try {
 			        				
 			        				cs.execute();
-									rs = (ResultSet) cs.getObject(5);
+									rs = (ResultSet) cs.getObject(7);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
 										manageContentTOResult.setContentId(rs.getLong("ARTICLEID"));

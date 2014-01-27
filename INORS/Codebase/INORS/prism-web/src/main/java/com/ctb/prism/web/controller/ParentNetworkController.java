@@ -214,6 +214,7 @@ public class ParentNetworkController {
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/contentDetails");
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		long studentBioId = 0;
 		long articleId = 0;
 		String contentType = "";
 		long subtestId = 0; 
@@ -221,6 +222,8 @@ public class ParentNetworkController {
 		String studentGradeName = "";
 		long menuId = 0;
 		
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
 		articleId = Long.parseLong(request.getParameter("articleId")); 
 		contentType = (String)request.getParameter("contentType");
 		studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
@@ -232,6 +235,8 @@ public class ParentNetworkController {
 		}
 		ManageContentTO manageContentTO = null;
 		
+		paramMap.put("customerId", loggedinUserTO.getCustomerId());
+		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("articleId", articleId);
 		paramMap.put("contentType", contentType);
 		paramMap.put("subtestId", subtestId);

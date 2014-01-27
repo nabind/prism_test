@@ -69,12 +69,14 @@ function getDataUrl(action, obj){
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
 					+'&studentGradeId='+$(obj).attr('studentGradeId');
 	}else if(action == 'getArticleDescription'){
+		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 		var articleId = (typeof $(obj).attr('articleId') !== 'undefined') ? $(obj).attr('articleId') : 0;
 		var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
 		var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 		var menuId = (typeof $(obj).attr('menuId') !== 'undefined') ? $(obj).attr('menuId') : 0;
 		
-		dataUrl = 'articleId='+articleId
+		dataUrl = 'studentBioId='+studentBioId
+					+'&articleId='+articleId
 					+'&contentType='+$(obj).attr('contentType')
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
 					+'&studentGradeId='+studentGradeId
