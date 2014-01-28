@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
@@ -44,23 +45,28 @@
 				<div class="simple-div-table wrapped">
 					<c:set var="standardId" value="${standardIndicatorTO.objectiveId}" />
 					<div class="simple-div-table-col">
-						<a class="articledata" href="#nogo" articleId="${standardIndicatorTO.objectiveId}" contentType="STD" 
-									style="font-weight: bold"
-									id="subtestIdLink">
-										${standardIndicatorTO.objectiveName}
+						<a class="articledata" href="#nogo" articleId="${standardIndicatorTO.objectiveId}" 
+							contentType= '<spring:message code="val.contentType.std"/>'  
+							style="font-weight: bold"
+							id="subtestIdLink">
+								${standardIndicatorTO.objectiveName}
 						</a>
 						<p>
-							<c:choose>
-								<c:when test="${standardIndicatorTO.proficiencyLevel == 1}">
-									Proficient
-								</c:when>
-								<c:when test="${standardIndicatorTO.proficiencyLevel == 0}">
-									Below Proficient
-								</c:when>
-								<c:otherwise>
-									Unknown
-								</c:otherwise>
-							</c:choose>
+							<c:if test="${studentName != '-1'}">
+								<c:choose>
+									<c:when test="${standardIndicatorTO.proficiencyLevel == '+'}">
+										<p class="proficient"></p>
+										<p>Proficient</p>
+									</c:when>
+									<c:when test="${standardIndicatorTO.proficiencyLevel == '-'}">
+										<p class="below-proficient"></p>
+										<p>Below Proficient</p>
+									</c:when>
+									<c:otherwise>
+										Unknown
+									</c:otherwise>
+								</c:choose>
+							</c:if>
 						</p>
 					</div>
 					<div class="simple-div-table-col">
@@ -69,7 +75,9 @@
 								<c:if test="${standardId == IndicatorTO.objectiveId}">
 									<c:set var="curStandardId" value="${IndicatorTO.objectiveId}" />
 									<dd> 
-										<a class="articledata" href="#nogo" articleId="${IndicatorTO.objectiveId}" contentType="ACT" 
+										<a class="articledata" href="#nogo" 
+											articleId="${IndicatorTO.contentId}" 
+											contentType= '<spring:message code="val.contentType.ind"/>' 
 											style="font-weight: bold"
 											id="subtestIdLink">
 												${IndicatorTO.contentName}

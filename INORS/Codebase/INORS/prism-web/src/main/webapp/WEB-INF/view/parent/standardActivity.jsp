@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
@@ -41,22 +42,29 @@
 					<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
 					<div class="simple-div-table-col">
 						<p>
-							<a class="articledata" href="#nogo" articleId="${standardActivityTO.objectiveId}" contentType="STD" 
-										style="font-weight: bold"
-										id="subtestIdLink">
-											${standardActivityTO.objectiveName}
+							<a class="articledata" href="#nogo" 
+								articleId="${standardActivityTO.objectiveId}" 
+								contentType= '<spring:message code="val.contentType.std"/>' 
+								style="font-weight: bold"
+								id="subtestIdLink">
+									${standardActivityTO.objectiveName}
 							</a>
 						</p>
-						<c:choose>
-							<c:when test="${standardActivityTO.proficiencyLevel == 1}">
-								<p class="proficient"></p>
-								<p>Proficient</p>
-							</c:when>
-							<c:when test="${standardActivityTO.proficiencyLevel == 0}">
-								<p class="below-proficient"></p>
-								<p>Below Proficient</p>
-							</c:when>
-						</c:choose>
+						<c:if test="${studentName != '-1'}">
+							<c:choose>
+								<c:when test="${standardActivityTO.proficiencyLevel == '+'}">
+									<p class="proficient"></p>
+									<p>Proficient</p>
+								</c:when>
+								<c:when test="${standardActivityTO.proficiencyLevel == '-'}">
+									<p class="below-proficient"></p>
+									<p>Below Proficient</p>
+								</c:when>
+								<c:otherwise>
+										Unknown
+								</c:otherwise>
+							</c:choose>
+						</c:if>
 					</div>
 					<div class="simple-div-table-col">
 						<dl>
@@ -64,7 +72,9 @@
 								<c:if test="${standardId == activityTO.objectiveId}">
 									<c:set var="curStandardId" value="${activityTO.objectiveId}" />
 									<dd> 
-										<a class="articledata" href="#nogo" articleId="${activityTO.contentId}" contentType="ACT" 
+										<a class="articledata" href="#nogo" 
+											articleId="${activityTO.contentId}" 
+											contentType= '<spring:message code="val.contentType.act"/>'   
 											style="font-weight: bold"
 											id="subtestIdLink">
 												${activityTO.contentName}

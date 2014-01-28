@@ -301,35 +301,15 @@
 						
 						<li class="with-right-arrow" id="select-tooltip-2">
 							<span>Manage Account</span>
-							<div id="select-context-2" class="secondLevelMenu display-none">
-								<ul class="big-menu report-menu white-gradient">
-									<li class="mid-margin-left font-12 small-line-height"><a id="myaccount" href="myAccount.do"> My Account</a></li>
-									<c:if test="${parentReport != 'true'}">
-										<li class="mid-margin-left font-12 small-line-height"><a class="claim-Invitation" href="#nogo"> Enter next Activation Code</a></li>
-									</c:if>
+								<ul class="big-menu report-menu white-gradient collapsible">
+									<li class="mid-margin-left font-12 small-line-height">
+										<a href="myAccount.do">My Account</a>
+									</li>
+									<li class="mid-margin-left font-12 small-line-height">
+										<a class="claim-Invitation" href="#nogo"> Enter next Activation Code</a>
+									</li>
 								</ul>
-							</div>
 						</li>
-						
-						
-						
-						<c:if test="${parentReport == 'true'}">
-						<li class="with-right-arrow" id="select-tooltip-3">
-							<span>Reports</span>
-							<div id="select-context-3" class="secondLevelMenu display-none">
-								<ul class="big-menu report-menu white-gradient">
-								<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
-									<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
-										<sec:authorize ifAnyGranted="${report.allRoles}">
-											<li class="mid-margin-left font-12 small-line-height"><a class="" href="#nogo" onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${report.reportName}', '${assessments.assessmentId}')"> ${report.reportName}</a></li>
-										</sec:authorize>
-									</c:forEach>
-								</c:forEach>
-								</ul>
-							</div>
-						</li>
-						</c:if>
-						<%@ include file="resources.jsp"%>
 					</ul>
 				</sec:authorize>
 			</div>
