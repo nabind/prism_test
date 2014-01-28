@@ -594,11 +594,12 @@ function fetchReportMenu() {
 		type : "GET",
 		url : 'fetchReportMenu.do',
 		data : dataURL,
-		dataType: 'html',
-		cache:false,
+		dataType : 'html',
+		cache : false,
+		async : false,
 		success : function(data) {
 			$("#prismMenu").html(data);
-			//$('#tab-1').removeTab();
+			// $('#tab-1').removeTab();
 			callbackMenu();
 		},
 		error : function(data) {
@@ -721,6 +722,7 @@ function checkpagination(reportUrl, tabCount) {
 			data : dataURL,
 			dataType: 'html',
 			cache:false,
+			async : false,
 			success : function(data) {
 				var obj = jQuery.parseJSON(data);
 				// set ifarme height and width
