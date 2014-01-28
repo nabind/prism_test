@@ -80,7 +80,7 @@ public class CommonController extends BaseDAO {
 	public ModelAndView loadJSPView(@RequestParam("path") String jspPath) {
 		logger.log(IAppLogger.INFO, "Enter: loadJSPView() = " + jspPath);
 		ModelAndView mv = new ModelAndView(jspPath);
-		logger.log(IAppLogger.INFO, "Exit: UserController - loadJSPView");
+		logger.log(IAppLogger.INFO, "Exit: loadJSPView()");
 		return mv;
 	}
 	
