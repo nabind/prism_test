@@ -32,7 +32,7 @@
     <p>Sorry, but you are not authorized to view the page you requested.</p>
     <p>Please contact system administrator for details.</p>
     <br>
-    <p>Click <a href="login.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
+    <p>Click <a href="userlogin.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
     
   </div>
 
