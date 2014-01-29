@@ -7,7 +7,16 @@ $(document).ready(function() {
 	
 	if($("#orgTable").length > 0) {
 		
-		$('#org-list').tablesorter();
+		$('#org-list').tablesorter({
+			// pass the headers argument and assign an object
+	        headers: { 
+	            // assign the fourth column (we start counting zero)
+	            3: { 
+	                // disable it by setting the property sorter to false
+	                sorter: false 
+	            }
+	        } 
+		});
 		// hide the right side menu
 		$('.clearfix').addClass('menu-hidden');
 		$("ul#shortcuts li").removeClass("current");
