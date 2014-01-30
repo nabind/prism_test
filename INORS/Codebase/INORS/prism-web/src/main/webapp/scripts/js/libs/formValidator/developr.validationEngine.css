@@ -37,9 +37,9 @@
 .formError .formErrorContent {
 	width: 100%;
 	position:relative;
-	width: 150px;
+	width: 190px;
 	border: 1px solid #931a03;
-	padding: 6px 8px;
+	padding: 3px 8px;
 	color: white;
 	background: #d52607 url(../img/old-browsers/colors/bg_red-gradient.png) repeat-x;
 	-webkit-background-size: 100% 100%;
@@ -58,6 +58,7 @@
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	line-height: 12px;
 }
 
 .greenPopup .formErrorContent {
