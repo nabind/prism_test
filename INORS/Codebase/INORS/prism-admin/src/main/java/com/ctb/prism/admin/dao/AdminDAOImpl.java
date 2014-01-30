@@ -2034,7 +2034,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			String[] roleTokens = role.split(" ");
 			for (String token : roleTokens) {
 				if ("ADMIN".equalsIgnoreCase(token)) {
-					return role;
+					return CustomStringUtil.appendString(label, " ", role);
 				}
 			}
 			buff.append(label);
