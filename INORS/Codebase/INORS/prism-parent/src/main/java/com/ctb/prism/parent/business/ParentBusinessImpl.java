@@ -207,9 +207,9 @@ public class ParentBusinessImpl implements IParentBusiness {
 		return parentDAO.deleteContent(paramMap);
 	}
 	
-	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
+	/*public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentDAO.modifyStandardForEdit(paramMap);
-	}
+	}*/
 	
 	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentDAO.modifyGenericForEdit(paramMap);

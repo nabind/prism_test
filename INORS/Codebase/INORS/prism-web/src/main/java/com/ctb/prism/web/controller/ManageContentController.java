@@ -317,8 +317,9 @@ public class ManageContentController {
 	
 	/**
 	 * Get Objective Description for edit depending upon objectiveId
+	 * As Standard/Objective is dependent upon Test Administration, so the code is blocked by Joy
 	 */
-	@RequestMapping(value = "/modifyStandardForEdit", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/modifyStandardForEdit", method = RequestMethod.GET)
 	public @ResponseBody 
 	String modifyStandardForEdit(HttpServletRequest request, HttpServletResponse response) throws BusinessException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - modifyStandardForEdit()");
@@ -342,7 +343,7 @@ public class ManageContentController {
 			logger.log(IAppLogger.INFO, "Exit: ManageContentController - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return jsonString;
-    }
+    }*/
     
     /**
      * @author Joy
@@ -356,12 +357,16 @@ public class ManageContentController {
 		long custProdId = Long.parseLong(request.getParameter("custProdId"));
 		long gradeId = Long.parseLong(request.getParameter("gradeId"));
 		long subtestId = Long.parseLong(request.getParameter("subtestId"));
+		long objectiveId = Long.parseLong(request.getParameter("objectiveId"));
 		String type = request.getParameter("type");
+		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("custProdId", custProdId);
 		paramMap.put("gradeId", gradeId);
 		paramMap.put("subtestId", subtestId);
+		paramMap.put("objectiveId", objectiveId);
 		paramMap.put("type", type);
+		
 		ManageContentTO manageContentTO = null;
 		Gson gson = new Gson();
 		String jsonString = "";

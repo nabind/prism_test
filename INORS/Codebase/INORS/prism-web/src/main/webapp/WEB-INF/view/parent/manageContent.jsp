@@ -394,7 +394,9 @@
 			</div>
 			<!-- Manage Content edit end -->
 			
+			<!-- As Standard/Objective is dependent upon Test Administration, so the code is blocked by Joy -->
 			<!-- Modify Standard - start -->
+			<!--
 			<div id="modifyStandardModal" class="display-none">
 				<div class="">
 					<form:form id="modifyStandardForm" name="modifyStandardForm"
@@ -456,9 +458,11 @@
 						<div id="imgHolder"></div>
 					</form:form>
 				</div>
-				<%@ include file="../common/required.jsp"%>
+				<!-- %@ include file="../common/required.jsp"%>
 			</div>
+			-->
 			<!-- Modify Standard - end -->
+			
 			
 			<!-- Modify Everyday Activity and About the Test - start -->
 			<div id="modifyGenericModal" class="display-none">
@@ -469,6 +473,7 @@
 						<input type="hidden" id="custProdId" name="custProdId"/>
 						<input type="hidden" id="gradeId" name="gradeId"/>
 						<input type="hidden" id="subtestId" name="subtestId"/>
+						<input type="hidden" id="objectiveId" name="objectiveId"/>
 						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
 						<input type="hidden" id="contentType" name="contentType"/>
 						
@@ -491,6 +496,13 @@
 								<spring:message code="label.subtest"/>
 							</label> 
 							<span id="subtestText"></span>
+						</p>
+						
+						<p id="p_objective" class="button-height inline-label" style="display:none;">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.objective"/>
+							</label> 
+							<span id="objectiveText"></span>
 						</p>
 						
 						<div class="mandatoryDescription message small-margin-bottom red-gradient customError" style="display:none">

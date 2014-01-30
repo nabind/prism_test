@@ -1620,8 +1620,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	/**
 	 * @author Joy
 	 * Get content details for edit depending upon article_metedata id  - By Joy
+	 * Not usable now
+	 * Remove the code after testing
 	 */
-	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException{
+	/*public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyStandardForEdit()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
@@ -1663,11 +1665,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - modifyStandardForEdit() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return manageContentTO;
-	}
+	}*/
 	
 	/**
 	 * @author Joy
-	 * Get Description of Resource, Everyday Activity and About the Test  - By Joy
+	 * Get Description of Standard/Objective, Resource, Everyday Activity and About the Test  - By Joy
 	 */
 	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - modifyGenericForEdit()");
@@ -1676,6 +1678,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		final long gradeId = ((Long) paramMap.get("gradeId")).longValue();
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
+		final long objectiveId = ((Long) paramMap.get("objectiveId")).longValue();
 		final String type = (String) paramMap.get("type");
 		
 		try{
@@ -1686,8 +1689,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        		cs.setLong(1, custProdId);
 				            cs.setLong(2, gradeId);
 				            cs.setLong(3, subtestId);
-				            cs.setString(4, type);
-				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.setLong(4, objectiveId);
+				            cs.setString(5, type);
+				            cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR); 
 				            return cs;
 				        }
 				    } , new CallableStatementCallback<Object>()  {
@@ -1696,7 +1700,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			ManageContentTO manageContentTOResult = null;
 			        			try {
 									cs.execute();
-									rs = (ResultSet) cs.getObject(5);
+									rs = (ResultSet) cs.getObject(6);
 									if(rs.next()){
 										manageContentTOResult = new ManageContentTO();
 										manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));

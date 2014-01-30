@@ -60,7 +60,7 @@ $(document).ready(function() {
 		}else {
 			resetModalForm("addNewContent");
 			resetModalForm("editContent");
-			resetModalForm("modifyStandardForm");
+			//resetModalForm("modifyStandardForm");
 			resetModalForm("modifyGenericForm");
 			openContentModalToAdd();
 		}
@@ -71,7 +71,8 @@ $(document).ready(function() {
 		resetModalForm("editContent");
 		resetModalForm("modifyStandardForm");
 		resetModalForm("modifyGenericForm");
-		openModifyStandardModalToEdit();
+		//openModifyStandardModalToEdit();
+		openModifyGenericModalToEdit('STD');
 	});
 	
 	$('#modifyRscDiv').live("click", function() {
@@ -111,8 +112,11 @@ $(document).ready(function() {
 		var contentTypeId = $('#contentTypeIdManageContent').val();
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 		var lastid = $("#contentTable tr:last").attr("value");
-		var checkFirstLoad=false;
-		var paramUrl = 'custProdId='+custProdId+'&subtestId='+subtestId+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
+		var checkFirstLoad = false;
+		var paramUrl = 'custProdId='+custProdId+'&subtestId='+subtestId
+						+'&objectiveId='+objectiveId+'&contentTypeId='+contentTypeId
+						+'&lastid='+lastid+'&checkFirstLoad='+checkFirstLoad;
+		
 		currentScrollTop = $("#contentTable").scrollTop();
 		if(!$(this).hasClass('disabled')) {
 			var callingAction = "";
@@ -185,14 +189,22 @@ function openModifyGenericModalToEdit(type) {
 	blockUI();
 	var custProdId = $('#custProdIdManageContent').val();
 	var gradeId = $('#gradeIdManageContent').val();
-	var subtestId = $('#subtestIdManageContent').val();
-	var objectiveId = $('#objectiveIdManageContent').val();
+	var subtestId = 0;
+	var objectiveId = 0;
 	var contentTypeId = $('#contentTypeIdManageContent').val();
 	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-	if(type != 'RSC'){
-		subtestId = 0;
+	
+	if(type == 'RSC' || type == 'STD'){
+		subtestId = $('#subtestIdManageContent').val();
 	}
-	var dataUrl = 'custProdId='+custProdId+'&gradeId='+gradeId+'&subtestId='+subtestId+'&type='+type;
+	if(type == 'STD'){
+		objectiveId = $('#objectiveIdManageContent').val();
+	}
+	
+	var dataUrl = 'custProdId='+custProdId+'&gradeId='+gradeId
+					+'&subtestId='+subtestId+'&objectiveId='+objectiveId
+					+'&type='+type;
+	
 	$.ajax({
 			type : "GET",
 			url : "modifyGenericForEdit.do",
@@ -203,6 +215,7 @@ function openModifyGenericModalToEdit(type) {
 				var custProdName = $('#custProdIdManageContent :selected').text();
 				var gradeName = $('#gradeIdManageContent :selected').text();
 				var subtestName = $('#subtestIdManageContent :selected').text();
+				var objectiveName = $('#objectiveIdManageContent :selected').text();
 				
 				var $modifyGenericModal = $('#modifyGenericModal');
 				$modifyGenericModal.find('#testAdministrationText').text(custProdName);
@@ -214,18 +227,31 @@ function openModifyGenericModalToEdit(type) {
 					$('#p_subtest').hide();
 				}
 				
+				if(type == 'STD'){
+					$('#p_subtest').show();
+					$modifyGenericModal.find('#subtestText').text(subtestName);
+					$('#p_objective').show();
+					$modifyGenericModal.find('#objectiveText').text(objectiveName);
+				}else{
+					$('#p_subtest').hide();
+					$('#p_objective').hide();
+				}
+				
+				
 				if(data != null && data.contentDescription != ""){
 					$modifyGenericModal.find('#genericDescriptionEditor').val(data.contentDescription);
 				}
 				
 				var modalTitle = '';
-				if(type == 'RSC'){
+				if(type == 'STD'){
+					modalTitle+='Modify Standard Description';
+				}else if(type == 'RSC'){
 					modalTitle+='Modify Resource Description';
 				}else if(type == 'EDA'){
 					modalTitle+='Modify Everyday Activity Description';
 				}else if(type == 'ATT'){
 					modalTitle+='Modify About the Test  Description';
-				}
+				} 
 				
 				$("#modifyGenericModal").modal({
 					title: modalTitle,
@@ -279,6 +305,7 @@ function modifyGeneric(form, win) {
 		var custProdId = $('#custProdIdManageContent').val();
 		var gradeId = $('#gradeIdManageContent').val();
 		var subtestId = $('#subtestIdManageContent').val();
+		var objectiveId = $('#objectiveIdManageContent').val();
 		var contentTypeId = $('#contentTypeIdManageContent').val();
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 		
@@ -286,6 +313,7 @@ function modifyGeneric(form, win) {
 		$modifyGenericModal.find('#custProdId').val(custProdId);
 		$modifyGenericModal.find('#gradeId').val(gradeId);
 		$modifyGenericModal.find('#subtestId').val(subtestId);
+		$modifyGenericModal.find('#objectiveId').val(objectiveId);
 		$modifyGenericModal.find('#contentType').val(contentTypeId);
 		$modifyGenericModal.find('#contentTypeName').val(contentTypeName);
 		
@@ -317,7 +345,9 @@ function modifyGeneric(form, win) {
 	}
 }
 
+/* As Standard/Objective is dependent upon Test Administration, so the code is blocked by Joy */
 //============Open Modal to Edit Description of Standard ===============
+/*
 function openModifyStandardModalToEdit() {
 	blockUI();
 	var objectiveId = $('#objectiveIdManageContent').val();
@@ -380,6 +410,7 @@ function openModifyStandardModalToEdit() {
 		}); 
 }
 
+
 //============Insert/Update Standard Description ===============
 function modifyStandard(form, win) {
 	blockUI();
@@ -427,7 +458,7 @@ function modifyStandard(form, win) {
 		 unblockUI();
 	}
 }
-
+*/
 
 
 //============Open Modal to Edit Content ===============
@@ -642,9 +673,9 @@ function setCKEditor(purpose){
 		$objTextArea = $('#contentDescriptionEditor');
 	}else if(purpose == 'edit'){
 		$objTextArea = $('#contentDescriptionEditorEdit');
-	}else if(purpose == 'modifyStandard'){
+	}/*else if(purpose == 'modifyStandard'){
 		$objTextArea = $('#objectiveDescriptionEditor');
-	}else if(purpose == 'modifyGeneric'){
+	}*/else if(purpose == 'modifyGeneric'){
 		$objTextArea = $('#genericDescriptionEditor');
 	}
 	

@@ -173,9 +173,9 @@ public class ParentServiceImpl implements IParentService {
 		return parentBusiness.deleteContent(paramMap);
 	}
 	
-	public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
+	/*public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentBusiness.modifyStandardForEdit(paramMap);
-	}
+	}*/
 	
 	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException {
 		return parentBusiness.modifyGenericForEdit(paramMap);

@@ -291,8 +291,10 @@ public interface IParentDAO {
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
+	 * As Standard/Objective is dependent upon Test Administration, so the code is blocked by Joy
+	 * Remove it after testing
 	 */
-	public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
+	//public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
