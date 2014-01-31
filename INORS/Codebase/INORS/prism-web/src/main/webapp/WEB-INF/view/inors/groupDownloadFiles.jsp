@@ -8,7 +8,7 @@
 <p>This section includes files for the Bulk Candidate Report and Student Data File. The File Type column in the section below will indicate IC when the file contains Invitation Code Letters. Other file types will be blank.</p>
 <p class="big-message">
 	<span class="orange big-message-icon icon-speech"></span>
-	Please note: The length of time to create your file depends upon the volume of requests made by all TASC users. Thanks for your patience!</p>
+	Please note: The length of time to create your file depends upon the volume of requests made by all INORS users. Thanks for your patience!</p>
 <p class="red">File will be deleted automatically after expiration date.</p>
 </hgroup>
 <style>
