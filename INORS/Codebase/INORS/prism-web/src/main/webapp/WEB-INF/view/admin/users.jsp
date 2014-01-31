@@ -70,8 +70,10 @@
 							<tr class="abc">
 								<th scope="col" width="15%">User ID</th>
 								<th scope="col" width="20%">Full Name</th>
-								<th scope="col" width="10%" class="hide-on-tablet">Status</th>
-								<th scope="col" width="15%" class="hide-on-tablet-portrait">Org Name</th>
+								<!-- <th scope="col" width="10%" class="hide-on-tablet">Status</th> -->
+								<th scope="col" width="10%">Status</th>
+								<!--  <th scope="col" width="15%" class="hide-on-tablet-portrait">Org Name</th>-->
+								<th scope="col" width="15%">Org Name</th>
 								<th scope="col" width="20%">User Roles</th>
 								<th scope="col" width="20%">Actions</th>
 							</tr>
@@ -81,8 +83,10 @@
 							<tr class="abc users-list-all" id ="sample" >
 								<th scope="row">&nbsp;</th>
 								<th scope="row">&nbsp;</th>
-								<th scope="row" class="hide-on-tablet">&nbsp;</th>
-								<th scope="row" class="hide-on-tablet-portrait">&nbsp;</th>
+								<!--  <th scope="row" class="hide-on-tablet">&nbsp;</th>-->
+								<th scope="row">&nbsp;</th>
+								<!--  <th scope="row" class="hide-on-tablet-portrait">&nbsp;</th>-->
+								<th scope="row">&nbsp;</th>
 								<th scope="row">&nbsp;</th>
 								<th scope="row">&nbsp;</th>
 								
@@ -97,12 +101,15 @@
 									<th scope="row">${users.userName}</th>
 									<td>${users.userDisplayName}</td>
 									<c:if test="${users.status == 'AC'}">
-										<td class="hide-on-tablet"><small class="tag green-bg">Enabled</small></td>
+										<!--  <td class="hide-on-tablet"><small class="tag green-bg">Enabled</small></td>-->
+										<td><small class="tag green-bg">Enabled</small></td>
 									</c:if>
 									<c:if test="${users.status == 'IN'}" >
-										<td class="hide-on-tablet"><small class="tag red-bg">Disabled</small></td>
+										<!-- <td class="hide-on-tablet"><small class="tag red-bg">Disabled</small></td>-->
+										<td><small class="tag red-bg">Disabled</small></td>
 									</c:if>
-									<td class="hide-on-tablet-portrait">${users.tenantName}</td>
+									<!--  <td class="hide-on-tablet-portrait">${users.tenantName}</td>-->
+									<td>${users.tenantName}</td>
 									
 									<td class="roleContainerForUsers vertical-center">
 											<c:forEach var="role" items="${users.availableRoleList}">

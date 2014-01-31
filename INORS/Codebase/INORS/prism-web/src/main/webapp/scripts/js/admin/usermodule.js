@@ -803,9 +803,11 @@
 	function createStatusTag(status) {
 		var statusTag = "";
 		if (status == "AC" ) {
-			statusTag = '<td class="hide-on-tablet"><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			//statusTag = '<td class="hide-on-tablet"><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			statusTag = '<td><small class="tag green-bg">' + 'Enabled' + '</small></td>';
 		} else {
-			statusTag = '<td class="hide-on-tablet"><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			//statusTag = '<td class="hide-on-tablet"><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			statusTag = '<td><small class="tag red-bg">' + 'Disabled' + '</small></td>';
 		}
 		return statusTag;
 	}	
