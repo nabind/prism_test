@@ -132,7 +132,7 @@
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-ladybug"></span>
 				<strong><spring:message code="title.tab.application"/></strong><br>
-				Administrators/Teachers click here
+				Teachers click here
 			</p>
 			<a href="userlogin.do?theme=acsi&parent=false" class="button blue-gradient full-width">Login</a>
 		</div>
