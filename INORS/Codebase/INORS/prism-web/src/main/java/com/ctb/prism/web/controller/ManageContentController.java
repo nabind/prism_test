@@ -275,7 +275,6 @@ public class ManageContentController {
 			jsonString = gson.toJson(statusTO);
 			logger.log(IAppLogger.INFO, "jsonString of status:");
 			logger.log(IAppLogger.INFO, jsonString);
-			response.getWriter().write(jsonString);
 	    }catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
