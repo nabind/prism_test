@@ -74,6 +74,7 @@ function getDataUrl(action, obj){
 		var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
 		var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 		var menuId = (typeof $(obj).attr('menuId') !== 'undefined') ? $(obj).attr('menuId') : 0;
+		var custProdId = (typeof $(obj).attr('custProdId') !== 'undefined') ? $(obj).attr('custProdId') : 0;
 		
 		dataUrl = 'studentBioId='+studentBioId
 					+'&articleId='+articleId
@@ -82,7 +83,8 @@ function getDataUrl(action, obj){
 					+'&studentGradeId='+studentGradeId
 					+'&subtestId='+subtestId
 					+'&menuId='+menuId
-					+'&menuName='+$(obj).attr('menuName');
+					+'&menuName='+$(obj).attr('menuName')
+					+'&custProdId='+custProdId;
 	}else if(action == 'getGradeSubtestInfo'){
 		dataUrl = 'menuId='+$(obj).attr('menuId')
 					+'&menuName='+$(obj).attr('menuName');

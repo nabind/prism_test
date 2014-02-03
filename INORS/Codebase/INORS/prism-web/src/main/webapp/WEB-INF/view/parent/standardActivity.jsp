@@ -43,7 +43,7 @@
 					<div class="simple-div-table-col">
 						<p>
 							<a class="articledata" href="#nogo" 
-								articleId="${standardActivityTO.objectiveId}" 
+								articleId="${standardActivityTO.objContentId}" 
 								contentType= '<spring:message code="val.contentType.std"/>' 
 								style="font-weight: bold"
 								id="subtestIdLink">

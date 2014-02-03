@@ -25,6 +25,7 @@ public class ManageContentTO extends BaseTO {
 	private String objectiveName = "";
 	private String subtestName = "";
 	private String proficiencyLevel = "";
+	private long objContentId = 0;
 	
 	public long getContentId() {
 		return contentId;
@@ -121,6 +122,12 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setProficiencyLevel(String proficiencyLevel) {
 		this.proficiencyLevel = proficiencyLevel;
+	}
+	public long getObjContentId() {
+		return objContentId;
+	}
+	public void setObjContentId(long objContentId) {
+		this.objContentId = objContentId;
 	}
 }
 

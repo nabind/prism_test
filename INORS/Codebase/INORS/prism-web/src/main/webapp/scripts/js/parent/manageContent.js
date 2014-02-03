@@ -220,23 +220,18 @@ function openModifyGenericModalToEdit(type) {
 				var $modifyGenericModal = $('#modifyGenericModal');
 				$modifyGenericModal.find('#testAdministrationText').text(custProdName);
 				$modifyGenericModal.find('#gradeText').text(gradeName);
+				
+				$('#p_subtest').hide();
+				$('#p_objective').hide();
 				if(type == 'RSC'){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
-				}else{
-					$('#p_subtest').hide();
-				}
-				
-				if(type == 'STD'){
+				}else if(type == 'STD'){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 					$('#p_objective').show();
 					$modifyGenericModal.find('#objectiveText').text(objectiveName);
-				}else{
-					$('#p_subtest').hide();
-					$('#p_objective').hide();
 				}
-				
 				
 				if(data != null && data.contentDescription != ""){
 					$modifyGenericModal.find('#genericDescriptionEditor').val(data.contentDescription);

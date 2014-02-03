@@ -1827,6 +1827,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										articleTypeDetailsTO.setContentName(rs.getString("ARTICLE_NAME"));
 										articleTypeDetailsTO.setSubHeader(rs.getString("ARTICLE_SUB_HEADER"));
 										articleTypeDetailsTO.setProficiencyLevel(rs.getString("PROFICENCY_LEVEL"));
+										articleTypeDetailsTO.setObjContentId(rs.getLong("STD_ARTICLEID"));
+										articleTypeDetailsTO.setCustProdId(rs.getLong("CUST_PROD_ID"));
 										articleTypeDetailsResult.add(articleTypeDetailsTO);
 									}
 			        			} catch (SQLException e) {
@@ -1853,7 +1855,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getArticleDescription()");
 		long t1 = System.currentTimeMillis();
 		ManageContentTO manageContentTO = null;
-		final long customerId = Long.parseLong((String) paramMap.get("customerId"));
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue(); 
 		final long articleId = ((Long) paramMap.get("articleId")).longValue(); 
 		final String contentType = (String) paramMap.get("contentType");
@@ -1865,7 +1867,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ARTICLE_DESCRIPTION + "}");
-				        	cs.setLong(1, customerId);
+				        	cs.setLong(1, custProdId);
 				        	cs.setLong(2, studentBioId);
 				            cs.setLong(3, articleId);
 				            cs.setLong(4, studentGradeId);
@@ -1945,6 +1947,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 										gradeSubtestTO.setGradeName(rs.getString("GRADE_NAME"));
 										gradeSubtestTO.setSubtestId(rs.getLong("SUBTEST_ID"));
 										gradeSubtestTO.setSubtestName(rs.getString("SUBTEST_NAME"));
+										gradeSubtestTO.setCustProdId(rs.getLong("CUST_PROD_ID"));
 										gradeSubtestResult.add(gradeSubtestTO);
 									}
 			        			} catch (SQLException e) {

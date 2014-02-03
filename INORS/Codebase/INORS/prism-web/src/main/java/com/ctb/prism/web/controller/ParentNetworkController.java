@@ -221,8 +221,9 @@ public class ParentNetworkController {
 		long studentGradeId = 0;
 		String studentGradeName = "";
 		long menuId = 0;
+		long custProdId = 0;
 		
-		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		custProdId = Long.parseLong(request.getParameter("custProdId"));  
 		studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
 		articleId = Long.parseLong(request.getParameter("articleId")); 
 		contentType = (String)request.getParameter("contentType");
@@ -235,7 +236,7 @@ public class ParentNetworkController {
 		}
 		ManageContentTO manageContentTO = null;
 		
-		paramMap.put("customerId", loggedinUserTO.getCustomerId());
+		paramMap.put("custProdId", custProdId);
 		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("articleId", articleId);
 		paramMap.put("contentType", contentType);

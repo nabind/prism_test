@@ -52,6 +52,7 @@
 										studentGradeName="${gradeSubtestTO.gradeName}" menuId = '<spring:message code="menuId.content.eda"/>' 
 										menuName = '<spring:message code="menuName.content.eda"/>' 
 										contentType = '<spring:message code="val.contentType.eda"/>' 
+										custProdId = "${gradeSubtestTO.custProdId}"
 										style="font-weight: bold"
 										href="#nogo" id="">
 											${gradeSubtestTO.gradeName}
@@ -65,6 +66,7 @@
 										menuId = '<spring:message code="menuId.content.att"/>'  
 										menuName = '<spring:message code="menuName.content.att"/>'
 										contentType = '<spring:message code="val.contentType.att"/>' 
+										custProdId = "${gradeSubtestTO.custProdId}"
 										style="font-weight: bold"
 										href="#nogo" id="">
 											${gradeSubtestTO.gradeName}
@@ -84,6 +86,7 @@
 												<a class="subtest-link" action="getStandardActivity" subtestId="${subtestTO.subtestId}"
 													studentName="" studentGradeId="${subtestTO.gradeId}"
 													studentBioId="0" studentGradeName="${subtestTO.gradeName}"
+													custProdId = "${gradeSubtestTO.custProdId}"
 													style="font-weight: bold"
 													href="#nogo" id="">
 														${subtestTO.subtestName}
@@ -93,6 +96,7 @@
 												<a class="subtest-link" action="getStandardIndicator" subtestId="${subtestTO.subtestId}"
 													studentName="" studentGradeId="${subtestTO.gradeId}" 
 													studentBioId="0" studentGradeName="${subtestTO.gradeName}"
+													custProdId = "${gradeSubtestTO.custProdId}"
 													style="font-weight: bold"
 													href="#nogo" id="">
 														${subtestTO.subtestName}
@@ -104,6 +108,7 @@
 													menuId = '<spring:message code="menuId.content.rsc"/>'  
 													menuName = '<spring:message code="menuName.content.rsc"/>'
 													contentType = '<spring:message code="val.contentType.rsc"/>' 
+													custProdId = "${gradeSubtestTO.custProdId}"
 													style="font-weight: bold"
 													href="#nogo" id="">
 														${subtestTO.subtestName}

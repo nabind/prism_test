@@ -45,7 +45,8 @@
 				<div class="simple-div-table wrapped">
 					<c:set var="standardId" value="${standardIndicatorTO.objectiveId}" />
 					<div class="simple-div-table-col">
-						<a class="articledata" href="#nogo" articleId="${standardIndicatorTO.objectiveId}" 
+						<a class="articledata" href="#nogo" 
+							articleId="${standardIndicatorTO.objContentId}" 
 							contentType= '<spring:message code="val.contentType.std"/>'  
 							style="font-weight: bold"
 							id="subtestIdLink">
