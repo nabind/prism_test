@@ -663,9 +663,11 @@ public class InorsController {
 						jobLog = "Asynchoronous Separate Pdfs";
 					}
 				} catch (FileNotFoundException e) {
+					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
 					e.printStackTrace();
 				} catch (IOException e) {
+					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
 					e.printStackTrace();
 				}

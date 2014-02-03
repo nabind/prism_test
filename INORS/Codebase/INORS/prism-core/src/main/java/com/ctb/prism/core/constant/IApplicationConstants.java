@@ -31,6 +31,10 @@ public interface IApplicationConstants {
 		SDF, SBE, GDF
 	};
 
+	/**
+	 * SU (submitted), IP (in-progress), CO (completed), ER (error), FT (File Transfer), DE (deleted), AR (archived)
+	 * 
+	 */
 	public static enum JOB_STATUS {
 		SU, IP, CO, ER, DE, AR, FT
 	};

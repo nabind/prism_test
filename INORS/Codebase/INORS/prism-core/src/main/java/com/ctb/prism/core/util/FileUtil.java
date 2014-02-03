@@ -12,7 +12,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -199,16 +201,14 @@ public class FileUtil {
 	 * @param filePath
 	 *            Location of the input file
 	 * @return byte array representation of the input file
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public static byte[] getBytes(String filePath) {
+	public static byte[] getBytes(String filePath) throws FileNotFoundException, IOException {
 		logger.log(IAppLogger.INFO, "filePath = " + filePath);
 		if (filePath != null && !filePath.isEmpty()) {
-			try {
-				File in = new File(filePath);
-				return FileCopyUtils.copyToByteArray(in);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			File in = new File(filePath);
+			return FileCopyUtils.copyToByteArray(in);
 		}
 		return "".getBytes();
 	}
@@ -281,8 +281,14 @@ public class FileUtil {
 	 * 
 	 * @param zipFileName
 	 * @param filePaths
+	 * @throws IOException
 	 */
-	public static void createZipFile(String zipFileName, List<String> filePaths) {
+	public static void createZipFile(String zipFileName, List<String> filePaths) throws FileNotFoundException, IOException {
+		Set<String> filePathSet = new HashSet<String>(filePaths);
+		createZipFile(zipFileName, filePathSet);
+	}
+
+	public static void createZipFile(String zipFileName, Set<String> filePaths) throws FileNotFoundException, IOException {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {
@@ -305,16 +311,11 @@ public class FileUtil {
 			}
 			zos.close();
 			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			try {
 				fos.close();
-				// zos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.log(IAppLogger.WARN, "Not able to close stream.");
 			}
 		}
 	}
