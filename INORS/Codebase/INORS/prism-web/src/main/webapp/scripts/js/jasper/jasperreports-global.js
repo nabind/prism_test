@@ -250,6 +250,7 @@ jQuery.noConflict();
 	 */
 	jg.doJqueryStuff = function () {
 		jg.ajaxLoad = function (url, elementToAppendTo, elementToExtract, requestParams, callback, arrCallbackArgs, loadMaskTarget) {
+			if(url) // added by Amit to fic web server proxy issue
 			jQuery.ajax(url, 
 					{
 						type: 'POST',
@@ -331,6 +332,7 @@ jQuery.noConflict();
 		};
 		
 		jg.ajaxJson = function (url, requestParams, callback, arrCallbackArgs, loadMaskTarget) {
+			if(url) // added by Amit to fic web server proxy issue
 			jQuery.ajax(url, 
 					{
 						type: 'POST',
@@ -387,6 +389,7 @@ jQuery.noConflict();
 					parent = jQuery(this.target);
 				}
 				
+				if(this.requestUrl) // added by Amit to fic web server proxy issue
 				parent.loadmask && parent.loadmask();
 				
 				if (this.isJSONResponse) {

@@ -38,6 +38,10 @@ public interface IApplicationConstants {
 	public static enum JOB_STATUS {
 		SU, IP, CO, ER, DE, AR, FT
 	};
+	
+	public static String[] xssUserInputPatterns = { "applet", "body", "embed", "frame",
+		"script", "frameset", "html", "iframe", "img", "style", "layer",
+		"link", "ilayer", "meta", "object" };
 
 	// input control default value ALL
 	public static final String VALUE_ALL = "ALL";

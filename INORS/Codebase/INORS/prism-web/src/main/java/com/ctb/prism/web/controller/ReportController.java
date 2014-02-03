@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -115,6 +116,9 @@ public class ReportController extends BaseDAO {
 		String reportName = null;
 		String reportUrl = "";
 		try {
+			// added to bypass app scan issue
+			if(checkVolunarable(req)) return null;
+			
 			String studentBioId = req.getParameter("studentId");
 
 			reportUrl = req.getParameter("reportUrl");
@@ -250,6 +254,9 @@ public class ReportController extends BaseDAO {
 		// Connection conn = null;
 		String reportName = null;
 		try {
+			// added to bypass app scan issue
+			if(checkVolunarable(req)) return null;
+			
 			String studentBioId = req.getParameter("studentId");
 
 			String reportUrl = req.getParameter("reportUrl");
@@ -1776,5 +1783,45 @@ public class ReportController extends BaseDAO {
 			logger.log(IAppLogger.INFO, "Exit: ReportController - reportMoreInfo");
 		}
 		return modelAndView;
+	}
+	
+	/**
+	 * Check volunarablity in report request
+	 * @param request
+	 * @return
+	 */
+	private boolean checkVolunarable(HttpServletRequest request) {
+		Enumeration names = request.getParameterNames();
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			String[] values = request.getParameterValues(name);
+			if (values != null) {
+				for (String value : values) {
+					if (isXssSensitiveInput(value)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * check whether user input is sensitive to XSS or not
+	 * 
+	 * @param input
+	 * @return
+	 */
+	private boolean isXssSensitiveInput(String input) {
+		String input_New = input.toLowerCase();
+		for (String xssTag : IApplicationConstants.xssUserInputPatterns) {
+			
+			if (input_New.indexOf(xssTag) != -1
+					&& input_New.indexOf("<") != -1
+					&& input_New.indexOf(">") != -1 ) {
+				return true;
+			}
+		}
+		return false; 
 	}
 }
