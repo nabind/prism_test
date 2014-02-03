@@ -370,7 +370,7 @@ $(document).ready(function() {
 										$.modal.alert(strings['script.user.passwordMismatch']);
 									}
 								}
-							}
+							}						
 						}
 					}
 				});					
@@ -433,7 +433,11 @@ $(document).ready(function() {
 				if (purpose == 'eduCenterUsers') {
 					loadEduCenterUsers();
 				} else {
-					updateRowValues(row);
+					//updateRowValues(row);
+					//Added to load data after edit
+					var id = $("#treeViewForOrg a").parent().attr("id");
+					fetchAllUsers(id,"getUserDetails.do");
+					//Change end here
 				}
 			} else {
 				$.modal.alert(strings['script.user.saveError']);
