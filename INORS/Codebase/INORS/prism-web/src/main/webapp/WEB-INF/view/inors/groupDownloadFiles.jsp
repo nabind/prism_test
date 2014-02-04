@@ -75,7 +75,7 @@
 		    												<span class="icon-cross-round icon-size2 red" title="Error"></span>
 		    											</c:when>
 		    											<c:when test="${group.jobStatus=='CO'}">
-		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
+		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="button icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
 		    											</c:when>
 														<c:otherwise>
 															 <span class="loader working" title="In Progress"></span>
