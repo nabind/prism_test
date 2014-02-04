@@ -121,7 +121,7 @@
 					
 					<div class="cyan-gradient icholder icholder-${homeReport.tabCount} rounded-border-bottom display-none" style="border-bottom: 1px solid #CCC;">
 						<div class="refresh-report" style="position: absolute; top: 3px; right: 15px;">
-							<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>
+							<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass} refreh-button-${homeReport.tabCount}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>
 						</div>
 						<div class="with-mid-padding mid-margin-bottom icholderinner icholderinner-${homeReport.tabCount}" style="min-width:200px;overflow-x:auto !important">
 							<div class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer-${homeReport.tabCount}" style="line-height:6px;min-width:720px">
