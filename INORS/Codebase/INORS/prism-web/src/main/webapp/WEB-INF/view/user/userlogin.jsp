@@ -168,7 +168,6 @@
 							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-							<h3>INORS Assessment</h3>
 							${teacherLoginInfoMessage}
 							</div>
 							</div>
@@ -226,11 +225,7 @@
 							 <spring:message code="login.otage.message"/>
 						</p>
 					</div>
-					<div align="center">
-						<a onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/ACSIDataOnline_ReportFilters.pdf',800,600)" href="#nogo">
-							<img alt="Understand Report Filter Navigation" src="themes/acsi/img/Report-filter.jpg" width="40%" height="40%"/>
-						</a>
-					</div>	
+					
 				</div>
 			</section>
 		</c:when>
@@ -284,7 +279,6 @@
 								<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								<h3>INORS Assessment</h3>
 								${parentLoginInfoMessage}
 							</div>
 							

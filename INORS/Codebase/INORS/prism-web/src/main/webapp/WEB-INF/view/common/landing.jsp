@@ -147,9 +147,8 @@
 			<a href="userlogin.do?theme=parent&parent=true" class="button blue-gradient full-width">Login</a>
 		</div>
 		<div class="two-columns"></div>
-		<div class="twelve-columns">
-				<span class="big-message-icon icon-chat orange"></span>
-				${commonLogInInfoMessage}
+		<div class="twelve-columns align-center">
+			${commonLogInInfoMessage}
 		</div>
 	</div>
 				

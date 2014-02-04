@@ -879,6 +879,11 @@ function closeProgress(reportUrl, id, firstCall) {
 	
 	else $('#loading'+id+'').hide(100);
 	
+	// show download buttons
+	$(".download-button-"+id).show(100);
+	// change refresh button color
+	$(".refreh-button-"+id).addClass('blue-gradient');
+	
 	if(reportUrl != null && !firstCall) {
 		checkpagination(reportUrl, id);
 		if( 'none' == $(".icholder-"+id+"").css("display") )
@@ -955,6 +960,10 @@ function getCascading(selectedObj) {
 	var reportForm = $('.report-form');
 	var formObj = $(".report-form-"+tabCount); //reportForm.get(tabCount);
 	dataURL = dataURL + "&" + $(formObj).serialize();
+	// hide download buttons
+	$(".download-button-"+tabCount).hide(100);
+	// change refresh report button color
+	$(".refreh-button-"+tabCount).removeClass('blue-gradient').addClass('green-gradient');
 	
 	if($(selectedObj).val() != null) {
 	$.ajax({
