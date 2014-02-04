@@ -649,9 +649,10 @@ public class InorsController {
 						// TODO : convention implementation
 						Long orgNodeId = Long.parseLong(school);
 						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
-						fileName = reportService.getConventionalFileNameGD(orgNodeId);
-						String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
-						String zipFileName = fileNames[0] + ".zip";
+						// fileName = reportService.getConventionalFileNameGD(orgNodeId);
+						// String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
+						// String zipFileName = fileNames[0] + ".zip";
+						String zipFileName = fileName + ".zip";
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
