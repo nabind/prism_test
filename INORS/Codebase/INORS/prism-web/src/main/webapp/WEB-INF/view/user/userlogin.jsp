@@ -159,7 +159,6 @@
 							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
-								<!--  <p style="line-height:100%"><spring:message code="login.page.sign"/></p>-->
 							</div>
 							
 					        <div class="boxshade" style="height: 185px">
@@ -242,7 +241,6 @@
 							<h1 class="h1style"><spring:message code="pnlogin.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
-								<p style="line-height:100%"><spring:message code="login.page.sign"/></p>
 							</div>
 							
 						</div>
