@@ -284,7 +284,9 @@ public class LoginController {
 					req.getSession().setAttribute(IApplicationConstants.CURRUSER, user.getUserName());
 					// }
 					req.getSession().setAttribute(IApplicationConstants.AUTHORITIES, authenticatedUser.getAuthorities());
-					if (IApplicationConstants.TRUE.equals(req.getAttribute(IApplicationConstants.RELOAD_USER))) {
+					String reloadUserRequestScope = (String) req.getAttribute(IApplicationConstants.RELOAD_USER);
+					String reloadUserSessionScope = (String) req.getSession().getAttribute(IApplicationConstants.RELOAD_USER);
+					if ((IApplicationConstants.TRUE.equals(reloadUserRequestScope)) || (IApplicationConstants.TRUE.equals(reloadUserSessionScope))) {
 						// system reloading user after first-time change password
 						user = loginService.getUserDetails(user.getUserName());
 					}
@@ -527,6 +529,7 @@ public class LoginController {
 		if (success) {
 			// setting this attribute so that application reloads user data during login
 			req.setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
+			req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 			return validateUser(req, res);
 		} else {
 			// fetch security questions
@@ -536,6 +539,7 @@ public class LoginController {
 			modelAndView.addObject("secretQuestionList", questionList);
 			modelAndView.addObject("parentTO", parentTO);
 			modelAndView.addObject("Error message", "System is experiencing some problem while saving. Please try later.");
+			req.getSession().removeAttribute(IApplicationConstants.RELOAD_USER);
 			return modelAndView;
 		}
 	}
