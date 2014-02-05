@@ -161,7 +161,7 @@
 								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
 							</div>
 							
-					        <div class="boxshade" style="height: 185px">
+					        <div class="boxshade">
 						    <div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
 							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
