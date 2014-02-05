@@ -17,7 +17,7 @@
 			<form:form method="post" class="report-form"
 				id="reportMessageSearchForm">
 				<div class="mid-margin-bottom">
-					<div class="reportFilterCriteria panel-control rounded-border">
+					<div class="panel-control rounded-border">
 						<span id="filter-icon" class="icon-leaf icon-size2"></span> 
 						<b>Configure message for: ${serviceMapReportMessageFilter.reportName}</b>
 					</div>
