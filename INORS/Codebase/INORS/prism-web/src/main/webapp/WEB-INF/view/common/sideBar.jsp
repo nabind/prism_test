@@ -110,12 +110,7 @@
 							<a href="manageStudent.do">Manage Students</a>
 						</li>
 						<sec:authorize ifAnyGranted="ROLE_CTB">
-						
-							<%-- <c:if test="${product eq tascProduct}">
-								<li>
-									<a href="manageEducationCenter.do">Manage Education Center Users</a>
-								</li>
-							</c:if> --%>
+							<!-- Remove Manage Education Center -->
 							<li>
 								<a href="manageReports.do">Manage Reports</a>
 							</li>
@@ -130,7 +125,7 @@
 			<sec:authorize ifAnyGranted="ROLE_EDU_ADMIN">
 				<!-- Only for ROLE_EDU_ADMIN Admins -->
 				<c:if test="${product eq tascProduct}">
-					<li><a href="manageEducationCenter.do" class="shortcut-medias" title="Manage Education Center Users">Manage Education Center Users</a></li>
+					<!-- Remove Manage Education Center -->
 				</c:if>
 			</sec:authorize>
 					</ul>
