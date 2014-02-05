@@ -9,7 +9,7 @@ String adminYear = (String) request.getSession().getAttribute(IApplicationConsta
 String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 %>
 
-<div class="panel-control" style="overflow: auto;">
+<div class="panel-control">
 	<div class="float-left">
 		<a href="#nogo" id="hideHierarchy" class="button icon-backward icon-size1 with-tooltip" title="Hide Hierarchy"></a>
 	</div>
