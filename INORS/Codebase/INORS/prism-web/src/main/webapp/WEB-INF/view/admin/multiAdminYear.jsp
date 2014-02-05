@@ -9,9 +9,9 @@ String adminYear = (String) request.getSession().getAttribute(IApplicationConsta
 String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 %>
 
-<div class="panel-control">
+<div class="panel-control" style="overflow: auto;">
 	<div class="float-left">
-		<a href="#nogo" id="hideHierarchy" class="button icon-backward with-tooltip" title="Hide Hierarchy"></a>
+		<a href="#nogo" id="hideHierarchy" class="button icon-backward icon-size1 with-tooltip" title="Hide Hierarchy"></a>
 	</div>
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
