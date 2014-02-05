@@ -111,11 +111,11 @@
 						</li>
 						<sec:authorize ifAnyGranted="ROLE_CTB">
 						
-							<c:if test="${product eq tascProduct}">
+							<%-- <c:if test="${product eq tascProduct}">
 								<li>
 									<a href="manageEducationCenter.do">Manage Education Center Users</a>
 								</li>
-							</c:if>
+							</c:if> --%>
 							<li>
 								<a href="manageReports.do">Manage Reports</a>
 							</li>
