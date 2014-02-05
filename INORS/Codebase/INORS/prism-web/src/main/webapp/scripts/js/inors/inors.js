@@ -1164,43 +1164,52 @@ function groupDownloadSubmit(button) {
 	var json = getGroupDownloadTO();
 	if ((button == "SP") || (button == "CP") || (button == "SS")) {
 		var errMsg = validateGroupDownloadForm(button, json);
-		if(errMsg == "") {
-			$.modal.confirm("Submit file generation request for processing?", function() {
-			// Ajax Call
-			var serverResponseData = groupDownloadFunction(json);
-			// {
-			// "handler": "success/failure",
-			// "type": "sync/async",
-			// "downloadFileName": "download-file-name",
-			// "jobTrackingId": "job-tracking-id"
-			// }
-			if (serverResponseData) {
-				if (serverResponseData.handler == "success") {
-					status = true;
-					if (serverResponseData.type == "sync") {
-						// Synchronous : Immediate download - only for Single
-						// Student
-						status = undefined;
-						// var href = "downloadSingleStudentPdf.do?fileName=" + json.fileName + "&email=" + json.email;
-						// Href Call
-						// $("#downloadSinglePdfsGD").attr("href", href);
+		if (errMsg == "") {
+			$.modal.confirm("You are requesting multiple pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
+				function() {
+					// Ajax Call
+					var serverResponseData = groupDownloadFunction(json);
+					// {
+					// "handler": "success/failure",
+					// "type": "sync/async",
+					// "downloadFileName": "download-file-name",
+					// "jobTrackingId": "job-tracking-id"
+					// }
+					if (serverResponseData) {
+						if (serverResponseData.handler == "success") {
+							status = true;
+							if (serverResponseData.type == "sync") {
+								// Synchronous : Immediate download
+								// - only for Single
+								// Student
+								status = undefined;
+								// var href =
+								// "downloadSingleStudentPdf.do?fileName="
+								// + json.fileName + "&email=" +
+								// json.email;
+								// Href Call
+								// $("#downloadSinglePdfsGD").attr("href",
+								// href);
+							} else {
+								// Asynchronous : No action needed
+								// $("#downloadSinglePdfsGD").attr("href",
+								// "#");
+							}
+						} else {
+							status = false;
+						}
+						displayGroupDownloadStatus(status);
 					} else {
-						// Asynchronous : No action needed
-						// $("#downloadSinglePdfsGD").attr("href", "#");
+						$.modal.alert("Invalid Server Response");
 					}
-				} else {
-					status = false;
+				}, function() {
+					// this function closes the confirm modal on
+					// clicking
+					// cancel button
 				}
-				displayGroupDownloadStatus(status);
-			} else {
-				$.modal.alert("Invalid Server Response");
-			}
-		}, function() {
-			// this function closes the confirm modal on clicking
-			// cancel button
-		});
-		}else {
-			if(errMsg == "Please select student"){
+			);
+		} else {
+			if (errMsg == "Please select student") {
 				// clearGDCache();
 				// location.reload();
 			}
