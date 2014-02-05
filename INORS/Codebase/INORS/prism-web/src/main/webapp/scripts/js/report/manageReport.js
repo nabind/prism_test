@@ -239,7 +239,7 @@ var row = $("#"+reportId + '_' +reportId);
 				$(this).change();
 				$(this).trigger('update-select-list');
 			 });
-			 
+			 setDefaultValuesForAddReportModal();
 			}	
 
 //----------------------------Update report details---------------------
@@ -403,6 +403,13 @@ $('.delete-Report').live("click", function() {
 				}
 			}
 		});	
+	}
+	function setDefaultValuesForAddReportModal() {
+		$('#reportType option:first-child').attr("selected", "selected");
+		$('#menuType option:first-child').attr("selected", "selected");
+		$('#customerType option:first-child').attr("selected", "selected");
+		$("#addUserRole option[value='ROLE_USER']").attr("selected", "selected");
+		$('#allOrgNode option:first-child').attr("selected", "selected");
 	}
 	/*var obj = jQuery.parseJSON(data);
 					
