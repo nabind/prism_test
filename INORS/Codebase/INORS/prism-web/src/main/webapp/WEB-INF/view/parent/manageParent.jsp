@@ -65,7 +65,7 @@
 						</thead>
 
 						<tbody id="parent_details">
-							<tr class="abc">
+							<tr class="abc parent-list-result">
 								<th scope="col" width="20%"></th>
 								<th scope="col" width="25%"></th>
 								<!--th scope="col" width="16%">Last Login</th-->
