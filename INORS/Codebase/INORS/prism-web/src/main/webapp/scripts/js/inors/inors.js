@@ -1159,6 +1159,7 @@ function getGroupDownloadTO() {
  */
 function groupDownloadSubmit(button) {
 	displayGroupDownloadStatus(undefined);
+	if ($("#groupDownload").validationEngine('validate')) {
 	$("#buttonGD").val(button);
 	var status = false;
 	var json = getGroupDownloadTO();
@@ -1217,6 +1218,7 @@ function groupDownloadSubmit(button) {
 		}
 	} else {
 		$.modal.alert('Unknown Request Type');
+	}
 	}
 }
 
