@@ -1057,19 +1057,22 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		paramMap.put("userName", userName);
 		paramMap.put("invitationCode", invitationCode);
 		
-		long orgUserid = getOrgUserId(paramMap);
-		
-		int count = getJdbcTemplatePrism().update(
-				IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT,
-				orgUserid, 
-				invitationCode);
-		if (count > 0) {
-			boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(invitationCode);
-			return isUpdatedInvitationCodeClaimCount;
+		try{
+			long orgUserid = getOrgUserId(paramMap);
+			int count = getJdbcTemplatePrism().update(
+					IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT,
+					orgUserid, 
+					invitationCode);
+			if (count > 0) {
+				boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(invitationCode);
+				return isUpdatedInvitationCodeClaimCount;
+			}
+		}catch(Exception e){
+			return Boolean.FALSE;
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addInvitationToAccount() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		
-		long t2 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addInvitationToAccount() took time: "+String.valueOf(t2 - t1)+"ms");
 		return Boolean.FALSE;
 	}
 	
