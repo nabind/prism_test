@@ -1165,6 +1165,7 @@ function groupDownloadSubmit(button) {
 	if ((button == "SP") || (button == "CP") || (button == "SS")) {
 		var errMsg = validateGroupDownloadForm(button, json);
 		if(errMsg == "") {
+			$.modal.confirm("Submit file generation request for processing?", function() {
 			// Ajax Call
 			var serverResponseData = groupDownloadFunction(json);
 			// {
@@ -1194,10 +1195,14 @@ function groupDownloadSubmit(button) {
 			} else {
 				$.modal.alert("Invalid Server Response");
 			}
+		}, function() {
+			// this function closes the confirm modal on clicking
+			// cancel button
+		});
 		}else {
 			if(errMsg == "Please select student"){
-				clearGDCache();
-				location.reload();
+				// clearGDCache();
+				// location.reload();
 			}
 			$.modal.alert(errMsg);
 		}
