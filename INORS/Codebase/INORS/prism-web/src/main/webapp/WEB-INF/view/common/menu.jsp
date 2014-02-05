@@ -22,9 +22,7 @@
 					<li><a href="manageStudent.do" class="shortcut-agenda" title="Manage Students">Manage Students</a></li>
 					<sec:authorize ifAnyGranted="ROLE_CTB">
 						<!-- Only for CTB Admins -->
-						<c:if test="${product eq inorsProduct}">
-							<li><a href="manageEducationCenter.do" class="shortcut-medias" title="Manage Education Center Users">Manage Education Center Users</a></li>
-						</c:if>
+						<!-- Remove Manage Education Center -->
 						<li><a href="manageReports.do" class="shortcut-dashboard" title="Manage Reports">Manage Reports</a></li>
 						<!-- <li><a href="manageRole.do" class="shortcut-notes" title="Manage Roles">Manage Roles</a></li> -->
 					</sec:authorize>
