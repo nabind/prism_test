@@ -50,9 +50,9 @@ public interface IInorsQuery {
 	
 	public static final String GET_SCHOOLS = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_ORG_NODE_DETAILS_SCHOOL(?, ?, ?, ?)}";
 	
-	public static final String GET_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?)}";
+	public static final String GET_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?, ?)}";
 	
-	public static final String GET_ALL_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_ALL_MIG_RESULT_GRT(?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_ALL_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?)}";
 	
 	public static final String GET_IC= "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_INVITATION_DETAILS(?, ?, ?, ?, ?)}";
 	
