@@ -30,9 +30,7 @@
 			</sec:authorize>
 			<sec:authorize ifAnyGranted="ROLE_EDU_ADMIN">
 				<!-- Only for ROLE_EDU_ADMIN Admins -->
-				<c:if test="${product eq inorsProduct}">
-					<li><a href="manageEducationCenter.do" class="shortcut-medias" title="Manage Education Center Users">Manage Education Center Users</a></li>
-				</c:if>
+				<!-- Remove Manage Education Center -->
 			</sec:authorize>
 		</sec:authorize>
 		
