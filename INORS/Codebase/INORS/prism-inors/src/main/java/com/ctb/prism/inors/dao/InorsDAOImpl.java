@@ -192,7 +192,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(1, Long.parseLong(productId));
 						cs.setString(2, userName);
 						cs.setLong(3, Long.parseLong(districtId));
-						cs.setLong(4, Long.parseLong(testProgram));
+						cs.setString(4, testProgram);
 						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
@@ -219,7 +219,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setString(2, userName);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setLong(4, Long.parseLong(schoolId));
-						cs.setLong(5, Long.parseLong(testProgram));
+						cs.setString(5, testProgram);
 						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
@@ -242,7 +242,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			}
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: InorsDAOImpl - getGRTList() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: getGRTList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size());
 		return grtList;
@@ -526,7 +526,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		long t1 = System.currentTimeMillis();
 		List<InvitationCodeTO> icList = null;
 		try {
-			if ("ALL".equals(schoolId)) {
+			if ("-1".equals(schoolId)) {
 				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
@@ -579,7 +579,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			}
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: getICList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		logger.log(IAppLogger.INFO, "icList.size(): " + icList.size());
 		return icList;
