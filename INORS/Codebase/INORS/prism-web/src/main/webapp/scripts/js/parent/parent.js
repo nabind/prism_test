@@ -127,7 +127,7 @@ $(document).ready(function() {
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
+						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
 						+'&studentName='+this.studentName
 						+'&studentGradeName='+this.grade
 						+'&studentGradeId='+this.studentGradeId+'">'
@@ -136,7 +136,7 @@ $(document).ready(function() {
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
 					
-					// update menu
+					// update right menu
 					$("#child_list").html(menuContent);
 				}else{
 					var userContent = '<div>No child is associated to your account.</div>';

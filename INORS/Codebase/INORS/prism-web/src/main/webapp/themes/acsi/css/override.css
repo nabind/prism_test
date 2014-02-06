@@ -982,3 +982,21 @@ padding-bottom: 0px;
 width: 51px;
 height: 16px;
 }
+.menu-second-level{
+	background-color: #A8A8A8 !important;
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    padding-bottom: 8px !important;
+    padding-left: 17px !important;
+    padding-top: 8px !important;
+    text-shadow: none !important;
+}
+.menu-third-level{
+	padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 30px !important;
+	font-size: 12px !important; 
+	font-weight: normal !important; 
+	text-shadow: none !important
+}

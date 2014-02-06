@@ -136,24 +136,24 @@
 						
 						<li class="with-right-arrow" id="select-tooltip-1">
 							<span>Your Children</span>
-								<ul class="big-menu report-menu white-gradient collapsible" id="child_list">
+								<ul class="big-menu white-gradient collapsible" id="child_list">
 								</ul>
 						</li>
 						
 						<c:if test="${not empty childDataMap}">
-						<li class="" id="select-tooltip-10">
-							<a href="getChildData.do?studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
-								Overview
-							</a>
-						</li>
+							<li class="menu-second-level" id="select-tooltip-10">
+								<a href="getChildData.do?studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
+									Overview of ${childDataMap.studentName}
+								</a>
+							</li>
 						</c:if>
 						
 						<c:forEach var="subtestTO"	items="${childDataMap.studentSubtest}"	varStatus="loopSubtestTO">
-							<li class="with-right-arrow">
+							<li class="menu-second-level with-right-arrow black-arrow">
 								<a href="#nogo" 
 								id="">${subtestTO.name}</a>
-										<ul class="big-menu report-menu white-gradient collapsible">
-												<li class="mid-margin-left font-12 small-line-height">
+										<ul class="big-menu white-gradient collapsible">
+												<li class="menu-third-level">
 													<a class="standard-activity" href="#nogo" 
 														subtestId="${subtestTO.value}" 
 														studentName="${childDataMap.studentName}" 
@@ -165,7 +165,7 @@
 													</a>
 												</li>
 												
-												<li class="mid-margin-left font-12 small-line-height">
+												<li class="menu-third-level">
 													<a class="standard-indicator" href="#nogo"  
 														subtestId="${subtestTO.value}" 
 														studentName="${childDataMap.studentName}" 
@@ -177,7 +177,7 @@
 													</a>
 												</li>	
 												
-												<li class="mid-margin-left font-12 small-line-height">
+												<li class="menu-third-level">
 													<a class="articledata" href="#nogo" 
 														subtestId="${subtestTO.value}"
 														studentName="${childDataMap.studentName}" 
@@ -187,13 +187,12 @@
 														menuId = '<spring:message code="menuId.content.rsc"/>'  
 														menuName = '<spring:message code="menuName.content.rsc"/>'
 														contentType = '<spring:message code="val.contentType.rsc"/>' 
-														style="font-weight: bold"
 														id="">
 															<spring:message code="menuName.content.rsc"/>
 													</a>
 												</li>
 													
-												<li class="mid-margin-left font-12 small-line-height">
+												<li class="menu-third-level">
 													<a href="#" 
 													id="">Results</a>
 												</li>	
@@ -201,7 +200,7 @@
 						   </li>
 						</c:forEach>
 						<c:if test="${not empty childDataMap}">
-							<li class="" id="select-tooltip-10">
+							<li class="menu-second-level">
 								<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
 											studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
 											menuId = '<spring:message code="menuId.content.eda"/>' 
@@ -211,7 +210,7 @@
 											href="#nogo" id="">-  <spring:message code="menuName.content.eda"/>
 								</a>
 							</li>
-							<li class="" id="select-tooltip-10">
+							<li class="menu-second-level">
 								<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
 											studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  
 											menuId = '<spring:message code="menuId.content.att"/>' 
@@ -226,46 +225,47 @@
 						<li class="with-right-arrow" id="select-tooltip-10">
 							<span>Explore</span>
 								
-								<ul class="big-menu report-menu white-gradient collapsible">
+								<ul class="big-menu white-gradient collapsible">
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
+									 <li class="menu-second-level"> 
 									 	<a href="getStandardMatters.do"  id="">Why Standards Matter</a>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height with-right-arrow" style="background-color: #87CEFA	"> 
+									 <li class="menu-second-level with-right-arrow black-arrow"> 
 									 	<a href="getBrowseContent.do"  id="">Browse Content </a>
-											 <ul class="big-menu report-menu white-gradient collapsible">
-											 		<li class="mid-margin-left font-12 small-line-height">
-											 			<a href="getBrowseContent.do"  id="">- Overview</a></li>
-											 		<li class="mid-margin-left font-12 small-line-height">
+											 <ul class="big-menu white-gradient collapsible">
+											 		<li class="menu-third-level">
+											 			<a href="getBrowseContent.do"  id="">- Overview</a>
+											 		</li>
+											 		<li class="menu-third-level">
 												 		<a class="browse-content" href="#nogo" 
 	           												menuId='<spring:message code="menuId.content.stdAct"/>' 
 											           		menuName='<spring:message code="menuName.content.stdAct"/>'  
 											           		id=""> -  <spring:message code="menuName.content.stdAct"/>
 											           	</a>
 											        </li>
-											 		<li class="mid-margin-left font-12 small-line-height">
+											 		<li class="menu-third-level">
 											 			<a class="browse-content" href="#nogo" 
 															menuId='<spring:message code="menuId.content.stdInd"/>' 
 											           		menuName='<spring:message code="menuName.content.stdInd"/>'  
 											         		id=""> -  <spring:message code="menuName.content.stdInd"/> 
 											         	</a>
 											 		</li>
-											 		<li class="mid-margin-left font-12 small-line-height">
+											 		<li class="menu-third-level">
 											 			<a class="browse-content" href="#nogo" 
 															menuId='<spring:message code="menuId.content.rsc"/>' 
 											           		menuName='<spring:message code="menuName.content.rsc"/>'
 											           		id=""> -  <spring:message code="menuName.content.rsc"/>
 											           	</a>
 													</li>
-											 		<li class="mid-margin-left font-12 small-line-height">
+											 		<li class="menu-third-level">
 											 			<a class="browse-content" href="#nogo" 
 															menuId='<spring:message code="menuId.content.eda"/>' 
 											           		menuName='<spring:message code="menuName.content.eda"/>'
 											           		id=""> -  <spring:message code="menuName.content.eda"/> 
 											           	</a>
 													</li>
-											 		<li class="mid-margin-left font-12 small-line-height">
+											 		<li class="menu-third-level">
 											 			<a class="browse-content" href="#nogo"
 															menuId='<spring:message code="menuId.content.att"/>' 
 											           		menuName='<spring:message code="menuName.content.att"/>' 
@@ -275,12 +275,12 @@
 											 	</ul>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
-									 	<a href="#"  id="">English Guide to the Student Report </a>
+									 <li class="menu-second-level"> 
+									 	<a href="#nogo"  id="">English Guide to the Student Report </a>
 									 </li>
 									 
-									 <li class="mid-margin-left font-12 small-line-height" style="background-color: #87CEFA	"> 
-									 	<a href="#"  id="">Spanish Guide to the Student Report  </a>
+									 <li class="menu-second-level"> 
+									 	<a href="#nogo"  id="">Spanish Guide to the Student Report  </a>
 									 </li>
 									  
 								</ul>
@@ -296,11 +296,11 @@
 						
 						<li class="with-right-arrow" id="select-tooltip-2">
 							<span>Manage Account</span>
-								<ul class="big-menu report-menu white-gradient collapsible">
-									<li class="mid-margin-left font-12 small-line-height">
+								<ul class="big-menu white-gradient collapsible">
+									<li class="menu-third-level">
 										<a href="myAccount.do">My Account</a>
 									</li>
-									<li class="mid-margin-left font-12 small-line-height">
+									<li class="menu-third-level">
 										<a class="claim-Invitation" href="#nogo"> Enter next Activation Code</a>
 									</li>
 								</ul>
