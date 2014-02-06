@@ -694,7 +694,6 @@ function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, rep
 // check if report has multiple pages
 var paginatedArr = [];
 function checkpagination(reportUrl, tabCount) {
-	hideScrollingHotSpot(reportUrl);
 	// check if calling first time
 	var newcall = true;
 	$.each(paginatedArr, function(index, value) { 
@@ -757,6 +756,7 @@ function checkpagination(reportUrl, tabCount) {
 				$(iFrameContainerObj).smoothDivScroll({
 					manualContinuousScrolling: true
 				});
+				hideScrollingHotSpot(reportUrl);
 				if(newcall && obj != null && obj.paginate == "true") {
 					$(currentObj).css('display', 'block');
 					resetPagination(currentObj);
