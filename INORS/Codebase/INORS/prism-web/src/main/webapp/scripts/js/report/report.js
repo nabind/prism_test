@@ -694,6 +694,7 @@ function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, rep
 // check if report has multiple pages
 var paginatedArr = [];
 function checkpagination(reportUrl, tabCount) {
+	hideScrollingHotSpot(reportUrl);
 	// check if calling first time
 	var newcall = true;
 	$.each(paginatedArr, function(index, value) { 
@@ -1081,3 +1082,20 @@ function getHelp()
 	});
 }
 
+/**
+ * Hides the Hot Spot Scroll bars for a particular reportUrl.
+ * 
+ * @param reportUrl
+ */
+function hideScrollingHotSpot(reportUrl) {
+	if (reportUrl == "") { // Home page Url
+		var scrollingHotSpotLeft = $('.scrollingHotSpotLeft');
+		if (scrollingHotSpotLeft) {
+			$('.scrollingHotSpotLeft').removeClass("scrollingHotSpotLeft");
+		}
+		var scrollingHotSpotRight = $('.scrollingHotSpotRight');
+		if (scrollingHotSpotRight) {
+			$('.scrollingHotSpotRight').removeClass("scrollingHotSpotRight");
+		}
+	}
+}
