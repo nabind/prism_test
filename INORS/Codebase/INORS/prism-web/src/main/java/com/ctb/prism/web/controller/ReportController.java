@@ -140,13 +140,15 @@ public class ReportController extends BaseDAO {
 			}
 
 			// addding code to remember existing input control selection
-			if (IApplicationConstants.TRUE.equals(filter)) {
-				Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
-				if (sessionObjects != null) {
-					Iterator iterator = sessionObjects.entrySet().iterator();
-					while (iterator.hasNext()) {
-						Map.Entry mapEntry = (Map.Entry) iterator.next();
-						req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + mapEntry.getKey(), mapEntry.getValue());
+			if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+				if (IApplicationConstants.TRUE.equals(filter)) {
+					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
+					if (sessionObjects != null) {
+						Iterator iterator = sessionObjects.entrySet().iterator();
+						while (iterator.hasNext()) {
+							Map.Entry mapEntry = (Map.Entry) iterator.next();
+							req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + mapEntry.getKey(), mapEntry.getValue());
+						}
 					}
 				}
 			}
@@ -278,13 +280,15 @@ public class ReportController extends BaseDAO {
 			}
 
 			// addding code to remember existing input control selection
-			if (IApplicationConstants.TRUE.equals(filter)) {
-				Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
-				if (sessionObjects != null) {
-					Iterator iterator = sessionObjects.entrySet().iterator();
-					while (iterator.hasNext()) {
-						Map.Entry mapEntry = (Map.Entry) iterator.next();
-						req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + mapEntry.getKey(), mapEntry.getValue());
+			if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+				if (IApplicationConstants.TRUE.equals(filter)) {
+					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
+					if (sessionObjects != null) {
+						Iterator iterator = sessionObjects.entrySet().iterator();
+						while (iterator.hasNext()) {
+							Map.Entry mapEntry = (Map.Entry) iterator.next();
+							req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + mapEntry.getKey(), mapEntry.getValue());
+						}
 					}
 				}
 			}
@@ -1385,12 +1389,13 @@ public class ReportController extends BaseDAO {
 				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName, changedObject, changedValue, replacableParams, reportFilterTO);
 
 				// req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER+inputControlTO.getLabelId(), objects);
-				Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
-				if (sessionObjects == null)
-					sessionObjects = new HashMap<String, List<ObjectValueTO>>();
-				sessionObjects.put(inputControlTO.getLabelId(), objects);
-				req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl, sessionObjects);
-
+				if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
+					if (sessionObjects == null)
+						sessionObjects = new HashMap<String, List<ObjectValueTO>>();
+					sessionObjects.put(inputControlTO.getLabelId(), objects);
+					req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl, sessionObjects);
+				}
 				boolean isMultiselect = false;
 				if (IApplicationConstants.DATA_TYPE_COLLECTION.equals(inputControlTO.getType())) {
 					isMultiselect = true;

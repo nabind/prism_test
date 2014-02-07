@@ -238,7 +238,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getInputControlDetails(java.lang.String)
 	 */
-	//@Cacheable(cacheName = "reportInputControls")
+	@Cacheable(cacheName = "reportInputControls")
 	public List<InputControlTO> getInputControlDetails(String reportPath) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getInputControlDetails");
 
