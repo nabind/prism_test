@@ -594,24 +594,20 @@ public class InorsController {
 		Long fileSize = null;
 		String clobStr = reportService.getProcessDataGD(processId);
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
-		String[] tokens = clobStr.split("\\|");
+		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
 		List<String> filePaths = new ArrayList<String>();
-		// See : ReportDaoImpl.createJobTracking()
-		if (tokens.length == 5) { // IMPORTANT : Number of parameters needed in this method.
-			String button = tokens[0];
-			String fileName = tokens[1];
-			String groupFile = tokens[2];
-			String school = tokens[3];
-			String students = tokens[4];
+		if (to != null) {
+			String button = to.getButton();
+			String fileName = to.getFileName();
+			String groupFile = to.getGroupFile();
+			String school = to.getSchool();
+			String students = to.getStudents();
 			logger.log(IAppLogger.INFO, "button: " + button);
 			logger.log(IAppLogger.INFO, "fileName: " + fileName);
 			logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
 			logger.log(IAppLogger.INFO, "school: " + school);
 			logger.log(IAppLogger.INFO, "students: " + students);
 
-			GroupDownloadTO to = new GroupDownloadTO();
-			to.setGroupFile(groupFile);
-			to.setStudents(students);
 			filePaths = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
@@ -677,11 +673,12 @@ public class InorsController {
 				logger.log(IAppLogger.INFO, jobLog);
 			}
 		} else {
-			jobLog = "Invalid Clob (Student) Data to Process";
+			jobLog = "Invalid REQUEST_DETAILS Field";
 			logger.log(IAppLogger.WARN, jobLog);
 		}
 
 		paramMap.put("requestFileName", requestFileName);
+		paramMap.put("requestDetails", clobStr);
 		paramMap.put("jobLog", jobLog);
 		paramMap.put("jobStatus", jobStatus);
 		if (fileSize == null) {
@@ -801,7 +798,7 @@ public class InorsController {
 				generatedFileNames[1] = CustomStringUtil.appendString("1b-", fileName, ".IPR");
 			}
 		}
-		logger.log(IAppLogger.INFO, "generatedFileNames=" + generatedFileNames);
+		logger.log(IAppLogger.INFO, "generatedFileNames=" + Utils.convertStrArrayToCommaString(generatedFileNames));
 		logger.log(IAppLogger.INFO, "Exit: fileNameConventionGD()");
 		return generatedFileNames;
 	}

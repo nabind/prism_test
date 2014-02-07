@@ -58,9 +58,9 @@
 																	Test Program: <br />
 																	Corp/Diocese: <br />
 																	School: <br />
-																	Grage: <br />
+																	Grade: <br />
 																	Class: <br /><br /><br />
-																	1 Student(s) have been selected.<br /><br /><br />
+																	${group.querySheetTO.studentCount} Student(s) have been selected.<br /><br /><br />
 																	File Type: <br />
 																	Request Type: 
 																</span>
