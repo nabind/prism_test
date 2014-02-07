@@ -135,13 +135,24 @@
 					<ul class="big-menu blue-gradient collapsible" id="parentMenu">
 						
 						<li class="with-right-arrow" id="select-tooltip-1">
-							<span>Your Children</span>
+							<span><spring:message code="menuName.first.children"/></span>
 								<ul class="big-menu white-gradient collapsible" id="child_list">
 								</ul>
 						</li>
 						
 						<c:if test="${not empty childDataMap}">
 							<li class="menu-second-level" id="select-tooltip-10">
+								<!--  
+								<a class="menu-link" href="#nogo" 
+									action="getChildData"
+									studentBioId="${childDataMap.studentBioId}"
+									studentName="${childDataMap.studentName}"
+									studentGradeName="${childDataMap.studentGradeName}"
+									studentGradeId="${childDataMap.studentGradeId}"
+									id="">
+										<spring:message code="menuName.children.overview"/>${childDataMap.studentName}
+								</a>
+								-->
 								<a href="getChildData.do?studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
 									Overview of ${childDataMap.studentName}
 								</a>
@@ -194,7 +205,9 @@
 													
 												<li class="menu-third-level">
 													<a href="#" 
-													id="">Results</a>
+														id="">
+														<spring:message code="menuName.stud.result"/>
+													</a>
 												</li>	
 										</ul>
 						   </li>
@@ -223,19 +236,24 @@
 						</c:if>
 						
 						<li class="with-right-arrow" id="select-tooltip-10">
-							<span>Explore</span>
-								
+							<span><spring:message code="menuName.first.explore"/></span>
 								<ul class="big-menu white-gradient collapsible">
-									 
 									 <li class="menu-second-level"> 
-									 	<a href="getStandardMatters.do"  id="">Why Standards Matter</a>
+									 	<a class="menu-link" href="#nogo" 
+									 		action="getStandardMatters"  
+									 		id="">
+									 			<spring:message code="menuName.std.matter"/>
+									 	</a>
 									 </li>
 									 
 									 <li class="menu-second-level with-right-arrow black-arrow"> 
-									 	<a href="getBrowseContent.do"  id="">Browse Content </a>
-											 <ul class="big-menu white-gradient collapsible">
+									 	<span><spring:message code="menuName.content.browse"/></span>
+									 		 <ul class="big-menu white-gradient collapsible">
 											 		<li class="menu-third-level">
-											 			<a href="getBrowseContent.do"  id="">- Overview</a>
+											 			<a class="menu-link" href="#nogo" 
+															action="getBrowseContent" id="">
+																- <spring:message code="menuName.content.overview"/>
+														</a>
 											 		</li>
 											 		<li class="menu-third-level">
 												 		<a class="browse-content" href="#nogo" 
@@ -276,11 +294,15 @@
 									 </li>
 									 
 									 <li class="menu-second-level"> 
-									 	<a href="#nogo"  id="">English Guide to the Student Report </a>
+									 	<a href="#nogo"  id="">
+									 		<spring:message code="menuName.second.egsr"/>
+									 	</a>
 									 </li>
 									 
 									 <li class="menu-second-level"> 
-									 	<a href="#nogo"  id="">Spanish Guide to the Student Report  </a>
+									 	<a href="#nogo"  id="">
+									 		<spring:message code="menuName.second.sgsr"/>
+									 	</a>
 									 </li>
 									  
 								</ul>
@@ -295,13 +317,17 @@
 						</c:forEach>
 						
 						<li class="with-right-arrow" id="select-tooltip-2">
-							<span>Manage Account</span>
+							<span><spring:message code="menuName.first.mngac"/></span>
 								<ul class="big-menu white-gradient collapsible">
 									<li class="menu-third-level">
-										<a href="myAccount.do">My Account</a>
+										<a href="myAccount.do">
+											<spring:message code="menuName.second.myac"/>
+										</a>
 									</li>
 									<li class="menu-third-level">
-										<a class="claim-Invitation" href="#nogo"> Enter next Activation Code</a>
+										<a class="claim-Invitation" href="#nogo">
+											<spring:message code="menuName.second.enac"/>
+										</a>
 									</li>
 								</ul>
 						</li>

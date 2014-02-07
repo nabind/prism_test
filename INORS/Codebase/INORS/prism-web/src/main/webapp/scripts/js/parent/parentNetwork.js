@@ -30,6 +30,11 @@ $(document).ready(function() {
 		getGenericPage($(this).attr('action'), $(this));
 	});
 	
+	$('.menu-link').live('click', function() {
+		getGenericPage($(this).attr('action'), $(this));
+	});
+	
+	//TODO - If required
 	$('#backLink').live('click', function() {
 		historyBack();
 	});
@@ -88,6 +93,16 @@ function getDataUrl(action, obj){
 	}else if(action == 'getGradeSubtestInfo'){
 		dataUrl = 'menuId='+$(obj).attr('menuId')
 					+'&menuName='+$(obj).attr('menuName');
+	}else if(action == 'getChildData'){
+		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+		var studentName = (typeof $(obj).attr('studentName') !== 'undefined') ? $(obj).attr('studentName') : 0;
+		var studentGradeName = (typeof $(obj).attr('studentGradeName') !== 'undefined') ? $(obj).attr('studentGradeName') : 0;
+		var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
+		
+		dataUrl = 'studentBioId='+studentBioId
+					+'&studentName='+studentName
+					+'&studentGradeName='+$(obj).attr('studentGradeName')
+					+'&studentGradeId='+studentGradeId;
 	}
 	return dataUrl;
 }
