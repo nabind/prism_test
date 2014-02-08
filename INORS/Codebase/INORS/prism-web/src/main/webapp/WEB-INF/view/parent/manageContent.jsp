@@ -509,7 +509,7 @@
                        		<spring:message code="error.field.required"/>
                        	</div>
 						<p class="button-height inline-label">
-							<fieldset class="fieldset" style="width:700px;min-height:200px;">
+							<fieldset class="fieldset" style="min-height:300px;">
 								<legend class="legend" style="padding-left:5px">
 									<spring:message code="label.content.description"/>
 									<span class="icon-star icon-size1 red"></span>

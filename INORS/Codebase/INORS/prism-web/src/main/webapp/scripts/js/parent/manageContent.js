@@ -520,6 +520,24 @@ function openContentModalToEdit(contentId) {
 					resizable: false,
 					draggable: false,
 					onOpen: setCKEditor('edit'),
+					actions: {
+						'Close' : {
+							color: 'red',
+							click: function(win) { win.closeModal(); }
+						},
+						'Maximize' : {
+							color: 'blue',
+							click: function(win) { 
+								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
+							}
+						},
+						'Restore' : {
+							color: 'green',
+							click: function(win) { 
+								$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+							}
+						}
+					},
 					buttons: {
 						'Cancel': {
 							classes: 'glossy mid-margin-left',
@@ -636,6 +654,24 @@ function openContentModalToAdd() {
 		resizable: false,
 		draggable: false,
 		onOpen: setCKEditor('add'),
+		actions: {
+			'Close' : {
+				color: 'red',
+				click: function(win) { win.closeModal(); }
+			},
+			'Maximize' : {
+				color: 'blue',
+				click: function(win) { 
+					$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
+				}
+			},
+			'Restore' : {
+				color: 'green',
+				click: function(win) { 
+					$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+				}
+			}
+		},
 		buttons: {
 			'Cancel': {
 				classes: 'glossy mid-margin-left',
