@@ -1324,7 +1324,7 @@ public class AdminController {
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ParentController - manageParent");
+			logger.log(IAppLogger.INFO, "Enter: manageParent");
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			if (currentOrg != null) {
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
@@ -1364,7 +1364,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - manageParent");
+			logger.log(IAppLogger.INFO, "Exit: manageParent");
 		}
 		modelAndView.addObject("PDCT_NAME",propertyLookup.get("PDCT_NAME"));
 		return modelAndView;
@@ -1396,7 +1396,7 @@ public class AdminController {
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ParentController - manageStudent");
+			logger.log(IAppLogger.INFO, "Enter: manageStudent");
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			
 			if (currentOrg != null) {
@@ -1447,7 +1447,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - manageStudent");
+			logger.log(IAppLogger.INFO, "Exit: manageStudent");
 		}
 		modelAndView.addObject("PDCT_NAME",propertyLookup.get("PDCT_NAME"));
 		return modelAndView;
@@ -1468,7 +1468,7 @@ public class AdminController {
 
 		List<ParentTO> parentTOs = new ArrayList<ParentTO>();
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ParentController - getParentDetailsOnScroll");
+			logger.log(IAppLogger.INFO, "Enter: getParentDetailsOnScroll");
 			String adminYear = (String) request.getParameter("AdminYear");
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String tenantId = (String) request.getParameter("tenantId");
@@ -1488,7 +1488,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - getParentDetailsOnScroll");
+			logger.log(IAppLogger.INFO, "Exit: getParentDetailsOnScroll");
 		}
 
 		return null;
@@ -1510,7 +1510,7 @@ public class AdminController {
 
 		List<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ParentController - getStudentDetailsOnScroll");
+			logger.log(IAppLogger.INFO, "Enter: getStudentDetailsOnScroll");
 			String adminYear = (String) request.getParameter("AdminYear");
 			String scrollId = (String) request.getParameter("scrollId");
 			String studentBioId = (String) request.getParameter("studentBioId");
@@ -1541,7 +1541,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - getStudentDetailsOnScroll");
+			logger.log(IAppLogger.INFO, "Exit: getStudentDetailsOnScroll");
 		}
 
 		return null;
@@ -1557,7 +1557,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="/searchParentAutoComplete", method=RequestMethod.GET)
 	public String searchParentAutoComplete( HttpServletRequest req, HttpServletResponse res) {
-		logger.log(IAppLogger.INFO, "Enter: ParentController - searchParentAutoComplete");
+		logger.log(IAppLogger.INFO, "Enter: searchParentAutoComplete");
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
 			String parents = parentService.searchParentAutoComplete(req.getParameter("term"), 
@@ -1571,7 +1571,7 @@ public class AdminController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - searchParentAutoComplete");
+			logger.log(IAppLogger.INFO, "Exit: searchParentAutoComplete");
 		}
 		return null;
 	}
@@ -1585,7 +1585,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="/searchParent", method=RequestMethod.GET)
 	public String searchParent(HttpServletRequest req, HttpServletResponse res ) {
-		logger.log(IAppLogger.INFO, "Enter: ParentController - searchParent");
+		logger.log(IAppLogger.INFO, "Enter: searchParent");
 		try {
 			ArrayList<ParentTO> parentsList=null;
 			String adminYear = (String) req.getParameter("AdminYear");
@@ -1622,7 +1622,7 @@ public class AdminController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - searchParent");
+			logger.log(IAppLogger.INFO, "Exit: searchParent");
 		}
 		return null;
 			
@@ -1673,7 +1673,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="/searchStudentAutoComplete", method=RequestMethod.GET)
 	public String searchStudentAutoComplete( HttpServletRequest req, HttpServletResponse res) {
-		logger.log(IAppLogger.INFO, "Enter: ParentController - searchStudentAutoComplete");
+		logger.log(IAppLogger.INFO, "Enter: searchStudentAutoComplete");
 		String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 		
@@ -1689,7 +1689,7 @@ public class AdminController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - searchStudentAutoComplete");
+			logger.log(IAppLogger.INFO, "Exit: searchStudentAutoComplete");
 		}
 		return null;
 	}
@@ -1703,7 +1703,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="/searchStudent", method=RequestMethod.GET)
 	public String searchStudent(HttpServletRequest req, HttpServletResponse res ) {
-		logger.log(IAppLogger.INFO, "Enter: ParentController - searchStudent");
+		logger.log(IAppLogger.INFO, "Enter: searchStudent");
 		String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 		
@@ -1736,7 +1736,7 @@ public class AdminController {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - searchStudent");
+			logger.log(IAppLogger.INFO, "Exit: searchStudent");
 		}
 		return null;
 			
@@ -1765,7 +1765,7 @@ public class AdminController {
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 
 		try {
-				logger.log(IAppLogger.INFO, "Enter: ParentController - redirectToStudent");
+				logger.log(IAppLogger.INFO, "Enter: redirectToStudent");
 				logger.log(IAppLogger.INFO, "STUDENT BIO ID.................."+request.getParameter("studentBioId"));
 				String nodeId = request.getParameter("nodeId");
 				String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
@@ -1825,7 +1825,7 @@ public class AdminController {
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: ParentController - redirectToStudent");
+			logger.log(IAppLogger.INFO, "Exit: redirectToStudent");
 		}
 
 		return modelAndView;
@@ -1841,7 +1841,7 @@ public class AdminController {
 	public ModelAndView updateAssessmentDetails(HttpServletRequest req,
 			HttpServletResponse res) {
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ParentController - updateAssessmentDetails");
+			logger.log(IAppLogger.INFO, "Enter: updateAssessmentDetails");
 
 			String studentBioId= (String) req.getParameter("studentBioId");
 			logger.log(IAppLogger.INFO, "studentBioId................................." + studentBioId);
@@ -1865,7 +1865,7 @@ public class AdminController {
 			}
 			res.getWriter().write("{\"status\":\"" + status + "\"}");
 
-			logger.log(IAppLogger.INFO, "Exit: ParentController - updateAssessmentDetails");
+			logger.log(IAppLogger.INFO, "Exit: updateAssessmentDetails");
 
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error Saving File", e);
@@ -1964,7 +1964,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/downloadStudentFile", method = RequestMethod.GET)
 	public void downloadStudentFile(HttpServletRequest request, HttpServletResponse response) {
-		logger.log(IAppLogger.INFO, "Enter: Controller - downloadStudentFile");
+		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile");
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
@@ -1996,7 +1996,7 @@ public class AdminController {
 			logger.log(IAppLogger.ERROR, "", e);
 			e.printStackTrace();
 		}
-		logger.log(IAppLogger.INFO, "Exit: Controller - downloadStudentFile");
+		logger.log(IAppLogger.INFO, "Exit: downloadStudentFile");
 	}
 	
 	/**
