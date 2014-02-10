@@ -50,9 +50,9 @@ public class ParentServiceImpl implements IParentService {
 		return parentBusiness.getChildrenList( userName,clickedTreeNode, adminYear );
 	}
 	
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam) {
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode) {
 
-		return parentBusiness.getParentList(orgId, adminYear, searchParam);
+		return parentBusiness.getParentList(orgId, adminYear, searchParam, orgMode);
 	
 		
 	}
@@ -66,12 +66,12 @@ public class ParentServiceImpl implements IParentService {
 	
 	
 	
-	public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh){
-		return parentBusiness.searchParent( parentName,  tenantId, adminYear,isExactSeacrh);
+	public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh, String orgMode){
+		return parentBusiness.searchParent( parentName,  tenantId, adminYear,isExactSeacrh,orgMode);
 	}
 	
-	public String searchParentAutoComplete( String parentName, String tenantId, String adminYear ) {
-		return parentBusiness.searchParentAutoComplete( parentName, tenantId, adminYear );
+	public String searchParentAutoComplete( String parentName, String tenantId, String adminYear, String orgMode ) {
+		return parentBusiness.searchParentAutoComplete( parentName, tenantId, adminYear, orgMode );
 	}
 
 	public List<StudentTO> getAssessmentList( String studentBioId ){

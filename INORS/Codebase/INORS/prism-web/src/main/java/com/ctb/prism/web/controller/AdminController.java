@@ -1473,10 +1473,13 @@ public class AdminController {
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String tenantId = (String) request.getParameter("tenantId");
 			String searchParam= request.getParameter("searchParam");
+			//Added for TD 77154
+			String orgMode = (String)request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+			
 			if("Search".equals(searchParam)) searchParam = "";
 			
 			if (tenantId != null ) {
-				parentTOs = parentService.getParentList(tenantId, adminYear, searchParam);
+				parentTOs = parentService.getParentList(tenantId, adminYear, searchParam, orgMode);
 			}
 			
 
@@ -1560,8 +1563,10 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: searchParentAutoComplete");
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
+			//changed for TD 77154
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String parents = parentService.searchParentAutoComplete(req.getParameter("term"), 
-					req.getParameter("selectedOrg"), adminYear);
+					req.getParameter("selectedOrg"), adminYear, orgMode);
 			logger.log(IAppLogger.INFO, "Selected organisation............."+req.getParameter("selectedOrg"));
 			logger.log(IAppLogger.INFO, (String)req.getSession().getAttribute(IApplicationConstants.CURRORG));
 			if ( parents != null ) {
@@ -1592,6 +1597,7 @@ public class AdminController {
 			String parentName=req.getParameter("parentName");
 			String selectedOrg=req.getParameter("selectedOrg");
 			String isExactSeacrh=req.getParameter("isExactSeacrh");
+			String orgMode = (String)req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			
 			if (isExactSeacrh == null || IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSeacrh)){
 				isExactSeacrh=IApplicationConstants.FLAG_N;
@@ -1606,10 +1612,10 @@ public class AdminController {
 			if(("ie7".equals(browser))&& ("Search".equals(parentName))){
 				parentName="";
 				parentsList = parentService.searchParent(parentName, 
-						selectedOrg, adminYear,isExactSeacrh);
+						selectedOrg, adminYear,isExactSeacrh,orgMode);
 			}else{
 				parentsList = parentService.searchParent(parentName, 
-						selectedOrg, adminYear,isExactSeacrh);
+						selectedOrg, adminYear,isExactSeacrh,orgMode);
 			}
 			 
 			if ( parentsList != null ) {
