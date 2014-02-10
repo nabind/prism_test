@@ -82,7 +82,7 @@ public interface IParentDAO {
 	 * @param searchParam
 	 * @return
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam);
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
 
 	/**
 	 * @param orgId
@@ -115,7 +115,7 @@ public interface IParentDAO {
 	 * @param isExactSeacrh
 	 * @return
 	 */
-	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh);
+	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh, String orgMode);
 
 	/**
 	 * Searches and returns the parent(s) with given name (like operator). Performs case insensitive searching.
@@ -127,7 +127,7 @@ public interface IParentDAO {
 	 * @param adminYear
 	 * @return
 	 */
-	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear);
+	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode);
 
 	/**
 	 * Retrieves the list of the children of the logged in parent. This information is displayed in the home page of the parent login.
@@ -370,7 +370,7 @@ public interface IParentDAO {
 	 * @throws BusinessException
 	 * 
 	 */
-	// public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
+	//public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * Get Description of Standard/Objective, Resource, Everyday Activity and About the Test

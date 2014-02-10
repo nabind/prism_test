@@ -64,7 +64,7 @@ public interface IParentService {
 	 * @param searchParam
 	 * @return
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam);
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
 
 	/**
 	 * @param orgId
@@ -82,7 +82,7 @@ public interface IParentService {
 	 * @param isExactSeacrh
 	 * @return
 	 */
-	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh);
+	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh, String orgMode);
 
 	/**
 	 * @param parentName
@@ -90,7 +90,7 @@ public interface IParentService {
 	 * @param adminYear
 	 * @return
 	 */
-	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear);
+	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode);
 
 	/**
 	 * @param studentBioId
