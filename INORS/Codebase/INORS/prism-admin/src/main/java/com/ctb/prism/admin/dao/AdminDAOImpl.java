@@ -156,10 +156,18 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, orgParentId, currOrg, customerId);
 					logger.log(IAppLogger.DEBUG, "Tree for non TASC Users...Currorg=" + currOrg);
 				} else {
-					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgParentId, customerId);
+					if(Integer.parseInt(orgParentId) == 0){
+						lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, orgParentId, customerId);
+					}else{
+						lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ROOT, adminYear, orgParentId, customerId, orgMode);
+					}
 				}
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, nodeId, customerId);
+				if(Integer.parseInt(nodeId) == 0){
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS, adminYear, nodeId, customerId);
+				}else{
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ROOT, adminYear, nodeId, customerId, orgMode);
+				}
 			}
 		}
 		if (lstData.size() > 0) {
