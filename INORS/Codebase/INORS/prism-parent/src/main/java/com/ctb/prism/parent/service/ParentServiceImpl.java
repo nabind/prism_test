@@ -136,8 +136,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#searchStudent(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId) {
-		return parentBusiness.searchStudent(studentName, tenantId, adminyear, customerId);
+	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId, String orgMode) {
+		return parentBusiness.searchStudent(studentName, tenantId, adminyear, customerId, orgMode);
 	}
 
 	/*
@@ -145,8 +145,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#searchStudentAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId) {
-		return parentBusiness.searchStudentAutoComplete(studentName, tenantId, adminyear, customerId);
+	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode) {
+		return parentBusiness.searchStudentAutoComplete(studentName, tenantId, adminyear, customerId, orgMode);
 	}
 
 	/*
