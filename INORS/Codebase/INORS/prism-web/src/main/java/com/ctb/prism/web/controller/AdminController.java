@@ -161,6 +161,7 @@ public class AdminController {
 		List<OrgTO> children= new ArrayList<OrgTO>();
 		String jsonString = null;
 		String nodeid= request.getParameter("tenantId");
+		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		String searchParam= request.getParameter("searchParam");
 		if("Search".equals(searchParam)) searchParam = "";
 		
@@ -177,7 +178,7 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, jsonString);
 					}
 				else{*/
-					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer);
+					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode);
 					if ( children != null )	{
 						jsonString = JsonUtil.convertToJsonAdmin(children);
 						/*}*/
@@ -255,11 +256,13 @@ public class AdminController {
 			String adminYear = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+
 			/*List<OrgTO> orgs = adminService.searchOrganization(req
 					.getParameter("searchString"), (String) req.getSession()
 					.getAttribute(IApplicationConstants.CURRORG));*/
 			List<OrgTO> orgs = adminService.searchOrganization(req.getParameter("searchString")
-					, req.getParameter("selectedOrg"), adminYear,currCustomer);
+					, req.getParameter("selectedOrg"), adminYear,currCustomer,orgMode);
 			if (orgs != null) {
 				String jsonString = JsonUtil.convertToJsonAdmin(orgs);
 
@@ -293,11 +296,13 @@ public class AdminController {
 			String adminYear = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+
 			/*String orgs = adminService.searchOrgAutoComplete(req
 					.getParameter("term"), (String) req.getSession()
 					.getAttribute(IApplicationConstants.CURRORG));*/
 			String orgs = adminService.searchOrgAutoComplete(req.getParameter("term")
-					, req.getParameter("selectedOrg"), adminYear, currCustomer);
+					, req.getParameter("selectedOrg"), adminYear, currCustomer,orgMode);
 			if (orgs != null) {
 				res.setContentType("application/json");
 				res.getWriter().write(orgs);
@@ -476,6 +481,7 @@ public class AdminController {
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
+		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		
 		//List<ObjectValueTO> adminList = null;
 		try {
@@ -500,11 +506,11 @@ public class AdminController {
 			logger.log(IAppLogger.INFO, "Node ID: " + nodeId);
 			if (nodeId != null) {
 				if (currentOrg.equals(nodeId)) {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam, customerid);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam, customerid, orgMode);
 				} else if (nodeId.indexOf("_") > 0) {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam, customerid);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam, customerid, orgMode);
 				} else {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam, customerid);
+					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam, customerid, orgMode);
 				}
 			}
 			logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
@@ -838,7 +844,8 @@ public class AdminController {
 			}else{
 				isExactSearch=IApplicationConstants.FLAG_Y;
 			}
-			
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+
 			
 				
 		    String purpose = (String) req.getParameter("purpose");
@@ -862,7 +869,7 @@ public class AdminController {
 				}
 			}else {
 				List<UserTO> users = adminService.searchUser(req.getParameter("username"), 
-					req.getParameter("selectedOrg"), adminYear,isExactSearch);
+					req.getParameter("selectedOrg"), adminYear,isExactSearch,orgMode);
 				
 				if ( users != null ) {
 					String userJsonString = JsonUtil.convertToJsonAdmin(users);
@@ -897,6 +904,8 @@ public class AdminController {
 			String term = (String) req.getParameter("term");
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			String purpose = (String) req.getParameter("purpose");
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+
 			
 			if(IApplicationConstants.PURPOSE.equals(purpose)){
 				selectedOrg = (String) req.getParameter("eduCenterId");
@@ -907,6 +916,7 @@ public class AdminController {
 			paramMap.put("term",term);
 			paramMap.put("selectedOrg",selectedOrg);
 			paramMap.put("purpose",purpose);
+			paramMap.put("orgMode",orgMode);
 			
 			String users = adminService.searchUserAutoComplete(paramMap);
 			logger.log(IAppLogger.INFO, "CURRUSER.............");

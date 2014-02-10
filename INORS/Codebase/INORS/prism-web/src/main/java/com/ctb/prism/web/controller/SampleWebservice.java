@@ -251,7 +251,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 										@WebParam(name = "isExactSearch") String isExactSearch) {
 		ArrayList <UserTO> userList = null;
 		try {
-			userList = adminService.searchUser(userName, parentId, adminYear, isExactSearch);
+			userList = adminService.searchUser(userName, parentId, adminYear, isExactSearch,"");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

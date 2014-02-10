@@ -177,11 +177,13 @@ public class LoginController {
 	@RequestMapping(value = "/userlogin", method = RequestMethod.GET)
 	public ModelAndView userlogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: userlogin()");
+		logger.log(IAppLogger.INFO, ""+propertyLookup.get("theme.name"));
 		String mess_login_error = (String) request.getParameter("login_error");
 		String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		String message = null;
 		Map<String, Object> paramMapParent = new HashMap<String, Object>();
 		Map<String, Object> paramMapTeacher = new HashMap<String, Object>();
+		
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";

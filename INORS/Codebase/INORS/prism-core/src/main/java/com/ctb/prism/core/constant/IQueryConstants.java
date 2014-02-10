@@ -100,11 +100,13 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			       " (SELECT NVL(COUNT(1),0) FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID  = O.ORG_NODEID  AND CUSTOMERID = ?) CHILD_ORG_NO",
 			       " FROM ORG_NODE_DIM O",
 			       " WHERE  ORG_NODEID > ?",
+			       " AND O.ORG_MODE = ?",
                    " AND O.CUSTOMERID = ? ",
                    " CONNECT BY NOCYCLE PRIOR Org_Nodeid = Parent_Org_Nodeid START WITH Org_Nodeid = ? ",
 	             "GROUP BY ORG_NODEID ,",
 	                     " ORG_NODE_NAME ,",
-	                     " PARENT_ORG_NODEID", 
+	                     " PARENT_ORG_NODEID,", 
+	                     " ORG_MODE", 
 	             " ORDER BY ORG_NODEID) a",
 			     "  WHERE ROWNUM <= 15");
 		       
@@ -115,10 +117,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" (Select Nvl(Count(1), 0) From Org_Node_Dim Where Parent_Org_Nodeid = o.Org_Nodeid ",
 			" And Customerid = ?) Child_Org_No",
 			" From Org_Node_Dim  o ",
-			" Where o.Org_Nodeid <> ? And o.Org_Nodeid > ? And o.Customerid = ? ",
+			" Where o.Org_Nodeid <> ? And o.Org_Nodeid > ? AND o.ORG_MODE = ? And o.Customerid = ? ",
 			" Connect By Nocycle Prior Org_Nodeid = Parent_Org_Nodeid ",
 			" Start With Org_Nodeid = ? ",
-			" Group By Org_Nodeid, Org_Node_Name, Parent_Org_Nodeid " ,
+			" Group By Org_Nodeid, Org_Node_Name, Parent_Org_Nodeid, ORG_MODE " ,
 			" Order By Org_Nodeid) a ",
 			" Where Rownum <= 15 "); 
 	
@@ -128,9 +130,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" FROM org_node_dim O ",
 			"  Where O.org_nodeid  <>? ",
 			" AND O.org_nodeid  > ? ",
+			" AND O.ORG_MODE = ?",
 			" AND UPPER(O.org_node_name ) LIKE UPPER(?)",
 			" And o.customerid = ?",
-			" GROUP BY O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid ",
+			" GROUP BY O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid, O.ORG_MODE ",
 			" ORDER BY O.org_nodeid  ) a ",
 			"  WHERE  ROWNUM <= 15"); 
 	

@@ -41,7 +41,7 @@ public interface IAdminBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid) throws Exception;
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid, String orgMode) throws Exception;
 
 	/**
 	 * @param paramMap
@@ -99,7 +99,7 @@ public interface IAdminBusiness {
 	 * @param isExactSearch
 	 * @return
 	 */
-	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch);
+	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode);
 
 	/**
 	 * @param paramMap
@@ -122,7 +122,7 @@ public interface IAdminBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId);
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode);
 
 	/**
 	 * @param tenantId
@@ -139,7 +139,7 @@ public interface IAdminBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId);
+	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @param orgName
@@ -148,7 +148,7 @@ public interface IAdminBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId);
+	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @return

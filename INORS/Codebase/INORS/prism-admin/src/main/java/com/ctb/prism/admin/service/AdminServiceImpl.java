@@ -51,8 +51,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid) throws Exception {
-		return adminBusiness.getUserDetailsOnClick(nodeid, currorg, adminYear, searchParam, customerid);
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid, String orgMode) throws Exception {
+		return adminBusiness.getUserDetailsOnClick(nodeid, currorg, adminYear, searchParam, customerid, orgMode);
 	}
 
 	/*
@@ -109,8 +109,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch) {
-		return adminBusiness.searchUser(userName, parentId, adminYear, isExactSearch);
+	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
+		return adminBusiness.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
 	}
 
 	/*
@@ -145,8 +145,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getOrganizationChildren(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId) {
-		return adminBusiness.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId);
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode) {
+		return adminBusiness.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode);
 	}
 
 	/*
@@ -163,8 +163,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchOrganization(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId) {
-		return adminBusiness.searchOrganization(orgName, tenantId, adminYear, customerId);
+	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
+		return adminBusiness.searchOrganization(orgName, tenantId, adminYear, customerId, orgMode);
 	}
 
 	/*
@@ -172,8 +172,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchOrgAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId) {
-		return adminBusiness.searchOrgAutoComplete(orgName, tenantId, adminYear, customerId);
+	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
+		return adminBusiness.searchOrgAutoComplete(orgName, tenantId, adminYear, customerId, orgMode);
 	}
 
 	/*
