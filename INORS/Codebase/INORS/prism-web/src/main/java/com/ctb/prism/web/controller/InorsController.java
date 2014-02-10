@@ -157,22 +157,23 @@ public class InorsController {
 	@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
 	public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
-		String Id = (String) request.getParameter("jobId");
+		// String Id = (String) request.getParameter("jobId");
 		String filePath = (String) request.getParameter("filePath");
-		String fileName = (String) request.getParameter("fileName");
-		String extensionType = "";
+		// String fileName = (String) request.getParameter("fileName");
+		/*String extensionType = "";
 		if (-1 == fileName.lastIndexOf(".")) {
 			extensionType = ".pdf";
 		} else {
 			extensionType = fileName.substring(fileName.lastIndexOf(".") + 1);
 		}
-		File file = new File(filePath);
+		File file = new File(filePath);*/
 		try {
-			byte[] data = FileCopyUtils.copyToByteArray(file);
-			response.setContentType("application/" + extensionType);
-			response.setContentLength(data.length);
-			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-			FileCopyUtils.copy(data, response.getOutputStream());
+			// byte[] data = FileCopyUtils.copyToByteArray(file);
+			// response.setContentType("application/" + extensionType);
+			// response.setContentLength(data.length);
+			// response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+			// FileCopyUtils.copy(data, response.getOutputStream());
+			FileUtil.browserDownload(response, filePath);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
 			e.printStackTrace();
@@ -627,19 +628,22 @@ public class InorsController {
 						FileUtil.createFile(pdfFileName, input);
 
 						// Now read the pdf file from disk
-						byte[] data = FileCopyUtils.copyToByteArray(new File(pdfFileName));
+						// byte[] data = FileCopyUtils.copyToByteArray(new File(pdfFileName));
 
 						// Zip the pdf file
-						byte[] zipData = FileUtil.zipBytes(zipFileName, data);
+						// byte[] zipData = FileUtil.zipBytes(zipFileName, data);
 
 						// Create Zip file in disk
-						FileUtil.createFile(zipFileName, zipData);
+						// FileUtil.createFile(zipFileName, zipData);
+						List<String> list = new ArrayList<String>();
+						list.add(pdfFileName);
+						FileUtil.createZipFile(zipFileName, list);
 
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 
 						requestFileName = zipFileName;
-						fileSize = new Long(zipData.length);
+						fileSize = new Long(input.length);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
 					} else if ("SP".equals(button)) {

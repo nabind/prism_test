@@ -290,4 +290,17 @@ public final class Utils {
 		return object;
 	}
 
+	/**
+	 * Checks whether an integer is odd or even.
+	 * 
+	 * @param n
+	 * @return
+	 */
+	public static boolean isOdd(int n) {
+		if (n % 2 == 0)
+			return false;
+		else
+			return true;
+	}
+
 }

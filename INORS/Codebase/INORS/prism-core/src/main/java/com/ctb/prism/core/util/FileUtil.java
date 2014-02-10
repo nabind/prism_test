@@ -34,6 +34,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfReader;
 
@@ -51,6 +52,22 @@ import com.lowagie.text.pdf.PdfReader;
  */
 public class FileUtil {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(FileUtil.class.getName());
+
+	/**
+	 * Method to download a file through client browser.
+	 * 
+	 * @param response
+	 * @param filePath
+	 */
+	public static void browserDownload(HttpServletResponse response, String filePath) {
+		try {
+			browserDownload(response, getBytes(filePath), getFileNameFromFilePath(filePath));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Method to download a file through client browser.
@@ -74,7 +91,7 @@ public class FileUtil {
 	public static void browserDownload(HttpServletResponse response, byte[] data, String fileName, String contentType) {
 		response.setContentType(contentType);
 		response.setContentLength(data.length);
-		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 		try {
 			FileCopyUtils.copy(data, response.getOutputStream());
 			logger.log(IAppLogger.INFO, fileName + "[" + data.length + "] written to output stream");
@@ -236,6 +253,9 @@ public class FileUtil {
 					n = reader.getNumberOfPages();
 					for (int page = 0; page < n;) {
 						copy.addPage(copy.getImportedPage(reader, ++page));
+					}
+					if (Utils.isOdd(n)) {
+						copy.addPage(new Rectangle(8.27F, 11.69F), 0);
 					}
 					copy.freeReader(reader);
 					reader.close();
