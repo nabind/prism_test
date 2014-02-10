@@ -22,7 +22,7 @@ public interface IParentDAO {
 	 * 
 	 * @return
 	 */
-	public List getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions();
 
 	/**
 	 * Check provided user availability.
@@ -85,13 +85,10 @@ public interface IParentDAO {
 	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
 
 	/**
-	 * @param orgId
-	 * @param adminYear
-	 * @param searchParam
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> getStudentList(String orgId, String adminYear, String searchParam, long customerId);
+	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap);
 
 	/**
 	 * Retrieves the list of the children of the logged in parent. This information is displayed in the home page of the parent login.
@@ -148,7 +145,7 @@ public interface IParentDAO {
 	 * @param customerId
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId);
+	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
 	 * Searches and returns the students(s) with given name (like operator). Performs case insensitive searching.
@@ -159,15 +156,13 @@ public interface IParentDAO {
 	 * @param customerId
 	 * @return
 	 */
-	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId);
+	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
-	 * @param studentBioId
-	 * @param tenantId
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudentOnRedirect(String studentBioId, String tenantId, long customerId);
+	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap);
 
 	/**
 	 * @param studentBioId
@@ -370,7 +365,7 @@ public interface IParentDAO {
 	 * @throws BusinessException
 	 * 
 	 */
-	//public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
+	// public ManageContentTO modifyStandardForEdit(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * Get Description of Standard/Objective, Resource, Everyday Activity and About the Test

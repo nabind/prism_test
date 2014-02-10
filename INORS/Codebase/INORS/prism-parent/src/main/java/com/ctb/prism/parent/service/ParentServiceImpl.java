@@ -17,188 +17,298 @@ import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
 
-
 @Service("parentService")
 public class ParentServiceImpl implements IParentService {
-	
+
 	@Autowired
 	private IParentBusiness parentBusiness;
 
-	public List getSecretQuestions() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getSecretQuestions()
+	 */
+	public List<QuestionTO> getSecretQuestions() {
 		return parentBusiness.getSecretQuestions();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#checkUserAvailability(java.lang.String)
+	 */
 	public boolean checkUserAvailability(String username) {
 		return parentBusiness.checkUserAvailability(username);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#checkActiveUserAvailability(java.lang.String)
+	 */
 	public boolean checkActiveUserAvailability(String username) {
 		return parentBusiness.checkActiveUserAvailability(username);
 	}
-	public boolean isRoleAlreadyTagged(String roleId, String userName){
-		return parentBusiness.isRoleAlreadyTagged(roleId,userName);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#isRoleAlreadyTagged(java.lang.String, java.lang.String)
+	 */
+	public boolean isRoleAlreadyTagged(String roleId, String userName) {
+		return parentBusiness.isRoleAlreadyTagged(roleId, userName);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#validateIC(java.lang.String)
+	 */
 	public ParentTO validateIC(String invitationCode) {
 		return parentBusiness.validateIC(invitationCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
+	 */
 	public boolean registerUser(ParentTO parentTO) throws BusinessException {
 		return parentBusiness.registerUser(parentTO);
 	}
-	
-	public List<StudentTO> getChildrenList( String userName,String clickedTreeNode, String adminYear ) {
-		return parentBusiness.getChildrenList( userName,clickedTreeNode, adminYear );
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getChildrenList(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear) {
+		return parentBusiness.getChildrenList(userName, clickedTreeNode, adminYear);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getParentList(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode) {
-
 		return parentBusiness.getParentList(orgId, adminYear, searchParam, orgMode);
-	
-		
-	}
-	
-	public ArrayList<StudentTO> getStudentList(String orgId, String adminYear, String searchParam, long customerId) {
-
-		return parentBusiness.getStudentList(orgId, adminYear, searchParam, customerId);
-	
-		
-	}
-	
-	
-	
-	public ArrayList <ParentTO> searchParent(String parentName, String tenantId, String adminYear,String isExactSeacrh, String orgMode){
-		return parentBusiness.searchParent( parentName,  tenantId, adminYear,isExactSeacrh,orgMode);
-	}
-	
-	public String searchParentAutoComplete( String parentName, String tenantId, String adminYear, String orgMode ) {
-		return parentBusiness.searchParentAutoComplete( parentName, tenantId, adminYear, orgMode );
 	}
 
-	public List<StudentTO> getAssessmentList( String studentBioId ){
-		return parentBusiness.getAssessmentList( studentBioId );
-	}
-	
-	public ArrayList <StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId){
-		return parentBusiness.searchStudent( studentName,  tenantId, adminyear, customerId);
-	}
-	
-	public String searchStudentAutoComplete( String studentName, String tenantId, String adminyear,long customerId ) {
-		return parentBusiness.searchStudentAutoComplete( studentName, tenantId, adminyear, customerId );
-	}
-	
-	public ArrayList <StudentTO> searchStudentOnRedirect(String studentBioId, String tenantId, long customerId)
-	{
-		return parentBusiness.searchStudentOnRedirect(studentBioId,tenantId,customerId);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getStudentList(Map<String, Object> paramMap)
+	 */
+	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
+		return parentBusiness.getStudentList(paramMap);
 	}
 
-	public boolean updateAssessmentDetails(String studentBioId, String administration, String invitationcode,
-			String icExpirationStatus, String totalAvailableClaim,String expirationDate) throws Exception {
-
-		return parentBusiness.updateAssessmentDetails(studentBioId, administration, invitationcode,
-				icExpirationStatus, totalAvailableClaim, expirationDate);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#searchParent(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh, String orgMode) {
+		return parentBusiness.searchParent(parentName, tenantId, adminYear, isExactSeacrh, orgMode);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#searchParentAutoComplete(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode) {
+		return parentBusiness.searchParentAutoComplete(parentName, tenantId, adminYear, orgMode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getAssessmentList(java.lang.String)
+	 */
+	public List<StudentTO> getAssessmentList(String studentBioId) {
+		return parentBusiness.getAssessmentList(studentBioId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#searchStudent(java.lang.String, java.lang.String, java.lang.String, long)
+	 */
+	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId) {
+		return parentBusiness.searchStudent(studentName, tenantId, adminyear, customerId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#searchStudentAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
+	 */
+	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId) {
+		return parentBusiness.searchStudentAutoComplete(studentName, tenantId, adminyear, customerId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#searchStudentOnRedirect(java.util.Map)
+	 */
+	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap) {
+		return parentBusiness.searchStudentOnRedirect(paramMap);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#updateAssessmentDetails(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public boolean updateAssessmentDetails(String studentBioId, String administration, String invitationcode, String icExpirationStatus, String totalAvailableClaim, String expirationDate)
+			throws Exception {
+		return parentBusiness.updateAssessmentDetails(studentBioId, administration, invitationcode, icExpirationStatus, totalAvailableClaim, expirationDate);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#firstTimeUserLogin(com.ctb.prism.parent.transferobject.ParentTO)
+	 */
 	public boolean firstTimeUserLogin(ParentTO parentTO) throws BusinessException {
 		return parentBusiness.firstTimeUserLogin(parentTO);
 	}
 
-	//Added by Ravi for Manage Profile
-	public ParentTO manageParentAccountDetails(String username){
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#manageParentAccountDetails(java.lang.String)
+	 */
+	public ParentTO manageParentAccountDetails(String username) {
 		return parentBusiness.manageParentAccountDetails(username);
 	}
-	//Added by Ravi for Manage Profile
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
+	 */
 	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException {
 		return parentBusiness.updateUserProfile(parentTO);
 	}
-	//Added by Ravi for Claim New Invitation
-	public boolean addInvitationToAccount(String userName, String invitationCode){
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#addInvitationToAccount(java.lang.String, java.lang.String)
+	 */
+	public boolean addInvitationToAccount(String userName, String invitationCode) {
 		return parentBusiness.addInvitationToAccount(userName, invitationCode);
 	}
-	
-	public String getSchoolOrgId( String studentBioId ) {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getSchoolOrgId(java.lang.String)
+	 */
+	public String getSchoolOrgId(String studentBioId) {
 		return parentBusiness.getSchoolOrgId(studentBioId);
 	}
-	
-	public ArrayList<QuestionTO> getSecurityQuestionForUser( String username ) {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getSecurityQuestionForUser(java.lang.String)
+	 */
+	public ArrayList<QuestionTO> getSecurityQuestionForUser(String username) {
 		return parentBusiness.getSecurityQuestionForUser(username);
 	}
-	
-	public boolean validateAnswers(String userName,String ans1, String ans2,String ans3,String questionId1,String questionId2,String questionId3){
-		return parentBusiness.validateAnswers(userName,ans1, ans2,ans3,questionId1,questionId2,questionId3);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#validateAnswers(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3) {
+		return parentBusiness.validateAnswers(userName, ans1, ans2, ans3, questionId1, questionId2, questionId3);
 	}
-	public List<UserTO> getUserNamesByEmail(String emailId)
-	{
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getUserNamesByEmail(java.lang.String)
+	 */
+	public List<UserTO> getUserNamesByEmail(String emailId) {
 		return parentBusiness.getUserNamesByEmail(emailId);
 	}
-	
-	@Transactional (propagation = Propagation.REQUIRES_NEW)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#regenerateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean regenerateActivationCode(StudentTO student) throws Exception {
 		return parentBusiness.regenerateActivationCode(student);
 	}
 
-	//Manage Content - Parent Network - Start	
-	//Populate filters to search content
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.service.IParentService#getManageContentFilter(java.util.Map)
+	 */
 	public Map<String, Object> getManageContentFilter(Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getManageContentFilter(paramMap);
 	}
-	
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String,Object> paramMap) throws BusinessException{
+
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.populateGrade(paramMap);
 	}
-	
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String,Object> paramMap) throws BusinessException{
+
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.populateSubtest(paramMap);
 	}
-	
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String,Object> paramMap) throws BusinessException{
+
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.populateObjective(paramMap);
 	}
-	
-	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String,Object> paramMap) throws BusinessException{
+
+	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.addNewContent(paramMap);
 	}
-	
-	public List<ManageContentTO> loadManageContent(Map<String,Object> paramMap) throws BusinessException {
+
+	public List<ManageContentTO> loadManageContent(Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.loadManageContent(paramMap);
 	}
-	
-	public ManageContentTO getContentForEdit(final Map<String,Object> paramMap) throws BusinessException {
+
+	public ManageContentTO getContentForEdit(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getContentForEdit(paramMap);
 	}
-	
-	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String,Object> paramMap) throws BusinessException {
+
+	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.updateContent(paramMap);
 	}
-	
-	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String,Object> paramMap) throws BusinessException {
+
+	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.deleteContent(paramMap);
 	}
-	
-	/*public ManageContentTO modifyStandardForEdit(final Map<String,Object> paramMap) throws BusinessException {
-		return parentBusiness.modifyStandardForEdit(paramMap);
-	}*/
-	
-	public ManageContentTO modifyGenericForEdit(final Map<String,Object> paramMap) throws BusinessException {
+
+	public ManageContentTO modifyGenericForEdit(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.modifyGenericForEdit(paramMap);
 	}
 
-	//Manage Content - Parent Network - End
-	
-	//Parent Network - Start
-	public Map<String,Object> getChildData(final Map<String,Object> paramMap) throws BusinessException{
+	public Map<String, Object> getChildData(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getChildData(paramMap);
 	}
-	
-	public List<ManageContentTO>  getArticleTypeDetails(final Map<String,Object> paramMap) throws BusinessException{
+
+	public List<ManageContentTO> getArticleTypeDetails(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getArticleTypeDetails(paramMap);
 	}
-	
-	public ManageContentTO  getArticleDescription(final Map<String,Object> paramMap) throws BusinessException{
+
+	public ManageContentTO getArticleDescription(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getArticleDescription(paramMap);
 	}
-	
-	public List<ManageContentTO>  getGradeSubtestInfo(final Map<String,Object> paramMap) throws BusinessException{
+
+	public List<ManageContentTO> getGradeSubtestInfo(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.getGradeSubtestInfo(paramMap);
 	}
-	
-	//Parent Network - End
+
 }

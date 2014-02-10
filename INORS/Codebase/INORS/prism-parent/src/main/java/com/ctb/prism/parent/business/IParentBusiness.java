@@ -16,7 +16,7 @@ public interface IParentBusiness {
 	/**
 	 * @return
 	 */
-	public List getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions();
 
 	/**
 	 * @param username
@@ -57,18 +57,13 @@ public interface IParentBusiness {
 	 * @param orgMode
 	 * @return
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear,
-			String searchParam, String orgMode);
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
 
 	/**
-	 * @param orgId
-	 * @param adminYear
-	 * @param searchParam
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> getStudentList(String orgId, String adminYear,
-			String searchParam, long customerId);
+	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap);
 
 	/**
 	 * @param userName
@@ -76,8 +71,7 @@ public interface IParentBusiness {
 	 * @param adminYear
 	 * @return
 	 */
-	public List<StudentTO> getChildrenList(String userName,
-			String clickedTreeNode, String adminYear);
+	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear);
 
 	/**
 	 * @param parentName
@@ -87,8 +81,7 @@ public interface IParentBusiness {
 	 * @param orgMode
 	 * @return
 	 */
-	public ArrayList<ParentTO> searchParent(String parentName, String tenantId,
-			String adminYear, String isExactSeacrh, String orgMode);
+	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh, String orgMode);
 
 	/**
 	 * @param parentName
@@ -97,8 +90,7 @@ public interface IParentBusiness {
 	 * @param orgMode
 	 * @return
 	 */
-	public String searchParentAutoComplete(String parentName, String tenantId,
-			String adminYear, String orgMode);
+	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode);
 
 	/**
 	 * @param studentBioId
@@ -113,8 +105,7 @@ public interface IParentBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudent(String studentName,
-			String tenantId, String adminyear, long customerId);
+	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
 	 * @param studentName
@@ -123,17 +114,13 @@ public interface IParentBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public String searchStudentAutoComplete(String studentName,
-			String tenantId, String adminyear, long customerId);
+	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
-	 * @param studentBioId
-	 * @param tenantId
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudentOnRedirect(String studentBioId,
-			String tenantId, long customerId);
+	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap);
 
 	/**
 	 * @param studentBioId
@@ -145,18 +132,15 @@ public interface IParentBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean updateAssessmentDetails(String studentBioId,
-			String administration, String invitationcode,
-			String icExpirationStatus, String totalAvailableClaim,
-			String expirationDate) throws Exception;
+	public boolean updateAssessmentDetails(String studentBioId, String administration, String invitationcode, String icExpirationStatus, String totalAvailableClaim, String expirationDate)
+			throws Exception;
 
 	/**
 	 * @param parentTO
 	 * @return
 	 * @throws BusinessException
 	 */
-	public boolean firstTimeUserLogin(ParentTO parentTO)
-			throws BusinessException;
+	public boolean firstTimeUserLogin(ParentTO parentTO) throws BusinessException;
 
 	/**
 	 * @param username
@@ -169,8 +153,7 @@ public interface IParentBusiness {
 	 * @return
 	 * @throws BusinessException
 	 */
-	public boolean updateUserProfile(ParentTO parentTO)
-			throws BusinessException;
+	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException;
 
 	/**
 	 * @param userName
@@ -201,9 +184,7 @@ public interface IParentBusiness {
 	 * @param questionId3
 	 * @return
 	 */
-	public boolean validateAnswers(String userName, String ans1, String ans2,
-			String ans3, String questionId1, String questionId2,
-			String questionId3);
+	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3);
 
 	/**
 	 * @param emailId
@@ -225,111 +206,97 @@ public interface IParentBusiness {
 	 * @return
 	 * @throws BusinessException
 	 */
-	public Map<String, Object> getManageContentFilter(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public Map<String, Object> getManageContentFilter(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateGrade(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSubtest(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<ManageContentTO> loadManageContent(Map<String, Object> paramMap)
-			throws BusinessException;
+	public List<ManageContentTO> loadManageContent(Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public ManageContentTO getContentForEdit(final Map<String, Object> paramMap)
-			throws BusinessException;
+	public ManageContentTO getContentForEdit(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public com.ctb.prism.core.transferobject.ObjectValueTO updateContent(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public com.ctb.prism.core.transferobject.ObjectValueTO deleteContent(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public ManageContentTO modifyGenericForEdit(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public ManageContentTO modifyGenericForEdit(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public Map<String, Object> getChildData(final Map<String, Object> paramMap)
-			throws BusinessException;
+	public Map<String, Object> getChildData(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<ManageContentTO> getArticleTypeDetails(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public List<ManageContentTO> getArticleTypeDetails(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public ManageContentTO getArticleDescription(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public ManageContentTO getArticleDescription(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws BusinessException
 	 */
-	public List<ManageContentTO> getGradeSubtestInfo(
-			final Map<String, Object> paramMap) throws BusinessException;
+	public List<ManageContentTO> getGradeSubtestInfo(final Map<String, Object> paramMap) throws BusinessException;
 
 }

@@ -16,7 +16,7 @@ public interface IParentService {
 	/**
 	 * @return
 	 */
-	public List getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions();
 
 	/**
 	 * @param username
@@ -67,13 +67,10 @@ public interface IParentService {
 	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
 
 	/**
-	 * @param orgId
-	 * @param adminYear
-	 * @param searchParam
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> getStudentList(String orgId, String adminYear, String searchParam, long customerId);
+	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap);
 
 	/**
 	 * @param parentName
@@ -105,7 +102,7 @@ public interface IParentService {
 	 * @param customerId
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId);
+	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
 	 * @param studentName
@@ -114,15 +111,13 @@ public interface IParentService {
 	 * @param customerId
 	 * @return
 	 */
-	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId);
+	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode);
 
 	/**
-	 * @param studentBioId
-	 * @param tenantId
-	 * @param customerId
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<StudentTO> searchStudentOnRedirect(String studentBioId, String tenantId, long customerId);
+	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap);
 
 	/**
 	 * @param parentTO

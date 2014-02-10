@@ -1499,8 +1499,10 @@ public class AdminController {
 	}	
 	
 	
+	
 	/**
-	 * Fetching all users for selected organization
+	 * Fetching all users for selected organization.
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -1508,8 +1510,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "/getStudentDetailsOnScroll", method = RequestMethod.GET)
 	public @ResponseBody
-	String getStudentDetailsOnScroll(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	String getStudentDetailsOnScroll(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		List<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		try {
@@ -1518,24 +1519,37 @@ public class AdminController {
 			String scrollId = (String) request.getParameter("scrollId");
 			String studentBioId = (String) request.getParameter("studentBioId");
 			String isRedirectedTree = (String) request.getParameter("isRedirectedTree");
-			String searchParam= request.getParameter("searchParam");
+			String searchParam = request.getParameter("searchParam");
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
-			
-			if("Search".equals(searchParam)) searchParam = "";
-			if (scrollId != null && scrollId.trim().length()>0){
-				if(("Yes".equals(isRedirectedTree)) && ((studentBioId != null) && (studentBioId.trim().length()>0)) ){
-					if (scrollId.lastIndexOf("|") > 0){
-						scrollId=scrollId.substring((scrollId.lastIndexOf("|") + 1),scrollId.length());
+			long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+
+			if ("Search".equals(searchParam))
+				searchParam = "";
+			if (scrollId != null && scrollId.trim().length() > 0) {
+				String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+				if (("Yes".equals(isRedirectedTree)) && ((studentBioId != null) && (studentBioId.trim().length() > 0))) {
+					if (scrollId.lastIndexOf("|") > 0) {
+						scrollId = scrollId.substring((scrollId.lastIndexOf("|") + 1), scrollId.length());
 					}
-				studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), 
-						scrollId, Long.valueOf(customer).longValue());
-				//(String)request.getSession().getAttribute(IApplicationConstants.CURRORG)
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("studentBioId", request.getParameter("studentBioId"));
+					paramMap.put("scrollId", scrollId);
+					paramMap.put("customer", customer);
+					paramMap.put("orgMode", orgMode);
+					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.valueOf(customer).longValue());
+					studentTOs = parentService.searchStudentOnRedirect(paramMap);
+					// (String)request.getSession().getAttribute(IApplicationConstants.CURRORG)
+				} else {
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("scrollId", scrollId);
+					paramMap.put("adminYear", adminYear);
+					paramMap.put("searchParam", searchParam);
+					paramMap.put("currCustomer", currCustomer);
+					paramMap.put("orgMode", orgMode);
+					// studentTOs = parentService.getStudentList(scrollId, adminYear, searchParam, currCustomer);
+					studentTOs = parentService.getStudentList(paramMap);
 				}
-				else {
-					studentTOs = parentService.getStudentList(scrollId, adminYear, searchParam, currCustomer);
-				}
-				}
+			}
 			String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
 			logger.log(IAppLogger.INFO, "LOADING STUDENT DETAILS ..................");
 			logger.log(IAppLogger.INFO, studentJsonString);
@@ -1685,8 +1699,9 @@ public class AdminController {
 		
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String students = parentService.searchStudentAutoComplete(req.getParameter("term"), 
-					req.getParameter("selectedOrg"), adminYear,  currCustomer);
+					req.getParameter("selectedOrg"), adminYear,  currCustomer, orgMode);
 			logger.log(IAppLogger.INFO, "searchStudentAutoComplete.....................................");
 			if ( students != null ) {
 				res.setContentType("application/json");
@@ -1722,14 +1737,15 @@ public class AdminController {
 			}
 			String browser = req.getParameter("browser");
 			String selectedOrg = req.getParameter("selectedOrg");
+			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			if(("ie7".equals(browser)) && ("Search".equals(studentName))) {
 				studentName = "";
 				studentsList = parentService.searchStudent(studentName, 
-						selectedOrg, adminYear,currCustomer);				
+						selectedOrg, adminYear,currCustomer, orgMode);				
 			}
 			else {
 				studentsList = parentService.searchStudent(studentName, 
-						selectedOrg, adminYear, currCustomer);				
+						selectedOrg, adminYear, currCustomer, orgMode);				
 			}
 
 			if ( studentsList != null ) {
@@ -1757,77 +1773,78 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/redirectToStudent", method = RequestMethod.GET)
-	public ModelAndView redirectToStudent(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ModelAndView redirectToStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		List<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		ModelAndView modelAndView = new ModelAndView("parent/manageStudent");
 		String hierarchialOrgIds = null;
 		String adminYear = (String) request.getParameter("AdminYear");
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList =null;	
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = null;
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 
 		try {
-				logger.log(IAppLogger.INFO, "Enter: redirectToStudent");
-				logger.log(IAppLogger.INFO, "STUDENT BIO ID.................."+request.getParameter("studentBioId"));
-				String nodeId = request.getParameter("nodeId");
-				String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
-				String userId=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-				//String userName=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-				Map<String,Object> paramMap = new HashMap<String,Object>(); 
-				paramMap.put("loggedinUserTO", loggedinUserTO);
-				if (request.getParameter("studentBioId")!= null)
-					{	
-						if (nodeId != null){
-							customerProductList = adminService.getCustomerProduct(paramMap);
-							 
-							if(adminYear == null) {
-								adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-								if(adminYear == null) {
-									for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
-										adminYear = object.getValue();
-										break;
-									}
-								}
-							} else {
-								request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
+			logger.log(IAppLogger.INFO, "Enter: redirectToStudent");
+			logger.log(IAppLogger.INFO, "STUDENT BIO ID.................." + request.getParameter("studentBioId"));
+			String nodeId = request.getParameter("nodeId");
+			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+			String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			// String userName=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("loggedinUserTO", loggedinUserTO);
+			if (request.getParameter("studentBioId") != null) {
+				if (nodeId != null) {
+					customerProductList = adminService.getCustomerProduct(paramMap);
+
+					if (adminYear == null) {
+						adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+						if (adminYear == null) {
+							for (com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
+								adminYear = object.getValue();
+								break;
 							}
 						}
-					modelAndView.addObject("adminList", customerProductList);
-					if(isTree) {
-						paramMap.put("nodeid", currentOrg);
-						paramMap.put("currOrg", currentOrg);
-						paramMap.put("isFirstLoad", true);
-						paramMap.put("adminYear", adminYear);
-						paramMap.put("customerId", currCustomer);
-						paramMap.put("orgMode", orgMode);
-						orgTreeTOs =adminService.getOrganizationTree(paramMap);
-						hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(nodeId,currentOrg,userId,currCustomer,true);
-						modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
-						logger.log(IAppLogger.DEBUG, "hierarchialOrgIds................"+hierarchialOrgIds);
-						//modelAndView.addObject("organizationTreeList", orgTreeTOs);
-						modelAndView.addObject("treeSturcture", "Yes");
-						modelAndView.addObject("isRedirected", "Yes");
-						modelAndView.addObject("studentBioId", request.getParameter("studentBioId"));
-						//orgJsonString = JsonUtil.convertToJsonAdmin(orgTreeTOs);
-						//modelAndView.addObject("orgName", orgTreeTOs.get(0).getData());
-						modelAndView.addObject("rootOrgId", orgTreeTOs.get(0).getMetadata().getParentTenantId());
+					} else {
+						request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 					}
-						studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), 
-								(String)request.getSession().getAttribute(IApplicationConstants.CURRORG),currCustomer);
-						logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
-					}
-				String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
-				logger.log(IAppLogger.INFO, studentJsonString);
-				
-				
-				modelAndView.addObject("studentList", studentTOs);
-		
-		
+				}
+				modelAndView.addObject("adminList", customerProductList);
+				if (isTree) {
+					paramMap.put("nodeid", currentOrg);
+					paramMap.put("currOrg", currentOrg);
+					paramMap.put("isFirstLoad", true);
+					paramMap.put("adminYear", adminYear);
+					paramMap.put("customerId", currCustomer);
+					paramMap.put("orgMode", orgMode);
+					orgTreeTOs = adminService.getOrganizationTree(paramMap);
+					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(nodeId, currentOrg, userId, currCustomer, true);
+					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
+					logger.log(IAppLogger.DEBUG, "hierarchialOrgIds................" + hierarchialOrgIds);
+					// modelAndView.addObject("organizationTreeList", orgTreeTOs);
+					modelAndView.addObject("treeSturcture", "Yes");
+					modelAndView.addObject("isRedirected", "Yes");
+					modelAndView.addObject("studentBioId", request.getParameter("studentBioId"));
+					// orgJsonString = JsonUtil.convertToJsonAdmin(orgTreeTOs);
+					// modelAndView.addObject("orgName", orgTreeTOs.get(0).getData());
+					modelAndView.addObject("rootOrgId", orgTreeTOs.get(0).getMetadata().getParentTenantId());
+				}
+				// studentTOs = parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), (String) request.getSession().getAttribute(IApplicationConstants.CURRORG), currCustomer);
+				Map<String, Object> parameterMap = new HashMap<String, Object>();
+				parameterMap.put("studentBioId", request.getParameter("studentBioId"));
+				parameterMap.put("scrollId", request.getSession().getAttribute(IApplicationConstants.CURRORG));
+				parameterMap.put("customer", currCustomer);
+				parameterMap.put("orgMode", orgMode);
+				studentTOs = parentService.searchStudentOnRedirect(parameterMap);
+				logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
+			}
+			String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
+			logger.log(IAppLogger.INFO, studentJsonString);
+
+			modelAndView.addObject("studentList", studentTOs);
+
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
