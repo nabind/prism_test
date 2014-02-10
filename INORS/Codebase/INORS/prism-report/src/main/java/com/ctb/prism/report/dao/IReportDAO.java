@@ -253,7 +253,7 @@ public interface IReportDAO {
 	 * @param processId
 	 * @return
 	 */
-	public String getProcessDataGD(String processId);
+	public JobTrackingTO getProcessDataGD(String processId);
 
 	/**
 	 * @param orgNodeId
@@ -264,8 +264,8 @@ public interface IReportDAO {
 	/**
 	 * Updates the JOB_TRACKING table.
 	 * 
-	 * @param paramMap
-	 * @return Update Count
+	 * @param to
+	 * @return
 	 */
-	public int updateJobTracking(Map<String, String> paramMap);
+	public int updateJobTracking(GroupDownloadTO to);
 }

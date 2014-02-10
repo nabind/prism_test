@@ -600,7 +600,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getProcessDataGD(java.lang.String)
 	 */
-	public String getProcessDataGD(String processId) {
+	public JobTrackingTO getProcessDataGD(String processId) {
 		return reportDAO.getProcessDataGD(processId);
 	}
 
@@ -616,9 +616,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#updateJobTracking(java.util.Map)
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public int updateJobTracking(Map<String, String> paramMap) {
-		return reportDAO.updateJobTracking(paramMap);
+	public int updateJobTracking(GroupDownloadTO to) {
+		return reportDAO.updateJobTracking(to);
 	}
 }

@@ -46,30 +46,7 @@
 												<td scope="row">${group.updatedDateTime}<br>
 											    </td>
 											    <td scope="row">
-												    <c:choose>
-		    											<c:when test="${group.requestType=='GDF'}">
-		    												<span class="info-spot">
-																<span class="icon-info-round"></span>
-																<span class="info-bubble" style="width: 350px;">
-																	<%-- ${group.jobLog} --%>
-																	Generated File Name: ${group.filePath}<br />
-																	Date of File Generation Request: ${group.createdDateTime}<br />
-																	Test Administration: <br />
-																	Test Program: <br />
-																	Corp/Diocese: <br />
-																	School: <br />
-																	Grade: <br />
-																	Class: <br /><br /><br />
-																	${group.querySheetTO.studentCount} Student(s) have been selected.<br /><br /><br />
-																	File Type: <br />
-																	Request Type: 
-																</span>
-															</span>
-		    											</c:when>
-		    											<c:otherwise>
-															 <span class=" title="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		      											</c:otherwise>
-		                                            </c:choose>
+
 		                                            <c:choose>
 		    											<c:when test="${group.jobStatus=='ER'}">
 		    												<span class="icon-cross-round icon-size2 red" title="Error"></span>

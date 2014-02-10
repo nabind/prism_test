@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -890,14 +891,45 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		QuerySheetTO querySheetTO = new QuerySheetTO();
 		if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(requestType)) {
 			GroupDownloadTO to = Utils.jsonToObject(requestDetails, GroupDownloadTO.class);
-
+			String jobId = to.getJobId();
+			String fileName = to.getFileName();
+			String dateOfFileGenerationRequest = to.getExtractStartDate();
+			String testAdministration = to.getTestAdministrationVal();
+			String testProgram = to.getTestProgram();
+			if("0".equals(testProgram)){
+				testProgram = "Non Public Schools";
+			} else if("1".equals(testProgram)){
+				testProgram = "Public Schools";
+			}
+			String corpDiocese = to.getDistrict();
+			String schoolNames = to.getSchool();
+			String classNames = to.getKlass();
+			String gradeNames = to.getGrade();
+			String fileType = to.getGroupFile();
 			String students = to.getStudents();
+			int studentCount = students.split(",").length;
+			int classCount = classNames.split(",").length;;
+			int schoolCount = gradeNames.split(",").length;;
+
+			logger.log(IAppLogger.INFO, "fileName: " + fileName);
 			logger.log(IAppLogger.INFO, "students: " + students);
 
-			int studentCount = students.split(",").length;
 			logger.log(IAppLogger.INFO, "studentCount: " + studentCount);
 
+			querySheetTO.setJobId(jobId);
+			querySheetTO.setFileName(fileName);
+			querySheetTO.setDateOfFileGenerationRequest(dateOfFileGenerationRequest);
+			querySheetTO.setTestAdministration(testAdministration);
+			querySheetTO.setTestProgram(testProgram);
+			querySheetTO.setCorpDiocese(corpDiocese);
+			querySheetTO.setSchoolNames(schoolNames);
+			querySheetTO.setClassNames(classNames);
+			querySheetTO.setGradeNames(gradeNames);
+			querySheetTO.setFileType(fileType);
+			querySheetTO.setRequestType(requestType);
 			querySheetTO.setStudentCount(studentCount);
+			querySheetTO.setClassCount(classCount);
+			querySheetTO.setSchoolCount(schoolCount);
 		}
 		return querySheetTO;
 	}
@@ -910,6 +942,33 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	private String getRequestSummary(String requestDetails) {
 		QuerySheetTO querySheetTO = getQuerySheetTO(IApplicationConstants.REQUEST_TYPE.GDF.toString(), requestDetails);
+		String jobId = querySheetTO.getJobId();
+		String productId = querySheetTO.getTestAdministration();
+		String gradeId = querySheetTO.getGradeNames();
+		String corpDiocese = querySheetTO.getCorpDiocese();
+		String schools = querySheetTO.getSchoolNames();
+		String klass = querySheetTO.getClassNames();
+		String orgNodeIds = getOrgNodeIds(corpDiocese, schools, klass);
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId,
+				gradeId);
+		Map<String, String> valueMap = new HashMap<String, String>();
+		if ((dataList != null) && (!dataList.isEmpty())) {
+			for (Map<String, Object> data : dataList) {
+				valueMap.put((String) data.get("KEY"), (String) data.get("VALUE"));
+			}
+		}
+		querySheetTO.setDateOfFileGenerationRequest(valueMap.get("EXTRACT_STARTDATE"));
+		querySheetTO.setTestAdministration(valueMap.get("PRODUCT_NAME"));
+		querySheetTO.setCorpDiocese(valueMap.get(querySheetTO.getCorpDiocese()));
+		querySheetTO.setSchoolNames(valueMap.get(querySheetTO.getSchoolNames()));
+		querySheetTO.setGradeNames(valueMap.get("GRADE_NAME"));
+
+		if ("-1".equals(klass)) {
+			querySheetTO.setClassNames("All Classes");
+		} else {
+			querySheetTO.setClassNames(valueMap.get(querySheetTO.getClassNames()));
+		}
+
 		StringBuilder requestSummary = new StringBuilder();
 		requestSummary.append("Generated File Name: " + querySheetTO.getFileName() + "\n");
 		requestSummary.append("Date of File Generation Request: " + querySheetTO.getDateOfFileGenerationRequest() + "\n");
@@ -923,6 +982,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		requestSummary.append("File Type: " + querySheetTO.getFileType() + "\n");
 		requestSummary.append("Request Type: " + querySheetTO.getRequestType());
 		return requestSummary.toString();
+	}
+
+	private String getOrgNodeIds(String corpDiocese, String schools, String klass) {
+		StringBuilder sb = new StringBuilder();
+		if (corpDiocese != null && !corpDiocese.isEmpty()) {
+			sb.append(corpDiocese);
+			sb.append(",");
+		}
+		if (schools != null && !schools.isEmpty()) {
+			sb.append(schools);
+			sb.append(",");
+		}
+		if (klass != null && !klass.isEmpty() && (!"-1".equals(klass))) {
+			sb.append(klass);
+		} else {
+			sb.append("0");
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -1197,26 +1274,28 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.dao.IReportDAO#updateJobTracking(java.util.Map)
+	 * @see com.ctb.prism.report.dao.IReportDAO#updateJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public int updateJobTracking(Map<String, String> paramMap) {
+	public int updateJobTracking(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
 		int updateCount = 0;
 
-		String request_filename = paramMap.get("requestFileName");
-		String job_log = paramMap.get("jobLog");
-		String job_status = paramMap.get("jobStatus");
-		String file_size = paramMap.get("fileSize");
-		String job_id = paramMap.get("jobId");
-		String request_details = paramMap.get("requestDetails");
-		
+		String request_filename = to.getFileName();
+		String job_log = to.getJobLog();
+		String job_status = to.getJobStatus();
+		String file_size = to.getFileSize();
+		String job_id = to.getJobId();
+		String request_details = to.getRequestDetails();
+
 		logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
 		logger.log(IAppLogger.INFO, "job_log: " + job_log);
 		logger.log(IAppLogger.INFO, "job_status: " + job_status);
 		logger.log(IAppLogger.INFO, "file_size: " + file_size);
 		logger.log(IAppLogger.INFO, "job_id: " + job_id);
 		logger.log(IAppLogger.INFO, "request_details: " + request_details);
-		String request_summary = getRequestSummary(request_details);
+		// GroupDownloadTO to = Utils.jsonToObject(request_details, GroupDownloadTO.class);
+		// to.setFileName(request_filename);
+		String request_summary = getRequestSummary(Utils.objectToJson(to));
 
 		updateCount = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB_TRACKING, request_filename, request_summary, job_log, job_status, file_size, job_id);
 		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
@@ -1359,17 +1438,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getProcessDataGD(java.lang.String)
 	 */
-	public String getProcessDataGD(String processId) {
+	public JobTrackingTO getProcessDataGD(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: getProcessDataGD()");
-		String clobStr = null;
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT REQUEST_DETAILS FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
+		JobTrackingTO to = new JobTrackingTO();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
 		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				clobStr = (String) fieldDetails.get("REQUEST_DETAILS");
+			for (Map<String, Object> data : lstData) {
+				String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"), "MM/dd/yyyy HH:mm:ss");
+				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
+				to.setCreatedDateTime(createdDate);
+				to.setExtractFiletype((String) data.get("extract_filetype"));
+				to.setRequestType((String) data.get("request_type"));
+				to.setJobStatus((String) data.get("job_status")); 
+				to.setRequestDetails((String) data.get("REQUEST_DETAILS"));
+				to.setQuerySheetTO(getQuerySheetTO((String) data.get("request_type"), (String) data.get("request_details")));
 			}
 		}
 		logger.log(IAppLogger.INFO, "Exit: getProcessDataGD()");
-		return clobStr;
+		return to;
 	}
 
 	/*

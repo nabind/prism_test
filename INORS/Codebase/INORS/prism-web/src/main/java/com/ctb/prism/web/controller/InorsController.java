@@ -587,12 +587,13 @@ public class InorsController {
 	 */
 	private void processGroupDownload(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
-		Map<String, String> paramMap = new HashMap<String, String>();
+		// Map<String, String> paramMap = new HashMap<String, String>();
 		String requestFileName = null;
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		Long fileSize = null;
-		String clobStr = reportService.getProcessDataGD(processId);
+		JobTrackingTO jobTrackingTO = reportService.getProcessDataGD(processId);
+		String clobStr = jobTrackingTO.getRequestDetails();
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
 		List<String> filePaths = new ArrayList<String>();
@@ -677,16 +678,17 @@ public class InorsController {
 			logger.log(IAppLogger.WARN, jobLog);
 		}
 
-		paramMap.put("requestFileName", requestFileName);
-		paramMap.put("requestDetails", clobStr);
-		paramMap.put("jobLog", jobLog);
-		paramMap.put("jobStatus", jobStatus);
+		to.setFileName(requestFileName);
+		to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
+		to.setRequestDetails(clobStr);
+		to.setJobLog(jobLog);
+		to.setJobStatus(jobStatus);
 		if (fileSize == null) {
 			fileSize = 0L;
 		}
-		paramMap.put("fileSize", fileSize.toString());
-		paramMap.put("jobId", processId);
-		int updateCount = reportService.updateJobTracking(paramMap);
+		to.setFileSize(fileSize.toString());
+		to.setJobId(processId);
+		int updateCount = reportService.updateJobTracking(to);
 		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 	}

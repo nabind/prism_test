@@ -323,7 +323,7 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getProcessDataGD(java.lang.String)
 	 */
-	public String getProcessDataGD(String processId) {
+	public JobTrackingTO getProcessDataGD(String processId) {
 		return reportBusiness.getProcessDataGD(processId);
 	}
 
@@ -339,9 +339,9 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#updateJobTracking(java.util.Map)
+	 * @see com.ctb.prism.report.service.IReportService#updateJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public int updateJobTracking(Map<String, String> paramMap) {
-		return reportBusiness.updateJobTracking(paramMap);
+	public int updateJobTracking(GroupDownloadTO to) {
+		return reportBusiness.updateJobTracking(to);
 	}
 }

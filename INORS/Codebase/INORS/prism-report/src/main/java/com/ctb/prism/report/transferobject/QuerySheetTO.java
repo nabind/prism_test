@@ -4,6 +4,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
 
 public class QuerySheetTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
+	private String jobId;
 	private String fileName;
 	private String dateOfFileGenerationRequest;
 	private String testAdministration;
@@ -17,6 +18,21 @@ public class QuerySheetTO extends BaseTO {
 	private int studentCount;
 	private int classCount;
 	private int schoolCount;
+
+	/**
+	 * @return the jobId
+	 */
+	public String getJobId() {
+		return jobId;
+	}
+
+	/**
+	 * @param jobId
+	 *            the jobId to set
+	 */
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
 
 	/**
 	 * @return the fileName

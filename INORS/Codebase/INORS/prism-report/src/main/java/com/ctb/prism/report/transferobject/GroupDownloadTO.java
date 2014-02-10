@@ -28,6 +28,13 @@ public class GroupDownloadTO extends BaseTO {
 	private String adminId;
 	private String customerId;
 
+	private String extractStartDate;
+	private String requestDetails;
+	private String jobLog;
+	private String jobStatus;
+	private String fileSize;
+	private String jobId;
+
 	/**
 	 * @return the button
 	 */
@@ -266,6 +273,96 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	/**
+	 * @return the extractStartDate
+	 */
+	public String getExtractStartDate() {
+		return extractStartDate;
+	}
+
+	/**
+	 * @param extractStartDate
+	 *            the extractStartDate to set
+	 */
+	public void setExtractStartDate(String extractStartDate) {
+		this.extractStartDate = extractStartDate;
+	}
+
+	/**
+	 * @return the requestDetails
+	 */
+	public String getRequestDetails() {
+		return requestDetails;
+	}
+
+	/**
+	 * @param requestDetails
+	 *            the requestDetails to set
+	 */
+	public void setRequestDetails(String requestDetails) {
+		this.requestDetails = requestDetails;
+	}
+
+	/**
+	 * @return the jobLog
+	 */
+	public String getJobLog() {
+		return jobLog;
+	}
+
+	/**
+	 * @param jobLog
+	 *            the jobLog to set
+	 */
+	public void setJobLog(String jobLog) {
+		this.jobLog = jobLog;
+	}
+
+	/**
+	 * @return the jobStatus
+	 */
+	public String getJobStatus() {
+		return jobStatus;
+	}
+
+	/**
+	 * @param jobStatus
+	 *            the jobStatus to set
+	 */
+	public void setJobStatus(String jobStatus) {
+		this.jobStatus = jobStatus;
+	}
+
+	/**
+	 * @return the fileSize
+	 */
+	public String getFileSize() {
+		return fileSize;
+	}
+
+	/**
+	 * @param fileSize
+	 *            the fileSize to set
+	 */
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
+	}
+
+	/**
+	 * @return the jobId
+	 */
+	public String getJobId() {
+		return jobId;
+	}
+
+	/**
+	 * @param jobId
+	 *            the jobId to set
+	 */
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 
 	@Override
