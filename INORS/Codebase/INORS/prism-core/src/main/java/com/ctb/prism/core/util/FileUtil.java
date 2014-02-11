@@ -308,6 +308,16 @@ public class FileUtil {
 		createZipFile(zipFileName, filePathSet);
 	}
 
+	/**
+	 * Creates a Zip file and places all files from the Set of filePaths into it.
+	 * 
+	 * @param zipFileName
+	 *            Zip file name
+	 * @param filePaths
+	 *            Set of file paths
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static void createZipFile(String zipFileName, Set<String> filePaths) throws FileNotFoundException, IOException {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
@@ -370,5 +380,75 @@ public class FileUtil {
 			fileName = filePath.substring(index + 1);
 		}
 		return fileName;
+	}
+
+	/**
+	 * @param zipFileName
+	 * @param filePaths
+	 * @throws IOException
+	 */
+	public static void createDuplexZipFile(String zipFileName, List<String> filePaths) throws IOException {
+		Set<String> filePathSet = new HashSet<String>(filePaths);
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+		try {
+			fos = new FileOutputStream(zipFileName);
+			zos = new ZipOutputStream(fos);
+			for (String filePath : filePathSet) {
+				logger.log(IAppLogger.INFO, "filePath = " + filePath);
+				String fileName = getFileNameFromFilePath(filePath);
+				if (fileName == null) {
+					logger.log(IAppLogger.WARN, "Skipping " + filePath);
+					continue;
+				}
+				ZipEntry entry = new ZipEntry(fileName);
+				byte[] input = getDuplexPdfBytes(filePath);
+				logger.log(IAppLogger.INFO, input.length + " bytes read");
+				entry.setSize(input.length);
+				zos.putNextEntry(entry);
+				zos.write(input);
+				zos.closeEntry();
+			}
+			zos.close();
+			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				logger.log(IAppLogger.WARN, "Not able to close stream.");
+			}
+		}
+	}
+
+	/**
+	 * Reads a Pdf file and creates a byte[]. If the Pdf has odd number of pages then adds a blank page at the end.
+	 * 
+	 * @param filePath
+	 *            Pdf file path with file name
+	 * @return
+	 */
+	private static byte[] getDuplexPdfBytes(String filePath) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			Document document = new Document();
+			PdfCopy copy = new PdfCopy(document, baos);
+			document.open();
+			PdfReader reader = new PdfReader(filePath);
+			int n = reader.getNumberOfPages();
+			for (int page = 0; page < n;) {
+				copy.addPage(copy.getImportedPage(reader, ++page));
+			}
+			if (Utils.isOdd(n)) {
+				copy.addPage(new Rectangle(8.27F, 11.69F), 0);
+			}
+			copy.freeReader(reader);
+			reader.close();
+			document.close();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return baos.toByteArray();
 	}
 }

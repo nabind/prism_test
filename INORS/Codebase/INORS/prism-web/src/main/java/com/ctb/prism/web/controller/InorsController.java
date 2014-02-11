@@ -588,7 +588,6 @@ public class InorsController {
 	 */
 	private void processGroupDownload(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
-		// Map<String, String> paramMap = new HashMap<String, String>();
 		String requestFileName = null;
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
@@ -627,12 +626,6 @@ public class InorsController {
 						// Create Pdf file in disk
 						FileUtil.createFile(pdfFileName, input);
 
-						// Now read the pdf file from disk
-						// byte[] data = FileCopyUtils.copyToByteArray(new File(pdfFileName));
-
-						// Zip the pdf file
-						// byte[] zipData = FileUtil.zipBytes(zipFileName, data);
-
 						// Create Zip file in disk
 						// FileUtil.createFile(zipFileName, zipData);
 						List<String> list = new ArrayList<String>();
@@ -657,7 +650,7 @@ public class InorsController {
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
-						FileUtil.createZipFile(zipFileName, filePaths);
+						FileUtil.createDuplexZipFile(zipFileName, filePaths);
 
 						requestFileName = zipFileName;
 						fileSize = FileUtil.fileSize(zipFileName);
