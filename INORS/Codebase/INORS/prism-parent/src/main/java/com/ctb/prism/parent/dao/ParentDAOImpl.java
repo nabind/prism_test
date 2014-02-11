@@ -370,12 +370,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 				logger.log(IAppLogger.INFO, "userName = " + userName);
 				logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, tenantId, userName, searchParam, searchParam, searchParam);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, orgMode, tenantId, userName, searchParam, searchParam, searchParam);
 			} else {
 				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
 				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 				logger.log(IAppLogger.INFO, "userName = " + userName);
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL, tenantId, userName);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL, orgMode, tenantId, userName);
 			}
 		} else {
 			tenantId = orgId;
