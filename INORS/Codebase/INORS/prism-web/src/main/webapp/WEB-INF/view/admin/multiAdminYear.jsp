@@ -3,7 +3,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
-
+<%@ include file="../common/constant.jsp" %>
 <%
 String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
@@ -34,8 +34,14 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 			title='Select organization mode to refresh the hierarchy.'
 			class="select silver-gradient glossy with-tooltip expandable-list" 
 			onchange="reloadOrgTree($(this))">
+				<c:if test="${selectedOrgMode eq orgModePublic}">
 					<option value='<spring:message code="orgMode.val.public"/>' selected><spring:message code="orgMode.name.public"/></option>
 					<option value='<spring:message code="orgMode.val.nonPublic"/>'><spring:message code="orgMode.name.nonPublic"/></option>
+				</c:if>
+				<c:if test="${selectedOrgMode eq orgModeNonPublic}">
+					<option value='<spring:message code="orgMode.val.public"/>'><spring:message code="orgMode.name.public"/></option>
+					<option value='<spring:message code="orgMode.val.nonPublic"/>' selected><spring:message code="orgMode.name.nonPublic"/></option>
+				</c:if>
 		</select>
 	</div>
 </div>
