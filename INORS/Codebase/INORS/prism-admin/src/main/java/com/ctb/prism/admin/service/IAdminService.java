@@ -38,6 +38,7 @@ public interface IAdminService {
 	 * @param adminYear
 	 * @param searchParam
 	 * @param customerid
+	 * @param orgMode
 	 * @return
 	 * @throws Exception
 	 */
@@ -91,6 +92,7 @@ public interface IAdminService {
 	 * @param parentId
 	 * @param adminYear
 	 * @param isExactSearch
+	 * @param orgMode
 	 * @return
 	 */
 	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode);
@@ -120,6 +122,7 @@ public interface IAdminService {
 	 * @param adminYear
 	 * @param searchParam
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
 	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode);
@@ -128,15 +131,17 @@ public interface IAdminService {
 	 * @param tenantId
 	 * @param adminYear
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @param orgName
 	 * @param tenantId
 	 * @param adminYear
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
 	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
@@ -146,9 +151,10 @@ public interface IAdminService {
 	 * @param tenantId
 	 * @param adminYear
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId,String orgMode);
+	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @param roleId
@@ -200,7 +206,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception;
+	public RoleTO getRoleDetailsById(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap

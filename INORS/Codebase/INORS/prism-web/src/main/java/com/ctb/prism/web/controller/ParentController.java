@@ -57,7 +57,7 @@ public class ParentController {
 			HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Open user registration screen");
 		//fetch security questions
-		List questionList = parentService.getSecretQuestions();
+		List<QuestionTO> questionList = parentService.getSecretQuestions();
 		logger.log(IAppLogger.DEBUG, ""+questionList.size());
 		ModelAndView mv = new ModelAndView("parent/registration");
 		mv.addObject("secretQuestionList", null);
@@ -208,7 +208,7 @@ public class ParentController {
 		ParentTO parentTO = new ParentTO();
 		String loggedinUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		parentTO = parentService.manageParentAccountDetails(loggedinUser);		
-		List questionList = parentService.getSecretQuestions();
+		List<QuestionTO> questionList = parentService.getSecretQuestions();
 		ModelAndView modelAndView = null;
 		modelAndView = new ModelAndView("user/profile");
 		modelAndView.addObject("parentAccountDetail", parentTO);

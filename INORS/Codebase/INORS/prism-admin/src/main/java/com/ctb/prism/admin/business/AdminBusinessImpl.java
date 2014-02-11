@@ -168,10 +168,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#getTotalUserCount(java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getTotalUserCount(java.lang.String, java.lang.String, long, String orgMode)
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId) {
-		return adminDAO.getTotalUserCount(tenantId, adminYear, customerId);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
+		return adminDAO.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 	}
 
 	/*

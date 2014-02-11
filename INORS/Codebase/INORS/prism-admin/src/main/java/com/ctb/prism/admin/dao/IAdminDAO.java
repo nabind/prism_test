@@ -136,9 +136,10 @@ public interface IAdminDAO {
 	 * @param tenantId
 	 * @param adminYear
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @param orgName
@@ -185,7 +186,7 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception;
+	public RoleTO getRoleDetailsById(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * Associate user for that role in database through associate button in edit role popup screen.
@@ -226,6 +227,8 @@ public interface IAdminDAO {
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception;
 
 	/**
+	 * Returns the organizationList to create a tree structure. for manage organizations.
+	 * 
 	 * @param paramMap
 	 * @return
 	 * @throws Exception

@@ -428,7 +428,7 @@ public class LoginController {
 
 		String username = (String) req.getParameter("username");
 		// fetch security questions
-		List questionList = parentService.getSecretQuestions();
+		List<QuestionTO> questionList = parentService.getSecretQuestions();
 		// logger.log(IAppLogger.DEBUG, questionList.size());
 		// logger.log(IAppLogger.DEBUG, "into changePassword......................");
 		// logger.log(IAppLogger.DEBUG, "username in  changePassword......................"+username);
@@ -535,7 +535,7 @@ public class LoginController {
 			return validateUser(req, res);
 		} else {
 			// fetch security questions
-			List questionList = parentService.getSecretQuestions();
+			List<QuestionTO> questionList = parentService.getSecretQuestions();
 			// logger.log(IAppLogger.DEBUG, questionList.size());
 			ModelAndView modelAndView = new ModelAndView("user/firstTimeUser");
 			modelAndView.addObject("secretQuestionList", questionList);

@@ -197,45 +197,40 @@ public class AdminController {
 
 		return null;
 	}
+
 	/**
-	 * Method retrieves the number of users for an organization when clicked on the view users button.
-	 *  This method is called through AJAX
+	 * Method retrieves the number of users for an organization when clicked on the view users button. This method is called through AJAX
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 */
 	@RequestMapping(value = "/getUserCount", method = RequestMethod.GET)
-	public String getUserCount(HttpServletRequest request,
-			HttpServletResponse response) {
-		logger.log(IAppLogger.INFO, "Enter: AdminController - getUserCount");
-		OrgTO orguser= new OrgTO();
-		List<OrgTO> orgUserCount= new ArrayList<OrgTO>();
+	public String getUserCount(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: getUserCount()");
+		OrgTO orguser = new OrgTO();
+		List<OrgTO> orgUserCount = new ArrayList<OrgTO>();
 		String jsonString = null;
-		String tenantId= request.getParameter("tenantId");
-		String adminYear= request.getParameter("adminYear");
+		String tenantId = request.getParameter("tenantId");
+		String adminYear = request.getParameter("adminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		try {
-			if (tenantId != null && adminYear != null)	{
-								
-				orguser = adminService.getTotalUserCount(tenantId, adminYear,currCustomer);
-					if ( orguser != null )	{
-						orgUserCount.add(orguser);
-						jsonString = JsonUtil.convertToJsonAdmin(orgUserCount);
-						
-						response.setContentType("application/json");
-						response.getWriter().write(jsonString);
-					}
+			if (tenantId != null && adminYear != null) {
+				orguser = adminService.getTotalUserCount(tenantId, adminYear, currCustomer, orgMode);
+				if (orguser != null) {
+					orgUserCount.add(orguser);
+					jsonString = JsonUtil.convertToJsonAdmin(orgUserCount);
+					response.setContentType("application/json");
+					response.getWriter().write(jsonString);
+				}
 			}
-			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} finally {
-			logger.log(IAppLogger.INFO,
-					"Exit: AdminController - getUserCount");
+			logger.log(IAppLogger.INFO, "Exit: getUserCount()");
 		}
-		
 		return null;
 	}
 
@@ -2154,10 +2149,12 @@ public class AdminController {
 		String tenantId = (String) request.getParameter("tenantId");
 		String adminYear = (String) request.getParameter("adminYear");
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 
 		paramMap.put("tenantId", tenantId);
 		paramMap.put("adminYear", adminYear);
 		paramMap.put("userId", userId);
+		paramMap.put("orgMode", orgMode);
 
 		logger.log(IAppLogger.INFO, "tenantId=" + tenantId + ", adminYear=" + adminYear + ", userId=" + userId);
 

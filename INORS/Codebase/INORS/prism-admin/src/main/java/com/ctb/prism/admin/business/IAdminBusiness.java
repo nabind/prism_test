@@ -128,9 +128,10 @@ public interface IAdminBusiness {
 	 * @param tenantId
 	 * @param adminYear
 	 * @param customerId
+	 * @param orgMode
 	 * @return
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
 	 * @param orgName
@@ -177,7 +178,7 @@ public interface IAdminBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) throws Exception;
+	public RoleTO getRoleDetailsById(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param roleId

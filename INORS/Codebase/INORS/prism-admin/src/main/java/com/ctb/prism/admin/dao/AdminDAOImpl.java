@@ -218,18 +218,17 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return cummsSeperatedId;
 	}
 
-	/**
-	 * Returns the organizationList to create a tree structure. for manage organizations
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param nodeid
-	 * @return
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getOrgTree(java.util.Map)
 	 */
 	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrgTree()");
 		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
 
 		String nodeId = (String) paramMap.get("nodeid");
-		String currOrg = (String) paramMap.get("currOrg");
+		// String currOrg = (String) paramMap.get("currOrg");
 		boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
 		String adminYear = (String) paramMap.get("adminYear");
 		long customerId = Long.valueOf(paramMap.get("customerId").toString());
@@ -507,7 +506,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
 	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - updateUser");
+		logger.log(IAppLogger.INFO, "Enter: updateUser()");
 		try {
 			boolean ldapFlag = true;
 			if (password != null && !"".equals(password)) {
@@ -564,7 +563,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
 	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - deleteUser");
+		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
 		try {
 			// if (ldapManager.deleteUser(userName, userName, userName)) {
 			// delete the security answers from pwd_hint_answers table
@@ -608,7 +607,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - addNewUser");
+		logger.log(IAppLogger.INFO, "Enter: addNewUser()");
 		UserTO to = null;
 		String userName = (String) paramMap.get("userName");
 		String password = (String) paramMap.get("password");
@@ -698,7 +697,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while adding user details.", e);
 			throw new Exception(e);
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - addNewUser");
+		logger.log(IAppLogger.INFO, "Exit: addNewUser()");
 		return to;
 	}
 
@@ -846,10 +845,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return list of orgTO
 	 */
 	public List<OrgTO> getOrganizationList(String tenantId, String adminYear, long customerId) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getOrganizationList");
+		logger.log(IAppLogger.INFO, "Enter: getOrganizationList()");
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_LIST, tenantId, tenantId, adminYear, customerId, tenantId, adminYear, customerId);
 		List<OrgTO> orgList = getOrgList(lstData, adminYear);
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getOrganizationList");
+		logger.log(IAppLogger.INFO, "Exit: getOrganizationList()");
 		return orgList;
 	}
 
@@ -862,7 +861,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@Cacheable(cacheName = "orgChildren")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getOrganizationChildren");
+		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
 		String parentTenantId = "";
 		String orgId = "";
@@ -886,7 +885,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			orgList = getOrgList(lstData, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getOrganizationChildren");
+		logger.log(IAppLogger.INFO, "Exit: getOrganizationChildren()");
 		return orgList;
 	}
 
@@ -926,9 +925,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId) {
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
 		OrgTO orgTO = null;
-		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, adminYear, tenantId, adminYear, customerId, adminYear);
+		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, customerId, orgMode, tenantId, customerId, tenantId, adminYear, adminYear);
 		if (userCount != null && userCount.size() > 0) {
 			orgTO = new OrgTO();
 			orgTO.setNoOfUsers(((BigDecimal) userCount.get("USER_NO")).longValue());
@@ -1114,7 +1113,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public boolean updateRole(RoleTO roleTo) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - updateRole");
+		logger.log(IAppLogger.INFO, "Enter: updateRole()");
 		try {
 			ArrayList<UserTO> userTOs = new ArrayList<UserTO>();
 			long roleId = roleTo.getRoleId();
@@ -1138,7 +1137,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating role details.", e);
 			return false;
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - updateRole");
+		logger.log(IAppLogger.INFO, "Exit: updateRole()");
 		return true;
 	}
 
@@ -1149,7 +1148,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public boolean deleteRole(String roleid) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - deleteRole");
+		logger.log(IAppLogger.INFO, "Enter: deleteRole()");
 		try {
 			// removing the role from the users that is to be deleted
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_ROLE_FROM_USER_ROLE_TABLE, roleid);
@@ -1164,7 +1163,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while deleting role table.", e);
 			return false;
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - deleteRole");
+		logger.log(IAppLogger.INFO, "Exit: deleteRole()");
 		return true;
 	}
 
@@ -1174,7 +1173,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#associateUserToRole(java.lang.String, java.lang.String)
 	 */
 	public boolean associateUserToRole(String roleId, String userName) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - associateUserToRole");
+		logger.log(IAppLogger.INFO, "Enter: associateUserToRole()");
 		try {
 			// update role table
 			getJdbcTemplatePrism().update(IQueryConstants.INSERT_INTO_USER_ROLE, userName, roleId);
@@ -1183,7 +1182,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while associating user to role.", e);
 			return false;
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - associateUserToRole");
+		logger.log(IAppLogger.INFO, "Exit: associateUserToRole()");
 		return true;
 	}
 
@@ -1193,7 +1192,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#deleteUserFromRole(java.lang.String, java.lang.String)
 	 */
 	public boolean deleteUserFromRole(String roleId, String userId) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - deleteUserFromRole");
+		logger.log(IAppLogger.INFO, "Enter: deleteUserFromRole()");
 		try {
 			// update role table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_FROM_USER_ROLE_TABLE, roleId, userId);
@@ -1202,7 +1201,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while deleting user for role.", e);
 			return false;
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - deleteUserFromRole");
+		logger.log(IAppLogger.INFO, "Exit: deleteUserFromRole()");
 		return true;
 	}
 
@@ -1212,7 +1211,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#saveRole(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean saveRole(String roleId, String roleName, String roleDescription) {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - updateRole");
+		logger.log(IAppLogger.INFO, "Enter: updateRole()");
 		try {
 			// update role table
 			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ROLE, roleName, roleDescription, roleId);
@@ -1221,7 +1220,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating role details.", e);
 			return false;
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - updateRole");
+		logger.log(IAppLogger.INFO, "Exit: updateRole()");
 		return true;
 	}
 
@@ -1399,7 +1398,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#downloadStudentFile(java.util.Map)
 	 */
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - downloadStudentFile()");
+		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile()");
 		String userId = (String) paramMap.get("userId");
 		String startDate = (String) paramMap.get("startDate");
 		String endDate = (String) paramMap.get("endDate");
@@ -1906,7 +1905,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				studentDataList.add(s);
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - downloadStudentFile()");
+		logger.log(IAppLogger.INFO, "Exit: downloadStudentFile()");
 		return studentDataList;
 	}
 
@@ -1916,10 +1915,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEducationCenter(java.util.Map)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getEducationCenter()");
+		logger.log(IAppLogger.INFO, "Enter: getEducationCenter()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
-		List placeHolderValueList = new ArrayList();
+		List<String> placeHolderValueList = new ArrayList<String>();
 		try {
 			if (IApplicationConstants.SS_FLAG.equals(loggedinUserTO.getUserStatus())) {
 				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
@@ -1936,7 +1935,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred in getEducationCenter():", e);
 			throw new SystemException(e);
 		}
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getEducationCenter()");
+		logger.log(IAppLogger.INFO, "Exit: getEducationCenter()");
 		return objectValueTOList;
 	}
 
@@ -1947,8 +1946,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {
-
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - loadEduCenterUsers()");
+		logger.log(IAppLogger.INFO, "Enter: loadEduCenterUsers()");
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
 		long eduCenterId = ((Long) paramMap.get("eduCenterId")).longValue();
 		String searchParam = (String) paramMap.get("searchParam");
@@ -1990,7 +1988,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred in loadEduCenterUsers():", e);
 			throw new SystemException(e);
 		} finally {
-			logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - loadEduCenterUsers()");
+			logger.log(IAppLogger.INFO, "Exit: loadEduCenterUsers()");
 		}
 		return eduCenterTOList;
 	}
@@ -2002,17 +2000,19 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap) {
 		long start = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Enter: AdminDAOImpl - getUserData()");
+		logger.log(IAppLogger.INFO, "Enter: getUserData()");
 		String userId = (String) paramMap.get("userId");
 		String orgNodeId = (String) paramMap.get("tenantId");
 		String adminYear = (String) paramMap.get("adminYear");
+		String orgMode = (String) paramMap.get("orgMode");
 
 		logger.log(IAppLogger.INFO, "userId=" + userId);
 		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId);
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
+		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, userId, orgNodeId, adminYear);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgMode, userId, orgNodeId, adminYear);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserDataTO to = new UserDataTO();
@@ -2025,7 +2025,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			}
 		}
 		long end = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Exit: AdminDAOImpl - getUserData() : " + CustomStringUtil.getHMSTimeFormat(end - start));
+		logger.log(IAppLogger.INFO, "Exit: getUserData() : " + CustomStringUtil.getHMSTimeFormat(end - start));
 		return userDataList;
 	}
 

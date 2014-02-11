@@ -152,10 +152,10 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#getTotalUserCount(java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.service.IAdminService#getTotalUserCount(java.lang.String, java.lang.String, long, String orgMode)
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId) {
-		return adminBusiness.getTotalUserCount(tenantId, adminYear, customerId);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
+		return adminBusiness.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 	}
 
 	/*
