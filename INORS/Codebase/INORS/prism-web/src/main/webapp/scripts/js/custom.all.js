@@ -756,6 +756,7 @@ function checkpagination(reportUrl, tabCount) {
 				$(iFrameContainerObj).smoothDivScroll({
 					manualContinuousScrolling: true
 				});
+				hideScrollingHotSpot(reportUrl);
 				if(newcall && obj != null && obj.paginate == "true") {
 					$(currentObj).css('display', 'block');
 					resetPagination(currentObj);
@@ -1081,7 +1082,23 @@ function getHelp()
 	});
 }
 
-
+/**
+ * Hides the Hot Spot Scroll bars for a particular reportUrl.
+ * 
+ * @param reportUrl
+ */
+function hideScrollingHotSpot(reportUrl) {
+	if (reportUrl == "") { // Home page Url
+		var scrollingHotSpotLeft = $('.scrollingHotSpotLeft');
+		if (scrollingHotSpotLeft) {
+			$('.scrollingHotSpotLeft').removeClass("scrollingHotSpotLeft");
+		}
+		var scrollingHotSpotRight = $('.scrollingHotSpotRight');
+		if (scrollingHotSpotRight) {
+			$('.scrollingHotSpotRight').removeClass("scrollingHotSpotRight");
+		}
+	}
+}
 /**
  * This js file is to manage report module
  * Author: Tata Consultancy Services Ltd.
@@ -4342,7 +4359,7 @@ $(document).ready(function() {
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="mid-margin-left font-12 small-line-height"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
+						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
 						+'&studentName='+this.studentName
 						+'&studentGradeName='+this.grade
 						+'&studentGradeId='+this.studentGradeId+'">'
@@ -4351,7 +4368,7 @@ $(document).ready(function() {
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
 					
-					// update menu
+					// update right menu
 					$("#child_list").html(menuContent);
 				}else{
 					var userContent = '<div>No child is associated to your account.</div>';
@@ -6573,6 +6590,24 @@ function openContentModalToEdit(contentId) {
 					resizable: false,
 					draggable: false,
 					onOpen: setCKEditor('edit'),
+					actions: {
+						'Close' : {
+							color: 'red',
+							click: function(win) { win.closeModal(); }
+						},
+						'Maximize' : {
+							color: 'blue',
+							click: function(win) { 
+								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
+							}
+						},
+						'Restore' : {
+							color: 'green',
+							click: function(win) { 
+								$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+							}
+						}
+					},
 					buttons: {
 						'Cancel': {
 							classes: 'glossy mid-margin-left',
@@ -6689,6 +6724,24 @@ function openContentModalToAdd() {
 		resizable: false,
 		draggable: false,
 		onOpen: setCKEditor('add'),
+		actions: {
+			'Close' : {
+				color: 'red',
+				click: function(win) { win.closeModal(); }
+			},
+			'Maximize' : {
+				color: 'blue',
+				click: function(win) { 
+					$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
+				}
+			},
+			'Restore' : {
+				color: 'green',
+				click: function(win) { 
+					$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+				}
+			}
+		},
 		buttons: {
 			'Cancel': {
 				classes: 'glossy mid-margin-left',
@@ -8472,6 +8525,11 @@ $(document).ready(function() {
 		getGenericPage($(this).attr('action'), $(this));
 	});
 	
+	$('.menu-link').live('click', function() {
+		getGenericPage($(this).attr('action'), $(this));
+	});
+	
+	//TODO - If required
 	$('#backLink').live('click', function() {
 		historyBack();
 	});
@@ -8530,6 +8588,16 @@ function getDataUrl(action, obj){
 	}else if(action == 'getGradeSubtestInfo'){
 		dataUrl = 'menuId='+$(obj).attr('menuId')
 					+'&menuName='+$(obj).attr('menuName');
+	}else if(action == 'getChildData'){
+		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+		var studentName = (typeof $(obj).attr('studentName') !== 'undefined') ? $(obj).attr('studentName') : 0;
+		var studentGradeName = (typeof $(obj).attr('studentGradeName') !== 'undefined') ? $(obj).attr('studentGradeName') : 0;
+		var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
+		
+		dataUrl = 'studentBioId='+studentBioId
+					+'&studentName='+studentName
+					+'&studentGradeName='+$(obj).attr('studentGradeName')
+					+'&studentGradeId='+studentGradeId;
 	}
 	return dataUrl;
 }

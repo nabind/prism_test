@@ -1354,7 +1354,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	private List<String> getISRPaths(String students) {
 		// TODO : Change the query
-		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS_ISR));
 		logger.log(IAppLogger.INFO, "ISRs : " + studentPdfPaths.size());
 		return studentPdfPaths;
 	}
@@ -1367,7 +1367,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	private List<String> getIPPaths(String students) {
 		// TODO : Change the query
-		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
+		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS_IP));
 		logger.log(IAppLogger.INFO, "Image Prints : " + studentPdfPaths.size());
 		return studentPdfPaths;
 	}

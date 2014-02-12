@@ -3,7 +3,9 @@ package com.ctb.prism.inors.business;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -31,11 +33,15 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.dao.IInorsDAO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.util.ConcatPdf;
 import com.ctb.prism.inors.util.PdfGenerator;
+import com.ctb.prism.report.business.IReportBusiness;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
+import com.ctb.prism.report.transferobject.JobTrackingTO;
 
 /**
  * @author TCS
@@ -51,6 +57,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 	@Autowired
 	private IAdminDAO adminDAO;
+	
+	@Autowired
+	private IReportBusiness reportBusiness;
 
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -215,13 +224,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	public void batchPDFDownload(String jobId) {
 		logger.log(IAppLogger.INFO, "START ================== f r o m  async method --------------- ");
-		BulkDownloadTO jobTO = null;
-		jobTO = getJob(jobId);
-		if ("CR".equals(jobTO.getDownloadMode())) {
-			batchCRPDFDownload(jobId, jobTO);
-		} else {
-			batchPDFDownload(jobId, jobTO);
-		}
+		batchPDFDownload(jobId, null);
 	}
 
 	/**
@@ -320,75 +323,107 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param jobTO
 	 */
 	private void batchPDFDownload(String jobId, BulkDownloadTO jobTO) {
-		String folderLoc = "";
-		OutputStream fos = null;
-		InputStream is = null;
-		StringBuffer log = new StringBuffer();
+		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
+		String requestFileName = null;
+		String jobLog = null;
+		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
+		Long fileSize = null;
+		JobTrackingTO jobTrackingTO = reportBusiness.getProcessDataGD(jobId);
+		String clobStr = jobTrackingTO.getRequestDetails();
+		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
+		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
+		List<String> filePaths = new ArrayList<String>();
+		if (to != null) {
+			String button = to.getButton();
+			String fileName = to.getFileName();
+			String groupFile = to.getGroupFile();
+			String school = to.getSchool();
+			String students = to.getStudents();
+			logger.log(IAppLogger.INFO, "button: " + button);
+			logger.log(IAppLogger.INFO, "fileName: " + fileName);
+			logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
+			logger.log(IAppLogger.INFO, "school: " + school);
+			logger.log(IAppLogger.INFO, "students: " + students);
 
-		boolean icDownload = false;
-		if (IApplicationConstants.DOWNLOAD_MODE_IC.equals(jobTO.getDownloadMode())) {
-			icDownload = true;
-		}
+			filePaths = reportBusiness.getGDFilePaths(to);
+			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
-		// set status to inprogress
-		jobTO.setStatus(IApplicationConstants.INPROGRESS_FLAG);
-		updateStatus(jobTO);
-		folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPath"), File.separator);
-		jobTO.setFileLocation(CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), ".pdf"));
-		String studentIds = getAllStudents(jobTO);
-		String reportUrl = jobTO.getReportUrl(); // "/public/ISTEP/Reports/Dummy_Student_Report_files";
+			if (!filePaths.isEmpty()) {
+				try {
+					if ("CP".equals(button)) {
+						// The default naming convention is: Username + Date Time Stamp
+						String pdfFileName = fileName + ".pdf";
+						String zipFileName = fileName + ".zip";
+						logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
 
-		// split pdfs into multiple files
-		String[] students = studentIds.split(",");
-		StringBuffer URLStringBuf = new StringBuffer();
-		URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
-		URLStringBuf.append("icDownload.do?reportUrl=").append(reportUrl);
-		URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true&p_studentIds=");
+						// Merge Pdf files
+						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
 
-		// get ISR files from jasper
-		Map<String, String> isrFileMap = new HashMap<String, String>();
-		try {
-			for (String studentId : students) {
-				// TODO provide proper naming convention
-				String studentFileName = CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), studentId, Utils.getDateTime(), ".pdf");
-				isrFileMap.put(studentId, studentFileName);
+						// Create Pdf file in disk
+						FileUtil.createFile(pdfFileName, input);
 
-				URL url1 = new URL(URLStringBuf.toString() + studentId);
-				fos = new FileOutputStream(studentFileName);
+						// Create Zip file in disk
+						// FileUtil.createFile(zipFileName, zipData);
+						List<String> list = new ArrayList<String>();
+						list.add(pdfFileName);
+						FileUtil.createZipFile(zipFileName, list);
 
-				// Contacting the URL
-				logger.log(IAppLogger.INFO, "\nConnecting to " + url1.toString() + " ... ");
-				URLConnection urlConn = url1.openConnection();
+						// Delete the Pdf file from disk
+						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 
-				// Checking whether the URL contains a PDF
-				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-					logger.log(IAppLogger.ERROR, studentId + " : FAILED.\n[Sorry. This is not a PDF.]");
-					log.append("Error getting ISR for " + studentId);
-				} else {
-					// Read the PDF from the URL and save to a local file
-					is = url1.openStream();
-					IOUtils.copy(is, fos);
+						requestFileName = zipFileName;
+						fileSize = new Long(input.length);
+						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+						jobLog = "Asynchoronous Combined Pdf";
+					} else if ("SP".equals(button)) {
+						// TODO : convention implementation
+						Long orgNodeId = Long.parseLong(school);
+						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
+						// fileName = reportService.getConventionalFileNameGD(orgNodeId);
+						// String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
+						// String zipFileName = fileNames[0] + ".zip";
+						String zipFileName = fileName + ".zip";
+						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
+
+						// Create Zip file in disk from all the pdf files
+						FileUtil.createDuplexZipFile(zipFileName, filePaths);
+
+						requestFileName = zipFileName;
+						fileSize = FileUtil.fileSize(zipFileName);
+						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+						jobLog = "Asynchoronous Separate Pdfs";
+					}
+				} catch (FileNotFoundException e) {
+					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+					jobLog = e.getMessage();
+					e.printStackTrace();
+				} catch (IOException e) {
+					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+					jobLog = e.getMessage();
+					e.printStackTrace();
 				}
+			} else {
+				jobLog = "No File to download";
+				logger.log(IAppLogger.INFO, jobLog);
 			}
-		} catch (Exception npe) {
-			logger.log(IAppLogger.ERROR, studentIds + " : FAILED.\n[" + npe.getMessage() + "]\n");
-			log.append("Error ISR files : " + npe.getMessage());
-			// set status to error
-			jobTO.setStatus(IApplicationConstants.ERROR_FLAG);
-			jobTO.setLog(log.toString());
-			updateJobStatusAnsLog(jobTO);
-			System.exit(0);
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(fos);
+		} else {
+			jobLog = "Invalid REQUEST_DETAILS Field";
+			logger.log(IAppLogger.WARN, jobLog);
 		}
 
-		if (icDownload) {
-			procesICFiles(jobTO, folderLoc, students, isrFileMap, log);
-		} else {
-			// archive files based on parameters
-			procesFiles(jobTO, folderLoc, students, isrFileMap, log);
+		to.setFileName(requestFileName);
+		to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
+		to.setRequestDetails(clobStr);
+		to.setJobLog(jobLog);
+		to.setJobStatus(jobStatus);
+		if (fileSize == null) {
+			fileSize = 0L;
 		}
+		to.setFileSize(fileSize.toString());
+		to.setJobId(jobId);
+		int updateCount = reportBusiness.updateJobTracking(to);
+		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
+		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 
 		// email notification
 		// TODO code for email notification

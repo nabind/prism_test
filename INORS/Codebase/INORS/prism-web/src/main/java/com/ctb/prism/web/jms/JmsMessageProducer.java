@@ -50,7 +50,7 @@ public class JmsMessageProducer {
 	 * @param jobId
 	 * @throws JMSException
 	 */
-	public void sendJobForProcessing(final long jobId) throws JMSException {
+	public void sendJobForProcessing(final String jobId) throws JMSException {
 		LOG.info("Sending message to SQS for job : " + jobId);
 		/*jmsTemplate.send(new MessageCreator() {
 			public Message createMessage(Session session) throws JMSException {

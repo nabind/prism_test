@@ -373,7 +373,7 @@ public class InorsController {
 			String querysheetFile = PdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(bulkDownloadTO.getJobId());
+			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId());
 
 			if (bulkDownloadTO.getJobId() != 0)
 				status = "Success";
@@ -564,18 +564,24 @@ public class InorsController {
 			}
 			logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
 			handler = "success";
+		
+			// TODO : JMS Integration for processGroupDownload() method
+			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
+			messageProducer.sendJobForProcessing(jobTrackingId);
+			//processGroupDownload(jobTrackingId);
+			
+			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
+					jobTrackingId, "\"}");
+			logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
+			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction()");
+			return jsonString;
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
-			e.printStackTrace();
+			handler = "error";
+			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
+					jobTrackingId, "\"}");
+			return jsonString;
 		}
-		String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
-				jobTrackingId, "\"}");
-		logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
-
-		// TODO : JMS Integration for processGroupDownload() method
-		processGroupDownload(jobTrackingId);
-		logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction()");
-		return jsonString;
 	}
 
 	/**
@@ -941,7 +947,7 @@ public class InorsController {
 			String querysheetFile = PdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(bulkDownloadTO.getJobId());
+			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId());
 
 			if (bulkDownloadTO.getJobId() != 0)
 				status = "Success";

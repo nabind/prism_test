@@ -5,11 +5,18 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <hgroup id="main-title" class="thin">
-<p>This section includes files for the Bulk Candidate Report and Student Data File. The File Type column in the section below will indicate IC when the file contains Invitation Code Letters. Other file types will be blank.</p>
-<p class="big-message">
-	<span class="orange big-message-icon icon-speech"></span>
-	Please note: The length of time to create your file depends upon the volume of requests made by all INORS users. Thanks for your patience!</p>
-<p class="red">File will be deleted automatically after expiration date.</p>
+<p class="big-message">This section includes files for the ISTEP+, IMAST and IREAD-3 Student Reports, and for ISTEP+ only the Image Prints and Invitation Code Letters. The File Type column in the section below will indicate IC when the file contains Invitation Code Letters. Other file types will be blank.
+<br/><br/>If the Image Print document (Applied Skills) is not available for a student, please contact your School or Corporation Test Coordinator.<br/>If the ISR (Individual Student Report) is not available for a student, please contact the CTB/Indiana Help Desk.</p>
+<p class="red">
+	<span class="tag red-gradient">Please Note:</span> The length of time to create your file depends upon the volume of requests made by all INORS users. Thanks for your patience!
+</p>
+<p class="red">Files will be deleted automatically after the expiration date/time. Click <b>Refresh</b> to get the current job status.</p>
+<a href="javascript:location.reload();" class="button with-tooltip tooltip-right" title="Click to get the current status.">
+	<span class="button-icon"><span class="icon-refresh"></span></span>
+	Refresh
+</a>
+
+<hr/>
 </hgroup>
 <style>
 	.label {width: 160px !important}
@@ -49,10 +56,10 @@
 
 		                                            <c:choose>
 		    											<c:when test="${group.jobStatus=='ER'}">
-		    												<span class="icon-cross-round icon-size2 red" title="Error"></span>
+		    												<span class="button icon-cross-round icon-size2 red" title="Error"></span>
 		    											</c:when>
 		    											<c:when test="${group.jobStatus=='CO'}">
-		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="button icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
+		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="blue-gradient button icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
 		    											</c:when>
 														<c:otherwise>
 															 <span class="loader working" title="In Progress"></span>

@@ -901,6 +901,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String GET_IC_FILE_PATHS = "SELECT ICID VALUE, IC_FILE_LOC NAME FROM INVITATION_CODE WHERE STUDENT_BIO_ID IN (?)";
 	public static final String GET_STUDENTS_PDF_FILE_PATHS = "SELECT STU_PDF_FILEID VALUE, FILENAME NAME FROM STUDENT_PDF_FILES WHERE STUDENT_BIO_ID IN (?)";
+	public static final String GET_STUDENTS_PDF_FILE_PATHS_ISR = CustomStringUtil.appendString(
+			" SELECT STU_PDF_FILEID VALUE, FILENAME NAME FROM STUDENT_PDF_FILES SPF, pdf_reports PR" ,
+			" where SPF.pdf_reportid = PR.pdf_reportid and  pr.report_name = 'ISR' and STUDENT_BIO_ID IN (?)"
+			);
+	public static final String GET_STUDENTS_PDF_FILE_PATHS_IP = CustomStringUtil.appendString(
+			" SELECT STU_PDF_FILEID VALUE, FILENAME NAME FROM STUDENT_PDF_FILES SPF, pdf_reports PR" ,
+			" where SPF.pdf_reportid = PR.pdf_reportid and  pr.report_name = 'IP' and STUDENT_BIO_ID IN (?)"
+			);
 
 }
 
