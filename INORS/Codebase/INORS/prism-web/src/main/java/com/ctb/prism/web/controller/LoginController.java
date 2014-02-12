@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -50,20 +51,15 @@ public class LoginController {
 	private List<String> prismUserHomePage;
 	private List<ReportTO> homePageByRoleEntries;
 
-	@Autowired
-	private IPropertyLookup propertyLookup;
+	@Autowired private IPropertyLookup propertyLookup;
 
-	@Autowired
-	private ILoginService loginService;
+	@Autowired private ILoginService loginService;
 
-	@Autowired
-	private IReportService reportService;
+	@Autowired private IParentService parentService;
 
-	@Autowired
-	private IParentService parentService;
-
-	@Autowired
-	private IAdminService adminService;
+	@Autowired private IAdminService adminService;
+	
+	@Autowired private CookieThemeResolver themeResolver;
 
 	@RequestMapping(value = "/error", method = RequestMethod.POST)
 	public ModelAndView error(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -177,9 +173,9 @@ public class LoginController {
 	@RequestMapping(value = "/userlogin", method = RequestMethod.GET)
 	public ModelAndView userlogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.log(IAppLogger.INFO, "Enter: userlogin()");
-		logger.log(IAppLogger.INFO, ""+propertyLookup.get("theme.name"));
+		logger.log(IAppLogger.INFO, "theme -------------> "+themeResolver.resolveThemeName(request));
 		String mess_login_error = (String) request.getParameter("login_error");
-		String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
+		String parent = themeResolver.resolveThemeName(request); //request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		String message = null;
 		Map<String, Object> paramMapParent = new HashMap<String, Object>();
 		Map<String, Object> paramMapTeacher = new HashMap<String, Object>();
@@ -194,7 +190,7 @@ public class LoginController {
 			// this is proper login
 		}
 		ModelAndView modelAndView = null;
-		if (IApplicationConstants.TRUE.equals(parent)) {
+		if (IApplicationConstants.PARENT_LOGIN.equals(parent)) {
 			paramMapParent.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 			paramMapParent.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMapParent.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);

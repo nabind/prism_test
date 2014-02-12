@@ -270,7 +270,7 @@
 						</div>
 					</div>
 				</div>-->
-				<div class="seven-columns" style="margin-top:15px;margin-bottom:30px">
+				<div class="seven-columns" style="margin-top:15px;margin-bottom:30px;min-height: 230px;">
 					<div class="boxshade scrollable" style="height: 125px,width:100px;">
 						<div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
