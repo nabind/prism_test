@@ -11,6 +11,7 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
@@ -263,6 +264,15 @@ public final class Utils {
 			}
 		}
 		return returnStrBuff.toString();
+	}
+
+	public static String convertListToCommaString(List<String> list) {
+		String s = "";
+		if (list != null && !list.isEmpty()) {
+			s = list.toString();
+			s = s.substring(1, s.length() - 1);
+		}
+		return s;
 	}
 
 	/**

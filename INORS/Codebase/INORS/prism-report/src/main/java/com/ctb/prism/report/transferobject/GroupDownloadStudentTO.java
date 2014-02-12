@@ -9,7 +9,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
  * @author 796763
  * 
  */
-public class GroupDownloadStudentTO extends BaseTO {
+public class GroupDownloadStudentTO extends BaseTO implements Comparable<GroupDownloadStudentTO> {
 	private static final long serialVersionUID = 1L;
 	private Integer rowNum;
 	private String id;
@@ -154,6 +154,10 @@ public class GroupDownloadStudentTO extends BaseTO {
 	 */
 	public void setIc(String ic) {
 		this.ic = ic;
+	}
+
+	public int compareTo(GroupDownloadStudentTO o) {
+		return this.rowNum - o.getRowNum();
 	}
 
 }

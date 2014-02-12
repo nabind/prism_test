@@ -494,6 +494,8 @@ public class InorsController {
 			to.setTestProgram(testProgram);
 			to.setTestAdministrationVal(testAdministrationVal);
 			to.setDistrict(corpDiocese);
+			to.setCollationHierarchy(collationHierarchy);
+			to.setGroupFile(groupFile);
 			studentList = populateStudentTableGD(to);
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 			modelAndView.addObject("studentList", studentList);
@@ -564,7 +566,7 @@ public class InorsController {
 			}
 			logger.log(IAppLogger.INFO, "jobTrackingId = " + jobTrackingId);
 			handler = "success";
-		
+			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(jobTrackingId);
@@ -683,6 +685,7 @@ public class InorsController {
 
 		to.setFileName(requestFileName);
 		to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
+		to.setGdfExpiryTime(propertyLookup.get("gdfExpiryTime"));
 		to.setRequestDetails(clobStr);
 		to.setJobLog(jobLog);
 		to.setJobStatus(jobStatus);

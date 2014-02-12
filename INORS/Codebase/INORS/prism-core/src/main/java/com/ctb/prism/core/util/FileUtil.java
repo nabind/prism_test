@@ -12,9 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -304,21 +303,21 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void createZipFile(String zipFileName, List<String> filePaths) throws FileNotFoundException, IOException {
-		Set<String> filePathSet = new HashSet<String>(filePaths);
+		LinkedHashSet<String> filePathSet = new LinkedHashSet<String>(filePaths); // List with no duplicates
 		createZipFile(zipFileName, filePathSet);
 	}
 
 	/**
-	 * Creates a Zip file and places all files from the Set of filePaths into it.
+	 * Creates a Zip file and places all files from the List of filePaths into it.
 	 * 
 	 * @param zipFileName
 	 *            Zip file name
 	 * @param filePaths
-	 *            Set of file paths
+	 *            List of file paths with no duplicates
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void createZipFile(String zipFileName, Set<String> filePaths) throws FileNotFoundException, IOException {
+	public static void createZipFile(String zipFileName, LinkedHashSet<String> filePaths) throws FileNotFoundException, IOException {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {
@@ -388,7 +387,7 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void createDuplexZipFile(String zipFileName, List<String> filePaths) throws IOException {
-		Set<String> filePathSet = new HashSet<String>(filePaths);
+		LinkedHashSet<String> filePathSet = new LinkedHashSet<String>(filePaths); // List with no duplicates
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {

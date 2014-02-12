@@ -29,6 +29,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String customerId;
 
 	private String extractStartDate;
+	private String gdfExpiryTime;
 	private String requestDetails;
 	private String jobLog;
 	private String jobStatus;
@@ -288,6 +289,21 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setExtractStartDate(String extractStartDate) {
 		this.extractStartDate = extractStartDate;
+	}
+
+	/**
+	 * @return the gdfExpiryTime
+	 */
+	public String getGdfExpiryTime() {
+		return gdfExpiryTime;
+	}
+
+	/**
+	 * @param gdfExpiryTime
+	 *            the gdfExpiryTime to set
+	 */
+	public void setGdfExpiryTime(String gdfExpiryTime) {
+		this.gdfExpiryTime = gdfExpiryTime;
 	}
 
 	/**

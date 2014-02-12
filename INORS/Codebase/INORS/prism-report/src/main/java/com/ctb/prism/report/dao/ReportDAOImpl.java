@@ -1128,6 +1128,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String classId = to.getKlass();
 		String gradeId = to.getGrade();
 		String testProgram = to.getTestProgram();
+		String collationHierarchy = to.getCollationHierarchy();
+		String groupFile = to.getGroupFile();
 		if (testProgram == null) {
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 			return studentList;
@@ -1138,30 +1140,62 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "classId = " + classId);
 		logger.log(IAppLogger.INFO, "gradeId = " + gradeId);
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		logger.log(IAppLogger.INFO, "collationHierarchy = " + collationHierarchy);
 		logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
+
+		String stateOrgNodeId = getAncestorOrgNodeId(schoolId, 1);
+		String testAdministrationVal = to.getTestAdministrationVal();
+		String districtId = to.getDistrict();
+
+		logger.log(IAppLogger.INFO, "stateOrgNodeId = " + stateOrgNodeId);
+		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+
+		String orderBy = "";
+		if (collationHierarchy != null) {
+			if ("11".equals(collationHierarchy)) {
+				orderBy = "ORDER BY CLASS.ORG_NODE_NAME, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
+			} else if ("12".equals(collationHierarchy)) {
+				orderBy = "ORDER BY SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
+			}
+		}
 
 		List<Map<String, Object>> dataList = null;
 		if ("-1".equals(classId)) {
 			if ((schoolId != null) && (!"undefined".equalsIgnoreCase(schoolId))) {
-				logger.log(IAppLogger.INFO, "ALL classes");
-				String stateOrgNodeId = getAncestorOrgNodeId(schoolId, 1);
-				String testAdministrationVal = to.getTestAdministrationVal();
-				String districtId = to.getDistrict();
-
-				logger.log(IAppLogger.INFO, "stateOrgNodeId = " + stateOrgNodeId);
-				logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
-				logger.log(IAppLogger.INFO, "districtId = " + districtId);
-
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_STUDENT_TABLE_GD,
-						new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, gradeId });
+				logger.log(IAppLogger.INFO, "ALL Classes");
+				if ("-1".equals(gradeId)) {
+					logger.log(IAppLogger.INFO, "ALL Grades");
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES);
+					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					String grades = Utils.convertListToCommaString(gradeList);
+					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
+					logger.log(IAppLogger.INFO, query);
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, -99, testProgram });
+				} else {
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD);
+					logger.log(IAppLogger.INFO, query);
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, gradeId });
+				}
 			}
 		} else {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_TABLE_GD, new Object[] { orgMode, classId, gradeId });
+				if ("-1".equals(gradeId)) {
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD_ALL_GRADES);
+					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					String grades = Utils.convertListToCommaString(gradeList);
+					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
+					logger.log(IAppLogger.INFO, query);
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, classId });
+				} else {
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD);
+					logger.log(IAppLogger.INFO, query);
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, classId, gradeId });
+				}
 			}
 		}
-		Integer rowNum = 0;
 		if (dataList != null && dataList.size() > 0) {
+			Integer rowNum = 0;
 			for (Map<String, Object> data : dataList) {
 				rowNum = rowNum + 1;
 				String id = data.get("ID").toString();
@@ -1196,6 +1230,19 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "studentList.size() = " + studentList.size());
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		return studentList;
+	}
+
+	private List<String> getAllGrades(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
+		List<String> grades = new ArrayList<String>();
+		grades.add("-1");
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_GRADES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				grades.add((String) fieldDetails.get("GRADEID"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "Grades Size: " + grades.size());
+		return grades;
 	}
 
 	/*
@@ -1281,6 +1328,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		int updateCount = 0;
 
 		String request_filename = to.getFileName();
+		String gdfExpiryTime = to.getGdfExpiryTime();
 		String job_log = to.getJobLog();
 		String job_status = to.getJobStatus();
 		String file_size = to.getFileSize();
@@ -1288,16 +1336,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String request_details = to.getRequestDetails();
 
 		logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
+		logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
 		logger.log(IAppLogger.INFO, "job_log: " + job_log);
 		logger.log(IAppLogger.INFO, "job_status: " + job_status);
 		logger.log(IAppLogger.INFO, "file_size: " + file_size);
 		logger.log(IAppLogger.INFO, "job_id: " + job_id);
 		logger.log(IAppLogger.INFO, "request_details: " + request_details);
-		// GroupDownloadTO to = Utils.jsonToObject(request_details, GroupDownloadTO.class);
-		// to.setFileName(request_filename);
+
 		String request_summary = getRequestSummary(Utils.objectToJson(to));
 
-		updateCount = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB_TRACKING, request_filename, request_summary, job_log, job_status, file_size, job_id);
+		updateCount = getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
 		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 
 		logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
@@ -1333,43 +1381,56 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
 		return filePaths;
 	}
+	
+	private List<String> getFilePaths(String students, String parameterizedSql) {
+		List<String> filePaths = new ArrayList<String>();
+		String[] studentIds = students.split(",");
+		// Loop used to ensure collation hierarchy
+		for (String studentId : studentIds) { // TODO : Don't use loop
+			String filePath = getResult(CustomStringUtil.replaceCharacterInString('?', studentId, parameterizedSql));
+			if (filePath != null) {
+				filePaths.add(filePath);
+			}
+		}
+		logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
+		return filePaths;
+	}
 
 	/**
 	 * Gets the list of IC letter paths.
 	 * 
 	 * @param students
+	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
 	private List<String> getICLetterPaths(String students) {
-		List<String> icLetterPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_IC_FILE_PATHS));
-		logger.log(IAppLogger.INFO, "IC Letters : " + icLetterPaths.size());
+		List<String> icLetterPaths = getFilePaths(students, IQueryConstants.GET_IC_FILE_PATH);
+		logger.log(IAppLogger.INFO, "IC Size: " + icLetterPaths.size());
 		return icLetterPaths;
 	}
 
 	/**
 	 * Gets the list of Individual Student Report paths.
 	 * 
-	 * @param students
+	 * @param students Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
 	private List<String> getISRPaths(String students) {
-		// TODO : Change the query
-		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS_ISR));
-		logger.log(IAppLogger.INFO, "ISRs : " + studentPdfPaths.size());
-		return studentPdfPaths;
+		List<String> isrPaths = getFilePaths(students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_ISR);
+		logger.log(IAppLogger.INFO, "ISR Size: " + isrPaths.size());
+		return isrPaths;
 	}
 
 	/**
 	 * Gets the list of Image Print paths.
 	 * 
-	 * @param students
+	 * @param students Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
 	private List<String> getIPPaths(String students) {
-		// TODO : Change the query
-		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS_IP));
-		logger.log(IAppLogger.INFO, "Image Prints : " + studentPdfPaths.size());
-		return studentPdfPaths;
+		List<String> ipPaths = getFilePaths(students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_IP);
+		logger.log(IAppLogger.INFO, "IP Size: " + ipPaths.size());
+		return ipPaths;
 	}
 
 	/**
@@ -1379,10 +1440,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return
 	 */
 	private List<String> getBothPaths(String students) {
-		// TODO : Change the query
-		List<String> studentPdfPaths = getResults(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATHS));
-		logger.log(IAppLogger.INFO, "Size : " + studentPdfPaths.size());
-		return studentPdfPaths;
+		List<String> bothPaths = getISRPaths(students);
+		bothPaths.addAll(getIPPaths(students));
+		logger.log(IAppLogger.INFO, "Size : " + bothPaths.size());
+		return bothPaths;
 	}
 
 	/**
@@ -1401,6 +1462,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Results : " + results.size());
 		logger.log(IAppLogger.INFO, "Exit: getResults()");
 		return results;
+	}
+
+	/**
+	 * Returns a scalar result.
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private String getResult(String query) {
+		logger.log(IAppLogger.INFO, "Enter: getResult()");
+		logger.log(IAppLogger.INFO, query);
+		String result = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				result = (String) fieldDetails.get("LABELID");
+				break;
+			}
+		}
+		logger.log(IAppLogger.INFO, "Exit: getResult()");
+		return result;
 	}
 
 	/**
