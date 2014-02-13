@@ -233,7 +233,7 @@
 			<div class="columnss">
 				<div class="seven-columns">
 					<div>
-						<img alt="" src="themes/acsi/img/login_welcome_inors.bmp" >
+						<img alt="" src="themes/acsi/img/login_welcome_inors.png" >
 					</div>
 					<div class="boxsshade">
 						<div class="rowTwo">
