@@ -38,7 +38,11 @@ public interface IApplicationConstants {
 	public static enum JOB_STATUS {
 		SU, IP, CO, ER, DE, AR, FT
 	};
-	
+
+	public static enum DASH_MESSAGE_TYPE {
+		PSCM, FN, RN, GSCM, EN, RP, RPN, DM, RM, RL, MI, RSCM
+	};
+
 	public static String[] xssUserInputPatterns = { "applet", "body", "embed", "frame",
 		"script", "frameset", "html", "iframe", "img", "style", "layer",
 		"link", "ilayer", "meta", "object" };
@@ -189,6 +193,7 @@ public interface IApplicationConstants {
 	public static final String REPORT_SPECIFIC_MESSAGE_TYPE = "RSCM";
 	public static final String MORE_INFO = "More Info";
 	public static final String GROUP_DOWNLOAD_INSTRUCTION = "Group Download Instruction";
+	public static final String DATALOAD_MESSAGE = "Dataload Message";
 
 	// Article/Content type
 	public static final String CONTENT_TYPE_ACT = "ACT";

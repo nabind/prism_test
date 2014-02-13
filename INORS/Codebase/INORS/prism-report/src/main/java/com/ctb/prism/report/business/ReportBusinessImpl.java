@@ -621,4 +621,13 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public int updateJobTracking(GroupDownloadTO to) {
 		return reportDAO.updateJobTracking(to);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportMessage(java.util.Map)
+	 */
+	public String getReportMessage(Map<String, Object> paramMap) {
+		return reportDAO.getReportMessage(paramMap);
+	}
 }

@@ -344,4 +344,13 @@ public class ReportServiceImpl implements IReportService {
 	public int updateJobTracking(GroupDownloadTO to) {
 		return reportBusiness.updateJobTracking(to);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getReportMessage(java.util.Map)
+	 */
+	public String getReportMessage(Map<String, Object> paramMap) {
+		return reportBusiness.getReportMessage(paramMap);
+	}
 }

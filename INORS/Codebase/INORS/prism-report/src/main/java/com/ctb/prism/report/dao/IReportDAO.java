@@ -248,6 +248,12 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
+	
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String getReportMessage(Map<String, Object> paramMap);
 
 	/**
 	 * @param processId

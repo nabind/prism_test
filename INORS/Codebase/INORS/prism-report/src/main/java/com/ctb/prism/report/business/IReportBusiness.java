@@ -242,4 +242,10 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public int updateJobTracking(GroupDownloadTO to);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String getReportMessage(Map<String, Object> paramMap);
 }

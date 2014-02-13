@@ -1514,6 +1514,30 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getSystemConfigurationMessage(): " + String.valueOf(t2 - t1) + "ms");
 		return systemConfig;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getReportMessage(java.util.Map)
+	 */
+	public String getReportMessage(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
+		String reportId = (String) paramMap.get("REPORT_ID");
+		String messageType = (String) paramMap.get("MESSAGE_TYPE");
+		String messageName = (String) paramMap.get("MESSAGE_NAME");
+		String productId = (String) paramMap.get("PRODUCT_ID");
+		String customerId = (String) paramMap.get("CUSTOMER_ID");
+		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");
+		String message = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_REPORT_MESSAGE, reportId, messageType, messageName, productId, customerId, orgNodeLevel);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				message = (String) fieldDetails.get("REPORT_MSG");
+			}
+		}
+		logger.log(IAppLogger.INFO, "Exit: getReportMessage()");
+		return message;
+	}
 
 	/*
 	 * (non-Javadoc)

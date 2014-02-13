@@ -7,7 +7,6 @@
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	<dl class="download-instructions accordion same-height">
-		
 		<c:if test="${not empty testAdministrationVal}"><dt class="closed"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
 		<c:if test="${empty testAdministrationVal}"><dt class="open"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span></c:if>
 		</span> Instructions</dt>
@@ -16,8 +15,11 @@
 				${groupDownloadInstructionMessage}
 		</dd>
 	</dl>
-	
-	<c:if test="${not empty testAdministrationVal}">
+	<c:choose>
+	<c:when test="${not empty dataloadMessage}">
+		<div class="message small-margin-bottom orange-gradient dataload-message">${dataloadMessage}</div>
+	</c:when>
+	<c:otherwise>
 	<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 		<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableGD">
 			<thead>
@@ -95,7 +97,8 @@
 		<input type="hidden" name="endIndex" id="endIndex" />
 		<input type="hidden" name="length" id="length" />
 	</div>
-	</c:if>
+	</c:otherwise>
+	</c:choose>
 	</form:form>
 	<input type="hidden" id="q_testAdministrationVal" value="${testAdministrationVal}" />
 	<input type="hidden" id="q_testAdministrationText" value="${testAdministrationText}" />

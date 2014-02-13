@@ -397,6 +397,24 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Exit: icLetterDownloads()");
 		return groupDownloadForm(request, response);
 	}
+	
+	private String getDataLoadMessage(String reportId, String productId, String customerId, String currentOrgLevel) {
+		String dataLoadMessage = null;
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("REPORT_ID", reportId);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString());
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.DATALOAD_MESSAGE);
+			paramMap.put("PRODUCT_ID", productId);
+			paramMap.put("CUSTOMER_ID", customerId);
+			paramMap.put("ORG_NODE_LEVEL", currentOrgLevel);
+			dataLoadMessage = reportService.getReportMessage(paramMap);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
+		}
+		return dataLoadMessage;
+	}
 
 	/**
 	 * Entry method for group download screen. This method takes care of the text box and drop down values.
@@ -414,9 +432,11 @@ public class InorsController {
 		String reportId = (String) request.getParameter("reportId");
 		logger.log(IAppLogger.INFO, "reportId=" + reportId);
 		paramMap.put("REPORT_ID", reportId);
-		paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
+		paramMap.put("MESSAGE_TYPE", IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString());
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
 		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);
+		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		Long orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL));
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
@@ -424,7 +444,35 @@ public class InorsController {
 		}
 		String reportUrl = (String) request.getParameter("reportUrl");
 		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		String testProgram = (String) request.getParameter("p_test_program");
+		String corpDiocese = (String) request.getParameter("p_corpdiocese");
+		String school = (String) request.getParameter("p_school");
+		String klass = (String) request.getParameter("p_class");
+		String grade = (String) request.getParameter("p_grade");
+		String groupFile = (String) request.getParameter("p_generate_file");
+		String collationHierarchy = (String) request.getParameter("p_collation");
 
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		logger.log(IAppLogger.INFO, "klass=" + klass);
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+		
+		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
+		modelAndView.addObject("testProgram", testProgram);
+		modelAndView.addObject("corpDiocese", corpDiocese);
+		modelAndView.addObject("school", school);
+		modelAndView.addObject("klass", klass);
+		modelAndView.addObject("grade", grade);
+		modelAndView.addObject("groupFile", groupFile);
+		modelAndView.addObject("collationHierarchy", collationHierarchy);
+		
+		String dataloadMessage = getDataLoadMessage(reportId, testAdministrationVal, customerId, orgNodeLevel.toString());
+		if (dataloadMessage == null) {
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		try {
 			Map<String, Object> parameters = null;
@@ -438,23 +486,7 @@ public class InorsController {
 			// get parameter values for report
 			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 
-			String testAdministrationVal = (String) request.getParameter("p_test_administration");
-			String testProgram = (String) request.getParameter("p_test_program");
-			String corpDiocese = (String) request.getParameter("p_corpdiocese");
-			String school = (String) request.getParameter("p_school");
-			String klass = (String) request.getParameter("p_class");
-			String grade = (String) request.getParameter("p_grade");
-			String groupFile = (String) request.getParameter("p_generate_file");
-			String collationHierarchy = (String) request.getParameter("p_collation");
-
-			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
-			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
-			logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
-			logger.log(IAppLogger.INFO, "school=" + school);
-			logger.log(IAppLogger.INFO, "klass=" + klass);
-			logger.log(IAppLogger.INFO, "grade=" + grade);
-			logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
-			logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+			
 
 			String fileName = (String) request.getParameter("fileName");
 			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
@@ -473,17 +505,9 @@ public class InorsController {
 			}
 			logger.log(IAppLogger.INFO, "fileName=" + fileName);
 			logger.log(IAppLogger.INFO, "email=" + email);
-
-			modelAndView.addObject("testAdministrationVal", testAdministrationVal);
-			modelAndView.addObject("testProgram", testProgram);
-			modelAndView.addObject("corpDiocese", corpDiocese);
-			modelAndView.addObject("school", school);
-			modelAndView.addObject("klass", klass);
-			modelAndView.addObject("grade", grade);
-			modelAndView.addObject("groupFile", groupFile);
-			modelAndView.addObject("collationHierarchy", collationHierarchy);
 			modelAndView.addObject("fileName", fileName);
 			modelAndView.addObject("email", email);
+			
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 
 			List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
@@ -496,7 +520,9 @@ public class InorsController {
 			to.setDistrict(corpDiocese);
 			to.setCollationHierarchy(collationHierarchy);
 			to.setGroupFile(groupFile);
-			studentList = populateStudentTableGD(to);
+			if (testProgram != null && "null".equalsIgnoreCase(testProgram)) {
+				studentList = populateStudentTableGD(to);
+			}
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 			modelAndView.addObject("studentList", studentList);
 			modelAndView.addObject("studentCount", studentList.size());
@@ -504,7 +530,9 @@ public class InorsController {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 			e.printStackTrace();
 		}
+		}
 		modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
+		modelAndView.addObject("dataloadMessage", dataloadMessage);
 		modelAndView.addObject("reportUrl", reportUrl);
 		logger.log(IAppLogger.INFO, "Exit: groupDownloadForm()");
 		return modelAndView;
@@ -1007,6 +1035,19 @@ public class InorsController {
 		request.getSession().removeAttribute("p_collation");
 		logger.log(IAppLogger.INFO, "Exit: clearGDCache()");
 	}
+	
+	private String getProductNameById(String testAdministrationVal) {
+		String productName = null;
+		try {
+			if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
+				productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.WARN, e.getMessage());
+			e.printStackTrace();
+		}
+		return (productName == null) ? "" : productName;
+	}
 
 	/**
 	 * Displays the GRT/IC File Download page with pre-populated corporation list.
@@ -1026,15 +1067,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
-		String productName = "";
-		try {
-			if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
-				productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.WARN, e.getMessage());
-			e.printStackTrace();
-		}
+		String productName = getProductNameById(testAdministrationVal);
 		logger.log(IAppLogger.INFO, "productName=" + productName);
 
 		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
@@ -1084,13 +1117,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 
-		String productName = "";
-		try {
-			productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
-		} catch (Exception e) {
-			logger.log(IAppLogger.WARN, e.getMessage());
-			e.printStackTrace();
-		}
+		String productName = getProductNameById(testAdministrationVal);
 		logger.log(IAppLogger.INFO, "productName=" + productName);
 		String[] tokens = productName.split(" ");
 		String product = tokens[0];

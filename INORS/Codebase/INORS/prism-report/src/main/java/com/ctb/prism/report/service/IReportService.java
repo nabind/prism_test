@@ -247,4 +247,10 @@ public interface IReportService {
 	 */
 	public int updateJobTracking(GroupDownloadTO to);
 
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public String getReportMessage(Map<String, Object> paramMap);
+
 }
