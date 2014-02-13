@@ -212,7 +212,9 @@ $(document).ready(function() {
 		var totalStudents = $("input[id^=check-student-]");
 		if(checkedStudents.length == totalStudents.length){
 			$('#check-all').attr('checked', 'checked');
+			$('#check-all').prop("indeterminate", false);
 		} else {
+			$('#check-all').prop("indeterminate", true);
 			$('#check-all').removeAttr('checked');
 		}
 	});
@@ -1087,7 +1089,7 @@ function showHideDivs() {
 				$("#icLinks").html('');
 				$("#grtLinks").html('<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a><br />');
 			} else if ("2013" == tokens[2]) {
-				if("ISTEP" == tokens[0] && "Spring" == tokens[1]) {
+				if("ISTEP+" == tokens[0] && "Spring" == tokens[1]) {
 					$("#icLinks").html('<a class="button" id="ic2013" href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a><br />');
 				} else {
 					$("#icLinks").html('');
