@@ -51,8 +51,8 @@
 				
 				<div class="boxshade" style="max-width:938px">
 					<p style="text-align:justify">
-					In partnership with CTB/McGraw-Hill, ACSI provides member schools a standardized assessment program called TerraNova3, ACSI Edition. It combines TerraNova3 with the ACSI Bible Assessment. <br><br>				
-					TerraNova3, ACSI Edition is a next-generation achievement test that provides a research-based test blueprint that aligns to today's challenging content and performance standards. It assists educators in their plan to enhance classroom instruction and improve student achievement, and to empower all students to succeed.<br><br>
+					In partnership with CTB/McGraw-Hill, INORS provides member schools a standardized assessment program called TerraNova3, INORS Edition. It combines TerraNova3 with the INORS Bible Assessment. <br><br>				
+					TerraNova3, INORS Edition is a next-generation achievement test that provides a research-based test blueprint that aligns to today's challenging content and performance standards. It assists educators in their plan to enhance classroom instruction and improve student achievement, and to empower all students to succeed.<br><br>
 					The Bible Assessment allows Christian school educators to assess students Bible knowledge and understanding and application of Scripture. The assessment also assists with evaluating the Bible curriculum and promoting dialogue among the staff and the school community.
 						<!--To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
 						Explore the links below for additional information, including <i>Why Standards Matter</i>, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.-->
@@ -62,7 +62,7 @@
 				<div class="" style="max-width:980px">
 					<h4 class="blue">Manage Account</h4>
 					<div class="boxshade">
-						<p>Use this page to update your personal information. You can also view information about which test data is available on ACSI Data Online for Parents for your school.</p>
+						<p>Use this page to update your personal information. You can also view information about which test data is available on INORS Data Online for Parents for your school.</p>
 						<ul class="bullet-list">
 							<li><a href="myAccount.do">My Account</a></li>
 							<li><a href="#nogo" class="claim-Invitation">Enter next Activation Code</a></li>
