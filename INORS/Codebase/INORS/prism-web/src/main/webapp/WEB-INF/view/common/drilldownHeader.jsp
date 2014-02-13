@@ -60,11 +60,11 @@
 				<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
 				PDF
 			</a>
-			<a href="#" class="button margin-left glossy compact with-tooltip" 
+			<!-- <a href="#" class="button margin-left glossy compact with-tooltip" 
 				title="Download report as Excel" param="_REPORT_URL_" count="_TAB_COUNT_" assessment="_ASSESSMENT_" onClick="downloadXls()">
 				<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
 				Excel
-			</a>
+			</a> -->
 		</div>
 	</div>
 	

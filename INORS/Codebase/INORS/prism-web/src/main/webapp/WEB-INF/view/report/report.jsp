@@ -107,11 +107,11 @@
 								<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
 								PDF
 							</a>
-							<a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
+							<!-- <a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
 								title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 								<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
 								Excel
-							</a>
+							</a> -->
 							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
                                <span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>More Info
                             </a>							
