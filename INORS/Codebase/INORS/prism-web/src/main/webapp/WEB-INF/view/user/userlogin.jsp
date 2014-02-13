@@ -156,12 +156,12 @@
 					</div>
 					<div class="boxsshade scrollable">
 						<div class="rowTwo">
-							<h1 class="h1style"><spring:message code="login.page.welcome"/></h1>
+							<h1 class="h1style" style="margin-left:0px"><spring:message code="login.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
 							</div>
 							
-					        <div class="boxshade">
+					        <div class="boxshade" style="margin-top:10px">
 						    <div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
 							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
@@ -233,7 +233,7 @@
 			<div class="columnss">
 				<div class="seven-columns">
 					<div>
-						<img alt="" src="themes/acsi/img/login_welcome_inors.png" >
+						<img alt="" src="themes/acsi/img/login_welcome_inors.bmp" >
 					</div>
 					<div class="boxsshade">
 						<div class="rowTwo">
