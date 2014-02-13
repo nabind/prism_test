@@ -3,7 +3,7 @@
 
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
-<div class="margin-bottom-medium" style="min-height: 550px;">
+<div class="margin-bottom-medium std-matter-parent-div">
 	<h3>Standards, Testing, and NCLB</h3>
 
 	<p>
@@ -23,8 +23,7 @@
 		2002 reauthorization of the Elementary and Secondary Education Act.
 	</p>
 
-	<div class="content-panel"
-		style="padding-left: 0px; padding-right: 10px; border: none">
+	<div class="content-panel accordion-div">
 		<dl class="accordion">
 			<dt class="closed">
 				<span class="icon-info tracked"></span>

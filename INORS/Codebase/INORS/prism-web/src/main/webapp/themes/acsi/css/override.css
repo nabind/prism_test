@@ -1000,3 +1000,13 @@ height: 16px;
 	font-weight: normal !important; 
 	text-shadow: none !important
 }
+.std-matter-parent-div{
+	min-height: 550px; 
+	height: auto;
+}
+.accordion-div{
+	padding-left: 0px; 
+	padding-right: 10px; 
+	border: none; 
+	height: auto !important;
+}
