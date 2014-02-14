@@ -629,6 +629,7 @@ var newTab = true;
 // Add a tab
 function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, reportType, customUrl)
 {	
+	$(".reportButton").removeTooltip();
 	blockUI();
 	newTab = true;
 	// New tab id
@@ -884,6 +885,7 @@ function closeProgress(reportUrl, id, firstCall) {
 	$(".download-button-"+id).show(100);
 	// change refresh button color
 	$(".refreh-button-"+id).addClass('blue-gradient');
+	$(".reportButton").removeTooltip();
 	
 	if(reportUrl != null && !firstCall) {
 		checkpagination(reportUrl, id);
@@ -965,6 +967,8 @@ function getCascading(selectedObj) {
 	$(".download-button-"+tabCount).hide(100);
 	// change refresh report button color
 	$(".refreh-button-"+tabCount).removeClass('blue-gradient').addClass('green-gradient');
+	// show tooltip on refresh button
+	$(".refreh-button-"+tabCount).tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
 	
 	if($(selectedObj).val() != null) {
 	$.ajax({
