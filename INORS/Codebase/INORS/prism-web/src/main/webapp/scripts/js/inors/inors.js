@@ -18,7 +18,7 @@ var chkTreeContainerObj;
 $(document).ready(function() {
 	
 	// get home page message - after page is loaded
-	//openInorsHomePage();
+	openInorsHomePage();
 	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
@@ -244,23 +244,32 @@ $(document).ready(function() {
 });
 
 // =============== get inors home page message =====================
-/*function openInorsHomePage() {
+function openInorsHomePage() {
 	if($("#inorsHome").length > 0) {
+		blockUI();
 		$.ajax({
 			type : "GET",
-			url : "loadHomePage.do",
+			url : "loadHomePageMsg.do",
 			data : null,
-			dataType : 'html',
-			cache:false,
+			dataType : 'json',
+			cache:true,
 			success : function(data) {
-				$("#inorsHome").html(data);						
+				unblockUI();
+				$("#inorsHome").html(data.message);						
 			},
 			error : function(data) {
+			//alert(data.status + " - " + data.responseText.message);
+			if (data.status == "200") {
+				//var obj = JSON.parseJSON(data.responseText);
+				//alert("failure"+JSON.stringify(obj));
+				$("#inorsHome").html(data.responseText);	
+			} else {
 				$("#inorsHome").html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
-			}
+			}				
+		  }
 		});
 	}
-}*/
+}
 
 // =============== retain group download files field values =====================
 function retainDownloadValues() {

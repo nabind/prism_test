@@ -899,20 +899,20 @@ public class LoginController {
 		return null;
 	}
 
-	/**
+/*	*//**
 	 * Inors home page
 	 * 
 	 * @param req
 	 * @param res
 	 * @return
 	 * @throws IOException
-	 */
+	 *//*
 	@RequestMapping(value = "/inorsHome", method = RequestMethod.GET)
 	public ModelAndView inorsHome(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
 		ModelAndView modelAndView = new ModelAndView("user/inorsHome");
 		return modelAndView;
-	}
+	}*/
 
 	/**
 	 * Changed by Arunava Datta Load user specific dynamic login page message
@@ -927,13 +927,42 @@ public class LoginController {
 
 		// TODO get home page message based on logged in user
 		ModelAndView modelAndView = new ModelAndView("user/inorsHome");
-		Map<String, Object> paramMap = new HashMap<String, Object>();
+		/*Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
 		String inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
-		modelAndView.addObject("inorsHomePageInfoMessage", inorsHomePageInfoMessage);
+		modelAndView.addObject("inorsHomePageInfoMessage", inorsHomePageInfoMessage);*/
 		return modelAndView;
+	}
+	
+	
+	/**
+	 * Changed by Abir Load user specific dynamic login page message
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/loadHomePageMsg", method = RequestMethod.GET)
+	@ResponseBody
+	public String loadHomePageMsg(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+		paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
+		String inorsHomePageInfoMessage = null;
+		try {
+			inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
+			res.getWriter().write("{\"message\":\"" + inorsHomePageInfoMessage == null ? "" : inorsHomePageInfoMessage + "\"}");
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} finally {
+			logger.log(IAppLogger.INFO, "loading HomePageMsg");
+		}
+		return  null;//"{\"message\":\"" + inorsHomePageInfoMessage == null ? "" : inorsHomePageInfoMessage + "\"}";
 	}
 
 }
