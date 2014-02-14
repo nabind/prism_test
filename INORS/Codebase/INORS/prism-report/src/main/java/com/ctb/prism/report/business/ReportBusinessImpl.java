@@ -630,4 +630,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String getReportMessage(Map<String, Object> paramMap) {
 		return reportDAO.getReportMessage(paramMap);
 	}
+
+	public String getRequestSummary(String requestDetails) {
+		return reportDAO.getRequestSummary(requestDetails);
+	}
 }

@@ -248,4 +248,10 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public String getReportMessage(Map<String, Object> paramMap);
+
+	/**
+	 * @param requestDetails
+	 * @return
+	 */
+	public String getRequestSummary(String requestDetails);
 }

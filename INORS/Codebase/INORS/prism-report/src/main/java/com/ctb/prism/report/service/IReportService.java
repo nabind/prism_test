@@ -253,4 +253,10 @@ public interface IReportService {
 	 */
 	public String getReportMessage(Map<String, Object> paramMap);
 
+	/**
+	 * @param requestDetails
+	 * @return
+	 */
+	public String getRequestSummary(String requestDetails);
+
 }

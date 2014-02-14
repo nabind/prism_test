@@ -248,7 +248,7 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
-	
+
 	/**
 	 * @param paramMap
 	 * @return
@@ -274,4 +274,10 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public int updateJobTracking(GroupDownloadTO to);
+
+	/**
+	 * @param requestDetails
+	 * @return
+	 */
+	public String getRequestSummary(String requestDetails);
 }

@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -33,9 +34,11 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * This class contains various file handling utility methods:
@@ -450,4 +453,29 @@ public class FileUtil {
 		}
 		return baos.toByteArray();
 	}
+
+	/**
+	 * Creates a Pdf file with even number of page.
+	 * 
+	 * @param pdfFileName
+	 * @param pdfContent
+	 */
+	public static void createDuplexPdf(String pdfFileName, String pdfContent) {
+		try {
+			OutputStream file = new FileOutputStream(new File(pdfFileName));
+			Document document = new Document();
+			PdfWriter.getInstance(document, file);
+			document.open();
+			document.add(new Paragraph(pdfContent));
+			int n = document.getPageNumber();
+			if (Utils.isOdd(n)) {
+				document.add(new Rectangle(8.27F, 11.69F));
+			}
+			document.close();
+			file.close();
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Unable to Create Duplex Pdf");
+		}
+	}
+
 }

@@ -353,4 +353,13 @@ public class ReportServiceImpl implements IReportService {
 	public String getReportMessage(Map<String, Object> paramMap) {
 		return reportBusiness.getReportMessage(paramMap);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getRequestSummary(java.lang.String)
+	 */
+	public String getRequestSummary(String requestDetails) {
+		return reportBusiness.getRequestSummary(requestDetails);
+	}
 }

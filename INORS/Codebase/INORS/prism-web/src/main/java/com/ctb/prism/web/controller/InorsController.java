@@ -520,7 +520,7 @@ public class InorsController {
 			to.setDistrict(corpDiocese);
 			to.setCollationHierarchy(collationHierarchy);
 			to.setGroupFile(groupFile);
-			if (testProgram != null && "null".equalsIgnoreCase(testProgram)) {
+			if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
 				studentList = populateStudentTableGD(to);
 			}
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
@@ -624,7 +624,7 @@ public class InorsController {
 	 */
 	private void processGroupDownload(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
-		String requestFileName = null;
+		//// String requestFileName = null;
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		Long fileSize = null;
@@ -645,16 +645,33 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "school: " + school);
 			logger.log(IAppLogger.INFO, "students: " + students);
 
+			String pdfFileName = fileName + ".pdf";
+			String zipFileName = fileName + ".zip";
+			String quarySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
+			String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
+
+			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
+			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
+
+			to.setFileName(zipFileName);
+			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
+			to.setGdfExpiryTime(gdfExpiryTime);
+			to.setRequestDetails(clobStr);
+
 			filePaths = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
 			if (!filePaths.isEmpty()) {
+				// The default naming convention is: Username + Date Time Stamp
+				String querySheetAsString = reportService.getRequestSummary(Utils.objectToJson(to));
+				FileUtil.createDuplexPdf(quarySheetFileName, querySheetAsString);
+				filePaths.add(0, quarySheetFileName);
 				try {
 					if ("CP".equals(button)) {
 						// The default naming convention is: Username + Date Time Stamp
-						String pdfFileName = fileName + ".pdf";
-						String zipFileName = fileName + ".zip";
-						logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
+						//// String pdfFileName = fileName + ".pdf";
+						//// String zipFileName = fileName + ".zip";
+						//// logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
 
 						// Merge Pdf files
 						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
@@ -671,7 +688,7 @@ public class InorsController {
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 
-						requestFileName = zipFileName;
+						//// requestFileName = zipFileName;
 						fileSize = new Long(input.length);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
@@ -682,17 +699,18 @@ public class InorsController {
 						// fileName = reportService.getConventionalFileNameGD(orgNodeId);
 						// String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
 						// String zipFileName = fileNames[0] + ".zip";
-						String zipFileName = fileName + ".zip";
+						//// String zipFileName = fileName + ".zip";
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
 						FileUtil.createDuplexZipFile(zipFileName, filePaths);
 
-						requestFileName = zipFileName;
+						//// requestFileName = zipFileName;
 						fileSize = FileUtil.fileSize(zipFileName);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Separate Pdfs";
 					}
+					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(quarySheetFileName).delete());
 				} catch (FileNotFoundException e) {
 					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
@@ -711,10 +729,10 @@ public class InorsController {
 			logger.log(IAppLogger.WARN, jobLog);
 		}
 
-		to.setFileName(requestFileName);
-		to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
-		to.setGdfExpiryTime(propertyLookup.get("gdfExpiryTime"));
-		to.setRequestDetails(clobStr);
+		//// to.setFileName(requestFileName);
+		//// to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
+		//// to.setGdfExpiryTime(propertyLookup.get("gdfExpiryTime"));
+		//// to.setRequestDetails(clobStr);
 		to.setJobLog(jobLog);
 		to.setJobStatus(jobStatus);
 		if (fileSize == null) {

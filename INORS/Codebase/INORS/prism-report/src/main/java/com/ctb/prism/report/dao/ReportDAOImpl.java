@@ -940,7 +940,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param requestDetails
 	 * @return
 	 */
-	private String getRequestSummary(String requestDetails) {
+	public String getRequestSummary(String requestDetails) {
 		QuerySheetTO querySheetTO = getQuerySheetTO(IApplicationConstants.REQUEST_TYPE.GDF.toString(), requestDetails);
 		String jobId = querySheetTO.getJobId();
 		String productId = querySheetTO.getTestAdministration();
@@ -1344,6 +1344,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "request_details: " + request_details);
 
 		String request_summary = getRequestSummary(Utils.objectToJson(to));
+		logger.log(IAppLogger.INFO, "request_summary: " + request_summary);
 
 		updateCount = getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
 		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
@@ -1477,7 +1478,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
-				result = (String) fieldDetails.get("LABELID");
+				result = (String) fieldDetails.get("RESULT");
 				break;
 			}
 		}
