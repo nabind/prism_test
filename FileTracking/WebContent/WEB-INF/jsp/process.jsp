@@ -63,7 +63,7 @@
 			  String isEnabled = prop.getProperty("admin.year.enable");
 		 %>
 	    <input type="hidden" value="<%=isEnabled%>" id="hEnabled">	  
-		<h1>Search Process for Administration
+		<h1>Search ACSI Process for Administration
 		<select onChange="refreshList(this.value, 'view.htm')" id="theSelect">
 		 <%     java.util.List<AdminTO> adminList = (ArrayList) request.getSession().getAttribute("adminList");
 				String adminyear = (String) request.getSession().getAttribute("adminid");

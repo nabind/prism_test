@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -36,13 +37,14 @@ public class UserController extends MultiActionController {
 	
 	String jsonStr = "";
 	
+	@RequestMapping("/process/welcome.htm")
 	public ModelAndView welcome(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("welcome method called");
 		
 		return new ModelAndView("welcome", "message", "");
 	}
-	
+	@RequestMapping("/process/login.htm")
 	public ModelAndView login(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("login method called");
@@ -78,12 +80,12 @@ public class UserController extends MultiActionController {
     				}
     			}
     			
-    			StageDAOImpl stageDao = new StageDAOImpl();
-    			List<OrgProcess> processes = stageDao.getProcessDetails(
-    					(String) request.getSession().getAttribute("adminid"));
-    			request.getSession().setAttribute("allProcess", processes);
+//    			StageDAOImpl stageDao = new StageDAOImpl();
+//    			List<OrgProcess> processes = stageDao.getProcessDetails(
+//    					(String) request.getSession().getAttribute("adminid"));
+//    			request.getSession().setAttribute("allProcess", processes);
     			
-    			return new ModelAndView("office", "message", "");
+    			return new ModelAndView("process", "message", "");
     		}
     	}
 		
@@ -107,7 +109,7 @@ public class UserController extends MultiActionController {
 		}
 		return false;
 	}
-	
+	@RequestMapping("/process/logout.htm")
 	public ModelAndView logout(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("logout method called");
@@ -116,7 +118,7 @@ public class UserController extends MultiActionController {
 		
 		return new ModelAndView("welcome", "message", "");
 	}
-	
+	@RequestMapping("/process/view.htm")
 	public ModelAndView view(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("view method called");
@@ -147,6 +149,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/search.htm")
 	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("process method called");
@@ -190,6 +193,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/process.htm")
 	public ModelAndView process(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("process method called");
@@ -221,6 +225,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/processDetails.htm")
 	public @ResponseBody String processDetails(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("processDetails method called");
@@ -250,6 +255,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/updateEmail.htm")
 	public @ResponseBody String updateEmail(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("processDetails method called");
@@ -288,6 +294,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/sendEmail.htm")
 	public @ResponseBody String sendMail(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("send mail method called");
@@ -372,6 +379,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/viewPdf.htm")
 	public ModelAndView viewPdf(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("viewPdf method called");
@@ -480,7 +488,7 @@ public class UserController extends MultiActionController {
 		}
 		return fileData;
 	}
-	
+	@RequestMapping("/process/getProcessLog.htm")
 	public @ResponseBody String getProcessLog(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		try {
@@ -538,4 +546,5 @@ public class UserController extends MultiActionController {
         xstream.alias("process", OrgTO.class);
 		return xstream.toXML(processes);
 	}
+	
 }

@@ -20,8 +20,13 @@
   </definition>
   
   <definition name="process" extends="baseLayout">
-      <put-attribute name="title"  value="process"/>
+      <put-attribute name="title"  value="ACSI Process"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/process.jsp"/>      
+  </definition>
+  
+  <definition name="tascProcess" extends="baseLayout">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/tascProcess.jsp"/>      
   </definition>
   
   <definition name="friends" extends="baseLayout">
