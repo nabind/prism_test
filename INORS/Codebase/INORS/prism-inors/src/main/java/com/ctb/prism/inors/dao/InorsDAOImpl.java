@@ -182,10 +182,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	private List<GrtTO> getGRTList(final String userName, final String productId, final String testProgram, final String districtId, final String schoolId) {
-		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
 			if ("-1".equals(schoolId)) {
+				logger.log(IAppLogger.INFO, "All Schools");
 				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
@@ -212,6 +213,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					}
 				});
 			} else {
+				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
 				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
@@ -241,10 +243,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				});
 			}
 		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: getGRTList() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size());
 		}
-		logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size());
+		logger.log(IAppLogger.INFO, "Exit: getGRTList()");
 		return grtList;
 	}
 
@@ -523,10 +524,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	private List<InvitationCodeTO> getICList(final String productId, final String testProgram, final String districtId, final String schoolId) {
-		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: getICList()");
 		List<InvitationCodeTO> icList = null;
 		try {
 			if ("-1".equals(schoolId)) {
+				logger.log(IAppLogger.INFO, "All Schools");
 				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
@@ -552,6 +554,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					}
 				});
 			} else {
+				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
 				icList = (List<InvitationCodeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
@@ -578,10 +581,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				});
 			}
 		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: getICList() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "icList.size(): " + icList.size());
 		}
-		logger.log(IAppLogger.INFO, "icList.size(): " + icList.size());
+		logger.log(IAppLogger.INFO, "Exit: getICList()");
 		return icList;
 	}
 

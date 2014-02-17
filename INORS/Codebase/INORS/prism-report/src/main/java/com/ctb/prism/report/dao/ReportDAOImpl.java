@@ -896,9 +896,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			String dateOfFileGenerationRequest = to.getExtractStartDate();
 			String testAdministration = to.getTestAdministrationVal();
 			String testProgram = to.getTestProgram();
-			if("0".equals(testProgram)){
+			if ("0".equals(testProgram)) {
 				testProgram = "Non Public Schools";
-			} else if("1".equals(testProgram)){
+			} else if ("1".equals(testProgram)) {
 				testProgram = "Public Schools";
 			}
 			String corpDiocese = to.getDistrict();
@@ -908,8 +908,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			String fileType = to.getGroupFile();
 			String students = to.getStudents();
 			int studentCount = students.split(",").length;
-			int classCount = classNames.split(",").length;;
-			int schoolCount = gradeNames.split(",").length;;
+			int classCount = classNames.split(",").length;
+			int schoolCount = gradeNames.split(",").length;
 
 			logger.log(IAppLogger.INFO, "fileName: " + fileName);
 			logger.log(IAppLogger.INFO, "students: " + students);
@@ -963,10 +963,25 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		querySheetTO.setSchoolNames(valueMap.get(querySheetTO.getSchoolNames()));
 		querySheetTO.setGradeNames(valueMap.get("GRADE_NAME"));
 
+		GroupDownloadTO gdTo = null;
+		String stateOrgNodeId = null;
+		if (("-1".equals(klass)) || ("-1".equals(gradeId))) {
+			gdTo = Utils.jsonToObject(requestDetails, GroupDownloadTO.class);
+			stateOrgNodeId = getAncestorOrgNodeId(gdTo.getSchool(), 1);
+		}
+
+		List<String> classNameList = new ArrayList<String>();
 		if ("-1".equals(klass)) {
-			querySheetTO.setClassNames("All Classes");
+			classNameList = getAllClassNames(stateOrgNodeId);
 		} else {
-			querySheetTO.setClassNames(valueMap.get(querySheetTO.getClassNames()));
+			classNameList.add(valueMap.get(querySheetTO.getClassNames()));
+		}
+
+		List<String> gradeNameList = new ArrayList<String>();
+		if ("-1".equals(gradeId)) {
+			gradeNameList = getAllGradeNames(stateOrgNodeId, gdTo.getTestAdministrationVal(), corpDiocese, schools, gdTo.getGroupFile(), gdTo.getTestProgram());
+		} else {
+			gradeNameList.add(getResult(CustomStringUtil.replaceCharacterInString('?', gradeId, IQueryConstants.GET_GRADE_NAME_BY_ID)));
 		}
 
 		StringBuilder requestSummary = new StringBuilder();
@@ -976,8 +991,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		requestSummary.append("Test Program: " + querySheetTO.getTestProgram() + "\n");
 		requestSummary.append("Corp/Diocese: " + querySheetTO.getCorpDiocese() + "\n");
 		requestSummary.append("School: " + querySheetTO.getSchoolNames() + "\n");
-		requestSummary.append("Grade: " + querySheetTO.getGradeNames() + "\n");
-		requestSummary.append("Class: " + querySheetTO.getClassNames() + "\n\n\n");
+		requestSummary.append("Grade: " + Utils.convertListToCommaString(gradeNameList) + "\n");
+		requestSummary.append("Class: " + Utils.convertListToCommaString(classNameList) + "\n\n\n");
 		requestSummary.append(querySheetTO.getStudentCount() + " Student(s) have been selected.\n\n\n");
 		requestSummary.append("File Type: " + querySheetTO.getFileType() + "\n");
 		requestSummary.append("Request Type: " + querySheetTO.getRequestType());
@@ -1194,7 +1209,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				}
 			}
 		}
-		if (dataList != null && dataList.size() > 0) {
+		if ((dataList != null) && (!dataList.isEmpty())) {
 			Integer rowNum = 0;
 			for (Map<String, Object> data : dataList) {
 				rowNum = rowNum + 1;
@@ -1236,13 +1251,40 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<String> grades = new ArrayList<String>();
 		grades.add("-1");
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_GRADES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram);
-		if (lstData.size() > 0) {
+		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				grades.add((String) fieldDetails.get("GRADEID"));
 			}
 		}
 		logger.log(IAppLogger.INFO, "Grades Size: " + grades.size());
 		return grades;
+	}
+
+	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
+		List<String> grades = new ArrayList<String>();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+				.queryForList(IQueryConstants.GET_ALL_GRADE_NAMES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram);
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				grades.add((String) fieldDetails.get("GRADE_NAME"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "Grades Size: " + grades.size());
+		logger.log(IAppLogger.INFO, "Grades: " + grades);
+		return grades;
+	}
+
+	private List<String> getAllClassNames(String stateOrgNodeId) {
+		List<String> classes = new ArrayList<String>();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_CLASS_NAMES, stateOrgNodeId);
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				classes.add((String) fieldDetails.get("ORG_NODE_NAME"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "Classes Size: " + classes.size());
+		logger.log(IAppLogger.INFO, "Classes: " + classes);
+		return classes;
 	}
 
 	/*
@@ -1278,8 +1320,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;
 		String request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
-		// TODO : use json instead of pipe separated string
-		// String request_details_str = button + "|" + fileName + "|" + groupFile + "|" + orgNodeId + "|" + students; // See: InorsController.processGroupDownload()
 		String request_details_str = Utils.objectToJson(to);
 		String request_summary = "Group Download - " + groupFile;
 		InputStream is = null;
@@ -1382,7 +1422,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
 		return filePaths;
 	}
-	
+
 	private List<String> getFilePaths(String students, String parameterizedSql) {
 		List<String> filePaths = new ArrayList<String>();
 		String[] studentIds = students.split(",");
@@ -1413,7 +1453,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/**
 	 * Gets the list of Individual Student Report paths.
 	 * 
-	 * @param students Comma separated STUDENT_BIO_IDs
+	 * @param students
+	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
 	private List<String> getISRPaths(String students) {
@@ -1425,7 +1466,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/**
 	 * Gets the list of Image Print paths.
 	 * 
-	 * @param students Comma separated STUDENT_BIO_IDs
+	 * @param students
+	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
 	private List<String> getIPPaths(String students) {
@@ -1441,9 +1483,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return
 	 */
 	private List<String> getBothPaths(String students) {
-		List<String> bothPaths = getISRPaths(students);
-		bothPaths.addAll(getIPPaths(students));
-		logger.log(IAppLogger.INFO, "Size : " + bothPaths.size());
+		List<String> bothPaths = new ArrayList<String>();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_BOTH));
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				bothPaths.add((String) fieldDetails.get("FILENAME"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "Both Size: " + bothPaths.size());
 		return bothPaths;
 	}
 
@@ -1476,7 +1523,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, query);
 		String result = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
-		if (lstData.size() > 0) {
+		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				result = (String) fieldDetails.get("RESULT");
 				break;
@@ -1515,7 +1562,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getSystemConfigurationMessage(): " + String.valueOf(t2 - t1) + "ms");
 		return systemConfig;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1556,7 +1603,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setCreatedDateTime(createdDate);
 				to.setExtractFiletype((String) data.get("extract_filetype"));
 				to.setRequestType((String) data.get("request_type"));
-				to.setJobStatus((String) data.get("job_status")); 
+				to.setJobStatus((String) data.get("job_status"));
 				to.setRequestDetails((String) data.get("REQUEST_DETAILS"));
 				to.setQuerySheetTO(getQuerySheetTO((String) data.get("request_type"), (String) data.get("request_details")));
 			}
@@ -1583,6 +1630,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return conventionalFileName;
 	}
 
+	/**
+	 * Returns an Ancestor OrgNodeId for the mentioned OrgNodeLevel.
+	 * 
+	 * @param orgNodeId
+	 * @param ancestorLevel
+	 * @return
+	 */
 	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel) {
 		String ancestorOrgNodeId = "-1";
 		if (orgNodeId == null) {
@@ -1597,6 +1651,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return ancestorOrgNodeId;
 	}
 
+	/**
+	 * Returns the OrgNodeIdPath.
+	 * 
+	 * @param orgNodeId
+	 * @return
+	 */
 	public String getOrgNodeIdPath(String orgNodeId) {
 		if (orgNodeId == null) {
 			return "0";
@@ -1613,6 +1673,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return orgNodeIdPath.toString();
 	}
 
+	/**
+	 * Returns the Parent OrgNodeId.
+	 * 
+	 * @param orgNodeId
+	 * @return
+	 */
 	public String getParentOrgNodeId(String orgNodeId) {
 		String parentOrgNodeId = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);
