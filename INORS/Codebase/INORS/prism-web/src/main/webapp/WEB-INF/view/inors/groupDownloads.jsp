@@ -7,8 +7,8 @@
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	<dl class="download-instructions accordion same-height">
-		<c:if test="${not empty testAdministrationVal}"><dt class="closed"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
-		<c:if test="${empty testAdministrationVal}"><dt class="open"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span></c:if>
+		<c:if test="${not empty testAdministrationVal}"><dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
+		<c:if test="${empty testAdministrationVal}"><dt class="open accordion-header"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span></c:if>
 		</span> Instructions</dt>
 		<c:if test="${not empty testAdministrationVal}"><dd style="height: auto; display: none;" class="accordion-body with-padding"></c:if>
 		<c:if test="${empty testAdministrationVal}"><dd style="height: auto;" class="accordion-body with-padding"></c:if>

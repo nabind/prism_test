@@ -56,11 +56,11 @@ $(document).ready(function() {
 	});
 	
 	
-	/*$(".download-instructions").on("click", function() {
+	$(".accordion-header").on("click", function() {
 		$(".accordion-body").slideToggle(500);
 		$(".icon-plus-round").toggle();
 		$(".icon-minus-round").toggle();
-	});*/
+	});
 	
 	showHideDownloadButtons();
 	// this is to retain group download files field values
