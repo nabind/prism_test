@@ -42,7 +42,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "665838" };
+		// args = new String[] { "I", "604209" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -107,7 +107,7 @@ public class UserAccountPdf {
 			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
 					+ school.getDateStrWtYear() + "_IC.zip";
 			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
-			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"");
+			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1");
 			if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 				pdfPathList.add(letterLoc);
 			}

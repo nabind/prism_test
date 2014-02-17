@@ -33,6 +33,9 @@ public class ReportPDF {
 	 * @throws IOException
 	 */
 	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId) throws IOException {
+		logger.info("schoolId=" + schoolId);
+		logger.info("adminid=" + adminid);
+		logger.info("studentBioId=" + studentBioId);
 		// logger.info("studentBioId = " + studentBioId);
 		StringBuffer docBuff = new StringBuffer();
 		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("temp_IC_");
