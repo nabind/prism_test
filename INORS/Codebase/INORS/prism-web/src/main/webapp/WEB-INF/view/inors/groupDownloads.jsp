@@ -67,6 +67,8 @@
 			</tbody>
 		</table>
 	</div>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><strong>PDF File Generation has been requested. Click on 'Group Download Files' for Status of request(s).</strong></p>
+	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<div class="columns accordion with-padding" id="nameMailDiv">
 		<p class="inline-label">
 			<label for="fileName" class="label" style="width: 345px !important; float: left;">Name of Generated File (50 characters maximum): </label>
