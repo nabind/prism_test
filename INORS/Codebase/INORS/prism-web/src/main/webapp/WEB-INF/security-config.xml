@@ -23,12 +23,12 @@
 	<http pattern="/clearAllCache.do" security="none" />
 	<http pattern="/icDownload.do" security="none" />
 	<http pattern="/landing*" security="none" />
+	<http pattern="/getLoginMessage.do" security="none" />
 	<!-- <http pattern="/StudentDataloadService*" security="none" /> -->
 	    
    	<http auto-config="false" use-expressions="false" entry-point-ref="loginUrlAuthenticationEntryPoint">
 		<custom-filter ref="restAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
 		<intercept-url pattern="/landing.do" access="ROLE_ANONYMOUS,ROLE_USER" />
-		<intercept-url pattern="/login.do" access="ROLE_ANONYMOUS,ROLE_USER" />
 		<intercept-url pattern="/userlogin.do" access="ROLE_ANONYMOUS,ROLE_USER" />
 		<intercept-url pattern="/registration.do" access="ROLE_ANONYMOUS,ROLE_USER" />
 		<intercept-url pattern="/register.do" access="ROLE_ANONYMOUS,ROLE_USER" />
@@ -44,7 +44,7 @@
 	</http> 	
 	
 	<beans:bean id="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-		<beans:property name="loginFormUrl" value="/login.do"/>
+		<beans:property name="loginFormUrl" value="/userlogin.do"/>
 	</beans:bean>
 	
 	<beans:bean id="restAuthenticationFilter" class="com.ctb.prism.login.security.filter.RESTAuthenticationFilter">	

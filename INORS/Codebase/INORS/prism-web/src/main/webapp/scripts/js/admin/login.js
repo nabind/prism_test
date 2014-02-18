@@ -1,16 +1,17 @@
 
 $(document).ready(function() {
-		$(".login-password-help").keypress(function(evt){
-				if (evt.keyCode  == 13) { 
-					return false;
-				}					
-			});
-			
-		$(".login-username-help").keypress(function(evt){
+	getLoginMessage();
+	$(".login-password-help").keypress(function(evt){
 			if (evt.keyCode  == 13) { 
 				return false;
 			}					
-		});	
+		});
+		
+	$(".login-username-help").keypress(function(evt){
+		if (evt.keyCode  == 13) { 
+			return false;
+		}					
+	});	
 	//========================Code for Forgot Password================================
 	$(".login-password-help").click(function(e){
 		var cont='<p class="button-height inline-label">'
@@ -148,6 +149,37 @@ $(document).ready(function() {
 			});
 		});	
 	}); // End document ready
+
+/*
+ * By Joy
+ * Get teacher/parent login message after loading the login page 
+ */
+	function getLoginMessage(){
+		if(typeof $('#userLogin').val() !== 'undefined'){
+			blockUI('.nine-columns');
+			$.ajax({
+				type : "GET",
+				url : "getLoginMessage.do",
+				data : null,
+				dataType : 'json',
+				cache: true,
+				success : function(data) {
+					$('#taContent').val(data.value);
+					$('#contentDescription').html($('#taContent').val());
+					unblockUI('.nine-columns');
+				},
+				error : function(data) {
+					if (data.status == "200") {
+						$('#taContent').val(data.responseText);
+						$('#contentDescription').html($('#taContent').val());
+					} else {
+						$("#contentDescription").html("<p class='big-message icon-warning red-gradient'>Error getting login page content. Please try later.</p>");
+					}	
+					unblockUI('.nine-columns');
+			  }
+			});
+		}
+	}
 	
 //========================Code for Forgot Password================================
 	function populateUsername(){

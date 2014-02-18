@@ -146,6 +146,7 @@
 		<br>
 		<span class="description"> </span></h1>
 	</div>
+	<input type="hidden" id="userLogin" value="userLogin">
 	<c:choose>
 		<c:when test="${themeName == 'acsi'}">
 		<!-- State user page -->
@@ -167,7 +168,12 @@
 							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-							${teacherLoginInfoMessage}
+								<!-- For teacher -->
+								<textarea id="taContent" style="display:none;">
+								</textarea>
+								<div id="contentDescription" class="relative with-padding"
+									style="height: auto; text-align: justify">			
+								</div>
 							</div>
 							</div>
 					       </div>
@@ -277,7 +283,12 @@
 								<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								${parentLoginInfoMessage}
+								<!-- For parent -->
+								<textarea id="taContent" style="display:none;">
+								</textarea>
+								<div id="contentDescription" class="relative with-padding"
+									style="height: auto; text-align: justify">			
+								</div>
 							</div>
 							
 						</div>

@@ -30,18 +30,22 @@ import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.transferobject.ObjectValueTO;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
+import com.google.gson.Gson;
 
 @Controller
 public class LoginController {
@@ -175,11 +179,7 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Enter: userlogin()");
 		logger.log(IAppLogger.INFO, "theme -------------> "+themeResolver.resolveThemeName(request));
 		String mess_login_error = (String) request.getParameter("login_error");
-		String parent = themeResolver.resolveThemeName(request); //request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		String message = null;
-		Map<String, Object> paramMapParent = new HashMap<String, Object>();
-		Map<String, Object> paramMapTeacher = new HashMap<String, Object>();
-		
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";
@@ -189,28 +189,60 @@ public class LoginController {
 		} else {
 			// this is proper login
 		}
-		ModelAndView modelAndView = null;
-		if (IApplicationConstants.PARENT_LOGIN.equals(parent)) {
-			paramMapParent.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
-			paramMapParent.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-			paramMapParent.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
-			String parentLoginInfoMessage = loginService.getSystemConfigurationMessage(paramMapParent);
-			modelAndView = new ModelAndView("user/userlogin");
-			if (null != parentLoginInfoMessage || "" != parentLoginInfoMessage) {
-				modelAndView.addObject("parentLoginInfoMessage", parentLoginInfoMessage);
-			}
-		} else {
-			paramMapTeacher.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
-			paramMapTeacher.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-			paramMapTeacher.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
-			String teacherLoginInfoMessage = loginService.getSystemConfigurationMessage(paramMapTeacher);
-			modelAndView = new ModelAndView("user/userlogin");
-			modelAndView.addObject("teacherLoginInfoMessage", teacherLoginInfoMessage);
-		}
+		ModelAndView modelAndView = new ModelAndView("user/userlogin");
 		modelAndView.addObject("message", message);
 		logger.log(IAppLogger.INFO, "Exit: userlogin()");
 		return modelAndView;
 	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * Get login message for particular user(teacher/parent).
+	 */
+	@RequestMapping(value="/getLoginMessage", method=RequestMethod.GET)
+	public @ResponseBody 
+	String getLoginMessage(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
+		logger.log(IAppLogger.INFO, "Enter: LoginController - getLoginMessage()");
+		long t1 = System.currentTimeMillis();
+		String parent = "";
+		Map<String, Object> paramMapLoginMessage = null;
+		String loginMessage = "";
+		String jsonString = "";
+		try{
+			parent = themeResolver.resolveThemeName(request); 
+			paramMapLoginMessage = new HashMap<String, Object>();
+			paramMapLoginMessage.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMapLoginMessage.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+			
+			if (IApplicationConstants.PARENT_LOGIN.equals(parent)) {
+				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
+			} else {
+				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
+			}
+			
+			loginMessage = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
+			com.ctb.prism.core.transferobject.ObjectValueTO loginMessageObject = new com.ctb.prism.core.transferobject.ObjectValueTO();
+			loginMessageObject.setValue(loginMessage);
+			jsonString = new Gson().toJson(loginMessageObject);
+			
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			logger.log(IAppLogger.INFO, "Login Message: "+jsonString);
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: LoginController - getLoginMessage() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
+	}
+
 
 	/**
 	 * Opens dashboards
