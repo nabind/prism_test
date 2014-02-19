@@ -25,7 +25,7 @@
 			<thead>
 				<tr role="row">
 					<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
-						<input name="check-all" id="check-all" value="1" type="checkbox">
+						<input name="check-all" id="check-all" value="0" type="checkbox">
 					</th>
 					<th aria-label="Text: activate to sort column ascending" style="width: 350px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
 					<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Class</th>
@@ -112,4 +112,5 @@
 	<input type="hidden" id="q_groupFile" value="${groupFile}" />
 	<input type="hidden" id="q_collationHierarchy" value="${collationHierarchy}" />
 	<input type="hidden" id="klassOptionsString" />
+	<c:forEach var="student" items="${studentList}"><input type="hidden" id="check-status-${student.id}" name="check-status-${student.id}" value="0" /></c:forEach>
 </div>

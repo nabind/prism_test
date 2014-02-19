@@ -36,6 +36,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BadPdfFormatException;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
@@ -250,25 +251,31 @@ public class FileUtil {
 				int n;
 				// loop over the documents you want to concatenate
 				for (String file : files) {
-					reader = new PdfReader(file);
-					// loop over the pages in that document
-					n = reader.getNumberOfPages();
-					for (int page = 0; page < n;) {
-						copy.addPage(copy.getImportedPage(reader, ++page));
+					try {
+						reader = new PdfReader(file);
+						// loop over the pages in that document
+						n = reader.getNumberOfPages();
+						for (int page = 0; page < n;) {
+							copy.addPage(copy.getImportedPage(reader, ++page));
+						}
+						if (Utils.isOdd(n)) {
+							copy.addPage(new Rectangle(8.27F, 11.69F), 0);
+						}
+						copy.freeReader(reader);
+						reader.close();
+					} catch (IOException e) {
+						logger.log(IAppLogger.INFO, "Skipping " + file);
+						logger.log(IAppLogger.WARN, file + ": " + e.getMessage());
+					} catch (BadPdfFormatException e) {
+						logger.log(IAppLogger.INFO, "Skipping " + file);
+						logger.log(IAppLogger.ERROR, file + ": " + e.getMessage());
 					}
-					if (Utils.isOdd(n)) {
-						copy.addPage(new Rectangle(8.27F, 11.69F), 0);
-					}
-					copy.freeReader(reader);
-					reader.close();
 				}
 				document.close();
-				logger.log(IAppLogger.INFO, "merged pdf bytes [" + baos.size() + "] created");
 			} catch (DocumentException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				logger.log(IAppLogger.ERROR, e.getMessage());
 			}
+			logger.log(IAppLogger.INFO, "merged pdf bytes [" + baos.size() + "] created");
 		}
 		return baos.toByteArray();
 	}

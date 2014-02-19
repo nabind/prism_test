@@ -198,27 +198,6 @@ $(document).ready(function() {
 		$("#studentTableGDSelectedVal").html(num);
 		// alert("html=" + $("#studentTableGDSelectedVal").html());
 	});
-	$('#check-all').change(function() {
-		var checkboxes = $(this).closest('form').find(':checkbox');
-		if ($(this).is(':checked')) {
-			checkboxes.attr('checked', 'checked');
-		} else {
-			checkboxes.removeAttr('checked');
-		}
-	});
-
-	$("input[id^=check-student-]").change(function() {
-		var checkedStudents = $("input[id^=check-student-]:checked");
-		var totalStudents = $("input[id^=check-student-]");
-		if(checkedStudents.length == totalStudents.length){
-			$('#check-all').attr('checked', 'checked');
-			$('#check-all').prop("indeterminate", false);
-		} else {
-			$('#check-all').prop("indeterminate", true);
-			$('#check-all').removeAttr('checked');
-		}
-	});
-				
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").on("click", function() {
 		groupDownloadSubmit('SP');
@@ -232,16 +211,145 @@ $(document).ready(function() {
 	// groupDownloadSubmit('SS');
 	//	});
 	
-	// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
+
+// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
-		'aoColumnDefs': [
-			{ 'bSortable': false, 'aTargets': [ 0, 3, 4 ] }
-		],
-		 'sPaginationType': 'full_numbers'
+		'aoColumnDefs' : [ {
+			'bSortable' : false,
+			'aTargets' : [ 0, 3, 4 ]
+		} ],
+		'sPaginationType' : 'full_numbers'
 	});
-	
+
+	/**
+	 * Toggele self check status. Set all text box values.
+	 * Refresh check boxes from text boxes.
+	 */
+	$("#check-all").on("click", function() {
+		var value = toggleACheckBox($('#check-all'));
+		setAllTextBoxValues(value);
+		refreshCheckBoxesFromTextBoxes();
+	});
+
+	/**
+	 * Toggele self check status. Set the corresponding text box
+	 * value. Calculate and change the colour of check all check
+	 * box.
+	 */
+	$("input[id^=check-student-]").live("click", function() {
+		toggleACheckBox($(this));
+		var id = this.id;
+		var studentId = id.substring(14);
+		var textBox = $('#check-status-' + studentId);
+		setATextBoxValue(textBox, this.value);
+		calculateAndChangeCheckAll();
+	});
+
+	/**
+	 * Refresh check boxes from text boxes.
+	 */
+	$(".paginate_button").live("click", function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+
+	/**
+	 * Refresh check boxes from text boxes.
+	 */
+	$('[name="studentTableGD_length"]').change(function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+
 	$('#groupDownload').validationEngine();
 });
+
+function calculateAndChangeCheckAll(){
+	var totalStudents = getTotalStudentCount();
+	var checkedStudents = getCheckedStudentCount();
+	if(checkedStudents == totalStudents){
+		$('#check-all').attr('checked', 'checked');
+		$('#check-all').prop("indeterminate", false);
+	} else {
+		$('#check-all').prop("indeterminate", true);
+		$('#check-all').removeAttr('checked');
+	}
+}
+
+function getTotalStudentCount(){
+	var count = 0;
+	$("input[id^=check-status-]").each(function() {
+		count = count + 1;
+	});
+	return count;
+}
+
+function getCheckedStudentCount(){
+	var count = 0;
+	$("input[id^=check-status-]").each(function() {
+		var value = this.value;
+		if(value == "1") {
+			count = count + 1;
+		}
+	});
+	return count;
+}
+
+function setAllTextBoxValues(value){
+	$("input[id^=check-status-]").each(function() {
+		setATextBoxValue($(this), value);
+	});
+}
+
+function setATextBoxValue(textBox, value){
+	textBox.val(value);
+}
+
+/**
+ * Toggle text boxes. Refresh check boxes from text boxes.
+ * 
+ * @param value
+ */
+function toggleAllCheckBoxes(value) {
+	alert("toggleAllCheckBoxes(value)=" + value);
+	$("input[id^=check-status-]").each(function() {
+		toggleACheckBox($(this));
+	});
+}
+
+function toggleACheckBox(checkBox) {
+	var value = checkBox.val();
+	if (value == "1") {
+		checkBox.removeAttr('checked');
+		checkBox.val("0");
+		return "0";
+	} else if (value == "0") {
+		checkBox.attr('checked', 'checked');
+		checkBox.val("1");
+		return "1";
+	}
+}
+
+function refreshCheckBoxesFromTextBoxes() {
+	$("input[id^=check-student-]").each(function() {
+		refreshACheckBoxFromATextBox($(this));
+	});
+}
+
+function refreshACheckBoxFromATextBox(checkBox){
+	var id = checkBox.attr("id");
+	var studentId = id.substring(14);
+	var checkStatus = $('#check-status-' + studentId).val();
+	setACheckBox(checkBox, checkStatus);
+}
+
+function setACheckBox(checkBox, value) {
+	if (value == "1") {
+		checkBox.attr('checked', 'checked');
+		checkBox.val("1");
+	} else if (value == "0") {
+		checkBox.removeAttr('checked');
+		checkBox.val("0");
+	}
+}
 
 // =============== get inors home page message =====================
 function openInorsHomePage() {
@@ -1150,9 +1258,7 @@ function getGroupDownloadTO() {
 	var school = $("#q_school").val();
 	var klass = $("#q_klass").val();
 	var grade = $("#q_grade").val();
-	var students = $("input[id^=check-student-]:checked").map(function() {
-		return this.value;
-	}).get().join(",");
+	var students = getSelectedStudentIdsAsCommaString();
 	var groupFile = $("#q_groupFile").val();
 	var collationHierarchy = $("#q_collationHierarchy").val();
 	var fileName = $("#fileName").val();
@@ -1161,6 +1267,21 @@ function getGroupDownloadTO() {
 			testAdministrationText, testProgram, district, school, klass,
 			grade, students, groupFile, collationHierarchy, fileName, email);
 	return to;
+}
+
+function getSelectedStudentIdsAsCommaString() {
+	var students = "";
+	$("input[id^=check-status-]").each(function() {
+		if (this.value == "1") {
+			var id = this.id;
+			var studentId = id.substring(13);
+			students = students + "," + studentId;
+		}
+	});
+	if (students.length > 0) {
+		students = students.substring(1);
+	}
+	return students;
 }
 
 /**

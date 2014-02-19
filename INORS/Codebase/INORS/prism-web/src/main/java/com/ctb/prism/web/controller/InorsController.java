@@ -721,10 +721,12 @@ public class InorsController {
 					e.printStackTrace();
 				}
 			} else {
+				jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 				jobLog = "No File to download";
 				logger.log(IAppLogger.INFO, jobLog);
 			}
 		} else {
+			jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 			jobLog = "Invalid REQUEST_DETAILS Field";
 			logger.log(IAppLogger.WARN, jobLog);
 		}
