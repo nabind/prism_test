@@ -330,10 +330,8 @@
 			if (checkFirstLoad) {
 				$("#user_details").find("tr").remove();
 			}
-			
-			$.each(data, function () { 
-			    
-				userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
+			$.each(data, function (index,value) { 
+			    userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + this.userName +'</th>'
 								+'<td>' + this.userDisplayName +'</td>'
 								+ createStatusTag(this.status)
@@ -351,11 +349,14 @@
 										</sec:authorize>
 									+' </span>'
 								+'</td>'
-							+'</tr>'
-							
-							 
+							+'</tr>';
 			});
+			
 			$("#user_details").append(userContent);
+			if(data.length >= 1){
+				$('#userTable').show();
+				$('#userTable').css('visibility', 'visible');
+			}
 			$("#report-list").trigger("update");
 			$(".headerSortDown").removeClass("headerSortDown");
 			$(".headerSortUp").removeClass("headerSortUp");
