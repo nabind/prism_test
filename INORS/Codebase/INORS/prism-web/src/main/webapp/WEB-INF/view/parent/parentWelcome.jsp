@@ -70,11 +70,8 @@
 						</ul>
 					</div>
 				</div>
-				
-			</div></div>
-
-			<%@ include file="claimNewInvitation.jsp"%>
-
+			</div>
+			</div>
 		</div>
 		
 		

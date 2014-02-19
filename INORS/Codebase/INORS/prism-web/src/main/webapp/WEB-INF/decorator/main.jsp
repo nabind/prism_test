@@ -53,9 +53,9 @@
 			
 			<%@ include file="../view/common/footer.jsp"%>
 			<%@ include file="messages.jsp"%>
-			
 			<%@ include	file="../view/common/commonScripts.jsp"%>	
 			<%@ include file="../view/common/init.jsp"%>
 			<%@ include file="../view/common/keepAlive.jsp"%>
+			<%@ include file="../view/parent/claimNewInvitation.jsp"%>
 	</body>
 </html>
