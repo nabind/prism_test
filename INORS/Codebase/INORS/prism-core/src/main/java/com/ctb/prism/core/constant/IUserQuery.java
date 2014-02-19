@@ -100,11 +100,12 @@ public interface IUserQuery {
 			" START WITH ORG_nodeID = ? ",
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" UNION SELECT * FROM ORG_NODE_DIM WHERE CUSTOMERID = ? AND ORG_NODEID = ? AND ORG_NODE_LEVEL = 1",
-			" ) HIER",
+			" ) HIER,  ORG_PRODUCT_LINK OLP ", //Changed for QC 77275
 			" WHERE ORGUSER.USERID = USR.USERID",
 			" AND HIER.ORG_NODEID = ORGUSER.ORG_NODEID",
 			" AND ORGUSER.ORG_NODE_LEVEL <> 0",
-			" AND ORGUSER.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)",
+			" AND ORGUSER.ORG_NODEID = OLP.ORG_NODEID", //Changed for QC 77275
+			" AND OLP.CUST_PROD_ID = ?",				//Changed for QC 77275
 			" AND USR.ACTIVATION_STATUS != 'SS'",
 			" ORDER BY UPPER(USR.USERNAME)) ABC",
 			" WHERE ROWNUM <= 15",
@@ -122,9 +123,10 @@ public interface IUserQuery {
 			" START WITH ORG_nodeID = ? ",
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" UNION SELECT * FROM ORG_NODE_DIM WHERE CUSTOMERID = ? AND ORG_NODEID = ? AND ORG_NODE_LEVEL = 1",
-			" ) HIER  ",
+			" ) HIER , ORG_PRODUCT_LINK OLP ", //Changed for QC 77275
 			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",
-			" AND ORGUSER.ADMINID = (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUST_PROD_ID=?)", // new dao param added
+			" AND orguser.ORG_NODEID = OLP.ORG_NODEID", //Changed for QC 77275
+			" AND OLP.CUST_PROD_ID = ?",// //Changed for QC 77275
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
@@ -142,9 +144,10 @@ public interface IUserQuery {
 			" START WITH ORG_nodeID = ? ",
 			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
 			" UNION SELECT * FROM ORG_NODE_DIM WHERE CUSTOMERID = ? AND ORG_NODEID = ? AND ORG_NODE_LEVEL = 1",
-			" ) HIER  ",
+			" ) HIER , ORG_PRODUCT_LINK OLP ", //Changed for QC 77275
 			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 AND  USR.ACTIVATION_STATUS != 'SS' ",
-			" AND ORGUSER.ADMINID = (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUST_PROD_ID=?)", // new dao param added
+			" AND orguser.ORG_NODEID = OLP.ORG_NODEID",  //Changed for QC 77275
+			" AND OLP.CUST_PROD_ID = ? ",// //Changed for QC 77275
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
 			" AND (UPPER(USR.USERNAME) LIKE UPPER(?)  ",
 			"   OR UPPER(USR.LAST_NAME)  LIKE UPPER(?)  ",
@@ -284,13 +287,14 @@ public interface IUserQuery {
 					" START WITH ORG_NODEID = ?  ",
 					" CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID", 
 					" UNION SELECT * FROM ORG_NODE_DIM WHERE  ORG_NODEID = ? AND ORG_NODE_LEVEL = 1",
-					" )HIER ",
+					" )HIER , ORG_PRODUCT_LINK OLP ", //Changed for QC 77275
 					" WHERE (UPPER(USR.USERNAME) LIKE UPPER(?) ",
 					" OR UPPER(USR.LAST_NAME)  LIKE UPPER(?) ",
 					" OR UPPER(USR.FIRST_NAME) LIKE UPPER(?)) ",
 					" AND HIER.ORG_NODE_LEVEL <> 0 ",
 					" AND USR.ACTIVATION_STATUS != 'SS' ",
-					" AND orgUsers.adminid = (select adminid from cust_product_link where cust_prod_id=?) ", 
+					" AND orgUsers.ORG_NODEID = OLP.ORG_NODEID ",  //Changed for QC 77275
+					" AND OLP.CUST_PROD_ID =  ?",   //Changed for QC 77275
 					" AND orgUsers.ORG_NODEID = HIER.ORG_NODEID ",
 					" AND ORGUSERS.USERID = USR.USERID AND ROWNUM <= ? ");
 	
@@ -323,11 +327,12 @@ public interface IUserQuery {
 			" START WITH ORG_NODEID = ? ",
 			" CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID ",
 			" UNION SELECT * FROM ORG_NODE_DIM WHERE ORG_NODEID = ? AND ORG_NODE_LEVEL = 1",
-			")HIER ",
+			")HIER,  ORG_PRODUCT_LINK OLP ", //Changed for QC 77275
 			" WHERE UPPER(USR.USERNAME) LIKE UPPER(?) ",
 			" AND orgUsers.ORG_NODE_LEVEL <> 0 ",
 			" AND USR.ACTIVATION_STATUS != 'SS' ",
-			" AND orgUsers.adminid = (select adminid from cust_product_link where cust_prod_id=?) ", 
+			" AND ORGUSERS.ORG_NODEID = OLP.ORG_NODEID ", //Changed for QC 77275
+			" AND OLP.CUST_PROD_ID = ?",  //Changed for QC 77275
 			" AND orgUsers.ORG_NODEID = HIER.ORG_NODEID " +
 			" AND ORGUSERS.USERID = USR.USERID AND ROWNUM <= ? ");
 	
