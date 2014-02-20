@@ -136,7 +136,7 @@
 											"AdminYear" : $("#AdminYear").val()
 									   };
 								},									
-							"success": function(data, textStatus, XMLHttpRequest) {										 
+							"success": function(data, textStatus, XMLHttpRequest) {
 								if(data != null && data != "") {
 									if(data.length > maxNodeLimit)
 									{													
@@ -144,25 +144,6 @@
 										tempNodes = data;
 										tempIndex = clickedNode;
 									}
-									$('#studentTable').show();
-									$('#userTable').show();
-									$('#orgTable').show();
-									$('#parentTable').show();
-									
-									$("#moreStudent").show();
-									$("#moreUser").show();
-									$("#moreOrg").show();
-									$("#moreParent").show();
-								} else {
-									$("#moreStudent").hide();
-									$("#moreUser").hide();
-									$("#moreOrg").hide();
-									$("#moreParent").hide();
-									
-									$('#studentTable').hide();
-									$('#userTable').hide();
-									$('#orgTable').hide();
-									$('#parentTable').hide();
 								}								
 							},
 							"complete" : function() { 
