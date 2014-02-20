@@ -36,7 +36,7 @@
 			<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
 				<c:forEach var="student" items="${studentList}">
 					<tr id="">
-					    <td scope="row" class="checkbox-cell  sorting_1 vertical-center"><input name="checked[]" id="check-student-${student.id}" value="${student.id}" type="checkbox" /></td>
+					    <td scope="row" class="checkbox-cell  sorting_1 vertical-center"><input name="checked[]" id="check-student-${student.id}" value="0" type="checkbox" /></td>
 					    <td class="vertical-center">${student.name}</td>
 					    <td class="vertical-center">${student.klass}</td>
 					    <td class="vertical-center">${student.grade}</td>
