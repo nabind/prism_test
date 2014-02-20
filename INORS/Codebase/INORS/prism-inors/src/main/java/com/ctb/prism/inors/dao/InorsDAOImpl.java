@@ -212,6 +212,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						return grtTOResult;
 					}
 				});
+				logger.log(IAppLogger.INFO, "All Schools grtList.size(): " + grtList.size());
 			} else {
 				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
 				grtList = (List<GrtTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -239,13 +240,12 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						}
 						return grtTOResult;
 					}
-
 				});
+				logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size() +" for school id " + schoolId);
 			}
 		} finally {
-			logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size());
+			logger.log(IAppLogger.INFO, "Exit: getGRTList()");
 		}
-		logger.log(IAppLogger.INFO, "Exit: getGRTList()");
 		return grtList;
 	}
 
@@ -533,8 +533,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setLong(2, Long.parseLong(testProgram));
-						cs.setLong(3, Long.parseLong(districtId));
+						cs.setLong(2, Long.parseLong(districtId));
+						cs.setLong(3, Long.parseLong(testProgram));
 						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
@@ -559,8 +559,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setLong(2, Long.parseLong(testProgram));
-						cs.setLong(3, Long.parseLong(schoolId));
+						cs.setLong(2, Long.parseLong(schoolId));
+						cs.setLong(3, Long.parseLong(testProgram));
 						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
@@ -613,11 +613,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			to.setBirthDate(wrap(rs.getString("BIRTHDATE"), '"'));
 			to.setStudentTestNumber(wrap(rs.getString("TEST_ELEMENT_ID"), '"'));
 			to.setCorporationStudentID(wrap(rs.getString("EXT_STUDENT_ID"), '"'));
-			to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE"), '"'));
-			to.setTeacherName(wrap(rs.getString("Teacher_Name"), '"')); // TODO
-			to.setCTBUSEOrgtstgpgm(wrap(rs.getString("TP_CODE"), '"'));
-			to.setCTBUSETeacherElementNumber(wrap(rs.getString("Teacher_Element_Number"), '"')); // TODO
-			to.setCTBUSEStudentElementNumber(wrap(rs.getString("Student_Element_Number"), '"')); // TODO
+			to.setCTBUSEBarcodeID(wrap(rs.getString("BARCODE_ID_MULTIPLE_CHOICE"), '"'));
+			to.setTeacherName(wrap(rs.getString("TEACHER_NAME"), '"')); // TODO
+			to.setCTBUSEOrgtstgpgm(wrap(rs.getString("ORGTSTGPGM"), '"'));
+			to.setCTBUSETeacherElementNumber(wrap(rs.getString("TEACHER_ELEMENT"), '"')); // TODO
+			to.setCTBUSEStudentElementNumber(wrap(rs.getString("STUDENT_ELEMENT_NUMBER"), '"')); // TODO
 			icTOList.add(to);
 		}
 		return icTOList;
