@@ -137,7 +137,7 @@
 									   };
 								},									
 							"success": function(data, textStatus, XMLHttpRequest) {
-								if(data != null && data != "") {
+								if(data != null && data.length > 0) {
 									if(data.length > maxNodeLimit)
 									{													
 										//alert(data.length);
