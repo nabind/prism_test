@@ -375,7 +375,7 @@ function openInorsHomePage() {
 			url : "loadHomePageMsg.do",
 			data : null,
 			dataType : 'json',
-			cache: true,
+			cache: false,
 			success : function(data) {
 				unblockUI();
 				blockDivObj.hide();
