@@ -295,7 +295,7 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<String> getGDFilePaths(GroupDownloadTO to) {
+	public Map<String, String> getGDFilePaths(GroupDownloadTO to) {
 		return reportBusiness.getGDFilePaths(to);
 	}
 

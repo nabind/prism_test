@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1301,6 +1302,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
 		String currUserId = to.getUserId();
+		String currUserName = to.getUserName();
 		String currAdminId = to.getAdminId();
 		String currCustomerId = to.getCustomerId();
 
@@ -1311,6 +1313,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "students = " + students);
 		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
 		logger.log(IAppLogger.INFO, "currUserId = " + currUserId);
+		logger.log(IAppLogger.INFO, "currUserName = " + currUserName);
 		logger.log(IAppLogger.INFO, "currAdminId = " + currAdminId);
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 
@@ -1398,16 +1401,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getGDFilePaths(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	public List<String> getGDFilePaths(GroupDownloadTO to) {
+	public Map<String, String> getGDFilePaths(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: getGDFilePaths()");
-		List<String> filePaths = new ArrayList<String>();
+		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		String students = to.getStudents();
 		String groupFile = to.getGroupFile();
 		logger.log(IAppLogger.INFO, "students: " + students);
 		logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
 		if ("ICL".equals(groupFile)) {
 			// Invitation Code Letter
-			filePaths = getICLetterPaths(students);
+			filePaths = getICLetterPaths(groupFile, students);
 		} else if ("BOTH".equals(groupFile)) {
 			// Both (IP and ISR)
 			filePaths = getBothPaths(students);
@@ -1423,14 +1426,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return filePaths;
 	}
 
-	private List<String> getFilePaths(String students, String parameterizedSql) {
-		List<String> filePaths = new ArrayList<String>();
+	private Map<String, String> getFilePaths(String groupFile, String students, String parameterizedSql) {
+		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
 		for (String studentId : studentIds) { // TODO : Don't use loop
 			String filePath = getResult(CustomStringUtil.replaceCharacterInString('?', studentId, parameterizedSql));
 			if (filePath != null) {
-				filePaths.add(filePath);
+				filePaths.put(filePath, "");
 			}
 		}
 		logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
@@ -1444,8 +1447,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	private List<String> getICLetterPaths(String students) {
-		List<String> icLetterPaths = getFilePaths(students, IQueryConstants.GET_IC_FILE_PATH);
+	private Map<String, String> getICLetterPaths(String groupFile, String students) {
+		Map<String, String> icLetterPaths = getFilePaths(groupFile, students, IQueryConstants.GET_IC_FILE_PATH);
 		logger.log(IAppLogger.INFO, "IC Size: " + icLetterPaths.size());
 		return icLetterPaths;
 	}
@@ -1457,8 +1460,25 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	private List<String> getISRPaths(String students) {
-		List<String> isrPaths = getFilePaths(students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_ISR);
+	private Map<String, String> getISRPaths(String students) {
+		Map<String, String> isrPaths = new LinkedHashMap<String, String>();
+		String[] studentIds = students.split(",");
+		// Loop used to ensure collation hierarchy
+		int isrPrefixSequence = 0;
+		for (String studentId : studentIds) { // TODO : Don't use loop
+			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_ISR_ONLY;
+			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			if ((lstData != null) && (!lstData.isEmpty())) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
+					String value = (String) fieldDetails.get("FILE_NAME"); // New Name for the File
+					isrPrefixSequence = isrPrefixSequence + 1;
+					value = isrPrefixSequence + value;
+					isrPaths.put(key, value);
+				}
+			}
+		}
 		logger.log(IAppLogger.INFO, "ISR Size: " + isrPaths.size());
 		return isrPaths;
 	}
@@ -1470,46 +1490,62 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	private List<String> getIPPaths(String students) {
-		List<String> ipPaths = getFilePaths(students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_IP);
-		logger.log(IAppLogger.INFO, "IP Size: " + ipPaths.size());
-		return ipPaths;
+	private Map<String, String> getIPPaths(String students) {
+		Map<String, String> iprPaths = new LinkedHashMap<String, String>();
+		String[] studentIds = students.split(",");
+		// Loop used to ensure collation hierarchy
+		int iprPrefixSequence = 0;
+		for (String studentId : studentIds) { // TODO : Don't use loop
+			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_IPR_ONLY;
+			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			if ((lstData != null) && (!lstData.isEmpty())) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
+					String value = (String) fieldDetails.get("FILE_NAME"); // New Name for the File
+					iprPrefixSequence = iprPrefixSequence + 1;
+					value = iprPrefixSequence + value;
+					iprPaths.put(key, value);
+				}
+			}
+		}
+		logger.log(IAppLogger.INFO, "IPR Size: " + iprPaths.size());
+		return iprPaths;
 	}
-
+	
 	/**
 	 * Gets the list of both Image Print and Individual Student Report paths.
 	 * 
 	 * @param students
 	 * @return
 	 */
-	private List<String> getBothPaths(String students) {
-		List<String> bothPaths = new ArrayList<String>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('?', students, IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_BOTH));
-		if ((lstData != null) && (!lstData.isEmpty())) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				bothPaths.add((String) fieldDetails.get("FILENAME"));
+	private Map<String, String> getBothPaths(String students) {
+		Map<String, String> bothPaths = new LinkedHashMap<String, String>();
+		String[] studentIds = students.split(",");
+		// Loop used to ensure collation hierarchy
+		int isrPrefixSequence = 0;
+		int iprPrefixSequence = 0;
+		for (String studentId : studentIds) { // TODO : Don't use loop
+			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_BOTH;
+			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			if ((lstData != null) && (!lstData.isEmpty())) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
+					String value = (String) fieldDetails.get("FILE_NAME"); // New Name for the File
+					if (value.startsWith("a-")) {
+						isrPrefixSequence = isrPrefixSequence + 1;
+						value = isrPrefixSequence + value;
+					} else if (value.startsWith("b-")) {
+						iprPrefixSequence = iprPrefixSequence + 1;
+						value = iprPrefixSequence + value;
+					}
+					bothPaths.put(key, value);
+				}
 			}
 		}
 		logger.log(IAppLogger.INFO, "Both Size: " + bothPaths.size());
 		return bothPaths;
-	}
-
-	/**
-	 * Runs a query and returns a list of Strings.
-	 * 
-	 * @param query
-	 * @return
-	 */
-	private List<String> getResults(String query) {
-		logger.log(IAppLogger.INFO, "Enter: getResults()");
-		List<String> results = new ArrayList<String>();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objValues = getJdbcTemplatePrism().query(query, new ObjectValueTOMapper());
-		for (com.ctb.prism.core.transferobject.ObjectValueTO to : objValues) {
-			results.add(to.getName());
-		}
-		logger.log(IAppLogger.INFO, "Results : " + results.size());
-		logger.log(IAppLogger.INFO, "Exit: getResults()");
-		return results;
 	}
 
 	/**
@@ -1519,8 +1555,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return
 	 */
 	private String getResult(String query) {
-		logger.log(IAppLogger.INFO, "Enter: getResult()");
-		logger.log(IAppLogger.INFO, query);
+		logger.log(IAppLogger.DEBUG, "Enter: getResult()");
+		logger.log(IAppLogger.DEBUG, query);
 		String result = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 		if ((lstData != null) && (!lstData.isEmpty())) {
@@ -1529,7 +1565,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				break;
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: getResult()");
+		logger.log(IAppLogger.DEBUG, "Exit: getResult() = " + result);
 		return result;
 	}
 

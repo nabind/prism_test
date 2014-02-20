@@ -213,7 +213,7 @@ public interface IReportBusiness {
 	 * @param to
 	 * @return
 	 */
-	public List<String> getGDFilePaths(GroupDownloadTO to);
+	public Map<String, String> getGDFilePaths(GroupDownloadTO to);
 
 	/**
 	 * @param to

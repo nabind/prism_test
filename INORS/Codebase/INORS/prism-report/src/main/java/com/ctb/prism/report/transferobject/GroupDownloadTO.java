@@ -25,6 +25,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String fileName;
 	private String email;
 	private String userId;
+	private String userName;
 	private String adminId;
 	private String customerId;
 
@@ -244,6 +245,21 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName
+	 *            the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**

@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -409,6 +411,50 @@ public class FileUtil {
 				if (fileName == null) {
 					logger.log(IAppLogger.WARN, "Skipping " + filePath);
 					continue;
+				}
+				ZipEntry entry = new ZipEntry(fileName);
+				byte[] input = getDuplexPdfBytes(filePath);
+				logger.log(IAppLogger.INFO, input.length + " bytes read");
+				entry.setSize(input.length);
+				zos.putNextEntry(entry);
+				zos.write(input);
+				zos.closeEntry();
+			}
+			zos.close();
+			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				logger.log(IAppLogger.WARN, "Not able to close stream.");
+			}
+		}
+	}
+
+	/**
+	 * @param zipFileName
+	 *            A Zip file will be created with this name. This Zip file will contain all the Pdf files.
+	 * @param filePaths
+	 *            The Key of this Map is the Actual File Location and the Value is the system generated Pdf name to be used for that file.
+	 * @throws IOException
+	 */
+	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths) throws IOException {
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+		try {
+			fos = new FileOutputStream(zipFileName);
+			zos = new ZipOutputStream(fos);
+			for (Entry<String, String> fileEntry : filePaths.entrySet()) {
+				String filePath = fileEntry.getKey();
+				String fileName = fileEntry.getValue();
+				logger.log(IAppLogger.INFO, "filePath = " + filePath);
+				if (fileName == null) {
+					logger.log(IAppLogger.WARN, "Skipping " + filePath);
+					continue;
+				} else if ("".equals(fileName)) {
+					fileName = getFileNameFromFilePath(filePath);
+				} else {
+					fileName = fileName + ".pdf";
 				}
 				ZipEntry entry = new ZipEntry(fileName);
 				byte[] input = getDuplexPdfBytes(filePath);

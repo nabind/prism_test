@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -492,7 +493,7 @@ public class InorsController {
 			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
 				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-					fileName = fileNameConventionGD("CP", currentUser, fileName, groupFile)[0];
+					fileName = generateDefaultZipFileName(currentUser, groupFile);
 					request.getSession().setAttribute("FILE_NAME_GD", fileName);
 				}
 			}
@@ -582,12 +583,15 @@ public class InorsController {
 			type = "async";
 			if ((to.getStudents() != null) && (!to.getStudents().isEmpty())) {
 				String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 				String adminId = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 				logger.log(IAppLogger.INFO, "currentUserId = " + currentUserId);
+				logger.log(IAppLogger.INFO, "currentUser = " + currentUser);
 				logger.log(IAppLogger.INFO, "adminId = " + adminId);
 				logger.log(IAppLogger.INFO, "customerId = " + customerId);
 				to.setUserId(currentUserId);
+				to.setUserName(currentUser);
 				to.setAdminId(adminId);
 				to.setCustomerId(customerId);
 				jobTrackingId = reportService.createJobTracking(to);
@@ -624,7 +628,6 @@ public class InorsController {
 	 */
 	private void processGroupDownload(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
-		//// String requestFileName = null;
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		Long fileSize = null;
@@ -632,20 +635,21 @@ public class InorsController {
 		String clobStr = jobTrackingTO.getRequestDetails();
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
-		List<String> filePaths = new ArrayList<String>();
+		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		if (to != null) {
 			String button = to.getButton();
 			String fileName = to.getFileName();
 			String groupFile = to.getGroupFile();
 			String school = to.getSchool();
 			String students = to.getStudents();
+			String currentUser = to.getUserName();
 			logger.log(IAppLogger.INFO, "button: " + button);
 			logger.log(IAppLogger.INFO, "fileName: " + fileName);
 			logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
 			logger.log(IAppLogger.INFO, "school: " + school);
 			logger.log(IAppLogger.INFO, "students: " + students);
+			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
-			String pdfFileName = fileName + ".pdf";
 			String zipFileName = fileName + ".zip";
 			String quarySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
@@ -657,30 +661,30 @@ public class InorsController {
 			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
 			to.setGdfExpiryTime(gdfExpiryTime);
 			to.setRequestDetails(clobStr);
-
-			filePaths = reportService.getGDFilePaths(to);
+			/**
+			 * The Key of this Map is the Actual File Location and the Value is the system generated Pdf name to be used for that file.
+			 */
+			Map<String, String> filePathsGD = reportService.getGDFilePaths(to);
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
-			if (!filePaths.isEmpty()) {
-				// The default naming convention is: Username + Date Time Stamp
+			if (!filePathsGD.isEmpty()) {
 				String querySheetAsString = reportService.getRequestSummary(Utils.objectToJson(to));
 				FileUtil.createDuplexPdf(quarySheetFileName, querySheetAsString);
-				filePaths.add(0, quarySheetFileName);
+				filePaths.put(quarySheetFileName, quarySheetFileName);
+				filePaths.putAll(filePathsGD);
 				try {
 					if ("CP".equals(button)) {
-						// The default naming convention is: Username + Date Time Stamp
-						//// String pdfFileName = fileName + ".pdf";
-						//// String zipFileName = fileName + ".zip";
-						//// logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
-
+						/**
+						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
+						 */
+						String pdfFileName = generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
 						// Merge Pdf files
-						byte[] input = FileUtil.getMergedPdfBytes(filePaths);
+						byte[] input = FileUtil.getMergedPdfBytes(new ArrayList<String>(filePaths.keySet()));
 
 						// Create Pdf file in disk
 						FileUtil.createFile(pdfFileName, input);
 
 						// Create Zip file in disk
-						// FileUtil.createFile(zipFileName, zipData);
 						List<String> list = new ArrayList<String>();
 						list.add(pdfFileName);
 						FileUtil.createZipFile(zipFileName, list);
@@ -688,7 +692,6 @@ public class InorsController {
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 
-						//// requestFileName = zipFileName;
 						fileSize = new Long(input.length);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
@@ -696,16 +699,11 @@ public class InorsController {
 						// TODO : convention implementation
 						Long orgNodeId = Long.parseLong(school);
 						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
-						// fileName = reportService.getConventionalFileNameGD(orgNodeId);
-						// String[] fileNames = fileNameConventionGD(button, "", fileName, groupFile);
-						// String zipFileName = fileNames[0] + ".zip";
-						//// String zipFileName = fileName + ".zip";
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
 						FileUtil.createDuplexZipFile(zipFileName, filePaths);
 
-						//// requestFileName = zipFileName;
 						fileSize = FileUtil.fileSize(zipFileName);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Separate Pdfs";
@@ -730,11 +728,6 @@ public class InorsController {
 			jobLog = "Invalid REQUEST_DETAILS Field";
 			logger.log(IAppLogger.WARN, jobLog);
 		}
-
-		//// to.setFileName(requestFileName);
-		//// to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
-		//// to.setGdfExpiryTime(propertyLookup.get("gdfExpiryTime"));
-		//// to.setRequestDetails(clobStr);
 		to.setJobLog(jobLog);
 		to.setJobStatus(jobStatus);
 		if (fileSize == null) {
@@ -822,41 +815,21 @@ public class InorsController {
 	}
 
 	/**
-	 * @param button
+	 * Zip file name is provided by the user from user input text box. If user doesnot provide Zip file name then system will provide a default Zip file name. Pdf file name is always system generated.
+	 * This method provides the default Zip file name.
+	 * 
 	 * @param currentUser
-	 * @param fileName
 	 * @param groupFile
 	 * @return
 	 */
-	private String[] fileNameConventionGD(String button, String currentUser, String fileName, String groupFile) {
-		logger.log(IAppLogger.INFO, "Enter: fileNameConventionGD()");
-		if ((groupFile == null) || (groupFile.equalsIgnoreCase("null"))) {
-			groupFile = "";
+	private String generateDefaultZipFileName(String currentUser, String groupFile) {
+		String zipFileName = "";
+		if ((groupFile != null) && (!groupFile.isEmpty()) && (!"null".equalsIgnoreCase(groupFile))) {
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
+		} else {
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
 		}
-		String[] generatedFileNames = new String[2];
-		if ("CP".equals(button)) {
-			if ((fileName != null) && (!fileName.equalsIgnoreCase("null"))) {
-				generatedFileNames[0] = fileName;
-			} else {
-				if (!groupFile.isEmpty()) {
-					generatedFileNames[0] = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
-				} else {
-					generatedFileNames[0] = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
-				}
-			}
-		} else if ("SP".equals(button)) {
-			if ("ISR".equals(groupFile)) {
-				generatedFileNames[0] = CustomStringUtil.appendString("1-", fileName, groupFile);
-			} else if ("IPR".equals(groupFile)) {
-				generatedFileNames[0] = CustomStringUtil.appendString("1-", fileName, groupFile);
-			} else if ("BOTH".equals(groupFile)) {
-				generatedFileNames[0] = CustomStringUtil.appendString("1a-", fileName, ".ISR");
-				generatedFileNames[1] = CustomStringUtil.appendString("1b-", fileName, ".IPR");
-			}
-		}
-		logger.log(IAppLogger.INFO, "generatedFileNames=" + Utils.convertStrArrayToCommaString(generatedFileNames));
-		logger.log(IAppLogger.INFO, "Exit: fileNameConventionGD()");
-		return generatedFileNames;
+		return zipFileName;
 	}
 
 	/**

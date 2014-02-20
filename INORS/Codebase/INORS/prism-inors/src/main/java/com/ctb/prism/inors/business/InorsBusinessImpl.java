@@ -345,7 +345,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "school: " + school);
 			logger.log(IAppLogger.INFO, "students: " + students);
 
-			filePaths = reportBusiness.getGDFilePaths(to);
+			filePaths = new ArrayList<String>(reportBusiness.getGDFilePaths(to).keySet());
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
 			if (!filePaths.isEmpty()) {
