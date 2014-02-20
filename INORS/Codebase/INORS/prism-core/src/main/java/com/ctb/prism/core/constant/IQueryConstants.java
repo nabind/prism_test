@@ -866,7 +866,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_GRADES_GD = "SELECT GRADEID VALUE, GRADE_NAME NAME, GRADE_SEQ OTHER FROM GRADE_DIM ORDER BY GRADE_SEQ";
 	public static final String GET_STUDENT_TABLE_GD = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
-			" REPLACE(SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME || ' ' || SBD.LAST_NAME, '  ', ' ') AS NAME,",
+			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
 			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
@@ -889,7 +889,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 	public static final String GET_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
-			" REPLACE(SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME || ' ' || SBD.LAST_NAME, '  ', ' ') AS NAME,",
+			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
 			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
@@ -912,7 +912,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 	public static final String GET_ALL_STUDENT_TABLE_GD = CustomStringUtil.appendString(
 			" SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
-			" REPLACE(SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME || ' ' || SBD.LAST_NAME, ' ', ' ') AS NAME,",
+			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
 			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
@@ -935,7 +935,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 	public static final String GET_ALL_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
 			" SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
-			" REPLACE(SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME || ' ' || SBD.LAST_NAME, ' ', ' ') AS NAME,",
+			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
 			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
