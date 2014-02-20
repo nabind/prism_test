@@ -363,26 +363,34 @@ function setACheckBox(checkBox, value) {
 
 // =============== get inors home page message =====================
 function openInorsHomePage() {
-	if($("#inorsHome").length > 0) {
+	var iframeObj = $('#report-iframe-0').contents();
+	var inorsHomeObj = iframeObj.find('#inorsHome');
+	var taContentObj = iframeObj.find('#taContent');
+	var blockDivObj = iframeObj.find('#blockDiv');
+	if(inorsHomeObj.length) {
 		blockUI();
 		$.ajax({
 			type : "GET",
 			url : "loadHomePageMsg.do",
 			data : null,
 			dataType : 'json',
-			cache:true,
+			cache: false,
 			success : function(data) {
+				//Fixed for TD 77263 -  By Joy
 				unblockUI();
-				$("#inorsHome").html(data.message);						
+				blockDivObj.hide();
+				taContentObj.val(data.value);
+				inorsHomeObj.html(taContentObj.val());	
+				
 			},
 			error : function(data) {
-			//alert(data.status + " - " + data.responseText.message);
 			if (data.status == "200") {
-				//var obj = JSON.parseJSON(data.responseText);
-				//alert("failure"+JSON.stringify(obj));
-				$("#inorsHome").html(data.responseText);	
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.responseText);
+				inorsHomeObj.html(taContentObj.val());		
 			} else {
-				$("#inorsHome").html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
 			}				
 		  }
 		});

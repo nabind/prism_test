@@ -956,15 +956,8 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/loadHomePage", method = RequestMethod.GET)
 	public ModelAndView loadHomePage(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
-		// TODO get home page message based on logged in user
+		//Fetching Home page Content moved to ajax call: loadHomePageMsg()
 		ModelAndView modelAndView = new ModelAndView("user/inorsHome");
-		/*Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
-		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
-		String inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
-		modelAndView.addObject("inorsHomePageInfoMessage", inorsHomePageInfoMessage);*/
 		return modelAndView;
 	}
 	
@@ -979,22 +972,30 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/loadHomePageMsg", method = RequestMethod.GET)
 	@ResponseBody
-	public String loadHomePageMsg(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
+	public String loadHomePageMsg(HttpServletRequest req, HttpServletResponse res) throws IOException,BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: LoginController - loadHomePageMsg()");
+		long t1 = System.currentTimeMillis();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
-		String inorsHomePageInfoMessage = null;
+		String inorsHomePageInfoMessage = "";
+		String jsonString = "";
 		try {
 			inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
-			res.getWriter().write("{\"message\":\"" + inorsHomePageInfoMessage == null ? "" : inorsHomePageInfoMessage + "\"}");
-		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			//Fixed for TD - By Joy
+			com.ctb.prism.core.transferobject.ObjectValueTO homePageMsgObj = new com.ctb.prism.core.transferobject.ObjectValueTO();
+			homePageMsgObj.setValue(inorsHomePageInfoMessage);
+			jsonString = new Gson().toJson(homePageMsgObj);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
 		} finally {
-			logger.log(IAppLogger.INFO, "loading HomePageMsg");
+			logger.log(IAppLogger.INFO, "Login Message: "+jsonString);
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: LoginController - loadHomePageMsg() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		return  null;//"{\"message\":\"" + inorsHomePageInfoMessage == null ? "" : inorsHomePageInfoMessage + "\"}";
+		return  jsonString;
 	}
 
 }
