@@ -983,7 +983,7 @@ public class LoginController {
 		String jsonString = "";
 		try {
 			inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
-			//Fixed for TD - By Joy
+			//Fixed for TD 77263 - By Joy
 			com.ctb.prism.core.transferobject.ObjectValueTO homePageMsgObj = new com.ctb.prism.core.transferobject.ObjectValueTO();
 			homePageMsgObj.setValue(inorsHomePageInfoMessage);
 			jsonString = new Gson().toJson(homePageMsgObj);
