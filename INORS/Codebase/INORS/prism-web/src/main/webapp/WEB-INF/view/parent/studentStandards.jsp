@@ -3,9 +3,9 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <div class="margin-bottom-medium">
-		<div id="standardHeader" class="wrapped relative white-gradient"
+		<div id="standardHeader" class="wrapped relative white-gradient thin"
 			style="height: auto; text-align: justify">	
-			<h2>Overview of Action Plan for ${studentName}</h2>		
+			<h1>Overview of Action Plan for ${studentName}</h1>		
 		</div>
 </div>
 

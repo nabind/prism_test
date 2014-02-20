@@ -4,18 +4,18 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <div class="margin-bottom-medium" style="min-height:800px">
-	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
-		<div id="standardActivityHeader" class="relative" style="height: auto; text-align: justify">
-			<c:choose>
-				<c:when test="${studentName == '-1'}">
-					<h1>Skill-Building Activities</h1>
-				</c:when>
-				<c:otherwise>
-					<h1>Skill-Building Activities for ${studentName}</h1>
-				</c:otherwise>
-			</c:choose>
-		</div>
-	</hgroup>
+	
+	<div id="standardActivityHeader" class="relative thin" style="height: auto; text-align: justify">
+		<c:choose>
+			<c:when test="${studentName == '-1'}">
+				<h1>Skill-Building Activities</h1>
+			</c:when>
+			<c:otherwise>
+				<h1>Skill-Building Activities for ${studentName}</h1>
+			</c:otherwise>
+		</c:choose>
+	</div>
+	
 	<div id="standardActivityMessage" class="relative"
 			style="height: auto; text-align: justify">
 			In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 

@@ -4,7 +4,7 @@
 <%@ include file="../common/constant.jsp" %>
 <div class="margin-bottom-medium" style="min-height: 425px;">
 	
-	<div id="contentDetailsHeader" class="relative thin with-padding grey underline">	
+	<div id="contentDetailsHeader" class="relative thin">	
 		<c:choose>
 			<c:when test="${menuId == rsc}">
 				<h1>${menuName}</h1>

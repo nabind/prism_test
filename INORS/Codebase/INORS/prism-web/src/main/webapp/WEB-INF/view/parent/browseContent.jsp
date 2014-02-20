@@ -3,8 +3,8 @@
 
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
-<div class="margin-bottom-medium" style="min-height: 425px;">
-	<h3>Browse Content Overview</h3>
+<div class="margin-bottom-medium thin" style="min-height: 425px;">
+	<h1>Browse Content Overview</h1>
         Choose from the links below to search through content for all grades and subjects:
 	<h3>Overview</h3>
 		<p>

@@ -188,7 +188,7 @@ public class InputControlFactoryImpl implements InputControlFactory {
 	 */
 	public String getOptionsForSelect(List<ObjectValueTO> objectValueToList, 
 			String title, String name, String reportUrl, boolean isMultiselect, 
-			Map<String, String[]> defaultValues, List<String> defaultInputNames) {
+			Map<String, String[]> defaultValues, List<String> defaultInputNames, Map<String, String[]> sessionParams) {
 		StringBuilder str = new StringBuilder();
 		if(objectValueToList == null) {
 			objectValueToList = new ArrayList<ObjectValueTO>();
@@ -237,8 +237,19 @@ public class InputControlFactoryImpl implements InputControlFactory {
 					str.append( String.format(IDomObject.SELECT_OPTION, 
 							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 				} else {
-					str.append( String.format(IDomObject.SELECT_OPTION, 
-							objectValueTo.getValue(), "", objectValueTo.getName()) );
+					if(sessionParams != null && sessionParams.get(name) != null) {
+						String[] sessionVal = sessionParams.get(name);
+						if(sessionVal.length > 0 && objectValueTo.getValue().equals(sessionVal[0])) {
+							str.append( String.format(IDomObject.SELECT_OPTION, 
+									objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
+						} else {
+							str.append( String.format(IDomObject.SELECT_OPTION, 
+									objectValueTo.getValue(), "", objectValueTo.getName()) );
+						}
+					} else {
+						str.append( String.format(IDomObject.SELECT_OPTION, 
+								objectValueTo.getValue(), "", objectValueTo.getName()) );
+					}
 				}
 			}
 		}

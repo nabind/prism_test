@@ -20,7 +20,7 @@ public interface InputControlFactory {
 	
 	public String getOptionsForSelect(List<ObjectValueTO> objectValueToList, 
 			String title, String name, String reportUrl, boolean isMultiselect, 
-			Map<String, String[]> defaultValues, List<String> defaultInputNames);
+			Map<String, String[]> defaultValues, List<String> defaultInputNames, Map<String, String[]> sessionParams);
 	
 	public String getInputSectionWrapper(boolean startTag);
 	public String getInputSectionWrapperTwo(boolean startTag);

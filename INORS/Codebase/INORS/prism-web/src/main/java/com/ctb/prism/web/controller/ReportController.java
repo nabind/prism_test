@@ -138,9 +138,21 @@ public class ReportController extends BaseDAO {
 			if (IApplicationConstants.TRUE.equals(drilldown)) {
 				filter = drilldown;
 			}
+			
+			/****NEW***/
+			Map<String, String[]> sessionParams = (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_");
+			if(sessionParams == null) sessionParams = new HashMap<String, String[]>();
+			Iterator itr = req.getParameterMap().entrySet().iterator();
+			while (itr.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) itr.next();
+				req.getSession().setAttribute("_REMEMBER_ME_" + mapEntry.getKey(), mapEntry.getValue());
+				sessionParams.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+			}
+			req.getSession().setAttribute("_REMEMBER_ME_ALL_", sessionParams);
+			/****NEW***/
 
 			// addding code to remember existing input control selection
-			if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+			/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
 				if (IApplicationConstants.TRUE.equals(filter)) {
 					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
 					if (sessionObjects != null) {
@@ -151,7 +163,7 @@ public class ReportController extends BaseDAO {
 						}
 					}
 				}
-			}
+			}*/
 			// end : remember existing input control selection
 
 			// get jasper report
@@ -279,8 +291,19 @@ public class ReportController extends BaseDAO {
 				filter = drilldown;
 			}
 
+			/****NEW***/
+			Map<String, String[]> sessionParams = (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_");
+			if(sessionParams == null) sessionParams = new HashMap<String, String[]>();
+			Iterator itr = req.getParameterMap().entrySet().iterator();
+			while (itr.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) itr.next();
+				req.getSession().setAttribute("_REMEMBER_ME_" + mapEntry.getKey(), mapEntry.getValue());
+				sessionParams.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+			}
+			req.getSession().setAttribute("_REMEMBER_ME_ALL_", sessionParams);
+			/****NEW***/
 			// addding code to remember existing input control selection
-			if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+			/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
 				if (IApplicationConstants.TRUE.equals(filter)) {
 					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
 					if (sessionObjects != null) {
@@ -291,7 +314,7 @@ public class ReportController extends BaseDAO {
 						}
 					}
 				}
-			}
+			}*/
 			// end : remember existing input control selection
 
 			// get jasper report
@@ -493,7 +516,7 @@ public class ReportController extends BaseDAO {
 			} else {
 				// get default parameters for logged-in user
 				Object reportFilterTO = reportService
-						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
+						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
@@ -769,9 +792,9 @@ public class ReportController extends BaseDAO {
 				}
 			}
 		}
-		if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+		/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
 			req.getSession().setAttribute("inputControls", sessionParameters);
-		}
+		}*/
 		return parameters;
 	}
 
@@ -865,6 +888,10 @@ public class ReportController extends BaseDAO {
 					}
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
+					/***NEW***/
+					String[] valueFromSession = getFromSession(req, label);
+					/***NEW***/
+					
 					Map<String, Object> sessionParameters = null;
 					if (req != null)
 						sessionParameters = (Map<String, Object>) req.getSession().getAttribute("inputControls");
@@ -920,6 +947,16 @@ public class ReportController extends BaseDAO {
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
 							}
+							/***NEW***/
+							if(valueFromSession != null) {
+								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
+								List<String> selectInputNames = new ArrayList<String>();
+								selectInputValues.put(label, valueFromSession);
+								selectInputNames.add(label);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
+							}
+							/***NEW***/
 							if (!checkDefault) {
 								parameters.put(inputControlTO.getLabelId(), listOfValues);
 							} else {
@@ -966,6 +1003,13 @@ public class ReportController extends BaseDAO {
 							parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
 											: inputCollection);
+							/***NEW***/
+							if(valueFromSession != null) {
+								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+							} else {
+								parameters.put(inputControlTO.getLabelId(), inputCollection);
+							}
+							/***NEW***/
 						} else if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {
 							if (!customReport) {
 								for (int i = 0; i < jasperReport.getParameters().length; i++) {
@@ -1005,6 +1049,21 @@ public class ReportController extends BaseDAO {
 							parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
 											: value);
+							/***NEW***/
+							if(valueFromSession != null && valueFromSession.length > 0) {
+								boolean objExists = false;
+								for (ObjectValueTO objectValue : listOfValues) {
+									if (objectValue.getValue() != null && objectValue.getValue().equals(valueFromSession[0])) {
+										parameters.put(inputControlTO.getLabelId(), valueFromSession[0]);
+										objExists = true;
+										break;
+									}
+								}
+								if(!objExists) parameters.put(inputControlTO.getLabelId(), value);
+							} else {
+								parameters.put(inputControlTO.getLabelId(), value);
+							}
+							/***NEW***/
 						}
 					}
 				}
@@ -1014,6 +1073,10 @@ public class ReportController extends BaseDAO {
 			e.printStackTrace();
 		}
 		return parameters;
+	}
+	
+	private String[] getFromSession(HttpServletRequest req, String label) {
+		return (String[]) req.getSession().getAttribute("_REMEMBER_ME_" + label);
 	}
 
 	/**
@@ -1081,7 +1144,7 @@ public class ReportController extends BaseDAO {
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1091,9 +1154,9 @@ public class ReportController extends BaseDAO {
 			Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, true, req);
 
 			if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + reportUrl))) {
-				if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+				/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
 					req.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "InputControls" + reportUrl, allInputControls);
-				}
+				}*/
 				Map<String, Object> customParameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, req);
 				req.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, customParameters);
 			}
@@ -1121,11 +1184,11 @@ public class ReportController extends BaseDAO {
 				}
 				for (InputControlTO inputControlTO : allInputControls) {
 					inputControlTO.setTabCount(tabCount);
-					List<ObjectValueTO> sessionObject = (List<ObjectValueTO>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + inputControlTO.getLabelId());
+					/*List<ObjectValueTO> sessionObject = (List<ObjectValueTO>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + inputControlTO.getLabelId());
 					boolean fromSession = false;
 					if (sessionObject != null && sessionObject.size() > 0) {
 						fromSession = true;
-					}
+					}*/
 
 					count++;
 					if (parameters.get(inputControlTO.getLabelId()) != null) {
@@ -1142,7 +1205,10 @@ public class ReportController extends BaseDAO {
 									inputControlTO.setTextValue((String) parameters.get(inputControlTO.getLabelId()));
 									inputControlDom.append(inputControlFact.getTextInputControl(inputControlTO, isSeperateInputs));
 								} else {
-									inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+									/*inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+											inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
+											parameters, isSeperateInputs));*/
+									inputControlDom.append(inputControlFact.getSelectInputControl((List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
 											inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
 											parameters, isSeperateInputs));
 								}
@@ -1158,7 +1224,10 @@ public class ReportController extends BaseDAO {
 									inputControlTO.setTextValue((String) parameters.get(inputControlTO.getLabelId()));
 									inputControlDom.append(inputControlFact.getTextInputControl(inputControlTO, isSeperateInputs));
 								} else {
-									inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+									/*inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+											inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
+											parameters, isSeperateInputs));*/
+									inputControlDom.append(inputControlFact.getSelectInputControl((List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
 											inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
 											parameters, isSeperateInputs));
 								}
@@ -1172,7 +1241,10 @@ public class ReportController extends BaseDAO {
 								inputControlTO.setTextValue((String) parameters.get(inputControlTO.getLabelId()));
 								inputControlDom.append(inputControlFact.getTextInputControl(inputControlTO, isSeperateInputs));
 							} else {
-								inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+								/*inputControlDom.append(inputControlFact.getSelectInputControl((fromSession) ? sessionObject : (List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
+										inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
+										parameters, isSeperateInputs));*/
+								inputControlDom.append(inputControlFact.getSelectInputControl((List<ObjectValueTO>) parameters.get(inputControlTO.getLabelId()),
 										inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, tabCount, inputControlTO.isCollection(), inputControlTO.isInputBox(), assessmentId,
 										parameters, isSeperateInputs));
 							}
@@ -1239,7 +1311,7 @@ public class ReportController extends BaseDAO {
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("inputControls"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
 			// get default parameters for logged-in user
 			/*
 			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
@@ -1389,18 +1461,32 @@ public class ReportController extends BaseDAO {
 				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName, changedObject, changedValue, replacableParams, reportFilterTO);
 
 				// req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER+inputControlTO.getLabelId(), objects);
-				if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
+				/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
 					Map<String, List<ObjectValueTO>> sessionObjects = (Map<String, List<ObjectValueTO>>) req.getSession().getAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl);
 					if (sessionObjects == null)
 						sessionObjects = new HashMap<String, List<ObjectValueTO>>();
 					sessionObjects.put(inputControlTO.getLabelId(), objects);
 					req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER + reportUrl, sessionObjects);
-				}
+				}*/
 				boolean isMultiselect = false;
 				if (IApplicationConstants.DATA_TYPE_COLLECTION.equals(inputControlTO.getType())) {
 					isMultiselect = true;
 				}
-				String dom = inputControlFact.getOptionsForSelect(objects, inputControlTO.getLabel(), inputControlTO.getLabelId(), reportUrl, isMultiselect, defaultValues, defaultInputNames);
+				/***NEW***/
+				Map<String, String[]> currentParam = new HashMap<String, String[]>();
+				Map<String, String[]> sessionParam = (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_");
+				Iterator itr = sessionParam.entrySet().iterator();
+				while (itr.hasNext()) {
+					Map.Entry mapEntry = (Map.Entry) itr.next();
+					if(req.getParameterMap().containsKey(mapEntry.getKey())) {
+						currentParam.put((String) mapEntry.getKey(), (String[]) req.getParameterMap().get(mapEntry.getKey()));
+					} else {
+						currentParam.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+					}
+				}
+				/***NEW***/
+				String dom = inputControlFact.getOptionsForSelect(objects, inputControlTO.getLabel(), 
+						inputControlTO.getLabelId(), reportUrl, isMultiselect, defaultValues, defaultInputNames, (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
 				objectValueTo = new ObjectValueTO();
 				objectValueTo.setName(inputControlTO.getLabelId());
 				objectValueTo.setValue(dom); // set the DOM

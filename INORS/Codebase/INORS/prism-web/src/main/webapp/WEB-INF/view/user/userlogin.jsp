@@ -165,14 +165,14 @@
 					        <div class="boxshade" style="margin-top:10px">
 						    <div class="columns">
 							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
-							<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
+							<img src="themes/acsi/img/slide/ladybugicon64x64.gif" />
 							</div>
 							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
 								<!-- For teacher -->
 								<textarea id="taContent" style="display:none;">
 								</textarea>
-								<div id="contentDescription" class="relative with-padding"
-									style="height: auto; text-align: justify">			
+								<div id="contentDescription" class="relative" style="height: auto; text-align: justify">
+									<span class="loader big"></span>
 								</div>
 							</div>
 							</div>
@@ -286,8 +286,8 @@
 								<!-- For parent -->
 								<textarea id="taContent" style="display:none;">
 								</textarea>
-								<div id="contentDescription" class="relative with-padding"
-									style="height: auto; text-align: justify">			
+								<div id="contentDescription" class="relative" style="height: auto; text-align: justify">
+									<span class="loader big"></span>
 								</div>
 							</div>
 							

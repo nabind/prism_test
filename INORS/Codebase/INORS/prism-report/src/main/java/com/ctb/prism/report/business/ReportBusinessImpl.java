@@ -1,5 +1,6 @@
 package com.ctb.prism.report.business;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,31 +162,43 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 
-				// added new for remember i/p control
-				/*
+				/***NEW***/
 				if (sessionParams != null) {
-					boolean sessionArray = false;
 					Iterator it = sessionParams.entrySet().iterator();
 					while (it.hasNext()) {
 						Map.Entry pairs = (Map.Entry) it.next();
-						if (pairs.getValue() != null && pairs.getValue() instanceof List<?>) {
-							sessionArray = true;
-						} else {
-							sessionArray = false;
+						try {
+							String m = CustomStringUtil.appendString("get", ((String)pairs.getKey()).substring(0, 1).toUpperCase(), ((String)pairs.getKey()).substring(1));
+							List<ObjectValueTO> tempObj = (List<ObjectValueTO>) clazz.getMethod(m).invoke(obj);
+							boolean matched = false;
+							if(tempObj != null && tempObj.size() > 0) {
+								for(ObjectValueTO val : tempObj) {
+									if(val.getValue().equals(((String[]) pairs.getValue())[0])) {
+										matched = true;
+										break;
+									}
+								}
+								if(matched) {
+									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+								} else {
+									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+								}
+							}
+						} catch (Exception e) {
+							/** Nothing to do here 
+							 * - this block will get lots of java.lang.NoSuchMethodException
+							 * - which is expected and known
+							 * - as the ReportFilterTO (dynamic) class contains only report filter setters/getters **/
+							//e.printStackTrace();
 						}
-
-						query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), (sessionArray) ? replaceSpecial(query, (List<String>) pairs.getValue())
-								: ((String) sessionParams.get((String) pairs.getKey()) != null) ? (String) sessionParams.get((String) pairs.getKey()) : "-99");
-
 					}
 				}
-				*/
-				// END : added new for remember i/p control
+				/***NEW***/
 
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
-				logger.log(IAppLogger.DEBUG, query);
+				logger.log(IAppLogger.INFO, query);
 				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
 				/*
 				 * if(list != null && list.size() == 0) { // patch for form level if(IApplicationConstants.IC_FORM_LEVEL.equals(ito.getLabel())) { ObjectValueTO formObj = new ObjectValueTO();

@@ -3,8 +3,8 @@
 
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
-<div class="margin-bottom-medium std-matter-parent-div">
-	<h3>Standards, Testing, and NCLB</h3>
+<div class="margin-bottom-medium std-matter-parent-div thin">
+	<h1>Standards, Testing, and NCLB</h1>
 
 	<p>
 		Parents and caretakers, teachers, and schools all have a
