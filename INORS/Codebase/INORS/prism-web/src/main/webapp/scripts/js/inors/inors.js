@@ -199,11 +199,21 @@ $(document).ready(function() {
 		// alert("html=" + $("#studentTableGDSelectedVal").html());
 	});
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadSeparatePdfsGD").on("click", function() {
+	$("#downloadSeparatePdfsGD").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		window.parent.$('html, body').animate({scrollTop:0}, 'slow');
+		
 		groupDownloadSubmit('SP');
 	});
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadCombinedPdfsGD").on("click", function() {
+	$("#downloadCombinedPdfsGD").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		window.parent.$('html, body').animate({scrollTop:0}, 'slow');
+
 		groupDownloadSubmit('CP');
 	});
 	// Synchronous : Immediate download
