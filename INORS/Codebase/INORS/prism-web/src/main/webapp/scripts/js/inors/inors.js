@@ -363,6 +363,7 @@ function setACheckBox(checkBox, value) {
 
 // =============== get inors home page message =====================
 function openInorsHomePage() {
+	//Fixed for TD 77263 -  By Joy
 	var iframeObj = $('#report-iframe-0').contents();
 	var inorsHomeObj = iframeObj.find('#inorsHome');
 	var taContentObj = iframeObj.find('#taContent');
@@ -374,9 +375,8 @@ function openInorsHomePage() {
 			url : "loadHomePageMsg.do",
 			data : null,
 			dataType : 'json',
-			cache: false,
+			cache: true,
 			success : function(data) {
-				//Fixed for TD 77263 -  By Joy
 				unblockUI();
 				blockDivObj.hide();
 				taContentObj.val(data.value);
