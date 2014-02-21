@@ -535,6 +535,9 @@
 				dataType : 'json',
 				cache:false,
 				success : function(data) {
+					if(data.length >= 1){
+						showHideDataTable('show');
+					}
 					if (data != null && data.length > 14){
 						$(".pagination").show(200);
 					} else {
@@ -824,6 +827,13 @@
 		$("#orgMode").mouseenter();
 		$("#orgMode").mouseleave();
 		// END : patch to remove tooltip
+		
+		/* Fixed QC defect - Joy
+		 * By changing TA/org mode, data table retains for non-public mode though logged in user is public and vice versa
+		 */
+		showHideDataTable('hide');
+		//End Fixed QC defect - Joy
+		
 		var adminYear = $(selectedObj).val();
 		var queryData = "AdminYear="+adminYear+"&orgMode="+$("#orgMode").val();
 		$.ajax({
@@ -842,4 +852,31 @@
 				$.modal.alert(strings['script.org.error']);
 			}
 		});
+	}
+	
+	/* Fixed QC defect - Joy
+	 * By changing TA/org mode, data table retains for non-public mode though logged in user is public and vice versa
+	 */
+	function showHideDataTable(purpose){
+		if(purpose === 'show'){
+			$("#moreStudent").show();
+			$("#moreUser").show();
+			$("#moreOrg").show();
+			$("#moreParent").show();
+
+			$('#studentTable').show();
+			$('#userTable').show();
+			$('#orgTable').show();
+			$('#parentTable').show();
+		}else if(purpose === 'hide'){
+			$("#moreStudent").hide();
+			$("#moreUser").hide();
+			$("#moreOrg").hide();
+			$("#moreParent").hide();
+
+			$('#studentTable').hide();
+			$('#userTable').hide();
+			$('#orgTable').hide();
+			$('#parentTable').hide();
+		}
 	}

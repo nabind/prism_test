@@ -187,6 +187,9 @@ $('.view-Children').live("click", function() {
 			cache:false,
 			success : function(data) {
 				unblockUI();
+				if(data.length >= 1){
+					showHideDataTable('show');
+				}
 				if (data != null && data.length > 14){
 					$(".pagination").show(200);
 					$("#moreParent").removeClass("disabled");
