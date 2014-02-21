@@ -153,7 +153,7 @@ $('.view-Children').live("click", function() {
 				+'<td>'+checkForNull(this.orgName)+'</td>'
 				+'<td class="vertical-center">'
 					+' <span class="button-group compact">' 
-						+' <a id="'+ this.studentBioId + '" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages icon"></span> Assessment</a>'  
+						+' <a id="'+ this.studentBioId + '" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages"></span> Assessment</a>'  
 					+' </span>'
 				+'</td>'
 			+'</tr>' ;
