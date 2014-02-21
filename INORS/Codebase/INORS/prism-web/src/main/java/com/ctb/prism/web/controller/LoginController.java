@@ -991,7 +991,7 @@ public class LoginController {
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
 		} finally {
-			logger.log(IAppLogger.INFO, "Login Message: "+jsonString);
+			logger.log(IAppLogger.INFO, "HomePage Message: "+jsonString);
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: LoginController - loadHomePageMsg() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
