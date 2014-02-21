@@ -7,6 +7,8 @@ var ANIMATION_TIME = 200;
 
 $(document).ready(function() {
 	
+	//openInorsHomePage();
+	
 	if($("#contentTable").length > 0) {
 		var allContents = $(".content-list-all");
 		if(allContents != null && allContents.length > 0) {
@@ -1051,6 +1053,70 @@ function getPerformanceLevelName(performanceLevel){
 		performanceLevelName = 'Pass+';
 	}
 	return performanceLevelName;
+}
+
+//=============== get inors home page message =====================
+function openInorsHomePage() {
+	//Fixed for TD 77263 -  By Joy
+	/*var iframeObj = $('#report-iframe-0').contents();
+	var inorsHomeObj = iframeObj.find('#inorsHome');
+	var taContentObj = iframeObj.find('#taContent');
+	var blockDivObj = iframeObj.find('#blockDiv');
+	if(inorsHomeObj.length) {
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : "loadHomePageMsg.do",
+			data : null,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.value);
+				inorsHomeObj.html(taContentObj.val());	
+				
+			},
+			error : function(data) {
+			if (data.status == "200") {
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.responseText);
+				inorsHomeObj.html(taContentObj.val());		
+			} else {
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}				
+		  }
+		});
+	}*/
+	
+	if($('#report-iframe-0').contents().find('#inorsHome').length) {
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : "loadHomePageMsg.do",
+			data : null,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				$('#report-iframe-0').contents().find('#blockDiv').hide();
+				$('#report-iframe-0').contents().find('#taContent').val(data.value);
+				$('#report-iframe-0').contents().find('#inorsHome').html($('#report-iframe-0').contents().find('#taContent').val());
+			},
+			error : function(data) {
+			if (data.status == "200") {
+				unblockUI();
+				$('#report-iframe-0').contents().find('#blockDiv').hide();
+				$('#report-iframe-0').contents().find('#taContent').val(data.responseText);
+				$('#report-iframe-0').contents().find('#inorsHome').html($('#report-iframe-0').contents().find('#taContent').val());
+			} else {
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}				
+		  }
+		});
+	}
+	
 }
 
 /**

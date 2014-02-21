@@ -17,9 +17,6 @@ var chkTreeContainerObj;
 
 $(document).ready(function() {
 	
-	// get home page message - after page is loaded
-	openInorsHomePage();
-	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
 		$(document).click();
@@ -358,42 +355,6 @@ function setACheckBox(checkBox, value) {
 	} else if (value == "0") {
 		checkBox.removeAttr('checked');
 		checkBox.val("0");
-	}
-}
-
-// =============== get inors home page message =====================
-function openInorsHomePage() {
-	//Fixed for TD 77263 -  By Joy
-	var iframeObj = $('#report-iframe-0').contents();
-	var inorsHomeObj = iframeObj.find('#inorsHome');
-	var taContentObj = iframeObj.find('#taContent');
-	var blockDivObj = iframeObj.find('#blockDiv');
-	if(inorsHomeObj.length) {
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : "loadHomePageMsg.do",
-			data : null,
-			dataType : 'json',
-			cache: false,
-			success : function(data) {
-				unblockUI();
-				blockDivObj.hide();
-				taContentObj.val(data.value);
-				inorsHomeObj.html(taContentObj.val());	
-				
-			},
-			error : function(data) {
-			if (data.status == "200") {
-				unblockUI();
-				blockDivObj.hide();
-				taContentObj.val(data.responseText);
-				inorsHomeObj.html(taContentObj.val());		
-			} else {
-				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
-			}				
-		  }
-		});
 	}
 }
 
