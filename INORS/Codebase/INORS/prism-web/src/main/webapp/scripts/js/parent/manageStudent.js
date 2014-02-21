@@ -364,6 +364,9 @@ function confirmRecreationAC(rowcounter)
 					dataType : 'json',
 					cache:false,
 					success : function(data) {
+						if(data.length >= 1){
+							showHideDataTable('show');
+						}
 						if (data != null && data.length > 14){
 							$(".pagination").show(200);
 							$("#moreStudent").removeClass("disabled");
