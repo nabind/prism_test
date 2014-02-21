@@ -262,7 +262,8 @@ public class FileUtil {
 							copy.addPage(copy.getImportedPage(reader, ++page));
 						}
 						if (Utils.isOdd(n)) {
-							copy.addPage(new Rectangle(8.27F, 11.69F), 0);
+							copy.addPage(new Rectangle(8.26F, 11.69F), 0); // TODO: This page intentionally left blank.
+							copy.add(new Paragraph("This page intentionally left blank."));
 						}
 						copy.freeReader(reader);
 						reader.close();
@@ -516,7 +517,8 @@ public class FileUtil {
 				copy.addPage(copy.getImportedPage(reader, ++page));
 			}
 			if (Utils.isOdd(n)) {
-				copy.addPage(new Rectangle(8.27F, 11.69F), 0);
+				copy.addPage(new Rectangle(8.26F, 11.69F), 0); // TODO: This page intentionally left blank.
+				copy.add(new Paragraph("This page intentionally left blank."));
 			}
 			copy.freeReader(reader);
 			reader.close();
@@ -544,7 +546,8 @@ public class FileUtil {
 			document.add(new Paragraph(pdfContent));
 			int n = document.getPageNumber();
 			if (Utils.isOdd(n)) {
-				document.add(new Rectangle(8.27F, 11.69F));
+				document.add(new Rectangle(8.26F, 11.69F)); // TODO: This page intentionally left blank.
+				document.add(new Paragraph("This page intentionally left blank."));
 			}
 			document.close();
 			file.close();
@@ -564,9 +567,9 @@ public class FileUtil {
 	public static String generateDefaultZipFileName(String currentUser, String groupFile) {
 		String zipFileName = "";
 		if ((groupFile != null) && (!groupFile.isEmpty()) && (!"null".equalsIgnoreCase(groupFile))) {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
 		} else {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."));
 		}
 		return zipFileName;
 	}

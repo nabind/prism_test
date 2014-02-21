@@ -198,7 +198,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
-				logger.log(IAppLogger.INFO, query);
+				logger.log(IAppLogger.DEBUG, query);
 				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
 				/*
 				 * if(list != null && list.size() == 0) { // patch for form level if(IApplicationConstants.IC_FORM_LEVEL.equals(ito.getLabel())) { ObjectValueTO formObj = new ObjectValueTO();

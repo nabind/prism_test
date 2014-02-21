@@ -76,7 +76,7 @@
 			<span class="info-spot">
 				<span class="icon-info-round"></span>
 				<span class="info-bubble" style="width: 123px;">
-					Characters allowed are { A-Z a-z 0-9 -_ } ( Items within{ } )
+					Characters allowed are { A-Z a-z 0-9 _. } ( Items within{ } )
 				</span>
 			</span>
 		</p>

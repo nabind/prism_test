@@ -959,7 +959,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				valueMap.put((String) data.get("KEY"), (String) data.get("VALUE"));
 			}
 		}
-		querySheetTO.setDateOfFileGenerationRequest(valueMap.get("EXTRACT_STARTDATE"));
+		// querySheetTO.setDateOfFileGenerationRequest(valueMap.get("EXTRACT_STARTDATE"));
 		querySheetTO.setTestAdministration(valueMap.get("PRODUCT_NAME"));
 		querySheetTO.setCorpDiocese(valueMap.get(querySheetTO.getCorpDiocese()));
 		querySheetTO.setSchoolNames(valueMap.get(querySheetTO.getSchoolNames()));
@@ -1641,8 +1641,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> data : lstData) {
-				String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"), "MM/dd/yyyy HH:mm:ss");
+				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss");
+				String extractStartdate = getFormattedDate((Timestamp) data.get("EXTRACT_STARTDATE"), "MM/dd/yyyy HH:mm:ss");
 				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
+				to.setExtractStartdate(extractStartdate);
 				to.setCreatedDateTime(createdDate);
 				to.setExtractFiletype((String) data.get("extract_filetype"));
 				to.setRequestType((String) data.get("request_type"));

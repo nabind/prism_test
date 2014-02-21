@@ -268,7 +268,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
 			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
 
-			to.setFileName(fileName);
+			to.setFileName(zipFileName);
 			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
 			to.setGdfExpiryTime(gdfExpiryTime);
 			to.setRequestDetails(clobStr);

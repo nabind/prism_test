@@ -602,7 +602,7 @@ public class InorsController {
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(jobTrackingId);
-			//processGroupDownload(jobTrackingId);
+			// inorsService.batchPDFDownload(jobTrackingId);
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
 					jobTrackingId, "\"}");
@@ -928,6 +928,13 @@ public class InorsController {
 		modelAndView.addObject("testProgram", testProgram);
 		modelAndView.addObject("corpDiocese", corpDiocese);
 		modelAndView.addObject("school", school);
+		if ((productName != null) && (!productName.isEmpty())) {
+			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_Y);
+			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_Y);
+		} else {
+			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_N);
+			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_N);
+		}
 
 		String reportUrl = (String) request.getParameter("reportUrl");
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
