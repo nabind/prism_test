@@ -25,6 +25,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.SqlLobValue;
@@ -1367,33 +1368,39 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#updateJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public int updateJobTracking(GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
-		int updateCount = 0;
+		try {
+			logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
+			int updateCount = 0;
 
-		String request_filename = to.getFileName();
-		String gdfExpiryTime = to.getGdfExpiryTime();
-		String job_log = to.getJobLog();
-		String job_status = to.getJobStatus();
-		String file_size = to.getFileSize();
-		String job_id = to.getJobId();
-		String request_details = to.getRequestDetails();
+			String request_filename = to.getFileName();
+			String gdfExpiryTime = to.getGdfExpiryTime();
+			String job_log = to.getJobLog();
+			String job_status = to.getJobStatus();
+			String file_size = to.getFileSize();
+			String job_id = to.getJobId();
+			String request_details = to.getRequestDetails();
 
-		logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
-		logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
-		logger.log(IAppLogger.INFO, "job_log: " + job_log);
-		logger.log(IAppLogger.INFO, "job_status: " + job_status);
-		logger.log(IAppLogger.INFO, "file_size: " + file_size);
-		logger.log(IAppLogger.INFO, "job_id: " + job_id);
-		logger.log(IAppLogger.INFO, "request_details: " + request_details);
+			logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
+			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
+			logger.log(IAppLogger.INFO, "job_log: " + job_log);
+			logger.log(IAppLogger.INFO, "job_status: " + job_status);
+			logger.log(IAppLogger.INFO, "file_size: " + file_size);
+			logger.log(IAppLogger.INFO, "job_id: " + job_id);
+			logger.log(IAppLogger.INFO, "request_details: " + request_details);
 
-		String request_summary = getRequestSummary(Utils.objectToJson(to));
-		logger.log(IAppLogger.INFO, "request_summary: " + request_summary);
+			String request_summary = getRequestSummary(Utils.objectToJson(to));
+			logger.log(IAppLogger.INFO, "request_summary: " + request_summary);
 
-		updateCount = getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
-		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
+			updateCount = getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
+			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 
-		logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
-		return updateCount;
+			logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
+			return updateCount;
+		} catch (DataAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	/*

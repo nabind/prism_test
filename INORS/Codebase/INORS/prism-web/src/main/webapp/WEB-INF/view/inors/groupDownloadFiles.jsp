@@ -33,12 +33,12 @@
 
 									<thead>
 										<tr>
-											<th scope="col" width="12%">Request File Name</th>
-											<th scope="col" width="24%">Created Date</th>
-											<th scope="col" width="24%">Expiry Date</th>
-											<th scope="col" width="15%">Job Status</th>
-											<th scope="col" width="12%">File Size</th>
-											<th scope="col" width="13%">Actions</th>
+											<th scope="col" width="30%">Request File Name</th>
+											<th scope="col" width="20%">Created Date</th>
+											<th scope="col" width="20%">Expiry Date</th>
+											<th scope="col" width="12%">Job Status</th>
+											<th scope="col" width="10%">File Size</th>
+											<th scope="col" width="8%">Actions</th>
 										</tr>
 									</thead>
 
@@ -56,7 +56,10 @@
 
 		                                            <c:choose>
 		    											<c:when test="${group.jobStatus=='ER'}">
-		    												<span class="button icon-cross-round icon-size2 red" title="Error"></span>
+		    												<span class="button icon-cross-round icon-size2 red with-tooltip" title="Error in file generation"></span>
+		    											</c:when>
+		    											<c:when test="${group.jobStatus=='NA'}">
+		    												<span class="button icon-forbidden icon-size2 orange with-tooltip" title="No files available for the selected criteria"></span>
 		    											</c:when>
 		    											<c:when test="${group.jobStatus=='CO'}">
 		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="blue-gradient button icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>

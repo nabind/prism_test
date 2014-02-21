@@ -629,6 +629,7 @@ var newTab = true;
 // Add a tab
 function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, reportType, customUrl)
 {	
+	$(".reportButton").removeTooltip();
 	blockUI();
 	newTab = true;
 	// New tab id
@@ -884,6 +885,7 @@ function closeProgress(reportUrl, id, firstCall) {
 	$(".download-button-"+id).show(100);
 	// change refresh button color
 	$(".refreh-button-"+id).addClass('blue-gradient');
+	$(".reportButton").removeTooltip();
 	
 	if(reportUrl != null && !firstCall) {
 		checkpagination(reportUrl, id);
@@ -965,6 +967,8 @@ function getCascading(selectedObj) {
 	$(".download-button-"+tabCount).hide(100);
 	// change refresh report button color
 	$(".refreh-button-"+tabCount).removeClass('blue-gradient').addClass('green-gradient');
+	// show tooltip on refresh button
+	$(".refreh-button-"+tabCount).tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
 	
 	if($(selectedObj).val() != null) {
 	$.ajax({
@@ -2682,8 +2686,8 @@ $(document).ready(function() {
 											"AdminYear" : $("#AdminYear").val()
 									   };
 								},									
-							"success": function(data, textStatus, XMLHttpRequest) {										 
-								if(data != null && data != "") {
+							"success": function(data, textStatus, XMLHttpRequest) {
+								if(data != null && data.length > 0) {
 									if(data.length > maxNodeLimit)
 									{													
 										//alert(data.length);
@@ -7148,7 +7152,7 @@ var chkTreeContainerObj;
 $(document).ready(function() {
 	
 	// get home page message - after page is loaded
-	//openInorsHomePage();
+	openInorsHomePage();
 	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
@@ -7186,7 +7190,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$(".download-instructions").on("click", function() {
+	$(".accordion-header").on("click", function() {
 		$(".accordion-body").slideToggle(500);
 		$(".icon-plus-round").toggle();
 		$(".icon-minus-round").toggle();
@@ -7328,31 +7332,22 @@ $(document).ready(function() {
 		$("#studentTableGDSelectedVal").html(num);
 		// alert("html=" + $("#studentTableGDSelectedVal").html());
 	});
-	$('#check-all').change(function() {
-		var checkboxes = $(this).closest('form').find(':checkbox');
-		if ($(this).is(':checked')) {
-			checkboxes.attr('checked', 'checked');
-		} else {
-			checkboxes.removeAttr('checked');
-		}
-	});
-
-	$("input[id^=check-student-]").change(function() {
-		var checkedStudents = $("input[id^=check-student-]:checked");
-		var totalStudents = $("input[id^=check-student-]");
-		if(checkedStudents.length == totalStudents.length){
-			$('#check-all').attr('checked', 'checked');
-		} else {
-			$('#check-all').removeAttr('checked');
-		}
-	});
-				
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadSeparatePdfsGD").on("click", function() {
+	$("#downloadSeparatePdfsGD").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		window.parent.$('html, body').animate({scrollTop:0}, 'slow');
+		
 		groupDownloadSubmit('SP');
 	});
 	// Asynchronous : Submit to Group Download Files
-	$("#downloadCombinedPdfsGD").on("click", function() {
+	$("#downloadCombinedPdfsGD").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		window.parent.$('html, body').animate({scrollTop:0}, 'slow');
+
 		groupDownloadSubmit('CP');
 	});
 	// Synchronous : Immediate download
@@ -7360,35 +7355,181 @@ $(document).ready(function() {
 	// groupDownloadSubmit('SS');
 	//	});
 	
-	// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
+
+// ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
-		'aoColumnDefs': [
-			{ 'bSortable': false, 'aTargets': [ 0, 3, 4 ] }
-		],
-		 'sPaginationType': 'full_numbers'
+		'aoColumnDefs' : [ {
+			'bSortable' : false,
+			'aTargets' : [ 0, 3, 4 ]
+		} ],
+		'sPaginationType' : 'full_numbers'
 	});
-	
+
+	/**
+	 * Toggele self check status. Set all text box values.
+	 * Refresh check boxes from text boxes.
+	 */
+	$("#check-all").on("click", function() {
+		var value = toggleACheckBox($('#check-all'));
+		setAllTextBoxValues(value);
+		refreshCheckBoxesFromTextBoxes();
+	});
+
+	/**
+	 * Toggele self check status. Set the corresponding text box
+	 * value. Calculate and change the colour of check all check
+	 * box.
+	 */
+	$("input[id^=check-student-]").live("click", function() {
+		toggleACheckBox($(this));
+		var id = this.id;
+		var studentId = id.substring(14);
+		var textBox = $('#check-status-' + studentId);
+		setATextBoxValue(textBox, this.value);
+		calculateAndChangeCheckAll();
+	});
+
+	/**
+	 * Refresh check boxes from text boxes.
+	 */
+	$(".paginate_button").live("click", function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+
+	/**
+	 * Refresh check boxes from text boxes.
+	 */
+	$('[name="studentTableGD_length"]').change(function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+
 	$('#groupDownload').validationEngine();
 });
 
+function calculateAndChangeCheckAll(){
+	var totalStudents = getTotalStudentCount();
+	var checkedStudents = getCheckedStudentCount();
+	if(checkedStudents == totalStudents){
+		$('#check-all').attr('checked', 'checked');
+		$('#check-all').prop("indeterminate", false);
+	} else {
+		$('#check-all').prop("indeterminate", true);
+		$('#check-all').removeAttr('checked');
+	}
+}
+
+function getTotalStudentCount(){
+	var count = 0;
+	$("input[id^=check-status-]").each(function() {
+		count = count + 1;
+	});
+	return count;
+}
+
+function getCheckedStudentCount(){
+	var count = 0;
+	$("input[id^=check-status-]").each(function() {
+		var value = this.value;
+		if(value == "1") {
+			count = count + 1;
+		}
+	});
+	return count;
+}
+
+function setAllTextBoxValues(value){
+	$("input[id^=check-status-]").each(function() {
+		setATextBoxValue($(this), value);
+	});
+}
+
+function setATextBoxValue(textBox, value){
+	textBox.val(value);
+}
+
+/**
+ * Toggle text boxes. Refresh check boxes from text boxes.
+ * 
+ * @param value
+ */
+function toggleAllCheckBoxes(value) {
+	alert("toggleAllCheckBoxes(value)=" + value);
+	$("input[id^=check-status-]").each(function() {
+		toggleACheckBox($(this));
+	});
+}
+
+function toggleACheckBox(checkBox) {
+	var value = checkBox.val();
+	if (value == "1") {
+		checkBox.removeAttr('checked');
+		checkBox.val("0");
+		return "0";
+	} else if (value == "0") {
+		checkBox.attr('checked', 'checked');
+		checkBox.val("1");
+		return "1";
+	}
+}
+
+function refreshCheckBoxesFromTextBoxes() {
+	$("input[id^=check-student-]").each(function() {
+		refreshACheckBoxFromATextBox($(this));
+	});
+}
+
+function refreshACheckBoxFromATextBox(checkBox){
+	var id = checkBox.attr("id");
+	var studentId = id.substring(14);
+	var checkStatus = $('#check-status-' + studentId).val();
+	setACheckBox(checkBox, checkStatus);
+}
+
+function setACheckBox(checkBox, value) {
+	if (value == "1") {
+		checkBox.attr('checked', 'checked');
+		checkBox.val("1");
+	} else if (value == "0") {
+		checkBox.removeAttr('checked');
+		checkBox.val("0");
+	}
+}
+
 // =============== get inors home page message =====================
-/*function openInorsHomePage() {
-	if($("#inorsHome").length > 0) {
+function openInorsHomePage() {
+	//Fixed for TD 77263 -  By Joy
+	var iframeObj = $('#report-iframe-0').contents();
+	var inorsHomeObj = iframeObj.find('#inorsHome');
+	var taContentObj = iframeObj.find('#taContent');
+	var blockDivObj = iframeObj.find('#blockDiv');
+	if(inorsHomeObj.length) {
+		blockUI();
 		$.ajax({
 			type : "GET",
-			url : "loadHomePage.do",
+			url : "loadHomePageMsg.do",
 			data : null,
-			dataType : 'html',
-			cache:false,
+			dataType : 'json',
+			cache: false,
 			success : function(data) {
-				$("#inorsHome").html(data);						
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.value);
+				inorsHomeObj.html(taContentObj.val());	
+				
 			},
 			error : function(data) {
-				$("#inorsHome").html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
-			}
+			if (data.status == "200") {
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.responseText);
+				inorsHomeObj.html(taContentObj.val());		
+			} else {
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}				
+		  }
 		});
 	}
-}*/
+}
 
 // =============== retain group download files field values =====================
 function retainDownloadValues() {
@@ -8217,7 +8358,7 @@ function showHideDivs() {
 				$("#icLinks").html('');
 				$("#grtLinks").html('<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a><br />');
 			} else if ("2013" == tokens[2]) {
-				if("ISTEP" == tokens[0] && "Spring" == tokens[1]) {
+				if("ISTEP+" == tokens[0] && "Spring" == tokens[1]) {
 					$("#icLinks").html('<a class="button" id="ic2013" href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a><br />');
 				} else {
 					$("#icLinks").html('');
@@ -8269,9 +8410,7 @@ function getGroupDownloadTO() {
 	var school = $("#q_school").val();
 	var klass = $("#q_klass").val();
 	var grade = $("#q_grade").val();
-	var students = $("input[id^=check-student-]:checked").map(function() {
-		return this.value;
-	}).get().join(",");
+	var students = getSelectedStudentIdsAsCommaString();
 	var groupFile = $("#q_groupFile").val();
 	var collationHierarchy = $("#q_collationHierarchy").val();
 	var fileName = $("#fileName").val();
@@ -8280,6 +8419,21 @@ function getGroupDownloadTO() {
 			testAdministrationText, testProgram, district, school, klass,
 			grade, students, groupFile, collationHierarchy, fileName, email);
 	return to;
+}
+
+function getSelectedStudentIdsAsCommaString() {
+	var students = "";
+	$("input[id^=check-status-]").each(function() {
+		if (this.value == "1") {
+			var id = this.id;
+			var studentId = id.substring(13);
+			students = students + "," + studentId;
+		}
+	});
+	if (students.length > 0) {
+		students = students.substring(1);
+	}
+	return students;
 }
 
 /**

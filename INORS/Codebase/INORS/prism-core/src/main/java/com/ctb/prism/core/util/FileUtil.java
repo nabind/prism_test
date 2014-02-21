@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -367,11 +368,32 @@ public class FileUtil {
 	 * @param filePath
 	 * @return
 	 */
-	public static long fileSize(String filePath) {
-		long size = 0;
+	public static String fileSize(String filePath) {
 		File file = new File(filePath);
-		size = file.length();
-		return size;
+		double size = 0;
+		DecimalFormat f = new DecimalFormat("##.00");
+		if (file.exists()) {
+			size = file.length() / 1024 / 1024;
+			if (size == 0) {
+				size = file.length() / 1024;
+				return (f.format(size) + " K");
+			} else {
+				return (f.format(size) + " M");
+			}
+		}
+		return "0 M";
+	}
+	
+	public static String fileSize(byte[] fileBytes) {
+		double size = 0;
+		DecimalFormat f = new DecimalFormat("##.00");
+		size = fileBytes.length / 1024 / 1024;
+		if (size == 0) {
+			size = fileBytes.length / 1024;
+			return (f.format(size) + " K");
+		} else {
+			return (f.format(size) + " M");
+		}
 	}
 
 	/**
@@ -529,6 +551,24 @@ public class FileUtil {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to Create Duplex Pdf");
 		}
+	}
+	
+	/**
+	 * Zip file name is provided by the user from user input text box. If user doesnot provide Zip file name then system will provide a default Zip file name. Pdf file name is always system generated.
+	 * This method provides the default Zip file name.
+	 * 
+	 * @param currentUser
+	 * @param groupFile
+	 * @return
+	 */
+	public static String generateDefaultZipFileName(String currentUser, String groupFile) {
+		String zipFileName = "";
+		if ((groupFile != null) && (!groupFile.isEmpty()) && (!"null".equalsIgnoreCase(groupFile))) {
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
+		} else {
+			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
+		}
+		return zipFileName;
 	}
 
 }

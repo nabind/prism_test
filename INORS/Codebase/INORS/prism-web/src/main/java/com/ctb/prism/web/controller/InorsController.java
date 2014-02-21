@@ -493,7 +493,7 @@ public class InorsController {
 			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
 				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-					fileName = generateDefaultZipFileName(currentUser, groupFile);
+					fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
 					request.getSession().setAttribute("FILE_NAME_GD", fileName);
 				}
 			}
@@ -619,128 +619,6 @@ public class InorsController {
 	}
 
 	/**
-	 * This method will be called using JMS.
-	 * 
-	 * @param processId
-	 * @param button
-	 * @param fileName
-	 * @param filePaths
-	 */
-	private void processGroupDownload(String processId) {
-		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
-		String jobLog = null;
-		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
-		Long fileSize = null;
-		JobTrackingTO jobTrackingTO = reportService.getProcessDataGD(processId);
-		String clobStr = jobTrackingTO.getRequestDetails();
-		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
-		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
-		Map<String, String> filePaths = new LinkedHashMap<String, String>();
-		if (to != null) {
-			String button = to.getButton();
-			String fileName = to.getFileName();
-			String groupFile = to.getGroupFile();
-			String school = to.getSchool();
-			String students = to.getStudents();
-			String currentUser = to.getUserName();
-			logger.log(IAppLogger.INFO, "button: " + button);
-			logger.log(IAppLogger.INFO, "fileName: " + fileName);
-			logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
-			logger.log(IAppLogger.INFO, "school: " + school);
-			logger.log(IAppLogger.INFO, "students: " + students);
-			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
-
-			String zipFileName = fileName + ".zip";
-			String quarySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
-			String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
-
-			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
-			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
-
-			to.setFileName(zipFileName);
-			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
-			to.setGdfExpiryTime(gdfExpiryTime);
-			to.setRequestDetails(clobStr);
-			/**
-			 * The Key of this Map is the Actual File Location and the Value is the system generated Pdf name to be used for that file.
-			 */
-			Map<String, String> filePathsGD = reportService.getGDFilePaths(to);
-			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
-
-			if (!filePathsGD.isEmpty()) {
-				String querySheetAsString = reportService.getRequestSummary(Utils.objectToJson(to));
-				FileUtil.createDuplexPdf(quarySheetFileName, querySheetAsString);
-				filePaths.put(quarySheetFileName, quarySheetFileName);
-				filePaths.putAll(filePathsGD);
-				try {
-					if ("CP".equals(button)) {
-						/**
-						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
-						 */
-						String pdfFileName = generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
-						// Merge Pdf files
-						byte[] input = FileUtil.getMergedPdfBytes(new ArrayList<String>(filePaths.keySet()));
-
-						// Create Pdf file in disk
-						FileUtil.createFile(pdfFileName, input);
-
-						// Create Zip file in disk
-						List<String> list = new ArrayList<String>();
-						list.add(pdfFileName);
-						FileUtil.createZipFile(zipFileName, list);
-
-						// Delete the Pdf file from disk
-						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
-
-						fileSize = new Long(input.length);
-						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
-						jobLog = "Asynchoronous Combined Pdf";
-					} else if ("SP".equals(button)) {
-						// TODO : convention implementation
-						Long orgNodeId = Long.parseLong(school);
-						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
-						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
-
-						// Create Zip file in disk from all the pdf files
-						FileUtil.createDuplexZipFile(zipFileName, filePaths);
-
-						fileSize = FileUtil.fileSize(zipFileName);
-						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
-						jobLog = "Asynchoronous Separate Pdfs";
-					}
-					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(quarySheetFileName).delete());
-				} catch (FileNotFoundException e) {
-					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
-					jobLog = e.getMessage();
-					e.printStackTrace();
-				} catch (IOException e) {
-					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
-					jobLog = e.getMessage();
-					e.printStackTrace();
-				}
-			} else {
-				jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
-				jobLog = "No File to download";
-				logger.log(IAppLogger.INFO, jobLog);
-			}
-		} else {
-			jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
-			jobLog = "Invalid REQUEST_DETAILS Field";
-			logger.log(IAppLogger.WARN, jobLog);
-		}
-		to.setJobLog(jobLog);
-		to.setJobStatus(jobStatus);
-		if (fileSize == null) {
-			fileSize = 0L;
-		}
-		to.setFileSize(fileSize.toString());
-		to.setJobId(processId);
-		int updateCount = reportService.updateJobTracking(to);
-		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
-		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
-	}
-
-	/**
 	 * @param request
 	 * @param response
 	 */
@@ -773,10 +651,10 @@ public class InorsController {
 			// Download the file
 			FileUtil.browserDownload(response, zipData, zipFileName);
 
-			// Send email
-			if ((email != null) && (!email.isEmpty())) {
+			// Send email - [Amit] Conmmenting as this is not needed for sync download
+			/*if ((email != null) && (!email.isEmpty())) {
 				notificationMailGD(email);
-			}
+			}*/
 
 			// Delete the zip file from disk
 			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
@@ -812,24 +690,6 @@ public class InorsController {
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
-	}
-
-	/**
-	 * Zip file name is provided by the user from user input text box. If user doesnot provide Zip file name then system will provide a default Zip file name. Pdf file name is always system generated.
-	 * This method provides the default Zip file name.
-	 * 
-	 * @param currentUser
-	 * @param groupFile
-	 * @return
-	 */
-	private String generateDefaultZipFileName(String currentUser, String groupFile) {
-		String zipFileName = "";
-		if ((groupFile != null) && (!groupFile.isEmpty()) && (!"null".equalsIgnoreCase(groupFile))) {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime(), " ", groupFile);
-		} else {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", Utils.getDateTime());
-		}
-		return zipFileName;
 	}
 
 	/**

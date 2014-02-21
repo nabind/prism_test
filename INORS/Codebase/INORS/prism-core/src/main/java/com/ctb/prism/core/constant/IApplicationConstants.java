@@ -36,7 +36,7 @@ public interface IApplicationConstants {
 	 * 
 	 */
 	public static enum JOB_STATUS {
-		SU, IP, CO, ER, DE, AR, FT
+		SU, IP, CO, ER, DE, AR, FT, NA
 	};
 
 	public static enum DASH_MESSAGE_TYPE {
