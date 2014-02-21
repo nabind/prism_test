@@ -312,7 +312,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	public static void main(String[] args) {
 		try {
 			DigitalMeasuresHMACQueryStringBuilder hmc = 
-				new DigitalMeasuresHMACQueryStringBuilder("WPZguVF49hXaRuZfe9L29ItsC2I", 30, "HmacSHA1");
+				new DigitalMeasuresHMACQueryStringBuilder("BTCguSF49hYaPmAfe9Q29LtsQ2X", 30, "HmacSHA1");
 			hmc.setURL_ENCODING("UTF-8");
 			/*Appendable queryString = hmc.buildUnauthenticatedQueryString(
 					"12160", //URLDecoder.decode(customerId, URL_ENCODING), 
@@ -324,7 +324,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					);
 			System.out.println(queryString.toString());
 			*/
-			String param = "customer_id=14829&org_node_code=000000001&hierarchy_level=1&application_name=OAS&time_stamp=2014-11-19T18%3A33%3A44Z&user_role=Admin&user_name=SSOWSUSER";
+			String param = "customer_id=14829&org_node_code=IN~0670~0581&hierarchy_level=3&application_name=CTB.COM&time_stamp=2014-11-19T18%3A33%3A44Z&user_role=Regular&user_name=istep_prisam";
 			String signature = hmc.getAuthenticationCode(param.toString());
 			System.out.println( URLEncoder.encode(signature, "UTF-8"));
 			
