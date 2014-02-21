@@ -13,6 +13,16 @@
 	<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF File Generation has been requested.<br/>Click on 'Group Download Files' for Status of request(s).</p>
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
 	<input type="hidden" value="/public/INORS/Report/Report1_files" name="reportUrl" >
+	<c:if test="${not empty reportMessages}">
+		<c:forEach var="reportMessage" items="${reportMessages}">
+			<c:if test="${reportMessage.displayFlag=='Y'}">
+				<fieldset class="fieldset">
+					<legend class="legend">${ reportMessage.messageName }</legend>
+					<p class="inline-label">${ reportMessage.message }</p>
+				</fieldset>
+			</c:if>
+		</c:forEach>
+	</c:if>
 	<c:if test="${showGrtDiv=='Y'}">
 	<div id="grtDiv" class="columns accordion with-padding" style="margin-bottom: 0">
 		<c:choose>

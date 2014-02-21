@@ -196,6 +196,7 @@ public interface IApplicationConstants {
 	public static final String MORE_INFO = "More Info";
 	public static final String GROUP_DOWNLOAD_INSTRUCTION = "Group Download Instruction";
 	public static final String DATALOAD_MESSAGE = "Dataload Message";
+	public static final String EMBARGO_NOTICE = "Embargo Notice";
 
 	// Article/Content type
 	public static final String CONTENT_TYPE_ACT = "ACT";

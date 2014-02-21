@@ -2,12 +2,10 @@ package com.ctb.prism.web.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -54,6 +52,7 @@ import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
+import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.jms.JmsMessageProducer;
 import com.ctb.prism.web.util.JsonUtil;
@@ -934,6 +933,25 @@ public class InorsController {
 		} else {
 			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_N);
 			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_N);
+		}
+		if (testAdministrationVal != null) {
+			String reportId = (String) request.getParameter("reportId");
+			String productId = testAdministrationVal;
+			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+			logger.log(IAppLogger.INFO, "reportId=" + reportId);
+			logger.log(IAppLogger.INFO, "productId=" + productId);
+			logger.log(IAppLogger.INFO, "customerId=" + customerId);
+			logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("REPORT_ID", reportId);
+			paramMap.put("PRODUCT_ID", productId);
+			paramMap.put("CUSTOMER_ID", customerId);
+			paramMap.put("ORG_NODE_LEVEL", orgNodeLevel);
+			List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
+			modelAndView.addObject("reportMessages", reportMessages);
+		} else {
+			modelAndView.addObject("reportMessages", null);
 		}
 
 		String reportUrl = (String) request.getParameter("reportUrl");

@@ -1,6 +1,5 @@
 package com.ctb.prism.report.business;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
@@ -162,23 +162,23 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 
-				/***NEW***/
+				/*** NEW ***/
 				if (sessionParams != null) {
 					Iterator it = sessionParams.entrySet().iterator();
 					while (it.hasNext()) {
 						Map.Entry pairs = (Map.Entry) it.next();
 						try {
-							String m = CustomStringUtil.appendString("get", ((String)pairs.getKey()).substring(0, 1).toUpperCase(), ((String)pairs.getKey()).substring(1));
+							String m = CustomStringUtil.appendString("get", ((String) pairs.getKey()).substring(0, 1).toUpperCase(), ((String) pairs.getKey()).substring(1));
 							List<ObjectValueTO> tempObj = (List<ObjectValueTO>) clazz.getMethod(m).invoke(obj);
 							boolean matched = false;
-							if(tempObj != null && tempObj.size() > 0) {
-								for(ObjectValueTO val : tempObj) {
-									if(val.getValue().equals(((String[]) pairs.getValue())[0])) {
+							if (tempObj != null && tempObj.size() > 0) {
+								for (ObjectValueTO val : tempObj) {
+									if (val.getValue().equals(((String[]) pairs.getValue())[0])) {
 										matched = true;
 										break;
 									}
 								}
-								if(matched) {
+								if (matched) {
 									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
 								} else {
 									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
@@ -193,7 +193,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 						}
 					}
 				}
-				/***NEW***/
+				/*** NEW ***/
 
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
@@ -644,7 +644,21 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return reportDAO.getReportMessage(paramMap);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getRequestSummary(java.lang.String)
+	 */
 	public String getRequestSummary(String requestDetails) {
 		return reportDAO.getRequestSummary(requestDetails);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAllReportMessages(java.util.Map)
+	 */
+	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
+		return reportDAO.getAllReportMessages(paramMap);
 	}
 }

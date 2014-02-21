@@ -55,6 +55,7 @@ import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ManageMessageTOMapper;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.QuerySheetTO;
+import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.googlecode.ehcache.annotations.Cacheable;
@@ -1628,6 +1629,29 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		logger.log(IAppLogger.INFO, "Exit: getReportMessage()");
 		return message;
+	}
+	
+	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
+		List<ReportMessageTO> reportMessageList = new ArrayList<ReportMessageTO>();
+		String reportId = (String) paramMap.get("REPORT_ID");
+		String productId = (String) paramMap.get("PRODUCT_ID");
+		String customerId = (String) paramMap.get("CUSTOMER_ID");
+		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				ReportMessageTO to = new ReportMessageTO();
+				to.setMessageType((String) fieldDetails.get("MESSAGE_TYPE"));
+				to.setMessageName((String) fieldDetails.get("MESSAGE_NAME"));
+				to.setMessage((String) fieldDetails.get("REPORT_MSG"));
+				to.setDisplayFlag(IApplicationConstants.FLAG_Y);
+				reportMessageList.add(to);
+			}
+		}
+		logger.log(IAppLogger.INFO, "reportMessageList.size()=" + reportMessageList.size());
+		logger.log(IAppLogger.INFO, "Exit: getReportMessage()");
+		return reportMessageList;
 	}
 
 	/*

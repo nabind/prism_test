@@ -15,6 +15,7 @@ import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
@@ -258,5 +259,11 @@ public interface IReportService {
 	 * @return
 	 */
 	public String getRequestSummary(String requestDetails);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
 
 }

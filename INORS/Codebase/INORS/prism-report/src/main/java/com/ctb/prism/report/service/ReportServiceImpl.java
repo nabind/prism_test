@@ -21,6 +21,7 @@ import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
+import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
@@ -361,5 +362,14 @@ public class ReportServiceImpl implements IReportService {
 	 */
 	public String getRequestSummary(String requestDetails) {
 		return reportBusiness.getRequestSummary(requestDetails);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.service.IReportService#getAllReportMessages(java.util.Map)
+	 */
+	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
+		return reportBusiness.getAllReportMessages(paramMap);
 	}
 }
