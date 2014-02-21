@@ -397,21 +397,17 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Exit: icLetterDownloads()");
 		return groupDownloadForm(request, response);
 	}
-	
-	private String getDataLoadMessage(String reportId, String productId, String customerId, String currentOrgLevel) {
+
+	private String getDataLoadMessage(List<ReportMessageTO> reportMessages) {
 		String dataLoadMessage = null;
-		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("REPORT_ID", reportId);
-			paramMap.put("MESSAGE_TYPE", IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString());
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.DATALOAD_MESSAGE);
-			paramMap.put("PRODUCT_ID", productId);
-			paramMap.put("CUSTOMER_ID", customerId);
-			paramMap.put("ORG_NODE_LEVEL", currentOrgLevel);
-			dataLoadMessage = reportService.getReportMessage(paramMap);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
-			e.printStackTrace();
+		String messageType = IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString();
+		String messageName = IApplicationConstants.DATALOAD_MESSAGE;
+		if ((reportMessages != null) && (!reportMessages.isEmpty())) {
+			for (ReportMessageTO reportMessage : reportMessages) {
+				if ((messageType.equals(reportMessage.getMessageType())) && (messageName.equals(reportMessage.getMessageName()))) {
+					dataLoadMessage = reportMessage.getMessage();
+				}
+			}
 		}
 		return dataLoadMessage;
 	}
@@ -436,7 +432,7 @@ public class InorsController {
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
 		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		Long orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL));
+		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
@@ -452,9 +448,6 @@ public class InorsController {
 		String grade = (String) request.getParameter("p_grade");
 		String groupFile = (String) request.getParameter("p_generate_file");
 		String collationHierarchy = (String) request.getParameter("p_collation");
-		
-		
-
 
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
@@ -474,7 +467,27 @@ public class InorsController {
 		modelAndView.addObject("groupFile", groupFile);
 		modelAndView.addObject("collationHierarchy", collationHierarchy);
 		
-		String dataloadMessage = getDataLoadMessage(reportId, testAdministrationVal, customerId, orgNodeLevel.toString());
+		List<ReportMessageTO> reportMessages = null;
+		if (testAdministrationVal != null) {
+			//String reportId = (String) request.getParameter("reportId");
+			String productId = testAdministrationVal;
+			//String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			//String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+			logger.log(IAppLogger.INFO, "reportId=" + reportId);
+			logger.log(IAppLogger.INFO, "productId=" + productId);
+			logger.log(IAppLogger.INFO, "customerId=" + customerId);
+			logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
+			Map<String, Object> parameterMap = new HashMap<String, Object>();
+			parameterMap.put("REPORT_ID", reportId);
+			parameterMap.put("PRODUCT_ID", productId);
+			parameterMap.put("CUSTOMER_ID", customerId);
+			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
+			reportMessages = reportService.getAllReportMessages(parameterMap);
+			modelAndView.addObject("reportMessages", reportMessages);
+		} else {
+			modelAndView.addObject("reportMessages", null);
+		}
+		String dataloadMessage = getDataLoadMessage(reportMessages);
 		if (dataloadMessage == null) {
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir

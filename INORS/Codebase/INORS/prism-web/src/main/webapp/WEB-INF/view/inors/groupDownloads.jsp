@@ -15,6 +15,16 @@
 				${groupDownloadInstructionMessage}
 		</dd>
 	</dl>
+	<c:if test="${not empty reportMessages}">
+		<c:forEach var="reportMessage" items="${reportMessages}">
+			<c:if test="${ (reportMessage.displayFlag=='Y') && (reportMessage.messageType!='DM') }">
+				<fieldset class="fieldset">
+					<legend class="legend">${ reportMessage.messageName }</legend>
+					<p class="inline-label">${ reportMessage.message }</p>
+				</fieldset>
+			</c:if>
+		</c:forEach>
+	</c:if>
 	<c:choose>
 	<c:when test="${not empty dataloadMessage}">
 		<div class="message small-margin-bottom orange-gradient dataload-message">${dataloadMessage}</div>
