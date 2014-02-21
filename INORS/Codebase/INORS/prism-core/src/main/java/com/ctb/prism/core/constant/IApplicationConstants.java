@@ -74,6 +74,8 @@ public interface IApplicationConstants {
 
 	public static final String JASPER_ORG_PARAM = "LoggedInUserJasperOrgId";
 	public static final String JASPER_USER_PARAM = "LoggedInUserName";
+	public static final String JASPER_USERID_PARAM = "LoggedInUserId";
+	public static final String JASPER_CUSTOMERID_PARAM = "p_customerid";
 	public static final String DATA_TYPE_COLLECTION = "7";
 	public static final String DATA_TYPE_TESTBOX = "2";
 	public static final String FIELD_TYPE_DATE = "3";
