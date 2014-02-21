@@ -122,7 +122,7 @@ $(document).ready(function() {
 
 	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
-	showHideDivs();
+	//showHideDivs();
 	$("#p_test_administration").on("change", function(event) {
 		var testAdm = $("#p_test_administration").val();
 	});
@@ -148,7 +148,7 @@ $(document).ready(function() {
 		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		// $(".customRefresh").click();
-		showHideDivs();
+		//showHideDivs();
 	});
 	$("#p_class").on("change", function(event) {
 		var klassOptionsString = "";
@@ -169,7 +169,7 @@ $(document).ready(function() {
 			//alert("klassCount=" + $("#classCount").val());
 		}
 		// $(".customRefresh").click();
-		showHideDivs();
+		//showHideDivs();
 	});
 	$("#downloadGRTFile").on("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
