@@ -848,6 +848,8 @@ public class ReportController extends BaseDAO {
 			String userName = (String) c.getMethod("getLoggedInUserName").invoke(reportFilterTO);
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, loggedInUserJasperOrgId);
 			parameters.put(IApplicationConstants.JASPER_USER_PARAM, userName);
+			parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+			parameters.put(IApplicationConstants.JASPER_CUSTOMERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER));
 			if (allInputControls != null) {
 				for (InputControlTO inputControlTO : allInputControls) {
 					String label = inputControlTO.getLabelId();
