@@ -304,7 +304,7 @@ public class InorsController {
 			}
 			String assessmentId = request.getParameter("assessmentId");
 			Object reportFilterTO = reportService
-					.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) request.getSession().getAttribute("inputControls"));
+					.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) request.getSession().getAttribute("inputControls"),currentUserId);
 			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
 			// reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 
@@ -452,6 +452,9 @@ public class InorsController {
 		String grade = (String) request.getParameter("p_grade");
 		String groupFile = (String) request.getParameter("p_generate_file");
 		String collationHierarchy = (String) request.getParameter("p_collation");
+		
+		
+
 
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
@@ -474,6 +477,7 @@ public class InorsController {
 		String dataloadMessage = getDataLoadMessage(reportId, testAdministrationVal, customerId, orgNodeLevel.toString());
 		if (dataloadMessage == null) {
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 		try {
 			Map<String, Object> parameters = null;
 			// get all input controls for report
@@ -481,7 +485,7 @@ public class InorsController {
 
 			// get default parameters for logged-in user
 			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
-					.getAttribute("inputControls"));
+					.getAttribute("inputControls"),currentUserId);
 
 			// get parameter values for report
 			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
@@ -956,12 +960,14 @@ public class InorsController {
 
 		String reportUrl = (String) request.getParameter("reportUrl");
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+		
 		Map<String, Object> parameters = null;
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 
 		// get default parameters for logged-in user
 		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
-				.getAttribute("inputControls"));
+				.getAttribute("inputControls"),currentUserId);
 
 		// get parameter values for report
 		parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);

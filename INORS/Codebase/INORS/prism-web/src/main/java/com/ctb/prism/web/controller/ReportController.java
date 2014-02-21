@@ -479,6 +479,7 @@ public class ReportController extends BaseDAO {
 		try {
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 
 			// get compiled jasper report
 			JasperReport jasperReport = null;
@@ -516,7 +517,7 @@ public class ReportController extends BaseDAO {
 			} else {
 				// get default parameters for logged-in user
 				Object reportFilterTO = reportService
-						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
+						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
@@ -742,6 +743,8 @@ public class ReportController extends BaseDAO {
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, currOrg);
 			parameters.put(IApplicationConstants.JASPER_USER_PARAM, currentUser);
+			parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));// Added by Abir
+			parameters.put(IApplicationConstants.JASPER_CUSTOMERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER));//Added by Abir
 			for (InputControlTO inputTO : allInputControls) {
 				/*
 				 * if(req.getParameter(inputTO.getLabelId()) != null && req.getParameter(inputTO.getLabelId()).trim().length() > 0) { parameters.put(inputTO.getLabelId(),
@@ -1141,12 +1144,15 @@ public class ReportController extends BaseDAO {
 			String reportUrl = req.getParameter("reportUrl");
 			String tabCount = req.getParameter("count");
 			String assessmentId = req.getParameter("assessmentId");
+			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+		
+
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1310,10 +1316,12 @@ public class ReportController extends BaseDAO {
 			String changedValue = req.getParameter("changedValue");
 			String tabCount = req.getParameter("count");
 			String assessmentId = req.getParameter("assessmentId");
+			
+			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"));
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 			// get default parameters for logged-in user
 			/*
 			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);

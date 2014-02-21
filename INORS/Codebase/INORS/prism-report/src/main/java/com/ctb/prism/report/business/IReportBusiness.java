@@ -75,9 +75,11 @@ public interface IReportBusiness {
 	 * @param assessmentId
 	 * @param combAssessmentId
 	 * @param reportUrl
+	 * @param sessionParams
+	 * @param userId
 	 * @return
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId);
 
 	/**
 	 * @param query

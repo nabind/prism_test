@@ -137,9 +137,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param assessmentId
 	 * @param combAssessmentId
 	 * @param reportUrl
+	 * @param sessionParams
+	 * @param userId
 	 */
 	// @Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams) {
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
@@ -151,6 +153,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			obj = clazz.newInstance();
 			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
 			clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
+			clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -161,6 +164,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			if (query != null) {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 
 				/*** NEW ***/
 				if (sessionParams != null) {
