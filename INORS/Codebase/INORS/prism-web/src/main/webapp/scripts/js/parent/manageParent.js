@@ -31,8 +31,8 @@ $('.view-Children').live("click", function() {
 				$('#report-list').tablesorter({
 					headers: {
 						4: { sorter: false }
-					},
-					sortList: [[0,1]]
+					}/*,
+					sortList: [[0,1]]*/
 				});
 			}
 			if(parents != null && parents.length < 15) {
