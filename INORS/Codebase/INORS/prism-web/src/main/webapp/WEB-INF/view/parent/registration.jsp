@@ -56,7 +56,6 @@
 
 			<div class="field-block button-height">
 				<%@ include file="../common/required.jsp" %>
-				<small class="input-info">This is the name that will be displayed on profile page</small>
 				<label for="username" class="label"><b>Choose a Username</b><span class="icon-star icon-size1 red"></span></label>
 				<input type="text" name="username" id="username" value="" class="input validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" autocomplete="off">
 				<span class="info-spot">
@@ -68,6 +67,7 @@
 				<span id="imgHolder"></span>
 			</div>
 			<div class="field-block button-height">	
+				<small class="input-info">This is the name that will be displayed on profile page</small>
 				<label for="displayName" class="label"><b>Display Name</b><span class="icon-star icon-size1 red"></span></label>
 				<input type="text" name="displayName" id="displayName" value="" class="input validate[required, minSize[3], maxSize[10]]" autocomplete="off">
 			</div>
