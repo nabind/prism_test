@@ -17,7 +17,7 @@
 	</dl>
 	<c:if test="${not empty reportMessages}">
 		<c:forEach var="reportMessage" items="${reportMessages}">
-			<c:if test="${ (reportMessage.displayFlag=='Y') && (reportMessage.messageType!='DM') }">
+			<c:if test="${ (reportMessage.displayFlag=='Y') && (reportMessage.messageType!='DM') && (reportMessage.messageType!='RSCM') }">
 				<fieldset class="fieldset">
 					<legend class="legend">${ reportMessage.messageName }</legend>
 					<p class="inline-label">${ reportMessage.message }</p>
