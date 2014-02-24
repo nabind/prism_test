@@ -660,6 +660,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return objectValueTOList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#loadManageMessage(java.util.Map)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<ManageMessageTO> loadManageMessage(final Map<String, Object> paramMap) throws SystemException {
 
@@ -670,34 +675,26 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List placeHolderValueList = new ArrayList();
 		List<ManageMessageTO> manageMessageTOList = null;
 		try {
-			if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.GENERIC_REPORT_NAME)))
-
-			{
+			if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.GENERIC_REPORT_NAME))) {
 				placeHolderValueList.add(reportId);
 				custProdId = 5001L;
 				placeHolderValueList.add(custProdId);
 				placeHolderValueList.add(reportId);
 				placeHolderValueList.add(custProdId);
-
 				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM_GENERIC, placeHolderValueList.toArray(), new ManageMessageTOMapper());
-			} else if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME)))
-
-			{
+			} else if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME))) {
 				placeHolderValueList.add(reportId);
 				placeHolderValueList.add(custProdId);
 				placeHolderValueList.add(reportId);
 				placeHolderValueList.add(custProdId);
-
 				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM_PRODUCT_SPECIFIC, placeHolderValueList.toArray(), new ManageMessageTOMapper());
 			} else {
 				placeHolderValueList.add(reportId);
 				placeHolderValueList.add(custProdId);
 				placeHolderValueList.add(reportId);
 				placeHolderValueList.add(custProdId);
-
 				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST, placeHolderValueList.toArray(), new ManageMessageTOMapper());
 			}
-
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred in loadManageMessage():", e);
 			return null;
@@ -1418,16 +1415,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		logger.log(IAppLogger.INFO, "students: " + students);
 		logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
-		if ("ICL".equals(groupFile)) {
+		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			// Invitation Code Letter
 			filePaths = getICLetterPaths(groupFile, students);
-		} else if ("BOTH".equals(groupFile)) {
+		} else if (IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString().equals(groupFile)) {
 			// Both (IP and ISR)
 			filePaths = getBothPaths(students);
-		} else if ("IPR".equals(groupFile)) {
+		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.toString().equals(groupFile)) {
 			// Image Prints
 			filePaths = getIPPaths(students);
-		} else if ("ISR".equals(groupFile)) {
+		} else if (IApplicationConstants.EXTRACT_FILETYPE.ISR.toString().equals(groupFile)) {
 			// Individual Student Report
 			filePaths = getISRPaths(students);
 		}

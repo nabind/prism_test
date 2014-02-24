@@ -476,6 +476,8 @@ public class FileUtil {
 					continue;
 				} else if ("".equals(fileName)) {
 					fileName = getFileNameFromFilePath(filePath);
+				} else if (fileName.endsWith(".pdf")) {
+					// No need to append .pdf
 				} else {
 					fileName = fileName + ".pdf";
 				}

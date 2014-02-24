@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -399,18 +400,17 @@ public class InorsController {
 		return groupDownloadForm(request, response);
 	}
 
-	private String getDataLoadMessage(List<ReportMessageTO> reportMessages) {
-		String dataLoadMessage = null;
-		String messageType = IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString();
-		String messageName = IApplicationConstants.DATALOAD_MESSAGE;
+	private String getReportMessage(List<ReportMessageTO> reportMessages, String messageType, String messageName) {
+		String message = null;
 		if ((reportMessages != null) && (!reportMessages.isEmpty())) {
 			for (ReportMessageTO reportMessage : reportMessages) {
 				if ((messageType.equals(reportMessage.getMessageType())) && (messageName.equals(reportMessage.getMessageName()))) {
-					dataLoadMessage = reportMessage.getMessage();
+					message = reportMessage.getMessage();
+					break;
 				}
 			}
 		}
-		return dataLoadMessage;
+		return message;
 	}
 
 	/**
@@ -458,7 +458,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "grade=" + grade);
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
-		
+
 		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
 		modelAndView.addObject("testProgram", testProgram);
 		modelAndView.addObject("corpDiocese", corpDiocese);
@@ -467,13 +467,10 @@ public class InorsController {
 		modelAndView.addObject("grade", grade);
 		modelAndView.addObject("groupFile", groupFile);
 		modelAndView.addObject("collationHierarchy", collationHierarchy);
-		
+
 		List<ReportMessageTO> reportMessages = null;
 		if (testAdministrationVal != null) {
-			//String reportId = (String) request.getParameter("reportId");
 			String productId = testAdministrationVal;
-			//String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			//String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 			logger.log(IAppLogger.INFO, "reportId=" + reportId);
 			logger.log(IAppLogger.INFO, "productId=" + productId);
 			logger.log(IAppLogger.INFO, "customerId=" + customerId);
@@ -484,77 +481,151 @@ public class InorsController {
 			parameterMap.put("CUSTOMER_ID", customerId);
 			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
 			reportMessages = reportService.getAllReportMessages(parameterMap);
+			String[] hiddenReportTypes = { IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString() };
+			reportMessages = setDisplayFlags(reportMessages, hiddenReportTypes);
 			modelAndView.addObject("reportMessages", reportMessages);
+			String productName = getProductNameById(testAdministrationVal);
+			String hideContentFlag = getHideContentFlagGroupDownloadForm(groupFile, productName, reportMessages);
+			String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+			if (hideContentFlag.equals(IApplicationConstants.FLAG_N)) {
+				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+				String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+				try {
+					Map<String, Object> parameters = null;
+					// get all input controls for report
+					List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+
+					// get default parameters for logged-in user
+					Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request
+							.getSession().getAttribute("inputControls"), currentUserId);
+
+					// get parameter values for report
+					parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+
+					String fileName = (String) request.getParameter("fileName");
+					if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+						fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
+						if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+							fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
+							request.getSession().setAttribute("FILE_NAME_GD", fileName);
+						}
+					}
+					String email = (String) request.getParameter("email");
+					if ((email == null) || (email.equalsIgnoreCase("null"))) {
+						email = (String) request.getSession().getAttribute("EMAIL_GD");
+						if ((email == null) || (email.equalsIgnoreCase("null"))) {
+							email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
+						}
+					}
+					logger.log(IAppLogger.INFO, "fileName=" + fileName);
+					logger.log(IAppLogger.INFO, "email=" + email);
+					modelAndView.addObject("fileName", fileName);
+					modelAndView.addObject("email", email);
+
+					request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+
+					List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+					GroupDownloadTO to = new GroupDownloadTO();
+					to.setSchool(school);
+					to.setKlass(klass);
+					to.setGrade(grade);
+					to.setTestProgram(testProgram);
+					to.setTestAdministrationVal(testAdministrationVal);
+					to.setDistrict(corpDiocese);
+					to.setCollationHierarchy(collationHierarchy);
+					to.setGroupFile(groupFile);
+					if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
+						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
+						studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
+					}
+					logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
+					modelAndView.addObject("studentList", studentList);
+					modelAndView.addObject("studentCount", studentList.size());
+				} catch (Exception e) {
+					logger.log(IAppLogger.ERROR, e.getMessage(), e);
+					e.printStackTrace();
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "------------------------Hiding the input form---------------------");
+			}
+			modelAndView.addObject("hideContentFlag", hideContentFlag);
+			modelAndView.addObject("dataloadMessage", dataloadMessage);
+
 		} else {
 			modelAndView.addObject("reportMessages", null);
 		}
-		String dataloadMessage = getDataLoadMessage(reportMessages);
-		if (dataloadMessage == null) {
-		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
-		try {
-			Map<String, Object> parameters = null;
-			// get all input controls for report
-			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
-
-			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
-					.getAttribute("inputControls"),currentUserId);
-
-			// get parameter values for report
-			parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-
-			
-
-			String fileName = (String) request.getParameter("fileName");
-			if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-				fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
-				if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-					fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
-					request.getSession().setAttribute("FILE_NAME_GD", fileName);
-				}
-			}
-			String email = (String) request.getParameter("email");
-			if ((email == null) || (email.equalsIgnoreCase("null"))) {
-				email = (String) request.getSession().getAttribute("EMAIL_GD");
-				if ((email == null) || (email.equalsIgnoreCase("null"))) {
-					email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
-				}
-			}
-			logger.log(IAppLogger.INFO, "fileName=" + fileName);
-			logger.log(IAppLogger.INFO, "email=" + email);
-			modelAndView.addObject("fileName", fileName);
-			modelAndView.addObject("email", email);
-			
-			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
-
-			List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
-			GroupDownloadTO to = new GroupDownloadTO();
-			to.setSchool(school);
-			to.setKlass(klass);
-			to.setGrade(grade);
-			to.setTestProgram(testProgram);
-			to.setTestAdministrationVal(testAdministrationVal);
-			to.setDistrict(corpDiocese);
-			to.setCollationHierarchy(collationHierarchy);
-			to.setGroupFile(groupFile);
-			if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
-				LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
-				studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
-			}
-			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
-			modelAndView.addObject("studentList", studentList);
-			modelAndView.addObject("studentCount", studentList.size());
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage(), e);
-			e.printStackTrace();
-		}
-		}
 		modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
-		modelAndView.addObject("dataloadMessage", dataloadMessage);
 		modelAndView.addObject("reportUrl", reportUrl);
 		logger.log(IAppLogger.INFO, "Exit: groupDownloadForm()");
 		return modelAndView;
+	}
+
+	/**
+	 * Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
+	 * 
+	 * @param reportMessages
+	 * @return
+	 */
+	private String getHideContentFlagGroupDownloadForm(String groupFile, String productName, List<ReportMessageTO> reportMessages) {
+		String hideContentFlag = IApplicationConstants.FLAG_N;
+
+		// Rule 1 : If dataload message is configured for a product then user should not be allowed to download anything
+		/*String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+		if (dataloadMessage != null) {
+			hideContentFlag = IApplicationConstants.FLAG_Y;
+		}*/
+
+		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
+			// Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
+			// Report Notification: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
+			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) {
+				// OK
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
+		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.IPR.toString())) {
+			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
+			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+				// OK
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
+		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ISR.toString())) {
+			// Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
+			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+				// OK
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
+			if (productName != null && productName.startsWith("IMAST") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+				// OK
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
+			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
+			if (productName != null && productName.startsWith("IREAD-3") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+				// OK
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
+		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
+			// Rule 5: Rule 2, 3 and 4
+		}
+
+		return hideContentFlag;
+	}
+
+	private List<ReportMessageTO> setDisplayFlags(List<ReportMessageTO> allReportMessages, String[] hiddenReportTypes) {
+		for (String hiddenReportType : hiddenReportTypes) {
+			for (ReportMessageTO reportMessageTO : allReportMessages) {
+				String messageType = reportMessageTO.getMessageType();
+				if ((messageType != null) && (messageType.equals(hiddenReportType))) {
+					reportMessageTO.setDisplayFlag(IApplicationConstants.FLAG_N);
+					break;
+				}
+			}
+		}
+		return allReportMessages;
 	}
 
 	/**

@@ -262,7 +262,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
 			String zipFileName = fileName + ".zip";
-			String quarySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
+			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
 
 			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
@@ -280,8 +280,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			if (!filePathsGD.isEmpty()) {
 				String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to));
-				FileUtil.createDuplexPdf(quarySheetFileName, querySheetAsString);
-				filePaths.put(quarySheetFileName, quarySheetFileName);
+				FileUtil.createDuplexPdf(querySheetFileName, querySheetAsString);
+				filePaths.put(querySheetFileName, querySheetFileName);
 				filePaths.putAll(filePathsGD);
 				try {
 					if ("CP".equals(button)) {
@@ -319,7 +319,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Separate Pdfs";
 					}
-					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(quarySheetFileName).delete());
+					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
 				} catch (FileNotFoundException e) {
 					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
