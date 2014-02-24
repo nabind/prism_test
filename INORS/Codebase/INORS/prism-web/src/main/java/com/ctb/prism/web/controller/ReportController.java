@@ -1484,8 +1484,14 @@ public class ReportController extends BaseDAO {
 				}
 				/***NEW***/
 				Map<String, String[]> currentParam = new HashMap<String, String[]>();
-				Map<String, String[]> sessionParam = (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_");
-				Iterator itr = sessionParam.entrySet().iterator();
+				Map<String, String[]> sessionParams = (Map<String, String[]>) req.getSession().getAttribute("_REMEMBER_ME_ALL_");
+				Iterator itr = null;
+				if (sessionParams != null) {
+					itr = sessionParams.entrySet().iterator();
+				} else {
+					itr = req.getParameterMap().entrySet().iterator();					
+				}
+				 
 				while (itr.hasNext()) {
 					Map.Entry mapEntry = (Map.Entry) itr.next();
 					if(req.getParameterMap().containsKey(mapEntry.getKey())) {
