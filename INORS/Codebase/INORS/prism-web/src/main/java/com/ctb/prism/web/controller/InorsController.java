@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -538,7 +539,8 @@ public class InorsController {
 			to.setCollationHierarchy(collationHierarchy);
 			to.setGroupFile(groupFile);
 			if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
-				studentList = populateStudentTableGD(to);
+				LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
+				studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
 			}
 			logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 			modelAndView.addObject("studentList", studentList);

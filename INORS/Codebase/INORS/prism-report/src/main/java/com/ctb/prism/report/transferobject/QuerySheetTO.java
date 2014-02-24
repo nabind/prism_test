@@ -18,6 +18,7 @@ public class QuerySheetTO extends BaseTO {
 	private int studentCount;
 	private int classCount;
 	private int schoolCount;
+	private String selectedStudents;
 
 	/**
 	 * @return the jobId
@@ -227,6 +228,21 @@ public class QuerySheetTO extends BaseTO {
 	 */
 	public void setSchoolCount(int schoolCount) {
 		this.schoolCount = schoolCount;
+	}
+
+	/**
+	 * @return the selectedStudents
+	 */
+	public String getSelectedStudents() {
+		return selectedStudents;
+	}
+
+	/**
+	 * @param selectedStudents
+	 *            the selectedStudents to set
+	 */
+	public void setSelectedStudents(String selectedStudents) {
+		this.selectedStudents = selectedStudents;
 	}
 
 }

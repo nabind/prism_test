@@ -933,6 +933,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			querySheetTO.setStudentCount(studentCount);
 			querySheetTO.setClassCount(classCount);
 			querySheetTO.setSchoolCount(schoolCount);
+			querySheetTO.setSelectedStudents(students);
 		}
 		return querySheetTO;
 	}
@@ -952,6 +953,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String schools = querySheetTO.getSchoolNames();
 		String klass = querySheetTO.getClassNames();
 		String orgNodeIds = getOrgNodeIds(corpDiocese, schools, klass);
+		String selectedStudents = querySheetTO.getSelectedStudents();
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId,
 				gradeId);
 		Map<String, String> valueMap = new HashMap<String, String>();
@@ -975,7 +977,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		List<String> classNameList = new ArrayList<String>();
 		if ("-1".equals(klass)) {
-			classNameList = getAllClassNames(stateOrgNodeId);
+			classNameList = getSelectedClassNames(stateOrgNodeId, selectedStudents);
 		} else {
 			classNameList.add(valueMap.get(querySheetTO.getClassNames()));
 		}
@@ -1277,9 +1279,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 
-	private List<String> getAllClassNames(String stateOrgNodeId) {
+	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds) {
 		List<String> classes = new ArrayList<String>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_CLASS_NAMES, stateOrgNodeId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), stateOrgNodeId);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				classes.add((String) fieldDetails.get("ORG_NODE_NAME"));
