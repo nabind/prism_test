@@ -54,7 +54,7 @@
 
 			<legend class="legend">Profile</legend>
 
-			<div class="field-block button-height">
+			<div class="field-block button-height" id="usernameDiv">
 				<%@ include file="../common/required.jsp" %>
 				<label for="username" class="label"><b>Choose a Username</b><span class="icon-star icon-size1 red"></span></label>
 				<input type="text" name="username" id="username" value="" class="input validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" autocomplete="off">

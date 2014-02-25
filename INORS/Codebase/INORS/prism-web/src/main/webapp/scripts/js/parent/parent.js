@@ -444,8 +444,14 @@ $(document).ready(function() {
 	});	
 //========================REGISTRATION FORM SUBMISSION=====================	
 	$("#regSubmit").click(function(e){
-		e.stopImmediatePropagation();
-		validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+		if($("#usernameDiv #imgHolder > #validated").hasClass("validated")){
+			e.stopImmediatePropagation();
+			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+		}else{
+			stepBack(2);
+			e.stopImmediatePropagation();
+		}
+		
 		//$("#registrationForm").submit();
 	});
 //=============================PREVENTING REGISTRATION FORM SUBMIT ON ENTER===========================	
