@@ -263,6 +263,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			String zipFileName = fileName + ".zip";
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
+			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
+				querySheetFileName = "000" + querySheetFileName;
+			}
 			String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
 
 			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
