@@ -70,4 +70,6 @@ public interface CommonDAO {
 	 */
 	public List<String> getStudentIdList(String schoolId);
 
+	public int[] updateStudentsPDFloc(Map<String,String> pdfPathList);
+
 }

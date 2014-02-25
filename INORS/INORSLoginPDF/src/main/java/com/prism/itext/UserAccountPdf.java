@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -42,7 +45,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "604209" };
+		 args = new String[] { "S", "605247" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -76,6 +79,9 @@ public class UserAccountPdf {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
+					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
+						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
+						logger.info("IC Letter Location: " + letterLocation);
 					}
 				}
 				if (ARCHIVE_NEEDED) {
@@ -107,7 +113,7 @@ public class UserAccountPdf {
 			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
 					+ school.getDateStrWtYear() + "_IC.zip";
 			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
-			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1");
+			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1"); // -1 for all students combined pdf
 			if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 				pdfPathList.add(letterLoc);
 			}
@@ -144,6 +150,67 @@ public class UserAccountPdf {
 		logger.info("Processing for IC Letter Completed.");
 		return letterLoc;
 	}
+	
+	
+	/*
+	 * Individual IC letter in a school
+	 */
+	private static String processIndividualIcLetterPdf(Properties prop, CommonDAO dao, String schoolId) {
+		logger.info("Processing for IC Letter...");
+		String letterLoc = "";
+		try {
+			OrgTO school = dao.getSchoolDetails(schoolId);
+			String adminId = dao.getCurrentAdminYear();
+			List<String> studentIdList = dao.getStudentIdList(schoolId);
+			//List<String> pdfPathList = new ArrayList<String>();
+			Map<String,String> pdfPathList = new HashMap<String,String>();
+
+			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
+					+ school.getDateStrWtYear() + "_IC.zip";
+			for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
+				letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, "-1", school.getElementName(), school.getCustomerCode(), adminId,  studentBioId );// for all students in school separate pdf
+				if ((letterLoc != null) && (!letterLoc.isEmpty())) {
+					//pdfPathList.add(letterLoc);
+					pdfPathList.put(studentBioId, letterLoc);
+				}				
+			 }
+			
+			dao.updateStudentsPDFloc(pdfPathList);
+			
+			if (!pdfPathList.isEmpty()) {
+				letterLoc = FileUtil.createPDFFile(docName, new ArrayList<String>(pdfPathList.values()));
+				logger.debug("IC letter created @ " + letterLoc);
+			} else {
+				logger.info("No pdf found");
+			}
+
+			if (letterLoc != null && !letterLoc.isEmpty()) {
+				// send pdf to school
+				/* Fetch support email from customer table */
+				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
+				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
+					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
+						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
+						// removeFile(encDocLocation);
+						logger.info("Mail sent successfully to " + school.getEmail());
+					} else {
+						logger.warn("FAILED: sending mail. Updating status.");
+					}
+				} else {
+					logger.warn("FAILED: sending mail .. no school mail id is defined.");
+				}
+			}
+		//	FileUtil.removeFile(new ArrayList<String>(pdfPathList.values()));  Individual PDF will not be deleted
+		} catch (Exception e) {
+			logger.error("Error processing : Java exception : " + e.getMessage());
+			e.printStackTrace();
+			return "";
+		}
+		logger.info("Processing for IC Letter Completed.");
+		return letterLoc;
+	}
+	
+	
 
 	private static void processLoginPdf(Properties prop, CommonDAO dao, String schoolId) {
 		logger.info("Processing for Login Pdf...");
@@ -238,8 +305,9 @@ public class UserAccountPdf {
 		logger.info("**************************************************");
 		logger.info("args[0] - Param 1 is required.");
 		logger.info("              L = Login Pdf");
-		logger.info("              I = IC Letter");
+		logger.info("              I = IC Letter combined PDF");
 		logger.info("              A = All/Both Login Pdf and IC Letter");
+		logger.info("              S = IC Letter Separte PDF- No zip");
 		logger.info("args[1] - Param 2 is required.");
 		logger.info("              Provide space separated Ids");
 		logger.info("**************************************************");
@@ -257,10 +325,11 @@ public class UserAccountPdf {
 			return false;
 		} else {
 			if (args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString()) || args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())
-					|| args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
+					|| args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())
+					|| args[0].equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
 				return true;
 			} else {
-				printHelp("Param 1 is not valid. Please provide L/I/A");
+				printHelp("Param 1 is not valid. Please provide L/I/A/S");
 				return false;
 			}
 		}

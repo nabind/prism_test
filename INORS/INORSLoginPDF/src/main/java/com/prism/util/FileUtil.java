@@ -96,6 +96,53 @@ public class FileUtil {
 		}
 		return zipFilePath;
 	}
+	
+	
+	/**
+	 * Creates a PDF file from the list of file paths.
+	 * 
+	 * @param zipFileName
+	 * @param filePaths
+	 */
+	public static String createPDFFile(String PDFFileName, List<String> filePaths) {
+		logger.info("Adding " + filePaths.size() + " files in " + PDFFileName);
+		FileOutputStream fos = null;
+		String PDFFilePath = null;
+		try {
+			File PDFFile = new File(PDFFileName);
+			fos = new FileOutputStream(PDFFile);
+			
+			for (String filePath : filePaths) {
+				logger.info("Adding " + filePath);
+				String fileName = getFileNameFromFilePath(filePath);
+				if (fileName == null) {
+					logger.warn("Skipping " + filePath);
+					continue;
+				}
+				byte[] input = getBytes(filePath);
+				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
+				fos.write(input);
+				
+			}
+			fos.close();
+			logger.info("PDF file [" + PDFFileName + "] created");
+			PDFFilePath = PDFFile.getAbsolutePath();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+				// zos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return PDFFilePath;
+	}
+	
+	
 
 	/**
 	 * Returns the file name from the file path.

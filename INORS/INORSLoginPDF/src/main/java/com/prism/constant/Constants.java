@@ -9,8 +9,14 @@ import com.prism.util.CustomStringUtil;
 public interface Constants {
 	public static final String PROPERTIES_FILE = "inors.properties";
 
+	/*
+	 * L : Login PDF
+	 * A: All = Login + IC
+	 * I: IC for school
+	 * S: IC for individual student in a school
+	 */ 
 	public static enum ARGS_OPTIONS {
-		L, A, I
+		L, A, I, S  
 	};
 
 	public static enum ORG_STATUS {
@@ -83,6 +89,10 @@ public interface Constants {
 	public static final String UPDATE_PROCESS_STATUS = "UPDATE ORG_PROCESS_STATUS SET PROCESS_STATUS = ?, UPDATED_DATE_TIME = SYSDATE WHERE PROCESSID = ?";
 
 	public static final String UPDATE_MAIL_STATUS = "UPDATE ORG_PROCESS_STATUS SET TARGET_EMAIL_STATUS = ?, UPDATED_DATE_TIME = SYSDATE WHERE PROCESSID = ?";
-	public static final String GET_STUDENT_ID_LIST = "SELECT DISTINCT STUDENT_BIO_ID FROM STUDENT_BIO_DIM WHERE ORG_NODEID = ?";
+	public static final String GET_STUDENT_ID_LIST = CustomStringUtil.appendString( "SELECT DISTINCT STUDENT_BIO_ID",
+																					" FROM STUDENT_BIO_DIM ",
+																					" WHERE ORG_NODEID IN ",
+																					" (SELECT ORG_NODEID FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?)");
+	public static final String UPDATE_STUDENT_PDF_LOC = "UPDATE INVITATION_CODE SET IC_FILE_LOC = ? WHERE STUDENT_BIO_ID = ?";
 
 }

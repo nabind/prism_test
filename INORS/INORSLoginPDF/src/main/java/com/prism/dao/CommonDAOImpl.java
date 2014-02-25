@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.prism.constant.Constants;
+import com.prism.to.ObjectValueTO;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 import com.prism.util.CustomStringUtil;
@@ -303,5 +305,37 @@ public class CommonDAOImpl implements CommonDAO {
 		}
 		logger.info("studentIdList.size(): " + studentIdList.size());
 		return studentIdList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String> pdfPathList)
+	 */
+	public int[] updateStudentsPDFloc(Map<String,String> pdfPathList) {
+		
+		final List<ObjectValueTO> studentList = new ArrayList<ObjectValueTO>();
+		ObjectValueTO studentTo = null;
+		for (Entry entry: pdfPathList.entrySet()){
+			studentTo = new ObjectValueTO();
+			studentTo.setName(entry.getKey().toString());
+			studentTo.setValue(entry.getValue().toString());
+			studentList.add(studentTo);
+		}
+		
+		int[] updateCount = jdbcTemplate.batchUpdate(Constants.UPDATE_STUDENT_PDF_LOC, new BatchPreparedStatementSetter() {
+			public void setValues(PreparedStatement pstmt, int i) throws SQLException {
+				ObjectValueTO student = studentList.get(i);
+				pstmt.setString(1, student.getValue()); // IC_FILE_LOC
+				pstmt.setString(2, student.getName()); // STUDENT_BIO_ID
+				
+				
+			}
+
+			public int getBatchSize() {
+				return studentList.size();
+			}
+		});
+		return updateCount;
+		
 	}
 }
