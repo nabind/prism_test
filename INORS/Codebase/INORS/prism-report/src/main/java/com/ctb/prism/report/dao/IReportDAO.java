@@ -192,6 +192,8 @@ public interface IReportDAO {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String, Object> paramMap) throws SystemException;
 
 	/**
+	 * For Group Download listing.
+	 * 
 	 * @param paramMap
 	 * @return
 	 * @throws SystemException
@@ -199,16 +201,22 @@ public interface IReportDAO {
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String, Object> paramMap) throws SystemException;
 
 	/**
+	 * For Group Download listing.
+	 * 
 	 * @param paramMap
 	 * @return
 	 * @throws SystemException
+	 * @author Arunava
 	 */
 	public List<JobTrackingTO> getRequestDetail(Map<String, Object> paramMap) throws SystemException;
 
 	/**
+	 * For Group Download deleting.
+	 * 
 	 * @param Id
 	 * @return
 	 * @throws Exception
+	 * @author Arunava
 	 */
 	public boolean deleteGroupFiles(String Id) throws Exception;
 

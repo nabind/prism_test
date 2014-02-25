@@ -828,15 +828,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return reportTo;
 	}
 
-	/**
-	 * @author Arunava
-	 * @param paramMap
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getAllGroupDownloadFiles(java.util.Map)
 	 */
-	// Arunava Datta for Group Download listing
-
 	public List<JobTrackingTO> getAllGroupDownloadFiles(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Enter: getAllGroupDownloadFiles()");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<JobTrackingTO> allGroupFiles = null;
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_LIST, loggedinUserTO.getUserId());
@@ -873,18 +871,35 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					}
 				}
 				// fileName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
+				if ("".equals(fileName)) {
+					fileName = getFileNameFromRequestDetails((String) data.get("REQUEST_TYPE"), (String) data.get("REQUEST_DETAILS"));
+				}
 				to.setRequestFilename(fileName);
 				to.setFilePath(filePath);
 				to.setCreatedDateTime(createdDate);
 				to.setUpdatedDateTime(updatedDate);
-				to.setRequestType((String) data.get("request_type"));
-				to.setJobStatus((String) data.get("job_status"));
-				to.setQuerySheetTO(getQuerySheetTO((String) data.get("request_type"), (String) data.get("request_details")));
+				to.setRequestType((String) data.get("REQUEST_TYPE"));
+				to.setJobStatus((String) data.get("JOB_STATUS"));
+				to.setQuerySheetTO(getQuerySheetTO((String) data.get("REQUEST_TYPE"), (String) data.get("REQUEST_DETAILS")));
 				allGroupFiles.add(to);
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Exit: getAllGroupDownloadFiles()");
 		return allGroupFiles;
+	}
+
+	private String getFileNameFromRequestDetails(String requestType, String requestDetails) {
+		String fileName = "";
+		if ((requestType != null) && (requestType.equals(IApplicationConstants.REQUEST_TYPE.GDF.toString()))) {
+			GroupDownloadTO to = Utils.jsonToObject(requestDetails, GroupDownloadTO.class);
+			if (to != null) {
+				if (to.getFileName() != null) {
+					fileName = to.getFileName();
+				}
+			}
+		}
+		logger.log(IAppLogger.INFO, "Return: getFileNameFromRequestDetails() = " + fileName);
+		return fileName;
 	}
 
 	private QuerySheetTO getQuerySheetTO(String requestType, String requestDetails) {
@@ -1019,15 +1034,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return sb.toString();
 	}
 
-	/**
-	 * @author Arunava
-	 * @param paramMap
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getRequestDetail(java.util.Map)
 	 */
-	// Arunava Datta for Group Download listing
-
 	public List<JobTrackingTO> getRequestDetail(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getRequestDetail");
+		logger.log(IAppLogger.INFO, "Enter: getRequestDetail()");
 		List<JobTrackingTO> allGroupFiles = null;
 		String jobId = (String) paramMap.get("jobId");
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_GROUP_DOWNLOAD_REQUEST_VIEW, jobId);
@@ -1039,34 +1052,36 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				// String extractStartdate = getFormattedDate((Timestamp) data.get("extract_startdate"),"MM/dd/yyyy HH:mm:ss");
 				// String extractEnddate = getFormattedDate((Timestamp) data.get("extract_enddate"),"MM/dd/yyyy HH:mm:ss");
 				String fileName = "";
-				if (filePath.lastIndexOf("\\") >= 0) {
-					fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
-				} else {
-					fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+				if (filePath != null) {
+					if (filePath.lastIndexOf("\\") >= 0) {
+						fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+					} else {
+						fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+					}
+				}
+				if ("".equals(fileName)) {
+					fileName = getFileNameFromRequestDetails((String) data.get("REQUEST_TYPE"), (String) data.get("REQUEST_DETAILS"));
 				}
 				to.setRequestFilename(fileName);
-				to.setRequestType((String) data.get("request_type"));
-				to.setRequestDetails((String) data.get("request_details"));
-				to.setRequestSummary((String) data.get("request_summary"));
-				to.setExtractCategory((String) data.get("extract_category"));
+				to.setRequestType((String) data.get("REQUEST_TYPE"));
+				to.setRequestDetails((String) data.get("REQUEST_DETAILS"));
+				to.setRequestSummary((String) data.get("REQUEST_SUMMARY"));
+				to.setExtractCategory((String) data.get("EXTRACT_CATEGORY"));
 				// to.setExtractStartdate(extractStartdate);
 				// to.setExtractEnddate(extractEnddate);
-				to.setJobName((String) data.get("job_name"));
+				to.setJobName((String) data.get("JOB_NAME"));
 				allGroupFiles.add(to);
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllGroupDownloadFiles");
+		logger.log(IAppLogger.INFO, "Exit: getRequestDetail()");
 		return allGroupFiles;
 	}
 
-	/**
-	 * @author Arunava
-	 * @param id
-	 * @return
-	 * @throws SystemException
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#deleteGroupFiles(java.lang.String)
 	 */
-	// Arunava Datta for Group Download deleting
-
 	public boolean deleteGroupFiles(String Id) throws Exception {
 		try {
 			getJdbcTemplatePrism().update(IReportQuery.DELETE_GROUP_FILES, Id);
