@@ -588,18 +588,18 @@ public class InorsController {
 			}
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ISR.toString())) {
 			// Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
-			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
 			}
-			if (productName != null && productName.startsWith("IMAST") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("IMAST") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
 			}
 			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
-			if (productName != null && productName.startsWith("IREAD-3") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("IREAD-3") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -607,24 +607,24 @@ public class InorsController {
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
 			// Rule 2, 3 and 4
 			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
-			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
 			}
 			// Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
-			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
 			}
-			if (productName != null && productName.startsWith("IMAST") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("IMAST") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
 			}
 			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
-			if (productName != null && productName.startsWith("IREAD-3") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
+			if (productName != null && productName.startsWith("IREAD-3") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 				// OK
 			} else {
 				hideContentFlag = IApplicationConstants.FLAG_Y;
