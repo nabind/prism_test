@@ -519,7 +519,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				} else {
 					to.setParentAccount(Collections.<ParentTO> emptyList());
 				}
-				to.setStructureElement(String.valueOf((BigDecimal) (fieldDetails.get("TESTELEMENTID"))));
+				//As data type of TESTELEMENTID changes to varchar so block the code 
+				//to.setStructureElement(String.valueOf((BigDecimal) (fieldDetails.get("TESTELEMENTID"))));
 				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
 				to.setStudentMode((String) (fieldDetails.get("STUDENT_MODE")));
