@@ -52,7 +52,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			//" AND DMT.MESSAGE_NAME = ?",
 			" AND DM.ACTIVATION_STATUS = 'AC'",
 			" AND DM.CUST_PROD_ID = (SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE PRODUCTID = ? AND CUSTOMERID = ?)",
-			" AND DMRA.ORG_LEVEL = ?"
+			" AND DMRA.ORG_LEVEL = ? AND DMRA.ROLEID=(SELECT MAX(ROLEID) FROM USER_ROLE WHERE USERID = ?)"
 			);
 	
 	// query to retrieve tenant id for a particular username

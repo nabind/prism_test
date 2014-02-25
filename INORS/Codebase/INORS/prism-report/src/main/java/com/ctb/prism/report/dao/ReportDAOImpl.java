@@ -1637,7 +1637,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String productId = (String) paramMap.get("PRODUCT_ID");
 		String customerId = (String) paramMap.get("CUSTOMER_ID");
 		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel);
+		String userId = (String) paramMap.get("USER_ID");
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel, userId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				ReportMessageTO to = new ReportMessageTO();
