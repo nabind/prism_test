@@ -571,64 +571,68 @@ public class InorsController {
 	 */
 	private String getHideContentFlagGroupDownloadForm(String groupFile, String productName, List<ReportMessageTO> reportMessages) {
 		String hideContentFlag = IApplicationConstants.FLAG_N;
+		boolean ipOkFlag = false;
+		boolean isrOkFlag = false;
 		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
 			// Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
 			// Report Notification: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
-			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
+			if (productName != null) {
+				if (productName.startsWith("ISTEP+")) {
+					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR))) {
+						// OK
+					} else {
+						hideContentFlag = IApplicationConstants.FLAG_Y;
+					}
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
 			}
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.IPR.toString())) {
 			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
-			if (productName != null && productName.startsWith("ISTEP") && productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) && productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR)) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
+			if (productName != null) {
+				if (productName.startsWith("ISTEP+")) {
+					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+						// OK
+						ipOkFlag = true;
+					} else {
+						hideContentFlag = IApplicationConstants.FLAG_Y;
+					}
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
 			}
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ISR.toString())) {
 			// Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
-			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
-			if (productName != null && productName.startsWith("IMAST") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
 			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
-			if (productName != null && productName.startsWith("IREAD-3") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
+			if (productName != null) {
+				if (productName.startsWith("ISTEP+")) {
+					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+						// OK
+						isrOkFlag = true;
+					} else {
+						hideContentFlag = IApplicationConstants.FLAG_Y;
+					}
+				} else if (productName.startsWith("IMAST")) {
+					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+						// OK
+						isrOkFlag = true;
+					} else {
+						hideContentFlag = IApplicationConstants.FLAG_Y;
+					}
+				} else if (productName.startsWith("IREAD-3")) {
+					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+						// OK
+						isrOkFlag = true;
+					} else {
+						hideContentFlag = IApplicationConstants.FLAG_Y;
+					}
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
 			}
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
 			// Rule 2, 3 and 4
-			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
-			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
-			// Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
-			if (productName != null && productName.startsWith("ISTEP") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
-			if (productName != null && productName.startsWith("IMAST") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
-			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
-			if (productName != null && productName.startsWith("IREAD-3") && (productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR) || productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
-				// OK
-			} else {
-				hideContentFlag = IApplicationConstants.FLAG_Y;
-			}
+			hideContentFlag = (ipOkFlag || isrOkFlag) ? IApplicationConstants.FLAG_N : IApplicationConstants.FLAG_Y;
 		}
 		return hideContentFlag;
 	}
