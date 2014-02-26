@@ -104,9 +104,9 @@ $('.view-Children').live("click", function() {
 		
 		$.each(data, function () { 
 			parentContent += '<tr id ='+ this.userName +' class="abc" scrollid='+this.clikedOrgId+'_'+this.userName+'>'
-								+'<th scope="row">' + this.userName +'</th>'
+								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
 								+'<td>' + this.displayName +'</td>'
-								+ createStatusTag(this.status)
+								//+ createStatusTag(this.status)
 								+'<td>'+this.orgName+'</td>'
 								+'<td class="vertical-center">'
 									+' <span class="button-group compact">' 

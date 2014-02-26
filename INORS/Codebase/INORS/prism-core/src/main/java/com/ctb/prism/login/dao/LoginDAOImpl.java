@@ -269,6 +269,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			for (Map<String, Object> fieldDetails : lstData) {
 				userTO.setOrgId( ((BigDecimal) (fieldDetails.get("NODEID"))).toString() );
 				userTO.setOrgNodeLevel( ((BigDecimal) (fieldDetails.get("ORGLEVEL"))).longValue() );
+				userTO.setCustomerId(((BigDecimal) (fieldDetails.get("CUSTOMERID"))).toString());
 			}
 		}
 		return userTO;
@@ -444,7 +445,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					} else {
 						// insert into org_users
 						long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-						getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER,
+						getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_SSO,
 								orgUserSeqId, user_seq_id, tenantId,
 								orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
 					}

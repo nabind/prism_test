@@ -262,6 +262,10 @@ public interface IUserQuery {
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
 			" (?, ?, ?, ?, (select adminid from cust_product_link where cust_prod_id=?),?, sysdate )");
 	
+	public static final String INSERT_ORG_USER_SSO = CustomStringUtil.appendString(
+			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
+			" (?, ?, ?, ?, ? ,?, sysdate )");
+	
 	public static final String INSERT_USER_WITH_PASSWORD = CustomStringUtil.appendString(
 			" INSERT INTO USERS (USERID, USERNAME, ",
 			" DISPLAY_USERNAME, EMAIL_ADDRESS, ACTIVATION_STATUS,",

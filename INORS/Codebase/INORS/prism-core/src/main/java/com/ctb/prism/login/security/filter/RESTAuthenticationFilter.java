@@ -66,6 +66,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private boolean postOnly = true;
     
     String RANDOM_STRING = "9rc^wH7KRg[B";
+    String RANDOM_PASSWD = "8rc^wK6HRg[C";
     
 	@Autowired
     DigitalMeasuresHMACQueryStringBuilder hmac;
@@ -145,13 +146,13 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						// customer id org level and orgnode id is valid - which are received from request
 						
 						// create sso user in prism
-						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, customerId, RANDOM_STRING);
+						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, RANDOM_STRING);
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
 						if(loginService.checkUserAvailability(ssoUsername)) {
 							// if user  not present into system
 							Map<String,Object> paramMap = new HashMap<String,Object>();
 							paramMap.put("userName", ssoUsername);
-							paramMap.put("password", RANDOM_STRING);
+							paramMap.put("password", RANDOM_PASSWD);
 							paramMap.put("userDisplayName", (userName.length() > 10 )? userName.subSequence(0, 10) : userName);
 							paramMap.put("userStatus", IApplicationConstants.SS_FLAG);
 							paramMap.put("customer", userTO.getCustomerId());
@@ -169,7 +170,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						request.getSession().setAttribute(IApplicationConstants.SSO_ADMIN, ADMIN.equalsIgnoreCase(role));
 						
 						// Authenticate user
-			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_STRING);
+			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_PASSWD);
 						//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
 				
 				        // Allow subclasses to set the "details" property

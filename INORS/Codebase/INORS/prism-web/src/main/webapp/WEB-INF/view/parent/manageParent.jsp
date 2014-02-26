@@ -55,10 +55,10 @@
 						<input type="text"  style="display:none"  name="lastParentName" id="lastParentName" value="" />
 						<thead>
 							<tr class="abc">
-								<th scope="col" width="20%">User ID</th>
+								<th scope="col" width="20%"><span style="margin-left:24px">User ID</span></th>
 								<th scope="col" width="25%">Full Name</th>
 								<!--th scope="col" width="16%">Last Login</th-->
-								<th scope="col" width="10%" class="hide-on-tablet">Status</th>
+								<!--<th scope="col" width="10%" class="hide-on-tablet">Status</th>-->
 								<th scope="col" width="30%">School Name</th>
 								<th scope="col" width="15%" class="">Actions</th>
 							</tr>
@@ -69,7 +69,7 @@
 								<th scope="col" width="20%"></th>
 								<th scope="col" width="25%"></th>
 								<!--th scope="col" width="16%">Last Login</th-->
-								<th scope="col" width="10%" class="hide-on-tablet"></th>
+								<!--<th scope="col" width="10%" class="hide-on-tablet"></th>-->
 								<th scope="col" width="30%"></th>
 								<th scope="col" width="15%" class=""></th>
 							</tr>

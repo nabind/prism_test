@@ -332,10 +332,10 @@
 			}
 			$.each(data, function (index,value) { 
 			    userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
-								+'<th scope="row">' + this.userName +'</th>'
-								+'<td>' + this.userDisplayName +'</td>'
-								+ createStatusTag(this.status)
-								+'<td class="hide-on-tablet-portrait">'+this.tenantName+'</td>'
+								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
+								+'<td class="hide-on-tablet">' + this.userDisplayName +'</td>'
+								//+ createStatusTag(this.status)
+								+'<td>'+this.tenantName+'</td>'
 								//+ createUserTypeTag(this.userType)
 								+ createUserRolesTag(this.availableRoleList)
 								+'<td class="vertical-center">'

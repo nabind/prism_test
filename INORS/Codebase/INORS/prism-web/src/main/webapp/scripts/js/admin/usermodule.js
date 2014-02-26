@@ -807,13 +807,15 @@
 		var statusTag = "";
 		if (status == "AC" ) {
 			//statusTag = '<td class="hide-on-tablet"><small class="tag green-bg">' + 'Enabled' + '</small></td>';
-			statusTag = '<td><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			//statusTag = '<td><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			statusTag = '<span class="enable with-tooltip tooltip-left" title="Enabled"></span>';
 		} else {
 			//statusTag = '<td class="hide-on-tablet"><small class="tag red-bg">' + 'Disabled' + '</small></td>';
-			statusTag = '<td><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			//statusTag = '<td><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			statusTag = '<span class="disable with-tooltip tooltip-left" title="Disabled"></span>';
 		}
 		return statusTag;
-	}	
+	}
 	
 	// ======================== RELOAD JS-TREE ON SELECTING ADMIN YEAR ====================== 
 	function reloadOrgTree(selectedObj) {

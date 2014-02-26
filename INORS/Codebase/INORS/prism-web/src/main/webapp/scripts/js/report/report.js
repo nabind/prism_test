@@ -773,6 +773,7 @@ function checkpagination(reportUrl, tabCount) {
 				if(obj != null && !(obj.paginate == "true")) {
 					$(currentObj).css('display', 'none');
 				}
+				$('html, body').scrollTop(0);
 			},
 			error : function(data) {
 				$.modal.alert(strings['script.report.pagination']);
