@@ -45,7 +45,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		 args = new String[] { "S", "605247" };
+	//	 args = new String[] { "S", "605247" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
