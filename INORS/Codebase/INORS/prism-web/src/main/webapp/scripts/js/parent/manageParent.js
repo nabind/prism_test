@@ -110,8 +110,8 @@ $('.view-Children').live("click", function() {
 								+'<td>'+this.orgName+'</td>'
 								+'<td class="vertical-center">'
 									+' <span class="button-group compact">' 
-										+' <a id='+ this.userId + ' parentName='+ this.userName +' parentDisplayName='+this.displayName+' href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
-										+' <a id='+ this.userId + ' parentName='+ this.userName +' clickedTreeNode='+  this.clikedOrgId +' href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
+										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
+										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId +'" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
 									+' </span>'
 								+'</td>'
 							+'</tr>' ;
