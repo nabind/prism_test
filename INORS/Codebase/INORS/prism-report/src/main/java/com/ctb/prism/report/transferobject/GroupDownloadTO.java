@@ -28,6 +28,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String userName;
 	private String adminId;
 	private String customerId;
+	private String orgNodeLevel;
 
 	private String extractStartDate;
 	private String gdfExpiryTime;
@@ -290,6 +291,20 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getOrgNodeLevel() {
+		return orgNodeLevel;
+	}
+
+	/**
+	 * @param orgNodeLevel
+	 */
+	public void setOrgNodeLevel(String orgNodeLevel) {
+		this.orgNodeLevel = orgNodeLevel;
 	}
 
 	/**

@@ -47,6 +47,8 @@ public interface IApplicationConstants {
 		"script", "frameset", "html", "iframe", "img", "style", "layer",
 		"link", "ilayer", "meta", "object" };
 
+	public static String DEFAULT_PRODUCT_ID = "3001";
+
 	// input control default value ALL
 	public static final String VALUE_ALL = "ALL";
 

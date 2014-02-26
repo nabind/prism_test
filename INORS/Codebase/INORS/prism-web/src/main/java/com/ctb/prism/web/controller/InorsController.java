@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -535,6 +534,8 @@ public class InorsController {
 					to.setTestAdministrationVal(testAdministrationVal);
 					to.setDistrict(corpDiocese);
 					to.setCollationHierarchy(collationHierarchy);
+					to.setCustomerId(customerId);
+					to.setOrgNodeLevel(orgNodeLevel);
 					to.setGroupFile(groupFile);
 					if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
 						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
@@ -1048,9 +1049,9 @@ public class InorsController {
 			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_N);
 			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_N);
 		}
-		if (testAdministrationVal != null) {
+		//if (testAdministrationVal != null) {
 			String reportId = (String) request.getParameter("reportId");
-			String productId = testAdministrationVal;
+			String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
 			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
@@ -1066,13 +1067,13 @@ public class InorsController {
 			paramMap.put("USER_ID", currentUserId);
 			List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
 			modelAndView.addObject("reportMessages", reportMessages);
-		} else {
-			modelAndView.addObject("reportMessages", null);
-		}
+		//} else {
+			//modelAndView.addObject("reportMessages", null);
+		//}
 
 		String reportUrl = (String) request.getParameter("reportUrl");
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 		
 		Map<String, Object> parameters = null;
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);

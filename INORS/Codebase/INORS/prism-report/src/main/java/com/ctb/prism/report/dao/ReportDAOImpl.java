@@ -1162,6 +1162,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String testProgram = to.getTestProgram();
 		String collationHierarchy = to.getCollationHierarchy();
 		String groupFile = to.getGroupFile();
+		String customerId = to.getCustomerId();
+		String orgNodeLevel = to.getOrgNodeLevel();
 		if (testProgram == null) {
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 			return studentList;
@@ -1173,6 +1175,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "gradeId = " + gradeId);
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		logger.log(IAppLogger.INFO, "collationHierarchy = " + collationHierarchy);
+		logger.log(IAppLogger.INFO, "customerId = " + customerId);
 		logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
 
 		String stateOrgNodeId = getAncestorOrgNodeId(schoolId, 1);
@@ -1199,11 +1202,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES);
-					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
-					String grades = Utils.convertListToCommaString(gradeList);
-					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
+					// List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					// String grades = Utils.convertListToCommaString(gradeList);
+					// query = CustomStringUtil.replaceCharacterInString('$', classes, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, -99, testProgram });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, testAdministrationVal, orgMode, schoolId, customerId, testAdministrationVal, orgNodeLevel, schoolId, orgNodeLevel, schoolId });//
 				} else {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD);
 					logger.log(IAppLogger.INFO, query);
@@ -1275,6 +1278,18 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		logger.log(IAppLogger.INFO, "Grades Size: " + grades.size());
 		return grades;
+	}
+	
+	private List<String> getAllClassesForAllGrades(String productId, String orgMode, String schoolId, String customerId, String orgNodeLevel) {
+		List<String> classes = new ArrayList<String>();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_CLASSES_FOR_ALL_GRADES, productId, orgMode, schoolId, customerId, productId, orgNodeLevel, schoolId, orgNodeLevel, schoolId);
+		if ((lstData != null) && (!lstData.isEmpty())) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				classes.add((String) fieldDetails.get("ORG_NODEID"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "Classes Size: " + classes.size());
+		return classes;
 	}
 
 	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
@@ -1653,7 +1668,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String customerId = (String) paramMap.get("CUSTOMER_ID");
 		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");
 		String userId = (String) paramMap.get("USER_ID");
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel, userId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				ReportMessageTO to = new ReportMessageTO();
