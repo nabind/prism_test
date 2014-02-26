@@ -159,7 +159,7 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - getOrgChildren");
 		List<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
 		List<OrgTO> children= new ArrayList<OrgTO>();
-		String jsonString = null;
+		String jsonString = "";
 		String nodeid= request.getParameter("tenantId");
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		String searchParam= request.getParameter("searchParam");
@@ -181,11 +181,9 @@ public class AdminController {
 					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode);
 					if ( children != null )	{
 						jsonString = JsonUtil.convertToJsonAdmin(children);
-						/*}*/
-
-						response.setContentType("application/json");
-						response.getWriter().write(jsonString);
 					}
+					response.setContentType("application/json");
+					response.getWriter().write(jsonString);
 			}
 			
 		} catch (Exception e) {
