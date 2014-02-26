@@ -574,8 +574,6 @@ public class InorsController {
 	 */
 	private String getHideContentFlagGroupDownloadForm(String groupFile, String productName, List<ReportMessageTO> reportMessages) {
 		String hideContentFlag = IApplicationConstants.FLAG_N;
-		boolean ipOkFlag = false;
-		boolean isrOkFlag = false;
 		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
 			// Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
 			// Report Notification: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
@@ -596,7 +594,6 @@ public class InorsController {
 				if (productName.startsWith("ISTEP+")) {
 					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 						// OK
-						ipOkFlag = true;
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
@@ -611,21 +608,18 @@ public class InorsController {
 				if (productName.startsWith("ISTEP+")) {
 					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 						// OK
-						isrOkFlag = true;
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IMAST")) {
 					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 						// OK
-						isrOkFlag = true;
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IREAD-3")) {
 					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
 						// OK
-						isrOkFlag = true;
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
@@ -635,7 +629,27 @@ public class InorsController {
 			}
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
 			// Rule 2, 3 and 4
-			hideContentFlag = (ipOkFlag || isrOkFlag) ? IApplicationConstants.FLAG_N : IApplicationConstants.FLAG_Y;
+			if (productName.startsWith("ISTEP+")) {
+				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					// OK
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
+			} else if (productName.startsWith("IMAST")) {
+				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					// OK
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
+			} else if (productName.startsWith("IREAD-3")) {
+				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					// OK
+				} else {
+					hideContentFlag = IApplicationConstants.FLAG_Y;
+				}
+			} else {
+				hideContentFlag = IApplicationConstants.FLAG_Y;
+			}
 		}
 		return hideContentFlag;
 	}
