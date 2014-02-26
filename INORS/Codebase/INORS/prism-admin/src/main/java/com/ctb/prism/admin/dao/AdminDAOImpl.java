@@ -865,7 +865,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
 		String parentTenantId = "";
 		String orgId = "";
-		List<OrgTO> orgList = null;
+		List<OrgTO> orgList = new ArrayList<OrgTO>();
 		List<Map<String, Object>> lstData = null;
 		if (nodeId.indexOf("_") > 0) {
 			orgId = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
@@ -898,9 +898,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 */
 	private List<OrgTO> getOrgList(List<Map<String, Object>> queryData, String adminYear) {
-		List<OrgTO> orgList = null;
+		List<OrgTO> orgList = new ArrayList<OrgTO>();
 		if (queryData != null && queryData.size() > 0) {
-			orgList = new ArrayList<OrgTO>();
 			for (Map<String, Object> data : queryData) {
 				OrgTO orgTO = new OrgTO();
 				orgTO.setTenantId(Long.valueOf(data.get("ORG_NODEID").toString()));
