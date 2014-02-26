@@ -228,7 +228,12 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	public void batchPDFDownload(String jobId) {
 		logger.log(IAppLogger.INFO, "START ================== f r o m  async method --------------- ");
-		batchPDFDownload(jobId, null);
+		try {
+			batchPDFDownload(jobId, null);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "BULK DOWNLOAD FAILED .................. ");
+			e.printStackTrace();
+		}
 	}
 
 	/**
