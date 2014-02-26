@@ -650,7 +650,7 @@ $('.view-Children').live("click", function() {
 						+'<strong>User Name:</strong>&nbsp;&nbsp;&nbsp;'
 						+parentName
 						+'<br/>'
-						+'<strong>Display Name:</strong>&nbsp;&nbsp;&nbsp;'
+						+'<strong>Full Name:</strong>&nbsp;&nbsp;&nbsp;'
 						+ parentDisplayName
 						+'</div>'
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(content);					
