@@ -628,7 +628,7 @@ $('.view-Children').live("click", function() {
 		$("#"+modalId +" > "+"#"+modalContainerDivId ).find("div").remove();
 		var newPassword ='<div id="newPassword">'
 							 +'<p class="message blue-gradient" style="width:400px">The password for the following user has been reset:</p>'
-							 +'<p><b>Account:</b>&nbsp;'+parentDisplayName+'</p>'
+							 +'<p><b>Full Name:</b>&nbsp;'+parentDisplayName+'</p>'
 							 +'<p><b>Temporary Password:</b>&nbsp;'+jsonData.password+'</p>'
 							 +'<p class="big-message" style="width:400px">Please provide this password to the user. The user will need to change the password after log in.</p>'
 							 +'</div>';
