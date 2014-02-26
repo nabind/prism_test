@@ -436,7 +436,7 @@ $(document).ready(function() {
 					//updateRowValues(row);
 					//Added to load data after edit
 					var id = $("#treeViewForOrg a").parent().attr("id");
-					fetchAllUsers(id,"getUserDetails.do");
+					//fetchAllUsers(id,"getUserDetails.do");//Blocked as after search and edit the user should retain there
 					//Change end here
 				}
 			} else {
