@@ -21,7 +21,21 @@ public class TASCProcessTO implements Serializable {
 	private String processLog;
 	private String dateTimestamp;
 	private String timeMili;
+	private String ppCount;
+	private String olCount;
 	
+	public String getPpCount() {
+		return ppCount;
+	}
+	public void setPpCount(String ppCount) {
+		this.ppCount = ppCount;
+	}
+	public String getOlCount() {
+		return olCount;
+	}
+	public void setOlCount(String olCount) {
+		this.olCount = olCount;
+	}
 	public String getTimeMili() {
 		return timeMili;
 	}

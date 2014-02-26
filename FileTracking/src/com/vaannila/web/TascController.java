@@ -104,6 +104,7 @@ public class TascController {
 			process.setCreatedDate(request.getParameter("updatedDateFrom"));
 			process.setUpdatedDate(request.getParameter("updatedDateTo"));
 			
+			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
 			List<TASCProcessTO> processes = stageDao.getProcess(process);
 			
@@ -115,6 +116,43 @@ public class TascController {
 		}
 		
 		return new ModelAndView("tascProcess", "message", jsonStr);
+	}
+	
+	@RequestMapping("/process/searchTascGraph.htm")
+	public ModelAndView searchTascGraph(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("process method called");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> processes = stageDao.getProcessCountList();
+			
+			StringBuilder pp = new StringBuilder();
+			StringBuilder ol = new StringBuilder();
+			int count = 0;
+			for(TASCProcessTO processTO : processes) {
+				if(count > 0) {
+					pp.append(",");
+					ol.append(",");
+				} else {
+					String[] date = (processTO.getDateTimestamp() != null)?processTO.getDateTimestamp().split(","):"2014,02,09".split(",");
+					int month = Integer.parseInt(date[1]);
+					month =  month - 1;
+					request.getSession().setAttribute("tascStartDate", date[0]+","+month+","+date[2]);
+				}
+				count++;
+				pp.append(processTO.getPpCount());
+				ol.append(processTO.getOlCount());
+			}
+			request.getSession().setAttribute("tascPPCountList", pp.toString());
+			request.getSession().setAttribute("tascOLCountList", ol.toString());
+			convertProcessToJson(processes);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("tascProcessGraph", "message", jsonStr);
 	}
 	
 	public ModelAndView showDataload(HttpServletRequest request,
