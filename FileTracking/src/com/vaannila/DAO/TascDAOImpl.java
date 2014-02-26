@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.JDCConnectionDriver;
 
@@ -19,21 +20,42 @@ public class TascDAOImpl {
 	 * Get all process list
 	 * @throws Exception
 	 */
-	public List<TASCProcessTO> getProcess() throws Exception {
+	public List<TASCProcessTO> getProcess(SearchProcess searchProcess) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
-		String query = "select PROCESS_ID,FILE_NAME,SOURCE_SYSTEM,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION," +
-				"OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP " +
-				"from stg_process_status order by PROCESS_ID desc";
-		
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("select PROCESS_ID,FILE_NAME,SOURCE_SYSTEM,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
+		queryBuff.append("OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP, ");
+		queryBuff.append("to_number(datetimestamp - to_date('01-JAN-1970','DD-MON-YYYY')) * (24 * 60 * 60 * 1000) long_time ");
+		queryBuff.append("from stg_process_status ");
+		if(searchProcess != null) {
+			queryBuff.append(" WHERE 1 = 1 ");
+			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
+					&& searchProcess.getUpdatedDate() != null & searchProcess.getUpdatedDate().trim().length() > 0) {
+				queryBuff.append("AND (DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
+			}
+			if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0) 
+				queryBuff.append("AND SOURCE_SYSTEM = ? ");
+		}
+		queryBuff.append(" order by PROCESS_ID desc ");
+		String query = queryBuff.toString();
 		try {
 			driver = TASCConnectionProvider.getDriver();
 			conn = driver.connect(DATA_SOURCE, null);
-
+			int count = 0;
 			pstmt = conn.prepareCall(query);
+			if(searchProcess != null) {
+				if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
+						&& searchProcess.getUpdatedDate() != null & searchProcess.getUpdatedDate().trim().length() > 0) {
+					pstmt.setString(++count, searchProcess.getCreatedDate());
+					pstmt.setString(++count, searchProcess.getUpdatedDate());
+				}
+				if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getStructElement());
+			}
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new TASCProcessTO();
@@ -48,6 +70,7 @@ public class TascDAOImpl {
 				processTO.setItemValidation(rs.getString(9));
 				processTO.setWkfPartitionName(rs.getString(10));
 				processTO.setDateTimestamp(rs.getString(11));
+				processTO.setTimeMili(rs.getString(12));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

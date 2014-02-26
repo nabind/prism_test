@@ -85,11 +85,7 @@
 	
 <div id="heromaskarticle">
 	<div id="articlecontent">
-	 <%   Properties prop = PropertyFile.loadProperties("acsi.properties");
-			  String isEnabled = prop.getProperty("admin.year.enable");
-	 %>
-		<input type="hidden" value="<%=isEnabled%>" id="hEnabled">	  
-		
+	 
 		<div id="accordion">
 				<!-- panel -->
 				
@@ -152,7 +148,7 @@
 				</tbody>
 				</table>
 				
-				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active </p>
+				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active, <span style="color: red">ER = Error</span> </p>
 				<p><b>Source System:</b> PP = Paper Pencil, OL = Online (Web service)</p>
 				
 				<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>

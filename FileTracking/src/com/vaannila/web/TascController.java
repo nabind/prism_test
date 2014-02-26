@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
+import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
 
 @Controller
@@ -42,7 +43,7 @@ public class TascController {
 			}
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> processes = stageDao.getProcess();
+			List<TASCProcessTO> processes = stageDao.getProcess(null);
 			
 			request.getSession().setAttribute("tascProcess", processes);
 			convertProcessToJson(processes);
@@ -72,13 +73,57 @@ public class TascController {
 		return null;
 	}
 	
+	@RequestMapping("/process/tascSearch.htm")
+	public ModelAndView tascSearch(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("view method called");
+		String adminid = request.getParameter("adminid");
+		if(adminid != null) {
+			request.getSession().setAttribute("adminid", adminid);
+		}
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		
+		return new ModelAndView("tascSearch", "message", "");
+	}
+	
+	/**
+	 * This method is to search processes
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/searchTasc.htm")
+	public ModelAndView searchTasc(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("process method called");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			SearchProcess process = new SearchProcess();
+			process.setStructElement(request.getParameter("sourceSystem"));
+			process.setCreatedDate(request.getParameter("updatedDateFrom"));
+			process.setUpdatedDate(request.getParameter("updatedDateTo"));
+			
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> processes = stageDao.getProcess(process);
+			
+			request.getSession().setAttribute("tascProcess", processes);
+			convertProcessToJson(processes);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("tascProcess", "message", jsonStr);
+	}
+	
 	public ModelAndView showDataload(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		List<TASCProcessTO> processes = (List<TASCProcessTO>) request.getSession().getAttribute("tascProcess");
 		if(processes == null) {
 			TascDAOImpl stageDao = new TascDAOImpl();
-			processes = stageDao.getProcess();
+			processes = stageDao.getProcess(null);
 		}
 		if(processes != null) {
 			int ppCount = 0, olCount = 0;

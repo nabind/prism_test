@@ -35,17 +35,24 @@ function refreshList(adminid, url) {
 <div id="topnav" class="clear">
 	<div id="topnavcontrol" class="clear">
 		<% if(UserController.checkLogin(request)) { %>
-		<span><a id="toproot1" class="off" href="process.htm">&nbsp; ACSI Processes &nbsp;</a></span>
-		<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
-		
-		<span><a id="toproot2" class="off" href="view.htm">&nbsp;Search ACSI Process&nbsp;</a></span>
-		<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
-		
-		<span><a id="toproot1" class="off" href="tascProcess.htm">&nbsp; TASC Processes &nbsp;</a></span>
-		<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
-		
-		<span><a id="toproot2" class="off" target="_blank" href="css/external/help.pdf">&nbsp;Help &nbsp;</a></span>
-		<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			<%if("Admin".equals(request.getSession().getAttribute("userName"))) { %>
+			<span><a id="toproot2" class="off" href="view.htm">&nbsp;Search ACSI Process&nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
+			<span><a id="toproot1" class="off" href="process.htm">&nbsp; ACSI Processes &nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
+			<span><a id="toproot2" class="off" target="_blank" href="css/external/help.pdf">&nbsp;Help &nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
+			<% } else if("TascAdmin".equals(request.getSession().getAttribute("userName"))) { %>
+			<span><a id="toproot2" class="off" href="tascSearch.htm">&nbsp;Search TASC Process&nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
+			<span><a id="toproot1" class="off" href="tascProcess.htm">&nbsp; TASC Processes &nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
+			<% } %>
 		<% } %>
 	</div>
 </div>

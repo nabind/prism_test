@@ -24,6 +24,11 @@
       <put-attribute name="body"   value="/WEB-INF/jsp/process.jsp"/>      
   </definition>
   
+  <definition name="tascSearch" extends="baseLayout">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/tascSearch.jsp"/>      
+  </definition>
+  
   <definition name="tascProcess" extends="baseLayout">
       <put-attribute name="title"  value="TASC Process"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/tascProcess.jsp"/>      

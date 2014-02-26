@@ -20,7 +20,14 @@ public class TASCProcessTO implements Serializable {
 	private String wkfPartitionName;
 	private String processLog;
 	private String dateTimestamp;
+	private String timeMili;
 	
+	public String getTimeMili() {
+		return timeMili;
+	}
+	public void setTimeMili(String timeMili) {
+		this.timeMili = timeMili;
+	}
 	public String getProcessId() {
 		return processId;
 	}
@@ -40,36 +47,42 @@ public class TASCProcessTO implements Serializable {
 		this.sourceSystem = sourceSystem;
 	}
 	public String getHierValidation() {
+		if(hierValidation != null && "ER".equals(hierValidation)) return "<span style='color: red'>"+hierValidation+"</span>";
 		return hierValidation;
 	}
 	public void setHierValidation(String hierValidation) {
 		this.hierValidation = hierValidation;
 	}
 	public String getBioValidation() {
+		if(bioValidation != null && "ER".equals(bioValidation)) return "<span style='color: red'>"+bioValidation+"</span>";
 		return bioValidation;
 	}
 	public void setBioValidation(String bioValidation) {
 		this.bioValidation = bioValidation;
 	}
 	public String getDemoValidation() {
+		if(demoValidation != null && "ER".equals(demoValidation)) return "<span style='color: red'>"+demoValidation+"</span>";
 		return demoValidation;
 	}
 	public void setDemoValidation(String demoValidation) {
 		this.demoValidation = demoValidation;
 	}
 	public String getContentValidation() {
+		if(contentValidation != null && "ER".equals(contentValidation)) return "<span style='color: red'>"+contentValidation+"</span>";
 		return contentValidation;
 	}
 	public void setContentValidation(String contentValidation) {
 		this.contentValidation = contentValidation;
 	}
 	public String getObjValidation() {
+		if(objValidation != null && "ER".equals(objValidation)) return "<span style='color: red'>"+objValidation+"</span>";
 		return objValidation;
 	}
 	public void setObjValidation(String objValidation) {
 		this.objValidation = objValidation;
 	}
 	public String getItemValidation() {
+		if(itemValidation != null && "ER".equals(itemValidation)) return "<span style='color: red'>"+itemValidation+"</span>";
 		return itemValidation;
 	}
 	public void setItemValidation(String itemValidation) {

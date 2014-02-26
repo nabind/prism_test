@@ -53,6 +53,8 @@ public class UserController extends MultiActionController {
 		String username = prop.getProperty("j_username");
 		String password = prop.getProperty("j_password");
 		
+		String j_username_0 = prop.getProperty("j_username_0");
+		
 		String j_username_1 = prop.getProperty("j_username_1");
 		String j_password_1 = prop.getProperty("j_password_1");
 		
@@ -64,6 +66,10 @@ public class UserController extends MultiActionController {
 		if(givenUsername != null && givenUsername.equals(j_username_1)) {
 			password = j_password_1;
 			username = j_username_1;
+		}
+		if(givenUsername != null && givenUsername.equals(j_username_0)) {
+			password = password;
+			username = j_username_0;
 		}
     	if(encPwd != null && encPwd.equals(password)) {
     		if(username != null && username.equals(givenUsername)) {
@@ -84,7 +90,9 @@ public class UserController extends MultiActionController {
 //    			List<OrgProcess> processes = stageDao.getProcessDetails(
 //    					(String) request.getSession().getAttribute("adminid"));
 //    			request.getSession().setAttribute("allProcess", processes);
-    			
+    			if(prop.getProperty("j_username_0").equals(username)) {
+    				return new ModelAndView("tascSearch", "message", "");
+    			}
     			return new ModelAndView("process", "message", "");
     		}
     	}
