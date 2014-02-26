@@ -14,9 +14,10 @@ public interface Constants {
 	 * A: All = Login + IC
 	 * I: IC for school
 	 * S: IC for individual student in a school
+	 * X: BIO_STUDENT_EXTRACT
 	 */ 
 	public static enum ARGS_OPTIONS {
-		L, A, I, S  
+		L, A, I, S, X
 	};
 
 	public static enum ORG_STATUS {
@@ -93,6 +94,7 @@ public interface Constants {
 																					" FROM STUDENT_BIO_DIM ",
 																					" WHERE ORG_NODEID IN ",
 																					" (SELECT ORG_NODEID FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?)");
+	public static final String GET_STUDENT_ID_LIST_FROM_EXT = "SELECT DISTINCT BIO_EXTRACTID FROM BIO_STUDENT_EXTRACT WHERE SCHOOL_ORG_NODEID = ?";
 	public static final String UPDATE_STUDENT_PDF_LOC = "UPDATE INVITATION_CODE SET IC_FILE_LOC = ? WHERE STUDENT_BIO_ID = ?";
 
 }

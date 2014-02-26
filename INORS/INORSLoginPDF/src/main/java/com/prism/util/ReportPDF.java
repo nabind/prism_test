@@ -32,7 +32,7 @@ public class ReportPDF {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId) throws IOException {
+	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId, boolean isExtTable) throws IOException {
 		logger.info("schoolId=" + schoolId);
 		logger.info("adminid=" + adminid);
 		logger.info("studentBioId=" + studentBioId);
@@ -48,6 +48,11 @@ public class ReportPDF {
 		URLStringBuf.append(prop.getProperty("jasperURLParams"));
 		URLStringBuf.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=").append(schoolId);
 		URLStringBuf.append("&p_AdminYear=").append(adminid).append("&assessmentId=105_InvLetter").append("&p_Student_Bio_Id=").append(studentBioId);
+		if (isExtTable) {
+			URLStringBuf.append("&p_ExtTable=Y");
+		} else {
+			URLStringBuf.append("&p_ExtTable=N");
+		}
 		// logger.info(URLStringBuf.toString());
 
 		URL url1 = new URL(URLStringBuf.toString());

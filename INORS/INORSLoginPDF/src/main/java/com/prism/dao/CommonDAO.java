@@ -13,7 +13,7 @@ public interface CommonDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public OrgTO getSchoolDetails(String schoolId) throws Exception;
+	public OrgTO getSchoolDetails(String schoolId, boolean cascade) throws Exception;
 
 	/**
 	 * Creates the organization Map where the organization id is the key and the organization name is the value.
@@ -70,6 +70,16 @@ public interface CommonDAO {
 	 */
 	public List<String> getStudentIdList(String schoolId);
 
-	public int[] updateStudentsPDFloc(Map<String,String> pdfPathList);
+	/**
+	 * @param pdfPathList
+	 * @return
+	 */
+	public int[] updateStudentsPDFloc(Map<String, String> pdfPathList);
+
+	/**
+	 * @param schoolId
+	 * @return
+	 */
+	public List<String> getStudentIdListFromExtractTable(String schoolId);
 
 }
