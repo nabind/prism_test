@@ -296,7 +296,8 @@ public interface IUserQuery {
 					" WHERE (UPPER(USR.USERNAME) LIKE UPPER(?) ",
 					" OR UPPER(USR.LAST_NAME)  LIKE UPPER(?) ",
 					" OR UPPER(USR.FIRST_NAME) LIKE UPPER(?)) ",
-					" AND HIER.ORG_NODE_LEVEL <> 0 ",
+					//" AND HIER.ORG_NODE_LEVEL <> 0 ",
+					" AND orgUsers.ORG_NODE_LEVEL <> 0 ",
 					" AND USR.ACTIVATION_STATUS != 'SS' ",
 					" AND orgUsers.ORG_NODEID = OLP.ORG_NODEID ",  //Changed for QC 77275
 					" AND OLP.CUST_PROD_ID =  ?",   //Changed for QC 77275
