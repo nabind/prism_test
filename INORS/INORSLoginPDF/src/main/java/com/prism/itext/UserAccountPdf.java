@@ -43,7 +43,7 @@ public class UserAccountPdf {
 	private static Map<Integer, String> orgMap = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "X", "605247" };
+		 args = new String[] { "X", "605247" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -249,7 +249,6 @@ public class UserAccountPdf {
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
 					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
 						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
-						// removeFile(encDocLocation);
 						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
 						logger.warn("FAILED: sending mail. Updating status.");
@@ -258,7 +257,6 @@ public class UserAccountPdf {
 					logger.warn("FAILED: sending mail .. no school mail id is defined.");
 				}
 			}
-			// FileUtil.removeFile(new ArrayList<String>(pdfPathList.values())); Individual PDF will not be deleted
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());
 			e.printStackTrace();
