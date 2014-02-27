@@ -787,6 +787,7 @@ public class InorsController {
 			// Delete the zip file from disk
 			logger.log(IAppLogger.INFO, "temp zip file deleted = " + new File(zipFileName).delete());
 		} catch (Exception e) {
+			ReportController.showDownloadError(response);
 			logger.log(IAppLogger.ERROR, e.getMessage());
 			e.printStackTrace();
 		} finally {

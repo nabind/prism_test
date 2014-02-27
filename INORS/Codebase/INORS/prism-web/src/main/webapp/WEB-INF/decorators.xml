@@ -30,6 +30,7 @@
 		<pattern>/ajaxJSP/*</pattern>
 		<pattern>/StudentDataloadService*</pattern>
 		<pattern>/landing*</pattern>
+		<pattern>/downloadZippedPdf*</pattern>
 	</excludes>
 	
 	<decorator name="parentnetwork" page="parentnetwork.jsp">
