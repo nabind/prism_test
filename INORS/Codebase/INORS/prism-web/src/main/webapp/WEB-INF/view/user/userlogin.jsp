@@ -367,7 +367,14 @@
 	
 	<footer class="margin-top">
 		<div class="float-center"><spring:message code="footer.copyright"/> </div>
-		<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
+		<c:choose>
+			<c:when test="${themeName == 'acsi'}">
+				<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
+			</c:when>
+			<c:otherwise>
+				<div class="float-center"> <spring:message code="footer.helpdesk.parent"/> </div> 
+			</c:otherwise>
+		</c:choose>
 	</footer>  
   
 	<%@ include	file="../common/minimalScripts.jsp"%>	

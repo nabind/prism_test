@@ -154,7 +154,7 @@
 				
 	<footer class="margin-top">
 		<div class="float-center"><spring:message code="footer.copyright"/></div>
-		<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
+		<%-- <div class="float-center"> <spring:message code="footer.helpdesk"/> </div>  --%>
 	</footer>    
   
 	<%@ include	file="../common/minimalScripts.jsp"%>	
