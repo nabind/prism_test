@@ -326,7 +326,7 @@ function confirmRecreationAC(rowcounter)
 			
 			function saveAssessmentDetails(studentBioId,administration,invitationcode,icExpirationStatus,totalAvailableClaim,expirationDate)
 			{
-							
+				blockUI();		
 					$.ajax({
 							type : "GET",
 							url : 'updateAssessmentDetails.do',
@@ -341,8 +341,10 @@ function confirmRecreationAC(rowcounter)
 								} else {
 									$.modal.alert(strings['script.user.saveError']);
 								}
+								unblockUI();
 							},
 							error : function(data) {
+								unblockUI();
 								$.modal.alert(strings['script.user.saveError']);
 							}
 						});
