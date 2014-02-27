@@ -415,16 +415,37 @@ public interface IParentQuery {
 			" select ORG.level3_jasper_orgid from student_bio_dim std, ORG_NODE_DIM org ",
 			" where ORG.ORG_NODEID = std.ORG_NODEID and std.student_bio_id = ? ");
 
-	public static final String UPDATE_ACTIVATION_CODE = CustomStringUtil.appendString(
-			"UPDATE INVITATION_CODE IC SET IC.ACTIVATION_STATUS = 'IN', IC.UPDATED_DATE_TIME = sysdate",
-			" WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.ADMINID = (SELECT STD.ADMINID FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?)");
-
+	//Query modified for Reset Activation Code issue - By Joy
 	public static final String ADD_NEW_INVITATION_CODE = CustomStringUtil.appendString(
-			"insert into INVITATION_CODE",
-			" select NVITATION_CODE_ID_SEQ.Nextval, (select sf_gen_invite_code from DUAL), student_struc_element, total_available, total_attempt, org_nodeid, adminid, EXPIRATION_DATE, 'AC', created_by_id, sysdate, sysdate, 'N'",
-			" from INVITATION_CODE",
-			" where invitation_code = ? and activation_status = 'AC' AND ADMINID = (SELECT STD.ADMINID FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?) ");
+			"INSERT INTO INVITATION_CODE",
+			" SELECT INVITATION_CODE_CLAIM_ID_SEQ.NEXTVAL,",
+			" (SELECT SF_GEN_INVITE_CODE FROM DUAL),",
+			" TEST_ELEMENT_ID,",
+			" TOTAL_AVAILABLE,",
+			" TOTAL_ATTEMPT,",
+			" EXPIRATION_DATE,",
+			" ORG_NODEID,",
+			" ADMINID,",
+			" CUSTOMERID,",
+			" 'N',",
+			" 'AC',",
+			" CREATED_BY_ID,",
+			" SYSDATE,",
+			" NULL,",
+			" STUDENT_BIO_ID,",
+			" IC_FILE_LOC",
+			" FROM INVITATION_CODE",
+			" WHERE INVITATION_CODE = ?",
+			" AND ACTIVATION_STATUS = 'AC'",
+			" AND STUDENT_BIO_ID = ?");
+	
+	//Query modified for Reset Activation Code issue - By Joy
+	public static final String UPDATE_ACTIVATION_CODE = CustomStringUtil.appendString(
+			"UPDATE INVITATION_CODE IC",
+			" SET IC.ACTIVATION_STATUS = 'IN', IC.UPDATED_DATE_TIME = SYSDATE",
+			" WHERE IC.INVITATION_CODE = ?",
+			" AND IC.ACTIVATION_STATUS = 'AC'",
+			" AND STUDENT_BIO_ID = ?");
 
 	public static final String STUDENT_LIST_FOR_TREE = CustomStringUtil.appendString(
 			" select last_name || ' ' || first_name || ' ' || middle_name NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",
