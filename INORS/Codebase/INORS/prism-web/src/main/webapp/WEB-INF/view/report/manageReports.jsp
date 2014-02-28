@@ -175,6 +175,7 @@
 										<option value="101">Reports</option>
 										<option value="102">Downloads</option>
 										<option value="103">Resources</option>
+										<option value="104">Useful Links</option>
 									</select>
 							</p>
 							
@@ -259,6 +260,7 @@
 										<option value="101">Reports</option>
 										<option value="102">Downloads</option>
 										<option value="103">Resources</option>
+										<option value="104">Useful Links</option>
 									</select>
 							</p>
 							
