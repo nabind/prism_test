@@ -433,7 +433,8 @@ $(document).ready(function() {
 				if (purpose == 'eduCenterUsers') {
 					loadEduCenterUsers();
 				} else {
-					//updateRowValues(row);
+					//Uncommented updateRowValues(row) for TD 77428 - By Joy
+					updateRowValues(row);
 					//Added to load data after edit
 					var id = $("#treeViewForOrg a").parent().attr("id");
 					//fetchAllUsers(id,"getUserDetails.do");//Blocked as after search and edit the user should retain there
@@ -554,26 +555,30 @@ $(document).ready(function() {
 	
 	//----------------------------UPDATE ROW IF UPDATE SUCCESS ---------------------
 	
+	// Modification done by Joy for TD 77428 - ISTEP Prism_Manage User_On editing an existing user the change is not getting reflected immediately.
 	function updateRowValues(row) {
 		var roletag = '<small class="tag _BGCOLOR_ _CLASS_ ">_VALUE_</small>'
 		var completeRoleTagHtml = '';
 	
-		var statusClass = 'tag';
+		//var statusClass = 'tag';
+		var statusClass = 'with-tooltip tooltip-left';
 		var statusVal = '';
 		//alert($("#userModal #userStatus").attr('checked'));
 		if($("#userModal #userStatus").attr('checked') ==  'checked' || $("#userModal #userStatus").attr('checked') ==  true) {
-			statusClass = statusClass + ' green-bg';
+			statusClass = statusClass + ' enable';
 			statusVal = 'Enabled';
 		} else {
-			statusClass = statusClass + ' red-bg';
+			statusClass = statusClass + ' disable';
 			statusVal = 'Disabled';
 		}
+		//alert(statusClass);
 		//alert($("#userModal #userName").val());
-		row.find('th:eq(0)').html( $("#userModal #userId").val());
+		//row.find('th:eq(0)').html( $("#userModal #userId").val());
 		//row.find('td:eq(0)').html( $("#userModal #userName").val());
-		row.find('td small:eq(0)').html( statusVal);
-		row.find('td small:eq(0)').removeClass();
-		row.find('td small:eq(0)').addClass(statusClass);
+		//row.find('td small:eq(0)').html( statusVal);
+		row.find('th span:eq(0)').removeClass();
+		row.find('th span:eq(0)').addClass(statusClass);
+		row.find('th span:eq(0)').attr('title', statusVal)
 		
 		/*row.find('td:eq(1) small').removeClass();
 		row.find('td:eq(1) small').addClass(statusClass);*/
@@ -628,9 +633,6 @@ $(document).ready(function() {
 			});
 		}
 		row.find('.roleContainerForUsers').html(completeRoleTagHtml);
-			
-			
-			
 	  }
 		
 	//----------------------------DELETE THE ROW IF THE DATA IS DELETED SUCCESSFULLY ---------------------
