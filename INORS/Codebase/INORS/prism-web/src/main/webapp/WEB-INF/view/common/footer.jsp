@@ -1,5 +1,4 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
 
 <spring:theme code="theme.name" var="themeName"/>
 <footer class="margin-top main-footer">
