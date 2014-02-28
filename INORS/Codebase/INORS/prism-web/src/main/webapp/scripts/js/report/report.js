@@ -645,6 +645,15 @@ function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, rep
 			unblockUI();
 		}
 	});
+	// ====== This section added for resource download =====
+	if(reportUrl == 'resourcepdf') {
+		newTab = false;
+		window.open(customUrl+'&userType='+$('#customerId').val());
+	}
+	if(reportUrl == 'extLinks') {
+		newTab = false;
+		window.open(customUrl);
+	}
 	if(newTab) {
 		//if(tabsAddedArr.length > 3) {
 		if(!canAddNewTab(tabId) && !(tabsAddedArr.length == 1) ) {

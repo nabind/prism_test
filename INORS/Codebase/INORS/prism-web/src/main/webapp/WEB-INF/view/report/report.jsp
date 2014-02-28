@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 <style>
 /* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
 
@@ -166,5 +167,6 @@
 		<input type="hidden" name="reportName" id="reportName" value="${homeReport.reportName}">
 		<input type="hidden" name="reportId" id="reportId" value="${homeReport.reportId}">
 		<input type="hidden" name="studentId" class="studentIdForTab" value="${homeReport.studentBioId}">
+		<input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
 	</div>
 </div>
