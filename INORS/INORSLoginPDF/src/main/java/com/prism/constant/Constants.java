@@ -8,6 +8,8 @@ import com.prism.util.CustomStringUtil;
  */
 public interface Constants {
 	public static final String PROPERTIES_FILE = "inors.properties";
+	
+	public static final String JDBC_PROPERTIES_FILE = "jdbc.properties";
 
 	/*
 	 * L : Login PDF
@@ -95,6 +97,6 @@ public interface Constants {
 																					" WHERE ORG_NODEID IN ",
 																					" (SELECT ORG_NODEID FROM ORG_NODE_DIM WHERE PARENT_ORG_NODEID = ?)");
 	public static final String GET_STUDENT_ID_LIST_FROM_EXT = "SELECT DISTINCT BIO_EXTRACTID FROM BIO_STUDENT_EXTRACT WHERE SCHOOL_ORG_NODEID = ?";
-	public static final String UPDATE_STUDENT_PDF_LOC = "UPDATE INVITATION_CODE SET IC_FILE_LOC = ? WHERE STUDENT_BIO_ID = ?";
+	public static final String UPDATE_STUDENT_PDF_LOC = "UPDATE INVITATION_CODE SET IC_PDF_FILENAME = ? WHERE STUDENT_BIO_ID = ?";
 
 }

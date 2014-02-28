@@ -15,7 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+//import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
@@ -23,6 +23,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.prism.cipher.PasswordGenerator;
 import com.prism.constant.Constants;
 import com.prism.dao.CommonDAO;
+import com.prism.dao.CommonDAOImpl;
 import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
@@ -41,14 +42,17 @@ public class UserAccountPdf {
 	private static boolean ARCHIVE_NEEDED = false;
 	private static String DDMMYY = "";
 	private static Map<Integer, String> orgMap = null;
+	
+	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		 args = new String[] { "X", "605247" };
+		// args = new String[] { "S", "604709" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
 			String flag = args[0];
 			Properties prop = PropertyFile.loadProperties(Constants.PROPERTIES_FILE);
+			Properties jdbcProp = PropertyFile.loadProperties(Constants.JDBC_PROPERTIES_FILE);
 			if (prop == null) {
 				logger.error("Not able to read property file.");
 				System.exit(1);
@@ -57,8 +61,12 @@ public class UserAccountPdf {
 				String[] ids = new String[length];
 				// Creates a new array with args[1] to args[last element]
 				System.arraycopy(args, 1, ids, 0, length);
-				ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
-				CommonDAO dao = applicationContext.getBean("commonDAO", CommonDAO.class);
+				//ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
+				try {
+					dao = new CommonDAOImpl(jdbcProp);
+				} catch (Exception e) {
+					e.printStackTrace();
+				};
 				if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
 					ENCRYPTION_NEEDED = true;
 				}
@@ -92,11 +100,11 @@ public class UserAccountPdf {
 					String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"), prop.getProperty("schoolaArc"), DDMMYY, ".ZIP");
 					archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
 				}
-				try {
+				/*try {
 					applicationContext.close();
 				} catch (Exception e) {
 					logger.warn("Error in closing Application Context");
-				}
+				}*/
 			}
 		}
 		logger.info("The End!");

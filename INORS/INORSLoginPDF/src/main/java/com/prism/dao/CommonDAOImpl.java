@@ -1,6 +1,5 @@
 package com.prism.dao;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,14 +12,18 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
+//import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+//import org.springframework.jdbc.core.JdbcTemplate;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.Properties;
+
 
 import com.prism.constant.Constants;
-import com.prism.to.ObjectValueTO;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 import com.prism.util.CustomStringUtil;
+import com.prism.util.JDCConnectionDriver;
 
 /**
  * @author Amitabha Roy
@@ -30,12 +33,39 @@ public class CommonDAOImpl implements CommonDAO {
 
 	private static final Logger logger = Logger.getLogger(CommonDAOImpl.class);
 
-	private JdbcTemplate jdbcTemplate;
+	static JDCConnectionDriver driver = null;
+	static String DATA_SOURCE = "jdbc:jdc:acsi";
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param prop
+	 * @throws Exception
+	 */
+	public CommonDAOImpl(Properties prop) throws Exception {
+		try {
+			String dbURL = prop.getProperty("jdbc.url");
+			String dbUserName = prop.getProperty("jdbc.username");
+			String dbPassword = prop.getProperty("jdbc.password");
+
+			driver = new JDCConnectionDriver(prop.getProperty("jdbc.driverClassName"),
+					dbURL, dbUserName, dbPassword);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,29 +74,54 @@ public class CommonDAOImpl implements CommonDAO {
 	public OrgTO getSchoolDetails(String schoolId, boolean cascade) throws Exception {
 		logger.info("School Id: " + schoolId);
 		OrgTO school = new OrgTO();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		logger.info("Fetching School Data ...");
-		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_SCHOOL_DETAILS, schoolId);
-		if ((dataList != null) && (!dataList.isEmpty())) {
-			// logger.info("Schools: " + dataList.size());
-			for (Map<String, Object> data : dataList) {
-				school.setElementName(((String) data.get("ORG_NODE_NAME")).trim()); // 2
-				school.setOrgNodeId(((BigDecimal) data.get("ORG_NODEID")).toString()); // 1
-				school.setOrgNodeLevel(((BigDecimal) data.get("ORG_NODE_LEVEL")).toString()); // 4
-				school.setJasperOrgId(((BigDecimal) data.get("ORG_NODEID")).toString()); // 1
-				school.setEmail((String) data.get("EMAILS")); // 9
-				school.setCustomerCode(((BigDecimal) data.get("CUSTOMERID")).toString()); // 10
-				school.setParentJasperOrgId(((BigDecimal) data.get("PARENT_ORG_NODEID")).toString()); // 7
-				school.setDateStr((String) data.get("DATE_STR")); // 11
-				school.setDateStrWtYear((String) data.get("DATE_STR_WT_YEAR")); // 12
-				break;
+		
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_SCHOOL_DETAILS);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				school = new OrgTO();
+				school.setElementName(rs.getString("ORG_NODE_NAME"));
+				school.setOrgNodeId(rs.getString("ORG_NODEID"));
+				school.setOrgNodeLevel(rs.getString("ORG_NODE_LEVEL"));
+				school.setJasperOrgId(rs.getString("ORG_NODEID"));
+				school.setEmail(rs.getString("EMAILS"));
+				school.setCustomerCode(rs.getString("CUSTOMERID"));
+				school.setParentJasperOrgId("PARENT_ORG_NODEID");
+				school.setDateStr(rs.getString("DATE_STR"));
+				school.setDateStrWtYear(rs.getString("DATE_STR_WT_YEAR"));
+			} else {
+				logger.info("No school found");
 			}
-		} else {
-			logger.info("No school found");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
 		}
+	
 		if ((school != null) && (cascade == true)) {
 			List<UserTO> users = getSchoolUsers(school.getJasperOrgId(), false);
 			school.setUsers(users);
 		}
+		
 		return school;
 	}
 
@@ -78,26 +133,54 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	private List<UserTO> getSchoolUsers(String schoolId, boolean hierarchical) throws Exception {
 		logger.info("Fetching School User Data ...");
+		
 		List<UserTO> users = new ArrayList<UserTO>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		UserTO user = null;
+		
 		String query = Constants.GET_SCHOOL_USERS;
 		if (hierarchical) {
 			query = Constants.GET_SCHOOL_USERS_HIERARCHICAL;
 		}
-		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(query, schoolId);
-		if (dataList != null && dataList.size() > 0) {
-			for (Map<String, Object> data : dataList) {
-				UserTO user = new UserTO();
-				String userId = ((BigDecimal) data.get("USERID")).toString();
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				user = new UserTO();
+				String userId = rs.getString("USERID");
 				user.setJasperUserId(userId);
 				user.setUserId(userId);
-				user.setUserName((String) data.get("USERNAME"));
-				user.setFullName((String) data.get("DISPLAY_USERNAME"));
-				user.setOrgNodeId(((BigDecimal) data.get("ORG_NODEID")).toString());
-				user.setOrgNodeLevel(((BigDecimal) data.get("ORG_NODE_LEVEL")).toString());
-				user.setOrgNodeName((String) data.get("ORG_NODE_NAME"));
+				user.setUserName(rs.getString("USERNAME"));
+				user.setFullName(rs.getString("DISPLAY_USERNAME"));
+				user.setOrgNodeId(rs.getString("ORG_NODEID"));
+				user.setOrgNodeLevel(rs.getString("ORG_NODE_LEVEL"));
+				user.setOrgNodeName(rs.getString("ORG_NODE_NAME"));
 				// Database values are not correct so a manual call is required
 				user.setOrgNodeCodePath(getOrgNodeCodePath(user.getOrgNodeId()));
 				users.add(user);
+			}
+			logger.debug("Returning org users");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
 			}
 		}
 		return getSchoolUsersWithRoles(users);
@@ -126,13 +209,35 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	private String getParentOrgNodeId(String orgNodeId) throws Exception {
-		String parentOrgNodeId = null;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_PARENT_ORG_NODEID, orgNodeId);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				parentOrgNodeId = ((BigDecimal) fieldDetails.get("PARENT_ORG_NODEID")).toString();
-				break;
+	private String getParentOrgNodeId(String schoolId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String parentOrgNodeId = null;		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_PARENT_ORG_NODEID);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				parentOrgNodeId = rs.getString("PARENT_ORG_NODEID");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
 			}
 		}
 		return parentOrgNodeId;
@@ -146,11 +251,36 @@ public class CommonDAOImpl implements CommonDAO {
 	public Map<Integer, String> getOrgMap(List<UserTO> userList) {
 		Map<Integer, String> orgMap = new HashMap<Integer, String>();
 		String ids = getIds(userList);
-		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(CustomStringUtil.replaceCharacterInString('?', ids, Constants.GET_ORG_MAP));
-		if (dataList != null && dataList.size() > 0) {
-			for (Map<String, Object> data : dataList) {
-				orgMap.put(((BigDecimal) data.get("ORG_NODEID")).intValue(), (String) data.get("ORG_NODE_NAME"));
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(CustomStringUtil.replaceCharacterInString('?', ids, Constants.GET_ORG_MAP));
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				orgMap.put(Integer.valueOf(rs.getString("ORG_NODEID")),rs.getString("ORG_NODE_NAME"));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		
 		}
 		return orgMap;
 	}
@@ -182,18 +312,40 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @see com.prism.dao.CommonDAO#updateNewUserFlag(java.util.List)
 	 */
 	public int[] updateNewUserFlag(final List<UserTO> userList) {
-		int[] updateCount = jdbcTemplate.batchUpdate(Constants.UPDATE_NEW_USER_FLAG, new BatchPreparedStatementSetter() {
-			public void setValues(PreparedStatement pstmt, int i) throws SQLException {
-				UserTO user = userList.get(i);
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int updateCount[] = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+
+			pstmt = conn.prepareStatement(Constants.UPDATE_NEW_USER_FLAG);
+			
+			for (UserTO user : userList) {
 				pstmt.setString(1, user.getEncPassword());
 				pstmt.setString(2, user.getSalt());
 				pstmt.setString(3, user.getUserName());
+				pstmt.addBatch();
 			}
-
-			public int getBatchSize() {
-				return userList.size();
+			updateCount = pstmt.executeBatch();
+			logger.debug("Records updated: " + updateCount);
+			conn.commit();
+			logger.debug("commit successful");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
 			}
-		});
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		
 		return updateCount;
 	}
 
@@ -204,37 +356,86 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public String getSupportEmailForCustomer(String customerId) {
 		String supportEmail = null;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_SUPPORT_EMAIL_FOR_CUSTOMER, Long.valueOf(customerId));
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				supportEmail = (String) fieldDetails.get("SUPPORT_EMAIL");
-				break;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_SUPPORT_EMAIL_FOR_CUSTOMER);
+			pstmt.setLong(1, Long.valueOf(customerId));
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				supportEmail = rs.getString("SUPPORT_EMAIL");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();			
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
 			}
 		}
 		return supportEmail;
 	}
-
+	
+	
 	/**
-	 * Populates the Role List for all the users.
+	 * Populates the Role List for all the users
 	 * 
 	 * @param users
 	 * @return
 	 * @throws Exception
 	 */
-	private List<UserTO> getSchoolUsersWithRoles(List<UserTO> users) {
-		logger.info("Fetching School User Role Data ...");
-		for (UserTO user : users) {
-			List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_SCHOOL_USERS_WITH_ROLES, user.getUserId());
-			if (dataList != null && dataList.size() > 0) {
+	public List<UserTO> getSchoolUsersWithRoles(List<UserTO> users)	throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+
+			pstmt = conn.prepareCall(Constants.GET_SCHOOL_USERS_WITH_ROLES);
+			for (UserTO user : users) {
+				pstmt.setString(1, user.getUserId());
+				
+				rs = pstmt.executeQuery();
 				List<String> roleList = new ArrayList<String>();
-				for (Map<String, Object> data : dataList) {
-					roleList.add((String) data.get("DESCRIPTION"));
+				while (rs.next()) {
+					roleList.add(rs.getString("DESCRIPTION"));
 				}
 				user.setRoles(roleList);
+			}
+			logger.debug("Returning roles");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
 			}
 		}
 		return users;
 	}
+		
 
 	/*
 	 * (non-Javadoc)
@@ -243,11 +444,35 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public Map<String, String> getOrgLabelMap() {
 		Map<String, String> orgLabelMap = new HashMap<String, String>();
-		List<Map<String, Object>> dataList = jdbcTemplate.queryForList(Constants.GET_ORG_LABEL_MAP);
-		if (dataList != null && dataList.size() > 0) {
-			for (Map<String, Object> data : dataList) {
-				orgLabelMap.put(((BigDecimal) data.get("ORG_LEVEL")).toString(), (String) data.get("ORG_LABEL"));
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_ORG_LABEL_MAP);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				orgLabelMap.put(rs.getString("ORG_LEVEL"),rs.getString("ORG_LABEL"));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		
 		}
 		return orgLabelMap;
 	}
@@ -259,16 +484,42 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public List<String> getIcLetterPathList(String schoolId) {
 		List<String> pdfList = new ArrayList<String>();
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_IC_LETTER_PATH_LIST, schoolId);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				String pdfPath = (String) fieldDetails.get("IC_FILE_LOC");
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_IC_LETTER_PATH_LIST);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				String pdfPath = rs.getString("IC_FILE_LOC");
 				if (pdfPath != null && !"null".equalsIgnoreCase(pdfPath) && !pdfPath.isEmpty()) {
 					pdfList.add(pdfPath);
 				}
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		
 		}
-		logger.info("pdfList.size(): " + pdfList.size());
+		logger.info("pdfList.size(): " + pdfList!=null ? pdfList.size(): 0);
 		return pdfList;
 	}
 
@@ -279,13 +530,34 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public String getCurrentAdminYear() {
 		String currentAdminYear = null;
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_CURRENT_ADMIN_YEAR);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				currentAdminYear = ((BigDecimal) fieldDetails.get("ADMINID")).toString();
-				break;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_CURRENT_ADMIN_YEAR);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				currentAdminYear = rs.getString("ADMINID");
 			}
-		}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}		
+		}		
 		return currentAdminYear;
 	}
 
@@ -296,14 +568,37 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public List<String> getStudentIdList(String schoolId) {
 		List<String> studentIdList = new ArrayList<String>();
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_STUDENT_ID_LIST, schoolId);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				String studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).toString();
-				studentIdList.add(studentBioId);
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_STUDENT_ID_LIST);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				studentIdList.add(rs.getString("STUDENT_BIO_ID"));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		
 		}
-		logger.info("studentIdList.size(): " + studentIdList.size());
 		return studentIdList;
 	}
 
@@ -313,28 +608,39 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String> pdfPathList)
 	 */
 	public int[] updateStudentsPDFloc(Map<String, String> pdfPathList) {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int updateCount[] = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
 
-		final List<ObjectValueTO> studentList = new ArrayList<ObjectValueTO>();
-		ObjectValueTO studentTo = null;
-		for (Entry entry : pdfPathList.entrySet()) {
-			studentTo = new ObjectValueTO();
-			studentTo.setName(entry.getKey().toString());
-			studentTo.setValue(entry.getValue().toString());
-			studentList.add(studentTo);
+			pstmt = conn.prepareStatement(Constants.UPDATE_STUDENT_PDF_LOC);
+						
+			for (Entry entry : pdfPathList.entrySet()) {	
+				pstmt.setString(1, entry.getValue().toString()); // IC_FILE_LOC
+				pstmt.setString(2, entry.getKey().toString()); // STUDENT_BIO_ID
+				pstmt.addBatch();
+			}
+			
+			updateCount = pstmt.executeBatch();
+			logger.debug("Records updated: " + updateCount);
+			conn.commit();
+			logger.debug("commit successful");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
 		}
-
-		int[] updateCount = jdbcTemplate.batchUpdate(Constants.UPDATE_STUDENT_PDF_LOC, new BatchPreparedStatementSetter() {
-			public void setValues(PreparedStatement pstmt, int i) throws SQLException {
-				ObjectValueTO student = studentList.get(i);
-				pstmt.setString(1, student.getValue()); // IC_FILE_LOC
-				pstmt.setString(2, student.getName()); // STUDENT_BIO_ID
-
-			}
-
-			public int getBatchSize() {
-				return studentList.size();
-			}
-		});
 		return updateCount;
 
 	}
@@ -346,12 +652,37 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public List<String> getStudentIdListFromExtractTable(String schoolId) {
 		List<String> studentIdList = new ArrayList<String>();
-		List<Map<String, Object>> lstData = jdbcTemplate.queryForList(Constants.GET_STUDENT_ID_LIST_FROM_EXT, schoolId);
-		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				String studentBioId = ((BigDecimal) fieldDetails.get("BIO_EXTRACTID")).toString();
-				studentIdList.add(studentBioId);
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_STUDENT_ID_LIST_FROM_EXT);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				studentIdList.add(rs.getString("BIO_EXTRACTID"));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		
 		}
 		logger.info("EXT studentIdList.size(): " + studentIdList.size());
 		return studentIdList;

@@ -7,7 +7,8 @@ import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 
 public interface CommonDAO {
-
+	
+		
 	/**
 	 * @param schoolId
 	 * @return
