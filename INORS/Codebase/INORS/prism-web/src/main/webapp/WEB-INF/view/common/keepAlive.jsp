@@ -3,7 +3,7 @@
 <script>
 	//============================= USER KEEP ALIVE =============================
 	// alert will appear if idle time is xx * 60 seconds. Where xx indicates minute.
-	var alertInterval = 55 * 60; // time in sec
+	var alertInterval = 25 * 60; // time in sec
 	var forceInterval = 5 * 60 * 1000; // time in milisec
 	var changeInt = '';
 	var seconds;
