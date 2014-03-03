@@ -23,7 +23,28 @@ public class TASCProcessTO implements Serializable {
 	private String timeMili;
 	private String ppCount;
 	private String olCount;
+	private String coCount;
+	private String erCount;
+	private String overallStatus;
 	
+	public String getCoCount() {
+		return coCount;
+	}
+	public void setCoCount(String coCount) {
+		this.coCount = coCount;
+	}
+	public String getErCount() {
+		return erCount;
+	}
+	public void setErCount(String erCount) {
+		this.erCount = erCount;
+	}
+	public String getOverallStatus() {
+		return overallStatus;
+	}
+	public void setOverallStatus(String overallStatus) {
+		this.overallStatus = overallStatus;
+	}
 	public String getPpCount() {
 		return ppCount;
 	}

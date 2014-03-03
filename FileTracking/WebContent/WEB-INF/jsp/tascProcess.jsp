@@ -7,6 +7,41 @@
 <%@page import="java.util.Properties" %>
 <%@page import="com.vaannila.util.PropertyFile" %>
 
+<style>
+	.completed {
+		display: block;
+		float: left;
+		width: 34px;
+		height: 34px;
+		background: url(css/sprites.png) no-repeat -68px -94px;
+		margin-left: -12px;
+		margin-top: -9px;
+		position: relative;
+		z-index: 88;
+	}
+	.progress {
+		display: block;
+		float: left;
+		width: 34px;
+		height: 34px;
+		background: url(css/sprites.png) no-repeat -102px -94px;
+		margin-left: -12px;
+		margin-top: -9px;
+		position: relative;
+		z-index: 88;
+	}
+	.error {
+		display: block;
+		float: left;
+		width: 34px;
+		height: 34px;
+		background: url(css/sprites.png) no-repeat -136px -94px;
+		margin-left: -12px;
+		margin-top: -9px;
+		position: relative;
+		z-index: 88;
+	}
+</style>
 <script src="css/jquery.validate.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -117,7 +152,14 @@
 					<tr>
 						<td>&nbsp;</td>
 						
-						<td>
+						<td style="padding-top: 12px;" nowrap>
+							<%if("CO".equals(process.getOverallStatus())) { %>
+								<span class="completed" title="Completed"></span>
+							<%} else if("IN".equals(process.getOverallStatus())) {%>
+								<span class="progress" title="In Progress"></span>
+							<%} else {%>
+								<span class="error" title="Error"></span>
+							<%} %>
 							<%=process.getProcessId() %>
 						</td>
 						
@@ -150,7 +192,11 @@
 				
 				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active, <span style="color: red">ER = Error</span> </p>
 				<p><b>Source System:</b> PP = Paper Pencil, OL = Online (Web service)</p>
-				
+				<p><b>Overall Status:</b><br/>
+					<span class="completed" title="Completed"></span> = Completed/Success <br/>
+					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
+					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
+				</p>
 				<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="_process_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>

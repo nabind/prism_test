@@ -25,7 +25,7 @@ $(function () {
             },
             xAxis: {
                 type: 'datetime',
-                maxZoom: 14 * 24 * 3600000, // fourteen days
+                maxZoom: 3 * 24 * 3600000, // fourteen days
                 title: {
                     text: null
                 }
@@ -95,7 +95,7 @@ $(function () {
                 spacingRight: 20
             },
             title: {
-                text: 'Request count for data load at TASC PRISM'
+                text: 'Status count for data load at TASC PRISM'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
@@ -104,50 +104,66 @@ $(function () {
             },
             xAxis: {
                 type: 'datetime',
-                maxZoom: 14 * 24 * 3600000, // fourteen days
+                maxZoom: 3 * 24 * 3600000, // fourteen days
                 title: {
                     text: null
                 }
             },
             yAxis: {
                 title: {
-                    text: 'Request %-age'
+                    text: 'Count'
                 }
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
                 shared: true
             },
             legend: {
                 enabled: true
             },
             plotOptions: {
-                column: {
-                    stacking: 'percent'
-                }
+                
             },
     
             series: [{
                 type: 'column',
-                name: 'Paper Pencil',
+                name: 'Success',
                 pointInterval: 24 * 3600 * 1000,
                 pointStart: Date.UTC(<%= (String) request.getSession().getAttribute("tascStartDate") %>),
                 data: [
-                    <%= (String) request.getSession().getAttribute("tascPPCountList") %>
-                ]
+                    <%= (String) request.getSession().getAttribute("tascCOCountList") %>
+                ],
+                color: '#36A502'
             },
             {
                 type: 'column',
-                name: 'Web Service',
+                name: 'Error',
                 pointInterval: 24 * 3600 * 1000,
                 pointStart: Date.UTC(<%= (String) request.getSession().getAttribute("tascStartDate") %>),
                 data: [
-					<%= (String) request.getSession().getAttribute("tascOLCountList") %>
+					<%= (String) request.getSession().getAttribute("tascERCountList") %>
                 ],
-                color: '#8bbc21'
+                color: '#BD0606'
+            }, {
+                type: 'pie',
+                name: 'Total count',
+                data: [{
+                    name: 'Success',
+                    y: <%= (String) request.getSession().getAttribute("successCount") %>,
+                    color: '#36A502'
+                }, {
+                    name: 'Error',
+                    y: <%= (String) request.getSession().getAttribute("errorCount") %>,
+                    color: '#BD0606'
+                }],
+                center: [100, 80],
+                size: 100,
+                showInLegend: false,
+                dataLabels: {
+                    enabled: true
+                }
             }
             ]
         });

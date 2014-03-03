@@ -129,11 +129,16 @@ public class TascController {
 			
 			StringBuilder pp = new StringBuilder();
 			StringBuilder ol = new StringBuilder();
+			StringBuilder co = new StringBuilder();
+			StringBuilder er = new StringBuilder();
+			long error = 0, success = 0;
 			int count = 0;
 			for(TASCProcessTO processTO : processes) {
 				if(count > 0) {
 					pp.append(",");
 					ol.append(",");
+					co.append(",");
+					er.append(",");
 				} else {
 					String[] date = (processTO.getDateTimestamp() != null)?processTO.getDateTimestamp().split(","):"2014,02,09".split(",");
 					int month = Integer.parseInt(date[1]);
@@ -143,9 +148,17 @@ public class TascController {
 				count++;
 				pp.append(processTO.getPpCount());
 				ol.append(processTO.getOlCount());
+				co.append(processTO.getCoCount());
+				er.append(processTO.getErCount());
+				error = error + Integer.parseInt(processTO.getErCount());
+				success = success + Integer.parseInt(processTO.getCoCount());
 			}
 			request.getSession().setAttribute("tascPPCountList", pp.toString());
 			request.getSession().setAttribute("tascOLCountList", ol.toString());
+			request.getSession().setAttribute("tascCOCountList", co.toString());
+			request.getSession().setAttribute("tascERCountList", er.toString());
+			request.getSession().setAttribute("successCount", success+"");
+			request.getSession().setAttribute("errorCount", error+"");
 			convertProcessToJson(processes);
 			
 		} catch (Exception e) {
