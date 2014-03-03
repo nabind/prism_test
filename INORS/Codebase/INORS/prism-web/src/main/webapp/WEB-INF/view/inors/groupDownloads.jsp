@@ -51,7 +51,7 @@
 				<thead>
 					<tr role="row">
 						<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
-							<img id="checkAllImg" src="http://localhost:8080/inors/themes/acsi/img/empty.bmp" /><input type="hidden" id="checkAllVal" value="0" /><br />
+							<img id="checkAllImg" src="/inors/themes/acsi/img/empty.bmp" /><input type="hidden" id="checkAllVal" value="0" /><br />
 						</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 350px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Class</th>
