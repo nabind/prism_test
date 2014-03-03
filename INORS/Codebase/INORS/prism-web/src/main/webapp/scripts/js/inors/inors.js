@@ -122,7 +122,6 @@ $(document).ready(function() {
 
 	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
-	//showHideDivs();
 	$("#p_test_administration").on("change", function(event) {
 		var testAdm = $("#p_test_administration").val();
 	});
@@ -130,11 +129,11 @@ $(document).ready(function() {
 	});
 	$('#p_corpdiocese').on('change',function(){
 	});
-	$("#p_school").on("change", function(event) {
-		var testAdministrationVal = $("#q_testAdministrationVal").val();
-		var testProgram = $("#q_testProgram").val();
-		var corpDiocese = $("#q_corpDiocese").val();
-		var school = $("#q_school").val();
+	$("#p_school").live("change", function(event) {
+		var testAdministrationVal = $("#p_testAdministrationVal").val();
+		var testProgram = $("#p_testProgram").val();
+		var corpDiocese = $("#p_corpDiocese").val();
+		var school = $("#p_school").val();
 		if(school) {
 			if (school == "-1") { // All
 				var schoolCount = $('#p_school > option').length;
@@ -148,7 +147,6 @@ $(document).ready(function() {
 		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		// $(".customRefresh").click();
-		//showHideDivs();
 	});
 	$("#p_class").on("change", function(event) {
 		var klassOptionsString = "";
@@ -169,7 +167,6 @@ $(document).ready(function() {
 			//alert("klassCount=" + $("#classCount").val());
 		}
 		// $(".customRefresh").click();
-		//showHideDivs();
 	});
 	$("#downloadGRTFile").on("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
@@ -232,11 +229,24 @@ $(document).ready(function() {
 	 * Toggele self check status. Set all text box values.
 	 * Refresh check boxes from text boxes.
 	 */
-	$("#check-all").on("click", function() {
+	$("#checkAllImg").click(function() {
+		var val = $('#checkAllVal').val();
+		if (val == "0") {
+			$('#checkAllImg').prop('src', 'http://localhost:8080/inors/themes/acsi/img/selected.bmp');
+			$('#checkAllVal').val("1");
+			setAllTextBoxValues("1");
+		} else if ((val == "1") || (val == "-1")) {
+			$('#checkAllImg').prop('src', 'http://localhost:8080/inors/themes/acsi/img/empty.bmp');
+			$('#checkAllVal').val("0");
+			setAllTextBoxValues("0");
+		}
+		refreshCheckBoxesFromTextBoxes();
+	});
+	/*$("#check-all").on("click", function() {
 		var value = toggleACheckBox($('#check-all'));
 		setAllTextBoxValues(value);
 		refreshCheckBoxesFromTextBoxes();
-	});
+	});*/
 
 	/**
 	 * Toggele self check status. Set the corresponding text box
@@ -267,17 +277,38 @@ $(document).ready(function() {
 	});
 
 	$('#groupDownload').validationEngine();
+	
+	clickTheRefreshButton();
+	
 });
+
+/**
+ * Programatically click the Refresh button.
+ */
+var refreshUrls = new Array("/public/INORS/Report/Report1_files", "/public/INORS/Report/Report2_files");
+function clickTheRefreshButton() {
+	var reportUrl = $("#reportUrl").val();
+	for (var i = 0; i < refreshUrls.length; i++) {
+		// alert(reportUrl + "\n" + refreshUrls[i]);
+		if (reportUrl == refreshUrls[i]) {
+			$(".customRefresh").click();
+			break;
+		}
+	}
+}
 
 function calculateAndChangeCheckAll(){
 	var totalStudents = getTotalStudentCount();
 	var checkedStudents = getCheckedStudentCount();
-	if(checkedStudents == totalStudents){
-		$('#check-all').attr('checked', 'checked');
-		$('#check-all').prop("indeterminate", false);
+	if(checkedStudents == 0){
+		$('#checkAllImg').prop('src', 'http://localhost:8080/inors/themes/acsi/img/empty.bmp');
+		$('#checkAllVal').val("0");
+	} else if(checkedStudents == totalStudents){
+		$('#checkAllImg').prop('src', 'http://localhost:8080/inors/themes/acsi/img/selected.bmp');
+		$('#checkAllVal').val("1");
 	} else {
-		$('#check-all').prop("indeterminate", true);
-		$('#check-all').removeAttr('checked');
+		$('#checkAllImg').prop('src', 'http://localhost:8080/inors/themes/acsi/img/tristate.bmp');
+		$('#checkAllVal').val("-1");
 	}
 }
 
@@ -1163,47 +1194,6 @@ function populateStudentTableByJson(json) {
 }
 
 /**
- * Show/Hide GRT/IC Layout/Download Links/Buttons
- */
-function showHideDivs() {
-	var schoolId = $("#q_school").val();
-	if((schoolId) && schoolId != '-2') {
-		$("#icDiv").removeClass('hidden');
-		$("#grtDiv").removeClass('hidden');
-		$("#icDiv").show();
-		$("#grtDiv").show();
-		var testAdministrationText = $("#q_testAdministrationText").val();
-		if (testAdministrationText) {
-			var tokens = testAdministrationText.split(" ");
-			if ("2010" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
-			} else if ("2011" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2011" href="/inors/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2010-11 GRT File Record Layout</a><br />');
-			} else if ("2012" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a><br />');
-			} else if ("2013" == tokens[2]) {
-				if("ISTEP+" == tokens[0] && "Spring" == tokens[1]) {
-					$("#icLinks").html('<a class="button" id="ic2013" href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a><br />');
-				} else {
-					$("#icLinks").html('');
-				}
-				$("#grtLinks").html('<a class="button" id="grt2013" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 GRT File Record Layout</a><br />');
-			} else {
-				$("#icDiv").hide();
-				$("#grtDiv").hide();
-				$.modal.alert('Unknown Test Administration');
-			}
-		}
-	} else {
-		$("#icDiv").hide();
-		$("#grtDiv").hide();
-	}
-}
-
-/**
  * GroupDownloadTO Constructor
  */
 function GroupDownloadTO(button, testAdministrationVal, testAdministrationText,
@@ -1277,7 +1267,13 @@ function groupDownloadSubmit(button) {
 	if ((button == "SP") || (button == "CP") || (button == "SS")) {
 		var errMsg = validateGroupDownloadForm(button, json);
 		if (errMsg == "") {
-			$.modal.confirm("You are requesting multiple pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
+			var checkedStudents = getCheckedStudentCount();
+			var pageCount = (checkedStudents + 1) * 2;
+			var groupFile = $("#q_groupFile");
+			if(groupFile == "BOTH"){
+				pageCount = pageCount + (checkedStudents * 2);
+			}
+			$.modal.confirm("You are requesting "+pageCount+" pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
 				function() {
 					// Ajax Call
 					var serverResponseData = groupDownloadFunction(json);
