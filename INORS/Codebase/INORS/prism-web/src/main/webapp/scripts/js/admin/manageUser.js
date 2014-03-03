@@ -131,8 +131,8 @@ $(document).ready(function() {
 	//Changed for TD 77443 - By Joy
 	function loginAs(event,$obj){
 		if(!$obj.hasClass('disabled')){
-			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param');
 			$obj.addClass('disabled');
+			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param');
 		}
 	}
 	//===================================Education Center User Details Screen=====================

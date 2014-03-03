@@ -343,7 +343,7 @@
 										<sec:authorize ifNotGranted="ROLE_SSO">
 											+' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> '
 										</sec:authorize>
-										+' <a id="'+ this.userId +'" param="'+ this.userName +'" href="#" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>'
+										+' <a id="'+ this.userId +'" param="'+ this.userName +'" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>'
 										<sec:authorize ifNotGranted="ROLE_SSO">
 											+' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>'
 										</sec:authorize>
