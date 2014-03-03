@@ -62,17 +62,19 @@ $(document).ready(function() {
 		);
 		
 	});
+	
+	//Changed for TD 77443 - By Joy
 	if($('#educationTab').val()!= "" && $('#educationTab').val()=="educationUserTab" ){
-		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param');
+		$(".login-as").live("click", function(e) {
+			loginAs(e,$(this));
 		});	
 	}
 	else
 		{
-		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param');
+		$(".login-as").live("click", function(e) {
+			loginAs(e,$(this));
 		});	
-		}
+	}
 	
 	
 	//====================THIS METHOD POPULATES THE COUNTRY IN THE PROFILE PAGE=============
@@ -126,6 +128,13 @@ $(document).ready(function() {
 	}); 
 });
 
+	//Changed for TD 77443 - By Joy
+	function loginAs(event,$obj){
+		if(!$obj.hasClass('disabled')){
+			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param');
+			$obj.addClass('disabled');
+		}
+	}
 	//===================================Education Center User Details Screen=====================
 	function loadEduCenterUsers(){
 		var eduCenterId = $('#eduCenterId').val();
