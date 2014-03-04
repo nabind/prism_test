@@ -282,6 +282,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param msgtype,reportname and infoname
 	 * @return message
 	 */
+	
+	//Implement cache - By Joy
+	@Cacheable(cacheName = "sysConfigMessageCache")
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();

@@ -632,7 +632,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap) {
 		String studentBioId = (String) paramMap.get("studentBioId");
 		String tenantId = (String) paramMap.get("scrollId");
-		long customerId = (Long) paramMap.get("customer");
+		//Fix for java.lang.ClassCastException
+		//long customerId = (Long) paramMap.get("customer");
+		long customerId = Long.parseLong((String) paramMap.get("customer"));
 		String orgMode = (String) paramMap.get("orgMode");
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<Map<String, Object>> studentlist = null;
@@ -643,8 +645,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				StudentTO to = new StudentTO();
 				to.setStudentBioId(((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue());
 				to.setParentAccount(getParentAccountDetails(((Long) (to.getStudentBioId())).toString(), customerId));
-				//As data type of TESTELEMENTID 
-				//to.setStructureElement((String) (fieldDetails.get("STUDENT_STRUC_ELEMENT")));
 				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 				to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));

@@ -87,5 +87,10 @@
        maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
        timeToIdleSeconds="0" timeToLiveSeconds="300000"
        memoryStoreEvictionPolicy="LRU" />   
+       
+     <cache name="sysConfigMessageCache" eternal="false"
+       maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+       timeToIdleSeconds="0" timeToLiveSeconds="300000"
+       memoryStoreEvictionPolicy="LRU" />
     
 </ehcache>
