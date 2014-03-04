@@ -326,12 +326,14 @@ public class LoginController {
 					authorities = authenticatedUser.getAuthorities();
 
 					// add admin role to user if it an SSO user and admin flag
-					if (req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && (Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
+					if (req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null) {
 
 						Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 						List<GrantedAuthority> extraAuths = new ArrayList<GrantedAuthority>(auth.getAuthorities());
 						extraAuths.addAll(authorities);
-						extraAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+						if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
+							extraAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+						}
 						extraAuths.add(new SimpleGrantedAuthority("ROLE_SSO"));
 						Authentication newAuth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), extraAuths);
 						SecurityContextHolder.getContext().setAuthentication(newAuth);
