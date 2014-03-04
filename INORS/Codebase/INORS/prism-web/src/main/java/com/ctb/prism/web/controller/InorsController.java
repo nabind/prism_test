@@ -507,7 +507,7 @@ public class InorsController {
 					if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 						fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
 						if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-							fileName = FileUtil.generateDefaultZipFileName(currentUser, null);
+							fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
 							request.getSession().setAttribute("FILE_NAME_GD", fileName);
 						}
 					}

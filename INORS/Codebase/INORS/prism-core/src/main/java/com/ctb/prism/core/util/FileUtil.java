@@ -33,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.FileCopyUtils;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.lowagie.text.Document;
@@ -384,7 +385,7 @@ public class FileUtil {
 		}
 		return "0 M";
 	}
-	
+
 	public static String fileSize(byte[] fileBytes) {
 		double size = 0;
 		DecimalFormat f = new DecimalFormat("##.00");
@@ -557,7 +558,7 @@ public class FileUtil {
 			logger.log(IAppLogger.ERROR, "Unable to Create Duplex Pdf");
 		}
 	}
-	
+
 	/**
 	 * Zip file name is provided by the user from user input text box. If user doesnot provide Zip file name then system will provide a default Zip file name. Pdf file name is always system generated.
 	 * This method provides the default Zip file name.
@@ -568,7 +569,7 @@ public class FileUtil {
 	 */
 	public static String generateDefaultZipFileName(String currentUser, String groupFile) {
 		String zipFileName = "";
-		if ((groupFile != null) && (!groupFile.isEmpty()) && (!"null".equalsIgnoreCase(groupFile))) {
+		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
 		} else {
 			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."));

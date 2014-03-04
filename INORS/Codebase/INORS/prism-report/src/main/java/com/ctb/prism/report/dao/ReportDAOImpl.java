@@ -1447,7 +1447,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			// Invitation Code Letter
-			filePaths = getICLetterPaths(groupFile, students);
+			filePaths = getICLetterPaths(students);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString().equals(groupFile)) {
 			// Both (IP and ISR)
 			filePaths = getBothPaths(students);
@@ -1462,21 +1462,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
 		return filePaths;
 	}
-
-	private Map<String, String> getFilePaths(String groupFile, String students, String parameterizedSql) {
-		Map<String, String> filePaths = new LinkedHashMap<String, String>();
-		String[] studentIds = students.split(",");
-		// Loop used to ensure collation hierarchy
-		for (String studentId : studentIds) { // TODO : Don't use loop
-			String filePath = getResult(CustomStringUtil.replaceCharacterInString('?', studentId, parameterizedSql));
-			if (filePath != null) {
-				filePaths.put(filePath, "");
-			}
-		}
-		logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
-		return filePaths;
-	}
-
+	
 	/**
 	 * Gets the list of IC letter paths.
 	 * 
@@ -1484,10 +1470,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	private Map<String, String> getICLetterPaths(String groupFile, String students) {
-		Map<String, String> icLetterPaths = getFilePaths(groupFile, students, IQueryConstants.GET_IC_FILE_PATH);
-		logger.log(IAppLogger.INFO, "IC Size: " + icLetterPaths.size());
-		return icLetterPaths;
+	private Map<String, String> getICLetterPaths(String students) {
+		Map<String, String> icPaths = new LinkedHashMap<String, String>();
+		String[] studentIds = students.split(",");
+		// Loop used to ensure collation hierarchy
+		int icPrefixSequence = 0;
+		for (String studentId : studentIds) { // TODO : Don't use loop
+			String query = IQueryConstants.GET_IC_FILE_PATH;
+			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			if ((lstData != null) && (!lstData.isEmpty())) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					String key = (String) fieldDetails.get("IC_FILE_LOC"); // Actual File Location
+					String value = (String) fieldDetails.get("IC_FILE_NAME"); // New Name for the File
+					icPrefixSequence = icPrefixSequence + 1;
+					value = icPrefixSequence + value;
+					icPaths.put(key, value);
+				}
+			}
+		}
+		logger.log(IAppLogger.INFO, "IC Size: " + icPaths.size());
+		return icPaths;
 	}
 
 	/**
