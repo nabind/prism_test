@@ -3,7 +3,6 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary" style="margin-top:34px; width:262px;">
-        <c:set var="tascProduct" value="${PDCT_NAME}"/>
 	    <c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 		<c:set var="currOrg" value="<%=request.getSession().getAttribute(IApplicationConstants.CURRORG) %>"/>
 		
@@ -101,11 +100,9 @@
 						<li>
 							<a href="manageOrganizations.do">Manage Organizations</a>
 						</li>
-						<c:if test="${product ne tascProduct}">
-						 <li>
+						<li>
 							<a href="manageParent.do">Manage Parents</a>
 						</li>
-						</c:if>
 						<li>
 							<a href="manageStudent.do">Manage Students</a>
 						</li>
@@ -122,12 +119,6 @@
 							</li>
 						</sec:authorize>
 						</sec:authorize>
-			<sec:authorize ifAnyGranted="ROLE_EDU_ADMIN">
-				<!-- Only for ROLE_EDU_ADMIN Admins -->
-				<c:if test="${product eq tascProduct}">
-					<!-- Remove Manage Education Center -->
-				</c:if>
-			</sec:authorize>
 					</ul>
 				</sec:authorize>
 				
