@@ -27,16 +27,52 @@
 	<div id="grtDiv" class="columns accordion with-padding" style="margin-bottom: 0">
 		<c:choose>
 			<c:when test="${fn:endsWith(testAdministrationText, '2010')}">
-				<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				<c:if test="${fn:startsWith(testAdministrationText, 'ISTEP')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IMAST')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/IMAST S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
 			</c:when>
 			<c:when test="${fn:endsWith(testAdministrationText, '2011')}">
-				<a class="button" id="grt2011" href="/inors/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2010-11 GRT File Record Layout</a>
+				<c:if test="${fn:startsWith(testAdministrationText, 'ISTEP')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IMAST')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/IMAST S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
 			</c:when>
 			<c:when test="${fn:endsWith(testAdministrationText, '2012')}">
-				<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a>
+				<c:if test="${fn:startsWith(testAdministrationText, 'ISTEP')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IMAST')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/IMAST S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IREAD')}">
+					<c:if test="${fn:contains(testAdministrationText, 'Spring')}">
+						<a class="button" id="grt2010" href="/inors/staticfiles/IREAD-3 S2011-12 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+					</c:if>
+					<c:if test="${fn:contains(testAdministrationText, 'Summer')}">
+						<a class="button" id="grt2010" href="/inors/staticfiles/IREAD-3 R2011-12 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+					</c:if>
+				</c:if>
 			</c:when>
 			<c:when test="${fn:endsWith(testAdministrationText, '2013')}">
-				<a class="button" id="grt2013" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 GRT File Record Layout</a>
+				<c:if test="${fn:startsWith(testAdministrationText, 'ISTEP')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IMAST')}">
+					<a class="button" id="grt2010" href="/inors/staticfiles/IMAST S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+				</c:if>
+				<c:if test="${fn:startsWith(testAdministrationText, 'IREAD')}">
+					<c:if test="${fn:contains(testAdministrationText, 'Spring')}">
+						<a class="button" id="grt2010" href="/inors/staticfiles/IREAD-3 S2012-13 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+					</c:if>
+					<c:if test="${fn:contains(testAdministrationText, 'Summer')}">
+						<a class="button" id="grt2010" href="/inors/staticfiles/IREAD-3 R2012-13 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>
+					</c:if>
+				</c:if>
 			</c:when>
 			<c:otherwise>
 				<!-- Code When No Layout Available -->
