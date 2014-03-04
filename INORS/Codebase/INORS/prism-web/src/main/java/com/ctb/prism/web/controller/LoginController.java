@@ -340,7 +340,7 @@ public class LoginController {
 					}
 
 					String ssoOrg = (String) req.getSession().getAttribute(IApplicationConstants.SSO_ORG);
-					if (ssoOrg != null && ssoOrg.length() > 0) {
+					if (ssoOrg != null && ssoOrg.length() > 0 && req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN)== null) { //Changed by Abir to solve login as after sso
 						user.setOrgId(ssoOrg);
 						req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 						req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, req.getSession().getAttribute(IApplicationConstants.SSO_ORG_LEVEL));
