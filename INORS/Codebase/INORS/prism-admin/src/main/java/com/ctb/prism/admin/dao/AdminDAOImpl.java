@@ -666,7 +666,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					if (user_seq_id != 0) {
 						String salt = PasswordGenerator.getNextSalt();
 						getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_WITH_PASSWORD, user_seq_id, userName, userDisplayName, emailId, userStatus, IApplicationConstants.FLAG_Y,
-								SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), salt, IApplicationConstants.FLAG_Y, customerId);
+								SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), salt, IApplicationConstants.FLAG_N, customerId);
 						if (IApplicationConstants.PURPOSE.equals(purpose)) {
 							// Insert into edu_center_user_link
 							String eduCenterId = (String) paramMap.get("eduCenterId");
