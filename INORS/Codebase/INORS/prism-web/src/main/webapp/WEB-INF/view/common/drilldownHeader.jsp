@@ -25,7 +25,7 @@
 				</sec:authorize>
 				
 				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
-					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) %></span>
+					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME) %></span>
 					as <span class="name black"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 					
 				</sec:authorize>
