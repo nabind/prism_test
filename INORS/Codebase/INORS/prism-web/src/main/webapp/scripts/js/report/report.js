@@ -210,7 +210,7 @@ $(document).ready(function() {
 		//blockUI();
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");
-		blockUI('new-tab'+tabCount+'');
+		blockUI('new-tab'+count+'');
 		//$(this).parent().siblings('.reportFilterCriteria').click();
 		var reportUrl = $(this).attr("param");
 		var reportName = $(this).attr("reportName");
@@ -336,7 +336,7 @@ $(document).ready(function() {
 				resetPagination(currentObj);
 			} else {
 				//unblockUI();
-				unblockUI('new-tab'+tabCount+'');
+				unblockUI('new-tab'+count+'');
 				$(".page_first").css("cursor", "auto");
 				$(".page_prev").css("cursor", "auto");
 			}
@@ -360,7 +360,7 @@ $(document).ready(function() {
 				
 			}
 		} else {
-			unblockUI('new-tab'+tabCount+'');
+			unblockUI('new-tab'+count+'');
 		}
 	});
 	
