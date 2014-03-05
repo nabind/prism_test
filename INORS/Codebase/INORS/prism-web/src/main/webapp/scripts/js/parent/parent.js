@@ -121,14 +121,14 @@ $(document).ready(function() {
 					var userContent = '';
 					var menuContent = '';
 					$.each(data, function () { 
-						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId
+						userContent += '<a href="getChildData.do?testElementId='+this.testElementId
 									+'&studentName='+this.studentName
 									+'&studentGradeName='+this.grade
 									+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
+						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
 						+'&studentName='+this.studentName
 						+'&studentGradeName='+this.grade
 						+'&studentGradeId='+this.studentGradeId+'">'

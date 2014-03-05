@@ -55,7 +55,7 @@ public class ParentNetworkController {
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/studentSubtest");
 		Map<String,Object> childDataMap = null;
-		String studentBioId = request.getParameter("studentBioId");
+		String testElementId = request.getParameter("testElementId");
 		String studentName = request.getParameter("studentName");
 		long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
 		String studentGradeName = request.getParameter("studentGradeName");
@@ -63,21 +63,21 @@ public class ParentNetworkController {
 		request.getSession().setAttribute(IApplicationConstants.PARENT_REPORT, IApplicationConstants.TRUE);
 		
 		//Don't use this Parent Network flow. This is required for report. 
-		request.getSession().setAttribute(IApplicationConstants.STUDENT_BIO_ID, studentBioId);
+		request.getSession().setAttribute(IApplicationConstants.TEST_ELEMENT_ID, testElementId);
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("REPORT_NAME",  IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
 		paramMap.put("customerId", loggedinUserTO.getCustomerId());
-		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("testElementId", testElementId);
 		paramMap.put("userId", loggedinUserTO.getUserId());
 		
 		try{
 			childDataMap = parentService.getChildData(paramMap);
 			childDataMap.put("studentName", studentName);
 			childDataMap.put("studentGradeId", studentGradeId);
-			childDataMap.put("studentBioId", studentBioId);
+			childDataMap.put("testElementId", testElementId);
 			childDataMap.put("studentGradeName", studentGradeName);
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);

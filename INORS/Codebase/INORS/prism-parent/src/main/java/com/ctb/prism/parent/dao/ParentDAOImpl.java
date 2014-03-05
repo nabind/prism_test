@@ -328,7 +328,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						while (rs.next()) {
 							studentTO = new StudentTO();
 							studentTO.setStudentName(rs.getString("STUDENT_NAME"));
-							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							studentTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
 							studentTO.setAdministration(rs.getString("ADMIN_SEASON_YEAR"));
 							studentTO.setGrade(rs.getString("STUDENT_GRADE"));
 							studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
@@ -637,7 +637,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		String tenantId = (String) paramMap.get("scrollId");
 		//Fix for java.lang.ClassCastException
 		//long customerId = (Long) paramMap.get("customer");
-		long customerId = Long.parseLong((String) paramMap.get("customer"));
+		long customerId = (Long) paramMap.get("customer");
 		String orgMode = (String) paramMap.get("orgMode");
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<Map<String, Object>> studentlist = null;
@@ -1566,13 +1566,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentSubtest()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
-		final long studentBioId = Long.parseLong((String) paramMap.get("studentBioId"));
+		final String testElementId = (String) paramMap.get("testElementId");
 
 		try {
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
-					cs.setLong(1, studentBioId);
+					cs.setString(1, testElementId);
 					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;

@@ -22,16 +22,18 @@ public interface IParentQuery {
 			" AND rownum = 1");
 
 	public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
-			" SELECT STD.FIRST_NAME || ' ' || STD.MIDDLE_NAME || ' ' || STD.LAST_NAME AS STUDENT_NAME,",
+			" SELECT IC.STUDENT_FULL_NAME  AS STUDENT_NAME, ",
 			" ADM.ADMIN_NAME AS ADMINISTRATION, ",
-			" 'Grade ' || grd.grade_name AS GRADE ",
-			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, ADMIN_DIM ADM, GRADE_DIM GRD ",
-			" WHERE STD.ADMINID = IC.ADMINID ",
-			" AND ADM.ADMINID = STD.ADMINID ",
-			" and ic.org_nodeid = std.org_nodeid ",
-			" AND GRD.GRADEID = STD.GRADEID AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.INVITATION_CODE = ? ",
-			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID");
+			" GRD.GRADE_NAME AS GRADE ",
+			" FROM INVITATION_CODE IC, ",
+			" CUST_PRODUCT_LINK CPL, ",
+			" ADMIN_DIM       ADM, ",
+			" GRADE_DIM       GRD ",
+			" WHERE IC.CUST_PROD_ID = CPL.CUST_PROD_ID ",
+			" AND CPL.ADMINID =  ADM.ADMINID ", 
+			" AND IC.GRADE_ID = GRD.GRADEID ",
+			" AND IC.ACTIVATION_STATUS = 'AC' ",
+			" AND IC.INVITATION_CODE = ?");
 
 	/**
 	 * Query to insert newly registered user
@@ -57,7 +59,7 @@ public interface IParentQuery {
 			" IS_FIRSTTIME_LOGIN,IS_NEW_USER, ",
 			" ACTIVATION_STATUS, CREATED_DATE_TIME, PASSWORD, SALT)",
 			" VALUES (?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?,?,",
-			" (select DISTINCT inv.customerid from org_node_dim org, invitation_code inv where inv.org_nodeid = org.org_nodeid and INV.ACTIVATION_STATUS = 'AC' AND inv.invitation_code = ?),?,'Y',",
+			" (SELECT DISTINCT CPL.CUSTOMERID FROM CUST_PRODUCT_LINK CPL, INVITATION_CODE INV WHERE CPL.CUST_PROD_ID = INV.CUST_PROD_ID  AND INV.ACTIVATION_STATUS = 'AC' AND INV.INVITATION_CODE = ?),?,'Y',",
 			" 'AC', SYSDATE, ?, ?)");
 	
 	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
@@ -75,7 +77,9 @@ public interface IParentQuery {
 	
 	public static final String INSERT_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID,ORG_NODEID,ORG_NODE_LEVEL,ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
-			" (?, ?,(SELECT N.PARENT_ORG_NODEID FROM INVITATION_CODE M,ORG_NODE_DIM N  WHERE M.ORG_NODEID= N.ORG_NODEID AND M.INVITATION_CODE = ?),'0', (select adminid from invitation_code where invitation_code=?), ?, sysdate )");
+			" (?, ?,(SELECT M.ORG_NODEID FROM INVITATION_CODE M  WHERE M.INVITATION_CODE = ?),'0', ",
+			" (SELECT CUST_PRODUCT_LINK.ADMINID FROM INVITATION_CODE,CUST_PRODUCT_LINK WHERE INVITATION_CODE.CUST_PROD_ID = CUST_PRODUCT_LINK.CUST_PROD_ID ",
+			" AND INVITATION_CODE=?), ?, sysdate )");
 
 	/**
 	 * Query to assign user role to the new registered user
@@ -394,7 +398,7 @@ public interface IParentQuery {
 			" ORDER BY UPPER(ABC.STUDENTNAME)");*/
 	
 	//Query change for INORS-331 - By Joy
-	public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil.appendString(
+	/*public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil.appendString(
 			"SELECT DISTINCT (ABC.STUDENT_BIO_ID) AS STUDENT_BIO_ID,",
 			" ABC.STUDENTNAME,",
 			" ABC.ROWIDENTIFIER,",
@@ -428,7 +432,26 @@ public interface IParentQuery {
 			" AND ic.cust_prod_id = link.cust_prod_id",
 			" AND STD.GRADEID = GRD.GRADEID) ABC",
 			" WHERE ABC.STUDENT_BIO_ID = (?)",
+			" ORDER BY UPPER(ABC.STUDENTNAME)");*/
+	
+	
+	//Changed by abir
+	public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil.appendString(
+			"SELECT DISTINCT (ABC.TEST_ELEMENT_ID) AS TEST_ELEMENT_ID,ABC.STUDENTNAME, ABC.ROWIDENTIFIER,ABC.STUDENTGRADE ",
+			" FROM (SELECT IC.STUDENT_FULL_NAME AS STUDENTNAME, IC.STUDENT_FULL_NAME || '_' || TO_CHAR(IC.TEST_ELEMENT_ID) AS ROWIDENTIFIER, ",
+			" IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID, GRD.GRADE_NAME AS STUDENTGRADE, IC.ICID AS INVITATIONCODE, IC.ACTIVATION_STATUS AS ACTIVATIONSTATUS, ",
+			" HIER.ORG_NODE_NAME,  HIER.ORG_NODEID ",
+			" FROM ORG_USERS ORG_USR, GRADE_DIM GRD, INVITATION_CODE IC, INVITATION_CODE_CLAIM ICC, ",
+			" (SELECT *  FROM ORG_NODE_DIM  WHERE ORG_MODE = ?  START WITH ORG_NODEID = ? ",
+			" CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER, CUST_PRODUCT_LINK LINK ",
+			"  WHERE HIER.ORG_NODEID = ORG_USR.ORG_NODEID AND ORG_USR.ORG_NODE_LEVEL = 0 ",
+			" AND ORG_USR.ORG_USER_ID = ICC.ORG_USER_ID AND IC.ACTIVATION_STATUS = 'AC' ",
+			" AND ICC.ICID = IC.ICID ",
+			" AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID ",
+			" AND IC.GRADE_ID = GRD.GRADEID) ABC ",
+			" WHERE ABC.TEST_ELEMENT_ID = ? ",
 			" ORDER BY UPPER(ABC.STUDENTNAME)");
+	
 
 	public static final String UPDATE_ASSESSMENT = CustomStringUtil.appendString(
 			"UPDATE INVITATION_CODE IC SET IC.total_available = ?, IC.EXPIRATION_DATE= TO_DATE(?,'mm/dd/yyyy')",

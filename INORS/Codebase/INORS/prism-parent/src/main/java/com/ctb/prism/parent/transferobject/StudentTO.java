@@ -25,7 +25,15 @@ public class StudentTO extends BaseTO{
 	private String adminid = "";
 	private String studentMode = "";
 	private long studentGradeId = 0;
+	private String testElementId ="";
 	
+	
+	public String getTestElementId() {
+		return testElementId;
+	}
+	public void setTestElementId(String testElementId) {
+		this.testElementId = testElementId;
+	}
 	
 	public String getAdminid() {
 		return adminid;
