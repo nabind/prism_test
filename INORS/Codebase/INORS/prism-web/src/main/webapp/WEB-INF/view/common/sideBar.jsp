@@ -90,7 +90,7 @@
 						<span class="loader big"></span>
 					</li>
 				</ul>
-				<sec:authorize ifNotGranted="ROLE_EDU_ADMIN">
+			
 				<sec:authorize ifAnyGranted="ROLE_ADMIN">
 					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
 						<%@ include file="resources.jsp"%>
@@ -120,7 +120,7 @@
 						</sec:authorize>
 						</sec:authorize>
 					</ul>
-				</sec:authorize>
+			
 				
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
 					<ul class="big-menu blue-gradient collapsible" id="parentMenu">
