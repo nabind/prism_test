@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 		http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring 
         http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd
+        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
@@ -64,7 +66,7 @@
 	<bean id="loggingAspect" class="com.ctb.prism.core.logger.LoggingAspect"></bean>
 	
 	<!-- Enabling Spring cache -->
-	<ehcache:annotation-driven />
+	<!-- <ehcache:annotation-driven />
 
 	<ehcache:config cache-manager="cacheManager">
 		<ehcache:evict-expired-elements interval="60" />
@@ -73,7 +75,14 @@
 	<bean id="cacheManager"
 		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="/WEB-INF/ehcache.xml" />
-	</bean>
+	</bean> -->
+	<cache:annotation-driven />
+	<context:component-scan base-package="caching" />
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cacheManager-ref="ehcache"/>
+	 
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" 
+	     p:configLocation="/WEB-INF/ehcache.xml"  
+	     p:shared="true"/> 
 	<!-- End EHCache configuration -->
 	
 	<!-- bean id="testDAO" class="com.ctb.prism.web.util.TestDAOImpl"/>

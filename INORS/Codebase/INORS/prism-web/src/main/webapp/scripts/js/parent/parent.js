@@ -109,6 +109,7 @@ $(document).ready(function() {
 
 	//============================= Function to fetch ChildrenList =============================
 	function refreshChildrenList() {
+		blockUI();
 		$(".children-list").addClass("loader big");
 		$.ajax({
 			type:"GET",
@@ -143,8 +144,10 @@ $(document).ready(function() {
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
 				}
+				unblockUI();
 			},
 			error:function(data){
+				unblockUI();
 				$.modal.alert(strings['script.parent.getChildrenError']);
 				$(".children-list").removeClass("loader big");
 			}

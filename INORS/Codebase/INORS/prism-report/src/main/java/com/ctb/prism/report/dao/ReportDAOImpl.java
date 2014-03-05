@@ -25,6 +25,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -58,8 +60,8 @@ import com.ctb.prism.report.transferobject.QuerySheetTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
+//import com.googlecode.ehcache.annotations.Cacheable;
+//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
@@ -73,7 +75,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	@Cacheable(cacheName = "filledJasperPrint")
+	@Cacheable(value = "filledJasperPrint", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -96,6 +98,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReportNoCache(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
+	@Cacheable(value = "filledJasperPrint", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -164,7 +167,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#removeReportCache()
 	 */
-	@TriggersRemove(cacheName = "compiledJrxml", removeAll = true)
+	@CacheEvict(value = "compiledJrxml", allEntries = true)
 	public void removeReportCache() {
 		logger.log(IAppLogger.INFO, "Removed report cache");
 	}
@@ -174,10 +177,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#removeCache()
 	 */
-	@TriggersRemove(cacheName = { "msgCache", "compiledJrxml", "reportInputControls", "defaultInputControls", "tenantId", "orgChildren", "securityQuestions", "orgTreeChildren", "orgUsers",
-			"allAdminYear", "filledJasperPrint" }, removeAll = true)
+	@CacheEvict(value = { "msgCache", "reportInputControls", "defaultInputControls", "tenantId", "orgChildren", 
+			"securityQuestions", "orgTreeChildren", "orgUsers", "allAdminYear", "filledJasperPrint", 
+			"customerProductCache", "masterRoleCache", "studentList" }, allEntries = true)
 	public void removeCache() {
 		logger.log(IAppLogger.INFO, "Removed all cache");
+	}
+	
+	@CacheEvict(value = {"sysConfigMessageCache", "SimplePageCachingFilter"}, allEntries = true)
+	public void removeConfigurationCache() {
+		logger.log(IAppLogger.INFO, "Removed config cache");
 	}
 
 	/*
@@ -185,7 +194,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getReportJasperObjectList(java.lang.String)
 	 */
-	@Cacheable(cacheName = "compiledJrxml")
+	@Cacheable(value = "compiledJrxml")
 	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 
@@ -242,7 +251,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getInputControlDetails(java.lang.String)
 	 */
-	@Cacheable(cacheName = "reportInputControls")
+	@Cacheable(value = "reportInputControls")
 	public List<InputControlTO> getInputControlDetails(String reportPath) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getInputControlDetails");
 
@@ -313,7 +322,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getValuesOfSingleInput(java.lang.String)
 	 */
-	@Cacheable(cacheName = "defaultInputControls")
+	@Cacheable(value = "defaultInputControls")
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
 		if (query == null)
 			return null;
@@ -350,7 +359,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getTenantId(java.lang.String)
 	 */
-	@Cacheable(cacheName = "tenantId")
+	@Cacheable(value = "tenantId")
 	public String getTenantId(String userName) {
 		String userType = getUserType(userName);
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - userType = " + userType);
@@ -377,6 +386,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @Cacheable(cacheName = "allReports")
 	 */
+	@Cacheable(value = "allReports")
 	public List<ReportTO> getAllReportList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
@@ -441,7 +451,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @CacheEvict(value = "allReports", allEntries=true)
 	 */
-	@TriggersRemove(cacheName = "allReports", removeAll = true)
+	//@TriggersRemove(cacheName = "allReports", removeAll = true)
+	@CacheEvict(value = "allReports", allEntries=true)
 	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
 		try {
@@ -583,7 +594,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	}
 
-	@Cacheable(cacheName = "roleCache")
+	@Cacheable(value = "roleCache")
 	public List<ObjectValueTO> getAllRoles() {
 		List<ObjectValueTO> roles = null;
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.ALL_ROLE);

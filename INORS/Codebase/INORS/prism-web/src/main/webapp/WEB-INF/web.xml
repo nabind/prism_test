@@ -190,6 +190,23 @@
 		<filter-name>characterEncodingProxyFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+	<filter>
+		<filter-name>SimplePageCachingFilter</filter-name>
+		<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SimplePageCachingFilter</filter-name>
+		<url-pattern>/userlogin.do</url-pattern>
+		<url-pattern>/landing.do</url-pattern>
+		<url-pattern>/getStandardMatters.do</url-pattern>
+		<url-pattern>/getBrowseContent.do</url-pattern>
+		<url-pattern>/getEverydayActivity.do</url-pattern>
+		<url-pattern>/getStandardActivity.do</url-pattern>
+		<url-pattern>/getStandardIndicator.do</url-pattern>
+		<url-pattern>/getArticleDescription.do</url-pattern>
+		<url-pattern>/getGradeSubtestInfo.do</url-pattern>
+	</filter-mapping>
 	
 	<!-- Switch user filter -->
 	<filter>

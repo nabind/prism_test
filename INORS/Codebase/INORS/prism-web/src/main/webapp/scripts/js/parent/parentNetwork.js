@@ -51,7 +51,7 @@ function getGenericPage(action, obj) {
 		url : urlParam,
 		data : dataUrl,
 		dataType : 'html',
-		cache:false,
+		cache:true,
 		success : function(data) {
 			unblockUI();
 			$(".main-section").html(data);

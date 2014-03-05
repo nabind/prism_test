@@ -307,11 +307,12 @@ public interface IParentQuery {
 			" INVITATION_CODE IC, ",
 			" USERS USR,",
 			" STUDENT_BIO_DIM STD,",
-			" ORG_USERS       ORG",
+			" ORG_USERS       ORG, cust_product_link link",
 			" WHERE STD.STUDENT_BIO_ID = ?",
 			" AND STD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID",
 			" AND IC.ICID = ICC.ICID",
-			" AND IC.ADMINID = STD.ADMINID",
+			" AND link.ADMINID = STD.ADMINID",
+			" AND ic.cust_prod_id = link.cust_prod_id",
 			" AND IC.ACTIVATION_STATUS = 'AC'",
 			" AND ICC.ORG_USER_ID = ORG.ORG_USER_ID ",
 			" AND ORG.USERID = USR.USERID",
@@ -324,11 +325,12 @@ public interface IParentQuery {
 			" IC.total_available,",
 			" DECODE(SIGN(IC.EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
 			" ADM.ADMIN_SEASON || ' ' || ADM.ADMIN_YEAR AS ASSESSMENT_YEAR ",
-			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, ADMIN_DIM ADM",
-			" WHERE IC.ADMINID = STD.ADMINID ",
+			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, ADMIN_DIM ADM, cust_product_link link",
+			" WHERE link.ADMINID = STD.ADMINID ",
+			" AND ic.cust_prod_id = link.cust_prod_id",
 			" AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.ADMINID=STD.ADMINID",
-			" AND ADM.ADMINID=IC.ADMINID",
+			" AND link.ADMINID=STD.ADMINID",
+			" AND ADM.ADMINID=link.ADMINID",
 			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
 			" AND STD.STUDENT_BIO_ID = ?");
 
@@ -416,21 +418,22 @@ public interface IParentQuery {
 			" FROM ORG_NODE_DIM",
 			" WHERE ORG_MODE = ?",
 			" START WITH ORG_NODEID = ?",
-			" CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER",
+			" CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER, cust_product_link link",
 			" WHERE HIER.ORG_NODEID = ORG_USR.ORG_NODEID ",
 			" AND ORG_USR.ORG_NODE_LEVEL = 0",
 			" AND ORG_USR.ORG_USER_ID = ICC.ORG_USER_ID",
 			" AND IC.ACTIVATION_STATUS = 'AC'",
 			" AND ICC.ICID = IC.ICID",
-			" AND IC.ADMINID = STD.ADMINID",
+			" AND link.ADMINID = STD.ADMINID",
+			" AND ic.cust_prod_id = link.cust_prod_id",
 			" AND STD.GRADEID = GRD.GRADEID) ABC",
 			" WHERE ABC.STUDENT_BIO_ID = (?)",
 			" ORDER BY UPPER(ABC.STUDENTNAME)");
 
 	public static final String UPDATE_ASSESSMENT = CustomStringUtil.appendString(
 			"UPDATE INVITATION_CODE IC SET IC.total_available = ?, IC.EXPIRATION_DATE= TO_DATE(?,'mm/dd/yyyy')",
-			" WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.ADMINID = (SELECT STD.ADMINID FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?)");
+			" WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ");
+			//" AND IC.ADMINID = (SELECT STD.ADMINID FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?)");
 
 	/**
 	 * update user profile when they login for the first time

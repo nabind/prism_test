@@ -244,6 +244,7 @@ $('.view-Children').live("click", function() {
 	function openParentModalToViewStudent(parentName,clickedTreeNode) {
 		var row = $("#"+parentName);
 		var nodeid = "parentName=" + parentName +"&clickedTreeNode="+clickedTreeNode;	
+		blockUI();
 		$.ajax({
 				type : "GET",
 				url : "getChildrenList.do",
@@ -274,8 +275,10 @@ $('.view-Children').live("click", function() {
 					else {
 						$.modal.alert(strings['script.parent.noChildren']);
 					}
+					unblockUI();
 				},
 				error : function(data) {
+					unblockUI();
 					$.modal.alert(strings['script.common.error']);
 				}
 			})	
@@ -596,6 +599,7 @@ $('.view-Children').live("click", function() {
 	{   //alert("resetPassword");
 		var row = $("#"+parentName);
 		var nodeid = "userName=" + parentName;	
+		blockUI();
 		$.ajax({
 			type : "GET",
 			url : "resetPassword.do",
@@ -612,8 +616,10 @@ $('.view-Children').live("click", function() {
 				else {
 					$.modal.alert(strings['script.parent.passwordResetError']);
 				}
+				unblockUI();
 			},
 			error : function(data) {
+				unblockUI();
 				$.modal.alert(strings['script.parent.passwordResetError']);
 			}
 		});

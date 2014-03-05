@@ -1820,7 +1820,7 @@ public class AdminController {
 					paramMap.put("currOrg", currentOrg);
 					paramMap.put("isFirstLoad", true);
 					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer);
+					paramMap.put("customerId", currCustomer+"");
 					paramMap.put("orgMode", orgMode);
 					orgTreeTOs = adminService.getOrganizationTree(paramMap);
 					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(nodeId, currentOrg, userId, currCustomer, true);

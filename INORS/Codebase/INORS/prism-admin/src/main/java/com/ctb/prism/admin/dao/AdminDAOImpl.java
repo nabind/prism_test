@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -43,8 +45,8 @@ import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
+//import com.googlecode.ehcache.annotations.Cacheable;
+//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository("adminDAO")
 public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
@@ -127,7 +129,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	/*@Cacheable(cacheName = "orgTreeChildren")*/
+	@Cacheable(value = "orgTreeChildren", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap) )")
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTree()");
 		String nodeId = (String) paramMap.get("nodeid");
@@ -196,7 +198,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	// @Cacheable(cacheName = "orgTreeChildren")
+	@Cacheable(value = "orgTreeChildren")
 	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTreeOnRedirect()");
 		StringBuffer hierarcialOrgIds = new StringBuffer();
@@ -270,7 +272,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(cacheName = "orgUsers")
+	@Cacheable(value = "orgUsers")
 	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerid, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
 		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
@@ -413,6 +415,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            ,userId
 	 * @return
 	 */
+	@Cacheable(value = "masterRoleCache")
 	private List<RoleTO> getMasterRoleList(String argType, String userid, String customerId,String purpose) {
 		logger.log(IAppLogger.INFO, "argType=" + argType);
 		logger.log(IAppLogger.INFO, "userid=" + userid);
@@ -504,7 +507,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            userId, userName, emailId, password, userStatus,userRoles
 	 * @return
 	 */
-	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
+	@CacheEvict(value = "orgUsers", allEntries = true)
 	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: updateUser()");
 		try {
@@ -561,7 +564,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 
-	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
+	@CacheEvict(value = "orgUsers", allEntries = true)
 	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
 		try {
@@ -605,7 +608,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#addNewUser(java.util.Map)
 	 */
-	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
+	@CacheEvict(value = "orgUsers", allEntries = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: addNewUser()");
 		UserTO to = null;
@@ -859,7 +862,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantId
 	 * @return list of orgTO
 	 */
-	@Cacheable(cacheName = "orgChildren")
+	@Cacheable(value = "orgChildren")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
@@ -1251,7 +1254,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllAdmin()
 	 */
-	@Cacheable(cacheName = "allAdminYear")
+	@Cacheable(value = "allAdminYear")
 	public List<ObjectValueTO> getAllAdmin() throws SystemException {
 		List<ObjectValueTO> adminYearList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
@@ -1325,7 +1328,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllStudents(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(cacheName = "studentsForDownload")
+	@Cacheable(value = "studentsForDownload")
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId) {
 		List<ObjectValueTO> studentList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
@@ -1347,7 +1350,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getHierarchy(java.util.Map)
 	 */
-	@Cacheable(cacheName = "hierarchyForDownload")
+	@Cacheable(value = "hierarchyForDownload")
 	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap) throws Exception {
 		String nodeId = (String) paramMap.get("nodeid");
 		String currOrg = (String) paramMap.get("currOrg");
@@ -1396,516 +1399,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#downloadStudentFile(java.util.Map)
 	 */
+	@Deprecated
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile()");
-		String userId = (String) paramMap.get("userId");
-		String startDate = (String) paramMap.get("startDate");
-		String endDate = (String) paramMap.get("endDate");
-		SimpleDateFormat sdf = new SimpleDateFormat(StudentDataConstants.DATE_FORMAT);
-		Date today = new Date();
-		if ((startDate == null) || (startDate.equals("null")) || (startDate.length() < 1)) {
-			startDate = StudentDataConstants.MINUS_INFINITY_DATE;
-		}
-		if ((endDate == null) || (endDate.equals("null")) || (endDate.length() < 1)) {
-			endDate = sdf.format(today);
-		}
-		logger.log(IAppLogger.INFO, "userId=" + userId + ",startString=" + startDate + ",endString=" + endDate);
-		List<StudentDataTO> studentDataList = new ArrayList<StudentDataTO>();
-		List<Map<String, Object>> studentSSFDataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DATA, userId, startDate, endDate);
-		if (!studentSSFDataList.isEmpty()) {
-			for (Map<String, Object> fieldDetails : studentSSFDataList) {
-				StudentDataTO s = new StudentDataTO();
-				s.setCustID(StudentDataUtil.paddedWrap(StudentDataConstants.COL001, fieldDetails.get("PRISM_CUSTOMER_ID")));
-				s.setRosterID(StudentDataUtil.paddedWrap(StudentDataConstants.COL002, fieldDetails.get("ROSTER_ID")));
-				String orgNodeLevel = fieldDetails.get("ORG_NODE_LEVEL").toString();
-				if ("1".equals(orgNodeLevel)) {
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("2".equals(orgNodeLevel)) {
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("3".equals(orgNodeLevel)) {
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("4".equals(orgNodeLevel)) {
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("5".equals(orgNodeLevel)) {
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("6".equals(orgNodeLevel)) {
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				} else if ("7".equals(orgNodeLevel)) {
-					s.setHierarchyG_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, fieldDetails.get("ELEMENT_HIERARCHY_NAME")));
-					s.setHierarchyG_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, fieldDetails.get("ELEMENT_ELEMENT_NUMBER"), '0', StudentDataConstants.ALIGN_RIGHT));
-					s.setHierarchyG_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, fieldDetails.get("ELEMENT_SPECIAL_CODES")));
-					s.setHierarchyA_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyA_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyA_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyB_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyB_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyB_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyC_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyC_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyC_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyD_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyD_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyD_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyE_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyE_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyE_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-					s.setHierarchyF_Name(StudentDataUtil.paddedWrap(StudentDataConstants.COL003, ""));
-					s.setHierarchyF_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL004, ""));
-					s.setHierarchyF_SpCodes(StudentDataUtil.paddedWrap(StudentDataConstants.COL005, ""));
-				}
-				s.setLastName(StudentDataUtil.paddedWrap(StudentDataConstants.COL024, fieldDetails.get("LAST_NAME")));
-				s.setFirstName(StudentDataUtil.paddedWrap(StudentDataConstants.COL025, fieldDetails.get("FIRST_NAME")));
-				s.setMiddleInitial(StudentDataUtil.paddedWrap(StudentDataConstants.COL026, fieldDetails.get("MIDDLE_NAME")));
-				s.setDateOfBirth(StudentDataUtil.paddedWrap(StudentDataConstants.COL027, fieldDetails.get("BIRTHDATE")));
-				s.setForm(StudentDataUtil.paddedWrap(StudentDataConstants.COL028, fieldDetails.get("TEST_FORM")));
-				s.setChangedFormFlag(StudentDataUtil.paddedWrap(StudentDataConstants.COL029, fieldDetails.get("FORM_CHANGE")));
-				s.setTestLang(StudentDataUtil.paddedWrap(StudentDataConstants.COL030, fieldDetails.get("TEST_LANGUAGE")));
-				s.setTestMode(StudentDataUtil.paddedWrap(StudentDataConstants.COL031, fieldDetails.get("TEST_MODE")));
-				s.setGender(StudentDataUtil.paddedWrap(StudentDataConstants.COL032, fieldDetails.get("GENDER")));
-				s.setResolvedEthnicity(StudentDataUtil.paddedWrap(StudentDataConstants.COL033, fieldDetails.get("RESOLVED_ETHNICITY")));
-				s.setStudentID((String) fieldDetails.get("EXAMINEE_ID"));
-				s.setPhoneNumber(StudentDataUtil.paddedWrap(StudentDataConstants.COL035, fieldDetails.get("EXAMINEE_PHONE")));
-				s.setLithocode(StudentDataUtil.paddedWrap(StudentDataConstants.COL036, fieldDetails.get("LITHOCODE")));
-				s.setImagingID(StudentDataUtil.paddedWrap(StudentDataConstants.COL037, fieldDetails.get("IMAGING_ID")));
-				s.setStreetAddress(StudentDataUtil.paddedWrap(StudentDataConstants.COL038, fieldDetails.get("ADDRESS")));
-				s.setAptNo(StudentDataUtil.paddedWrap(StudentDataConstants.COL039, fieldDetails.get("APT")));
-				s.setCity(StudentDataUtil.paddedWrap(StudentDataConstants.COL040, fieldDetails.get("CITY")));
-				s.setState(StudentDataUtil.paddedWrap(StudentDataConstants.COL041, fieldDetails.get("STATE")));
-				s.setZipCode(StudentDataUtil.paddedWrap(StudentDataConstants.COL042, fieldDetails.get("ZIP")));
-				s.setCounty_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL043, fieldDetails.get("COUNTY_CODE")));
-				s.setEduc_Center_Code(StudentDataUtil.paddedWrap(StudentDataConstants.COL044, fieldDetails.get("EDUCATION_CENTER_CODE")));
-				s.setAcc_Audio_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL045, fieldDetails.get("RD_AUDIO_ALT_PRESN")));
-				s.setAcc_Audio_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL046, fieldDetails.get("WR_AUDIO_ALT_PRESN")));
-				s.setAcc_Audio_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL047, fieldDetails.get("MATH_PART1_AUDIO_ALT_PRESN")));
-				s.setAcc_Audio_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL048, fieldDetails.get("MATH_PART2_AUDIO_ALT_PRESN")));
-				s.setAcc_Audio_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL049, fieldDetails.get("SCI_AUDIO_ALT_PRESN")));
-				s.setAcc_Audio_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL050, fieldDetails.get("SS_AUDIO_ALT_PRESN")));
-				s.setAcc_Breaks_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL051, fieldDetails.get("RD_BREAKS")));
-				s.setAcc_Breaks_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL052, fieldDetails.get("WR_BREAKS")));
-				s.setAcc_Breaks_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL053, fieldDetails.get("MATH_PART1_BREAKS")));
-				s.setAcc_Breaks_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL054, fieldDetails.get("MATH_PART2_BREAKS")));
-				s.setAcc_Breaks_SC(StudentDataUtil.paddedWrap(StudentDataConstants.COL055, fieldDetails.get("SCI_BREAKS")));
-				s.setAcc_Breaks_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL056, fieldDetails.get("SS_BREAKS")));
-				s.setAcc_Calculator_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL057, fieldDetails.get("RD_CALCULATOR")));
-				s.setAcc_Calculator_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL058, fieldDetails.get("WR_CALCULATOR")));
-				s.setAcc_Calculator_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL059, fieldDetails.get("MATH_PART1_CALCULATOR")));
-				s.setAcc_Calculator_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL060, fieldDetails.get("SS_CALCULATOR")));
-				s.setAcc_Duration1_25_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL061, fieldDetails.get("RD_DUR_1_25T")));
-				s.setAcc_Duration1_25_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL062, fieldDetails.get("WR_DUR_1_25T")));
-				s.setAcc_Duration1_25_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL063, fieldDetails.get("MATH_PART1_DUR_1_25T")));
-				s.setAcc_Duration1_25_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL064, fieldDetails.get("MATH_PART2_DUR_1_25T")));
-				s.setAcc_Duration1_25_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL065, fieldDetails.get("SCI_DUR_1_25T")));
-				s.setAcc_Duration1_25_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL066, fieldDetails.get("SS_DUR_1_25T")));
-				s.setAcc_Duration1_5_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL067, fieldDetails.get("RD_DUR_1_5T")));
-				s.setAcc_Duration1_5_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL068, fieldDetails.get("WR_DUR_1_5T")));
-				s.setAcc_Duration1_5_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL069, fieldDetails.get("MATH_PART1_DUR_1_5T")));
-				s.setAcc_Duration1_5_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL070, fieldDetails.get("MATH_PART2_DUR_1_5T")));
-				s.setAcc_Duration1_5_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL071, fieldDetails.get("SCI_DUR_1_5T")));
-				s.setAcc_Duration1_5_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL072, fieldDetails.get("SS_DUR_1_5T")));
-				s.setAcc_Duration2_0_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL073, fieldDetails.get("RD_DUR_2T")));
-				s.setAcc_Duration2_0_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL074, fieldDetails.get("WR_DUR_2T")));
-				s.setAcc_Duration2_0_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL075, fieldDetails.get("MATH_PART1_DUR_2T")));
-				s.setAcc_Duration2_0_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL076, fieldDetails.get("MATH_PART2_DUR_2T")));
-				s.setAcc_Duration2_0_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL077, fieldDetails.get("SCI_DUR_2T")));
-				s.setAcc_Duration2_0_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL078, fieldDetails.get("SS_DUR_2T")));
-				s.setAcc_PhysicalSupport_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL079, fieldDetails.get("RD_PHYSICAL_SUPP")));
-				s.setAcc_PhysicalSupport_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL080, fieldDetails.get("WR_PHYSICAL_SUPP")));
-				s.setAcc_PhysicalSupport_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL081, fieldDetails.get("MATH_PART1_PHYSICAL_SUPP")));
-				s.setAcc_PhysicalSupport_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL082, fieldDetails.get("MATH_PART2_PHYSICAL_SUPP")));
-				s.setAcc_PhysicalSupport_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL083, fieldDetails.get("SCI_PHYSICAL_SUPP")));
-				s.setAcc_PhysicalSupport_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL084, fieldDetails.get("SS_PHYSICAL_SUPP")));
-				s.setAcc_Scribe_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL085, fieldDetails.get("RD_SCRIBE")));
-				s.setAcc_Scribe_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL086, fieldDetails.get("WR_SCRIBE")));
-				s.setAcc_Scribe_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL087, fieldDetails.get("MATH_PART1_SCRIBE")));
-				s.setAcc_Scribe_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL088, fieldDetails.get("MATH_PART2_SCRIBE")));
-				s.setAcc_Scribe_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL089, fieldDetails.get("SCI_SCRIBE")));
-				s.setAcc_Scribe_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL090, fieldDetails.get("SS_SCRIBE")));
-				s.setAcc_TechDevice_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL091, fieldDetails.get("RD_TECNOLOGY_DEVICE")));
-				s.setAcc_TechDevice_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL092, fieldDetails.get("WR_TECHNOLOGY_DEVICE")));
-				s.setAcc_TechDevice_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL093, fieldDetails.get("MATH_PART1_TECNOLOGY_DEVICE")));
-				s.setAcc_TechDevice_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL094, fieldDetails.get("MATH_PART2_TECNOLOGY_DEVICE")));
-				s.setAcc_TechDevice_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL095, fieldDetails.get("SCI_TECHNOLOGY_DEVICE")));
-				s.setAcc_TechDevice_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL096, fieldDetails.get("SS_TECHNOLOGY_DEVICE")));
-				s.setAcc_SepRoom_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL097, fieldDetails.get("RD_SEPARATE_ROOM")));
-				s.setAcc_SepRoom_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL098, fieldDetails.get("WR_SEPARATE_ROOM")));
-				s.setAcc_SepRoom_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL099, fieldDetails.get("MATH_PART1_SEPARATE_ROOM")));
-				s.setAcc_SepRoom_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL100, fieldDetails.get("MATH_PART2_SEPARATE_ROOM")));
-				s.setAcc_SepRoom_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL101, fieldDetails.get("SCI_SEPARATE_ROOM")));
-				s.setAcc_SepRoom_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL102, fieldDetails.get("SS_SEPARATE_ROOM")));
-				s.setAcc_SmGroup_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL103, fieldDetails.get("RD_SMALL_GRP_SETTING")));
-				s.setAcc_SmGroup_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL104, fieldDetails.get("WR_SMALL_GRP_SETTING")));
-				s.setAcc_SmGroup_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL105, fieldDetails.get("MATH_PART1_SMALL_GRP_SETTING")));
-				s.setAcc_SmGroup_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL106, fieldDetails.get("MATH_PART2_SMALL_GRP_SETTING")));
-				s.setAcc_SmGroup_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL107, fieldDetails.get("SCI_SMALL_GRP_SETTING")));
-				s.setAcc_SmGroup_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL108, fieldDetails.get("SS_SMALL_GRP_SETTING")));
-				s.setAcc_Other_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL109, fieldDetails.get("RD_OTHER")));
-				s.setAcc_Other_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL110, fieldDetails.get("WR_OTHER")));
-				s.setAcc_Other_Math1(StudentDataUtil.paddedWrap(StudentDataConstants.COL111, fieldDetails.get("MATH_PART1_OTHER")));
-				s.setAcc_Other_Math2(StudentDataUtil.paddedWrap(StudentDataConstants.COL112, fieldDetails.get("MATH_PART2_OTHER")));
-				s.setAcc_Other_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL113, fieldDetails.get("SCI_OTHER")));
-				s.setAcc_Other_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL114, fieldDetails.get("SS_OTHER")));
-				s.setExaminer_Ack_Accomm(StudentDataUtil.paddedWrap(StudentDataConstants.COL115, fieldDetails.get("WAIVER")));
-				s.setHomeLang(StudentDataUtil.paddedWrap(StudentDataConstants.COL116, fieldDetails.get("HOME_LANGUAGE")));
-				s.setK_12_Educ_Completed(StudentDataUtil.paddedWrap(StudentDataConstants.COL117, fieldDetails.get("K_12_EDUC_COMPLETED")));
-				s.setSubj_Taken_Passed_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL118, fieldDetails.get("RD_PASSED")));
-				s.setSubj_Taken_Passed_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL119, fieldDetails.get("WR_PASSED")));
-				s.setSubj_Taken_Passed_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL120, fieldDetails.get("MATH_PASSED")));
-				s.setSubj_Taken_Passed_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL121, fieldDetails.get("SCI_PASSED")));
-				s.setSubj_Taken_Passed_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL122, fieldDetails.get("SS_PASSED")));
-				s.setSubj_Taken_Passed_None(StudentDataUtil.paddedWrap(StudentDataConstants.COL123, fieldDetails.get("NONE_PASSED")));
-				s.setNo_Times_Taken_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL124, fieldDetails.get("RD_T_TAKEN")));
-				s.setNo_Times_Taken_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL125, fieldDetails.get("WR_T_TAKEN")));
-				s.setNo_Times_Taken_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL126, fieldDetails.get("MATH_T_TAKEN")));
-				s.setNo_Times_Taken_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL127, fieldDetails.get("SCI_T_TAKEN")));
-				s.setNo_Times_Taken_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL128, fieldDetails.get("SS_T_TAKEN")));
-				s.setRetake_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL129, fieldDetails.get("RD_RETAKE")));
-				s.setRetake_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL130, fieldDetails.get("WR_RETAKE")));
-				s.setRetake_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL131, fieldDetails.get("MATH_RETAKE")));
-				s.setRetake_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL132, fieldDetails.get("SCI_RETAKE")));
-				s.setRetake_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL133, fieldDetails.get("SS_RETAKE")));
-				s.setRetake_None(StudentDataUtil.paddedWrap(StudentDataConstants.COL134, fieldDetails.get("NONE_RETAKE")));
-				s.setTake_Readiness_Assessment(StudentDataUtil.paddedWrap(StudentDataConstants.COL135, fieldDetails.get("READINESS_ASSESSMENT")));
-				s.setPrepare_County_Prog(StudentDataUtil.paddedWrap(StudentDataConstants.COL136, fieldDetails.get("COUNTY_PROGRAM")));
-				s.setPrepare_Sch_Dist_Prog(StudentDataUtil.paddedWrap(StudentDataConstants.COL137, fieldDetails.get("DISTRICT_PROGRAM")));
-				s.setPrepare_Military_Prog(StudentDataUtil.paddedWrap(StudentDataConstants.COL138, fieldDetails.get("MILITARY_PROGRAM")));
-				s.setPrepare_Religious_Prog(StudentDataUtil.paddedWrap(StudentDataConstants.COL139, fieldDetails.get("RELIGIOUS_PROGRAM")));
-				s.setPrepare_Purchased_My_Own_Study_Books(StudentDataUtil.paddedWrap(StudentDataConstants.COL140, fieldDetails.get("PURCHASED_BOOKS")));
-				s.setPrepare_Online_Study_Prog(StudentDataUtil.paddedWrap(StudentDataConstants.COL141, fieldDetails.get("ONLINE_STUDY_PROGRAM")));
-				s.setPrepare_Homeschool(StudentDataUtil.paddedWrap(StudentDataConstants.COL142, fieldDetails.get("HOMESCHOOL")));
-				s.setPrepare_Tutor(StudentDataUtil.paddedWrap(StudentDataConstants.COL143, fieldDetails.get("TUTOR")));
-				s.setPrepare_Self_Taught(StudentDataUtil.paddedWrap(StudentDataConstants.COL144, fieldDetails.get("SELF_TAUGHT")));
-				s.setRecent_Class_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL145, fieldDetails.get("RD_PAST_3MONTHS")));
-				s.setRecent_Class_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL146, fieldDetails.get("WR_PAST_3MONTHS")));
-				s.setRecent_Class_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL147, fieldDetails.get("MATH_PAST_3MONTHS")));
-				s.setRecent_Class_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL148, fieldDetails.get("SCI_PAST_3MONTHS")));
-				s.setRecent_Class_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL149, fieldDetails.get("SS_PAST_3MONTHS")));
-				s.setMonths_Studied_Subj_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL150, fieldDetails.get("RD_HOW_MANY_MONTHS")));
-				s.setMonths_Studied_Subj_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL151, fieldDetails.get("WR_HOW_MANY_MONTHS")));
-				s.setMonths_Studied_Subj_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL152, fieldDetails.get("MATH_HOW_MANY_MONTHS")));
-				s.setMonths_Studied_Subj_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL153, fieldDetails.get("SCI_HOW_MANY_MONTHS")));
-				s.setMonths_Studied_Subj_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL154, fieldDetails.get("SS_HOW_MANY_MONTHS")));
-				s.setGrade_in_Subj_Rd(StudentDataUtil.paddedWrap(StudentDataConstants.COL155, fieldDetails.get("RD_WHAT_GRADE")));
-				s.setGrade_in_Subj_Wr(StudentDataUtil.paddedWrap(StudentDataConstants.COL156, fieldDetails.get("WR_WHAT_GRADE")));
-				s.setGrade_in_Subj_Math(StudentDataUtil.paddedWrap(StudentDataConstants.COL157, fieldDetails.get("MATH_WHAT_GRADE")));
-				s.setGrade_in_Subj_Sc(StudentDataUtil.paddedWrap(StudentDataConstants.COL158, fieldDetails.get("SCI_WHAT_GRADE")));
-				s.setGrade_in_Subj_SS(StudentDataUtil.paddedWrap(StudentDataConstants.COL159, fieldDetails.get("SS_WHAT_GRADE")));
-				s.setTestFormat_Braille(StudentDataUtil.paddedWrap(StudentDataConstants.COL160, fieldDetails.get("BRAILLE")));
-				s.setTestFormat_LP(StudentDataUtil.paddedWrap(StudentDataConstants.COL161, fieldDetails.get("LARGE_PRINT")));
-				s.setLocal_Field_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL162, fieldDetails.get("LOCAL_USE_1")));
-				s.setLocal_Field_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL163, fieldDetails.get("LOCAL_USE_2")));
-				s.setLocal_Field_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL164, fieldDetails.get("LOCAL_USE_3")));
-				s.setLocal_Field_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL165, fieldDetails.get("LOCAL_USE_4")));
-				s.setLocal_Field_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL166, fieldDetails.get("LOCAL_USE_5")));
-				s.setLocal_Field_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL167, fieldDetails.get("LOCAL_USE_6")));
-				s.setLocal_Field_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL168, fieldDetails.get("LOCAL_USE_7")));
-				s.setLocal_Field_8(StudentDataUtil.paddedWrap(StudentDataConstants.COL169, fieldDetails.get("LOCAL_USE_8")));
-				s.setLocal_Field_9(StudentDataUtil.paddedWrap(StudentDataConstants.COL170, fieldDetails.get("LOCAL_USE_9")));
-				s.setLocal_Field_10(StudentDataUtil.paddedWrap(StudentDataConstants.COL171, fieldDetails.get("LOCAL_USE_10")));
-				s.setLocal_Field_11(StudentDataUtil.paddedWrap(StudentDataConstants.COL172, fieldDetails.get("LOCAL_USE_11")));
-				s.setLocal_Field_12(StudentDataUtil.paddedWrap(StudentDataConstants.COL173, fieldDetails.get("LOCAL_USE_12")));
-				s.setLocal_Field_13(StudentDataUtil.paddedWrap(StudentDataConstants.COL174, fieldDetails.get("LOCAL_USE_13")));
-				s.setLocal_Field_14(StudentDataUtil.paddedWrap(StudentDataConstants.COL175, fieldDetails.get("LOCAL_USE_14")));
-				s.setLocal_Field_15(StudentDataUtil.paddedWrap(StudentDataConstants.COL176, fieldDetails.get("LOCAL_USE_15")));
-				s.setLocal_Field_16(StudentDataUtil.paddedWrap(StudentDataConstants.COL177, fieldDetails.get("LOCAL_USE_16")));
-				s.setLocal_Field_17(StudentDataUtil.paddedWrap(StudentDataConstants.COL178, fieldDetails.get("LOCAL_USE_17")));
-				s.setLocal_Field_18(StudentDataUtil.paddedWrap(StudentDataConstants.COL179, fieldDetails.get("LOCAL_USE_18")));
-				s.setLocal_Field_19(StudentDataUtil.paddedWrap(StudentDataConstants.COL180, fieldDetails.get("LOCAL_USE_19")));
-				s.setLocal_Field_20(StudentDataUtil.paddedWrap(StudentDataConstants.COL181, fieldDetails.get("LOCAL_USE_20")));
-				s.setCandidate_Acknowledgement(StudentDataUtil.paddedWrap(StudentDataConstants.COL182, fieldDetails.get("ACKNOWLEDGEMENT")));
-				s.setReading_dateTestTaken(StudentDataUtil.paddedWrap(StudentDataConstants.COL183, fieldDetails.get("DATE_TEST_TAKEN_RD_SUBTEST")));
-				s.setReading_numberCorrect(StudentDataUtil.paddedWrap(StudentDataConstants.COL184, fieldDetails.get("RD_NUMBER_CORRECT")));
-				s.setReading_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL185, fieldDetails.get("RD_SCALE_SCORE")));
-				s.setReading_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL186, fieldDetails.get("RD_HIGH_SC_EQ")));
-				s.setReading_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL187, fieldDetails.get("RD_PERCENTILE_RANK")));
-				s.setReading_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL188, fieldDetails.get("RD_NORMAL_CURVE_EQ")));
-				s.setReading_std_Obj_Mstry_Scr_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL189, fieldDetails.get("RD_OBJ_1_MASTERY")));
-				s.setReading_not_All_items_atmpt_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL190, fieldDetails.get("RD_OBJ_1_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL191, fieldDetails.get("RD_OBJ_2_MASTERY")));
-				s.setReading_not_All_items_atmpt_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL192, fieldDetails.get("RD_OBJ_2_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL193, fieldDetails.get("RD_OBJ_3_MASTERY")));
-				s.setReading_not_All_items_atmpt_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL194, fieldDetails.get("RD_OBJ_3_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL195, fieldDetails.get("RD_OBJ_4_MASTERY")));
-				s.setReading_not_All_items_atmpt_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL196, fieldDetails.get("RD_OBJ_4_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL197, fieldDetails.get("RD_OBJ_5_MASTERY")));
-				s.setReading_not_All_items_atmpt_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL198, fieldDetails.get("RD_OBJ_5_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL199, fieldDetails.get("RD_OBJ_6_MASTERY")));
-				s.setReading_not_All_items_atmpt_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL200, fieldDetails.get("RD_OBJ_6_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL201, fieldDetails.get("RD_OBJ_7_MASTERY")));
-				s.setReading_not_All_items_atmpt_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL202, fieldDetails.get("RD_OBJ_7_NOT_ALL_ATMPT_FLAG")));
-				s.setReading_std_Obj_Mstry_Scr_8(StudentDataUtil.paddedWrap(StudentDataConstants.COL203, fieldDetails.get("RD_OBJ_8_MASTERY")));
-				s.setReading_not_All_items_atmpt_8(StudentDataUtil.paddedWrap(StudentDataConstants.COL204, fieldDetails.get("RD_OBJ_8_NOT_ALL_ATMPT_FLAG")));
-				s.setWriting_dateTestTaken(StudentDataUtil.paddedWrap(StudentDataConstants.COL205, fieldDetails.get("DATE_TEST_TAKEN_WR_SUBTEST")));
-				s.setWriting_numberCorrect(StudentDataUtil.paddedWrap(StudentDataConstants.COL206, fieldDetails.get("WR_NUMBER_CORRECT")));
-				s.setWriting_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL207, fieldDetails.get("WR_SCALE_SCORE")));
-				s.setWriting_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL208, fieldDetails.get("WR_HIGH_SC_EQ")));
-				s.setWriting_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL209, fieldDetails.get("WR_PERCENTILE_RANK")));
-				s.setWriting_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL210, fieldDetails.get("WR_NORMAL_CURVE_EQ")));
-				s.setWriting_std_Obj_Mstry_Scr_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL211, fieldDetails.get("WR_OBJ_1_MASTERY")));
-				s.setWriting_not_All_items_atmpt_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL212, fieldDetails.get("WR_OBJ_1_NOT_ALL_ATMPT_FLAG")));
-				s.setWriting_std_Obj_Mstry_Scr_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL213, fieldDetails.get("WR_OBJ_2_MASTERY")));
-				s.setWriting_not_All_items_atmpt_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL214, fieldDetails.get("WR_OBJ_2_NOT_ALL_ATMPT_FLAG")));
-				s.setWriting_std_Obj_Mstry_Scr_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL215, fieldDetails.get("WR_OBJ_3_MASTERY")));
-				s.setWriting_not_All_items_atmpt_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL216, fieldDetails.get("WR_OBJ_3_NOT_ALL_ATMPT_FLAG")));
-				s.setWriting_std_Obj_Mstry_Scr_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL217, fieldDetails.get("WR_OBJ_4_MASTERY")));
-				s.setWriting_not_All_items_atmpt_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL218, fieldDetails.get("WR_OBJ_4_NOT_ALL_ATMPT_FLAG")));
-				s.setEla_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL219, fieldDetails.get("ELA_SCALE_SCORE")));
-				s.setEla_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL220, fieldDetails.get("ELA_HIGH_SC_EQ")));
-				s.setEla_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL221, fieldDetails.get("ELA_PERCENTILE_RANK")));
-				s.setEla_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL222, fieldDetails.get("ELA_NORMAL_CURVE_EQ")));
-				s.setMath_dateTestTaken(StudentDataUtil.paddedWrap(StudentDataConstants.COL223, fieldDetails.get("DATE_TEST_TAKEN_MATH_SUBTEST")));
-				s.setMath_numberCorrect(StudentDataUtil.paddedWrap(StudentDataConstants.COL224, fieldDetails.get("MATH_NUMBER_CORRECT")));
-				s.setMath_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL225, fieldDetails.get("MATH_SCALE_SCORE")));
-				s.setMath_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL226, fieldDetails.get("MATH_HIGH_SC_EQ")));
-				s.setMath_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL227, fieldDetails.get("MATH_PERCENTILE_RANK")));
-				s.setMath_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL228, fieldDetails.get("MATH_NORMAL_CURVE_EQ")));
-				s.setMath_std_Obj_Mstry_Scr_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL229, fieldDetails.get("MATH_OBJ_1_MASTERY")));
-				s.setMath_not_All_items_atmpt_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL230, fieldDetails.get("MATH_OBJ_1_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL231, fieldDetails.get("MATH_OBJ_2_MASTERY")));
-				s.setMath_not_All_items_atmpt_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL232, fieldDetails.get("MATH_OBJ_2_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL233, fieldDetails.get("MATH_OBJ_3_MASTERY")));
-				s.setMath_not_All_items_atmpt_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL234, fieldDetails.get("MATH_OBJ_3_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL235, fieldDetails.get("MATH_OBJ_4_MASTERY")));
-				s.setMath_not_All_items_atmpt_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL236, fieldDetails.get("MATH_OBJ_4_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL237, fieldDetails.get("MATH_OBJ_5_MASTERY")));
-				s.setMath_not_All_items_atmpt_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL238, fieldDetails.get("MATH_OBJ_5_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL239, fieldDetails.get("MATH_OBJ_6_MASTERY")));
-				s.setMath_not_All_items_atmpt_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL240, fieldDetails.get("MATH_OBJ_6_NOT_ALL_ATMPT_FLAG")));
-				s.setMath_std_Obj_Mstry_Scr_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL241, fieldDetails.get("MATH_OBJ_7_MASTERY")));
-				s.setMath_not_All_items_atmpt_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL242, fieldDetails.get("MATH_OBJ_7_NOT_ALL_ATMPT_FLAG")));
-				s.setScience_dateTestTaken(StudentDataUtil.paddedWrap(StudentDataConstants.COL243, fieldDetails.get("DATE_TEST_TAKEN_SCI_SUBTEST")));
-				s.setScience_numberCorrect(StudentDataUtil.paddedWrap(StudentDataConstants.COL244, fieldDetails.get("SCI_NUMBER_CORRECT")));
-				s.setScience_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL245, fieldDetails.get("SCI_SCALE_SCORE")));
-				s.setScience_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL246, fieldDetails.get("SCI_HIGH_SC_EQ")));
-				s.setScience_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL247, fieldDetails.get("SCI_PERCENTILE_RANK")));
-				s.setScience_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL248, fieldDetails.get("SCI_NORMAL_CURVE_EQ")));
-				s.setScience_std_Obj_Mstry_Scr_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL249, fieldDetails.get("SCI_OBJ_1_MASTERY")));
-				s.setScience_not_All_items_atmpt_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL250, fieldDetails.get("SCI_OBJ_1_NOT_ALL_ATMPT_FLAG")));
-				s.setScience_std_Obj_Mstry_Scr_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL251, fieldDetails.get("SCI_OBJ_2_MASTERY")));
-				s.setScience_not_All_items_atmpt_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL252, fieldDetails.get("SCI_OBJ_2_NOT_ALL_ATMPT_FLAG")));
-				s.setScience_std_Obj_Mstry_Scr_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL253, fieldDetails.get("SCI_OBJ_3_MASTERY")));
-				s.setScience_not_All_items_atmpt_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL254, fieldDetails.get("SCI_OBJ_3_NOT_ALL_ATMPT_FLAG")));
-				s.setScience_std_Obj_Mstry_Scr_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL255, fieldDetails.get("SCI_OBJ_4_MASTERY")));
-				s.setScience_not_All_items_atmpt_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL256, fieldDetails.get("SCI_OBJ_4_NOT_ALL_ATMPT_FLAG")));
-				s.setScience_std_Obj_Mstry_Scr_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL257, fieldDetails.get("SCI_OBJ_5_MASTERY")));
-				s.setScience_not_All_items_atmpt_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL258, fieldDetails.get("SCI_OBJ_5_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_dateTestTaken(StudentDataUtil.paddedWrap(StudentDataConstants.COL259, fieldDetails.get("DATE_TEST_TAKEN_SS_SUBTEST")));
-				s.setSocial_numberCorrect(StudentDataUtil.paddedWrap(StudentDataConstants.COL260, fieldDetails.get("SOC_NUMBER_CORRECT")));
-				s.setSocial_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL261, fieldDetails.get("SOC_SCALE_SCORE")));
-				s.setSocial_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL262, fieldDetails.get("SOC_HIGH_SC_EQ")));
-				s.setSocial_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL263, fieldDetails.get("SOC_PERCENTILE_RANK")));
-				s.setSocial_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL264, fieldDetails.get("SOC_NORMAL_CURVE_EQ")));
-				s.setSocial_std_Obj_Mstry_Scr_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL265, fieldDetails.get("SOC_OBJ_1_MASTERY")));
-				s.setSocial_not_All_items_atmpt_1(StudentDataUtil.paddedWrap(StudentDataConstants.COL266, fieldDetails.get("SOC_OBJ_1_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL267, fieldDetails.get("SOC_OBJ_2_MASTERY")));
-				s.setSocial_not_All_items_atmpt_2(StudentDataUtil.paddedWrap(StudentDataConstants.COL268, fieldDetails.get("SOC_OBJ_2_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL269, fieldDetails.get("SOC_OBJ_3_MASTERY")));
-				s.setSocial_not_All_items_atmpt_3(StudentDataUtil.paddedWrap(StudentDataConstants.COL270, fieldDetails.get("SOC_OBJ_3_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL271, fieldDetails.get("SOC_OBJ_4_MASTERY")));
-				s.setSocial_not_All_items_atmpt_4(StudentDataUtil.paddedWrap(StudentDataConstants.COL272, fieldDetails.get("SOC_OBJ_4_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL273, fieldDetails.get("SOC_OBJ_5_MASTERY")));
-				s.setSocial_not_All_items_atmpt_5(StudentDataUtil.paddedWrap(StudentDataConstants.COL274, fieldDetails.get("SOC_OBJ_5_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL275, fieldDetails.get("SOC_OBJ_6_MASTERY")));
-				s.setSocial_not_All_items_atmpt_6(StudentDataUtil.paddedWrap(StudentDataConstants.COL276, fieldDetails.get("SOC_OBJ_6_NOT_ALL_ATMPT_FLAG")));
-				s.setSocial_std_Obj_Mstry_Scr_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL277, fieldDetails.get("SOC_OBJ_7_MASTERY")));
-				s.setSocial_not_All_items_atmpt_7(StudentDataUtil.paddedWrap(StudentDataConstants.COL278, fieldDetails.get("SOC_OBJ_7_NOT_ALL_ATMPT_FLAG")));
-				s.setOverall_scaleScore(StudentDataUtil.paddedWrap(StudentDataConstants.COL279, fieldDetails.get("OVR_COMP_SCORE_SCALE_SCORE")));
-				s.setOverall_hSE_Score(StudentDataUtil.paddedWrap(StudentDataConstants.COL280, fieldDetails.get("OVR_COMP_SCORE_HIGH_SC_EQ")));
-				s.setOverall_percentileRank(StudentDataUtil.paddedWrap(StudentDataConstants.COL281, fieldDetails.get("OVR_COMP_SCORE_PERCENTILE_RANK")));
-				s.setOverall_nCE(StudentDataUtil.paddedWrap(StudentDataConstants.COL282, fieldDetails.get("OVR_COMP_SCORE_NORMAL_CURVE_EQ")));
-				s.setOasReading_screenReader(StudentDataUtil.paddedWrap(StudentDataConstants.COL283, fieldDetails.get("RD_SCREEN_READER")));
-				s.setOasReading_onlineCalc(StudentDataUtil.paddedWrap(StudentDataConstants.COL284, fieldDetails.get("RD_ONLINE_CALC")));
-				s.setOasReading_testPause(StudentDataUtil.paddedWrap(StudentDataConstants.COL285, fieldDetails.get("RD_TEST_PAUSE")));
-				s.setOasReading_highlighter(StudentDataUtil.paddedWrap(StudentDataConstants.COL286, fieldDetails.get("RD_HIGHLIGHTER")));
-				s.setOasReading_blockingRuler(StudentDataUtil.paddedWrap(StudentDataConstants.COL287, fieldDetails.get("RD_BLOCKING_RULER")));
-				s.setOasReading_magnifyingGlass(StudentDataUtil.paddedWrap(StudentDataConstants.COL288, fieldDetails.get("RD_MAGNIFYING_GLASS")));
-				s.setOasReading_fontAndBkgndClr(StudentDataUtil.paddedWrap(StudentDataConstants.COL289, fieldDetails.get("RD_FONT_AND_BKGND_CLR")));
-				s.setOasReading_largeFont(StudentDataUtil.paddedWrap(StudentDataConstants.COL290, fieldDetails.get("RD_LARGE_FONT")));
-				s.setOasReading_musicPlayer(StudentDataUtil.paddedWrap(StudentDataConstants.COL291, fieldDetails.get("RD_MUSIC_PLAYER")));
-				s.setOasReading_extendedTime(StudentDataUtil.paddedWrap(StudentDataConstants.COL292, fieldDetails.get("RD_EXTENDED_TIME")));
-				s.setOasReading_maskingTool(StudentDataUtil.paddedWrap(StudentDataConstants.COL293, fieldDetails.get("RD_MASKING_TOOL")));
-				s.setOasWriting_screenReader(StudentDataUtil.paddedWrap(StudentDataConstants.COL294, fieldDetails.get("WR_SCREEN_READER")));
-				s.setOasWriting_onlineCalc(StudentDataUtil.paddedWrap(StudentDataConstants.COL295, fieldDetails.get("WR_ONLINE_CALC")));
-				s.setOasWriting_testPause(StudentDataUtil.paddedWrap(StudentDataConstants.COL296, fieldDetails.get("WR_TEST_PAUSE")));
-				s.setOasWriting_highlighter(StudentDataUtil.paddedWrap(StudentDataConstants.COL297, fieldDetails.get("WR_HIGHLIGHTER")));
-				s.setOasWriting_blockingRuler(StudentDataUtil.paddedWrap(StudentDataConstants.COL298, fieldDetails.get("WR_BLOCKING_RULER")));
-				s.setOasWriting_magnifyingGlass(StudentDataUtil.paddedWrap(StudentDataConstants.COL299, fieldDetails.get("WR_MAGNIFYING_GLASS")));
-				s.setOasWriting_fontAndBkgndClr(StudentDataUtil.paddedWrap(StudentDataConstants.COL300, fieldDetails.get("WR_FONT_AND_BKGND_CLR")));
-				s.setOasWriting_largeFont(StudentDataUtil.paddedWrap(StudentDataConstants.COL301, fieldDetails.get("WR_LARGE_FONT")));
-				s.setOasWriting_musicPlayer(StudentDataUtil.paddedWrap(StudentDataConstants.COL302, fieldDetails.get("WR_MUSIC_PLAYER")));
-				s.setOasWriting_extendedTime(StudentDataUtil.paddedWrap(StudentDataConstants.COL303, fieldDetails.get("WR_EXTENDED_TIME")));
-				s.setOasWriting_maskingTool(StudentDataUtil.paddedWrap(StudentDataConstants.COL304, fieldDetails.get("WR_MASKING_TOOL")));
-				s.setOasMath_screenReader(StudentDataUtil.paddedWrap(StudentDataConstants.COL305, fieldDetails.get("MATH_SCREEN_READER")));
-				s.setOasMath_onlineCalc(StudentDataUtil.paddedWrap(StudentDataConstants.COL306, fieldDetails.get("MATH_ONLINE_CALC")));
-				s.setOasMath_testPause(StudentDataUtil.paddedWrap(StudentDataConstants.COL307, fieldDetails.get("MATH_TEST_PAUSE")));
-				s.setOasMath_highlighter(StudentDataUtil.paddedWrap(StudentDataConstants.COL308, fieldDetails.get("MATH_HIGHLIGHTER")));
-				s.setOasMath_blockingRuler(StudentDataUtil.paddedWrap(StudentDataConstants.COL309, fieldDetails.get("MATH_BLOCKING_RULER")));
-				s.setOasMath_magnifyingGlass(StudentDataUtil.paddedWrap(StudentDataConstants.COL310, fieldDetails.get("MATH_MAGNIFYING_GLASS")));
-				s.setOasMath_fontAndBkgndClr(StudentDataUtil.paddedWrap(StudentDataConstants.COL311, fieldDetails.get("MATH_FONT_AND_BKGND_CLR")));
-				s.setOasMath_largeFont(StudentDataUtil.paddedWrap(StudentDataConstants.COL312, fieldDetails.get("MATH_LARGE_FONT")));
-				s.setOasMath_musicPlayer(StudentDataUtil.paddedWrap(StudentDataConstants.COL313, fieldDetails.get("MATH_MUSIC_PLAYER")));
-				s.setOasMath_extendedTime(StudentDataUtil.paddedWrap(StudentDataConstants.COL314, fieldDetails.get("MATH_EXTENDED_TIME")));
-				s.setOasMath_maskingTool(StudentDataUtil.paddedWrap(StudentDataConstants.COL315, fieldDetails.get("MATH_MASKING_TOOL")));
-				s.setOasScience_screenReader(StudentDataUtil.paddedWrap(StudentDataConstants.COL316, fieldDetails.get("SCI_SCREEN_READER")));
-				s.setOasScience_onlineCalc(StudentDataUtil.paddedWrap(StudentDataConstants.COL317, fieldDetails.get("SCI_ONLINE_CALC")));
-				s.setOasScience_testPause(StudentDataUtil.paddedWrap(StudentDataConstants.COL318, fieldDetails.get("SCI_TEST_PAUSE")));
-				s.setOasScience_highlighter(StudentDataUtil.paddedWrap(StudentDataConstants.COL319, fieldDetails.get("SCI_HIGHLIGHTER")));
-				s.setOasScience_blockingRuler(StudentDataUtil.paddedWrap(StudentDataConstants.COL320, fieldDetails.get("SCI_BLOCKING_RULER")));
-				s.setOasScience_magnifyingGlass(StudentDataUtil.paddedWrap(StudentDataConstants.COL321, fieldDetails.get("SCI_MAGNIFYING_GLASS")));
-				s.setOasScience_fontAndBkgndClr(StudentDataUtil.paddedWrap(StudentDataConstants.COL322, fieldDetails.get("SCI_FONT_AND_BKGND_CLR")));
-				s.setOasScience_largeFont(StudentDataUtil.paddedWrap(StudentDataConstants.COL323, fieldDetails.get("SCI_LARGE_FONT")));
-				s.setOasScience_musicPlayer(StudentDataUtil.paddedWrap(StudentDataConstants.COL324, fieldDetails.get("SCI_MUSIC_PLAYER")));
-				s.setOasScience_extendedTime(StudentDataUtil.paddedWrap(StudentDataConstants.COL325, fieldDetails.get("SCI_EXTENDED_TIME")));
-				s.setOasScience_maskingTool(StudentDataUtil.paddedWrap(StudentDataConstants.COL326, fieldDetails.get("SCI_MASKING_TOOL")));
-				s.setOasSocial_screenReader(StudentDataUtil.paddedWrap(StudentDataConstants.COL327, fieldDetails.get("SS_SCREEN_READER")));
-				s.setOasSocial_onlineCalc(StudentDataUtil.paddedWrap(StudentDataConstants.COL328, fieldDetails.get("SS_ONLINE_CALC")));
-				s.setOasSocial_testPause(StudentDataUtil.paddedWrap(StudentDataConstants.COL329, fieldDetails.get("SS_TEST_PAUSE")));
-				s.setOasSocial_highlighter(StudentDataUtil.paddedWrap(StudentDataConstants.COL330, fieldDetails.get("SS_HIGHLIGHTER")));
-				s.setOasSocial_blockingRuler(StudentDataUtil.paddedWrap(StudentDataConstants.COL331, fieldDetails.get("SS_BLOCKING_RULER")));
-				s.setOasSocial_magnifyingGlass(StudentDataUtil.paddedWrap(StudentDataConstants.COL332, fieldDetails.get("SS_MAGNIFYING_GLASS")));
-				s.setOasSocial_fontAndBkgndClr(StudentDataUtil.paddedWrap(StudentDataConstants.COL333, fieldDetails.get("SS_FONT_AND_BKGND_CLR")));
-				s.setOasSocial_largeFont(StudentDataUtil.paddedWrap(StudentDataConstants.COL334, fieldDetails.get("SS_LARGE_FONT")));
-				s.setOasSocial_musicPlayer(StudentDataUtil.paddedWrap(StudentDataConstants.COL335, fieldDetails.get("SS_MUSIC_PLAYER")));
-				s.setOasSocial_extendedTime(StudentDataUtil.paddedWrap(StudentDataConstants.COL336, fieldDetails.get("SS_EXTENDED_TIME")));
-				s.setOasSocial_maskingTool(StudentDataUtil.paddedWrap(StudentDataConstants.COL337, fieldDetails.get("SS_MASKING_TOOL")));
-				s.setReadingItems_SR(StudentDataUtil.paddedWrap(StudentDataConstants.COL338, fieldDetails.get("RD_SR_RESPONSE")));
-				s.setReadingItems_FU(StudentDataUtil.paddedWrap(StudentDataConstants.COL339, fieldDetails.get("RD_ITEMS_FU")));
-				s.setWritingItems_SR(StudentDataUtil.paddedWrap(StudentDataConstants.COL340, fieldDetails.get("WR_SR_RESPONSE")));
-				s.setWritingItems_CR(StudentDataUtil.paddedWrap(StudentDataConstants.COL341, fieldDetails.get("WR_ITEM_CODE_CR")));
-				s.setWritingItems_FU(StudentDataUtil.paddedWrap(StudentDataConstants.COL342, fieldDetails.get("WR_ITEMS_FU")));
-				s.setMathItems_SR(StudentDataUtil.paddedWrap(StudentDataConstants.COL343, fieldDetails.get("MATH_ITEM_CODE_SR")));
-				s.setMathItems_GR_Status(StudentDataUtil.paddedWrap(StudentDataConstants.COL344, fieldDetails.get("MATH_ITEM_CODE_GR_STATUS")));
-				s.setMathItems_GR_Edited(StudentDataUtil.paddedWrap(StudentDataConstants.COL345, fieldDetails.get("MATH_ITEM_CODE_GR_EDITED")));
-				s.setMathItems_FU(StudentDataUtil.paddedWrap(StudentDataConstants.COL346, fieldDetails.get("MATH_ITEMS_FU")));
-				s.setScienceItems_SR(StudentDataUtil.paddedWrap(StudentDataConstants.COL347, fieldDetails.get("SCI_SR_RESPONSE")));
-				s.setScienceItems_FU(StudentDataUtil.paddedWrap(StudentDataConstants.COL348, fieldDetails.get("SCI_ITEMS_FU")));
-				s.setSocialStudies_SR(StudentDataUtil.paddedWrap(StudentDataConstants.COL349, fieldDetails.get("SOC_SR_RESPONSE")));
-				s.setSocialStudies_FU(StudentDataUtil.paddedWrap(StudentDataConstants.COL350, fieldDetails.get("SS_FU")));
-				s.setcTBUseField(StudentDataUtil.paddedWrap(StudentDataConstants.COL351, fieldDetails.get("CTB_USE_FIELD")));
-				studentDataList.add(s);
-			}
-		}
-		logger.log(IAppLogger.INFO, "Exit: downloadStudentFile()");
-		return studentDataList;
+		return null;
 	}
 
 	/*

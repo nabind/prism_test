@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,8 +37,8 @@ import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
+//import com.googlecode.ehcache.annotations.Cacheable;
+//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository("parentDAO")
 public class ParentDAOImpl extends BaseDAO implements IParentDAO {
@@ -53,7 +55,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions()
 	 */
-	@Cacheable(cacheName = "securityQuestions")
+	@Cacheable(value = "securityQuestions")
 	public List<QuestionTO> getSecretQuestions() {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SECRET_QUESTION);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
@@ -478,6 +480,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
+	@Cacheable(value="studentList")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		String orgId = (String) paramMap.get("scrollId");
 		String adminYear = (String) paramMap.get("adminYear");
@@ -894,7 +897,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@TriggersRemove(cacheName = "orgUsers", removeAll = true)
+	@CacheEvict(value = "orgUsers", allEntries = true)
 	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException {
 
 		long user_id = parentTO.getUserId();

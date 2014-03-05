@@ -30,6 +30,8 @@ public interface IReportBusiness {
 	 * 
 	 */
 	public void removeCache();
+	
+	public void removeConfigurationCache();
 
 	/**
 	 * @param jasperReport

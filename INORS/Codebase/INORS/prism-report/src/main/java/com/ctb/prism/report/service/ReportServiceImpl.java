@@ -49,6 +49,10 @@ public class ReportServiceImpl implements IReportService {
 	public void removeReportCache() {
 		reportBusiness.removeReportCache();
 	}
+	
+	public void removeConfigurationCache() {
+		reportBusiness.removeConfigurationCache();
+	}
 
 	/*
 	 * (non-Javadoc)

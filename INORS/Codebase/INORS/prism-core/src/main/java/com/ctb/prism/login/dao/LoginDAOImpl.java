@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,8 +32,8 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
+//import com.googlecode.ehcache.annotations.Cacheable;
+//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository
 public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
@@ -105,7 +107,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param userName
 	 * @return tenantId
 	 */
-	@Cacheable(cacheName = "tenantId")
+	@Cacheable(value = "tenantId")
 	public String getTenantId( String userName ) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_TENANT_ID, new Object[]{ userName }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
@@ -282,9 +284,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param msgtype,reportname and infoname
 	 * @return message
 	 */
-	
-	//Implement cache - By Joy
-	@Cacheable(cacheName = "sysConfigMessageCache")
+	@Cacheable(value = "sysConfigMessageCache")
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
@@ -314,7 +314,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	/*
 	 * Get custprodid along with product - By Joy
 	 * */
-	@Cacheable(cacheName = "customerProductCache")
+	@Cacheable(value = "customerProductCache")
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
 			throws BusinessException {
@@ -409,7 +409,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			String[] userRoles
 	 * @return UserTO
 	 */
-	@TriggersRemove(cacheName="orgUsers", removeAll=true)
+	@CacheEvict(value="orgUsers", allEntries=true)
 	public void addNewUser(Map<String,Object> paramMap) throws Exception {
 		//UserTO to = null;
 		String userName = (String) paramMap.get("userName");

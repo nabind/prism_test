@@ -29,6 +29,8 @@ public interface IReportDAO {
 	 * 
 	 */
 	public void removeCache();
+	
+	public void removeConfigurationCache();
 
 	/**
 	 * This method returns report print object filled with data.

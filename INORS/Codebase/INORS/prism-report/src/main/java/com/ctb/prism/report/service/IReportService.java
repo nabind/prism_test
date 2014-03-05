@@ -29,6 +29,8 @@ public interface IReportService {
 	 * 
 	 */
 	public void removeCache();
+	
+	public void removeConfigurationCache();
 
 	/**
 	 * @param jasperReport

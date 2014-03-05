@@ -3,14 +3,14 @@ package com.ctb.prism.web.util;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.web.controller.ParentController;
-import com.googlecode.ehcache.annotations.Cacheable;
+//import com.googlecode.ehcache.annotations.Cacheable;
 
 
 public class TestDAOImpl implements TestDAO {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(TestDAOImpl.class.getName());
 	
-	@Cacheable(cacheName = "msgCache")
+	//@Cacheable(cacheName = "msgCache")
 	public String getMessage(int id) {
 		logger.log(IAppLogger.DEBUG, "------ not from cache !!");
 		return "hi there ! " + id;

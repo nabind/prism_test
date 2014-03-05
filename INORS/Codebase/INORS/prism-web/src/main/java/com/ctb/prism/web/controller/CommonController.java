@@ -314,16 +314,15 @@ public class CommonController extends BaseDAO {
 	 * @throws ServletException
 	 * @throws IOException 
 	 */
-	@Secured({"ROLE_CTB"})
-	@RequestMapping(value="/clearCache", method=RequestMethod.GET)
-	public ModelAndView clearCache(HttpServletRequest req, HttpServletResponse res) 
+	@RequestMapping(value="/clearConfigCache", method=RequestMethod.GET)
+	public ModelAndView clearConfigCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView("common/success");
 		try {
-			reportService.removeCache();
-			logger.log(IAppLogger.INFO, "Cache cleared ....");
+			reportService.removeConfigurationCache();
+			logger.log(IAppLogger.INFO, "Config cache cleared ....");
 			
-			mv.addObject("message", "Cache cleared !!!");
+			mv.addObject("message", "Config cache cleared !!!");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			mv.addObject("message", e.getMessage());
