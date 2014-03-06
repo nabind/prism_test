@@ -1495,7 +1495,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					String key = (String) fieldDetails.get("IC_FILE_LOC"); // Actual File Location
 					String value = (String) fieldDetails.get("IC_FILE_NAME"); // New Name for the File
 					icPrefixSequence = icPrefixSequence + 1;
-					value = icPrefixSequence + value;
+					value = icPrefixSequence + "-" + value;
 					icPaths.put(key, value);
 				}
 			}
@@ -1525,7 +1525,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
 					String value = (String) fieldDetails.get("FILE_NAME"); // New Name for the File
 					isrPrefixSequence = isrPrefixSequence + 1;
-					value = isrPrefixSequence + value;
+					value = isrPrefixSequence + "-" + value;
 					isrPaths.put(key, value);
 				}
 			}
@@ -1555,7 +1555,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
 					String value = (String) fieldDetails.get("FILE_NAME"); // New Name for the File
 					iprPrefixSequence = iprPrefixSequence + 1;
-					value = iprPrefixSequence + value;
+					value = iprPrefixSequence + "-" + value;
 					iprPaths.put(key, value);
 				}
 			}
