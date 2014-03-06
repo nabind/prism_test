@@ -222,21 +222,22 @@ $('.view-Children').live("click", function() {
 	}
 	
 	//==========================THIS FUNCTION CREATES LIST OF PARENTS TO BE DISPALYED FOR EACH STUDENT============================
-	function createParentTag(parentJson)
-	{	
-		var size=parentJson.length;
-		var parentContent='<td>';
-		$.each(parentJson, function (index) { 
-			if(!(index+1==size)){
-				parentContent += this.userName +', ';//'<p>'+this.userName+'</p>';
-				}else{
-					parentContent += this.userName ;
-				}
+	function createParentTag(parentJson) {
+	var parentContent = '<td>';
+	if (parentJson) {
+		var size = parentJson.length;
+		$.each(parentJson, function(index) {
+			if (!(index + 1 == size)) {
+				parentContent += this.userName + ', ';// '<p>'+this.userName+'</p>';
+			} else {
+				parentContent += this.userName;
+			}
 		});
-		parentContent +='</td>';
-		
-		return parentContent;
 	}
+	parentContent += '</td>';
+
+	return parentContent;
+}
 	
 	
 	
@@ -337,7 +338,7 @@ $('.view-Children').live("click", function() {
 		$.each(jsonData, function () { 
 		
 						makeViewStudentTableDom += '<tr>'
-													+'<td><a href="redirectToStudent.do?AdminYear='+this.adminid+'&studentBioId='+this.studentBioId+'&nodeId='+this.clikedOrgId+'" >'+this.studentName +'</a></td>'
+													+'<td><a href="redirectToStudent.do?AdminYear='+this.adminid+'&studentBioId='+this.testElementId+'&nodeId='+this.clikedOrgId+'" >'+this.studentName +'</a></td>'
 													+'<td>'+this.administration +'</td>'
 													+'<td>'+this.grade +'</td>'
 													+'</tr>';

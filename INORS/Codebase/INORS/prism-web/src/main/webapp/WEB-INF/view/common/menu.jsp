@@ -16,9 +16,9 @@
 					<!-- Only for Admin users -->
 					<li><a href="userModule.do" class="shortcut-contacts" title="Manage Users">Manage Users</a></li>
 					<li><a href="manageOrganizations.do" class="shortcut-settings" title="Manage Organizations">Manage Organizations</a></li>
-					<c:if test="${product ne inorsProduct}">
+					<%-- <c:if test="${product ne inorsProduct}"> --%>
 						<li><a href="manageParent.do" class="shortcut-medias" title="Manage Parents">Manage Parents</a></li>
-					</c:if>
+					<%-- </c:if> --%>
 					<li><a href="manageStudent.do" class="shortcut-agenda" title="Manage Students">Manage Students</a></li>
 					<sec:authorize ifAnyGranted="ROLE_CTB">
 						<!-- Only for CTB Admins -->

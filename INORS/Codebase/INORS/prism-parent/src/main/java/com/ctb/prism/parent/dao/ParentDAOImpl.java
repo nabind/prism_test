@@ -562,6 +562,24 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return parentTOs;
 	}
+	
+	private ArrayList<ParentTO> getParentAccountDetailsByTestElementId(String testElementId, long customerId) {
+		ArrayList<ParentTO> parentTOs = null;
+		List<Map<String, Object>> parentAccountData = null;
+		if (testElementId != null) {
+			parentAccountData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_FOR_CHILDREN, testElementId, customerId);
+			if (parentAccountData.size() > 0) {
+				parentTOs = new ArrayList<ParentTO>();
+				for (Map<String, Object> fieldDetails : parentAccountData) {
+					ParentTO to = new ParentTO();
+					to.setUserName((String) (fieldDetails.get("USERNAME")));
+					to.setStatus((String) (fieldDetails.get("STATUS")));
+					parentTOs.add(to);
+				}
+			}
+		}
+		return parentTOs;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -636,8 +654,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		String studentBioId = (String) paramMap.get("studentBioId");
 		String tenantId = (String) paramMap.get("scrollId");
 		//Fix for java.lang.ClassCastException
-		//long customerId = (Long) paramMap.get("customer");
-		long customerId = (Long) paramMap.get("customer");
+		String customerIdString = paramMap.get("customer").toString();
+		long customerId = Long.parseLong(customerIdString);
 		String orgMode = (String) paramMap.get("orgMode");
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<Map<String, Object>> studentlist = null;
@@ -646,12 +664,20 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			studentTOs = new ArrayList<StudentTO>();
 			for (Map<String, Object> fieldDetails : studentlist) {
 				StudentTO to = new StudentTO();
-				to.setStudentBioId(((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue());
-				to.setParentAccount(getParentAccountDetails(((Long) (to.getStudentBioId())).toString(), customerId));
+				to.setTestElementId((String) (fieldDetails.get("TEST_ELEMENT_ID")));
+				BigDecimal orgNodeId = (BigDecimal) (fieldDetails.get("ORG_NODEID"));
+				if (orgNodeId != null) {
+					to.setOrgId(orgNodeId.longValue());
+				}
+				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
+				to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
 				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
 				to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
 				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
-				to.setInvitationcode((String) (fieldDetails.get("INVITATIONCODE")));
+				BigDecimal invCode = (BigDecimal) (fieldDetails.get("INVITATIONCODE"));
+				if (invCode != null) {
+					to.setInvitationcode(invCode.toString());
+				}
 				try {
 					to.setClikedOrgId(Long.parseLong(tenantId));
 				} catch (Exception ex) {
