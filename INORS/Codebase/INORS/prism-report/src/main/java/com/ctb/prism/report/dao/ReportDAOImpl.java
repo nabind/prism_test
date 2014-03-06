@@ -167,7 +167,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#removeReportCache()
 	 */
-	@CacheEvict(value = "compiledJrxml", allEntries = true)
+	@CacheEvict(value ={ "compiledJrxml","filledJasperPrint"}, allEntries = true)
 	public void removeReportCache() {
 		logger.log(IAppLogger.INFO, "Removed report cache");
 	}
