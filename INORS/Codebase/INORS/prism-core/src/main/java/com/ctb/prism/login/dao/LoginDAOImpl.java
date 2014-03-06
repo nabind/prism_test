@@ -491,5 +491,19 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		
 		return to;
 	}
+	/**
+	 * Get root path for customer and product
+	 * @param customerId
+	 * @param testAdmin
+	 * @return
+	 */
+	@Cacheable(value = "rootPath")
+	public String getRootPath(String customerId, String testAdmin) {
+		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_ROOT_PATH, new Object[] { customerId, testAdmin }, new RowMapper<String>() {
+			public String mapRow(ResultSet rs, int col) throws SQLException {
+				return rs.getString(1);
+			}
+		});
+	}
 	
 }

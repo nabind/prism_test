@@ -43,6 +43,7 @@ import com.ctb.prism.inors.dao.IInorsDAO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.util.ConcatPdf;
 import com.ctb.prism.inors.util.PdfGenerator;
+import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
@@ -68,6 +69,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	@Autowired
 	private IPropertyLookup propertyLookup;
 
+	@Autowired
+	private ILoginDAO loginDAO;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -251,6 +254,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String clobStr = jobTrackingTO.getRequestDetails();
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
+		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal());
 		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		if (to != null) {
 			String button = to.getButton();
@@ -267,6 +271,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
 			String zipFileName = fileName + ".zip";
+			zipFileName = CustomStringUtil.appendString(rootPath,"/GDF/",zipFileName);
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
 				querySheetFileName = "000" + querySheetFileName;
@@ -288,8 +293,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			if (!filePathsGD.isEmpty()) {
 				String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to));
-				FileUtil.createDuplexPdf(querySheetFileName, querySheetAsString);
-				filePaths.put(querySheetFileName, querySheetFileName);
+				FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath,"/GDF/",querySheetFileName), querySheetAsString);
+				filePaths.put(CustomStringUtil.appendString("/GDF/",querySheetFileName), querySheetFileName);
 				filePaths.putAll(filePathsGD);
 				try {
 					if ("CP".equals(button)) {
@@ -297,8 +302,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
 						 */
 						String pdfFileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
+						pdfFileName = CustomStringUtil.appendString(rootPath,"/GDF/",pdfFileName);
 						// Merge Pdf files
-						byte[] input = FileUtil.getMergedPdfBytes(new ArrayList<String>(filePaths.keySet()));
+						byte[] input = FileUtil.getMergedPdfBytes(new ArrayList<String>(filePaths.keySet()), rootPath);
 
 						// Create Pdf file in disk
 						FileUtil.createFile(pdfFileName, input);
@@ -321,7 +327,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
-						FileUtil.createDuplexZipFile(zipFileName, filePaths);
+						FileUtil.createDuplexZipFile(zipFileName, filePaths, rootPath);
 
 						fileSize = FileUtil.fileSize(zipFileName);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();

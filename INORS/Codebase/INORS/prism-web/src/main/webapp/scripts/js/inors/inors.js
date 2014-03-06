@@ -232,11 +232,11 @@ $(document).ready(function() {
 	$("#checkAllImg").click(function() {
 		var val = $('#checkAllVal').val();
 		if (val == "0") {
-			$('#checkAllImg').prop('src', '/inors/themes/acsi/img/selected.bmp');
+			$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
 			$('#checkAllVal').val("1");
 			setAllTextBoxValues("1");
 		} else if ((val == "1") || (val == "-1")) {
-			$('#checkAllImg').prop('src', '/inors/themes/acsi/img/empty.bmp');
+			$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
 			$('#checkAllVal').val("0");
 			setAllTextBoxValues("0");
 		}
@@ -301,13 +301,13 @@ function calculateAndChangeCheckAll(){
 	var totalStudents = getTotalStudentCount();
 	var checkedStudents = getCheckedStudentCount();
 	if(checkedStudents == 0){
-		$('#checkAllImg').prop('src', '/inors/themes/acsi/img/empty.bmp');
+		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
 		$('#checkAllVal').val("0");
 	} else if(checkedStudents == totalStudents){
-		$('#checkAllImg').prop('src', '/inors/themes/acsi/img/selected.bmp');
+		$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
 		$('#checkAllVal').val("1");
 	} else {
-		$('#checkAllImg').prop('src', '/inors/themes/acsi/img/tristate.bmp');
+		$('#checkAllImg').prop('src', 'themes/acsi/img/tristate.bmp');
 		$('#checkAllVal').val("-1");
 	}
 }

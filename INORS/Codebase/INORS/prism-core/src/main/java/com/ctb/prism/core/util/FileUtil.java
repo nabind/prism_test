@@ -245,6 +245,9 @@ public class FileUtil {
 	 * @return A merged Pdf bytes
 	 */
 	public static byte[] getMergedPdfBytes(List<String> files) {
+		return getMergedPdfBytes(files, "");
+	}
+	public static byte[] getMergedPdfBytes(List<String> files, String rootPath) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		if (files != null && !files.isEmpty()) {
 			try {
@@ -255,6 +258,7 @@ public class FileUtil {
 				int n;
 				// loop over the documents you want to concatenate
 				for (String file : files) {
+					file = CustomStringUtil.appendString(rootPath, file);
 					try {
 						reader = new PdfReader(file);
 						// loop over the pages in that document
@@ -463,13 +467,16 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths) throws IOException {
+		createDuplexZipFile(zipFileName, filePaths, "");
+	}
+	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String rootPath) throws IOException {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {
 			fos = new FileOutputStream(zipFileName);
 			zos = new ZipOutputStream(fos);
 			for (Entry<String, String> fileEntry : filePaths.entrySet()) {
-				String filePath = fileEntry.getKey();
+				String filePath = CustomStringUtil.appendString(rootPath, fileEntry.getKey());
 				String fileName = fileEntry.getValue();
 				logger.log(IAppLogger.INFO, "filePath = " + filePath);
 				if (fileName == null) {

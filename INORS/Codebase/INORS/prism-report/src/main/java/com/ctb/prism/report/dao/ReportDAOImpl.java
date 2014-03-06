@@ -184,7 +184,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Removed all cache");
 	}
 	
-	@CacheEvict(value = {"sysConfigMessageCache", "SimplePageCachingFilter"}, allEntries = true)
+	@CacheEvict(value = {"sysConfigMessageCache", "SimplePageCachingFilter", "rootPath"}, allEntries = true)
 	public void removeConfigurationCache() {
 		logger.log(IAppLogger.INFO, "Removed config cache");
 	}

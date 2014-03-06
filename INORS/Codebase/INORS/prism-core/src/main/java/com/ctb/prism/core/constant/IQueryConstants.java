@@ -881,7 +881,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
 			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
-			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
+			" DECODE(IC.FILENAME, NULL, ' ', IC.FILENAME) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
 			" DECODE(SPF_IP.FILENAME, NULL, ' ', SPF_IP.FILENAME) IP",
 			" FROM STUDENT_BIO_DIM SBD, INVITATION_CODE IC,",
@@ -904,7 +904,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
 			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
-			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
+			" DECODE(IC.FILENAME, NULL, ' ', IC.FILENAME) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
 			" DECODE(SPF_IP.FILENAME, NULL, ' ', SPF_IP.FILENAME) IP",
 			" FROM STUDENT_BIO_DIM SBD, INVITATION_CODE IC,",
@@ -927,7 +927,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
 			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
-			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
+			" DECODE(IC.FILENAME, NULL, ' ', IC.FILENAME) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
 			" DECODE(SPF_IP.FILENAME, NULL, ' ', SPF_IP.FILENAME) IP",
 			" FROM STUDENT_BIO_DIM SBD, INVITATION_CODE IC,",
@@ -970,7 +970,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
 			" REPLACE(SBD.LAST_NAME || ', ' || SBD.FIRST_NAME || ' ' || SBD.MIDDLE_NAME, '  ', ' ') AS NAME,",
 			" GRADE.GRADE_NAME GRADE,",
-			" DECODE(IC.IC_FILE_LOC, NULL, ' ', IC.IC_FILE_LOC) IC,",
+			" DECODE(IC.FILENAME, NULL, ' ', IC.FILENAME) IC,",
 			" DECODE(SPF_ISR.FILENAME, NULL, ' ', SPF_ISR.FILENAME) ISR,",
 			" DECODE(SPF_IP.FILENAME, NULL, ' ', SPF_IP.FILENAME) IP",
 			" FROM STUDENT_BIO_DIM SBD, INVITATION_CODE IC,",
@@ -1020,13 +1020,13 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE ALL_ORGS.ORG_NODEID=STUDENT_ORGS.ORG_NODEID ORDER BY ALL_ORGS.ORG_NODE_NAME"
 			);
 	
-	public static final String GET_IC_FILE_PATHS = "SELECT ICID VALUE, IC_FILE_LOC NAME FROM INVITATION_CODE WHERE STUDENT_BIO_ID IN (?)";
+	public static final String GET_IC_FILE_PATHS = "SELECT ICID VALUE, FILENAME NAME FROM INVITATION_CODE WHERE STUDENT_BIO_ID IN (?)";
 	/**
 	 * All 6 Params are STUDENT_BIO_ID
 	 */
 	public static final String GET_IC_FILE_PATH = CustomStringUtil.appendString(
-			" SELECT IC.IC_FILE_LOC, P_NAME.FILE_NAME IC_FILE_NAME",
-			" FROM (SELECT DISTINCT STUDENT_BIO_ID, IC_FILE_LOC FROM INVITATION_CODE) IC,",
+			" SELECT IC.FILENAME IC_FILE_LOC, P_NAME.FILE_NAME IC_FILE_NAME",
+			" FROM (SELECT DISTINCT STUDENT_BIO_ID, FILENAME FROM INVITATION_CODE) IC,",
 			" (SELECT '?' STUDENT_BIO_ID, 'IN' || FACT.TEST_DATE || '.ISTEP.' || FACT.ORGTSTGPGM || '.'",
 			" || DISTRICT.ORG_NODE_NAME || '.' || DISTRICT.ORG_NODEID || '.'",
 			" || SCHOOL.ORG_NODE_NAME || '.' || SCHOOL.ORG_NODEID || '.'",
@@ -1105,7 +1105,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" (SELECT '?' STUDENT_BIO_ID, 'IN' || FACT.TEST_DATE || '.ISTEP.' || FACT.ORGTSTGPGM || '.' ||",
 			" DISTRICT.ORG_NODE_NAME || '.' || DISTRICT.ORG_NODEID || '.' ||",
 			" SCHOOL.ORG_NODE_NAME || '.' || SCHOOL.ORG_NODEID || '.' ||",
-			" GRADE.GRADE_CODE || '.' || FACT.ELEMENT_NUMBER || '.ISR.pdf' FILE_NAME",
+			" GRADE.GRADE_CODE || '.' || FACT.ELEMENT_NUMBER FILE_NAME",
 			" FROM RESULTS_GRT_FACT FACT, GRADE_DIM GRADE,",
 			" (SELECT '?' STUDENT_BIO_ID, ORG_NODEID, ORG_NODE_NAME",
 			" FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL=2",
@@ -1134,7 +1134,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" (SELECT '?' STUDENT_BIO_ID, 'IN' || FACT.TEST_DATE || '.ISTEP.' || FACT.ORGTSTGPGM || '.' ||",
 			" DISTRICT.ORG_NODE_NAME || '.' || DISTRICT.ORG_NODEID || '.' ||",
 			" SCHOOL.ORG_NODE_NAME || '.' || SCHOOL.ORG_NODEID || '.' ||",
-			" GRADE.GRADE_CODE || '.' || FACT.ELEMENT_NUMBER || '.IP.pdf' FILE_NAME",
+			" GRADE.GRADE_CODE || '.' || FACT.ELEMENT_NUMBER FILE_NAME",
 			" FROM RESULTS_GRT_FACT FACT, GRADE_DIM GRADE,",
 			" (SELECT '?' STUDENT_BIO_ID, ORG_NODEID, ORG_NODE_NAME",
 			" FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL=2",
@@ -1213,6 +1213,13 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND OND.ORG_NODE_LEVEL    = 4",
 			" ORDER BY 1"
 			);
+	
+	public static final String GET_ROOT_PATH = CustomStringUtil.appendString(
+			" SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
+			" WHERE lin.customerid = cust.customerid ",
+			" AND lin.productid = prod.productid ",
+			" AND cust.customerid = ? AND prod.productid = ? ",
+			" AND ROWNUM = 1");
 
 }
 

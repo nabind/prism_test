@@ -119,5 +119,9 @@ public class LoginServiceImpl implements ILoginService {
 	public void addNewUser(Map<String, Object> paramMap) throws Exception {
 		loginBusiness.addNewUser(paramMap);
 	}
+	
+	public String getRootPath(String customerId, String testAdmin) {
+		return loginBusiness.getRootPath(customerId, testAdmin);
+	}
 
 }

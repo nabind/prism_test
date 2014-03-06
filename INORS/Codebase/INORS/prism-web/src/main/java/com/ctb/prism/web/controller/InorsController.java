@@ -46,6 +46,7 @@ import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -67,26 +68,21 @@ import com.ctb.prism.web.util.JsonUtil;
 public class InorsController {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsController.class.getName());
 
-	@Autowired
-	private IInorsService inorsService;
+	@Autowired private IInorsService inorsService;
 
-	@Autowired
-	private IAdminService adminService;
+	@Autowired	private IAdminService adminService;
 
-	@Autowired
-	private IReportService reportService;
+	@Autowired	private IReportService reportService;
 
-	@Autowired
-	private IReportFilterTOFactory reportFilterFactory;
+	@Autowired	private IReportFilterTOFactory reportFilterFactory;
 
-	@Autowired
-	private ReportController reportController;
+	@Autowired	private ReportController reportController;
 
-	@Autowired
-	private IPropertyLookup propertyLookup;
+	@Autowired	private IPropertyLookup propertyLookup;
 
-	@Autowired
-	private JmsMessageProducer messageProducer;
+	@Autowired	private JmsMessageProducer messageProducer;
+	
+	@Autowired	private ILoginService loginService;
 
 	/**
 	 * For Group Download Listing.
@@ -442,6 +438,7 @@ public class InorsController {
 		String reportUrl = (String) request.getParameter("reportUrl");
 		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
 		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
 		String testProgram = (String) request.getParameter("p_test_program");
 		String corpDiocese = (String) request.getParameter("p_corpdiocese");
 		String school = (String) request.getParameter("p_school");
@@ -764,6 +761,10 @@ public class InorsController {
 		String zipFileName = fileType + ".zip";
 		try {
 			// fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
+			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			String testAdmin = (String) request.getSession().getAttribute("GDF_testadmin");
+			String rootPath = loginService.getRootPath(customerId, testAdmin);
+			fileName = CustomStringUtil.appendString(rootPath, fileName);
 			File pdfFile = new File(fileName);
 			if (!pdfFile.canRead()) {
 				logger.log(IAppLogger.WARN, "No Read Permission");

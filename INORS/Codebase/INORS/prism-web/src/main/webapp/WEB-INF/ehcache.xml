@@ -107,5 +107,9 @@
        maxElementsInMemory="100000" overflowToDisk="true" diskPersistent="false"
        timeToIdleSeconds="0" timeToLiveSeconds="300000"
        memoryStoreEvictionPolicy="LRU" />   
-    
+       
+    <cache name="rootPath" eternal="false"
+       maxElementsInMemory="10" overflowToDisk="true" diskPersistent="false"
+       timeToIdleSeconds="0" timeToLiveSeconds="900000"
+       memoryStoreEvictionPolicy="LRU" />   
 </ehcache>

@@ -80,4 +80,5 @@ public interface ILoginService {
 	 * @throws Exception
 	 */
 	public void addNewUser(Map<String, Object> paramMap) throws Exception;
+	public String getRootPath(String customerId, String testAdmin);
 }

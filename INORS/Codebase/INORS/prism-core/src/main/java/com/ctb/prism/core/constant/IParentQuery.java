@@ -496,7 +496,7 @@ public interface IParentQuery {
 			" SYSDATE,",
 			" NULL,",
 			" STUDENT_BIO_ID,",
-			" IC_FILE_LOC",
+			" FILENAME IC_FILE_LOC",
 			" FROM INVITATION_CODE",
 			" WHERE INVITATION_CODE = ?",
 			" AND ACTIVATION_STATUS = 'AC'",

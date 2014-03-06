@@ -72,4 +72,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public void addNewUser(Map<String,Object> paramMap) throws Exception {
 		loginDAO.addNewUser(paramMap);
 	}
+	
+	public String getRootPath(String customerId, String testAdmin) {
+		return loginDAO.getRootPath(customerId, testAdmin);
+	}
 }
