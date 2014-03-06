@@ -9,7 +9,7 @@
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta charset="utf-8">
-  <title><spring:message code="title.tab.login"/></title>
+  <title><spring:message code="title.tab.application"/></title>
   <link rel="shortcut icon" href="themes/acsi/img/favicons/favicon.ico">
   <%@ include file="../common/commonStyle.jsp"%>
   <spring:theme code="theme.name" var="themeName"/>
