@@ -174,4 +174,14 @@ public class CustomStringUtil {
 				TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 		return hms;
 	}
+
+	public static String getNotNullString(Object input) {
+		String output = "";
+		if (input != null) {
+			if (!"null".equalsIgnoreCase(input.toString())) {
+				output = input.toString();
+			}
+		}
+		return output;
+	}
 }

@@ -408,6 +408,18 @@ public class InorsController {
 		return message;
 	}
 
+	public Map<String, Object> getReportParameters(HttpServletRequest request, String reportUrl) {
+		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String assessmentId = request.getParameter("assessmentId");
+		Map<String, Object> inputControls = (Map<String, Object>) request.getSession().getAttribute("inputControls");
+		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+
+		// get default parameters for logged-in user
+		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, inputControls, currentUserId);
+		return reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+	}
+
 	/**
 	 * Entry method for group download screen. This method takes care of the text box and drop down values.
 	 * 
@@ -435,8 +447,6 @@ public class InorsController {
 		} else {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
-		String reportUrl = (String) request.getParameter("reportUrl");
-		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
 		String testAdministrationVal = (String) request.getParameter("p_test_administration");
 		request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
 		String testProgram = (String) request.getParameter("p_test_program");
@@ -447,6 +457,32 @@ public class InorsController {
 		String groupFile = (String) request.getParameter("p_generate_file");
 		String collationHierarchy = (String) request.getParameter("p_collation");
 
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		logger.log(IAppLogger.INFO, "klass=" + klass);
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+
+		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
+			String reportUrl = (String) request.getParameter("reportUrl");
+			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+			// get parameter values for report
+			Map<String, Object> parameters = getReportParameters(request, reportUrl);
+			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+			if ((parameters != null) && (!parameters.isEmpty())) {
+				testAdministrationVal = CustomStringUtil.getNotNullString(parameters.get("p_test_administration"));
+				testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
+				corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
+				school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
+				klass = CustomStringUtil.getNotNullString(parameters.get("p_class"));
+				grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
+				groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
+				collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
+			}
+		}
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
@@ -486,20 +522,8 @@ public class InorsController {
 			String hideContentFlag = getHideContentFlagGroupDownloadForm(groupFile, productName, reportMessages);
 			String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
 			if (hideContentFlag.equals(IApplicationConstants.FLAG_N)) {
-				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-				// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 				try {
-					Map<String, Object> parameters = null;
-					// get all input controls for report
-					List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
-
-					// get default parameters for logged-in user
-					Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request
-							.getSession().getAttribute("inputControls"), currentUserId);
-
-					// get parameter values for report
-					parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-
+					String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 					String fileName = (String) request.getParameter("fileName");
 					if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
 						fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
@@ -519,8 +543,6 @@ public class InorsController {
 					logger.log(IAppLogger.INFO, "email=" + email);
 					modelAndView.addObject("fileName", fileName);
 					modelAndView.addObject("email", email);
-
-					request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 
 					List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 					GroupDownloadTO to = new GroupDownloadTO();
@@ -1042,6 +1064,7 @@ public class InorsController {
 	public ModelAndView grtICFileForm(HttpServletRequest request) {
 		logger.log(IAppLogger.INFO, "Enter: grtICFileForm()");
 		ModelAndView modelAndView = new ModelAndView("inors/grtICFileForm");
+
 		String testAdministrationVal = (String) request.getParameter("p_test_administration");
 		String testProgram = (String) request.getParameter("p_test_program");
 		String corpDiocese = (String) request.getParameter("p_corpdiocese");
@@ -1050,6 +1073,25 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
+
+		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
+			String reportUrl = (String) request.getParameter("reportUrl");
+			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+			Map<String, Object> parameters = getReportParameters(request, reportUrl);
+			logger.log(IAppLogger.INFO, "parameters = " + parameters);
+			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+			if ((parameters != null) && (!parameters.isEmpty())) {
+				testAdministrationVal = CustomStringUtil.getNotNullString(parameters.get("p_test_administration"));
+				testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
+				corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
+				school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
+			}
+		}
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+
 		String productName = getProductNameById(testAdministrationVal);
 		logger.log(IAppLogger.INFO, "productName=" + productName);
 
@@ -1065,43 +1107,25 @@ public class InorsController {
 			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_N);
 			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_N);
 		}
-		//if (testAdministrationVal != null) {
-			String reportId = (String) request.getParameter("reportId");
-			String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
-			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
-			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-			logger.log(IAppLogger.INFO, "reportId=" + reportId);
-			logger.log(IAppLogger.INFO, "productId=" + productId);
-			logger.log(IAppLogger.INFO, "customerId=" + customerId);
-			logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("REPORT_ID", reportId);
-			paramMap.put("PRODUCT_ID", productId);
-			paramMap.put("CUSTOMER_ID", customerId);
-			paramMap.put("ORG_NODE_LEVEL", orgNodeLevel);
-			paramMap.put("USER_ID", currentUserId);
-			List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
-			modelAndView.addObject("reportMessages", reportMessages);
-		//} else {
-			//modelAndView.addObject("reportMessages", null);
-		//}
 
-		String reportUrl = (String) request.getParameter("reportUrl");
-		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
-		
-		Map<String, Object> parameters = null;
-		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+		String reportId = (String) request.getParameter("reportId");
+		String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
+		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		logger.log(IAppLogger.INFO, "reportId=" + reportId);
+		logger.log(IAppLogger.INFO, "productId=" + productId);
+		logger.log(IAppLogger.INFO, "customerId=" + customerId);
+		logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("REPORT_ID", reportId);
+		paramMap.put("PRODUCT_ID", productId);
+		paramMap.put("CUSTOMER_ID", customerId);
+		paramMap.put("ORG_NODE_LEVEL", orgNodeLevel);
+		paramMap.put("USER_ID", currentUserId);
+		List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
+		modelAndView.addObject("reportMessages", reportMessages);
 
-		// get default parameters for logged-in user
-		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, request.getParameter("assessmentId"), "", reportUrl, (Map<String, Object>) request.getSession()
-				.getAttribute("inputControls"),currentUserId);
-
-		// get parameter values for report
-		parameters = reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
-		logger.log(IAppLogger.INFO, "parameters = " + parameters);
-		request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
 		return modelAndView;
 	}
