@@ -469,6 +469,7 @@ public class InorsController {
 		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
 			String reportUrl = (String) request.getParameter("reportUrl");
 			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+			modelAndView.addObject("reportUrl", reportUrl);
 			// get parameter values for report
 			Map<String, Object> parameters = getReportParameters(request, reportUrl);
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
@@ -577,7 +578,6 @@ public class InorsController {
 			modelAndView.addObject("reportMessages", null);
 		}
 		modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
-		modelAndView.addObject("reportUrl", reportUrl);
 		logger.log(IAppLogger.INFO, "Exit: groupDownloadForm()");
 		return modelAndView;
 	}
@@ -1077,6 +1077,8 @@ public class InorsController {
 		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
 			String reportUrl = (String) request.getParameter("reportUrl");
 			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+			modelAndView.addObject("reportUrl", reportUrl);
+			// get parameter values for report
 			Map<String, Object> parameters = getReportParameters(request, reportUrl);
 			logger.log(IAppLogger.INFO, "parameters = " + parameters);
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
