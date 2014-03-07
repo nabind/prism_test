@@ -146,24 +146,6 @@ $(function () {
 					<%= (String) request.getSession().getAttribute("tascERCountList") %>
                 ],
                 color: '#BD0606'
-            }, {
-                type: 'pie',
-                name: 'Total count',
-                data: [{
-                    name: 'Success',
-                    y: <%= (String) request.getSession().getAttribute("successCount") %>,
-                    color: '#36A502'
-                }, {
-                    name: 'Error',
-                    y: <%= (String) request.getSession().getAttribute("errorCount") %>,
-                    color: '#BD0606'
-                }],
-                center: [100, 80],
-                size: 100,
-                showInLegend: false,
-                dataLabels: {
-                    enabled: true
-                }
             }
             ]
         });

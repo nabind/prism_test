@@ -302,7 +302,7 @@ public class UserController extends MultiActionController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/process/sendEmail.htm")
+	@RequestMapping("/process/sendMail.htm")
 	public @ResponseBody String sendMail(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("send mail method called");

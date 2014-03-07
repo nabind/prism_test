@@ -38,9 +38,9 @@
 				autoOpen: false, 
 				modal: false, 
 				minHeight: 50, 
-				minWidth: 500, 
+				minWidth: 650, 
 				closeOnEscape: true, 
-				resizable: false
+				resizable: true
 			});
 			
 			$("#updateEmailBox").dialog({
@@ -48,7 +48,7 @@
 				autoOpen: false, 
 				modal: false, 
 				minHeight: 50, 
-				minWidth: 400, 
+				minWidth: 450, 
 				modal: true, 
 				resizable: false
 			});
@@ -115,9 +115,12 @@
 				$("#sender_email_address").val( data.process.email );
 				
 				<% if(UserController.checkAdmin(request)) { %>
-				$("#_school_email").html( data.process.email + "&nbsp;&nbsp;<a href='#note' class='updateEmail buttonLink' onClick='openEmailEdit("+processId+");'>Edit</a>" );
+				var emailaddr = data.process.email;
+				emailaddr = emailaddr.replace(/\,/g, '<br/>');
+				//alert(emailaddr);
+				$("#_school_email").html( emailaddr + "&nbsp;&nbsp;<a href='#note' class='updateEmail buttonLink' onClick='openEmailEdit("+processId+");'>Edit</a>" );
 				<% } else { %>
-				$("#_school_email").html( data.process.email );
+				$("#_school_email").html( emailaddr );
 				<% } %>
 				$("#old_school_email").text( data.process.email );
 				
@@ -258,11 +261,11 @@
 		
 		function updateEmail() {
 			var processId = $("#school_process_id").val();
-			if(!isValidEmailAddress($("#school_email").val())) { 
+			/*if(!isValidEmailAddress($("#school_email").val())) { 
 				$("#save_email_progress").css('color', 'red');
 				$("#save_email_progress").html( ' Please provide a valid email address' );
 				return false;
-			}
+			}*/
 			
 			var dataString = "structureElement="+$("#_structure_element").text()+"&newMail="+$("#school_email").val()+"&processId="+processId+"&oldEmail="+$("#old_school_email").text();
 			if(confirm("Do you want to update email?")) {
@@ -277,9 +280,11 @@
 				    		$("#save_email_progress").html( ' Mail updated successfully' );
 				    		
 				    		<% if(UserController.checkAdmin(request)) { %>
-				    		$("#_school_email").html( $("#school_email").val()  + "&nbsp;&nbsp;<a href='#note' class='updateEmail buttonLink' onClick='openEmailEdit("+processId+");'>Edit</a>" );
+				    		var emailaddr = $("#school_email").val();
+							emailaddr = emailaddr.replace(/\,/g, '<br/>');
+				    		$("#_school_email").html( emailaddr  + "&nbsp;&nbsp;<a href='#note' class='updateEmail buttonLink' onClick='openEmailEdit("+processId+");'>Edit</a>" );
 				    		<% } else { %>
-				    		$("#_school_email").html( $("#school_email").val() );
+				    		$("#_school_email").html( emailaddr );
 				    		<% } %>
 				    		
 				    		$("#old_school_email").text( $("#school_email").val() );
