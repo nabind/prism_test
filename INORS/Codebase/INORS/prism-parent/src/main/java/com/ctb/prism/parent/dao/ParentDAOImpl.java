@@ -724,7 +724,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUser");
 		try {
 			// update invitation_code table
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ASSESSMENT, totalAvailableClaim, expirationDate, invitationcode, studentBioId);
+			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ASSESSMENT, totalAvailableClaim, expirationDate, invitationcode);
 
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating assessment details.", e);
