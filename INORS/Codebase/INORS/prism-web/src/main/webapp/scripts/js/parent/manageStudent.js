@@ -16,7 +16,7 @@ $(document).ready(function() {
 			$('.clearfix').addClass('menu-hidden');
 			$('.view-Assessment').live("click", function() {
 				regenerateAC = false;
-				openModalToViewAssessments($(this).attr("id"));		
+				openModalToViewAssessments($(this).attr("id"), $(this).attr("testelementid"));		
 			});	
 			//$('input#lastStudentId').val("");//clearing the value on load.
 			
@@ -77,7 +77,7 @@ $(document).ready(function() {
 var regenerateAC=false;
 
 
-function openModalToViewAssessments(studentBioId) {
+function openModalToViewAssessments(studentBioId, testElementId) {
 	var nodeid = "studentBioId=" + studentBioId;	
 	blockUI();
 	$.ajax({
@@ -113,7 +113,9 @@ function openModalToViewAssessments(studentBioId) {
 							'Create Letter':{
 								classes: 'blue-gradient glossy createLetter',
 								click: function(win) {
-									window.open('download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+studentBioId);
+									var url = 'download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+testElementId;
+									url = url + '&p_L3_Jasper_Org_Id=-1&p_AdminYear=-1'; // TODO : Remove hardcode 101
+									window.open(url);
 								}
 							}
 					}

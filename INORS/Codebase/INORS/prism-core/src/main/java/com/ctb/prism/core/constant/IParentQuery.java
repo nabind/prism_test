@@ -325,7 +325,7 @@ public interface IParentQuery {
 
 	public static final String GET_ASSESSMENT_LIST = CustomStringUtil.appendString(
 			" SELECT STD.STUDENT_BIO_ID, ",
-			" IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
+			" STD.TEST_ELEMENT_ID AS TESTELEMENT,IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
 			" IC.total_available,",
 			" DECODE(SIGN(IC.EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
 			" ADM.ADMIN_SEASON || ' ' || ADM.ADMIN_YEAR AS ASSESSMENT_YEAR ",

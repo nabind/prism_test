@@ -531,6 +531,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
 				tenantId = (tenantId == null) ? tenantId = "0" : tenantId;
 				to.setClikedOrgId(Long.parseLong(tenantId));
+				to.setTestElementId((String) (fieldDetails.get("TESTELEMENTID")));
 				studentTOs.add(to);
 			}
 		}
@@ -638,6 +639,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				// to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
 				// to. setActivationStatus((String) (fieldDetails.get("ACTIVATIONSTATUS")));
 				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
+				to.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
 				studentTOs.add(to);
 			}
 		}
@@ -708,6 +710,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentTO.setExpirationDate((String) fieldDetails.get("EXPIRATION_DATE"));
 				studentTO.setIcExpirationStatus((String) fieldDetails.get("EXPIRATION_STATUS"));
 				studentTO.setTotalAvailableClaim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
+				studentTO.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
 				assessmentList.add(studentTO);
 			}
 		}
