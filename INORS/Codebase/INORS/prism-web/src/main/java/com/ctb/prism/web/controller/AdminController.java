@@ -420,7 +420,7 @@ public class AdminController {
 			String adminYear = (String) request.getParameter("AdminYear");
 			
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("nodeid", nodeid);
+			paramMap.put("nodeid", nodeid.equals("0_") ? "0_1" : nodeid);
 			paramMap.put("currOrg", currentOrg);
 			paramMap.put("isFirstLoad", false);
 			paramMap.put("adminYear", adminYear);

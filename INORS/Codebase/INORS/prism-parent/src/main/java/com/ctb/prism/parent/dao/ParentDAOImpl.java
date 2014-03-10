@@ -303,7 +303,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getChildrenList(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<StudentTO> getChildrenList(final String userName, String clickedTreeNode, String adminYear) {
+	public List<StudentTO> getChildrenList(final String userName, final String clickedTreeNode, String adminYear) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getChildrenList()");
 		long t1 = System.currentTimeMillis();
 		List<StudentTO> studentList = null;
@@ -333,6 +333,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setGrade(rs.getString("STUDENT_GRADE"));
 							studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
 							studentTO.setAdminid(rs.getString("ADMINID"));
+							studentTO.setClikedOrgId(Long.valueOf(clickedTreeNode));
 							studentResult.add(studentTO);
 						}
 					} catch (SQLException e) {
