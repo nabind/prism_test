@@ -56,7 +56,7 @@
 								<th scope="col" width="13%">Grade</th>
 								<!--th scope="col" width="16%">Student Test Number</th-->
 								<th scope="col" width="20%">Parent User ID</th>													
-								<th scope="col" width="22%">Class Name</th>
+								<th scope="col" width="22%">School Name</th>
 								<th scope="col" width="20%" class="">Actions</th>
 								
 							</tr>
