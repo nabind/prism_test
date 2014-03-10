@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 	
@@ -20,6 +21,12 @@
 		<div id="subtestDiv" class="left-column big-message blue-gradient" 
 			style="color: #fff; height: auto; width:22%" >
 			<dl>
+			 <c:if test="${empty childDataMap.studentSubtest}">
+			 	<dd style="min-height: 50px;">
+			 		<spring:message code="pre.grtload.message"/>
+			 	</dd>
+			 </c:if>
+			<c:if test="${not empty childDataMap.studentSubtest}">
 				<c:forEach var="subtestTO"
 					items="${childDataMap.studentSubtest}"
 					varStatus="loopSubtestTO">
@@ -31,6 +38,7 @@
 							</a>
 						</dd>
 				</c:forEach>
+			 </c:if>	
 			</dl>
 		</div>
 	</c:if>
