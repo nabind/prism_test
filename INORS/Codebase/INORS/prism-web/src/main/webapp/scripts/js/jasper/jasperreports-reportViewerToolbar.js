@@ -16,8 +16,9 @@
 	};
 	
 	jvt.init = function(toolbarId) {
-		var toolbar = jQuery('#' + toolbarId);
+		var toolbar = jQuery(".toolbarDiv");//Changed by Abir //jQuery('#' + toolbarId);
 		
+
 		if (toolbar.size() != 1) {
 			return;
 		}
@@ -73,7 +74,8 @@
 	
 	jvt.refreshPage = function(toolbarId, requestedPage) {
 		var jg = global.jasperreports.global,
-			toolbar = jQuery('#' + toolbarId),
+			//toolbar = jQuery('#' + toolbarId),
+			toolbar =  jQuery(".toolbarDiv"),//Changed by Abir
 			currentHref = toolbar.attr('data-url'),
 			params = 'jr.page=' + requestedPage;
 		
@@ -92,7 +94,8 @@
 	
 	jvt.setAutoRefresh = function(toolbarId) {
 		var jg = global.jasperreports.global,
-			jqToolbar = jQuery('#' + toolbarId),
+			//jqToolbar = jQuery('#' + toolbarId),
+			jqToolbar = jQuery(".toolbarDiv"),//Changed by Abir
 			pageTimestamp = jqToolbar.attr('data-pageTimestamp'),
 			totalPages = jqToolbar.attr('data-totalpages');
 		
@@ -123,7 +126,8 @@
 	
 	jvt.checkPageUpdate = function(toolbarId, page, pageTimestamp) {
 		var jg = global.jasperreports.global,
-			toolbar = jQuery('#' + toolbarId),
+			//toolbar = jQuery('#' + toolbarId),
+		    toolbar = jQuery(".toolbarDiv"),//Changed by Abir
 			currentHref = toolbar.attr('data-url'),
 			params = 'jr.pageUpdate';
 		
@@ -143,9 +147,10 @@
 	}
 	
 	jvt.afterPageUpdateCallback = function (toolbarId, page, response) {
-		var jqToolbar = jQuery('#' + toolbarId);
+		//var jqToolbar = jQuery('#' + toolbarId);
+		var jqToolbar = jQuery(".toolbarDiv");//Changed by Abir
 		jvt.updateTotalPagesForToolbar(jqToolbar, response.totalPages);
-		jvt.updateToolbarPaginationButtons(jqToolbar);
+		jvt.updateToolbarPaginationButtons(jqToolbar); 
 		
 		if (response.pageModified) {
 			if (page == jqToolbar.attr('data-currentPage')) {
@@ -204,7 +209,7 @@
 			}
 		};
 	}());
-	
+	//Changed by Abir
 	jvt.updateToolbarPaginationButtons = function (jqToolbar) {
 		var jg = global.jasperreports.global,
 			currentPage = jqToolbar.attr('data-currentpage'),
@@ -245,7 +250,8 @@
 	};
 	
 	jvt.disableToolbarPaginationButtons = function (toolbarId) {
-		var jqToolbar = jQuery('#' + toolbarId),
+		//var jqToolbar = jQuery('#' + toolbarId),
+		var jqToolbar = jQuery(".toolbarDiv"),//Changed by Abir
 			utils = jvt.toolbarUtils;
 		utils.disablePair(jQuery('.pageFirst', jqToolbar), jQuery('.pageLast', jqToolbar));
 		utils.disablePair(jQuery('.pagePrevious', jqToolbar), jQuery('.pageNext', jqToolbar));
@@ -299,7 +305,9 @@
 	};
 	
 	jvt.updateToolbarUndoButton = function (toolbarId, boolEnable) {
-		var jqToolbar = jQuery('#' + toolbarId),
+		//var jqToolbar = jQuery('#' + toolbarId),
+		var jqToolbar = jQuery(".toolbarDiv"),//Changed by Abir
+
 			utils = jvt.toolbarUtils;
 		
 		if (boolEnable) {
@@ -310,8 +318,9 @@
 	};
 
 	jvt.updateToolbarRedoButton = function (toolbarId, boolEnable) {
-		var jqToolbar = jQuery('#' + toolbarId),
-			utils = jvt.toolbarUtils;
+		//var jqToolbar = jQuery('#' + toolbarId),
+		var jqToolbar = jQuery(".toolbarDiv"),//Changed by Abir
+		utils = jvt.toolbarUtils;
 		
 		if (boolEnable) {
 			utils.enableElem(jQuery('.redo', jqToolbar));
@@ -322,7 +331,7 @@
 	
 	jvt.loadReport = function (reportUrl, jsonParamsObject, toolbarId) {
 		var jg = global.jasperreports.global,
-			ctx = jg.getToolbarExecutionContext(jQuery('#'+toolbarId),	// startPoint 
+			ctx = jg.getToolbarExecutionContext(jQuery(".toolbarDiv"),//Changed by Abir //jQuery('#'+toolbarId),	// startPoint 
 									reportUrl, 							// url
 									jQuery.parseJSON(jsonParamsObject), // params
 									jvt.afterReportLoadCallback, 		// callback
@@ -334,7 +343,8 @@
 	};
 	
 	jvt.afterReportLoadCallback = function (toolbarId, response) {
-		var jqToolbar = jQuery('#' + toolbarId),
+		var jqToolbar = jQuery(".toolbarDiv"), //Changed by Abir 
+						//jQuery('#' + toolbarId),
 			reportStatusDiv = jQuery('#reportStatus', response);
 		
 		jvt.updateCurrentPageForToolbar(jqToolbar, 
@@ -343,6 +353,7 @@
 										reportStatusDiv.attr('data-pagetimestamp'));
 		
 		jvt.updateToolbarPaginationButtons(jqToolbar);
+		
 		jvt.setAutoRefresh(toolbarId);
 	};
 	
