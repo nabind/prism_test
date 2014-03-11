@@ -889,7 +889,7 @@ public class ReportController extends BaseDAO {
 							}
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured for subtest multiselect : ", e.getMessage()));
 					}
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
@@ -1385,7 +1385,7 @@ public class ReportController extends BaseDAO {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured or subtest multiselect : ", e.getMessage()));
 			}
 			/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 

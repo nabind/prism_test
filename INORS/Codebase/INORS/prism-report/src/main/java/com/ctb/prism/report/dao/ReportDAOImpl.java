@@ -179,7 +179,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	@CacheEvict(value = { "msgCache", "reportInputControls", "defaultInputControls", "tenantId", "orgChildren", 
 			"securityQuestions", "orgTreeChildren", "orgUsers", "allAdminYear", "filledJasperPrint", 
-			"customerProductCache", "masterRoleCache", "studentList" }, allEntries = true)
+			"customerProductCache", "masterRoleCache", "studentList", "allAssessment", "userType" }, allEntries = true)
 	public void removeCache() {
 		logger.log(IAppLogger.INFO, "Removed all cache");
 	}
@@ -483,6 +483,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @return List of all available assessments {@link AssessmentTO} along with corresponding report details {@link ReportTO}
 	 */
+	@Cacheable(value = "allAssessment")
 	public List<AssessmentTO> getAssessments(boolean parentReports) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 

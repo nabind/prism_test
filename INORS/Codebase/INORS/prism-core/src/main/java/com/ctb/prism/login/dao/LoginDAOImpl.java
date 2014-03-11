@@ -74,7 +74,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					"" + IApplicationConstants.DEFAULT_LEVELID_VALUE
 			)));
 		} else {
-			userPerms = getJdbcTemplatePrism().query(IQueryConstants.SELECT_USER_AUTHORITIES, new String[] { username, String.valueOf(orgLevel) },
+			userPerms = getJdbcTemplatePrism().query(IQueryConstants.SELECT_USER_AUTHORITIES, new String[] { username/*, String.valueOf(orgLevel)*/ },
 					new RowMapper<GrantedAuthority>() {
 						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
 							return new SimpleGrantedAuthority(rs.getString(1));
@@ -124,14 +124,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return
 	 */
+	@Cacheable(value = "userType")
 	private String getUserType(String username) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_TYPE, username);
 		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				return fieldDetails.get("USER_TYPE").toString();
-			}
+			return IApplicationConstants.PARENT_USER_FLAG;
+		} else {
+			return IApplicationConstants.ORG_USER_FLAG;
 		}
-		return null;
 	}
 	
 	/**

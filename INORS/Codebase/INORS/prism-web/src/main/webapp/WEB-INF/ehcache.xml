@@ -38,6 +38,16 @@
         timeToIdleSeconds="0" timeToLiveSeconds="300000"
         memoryStoreEvictionPolicy="LRU" />
         
+    <cache name="allAssessment" eternal="false"
+        maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+    
+    <cache name="userType" eternal="false"
+        maxElementsInMemory="900000" overflowToDisk="true" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+            
     <cache name="securityQuestions" eternal="false"
         maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
         timeToIdleSeconds="0" timeToLiveSeconds="300000"

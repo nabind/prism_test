@@ -186,6 +186,7 @@ public interface IApplicationConstants {
 	public static final String LOGIN_AS = "LOGIN_AS";
 	public static final String ORG_USER_FLAG = "O";
 	public static final String EDU_USER_FLAG = "E";
+	public static final String PARENT_USER_FLAG = "P";
 
 	// System Configuration Message
 	public static final String COMMON_LOG_IN = "Common Log In";
