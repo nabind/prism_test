@@ -318,7 +318,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
 			throws BusinessException {
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getCustomerProduct()");
+		logger.log(IAppLogger.INFO, "Enter: getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
 		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
@@ -361,7 +361,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			throw new BusinessException(e.getMessage());
 		}finally{
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
+			logger.log(IAppLogger.INFO, "Exit: getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return objectValueTOList;
 	}
