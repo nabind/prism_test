@@ -295,16 +295,15 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, orgMode, tenantId, customerid, tenantId, adminYear, userName, searchParam, searchParam,
-						searchParam);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, orgMode, tenantId, customerid, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId, adminYear, userName);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId, adminYear, userName, IApplicationConstants.ROLE_PARENT_ID);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear, IApplicationConstants.ROLE_PARENT_ID);
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		if (lstData.size() > 0) {
@@ -720,9 +719,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
 			userName = CustomStringUtil.appendString("%", userName, "%");
 			// List<OrgTO> orgList = null;
-			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER,orgMode, tenantId, tenantId, userName, userName, userName, adminYear, "15");
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER,orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		} else {
-			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,orgMode, tenantId, tenantId, userName, adminYear, "15");
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,orgMode, tenantId, tenantId, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		}
 		if (userslist.size() > 0) {
 			UserTOs = new ArrayList<UserTO>();
@@ -827,7 +826,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (IApplicationConstants.PURPOSE.equals(purpose)) {
 			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, "100");
 		} else {
-			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName, adminYear, "100");
+			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "100");
 		}
 		if (listOfUser != null && listOfUser.size() > 0) {
 			userListJsonString = "[";
@@ -1508,7 +1507,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
 
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgMode, userId, orgNodeId, adminYear);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgMode, userId, orgNodeId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserDataTO to = new UserDataTO();

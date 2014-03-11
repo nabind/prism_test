@@ -181,6 +181,7 @@ public interface IApplicationConstants {
 	public static final String PURPOSE = "eduCenterUsers";
 	public static final long ROLE_USER_ID = 1;
 	public static final long ROLE_ADMIN_ID = 3;
+	public static final long ROLE_PARENT_ID = 6;
 	public static final long RECORD_PER_PAGE = 15;
 	public static final String LOGIN_AS = "LOGIN_AS";
 	public static final String ORG_USER_FLAG = "O";
