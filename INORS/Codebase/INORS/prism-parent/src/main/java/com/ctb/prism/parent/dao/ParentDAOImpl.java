@@ -333,6 +333,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setGrade(rs.getString("STUDENT_GRADE"));
 							studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
 							studentTO.setAdminid(rs.getString("ADMINID"));
+							studentTO.setBioExists(rs.getLong("BIO_EXISTS"));
 							studentTO.setClikedOrgId(Long.valueOf(clickedTreeNode));
 							studentResult.add(studentTO);
 						}

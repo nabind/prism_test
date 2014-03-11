@@ -320,6 +320,7 @@ $('.view-Children').live("click", function() {
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewStudentDom);				
 	}
 	
+	//Modified by Joy
 	//==========================CREATES THE TABULAR STRUCTURE FOR CHILDREN VIEW=======================
 	function buildStudentTableDom(jsonData,modalId,modalContainerDivId)
 	{	
@@ -338,7 +339,9 @@ $('.view-Children').live("click", function() {
 		$.each(jsonData, function () { 
 		
 						makeViewStudentTableDom += '<tr>'
-													+'<td><a href="redirectToStudent.do?AdminYear='+this.adminid+'&studentBioId='+this.testElementId+'&nodeId='+this.clikedOrgId+'" >'+this.studentName +'</a></td>'
+													+'<td>'
+													+getStudentNameHTML(this)
+													+'</td>'
 													+'<td>'+this.administration +'</td>'
 													+'<td>'+this.grade +'</td>'
 													+'</tr>';
@@ -347,6 +350,20 @@ $('.view-Children').live("click", function() {
 		makeViewStudentTableDom += '</tbody></table>';
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewStudentTableDom);		
 				
+	}
+	
+	function getStudentNameHTML(obj){
+		var studentNameHTML = "";
+		if(obj.bioExists == 1){
+			studentNameHTML += '<a href="redirectToStudent.do?AdminYear='
+				+obj.adminid+'&studentBioId='+obj.testElementId+'&nodeId='+obj.clikedOrgId+'" >'
+				+obj.studentName 
+				+'</a>'
+		}else{
+			studentNameHTML += '<span class="with-tooltip tooltip-left" title="Student GRT has not been loaded for this administration. You will be able to see your child test data once data will be loaded.">'
+				+obj.studentName+'</span>';
+		}
+		return studentNameHTML;
 	}
 	
 	
