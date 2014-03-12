@@ -373,7 +373,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		masterRoleList = getMasterRoleList("user", nodeId, customerId,purpose);
 
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
-		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId,
+				IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
+				IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
+				IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
+		
 		for (Map<String, Object> fieldDetails : lstRoleData) {
 			roleTO = new RoleTO();
 			String roleName = ((String) (fieldDetails.get("ROLENAME")));
@@ -436,9 +440,15 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		}
 
 		if("add".equals(purpose)){
-			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_ADD, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_ADD, 
+					IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
+					IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
+					IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
 		}else{
-			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE, userid, userid, userid, IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString());
+			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE, userid, userid, userid, 
+					IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
+					IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
+					IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
 		}
 		
 

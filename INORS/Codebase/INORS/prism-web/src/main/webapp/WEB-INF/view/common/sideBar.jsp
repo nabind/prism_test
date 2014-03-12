@@ -106,7 +106,7 @@
 						<li>
 							<a href="manageStudent.do">Manage Students</a>
 						</li>
-						<sec:authorize ifAnyGranted="ROLE_CTB">
+						<sec:authorize ifAnyGranted="ROLE_SUPER">
 							<!-- Remove Manage Education Center -->
 							<li>
 								<a href="manageReports.do">Manage Reports</a>

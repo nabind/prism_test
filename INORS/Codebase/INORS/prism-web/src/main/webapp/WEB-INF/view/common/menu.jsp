@@ -20,7 +20,7 @@
 						<li><a href="manageParent.do" class="shortcut-medias" title="Manage Parents">Manage Parents</a></li>
 					<%-- </c:if> --%>
 					<li><a href="manageStudent.do" class="shortcut-agenda" title="Manage Students">Manage Students</a></li>
-					<sec:authorize ifAnyGranted="ROLE_CTB">
+					<sec:authorize ifAnyGranted="ROLE_SUPER">
 						<!-- Only for CTB Admins -->
 						<!-- Remove Manage Education Center -->
 						<li><a href="manageReports.do" class="shortcut-dashboard" title="Manage Reports">Manage Reports</a></li>
@@ -40,7 +40,7 @@
 			<li><a href="myAccount.do" class="shortcut-stats" title="My Account">My Account</a></li>
 		</sec:authorize>
 		
-		<sec:authorize ifAnyGranted="ROLE_CTB">
+		<sec:authorize ifAnyGranted="ROLE_SUPER">
 			<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
 		</sec:authorize>
 		<!-- 

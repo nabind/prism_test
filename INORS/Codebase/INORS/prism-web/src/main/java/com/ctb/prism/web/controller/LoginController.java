@@ -357,7 +357,7 @@ public class LoginController {
 				// Due to introduction of Org Mode - By Joy
 				req.getSession().setAttribute(IApplicationConstants.ORG_MODE, propertyLookup.get("orgMode.val.public"));
 
-				if (user.getOrgNodeLevel() == 0) {
+				if (user.getUserType().equals(IApplicationConstants.PARENT_USER_FLAG)) {
 					req.getSession().setAttribute("PARENT_LOGIN", IApplicationConstants.PARENT_LOGIN);
 				} else {
 					req.getSession().removeAttribute("PARENT_LOGIN");
