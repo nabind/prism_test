@@ -3,8 +3,12 @@
  */
 package com.ctb.prism.inors.util;
 
+import static com.ctb.prism.inors.util.InorsDownloadUtil.wrap;
+
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +22,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.transferobject.LayoutTO;
 
 /**
  * @author Amitabha Roy
@@ -26,6 +31,39 @@ import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 public class InorsDownloadUtil {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDownloadUtil.class.getName());
+
+	public static byte[] getTableDataBytes(String year, ArrayList<ArrayList<LayoutTO>> tableData, final String delimiter) {
+		if (tableData != null && !tableData.isEmpty()) {
+			CharArrayWriter out = new CharArrayWriter();
+			try {
+				// Write the Header
+				for (LayoutTO to : tableData.get(0)) {
+					out.write(to.getHeaderText());
+					out.write(delimiter);
+				}
+				out.write("\n");
+
+				// Write the row wise data
+				for (ArrayList<LayoutTO> rowData : tableData) {
+					for (LayoutTO to : rowData) {
+						out.write(to.getColumnData());
+						out.write(delimiter);
+					}
+					out.write("\n");
+				}
+				out.flush();
+				out.close();
+				logger.log(IAppLogger.INFO, "Table Data bytes created");
+			} catch (IOException e) {
+				logger.log(IAppLogger.ERROR, "", e);
+				e.printStackTrace();
+
+			}
+			return out.toString().getBytes();
+		} else {
+			return "No Records Found".getBytes();
+		}
+	}
 
 	/**
 	 * Creates a byte array from the IC list based of layout identified by the year. There will be a single <code>InvitationCodeTO</code> for all layouts. If a layout does not contain any particular
@@ -1229,5 +1267,39 @@ public class InorsDownloadUtil {
 			userDataList.add(userDataTO);
 		}
 		return userDataList;
+	}
+
+	public static ArrayList<ArrayList<LayoutTO>> getTableDataFromResultSet(ResultSet rs, ArrayList<LayoutTO> layoutTOList) throws SQLException {
+		ArrayList<ArrayList<LayoutTO>> tableData = new ArrayList<ArrayList<LayoutTO>>();
+		while (rs.next()) {
+			for (int i = 0; i < layoutTOList.size(); i++) {
+				LayoutTO to = layoutTOList.get(i);
+				to.setColumnData(wrap(rs.getString(to.getColumnAlias()), '"'));
+			}
+			tableData.add(layoutTOList);
+		}
+		return tableData;
+	}
+
+	public static ArrayList<LayoutTO> getRowDataLayout(String headers, String aliases) {
+		ArrayList<LayoutTO> layoutTOList = new ArrayList<LayoutTO>();
+		String[] headerTokens = headers.split("\\|");
+		String[] aliasTokens = aliases.split("\\|");
+		for (int i = 0; i < headerTokens.length; i++) {
+			layoutTOList.add(new LayoutTO(i + 1, headerTokens[i].trim(), aliasTokens[i].trim(), ""));
+		}
+		return layoutTOList;
+	}
+
+	public static void print(ArrayList<LayoutTO> layoutTOList) {
+		for (LayoutTO to : layoutTOList) {
+			System.out.println(to);
+		}
+	}
+
+	public static void printTable(ArrayList<ArrayList<LayoutTO>> tableData) {
+		for (ArrayList<LayoutTO> to : tableData) {
+			print(to);
+		}
 	}
 }

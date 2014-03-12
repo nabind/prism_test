@@ -25,6 +25,8 @@ import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.transferobject.LayoutTO;
+import com.ctb.prism.inors.util.InorsDownloadUtil;
 
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
@@ -242,6 +244,87 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					}
 				});
 				logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size() +" for school id " + schoolId);
+			}
+		} finally {
+			logger.log(IAppLogger.INFO, "Exit: getGRTList()");
+		}
+		return grtList;
+	}
+	
+	private ArrayList<ArrayList<LayoutTO>> getGRTTableData(Map<String, String> paramMap, final ArrayList<LayoutTO> rowDataLayout) {
+		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
+		final String userName = paramMap.get("userName");
+		final String productId = paramMap.get("productId");
+		final String testProgram = paramMap.get("testProgram");
+		final String districtId = paramMap.get("parentOrgNodeId");
+		final String schoolId = paramMap.get("orgNodeId");
+
+		logger.log(IAppLogger.INFO, "userName = " + userName);
+		logger.log(IAppLogger.INFO, "productId = " + productId);
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
+
+		ArrayList<ArrayList<LayoutTO>> grtList = new ArrayList<ArrayList<LayoutTO>>();
+		try {
+			if ("-1".equals(schoolId)) {
+				logger.log(IAppLogger.INFO, "All Schools");
+				grtList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setString(2, userName);
+						cs.setLong(3, Long.parseLong(districtId));
+						cs.setString(4, testProgram);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						ArrayList<ArrayList<LayoutTO>> grtTOResult = new ArrayList<ArrayList<LayoutTO>>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(5);
+							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return grtTOResult;
+					}
+				});
+				logger.log(IAppLogger.INFO, "All Schools grtList.size(): " + grtList.size());
+			} else {
+				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
+				grtList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setString(2, userName);
+						cs.setLong(3, Long.parseLong(districtId));
+						cs.setLong(4, Long.parseLong(schoolId));
+						cs.setString(5, testProgram);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						ArrayList<ArrayList<LayoutTO>> grtTOResult = new ArrayList<ArrayList<LayoutTO>>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(6);
+							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return grtTOResult;
+					}
+
+				});
+				logger.log(IAppLogger.INFO, "grtList.size(): " + grtList.size() + " for school id " + schoolId);
 			}
 		} finally {
 			logger.log(IAppLogger.INFO, "Exit: getGRTList()");
@@ -513,6 +596,33 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#getTableData(java.util.Map, java.util.ArrayList)
+	 */
+	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout) {
+		String type = paramMap.get("type");
+		logger.log(IAppLogger.INFO, "type = " + type);
+		String userName = paramMap.get("userName");
+		logger.log(IAppLogger.INFO, "userName = " + userName);
+		String productId = paramMap.get("productId");
+		logger.log(IAppLogger.INFO, "productId = " + productId);
+		String testProgram = paramMap.get("testProgram");
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		String districtId = paramMap.get("parentOrgNodeId");
+		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		String schoolId = paramMap.get("orgNodeId");
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
+		if (InorsDownloadConstants.IC.equals(type)) {
+			return getICTableData(paramMap, rowDataLayout);
+		} else if (InorsDownloadConstants.GRT.equals(type)) {
+			return getGRTTableData(paramMap, rowDataLayout);
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * Fetches the IC list from the database. All field level data are wrapped using double quotes. Field level data validations may apply to specific field to support multiple layouts. Setter methods
 	 * set valid data for that layout to achieve better performance and to avoid multiple getter or setter calls.
@@ -573,6 +683,81 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(4);
 							icTOList = getICTOList(rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return icTOList;
+					}
+				});
+			}
+		} finally {
+			logger.log(IAppLogger.INFO, "icList.size(): " + icList.size());
+		}
+		logger.log(IAppLogger.INFO, "Exit: getICList()");
+		return icList;
+	}
+	
+	private ArrayList<ArrayList<LayoutTO>> getICTableData(Map<String, String> paramMap, final ArrayList<LayoutTO> rowDataLayout) {
+		logger.log(IAppLogger.INFO, "Enter: getICList()");
+		final String userName = paramMap.get("userName");
+		final String productId = paramMap.get("productId");
+		final String testProgram = paramMap.get("testProgram");
+		final String districtId = paramMap.get("parentOrgNodeId");
+		final String schoolId = paramMap.get("orgNodeId");
+
+		logger.log(IAppLogger.INFO, "userName = " + userName);
+		logger.log(IAppLogger.INFO, "productId = " + productId);
+		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
+		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
+		ArrayList<ArrayList<LayoutTO>> icList = null;
+		try {
+			if ("-1".equals(schoolId)) {
+				logger.log(IAppLogger.INFO, "All Schools");
+				icList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setLong(2, Long.parseLong(districtId));
+						cs.setLong(3, Long.parseLong(testProgram));
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						ArrayList<ArrayList<LayoutTO>> icTOList = new ArrayList<ArrayList<LayoutTO>>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(4);
+							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return icTOList;
+					}
+				});
+			} else {
+				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
+				icList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
+						cs.setLong(1, Long.parseLong(productId));
+						cs.setLong(2, Long.parseLong(schoolId));
+						cs.setLong(3, Long.parseLong(testProgram));
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						ArrayList<ArrayList<LayoutTO>> icTOList = new ArrayList<ArrayList<LayoutTO>>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(4);
+							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}

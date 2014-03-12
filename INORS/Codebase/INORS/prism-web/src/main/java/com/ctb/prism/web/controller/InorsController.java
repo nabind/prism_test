@@ -44,6 +44,7 @@ import com.ctb.prism.inors.service.IInorsService;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.transferobject.LayoutTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.Service.ILoginService;
@@ -1170,6 +1171,21 @@ public class InorsController {
 		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String userName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 
+		String productStr = product;
+		if (productStr.indexOf('+') > 0) {
+			productStr = productStr.replace('+', ' ').trim();
+		}
+		if (productStr.indexOf('-') > 0) {
+			productStr = productStr.replace('-', ' ').trim();
+		}
+		String layoutName = type + "_" + productStr + "_" + term + "_" + year;
+		layoutName = layoutName.toUpperCase();
+		logger.log(IAppLogger.INFO, "layoutName=" + layoutName);
+
+		String headers = propertyLookup.get(layoutName + "_HEADER");
+		String aliases = propertyLookup.get(layoutName + "_ALIAS");
+		ArrayList<LayoutTO> rowDataLayout = InorsDownloadUtil.getRowDataLayout(headers, aliases);
+
 		paramMap.put("type", type);
 		paramMap.put("product", product);
 		paramMap.put("term", term);
@@ -1185,13 +1201,13 @@ public class InorsController {
 		String fileName = "";
 		String zipFileName = "";
 		if ("IC".equals(type)) {
-			List<InvitationCodeTO> icList = (List<InvitationCodeTO>) inorsService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.getICBytes(year, icList, ",");
+			ArrayList<ArrayList<LayoutTO>> icTable = inorsService.getTableData(paramMap, rowDataLayout);
+			data = InorsDownloadUtil.getTableDataBytes(year, icTable, ",");
 			fileName = InorsDownloadConstants.IC_FILE_PATH;
 			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
 		} else if ("GRT".equals(type)) {
-			List<GrtTO> grtList = (List<GrtTO>) inorsService.getDownloadData(paramMap);
-			data = InorsDownloadUtil.getGRTBytes(year, grtList, ",");
+			ArrayList<ArrayList<LayoutTO>> grtTable = inorsService.getTableData(paramMap, rowDataLayout);
+			data = InorsDownloadUtil.getTableDataBytes(year, grtTable, ",");
 			fileName = InorsDownloadConstants.GRT_FILE_PATH;
 			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
 		}

@@ -1,5 +1,6 @@
 package com.ctb.prism.inors.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.business.IInorsBusiness;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.LayoutTO;
 
 /**
  * @author TCS
@@ -83,6 +85,15 @@ public class InorsServiceImpl implements IInorsService {
 	 */
 	public String getProductNameById(Long productId) {
 		return inorsBusiness.getProductNameById(productId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.inors.service.IInorsService#getTableData(java.util.Map, java.util.ArrayList)
+	 */
+	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout) {
+		return inorsBusiness.getTableData(paramMap, rowDataLayout);
 	}
 
 }
