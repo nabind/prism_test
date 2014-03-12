@@ -197,7 +197,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>SimplePageCachingFilter</filter-name>
-		<url-pattern>/userlogin.do</url-pattern>
+		<!--  <url-pattern>/userlogin.do</url-pattern> -->		
 		<url-pattern>/landing.do</url-pattern>
 		<url-pattern>/getStandardMatters.do</url-pattern>
 		<url-pattern>/getBrowseContent.do</url-pattern>
