@@ -1,4 +1,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@page import="com.ctb.prism.core.constant.IApplicationConstants"%>
+
 	<!--[if gt IE 8]>
     <style>
 	    .icon-leaf {
@@ -330,6 +332,9 @@
 			if (checkFirstLoad) {
 				$("#user_details").find("tr").remove();
 			}
+			
+			var currentUser = document.getElementById("currentUser").value;
+			
 			$.each(data, function (index,value) { 
 			    userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
@@ -337,19 +342,35 @@
 								//+ createStatusTag(this.status)
 								+'<td>'+this.tenantName+'</td>'
 								//+ createUserTypeTag(this.userType)
-								+ createUserRolesTag(this.availableRoleList)
-								+'<td class="vertical-center">'
+								+ createUserRolesTag(this.availableRoleList);
+				
+				if(this.userName == currentUser) {
+					userContent +=  '<td class="vertical-center">'
 									+' <span class="button-group compact">' 
 										<sec:authorize ifNotGranted="ROLE_SSO">
-											+' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> '
-										</sec:authorize>
-											+' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>'
+											+' <span class="button icon-pencil with-tooltip disabled" title="Can not be edited"></span> '
+										</sec:authorize>										
+										+' <span class="button icon-users icon-size2 with-tooltip disabled" title="Can not be logged in"></span>'
 										<sec:authorize ifNotGranted="ROLE_SSO">
-											+' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>'
+											+' <span class=" button icon-trash with-tooltip disabled" title="Can not be deleted"></span>'
 										</sec:authorize>
-									+' </span>'
-								+'</td>'
-							+'</tr>';
+										+' </span>'
+									+'</td>'
+				} else {
+					userContent +=  '<td class="vertical-center">'
+						+' <span class="button-group compact">' 
+							<sec:authorize ifNotGranted="ROLE_SSO">
+								+' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> '
+							</sec:authorize>										
+							+' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>'
+							<sec:authorize ifNotGranted="ROLE_SSO">
+								+' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>'
+							</sec:authorize>
+							+' </span>'
+						+'</td>'
+				}
+								
+				userContent +='</tr>';
 			});
 			
 			$("#user_details").append(userContent);
@@ -363,3 +384,7 @@
 			setLastRowId ($("#last_user_tenant"));
 		}
 	</script>
+	
+	  	
+<%String currentUser = (String)request.getSession().getAttribute(IApplicationConstants.CURRUSER);%>
+<input type="hidden" value="<%=currentUser%>" id="currentUser">
