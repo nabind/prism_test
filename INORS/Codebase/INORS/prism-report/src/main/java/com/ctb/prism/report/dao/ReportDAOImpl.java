@@ -386,7 +386,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @Cacheable(cacheName = "allReports")
 	 */
-	@Cacheable(value = "allReports")
+	/*@Cacheable(value = "allReports")*/
 	public List<ReportTO> getAllReportList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
@@ -1627,6 +1627,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            ,reportname and infoname
 	 * @return message
 	 */
+	// Implemented cache for better performance - By Joy
+	@Cacheable(value = "sysConfigMessageCache")
 	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
