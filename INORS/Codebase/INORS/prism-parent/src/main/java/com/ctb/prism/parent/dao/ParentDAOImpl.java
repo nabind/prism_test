@@ -55,7 +55,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions()
 	 */
-	@Cacheable(value = "securityQuestions")
+	@Cacheable(value = "configCache", key="'getSecretQuestions'.concat(#root.method.name)")
 	public List<QuestionTO> getSecretQuestions() {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SECRET_QUESTION);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
@@ -482,7 +482,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
-	@Cacheable(value="studentList")
+	@Cacheable(value="defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		String orgId = (String) paramMap.get("scrollId");
 		String adminYear = (String) paramMap.get("adminYear");
@@ -928,7 +928,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = "orgUsers", allEntries = true)
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException {
 
 		long user_id = parentTO.getUserId();

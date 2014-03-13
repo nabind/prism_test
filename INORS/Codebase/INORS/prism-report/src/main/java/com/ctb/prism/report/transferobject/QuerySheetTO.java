@@ -19,6 +19,15 @@ public class QuerySheetTO extends BaseTO {
 	private int classCount;
 	private int schoolCount;
 	private String selectedStudents;
+	private String customerId;
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
 
 	/**
 	 * @return the jobId

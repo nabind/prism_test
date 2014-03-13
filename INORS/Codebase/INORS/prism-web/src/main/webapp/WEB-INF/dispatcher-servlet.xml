@@ -66,7 +66,7 @@
 	<bean id="loggingAspect" class="com.ctb.prism.core.logger.LoggingAspect"></bean>
 	
 	<!-- Enabling Spring cache -->
-	<!-- <ehcache:annotation-driven />
+	<ehcache:annotation-driven />
 
 	<ehcache:config cache-manager="cacheManager">
 		<ehcache:evict-expired-elements interval="60" />
@@ -75,14 +75,14 @@
 	<bean id="cacheManager"
 		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="/WEB-INF/ehcache.xml" />
-	</bean> -->
-	<cache:annotation-driven />
+	</bean>
+	<!-- <cache:annotation-driven />
 	<context:component-scan base-package="caching" />
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cacheManager-ref="ehcache"/>
 	 
 	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" 
 	     p:configLocation="/WEB-INF/ehcache.xml"  
-	     p:shared="true"/> 
+	     p:shared="true"/>  -->
 	<!-- End EHCache configuration -->
 	
 	<!-- bean id="testDAO" class="com.ctb.prism.web.util.TestDAOImpl"/>
@@ -178,4 +178,5 @@
 	<import resource="security-config.xml" />
 	<import resource="ws-context.xml" />
 	<import resource="jms-config.xml" />
+	<import resource="elasticache.xml" />
 </beans>

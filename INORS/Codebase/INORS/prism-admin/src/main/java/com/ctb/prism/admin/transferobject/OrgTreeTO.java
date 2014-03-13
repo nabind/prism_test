@@ -1,10 +1,12 @@
 package com.ctb.prism.admin.transferobject;
 
+import com.ctb.prism.core.transferobject.BaseTO;
+
 /**
  * @author TCS
  * 
  */
-public class OrgTreeTO {
+public class OrgTreeTO extends BaseTO {
 	private String state;
 	private String data;
 	private long orgTreeId;

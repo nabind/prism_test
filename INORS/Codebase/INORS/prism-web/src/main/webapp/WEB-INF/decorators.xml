@@ -20,6 +20,8 @@
 		<pattern>/clearCache*</pattern>
 		<pattern>/showError.do</pattern>
 		<pattern>/clearAllCache.do</pattern>
+		<pattern>/clearConfigCache.do</pattern>
+		<pattern>/clearReportCache.do</pattern>
 		<pattern>/ReportServlet.do</pattern>
 		<pattern>/servlets/report</pattern>
 		<pattern>/servlets/resource</pattern>

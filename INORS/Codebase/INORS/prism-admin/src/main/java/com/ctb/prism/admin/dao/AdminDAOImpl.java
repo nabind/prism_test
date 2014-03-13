@@ -129,7 +129,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	@Cacheable(value = "orgTreeChildren", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap) )")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )")
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTree()");
 		String nodeId = (String) paramMap.get("nodeid");
@@ -198,7 +198,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	@Cacheable(value = "orgTreeChildren")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTreeOnRedirect()");
 		StringBuffer hierarcialOrgIds = new StringBuffer();
@@ -272,7 +272,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "orgUsers")
+	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #root.method.name )")
 	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerid, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
 		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
@@ -418,7 +418,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            ,userId
 	 * @return
 	 */
-	@Cacheable(value = "masterRoleCache")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )")
 	private List<RoleTO> getMasterRoleList(String argType, String userid, String customerId,String purpose) {
 		logger.log(IAppLogger.INFO, "argType=" + argType);
 		logger.log(IAppLogger.INFO, "userid=" + userid);
@@ -516,7 +516,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            userId, userName, emailId, password, userStatus,userRoles
 	 * @return
 	 */
-	@CacheEvict(value = "orgUsers", allEntries = true)
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: updateUser()");
 		try {
@@ -573,7 +573,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 
-	@CacheEvict(value = "orgUsers", allEntries = true)
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
 		try {
@@ -617,7 +617,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#addNewUser(java.util.Map)
 	 */
-	@CacheEvict(value = "orgUsers", allEntries = true)
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: addNewUser()");
 		UserTO to = null;
@@ -871,7 +871,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantId
 	 * @return list of orgTO
 	 */
-	@Cacheable(value = "orgChildren")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
@@ -1263,7 +1263,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllAdmin()
 	 */
-	@Cacheable(value = "allAdminYear")
+	@Cacheable(value = "configCache", key="'getAllAdmin'.concat(#root.method.name)")
 	public List<ObjectValueTO> getAllAdmin() throws SystemException {
 		List<ObjectValueTO> adminYearList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
@@ -1337,7 +1337,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllStudents(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "studentsForDownload")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )")
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId) {
 		List<ObjectValueTO> studentList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;
@@ -1359,7 +1359,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getHierarchy(java.util.Map)
 	 */
-	@Cacheable(value = "hierarchyForDownload")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getHierarchy') )")
 	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap) throws Exception {
 		String nodeId = (String) paramMap.get("nodeid");
 		String currOrg = (String) paramMap.get("currOrg");

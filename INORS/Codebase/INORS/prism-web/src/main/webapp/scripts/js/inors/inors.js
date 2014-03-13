@@ -19,6 +19,7 @@ $(document).ready(function() {
 	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
+		$(this).removeTooltip();
 		$(document).click();
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");

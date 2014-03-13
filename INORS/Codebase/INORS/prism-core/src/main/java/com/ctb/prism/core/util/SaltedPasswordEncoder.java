@@ -47,7 +47,7 @@ public class SaltedPasswordEncoder extends ShaPasswordEncoder {
 	}
 	
 	public static void main(String[] args) {
-		String encPass = SaltedPasswordEncoder.encryptPassword("Passwd12", "dummyssouser" + "as");
+		String encPass = SaltedPasswordEncoder.encryptPassword("Passwd12", "dummyssouser" + "as", 256);
 		System.out.println(encPass);
 	}
 

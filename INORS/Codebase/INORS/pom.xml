@@ -305,18 +305,33 @@
 			<version>2.5</version> <scope>provided</scope> </dependency> -->
 
 		<!-- JSON SIMPLE -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
-		</dependency>
+		</dependency> -->
 		<!-- JSON SIMPLE -->
 
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>1.0</version>
+		</dependency> -->
+		
+		<!-- Gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>1.7.1</version>
+  		</dependency>
+  		
+  		<dependency>
+		    <!-- <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-core-asl</artifactId> -->
+		    <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+		    <version>1.9.10</version>
 		</dependency>
 		
 		<!-- Gson -->
@@ -739,7 +754,8 @@
 			<version>3.1</version>
 		</dependency>
 
-		<dependency>
+		<!-- Spring eh cache -->
+		<!-- <dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>2.6.0</version>
@@ -751,7 +767,19 @@
 		    <groupId>net.sf.ehcache</groupId>
 		    <artifactId>ehcache-web</artifactId>
 		    <version>2.0.4</version>
-		</dependency>  
+		</dependency>   -->
+	            
+		<!--  memcached with aws elastiCache -->            
+        <dependency>
+	        <groupId>com.google.code.simple-spring-memcached</groupId>
+	        <artifactId>spring-cache</artifactId>
+	        <version>3.3.0</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.google.code.simple-spring-memcached</groupId>
+	        <artifactId>xmemcached-provider</artifactId>
+	        <version>3.3.0</version>
+	    </dependency>
 	            
 		            
 

@@ -1,6 +1,8 @@
 package com.ctb.prism.parent.transferobject;
 
-public class QuestionTO {
+import java.io.Serializable;
+
+public class QuestionTO implements Serializable {
 	
 	private long questionId;
 	private String question;

@@ -47,7 +47,9 @@ public final class CacheKeyUtils {
 
         final StringBuilder b = new StringBuilder("[");
         for (K entry : sorted) {
-            if (entry != null && !"REPORT_CONTEXT".equals(entry) && !"net.sf.jasperreports.parameter.jasperdesign.cache".equals(entry)
+            if (entry != null 
+            		&& !"REPORT_CONTEXT".equals(entry) 
+            		&& !"net.sf.jasperreports.parameter.jasperdesign.cache".equals(entry)
             		&& !"net.sf.jasperreports.data.cache.handler".equals(entry)) {
                 b.append(entry);
                 b.append("|");
@@ -64,9 +66,25 @@ public final class CacheKeyUtils {
     	return "";
     }
     
+    public static String string(boolean col) {
+    	return col+"";
+    }
+    
     public static String encryptedKey(String col) {
-    	if(col != null) return SaltedPasswordEncoder.encryptPassword(col, null);
+    	if(col != null) return SaltedPasswordEncoder.encryptPassword(col, null, 1);
     	return "";
     }
+    
+    public static String generateKey(Object... param) {
+    	StringBuffer buf = new StringBuffer();
+		for (Object n : param) {
+			if(n != null) buf.append(String.valueOf(n));
+		}
+		return encryptedKey(buf.toString());
+    }
+    
+    public static void main(String[] args) {
+		System.out.println( generateKey("abc", 123, true, null) );
+	}
     
 }
