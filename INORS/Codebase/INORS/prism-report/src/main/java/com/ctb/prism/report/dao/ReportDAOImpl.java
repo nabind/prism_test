@@ -536,6 +536,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return assessments;
 	}
 
+	// Implement CacheEvict - By Joy
+	@CacheEvict(value = "allReports", allEntries=true)
 	public boolean deleteReport(String reportId) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
 		try {
@@ -801,6 +803,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 
 	// Arunava Datta
+	// Implement CacheEvict - By Joy
+	@CacheEvict(value = "allReports", allEntries=true)
 	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard");
 
