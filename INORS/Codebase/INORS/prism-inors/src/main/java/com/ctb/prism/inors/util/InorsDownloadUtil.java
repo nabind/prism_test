@@ -3,8 +3,6 @@
  */
 package com.ctb.prism.inors.util;
 
-import static com.ctb.prism.inors.util.InorsDownloadUtil.wrap;
-
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -1274,7 +1272,12 @@ public class InorsDownloadUtil {
 		while (rs.next()) {
 			for (int i = 0; i < layoutTOList.size(); i++) {
 				LayoutTO to = layoutTOList.get(i);
-				to.setColumnData(wrap(rs.getString(to.getColumnAlias()), '"'));
+				String columnAlias = to.getColumnAlias();
+				if ("*".equals(columnAlias)) {
+					to.setColumnData(wrap("", '"'));
+				} else {
+					to.setColumnData(wrap(rs.getString(columnAlias), '"'));
+				}
 			}
 			tableData.add(layoutTOList);
 		}
@@ -1285,6 +1288,8 @@ public class InorsDownloadUtil {
 		ArrayList<LayoutTO> layoutTOList = new ArrayList<LayoutTO>();
 		String[] headerTokens = headers.split("\\|");
 		String[] aliasTokens = aliases.split("\\|");
+		logger.log(IAppLogger.INFO, "Headers = " + headerTokens.length);
+		logger.log(IAppLogger.INFO, "Aliases = " + aliasTokens.length);
 		for (int i = 0; i < headerTokens.length; i++) {
 			layoutTOList.add(new LayoutTO(i + 1, headerTokens[i].trim(), aliasTokens[i].trim(), ""));
 		}

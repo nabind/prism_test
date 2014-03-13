@@ -1173,13 +1173,16 @@ public class InorsController {
 
 		String productStr = product;
 		if (productStr.indexOf('+') > 0) {
-			productStr = productStr.replace('+', ' ').trim();
+			productStr = productStr.replace("+", "").trim();
 		}
 		if (productStr.indexOf('-') > 0) {
-			productStr = productStr.replace('-', ' ').trim();
+			productStr = productStr.replace("-", "").trim();
 		}
 		String layoutName = type + "_" + productStr + "_" + term + "_" + year;
 		layoutName = layoutName.toUpperCase();
+		if (layoutName.indexOf(' ') > 0) {
+			layoutName = layoutName.replaceAll("\\s+", "").trim();
+		}
 		logger.log(IAppLogger.INFO, "layoutName=" + layoutName);
 
 		String headers = propertyLookup.get(layoutName + "_HEADER");
