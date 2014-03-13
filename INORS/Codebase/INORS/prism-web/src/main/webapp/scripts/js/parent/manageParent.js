@@ -360,7 +360,7 @@ $('.view-Children').live("click", function() {
 				+obj.studentName 
 				+'</a>'
 		}else{
-			studentNameHTML += '<span class="with-tooltip tooltip-left" title="Student GRT has not been loaded<br> for this administration.<br>You will be able to see your child<br> test data once data will be loaded.">'
+			studentNameHTML += '<span class="with-tooltip tooltip-left" title="Student data is not available<br> at this time.">'
 				+obj.studentName+'</span>';
 		}
 		return studentNameHTML;
