@@ -386,7 +386,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @Cacheable(cacheName = "allReports")
 	 */
-	/*@Cacheable(value = "allReports")*/
+	@Cacheable(value = "allReports")
 	public List<ReportTO> getAllReportList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList");
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
@@ -768,6 +768,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	// 365348
+	// Implement CacheEvict - By Joy
+	@CacheEvict(value = "allReports", allEntries=true)
 	public boolean updateReportNew(ReportTO reportTO) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
 		try {
