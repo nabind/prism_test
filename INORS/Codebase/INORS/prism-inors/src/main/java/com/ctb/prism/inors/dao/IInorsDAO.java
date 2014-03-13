@@ -114,4 +114,9 @@ public interface IInorsDAO {
 	 * @return
 	 */
 	public String getProductNameById(Long productId);
+
+	/**
+	 * @return
+	 */
+	public String getCurrentAdminYear();
 }

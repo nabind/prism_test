@@ -96,4 +96,9 @@ public interface IInorsBusiness {
 	 * @return
 	 */
 	public String getProductNameById(Long productId);
+
+	/**
+	 * @return
+	 */
+	public String getCurrentAdminYear();
 }

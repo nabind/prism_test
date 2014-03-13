@@ -96,4 +96,13 @@ public class InorsServiceImpl implements IInorsService {
 		return inorsBusiness.getTableData(paramMap, rowDataLayout);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.inors.service.IInorsService#getCurrentAdminYear()
+	 */
+	public String getCurrentAdminYear() {
+		return inorsBusiness.getCurrentAdminYear();
+	}
+
 }

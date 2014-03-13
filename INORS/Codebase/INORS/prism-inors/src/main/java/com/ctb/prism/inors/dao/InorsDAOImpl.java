@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -926,6 +927,28 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			}
 		}
 		return productName;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.inors.dao.IInorsDAO#getCurrentAdminYear()
+	 */
+	public String getCurrentAdminYear() {
+		Integer year = Calendar.getInstance().get(Calendar.YEAR);
+		String currentAdminYear = year.toString();
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_CURRENT_ADMIN_YEAR);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				try {
+					Integer i = new Integer(fieldDetails.get("CURRENT_ADMIN_YEAR").toString());
+					currentAdminYear = i.toString();
+				} catch (Exception e) {
+					logger.log(IAppLogger.WARN, "Check the Current Admin Query. Returning System Year.");
+				}
+			}
+		}
+		return currentAdminYear;
 	}
 
 }

@@ -1222,5 +1222,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND cust.customerid = ? AND prod.productid = ? ",
 			" AND ROWNUM = 1");
 
+	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT SUBSTR(ADMIN_NAME, -4) FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y' AND ROWNUM = 1";
+
 }
 

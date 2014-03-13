@@ -42,8 +42,6 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.service.IInorsService;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.GrtTO;
-import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 import com.ctb.prism.inors.transferobject.LayoutTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
@@ -584,22 +582,26 @@ public class InorsController {
 	}
 
 	/**
-	 * Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
-	 * Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
-	 * Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations.
-	 * Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
+	 * Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only. Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+
+	 * administrations. (Not available for IMAST or IREAD-3) Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations. Rule 4: IREAD-3 Student Report (ISR) for the 2013
+	 * and 2014 administrations (Spring and Summer).
 	 * 
 	 * @param reportMessages
 	 * @return
 	 */
 	private String getHideContentFlagGroupDownloadForm(String groupFile, String productName, List<ReportMessageTO> reportMessages) {
 		String hideContentFlag = IApplicationConstants.FLAG_N;
+		String currentAdminYear = inorsService.getCurrentAdminYear();
+		Integer lastAdmYr = (new Integer(currentAdminYear)) - 1;
+		String lastAdminYear = lastAdmYr.toString();
+		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
+		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
 		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
 			// Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
 			// Report Notification: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
 			if (productName != null) {
 				if (productName.startsWith("ISTEP+")) {
-					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR))) {
+					if ((productName.endsWith(currentAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -612,7 +614,7 @@ public class InorsController {
 			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
 			if (productName != null) {
 				if (productName.startsWith("ISTEP+")) {
-					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -626,19 +628,19 @@ public class InorsController {
 			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
 			if (productName != null) {
 				if (productName.startsWith("ISTEP+")) {
-					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IMAST")) {
-					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IREAD-3")) {
-					if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -650,19 +652,19 @@ public class InorsController {
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
 			// Rule 2, 3 and 4
 			if (productName.startsWith("ISTEP+")) {
-				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
 				}
 			} else if (productName.startsWith("IMAST")) {
-				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
 				}
 			} else if (productName.startsWith("IREAD-3")) {
-				if ((productName.endsWith(IApplicationConstants.CURR_ADMIN_YEAR)) || (productName.endsWith(IApplicationConstants.LAST_ADMIN_YEAR))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -1103,13 +1105,6 @@ public class InorsController {
 		modelAndView.addObject("testProgram", testProgram);
 		modelAndView.addObject("corpDiocese", corpDiocese);
 		modelAndView.addObject("school", school);
-		if ((productName != null) && (!productName.isEmpty())) {
-			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_Y);
-			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_Y);
-		} else {
-			modelAndView.addObject("showGrtDiv", IApplicationConstants.FLAG_N);
-			modelAndView.addObject("showIcDiv", IApplicationConstants.FLAG_N);
-		}
 
 		String reportId = (String) request.getParameter("reportId");
 		String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
@@ -1128,6 +1123,8 @@ public class InorsController {
 		paramMap.put("USER_ID", currentUserId);
 		List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
 		modelAndView.addObject("reportMessages", reportMessages);
+		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+		modelAndView.addObject("dataloadMessage", dataloadMessage);
 
 		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
 		return modelAndView;
@@ -1139,7 +1136,6 @@ public class InorsController {
 	 * @param request
 	 * @param response
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/downloadGRTInvitationCodeFiles", method = RequestMethod.GET)
 	public void downloadGRTInvitationCodeFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: downloadGRTInvitationCodeFiles()");
@@ -1201,18 +1197,18 @@ public class InorsController {
 		paramMap.put("userName", userName);
 
 		byte[] data = null;
-		String fileName = "";
-		String zipFileName = "";
+		String fileName = layoutName.toLowerCase() + ".dat";
+		String zipFileName = layoutName.toLowerCase() + ".zip";
 		if ("IC".equals(type)) {
 			ArrayList<ArrayList<LayoutTO>> icTable = inorsService.getTableData(paramMap, rowDataLayout);
 			data = InorsDownloadUtil.getTableDataBytes(year, icTable, ",");
-			fileName = InorsDownloadConstants.IC_FILE_PATH;
-			zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
+			// fileName = InorsDownloadConstants.IC_FILE_PATH;
+			// zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
 		} else if ("GRT".equals(type)) {
 			ArrayList<ArrayList<LayoutTO>> grtTable = inorsService.getTableData(paramMap, rowDataLayout);
 			data = InorsDownloadUtil.getTableDataBytes(year, grtTable, ",");
-			fileName = InorsDownloadConstants.GRT_FILE_PATH;
-			zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
+			// fileName = InorsDownloadConstants.GRT_FILE_PATH;
+			// zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
 		}
 		try {
 			data = FileUtil.zipBytes(fileName, data);

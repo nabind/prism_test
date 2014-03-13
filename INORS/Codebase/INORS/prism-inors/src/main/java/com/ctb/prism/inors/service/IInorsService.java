@@ -67,4 +67,9 @@ public interface IInorsService {
 	 */
 	public String getProductNameById(Long productId);
 
+	/**
+	 * @return
+	 */
+	public String getCurrentAdminYear();
+
 }

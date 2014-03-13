@@ -1288,9 +1288,14 @@ public class InorsDownloadUtil {
 		ArrayList<LayoutTO> layoutTOList = new ArrayList<LayoutTO>();
 		String[] headerTokens = headers.split("\\|");
 		String[] aliasTokens = aliases.split("\\|");
-		logger.log(IAppLogger.INFO, "Headers = " + headerTokens.length);
-		logger.log(IAppLogger.INFO, "Aliases = " + aliasTokens.length);
-		for (int i = 0; i < headerTokens.length; i++) {
+		int headerCount = headerTokens.length;
+		int aliasCount = aliasTokens.length;
+		logger.log(IAppLogger.INFO, "Headers = " + headerCount);
+		logger.log(IAppLogger.INFO, "Aliases = " + aliasCount);
+		if (headerCount != aliasCount) {
+			logger.log(IAppLogger.WARN, "Headers and Aliases do not match. Please configure Properties for them.");
+		}
+		for (int i = 0; i < headerCount; i++) {
 			layoutTOList.add(new LayoutTO(i + 1, headerTokens[i].trim(), aliasTokens[i].trim(), ""));
 		}
 		return layoutTOList;

@@ -688,4 +688,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout) {
 		return inorsDAO.getTableData(paramMap, rowDataLayout);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#getCurrentAdminYear()
+	 */
+	public String getCurrentAdminYear() {
+		return inorsDAO.getCurrentAdminYear();
+	}
 }
