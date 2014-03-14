@@ -937,6 +937,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			String classNames = to.getKlass();
 			String gradeNames = to.getGrade();
 			String fileType = to.getGroupFile();
+			String customerId = to.getCustomerId();
 			String students = to.getStudents();
 			int studentCount = students.split(",").length;
 			int classCount = classNames.split(",").length;
@@ -962,7 +963,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			querySheetTO.setClassCount(classCount);
 			querySheetTO.setSchoolCount(schoolCount);
 			querySheetTO.setSelectedStudents(students);
-			querySheetTO.setCustomerId(to.getCustomerId());
+			querySheetTO.setCustomerId(customerId);
 		}
 		return querySheetTO;
 	}
@@ -983,6 +984,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String klass = querySheetTO.getClassNames();
 		String orgNodeIds = getOrgNodeIds(corpDiocese, schools, klass);
 		String selectedStudents = querySheetTO.getSelectedStudents();
+		String customerId = querySheetTO.getCustomerId();
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId,
 				gradeId);
 		Map<String, String> valueMap = new HashMap<String, String>();
@@ -1006,7 +1008,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		List<String> classNameList = new ArrayList<String>();
 		if ("-1".equals(klass)) {
-			classNameList = getSelectedClassNames(stateOrgNodeId, selectedStudents, querySheetTO.getCustomerId());
+			classNameList = getSelectedClassNames(stateOrgNodeId, selectedStudents, customerId);
 		} else {
 			classNameList.add(valueMap.get(querySheetTO.getClassNames()));
 		}
@@ -1325,9 +1327,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds, String customerId) {
 		List<String> classes = new ArrayList<String>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(
-				CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), 
-				stateOrgNodeId, customerId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), stateOrgNodeId, customerId);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				classes.add((String) fieldDetails.get("ORG_NODE_NAME"));

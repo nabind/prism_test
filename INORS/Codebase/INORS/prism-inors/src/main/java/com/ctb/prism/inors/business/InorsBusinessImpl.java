@@ -327,11 +327,16 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
 
 						// Create Zip file in disk from all the pdf files
-						FileUtil.createDuplexZipFile(zipFileName, filePaths, rootPath);
-
-						fileSize = FileUtil.fileSize(zipFileName);
-						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
-						jobLog = "Asynchoronous Separate Pdfs";
+						try {
+							FileUtil.createDuplexZipFile(zipFileName, filePaths, rootPath);
+							fileSize = FileUtil.fileSize(zipFileName);
+							jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+							jobLog = "Asynchoronous Separate Pdfs";
+						} catch (Exception e) {
+							jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+							jobLog = e.getMessage();
+							e.printStackTrace();
+						}
 					}
 					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
 				} catch (FileNotFoundException e) {

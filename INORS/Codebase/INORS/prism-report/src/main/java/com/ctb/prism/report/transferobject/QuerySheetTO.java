@@ -21,14 +21,6 @@ public class QuerySheetTO extends BaseTO {
 	private String selectedStudents;
 	private String customerId;
 
-	public String getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
-
 	/**
 	 * @return the jobId
 	 */
@@ -252,6 +244,21 @@ public class QuerySheetTO extends BaseTO {
 	 */
 	public void setSelectedStudents(String selectedStudents) {
 		this.selectedStudents = selectedStudents;
+	}
+
+	/**
+	 * @return the customerId
+	 */
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @param customerId
+	 *            the customerId to set
+	 */
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 }

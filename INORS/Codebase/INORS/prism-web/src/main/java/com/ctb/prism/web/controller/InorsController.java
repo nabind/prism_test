@@ -1029,6 +1029,12 @@ public class InorsController {
 		return null;
 	}
 
+	/**
+	 * Clears the Group Download related Session data.
+	 * 
+	 * @param request
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/clearGDCache", method = RequestMethod.GET)
 	public void clearGDCache(HttpServletRequest request) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: clearGDCache()");
@@ -1043,7 +1049,13 @@ public class InorsController {
 		request.getSession().removeAttribute("p_collation");
 		logger.log(IAppLogger.INFO, "Exit: clearGDCache()");
 	}
-	
+
+	/**
+	 * Returns the product name from the product id.
+	 * 
+	 * @param testAdministrationVal
+	 * @return
+	 */
 	private String getProductNameById(String testAdministrationVal) {
 		String productName = null;
 		try {
@@ -1199,17 +1211,9 @@ public class InorsController {
 		byte[] data = null;
 		String fileName = layoutName.toLowerCase() + ".dat";
 		String zipFileName = layoutName.toLowerCase() + ".zip";
-		if ("IC".equals(type)) {
-			ArrayList<ArrayList<LayoutTO>> icTable = inorsService.getTableData(paramMap, rowDataLayout);
-			data = InorsDownloadUtil.getTableDataBytes(year, icTable, ",");
-			// fileName = InorsDownloadConstants.IC_FILE_PATH;
-			// zipFileName = InorsDownloadConstants.IC_ZIP_FILE_PATH;
-		} else if ("GRT".equals(type)) {
-			ArrayList<ArrayList<LayoutTO>> grtTable = inorsService.getTableData(paramMap, rowDataLayout);
-			data = InorsDownloadUtil.getTableDataBytes(year, grtTable, ",");
-			// fileName = InorsDownloadConstants.GRT_FILE_PATH;
-			// zipFileName = InorsDownloadConstants.GRT_ZIP_FILE_PATH;
-		}
+		ArrayList<ArrayList<LayoutTO>> table = inorsService.getTableData(paramMap, rowDataLayout);
+		data = InorsDownloadUtil.getTableDataBytes(table, IApplicationConstants.COMMA);
+
 		try {
 			data = FileUtil.zipBytes(fileName, data);
 		} catch (IOException e) {
@@ -1218,63 +1222,6 @@ public class InorsController {
 		}
 		FileUtil.browserDownload(response, data, zipFileName);
 		logger.log(IAppLogger.INFO, "Exit: downloadGRTInvitationCodeFiles()");
-	}
-
-	/**
-	 * @param request
-	 * @return
-	 * @deprecated
-	 */
-	@RequestMapping(value = "/populateDistrictGrt", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateDistrictGrt(HttpServletRequest request) {
-		logger.log(IAppLogger.INFO, "Enter: populateDistrictGrt()");
-		long t1 = System.currentTimeMillis();
-		Map<String, String> paramMap = new HashMap<String, String>();
-		paramMap.put("testProgram", request.getParameter("testProgram"));
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> districtList = null;
-		String jsonString = "";
-		try {
-			districtList = inorsService.populateDistrictGrt(paramMap);
-			jsonString = JsonUtil.convertToJsonAdmin(districtList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
-			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: populateDistrictGrt(): " + String.valueOf(t2 - t1) + "ms");
-		}
-		return jsonString;
-	}
-
-	/**
-	 * Creates a json for all the school under a corporation.
-	 * 
-	 * @param request
-	 * @return
-	 * @deprecated
-	 */
-	@RequestMapping(value = "/populateSchoolGrt", method = RequestMethod.GET)
-	public @ResponseBody
-	String populateSchoolGrt(HttpServletRequest request) {
-		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
-		long t1 = System.currentTimeMillis();
-		Map<String, String> paramMap = new HashMap<String, String>();
-		paramMap.put("districtId", request.getParameter("districtId"));
-		paramMap.put("testProgram", request.getParameter("testProgram"));
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> schoolList = null;
-		String jsonString = "";
-		try {
-			schoolList = inorsService.populateSchoolGrt(paramMap);
-			jsonString = JsonUtil.convertToJsonAdmin(schoolList);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage());
-			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Exit: populateSchoolGrt(): ", String.valueOf(t2 - t1), "ms"));
-		}
-		return jsonString;
 	}
 
 	/**

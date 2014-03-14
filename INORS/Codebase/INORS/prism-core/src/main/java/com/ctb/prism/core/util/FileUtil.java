@@ -247,6 +247,7 @@ public class FileUtil {
 	public static byte[] getMergedPdfBytes(List<String> files) {
 		return getMergedPdfBytes(files, "");
 	}
+
 	public static byte[] getMergedPdfBytes(List<String> files, String rootPath) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		if (files != null && !files.isEmpty()) {
@@ -469,6 +470,7 @@ public class FileUtil {
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths) throws IOException {
 		createDuplexZipFile(zipFileName, filePaths, "");
 	}
+
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String rootPath) throws IOException {
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
@@ -489,13 +491,17 @@ public class FileUtil {
 				} else {
 					fileName = fileName + ".pdf";
 				}
-				ZipEntry entry = new ZipEntry(fileName);
-				byte[] input = getDuplexPdfBytes(filePath);
-				logger.log(IAppLogger.INFO, input.length + " bytes read");
-				entry.setSize(input.length);
-				zos.putNextEntry(entry);
-				zos.write(input);
-				zos.closeEntry();
+				try {
+					ZipEntry entry = new ZipEntry(fileName);
+					byte[] input = getDuplexPdfBytes(filePath);
+					logger.log(IAppLogger.INFO, input.length + " bytes read");
+					entry.setSize(input.length);
+					zos.putNextEntry(entry);
+					zos.write(input);
+					zos.closeEntry();
+				} catch (Exception e) {
+					logger.log(IAppLogger.WARN, "Skiping " + fileName + " in " + zipFileName);
+				}
 			}
 			zos.close();
 			logger.log(IAppLogger.INFO, "Zip file [" + zipFileName + "] created");
