@@ -174,7 +174,12 @@ public class InorsDownloadUtil {
 				if ("*".equals(columnAlias)) {
 					to.setColumnData(wrap("", '"'));
 				} else {
-					to.setColumnData(wrap(rs.getString(columnAlias), '"'));
+					try {
+						to.setColumnData(wrap(rs.getString(columnAlias), '"'));
+					} catch (Exception e) {
+						to.setColumnData(wrap("", '"'));
+						logger.log(IAppLogger.ERROR, columnAlias + ": " + e.getMessage());
+					}
 				}
 			}
 			tableData.add(layoutTOList);
