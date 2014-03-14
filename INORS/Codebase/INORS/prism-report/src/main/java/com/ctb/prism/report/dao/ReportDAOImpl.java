@@ -1120,25 +1120,31 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception {
 		try {
-			int gdfExpiryTimeRange = Integer.parseInt(gdfExpiryTime);
+			int gdfExpiryTimeRange=Integer.parseInt(gdfExpiryTime);
 			logger.log(IAppLogger.INFO, "Entering Scheduled method for GROUP DOWNLOAD FILES--------------- ");
-			List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST, gdfExpiryTimeRange);
+			List<Map<String,Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST,gdfExpiryTimeRange);
 			String appendLog = " ... File is deleted by cron job as the file is expired : " + Utils.getDateTime();
-			if (dataList != null && dataList.size() > 0) {
-				for (Map<String, Object> data : dataList) {
-					String filePath = (String) data.get("request_filename");
-					long jobId = ((BigDecimal) data.get("job_id")).longValue();
-					logger.log(IAppLogger.INFO, "File Path/Job Id--------------" + filePath + "/" + jobId);
-					File file = new File(filePath);
-					if (file.exists()) {
-						file.delete();
+			if ( dataList != null && dataList.size() > 0 )
+			{
+				for (Map<String, Object> data : dataList)
+				{
+					String filePath=(String) data.get("request_filename");
+					if(filePath != null && filePath.length() > 0) {
+						long jobId=((BigDecimal) data.get("job_id")).longValue();
+						logger.log(IAppLogger.INFO, "File Path/Job Id--------------"+filePath+"/"+jobId);
+						File file  = new File (filePath);
+						if(file.exists())
+						{
+							file.delete();
+						}
+						getJdbcTemplatePrism().update(IReportQuery.DELETE_SCHEDULED_GROUP_FILES,appendLog,jobId);
 					}
-					getJdbcTemplatePrism().update(IReportQuery.DELETE_SCHEDULED_GROUP_FILES, appendLog, jobId);
 				}
 				logger.log(IAppLogger.INFO, "Exiting Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 			}
+			
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ", e);
+			logger.log(IAppLogger.ERROR, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 		}
 	}
 
