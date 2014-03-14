@@ -59,6 +59,7 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class FileUtil {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(FileUtil.class.getName());
+	// private static final String TEST_DIR = "C:\\Temp\\GroupDownload\\";
 
 	/**
 	 * Method to download a file through client browser.
@@ -472,6 +473,9 @@ public class FileUtil {
 	}
 
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String rootPath) throws IOException {
+		// test start
+		// zipFileName = TEST_DIR + getFileNameFromFilePath(zipFileName);
+		// test end
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {
@@ -552,9 +556,14 @@ public class FileUtil {
 	 * 
 	 * @param pdfFileName
 	 * @param pdfContent
+	 * @throws DocumentException
+	 * @throws IOException
 	 */
-	public static void createDuplexPdf(String pdfFileName, String pdfContent) {
+	public static void createDuplexPdf(String pdfFileName, String pdfContent) throws DocumentException, IOException {
 		try {
+			// test start
+			// pdfFileName = TEST_DIR + getFileNameFromFilePath(pdfFileName);
+			// test end
 			OutputStream file = new FileOutputStream(new File(pdfFileName));
 			Document document = new Document();
 			PdfWriter.getInstance(document, file);
@@ -567,8 +576,8 @@ public class FileUtil {
 			}
 			document.close();
 			file.close();
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Unable to Create Duplex Pdf");
+		} finally {
+			logger.log(IAppLogger.INFO, "Exit: createDuplexPdf()");
 		}
 	}
 

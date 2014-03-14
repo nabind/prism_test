@@ -46,6 +46,7 @@ import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
+import com.lowagie.text.DocumentException;
 
 /**
  * @author TCS
@@ -292,11 +293,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "filePaths: " + filePaths.size());
 
 			if (!filePathsGD.isEmpty()) {
-				String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to));
-				FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath, "/GDF/", querySheetFileName), querySheetAsString);
-				filePaths.put(CustomStringUtil.appendString("/GDF/", querySheetFileName), querySheetFileName);
-				filePaths.putAll(filePathsGD);
 				try {
+					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to));
+					FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath, "/GDF/", querySheetFileName), querySheetAsString);
+					filePaths.put(CustomStringUtil.appendString("/GDF/", querySheetFileName), querySheetFileName);
+					filePaths.putAll(filePathsGD);
 					if ("CP".equals(button)) {
 						/**
 						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
@@ -344,6 +345,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					jobLog = e.getMessage();
 					e.printStackTrace();
 				} catch (IOException e) {
+					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+					jobLog = e.getMessage();
+					e.printStackTrace();
+				} catch (DocumentException e) {
 					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
 					e.printStackTrace();
