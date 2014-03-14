@@ -158,7 +158,7 @@ public interface IParentQuery {
 			" WHERE U.USERID = A.USERID ",
 			" AND Q.PH_QUESTIONID = A.PH_QUESTIONID ",
 			" AND UPPER(U.USERNAME) = UPPER(?) ",
-			" AND U.ACTIVATION_STATUS ='AC' ",
+			" AND U.ACTIVATION_STATUS in ('SS','AC') ",
 			" ORDER BY A.PH_ANSWERID");
 
 	// Added by Ravi for Manage Profile
