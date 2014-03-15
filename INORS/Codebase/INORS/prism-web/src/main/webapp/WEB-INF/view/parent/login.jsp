@@ -89,7 +89,7 @@
 			<div class="boxsshade">
 				<div class="rowTwo">
 					
-					<h1 class="h1style">Welcome to <span class="acsicol">ACSI Data Online for Parents!</span></h1>
+					<h1 class="h1style">Welcome to <span class="acsicol">Indiana Parent Network!</span></h1>
 					<div class="loginMsg">
 						<p style="line-height:120%">The <i>Association of Christian Schools International</i> is committed to supporting academic success and to promoting the growth of all students. You can help by playing an active role in your child's education. Create an account on this site to access personalized resources, activities, and information, which will help support your child's education throughout the year.</p>
 						<p style="line-height:120%">This site provides your child's assessment results to help you understand strengths and learning needs. You will be able to see the results as soon as they are available. Also, you can review your child's progress year after year.</p>
@@ -169,17 +169,17 @@
 						</li>
 						<li>
 							<a class="" href="#">
-								ACSI Data Online for Parents Tutorial for Parents
+								Indiana Parent Network Tutorial for Parents
 							</a>
 						</li>
 						<li>
 							<a class="" href="#">
-								ACSI Data Online for Parents Tutorial for School Administrators
+								Indiana Parent Network Tutorial for School Administrators
 							</a>
 						</li>
 					</ul>
 					
-					For questions about the ACSI Data Online for Parents, please email support@ctb.com or call 1-800-481-4769.
+					For questions about the Indiana Parent Network, please email support@ctb.com or call 1-800-481-4769.
 				
 				</div>
 			</div>

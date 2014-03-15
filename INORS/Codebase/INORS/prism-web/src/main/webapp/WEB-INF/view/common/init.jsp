@@ -26,7 +26,7 @@
 		
 		if(!window.slider) var slider={};
 	    slider.data=[
-	                 {"id":"slide-img-1","client":"","desc":"welcome to ACSI Data Online for Parents"},
+	                 {"id":"slide-img-1","client":"","desc":"welcome to Indiana Parent Network"},
 	                 {"id":"slide-img-2","client":"","desc":"explore the links below for additional information"},
 	                 {"id":"slide-img-3","client":"","desc":"add all your child information into single login"}];
 	    

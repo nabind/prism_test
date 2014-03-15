@@ -243,7 +243,7 @@
 					</div>
 					<div class="boxsshade">
 						<div class="rowTwo">
-							<!--<h1 class="h1style">Welcome to <span class="acsicol">ACSI Data Online for Parents!</span></h1>-->
+							<!--<h1 class="h1style">Welcome to <span class="acsicol">Indiana Parent Network!</span></h1>-->
 							<h1 class="h1style"><spring:message code="pnlogin.page.welcome"/></h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
@@ -350,7 +350,7 @@
 								</li><br>
 								<li>
 									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide_For_Parents.pdf',800,600)">
-										For questions about ACSI Data Online for Parents, access the <small class="tag blue-bg">Quick Start Guide For Parents</small> here.
+										For questions about Indiana Parent Network, access the <small class="tag blue-bg">Quick Start Guide For Parents</small> here.
 									</a>
 								</li>
 							</ul>
