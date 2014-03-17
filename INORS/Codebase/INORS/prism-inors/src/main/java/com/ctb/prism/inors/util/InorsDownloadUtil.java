@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.beanio.stream.RecordIOException;
 
@@ -167,11 +169,10 @@ public class InorsDownloadUtil {
 	 */
 	public static ArrayList<ArrayList<LayoutTO>> getTableDataFromResultSet(ResultSet rs, ArrayList<LayoutTO> rowLayout) throws SQLException {
 		ArrayList<ArrayList<LayoutTO>> tableData = new ArrayList<ArrayList<LayoutTO>>();
-		ArrayList<LayoutTO> rowData = null;
-		while (rs.next()) {
-			rowData = new ArrayList<LayoutTO>();
-			for (int i = 0; i < rowLayout.size(); i++) {
-				LayoutTO columnLayout = rowLayout.get(i);
+		while (rs.next()) { // Rows
+			ArrayList<LayoutTO> rowData = new ArrayList<LayoutTO>();
+			for (int i = 0; i < rowLayout.size(); i++) { // Columns
+				LayoutTO columnLayout = new LayoutTO(rowLayout.get(i).getColumnNum(), rowLayout.get(i).getHeaderText(), rowLayout.get(i).getColumnAlias(), null);
 				String columnAlias = columnLayout.getColumnAlias();
 				if ("*".equals(columnAlias)) {
 					columnLayout.setColumnData(wrap("", '"'));
