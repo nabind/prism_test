@@ -1230,7 +1230,7 @@ public class InorsController {
 	 * @throws Exception
 	 */
 
-	@Scheduled(cron = "* * 1 * * ?")
+	@Scheduled(cron="${cron.expression}")
 	public void doSomething() throws Exception {
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES --------------- ");
 		String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");

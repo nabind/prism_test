@@ -27,7 +27,7 @@ public class UsabilityLogger {
 	 * Usability log Before method execution
 	 * @param joinPoint
 	 */
-	@Before("execution(* com.ctb.prism.web.controller.ReportController.openReportHtml(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)) && args(req, res)")
+	//@Before("execution(* com.ctb.prism.web.controller.ReportController.openReportHtml(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)) && args(req, res)")
 	public void logAfter(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
 		UsabilityTO usability = new UsabilityTO();
 		try {
