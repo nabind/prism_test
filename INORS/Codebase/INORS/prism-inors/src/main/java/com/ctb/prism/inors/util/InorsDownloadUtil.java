@@ -186,10 +186,10 @@ public class InorsDownloadUtil {
 				}
 				rowData.add(columnLayout);
 			}
-			print(rowData);
+			// print(rowData);
 			tableData.add(rowData);
 		}
-		printTable(tableData);
+		// printTable(tableData);
 		return tableData;
 	}
 
