@@ -165,25 +165,30 @@ public class InorsDownloadUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static ArrayList<ArrayList<LayoutTO>> getTableDataFromResultSet(ResultSet rs, ArrayList<LayoutTO> layoutTOList) throws SQLException {
+	public static ArrayList<ArrayList<LayoutTO>> getTableDataFromResultSet(ResultSet rs, ArrayList<LayoutTO> rowLayout) throws SQLException {
 		ArrayList<ArrayList<LayoutTO>> tableData = new ArrayList<ArrayList<LayoutTO>>();
+		ArrayList<LayoutTO> rowData = null;
 		while (rs.next()) {
-			for (int i = 0; i < layoutTOList.size(); i++) {
-				LayoutTO to = layoutTOList.get(i);
-				String columnAlias = to.getColumnAlias();
+			rowData = new ArrayList<LayoutTO>();
+			for (int i = 0; i < rowLayout.size(); i++) {
+				LayoutTO columnLayout = rowLayout.get(i);
+				String columnAlias = columnLayout.getColumnAlias();
 				if ("*".equals(columnAlias)) {
-					to.setColumnData(wrap("", '"'));
+					columnLayout.setColumnData(wrap("", '"'));
 				} else {
 					try {
-						to.setColumnData(wrap(rs.getString(columnAlias), '"'));
+						columnLayout.setColumnData(wrap(rs.getString(columnAlias), '"'));
 					} catch (Exception e) {
-						to.setColumnData(wrap("", '"'));
+						columnLayout.setColumnData(wrap("", '"'));
 						logger.log(IAppLogger.ERROR, columnAlias + ": " + e.getMessage());
 					}
 				}
+				rowData.add(columnLayout);
 			}
-			tableData.add(layoutTOList);
+			print(rowData);
+			tableData.add(rowData);
 		}
+		printTable(tableData);
 		return tableData;
 	}
 
@@ -216,9 +221,11 @@ public class InorsDownloadUtil {
 	 * 
 	 * @param rowDataLayout
 	 */
-	public static void print(ArrayList<LayoutTO> rowDataLayout) {
-		for (LayoutTO to : rowDataLayout) {
-			System.out.println(to);
+	public static void print(ArrayList<LayoutTO> rowData) {
+		for (LayoutTO columnData : rowData) {
+			if ("STUDENT_LAST_NAME".equals(columnData.getColumnAlias())) {
+				System.out.println("before add: " + columnData.getColumnData());
+			}
 		}
 	}
 
@@ -227,9 +234,13 @@ public class InorsDownloadUtil {
 	 * 
 	 * @param tableDataLayout
 	 */
-	public static void printTable(ArrayList<ArrayList<LayoutTO>> tableDataLayout) {
-		for (ArrayList<LayoutTO> rowDataLayout : tableDataLayout) {
-			print(rowDataLayout);
+	public static void printTable(ArrayList<ArrayList<LayoutTO>> tableData) {
+		for (ArrayList<LayoutTO> rowData : tableData) {
+			for (LayoutTO columnData : rowData) {
+				if ("STUDENT_LAST_NAME".equals(columnData.getColumnAlias())) {
+					System.out.println("returning: " + columnData.getColumnData());
+				}
+			}
 		}
 	}
 }
