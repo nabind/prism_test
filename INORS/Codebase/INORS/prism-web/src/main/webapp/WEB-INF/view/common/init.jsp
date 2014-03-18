@@ -334,9 +334,9 @@
 			}
 			
 			var currentUser = document.getElementById("currentUser").value;
-			
+			var orgLevel = $('#orgLevel').val();
 			$.each(data, function (index,value) { 
-			    userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
+				userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
 								+'<td class="hide-on-tablet">' + this.userDisplayName +'</td>'
 								//+ createStatusTag(this.status)
@@ -358,15 +358,21 @@
 									+'</td>'
 				} else {
 					userContent +=  '<td class="vertical-center">'
-						+' <span class="button-group compact">' 
+						+' <span class="button-group compact">'; 
 							<sec:authorize ifNotGranted="ROLE_SSO">
-								+' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> '
-							</sec:authorize>										
-							+' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>'
-							<sec:authorize ifNotGranted="ROLE_SSO">
-								+' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>'
+								userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
+							</sec:authorize>	
+							<sec:authorize ifAnyGranted="ROLE_SSO">
+								if(orgLevel == 4) userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
 							</sec:authorize>
-							+' </span>'
+							userContent += ' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>';
+							<sec:authorize ifNotGranted="ROLE_SSO">
+								userContent += ' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>';
+							</sec:authorize>
+							<sec:authorize ifAnyGranted="ROLE_SSO">
+								if(orgLevel == 4) userContent += ' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>';
+							</sec:authorize>
+							userContent += ' </span>'
 						+'</td>'
 				}
 								
