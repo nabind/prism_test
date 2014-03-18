@@ -12,7 +12,8 @@
 			if(allUsers != null && allUsers.length > 0) {
 				$('#report-list').tablesorter({
 					headers: {
-						5: { sorter: false }
+						//Change for TD 77643 - By Joy
+						4: { sorter: false }
 					},
 					sortList: [[0,1]]
 				});

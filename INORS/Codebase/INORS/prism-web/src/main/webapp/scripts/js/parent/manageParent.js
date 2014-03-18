@@ -30,7 +30,8 @@ $('.view-Children').live("click", function() {
 			if(parents != null && parents.length > 0) {
 				$('#report-list').tablesorter({
 					headers: {
-						4: { sorter: false }
+						//Change for TD 77643 - By Joy
+						3: { sorter: false }
 					}/*,
 					sortList: [[0,1]]*/
 				});
