@@ -350,7 +350,7 @@
 								</li><br>
 								<li>
 									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide_For_Parents.pdf',800,600)">
-										For questions about Indiana Parent Network, access the <small class="tag blue-bg">Quick Start Guide For Parents</small> here.
+										For questions about <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">Quick Start Guide For Parents</small> here.
 									</a>
 								</li>
 							</ul>
