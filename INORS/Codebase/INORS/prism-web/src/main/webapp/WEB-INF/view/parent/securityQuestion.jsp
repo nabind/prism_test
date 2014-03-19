@@ -40,7 +40,7 @@
 	<div class="field-block button-height noEnterSubmit">
 		<input type="hidden" name="ansId1" id="ansId1" value="-1" />
 		<label for="ans1" class="label"><b>Your Answer</b><span class="icon-star icon-size1 red"></span></label>
-		<input type="text" name="ans1" id="ans1" value="" maxlength="199" class="input validate[required]" maxlength="200">
+		<input type="text" name="ans1" id="ans1" value="" maxlength="199" class="input validate[required]" maxlength="200" style="width:395px">
 	</div>
 
 	<div class="field-block button-height noEnterSubmit">
@@ -60,7 +60,7 @@
 	<div class="field-block button-height noEnterSubmit">
 		<input type="hidden" name="ansId2" id="ansId2" value="-1" />
 		<label for="ans2" class="label"><b>Your Answer</b><span class="icon-star icon-size1 red"></span></label>
-		<input type="text" name="ans2" id="ans2" value="" maxlength="199" class="input validate[required]" maxlength="200">
+		<input type="text" name="ans2" id="ans2" value="" maxlength="199" class="input validate[required]" maxlength="200" style="width:395px">
 	</div>
 
 	<div class="field-block button-height noEnterSubmit">
@@ -80,6 +80,6 @@
 	<div class="field-block button-height noEnterSubmit">
 		<input type="hidden" name="ansId3" id="ansId3" value="-1" />
 		<label for="ans3" class="label"><b>Your Answer</b><span class="icon-star icon-size1 red"></span></label>
-		<input type="text" name="ans3" id="ans3" value="" maxlength="199" class="input validate[required]" maxlength="200">
+		<input type="text" name="ans3" id="ans3" value="" maxlength="199" class="input validate[required]" maxlength="200" style="width:395px">
 	</div>
 </c:if>
