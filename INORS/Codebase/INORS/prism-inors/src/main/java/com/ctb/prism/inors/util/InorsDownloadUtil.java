@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.beanio.stream.RecordIOException;
 
@@ -34,17 +32,22 @@ public class InorsDownloadUtil {
 			CharArrayWriter out = new CharArrayWriter();
 			try {
 				// Write the Header
-				for (LayoutTO to : tableData.get(0)) {
+				ArrayList<LayoutTO> headerLayout = tableData.get(0);
+				int i = 0;
+				for (LayoutTO to : headerLayout) {
+					i = i + 1;
 					out.write(to.getHeaderText());
-					out.write(delimiter);
+					if (i < headerLayout.size()) out.write(delimiter);
 				}
 				out.write("\n");
 
 				// Write the row wise data
 				for (ArrayList<LayoutTO> rowData : tableData) {
+					i = 0;
 					for (LayoutTO to : rowData) {
+						i = i + 1;
 						out.write(to.getColumnData());
-						out.write(delimiter);
+						if (i < rowData.size()) out.write(delimiter);
 					}
 					out.write("\n");
 				}
