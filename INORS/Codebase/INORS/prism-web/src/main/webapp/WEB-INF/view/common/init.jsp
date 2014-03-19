@@ -335,6 +335,13 @@
 			
 			var currentUser = document.getElementById("currentUser").value;
 			var orgLevel = $('#orgLevel').val();
+			<sec:authorize ifAnyGranted="ROLE_SSO">
+				if(orgLevel == 4) {
+					$("#addUser").show();
+				} else {
+					$("#addUser").hide();
+				}
+			</sec:authorize>
 			$.each(data, function (index,value) { 
 				userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'

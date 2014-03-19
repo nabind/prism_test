@@ -45,12 +45,10 @@
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>
 				</span>
 				
-				<sec:authorize ifNotGranted="ROLE_SSO">
 				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left" >
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					Add User
 				</a>
-				</sec:authorize>
 				<a class="button float-right" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> Download Users</a>
 			</div>
 			
