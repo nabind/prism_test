@@ -298,7 +298,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, orgMode, tenantId, customerid, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId, adminYear, userName, IApplicationConstants.ROLE_PARENT_ID);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId,IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
