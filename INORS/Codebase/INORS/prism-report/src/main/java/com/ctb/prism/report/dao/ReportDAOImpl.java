@@ -1263,6 +1263,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String ic = (String) data.get("IC");
 				String isr = (String) data.get("ISR");
 				String ip = (String) data.get("IP");
+				String icFlag = (String) data.get("IC_FLAG");
+				String isrFlag = (String) data.get("ISR_FLAG");
+				String ipFlag = (String) data.get("IP_FLAG");
 
 				logger.log(IAppLogger.DEBUG, "rowNum = " + rowNum);
 				logger.log(IAppLogger.DEBUG, "id = " + id);
@@ -1282,6 +1285,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				student.setIc(ic);
 				student.setIsr(isr);
 				student.setIp(ip);
+				student.setIcFlag(icFlag);
+				student.setIsrFlag(isrFlag);
+				student.setIpFlag(ipFlag);
 				studentList.add(student);
 			}
 		}

@@ -1138,6 +1138,15 @@ public class InorsController {
 		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
 		modelAndView.addObject("dataloadMessage", dataloadMessage);
 
+		String currentAdminYear = inorsService.getCurrentAdminYear();
+		Integer lastAdmYr = (new Integer(currentAdminYear)) - 1;
+		String lastAdminYear = lastAdmYr.toString();
+		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
+		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
+		
+		modelAndView.addObject("currentAdminYear", currentAdminYear);
+		modelAndView.addObject("lastAdminYear", lastAdminYear);
+
 		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
 		return modelAndView;
 	}

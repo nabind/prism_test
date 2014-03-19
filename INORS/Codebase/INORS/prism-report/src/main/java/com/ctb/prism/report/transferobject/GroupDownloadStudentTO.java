@@ -20,6 +20,9 @@ public class GroupDownloadStudentTO extends BaseTO implements Comparable<GroupDo
 	private String ip;
 	private String both;
 	private String ic;
+	private String icFlag;
+	private String isrFlag;
+	private String ipFlag;
 
 	/**
 	 * @return the rowNum
@@ -154,6 +157,51 @@ public class GroupDownloadStudentTO extends BaseTO implements Comparable<GroupDo
 	 */
 	public void setIc(String ic) {
 		this.ic = ic;
+	}
+
+	/**
+	 * @return the icFlag
+	 */
+	public String getIcFlag() {
+		return icFlag;
+	}
+
+	/**
+	 * @param icFlag
+	 *            the icFlag to set
+	 */
+	public void setIcFlag(String icFlag) {
+		this.icFlag = icFlag;
+	}
+
+	/**
+	 * @return the isrFlag
+	 */
+	public String getIsrFlag() {
+		return isrFlag;
+	}
+
+	/**
+	 * @param isrFlag
+	 *            the isrFlag to set
+	 */
+	public void setIsrFlag(String isrFlag) {
+		this.isrFlag = isrFlag;
+	}
+
+	/**
+	 * @return the ipFlag
+	 */
+	public String getIpFlag() {
+		return ipFlag;
+	}
+
+	/**
+	 * @param ipFlag
+	 *            the ipFlag to set
+	 */
+	public void setIpFlag(String ipFlag) {
+		this.ipFlag = ipFlag;
 	}
 
 	public int compareTo(GroupDownloadStudentTO o) {
