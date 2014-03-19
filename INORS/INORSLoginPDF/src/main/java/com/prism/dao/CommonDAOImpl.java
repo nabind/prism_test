@@ -687,4 +687,80 @@ public class CommonDAOImpl implements CommonDAO {
 		logger.info("EXT studentIdList.size(): " + studentIdList.size());
 		return studentIdList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.prism.dao.CommonDAO#getSubjectPrefix(java.lang.String)
+	 */
+	public String getSubjectPrefix(String schoolId) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String districtId = "";
+		String districtName = "";
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_ORG);
+			pstmt.setString(1, schoolId);
+			pstmt.setString(2, "2");
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				districtId = rs.getString("ORG_NODEID");
+				districtName = rs.getString("ORG_NODE_NAME");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return getProductName() + " " + districtName + " " + districtId;
+	}
+
+	
+	/**
+	 * @return
+	 */
+	private String getProductName() {
+		String currentAdminYear = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_PRODUCT_NAME);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				currentAdminYear = rs.getString("PRODUCT_NAME");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return currentAdminYear;
+	}
 }

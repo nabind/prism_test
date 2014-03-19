@@ -139,7 +139,8 @@ public class UserAccountPdf {
 				/* Fetch support email from customer table */
 				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
+					String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
+					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail, mailSubject)) {
 						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
 						// removeFile(encDocLocation);
 						logger.info("Mail sent successfully to " + school.getEmail());
@@ -197,7 +198,8 @@ public class UserAccountPdf {
 				/* Fetch support email from customer table */
 				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
+					String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
+					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail, mailSubject)) {
 						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
 						// removeFile(encDocLocation);
 						logger.info("Mail sent successfully to " + school.getEmail());
@@ -255,7 +257,8 @@ public class UserAccountPdf {
 				/* Fetch support email from customer table */
 				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail)) {
+					String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
+					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail, mailSubject)) {
 						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
 						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
@@ -323,9 +326,10 @@ public class UserAccountPdf {
 						logger.info("Updated Process Status to success");
 						/* Fetch support email from customer table */
 						String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
+						String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
 						// send mail to school
 						if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-							if (sendMail(schoolId, false, migration, prop, school.getEmail(), encDocLocation, null, null, schoolUserPresent, false, supportEmail)) {
+							if (sendMail(schoolId, false, migration, prop, school.getEmail(), encDocLocation, null, null, schoolUserPresent, false, supportEmail, mailSubject)) {
 								logger.debug("	mail sent successfully ... for process id : " + processId);
 								logger.info("Mail sent successfully to " + school.getEmail());
 								// update staging status
@@ -336,7 +340,7 @@ public class UserAccountPdf {
 							}
 						} else {
 							logger.debug("Sending mail to Support group only .. no school mail id is defined.");
-							if (sendMail(schoolId, false, migration, prop, supportEmail, encDocLocation, null, null, schoolUserPresent, false, null)) {
+							if (sendMail(schoolId, false, migration, prop, supportEmail, encDocLocation, null, null, schoolUserPresent, false, null, mailSubject)) {
 								logger.info("Mail sent successfully to " + supportEmail);
 							} else {
 								logger.warn("FAILED: sending mail. Updating status.");
@@ -499,13 +503,14 @@ public class UserAccountPdf {
 	 * @return
 	 */
 	private static boolean sendMail(String level3OrgId, boolean isInitialLoad, boolean migration, Properties prop, String toMailAddr, String attachment, String attachmentTwo, StringBuffer processLog,
-			boolean schoolUserPresent, boolean letterMail, String supportEmail) {
+			boolean schoolUserPresent, boolean letterMail, String supportEmail, String mailSubject) {
 		logger.debug("sending mail... ");
 		boolean mailSent = false;
-		String mailSubject = "";
+		// String mailSubject = "";
 		String mailBody = "";
 		try {
 			mailSubject = prop.getProperty("mailSubject");
+			logger.info("Email Subject: " + mailSubject);
 			mailBody = prop.getProperty("messageBody") + prop.getProperty("messageFooter");
 			EmailSender.sendMail(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
@@ -574,6 +579,7 @@ public class UserAccountPdf {
 		String password = "";
 		try {
 			mailSubject = prop.getProperty("mailPasswordSubject");
+			logger.info("Email Subject: " + mailSubject);
 			messagePasswordBody = prop.getProperty("messagePasswordBody") + prop.getProperty("messageFooter");
 			String tascPropertyPasswordString = "pdfPasswordLevel";
 

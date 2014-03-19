@@ -83,4 +83,9 @@ public interface CommonDAO {
 	 */
 	public List<String> getStudentIdListFromExtractTable(String schoolId);
 
+	/**
+	 * @return
+	 */
+	public String getSubjectPrefix(String schoolId);
+
 }
