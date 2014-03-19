@@ -519,6 +519,7 @@
 			$('#addUser').attr( 'tenantName', tenantName);
 			$('#addUser').attr( 'orgLevel', orgLevel);
 			$('#addUser').attr( 'tenantId', tenantId);
+			$('#orgLevel').val(orgLevel);
 		}
 	
 	//====================================AJAX CALL TO FETCH ALL THE USERS FOR THE SELECTED ORG====================
