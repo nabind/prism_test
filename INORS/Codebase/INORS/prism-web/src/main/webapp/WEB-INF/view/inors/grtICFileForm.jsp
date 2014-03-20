@@ -24,16 +24,17 @@
 			</c:if>
 		</c:forEach>
 	</c:if>
-	<c:if test="${not empty dataloadMessage}">
-		<sec:authorize ifAnyGranted="ROLE_CTB">
+
+	<sec:authorize ifAnyGranted="ROLE_CTB">
+		<%@ include file="grtIcOptions.jsp" %>
+	</sec:authorize>
+	<sec:authorize ifNotGranted="ROLE_CTB">
+		<c:if test="${empty dataloadMessage}">
 			<%@ include file="grtIcOptions.jsp" %>
-		</sec:authorize>
-	</c:if>
-	<c:if test="${empty dataloadMessage}">
-		<sec:authorize ifAnyGranted="ROLE_USER, ROLE_ADMIN, ROLE_PARENT, ROLE_SUPER">
-			<%@ include file="grtIcOptions.jsp" %>
-		</sec:authorize>
-	</c:if>
+		</c:if>
+	</sec:authorize>
+	
+	
 	</form:form>
 	<input type="hidden" id="q_testAdministrationVal" value="${testAdministrationVal}" />
 	<input type="hidden" id="q_testAdministrationText" value="${testAdministrationText}" />
