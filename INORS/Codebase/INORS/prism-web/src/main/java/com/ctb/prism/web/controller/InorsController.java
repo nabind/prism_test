@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -515,7 +516,8 @@ public class InorsController {
 			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
 			parameterMap.put("USER_ID", currentUserId);
 			reportMessages = reportService.getAllReportMessages(parameterMap);
-			String[] hiddenReportTypes = { IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString() };
+			Map<String, String> hiddenReportTypes = new HashMap<String, String>();
+			hiddenReportTypes.put(IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString(), IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
 			reportMessages = setDisplayFlags(reportMessages, hiddenReportTypes);
 			modelAndView.addObject("reportMessages", reportMessages);
 			String productName = getProductNameById(testAdministrationVal);
@@ -570,6 +572,8 @@ public class InorsController {
 			} else {
 				logger.log(IAppLogger.INFO, "------------------------Hiding the input form---------------------");
 			}
+			logger.log(IAppLogger.INFO, "hideContentFlag=" + hideContentFlag);
+			logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
 			modelAndView.addObject("hideContentFlag", hideContentFlag);
 			modelAndView.addObject("dataloadMessage", dataloadMessage);
 
@@ -676,13 +680,23 @@ public class InorsController {
 		return hideContentFlag;
 	}
 
-	private List<ReportMessageTO> setDisplayFlags(List<ReportMessageTO> allReportMessages, String[] hiddenReportTypes) {
-		for (String hiddenReportType : hiddenReportTypes) {
+	/**
+	 * This method is used to hide a particular message from jsp.
+	 * 
+	 * @param allReportMessages
+	 * @param hiddenReportTypes
+	 * @return
+	 */
+	private List<ReportMessageTO> setDisplayFlags(List<ReportMessageTO> allReportMessages, Map<String, String> hiddenReportTypes) {
+		for (Entry<String, String> hiddenReportType : hiddenReportTypes.entrySet()) {
 			for (ReportMessageTO reportMessageTO : allReportMessages) {
 				String messageType = reportMessageTO.getMessageType();
-				if ((messageType != null) && (messageType.equals(hiddenReportType))) {
-					reportMessageTO.setDisplayFlag(IApplicationConstants.FLAG_N);
-					break;
+				String messageName = reportMessageTO.getMessageName();
+				if ((messageType != null) && (messageType.equals(hiddenReportType.getKey()))) {
+					if ((messageName != null) && (messageName.equals(hiddenReportType.getValue()))) {
+						reportMessageTO.setDisplayFlag(IApplicationConstants.FLAG_N);
+						logger.log(IAppLogger.INFO, "Hiding MessageName: " + messageName);
+					}
 				}
 			}
 		}
@@ -1136,6 +1150,7 @@ public class InorsController {
 		List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
 		modelAndView.addObject("reportMessages", reportMessages);
 		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+		logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
 		modelAndView.addObject("dataloadMessage", dataloadMessage);
 
 		String currentAdminYear = inorsService.getCurrentAdminYear();

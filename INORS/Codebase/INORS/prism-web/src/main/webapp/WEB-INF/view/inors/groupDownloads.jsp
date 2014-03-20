@@ -20,14 +20,19 @@
 		<c:forEach var="reportMessage" items="${reportMessages}">
 			<c:if test="${reportMessage.displayFlag=='Y'}">
 				<c:if test="${reportMessage.messageType=='DM'}">
-					<fieldset class="fieldset silver-bg">
+					<div class="big-message">
+						<span class="big-message-icon icon-warning with-text color">Important</span>
+						<strong>${ reportMessage.messageName }</strong><br>
+						${ reportMessage.message }
+					</div>
+					<p>&nbsp;</p>
 				</c:if>
 				<c:if test="${reportMessage.messageType!='DM'}">
 					<fieldset class="fieldset">
-				</c:if>
 						<legend class="legend">${ reportMessage.messageName }</legend>
 						<p class="inline-label">${ reportMessage.message }</p>
 					</fieldset>
+				</c:if>
 			</c:if>
 		</c:forEach>
 	</c:if>
