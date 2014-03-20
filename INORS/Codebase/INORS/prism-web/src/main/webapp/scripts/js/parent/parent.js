@@ -474,10 +474,10 @@ $(document).ready(function() {
 			if(password.indexOf(username) != -1) {
 				unblockUI();
 				$.modal.alert(strings['script.user.passwordPartUsername']);
-			} else if (patt.test(username)) {
+			} /*else if (patt.test(username)) {
 				unblockUI();
 				$.modal.alert(strings['script.user.useridStartNumber']);
-			}else {
+			}*/ else {
 				$.ajax({
 					type : "GET",
 					url : 'validatePwd.do',

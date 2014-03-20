@@ -401,10 +401,10 @@ $(document).ready(function() {
 			unblockUI();
 			$.modal.alert(strings['script.user.passwordPartUsername']);
 		} 
-		else if (patt.test(username)){
+		/*else if (patt.test(username)){
 			unblockUI();
 			$.modal.alert(strings['script.user.useridStartNumber']);
-		}else {
+		}*/else {
 		$.ajax({
 			type : "POST",
 			url : 'addNewUser.do',

@@ -495,10 +495,10 @@ $(document).ready(function() {
 			unblockUI();
 			$.modal.alert(strings['script.user.passwordPartUsername']);
 		} 
-		else if (patt.test(username)){
+		/*else if (patt.test(username)){
 			unblockUI();
 			$.modal.alert(strings['script.user.useridStartNumber']);
-		}else {
+		}*/ else {
 		var dataUrl = form.serialize()+'&AdminYear='+$("#AdminYear").val()+'&purpose='+ $("#purpose").val()+'&eduCenterId='+ $("#eduCenterId").val();
 		$.ajax({
 			type : "POST",
