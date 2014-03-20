@@ -884,3 +884,16 @@
 			$('#parentTable').hide();
 		}
 	}
+	
+	
+	/*This function used for SSO user to check class level*/
+	function hasClass(availableRoles){
+		var isClass = false;		
+		$.each(availableRoles, function (){
+			if(this.label== 'CLASS'){
+				isClass = true;
+				return isClass;
+			}			
+		});
+		return isClass;
+	}
