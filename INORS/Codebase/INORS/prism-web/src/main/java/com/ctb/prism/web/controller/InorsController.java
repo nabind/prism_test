@@ -515,7 +515,7 @@ public class InorsController {
 			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
 			parameterMap.put("USER_ID", currentUserId);
 			reportMessages = reportService.getAllReportMessages(parameterMap);
-			String[] hiddenReportTypes = { IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString() };
+			String[] hiddenReportTypes = { IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString() };
 			reportMessages = setDisplayFlags(reportMessages, hiddenReportTypes);
 			modelAndView.addObject("reportMessages", reportMessages);
 			String productName = getProductNameById(testAdministrationVal);
