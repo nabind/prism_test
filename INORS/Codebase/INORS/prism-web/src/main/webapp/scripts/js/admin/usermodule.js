@@ -887,10 +887,10 @@
 	
 	
 	/*This function used for SSO user to check class level*/
-	function hasClass(availableRoles){
+	function isClassUser(availableRoles){
 		var isClass = false;		
 		$.each(availableRoles, function (){
-			if(this.label== 'CLASS'){
+			if(this.label== 'Class'){
 				isClass = true;
 				return isClass;
 			}			
