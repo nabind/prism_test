@@ -93,5 +93,8 @@
 							</p>
 						</form:form>
 				</div>
+				<div id="requestDetailsContainerGD" style="display:none">
+					<div id="requestDetailsContentGD"></div>
+				</div>
 			
 	</div>

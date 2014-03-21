@@ -736,15 +736,22 @@ function downloadBulkPdf(type, mode) {
 						cache:false,
 						success : function(data) {
 							unblockUI();
-							$("textarea#requestSummary").val(data[0].requestSummary);
+							/*$("textarea#requestSummary").val(data[0].requestSummary);
 							$("#viewRequestDetail").modal({
 								title: 'View Request Details',
 								height: 350,
 								width: 600,
 								resizable: true,
 								draggable: true,
-							});		
-								
+							});*/
+							var requestDetails = data[0].requestSummary;
+							requestDetails = requestDetails.replace(/\n/g, '<br />');
+							// alert(requestDetails);
+							$("#requestDetailsContainerGD").html(requestDetails);
+							$("#requestDetailsContainerGD").modal({
+								title: 'View Request Details',
+								buttonsAlign: 'center'
+							});
 						},
 						error : function(data) {
 							$.modal.alert(strings['script.common.error1']);
