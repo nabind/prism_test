@@ -90,13 +90,13 @@
 		<c:choose>
 			<c:when test="${(fn:startsWith(testAdministrationText, 'ISTEP+')) && (fn:endsWith(testAdministrationText, currentAdminYear))}">
 				<div id="icDiv" class="columns accordion with-padding" style="margin-bottom: 0">
-				<a class="button" id="ic2013" href="staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a>
+				<a class="button" id="ic2013" href="staticfiles/${currentIcFileName}"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a>
 				<a class="button float-right" id="downloadICFile" style="cursor: pointer;"><span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File</a>
 				</div>
 			</c:when>
 			<c:when test="${(fn:startsWith(testAdministrationText, 'ISTEP+')) && (fn:endsWith(testAdministrationText, lastAdminYear))}">
 				<div id="icDiv" class="columns accordion with-padding" style="margin-bottom: 0">
-				<a class="button" id="ic2012" href="staticfiles/S2011-12 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 Invitation Code File Record Layout</a>
+				<a class="button" id="ic2012" href="staticfiles/${lastIcFileName}"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 Invitation Code File Record Layout</a>
 				<a class="button float-right" id="downloadICFile" style="cursor: pointer;"><span class="button-icon icon-download blue-gradient report-btn">DAT</span> Generate IC File</a>
 				</div>
 			</c:when>

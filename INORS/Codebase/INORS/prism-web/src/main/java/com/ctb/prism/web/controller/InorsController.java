@@ -1158,9 +1158,21 @@ public class InorsController {
 		String lastAdminYear = lastAdmYr.toString();
 		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
 		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
-		
+
 		modelAndView.addObject("currentAdminYear", currentAdminYear);
 		modelAndView.addObject("lastAdminYear", lastAdminYear);
+
+		String currentIcFile = "IC_ISTEP_SPRING_" + currentAdminYear + "_FILENAME";
+		String lastIcFile = "IC_ISTEP_SPRING_" + lastAdminYear + "_FILENAME";
+
+		String currentIcFileName = propertyLookup.get(currentIcFile);
+		String lastIcFileName = propertyLookup.get(lastIcFile);
+
+		logger.log(IAppLogger.INFO, "currentIcFileName=" + currentIcFileName);
+		logger.log(IAppLogger.INFO, "lastIcFileName=" + lastIcFileName);
+
+		modelAndView.addObject("currentIcFileName", currentIcFileName);
+		modelAndView.addObject("lastIcFileName", lastIcFileName);
 
 		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
 		return modelAndView;
