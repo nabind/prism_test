@@ -36,6 +36,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
@@ -57,6 +58,8 @@ public class CommonController extends BaseDAO {
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
+	
+	@Autowired	private ILoginService loginService;
 	
 	/**
 	 * Load error page
@@ -145,6 +148,61 @@ public class CommonController extends BaseDAO {
 		OutputStream os = null;
 		try {
 			String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
+			String userType = req.getParameter("userType");
+			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading pdf, user type: "
+					, userType, "file name : ", fileName));
+			
+			//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			//LdapUserDetailsImpl userDetails = (LdapUserDetailsImpl) auth.getPrincipal();
+			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			
+			if(userType != null && userType.equals(currentOrg)) {
+				File file = null;
+				file = new File(fileName);
+		
+				byte[] pdf = null;
+				if (file.isFile()) pdf = IOUtils.toByteArray(new FileInputStream(fileName)); //getFileData(file);
+				
+				if(pdf != null) {
+					res.setContentType("application/pdf");
+					res.setHeader("Content-Disposition",
+							CustomStringUtil.appendString("attachment; filename=\"", file.getName(), "\""));
+					res.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+					res.setHeader("Pragma", "public");
+			
+					os = res.getOutputStream();
+					os.write(pdf);
+					/*for (int i = 0; i < pdf.length; i++) {
+						os.write(pdf[i]);
+					}*/
+					os.flush();
+				} else {
+					logger.log(IAppLogger.DEBUG, "PDF file not present is the specified location");
+					return new ModelAndView("error/error");
+				}
+			} else {
+				logger.log(IAppLogger.DEBUG, "User does not have acces to view this PDF");
+				return new ModelAndView("error/error");
+			}
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			return new ModelAndView("error/error");
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			return new ModelAndView("error/error");
+		} finally {
+			IOUtils.closeQuietly(os);
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/inorspdf", method=RequestMethod.GET)
+	public ModelAndView inorsPdf(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException {
+		OutputStream os = null;
+		try {
+			String rootPath = loginService.getRootPath(req.getParameter("customerId"), req.getParameter("testAdmin"));
+			String fileName = rootPath + req.getParameter("pdfFileName");
 			String userType = req.getParameter("userType");
 			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading pdf, user type: "
 					, userType, "file name : ", fileName));
