@@ -37,13 +37,7 @@
 
 			</div>
 
-			<div style="height: 540px;"
-				class="panel-load-target with-padding margin10 height-mid padding-none">
-				<p class="message icon-speech orange-gradient small-margin-bottom">
-					<span class="block-arrow down"><span></span></span>
-					<a href="#" title="Hide message" class="close show-on-parent-hover">X</a>
-					Parent users are associated with <b>School</b> level (not with Class/Teacher level).
-				</p>
+			<div class="panel-load-target with-padding margin10 height-mid padding-none">
 				<div class="pagination panel-control margin-bottom-small rounded-border">
 					<a href="#nogo" id="moreParent" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more users">More</a>
 				</div>

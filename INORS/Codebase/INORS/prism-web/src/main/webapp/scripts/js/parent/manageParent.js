@@ -92,6 +92,22 @@ $('.view-Children').live("click", function() {
 				}
 				tempScrollTop = currentScrollTop;
 			});
+			
+			/*Fixed for TD  77675 Start - By Joy
+			 * Use notification instead of message in page
+			 */
+			notify('Notification!', 'Parent users are associated with <b>School</b> level (not with Class/Teacher level).', {
+				system:				true,
+				vPos:				'top',
+				hPos:				'center',
+				autoClose:			false,
+				icon:				'themes/acsi/img/demo/icon.png',
+				iconOutside:		true,
+				closeButton:		true,
+				showCloseOnHover:	true,
+				groupSimilar:		true
+			});
+			//Fixed for TD  77675 End - Implementation change - By Joy
 		}
 	});
 	
