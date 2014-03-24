@@ -21,7 +21,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class SSOTest {
 	
-	private static String REQUEST_URL = "http://10.160.23.51:8080/inors";
+	private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults";
 	private static String REQUEST_PATH = "/reports.do?";
 	
 	private static String IP = "127.0.0.1";
