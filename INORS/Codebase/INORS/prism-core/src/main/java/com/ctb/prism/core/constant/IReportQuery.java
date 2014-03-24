@@ -169,6 +169,9 @@ public interface IReportQuery {
 
 	// query to delete from report and roles association table report_roles
 	public static final String DELETE_REPORT_ROLE = "DELETE FROM DASH_MENU_RPT_ACCESS WHERE DB_REPORTID = ?";
+	
+	// query to delete the report from the  DASH_MESSAGES table
+	public static final String DELETE_REPORT_MSG = "DELETE FROM DASH_MESSAGES DM WHERE DM.DB_REPORTID = ?";
 
 	// query to delete the report from the  reports table
 	public static final String DELETE_REPORT = "DELETE  FROM DASH_REPORTS WHERE DB_REPORTID = ?";
