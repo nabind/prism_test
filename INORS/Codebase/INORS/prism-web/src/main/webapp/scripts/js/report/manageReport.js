@@ -149,7 +149,7 @@ var row = $("#"+reportId + '_' +reportId);
 			
 			$("#editReportForm").modal({
 				title: 'Edit Report',
-				height: 450,
+				height: 470,
 				width: 400,
 				resizable: false,
 				draggable: false,

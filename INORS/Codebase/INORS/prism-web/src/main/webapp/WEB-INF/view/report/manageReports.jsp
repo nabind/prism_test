@@ -140,11 +140,12 @@
 					</div>
 				</div>
 					
-				<div id="editRole" class="display-none" style="top:10px;position:relative;">
+				<div id="editRole" class="display-none">
 					<div class="">
 					
 						<form:form id="editReportForm" method="post" class="edit-report-form" action="updateReport.do">
 							<input type="hidden" name="reportId" id="reportId"/>
+							<p  style="width:329px"><span  id="imgHolder"></span></p>
 							<p class="button-height inline-label">
 								<label class="label" for="reportName">Report Name<span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportName" value="${report.reportName}" id="reportName" style="width:200px" class="input full-width newReportName reset validate[required]"/>
