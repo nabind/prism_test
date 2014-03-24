@@ -543,7 +543,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		try {
 			// delete from report_role table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_ROLE, reportId);
-
+			
+			// delete from report table DASH_MESSAGES table - Added by Joy
+			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_MSG, reportId);
+			
 			// delete from report table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT, reportId);
 		} catch (Exception e) {
