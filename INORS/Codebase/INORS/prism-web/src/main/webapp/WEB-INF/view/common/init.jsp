@@ -209,6 +209,7 @@
 				var secondLevelMenu = $("li.with-right-arrow");
 				$.each(secondLevelMenu, function(index, value) { 
 					$('#select-tooltip-'+index).removeTooltip(true, true);
+					$(".customRefresh").removeTooltip();
 				});
 			});
 			
