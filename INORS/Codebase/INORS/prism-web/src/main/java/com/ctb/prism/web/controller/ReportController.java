@@ -1892,10 +1892,10 @@ public class ReportController extends BaseDAO {
 		return null;
 	}
 
+	
 	/**
 	 * Arunava Datta More Info implementation Report wise
 	 */
-
 	// For getting the required more info data
 	@RequestMapping(value = "/reportMoreInfo", method = RequestMethod.GET)
 	public ModelAndView reportMoreInfo(HttpServletRequest req, HttpServletResponse res) {
@@ -1906,6 +1906,10 @@ public class ReportController extends BaseDAO {
 			paramMap.put("REPORT_ID", req.getParameter("reportId"));
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
+			
+			//Fix for TD 77743 - By Joy
+			paramMap.put("custProdId", req.getParameter("custProdId"));
+			
 			String infoMessage = reportService.getSystemConfigurationMessage(paramMap);
 			modelAndView.addObject("infoMessage", infoMessage);
 		} catch (Exception exception) {

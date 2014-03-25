@@ -1641,6 +1641,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return result;
 	}
 
+	
+	//Fix for TD 77743 - By Joy
 	/**
 	 * @author Arunavo Retrieves and returns message corresponding configured in database
 	 * @param msgtype
@@ -1655,9 +1657,20 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String REPORT_ID = (String) paramMap.get("REPORT_ID");
 		String MESSAGE_TYPE = (String) paramMap.get("MESSAGE_TYPE");
 
+		List<Map<String, Object>> lstData = null;
 		String systemConfig = "";
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC, REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME);
-
+		
+		//Fix for TD 77743 - By Joy
+		if(IApplicationConstants.MORE_INFO.equals(MESSAGE_NAME) 
+				&& IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE.equals(MESSAGE_TYPE)){
+			String custProdId = (String) paramMap.get("custProdId");
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_REPORT_MESSAGE_MORE_INFO
+					,REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME,custProdId);
+		}else{
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC
+					,REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME);
+		}
+		
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				if (fieldDetails.get("REPORT_MSG") != null || fieldDetails.get("REPORT_MSG") != "") {
@@ -1667,6 +1680,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				}
 			}
 		}
+		
 		long t2 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Exit: getSystemConfigurationMessage(): " + String.valueOf(t2 - t1) + "ms");
 		return systemConfig;
