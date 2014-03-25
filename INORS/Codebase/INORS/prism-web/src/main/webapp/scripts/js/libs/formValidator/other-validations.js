@@ -19,7 +19,7 @@
 		};
 		$.validationEngineLanguage.allRules["fileNameGD"] = {
 				// Group download file name
-				"regex": /^[0-9a-zA-Z\ \_\.]+$/,
+				"regex": /^[0-9a-zA-Z\ \_\.\-]+$/,
 			    "alertText": "* File name contains invalid characters"
 		};
 	//	# more validations may be added after this point
