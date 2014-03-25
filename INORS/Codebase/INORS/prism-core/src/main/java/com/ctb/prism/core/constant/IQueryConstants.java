@@ -30,7 +30,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" where DR.DB_REPORTID= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
 	
 	//Fix for TD 77743 - By Joy
-	// query to retrieve more info message dynamically - By Joy
+	//More info message - By Joy
 	public static final String GET_REPORT_MESSAGE_MORE_INFO =  CustomStringUtil.appendString(
 			"SELECT DM.REPORT_MSG AS REPORT_MSG",
 			" FROM DASH_REPORTS DR, DASH_MESSAGES DM, DASH_MESSAGE_TYPE DMT",
@@ -41,8 +41,11 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND DMT.MESSAGE_TYPE = ?",
 			" AND DMT.MESSAGE_NAME = ?",
 			" AND DM.ACTIVATION_STATUS = 'AC'",
-			" AND DM.CUST_PROD_ID = ?");
-	
+			" AND DM.CUST_PROD_ID = (SELECT CUST_PROD_ID",
+									" FROM CUST_PRODUCT_LINK",
+									" WHERE PRODUCTID = ?",
+									" AND CUSTOMERID = ?)");
+		
 	public static final String GET_REPORT_MESSAGE = CustomStringUtil.appendString(
 			"SELECT DM.REPORT_MSG",
 			" FROM DASH_REPORTS DR",

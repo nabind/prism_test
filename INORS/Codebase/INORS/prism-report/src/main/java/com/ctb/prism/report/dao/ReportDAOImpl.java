@@ -1663,9 +1663,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		//Fix for TD 77743 - By Joy
 		if(IApplicationConstants.MORE_INFO.equals(MESSAGE_NAME) 
 				&& IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE.equals(MESSAGE_TYPE)){
-			String custProdId = (String) paramMap.get("custProdId");
+			
+			String productId = (String) paramMap.get("productId");
+			String customerId = (String) paramMap.get("customerId");
 			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_REPORT_MESSAGE_MORE_INFO
-					,REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME,custProdId);
+					,REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME,productId,customerId);
+			
 		}else{
 			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC
 					,REPORT_ID, MESSAGE_TYPE, MESSAGE_NAME);

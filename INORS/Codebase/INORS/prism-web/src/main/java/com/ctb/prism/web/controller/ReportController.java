@@ -1908,7 +1908,8 @@ public class ReportController extends BaseDAO {
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
 			
 			//Fix for TD 77743 - By Joy
-			paramMap.put("custProdId", req.getParameter("custProdId"));
+			paramMap.put("productId", req.getParameter("productId"));
+			paramMap.put("customerId", (String)req.getSession().getAttribute(IApplicationConstants.CUSTOMER));
 			
 			String infoMessage = reportService.getSystemConfigurationMessage(paramMap);
 			modelAndView.addObject("infoMessage", infoMessage);

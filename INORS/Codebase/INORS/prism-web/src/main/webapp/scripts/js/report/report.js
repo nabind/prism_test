@@ -1059,9 +1059,9 @@ function download(count, reportUrl, assessmentId, type) {
 
 //Fix for TD 77743 - By Joy
 function moreInfo(reportId){
-	var custProdId = $('#p_test_administration').val();
+	var productId = $('#p_test_administration').val();
 	$.modal({
-		url: 'reportMoreInfo.do?reportId='+reportId+'&custProdId='+custProdId,
+		url: 'reportMoreInfo.do?reportId='+reportId+'&productId='+productId,
 		useIframe: true,
 		title: 'More Info',
 		height: 650,
