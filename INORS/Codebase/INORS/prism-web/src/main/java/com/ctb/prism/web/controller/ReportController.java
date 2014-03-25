@@ -480,6 +480,7 @@ public class ReportController extends BaseDAO {
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 			// get compiled jasper report
 			JasperReport jasperReport = null;
@@ -517,7 +518,7 @@ public class ReportController extends BaseDAO {
 			} else {
 				// get default parameters for logged-in user
 				Object reportFilterTO = reportService
-						.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
+						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
@@ -1145,14 +1146,14 @@ public class ReportController extends BaseDAO {
 			String tabCount = req.getParameter("count");
 			String assessmentId = req.getParameter("assessmentId");
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
-		
+			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1318,10 +1319,11 @@ public class ReportController extends BaseDAO {
 			String assessmentId = req.getParameter("assessmentId");
 			
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
+			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, (Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId);
 			// get default parameters for logged-in user
 			/*
 			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
@@ -1463,12 +1465,13 @@ public class ReportController extends BaseDAO {
 			List<String> defaultInputNames, HttpServletRequest req) throws SystemException {
 		if (allCascading != null) {
 			List<InputControlTO> reCascadingInputControls = null;
-
+			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			
 			ObjectValueTO objectValueTo = null;
 			InputControlFactory inputControlFact = new InputControlFactoryImpl();
 			for (InputControlTO inputControlTO : allCascading) {
 				// get list of values
-				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName, changedObject, changedValue, replacableParams, reportFilterTO);
+				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName,customerId, changedObject, changedValue, replacableParams, reportFilterTO);
 
 				// req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER+inputControlTO.getLabelId(), objects);
 				/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {
@@ -1892,10 +1895,10 @@ public class ReportController extends BaseDAO {
 		return null;
 	}
 
-	
 	/**
 	 * Arunava Datta More Info implementation Report wise
 	 */
+
 	// For getting the required more info data
 	@RequestMapping(value = "/reportMoreInfo", method = RequestMethod.GET)
 	public ModelAndView reportMoreInfo(HttpServletRequest req, HttpServletResponse res) {
@@ -1906,7 +1909,7 @@ public class ReportController extends BaseDAO {
 			paramMap.put("REPORT_ID", req.getParameter("reportId"));
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.REPORT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MORE_INFO);
-			
+
 			//Fix for TD 77743 - By Joy
 			paramMap.put("productId", req.getParameter("productId"));
 			paramMap.put("customerId", (String)req.getSession().getAttribute(IApplicationConstants.CUSTOMER));

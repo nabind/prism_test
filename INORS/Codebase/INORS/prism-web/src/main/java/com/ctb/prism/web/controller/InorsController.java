@@ -301,7 +301,7 @@ public class InorsController {
 			}
 			String assessmentId = request.getParameter("assessmentId");
 			Object reportFilterTO = reportService
-					.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, (Map<String, Object>) request.getSession().getAttribute("inputControls"),currentUserId);
+					.getDefaultFilter(allInputControls, currentUser,customer, assessmentId, "", reportUrl, (Map<String, Object>) request.getSession().getAttribute("inputControls"),currentUserId);
 			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
 			// reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 
@@ -414,9 +414,10 @@ public class InorsController {
 		String assessmentId = request.getParameter("assessmentId");
 		Map<String, Object> inputControls = (Map<String, Object>) request.getSession().getAttribute("inputControls");
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
+		String customerId=(String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
 		// get default parameters for logged-in user
-		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId, "", reportUrl, inputControls, currentUserId);
+		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, inputControls, currentUserId);
 		return reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
 	}
 

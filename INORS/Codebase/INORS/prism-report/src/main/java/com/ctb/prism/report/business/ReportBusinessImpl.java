@@ -138,6 +138,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 *            List of input control details
 	 * @param userName
 	 *            logged in user name
+	 * @param customerId
 	 * @param assessmentId
 	 * @param combAssessmentId
 	 * @param reportUrl
@@ -145,7 +146,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param userId
 	 */
 	// @Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId) {
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
@@ -158,6 +159,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
 			clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
 			clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
+			clazz.getMethod("setP_customerid", String.class).invoke(obj, customerId);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -169,6 +171,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 
 				/*** NEW ***/
 				if (sessionParams != null) {
@@ -328,11 +331,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @param query
 	 * @param userName
+	 * @param customerId
 	 * @return
 	 * @throws SystemException
 	 * @throws IllegalArgumentException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String changedObject, String changedValue, Map<String, String> replacableParams, Object obj)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object obj)
 			throws SystemException {
 		if (query == null)
 			return null;
@@ -343,6 +347,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			String tenantId = reportDAO.getTenantId(userName);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
+			query = query.replaceAll(IApplicationConstants.JASPER_CUSTOMERID_PARAM, customerId);
 			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), CustomStringUtil.appendString("'", changedValue, "'"));
 
 			// replace all required params

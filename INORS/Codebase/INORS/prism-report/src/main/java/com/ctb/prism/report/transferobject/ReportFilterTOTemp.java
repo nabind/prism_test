@@ -14,6 +14,8 @@ public class ReportFilterTOTemp extends BaseTO {
 	private String LoggedInUserJasperOrgId;
 	private String LoggedInUserName;
 	private String LoggedInUserId;
+	private String p_customerid;
+	
 	
 	// ISTEP inputcontrol
 	private List<ObjectValueTO> ip_product_id_eod;
@@ -219,6 +221,13 @@ public class ReportFilterTOTemp extends BaseTO {
 	}
 	public void setLoggedInUserId(String loggedInUserId) {
 		LoggedInUserId = loggedInUserId;
+	}
+	
+	public String getP_customerid() {
+		return p_customerid;
+	}
+	public void setP_customerid(String p_customerid) {
+		p_customerid = p_customerid;
 	}
 	
 	public List<ObjectValueTO> getImage_1() {

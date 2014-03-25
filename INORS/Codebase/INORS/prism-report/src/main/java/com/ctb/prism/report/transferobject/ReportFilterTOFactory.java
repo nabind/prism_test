@@ -53,6 +53,7 @@ public class ReportFilterTOFactory implements IReportFilterTOFactory {
 		props.put("LoggedInUserName", String.class);
 		props.put("LoggedInUserJasperOrgId", String.class);
 		props.put("LoggedInUserId",  String.class);
+		props.put("p_customerid",  String.class);
 		
 		//ReportFilterTOFactory fact = new ReportFilterTOFactory();
 		//clazz = ReportFilterTOFactory.generate("com.ctb.prism.report.transferobject.ReportFilterTO", props);

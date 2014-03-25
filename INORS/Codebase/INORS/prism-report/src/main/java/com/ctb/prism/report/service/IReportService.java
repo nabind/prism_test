@@ -73,6 +73,7 @@ public interface IReportService {
 	/**
 	 * @param tos
 	 * @param userName
+	 * @param customerId
 	 * @param assessmentId
 	 * @param combAssessmentId
 	 * @param reportUrl
@@ -80,7 +81,7 @@ public interface IReportService {
 	 * @param userId
 	 * @return
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId);
 
 	/**
 	 * @param query
@@ -98,7 +99,7 @@ public interface IReportService {
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz)
 			throws SystemException;
 
 	/**
