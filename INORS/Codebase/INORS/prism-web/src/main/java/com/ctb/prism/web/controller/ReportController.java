@@ -1741,6 +1741,13 @@ public class ReportController extends BaseDAO {
 			response.getWriter().write(message);
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, message, e);
+		} finally {
+			try {
+				response.flushBuffer();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1751,6 +1758,13 @@ public class ReportController extends BaseDAO {
 			response.getWriter().write(message);
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, message, e);
+		} finally {
+			try {
+				response.flushBuffer();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
