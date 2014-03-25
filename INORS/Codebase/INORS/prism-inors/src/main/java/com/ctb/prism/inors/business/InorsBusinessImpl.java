@@ -318,7 +318,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						// Delete the Pdf file from disk
 						logger.log(IAppLogger.INFO, "temp pdf file deleted = " + new File(pdfFileName).delete());
 
-						fileSize = FileUtil.fileSize(input);
+						// fileSize = FileUtil.fileSize(input);
+						fileSize = FileUtil.getFileSize(zipFileName);
+						logger.log(IAppLogger.INFO, "fileSize=" + fileSize);
 						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
 					} else if ("SP".equals(button)) {
@@ -330,7 +332,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						// Create Zip file in disk from all the pdf files
 						try {
 							FileUtil.createDuplexZipFile(zipFileName, filePaths, rootPath);
-							fileSize = FileUtil.fileSize(zipFileName);
+							// fileSize = FileUtil.fileSize(zipFileName);
+							fileSize = FileUtil.getFileSize(zipFileName);
+							logger.log(IAppLogger.INFO, "fileSize=" + fileSize);
 							jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 							jobLog = "Asynchoronous Separate Pdfs";
 						} catch (Exception e) {
