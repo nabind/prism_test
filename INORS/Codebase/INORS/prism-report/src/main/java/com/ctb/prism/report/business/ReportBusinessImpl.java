@@ -171,8 +171,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
-				if(query.indexOf("$P{p_customerid}") != -1 )
-					query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 
 				/*** NEW ***/
 				if (sessionParams != null) {
@@ -348,7 +347,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			String tenantId = reportDAO.getTenantId(userName);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
-			query = query.replaceAll(IApplicationConstants.JASPER_CUSTOMERID_PARAM, customerId);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), CustomStringUtil.appendString("'", changedValue, "'"));
 
 			// replace all required params

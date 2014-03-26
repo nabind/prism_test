@@ -70,7 +70,7 @@ public interface IApplicationConstants {
 	public static final String LOGGED_IN_USER_JASPER_ORG_ID = "\\$[P][{][LoggedInUserJasperOrgId]+[}]";
 	public static final String LOGGED_IN_USERNAME = "\\$[P][{][LoggedInUserName]+[}]";
 	public static final String LOGGED_IN_USER_ID = "\\$[P][{][LoggedInUserId]+[}]";
-	public static final String LOGGED_IN_CUSTOMER = "\\$[P][{][p_customerid]+[}]";
+	public static final String LOGGED_IN_CUSTOMER = "\\$[P][{]p_[customerid]+[}]"; // "\\$[P][{][p_customerid]+[}]";
 
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";

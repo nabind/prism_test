@@ -226,8 +226,8 @@ public class ReportFilterTOTemp extends BaseTO {
 	public String getP_customerid() {
 		return p_customerid;
 	}
-	public void setP_customerid(String p_customerid) {
-		p_customerid = p_customerid;
+	public void setP_customerid(String P_customerid) {
+		p_customerid = P_customerid;
 	}
 	
 	public List<ObjectValueTO> getImage_1() {
