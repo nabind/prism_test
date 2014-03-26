@@ -275,5 +275,23 @@ public class EmailSender {
 		msErrorStatus = "Success";
 		return msErrorStatus;
 	}
+	
+	public static void sendMailAcsi(final Properties prop, String recipientEmail, String attachment, String attachmentTwo,
+			String subject, String mailBody) throws Exception {
+		String host = prop.getProperty("mail.smtp.host");
+		String port = prop.getProperty("mail.smtp.port");
+		String sender = prop.getProperty("senderMail");
+		String supportEmail = prop.getProperty("supportEmail");
+		ArrayList<String> attach = new ArrayList<String>();
+		attach.add(attachment);
+		if(attachmentTwo != null) attach.add(attachmentTwo);
+		
+		if(host == null || port == null) { 
+			throw new Exception("Make sure smtp parametres are correctly defined");
+		}
+		
+		//sendMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach);
+		sendHTMLMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach);
+	}
 
 }

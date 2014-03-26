@@ -15,6 +15,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.List;
 import com.lowagie.text.ListItem;
 import com.lowagie.text.PageSize;
@@ -601,5 +603,383 @@ public class PdfGenerator {
 		}
 
 		document.add(new Paragraph(prop.getProperty("HELP"), font));
+	}
+	
+	/**
+	 * Generates pdf in specified format
+	 * @param prop
+	 * @param school
+	 * @param teachers
+	 * @return
+	 */
+	private static Image _img = null;
+	private static Font smallFont = FontFactory.getFont("Arial", 4.0F, 1, new Color(0, 0, 0));
+	public static String generatePdfAcsi(Properties prop, OrgTO school, java.util.List<OrgTO> teachers, 
+			boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state) {
+		Document document = null;
+		String docName = null;
+		try {
+			_img = Image.getInstance(prop.getProperty("imageLogo"));
+			_img.scalePercent(50); 
+			
+			document = new Document(PageSize.A4, 50.0F, 50.0F, 50.0F, 50.0F);
+			docName = prop.getProperty("pdfGenPath") + File.separator + 
+						prop.getProperty("tempPdfLocation")+
+						school.getStructureElement() + "_" +
+						System.currentTimeMillis()+".pdf";
+			/*docName = System.getProperty("user.home") + File.separator + 
+								prop.getProperty("tempPdfLocation")+System.currentTimeMillis()+".pdf";*/
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(docName));
+			
+			addMetaData(document);
+			
+			document.open();
+			
+			document.setFooter(new HeaderFooter(new Phrase(prop.getProperty("footer"), smallFont), false));
+			
+			_img.scalePercent(50); 
+			document.add(_img);
+			document.add(Chunk.NEWLINE);  
+			boolean pageBreakRequired = false;
+			if(migration) {
+				addLoginInstructionAcsi(document, prop, school, false, migration, state);
+				addUserLoginsAcsi(document, school, state);
+				pageBreakRequired = true;
+			} else if(schoolUserPresent) {
+				addLoginInstruction(document, prop, school, false, false, false);
+				
+				addUserLoginsAcsi(document, school, false);
+				
+				// next page
+				addTeacherLoginsAcsi(document, teachers, false);
+				pageBreakRequired = true;
+			} else if(isInitialLoad) {
+				// page for returning schools
+				addLoginInstructionAcsi(document, prop, school, true, false, false);
+				addTeacherLoginsAcsi(document, teachers, true);
+				pageBreakRequired = true;
+			}
+			
+			// new page for each teacher
+			//int teacherCount = 0;
+			for(OrgTO tech : teachers) {
+				addTeacherPageAcsi(document, prop, tech, school.getElementName(), schoolUserPresent, pageBreakRequired);
+				/*if(!schoolUserPresent && teacherCount == 0) {
+					teacherCount++;
+					addTeacherPage(document, prop, tech, school.getElementName(), schoolUserPresent, false);
+				} else {
+					addTeacherPage(document, prop, tech, school.getElementName(), schoolUserPresent, true);
+				}*/
+			}
+			
+			System.out.println("Done !!!");
+			
+		} catch (Exception e2) {
+			System.out.println(e2.getMessage());
+			e2.printStackTrace();
+			issueFound = true;
+			return null;
+		} finally {
+			if(document != null) document.close();
+		}
+		return docName;
+	}
+	
+	/**
+	 * Add login information and title in the first screen
+	 * @param document
+	 * @param prop
+	 * @param school
+	 * @param font
+	 * @throws DocumentException
+	 */
+	private static void addLoginInstructionAcsi(Document document, Properties prop,
+			OrgTO school, boolean returningSchool, boolean migration, boolean state) throws DocumentException {
+		document.add(new Paragraph(prop.getProperty("title")+school.getElementName()));
+		List list = new List(true, 20);  
+        ListItem listItem;  
+          
+        if(state)
+        	document.add(new Paragraph(prop.getProperty("welcome_state"), fontBold));
+        else
+        	document.add(new Paragraph(prop.getProperty("welcome"), fontBold));  
+        if(migration) {
+        	if(state)
+        		document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR_STATE"), font));
+        	else
+        		document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR"), font));
+        } else if(returningSchool) {
+        	document.add(new Paragraph(prop.getProperty("TXT_ONE_RET"), font));
+            document.add(new Paragraph(prop.getProperty("TXT_TWO_RET"), font));
+            document.add(new Paragraph(prop.getProperty("TXT_THR_RET"), font));
+        } else {
+        	document.add(new Paragraph(prop.getProperty("TXT_ONE"), font));
+        	document.add(new Paragraph(prop.getProperty("TXT_TWO"), font));
+        	document.add(new Paragraph(prop.getProperty("TXT_THREE"), font));
+        }
+        
+        document.add(new Paragraph("\nTeacher Log-ins", fontBold));  
+        document.add(new Paragraph("\nInstructions to Log-in:", font));  
+        list = new List(false, 20);  
+        //list.setListSymbol(new Chunk("\u2022", FontFactory.getFont(FontFactory.HELVETICA, 20, Font.BOLD)));  
+        listItem = new ListItem(prop.getProperty("URL"), font);  
+        list.add(listItem);  
+        
+        if(migration) {
+	        listItem = new ListItem(prop.getProperty("BLT1_MGR"), font);  
+	        list.add(listItem);  
+	     
+	        listItem = new ListItem(prop.getProperty("BLT2_MGR"), font);  
+	        list.add(listItem);  
+	        
+	        listItem = new ListItem(prop.getProperty("BLT3_MGR"), font);  
+	        list.add(listItem);  
+	        
+	        listItem = new ListItem(prop.getProperty("BLT3A_MGR"), fontBold);  
+	        list.add(listItem);  
+        } else {
+        	listItem = new ListItem(prop.getProperty("BLT1"), font);  
+	        list.add(listItem);  
+	     
+	        listItem = new ListItem(prop.getProperty("BLT2"), font);  
+	        list.add(listItem);  
+	        
+	        listItem = new ListItem(prop.getProperty("BLT3"), font);  
+	        list.add(listItem);  
+	        
+	        listItem = new ListItem(prop.getProperty("BLT3A"), font);  
+	        list.add(listItem);  
+        }
+        document.add(list);
+	}
+	
+	/**
+	 * Add school login informations in tabular format
+	 * @param document
+	 * @param school
+	 * @param font
+	 * @param tableFont
+	 * @throws DocumentException
+	 */
+	private static void addUserLoginsAcsi(Document document, OrgTO school, boolean state) throws DocumentException {
+		PdfPTable table = getTableAcsi();
+		document.add(new Paragraph("\n"));
+		document.add(new Paragraph("\n"));
+		
+		PdfPCell c1 = new PdfPCell(new Phrase("User Log-in Type", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+
+		c1 = new PdfPCell(new Phrase("Grade", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+
+		/*c1 = new PdfPCell(new Phrase("Organization", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);*/
+		
+		c1 = new PdfPCell(new Phrase("User Name", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+		
+		c1 = new PdfPCell(new Phrase("User Password", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+		table.setHeaderRows(1);
+
+		java.util.List<UserTO> schoolUsers = school.getUsers();
+		if(schoolUsers != null && schoolUsers.size() == 0) {
+			System.out.println("pdf generation : issueFound : no school user found");
+			issueFound = true;
+		}
+		String orgType = (state)? "ACSI" : "School";
+		for(UserTO schUser : schoolUsers) {
+			if(schUser.isAdminUser()) {
+				table.addCell(new Phrase(orgType+" Administrative", tableFont));
+			} else {
+				continue;
+			}
+			if(school.getTenantId() == null || schUser.getPassword() == null) {
+				System.out.println("pdf generation : issueFound : school tenantId or password is blank");
+				issueFound = true;
+			}
+			table.addCell(new Phrase("All", tableFont));
+			//table.addCell(new Phrase((school.getTenantId() == null) ? "" : school.getTenantId(), tableFont)); 
+			table.addCell(new Phrase(schUser.getUserName(), tableFont));
+			table.addCell(new Phrase((schUser.getPassword() == null) ? "" : schUser.getPassword(), tableFont));
+		}
+		for(UserTO schUser : schoolUsers) {
+			if(schUser.isAdminUser()) {
+				continue;
+			} else {
+				table.addCell(new Phrase(orgType+" Regular", tableFont));
+			}
+			if(school.getTenantId() == null || schUser.getPassword() == null) {
+				System.out.println("pdf generation : issueFound : school tenantId or password is blank");
+				issueFound = true;
+			}
+			table.addCell(new Phrase("All", tableFont));
+			//table.addCell(new Phrase((school.getTenantId() == null) ? "" : school.getTenantId(), tableFont)); 
+			table.addCell(new Phrase(schUser.getUserName(), tableFont));
+			table.addCell(new Phrase((schUser.getPassword() == null) ? "" : schUser.getPassword(), tableFont));
+		}
+		
+		document.add(table);
+	}
+	
+	/**
+	 * Create one PDF table
+	 * @return
+	 * @throws DocumentException 
+	 */
+	private static PdfPTable getTableAcsi() throws DocumentException {
+		float[] colsWidth = {4f, 1f, 3f, 3f};
+		PdfPTable table = new PdfPTable(4);
+		table.setWidths(colsWidth);
+		table.setWidthPercentage(100);
+		return table;
+	}
+	
+	/**
+	 * Add teacher login information in next page
+	 * @param document
+	 * @param teachers
+	 * @param font
+	 * @param tableFont
+	 * @throws DocumentException
+	 */
+	private static void addTeacherLoginsAcsi(Document document, java.util.List<OrgTO> teachers, boolean returningSchool)
+			throws DocumentException {
+		if(!returningSchool) {
+			document.newPage();
+			document.add(_img);
+		}
+		//document.newPage();
+		//document.add(_img);
+		document.add(Chunk.NEWLINE);
+		
+		document.add(new Paragraph("Teacher Log-ins:\n", font));
+		document.add(new Paragraph("\n"));
+		
+		PdfPTable table = getTeacherTable();
+		
+		PdfPCell c1 = new PdfPCell(new Phrase("Teacher Name", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+
+		c1 = new PdfPCell(new Phrase("Grade", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+
+		c1 = new PdfPCell(new Phrase("Number of Students in Class", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+		
+		c1 = new PdfPCell(new Phrase("User Name", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+		
+		c1 = new PdfPCell(new Phrase("User Password", tableHeaderFont));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setBackgroundColor(Color.lightGray);
+		table.addCell(c1);
+		table.setHeaderRows(1);
+
+		if(teachers != null && teachers.size() == 0) {
+			System.out.println("pdf generation : issueFound : teachers are blank");
+			issueFound = true;
+		}
+		for(OrgTO tech : teachers) {
+			if(tech.getFullName() == null || tech.getTenantId() == null || tech.getPassword() == null) {
+				System.out.println("pdf generation : issueFound : teacher fullname or teacher tenant id or teacher password is null");
+				issueFound = true;
+			}
+			table.addCell(new Phrase((tech.getFullName() == null) ? "" : tech.getFullName(), tableFont));  
+			table.addCell(new Phrase(tech.getGrade(), tableFont));
+			//table.addCell(new Phrase((tech.getTenantId() == null) ? "" : tech.getTenantId(), tableFont));
+			table.addCell(new Phrase(tech.getStudentCount(), tableFont));
+			table.addCell(new Phrase(tech.getUserName(), tableFont));
+			table.addCell(new Phrase((tech.getPassword() == null) ? "" : tech.getPassword(), tableFont));
+		}
+		
+		document.add(table);
+	}
+	
+	/**
+	 * Create new page for each teacher user and add login information 
+	 * along with list of 5 students (alphabetically)
+	 * @param document
+	 * @param prop
+	 * @param tech
+	 * @param font
+	 * @param tableFont
+	 * @throws DocumentException
+	 */
+	private static void addTeacherPageAcsi(Document document, Properties prop,
+			OrgTO tech, String schoolName, boolean schoolUserPresent, boolean newPagerRequired) throws DocumentException {
+		if(newPagerRequired) {
+			document.newPage();
+			document.add(_img);
+			document.add(Chunk.NEWLINE);
+		}
+		if(!schoolUserPresent) {
+			document.add(new Paragraph("\nSchool: "+ schoolName, font));
+		}
+		document.add(new Paragraph("\nTeacher: "+tech.getFullName()+ ", Grade: "+tech.getGrade(), font));
+		//document.add(new Paragraph("\nOrganization: "+ tech.getTenantId(), fontCourier));
+		document.add(new Paragraph("User Name: "+ tech.getUserName(), fontCourier));
+		document.add(new Paragraph("User Password: "+ tech.getPassword(), fontCourier));
+		
+		document.add(new Paragraph("\n"+prop.getProperty("TECH_TEXT"), font));
+		
+		document.add(new Paragraph("\nInstructions to Log-in:", font));  
+        List list = new List(false, 20);  
+        //list.setListSymbol(new Chunk("\u2022", FontFactory.getFont(FontFactory.HELVETICA, 20, Font.BOLD)));  
+        ListItem listItem = new ListItem(prop.getProperty("URL"), font);  
+        list.add(listItem);  
+        
+        listItem = new ListItem(prop.getProperty("BLT4"), font);  
+        list.add(listItem);  
+     
+        listItem = new ListItem(prop.getProperty("BLT5"), font);  
+        list.add(listItem);  
+        
+        listItem = new ListItem(prop.getProperty("BLT6"), font);  
+        list.add(listItem);  
+        
+        listItem = new ListItem(prop.getProperty("BLT6A"), font);  
+        list.add(listItem);  
+        
+        document.add(list);
+        
+        Table t = new Table(1, 6);
+		//t.setBorderColor(new Color(220, 255, 100));
+		t.setPadding(1.0F);
+		float[] studentTableWidth = {10f};
+		t.setWidths(studentTableWidth);
+		t.setAlignment(Element.ALIGN_LEFT);
+		//t.setSpacing(5.0F);
+		t.setBorderWidth(0.5F);
+		
+		java.util.List<UserTO> students = tech.getUsers();
+		Cell c1 = new Cell(new Phrase("First "+students.size()+" students in the class (alphabetical order)", font));
+		t.addCell(c1);
+		if(students != null) {
+			for(UserTO student : students) {
+				c1 = new Cell(new Phrase(student.getStudentName(), tableFont));
+				t.addCell(c1);
+			}
+		}
+		
+		document.add(t);
 	}
 }

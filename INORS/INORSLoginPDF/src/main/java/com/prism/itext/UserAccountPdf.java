@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +43,12 @@ public class UserAccountPdf {
 	private static boolean ARCHIVE_NEEDED = false;
 	private static String DDMMYY = "";
 	private static Map<Integer, String> orgMap = null;
+	private static StringBuffer processLog = null;
 	
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "S", "604709" };
+		// args = new String[] { "L", "603833" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -75,14 +77,16 @@ public class UserAccountPdf {
 				}
 				for (String id : ids) {
 					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
-						processLoginPdf(prop, dao, id);
+						//// processLoginPdf(prop, dao, id);
+						manupulateTenants(id, prop, null, false, false);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
-						processLoginPdf(prop, dao, id);
+						////processLoginPdf(prop, dao, id);
 						String letterLocation = processIcLetterPdf(prop, dao, id);
+						manupulateTenants(id, prop, letterLocation, false, false);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
@@ -114,7 +118,7 @@ public class UserAccountPdf {
 		logger.info("Processing for IC Letter...");
 		String letterLoc = "";
 		try {
-			OrgTO school = dao.getSchoolDetails(schoolId, true);
+			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
 			String adminId = dao.getCurrentAdminYear();
 			// List<String> studentIdList = dao.getStudentIdList(schoolId);
 			List<String> pdfPathList = new ArrayList<String>();
@@ -168,7 +172,7 @@ public class UserAccountPdf {
 		logger.info("Processing for IC Letter...");
 		String letterLoc = "";
 		try {
-			OrgTO school = dao.getSchoolDetails(schoolId, true);
+			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
 			String adminId = dao.getCurrentAdminYear();
 			List<String> studentIdList = dao.getStudentIdList(schoolId);
 			// List<String> pdfPathList = new ArrayList<String>();
@@ -227,7 +231,7 @@ public class UserAccountPdf {
 		logger.info("Processing for IC Letter From Extract Table...");
 		String letterLoc = "";
 		try {
-			OrgTO school = dao.getSchoolDetails(schoolId, false);
+			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
 			String adminId = dao.getCurrentAdminYear();
 			List<String> studentIdList = dao.getStudentIdListFromExtractTable(schoolId);
 			// List<String> pdfPathList = new ArrayList<String>();
@@ -283,7 +287,7 @@ public class UserAccountPdf {
 		boolean schoolUserPresent = false;
 		String encDocLocation = "";
 		try {
-			OrgTO school = dao.getSchoolDetails(schoolId, true);
+			OrgTO school = dao.getSchoolDetails(schoolId, true); // Users required for all orgs under it
 			if (school != null && school.getUsers() != null && school.getUsers().size() > 0) {
 				schoolUserPresent = true;
 				DDMMYY = school.getDateStrWtYear();
@@ -534,7 +538,7 @@ public class UserAccountPdf {
 	 */
 	private static boolean sendPasswordToMailId(CommonDAO dao, String level3OrgId, Properties prop, String toMail, boolean state, boolean isEducationCenter, String supportEmail) {
 		try {
-			OrgTO school = dao.getSchoolDetails(level3OrgId, true);
+			OrgTO school = dao.getSchoolDetails(level3OrgId, false); // Users not required
 			if (school != null) {
 				/* Fetch support email from customer table */
 				// String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
@@ -689,6 +693,533 @@ public class UserAccountPdf {
 		} finally {
 			zos.closeEntry();
 			IOUtils.closeQuietly(fis);
+		}
+	}
+
+	/**
+	 * Main method responsible for fetching data, storing password and sending mail
+	 * 
+	 * @param level3JasperOrgId
+	 * @param prop
+	 */
+	private static boolean manupulateTenants(String level3JasperOrgId, Properties prop, String acLetterLocation, boolean migration, boolean state) {
+		long processId = 0;
+		boolean schoolUserPresent = false;
+		boolean teacherUserPresent = false;
+		String encDocLocation = "";
+		try {
+			logger.debug("Using the following schema ... ");
+			logger.debug("        Load schema       : " + prop.getProperty("dbUserName"));
+			logger.debug("        Staging schema    : " + prop.getProperty("dbStageUserName"));
+			logger.debug("        Repository schema : " + prop.getProperty("dbRepoUserName"));
+
+			if (migration)
+				logger.debug("***** Migrating user for : " + level3JasperOrgId);
+
+			logger.info("Processing school (jasperorgId) : " + level3JasperOrgId);
+
+			if (dao == null)
+				dao = new CommonDAOImpl(prop);
+			/*if (stageDao == null) stageDao = new StageDAOImpl(prop);*/
+
+			logger.debug("getting schools ... ");
+			logger.info("getting schools ... ");
+			//lStartTime = new Date().getTime();
+			/** Log time difference */
+			// start time
+			OrgTO school = dao.getSchoolDetailsAcsi(level3JasperOrgId, state);
+			//lEndTime = new Date().getTime();
+			/** Log time difference */
+			// end time
+			//logElapsedTime("Get school information : ");
+			/** Log time difference */
+			// difference
+
+			if (school != null && school.getUsers() != null && school.getUsers().size() > 0) {
+				schoolUserPresent = true;
+				logger.info("New school user found. count .. " + school.getUsers().size());
+			} else {
+				logger.info("No new school user found. Incremental PDF will be generated.");
+			}
+			if (school != null) {
+				//lStartTime = new Date().getTime();
+				/** Log time difference */
+				// start time
+				processId = 1; // stageDao.getProcessId(school.getStructureElement());
+				//lEndTime = new Date().getTime();
+				/** Log time difference */
+				// end time
+				//logElapsedTime("Get process id : ");
+				/** Log time difference */
+				// difference
+			}
+			if (processId > 0 || migration) {
+				logger.debug("Processing PDF for processId : " + processId);
+				logger.info("Processing PDF for processId : " + processId);
+
+				//lStartTime = new Date().getTime();
+				/** Log time difference */
+				// start time
+				if (true/* stageDao.updateMailStatus(processId, INPROGRESS_STATUS, UTILITY_STATUS) > 0 || migration */) {
+					//lEndTime = new Date().getTime();
+					/** Log time difference */
+					// end time
+					//logElapsedTime("update email status to 'IP' : ");
+					/** Log time difference */
+					// difference
+
+					/** Commenting the following for PHASE II */
+					// if(repoDao == null) repoDao = new RepoDAOImpl(prop);
+
+					String adminid = dao.getCurrentAdminYearAcsi();
+					boolean isInitialLoad = true;// (migration)? false : stageDao.isInitialLoad(school.getStructureElement(), adminid);
+
+					// fetching all repo users for school
+					if (schoolUserPresent) {
+						logger.debug("	fetching repo school users ... ");
+						logger.info("fetching repo school users ...");
+
+						/** Commenting the following for PHASE II */
+						// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+						// school.setUsers(repoDao.getSchoolUsers(school.getUsers(), school.getJasperOrgId()));
+						// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+						// logElapsedTime("Fetching school users from Jasper repo : "); /** Log time difference*/ // difference
+
+						/*
+						 * if(school != null && school.getUsers() != null && school.getUsers().size() > 0 ) { if(school.getUsers().get(0) != null) {
+						 * school.setTenantId(school.getUsers().get(0).getTenantId()); } }
+						 */
+						/** adding this line for PHASE II */
+						// NA //school.setTenantId(school.getJasperOrgId());
+
+						//lStartTime = new Date().getTime();
+						/** Log time difference */
+						// start time
+						// generate auto password
+						List<OrgTO> schools = new ArrayList<OrgTO>();
+						schools.add(school);
+						schools = PasswordGenerator.populateWithPassword(schools);
+						//lEndTime = new Date().getTime();
+						/** Log time difference */
+						// end time
+						//logElapsedTime("Generate password for each school user : ");
+						/** Log time difference */
+						// difference
+
+						// updating password for each users
+						/** Commenting the following for PHASE II */
+						// logger.debug("	updating repo school users ... ");
+						// logger.info("updating repo school users ... ");
+
+						// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+						// repoDao.updateSchoolUsers(school);
+						// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+						// logElapsedTime("Update school user in jasper repo - with new password : "); /** Log time difference*/ // difference
+
+						/** adding for PHASE II */
+						// call LDAP code to save user password
+						logger.debug("Connecting to LDAP ...");
+						//LdapManager ldap = LdapManager.getInstance(prop.getProperty("ldap.host"), Integer.parseInt(prop.getProperty("ldap.port")), prop.getProperty("app.ldap.username"),
+						//		prop.getProperty("app.ldap.password"));
+						//ldap.setUSERS_OU(prop.getProperty("ldap.users.ou"));
+						logger.debug("Connection established with LDAP ...");
+						for (UserTO user : school.getUsers()) {
+							try {
+								//ldap.deleteUser(user.getUserName());
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+							logger.debug("---------------------------------------------------");
+							logger.debug("Username: " + user.getUserName() + " Password: " + user.getPassword());
+							logger.debug("---------------------------------------------------");
+							try {
+								//ldap.addUser(user.getUserName(), user.getUserName(), user.getUserName(), user.getPassword());
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+						}
+					}
+					logger.debug("getting teachers ... ");
+					logger.info("getting teachers ... ");
+
+					//lStartTime = new Date().getTime();
+					/** Log time difference */
+					// start time
+					List<OrgTO> teachers = dao.getAllTeachersAcsi(level3JasperOrgId);
+					//lEndTime = new Date().getTime();
+					/** Log time difference */
+					// end time
+					//logElapsedTime("Get all teacher users : ");
+					/** Log time difference */
+					// difference
+
+					if (teachers != null && teachers.size() > 0) {
+						teacherUserPresent = true;
+					}
+
+					if (!schoolUserPresent && !teacherUserPresent) {
+						// no new school user found also no new teacher found
+						logger.debug("No New School and Teacher user found");
+						logger.info("No New School and Teacher user found");
+
+						if (acLetterLocation != null && acLetterLocation.trim().length() > 0) {
+							logger.info("Sending AC email for new students");
+							if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
+								if (sendMailAcsi(level3JasperOrgId, isInitialLoad, migration, prop, school.getEmail(), acLetterLocation, null, processLog, schoolUserPresent, true)) {
+									// updating new activation flag
+									logger.info("AC letter created. Updating new_code flag to N");
+									//TODO//dao.updateNewActivationFlag(level3JasperOrgId);
+
+									// stageDao.updateProcessStatus(processId, COMPLETE_STATUS);
+									logger.info("Updated Process Status to complete");
+
+									// stageDao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
+									logger.info("Updated Mail Status to success");
+								} else {
+									logger.info("Failed sending AC mail.");
+									// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+									// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+								}
+							} else {
+								logger.debug("failed sending mail .. no school mail id is defined.");
+								logger.info("Failed sending mail .. no school mail id is defined.");
+								// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+								// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+							}
+						} else {
+							logger.info("No New Students found");
+							// stageDao.updateProcessStatus(processId, COMPLETE_STATUS);
+							logger.info("Updated Process Status to complete");
+
+							// stageDao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
+							logger.info("Updated Mail Status to success");
+						}
+						return true;
+					}
+
+					// fetch all teacher user from repo
+					/** Commenting the following for PHASE II */
+					// logger.debug("	fetching repo teacher users ... ");
+					// logger.info("fetching repo teacher users ... ");
+
+					// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+					// teachers = RepoDAOImpl.getTeacherUsers(teachers);
+					// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+					// logElapsedTime("Get all teacher users from jasper repository : "); /** Log time difference*/ // difference
+
+					// generate auto password
+					//lStartTime = new Date().getTime();
+					/** Log time difference */
+					// start time
+					teachers = PasswordGenerator.populateTeachersWithPassword(teachers);
+					//lEndTime = new Date().getTime();
+					/** Log time difference */
+					// end time
+					//logElapsedTime("Generate password for all teachers : ");
+					/** Log time difference */
+					// difference
+
+					// updating password for each users
+					/** Commenting the following for PHASE II */
+					// logger.debug("	updating repo teacher users ... ");
+					// logger.info("updating repo teacher users ... ");
+					// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+					// repoDao.updateTeacherUsers(teachers);
+					// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+					// logElapsedTime("Update teacher user in jasper repo - with new password : "); /** Log time difference*/ // difference
+
+					/** adding for PHASE II */
+					// call LDAP code to save user password
+					logger.debug("Connecting to LDAP ...");
+					//LdapManager ldap = LdapManager.getInstance(prop.getProperty("ldap.host"), Integer.parseInt(prop.getProperty("ldap.port")), prop.getProperty("app.ldap.username"),
+					//		prop.getProperty("app.ldap.password"));
+					//ldap.setUSERS_OU(prop.getProperty("ldap.users.ou"));
+					logger.debug("Connection established with LDAP ...");
+					for (OrgTO user : teachers) {
+						try {
+							//ldap.deleteUser(user.getUserName());
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+						logger.debug("---------------------------------------------------");
+						logger.debug("Username: " + user.getUserName() + " Password: " + user.getPassword());
+						logger.debug("---------------------------------------------------");
+						try {
+							//ldap.addUser(user.getUserName(), user.getUserName(), user.getUserName(), user.getPassword());
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+					// ordering teachers by Grade
+					Collections.sort(teachers);
+
+					// create pdf
+					logger.info("Creating PDF ... ");
+					encDocLocation = createPdfAcsi(school, teachers, prop, true, schoolUserPresent, isInitialLoad, migration, state);
+					logger.info("Created PDF with name : " + encDocLocation);
+					if (PdfGenerator.isIssueFound() && !migration) {
+						logger.info("Some issues identified during generation of pdf.");
+						// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+						// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+					} else {
+						// update org_user table set newuser = N
+						logger.info("Updating ORG_USER.newuser = 'N' ");
+
+						//lStartTime = new Date().getTime();
+						/** Log time difference */
+						// start time
+						// TODO //dao.updateNewuserFlag(school.getJasperOrgId());
+						//lEndTime = new Date().getTime();
+						/** Log time difference */
+						// end time
+						//logElapsedTime("Update newuser flag for school : ");
+						/** Log time difference */
+						// difference
+
+						//lStartTime = new Date().getTime();
+						/** Log time difference */
+						// start time
+						//TODO//dao.updateTeacherNewuserFlag(teachers);
+						//lEndTime = new Date().getTime();
+						/** Log time difference */
+						// end time
+						//logElapsedTime("Update newuser flag for teacher : ");
+						/** Log time difference */
+						// difference
+
+						if (encDocLocation != null && encDocLocation.trim().length() > 0) {
+							// update staging status
+							// stageDao.updateProcessStatus(processId, INPROGRESS_STATUS);
+							logger.info("Updated Process Status to success");
+
+							// send mail to school
+							if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
+								// String attachmentName = school.getElementName() + "_" + school.getStructureElement() + ".pdf";
+								if ((acLetterLocation != null && acLetterLocation.trim().length() == 0)) {
+									logger.info("No new students loaded .. sending email as single attachment");
+									acLetterLocation = null; // as we need to send only one attachment
+								}
+								if (sendMailAcsi(level3JasperOrgId, isInitialLoad, migration, prop, school.getEmail(), encDocLocation, acLetterLocation, processLog, schoolUserPresent, false)) {
+									logger.debug("	mail sent successfully ... for process id : " + processId);
+									// removeFile(encDocLocation);
+									logger.info("Mail sent successfully to " + school.getEmail());
+
+									if (acLetterLocation != null && acLetterLocation.trim().length() > 0) {
+										// updating new activation flag
+										logger.info("AC letter created. Updating new_code flag to N");
+										//TODO//dao.updateNewActivationFlag(level3JasperOrgId);
+									}
+
+									// update staging status
+									//lStartTime = new Date().getTime();
+									/** Log time difference */
+									// start time
+									// stageDao.updateProcessStatus(processId, COMPLETE_STATUS);
+									logger.info("Updated Process Status to complete");
+
+									// stageDao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
+									logger.info("Updated Mail Status to success");
+									//lEndTime = new Date().getTime();
+									/** Log time difference */
+									// end time
+									//logElapsedTime("Update process status : ");
+									/** Log time difference */
+									// difference
+
+								} else {
+									logger.info("Failed sending mail. Updating status.");
+									// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+									// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+								}
+							} else {
+								logger.debug("failed sending mail .. no school mail id is defined.");
+								logger.info("Failed sending mail .. no school mail id is defined.");
+								// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+								// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+							}
+						} else {
+							logger.info("Error generating PDF");
+							// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+							// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+						}
+					}
+				} else {
+					logger.debug("Failed to update email status : (jasperorgId) : " + level3JasperOrgId);
+					logger.info("Failed to update email status : (jasperorgId) : " + level3JasperOrgId);
+					// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+					// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+				}
+			} else {
+				logger.debug("ProcessId not found");
+				logger.info("ProcessId not found " + level3JasperOrgId);
+				if (school != null)
+					logger.info("  ... for ... structure element " + school.getStructureElement());
+				// stageDao.updateProcessStatus(processId, ERROR_STATUS);
+				// stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS);
+			}
+		} catch (Exception e) {
+			logger.info("Error processing : Java exception : " + e.getMessage());
+			try { /* stageDao.updateProcessStatus(processId, ERROR_STATUS); */
+			} catch (Exception ex) {
+			}
+			try { /* stageDao.updateMailStatus(processId, ERROR_STATUS, INPROGRESS_STATUS); */
+			} catch (Exception ex) {
+			}
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (processId > 0) {
+				//lStartTime = new Date().getTime();
+				/** Log time difference */
+				// start time
+				logger.info("Processing complete for (jasperorgId) " + level3JasperOrgId);
+				try {
+					// stageDao.updateProcessLog(processId, processLog.toString(), encDocLocation, acLetterLocation);
+				} catch (Exception ex) {
+				}
+				//lEndTime = new Date().getTime();
+				/** Log time difference */
+				// end time
+				//logElapsedTime("Update process Log : ");
+				/** Log time difference */
+				// difference
+			}
+			logger.debug("Process Log ----------------------------------------- ");
+			//logger.debug((processLog != null) ? processLog.toString() : "error");
+		}
+		return true;
+	}
+	
+	/**
+	 * This calls create PDF method to create pdf with specified template
+	 * 
+	 * @param school
+	 * @param teachers
+	 * @param prop
+	 * @return
+	 */
+	private static String createPdfAcsi(OrgTO school, List<OrgTO> teachers, Properties prop, boolean encrypt, boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state) {
+		logger.debug("generating pdf... ");
+		if (prop.getProperty("pdfGenPath") == null) {
+			logger.info("PDF generation path (pdfGenPath) is not defined");
+		}
+		// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+		String docLocation = PdfGenerator.generatePdfAcsi(prop, school, teachers, schoolUserPresent, isInitialLoad, migration, state);
+		// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+		// logElapsedTime("Create PDF : "); /** Log time difference*/ // difference
+
+		if (encrypt) {
+			// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
+			String encLocation = encryptPdfAcsi(prop, docLocation, school.getStructureElement(), school.getCustomerCode(), school.getElementName(), state);
+			removeFileAcsi(docLocation);
+			// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
+			// logElapsedTime("Encrypt PDF : "); /** Log time difference*/ // difference
+			return encLocation;
+		} else {
+			return docLocation;
+		}
+	}
+	
+	/**
+	 * This calls mail sending menthod to send send PDF to school users
+	 * @param prop
+	 * @param toMailAddr
+	 * @param attachment
+	 * @return 
+	 */
+	private static boolean sendMailAcsi(String level3JasperOrgId, boolean isInitialLoad, boolean migration, Properties prop, 
+			String toMailAddr, String attachment, String attachmentTwo, StringBuffer processLog, 
+			boolean schoolUserPresent, boolean letterMail) {
+		logger.debug("sending mail... ");
+		
+		//lStartTime = new Date().getTime(); /** Log time difference*/ // start time 
+		
+		boolean mailSent = false;
+		int trySending = 0;
+		String mailSubject = "";
+		String mailBody = "";
+		try {
+			trySending++;
+			logger.debug("Checking .. if school is new ... --> ");
+			// boolean newSchool = dao.newSchool(level3JasperOrgId);
+			// logger.debug(newSchool);
+			//if(newSchool) updateLog("NEW SCHOOL"); else updateLog("OLD SCHOOL");
+			if(migration) {
+				mailSubject = prop.getProperty("mailSubjectMigration");
+				mailBody = prop.getProperty("messageBodyMigration")+prop.getProperty("messageFooter");
+				logger.debug("Mail sending for Migrated users");
+			} else if(letterMail) {
+				mailSubject = prop.getProperty("mailSubjectAnnualAddlGroup");
+				mailBody = prop.getProperty("messageBodyAnnualAddlGroup")+prop.getProperty("messageFooter");
+				//updateLog("Mail sending for IC");
+			} else if(schoolUserPresent) {
+				mailSubject = prop.getProperty("mailSubjectAnnualNewSch");
+				mailBody = prop.getProperty("messageBodyAnnualNewSch")+prop.getProperty("messageFooter");
+				//updateLog("Sending mail for new school");
+			} else { // mail for additional group
+				if(isInitialLoad) { 
+					// returning school is loading data first time
+					mailSubject = prop.getProperty("mailSubjectAnnualRetSch");
+					mailBody = prop.getProperty("messageBodyAnnualRetSch")+prop.getProperty("messageFooter");
+					//updateLog("Sending mail for addl. users. Ret. School");
+				} else {
+					mailSubject = prop.getProperty("mailSubjectAnnualAddlGroup");
+					mailBody = prop.getProperty("messageBodyAnnualAddlGroup")+prop.getProperty("messageFooter");
+					//updateLog("Sending mail for addl. users.");
+				}
+			}
+			EmailSender.sendMailAcsi(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody);
+			mailSent = true;
+		} catch (Exception e) {
+			logger.debug("Mail sending failed ..."+e.getMessage());
+			//updateLog("Mail sending failed", e.getMessage());
+		}
+		//lEndTime = new Date().getTime();   /** Log time difference*/ // end time 
+		//logElapsedTime("Mail sending : "); /** Log time difference*/ // difference 
+		
+		return mailSent;
+		
+	}
+	
+	/**
+	 * This method encrypt pdf with strength: 128bits 
+	 * @param prop
+	 * @param docLocation
+	 * @return
+	 */
+	private static String encryptPdfAcsi(Properties prop, String docLocation, String structElem, 
+			String customerCode, String elementName, boolean state) {
+		logger.debug("encrypting pdf... ");
+		String docName = null;
+		StringBuffer docBuff = new StringBuffer();
+		try {
+			String pdfPrefix = (state)? prop.getProperty("pdfFileNamePrefixLoginState") : prop.getProperty("pdfFileNamePrefixLogin");
+			docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
+			docBuff.append(elementName).append("_").append(customerCode).append("_");
+			docBuff.append(System.currentTimeMillis()).append(".pdf");
+			
+			docName = docBuff.toString();
+			
+			// Add the security object to the document
+			PdfEncryptor.encrypt(new PdfReader(docLocation), 
+					new FileOutputStream(docName), 
+					prop.getProperty("pdfPassword").getBytes(), 
+					prop.getProperty("pdfOwnerPassword").getBytes(),
+					PdfWriter.AllowDegradedPrinting, 
+					PdfWriter.STRENGTH128BITS);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+		return docName;
+	}
+	
+	private static void removeFileAcsi(String file) {
+		try {
+			File pdf = new File(file);
+			if(pdf.exists()) pdf.delete();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 }

@@ -87,5 +87,15 @@ public interface CommonDAO {
 	 * @return
 	 */
 	public String getSubjectPrefix(String schoolId);
+	
+	public OrgTO getSchoolDetailsAcsi(String jasperOrgId, boolean state) throws Exception;
+	public List<UserTO> getSchoolUsersAcsi(String jasperOrgId) throws Exception;
+	public List<UserTO> fetchAdminColumnAcsi(List<UserTO> users) throws Exception;
+	public List<UserTO> checkAdminAcsi(String allRoleIds) throws Exception;
+	public String getCurrentAdminYearAcsi() throws Exception;
+	public List<OrgTO> getAllTeachersAcsi(String jasperOrgId) throws Exception;
+	public List<OrgTO> getGradeForTeacherUsersAcsi(List<OrgTO> teachers) throws Exception;
+	public List<OrgTO> getGradesAcsi(String jasperOrgIds) throws Exception;
+	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception;
 
 }

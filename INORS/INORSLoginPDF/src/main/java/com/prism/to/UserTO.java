@@ -34,6 +34,10 @@ public class UserTO {
 	private String testingSiteName;
 	private Integer testingSiteCode;
 
+	private boolean adminUser;
+
+	private String studentName;
+
 	/**
 	 * @return the userId
 	 */
@@ -302,6 +306,36 @@ public class UserTO {
 	 */
 	public void setTestingSiteCode(Integer testingSiteCode) {
 		this.testingSiteCode = testingSiteCode;
+	}
+
+	/**
+	 * @return the adminUser
+	 */
+	public boolean isAdminUser() {
+		return adminUser;
+	}
+
+	/**
+	 * @param adminUser
+	 *            the adminUser to set
+	 */
+	public void setAdminUser(boolean adminUser) {
+		this.adminUser = adminUser;
+	}
+
+	/**
+	 * @return the studentName
+	 */
+	public String getStudentName() {
+		return studentName;
+	}
+
+	/**
+	 * @param studentName
+	 *            the studentName to set
+	 */
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 
 }

@@ -12,11 +12,21 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+
+
+
+
 //import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 //import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Properties;
+
+
+
+
+
 
 
 import com.prism.constant.Constants;
@@ -118,7 +128,7 @@ public class CommonDAOImpl implements CommonDAO {
 		}
 	
 		if ((school != null) && (cascade == true)) {
-			List<UserTO> users = getSchoolUsers(school.getJasperOrgId(), false);
+			List<UserTO> users = getSchoolUsers(school.getJasperOrgId(), cascade);
 			school.setUsers(users);
 		}
 		
@@ -762,5 +772,511 @@ public class CommonDAOImpl implements CommonDAO {
 			}
 		}
 		return currentAdminYear;
+	}
+
+	/**
+	 * Fetch school information
+	 * 
+	 * @param jasperOrgId
+	 * @return
+	 * @throws Exception
+	 */
+	public OrgTO getSchoolDetailsAcsi(String jasperOrgId, boolean state) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrgTO school = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			// conn = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+
+			/*
+			 * String query = "SELECT org.level3_element_name, org.org_nodeid, org.level3_jasper_orgid " + "FROM org_node_dim org WHERE rownum = 1 and org.level3_jasper_orgid = ?";
+			 */
+
+			String query = "";
+			if (state) {
+				query = /*
+						 * "SELECT org.level1_element_name, org.org_nodeid, org.level1_jasper_orgid, str.email, " + "str.STRUCTURE_ELEMENT, org.LEVEL1_CUSTOMER_CODE " +
+						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level1_jasper_orgid " +
+						 * "AND rownum = 1 and org.level1_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
+						 */
+				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid from org_node_dim where org_nodeid = ? and org_node_level=1";
+			} else {
+				query = /*
+						 * "SELECT org.level3_element_name, org.org_nodeid, org.level3_jasper_orgid, str.email, " + "str.STRUCTURE_ELEMENT, org.LEVEL3_CUSTOMER_CODE " +
+						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level3_jasper_orgid " +
+						 * "AND rownum = 1 and org.level3_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
+						 */
+				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid from org_node_dim where org_nodeid = ? and org_node_level=3";
+			}
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, jasperOrgId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				school = new OrgTO();
+				school.setElementName(rs.getString(1));
+				school.setOrgNodeId(rs.getString(2));
+				school.setJasperOrgId(rs.getString(3));
+				school.setEmail(rs.getString(4));
+				school.setStructureElement(rs.getString(5));
+				school.setCustomerCode(rs.getString(6));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		if (school != null) {
+			List<UserTO> users = getSchoolUsersAcsi(school.getJasperOrgId());
+			school.setUsers(users);
+		}
+		return school;
+	}
+
+	/**
+	 * Fetch all school users
+	 * 
+	 * @param jasperOrgId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserTO> getSchoolUsersAcsi(String jasperOrgId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<UserTO> allUsers = new ArrayList<UserTO>();
+		UserTO user = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			// conn = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+
+			/*
+			 * String query = "SELECT u.jasper_userid, u.user_name FROM org_users u " + "WHERE u.new_user = 'Y' AND u.jasper_orgid = ?";
+			 */
+			// changing query for new table in Phase II
+			String query = /*
+							 * "SELECT u.user_id, u.username FROM users u " + "WHERE u.new_user = 'Y' and u.activation_status = 'AC' AND u.org_id = ? " +
+							 * "AND u.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
+							 */
+			"SELECT U.USERID, U.USERNAME FROM USERS U, ORG_USERS OU WHERE U.USERID=OU.USERID AND U.ACTIVATION_STATUS = 'AC' AND U.IS_NEW_USER='Y' AND OU.ORG_NODEID = ?";
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, jasperOrgId);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				user = new UserTO();
+				String userId = rs.getString(1);
+				user.setJasperUserId(userId);
+				user.setUserId(userId);
+				user.setUserName(rs.getString(2));
+				allUsers.add(user);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return fetchAdminColumnAcsi(allUsers);
+	}
+
+	/**
+	 * Check if user is admin user or not
+	 * 
+	 * @param users
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserTO> fetchAdminColumnAcsi(List<UserTO> users) throws Exception {
+		StringBuffer allUserIds = new StringBuffer();
+		boolean firstRec = false;
+		for (UserTO u : users) {
+			if (firstRec) {
+				allUserIds.append(",");
+			}
+			firstRec = true;
+			allUserIds.append(u.getUserId());
+		}
+		// System.out.println("all user ids : "+allUserIds);
+		List<UserTO> allUsers = null;
+		if (allUserIds.toString() != null && allUserIds.toString().length() > 0) {
+			allUsers = checkAdminAcsi(allUserIds.toString());
+
+			for (UserTO adUs : allUsers) {
+				for (UserTO user : users) {
+					if (user.getUserId() != null && user.getUserId().equals(adUs.getUserId())) {
+						user.setAdminUser(adUs.isAdminUser());
+						break;
+					}
+				}
+			}
+		}
+
+		return users;
+	}
+
+	/**
+	 * Check if the school user is admin or not
+	 * 
+	 * @param allRoleIds
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserTO> checkAdminAcsi(String allRoleIds) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<UserTO> allUsers = new ArrayList<UserTO>();
+		UserTO user = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+
+			String query = " SELECT rle.role_name, urle.user_id FROM role rle, user_role urle " + "WHERE urle.role_id = rle.role_ID AND rle.role_name = 'ROLE_ADMIN' " + "AND urle.user_id in ( "
+					+ allRoleIds + " )";
+			pstmt = conn.prepareCall(query);
+			// pstmt.setString(1, allRoleIds);
+			// System.out.println(query);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				user = new UserTO();
+				String roleName = rs.getString(1);
+				if ("ROLE_ADMIN".equals(roleName)) {
+					user.setAdminUser(Boolean.TRUE);
+				}
+				user.setUserId(rs.getString(2));
+				allUsers.add(user);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return allUsers;
+	}
+	
+	/**
+	 * get current admin year
+	 * @return
+	 * @throws Exception
+	 */
+	public String getCurrentAdminYearAcsi() throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String adminid = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			String query = "select adminid from admin_dim where is_current_admin = 'Y'";
+			pstmt = conn.prepareCall(query);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				adminid = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return adminid;
+	}
+	
+	/**
+	 * Fetch all teacher org with student count and login user
+	 * @param jasperOrgId
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OrgTO> getAllTeachersAcsi(String jasperOrgId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<OrgTO> allTeachers = new ArrayList<OrgTO>();
+		OrgTO teacher = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+
+			/*String query = "SELECT COUNT(STU.STUDENT_BIO_ID), " + 
+						       "ORG.LEVEL4_ELEMENT_NAME, " + 
+						       "ORG.LEVEL4_JASPER_ORGID, " + 
+						       "ORG.ORG_NODEID, " + 
+						       "U.JASPER_USERID, " + 
+						       "U.USER_NAME " + 
+						  "FROM ORG_NODE_DIM ORG, ORG_USERS U, STUDENT_BIO_DIM STU " + 
+						 "WHERE ORG.LEVEL3_JASPER_ORGID = ? " + 
+						   "AND U.JASPER_ORGID = ORG.LEVEL4_JASPER_ORGID " + 
+						   "AND STU.ORG_NODEID = ORG.ORG_NODEID " + 
+						   "AND u.new_user = 'Y' " + 
+						 "GROUP BY ORG.LEVEL4_ELEMENT_NAME, " + 
+						          "ORG.LEVEL4_JASPER_ORGID, " + 
+						          "ORG.ORG_NODEID, " + 
+						          "U.JASPER_USERID, " + 
+						          "U.USER_NAME " + 
+						 "ORDER BY ORG.ORG_NODEID";*/
+			/** Changing query for Phase II */
+			String query = /*"SELECT COUNT(STU.STUDENT_BIO_ID), " + 
+						       "ORG.LEVEL4_ELEMENT_NAME, " + 
+						       "ORG.LEVEL4_JASPER_ORGID, " + 
+						       "ORG.ORG_NODEID, " + 
+						       "U.USER_ID, " + 
+						       "U.USERNAME, " + 
+						       "U.ORG_ID " + 
+						  "FROM ORG_NODE_DIM ORG, USERS U, STUDENT_BIO_DIM STU " + 
+						 "WHERE ORG.LEVEL3_JASPER_ORGID = ? " + 
+						   "AND U.ORG_ID = ORG.LEVEL4_JASPER_ORGID " + 
+						   "AND STU.ORG_NODEID = ORG.ORG_NODEID " + 
+						   "AND u.new_user = 'Y' and u.activation_status = 'AC' " + 
+						   " and u.adminid = (select adminid from admin_dim where current_admin = 'Y') " +
+						 "GROUP BY ORG.LEVEL4_ELEMENT_NAME, " + 
+						          "ORG.LEVEL4_JASPER_ORGID, " + 
+						          "ORG.ORG_NODEID, " + 
+						          "U.USER_ID, " + 
+						          "U.USERNAME, U.ORG_ID " + 
+						 "ORDER BY ORG.ORG_NODEID";*/
+			CustomStringUtil.appendString(
+					"SELECT COUNT(SBD.STUDENT_BIO_ID),",
+					"       OND.ORG_NODE_NAME,",
+					"       OND.ORG_NODEID,",
+					"       OND.ORG_NODEID,",
+					"       U.USERID,",
+					"       U.USERNAME,",
+					"       OND.ORG_NODEID",
+					"  FROM USERS U, ORG_USERS OU, ORG_NODE_DIM OND, STUDENT_BIO_DIM SBD",
+					" WHERE U.USERID = OU.USERID",
+					"   AND OU.ORG_NODEID = OND.ORG_NODEID",
+					"   AND OND.PARENT_ORG_NODEID = ?",
+					"   AND SBD.ORG_NODEID = OND.ORG_NODEID",
+					" GROUP BY OND.ORG_NODE_NAME, OND.ORG_NODEID, U.USERID, U.USERNAME",
+					" ORDER BY OND.ORG_NODEID", "");
+			
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, jasperOrgId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				teacher = new OrgTO();
+				teacher.setStudentCount(rs.getString(1));
+				String elementName = rs.getString(2);
+				teacher.setElementName(elementName);
+				teacher.setFullName(elementName);
+				teacher.setJasperOrgId(rs.getString(3));
+				teacher.setOrgNodeId(rs.getString(4));
+				teacher.setUserId(rs.getString(5)); // this is jasper user id
+				teacher.setUserName(rs.getString(6)); // userid 
+				teacher.setTenantId(rs.getString(7));
+				allTeachers.add(teacher);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		
+		return getGradeForTeacherUsersAcsi(allTeachers);
+	}
+	
+	/**
+	 * Fetch grade for each teacher
+	 * @param teachers
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OrgTO> getGradeForTeacherUsersAcsi(List<OrgTO> teachers) throws Exception {
+		StringBuffer allNodes = new StringBuffer();
+		StringBuffer allJasperOrgIds = new StringBuffer();
+		boolean firstRec = false;
+		for(OrgTO t : teachers) {
+			if(firstRec) {
+				allNodes.append(",");
+				allJasperOrgIds.append(",");
+			}
+			firstRec = true;
+			allNodes.append(t.getOrgNodeId());
+			allJasperOrgIds.append(t.getJasperOrgId());
+		}
+		//System.out.println("nodes"+allNodes);
+		List<OrgTO> allGrades = null;
+		List<UserTO> allStudents = null;
+		List<UserTO> students = null;
+		if(allNodes.toString() != null && allNodes.toString().length() > 0) {
+			System.out.println("   Fetching grades for teachers");
+			//allGrades = getGrades(allNodes.toString());
+			allGrades = getGradesAcsi(allJasperOrgIds.toString());
+			
+			System.out.println("   Fetching students for teachers");
+			allStudents = getStudentsAcsi(allNodes.toString());
+		
+			for(OrgTO tech : teachers) {
+				for(OrgTO grade : allGrades) {
+					if(tech.getJasperOrgId() != null && tech.getJasperOrgId().equals(grade.getJasperOrgId())) {
+						tech.setGrade(grade.getGrade());
+						tech.setGradeSeq(grade.getGradeSeq());
+						break;
+					}
+				}
+				students = new ArrayList<UserTO>();
+				for(UserTO student : allStudents) {
+					if(tech.getOrgNodeId() != null && tech.getOrgNodeId().equals(student.getOrgNodeId())) {
+						students.add(student);
+					}
+				}
+				tech.setUsers(students);
+			}
+		}
+		
+		return teachers;
+	}
+	
+	/**
+	 * get grade for teacher
+	 * @param jasperOrgId
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OrgTO> getGradesAcsi(String jasperOrgIds) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<OrgTO> allGrades = new ArrayList<OrgTO>();
+		OrgTO grades = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			/*String query = "SELECT DISTINCT grade.grade_name, FACT.ORG_NODEID " + 
+							  "FROM SUBTEST_SCORE_FACT FACT, GRADE_DIM GRADE " + 
+							 "WHERE FACT.ORG_NODEID in ( "+ nodeId +" )" +
+							 "AND grade.gradeid = fact.gradeid";*/
+			String query = /*"SELECT DISTINCT GRADE.GRADE_NAME, gsl.jasper_orgid, GRADE.GRADE_SEQ  " +
+					"FROM GRADE_SELECTION_LOOKUP GSL, ADMIN_DIM ADM, GRADE_DIM GRADE " +
+					"WHERE ADM.ADMINID = GSL.ADMINID " +
+					"AND grade.gradeid = gsl.gradeid " +
+					"AND ADM.CURRENT_ADMIN = 'Y' " +
+					"AND gsl.jasper_orgid in ( "+ jasperOrgIds +" ) ";*/
+					CustomStringUtil.appendString(
+							"select distinct gd.grade_name, ond.org_nodeid, GD.GRADE_SEQ",
+							"  from users           u,",
+							"       org_users       ou,",
+							"       org_node_dim    ond,",
+							"       student_bio_dim sbd,",
+							"       grade_dim       gd",
+							" where u.userid = ou.userid",
+							"   and ou.org_nodeid = ond.org_nodeid",
+							"   and ond.parent_org_nodeid in ( "+ jasperOrgIds +" )",
+							"   and sbd.org_nodeid = ond.org_nodeid",
+							"   and sbd.gradeid = gd.gradeid",
+							" order by ond.org_nodeid");
+			
+			pstmt = conn.prepareCall(query);
+			//pstmt.setString(1, nodeId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				grades = new OrgTO();
+				grades.setGrade(rs.getString(1));
+				grades.setJasperOrgId(rs.getString(2));
+				grades.setGradeSeq(rs.getInt(3));
+				allGrades.add(grades);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return allGrades;
+	}
+	
+	/**
+	 * fetching top 5 students alphabetically
+	 * @param nodeId
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<UserTO> students = new ArrayList<UserTO>();
+		UserTO student = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			
+			String query = " SELECT * FROM (SELECT stu.org_nodeid, " +
+					"stu.last_name || ', ' || stu.first_name || ' ' || stu.middle_name " +
+					"FROM student_bio_dim stu WHERE stu.org_nodeid = ? ORDER BY stu.last_name, stu.first_name, stu.middle_name " +
+					"  ) WHERE ROWNUM < 6 ";
+			
+			String[] nodearr = nodeId.split(",");
+			int count = 0;
+			StringBuffer queryBuf = new StringBuffer();
+			for(String node : nodearr) {
+				if(count > 0) {
+					queryBuf.append("UNION ALL");
+				}
+				count++;
+				queryBuf.append(query);
+			}
+			
+			pstmt = conn.prepareCall(queryBuf.toString());
+			//System.out.println(queryBuf.toString());
+			count = 0;
+			for(String node : nodearr) {
+				pstmt.setString(++count, node);
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				student = new UserTO();
+				student.setOrgNodeId(rs.getString(1));
+				student.setStudentName(rs.getString(2));
+				students.add(student);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return students;
 	}
 }

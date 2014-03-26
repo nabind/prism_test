@@ -14,6 +14,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String elementName;
 	private String orgNodeId;
 	private String orgNodeLevel;
+	private String tenantId;
 	private String jasperOrgId;
 	private String email;
 	private String customerCode;
@@ -22,7 +23,9 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String dateStrWtYear;
 	private List<UserTO> users;
 
+	private String userId;
 	private String userName;
+	private String fullName;
 	private String password;
 	private String salt;
 	private String encPassword;
@@ -37,11 +40,15 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String testingSiteName;
 	private String structureElement;
 
+	private String studentCount;
+	private String grade;
+	private int gradeSeq;
+
 	/**
 	 * @return the elementName
 	 */
 	public String getElementName() {
-		return elementName == null ? "" : elementName;
+		return elementName;
 	}
 
 	/**
@@ -80,6 +87,21 @@ public class OrgTO implements Comparable<OrgTO> {
 	 */
 	public void setOrgNodeLevel(String orgNodeLevel) {
 		this.orgNodeLevel = orgNodeLevel;
+	}
+
+	/**
+	 * @return the tenantId
+	 */
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	/**
+	 * @param tenantId
+	 *            the tenantId to set
+	 */
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
 	}
 
 	/**
@@ -188,6 +210,21 @@ public class OrgTO implements Comparable<OrgTO> {
 	}
 
 	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/**
 	 * @return the userName
 	 */
 	public String getUserName() {
@@ -200,6 +237,21 @@ public class OrgTO implements Comparable<OrgTO> {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the fullName
+	 */
+	public String getFullName() {
+		return fullName;
+	}
+
+	/**
+	 * @param fullName
+	 *            the fullName to set
+	 */
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	/**
@@ -281,7 +333,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	 * @return the stateName
 	 */
 	public String getStateName() {
-		return stateName == null ? "" : stateName;
+		return stateName;
 	}
 
 	/**
@@ -296,7 +348,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	 * @return the countyCode
 	 */
 	public Integer getCountyCode() {
-		return countyCode == null ? 0 : countyCode;
+		return countyCode;
 	}
 
 	/**
@@ -326,7 +378,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	 * @return the testingSiteCode
 	 */
 	public Integer getTestingSiteCode() {
-		return testingSiteCode == null ? 0 : testingSiteCode;
+		return testingSiteCode;
 	}
 
 	/**
@@ -341,7 +393,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	 * @return the testingSiteName
 	 */
 	public String getTestingSiteName() {
-		return testingSiteName == null ? "" : testingSiteName;
+		return testingSiteName;
 	}
 
 	/**
@@ -367,15 +419,60 @@ public class OrgTO implements Comparable<OrgTO> {
 		this.structureElement = structureElement;
 	}
 
+	/**
+	 * @return the studentCount
+	 */
+	public String getStudentCount() {
+		return studentCount;
+	}
+
+	/**
+	 * @param studentCount
+	 *            the studentCount to set
+	 */
+	public void setStudentCount(String studentCount) {
+		this.studentCount = studentCount;
+	}
+
+	/**
+	 * @return the grade
+	 */
+	public String getGrade() {
+		return grade;
+	}
+
+	/**
+	 * @param grade
+	 *            the grade to set
+	 */
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	/**
+	 * @return the gradeSeq
+	 */
+	public int getGradeSeq() {
+		return gradeSeq;
+	}
+
+	/**
+	 * @param gradeSeq
+	 *            the gradeSeq to set
+	 */
+	public void setGradeSeq(int gradeSeq) {
+		this.gradeSeq = gradeSeq;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((elementName == null) ? 0 : elementName.hashCode());
-		result = prime * result + Integer.parseInt(parentJasperOrgId);
+		result = prime * result
+				+ ((fullName == null) ? 0 : fullName.hashCode());
+		result = prime * result + gradeSeq;
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -385,26 +482,26 @@ public class OrgTO implements Comparable<OrgTO> {
 		if (getClass() != obj.getClass())
 			return false;
 		OrgTO other = (OrgTO) obj;
-		if (elementName == null) {
-			if (other.elementName != null)
+		if (fullName == null) {
+			if (other.fullName != null)
 				return false;
-		} else if (!elementName.equals(other.elementName))
+		} else if (!fullName.equals(other.fullName))
 			return false;
-		if (Integer.parseInt(parentJasperOrgId) != Integer.parseInt(other.parentJasperOrgId))
+		if (gradeSeq != other.gradeSeq)
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public int compareTo(OrgTO arg0) {
 		final int BEFORE = -1;
-		final int AFTER = 1;
-
-		if (Integer.parseInt(this.parentJasperOrgId) > Integer.parseInt(arg0.parentJasperOrgId)) {
-			return AFTER;
-		} else {
-			return BEFORE;
-		}
+	    final int AFTER = 1;
+	    
+	    if(this.gradeSeq > arg0.getGradeSeq()) {
+	    	return AFTER;
+	    } else {
+	    	return BEFORE;
+	    }
 	}
 
 }
