@@ -37,6 +37,15 @@ public class UserTO {
 	private boolean adminUser;
 
 	private String studentName;
+	private String grade;
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 
 	/**
 	 * @return the userId

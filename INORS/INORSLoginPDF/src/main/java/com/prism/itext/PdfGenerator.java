@@ -238,7 +238,7 @@ public class PdfGenerator {
 	 * @throws DocumentException
 	 */
 	private static PdfPTable getTeacherTable() throws DocumentException {
-		float[] colsWidth = { 4f, 1f, 2f, 3f, 3f };
+		float[] colsWidth = { 4f, 2f, 2f, 3f, 3f };
 		PdfPTable table = new PdfPTable(5);
 		table.setWidths(colsWidth);
 		table.setWidthPercentage(100);
@@ -695,7 +695,8 @@ public class PdfGenerator {
 	 */
 	private static void addLoginInstructionAcsi(Document document, Properties prop,
 			OrgTO school, boolean returningSchool, boolean migration, boolean state) throws DocumentException {
-		document.add(new Paragraph(prop.getProperty("title")+school.getElementName()));
+		document.add(new Paragraph(CustomStringUtil.appendString(
+				prop.getProperty("title"), prop.getProperty("testAdministrator"), " ", prop.getProperty("title1"), school.getElementName())) );
 		List list = new List(true, 20);  
         ListItem listItem;  
           
@@ -709,16 +710,18 @@ public class PdfGenerator {
         	else
         		document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR"), font));
         } else if(returningSchool) {
-        	document.add(new Paragraph(prop.getProperty("TXT_ONE_RET"), font));
+        	/*document.add(new Paragraph(prop.getProperty("TXT_ONE_RET"), font));
             document.add(new Paragraph(prop.getProperty("TXT_TWO_RET"), font));
-            document.add(new Paragraph(prop.getProperty("TXT_THR_RET"), font));
+            document.add(new Paragraph(prop.getProperty("TXT_THR_RET"), font));*/
+        	document.add(new Paragraph(prop.getProperty("TXT_ONE"), font));
+        	document.add(new Paragraph(prop.getProperty("TXT_TWO"), font));
         } else {
         	document.add(new Paragraph(prop.getProperty("TXT_ONE"), font));
         	document.add(new Paragraph(prop.getProperty("TXT_TWO"), font));
         	document.add(new Paragraph(prop.getProperty("TXT_THREE"), font));
         }
         
-        document.add(new Paragraph("\nTeacher Log-ins", fontBold));  
+        document.add(new Paragraph("\nUser Log-ins", fontBold));  
         document.add(new Paragraph("\nInstructions to Log-in:", font));  
         list = new List(false, 20);  
         //list.setListSymbol(new Chunk("\u2022", FontFactory.getFont(FontFactory.HELVETICA, 20, Font.BOLD)));  
@@ -744,11 +747,11 @@ public class PdfGenerator {
 	        listItem = new ListItem(prop.getProperty("BLT2"), font);  
 	        list.add(listItem);  
 	        
-	        listItem = new ListItem(prop.getProperty("BLT3"), font);  
+	        /*listItem = new ListItem(prop.getProperty("BLT3"), font);  
 	        list.add(listItem);  
 	        
 	        listItem = new ListItem(prop.getProperty("BLT3A"), font);  
-	        list.add(listItem);  
+	        list.add(listItem);  */
         }
         document.add(list);
 	}
@@ -838,7 +841,7 @@ public class PdfGenerator {
 	 * @throws DocumentException 
 	 */
 	private static PdfPTable getTableAcsi() throws DocumentException {
-		float[] colsWidth = {4f, 1f, 3f, 3f};
+		float[] colsWidth = {4f, 2f, 3f, 3f};
 		PdfPTable table = new PdfPTable(4);
 		table.setWidths(colsWidth);
 		table.setWidthPercentage(100);
@@ -932,8 +935,10 @@ public class PdfGenerator {
 			document.add(Chunk.NEWLINE);
 		}
 		if(!schoolUserPresent) {
-			document.add(new Paragraph("\nSchool: "+ schoolName, font));
+			document.add(new Paragraph(CustomStringUtil.appendString(
+					"\nSchool: ", schoolName , ", Test Administration: " , prop.getProperty("testAdministrator")), fontBold));
 		}
+		
 		document.add(new Paragraph("\nTeacher: "+tech.getFullName()+ ", Grade: "+tech.getGrade(), font));
 		//document.add(new Paragraph("\nOrganization: "+ tech.getTenantId(), fontCourier));
 		document.add(new Paragraph("User Name: "+ tech.getUserName(), fontCourier));
@@ -953,28 +958,32 @@ public class PdfGenerator {
         listItem = new ListItem(prop.getProperty("BLT5"), font);  
         list.add(listItem);  
         
-        listItem = new ListItem(prop.getProperty("BLT6"), font);  
+        /*listItem = new ListItem(prop.getProperty("BLT6"), font);  
         list.add(listItem);  
         
         listItem = new ListItem(prop.getProperty("BLT6A"), font);  
-        list.add(listItem);  
+        list.add(listItem);*/  
         
         document.add(list);
         
-        Table t = new Table(1, 6);
+        Table t = new Table(2, 6);
 		//t.setBorderColor(new Color(220, 255, 100));
 		t.setPadding(1.0F);
-		float[] studentTableWidth = {10f};
+		float[] studentTableWidth = {3f, 10f};
 		t.setWidths(studentTableWidth);
 		t.setAlignment(Element.ALIGN_LEFT);
 		//t.setSpacing(5.0F);
 		t.setBorderWidth(0.5F);
 		
 		java.util.List<UserTO> students = tech.getUsers();
-		Cell c1 = new Cell(new Phrase("First "+students.size()+" students in the class (alphabetical order)", font));
+		Cell c1 = new Cell(new Phrase("Grade", font));
+		t.addCell(c1);
+		c1 = new Cell(new Phrase("First "+students.size()+" students in the class (alphabetical order)", font));
 		t.addCell(c1);
 		if(students != null) {
 			for(UserTO student : students) {
+				c1 = new Cell(new Phrase(student.getGrade(), tableFont));
+				t.addCell(c1);
 				c1 = new Cell(new Phrase(student.getStudentName(), tableFont));
 				t.addCell(c1);
 			}

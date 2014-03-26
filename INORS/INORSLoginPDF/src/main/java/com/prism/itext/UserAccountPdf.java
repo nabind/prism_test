@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +18,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-//import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
@@ -75,10 +76,11 @@ public class UserAccountPdf {
 				if ("true".equals(prop.getProperty("archiveNeeded"))) {
 					ARCHIVE_NEEDED = true;
 				}
+				String encDocLocation = "";
 				for (String id : ids) {
 					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
 						//// processLoginPdf(prop, dao, id);
-						manupulateTenants(id, prop, null, false, false);
+						encDocLocation = manupulateTenants(id, prop, null, false, false);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
@@ -86,7 +88,7 @@ public class UserAccountPdf {
 						logger.info("All/Both Login Pdf and IC Letter...");
 						////processLoginPdf(prop, dao, id);
 						String letterLocation = processIcLetterPdf(prop, dao, id);
-						manupulateTenants(id, prop, letterLocation, false, false);
+						encDocLocation = manupulateTenants(id, prop, letterLocation, false, false);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
@@ -97,13 +99,20 @@ public class UserAccountPdf {
 						logger.info("IC Letter Location: " + letterLocation);
 					}
 				}
-				if (ARCHIVE_NEEDED) {
+				/*if (ARCHIVE_NEEDED) {
 					File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
 					if (!arc.exists())
 						arc.mkdir();
-					String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"), prop.getProperty("schoolaArc"), DDMMYY, ".ZIP");
-					archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
-				}
+					if(encDocLocation != null && encDocLocation.length() > 0) {
+						File file = new File(encDocLocation);
+						if(file.exists()) {
+							String arcFilePath = file.getAbsolutePath();
+							List<String> filePaths = new ArrayList<String>();
+							filePaths.add(arcFilePath);
+							FileUtil.createZipFile(arcFilePath.substring(0, arcFilePath.length()-4)+".ZIP", filePaths);
+						}
+					}
+				}*/
 				/*try {
 					applicationContext.close();
 				} catch (Exception e) {
@@ -702,7 +711,7 @@ public class UserAccountPdf {
 	 * @param level3JasperOrgId
 	 * @param prop
 	 */
-	private static boolean manupulateTenants(String level3JasperOrgId, Properties prop, String acLetterLocation, boolean migration, boolean state) {
+	private static String manupulateTenants(String level3JasperOrgId, Properties prop, String acLetterLocation, boolean migration, boolean state) {
 		long processId = 0;
 		boolean schoolUserPresent = false;
 		boolean teacherUserPresent = false;
@@ -894,7 +903,7 @@ public class UserAccountPdf {
 							// stageDao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
 							logger.info("Updated Mail Status to success");
 						}
-						return true;
+						return encDocLocation;
 					}
 
 					// fetch all teacher user from repo
@@ -968,7 +977,15 @@ public class UserAccountPdf {
 						//lStartTime = new Date().getTime();
 						/** Log time difference */
 						// start time
-						// TODO //dao.updateNewuserFlag(school.getJasperOrgId());
+						List<UserTO> teacherUsers = new ArrayList<UserTO>();
+						for (OrgTO user : teachers) {
+							UserTO teacherUser = new UserTO();
+							teacherUser.setUserName(user.getUserName());
+							teacherUser.setSalt(user.getSalt());
+							teacherUser.setEncPassword(user.getEncPassword());
+							teacherUsers.add(teacherUser);
+						}
+						dao.updateNewUserFlag(teacherUsers);
 						//lEndTime = new Date().getTime();
 						/** Log time difference */
 						// end time
@@ -1066,7 +1083,7 @@ public class UserAccountPdf {
 			} catch (Exception ex) {
 			}
 			e.printStackTrace();
-			return false;
+			return "";
 		} finally {
 			if (processId > 0) {
 				//lStartTime = new Date().getTime();
@@ -1087,7 +1104,7 @@ public class UserAccountPdf {
 			logger.debug("Process Log ----------------------------------------- ");
 			//logger.debug((processLog != null) ? processLog.toString() : "error");
 		}
-		return true;
+		return encDocLocation;
 	}
 	
 	/**
@@ -1110,10 +1127,27 @@ public class UserAccountPdf {
 
 		if (encrypt) {
 			// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
-			String encLocation = encryptPdfAcsi(prop, docLocation, school.getStructureElement(), school.getCustomerCode(), school.getElementName(), state);
+			String encLocation = encryptPdfAcsi(prop, docLocation, school.getSchoolCode(), school.getCustomerCode(), school.getDistrictCode(), state);
 			removeFileAcsi(docLocation);
 			// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
 			// logElapsedTime("Encrypt PDF : "); /** Log time difference*/ // difference
+			
+			if (ARCHIVE_NEEDED) {
+				if(encLocation != null && encLocation.length() > 0) {
+					String pdfPrefix = prop.getProperty("testAdministrator");
+					String docName = CustomStringUtil.appendString(prop.getProperty("pdfGenPath"),
+							File.separator, pdfPrefix, "_", school.getSchoolCode(), "_", getDateTime("ddMMyyyyHHmmss"), ".ZIP");
+					
+					File file = new File(encLocation);
+					if(file.exists()) {
+						String arcFilePath = file.getAbsolutePath();
+						List<String> filePaths = new ArrayList<String>();
+						filePaths.add(arcFilePath);
+						FileUtil.createZipFile(docName, filePaths);
+					}
+				}
+			}
+			
 			return encLocation;
 		} else {
 			return docLocation;
@@ -1187,16 +1221,16 @@ public class UserAccountPdf {
 	 * @param docLocation
 	 * @return
 	 */
-	private static String encryptPdfAcsi(Properties prop, String docLocation, String structElem, 
-			String customerCode, String elementName, boolean state) {
+	private static String encryptPdfAcsi(Properties prop, String docLocation, String schoolNum, 
+			String customerCode, String districtNumber, boolean state) {
 		logger.debug("encrypting pdf... ");
 		String docName = null;
 		StringBuffer docBuff = new StringBuffer();
 		try {
-			String pdfPrefix = (state)? prop.getProperty("pdfFileNamePrefixLoginState") : prop.getProperty("pdfFileNamePrefixLogin");
+			String pdfPrefix = prop.getProperty("testAdministrator");
 			docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
-			docBuff.append(elementName).append("_").append(customerCode).append("_");
-			docBuff.append(System.currentTimeMillis()).append(".pdf");
+			docBuff.append("_district_").append(districtNumber).append("_school_").append(schoolNum).append("_");
+			docBuff.append(getDateTime("ddMMyyyyHHmmss")).append(".pdf");
 			
 			docName = docBuff.toString();
 			
@@ -1205,13 +1239,19 @@ public class UserAccountPdf {
 					new FileOutputStream(docName), 
 					prop.getProperty("pdfPassword").getBytes(), 
 					prop.getProperty("pdfOwnerPassword").getBytes(),
-					PdfWriter.AllowDegradedPrinting, 
+					PdfWriter.ALLOW_COPY,
 					PdfWriter.STRENGTH128BITS);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
 		return docName;
+	}
+	
+	public static String getDateTime(String dateFormat) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat dateformatter = new SimpleDateFormat(dateFormat);
+		return dateformatter.format(cal.getTime());
 	}
 	
 	private static void removeFileAcsi(String file) {

@@ -22,6 +22,9 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String dateStr;
 	private String dateStrWtYear;
 	private List<UserTO> users;
+	
+	private String schoolCode;
+	private String districtCode;
 
 	private String userId;
 	private String userName;
@@ -43,6 +46,31 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String studentCount;
 	private String grade;
 	private int gradeSeq;
+
+	public String getSchoolCode() {
+		return schoolCode;
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		if (schoolCode != null) {
+			String[] codes = schoolCode.split("~");
+			if (codes.length == 4) {
+				this.schoolCode = codes[3];
+				this.districtCode = codes[2];
+			}
+		} else {
+			this.schoolCode = schoolCode;
+			this.districtCode = "NA";
+		}
+	}
+
+	public String getDistrictCode() {
+		return districtCode;
+	}
+
+	public void setDistrictCode(String districtCode) {
+		this.districtCode = districtCode;
+	}
 
 	/**
 	 * @return the elementName

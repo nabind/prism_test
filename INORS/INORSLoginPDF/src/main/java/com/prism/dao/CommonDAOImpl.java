@@ -801,14 +801,14 @@ public class CommonDAOImpl implements CommonDAO {
 						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level1_jasper_orgid " +
 						 * "AND rownum = 1 and org.level1_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
 						 */
-				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid from org_node_dim where org_nodeid = ? and org_node_level=1";
+				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid, org_node_code_path from org_node_dim where org_nodeid = ? and org_node_level=1";
 			} else {
 				query = /*
 						 * "SELECT org.level3_element_name, org.org_nodeid, org.level3_jasper_orgid, str.email, " + "str.STRUCTURE_ELEMENT, org.LEVEL3_CUSTOMER_CODE " +
 						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level3_jasper_orgid " +
 						 * "AND rownum = 1 and org.level3_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
 						 */
-				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid from org_node_dim where org_nodeid = ? and org_node_level=3";
+				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid, org_node_code_path from org_node_dim where org_nodeid = ? and org_node_level=3";
 			}
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
@@ -821,6 +821,7 @@ public class CommonDAOImpl implements CommonDAO {
 				school.setEmail(rs.getString(4));
 				school.setStructureElement(rs.getString(5));
 				school.setCustomerCode(rs.getString(6));
+				school.setSchoolCode(rs.getString(7));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1199,7 +1200,8 @@ public class CommonDAOImpl implements CommonDAO {
 							"       grade_dim       gd",
 							" where u.userid = ou.userid",
 							"   and ou.org_nodeid = ond.org_nodeid",
-							"   and ond.parent_org_nodeid in ( "+ jasperOrgIds +" )",
+							//"   and ond.parent_org_nodeid in ( "+ jasperOrgIds +" )",
+							"   and ond.org_nodeid in ( "+ jasperOrgIds +" )",
 							"   and sbd.org_nodeid = ond.org_nodeid",
 							"   and sbd.gradeid = gd.gradeid",
 							" order by ond.org_nodeid");
@@ -1241,8 +1243,8 @@ public class CommonDAOImpl implements CommonDAO {
 			conn = driver.connect(DATA_SOURCE, null);
 			
 			String query = " SELECT * FROM (SELECT stu.org_nodeid, " +
-					"stu.last_name || ', ' || stu.first_name || ' ' || stu.middle_name " +
-					"FROM student_bio_dim stu WHERE stu.org_nodeid = ? ORDER BY stu.last_name, stu.first_name, stu.middle_name " +
+					"stu.last_name || ', ' || stu.first_name || ' ' || stu.middle_name, grd.grade_name " +
+					"FROM student_bio_dim stu, grade_dim grd WHERE grd.gradeid = stu.gradeid AND stu.org_nodeid = ? ORDER BY stu.last_name, stu.first_name, stu.middle_name " +
 					"  ) WHERE ROWNUM < 6 ";
 			
 			String[] nodearr = nodeId.split(",");
@@ -1267,6 +1269,7 @@ public class CommonDAOImpl implements CommonDAO {
 				student = new UserTO();
 				student.setOrgNodeId(rs.getString(1));
 				student.setStudentName(rs.getString(2));
+				student.setGrade(rs.getString(3));
 				students.add(student);
 			}
 		} catch (SQLException e) {
