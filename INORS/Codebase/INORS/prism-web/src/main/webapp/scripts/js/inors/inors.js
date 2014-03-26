@@ -786,9 +786,6 @@ function downloadBulkPdf(type, mode) {
 						}
 					});
 				}
-			function deleteRowValues(row) {
-				row.closest("tr").remove();
-			}
 			
 			// ================ Remove duplicate icons in IE ============================
 			function manageIconIE(icon) {
