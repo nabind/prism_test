@@ -49,7 +49,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "L", "603833" };
+		//args = new String[] { "L", "603833" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -99,20 +99,19 @@ public class UserAccountPdf {
 						logger.info("IC Letter Location: " + letterLocation);
 					}
 				}
-				/*if (ARCHIVE_NEEDED) {
-					File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
-					if (!arc.exists())
-						arc.mkdir();
-					if(encDocLocation != null && encDocLocation.length() > 0) {
-						File file = new File(encDocLocation);
-						if(file.exists()) {
-							String arcFilePath = file.getAbsolutePath();
-							List<String> filePaths = new ArrayList<String>();
-							filePaths.add(arcFilePath);
-							FileUtil.createZipFile(arcFilePath.substring(0, arcFilePath.length()-4)+".ZIP", filePaths);
-						}
-					}
-				}*/
+				if(ARCHIVE_NEEDED) {
+					File arc = new File(CustomStringUtil.appendString(
+							prop.getProperty("pdfGenPath"),
+							File.separator,"archive",File.separator));
+					if(!arc.exists()) arc.mkdir();
+					String arcFilePath = CustomStringUtil.appendString(
+							arc.getAbsolutePath(),File.separator,
+							prop.getProperty("tempPdfLocation"),
+							prop.getProperty("schoolaArc"),
+							getDateTime("ddMMyyyyHHmmss"),".ZIP");
+							
+					archiveFiles(prop.getProperty("pdfGenPath"),arcFilePath);
+				}
 				/*try {
 					applicationContext.close();
 				} catch (Exception e) {
@@ -1132,7 +1131,7 @@ public class UserAccountPdf {
 			// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
 			// logElapsedTime("Encrypt PDF : "); /** Log time difference*/ // difference
 			
-			if (ARCHIVE_NEEDED) {
+			/*if (ARCHIVE_NEEDED) {
 				if(encLocation != null && encLocation.length() > 0) {
 					String pdfPrefix = prop.getProperty("testAdministrator");
 					String docName = CustomStringUtil.appendString(prop.getProperty("pdfGenPath"),
@@ -1146,7 +1145,7 @@ public class UserAccountPdf {
 						FileUtil.createZipFile(docName, filePaths);
 					}
 				}
-			}
+			}*/
 			
 			return encLocation;
 		} else {
@@ -1229,7 +1228,8 @@ public class UserAccountPdf {
 		try {
 			String pdfPrefix = prop.getProperty("testAdministrator");
 			docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
-			docBuff.append("_district_").append(districtNumber).append("_school_").append(schoolNum).append("_");
+			docBuff.append(prop.getProperty("districtText")).append(districtNumber);
+			docBuff.append(prop.getProperty("schoolText")).append(schoolNum).append("_");
 			docBuff.append(getDateTime("ddMMyyyyHHmmss")).append(".pdf");
 			
 			docName = docBuff.toString();
