@@ -943,7 +943,7 @@ public class CommonDAOImpl implements CommonDAO {
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
 
-			String query = " SELECT rle.role_name, urle.user_id FROM role rle, user_role urle " + "WHERE urle.role_id = rle.role_ID AND rle.role_name = 'ROLE_ADMIN' " + "AND urle.user_id in ( "
+			String query = " SELECT rle.role_name, urle.userid FROM role rle, user_role urle " + "WHERE urle.roleid = rle.roleID AND rle.role_name = 'ROLE_ADMIN' " + "AND urle.userid in ( "
 					+ allRoleIds + " )";
 			pstmt = conn.prepareCall(query);
 			// pstmt.setString(1, allRoleIds);
