@@ -743,7 +743,9 @@ public class UserAccountPdf {
 			// difference
 
 			if (school != null && school.getUsers() != null && school.getUsers().size() > 0) {
-				schoolUserPresent = true;
+				//schoolUserPresent = true; 
+				/** we don't need to generate school users even if that present **/
+				schoolUserPresent = false; 
 				logger.info("New school user found. count .. " + school.getUsers().size());
 			} else {
 				logger.info("No new school user found. Incremental PDF will be generated.");
@@ -900,6 +902,7 @@ public class UserAccountPdf {
 							// stageDao.updateMailStatus(processId, SUCCESS_STATUS, INPROGRESS_STATUS);
 							logger.info("Updated Mail Status to success");
 						}
+						ARCHIVE_NEEDED = false;
 						return encDocLocation;
 					}
 
