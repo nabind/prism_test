@@ -280,8 +280,11 @@ public class CustomReportServlet extends AbstractServlet
 			ReportExecutionHyperlinkProducerFactory.getInstance(getJasperReportsContext(), request)
 			);
 		
-		exporter.exportReport();
-
+		try { // added by amit to hide any error 
+			exporter.exportReport();
+		} catch(Exception ex) {
+			
+		}
 	}
 
 
