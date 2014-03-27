@@ -1,6 +1,8 @@
 package com.prism.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,25 +11,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
-
-
-
-
-//import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-//import org.springframework.jdbc.core.JdbcTemplate;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.Properties;
-
-
-
-
-
-
 
 import com.prism.constant.Constants;
 import com.prism.to.OrgTO;
@@ -339,7 +326,8 @@ public class CommonDAOImpl implements CommonDAO {
 				pstmt.addBatch();
 			}
 			updateCount = pstmt.executeBatch();
-			logger.debug("Records updated: " + updateCount);
+			for (int i = 0; i < updateCount.length; i++)
+			logger.debug("Records updated: " + updateCount[i]);
 			conn.commit();
 			logger.debug("commit successful");
 			
@@ -355,7 +343,6 @@ public class CommonDAOImpl implements CommonDAO {
 			} catch (Exception e2) {
 			}
 		}
-		
 		return updateCount;
 	}
 
@@ -901,6 +888,7 @@ public class CommonDAOImpl implements CommonDAO {
 			} catch (Exception e2) {
 			}
 		}
+		logger.info("Returning " + allUsers.size() + " School Users");
 		return fetchAdminColumnAcsi(allUsers);
 	}
 
@@ -921,7 +909,7 @@ public class CommonDAOImpl implements CommonDAO {
 			firstRec = true;
 			allUserIds.append(u.getUserId());
 		}
-		// System.out.println("all user ids : "+allUserIds);
+		// logger.info("all user ids : "+allUserIds);
 		List<UserTO> allUsers = null;
 		if (allUserIds.toString() != null && allUserIds.toString().length() > 0) {
 			allUsers = checkAdminAcsi(allUserIds.toString());
@@ -935,7 +923,7 @@ public class CommonDAOImpl implements CommonDAO {
 				}
 			}
 		}
-
+		logger.info("Returning " + users.size() + " Admin Columns");
 		return users;
 	}
 
@@ -959,7 +947,7 @@ public class CommonDAOImpl implements CommonDAO {
 					+ allRoleIds + " )";
 			pstmt = conn.prepareCall(query);
 			// pstmt.setString(1, allRoleIds);
-			// System.out.println(query);
+			// logger.info(query);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				user = new UserTO();
@@ -987,6 +975,7 @@ public class CommonDAOImpl implements CommonDAO {
 			} catch (Exception e2) {
 			}
 		}
+		logger.info("Returning " + allUsers.size() + " Admins");
 		return allUsers;
 	}
 	
@@ -1016,6 +1005,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
+		logger.info("Returning Admin Year = " + adminid);
 		return adminid;
 	}
 	
@@ -1081,11 +1071,12 @@ public class CommonDAOImpl implements CommonDAO {
 					"       OND.ORG_NODEID",
 					"  FROM USERS U, ORG_USERS OU, ORG_NODE_DIM OND, STUDENT_BIO_DIM SBD",
 					" WHERE U.USERID = OU.USERID",
+					" AND U.IS_NEW_USER = 'Y' AND U.ACTIVATION_STATUS = 'AC'",
 					"   AND OU.ORG_NODEID = OND.ORG_NODEID",
 					"   AND OND.PARENT_ORG_NODEID = ?",
 					"   AND SBD.ORG_NODEID = OND.ORG_NODEID",
 					" GROUP BY OND.ORG_NODE_NAME, OND.ORG_NODEID, U.USERID, U.USERNAME",
-					" ORDER BY OND.ORG_NODEID", "");
+					" ORDER BY OND.ORG_NODEID");
 			
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
@@ -1111,7 +1102,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		
+		logger.info("Returning " + allTeachers.size() + " Teachers");
 		return getGradeForTeacherUsersAcsi(allTeachers);
 	}
 	
@@ -1134,16 +1125,16 @@ public class CommonDAOImpl implements CommonDAO {
 			allNodes.append(t.getOrgNodeId());
 			allJasperOrgIds.append(t.getJasperOrgId());
 		}
-		//System.out.println("nodes"+allNodes);
+		//logger.info("nodes"+allNodes);
 		List<OrgTO> allGrades = null;
 		List<UserTO> allStudents = null;
 		List<UserTO> students = null;
 		if(allNodes.toString() != null && allNodes.toString().length() > 0) {
-			System.out.println("   Fetching grades for teachers");
+			logger.info("Fetching grades for teachers");
 			//allGrades = getGrades(allNodes.toString());
 			allGrades = getGradesAcsi(allJasperOrgIds.toString());
 			
-			System.out.println("   Fetching students for teachers");
+			logger.info("Fetching students for teachers");
 			allStudents = getStudentsAcsi(allNodes.toString());
 		
 			for(OrgTO tech : teachers) {
@@ -1163,7 +1154,7 @@ public class CommonDAOImpl implements CommonDAO {
 				tech.setUsers(students);
 			}
 		}
-		
+		logger.info("Returning " + teachers.size() + " Grades for Teacher Users");
 		return teachers;
 	}
 	
@@ -1224,6 +1215,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
+		logger.info("Returning " + allGrades.size() + " Grades");
 		return allGrades;
 	}
 	
@@ -1259,7 +1251,7 @@ public class CommonDAOImpl implements CommonDAO {
 			}
 			
 			pstmt = conn.prepareCall(queryBuf.toString());
-			//System.out.println(queryBuf.toString());
+			//logger.info(queryBuf.toString());
 			count = 0;
 			for(String node : nodearr) {
 				pstmt.setString(++count, node);
@@ -1280,6 +1272,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
+		logger.info("Returning " + students.size() + " Students");
 		return students;
 	}
 }

@@ -49,7 +49,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		//args = new String[] { "L", "603833" };
+		// args = new String[] { "L", "603833" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -730,8 +730,7 @@ public class UserAccountPdf {
 				dao = new CommonDAOImpl(prop);
 			/*if (stageDao == null) stageDao = new StageDAOImpl(prop);*/
 
-			logger.debug("getting schools ... ");
-			logger.info("getting schools ... ");
+			logger.info("Getting Schools ... ");
 			//lStartTime = new Date().getTime();
 			/** Log time difference */
 			// start time
@@ -847,8 +846,7 @@ public class UserAccountPdf {
 							}
 						}
 					}
-					logger.debug("getting teachers ... ");
-					logger.info("getting teachers ... ");
+					logger.info("Getting Teachers ... ");
 
 					//lStartTime = new Date().getTime();
 					/** Log time difference */
@@ -971,19 +969,22 @@ public class UserAccountPdf {
 						// stageDao.updateProcessStatus(processId, ERROR_STATUS);
 					} else {
 						// update org_user table set newuser = N
-						logger.info("Updating ORG_USER.newuser = 'N' ");
 
 						//lStartTime = new Date().getTime();
 						/** Log time difference */
 						// start time
 						List<UserTO> teacherUsers = new ArrayList<UserTO>();
+						int i = 0;
 						for (OrgTO user : teachers) {
 							UserTO teacherUser = new UserTO();
 							teacherUser.setUserName(user.getUserName());
 							teacherUser.setSalt(user.getSalt());
 							teacherUser.setEncPassword(user.getEncPassword());
 							teacherUsers.add(teacherUser);
+							logger.info("(" + ++i + " of " + teachers.size() + ") Updating ORG_USER.newuser = 'N' for " + user.getUsers().size() + " Students");
+							dao.updateNewUserFlag(user.getUsers());
 						}
+						logger.info("Updating ORG_USER.newuser = 'N' for " + teacherUsers.size() + " Teachers");
 						dao.updateNewUserFlag(teacherUsers);
 						//lEndTime = new Date().getTime();
 						/** Log time difference */

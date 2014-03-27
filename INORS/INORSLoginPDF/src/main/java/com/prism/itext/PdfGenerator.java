@@ -238,7 +238,7 @@ public class PdfGenerator {
 	 * @throws DocumentException
 	 */
 	private static PdfPTable getTeacherTable() throws DocumentException {
-		float[] colsWidth = { 4f, 2f, 2f, 3f, 3f };
+		float[] colsWidth = { 4f, 2f, 3f, 4f, 3f };
 		PdfPTable table = new PdfPTable(5);
 		table.setWidths(colsWidth);
 		table.setWidthPercentage(100);
@@ -672,10 +672,10 @@ public class PdfGenerator {
 				}*/
 			}
 			
-			System.out.println("Done !!!");
+			logger.info("Done !!!");
 			
 		} catch (Exception e2) {
-			System.out.println(e2.getMessage());
+			logger.error(e2.getMessage());
 			e2.printStackTrace();
 			issueFound = true;
 			return null;
@@ -797,7 +797,7 @@ public class PdfGenerator {
 
 		java.util.List<UserTO> schoolUsers = school.getUsers();
 		if(schoolUsers != null && schoolUsers.size() == 0) {
-			System.out.println("pdf generation : issueFound : no school user found");
+			logger.info("pdf generation : issueFound : no school user found");
 			issueFound = true;
 		}
 		String orgType = (state)? "ACSI" : "School";
@@ -808,7 +808,7 @@ public class PdfGenerator {
 				continue;
 			}
 			if(school.getTenantId() == null || schUser.getPassword() == null) {
-				System.out.println("pdf generation : issueFound : school tenantId or password is blank");
+				logger.info("pdf generation : issueFound : school tenantId or password is blank");
 				issueFound = true;
 			}
 			table.addCell(new Phrase("All", tableFont));
@@ -823,7 +823,7 @@ public class PdfGenerator {
 				table.addCell(new Phrase(orgType+" Regular", tableFont));
 			}
 			if(school.getTenantId() == null || schUser.getPassword() == null) {
-				System.out.println("pdf generation : issueFound : school tenantId or password is blank");
+				logger.info("pdf generation : issueFound : school tenantId or password is blank");
 				issueFound = true;
 			}
 			table.addCell(new Phrase("All", tableFont));
@@ -881,7 +881,7 @@ public class PdfGenerator {
 		c1.setBackgroundColor(Color.lightGray);
 		table.addCell(c1);
 
-		c1 = new PdfPCell(new Phrase("Number of Students in Class", tableHeaderFont));
+		c1 = new PdfPCell(new Phrase("No of Students in Class", tableHeaderFont));
 		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
 		c1.setBackgroundColor(Color.lightGray);
 		table.addCell(c1);
@@ -898,12 +898,12 @@ public class PdfGenerator {
 		table.setHeaderRows(1);
 
 		if(teachers != null && teachers.size() == 0) {
-			System.out.println("pdf generation : issueFound : teachers are blank");
+			logger.info("pdf generation : issueFound : teachers are blank");
 			issueFound = true;
 		}
 		for(OrgTO tech : teachers) {
 			if(tech.getFullName() == null || tech.getTenantId() == null || tech.getPassword() == null) {
-				System.out.println("pdf generation : issueFound : teacher fullname or teacher tenant id or teacher password is null");
+				logger.info("pdf generation : issueFound : teacher fullname or teacher tenant id or teacher password is null");
 				issueFound = true;
 			}
 			table.addCell(new Phrase((tech.getFullName() == null) ? "" : tech.getFullName(), tableFont));  

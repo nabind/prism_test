@@ -10,9 +10,13 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import com.prism.constant.Constants;
 
 public class PropertyFile {
+	
+	private static final Logger logger = Logger.getLogger(PropertyFile.class);
 
 	/**
 	 * A convenience overload of {@link #loadProperties(String, ClassLoader)} that uses the current thread's context class loader.
@@ -27,7 +31,7 @@ public class PropertyFile {
 	public static void main(String[] args) {
 		Properties p = loadProperties(Constants.PROPERTIES_FILE);
 
-		System.out.println("done " + p.get("TXT_ONE"));
+		logger.info("done " + p.get("TXT_ONE"));
 	}
 
 	/**

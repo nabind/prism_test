@@ -1,28 +1,26 @@
 package com.prism.mail;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.PasswordAuthentication;
+
+import org.apache.log4j.Logger;
 
 import com.prism.constant.Constants;
 import com.prism.util.PropertyFile;
 
 public class _SendMailSSL {
+	private static final Logger logger = Logger.getLogger(_SendMailSSL.class);
 	public static void sendmail(String mailTo, String body) {
 		final Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -53,7 +51,7 @@ public class _SendMailSSL {
 
 			Transport.send(message);
 
-			System.out.println("Done");
+			logger.info("Done");
 
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
@@ -66,15 +64,15 @@ public class _SendMailSSL {
 			String mailSubject = prop.getProperty("mailSubject");
 			String mailBody = prop.getProperty("messageBody") + prop.getProperty("messageFooter");
 
-			System.out.println("Sending ...");
+			logger.info("Sending ...");
 			sendHTMLMail("amit_dhara@ctb.com", mailSubject, mailBody);
-			System.out.println("Done");
+			logger.info("Done");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		/*
-		 * if(args == null || args.length < 3) { System.out.println("Please provide all arguments ... "); System.out.println("Usage -> mailTo yourGmailId yourGmailPassword message "); } else {
+		 * if(args == null || args.length < 3) { logger.info("Please provide all arguments ... "); logger.info("Usage -> mailTo yourGmailId yourGmailPassword message "); } else {
 		 * //sendmail(args[0], args[1], args[2], args[3]); }
 		 */
 	}
