@@ -22,7 +22,7 @@
 				<c:if test="${reportMessage.messageType=='DM'}">
 					<div class="big-message">
 						<span class="big-message-icon icon-warning with-text color">Important</span>
-						<strong>${ reportMessage.messageName }</strong><br>
+						<%-- <strong>${ reportMessage.messageName }</strong><br> --%>
 						${ reportMessage.message }
 					</div>
 					<p>&nbsp;</p>
