@@ -389,13 +389,17 @@ $(document).ready(function() {
 			}
 		})	
 	}
+
+	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON EDIT USER==========================================	
 	function createRoleListOnEdit(data) {
 		
 	    $("#userRole").find("option").remove();
 		var availableRole = "";
 		$.each(data[0].availableRoleList, function(index, value){
-			availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+			if(data[0].availableRoleList[index].roleDescription != 'Class Admin user'){
+				availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+			}
 		});
 		$("#userRole").append(availableRole);		
 		$("#userRole").change(function(){
@@ -404,11 +408,19 @@ $(document).ready(function() {
 		//alert(masterRole);
 	}
 	
+	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON ADD USER==========================================	
-	function createRoleListOnAdd(data) {
+	function createRoleListOnAdd(data,orgLevel) {
 	    var masterRole = "";
 		$.each(data, function(index, value){
-			masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+			if(orgLevel == '4'){
+				if(data[index].roleDescription != 'Admin user'){
+					masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+				}
+			}else{
+				masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+			}
+			
 		});
 		//alert(masterRole);
 		$("#addUserRole").empty().append(masterRole);
@@ -417,6 +429,7 @@ $(document).ready(function() {
 		});
 		$('#addUserRole').trigger('update-select-list');
 	}	
+	
 	//=========================SAVE EDIT USER DETAILS========================================
 	function updateUserDetails(form, win, row) {
 	blockUI();
