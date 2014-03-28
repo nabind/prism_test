@@ -39,7 +39,6 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.dao.IInorsDAO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.LayoutTO;
 import com.ctb.prism.inors.util.ConcatPdf;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.dao.ILoginDAO;
@@ -699,8 +698,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * 
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#getTableData(java.util.Map, java.util.ArrayList)
 	 */
-	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout) {
-		return inorsDAO.getTableData(paramMap, rowDataLayout);
+	public ArrayList<ArrayList<String>> getTabulerData(Map<String, String> paramMap, ArrayList<String> aliasList, ArrayList<String> headerList) {
+		return inorsDAO.getTabulerData(paramMap, aliasList, headerList);
 	}
 
 	/*

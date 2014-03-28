@@ -40,10 +40,8 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.service.IInorsService;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.LayoutTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.Service.ILoginService;
@@ -1234,7 +1232,13 @@ public class InorsController {
 
 		String headers = propertyLookup.get(layoutName + "_HEADER");
 		String aliases = propertyLookup.get(layoutName + "_ALIAS");
-		ArrayList<LayoutTO> rowDataLayout = InorsDownloadUtil.getRowDataLayout(headers, aliases);
+		ArrayList<String> headerList = InorsDownloadUtil.getRowDataLayout(headers);
+		ArrayList<String> aliasList = InorsDownloadUtil.getRowDataLayout(aliases);
+		if (headerList.size() != aliasList.size()) {
+			logger.log(IAppLogger.ERROR, "Header count(" + headerList.size() + ") does not match with Alias count(" + aliasList.size() + ")");
+		} else {
+			logger.log(IAppLogger.INFO, "Header count(" + headerList.size() + ") matches with Alias count(" + aliasList.size() + ")");
+		}
 
 		paramMap.put("type", type);
 		paramMap.put("product", product);
@@ -1250,7 +1254,7 @@ public class InorsController {
 		byte[] data = null;
 		String fileName = layoutName.toLowerCase() + ".dat";
 		String zipFileName = layoutName.toLowerCase() + ".zip";
-		ArrayList<ArrayList<LayoutTO>> table = inorsService.getTableData(paramMap, rowDataLayout);
+		ArrayList<ArrayList<String>> table = inorsService.getTabulerData(paramMap, aliasList, headerList);
 		data = InorsDownloadUtil.getTableDataBytes(table, IApplicationConstants.COMMA);
 
 		try {

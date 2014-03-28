@@ -17,7 +17,6 @@ import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.inors.transferobject.LayoutTO;
 
 /**
  * @author Amitabha Roy
@@ -27,27 +26,17 @@ public class InorsDownloadUtil {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDownloadUtil.class.getName());
 
-	public static byte[] getTableDataBytes(ArrayList<ArrayList<LayoutTO>> tableData, final String delimiter) {
+	public static byte[] getTableDataBytes(ArrayList<ArrayList<String>> tableData, final String delimiter) {
 		if (tableData != null && !tableData.isEmpty()) {
 			CharArrayWriter out = new CharArrayWriter();
 			try {
-				// Write the Header
-				ArrayList<LayoutTO> headerLayout = tableData.get(0);
-				int i = 0;
-				for (LayoutTO to : headerLayout) {
-					i = i + 1;
-					out.write(to.getHeaderText());
-					if (i < headerLayout.size()) out.write(delimiter);
-				}
-				out.write("\n");
-
-				// Write the row wise data
-				for (ArrayList<LayoutTO> rowData : tableData) {
-					i = 0;
-					for (LayoutTO to : rowData) {
+				for (ArrayList<String> rowData : tableData) {
+					int i = 0;
+					for (String data : rowData) {
 						i = i + 1;
-						out.write(to.getColumnData());
-						if (i < rowData.size()) out.write(delimiter);
+						out.write(data);
+						if (i < rowData.size())
+							out.write(delimiter);
 					}
 					out.write("\n");
 				}
@@ -166,85 +155,50 @@ public class InorsDownloadUtil {
 	 * Maps a ResultSet to a tableDataLayout.
 	 * 
 	 * @param rs
-	 * @param layoutTOList
+	 * @param StringList
 	 * @return
 	 * @throws SQLException
 	 */
-	public static ArrayList<ArrayList<LayoutTO>> getTableDataFromResultSet(ResultSet rs, ArrayList<LayoutTO> rowLayout) throws SQLException {
-		ArrayList<ArrayList<LayoutTO>> tableData = new ArrayList<ArrayList<LayoutTO>>();
+	public static ArrayList<ArrayList<String>> getTableDataFromResultSet(ResultSet rs, ArrayList<String> aliasList, ArrayList<String> headerList) throws SQLException {
+		ArrayList<ArrayList<String>> tableData = new ArrayList<ArrayList<String>>();
+
+		// Add Header
+		ArrayList<String> headerData = new ArrayList<String>();
+		for (String headerText : headerList) {
+			headerData.add(headerText.trim());
+		}
+		tableData.add(headerData);
+
+		// Add Rows
 		while (rs.next()) { // Rows
-			ArrayList<LayoutTO> rowData = new ArrayList<LayoutTO>();
-			for (int i = 0; i < rowLayout.size(); i++) { // Columns
-				LayoutTO columnLayout = new LayoutTO(rowLayout.get(i).getColumnNum(), rowLayout.get(i).getHeaderText(), rowLayout.get(i).getColumnAlias(), null);
-				String columnAlias = columnLayout.getColumnAlias();
+			ArrayList<String> rowData = new ArrayList<String>();
+			for (String columnAlias : aliasList) { // Columns
+				columnAlias = columnAlias.trim();
+				String data = "";
 				if ("*".equals(columnAlias)) {
-					columnLayout.setColumnData(wrap("", '"'));
+					data = (wrap("", '"'));
 				} else {
 					try {
-						columnLayout.setColumnData(wrap(rs.getString(columnAlias), '"'));
+						data = (wrap(rs.getString(columnAlias), '"'));
 					} catch (Exception e) {
-						columnLayout.setColumnData(wrap("", '"'));
+						data = (wrap("", '"'));
 						logger.log(IAppLogger.ERROR, columnAlias + ": " + e.getMessage());
 					}
 				}
-				rowData.add(columnLayout);
+				rowData.add(data);
 			}
-			// print(rowData);
 			tableData.add(rowData);
 		}
-		// printTable(tableData);
 		return tableData;
 	}
 
-	/**
-	 * Maps the Headers with the Aliases.
-	 * 
-	 * @param headers
-	 * @param aliases
-	 * @return
-	 */
-	public static ArrayList<LayoutTO> getRowDataLayout(String headers, String aliases) {
-		ArrayList<LayoutTO> rowDataLayout = new ArrayList<LayoutTO>();
-		String[] headerTokens = headers.split("\\|");
-		String[] aliasTokens = aliases.split("\\|");
-		int headerCount = headerTokens.length;
-		int aliasCount = aliasTokens.length;
-		logger.log(IAppLogger.INFO, "Headers = " + headerCount);
-		logger.log(IAppLogger.INFO, "Aliases = " + aliasCount);
-		if (headerCount != aliasCount) {
-			logger.log(IAppLogger.WARN, "Headers and Aliases do not match. Please configure Properties for them.");
-		}
-		for (int i = 0; i < headerCount; i++) {
-			rowDataLayout.add(new LayoutTO(i + 1, headerTokens[i].trim(), aliasTokens[i].trim(), ""));
+	public static ArrayList<String> getRowDataLayout(String commaString) {
+		ArrayList<String> rowDataLayout = new ArrayList<String>();
+		String[] tokens = commaString.split("\\|");
+		for (int i = 0; i < tokens.length; i++) {
+			rowDataLayout.add(tokens[i]);
 		}
 		return rowDataLayout;
 	}
 
-	/**
-	 * Prints a rowDataLayout.
-	 * 
-	 * @param rowDataLayout
-	 */
-	public static void print(ArrayList<LayoutTO> rowData) {
-		for (LayoutTO columnData : rowData) {
-			if ("STUDENT_LAST_NAME".equals(columnData.getColumnAlias())) {
-				System.out.println("before add: " + columnData.getColumnData());
-			}
-		}
-	}
-
-	/**
-	 * Prints a tableDataLayout.
-	 * 
-	 * @param tableDataLayout
-	 */
-	public static void printTable(ArrayList<ArrayList<LayoutTO>> tableData) {
-		for (ArrayList<LayoutTO> rowData : tableData) {
-			for (LayoutTO columnData : rowData) {
-				if ("STUDENT_LAST_NAME".equals(columnData.getColumnAlias())) {
-					System.out.println("returning: " + columnData.getColumnData());
-				}
-			}
-		}
-	}
 }

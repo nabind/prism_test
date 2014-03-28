@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.transferobject.LayoutTO;
 
 /**
  * @author TCS
@@ -43,7 +42,7 @@ public interface IInorsService {
 	 * @param rowDataLayout
 	 * @return
 	 */
-	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout);
+	public ArrayList<ArrayList<String>> getTabulerData(Map<String, String> paramMap, ArrayList<String> aliasList, ArrayList<String> headerList);
 
 	/**
 	 * 

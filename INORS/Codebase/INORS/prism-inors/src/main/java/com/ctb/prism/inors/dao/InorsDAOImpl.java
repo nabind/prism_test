@@ -26,7 +26,6 @@ import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
-import com.ctb.prism.inors.transferobject.LayoutTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 
 /**
@@ -252,7 +251,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return grtList;
 	}
 	
-	private ArrayList<ArrayList<LayoutTO>> getGRTTableData(Map<String, String> paramMap, final ArrayList<LayoutTO> rowDataLayout) {
+	private ArrayList<ArrayList<String>> getGRTTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
 		final String userName = paramMap.get("userName");
 		final String productId = paramMap.get("productId");
@@ -266,11 +265,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 
-		ArrayList<ArrayList<LayoutTO>> grtList = new ArrayList<ArrayList<LayoutTO>>();
+		ArrayList<ArrayList<String>> grtList = new ArrayList<ArrayList<String>>();
 		try {
 			if ("-1".equals(schoolId)) {
 				logger.log(IAppLogger.INFO, "All Schools");
-				grtList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				grtList = (ArrayList<ArrayList<String>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
@@ -284,11 +283,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				}, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(CallableStatement cs) {
 						ResultSet rs = null;
-						ArrayList<ArrayList<LayoutTO>> grtTOResult = new ArrayList<ArrayList<LayoutTO>>();
+						ArrayList<ArrayList<String>> grtTOResult = new ArrayList<ArrayList<String>>();
 						try {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(5);
-							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -298,7 +297,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				logger.log(IAppLogger.INFO, "All Schools grtList.size(): " + grtList.size());
 			} else {
 				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
-				grtList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				grtList = (ArrayList<ArrayList<String>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
@@ -313,11 +312,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				}, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(CallableStatement cs) {
 						ResultSet rs = null;
-						ArrayList<ArrayList<LayoutTO>> grtTOResult = new ArrayList<ArrayList<LayoutTO>>();
+						ArrayList<ArrayList<String>> grtTOResult = new ArrayList<ArrayList<String>>();
 						try {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(6);
-							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -602,7 +601,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getTableData(java.util.Map, java.util.ArrayList)
 	 */
-	public ArrayList<ArrayList<LayoutTO>> getTableData(Map<String, String> paramMap, ArrayList<LayoutTO> rowDataLayout) {
+	public ArrayList<ArrayList<String>> getTabulerData(Map<String, String> paramMap, ArrayList<String> aliasList, ArrayList<String> headerList) {
 		String type = paramMap.get("type");
 		logger.log(IAppLogger.INFO, "type = " + type);
 		String userName = paramMap.get("userName");
@@ -616,9 +615,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		String schoolId = paramMap.get("orgNodeId");
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		if (InorsDownloadConstants.IC.equals(type)) {
-			return getICTableData(paramMap, rowDataLayout);
+			return getICTableData(paramMap, aliasList, headerList);
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
-			return getGRTTableData(paramMap, rowDataLayout);
+			return getGRTTableData(paramMap, aliasList, headerList);
 		} else {
 			return null;
 		}
@@ -698,7 +697,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return icList;
 	}
 	
-	private ArrayList<ArrayList<LayoutTO>> getICTableData(Map<String, String> paramMap, final ArrayList<LayoutTO> rowDataLayout) {
+	private ArrayList<ArrayList<String>> getICTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getICList()");
 		final String userName = paramMap.get("userName");
 		final String productId = paramMap.get("productId");
@@ -711,11 +710,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
-		ArrayList<ArrayList<LayoutTO>> icList = null;
+		ArrayList<ArrayList<String>> icList = null;
 		try {
 			if ("-1".equals(schoolId)) {
 				logger.log(IAppLogger.INFO, "All Schools");
-				icList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				icList = (ArrayList<ArrayList<String>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_IC);
 						cs.setLong(1, Long.parseLong(productId));
@@ -728,11 +727,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				}, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(CallableStatement cs) {
 						ResultSet rs = null;
-						ArrayList<ArrayList<LayoutTO>> icTOList = new ArrayList<ArrayList<LayoutTO>>();
+						ArrayList<ArrayList<String>> icTOList = new ArrayList<ArrayList<String>>();
 						try {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(4);
-							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -741,7 +740,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				});
 			} else {
 				logger.log(IAppLogger.INFO, "schoolId=" + schoolId);
-				icList = (ArrayList<ArrayList<LayoutTO>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				icList = (ArrayList<ArrayList<String>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_IC);
 						cs.setLong(1, Long.parseLong(productId));
@@ -754,11 +753,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				}, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(CallableStatement cs) {
 						ResultSet rs = null;
-						ArrayList<ArrayList<LayoutTO>> icTOList = new ArrayList<ArrayList<LayoutTO>>();
+						ArrayList<ArrayList<String>> icTOList = new ArrayList<ArrayList<String>>();
 						try {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(4);
-							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, rowDataLayout);
+							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
