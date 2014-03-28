@@ -84,7 +84,7 @@ public interface IAdminBusiness {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception;
+	public UserTO addNewUser(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap

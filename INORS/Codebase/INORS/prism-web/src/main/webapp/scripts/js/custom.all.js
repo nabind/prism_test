@@ -210,7 +210,7 @@ $(document).ready(function() {
 		//blockUI();
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");
-		blockUI('new-tab'+tabCount+'');
+		blockUI('new-tab'+count+'');
 		//$(this).parent().siblings('.reportFilterCriteria').click();
 		var reportUrl = $(this).attr("param");
 		var reportName = $(this).attr("reportName");
@@ -336,7 +336,7 @@ $(document).ready(function() {
 				resetPagination(currentObj);
 			} else {
 				//unblockUI();
-				unblockUI('new-tab'+tabCount+'');
+				unblockUI('new-tab'+count+'');
 				$(".page_first").css("cursor", "auto");
 				$(".page_prev").css("cursor", "auto");
 			}
@@ -360,7 +360,7 @@ $(document).ready(function() {
 				
 			}
 		} else {
-			unblockUI('new-tab'+tabCount+'');
+			unblockUI('new-tab'+count+'');
 		}
 	});
 	
@@ -645,6 +645,15 @@ function addReportTab(reportUrl, reportId, reportName, assessmentId, isHome, rep
 			unblockUI();
 		}
 	});
+	// ====== This section added for resource download =====
+	if(reportUrl == 'resourcepdf') {
+		newTab = false;
+		window.open(customUrl+'&userType='+$('#customerId').val());
+	}
+	if(reportUrl == 'extLinks') {
+		newTab = false;
+		window.open(customUrl);
+	}
 	if(newTab) {
 		//if(tabsAddedArr.length > 3) {
 		if(!canAddNewTab(tabId) && !(tabsAddedArr.length == 1) ) {
@@ -773,6 +782,7 @@ function checkpagination(reportUrl, tabCount) {
 				if(obj != null && !(obj.paginate == "true")) {
 					$(currentObj).css('display', 'none');
 				}
+				$('html, body').scrollTop(0);
 			},
 			error : function(data) {
 				$.modal.alert(strings['script.report.pagination']);
@@ -1047,10 +1057,11 @@ function download(count, reportUrl, assessmentId, type) {
 	
 }
 
-function moreInfo(reportId)
-{
+//Fix for TD 77743 - By Joy
+function moreInfo(reportId){
+	var productId = $('#p_test_administration').val();
 	$.modal({
-		url: 'reportMoreInfo.do?reportId='+reportId,
+		url: 'reportMoreInfo.do?reportId='+reportId+'&productId='+productId,
 		useIframe: true,
 		title: 'More Info',
 		height: 650,
@@ -1254,7 +1265,7 @@ var row = $("#"+reportId + '_' +reportId);
 			
 			$("#editReportForm").modal({
 				title: 'Edit Report',
-				height: 450,
+				height: 470,
 				width: 400,
 				resizable: false,
 				draggable: false,
@@ -1833,17 +1844,19 @@ $(document).ready(function() {
 		);
 		
 	});
+	
+	//Changed for TD 77443 - By Joy
 	if($('#educationTab').val()!= "" && $('#educationTab').val()=="educationUserTab" ){
-		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param');
+		$(".login-as").live("click", function(e) {
+			loginAs(e,$(this));
 		});	
 	}
 	else
 		{
-		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param');
+		$(".login-as").live("click", function(e) {
+			loginAs(e,$(this));
 		});	
-		}
+	}
 	
 	
 	//====================THIS METHOD POPULATES THE COUNTRY IN THE PROFILE PAGE=============
@@ -1897,6 +1910,13 @@ $(document).ready(function() {
 	}); 
 });
 
+	//Changed for TD 77443 - By Joy
+	function loginAs(event,$obj){
+		if(!$obj.hasClass('disabled')){
+			$obj.addClass('disabled');
+			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param');
+		}
+	}
 	//===================================Education Center User Details Screen=====================
 	function loadEduCenterUsers(){
 		var eduCenterId = $('#eduCenterId').val();
@@ -2151,13 +2171,17 @@ $(document).ready(function() {
 			}
 		})	
 	}
+
+	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON EDIT USER==========================================	
 	function createRoleListOnEdit(data) {
 		
 	    $("#userRole").find("option").remove();
 		var availableRole = "";
 		$.each(data[0].availableRoleList, function(index, value){
-			availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+			if(data[0].availableRoleList[index].roleDescription != 'Class Admin user'){
+				availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+			}
 		});
 		$("#userRole").append(availableRole);		
 		$("#userRole").change(function(){
@@ -2166,11 +2190,19 @@ $(document).ready(function() {
 		//alert(masterRole);
 	}
 	
+	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON ADD USER==========================================	
-	function createRoleListOnAdd(data) {
+	function createRoleListOnAdd(data,orgLevel) {
 	    var masterRole = "";
 		$.each(data, function(index, value){
-			masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+			if(orgLevel == '4'){
+				if(data[index].roleDescription != 'Admin user'){
+					masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+				}
+			}else{
+				masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+			}
+			
 		});
 		//alert(masterRole);
 		$("#addUserRole").empty().append(masterRole);
@@ -2179,6 +2211,7 @@ $(document).ready(function() {
 		});
 		$('#addUserRole').trigger('update-select-list');
 	}	
+	
 	//=========================SAVE EDIT USER DETAILS========================================
 	function updateUserDetails(form, win, row) {
 	blockUI();
@@ -2204,10 +2237,11 @@ $(document).ready(function() {
 				if (purpose == 'eduCenterUsers') {
 					loadEduCenterUsers();
 				} else {
-					//updateRowValues(row);
+					//Uncommented updateRowValues(row) for TD 77428 - By Joy
+					updateRowValues(row);
 					//Added to load data after edit
 					var id = $("#treeViewForOrg a").parent().attr("id");
-					fetchAllUsers(id,"getUserDetails.do");
+					//fetchAllUsers(id,"getUserDetails.do");//Blocked as after search and edit the user should retain there
 					//Change end here
 				}
 			} else {
@@ -2256,10 +2290,10 @@ $(document).ready(function() {
 			unblockUI();
 			$.modal.alert(strings['script.user.passwordPartUsername']);
 		} 
-		else if (patt.test(username)){
+		/*else if (patt.test(username)){
 			unblockUI();
 			$.modal.alert(strings['script.user.useridStartNumber']);
-		}else {
+		}*/ else {
 		var dataUrl = form.serialize()+'&AdminYear='+$("#AdminYear").val()+'&purpose='+ $("#purpose").val()+'&eduCenterId='+ $("#eduCenterId").val();
 		$.ajax({
 			type : "POST",
@@ -2325,26 +2359,30 @@ $(document).ready(function() {
 	
 	//----------------------------UPDATE ROW IF UPDATE SUCCESS ---------------------
 	
+	// Modification done by Joy for TD 77428 - ISTEP Prism_Manage User_On editing an existing user the change is not getting reflected immediately.
 	function updateRowValues(row) {
 		var roletag = '<small class="tag _BGCOLOR_ _CLASS_ ">_VALUE_</small>'
 		var completeRoleTagHtml = '';
 	
-		var statusClass = 'tag';
+		//var statusClass = 'tag';
+		var statusClass = 'with-tooltip tooltip-left';
 		var statusVal = '';
 		//alert($("#userModal #userStatus").attr('checked'));
 		if($("#userModal #userStatus").attr('checked') ==  'checked' || $("#userModal #userStatus").attr('checked') ==  true) {
-			statusClass = statusClass + ' green-bg';
+			statusClass = statusClass + ' enable';
 			statusVal = 'Enabled';
 		} else {
-			statusClass = statusClass + ' red-bg';
+			statusClass = statusClass + ' disable';
 			statusVal = 'Disabled';
 		}
+		//alert(statusClass);
 		//alert($("#userModal #userName").val());
-		row.find('th:eq(0)').html( $("#userModal #userId").val());
+		//row.find('th:eq(0)').html( $("#userModal #userId").val());
 		//row.find('td:eq(0)').html( $("#userModal #userName").val());
-		row.find('td small:eq(0)').html( statusVal);
-		row.find('td small:eq(0)').removeClass();
-		row.find('td small:eq(0)').addClass(statusClass);
+		//row.find('td small:eq(0)').html( statusVal);
+		row.find('th span:eq(0)').removeClass();
+		row.find('th span:eq(0)').addClass(statusClass);
+		row.find('th span:eq(0)').attr('title', statusVal)
 		
 		/*row.find('td:eq(1) small').removeClass();
 		row.find('td:eq(1) small').addClass(statusClass);*/
@@ -2399,9 +2437,6 @@ $(document).ready(function() {
 			});
 		}
 		row.find('.roleContainerForUsers').html(completeRoleTagHtml);
-			
-			
-			
 	  }
 		
 	//----------------------------DELETE THE ROW IF THE DATA IS DELETED SUCCESSFULLY ---------------------
@@ -2562,7 +2597,8 @@ $(document).ready(function() {
 			if(allUsers != null && allUsers.length > 0) {
 				$('#report-list').tablesorter({
 					headers: {
-						5: { sorter: false }
+						//Change for TD 77643 - By Joy
+						4: { sorter: false }
 					},
 					sortList: [[0,1]]
 				});
@@ -3068,6 +3104,7 @@ $(document).ready(function() {
 			$('#addUser').attr( 'tenantName', tenantName);
 			$('#addUser').attr( 'orgLevel', orgLevel);
 			$('#addUser').attr( 'tenantId', tenantId);
+			$('#orgLevel').val(orgLevel);
 		}
 	
 	//====================================AJAX CALL TO FETCH ALL THE USERS FOR THE SELECTED ORG====================
@@ -3085,6 +3122,9 @@ $(document).ready(function() {
 				dataType : 'json',
 				cache:false,
 				success : function(data) {
+					if(data != null && data.length >= 1){
+						showHideDataTable('show');
+					}
 					if (data != null && data.length > 14){
 						$(".pagination").show(200);
 					} else {
@@ -3354,13 +3394,15 @@ $(document).ready(function() {
 		var statusTag = "";
 		if (status == "AC" ) {
 			//statusTag = '<td class="hide-on-tablet"><small class="tag green-bg">' + 'Enabled' + '</small></td>';
-			statusTag = '<td><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			//statusTag = '<td><small class="tag green-bg">' + 'Enabled' + '</small></td>';
+			statusTag = '<span class="enable with-tooltip tooltip-left" title="Enabled"></span>';
 		} else {
 			//statusTag = '<td class="hide-on-tablet"><small class="tag red-bg">' + 'Disabled' + '</small></td>';
-			statusTag = '<td><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			//statusTag = '<td><small class="tag red-bg">' + 'Disabled' + '</small></td>';
+			statusTag = '<span class="disable with-tooltip tooltip-left" title="Disabled"></span>';
 		}
 		return statusTag;
-	}	
+	}
 	
 	// ======================== RELOAD JS-TREE ON SELECTING ADMIN YEAR ====================== 
 	function reloadOrgTree(selectedObj) {
@@ -3374,6 +3416,13 @@ $(document).ready(function() {
 		$("#orgMode").mouseenter();
 		$("#orgMode").mouseleave();
 		// END : patch to remove tooltip
+		
+		/* Fixed QC defect - Joy
+		 * By changing TA/org mode, data table retains for non-public mode though logged in user is public and vice versa
+		 */
+		showHideDataTable('hide');
+		//End Fixed QC defect - Joy
+		
 		var adminYear = $(selectedObj).val();
 		var queryData = "AdminYear="+adminYear+"&orgMode="+$("#orgMode").val();
 		$.ajax({
@@ -3393,7 +3442,46 @@ $(document).ready(function() {
 			}
 		});
 	}
+	
+	/* Fixed QC defect - Joy
+	 * By changing TA/org mode, data table retains for non-public mode though logged in user is public and vice versa
+	 */
+	function showHideDataTable(purpose){
+		if(purpose === 'show'){
+			$("#moreStudent").show();
+			$("#moreUser").show();
+			$("#moreOrg").show();
+			$("#moreParent").show();
 
+			$('#studentTable').show();
+			$('#userTable').show();
+			$('#orgTable').show();
+			$('#parentTable').show();
+		}else if(purpose === 'hide'){
+			$("#moreStudent").hide();
+			$("#moreUser").hide();
+			$("#moreOrg").hide();
+			$("#moreParent").hide();
+
+			$('#studentTable').hide();
+			$('#userTable').hide();
+			$('#orgTable').hide();
+			$('#parentTable').hide();
+		}
+	}
+	
+	
+	/*This function used for SSO user to check class level*/
+	function isClassUser(availableRoles){
+		var isClass = false;		
+		$.each(availableRoles, function (){
+			if(this.label== 'Class'){
+				isClass = true;
+				return isClass;
+			}			
+		});
+		return isClass;
+	}
 /**
  * This js file is for manage organizations screen
  * Author: Tata Consultancy Services Ltd.
@@ -3565,6 +3653,9 @@ $(document).ready(function() {
 				cache:false,
 				success : function(data) {
 					unblockUI();
+					if(data.length >= 1){
+						showHideDataTable('show');
+					}
 					if (data != null && data.length > 14){
 						$(".pagination").show(200);
 						$("#moreOrg").removeClass("disabled");
@@ -4345,6 +4436,7 @@ $(document).ready(function() {
 
 	//============================= Function to fetch ChildrenList =============================
 	function refreshChildrenList() {
+		blockUI();
 		$(".children-list").addClass("loader big");
 		$.ajax({
 			type:"GET",
@@ -4356,14 +4448,14 @@ $(document).ready(function() {
 					var userContent = '';
 					var menuContent = '';
 					$.each(data, function () { 
-						userContent += '<a href="getChildData.do?studentBioId='+this.studentBioId
+						userContent += '<a href="getChildData.do?testElementId='+this.testElementId
 									+'&studentName='+this.studentName
 									+'&studentGradeName='+this.grade
 									+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
 									+ this.studentName + '</a><br/>'
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
-						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?studentBioId='+this.studentBioId
+						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
 						+'&studentName='+this.studentName
 						+'&studentGradeName='+this.grade
 						+'&studentGradeId='+this.studentGradeId+'">'
@@ -4379,8 +4471,10 @@ $(document).ready(function() {
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
 				}
+				unblockUI();
 			},
 			error:function(data){
+				unblockUI();
 				$.modal.alert(strings['script.parent.getChildrenError']);
 				$(".children-list").removeClass("loader big");
 			}
@@ -4680,8 +4774,14 @@ $(document).ready(function() {
 	});	
 //========================REGISTRATION FORM SUBMISSION=====================	
 	$("#regSubmit").click(function(e){
-		e.stopImmediatePropagation();
-		validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+		if($("#usernameDiv #imgHolder > #validated").hasClass("validated")){
+			e.stopImmediatePropagation();
+			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+		}else{
+			stepBack(2);
+			e.stopImmediatePropagation();
+		}
+		
 		//$("#registrationForm").submit();
 	});
 //=============================PREVENTING REGISTRATION FORM SUBMIT ON ENTER===========================	
@@ -4701,10 +4801,10 @@ $(document).ready(function() {
 			if(password.indexOf(username) != -1) {
 				unblockUI();
 				$.modal.alert(strings['script.user.passwordPartUsername']);
-			} else if (patt.test(username)) {
+			} /*else if (patt.test(username)) {
 				unblockUI();
 				$.modal.alert(strings['script.user.useridStartNumber']);
-			}else {
+			}*/ else {
 				$.ajax({
 					type : "GET",
 					url : 'validatePwd.do',
@@ -4821,9 +4921,10 @@ $('.view-Children').live("click", function() {
 			if(parents != null && parents.length > 0) {
 				$('#report-list').tablesorter({
 					headers: {
-						4: { sorter: false }
-					},
-					sortList: [[0,1]]
+						//Change for TD 77643 - By Joy
+						3: { sorter: false }
+					}/*,
+					sortList: [[0,1]]*/
 				});
 			}
 			if(parents != null && parents.length < 15) {
@@ -4882,6 +4983,22 @@ $('.view-Children').live("click", function() {
 				}
 				tempScrollTop = currentScrollTop;
 			});
+			
+			/*Fixed for TD  77675 Start - By Joy
+			 * Use notification instead of message in page
+			 */
+			notify('Notification!', 'Parent users are associated with <b>School</b> level (not with Class/Teacher level).', {
+				system:				true,
+				vPos:				'top',
+				hPos:				'center',
+				autoClose:			false,
+				icon:				'themes/acsi/img/demo/icon.png',
+				iconOutside:		true,
+				closeButton:		true,
+				showCloseOnHover:	true,
+				groupSimilar:		true
+			});
+			//Fixed for TD  77675 End - Implementation change - By Joy
 		}
 	});
 	
@@ -4895,14 +5012,14 @@ $('.view-Children').live("click", function() {
 		
 		$.each(data, function () { 
 			parentContent += '<tr id ='+ this.userName +' class="abc" scrollid='+this.clikedOrgId+'_'+this.userName+'>'
-								+'<th scope="row">' + this.userName +'</th>'
+								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
 								+'<td>' + this.displayName +'</td>'
-								+ createStatusTag(this.status)
+								//+ createStatusTag(this.status)
 								+'<td>'+this.orgName+'</td>'
 								+'<td class="vertical-center">'
 									+' <span class="button-group compact">' 
-										+' <a id='+ this.userId + ' parentName='+ this.userName +' parentDisplayName='+this.displayName+' href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
-										+' <a id='+ this.userId + ' parentName='+ this.userName +' clickedTreeNode='+  this.clikedOrgId +' href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
+										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
+										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId +'" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
 									+' </span>'
 								+'</td>'
 							+'</tr>' ;
@@ -4944,7 +5061,7 @@ $('.view-Children').live("click", function() {
 				+'<td>'+checkForNull(this.orgName)+'</td>'
 				+'<td class="vertical-center">'
 					+' <span class="button-group compact">' 
-						+' <a id="'+ this.studentBioId + '" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages icon"></span> Assessment</a>'  
+						+' <a id="'+ this.studentBioId + '" testelementid="'+this.testElementId+'" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages"></span> Assessment</a>'  
 					+' </span>'
 				+'</td>'
 			+'</tr>' ;
@@ -4978,6 +5095,9 @@ $('.view-Children').live("click", function() {
 			cache:false,
 			success : function(data) {
 				unblockUI();
+				if(data.length >= 1){
+					showHideDataTable('show');
+				}
 				if (data != null && data.length > 14){
 					$(".pagination").show(200);
 					$("#moreParent").removeClass("disabled");
@@ -5010,21 +5130,22 @@ $('.view-Children').live("click", function() {
 	}
 	
 	//==========================THIS FUNCTION CREATES LIST OF PARENTS TO BE DISPALYED FOR EACH STUDENT============================
-	function createParentTag(parentJson)
-	{	
-		var size=parentJson.length;
-		var parentContent='<td>';
-		$.each(parentJson, function (index) { 
-			if(!(index+1==size)){
-				parentContent += this.userName +', ';//'<p>'+this.userName+'</p>';
-				}else{
-					parentContent += this.userName ;
-				}
+	function createParentTag(parentJson) {
+	var parentContent = '<td>';
+	if (parentJson) {
+		var size = parentJson.length;
+		$.each(parentJson, function(index) {
+			if (!(index + 1 == size)) {
+				parentContent += this.userName + ', ';// '<p>'+this.userName+'</p>';
+			} else {
+				parentContent += this.userName;
+			}
 		});
-		parentContent +='</td>';
-		
-		return parentContent;
 	}
+	parentContent += '</td>';
+
+	return parentContent;
+}
 	
 	
 	
@@ -5032,6 +5153,7 @@ $('.view-Children').live("click", function() {
 	function openParentModalToViewStudent(parentName,clickedTreeNode) {
 		var row = $("#"+parentName);
 		var nodeid = "parentName=" + parentName +"&clickedTreeNode="+clickedTreeNode;	
+		blockUI();
 		$.ajax({
 				type : "GET",
 				url : "getChildrenList.do",
@@ -5062,8 +5184,10 @@ $('.view-Children').live("click", function() {
 					else {
 						$.modal.alert(strings['script.parent.noChildren']);
 					}
+					unblockUI();
 				},
 				error : function(data) {
+					unblockUI();
 					$.modal.alert(strings['script.common.error']);
 				}
 			})	
@@ -5104,6 +5228,7 @@ $('.view-Children').live("click", function() {
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewStudentDom);				
 	}
 	
+	//Modified by Joy
 	//==========================CREATES THE TABULAR STRUCTURE FOR CHILDREN VIEW=======================
 	function buildStudentTableDom(jsonData,modalId,modalContainerDivId)
 	{	
@@ -5122,7 +5247,9 @@ $('.view-Children').live("click", function() {
 		$.each(jsonData, function () { 
 		
 						makeViewStudentTableDom += '<tr>'
-													+'<td><a href="redirectToStudent.do?AdminYear='+this.adminid+'&studentBioId='+this.studentBioId+'&nodeId='+this.clikedOrgId+'" >'+this.studentName +'</a></td>'
+													+'<td>'
+													+getStudentNameHTML(this)
+													+'</td>'
 													+'<td>'+this.administration +'</td>'
 													+'<td>'+this.grade +'</td>'
 													+'</tr>';
@@ -5131,6 +5258,20 @@ $('.view-Children').live("click", function() {
 		makeViewStudentTableDom += '</tbody></table>';
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewStudentTableDom);		
 				
+	}
+	
+	function getStudentNameHTML(obj){
+		var studentNameHTML = "";
+		if(obj.bioExists == 1){
+			studentNameHTML += '<a href="redirectToStudent.do?AdminYear='
+				+obj.adminid+'&studentBioId='+obj.testElementId+'&nodeId='+obj.clikedOrgId+'" >'
+				+obj.studentName 
+				+'</a>'
+		}else{
+			studentNameHTML += '<span class="with-tooltip tooltip-left" title="Student data is not available<br> at this time.">'
+				+obj.studentName+'</span>';
+		}
+		return studentNameHTML;
 	}
 	
 	
@@ -5384,6 +5525,7 @@ $('.view-Children').live("click", function() {
 	{   //alert("resetPassword");
 		var row = $("#"+parentName);
 		var nodeid = "userName=" + parentName;	
+		blockUI();
 		$.ajax({
 			type : "GET",
 			url : "resetPassword.do",
@@ -5400,8 +5542,10 @@ $('.view-Children').live("click", function() {
 				else {
 					$.modal.alert(strings['script.parent.passwordResetError']);
 				}
+				unblockUI();
 			},
 			error : function(data) {
+				unblockUI();
 				$.modal.alert(strings['script.parent.passwordResetError']);
 			}
 		});
@@ -5416,7 +5560,7 @@ $('.view-Children').live("click", function() {
 		$("#"+modalId +" > "+"#"+modalContainerDivId ).find("div").remove();
 		var newPassword ='<div id="newPassword">'
 							 +'<p class="message blue-gradient" style="width:400px">The password for the following user has been reset:</p>'
-							 +'<p><b>Account:</b>&nbsp;'+parentDisplayName+'</p>'
+							 +'<p><b>Full Name:</b>&nbsp;'+parentDisplayName+'</p>'
 							 +'<p><b>Temporary Password:</b>&nbsp;'+jsonData.password+'</p>'
 							 +'<p class="big-message" style="width:400px">Please provide this password to the user. The user will need to change the password after log in.</p>'
 							 +'</div>';
@@ -5438,7 +5582,7 @@ $('.view-Children').live("click", function() {
 						+'<strong>User Name:</strong>&nbsp;&nbsp;&nbsp;'
 						+parentName
 						+'<br/>'
-						+'<strong>Display Name:</strong>&nbsp;&nbsp;&nbsp;'
+						+'<strong>Full Name:</strong>&nbsp;&nbsp;&nbsp;'
 						+ parentDisplayName
 						+'</div>'
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(content);					
@@ -5697,7 +5841,7 @@ $(document).ready(function() {
 			$('.clearfix').addClass('menu-hidden');
 			$('.view-Assessment').live("click", function() {
 				regenerateAC = false;
-				openModalToViewAssessments($(this).attr("id"));		
+				openModalToViewAssessments($(this).attr("id"), $(this).attr("testelementid"));		
 			});	
 			//$('input#lastStudentId').val("");//clearing the value on load.
 			
@@ -5758,7 +5902,7 @@ $(document).ready(function() {
 var regenerateAC=false;
 
 
-function openModalToViewAssessments(studentBioId) {
+function openModalToViewAssessments(studentBioId, testElementId) {
 	var nodeid = "studentBioId=" + studentBioId;	
 	blockUI();
 	$.ajax({
@@ -5794,7 +5938,9 @@ function openModalToViewAssessments(studentBioId) {
 							'Create Letter':{
 								classes: 'blue-gradient glossy createLetter',
 								click: function(win) {
-									window.open('download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+studentBioId);
+									var url = 'download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+testElementId;
+									url = url + '&p_L3_Jasper_Org_Id=-1&p_AdminYear=-1'; // TODO : Remove hardcode 101
+									window.open(url);
 								}
 							}
 					}
@@ -6007,7 +6153,7 @@ function confirmRecreationAC(rowcounter)
 			
 			function saveAssessmentDetails(studentBioId,administration,invitationcode,icExpirationStatus,totalAvailableClaim,expirationDate)
 			{
-							
+				blockUI();		
 					$.ajax({
 							type : "GET",
 							url : 'updateAssessmentDetails.do',
@@ -6022,8 +6168,10 @@ function confirmRecreationAC(rowcounter)
 								} else {
 									$.modal.alert(strings['script.user.saveError']);
 								}
+								unblockUI();
 							},
 							error : function(data) {
+								unblockUI();
 								$.modal.alert(strings['script.user.saveError']);
 							}
 						});
@@ -6045,6 +6193,9 @@ function confirmRecreationAC(rowcounter)
 					dataType : 'json',
 					cache:false,
 					success : function(data) {
+						if(data.length >= 1){
+							showHideDataTable('show');
+						}
 						if (data != null && data.length > 14){
 							$(".pagination").show(200);
 							$("#moreStudent").removeClass("disabled");
@@ -6080,6 +6231,8 @@ function confirmRecreationAC(rowcounter)
 var ANIMATION_TIME = 200;
 
 $(document).ready(function() {
+	
+	//openInorsHomePage();
 	
 	if($("#contentTable").length > 0) {
 		var allContents = $(".content-list-all");
@@ -7127,6 +7280,70 @@ function getPerformanceLevelName(performanceLevel){
 	return performanceLevelName;
 }
 
+//=============== get inors home page message =====================
+function openInorsHomePage() {
+	//Fixed for TD 77263 -  By Joy
+	/*var iframeObj = $('#report-iframe-0').contents();
+	var inorsHomeObj = iframeObj.find('#inorsHome');
+	var taContentObj = iframeObj.find('#taContent');
+	var blockDivObj = iframeObj.find('#blockDiv');
+	if(inorsHomeObj.length) {
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : "loadHomePageMsg.do",
+			data : null,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.value);
+				inorsHomeObj.html(taContentObj.val());	
+				
+			},
+			error : function(data) {
+			if (data.status == "200") {
+				unblockUI();
+				blockDivObj.hide();
+				taContentObj.val(data.responseText);
+				inorsHomeObj.html(taContentObj.val());		
+			} else {
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}				
+		  }
+		});
+	}*/
+	
+	if($('#report-iframe-0').contents().find('#inorsHome').length) {
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : "loadHomePageMsg.do",
+			data : null,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				$('#report-iframe-0').contents().find('#blockDiv').hide();
+				$('#report-iframe-0').contents().find('#taContent').val(data.value);
+				$('#report-iframe-0').contents().find('#inorsHome').html($('#report-iframe-0').contents().find('#taContent').val());
+			},
+			error : function(data) {
+			if (data.status == "200") {
+				unblockUI();
+				$('#report-iframe-0').contents().find('#blockDiv').hide();
+				$('#report-iframe-0').contents().find('#taContent').val(data.responseText);
+				$('#report-iframe-0').contents().find('#inorsHome').html($('#report-iframe-0').contents().find('#taContent').val());
+			} else {
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+			}				
+		  }
+		});
+	}
+	
+}
+
 /**
  * This js file is to manage content module - End
  * Author: Joy
@@ -7151,11 +7368,9 @@ var chkTreeContainerObj;
 
 $(document).ready(function() {
 	
-	// get home page message - after page is loaded
-	openInorsHomePage();
-	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
+		$(this).removeTooltip();
 		$(document).click();
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");
@@ -7259,7 +7474,6 @@ $(document).ready(function() {
 
 	/* Extra action call in happening - Commented the function  */
 	// GRT/IC File Download
-	showHideDivs();
 	$("#p_test_administration").on("change", function(event) {
 		var testAdm = $("#p_test_administration").val();
 	});
@@ -7267,11 +7481,11 @@ $(document).ready(function() {
 	});
 	$('#p_corpdiocese').on('change',function(){
 	});
-	$("#p_school").on("change", function(event) {
-		var testAdministrationVal = $("#q_testAdministrationVal").val();
-		var testProgram = $("#q_testProgram").val();
-		var corpDiocese = $("#q_corpDiocese").val();
-		var school = $("#q_school").val();
+	$("#p_school").live("change", function(event) {
+		var testAdministrationVal = $("#p_testAdministrationVal").val();
+		var testProgram = $("#p_testProgram").val();
+		var corpDiocese = $("#p_corpDiocese").val();
+		var school = $("#p_school").val();
 		if(school) {
 			if (school == "-1") { // All
 				var schoolCount = $('#p_school > option').length;
@@ -7285,7 +7499,6 @@ $(document).ready(function() {
 		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		// $(".customRefresh").click();
-		showHideDivs();
 	});
 	$("#p_class").on("change", function(event) {
 		var klassOptionsString = "";
@@ -7306,7 +7519,6 @@ $(document).ready(function() {
 			//alert("klassCount=" + $("#classCount").val());
 		}
 		// $(".customRefresh").click();
-		showHideDivs();
 	});
 	$("#downloadGRTFile").on("click", function() {
 		var testAdministrationVal = $("#q_testAdministrationVal").val();
@@ -7369,11 +7581,24 @@ $(document).ready(function() {
 	 * Toggele self check status. Set all text box values.
 	 * Refresh check boxes from text boxes.
 	 */
-	$("#check-all").on("click", function() {
+	$("#checkAllImg").click(function() {
+		var val = $('#checkAllVal').val();
+		if (val == "0") {
+			$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
+			$('#checkAllVal').val("1");
+			setAllTextBoxValues("1");
+		} else if ((val == "1") || (val == "-1")) {
+			$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
+			$('#checkAllVal').val("0");
+			setAllTextBoxValues("0");
+		}
+		refreshCheckBoxesFromTextBoxes();
+	});
+	/*$("#check-all").on("click", function() {
 		var value = toggleACheckBox($('#check-all'));
 		setAllTextBoxValues(value);
 		refreshCheckBoxesFromTextBoxes();
-	});
+	});*/
 
 	/**
 	 * Toggele self check status. Set the corresponding text box
@@ -7404,17 +7629,38 @@ $(document).ready(function() {
 	});
 
 	$('#groupDownload').validationEngine();
+	
+	clickTheRefreshButton();
+	
 });
+
+/**
+ * Programatically click the Refresh button.
+ */
+var refreshUrls = new Array("/public/INORS/Report/Report1_files", "/public/INORS/Report/Report2_files");
+function clickTheRefreshButton() {
+	var reportUrl = $("#reportUrl").val();
+	for (var i = 0; i < refreshUrls.length; i++) {
+		// alert(reportUrl + "\n" + refreshUrls[i]);
+		if (reportUrl == refreshUrls[i]) {
+			$(".customRefresh").click();
+			break;
+		}
+	}
+}
 
 function calculateAndChangeCheckAll(){
 	var totalStudents = getTotalStudentCount();
 	var checkedStudents = getCheckedStudentCount();
-	if(checkedStudents == totalStudents){
-		$('#check-all').attr('checked', 'checked');
-		$('#check-all').prop("indeterminate", false);
+	if(checkedStudents == 0){
+		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
+		$('#checkAllVal').val("0");
+	} else if(checkedStudents == totalStudents){
+		$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
+		$('#checkAllVal').val("1");
 	} else {
-		$('#check-all').prop("indeterminate", true);
-		$('#check-all').removeAttr('checked');
+		$('#checkAllImg').prop('src', 'themes/acsi/img/tristate.bmp');
+		$('#checkAllVal').val("-1");
 	}
 }
 
@@ -7492,42 +7738,6 @@ function setACheckBox(checkBox, value) {
 	} else if (value == "0") {
 		checkBox.removeAttr('checked');
 		checkBox.val("0");
-	}
-}
-
-// =============== get inors home page message =====================
-function openInorsHomePage() {
-	//Fixed for TD 77263 -  By Joy
-	var iframeObj = $('#report-iframe-0').contents();
-	var inorsHomeObj = iframeObj.find('#inorsHome');
-	var taContentObj = iframeObj.find('#taContent');
-	var blockDivObj = iframeObj.find('#blockDiv');
-	if(inorsHomeObj.length) {
-		blockUI();
-		$.ajax({
-			type : "GET",
-			url : "loadHomePageMsg.do",
-			data : null,
-			dataType : 'json',
-			cache: false,
-			success : function(data) {
-				unblockUI();
-				blockDivObj.hide();
-				taContentObj.val(data.value);
-				inorsHomeObj.html(taContentObj.val());	
-				
-			},
-			error : function(data) {
-			if (data.status == "200") {
-				unblockUI();
-				blockDivObj.hide();
-				taContentObj.val(data.responseText);
-				inorsHomeObj.html(taContentObj.val());		
-			} else {
-				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
-			}				
-		  }
-		});
 	}
 }
 
@@ -7877,15 +8087,22 @@ function downloadBulkPdf(type, mode) {
 						cache:false,
 						success : function(data) {
 							unblockUI();
-							$("textarea#requestSummary").val(data[0].requestSummary);
+							/*$("textarea#requestSummary").val(data[0].requestSummary);
 							$("#viewRequestDetail").modal({
 								title: 'View Request Details',
 								height: 350,
 								width: 600,
 								resizable: true,
 								draggable: true,
-							});		
-								
+							});*/
+							var requestDetails = data[0].requestSummary;
+							requestDetails = requestDetails.replace(/\n/g, '<br />');
+							// alert(requestDetails);
+							$("#requestDetailsContainerGD").html(requestDetails);
+							$("#requestDetailsContainerGD").modal({
+								title: 'View Request Details',
+								buttonsAlign: 'center'
+							});
 						},
 						error : function(data) {
 							$.modal.alert(strings['script.common.error1']);
@@ -7920,9 +8137,6 @@ function downloadBulkPdf(type, mode) {
 						}
 					});
 				}
-			function deleteRowValues(row) {
-				row.closest("tr").remove();
-			}
 			
 			// ================ Remove duplicate icons in IE ============================
 			function manageIconIE(icon) {
@@ -8336,47 +8550,6 @@ function populateStudentTableByJson(json) {
 }
 
 /**
- * Show/Hide GRT/IC Layout/Download Links/Buttons
- */
-function showHideDivs() {
-	var schoolId = $("#q_school").val();
-	if((schoolId) && schoolId != '-2') {
-		$("#icDiv").removeClass('hidden');
-		$("#grtDiv").removeClass('hidden');
-		$("#icDiv").show();
-		$("#grtDiv").show();
-		var testAdministrationText = $("#q_testAdministrationText").val();
-		if (testAdministrationText) {
-			var tokens = testAdministrationText.split(" ");
-			if ("2010" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2010" href="/inors/staticfiles/ISTEP S2009-10 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2009-10 GRT File Record Layout</a>');
-			} else if ("2011" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2011" href="/inors/staticfiles/ISTEP S2010-11 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2010-11 GRT File Record Layout</a><br />');
-			} else if ("2012" == tokens[2]) {
-				$("#icLinks").html('');
-				$("#grtLinks").html('<a class="button" id="grt2012" href="/inors/staticfiles/ISTEP S2011-12 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2011-12 GRT File Record Layout</a><br />');
-			} else if ("2013" == tokens[2]) {
-				if("ISTEP+" == tokens[0] && "Spring" == tokens[1]) {
-					$("#icLinks").html('<a class="button" id="ic2013" href="/inors/staticfiles/S2012-13 Invitation Code Layout.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 Invitation Code File Record Layout</a><br />');
-				} else {
-					$("#icLinks").html('');
-				}
-				$("#grtLinks").html('<a class="button" id="grt2013" href="/inors/staticfiles/ISTEP S2012-13 GR 3-8 GRT Corp Version.xls"><span class="button-icon icon-download blue-gradient report-btn">XLS</span>2012-13 GRT File Record Layout</a><br />');
-			} else {
-				$("#icDiv").hide();
-				$("#grtDiv").hide();
-				$.modal.alert('Unknown Test Administration');
-			}
-		}
-	} else {
-		$("#icDiv").hide();
-		$("#grtDiv").hide();
-	}
-}
-
-/**
  * GroupDownloadTO Constructor
  */
 function GroupDownloadTO(button, testAdministrationVal, testAdministrationText,
@@ -8450,7 +8623,13 @@ function groupDownloadSubmit(button) {
 	if ((button == "SP") || (button == "CP") || (button == "SS")) {
 		var errMsg = validateGroupDownloadForm(button, json);
 		if (errMsg == "") {
-			$.modal.confirm("You are requesting multiple pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
+			var checkedStudents = getCheckedStudentCount();
+			var pageCount = (checkedStudents + 1) * 2;
+			var groupFile = $("#q_groupFile");
+			if(groupFile == "BOTH"){
+				pageCount = pageCount + (checkedStudents * 2);
+			}
+			$.modal.confirm("You are requesting "+pageCount+" pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
 				function() {
 					// Ajax Call
 					var serverResponseData = groupDownloadFunction(json);
@@ -8700,7 +8879,7 @@ function getGenericPage(action, obj) {
 		url : urlParam,
 		data : dataUrl,
 		dataType : 'html',
-		cache:false,
+		cache:true,
 		success : function(data) {
 			unblockUI();
 			$(".main-section").html(data);

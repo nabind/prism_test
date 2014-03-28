@@ -20,4 +20,7 @@ public interface IUsabilityService {
 	public void updatePartition(String partitionName) throws Exception;
 	public String checkPartition() throws Exception;
 	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
+	
+	public Object getSetCache(String username, String sessionName, Object sessionParam);
+	public Object removeFromCache(String username, String sessionName);
 }

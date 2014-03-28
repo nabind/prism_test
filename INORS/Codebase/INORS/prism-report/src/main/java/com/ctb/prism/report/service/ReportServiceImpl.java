@@ -1,29 +1,44 @@
 package com.ctb.prism.report.service;
 
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ctb.prism.core.Service.IUsabilityService;
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.report.api.FillManagerImpl;
+import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
+import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
-//import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
 @Service("reportService")
@@ -31,6 +46,9 @@ public class ReportServiceImpl implements IReportService {
 
 	@Autowired
 	private IReportBusiness reportBusiness;
+	
+	@Autowired
+	IUsabilityService usabilityService;
 
 	/*
 	 * (non-Javadoc)
@@ -119,10 +137,11 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getDefaultFilter(java.util .List, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId) {
-		return reportBusiness.getDefaultFilter(tos, userName, customerId, assessmentId, combAssessmentId, reportUrl, sessionParams, userId);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
+			Map<String, Object> sessionParams, String userId, String currentOrg) {
+		return reportBusiness.getDefaultFilter(tos, userName, customerId, assessmentId, combAssessmentId, reportUrl, sessionParams, userId, currentOrg);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -375,5 +394,264 @@ public class ReportServiceImpl implements IReportService {
 	 */
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
 		return reportBusiness.getAllReportMessages(paramMap);
+	}
+	
+	
+	@Autowired private IReportFilterTOFactory reportFilterFactory;
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportServiceImpl.class.getName());
+	
+	@Cacheable(value = "defaultCache", 
+			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ) )")
+	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
+			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) {
+		Class<?> c = reportFilterFactory.getReportFilterTO();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		try {
+			String loggedInUserJasperOrgId = (String) c.getMethod("getLoggedInUserJasperOrgId").invoke(reportFilterTO);
+			String userName = (String) c.getMethod("getLoggedInUserName").invoke(reportFilterTO);
+			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, loggedInUserJasperOrgId);
+			parameters.put(IApplicationConstants.JASPER_USER_PARAM, userName);
+			parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+			parameters.put(IApplicationConstants.JASPER_CUSTOMERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER));
+			if (allInputControls != null) {
+				for (InputControlTO inputControlTO : allInputControls) {
+					String label = inputControlTO.getLabelId();
+					String fieldName = CustomStringUtil.capitalizeFirstCharacter(inputControlTO.getLabelId());
+					Method m = c.getMethod(CustomStringUtil.appendString("get", fieldName));
+					@SuppressWarnings("unchecked")
+					// List<ObjectValueTO> listOfValues = (List<ObjectValueTO>) m.invoke(reportFilterTO);
+					List<ObjectValueTO> listOfValues = (List<ObjectValueTO>) m.invoke(reportFilterTO);
+
+					/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
+					// get default list for multiselect subtest
+					// this code is a path for subtest to meet business requirement to show default subtest list
+					String[] defaultValues = null;
+					boolean checkDefault = false;
+					List<String> defaultInputNames = new ArrayList<String>();
+					Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
+					try {
+						for (IApplicationConstants.PATCH_FOR_SUBTEST subtest : IApplicationConstants.PATCH_FOR_SUBTEST.values()) {
+							if (subtest.name().equals(inputControlTO.getLabelId())) {
+								defaultInputNames.add(inputControlTO.getLabelId());
+								for (int i = 0; i < jasperReport.getParameters().length; i++) {
+									if (inputControlTO.getLabelId().equals(jasperReport.getParameters()[i].getName())) {
+										String value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
+										value = value.replace("Arrays.asList(", "");
+										value = value.replace(")", "");
+										value = value.replace("\"", "");
+										defaultValues = value.split(",");
+										checkDefault = true;
+										break;
+									}
+								}
+								defaultInputValues.put(inputControlTO.getLabelId(), defaultValues);
+								// break;
+							}
+						}
+					} catch (Exception e) {
+						logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured for subtest multiselect : ", e.getMessage()));
+					}
+					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
+
+					/***NEW***/
+					String[] valueFromSession = getFromSession(req, label);
+					/***NEW***/
+					
+					Map<String, Object> sessionParameters = null;
+					if (req != null)
+						sessionParameters = (Map<String, Object>) req.getSession().getAttribute("inputControls");
+					if (sessionParameters == null) {
+						sessionParameters = new HashMap<String, Object>();
+					}
+
+					boolean sessionArray = false;
+					if (sessionParameters.get(label) instanceof List<?>) {
+						sessionArray = true;
+					}
+
+					// patch for input control blank for text type i/p controls
+					boolean customReport = false;
+					if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + req.getParameter("reportUrl")))) {
+						customReport = true;
+					} else {
+						while (jasperReport == null) {
+							Thread.sleep(2000);
+							//jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
+							/** session to cache **/
+							jasperReport = (JasperReport) 
+								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
+									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
+						}
+					}
+					// end patch
+
+					if (getFullList) {
+						// for input control section
+						if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {
+							if (!customReport) {
+								for (int i = 0; i < jasperReport.getParameters().length; i++) {
+									if (inputControlTO.getLabelId().equals(jasperReport.getParameters()[i].getName())) {
+										String value = "";
+										if (jasperReport.getParameters()[i].getDefaultValueExpression() != null
+												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
+											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
+										}
+										// parameters.put(inputControlTO.getLabelId(), value);
+										parameters.put(label, (sessionParameters.get(label) != null) ? sessionParameters.get(label) : value);
+										break;
+									}
+								}
+							}
+						} else {
+							parameters.put(inputControlTO.getLabelId(), listOfValues);
+							if (sessionParameters.get(label) != null) {
+								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
+								List<String> selectInputNames = new ArrayList<String>();
+								if (sessionParameters.get(label) instanceof String) {
+									selectInputValues.put(label, new String[] { ((String) sessionParameters.get(label)) });
+								} else {
+									selectInputValues.put(label, ((List<String>) sessionParameters.get(label)).toArray(new String[0]));
+								}
+								selectInputNames.add(label);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
+							}
+							/***NEW***/
+							if(valueFromSession != null) {
+								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
+								List<String> selectInputNames = new ArrayList<String>();
+								selectInputValues.put(label, valueFromSession);
+								selectInputNames.add(label);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
+							}
+							/***NEW***/
+							if (!checkDefault) {
+								parameters.put(inputControlTO.getLabelId(), listOfValues);
+							} else {
+								parameters.put(inputControlTO.getLabelId(), listOfValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
+
+								/*
+								 * // list need to be modified based on default value List<ObjectValueTO> inputCollection = new ArrayList<ObjectValueTO>(); for(ObjectValueTO objectValue :
+								 * listOfValues) { // this field has default values - need to pass values that belongs to this default list if(defaultValues != null) { for(String currentVal :
+								 * defaultValues) { if(objectValue.getValue().equals(currentVal)) { inputCollection.add(objectValue); } } } else { inputCollection.add(objectValue); }
+								 * parameters.put(IApplicationConstants.CHECK_DEFAULT, defaultValues); parameters.put(IApplicationConstants.CHECK_DEFAULT_NAME, defaultInputNames); }
+								 * parameters.put(inputControlTO.getLabelId(), inputCollection);
+								 */
+							}
+						}
+					} else {
+						// fetch i/p for default values
+						if (IApplicationConstants.DATA_TYPE_COLLECTION.equals(inputControlTO.getType())) {
+							// passing array
+							List<String> inputCollection = new ArrayList<String>();
+							for (ObjectValueTO objectValue : listOfValues) {
+								if (!checkDefault) {
+									inputCollection.add(objectValue.getValue());
+									if (IApplicationConstants.EXTENDED_YEAR.equals(inputControlTO.getLabelId())) {
+										break;
+									}
+								} else {
+									// this field has default values - need to pass values that belongs to this default list
+									if (defaultValues != null) {
+										for (String currentVal : defaultValues) {
+											if (objectValue.getValue().equals(currentVal)) {
+												inputCollection.add(objectValue.getValue());
+											}
+										}
+										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
+										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
+									} else {
+										inputCollection.add(objectValue.getValue());
+									}
+								}
+							}
+							// parameters.put(inputControlTO.getLabelId(), inputCollection);
+							parameters.put(label,
+									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
+											: inputCollection);
+							/***NEW***/
+							if(valueFromSession != null) {
+								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+							} else {
+								parameters.put(inputControlTO.getLabelId(), inputCollection);
+							}
+							/***NEW***/
+						} else if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {
+							if (!customReport) {
+								for (int i = 0; i < jasperReport.getParameters().length; i++) {
+									if (label.equals(jasperReport.getParameters()[i].getName())) {
+										// String value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
+										String value = "";
+										if (jasperReport.getParameters()[i].getDefaultValueExpression() != null
+												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
+											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
+										}
+										// parameters.put(inputControlTO.getLabelId(), value);
+										parameters.put(label, (sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0])
+												: sessionParameters.get(label)) : value);
+										break;
+									}
+								}
+							}
+						} else {
+							String value = "";
+							if (listOfValues != null && listOfValues.size() > 0) {
+								if ("Form/Level".equals(inputControlTO.getLabel()) || "Level".equals(inputControlTO.getLabel()) || "Days".equals(inputControlTO.getLabel())) {
+									for (ObjectValueTO objectValue : listOfValues) {
+										if (objectValue.getName() != null && objectValue.getName().indexOf("Default") != -1) {
+											// this block is for form/level
+											value = objectValue.getValue();
+										}
+									}
+								} else {
+									value = listOfValues.get(0).getValue();
+								}
+							}
+							// fallback code
+							if ((value == null || value.length() == 0) && listOfValues != null && listOfValues.size() > 0) {
+								value = listOfValues.get(0).getValue();
+							}
+							// parameters.put(inputControlTO.getLabelId(), value);
+							parameters.put(label,
+									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
+											: value);
+							/***NEW***/
+							if(valueFromSession != null && valueFromSession.length > 0) {
+								boolean objExists = false;
+								for (ObjectValueTO objectValue : listOfValues) {
+									if (objectValue.getValue() != null && objectValue.getValue().equals(valueFromSession[0])) {
+										parameters.put(inputControlTO.getLabelId(), valueFromSession[0]);
+										objExists = true;
+										break;
+									}
+								}
+								if(!objExists) parameters.put(inputControlTO.getLabelId(), value);
+							} else {
+								parameters.put(inputControlTO.getLabelId(), value);
+							}
+							/***NEW***/
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured : ", e.getMessage()));
+			e.printStackTrace();
+		}
+		return parameters;
+	}
+	
+	private String[] getFromSession(HttpServletRequest req, String label) {
+		return (String[]) req.getSession().getAttribute("_REMEMBER_ME_" + label);
+	}
+	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )")
+	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
+		throws JRException, SQLException {
+		IFillManager fillManager = new FillManagerImpl();
+		return fillManager.fillReport(jasperReport, parameterValues);
 	}
 }

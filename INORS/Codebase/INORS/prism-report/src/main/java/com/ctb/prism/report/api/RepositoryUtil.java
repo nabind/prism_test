@@ -31,6 +31,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.ctb.prism.core.Service.IUsabilityService;
+import com.ctb.prism.core.Service.UsabilityServiceImpl;
+import com.ctb.prism.core.constant.IApplicationConstants;
+
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
@@ -49,10 +56,17 @@ import net.sf.jasperreports.repo.Resource;
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id$
  */
+@Component
 public final class RepositoryUtil
 {
 	//private static final Log log = LogFactory.getLog(RepositoryUtil.class);
 
+	@Autowired IUsabilityService usabilityService;
+	
+	public RepositoryUtil() {
+		
+	}
+	
 	/**
 	 * @deprecated To be removed.
 	 */
@@ -227,6 +241,13 @@ public final class RepositoryUtil
 			//jasperReport = resource.getReport();
 			//jasperReport = JDBC.getReport();
 			if(request != null) jasperReport = (JasperReport) request.getSession().getAttribute("apiJasperReport"+location);
+			/** session to cache **/
+			/*if(usabilityService == null) {
+				usabilityService = new UsabilityServiceImpl();
+			}
+			if(request != null) jasperReport = (JasperReport) 
+				usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER), "apiJasperReport"+location, null);
+			*/
 			System.out.println("jasperReport object : " + jasperReport != null? jasperReport.getName() : "jasperReport from SESSION null");
 
 			if (cache != null)

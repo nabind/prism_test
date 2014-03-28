@@ -12,6 +12,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -130,6 +131,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public List<InputControlTO> getAllInputControls() {
 		return reportDAO.getAllInputControls();
 	}
+	
+	public String getTenantId(String userName) {
+		return reportDAO.getTenantId(userName);
+	}
 
 	/**
 	 * Returns the default filter values for a report
@@ -145,14 +150,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param sessionParams
 	 * @param userId
 	 */
-	// @Cacheable(cacheName = "defaultInputControls")
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId) {
+	@Cacheable(value = "defaultCache", 
+			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getDefaultFilter').concat(#tenantId).concat(#reportUrl).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#sessionParams)) )")
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, 
+			String reportUrl, Map<String, Object> sessionParams, String userId, String tenantId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
 		Class<?> clazz = null;
 		Object obj = null;
-		String tenantId = null;
+		//String tenantId = null;
 		// ReportFilterTO to = new ReportFilterTO();
-		tenantId = reportDAO.getTenantId(userName);
+		//tenantId = reportDAO.getTenantId(userName);
 		try {
 			clazz = reportFilterFactory.getReportFilterTO();
 			obj = clazz.newInstance();

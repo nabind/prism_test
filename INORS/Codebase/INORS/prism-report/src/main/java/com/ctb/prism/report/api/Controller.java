@@ -24,7 +24,6 @@ package com.ctb.prism.report.api;
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -64,8 +63,10 @@ public class Controller
 	 *
 	 */
 	private JasperReportsContext jasperReportsContext;
-
 	
+	public Controller() {
+		// nothing to do
+	}
 	/**
 	 *
 	 */

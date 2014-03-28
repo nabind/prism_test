@@ -618,7 +618,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#addNewUser(java.util.Map)
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
+	public UserTO addNewUser(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: addNewUser()");
 		UserTO to = null;
 		String userName = (String) paramMap.get("userName");
@@ -631,83 +631,39 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String orgLevel = (String) paramMap.get("orgLevel");
 		String adminYear = (String) paramMap.get("adminYear");
 		String[] userRoles = (String[]) paramMap.get("userRoles");
-		String purpose = (String) paramMap.get("purpose");
-		try {
-			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-				// As discussed,no need to handle edu_center_user for
-				// ldapManager
-				if (!ldapManager.searchUser(userName)) {
+		//String purpose = (String) paramMap.get("purpose");
+		
+		List<Map<String, Object>> userMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_USER, userName);
+		if (userMap == null || userMap.isEmpty()) { // user not present in DB so insert new
 
-					List<Map<String, Object>> userMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_USER, userName);
-					if (userMap == null || userMap.isEmpty()) {
-						if (ldapManager.addUser(userName, userName, userName, password)) {
-							long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-							if (user_seq_id != 0) {
-								getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER, user_seq_id, userName, userDisplayName, emailId, userStatus, IApplicationConstants.FLAG_Y,
-										IApplicationConstants.FLAG_Y, customerId);
-								long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-								getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER, orgUserSeqId, user_seq_id, tenantId, orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
-								if (userRoles != null) {
-									getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
-									for (String role : userRoles) {
-										getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, user_seq_id);
-									}
-								}
-							}
-							String nodeId = String.valueOf(user_seq_id);
-							paramMap.put("nodeId", nodeId);
-							to = getEditUserData(paramMap);
-						}
-						// ldapManager.addUser(userName, userName, userName,
-						// password);
+			long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+			if (user_seq_id != 0) {
+				String salt = PasswordGenerator.getNextSalt();
+				getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_WITH_PASSWORD, user_seq_id, userName, userDisplayName, emailId, userStatus, IApplicationConstants.FLAG_Y,
+						SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), salt, IApplicationConstants.FLAG_N, customerId);
+				/*if (IApplicationConstants.PURPOSE.equals(purpose)) {
+					// Insert into edu_center_user_link
+					String eduCenterId = (String) paramMap.get("eduCenterId");
+					getJdbcTemplatePrism().update(IQueryConstants.INSERT_EDU_CENTER_USER, eduCenterId, user_seq_id);
+				} else {*/
+					// insert into org_users
+					long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+					getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER, orgUserSeqId, user_seq_id, tenantId, orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
+				/*}*/
+
+				if (userRoles != null) {
+					/*
+					 * getJdbcTemplatePrism().update( IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
+					 */
+					for (String role : userRoles) {
+						getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, user_seq_id);
 					}
-				}
-			} else {
-				// code to insert user in DAO only
-				List<Map<String, Object>> userMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_USER, userName);
-				if (userMap == null || userMap.isEmpty()) { // user not present
-															// in DB so insert
-															// new
-
-					// Check if password contains part of user name
-					if (password.equalsIgnoreCase(userName) || password.toLowerCase().indexOf(userName.toLowerCase()) != -1 || userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
-						throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
-					}
-
-					long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-					if (user_seq_id != 0) {
-						String salt = PasswordGenerator.getNextSalt();
-						getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_WITH_PASSWORD, user_seq_id, userName, userDisplayName, emailId, userStatus, IApplicationConstants.FLAG_Y,
-								SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), salt, IApplicationConstants.FLAG_N, customerId);
-						if (IApplicationConstants.PURPOSE.equals(purpose)) {
-							// Insert into edu_center_user_link
-							String eduCenterId = (String) paramMap.get("eduCenterId");
-							getJdbcTemplatePrism().update(IQueryConstants.INSERT_EDU_CENTER_USER, eduCenterId, user_seq_id);
-						} else {
-							// insert into org_users
-							long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-							getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER, orgUserSeqId, user_seq_id, tenantId, orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
-						}
-
-						if (userRoles != null) {
-							/*
-							 * getJdbcTemplatePrism().update( IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
-							 */
-							for (String role : userRoles) {
-								getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, user_seq_id);
-							}
-						}
-					}
-					String nodeId = String.valueOf(user_seq_id);
-					paramMap.put("nodeId", nodeId);
-					to = getEditUserData(paramMap);
 				}
 			}
-		} catch (BusinessException bex) {
-			throw new BusinessException(bex.getCustomExceptionMessage());
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while adding user details.", e);
-			throw new Exception(e);
+			String nodeId = String.valueOf(user_seq_id);
+			paramMap.put("nodeId", nodeId);
+			to = getEditUserData(paramMap);
+		
 		}
 		logger.log(IAppLogger.INFO, "Exit: addNewUser()");
 		return to;

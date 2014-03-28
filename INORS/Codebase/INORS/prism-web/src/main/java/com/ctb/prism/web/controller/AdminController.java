@@ -753,10 +753,15 @@ public class AdminController {
 				}
 			}
 			
+			// Check if password contains part of user name
+			if (password.equalsIgnoreCase(userName) || password.toLowerCase().indexOf(userName.toLowerCase()) != -1 || userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
+				throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
+			}
+			
 			/*userTo = adminService.addNewUser(userId, tenantId, userName,
 							emailId, password, userStatus, userRoles,orgLevel, adminYear, customer);*/
 			userTo = adminService.addNewUser(paramMap);
-					res.setContentType("text/plain");
+			res.setContentType("text/plain");
 			
 			if (userTo != null) {
 				UserTOs.add(userTo);

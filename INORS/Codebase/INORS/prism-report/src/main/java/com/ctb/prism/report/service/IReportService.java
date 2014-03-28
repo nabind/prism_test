@@ -1,7 +1,10 @@
 package com.ctb.prism.report.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -81,7 +84,8 @@ public interface IReportService {
 	 * @param userId
 	 * @return
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, Map<String, Object> sessionParams, String userId);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
+			Map<String, Object> sessionParams, String userId, String currentOrg);
 
 	/**
 	 * @param query
@@ -270,5 +274,11 @@ public interface IReportService {
 	 * @return
 	 */
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
+	
+	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, 
+			Object reportFilterTO, JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) ;
+	
+	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
+		throws JRException, SQLException;
 
 }

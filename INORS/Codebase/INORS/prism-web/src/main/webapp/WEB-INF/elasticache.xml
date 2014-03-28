@@ -30,6 +30,11 @@
                     <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
                     <constructor-arg name="allowClear" index="2" value="true"/>
                 </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="userCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
             </set>
         </property>
 
@@ -59,6 +64,12 @@
     </bean>
 	<bean name="configCache" class="com.google.code.ssm.CacheFactory">
         <property name="cacheName" value="configCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProvider"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="userCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="userCache"/>
         <property name="cacheClientFactory" ref="cacheClientFactory"/>
         <property name="addressProvider" ref="awsAddressProvider"/>
         <property name="configuration" ref="cacheConfiguration"/>

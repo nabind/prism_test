@@ -107,7 +107,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#addNewUser(java.util.Map)
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
+	public UserTO addNewUser(Map<String, Object> paramMap) {
 		return adminDAO.addNewUser(paramMap);
 	}
 

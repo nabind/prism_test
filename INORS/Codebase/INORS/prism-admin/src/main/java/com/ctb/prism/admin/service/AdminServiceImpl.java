@@ -100,7 +100,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * @see com.ctb.prism.admin.service.IAdminService#addNewUser(java.util.Map)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public UserTO addNewUser(Map<String, Object> paramMap) throws BusinessException, Exception {
+	public UserTO addNewUser(Map<String, Object> paramMap) {
 		return adminBusiness.addNewUser(paramMap);
 	}
 
