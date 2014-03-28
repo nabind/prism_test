@@ -276,7 +276,8 @@ public interface IReportService {
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
 	
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, 
-			Object reportFilterTO, JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) ;
+			Object reportFilterTO, JasperReport jasperReport, boolean getFullList, HttpServletRequest req, 
+			String reportUrl, String currentOrg, Map<String, String[]> param) ;
 	
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException;

@@ -872,7 +872,7 @@ public class ReportController extends BaseDAO {
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl) {
 		
 		String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
-		return reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg);
+		return reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg, req.getParameterMap());
 		/*Class<?> c = reportFilterFactory.getReportFilterTO();
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		try {

@@ -401,9 +401,9 @@ public class ReportServiceImpl implements IReportService {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportServiceImpl.class.getName());
 	
 	@Cacheable(value = "defaultCache", 
-			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ) )")
+			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
-			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) {
+			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg, Map<String, String[]> param) {
 		Class<?> c = reportFilterFactory.getReportFilterTO();
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		try {
