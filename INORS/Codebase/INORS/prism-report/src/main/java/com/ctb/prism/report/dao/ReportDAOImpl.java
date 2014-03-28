@@ -1387,7 +1387,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String extract_filetype = groupFile;
 		String request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
 		String request_details_str = Utils.objectToJson(to);
-		String request_summary = "Group Download - " + groupFile;
+		String request_summary = "Group Download - " + groupFile + ": In Progress";
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
 		LobHandler lobHandler = new DefaultLobHandler();
