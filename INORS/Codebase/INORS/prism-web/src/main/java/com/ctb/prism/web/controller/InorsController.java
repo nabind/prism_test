@@ -1175,8 +1175,75 @@ public class InorsController {
 		modelAndView.addObject("currentIcFileName", currentIcFileName);
 		modelAndView.addObject("lastIcFileName", lastIcFileName);
 
+		String showGrtDiv = "Y";
+		String showIcDiv = "N";
+		if (productName != null && productName.length() >= 4) {
+			String selectedYear = productName.substring(productName.length() - 4);
+			logger.log(IAppLogger.INFO, "selectedYear=" + selectedYear);
+			modelAndView.addObject("selectedYear", selectedYear);
+
+			String yearPrefix = getYearPrefix(selectedYear);
+			logger.log(IAppLogger.INFO, "yearPrefix=" + yearPrefix);
+			String productPrefix = "";
+			String productSuffix = "";
+			if (productName.toUpperCase().contains("ISTEP")) {
+				productPrefix = "ISTEP";
+			} else if (productName.toUpperCase().contains("IMAST")) {
+				productPrefix = "IMAST";
+			} else if (productName.toUpperCase().contains("IREAD")) {
+				productPrefix = "IREAD-3";
+			} else {
+				logger.log(IAppLogger.ERROR, "Invalid Product Prefix");
+			}
+			if (productName.toLowerCase().contains("spring")) {
+				productSuffix = " S";
+			} else if (productName.toUpperCase().contains("summer")) {
+				productSuffix = " R";
+			} else {
+				logger.log(IAppLogger.ERROR, "Invalid Product Suffix");
+			}
+
+			// IC is available for latest two years
+			if ((productName.contains(currentAdminYear)) || (productName.contains(lastAdminYear))) {
+				showIcDiv = "Y";
+			}
+			String icFileLayoutDisplayName = yearPrefix + " Invitation Code File Record Layout";
+			String icFileLayoutHref = productSuffix.trim() + yearPrefix + " Invitation Code Layout.xls";
+			logger.log(IAppLogger.INFO, "icFileLayoutDisplayName=" + icFileLayoutDisplayName);
+			logger.log(IAppLogger.INFO, "icFileLayoutHref=" + icFileLayoutHref);
+			modelAndView.addObject("icFileLayoutDisplayName", icFileLayoutDisplayName);
+			modelAndView.addObject("icFileLayoutHref", icFileLayoutHref);
+
+			// GRT is available for all years
+			String grtFileLayoutDisplayName = yearPrefix + " GRT File Record Layout";
+			String grtFileLayoutHref = productPrefix + productSuffix + yearPrefix + " GR 3-8 GRT Corp Version.xls";
+			logger.log(IAppLogger.INFO, "grtFileLayoutDisplayName=" + grtFileLayoutDisplayName);
+			logger.log(IAppLogger.INFO, "grtFileLayoutHref=" + grtFileLayoutHref);
+			modelAndView.addObject("grtFileLayoutDisplayName", grtFileLayoutDisplayName);
+			modelAndView.addObject("grtFileLayoutHref", grtFileLayoutHref);
+		} else {
+			logger.log(IAppLogger.ERROR, "Invalid Product Name");
+		}
+		logger.log(IAppLogger.INFO, "showGrtDiv=" + showGrtDiv);
+		logger.log(IAppLogger.INFO, "showIcDiv=" + showIcDiv);
+		modelAndView.addObject("showGrtDiv", showGrtDiv);
+		modelAndView.addObject("showIcDiv", showIcDiv);
+
 		logger.log(IAppLogger.INFO, "Exit: grtICFileForm()");
 		return modelAndView;
+	}
+	
+	/**
+	 * For input value 2014 the output value is 2013-14.
+	 * 
+	 * @param adminYear
+	 * @return
+	 */
+	private String getYearPrefix(String adminYear) {
+		Integer currentYear = Integer.parseInt(adminYear);
+		Integer lastYear = currentYear - 1;
+		String yearPrefix = lastYear + "-" + currentYear.toString().substring(2);
+		return yearPrefix;
 	}
 
 	/**
