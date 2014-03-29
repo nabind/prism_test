@@ -1191,34 +1191,51 @@ public class InorsController {
 			} else if (productName.toUpperCase().contains("IMAST")) {
 				productPrefix = "IMAST";
 			} else if (productName.toUpperCase().contains("IREAD")) {
-				productPrefix = "IREAD-3";
+				productPrefix = "IREAD3";
 			} else {
-				logger.log(IAppLogger.ERROR, "Invalid Product Prefix");
+				logger.log(IAppLogger.ERROR, "Invalid Product Prefix: Expected - ISTEP/IMAST/IREAD");
 			}
-			if (productName.toLowerCase().contains("spring")) {
-				productSuffix = " S";
-			} else if (productName.toUpperCase().contains("summer")) {
-				productSuffix = " R";
+			if (productName.toUpperCase().contains("SPRING")) {
+				productSuffix = "SPRING";
+			} else if (productName.toUpperCase().contains("SUMMER")) {
+				productSuffix = "SUMMER";
 			} else {
-				logger.log(IAppLogger.ERROR, "Invalid Product Suffix");
+				logger.log(IAppLogger.ERROR, "Invalid Product Suffix: Expected - SPRING/SUMMER");
 			}
 
 			// IC is available for latest two years
 			if ((productName.contains(currentAdminYear)) || (productName.contains(lastAdminYear))) {
-				showIcDiv = "Y";
+				// IC is available for ISTEP
+				if (productName.contains("ISTEP")) {
+					showIcDiv = "Y";
+				}
 			}
 			String icFileLayoutDisplayName = yearPrefix + " Invitation Code File Record Layout";
-			String icFileLayoutHref = productSuffix.trim() + yearPrefix + " Invitation Code Layout.xls";
+			// String icFileLayoutHref = productSuffix.trim() + yearPrefix + " Invitation Code Layout.xls";
+			String icFileLayoutHref = propertyLookup.get("IC_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
+			if (icFileLayoutHref == null || icFileLayoutHref.isEmpty()) {
+				if (showIcDiv == "Y") {
+					logger.log(IAppLogger.ERROR, "IC Layout Filename is not configured in Properties file");
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "icFileLayoutHref=" + icFileLayoutHref);
+			}
 			logger.log(IAppLogger.INFO, "icFileLayoutDisplayName=" + icFileLayoutDisplayName);
-			logger.log(IAppLogger.INFO, "icFileLayoutHref=" + icFileLayoutHref);
 			modelAndView.addObject("icFileLayoutDisplayName", icFileLayoutDisplayName);
 			modelAndView.addObject("icFileLayoutHref", icFileLayoutHref);
 
 			// GRT is available for all years
 			String grtFileLayoutDisplayName = yearPrefix + " GRT File Record Layout";
-			String grtFileLayoutHref = productPrefix + productSuffix + yearPrefix + " GR 3-8 GRT Corp Version.xls";
+			// String grtFileLayoutHref = productPrefix + productSuffix + yearPrefix + " GR 3-8 GRT Corp Version.xls";
+			String grtFileLayoutHref = propertyLookup.get("GRT_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
+			if (grtFileLayoutHref == null || grtFileLayoutHref.isEmpty()) {
+				if (showGrtDiv == "Y") {
+					logger.log(IAppLogger.ERROR, "GRT Layout Filename is not configured in Properties file");
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "grtFileLayoutHref=" + grtFileLayoutHref);
+			}
 			logger.log(IAppLogger.INFO, "grtFileLayoutDisplayName=" + grtFileLayoutDisplayName);
-			logger.log(IAppLogger.INFO, "grtFileLayoutHref=" + grtFileLayoutHref);
 			modelAndView.addObject("grtFileLayoutDisplayName", grtFileLayoutDisplayName);
 			modelAndView.addObject("grtFileLayoutHref", grtFileLayoutHref);
 		} else {
