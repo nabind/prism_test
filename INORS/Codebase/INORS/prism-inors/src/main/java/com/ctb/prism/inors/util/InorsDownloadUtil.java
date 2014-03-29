@@ -194,6 +194,10 @@ public class InorsDownloadUtil {
 
 	public static ArrayList<String> getRowDataLayout(String commaString) {
 		ArrayList<String> rowDataLayout = new ArrayList<String>();
+		if (commaString == null || commaString.isEmpty()) {
+			logger.log(IAppLogger.WARN, "Invalid comma separated string: " + commaString);
+			return rowDataLayout;
+		}
 		String[] tokens = commaString.split("\\|");
 		for (int i = 0; i < tokens.length; i++) {
 			rowDataLayout.add(tokens[i]);
