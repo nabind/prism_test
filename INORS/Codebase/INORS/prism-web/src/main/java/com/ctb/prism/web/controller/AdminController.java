@@ -781,6 +781,8 @@ public class AdminController {
 			res.getWriter().write("{\"status\":\"LDAP_ERROR\", \"message\":\""+bex.getCustomExceptionMessage()+"\"}");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error Saving User", e);
+			res.setContentType("text/plain");
+			res.getWriter().write("{\"status\":\"Faliure\", \"message\":\"Error in user creation. Please try later.\"}");
 		}
 		return null;
 	}
