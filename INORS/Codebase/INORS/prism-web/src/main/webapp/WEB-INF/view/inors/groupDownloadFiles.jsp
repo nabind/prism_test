@@ -35,7 +35,7 @@
 										<tr>
 											<th scope="col" width="30%">Request File Name</th>
 											<th scope="col" width="20%">Created Date</th>
-											<th scope="col" width="20%">Expiry Date</th>
+											<th scope="col" width="20%">Expiration Date</th>
 											<th scope="col" width="12%">Job Status</th>
 											<th scope="col" width="10%">File Size</th>
 											<th scope="col" width="8%">Actions</th>
