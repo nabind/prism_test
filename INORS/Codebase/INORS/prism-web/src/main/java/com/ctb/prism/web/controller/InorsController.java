@@ -449,7 +449,7 @@ public class InorsController {
 			modelAndView = new ModelAndView("inors/groupDownloads");
 		}
 		String testAdministrationVal = (String) request.getParameter("p_test_administration");
-		request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
+		//request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
 		String testProgram = (String) request.getParameter("p_test_program");
 		String corpDiocese = (String) request.getParameter("p_corpdiocese");
 		String school = (String) request.getParameter("p_school");
@@ -502,7 +502,7 @@ public class InorsController {
 		modelAndView.addObject("grade", grade);
 		modelAndView.addObject("groupFile", groupFile);
 		modelAndView.addObject("collationHierarchy", collationHierarchy);
-
+		request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
 		List<ReportMessageTO> reportMessages = null;
 		if (testAdministrationVal != null) {
 			String productId = testAdministrationVal;
@@ -803,6 +803,8 @@ public class InorsController {
 			// fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
 			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			String testAdmin = (String) request.getSession().getAttribute("GDF_testadmin");
+			logger.log(IAppLogger.INFO, "testAdmin=" + testAdmin);
+			logger.log(IAppLogger.INFO, "customerId=" + customerId);
 			String rootPath = loginService.getRootPath(customerId, testAdmin);
 			fileName = CustomStringUtil.appendString(rootPath, fileName);
 			File pdfFile = new File(fileName);
