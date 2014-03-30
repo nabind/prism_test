@@ -193,7 +193,7 @@ $(document).ready(function() {
 			cache:false,
 			success : function(data) {
 				unblockUI();
-				createRoleListOnAdd(data);
+				createRoleListOnAdd(data, orgLevel);
 				$("#addUserModal").modal({
 					title: 'Add User to ' + $('#addUser').attr("tenantName"),
 					height: 410,
