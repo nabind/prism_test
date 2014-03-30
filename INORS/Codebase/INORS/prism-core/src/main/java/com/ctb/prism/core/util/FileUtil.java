@@ -591,14 +591,16 @@ public class FileUtil {
 	 */
 	public static String generateDefaultZipFileName(String currentUser, String groupFile) {
 		String zipFileName = "";
+		String userName = currentUser;
+		if(userName.indexOf("9rc^w") != -1) userName = userName.substring(0, userName.indexOf("9rc^w"));
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
+			zipFileName = CustomStringUtil.appendString(userName, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
 		} else {
-			zipFileName = CustomStringUtil.appendString(currentUser, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."));
+			zipFileName = CustomStringUtil.appendString(userName, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."));
 		}
 		return zipFileName;
 	}
-
+	
 	public static String humanReadableByteCount(long bytes) {
 		int unit = 1024;
 		if (bytes < unit) {
