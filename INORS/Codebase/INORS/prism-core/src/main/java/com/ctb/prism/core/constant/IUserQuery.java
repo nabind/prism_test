@@ -383,6 +383,8 @@ public interface IUserQuery {
 	public static final String INSERT_EDU_CENTER_USER = CustomStringUtil.appendString(
 			"INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (?, ?)");
 		
+	
+	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
 }
 
