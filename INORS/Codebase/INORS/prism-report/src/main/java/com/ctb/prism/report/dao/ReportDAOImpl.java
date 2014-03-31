@@ -47,6 +47,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
@@ -1023,7 +1024,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 
 		StringBuilder requestSummary = new StringBuilder();
-		requestSummary.append("Generated File Name: " + querySheetTO.getFileName() + "\n");
+		requestSummary.append("Generated File Name: " + FileUtil.getFileNameFromFilePath(querySheetTO.getFileName()) + "\n");
 		requestSummary.append("Date of File Generation Request: " + querySheetTO.getDateOfFileGenerationRequest() + "\n");
 		requestSummary.append("Test Administration: " + querySheetTO.getTestAdministration() + "\n");
 		requestSummary.append("Test Program: " + querySheetTO.getTestProgram() + "\n");
