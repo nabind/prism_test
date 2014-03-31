@@ -579,9 +579,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
+	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
-		try {
+		//try {
 			// if (ldapManager.deleteUser(userName, userName, userName)) {
 			// delete the security answers from pwd_hint_answers table
 			String Id = (String) paramMap.get("Id");
@@ -604,16 +604,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);
 
 			// delete user from LDAP
-			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
+			/*if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapManager.deleteUser(userName, userName, userName);
-			}
+			}*/
 			// } else {
 			// return false;
 			// }
-		} catch (Exception e) {
+		/*} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while deleting user details.", e);
 			throw new Exception(e);
-		}
+		}*/
 		return true;
 	}
 
