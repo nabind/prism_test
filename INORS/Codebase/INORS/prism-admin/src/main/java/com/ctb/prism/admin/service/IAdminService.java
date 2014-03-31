@@ -70,7 +70,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean deleteUser(Map<String, Object> paramMap) throws Exception;
+	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/;
 
 	/**
 	 * @param orgLevel

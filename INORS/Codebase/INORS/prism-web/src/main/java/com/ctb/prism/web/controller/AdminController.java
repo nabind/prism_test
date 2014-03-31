@@ -791,10 +791,11 @@ public class AdminController {
 	 * @param req
 	 * @param res
 	 * @return
+	 * @throws IOException 
 	 */
 
 	@RequestMapping(value="/deleteUser", method=RequestMethod.GET )
-	public ModelAndView deleteUser(HttpServletRequest req, HttpServletResponse res) {
+	public ModelAndView deleteUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - deleteUser");
 
@@ -822,6 +823,7 @@ public class AdminController {
 			logger.log(IAppLogger.INFO, "Exit: AdminController - deleteUser");
 
 		} catch (Exception e) {
+			res.getWriter().write( "{\"status\":\"Fail\"}" );
 			logger.log(IAppLogger.ERROR, "Error Saving File", e);
 		}
 		return null;

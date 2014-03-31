@@ -89,7 +89,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#deleteUser(java.util.Map)
 	 */
-	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
+	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		return adminDAO.deleteUser(paramMap);
 	}
 

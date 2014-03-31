@@ -80,7 +80,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * @see com.ctb.prism.admin.service.IAdminService#deleteUser(java.util.Map)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean deleteUser(Map<String, Object> paramMap) throws Exception {
+	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		return adminBusiness.deleteUser(paramMap);
 	}
 
