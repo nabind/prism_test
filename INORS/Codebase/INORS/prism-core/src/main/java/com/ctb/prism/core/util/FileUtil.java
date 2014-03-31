@@ -592,6 +592,9 @@ public class FileUtil {
 	public static String generateDefaultZipFileName(String currentUser, String groupFile) {
 		String zipFileName = "";
 		String userName = currentUser.replaceAll("[^a-zA-Z0-9 ._-]", "");
+		if (userName.length() > 10){
+			userName = userName.substring(0, 10);
+		}
 		// if(userName.indexOf("9rc^w") != -1) userName = userName.substring(0, userName.indexOf("9rc^w"));
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			zipFileName = CustomStringUtil.appendString(userName, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
