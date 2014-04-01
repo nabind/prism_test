@@ -474,17 +474,20 @@ public class ReportServiceImpl implements IReportService {
 					if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + req.getParameter("reportUrl")))) {
 						customReport = true;
 					} else {
-						while (jasperReport == null) {
-							Thread.sleep(2000);
-							//jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
+						int count = 0;
+						while (jasperReport == null && count < 10) {
+							count++;
+							Thread.sleep(500);
+							jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
 							/** session to cache **/
-							jasperReport = (JasperReport) 
+							/*jasperReport = (JasperReport) 
 								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
-									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
+									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);*/
 						}
 					}
 					// end patch
 
+					if(jasperReport != null)
 					if (getFullList) {
 						// for input control section
 						if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {

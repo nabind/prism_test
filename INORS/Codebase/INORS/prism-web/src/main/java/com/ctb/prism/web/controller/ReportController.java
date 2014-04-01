@@ -172,13 +172,11 @@ public class ReportController extends BaseDAO {
 
 			// get jasper report
 			List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
-			//req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
+			/*OPENED AGAIN*/req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
 			req.getSession().setAttribute("apiJasperReport" + reportUrl, getMainReport(jasperReports));
 			/** session to cache **/
-			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
-					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
-			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-					"apiJasperReport" + reportUrl, getMainReport(jasperReports));*/
+			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
+					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));*/
 			
 			// get jasper print object
 			// JasperPrint jasperPrint = getJasperPrintObject(reportUrl, filter, assessmentId, sessionParam, req, drilldown);
@@ -331,10 +329,10 @@ public class ReportController extends BaseDAO {
 
 			// get jasper report
 			List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
-			//req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
+			/*OPENED AGAIN*/req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
 			/** session to cache **/
-			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
+			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));*/
 
 			// get jasper print object
 			// JasperPrint jasperPrint = getJasperPrintObject(reportUrl, filter, assessmentId, sessionParam, req, drilldown);
@@ -1186,9 +1184,9 @@ public class ReportController extends BaseDAO {
 					(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
 
 			// get current JasperReport object
-			JasperReport jasperReport = (JasperReport) //req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
+			JasperReport jasperReport = (JasperReport) /* OPENED AGAIN*/req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
 			/** session to cache **/
-				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), CustomStringUtil.appendString(reportUrl, "_", assessmentId), null);
+			//	usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), CustomStringUtil.appendString(reportUrl, "_", assessmentId), null);
 			// get parameter values for report
 			// Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, true);
 			Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, true, req, reportUrl);
