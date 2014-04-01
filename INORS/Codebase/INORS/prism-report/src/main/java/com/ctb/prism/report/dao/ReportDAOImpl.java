@@ -1191,7 +1191,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		String customerId = to.getCustomerId();
 		String orgNodeLevel = to.getOrgNodeLevel();
-		if (testProgram == null) {
+		if (testProgram == null || testProgram.isEmpty()) {
+			logger.log(IAppLogger.ERROR, "testProgram cannot be null or empty: " + testProgram);
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 			return studentList;
 		}
