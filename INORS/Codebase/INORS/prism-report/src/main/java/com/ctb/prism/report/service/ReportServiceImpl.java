@@ -478,19 +478,19 @@ public class ReportServiceImpl implements IReportService {
 						while (jasperReport == null && count < 10) {
 							count++;
 							Thread.sleep(500);
-							jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
+							//jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
 							/** session to cache **/
-							/*jasperReport = (JasperReport) 
+							jasperReport = (JasperReport) 
 								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
-									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);*/
+									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
 						}
 					}
 					// end patch
 
-					if(jasperReport != null)
+					//if(jasperReport != null)
 					if (getFullList) {
 						// for input control section
-						if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {
+						if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType()) && jasperReport != null) {
 							if (!customReport) {
 								for (int i = 0; i < jasperReport.getParameters().length; i++) {
 									if (inputControlTO.getLabelId().equals(jasperReport.getParameters()[i].getName())) {
@@ -582,7 +582,7 @@ public class ReportServiceImpl implements IReportService {
 								parameters.put(inputControlTO.getLabelId(), inputCollection);
 							}
 							/***NEW***/
-						} else if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType())) {
+						} else if (IApplicationConstants.DATA_TYPE_TESTBOX.equals(inputControlTO.getType()) && jasperReport != null) {
 							if (!customReport) {
 								for (int i = 0; i < jasperReport.getParameters().length; i++) {
 									if (label.equals(jasperReport.getParameters()[i].getName())) {
