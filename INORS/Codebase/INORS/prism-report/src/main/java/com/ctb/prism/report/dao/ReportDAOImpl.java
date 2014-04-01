@@ -946,6 +946,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			int studentCount = students.split(",").length;
 			int classCount = classNames.split(",").length;
 			int schoolCount = gradeNames.split(",").length;
+			String button = to.getButton();
 
 			// logger.log(IAppLogger.INFO, "fileName: " + fileName);
 			// logger.log(IAppLogger.INFO, "students: " + students);
@@ -967,6 +968,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			querySheetTO.setSchoolCount(schoolCount);
 			querySheetTO.setSelectedStudents(students);
 			querySheetTO.setCustomerId(customerId);
+			querySheetTO.setButton(button);
 		}
 		return querySheetTO;
 	}
@@ -988,8 +990,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String orgNodeIds = getOrgNodeIds(corpDiocese, schools, klass);
 		String selectedStudents = querySheetTO.getSelectedStudents();
 		String customerId = querySheetTO.getCustomerId();
-		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId,
-				gradeId);
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId, gradeId);
 		Map<String, String> valueMap = new HashMap<String, String>();
 		if ((dataList != null) && (!dataList.isEmpty())) {
 			for (Map<String, Object> data : dataList) {
@@ -1001,6 +1002,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		querySheetTO.setCorpDiocese(valueMap.get(querySheetTO.getCorpDiocese()));
 		querySheetTO.setSchoolNames(valueMap.get(querySheetTO.getSchoolNames()));
 		querySheetTO.setGradeNames(valueMap.get("GRADE_NAME"));
+		
+		List<Map<String, Object>> selectionDataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', selectedStudents, IReportQuery.GET_STUDENT_SELECTION_STATISTICS));
+		String schoolCount = "";
+		String classCount = "";
+		if ((selectionDataList != null) && (!selectionDataList.isEmpty())) {
+			for (Map<String, Object> data : selectionDataList) {
+				schoolCount = ((BigDecimal) data.get("SCHOOLS")).toString();
+				classCount = ((BigDecimal) data.get("CLASSES")).toString();
+			}
+		}
+		String selectionString = querySheetTO.getStudentCount() + " Student(s) in " + classCount + " Class(es) in " + schoolCount + " School(s) have been selected.";
 
 		GroupDownloadTO gdTo = null;
 		String stateOrgNodeId = null;
@@ -1022,6 +1034,28 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		} else {
 			gradeNameList.add(getResult(CustomStringUtil.replaceCharacterInString('?', gradeId, IQueryConstants.GET_GRADE_NAME_BY_ID)));
 		}
+		
+		String fileTypeDescription = querySheetTO.getFileType();
+		if (fileTypeDescription == null) {
+			fileTypeDescription = "";
+		} else if (fileTypeDescription.equals("ISR")) {
+			fileTypeDescription = "Individual Student Report (ISR)";
+		} else if (fileTypeDescription.equals("IPR")) {
+			fileTypeDescription = "Image Print";
+		} else if (fileTypeDescription.equals("BOTH")) {
+			fileTypeDescription = "Both (ISR and Image Print)";
+		} else if (fileTypeDescription.equals("ICL")) {
+			fileTypeDescription = "Invitation Letter";
+		}
+		
+		String requestTypeDescription = querySheetTO.getButton();
+		if (requestTypeDescription == null) {
+			requestTypeDescription = "";
+		} else if (requestTypeDescription.equals("CP")) {
+			requestTypeDescription = "Combined PDF";
+		} else if (requestTypeDescription.equals("SP")) {
+			requestTypeDescription = "Seperate PDF";
+		}
 
 		StringBuilder requestSummary = new StringBuilder();
 		requestSummary.append("Generated File Name: " + FileUtil.getFileNameFromFilePath(querySheetTO.getFileName()) + "\n");
@@ -1032,9 +1066,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		requestSummary.append("School: " + querySheetTO.getSchoolNames() + "\n");
 		requestSummary.append("Grade: " + Utils.convertListToCommaString(gradeNameList) + "\n");
 		requestSummary.append("Class: " + Utils.convertListToCommaString(classNameList) + "\n\n\n");
-		requestSummary.append(querySheetTO.getStudentCount() + " Student(s) have been selected.\n\n\n");
-		requestSummary.append("File Type: " + querySheetTO.getFileType() + "\n");
-		requestSummary.append("Request Type: " + querySheetTO.getRequestType());
+		requestSummary.append(selectionString + "\n\n\n");
+		requestSummary.append("File Type: " + fileTypeDescription + "\n");
+		requestSummary.append("Request Type: " + /*querySheetTO.getRequestType()*/requestTypeDescription);
 		return requestSummary.toString();
 	}
 
@@ -1751,8 +1785,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> data : lstData) {
-				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss");
-				String extractStartdate = getFormattedDate((Timestamp) data.get("EXTRACT_STARTDATE"), "MM/dd/yyyy HH:mm:ss");
+				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss aa");
+				String extractStartdate = getFormattedDate((Timestamp) data.get("EXTRACT_STARTDATE"), "MM/dd/yyyy HH:mm:ss aa");
 				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
 				to.setExtractStartdate(extractStartdate);
 				to.setCreatedDateTime(createdDate);

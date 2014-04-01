@@ -4,6 +4,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
 
 public class QuerySheetTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
+	private String button;
 	private String jobId;
 	private String fileName;
 	private String dateOfFileGenerationRequest;
@@ -20,6 +21,21 @@ public class QuerySheetTO extends BaseTO {
 	private int schoolCount;
 	private String selectedStudents;
 	private String customerId;
+
+	/**
+	 * @return the button
+	 */
+	public String getButton() {
+		return button;
+	}
+
+	/**
+	 * @param button
+	 *            the button to set
+	 */
+	public void setButton(String button) {
+		this.button = button;
+	}
 
 	/**
 	 * @return the jobId
