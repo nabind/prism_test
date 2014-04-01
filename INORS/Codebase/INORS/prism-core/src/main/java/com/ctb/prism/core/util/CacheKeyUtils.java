@@ -33,6 +33,19 @@ public final class CacheKeyUtils {
         b.append("]");
         return b.toString();
     }
+    
+    public static String listKey(List<String> list) {
+    	if(list != null) {
+    		if(list.size() > 1) Collections.sort(list);
+    		StringBuilder sb = new StringBuilder();
+    		for(String str : list) {
+    			sb.append(str);
+    		}
+    		return sb.toString();
+    	} else {
+    		return "";
+    	}
+    }
 
     public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
         if (col == null) {
