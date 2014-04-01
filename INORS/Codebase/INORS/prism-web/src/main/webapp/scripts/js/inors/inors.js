@@ -785,7 +785,8 @@ function downloadBulkPdf(type, mode) {
 							if(obj.status == 'Success') {
 								$.modal.alert('Job deleted successfully.');
 								unblockUI();
-								deleteRowValues(row);//this method is present in manageUser.js
+								//deleteRowValues(row);//this method is present in manageUser.js
+								row.closest("tr").remove();
 							} else {
 								$.modal.alert('Error while deleting the file');
 								unblockUI();
