@@ -17,6 +17,10 @@ var chkTreeContainerObj;
 
 $(document).ready(function() {
 	
+	$(".download-instructions").live("click", function(event) {
+		$(".formError").trigger("click");
+	});
+	
 	$(".customRefresh").live("click", function(event) {
 		event.stopImmediatePropagation();
 		$(this).removeTooltip();

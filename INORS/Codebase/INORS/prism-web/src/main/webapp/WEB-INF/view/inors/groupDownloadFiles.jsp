@@ -5,7 +5,7 @@
 	does not support JavaScript! Some features won't work as expected...</noscript>
 
 <hgroup id="main-title" class="thin">
-<p class="big-message">This section includes files for the ISTEP+, IMAST and IREAD-3 Student Reports, and for ISTEP+ only the Image Prints and Invitation Code Letters. The File Type column in the section below will indicate IC when the file contains Invitation Code Letters. Other file types will be blank.
+<p class="big-message">This section includes files for the ISTEP+, IMAST and IREAD-3 Student Reports, and for ISTEP+ only the Image Prints and Invitation Code Letters.
 <br/><br/>If the Image Print document (Applied Skills) is not available for a student, please contact your School or Corporation Test Coordinator.<br/>If the ISR (Individual Student Report) is not available for a student, please contact the CTB/Indiana Help Desk.</p>
 <p class="red">
 	<span class="tag red-gradient">Please Note:</span> The length of time to create your file depends upon the volume of requests made by all INORS users. Thanks for your patience!
