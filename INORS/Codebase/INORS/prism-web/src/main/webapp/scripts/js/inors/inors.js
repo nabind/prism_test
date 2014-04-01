@@ -276,6 +276,18 @@ $(document).ready(function() {
 	$('[name="studentTableGD_length"]').change(function() {
 		refreshCheckBoxesFromTextBoxes();
 	});
+	
+	$(".sorting").live("click", function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+	
+	$(".sorting_asc").live("click", function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
+	
+	$(".sorting_desc").live("click", function() {
+		refreshCheckBoxesFromTextBoxes();
+	});
 
 	$('#groupDownload').validationEngine();
 	
