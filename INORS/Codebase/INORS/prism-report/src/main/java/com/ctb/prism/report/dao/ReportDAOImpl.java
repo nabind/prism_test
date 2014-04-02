@@ -236,7 +236,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report " + reportPath, e);
 				}
 				long end = System.currentTimeMillis();
-				System.out.println("<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
+				//System.out.println("<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
 				
 				logger.log(IAppLogger.INFO, "<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
 				logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");

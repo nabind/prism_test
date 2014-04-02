@@ -487,7 +487,7 @@ public class ReportServiceImpl implements IReportService {
 						}
 						
 						long end = System.currentTimeMillis();
-						System.out.println(" <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+						//System.out.println(" <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 						logger.log(IAppLogger.INFO, " <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 						
 					}

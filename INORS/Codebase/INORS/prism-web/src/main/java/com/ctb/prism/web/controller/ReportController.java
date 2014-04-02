@@ -538,9 +538,14 @@ public class ReportController extends BaseDAO {
 				req.getSession().removeAttribute(sessionParam);
 			} else {
 				// get default parameters for logged-in user
+				long start = System.currentTimeMillis();
 				Object reportFilterTO = reportService
 						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
 								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+				
+				long end = System.currentTimeMillis();
+			//	System.out.println("<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+				logger.log(IAppLogger.INFO, "<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
