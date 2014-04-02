@@ -415,8 +415,9 @@ public class GroupDownloadTO extends BaseTO {
 	
 	private String string;
 	public String getString() {
-		return CustomStringUtil.appendString(school, klass, grade, testProgram, 
+		this.string = CustomStringUtil.appendString(school, klass, grade, testProgram, 
 				testAdministrationVal, district, collationHierarchy, customerId, orgNodeLevel, groupFile);
+		return this.string;
 	}
 
 	public void setString(String string) {
