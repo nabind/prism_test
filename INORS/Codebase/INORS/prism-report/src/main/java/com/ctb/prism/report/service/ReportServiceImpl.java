@@ -474,6 +474,7 @@ public class ReportServiceImpl implements IReportService {
 					if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + req.getParameter("reportUrl")))) {
 						customReport = true;
 					} else {
+						long start = System.currentTimeMillis();
 						int count = 0;
 						while (jasperReport == null && count < 10) {
 							count++;
@@ -484,6 +485,11 @@ public class ReportServiceImpl implements IReportService {
 								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
 									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
 						}
+						
+						long end = System.currentTimeMillis();
+						System.out.println(" <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+						logger.log(IAppLogger.INFO, " <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+						
 					}
 					// end patch
 

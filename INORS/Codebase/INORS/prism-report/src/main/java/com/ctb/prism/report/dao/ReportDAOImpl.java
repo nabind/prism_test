@@ -201,8 +201,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
 
 		Object[] param = new String[] { reportPath };
+		
 		return getJdbcTemplate().query(IQueryConstants.GET_JASPER_REPORT_OBJECT, param, new RowMapper<ReportTO>() {
 			public ReportTO mapRow(ResultSet rs, int col) throws SQLException {
+				long start = System.currentTimeMillis();
 				ReportTO reportTo = null;
 				JasperReport jasperReport = null;
 				reportTo = new ReportTO();
@@ -233,6 +235,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					}
 					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report " + reportPath, e);
 				}
+				long end = System.currentTimeMillis();
+				System.out.println("<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
+				
+				logger.log(IAppLogger.INFO, "<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
 				logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");
 				return reportTo;
 			}
@@ -1227,6 +1233,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		String customerId = to.getCustomerId();
 		String orgNodeLevel = to.getOrgNodeLevel();
+		String prodId = to.getTestAdministrationVal();
+		String custProdId = getCustProdId(customerId, prodId);
 		if (testProgram == null || testProgram.isEmpty()) {
 			logger.log(IAppLogger.ERROR, "testProgram cannot be null or empty: " + testProgram);
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
@@ -1253,7 +1261,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String orderBy = "";
 		if (collationHierarchy != null) {
 			if ("11".equals(collationHierarchy)) {
-				orderBy = "ORDER BY CLASS.ORG_NODE_NAME, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
+				//orderBy = "ORDER BY CLASS.ORG_NODE_NAME, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
+				orderBy = "ORDER BY 2, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
 			} else if ("12".equals(collationHierarchy)) {
 				orderBy = "ORDER BY SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
 			}
@@ -1265,31 +1274,31 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				logger.log(IAppLogger.INFO, "ALL Classes");
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES);
-					// List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
-					// String grades = Utils.convertListToCommaString(gradeList);
-					// query = CustomStringUtil.replaceCharacterInString('$', classes, query);
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES); 
+					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					String grades = Utils.convertListToCommaString(gradeList);
+					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, testAdministrationVal, orgMode, schoolId, customerId, testAdministrationVal, orgNodeLevel, schoolId, orgNodeLevel, schoolId });//
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, orgMode, custProdId });//
 				} else {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD);
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId, gradeId });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, orgMode, custProdId });
 				}
 			}
 		} else {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
 				if ("-1".equals(gradeId)) {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD_ALL_GRADES);
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD_ALL_GRADES); 
 					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
 					String grades = Utils.convertListToCommaString(gradeList);
 					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, classId });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, custProdId, orgMode, custProdId  });
 				} else {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD);
+					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { orgMode, classId, gradeId });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, gradeId, custProdId, orgMode, custProdId });
 				}
 			}
 		}
@@ -1897,4 +1906,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return parentOrgNodeId;
 	}
 
+	public String getCustProdId(String custId, String prodId) {
+		String custProdId = "-1";
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT CUST_PROD_ID  FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ? AND PRODUCTID = ?", custId, prodId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				custProdId = fieldDetails.get("CUST_PROD_ID").toString();
+			}
+		}
+		return custProdId;
+	}
+	
 }

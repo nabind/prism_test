@@ -205,7 +205,7 @@ public interface IReportQuery {
 			" ASS.MENU_NAME MENU_NAME,RE.DB_REPORTID REPORT_ID, ",
 			" REPORT_NAME, REPORT_FOLDER_URI, RE.ACTIVATION_STATUS STATUS, SF_GET_LIST_OF_ROLES(RE.DB_REPORTID) ROLES, ", 
 			" REPORT_TYPE TYPE, ASS.MENU_SEQ, acc.report_seq, acc.org_level ORGLEVEL ",
-			" FROM DASH_REPORTS RE, dash_menus ASS, dash_menu_rpt_access acc, CUST_PRODUCT_LINK LINK ", 
+			" FROM DASH_REPORTS RE, dash_menus ASS, dash_menu_rpt_access acc ", 
 			" WHERE RE.REPORT_TYPE LIKE (?) ",
 			" and ass.db_menuid = acc.db_menuid ",
 			" and acc.db_reportid = re.db_reportid ",
