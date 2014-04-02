@@ -1204,6 +1204,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getTestAdministrations()
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getTestAdministrations' )")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations() {
 		return getJdbcTemplatePrism().query(IQueryConstants.GET_TEST_ADMINISTRATIONS_GD, new ObjectValueTOMapper());
 	}
@@ -1213,6 +1214,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#to.string).concat('populateStudentTableGD') )")
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
@@ -1335,6 +1337,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return studentList;
 	}
 
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, 'getAllGrades' )")
 	private List<String> getAllGrades(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
 		List<String> grades = new ArrayList<String>();
 		grades.add("-1");
@@ -1348,6 +1351,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAllClassesForAllGrades' )")
 	private List<String> getAllClassesForAllGrades(String productId, String orgMode, String schoolId, String customerId, String orgNodeLevel) {
 		List<String> classes = new ArrayList<String>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_CLASSES_FOR_ALL_GRADES, productId, orgMode, schoolId, customerId, productId, orgNodeLevel, schoolId, orgNodeLevel, schoolId);
@@ -1360,6 +1364,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return classes;
 	}
 
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, 'getAllGradeNames' )")
 	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
 		List<String> grades = new ArrayList<String>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
@@ -1374,6 +1379,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getSelectedClassNames' )")
 	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds, String customerId) {
 		List<String> classes = new ArrayList<String>();
 		// List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), stateOrgNodeId, customerId);
@@ -1539,6 +1545,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getICLetterPaths' )")
 	private Map<String, String> getICLetterPaths(String students) {
 		Map<String, String> icPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -1569,6 +1576,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getISRPaths' )")
 	private Map<String, String> getISRPaths(String students) {
 		Map<String, String> isrPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -1599,6 +1607,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getIPPaths' )")
 	private Map<String, String> getIPPaths(String students) {
 		Map<String, String> iprPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -1628,6 +1637,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param students
 	 * @return
 	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getBothPaths' )")
 	private Map<String, String> getBothPaths(String students) {
 		Map<String, String> bothPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -1663,6 +1673,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param query
 	 * @return
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getResult' )")
 	private String getResult(String query) {
 		logger.log(IAppLogger.DEBUG, "Enter: getResult()");
 		logger.log(IAppLogger.DEBUG, query);
@@ -1731,6 +1742,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getReportMessage(java.util.Map)
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getReportMessage') )")
 	public String getReportMessage(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
 		String reportId = (String) paramMap.get("REPORT_ID");
@@ -1750,6 +1762,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return message;
 	}
 	
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportMessages') )")
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
 		List<ReportMessageTO> reportMessageList = new ArrayList<ReportMessageTO>();
@@ -1779,6 +1792,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getProcessDataGD(java.lang.String)
 	 */
+	//@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProcessDataGD' )")
 	public JobTrackingTO getProcessDataGD(String processId) {
 		logger.log(IAppLogger.INFO, "Enter: getProcessDataGD()");
 		JobTrackingTO to = new JobTrackingTO();
@@ -1806,6 +1820,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getConventionalFileNameGD(java.lang.Long)
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getConventionalFileNameGD' )")
 	public String getConventionalFileNameGD(Long orgNodeId) {
 		logger.log(IAppLogger.INFO, "Enter: getConventionalFileNameGD()");
 		String conventionalFileName = null;
@@ -1826,6 +1841,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param ancestorLevel
 	 * @return
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getAncestorOrgNodeId' )")
 	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel) {
 		String ancestorOrgNodeId = "-1";
 		if (orgNodeId == null) {
@@ -1846,6 +1862,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getOrgNodeIdPath' )")
 	public String getOrgNodeIdPath(String orgNodeId) {
 		if (orgNodeId == null) {
 			return "0";
@@ -1868,6 +1885,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getParentOrgNodeId' )")
 	public String getParentOrgNodeId(String orgNodeId) {
 		String parentOrgNodeId = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);

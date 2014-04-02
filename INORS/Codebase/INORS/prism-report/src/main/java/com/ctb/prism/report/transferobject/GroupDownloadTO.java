@@ -4,6 +4,7 @@
 package com.ctb.prism.report.transferobject;
 
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.util.CustomStringUtil;
 
 /**
  * @author 796763
@@ -411,6 +412,16 @@ public class GroupDownloadTO extends BaseTO {
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
+	
+	private String string;
+	public String getString() {
+		return CustomStringUtil.appendString(school, klass, grade, testProgram, 
+				testAdministrationVal, district, collationHierarchy, customerId, orgNodeLevel, groupFile);
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
 
 	@Override
 	public String toString() {
@@ -456,4 +467,5 @@ public class GroupDownloadTO extends BaseTO {
 		buf.append(email);
 		return buf.toString();
 	}
+
 }

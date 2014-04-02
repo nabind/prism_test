@@ -391,13 +391,15 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	private void notificationMailGD(String email, String fileName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
+			String file = fileName;
+			if(file != null && file.lastIndexOf(File.separator) != -1) file = file.substring(file.lastIndexOf(File.separator)+1);
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
 			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
 			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
 			String subject = propertyLookup.get("mail.gd.subject");
-			String mailBody = CustomStringUtil.appendString(fileName, ".zip ", propertyLookup.get("mail.gd.body"));
+			String mailBody = CustomStringUtil.appendString(file, propertyLookup.get("mail.gd.body"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
 			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
