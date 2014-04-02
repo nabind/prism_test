@@ -1906,6 +1906,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return parentOrgNodeId;
 	}
 
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getCustProdId' )")
 	public String getCustProdId(String custId, String prodId) {
 		String custProdId = "-1";
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT CUST_PROD_ID  FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ? AND PRODUCTID = ?", custId, prodId);
