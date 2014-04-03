@@ -19,7 +19,7 @@
 			<c:if test="${reportMessage.displayFlag=='Y'}">
 				<c:if test="${reportMessage.messageType=='DM'}">
 					<div class="big-message">
-						<span class="big-message-icon icon-warning with-text color" style="margin-top: -15px;">Important</span>
+						<%-- <span class="big-message-icon icon-warning with-text color" style="margin-top: -15px;">Important</span> --%>
 						<%-- <strong>${ reportMessage.messageName }</strong><br> --%>
 						${ reportMessage.message }
 					</div>
