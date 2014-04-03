@@ -65,6 +65,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.ctb.prism.core.util.CustomStringUtil;
+
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
@@ -99,6 +101,7 @@ public class CustomReportServlet extends AbstractServlet
 		HttpServletResponse response
 		) throws IOException, ServletException
 	{
+		long start = System.currentTimeMillis();
 		response.setContentType("text/html; charset=UTF-8");
 		
 		// Set to expire far in the past.
@@ -125,6 +128,8 @@ public class CustomReportServlet extends AbstractServlet
 			{
 				runReport(request, webReportContext);
 				render1(request, webReportContext, out);
+				long end = System.currentTimeMillis();
+				//System.out.println(" <<<< Time Taken: CustomReportServlet >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 			}
 		}
 		catch (JRInteractiveException e) 

@@ -1036,7 +1036,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		List<String> gradeNameList = new ArrayList<String>();
 		if ("-1".equals(gradeId)) {
-			gradeNameList = getAllGradeNames(stateOrgNodeId, gdTo.getTestAdministrationVal(), corpDiocese, schools, gdTo.getGroupFile(), gdTo.getTestProgram());
+			gradeNameList = getAllGradeNames(stateOrgNodeId, gdTo.getTestAdministrationVal(), corpDiocese, schools, gdTo.getGroupFile(), gdTo.getTestProgram(),customerId);
 		} else {
 			gradeNameList.add(getResult(CustomStringUtil.replaceCharacterInString('?', gradeId, IQueryConstants.GET_GRADE_NAME_BY_ID)));
 		}
@@ -1275,30 +1275,32 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES); 
-					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram,customerId);
 					String grades = Utils.convertListToCommaString(gradeList);
 					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, testProgram, custProdId });//
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, testProgram });//
 				} else {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, gradeId, custProdId, testProgram, custProdId });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, gradeId, custProdId, testProgram});
 				}
 			}
 		} else {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
 				if ("-1".equals(gradeId)) {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD_ALL_GRADES); 
-					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram);
+					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram, customerId);
 					String grades = Utils.convertListToCommaString(gradeList);
 					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, custProdId, testProgram, custProdId  });
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, custProdId, testProgram});
 				} else {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, gradeId, custProdId, testProgram, custProdId });
+				//	System.out.println("<<query>> "+ query);
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, gradeId, custProdId, testProgram });
+				//	System.out.println("<<datlist>> custProdId: "+custProdId + " classId:" + classId+ " gradeId:"+gradeId+ " testProgram:" + testProgram );
 				}
 			}
 		}
@@ -1346,11 +1348,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return studentList;
 	}
 
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, 'getAllGrades' )")
-	private List<String> getAllGrades(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGrades' )")
+	private List<String> getAllGrades(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId) {
 		List<String> grades = new ArrayList<String>();
 		grades.add("-1");
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_GRADES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_GRADES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram, customerId,"SCHOOL_OTH");
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				grades.add((String) fieldDetails.get("GRADEID"));
@@ -1373,11 +1375,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return classes;
 	}
 
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, 'getAllGradeNames' )")
-	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGradeNames' )")
+	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId) {
 		List<String> grades = new ArrayList<String>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
-				.queryForList(IQueryConstants.GET_ALL_GRADE_NAMES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram);
+				.queryForList(IQueryConstants.GET_ALL_GRADE_NAMES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram, customerId, "SCHOOL_OTH");
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				grades.add((String) fieldDetails.get("GRADE_NAME"));

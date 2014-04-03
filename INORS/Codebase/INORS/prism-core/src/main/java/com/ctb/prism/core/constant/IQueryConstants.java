@@ -943,7 +943,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND SBD.GRADEID = ? ",
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
-			" AND IC.CUST_PROD_ID = ? ",
+			//" AND IC.CUST_PROD_ID = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_ISR.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_IP.STUDENT_BIO_ID(+) ",
@@ -995,7 +995,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	" AND SBD.GRADEID IN ($) ",
 	" AND SBD.CUST_PROD_ID = ? ",
 	" AND ISPUBLIC = ? ",
-	" AND IC.CUST_PROD_ID = ? ",
+	//" AND IC.CUST_PROD_ID = ? ",
 	" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
 	" AND SBD.STUDENT_BIO_ID = SPF_ISR.STUDENT_BIO_ID(+)",
 	" AND SBD.STUDENT_BIO_ID = SPF_IP.STUDENT_BIO_ID(+) ",
@@ -1047,7 +1047,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND SBD.GRADEID = ? ",
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
-			" AND IC.CUST_PROD_ID = ? ",
+			//" AND IC.CUST_PROD_ID = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_ISR.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_IP.STUDENT_BIO_ID(+) ",
@@ -1138,14 +1138,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND SBD.GRADEID IN ($) ",
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
-			" AND IC.CUST_PROD_ID = ? ",
+			//" AND IC.CUST_PROD_ID = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_ISR.STUDENT_BIO_ID(+)",
 			" AND SBD.STUDENT_BIO_ID = SPF_IP.STUDENT_BIO_ID(+) ",
 			" #"
 			);
-	public static final String GET_ALL_GRADES = "SELECT VC1 AS GRADEID FROM TABLE (SELECT SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, 'SCHOOL_OTH') FROM DUAL)";
-	public static final String GET_ALL_GRADE_NAMES = "SELECT VC2 AS GRADE_NAME FROM TABLE(SELECT  SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, 'SCHOOL_OTH') FROM DUAL) WHERE VC1 != -1 ORDER BY 1";
+	public static final String GET_ALL_GRADES = "SELECT VC1 AS GRADEID FROM TABLE (SELECT SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL)";
+	public static final String GET_ALL_GRADE_NAMES = "SELECT VC2 AS GRADE_NAME FROM TABLE(SELECT  SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL) WHERE VC1 != -1 ORDER BY 1";
 	public static final String GET_SELECTED_CLASS_NAMES = CustomStringUtil.appendString(
 			/*"SELECT ALL_ORGS.ORG_NODE_NAME FROM",
 			" (SELECT VC1 AS ORG_NODEID,  VC2 AS ORG_NODE_NAME FROM",
