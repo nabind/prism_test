@@ -1044,7 +1044,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE PDF_REPORTID IN (SELECT DISTINCT PDF_REPORTID ",
 			" FROM PDF_REPORTS WHERE REPORT_NAME = 'IP' AND cust_prod_id = ?)) SPF_IP ",
 			"  WHERE SBD.ORG_NODEID IN (SELECT VC1 AS ORG_NODEID FROM TABLE(SELECT SF_GET_CLASS(?, ?, ?, ?, ?, ?, ?, 'ADD_ALL') FROM DUAL))",
-			" AND SBD.GRADEID IN ($) ",
+			" AND SBD.GRADEID = ? ",
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
 			" AND IC.CUST_PROD_ID = ? ",
