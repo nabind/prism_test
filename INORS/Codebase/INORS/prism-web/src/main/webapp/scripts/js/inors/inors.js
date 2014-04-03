@@ -292,6 +292,14 @@ $(document).ready(function() {
 	$(".sorting_desc").live("click", function() {
 		refreshCheckBoxesFromTextBoxes();
 	});
+	
+	//Fix for TD 77880 - By Joy
+	$('#studentTableGD_filter input[type="text"]').live("keydown", function() {
+		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
+		$('#checkAllVal').val("0");
+		setAllTextBoxValues("0");
+		refreshCheckBoxesFromTextBoxes();
+	});
 
 	$('#groupDownload').validationEngine();
 	
