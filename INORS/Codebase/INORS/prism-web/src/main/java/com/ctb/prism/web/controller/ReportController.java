@@ -636,8 +636,9 @@ public class ReportController extends BaseDAO {
 	 * @throws Exception
 	 */
 	private List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception {
+		return reportService.getJasperReportObject(reportUrl);
 		// Connection conn = null;
-		JasperReport jasperReport = null;
+		/*JasperReport jasperReport = null;
 		List<ReportTO> reportList = null;
 		try {
 			// get compiled jasper report
@@ -676,7 +677,7 @@ public class ReportController extends BaseDAO {
 			// if(conn != null) try {conn.close();} catch (SQLException e) {}
 			logger.log(IAppLogger.INFO, "Exit: ReportController - reportList");
 		}
-		return reportList;
+		return reportList;*/
 	}
 
 	/**
@@ -687,7 +688,8 @@ public class ReportController extends BaseDAO {
 	 * @throws Exception
 	 */
 	private JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception {
-		JasperReport jasperReport = null;
+		return reportService.getMainReport(jasperReportList);
+		/*JasperReport jasperReport = null;
 		boolean mainReportPresent = false;
 		if (jasperReportList != null && !jasperReportList.isEmpty()) {
 			for (ReportTO reportTo : jasperReportList) {
@@ -705,7 +707,7 @@ public class ReportController extends BaseDAO {
 			// report empty
 			throw new Exception("Report not found");
 		}
-		return jasperReport;
+		return jasperReport;*/
 	}
 
 	/**

@@ -1220,7 +1220,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#populateStudentTableGD(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#to.string).concat('populateStudentTableGD') )")
+	//@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#to.string).concat('populateStudentTableGD') )")
 	public List<GroupDownloadStudentTO> populateStudentTableGD(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();

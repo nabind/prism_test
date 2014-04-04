@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.dao.DataAccessException;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -281,5 +283,8 @@ public interface IReportService {
 	
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException;
+	
+	public List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception;
+	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception;
 
 }

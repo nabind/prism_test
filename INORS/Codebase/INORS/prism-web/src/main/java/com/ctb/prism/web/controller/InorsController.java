@@ -411,7 +411,7 @@ public class InorsController {
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String assessmentId = request.getParameter("assessmentId");
-		Map<String, Object> inputControls = (Map<String, Object>) request.getSession().getAttribute("inputControls");
+		Map<String, Object> inputControls = (Map<String, Object>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
 		String customerId=(String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 
@@ -484,6 +484,18 @@ public class InorsController {
 				groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
 				collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
 			}
+		} else {
+			/****NEW***/
+			Map<String, String[]> sessionParams = (Map<String, String[]>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
+			if(sessionParams == null) sessionParams = new HashMap<String, String[]>();
+			Iterator itr = request.getParameterMap().entrySet().iterator();
+			while (itr.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) itr.next();
+				request.getSession().setAttribute("_REMEMBER_ME_" + mapEntry.getKey(), mapEntry.getValue());
+				sessionParams.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+			}
+			request.getSession().setAttribute("_REMEMBER_ME_ALL_", sessionParams);
+			/****NEW***/
 		}
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);

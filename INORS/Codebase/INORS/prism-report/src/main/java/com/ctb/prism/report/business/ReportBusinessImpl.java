@@ -197,9 +197,21 @@ public class ReportBusinessImpl implements IReportBusiness {
 									}
 								}
 								if (matched) {
-									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+									if("p_generate_file".equals((String) pairs.getKey())) {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));
+									} else {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+									}
+									//query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
 								} else {
-									query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+									if("p_generate_file".equals((String) pairs.getKey())) {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));
+									} else {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+									}
+									//query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
 								}
 							}
 						} catch (Exception e) {

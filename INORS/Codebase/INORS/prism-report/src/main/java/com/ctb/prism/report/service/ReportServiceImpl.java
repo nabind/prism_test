@@ -684,7 +684,7 @@ public class ReportServiceImpl implements IReportService {
 	 * @throws JRException
 	 * @throws Exception
 	 */
-	private List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception {
+	public List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception {
 		// Connection conn = null;
 		JasperReport jasperReport = null;
 		List<ReportTO> reportList = null;
@@ -735,7 +735,7 @@ public class ReportServiceImpl implements IReportService {
 	 * @return
 	 * @throws Exception
 	 */
-	private JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception {
+	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception {
 		JasperReport jasperReport = null;
 		boolean mainReportPresent = false;
 		if (jasperReportList != null && !jasperReportList.isEmpty()) {
