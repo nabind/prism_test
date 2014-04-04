@@ -538,13 +538,13 @@ public class ReportController extends BaseDAO {
 				req.getSession().removeAttribute(sessionParam);
 			} else {
 				// get default parameters for logged-in user
-				long start = System.currentTimeMillis();
+				//long start = System.currentTimeMillis();
 				Object reportFilterTO = reportService
 						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
 								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
 				
-				long end = System.currentTimeMillis();
-			//	System.out.println("<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+				//long end = System.currentTimeMillis();
+			//	//System.out.println("<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 				logger.log(IAppLogger.INFO, "<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 
 				// get parameter values for report
@@ -875,9 +875,12 @@ public class ReportController extends BaseDAO {
 	 */
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl) {
-		
+		//long start = System.currentTimeMillis();
 		String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
-		return reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg, req.getParameterMap());
+		Map<String, Object> param =  reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg, req.getParameterMap());
+		//long end1 = System.currentTimeMillis();
+		//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start)+" <<<< Time Taken: getReportParameter >>>> ");
+		return param;
 		/*Class<?> c = reportFilterFactory.getReportFilterTO();
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		try {
@@ -1345,6 +1348,7 @@ public class ReportController extends BaseDAO {
 	@RequestMapping(value = "/checkCascading", method = RequestMethod.GET)
 	public @ResponseBody
 	String checkCascading(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		//long start = System.currentTimeMillis();
 		try {
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
@@ -1397,8 +1401,8 @@ public class ReportController extends BaseDAO {
 			 */
 			/** END : PATCH FOR STUDENT ROSTER */
 			/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
-			String[] defaultValues = null;
-			boolean checkDefault = false;
+			//String[] defaultValues = null;
+			//boolean checkDefault = false;
 			List<String> defaultInputNames = new ArrayList<String>();
 			Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
 			/* commenting as this is not needed for inors
@@ -1451,9 +1455,12 @@ public class ReportController extends BaseDAO {
 			}
 
 			// get list of cascading input controls
+			//long start1 = System.currentTimeMillis();
 			List<InputControlTO> allCascading = getCascadingInputControls(allInputControls, changedObj);
 			List<ObjectValueTO> objectValueList = recurrsiveCascading(reportUrl, allInputControls, allCascading, new ArrayList<ObjectValueTO>(), currentUser, changedObj, changedValue,
 					replacableParams, tabCount, reportFilterTO, defaultInputValues, defaultInputNames, req);
+			//long end1 = System.currentTimeMillis();
+			//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start1)+" <<<< Time Taken: recurrsiveCascading  >>>> " );
 			String jsonStr = JsonUtil.convertToJson(objectValueList);
 			jsonStr = CustomStringUtil.appendString("[", jsonStr.replace("\"", "\\\""), "]");
 			// return json string to page
@@ -1471,6 +1478,9 @@ public class ReportController extends BaseDAO {
 			}
 			// res.getWriter().write( "{\"status\":\""+status+"\", \"target\":\""+optionName+"\", \"inputDom\":\""+optionValue+"\"}" );
 			res.getWriter().write("{\"status\":\"" + status + "\", \"dom\":\"" + jsonStr + "\"}");
+			
+			//long end = System.currentTimeMillis();
+			//System.out.println(CustomStringUtil.getHMSTimeFormat(end - start)+" <<<< Time Taken: Cascading >>>> " + changedObj );
 		} catch (SystemException e) {
 			res.getWriter().write("{\"status\":\"Fail\"}");
 			e.printStackTrace();
@@ -1556,6 +1566,8 @@ public class ReportController extends BaseDAO {
 				 * List<InputControlTO> tempInputLists = getCascadingInputControls(allInputControls, inputControlTO.getLabelId()); if(tempInputLists != null) { if(reCascadingInputControls == null)
 				 * reCascadingInputControls = new ArrayList<InputControlTO>(); for(InputControlTO ic : tempInputLists) { reCascadingInputControls.add(ic); } }
 				 */
+				/** INORS ONLY : for inors only one i/p control is dependent with other **/
+				break;
 			}
 
 			// call self if other dependency present

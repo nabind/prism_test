@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -404,7 +405,10 @@ public class ReportServiceImpl implements IReportService {
 			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg, Map<String, String[]> param) {
+		//long start = System.currentTimeMillis();
 		Class<?> c = reportFilterFactory.getReportFilterTO();
+		//long end1 = System.currentTimeMillis();
+		//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start)+" <<<< Time Taken: no cache getReportParameter - report filter >>>> ");
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		try {
 			String loggedInUserJasperOrgId = (String) c.getMethod("getLoggedInUserJasperOrgId").invoke(reportFilterTO);
@@ -425,10 +429,12 @@ public class ReportServiceImpl implements IReportService {
 					/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 					// get default list for multiselect subtest
 					// this code is a path for subtest to meet business requirement to show default subtest list
-					String[] defaultValues = null;
+					/** COMMENTING AS this is not needed for inors */
+					/*String[] defaultValues = null;
 					boolean checkDefault = false;
 					List<String> defaultInputNames = new ArrayList<String>();
-					Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
+					Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();*/
+					/*
 					try {
 						for (IApplicationConstants.PATCH_FOR_SUBTEST subtest : IApplicationConstants.PATCH_FOR_SUBTEST.values()) {
 							if (subtest.name().equals(inputControlTO.getLabelId())) {
@@ -450,14 +456,14 @@ public class ReportServiceImpl implements IReportService {
 						}
 					} catch (Exception e) {
 						logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured for subtest multiselect : ", e.getMessage()));
-					}
+					}*/
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
 					/***NEW***/
 					String[] valueFromSession = getFromSession(req, label);
 					/***NEW***/
 					
-					Map<String, Object> sessionParameters = null;
+					/*Map<String, Object> sessionParameters = null;
 					if (req != null)
 						sessionParameters = (Map<String, Object>) req.getSession().getAttribute("inputControls");
 					if (sessionParameters == null) {
@@ -467,32 +473,44 @@ public class ReportServiceImpl implements IReportService {
 					boolean sessionArray = false;
 					if (sessionParameters.get(label) instanceof List<?>) {
 						sessionArray = true;
-					}
+					}*/
 
 					// patch for input control blank for text type i/p controls
 					boolean customReport = false;
 					if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + req.getParameter("reportUrl")))) {
 						customReport = true;
 					} else {
-						long start = System.currentTimeMillis();
-						int count = 0;
-						while (jasperReport == null && count < 10) {
+						//long start2 = System.currentTimeMillis();
+						/*int count = 0;
+						while (jasperReport == null && count < 25) {
 							count++;
-							Thread.sleep(500);
+							Thread.sleep(100);
 							//jasperReport = (JasperReport) req.getSession().getAttribute(CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")));
-							/** session to cache **/
+							*//** session to cache **//*
 							jasperReport = (JasperReport) 
 								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
 									CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
-						}
+						}*/
 						
-						long end = System.currentTimeMillis();
-						//System.out.println(" <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
-						logger.log(IAppLogger.INFO, " <<<< Time Taken: ReportServiceImpl >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+						if(jasperReport == null) {
+							jasperReport = (JasperReport) 
+								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
+										CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
+						}
+						//long end2 = System.currentTimeMillis();
+						//System.out.println(CustomStringUtil.getHMSTimeFormat(end2 - start2)+" <<<< Time Taken: no cache getReportParameter:get report from cache >>>> " );
+						//long start3 = System.currentTimeMillis();
+						
+						if(jasperReport == null) {
+							jasperReport = getMainReport(getJasperReportObject(reportUrl));
+						}
+						//long end3 = System.currentTimeMillis();
+						//System.out.println(CustomStringUtil.getHMSTimeFormat(end3 - start3)+" <<<< Time Taken: no cache getReportParameter:get report from table >>>> " );
 						
 					}
 					// end patch
 
+					//long start2 = System.currentTimeMillis();
 					//if(jasperReport != null)
 					if (getFullList) {
 						// for input control section
@@ -505,15 +523,15 @@ public class ReportServiceImpl implements IReportService {
 												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
 											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
 										}
-										// parameters.put(inputControlTO.getLabelId(), value);
-										parameters.put(label, (sessionParameters.get(label) != null) ? sessionParameters.get(label) : value);
+										parameters.put(label, value);
+										//parameters.put(label, (sessionParameters.get(label) != null) ? sessionParameters.get(label) : value);
 										break;
 									}
 								}
 							}
 						} else {
 							parameters.put(inputControlTO.getLabelId(), listOfValues);
-							if (sessionParameters.get(label) != null) {
+							/*if (sessionParameters.get(label) != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
 								List<String> selectInputNames = new ArrayList<String>();
 								if (sessionParameters.get(label) instanceof String) {
@@ -524,7 +542,7 @@ public class ReportServiceImpl implements IReportService {
 								selectInputNames.add(label);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
-							}
+							}*/
 							/***NEW***/
 							if(valueFromSession != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
@@ -535,12 +553,12 @@ public class ReportServiceImpl implements IReportService {
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
 							}
 							/***NEW***/
-							if (!checkDefault) {
+							/*if (!checkDefault) {
 								parameters.put(inputControlTO.getLabelId(), listOfValues);
-							} else {
+							} else {*/
 								parameters.put(inputControlTO.getLabelId(), listOfValues);
-								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
-								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
+								//parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
+								//parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
 
 								/*
 								 * // list need to be modified based on default value List<ObjectValueTO> inputCollection = new ArrayList<ObjectValueTO>(); for(ObjectValueTO objectValue :
@@ -549,7 +567,7 @@ public class ReportServiceImpl implements IReportService {
 								 * parameters.put(IApplicationConstants.CHECK_DEFAULT, defaultValues); parameters.put(IApplicationConstants.CHECK_DEFAULT_NAME, defaultInputNames); }
 								 * parameters.put(inputControlTO.getLabelId(), inputCollection);
 								 */
-							}
+							/*}*/
 						}
 					} else {
 						// fetch i/p for default values
@@ -557,14 +575,14 @@ public class ReportServiceImpl implements IReportService {
 							// passing array
 							List<String> inputCollection = new ArrayList<String>();
 							for (ObjectValueTO objectValue : listOfValues) {
-								if (!checkDefault) {
+								/*if (!checkDefault) {
 									inputCollection.add(objectValue.getValue());
 									if (IApplicationConstants.EXTENDED_YEAR.equals(inputControlTO.getLabelId())) {
 										break;
 									}
-								} else {
+								} else {*/
 									// this field has default values - need to pass values that belongs to this default list
-									if (defaultValues != null) {
+									/*if (defaultValues != null) {
 										for (String currentVal : defaultValues) {
 											if (objectValue.getValue().equals(currentVal)) {
 												inputCollection.add(objectValue.getValue());
@@ -572,15 +590,15 @@ public class ReportServiceImpl implements IReportService {
 										}
 										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
 										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
-									} else {
+									} else {*/
 										inputCollection.add(objectValue.getValue());
-									}
-								}
+									/*}*/
+								/*}*/
 							}
-							// parameters.put(inputControlTO.getLabelId(), inputCollection);
-							parameters.put(label,
+							 parameters.put(label, inputCollection);
+							/*parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
-											: inputCollection);
+											: inputCollection);*/
 							/***NEW***/
 							if(valueFromSession != null) {
 								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
@@ -598,16 +616,16 @@ public class ReportServiceImpl implements IReportService {
 												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
 											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
 										}
-										// parameters.put(inputControlTO.getLabelId(), value);
-										parameters.put(label, (sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0])
-												: sessionParameters.get(label)) : value);
+										 parameters.put(label, value);
+										/*parameters.put(label, (sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0])
+												: sessionParameters.get(label)) : value);*/
 										break;
 									}
 								}
 							}
 						} else {
 							String value = "";
-							if (listOfValues != null && listOfValues.size() > 0) {
+							/*if (listOfValues != null && listOfValues.size() > 0) {
 								if ("Form/Level".equals(inputControlTO.getLabel()) || "Level".equals(inputControlTO.getLabel()) || "Days".equals(inputControlTO.getLabel())) {
 									for (ObjectValueTO objectValue : listOfValues) {
 										if (objectValue.getName() != null && objectValue.getName().indexOf("Default") != -1) {
@@ -618,15 +636,15 @@ public class ReportServiceImpl implements IReportService {
 								} else {
 									value = listOfValues.get(0).getValue();
 								}
-							}
+							}*/
 							// fallback code
 							if ((value == null || value.length() == 0) && listOfValues != null && listOfValues.size() > 0) {
 								value = listOfValues.get(0).getValue();
 							}
-							// parameters.put(inputControlTO.getLabelId(), value);
-							parameters.put(label,
+							parameters.put(label, value);
+							/*parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
-											: value);
+											: value);*/
 							/***NEW***/
 							if(valueFromSession != null && valueFromSession.length > 0) {
 								boolean objExists = false;
@@ -644,13 +662,99 @@ public class ReportServiceImpl implements IReportService {
 							/***NEW***/
 						}
 					}
+					//long end2 = System.currentTimeMillis();
+					//System.out.println(CustomStringUtil.getHMSTimeFormat(end2 - start2)+" <<<< Time Taken: no cache getReportParameter:get-list "+getFullList+" - report filter >>>> ");
 				}
 			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured : ", e.getMessage()));
 			e.printStackTrace();
 		}
+		//long end = System.currentTimeMillis();
+		//System.out.println(CustomStringUtil.getHMSTimeFormat(end - start)+" <<<< Time Taken: no cache getReportParameter:end >>>> ");
 		return parameters;
+	}
+	
+	/**
+	 * Get jasper report object.
+	 * 
+	 * @param reportUrl
+	 * @return JasperReport object list
+	 * @throws DataAccessException
+	 * @throws JRException
+	 * @throws Exception
+	 */
+	private List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception {
+		// Connection conn = null;
+		JasperReport jasperReport = null;
+		List<ReportTO> reportList = null;
+		try {
+			// get compiled jasper report
+			// JasperReport jasperReport = getCompliledJrxml(reportUrl);
+			boolean mainReportPresent = false;
+			reportList = getReportJasperObjectList(reportUrl);
+			if (reportList != null && !reportList.isEmpty()) {
+				for (ReportTO reportTo : reportList) {
+					if (reportTo.isMainReport()) {
+						jasperReport = reportTo.getCompiledReport();
+						mainReportPresent = true;
+						break;
+					}
+				}
+
+				if (!mainReportPresent) {
+					jasperReport = reportList.get(0).getCompiledReport();
+				}
+			} else {
+				// report empty
+				throw new Exception("Report not found");
+			}
+
+		} catch (DataAccessException exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			throw new DataAccessException(exception.getMessage()) {
+				private static final long serialVersionUID = 1L;
+			};
+		} catch (JRException exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			throw new JRException(exception.getMessage());
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+			throw new Exception(exception.getMessage());
+		} finally {
+			// if(conn != null) try {conn.close();} catch (SQLException e) {}
+			logger.log(IAppLogger.INFO, "Exit: ReportController - reportList");
+		}
+		return reportList;
+	}
+	
+	/**
+	 * Retrieve main report object
+	 * 
+	 * @param jasperReportList
+	 * @return
+	 * @throws Exception
+	 */
+	private JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception {
+		JasperReport jasperReport = null;
+		boolean mainReportPresent = false;
+		if (jasperReportList != null && !jasperReportList.isEmpty()) {
+			for (ReportTO reportTo : jasperReportList) {
+				if (reportTo.isMainReport()) {
+					jasperReport = reportTo.getCompiledReport();
+					mainReportPresent = true;
+					break;
+				}
+			}
+
+			if (!mainReportPresent) {
+				jasperReport = jasperReportList.get(0).getCompiledReport();
+			}
+		} else {
+			// report empty
+			throw new Exception("Report not found");
+		}
+		return jasperReport;
 	}
 	
 	private String[] getFromSession(HttpServletRequest req, String label) {
