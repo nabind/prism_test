@@ -278,6 +278,8 @@ $(document).ready(function() {
 	 */
 	$('[name="studentTableGD_length"]').change(function() {
 		refreshCheckBoxesFromTextBoxes();
+		//Fix for TD 77926 - By Joy
+		$(".formError").trigger("click");
 	});
 	
 	$(".sorting").live("click", function() {
