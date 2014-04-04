@@ -227,7 +227,13 @@ $(document).ready(function() {
 			'bSortable' : false,
 			'aTargets' : [ 0, 3, 4 ]
 		} ],
-		'sPaginationType' : 'full_numbers'
+		'sPaginationType' : 'full_numbers',
+		'fnDrawCallback': function( oSettings ){
+			//Fix for TD 77864 - By Joy
+			$(".paginate_button").on("click", function() {
+				refreshCheckBoxesFromTextBoxes();
+			});
+		}
 	});
 
 	/**
@@ -265,13 +271,6 @@ $(document).ready(function() {
 		var textBox = $('#check-status-' + studentId);
 		setATextBoxValue(textBox, this.value);
 		calculateAndChangeCheckAll();
-	});
-
-	/**
-	 * Refresh check boxes from text boxes.
-	 */
-	$(".paginate_button").live("click", function() {
-		refreshCheckBoxesFromTextBoxes();
 	});
 
 	/**
