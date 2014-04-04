@@ -545,7 +545,7 @@ public class ReportController extends BaseDAO {
 				
 				//long end = System.currentTimeMillis();
 			//	//System.out.println("<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
-				logger.log(IAppLogger.INFO, "<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
+				//logger.log(IAppLogger.INFO, "<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
 
 				// get parameter values for report
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
