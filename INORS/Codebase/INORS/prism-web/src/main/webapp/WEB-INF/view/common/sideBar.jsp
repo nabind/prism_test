@@ -146,7 +146,7 @@
 										<spring:message code="menuName.children.overview"/>${childDataMap.studentName}
 								</a>
 								-->
-								<a href="getChildData.do?studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
+								<a href="getChildData.do?testElementId=${childDataMap.testElementId}&studentBioId=${childDataMap.studentBioId}&studentName=${childDataMap.studentName}&studentGradeName=${childDataMap.studentGradeName}&studentGradeId=${childDataMap.studentGradeId}" >
 									Overview of ${childDataMap.studentName}
 								</a>
 							</li>

@@ -122,6 +122,7 @@ $(document).ready(function() {
 					var menuContent = '';
 					$.each(data, function () { 
 						userContent += '<a href="getChildData.do?testElementId='+this.testElementId
+									+'&studentBioId='+this.studentBioId
 									+'&studentName='+this.studentName
 									+'&studentGradeName='+this.grade
 									+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
@@ -129,6 +130,7 @@ $(document).ready(function() {
 									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
 						
 						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
+						+'&studentBioId='+this.studentBioId
 						+'&studentName='+this.studentName
 						+'&studentGradeName='+this.grade
 						+'&studentGradeId='+this.studentGradeId+'">'

@@ -55,6 +55,7 @@ public class ParentNetworkController {
 		long t1 = System.currentTimeMillis();
 		ModelAndView modelAndView = new ModelAndView("parent/studentSubtest");
 		Map<String,Object> childDataMap = null;
+		String studentBioId = request.getParameter("studentBioId");
 		String testElementId = request.getParameter("testElementId");
 		String studentName = request.getParameter("studentName");
 		long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
@@ -75,6 +76,7 @@ public class ParentNetworkController {
 		
 		try{
 			childDataMap = parentService.getChildData(paramMap);
+			childDataMap.put("studentBioId", studentBioId);
 			childDataMap.put("studentName", studentName);
 			childDataMap.put("studentGradeId", studentGradeId);
 			childDataMap.put("testElementId", testElementId);
