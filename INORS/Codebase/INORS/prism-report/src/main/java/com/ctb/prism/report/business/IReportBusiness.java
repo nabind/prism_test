@@ -135,10 +135,10 @@ public interface IReportBusiness {
 	public boolean deleteReport(String reportId) throws SystemException;
 
 	/**
-	 * @param parentReports
+	 * @param paramMap
 	 * @return
 	 */
-	public List<AssessmentTO> getAssessments(boolean parentReports);
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap);
 
 	/**
 	 * @param reportParameterTO

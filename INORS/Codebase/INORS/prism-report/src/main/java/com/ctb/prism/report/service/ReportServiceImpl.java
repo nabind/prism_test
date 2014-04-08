@@ -203,10 +203,10 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#getAssessments(boolean)
+	 * @see com.ctb.prism.report.service.IReportService#getAssessments(paramMap)
 	 */
-	public List<AssessmentTO> getAssessments(boolean parentReports) {
-		return reportBusiness.getAssessments(parentReports);
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
+		return reportBusiness.getAssessments(paramMap);
 	}
 
 	/*

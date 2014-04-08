@@ -492,10 +492,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(boolean)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
 	 */
-	public List<AssessmentTO> getAssessments(boolean parentReports) {
-		return reportDAO.getAssessments(parentReports);
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
+		return reportDAO.getAssessments(paramMap);
 	}
 
 	/*

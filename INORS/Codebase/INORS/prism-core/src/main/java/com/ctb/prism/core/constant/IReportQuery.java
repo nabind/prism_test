@@ -192,6 +192,7 @@ public interface IReportQuery {
 			"VALUES",
 	"(?, ?, ?, ?,?, ?, SYSDATE, SYSDATE)" );
 
+	//Fix for TD 77939 - implement customerId - By Joy
 	// query to retrieve assessment details( including report details )
 	public static final String GET_ALL_ASSESSMENT_LIST = CustomStringUtil.appendString(
 			/*"SELECT DISTINCT ASS.ASSESSMENTID ASSESSMENT_ID,",
@@ -210,6 +211,8 @@ public interface IReportQuery {
 			" and ass.db_menuid = acc.db_menuid ",
 			" and acc.db_reportid = re.db_reportid ",
 			" AND RE.ACTIVATION_STATUS IN ('AC','SS') ",
+			"  AND ACC.CUST_PROD_ID IN",
+				"(SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ?)",
 	" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 
 

@@ -1707,14 +1707,20 @@ public class ReportController extends BaseDAO {
 	@RequestMapping(value = "/fetchReportMenu", method = RequestMethod.GET)
 	public ModelAndView fetchReportMenu(HttpServletRequest req, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: ReportController - fetchReportMenu");
+		
+		//Fix for TD 77939 - implement customerId - By Joy
+		UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		boolean parentReports = false;
 		if (IApplicationConstants.TRUE.equals(req.getSession().getAttribute(IApplicationConstants.PARENT_REPORT))) {
 			parentReports = true;
 		}
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("parentReports", parentReports);
 
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {
-			List<AssessmentTO> assessmentList = reportService.getAssessments(parentReports);
+			List<AssessmentTO> assessmentList = reportService.getAssessments(paramMap);
 			modelAndView.addObject("assessmentList", assessmentList);
 			modelAndView.addObject("test", "Test");
 		}

@@ -491,17 +491,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @return List of all available assessments {@link AssessmentTO} along with corresponding report details {@link ReportTO}
 	 */
-	@Cacheable(value = "defaultCache", key="(T(com.ctb.prism.core.util.CacheKeyUtils).string(#p0)).concat(#root.method.name)")
-	public List<AssessmentTO> getAssessments(boolean parentReports) {
+	//Fix for TD 77939 - implement customerId, caching param change - By Joy
+	//@Cacheable(value = "defaultCache", key="(T(com.ctb.prism.core.util.CacheKeyUtils).string(#p0)).concat(#root.method.name)")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAssessments') )")
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 
+		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		
 		List<AssessmentTO> assessments = null;
-
 		List<Map<String, Object>> dataList = null;
 		if (parentReports) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%");
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%",loggedinUserTO.getCustomerId());
 		} else {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%");
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%",loggedinUserTO.getCustomerId());
 		}
 		if (dataList != null && dataList.size() > 0) {
 			assessments = new ArrayList<AssessmentTO>();
