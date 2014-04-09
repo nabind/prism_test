@@ -3,6 +3,8 @@
  */
 package com.ctb.prism.core.Service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,58 +14,124 @@ import org.springframework.stereotype.Service;
 import com.ctb.prism.core.business.IUsabilityBusiness;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
 /**
- * @author d-abir_dutta
- * Service to report usability
- *
+ * @author d-abir_dutta Service to report usability
+ * 
  */
 @Service
 public class UsabilityServiceImpl implements IUsabilityService {
 
-	/* (non-Javadoc)
-	 * @see com.ctb.prism.core.Service.IUsabilityService#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
-	 */
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityServiceImpl.class.getName());
 	@Autowired
 	IUsabilityBusiness usabilityBuisness;
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
+	 */
 	@Async
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
-		// TODO Auto-generated method stub
 		return usabilityBuisness.saveUsabilityData(usability);
 	}
-	
-	//@Async
+
+	// @Async
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#updateStagingData(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
+	 */
 	public StudentDataLoadTO updateStagingData(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
-		
 		return usabilityBuisness.updateStagingData(studentListTO, studentDataLoadTO);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#updatePartition(java.lang.String)
+	 */
 	public void updatePartition(String partitionName) throws Exception {
 		usabilityBuisness.updatePartition(partitionName);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#checkPartition()
+	 */
 	public String checkPartition() throws Exception {
 		return usabilityBuisness.checkPartition();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#createProces(com.ctb.prism.webservice.transferobject.StudentListTO, com.ctb.prism.webservice.transferobject.StudentDataLoadTO)
+	 */
 	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
 		return usabilityBuisness.createProces(studentListTO, studentDataLoadTO);
 	}
-	
-	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityServiceImpl.class.getName());
-	
-	@CacheEvict(value="userCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )", condition="#p2 != null", beforeInvocation = true)
-	@Cacheable(value="userCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#insertIntoJobTracking(com.ctb.prism.core.transferobject.JobTrackingTO)
+	 */
+	public JobTrackingTO insertIntoJobTracking(JobTrackingTO jobTrackingTO) throws Exception {
+		return usabilityBuisness.insertIntoJobTracking(jobTrackingTO);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#getProces(com.ctb.prism.core.transferobject.ProcessTO)
+	 */
+	public ProcessTO getProces(ProcessTO processTO) throws Exception {
+		return usabilityBuisness.getProces(processTO);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#getStudentListTO()
+	 */
+	public Map<Long, StudentListTO> getStudentListTO() {
+		return usabilityBuisness.getStudentListTO();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#updateWSRosterData(com.ctb.prism.webservice.transferobject.StudentDataLoadTO, long)
+	 */
+	public int updateWSRosterData(StudentDataLoadTO studentDataLoadTO, long wsRosterDataId) {
+		return usabilityBuisness.updateWSRosterData(studentDataLoadTO, wsRosterDataId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#getSetCache(java.lang.String, java.lang.String, java.lang.Object)
+	 */
+	@CacheEvict(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )", condition = "#p2 != null", beforeInvocation = true)
+	@Cacheable(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
 	public Object getSetCache(String username, String sessionName, Object sessionParam) {
-		logger.log(IAppLogger.INFO, "********* ********** ************ putting into cache ****** "+sessionName);
+		logger.log(IAppLogger.INFO, "********* ********** ************ putting into cache ****** " + sessionName);
 		return sessionParam;
 	}
-	
-	@CacheEvict(value="userCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.Service.IUsabilityService#removeFromCache(java.lang.String, java.lang.String)
+	 */
+	@CacheEvict(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
 	public Object removeFromCache(String username, String sessionName) {
 		return null;
 	}

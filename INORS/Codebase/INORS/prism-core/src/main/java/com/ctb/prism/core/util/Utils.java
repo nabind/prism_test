@@ -1,11 +1,15 @@
 package com.ctb.prism.core.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -317,6 +321,49 @@ public final class Utils {
 			return false;
 		else
 			return true;
+	}
+	
+	public static byte[] serialize(Object obj) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream os = null;
+		try {
+			os = new ObjectOutputStream(out);
+			os.writeObject(obj);
+		} catch (IOException e) {
+
+		} finally {
+			try {
+				os.close();
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return out.toByteArray();
+	}
+
+	public static Object deserialize(byte[] data) {
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		ObjectInputStream is = null;
+		Object obj = null;
+		try {
+			is = new ObjectInputStream(in);
+			obj = is.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return obj;
 	}
 
 }

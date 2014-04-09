@@ -213,4 +213,6 @@ public interface IApplicationConstants {
 	
 	public static final String[] ORG_MODE_DESC = { "NON-PUBLIC", "PUBLIC" };
 	public static final String COMMA = ",";
+	
+	public static enum WS_ROSTER_DATA_STATUS { NR, IP, ER, CO };
 }

@@ -1360,5 +1360,34 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT ADMIN_YEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y' AND ROWNUM = 1";
 
+	// query to capture the user  activity when clicked login as
+		public static final String INSERT_LoginAsACTIVITY_LOG =  CustomStringUtil.appendString(
+				" INSERT INTO user_activity_history ",
+				" (activityid, ",
+				" userid, ",
+				" customerid, ",
+				" acty_typeid, ",
+				" activity_date, ",
+				" activity_details, ",
+				" ip_address, ",
+				"datetimestamp) ",
+				" VALUES ",
+	      		" (activityid_seq.NEXTVAL ,(select userid from users where upper(username)=upper(?)), ?, ?, SYSDATE, ?,?,SYSDATE) " );
+		
+		// query to capture the user activity
+		public static final String INSERT_ACTIVITY_LOG =  CustomStringUtil.appendString(
+				" INSERT INTO user_activity_history ",
+				" (activityid, ",
+				" userid, ",
+				" customerid, ",
+				" acty_typeid, ",
+				" activity_date, ",
+				" activity_details, ",
+				" ip_address, ",
+				"datetimestamp) ",
+				" VALUES ",
+	      		" (activityid_seq.NEXTVAL ,?, ?, ?, SYSDATE, ?,?,SYSDATE) " );
+		
+		
 }
 

@@ -8,41 +8,51 @@ public class UsabilityTO extends BaseTO  {
 	private static final long serialVersionUID = 1L;
 	
 	private String reportUrl;
-	private String reportId;
-	private String reportName;
-	private String username;
-	private String currentOrg;
+	private String userId;
+	private String customerId;
+	private String ipAddress;
+	private Long activityTypeId;
+	private boolean loginAs;
 	
-	
+	public boolean isLoginAs() {
+		return loginAs;
+	}
+	public void setLoginAs(boolean loginAs) {
+		this.loginAs = loginAs;
+	}
 	public String getReportUrl() {
 		return reportUrl;
 	}
 	public void setReportUrl(String reportUrl) {
 		this.reportUrl = reportUrl;
 	}
-	public String getReportId() {
-		return reportId;
+	public String getUserId() {
+		return userId;
 	}
-	public void setReportId(String reportId) {
-		this.reportId = reportId;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-	public String getReportName() {
-		return reportName;
+	public String getCustomerId() {
+		return customerId;
 	}
-	public void setReportName(String reportName) {
-		this.reportName = reportName;
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
-	public String getUsername() {
-		return username;
+	public String getIpAddress() {
+		return ipAddress;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
-	public String getCurrentOrg() {
-		return currentOrg;
+	public Long getActivityTypeId() {
+		return activityTypeId;
 	}
-	public void setCurrentOrg(String currentOrg) {
-		this.currentOrg = currentOrg;
+	public void setActivityTypeId(Long activityTypeId) {
+		this.activityTypeId = activityTypeId;
 	}
+
+	
+	
+	
 	
 }

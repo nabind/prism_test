@@ -3,6 +3,10 @@
  */
 package com.ctb.prism.core.dao;
 
+import java.util.Map;
+
+import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -11,11 +15,15 @@ import com.ctb.prism.webservice.transferobject.StudentListTO;
  * Dao for storing usability
  * 
  * @author d-abir_dutta
+ * @author d-abir_dutta
+ */
+/**
+ * @author 233208
+ * 
  */
 public interface IUsabilityDAO {
 
 	/**
-	 * 
 	 * @param usability
 	 * @return
 	 * @throws Exception
@@ -23,7 +31,6 @@ public interface IUsabilityDAO {
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception;
 
 	/**
-	 * 
 	 * @param studentListTO
 	 * @param studentDataLoadTO
 	 * @return
@@ -31,10 +38,11 @@ public interface IUsabilityDAO {
 	 */
 	public StudentDataLoadTO updateStagingData(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
 
+	
 	/**
-	 * Get available partition name from informatica for further processing
+	 * Get available partition name from informatica for further processing.
 	 * 
-	 * @return partition name
+	 * @return
 	 * @throws Exception
 	 */
 	public String checkPartition() throws Exception;
@@ -64,13 +72,10 @@ public interface IUsabilityDAO {
 	public StudentDataLoadTO insertOrgHierarchy(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
 
 	/**
-	 * Insert student BIO, SURVEY-BIO and DEMO details
 	 * 
 	 * @param studentListTO
-	 *            - all web service data
 	 * @param studentDataLoadTO
-	 *            - contains partition name and process id
-	 * @return - with success indicator
+	 * @return
 	 * @throws Exception
 	 */
 	public StudentDataLoadTO insertStudentBio(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
@@ -101,4 +106,30 @@ public interface IUsabilityDAO {
 	 * @throws Exception
 	 */
 	public void updatePartition(String partitionName) throws Exception;
+
+	/**
+	 * @param jobTrackingTO
+	 * @return
+	 * @throws Exception
+	 */
+	public JobTrackingTO insertIntoJobTracking(JobTrackingTO jobTrackingTO) throws Exception;
+
+	/**
+	 * @param processTO
+	 * @return
+	 * @throws Exception
+	 */
+	public ProcessTO getProces(ProcessTO processTO) throws Exception;
+
+	/**
+	 * @return
+	 */
+	public Map<Long, StudentListTO> getStudentListTO();
+
+	/**
+	 * @param studentDataLoadTO
+	 * @param wsRosterDataId
+	 * @return
+	 */
+	public int updateWSRosterData(StudentDataLoadTO studentDataLoadTO, long wsRosterDataId);
 }

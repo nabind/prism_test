@@ -3,20 +3,22 @@
  */
 package com.ctb.prism.core.business;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.dao.IUsabilityDAO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
 /**
- * Service to report usability
- * 
- * @author d-abir_dutta
+ * @author d-abir_dutta Service to report usability
  * 
  */
 
@@ -34,7 +36,6 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 	 * @see com.ctb.prism.core.business.IUsabilityBusiness#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
-		// TODO Auto-generated method stub
 		logger.log(IAppLogger.INFO, "UsabilityBusinessImpl:saveUsabilityData");
 		return usabilityDAO.saveUsabilityData(usability);
 	}
@@ -51,7 +52,6 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 		if (studentDataLoadTO.getProcessId() != 0) {
 			usabilityDAO.updateStagingData(studentListTO, studentDataLoadTO);
 		}
-
 		return studentDataLoadTO;
 	}
 
@@ -80,6 +80,42 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 	 */
 	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception {
 		return usabilityDAO.createProces(studentListTO, studentDataLoadTO);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#insertIntoJobTracking(com.ctb.prism.core.transferobject.JobTrackingTO)
+	 */
+	public JobTrackingTO insertIntoJobTracking(JobTrackingTO jobTrackingTO) throws Exception {
+		return usabilityDAO.insertIntoJobTracking(jobTrackingTO);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#getProces(com.ctb.prism.core.transferobject.ProcessTO)
+	 */
+	public ProcessTO getProces(ProcessTO processTO) throws Exception {
+		return usabilityDAO.getProces(processTO);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#getStudentListTO()
+	 */
+	public Map<Long, StudentListTO> getStudentListTO() {
+		return usabilityDAO.getStudentListTO();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#updateWSRosterData(com.ctb.prism.webservice.transferobject.StudentDataLoadTO, long)
+	 */
+	public int updateWSRosterData(StudentDataLoadTO studentDataLoadTO, long wsRosterDataId) {
+		return usabilityDAO.updateWSRosterData(studentDataLoadTO, wsRosterDataId);
 	}
 
 }

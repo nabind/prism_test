@@ -3,14 +3,16 @@
  */
 package com.ctb.prism.core.business;
 
+import java.util.Map;
+
+import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
 /**
- * Business to report usability
- * 
- * @author d-abir_dutta
+ * @author d-abir_dutta Business to report usability
  */
 public interface IUsabilityBusiness {
 
@@ -50,4 +52,30 @@ public interface IUsabilityBusiness {
 	 * @throws Exception
 	 */
 	public StudentDataLoadTO createProces(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) throws Exception;
+
+	/**
+	 * @param jobTrackingTO
+	 * @return
+	 * @throws Exception
+	 */
+	public JobTrackingTO insertIntoJobTracking(JobTrackingTO jobTrackingTO) throws Exception;
+
+	/**
+	 * @param processTO
+	 * @return
+	 * @throws Exception
+	 */
+	public ProcessTO getProces(ProcessTO processTO) throws Exception;
+
+	/**
+	 * @return
+	 */
+	public Map<Long, StudentListTO> getStudentListTO();
+
+	/**
+	 * @param studentDataLoadTO
+	 * @param wsRosterDataId
+	 * @return
+	 */
+	public int updateWSRosterData(StudentDataLoadTO studentDataLoadTO, long wsRosterDataId);
 }

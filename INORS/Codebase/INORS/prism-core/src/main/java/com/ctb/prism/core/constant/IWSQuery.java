@@ -276,5 +276,22 @@ public interface IWSQuery {
 		);
 	
 	public static final String GET_ORG_MAP = "SELECT ORG_NODEID, PARENT_ORG_NODEID FROM ORG_NODE_DIM";
+	
+	public static final String CLEAN_STG_HIER_DETAILS = "DELETE FROM STG_HIER_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_LSTNODE_HIER_DETAILS = "DELETE FROM STG_LSTNODE_HIER_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_STD_BIO_DETAILS = "DELETE FROM STG_STD_BIO_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_STD_DEMO_DETAILS = "DELETE FROM STG_STD_DEMO_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_STD_SUBTEST_DETAILS = "DELETE FROM STG_STD_SUBTEST_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_STD_OBJECTIVE_DETAILS = "DELETE FROM STG_STD_OBJECTIVE_DETAILS WHERE WKF_PARTITION_NAME = ?";
+	public static final String CLEAN_STG_ITEM_RESPONSE_DETAILS = "DELETE FROM STG_ITEM_RESPONSE_DETAILS WHERE WKF_PARTITION_NAME = ?";
+
+	public static final String GET_WS_ROSTER_DATA = "SELECT WS_ROSTER_DATA_ID,REQUEST_OBJECT FROM WS_ROSTER_DATA WHERE STATUS = ?";
+
+	public static final String UPDATE_WS_ROSTER_DATA = "UPDATE WS_ROSTER_DATA SET STATUS = ?,RESPONSE_LOG = ?, UPDATED_TIME =SYSDATE WHERE WS_ROSTER_DATA_ID = ?";
+	
+	public static final String GET_PROCESS_STATUS = CustomStringUtil.appendString(
+			" select hier_validation, bio_validation, demo_validation, ",
+			" content_validation, objective_validation, item_validation, process_log ",
+			" FROM stg_process_status where process_id = ? ");
 }
 
