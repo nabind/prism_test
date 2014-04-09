@@ -528,7 +528,7 @@
 			<div id ="forgotUserNameContainer"  name="forgotPasswordContainer" class="">
 				<p class="button-height inline-label">
 					<label class="label isIE" for="email">Enter Email Id</label>
-					<input type="text" name="f_email" id="f_email" style="width:200px;margin:3px" class="input" />
+					<input type="text" name="f_email" id="f_email" style="width:200px;margin:3px" maxlength="100" class="input" />
 				</p>
 			</div>
 		</div>

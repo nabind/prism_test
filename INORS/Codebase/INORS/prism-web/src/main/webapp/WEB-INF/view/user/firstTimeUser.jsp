@@ -63,7 +63,7 @@
 			</div>
 			<div class="field-block button-height">
 				<label for="mail" class="label"><b>Email Address</b><span class="icon-star icon-size1 red"></span></label>
-				<input type="text" name="mail" id="mail" value="${parentDetails.mail}" class="input validate[required,custom[email]]">
+				<input type="text" name="mail" id="mail" value="${parentDetails.mail}" maxlength="100" class="input validate[required,custom[email]]">
 				<span class="info-spot">
 					<span class="icon-info-round"></span>
 					<span class="info-bubble" style="width:300px">
@@ -74,7 +74,7 @@
 			
 			<div class="field-block button-height">
 				<label for="verify_mail" class="label"><b>Verify Email</b><span class="icon-star icon-size1 red"></span></label>
-				<input type="text" name="verify_mail" id="verify_mail" value="${parentDetails.mail}" class="input validate[required,custom[email] ,equalsEmail[mail]]" >
+				<input type="text" name="verify_mail" id="verify_mail" value="${parentDetails.mail}" maxlength="100" class="input validate[required,custom[email] ,equalsEmail[mail]]" >
 			</div>
 
 			<div class="field-block button-height">
@@ -131,7 +131,7 @@
 					</div>
 					<div class="field-block button-height">
 						<label for="mail" class="label"><b>Email Address</b><span class="icon-star icon-size1 red"></span></label>
-						<input type="text" name="mail" id="mail" value="" class="input validate[required,custom[email]]">
+						<input type="text" name="mail" id="mail" value="" maxlength="100" class="input validate[required,custom[email]]">
 						<span class="info-spot">
 							<span class="icon-info-round"></span>
 							<span class="info-bubble" style="width:300px">
@@ -142,7 +142,7 @@
 					
 					<div class="field-block button-height">
 						<label for="verify_mail" class="label"><b>Verify Email</b><span class="icon-star icon-size1 red"></span></label>
-						<input type="text" name="verify_mail" id="verify_mail" value="" class="input validate[required,custom[email] ,equalsEmail[mail]]" >
+						<input type="text" name="verify_mail" id="verify_mail" value="" maxlength="100" class="input validate[required,custom[email] ,equalsEmail[mail]]" >
 					</div>
 
 					<div class="field-block button-height">

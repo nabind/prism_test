@@ -84,7 +84,7 @@
 						<div id="tab-2" class="with-padding margin-top margin-bottom-medium">
 							<div class="field-block button-height">
 								<label for="verify_mail" class="label"><b>Email Address</b><span class="icon-star icon-size1 red"></span></label>
-								<input type="text" name="verify_mail" id="verify_mail" value="${parentAccountDetail.mail}" class="input validate[required, custom[email]]" >
+								<input type="text" name="verify_mail" id="verify_mail" value="${parentAccountDetail.mail}" maxlength="100" class="input validate[required, custom[email]]" >
 								<span class="info-spot">
 									<span class="icon-info-round"></span>
 									<span class="info-bubble" style="width:300px">

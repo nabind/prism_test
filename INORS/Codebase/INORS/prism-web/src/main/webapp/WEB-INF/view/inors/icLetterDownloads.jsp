@@ -66,7 +66,7 @@
 		
 		<p class="inline-label">
 			<label for="email" class="label" style="width: 345px !important;">Email address for notification of Generated File complete: </label>
-			<input name="email" type="text" value="${groupDownload.email}" id="email" class="input validate[required,custom[email]]" maxlength="30" style="width:187px;">
+			<input name="email" type="text" value="${groupDownload.email}" id="email" class="input validate[required,custom[email]]" maxlength="100" style="width:187px;">
 		</p>
 	</div>
 	

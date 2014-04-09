@@ -147,7 +147,7 @@
 									<p class="button-height inline-label">
 										<label class="label" for="validation-email">Email</label> <input
 											type="text" id="validation-email" name="emailId"
-											style="width: 200px"
+											style="width: 200px"  maxlength="100"
 											class="input full-width  validate[custom[email]]" />
 									</p>
 									<p class="button-height inline-label">
@@ -214,7 +214,7 @@
 									<p class="button-height inline-label">
 										<label class="label" for="validation-email">Email</label> <input
 											type="text" id="validation-email" name="emailId"
-											style="width: 200px"
+											style="width: 200px"  maxlength="100"
 											class="input full-width validate[custom[email]]" />
 										<!-- validate[required,custom[email]] -->
 
