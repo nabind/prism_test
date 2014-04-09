@@ -6,19 +6,19 @@
 					<input type="hidden" name="roleId" id="roleId"/>
 				
 			<div id="displayInvitation">			
-				<h3>Activation code</h3>
+				<h3>Invitation code</h3>
 				<div class="margin-bottom">
-					<p class="message blue-gradient">Enter the 16-digit Activation Code supplied by your children's school here. Please type in the Activation Code exactly as it appears in the letter you received from your children's school (use capital letters and include hyphens).
+					<p class="message blue-gradient">Enter the 16-digit Invitation Code supplied by your children's school here. Please type in the Activation Code exactly as it appears in the letter you received from your children's school (use capital letters and include hyphens).
 					<br/><br/>If you do not have a letter, please contact your children's school.</p>
 				</div>
 				<div class="field-block button-height">
 					
-					<br><label for="invitationCode" class="label"><b>Activation Code</b></label>&nbsp;
+					<br><label for="invitationCode" class="label"><b>Invitation Code</b></label>&nbsp;
 					<input type="text" name="invitationCode" id="invitationCode" value="" class="input validate[required]"/>
 					<p class="message red-gradient margin-top display-none" id="invalidICMsg">The code you have entered is not valid. Make sure you have entered exactly same code as you received in letter.</p>
 				</div>
 				<!--<div class="margin-bottom">
-					<br/><br/><p class="message grey-gradient">NOTE: Please type in the Activation Code exactly as it appears in the letter you received from your student's school (use capital letters and include hyphens).</p>
+					<br/><br/><p class="message grey-gradient">NOTE: Please type in the Invitation Code exactly as it appears in the letter you received from your student's school (use capital letters and include hyphens).</p>
 				</div>-->
 			</div>
 			
@@ -34,7 +34,7 @@
 					</div>
 				<p class="message blue-gradient margin-top">
 					<span class="message-icon icon-warning"></span>
-					<b>Note:</b> Please contact your child's school if you have questions regarding the activation code.
+					<b>Note:</b> Please contact your child's school if you have questions regarding the invitation code.
 				</p>
 			</div>
 			</div>

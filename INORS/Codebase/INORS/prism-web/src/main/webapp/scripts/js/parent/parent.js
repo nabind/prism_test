@@ -370,7 +370,7 @@ $(document).ready(function() {
 	//Added by Ravi for Claim New Invitation
 	function openNewInvitationClaimModal(){
 	$("#newICModal").modal({
-		title: 'Enter Activation Code',
+		title: 'Enter Invitation Code',
 		height: false,
 		width: 670,
 		resizable: false,

@@ -164,7 +164,7 @@
 					<ul style="padding-left: 15px;" class="margin-bottom-medium">
 						<li>
 							<a class="" href="registration.do">
-								Click here to enter your Activation Code and <b>create a new account!</b>
+								Click here to enter your Invitation Code and <b>create a new account!</b>
 							</a>
 						</li>
 						<li>

@@ -345,7 +345,7 @@
 							<ul style="" class="margin-bottom-medium bullet-list">
 								<li>
 									<a class=""  href="registration.do">
-										<small class="tag orange-bg">New User:</small> to create an account and enter the Activation Code for your first child, click here.
+										<small class="tag orange-bg">New User:</small> to create an account and enter the Invitation Code for your first child, click here.
 									</a>
 								</li><br>
 								<li>

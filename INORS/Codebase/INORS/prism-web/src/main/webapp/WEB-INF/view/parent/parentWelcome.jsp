@@ -65,7 +65,7 @@
 						<p>Use this page to update your personal information. You can also view information about which test data is available on INORS Data Online for Parents for your school.</p>
 						<ul class="bullet-list">
 							<li><a href="myAccount.do">My Account</a></li>
-							<li><a href="#nogo" class="claim-Invitation">Enter next Activation Code</a></li>
+							<li><a href="#nogo" class="claim-Invitation">Enter next Invitation Code</a></li>
 							<!--<li><a href="#nogo">Create New Child Information</a></li>-->
 						</ul>
 					</div>

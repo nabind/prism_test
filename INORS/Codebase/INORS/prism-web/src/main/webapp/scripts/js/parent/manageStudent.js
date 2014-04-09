@@ -104,7 +104,7 @@ function openModalToViewAssessments(studentBioId, testElementId) {
 									win.closeModal();
 								}
 							},
-							'Re-set Activation Code': {
+							'Re-set Invitation Code': {
 								classes: 'orange-gradient glossy',						
 								click: function(win) {
 									confirmRecreationAC(1);
@@ -145,7 +145,7 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 									+'<thead class ="table-header glossy ">'
 									+'<tr >'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available Assessments</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Activation Code</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">Invitation Code</span></th>'
 									//+'<th scope="col" class="blue-gradient glossy"><span class="white">Status</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available AC Claims</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Expiration Date</span></th>'
@@ -182,13 +182,13 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 		$("#invitationcode"+globalcounter).addClass("orange-bg");
 		$("#invitationcode"+globalcounter).css('box-shadow', '0 0 30px orange');
 		$(".createLetter").css('box-shadow', '0 0 15px blue');
-		notify('Activation Code Refreshed', 'The old activation code will no longer be linked to that student\'s results. Parents and family will no longer be able to view results, although the account is still active. <br/><br/>Please refresh \'Manage Student\' screen to view updated \'Parent User ID\' column.', {
+		notify('Invitation Code Refreshed', 'The old invitation code will no longer be linked to that student\'s results. Parents and family will no longer be able to view results, although the account is still active. <br/><br/>Please refresh \'Manage Student\' screen to view updated \'Parent User ID\' column.', {
 			autoClose: true,
 			closeDelay:10000,
 			delay: 100,
 			showCloseOnHover:false,
-			textOneSimilar:'Activation Code Regenated!',
-			textSeveralSimilars:'Activation Code Regenated!',
+			textOneSimilar:'Invitation Code Regenated!',
+			textSeveralSimilars:'Invitation Code Regenated!',
 			icon: 'themes/acsi/img/demo/icon.png',
 			onDisplay: function() {
 				$(".createLetter").css('box-shadow', '0 0 15px blue');
@@ -203,7 +203,7 @@ var globalcounter = 0;
 function confirmRecreationAC(rowcounter)
 {
 	globalcounter = rowcounter;
-	$.modal.confirm('Re-setting the activation code should be used cautiously. Once the code is re-set, the old activation code will no longer be linked to that student\'s results. Parents and family will no longer be able to view results, although the account is still active. Do you want to continue?', function()
+	$.modal.confirm('Re-setting the invitation code should be used cautiously. Once the code is re-set, the old invitation code will no longer be linked to that student\'s results. Parents and family will no longer be able to view results, although the account is still active. Do you want to continue?', function()
 	{
 		blockUI();
 		var studentBioId = $("#studentBioIdAss"+globalcounter).val();

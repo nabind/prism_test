@@ -14,16 +14,16 @@
 
 		<fieldset class="wizard-fieldset fields-list noEnterSubmit">
 
-			<legend class="legend">Activation Code</legend>
+			<legend class="legend">Invitation Code</legend>
 
 			<div class="margin-bottom">
-				<p class="message blue-gradient">Enter the 16-digit Activation Code supplied by your children's school here. Please type in the Activation Code exactly as it appears in the letter you received from your children's school (use capital letters and include hyphens).
-				<br/><br/>If you have previously entered the Activation Code for one child, and are attempting to enter Activation Codes for additional children, please return to the main screen, log in and under "Manage Account", click "Enter Next Activation Code".</p>
+				<p class="message blue-gradient">Enter the 16-digit Invitation Code supplied by your children's school here. Please type in the Invitation Code exactly as it appears in the letter you received from your children's school (use capital letters and include hyphens).
+				<br/><br/>If you have previously entered the Invitation Code for one child, and are attempting to enter Invitation Codes for additional children, please return to the main screen, log in and under "Manage Account", click "Enter Next Invitation Code".</p>
 			</div>
 
 			<div class="field-block button-height">
 				
-				<label for="invitationCode" class="label"><b>Activation Code</b></label>&nbsp;
+				<label for="invitationCode" class="label"><b>Invitation Code</b></label>&nbsp;
 				<input type="text" name="invitationCode" id="invitationCode" value="" class="input validate[required]"/>
 				<p class="message red-gradient margin-top display-none" id="invalidICMsg"></p>
 				
@@ -44,7 +44,7 @@
 					</div>
 				<p class="message blue-gradient margin-top">
 					<span class="message-icon icon-warning"></span>
-					<b>Note:</b> Please contact your child's school if you have questions regarding the activation code.
+					<b>Note:</b> Please contact your child's school if you have questions regarding the invitation code.
 				</p>
 			</div>
 
