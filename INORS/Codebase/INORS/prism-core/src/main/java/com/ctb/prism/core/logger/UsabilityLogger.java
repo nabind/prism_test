@@ -35,6 +35,18 @@ public class UsabilityLogger {
 		captureActivityLog(joinPoint, req, res, activityLogType);
 
 	}
+	
+	/**
+	 * Usability log Before method for capturing the report URL execution
+	 * 
+	 * @param joinPoint
+	 */
+	@Before("execution(* com.ctb.prism.web.controller.ReportController.openReportApiHtml(..)) && args(req, res)")
+	public void logReportURLApi(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
+		long activityLogType = 2;
+		captureActivityLog(joinPoint, req, res, activityLogType);
+
+	}
 
 	/**
 	 * Usability log After Login method execution/ or after the Login as functionality.
