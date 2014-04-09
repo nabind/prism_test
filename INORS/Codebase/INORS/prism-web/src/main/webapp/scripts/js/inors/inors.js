@@ -14,6 +14,7 @@ var jsTreeJsonArr = new Array();
 var tempIndex = 0;
 
 var chkTreeContainerObj;
+var filteredRow;
 
 $(document).ready(function() {
 	
@@ -233,6 +234,7 @@ $(document).ready(function() {
 			$(".paginate_button").on("click", function() {
 				refreshCheckBoxesFromTextBoxes();
 			});
+			filteredRow = this.$('tr', {"filter": "applied"} );
 		}
 	});
 
@@ -241,17 +243,7 @@ $(document).ready(function() {
 	 * Refresh check boxes from text boxes.
 	 */
 	$("#checkAllImg").click(function() {
-		var val = $('#checkAllVal').val();
-		if (val == "0") {
-			$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
-			$('#checkAllVal').val("1");
-			setAllTextBoxValues("1");
-		} else if ((val == "1") || (val == "-1")) {
-			$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
-			$('#checkAllVal').val("0");
-			setAllTextBoxValues("0");
-		}
-		refreshCheckBoxesFromTextBoxes();
+		selectAllFilteredRows();
 	});
 	/*$("#check-all").on("click", function() {
 		var value = toggleACheckBox($('#check-all'));
@@ -308,6 +300,22 @@ $(document).ready(function() {
 	
 });
 
+function selectAllFilteredRows(){
+	//alert(JSON.stringify(filteredRow));
+	//console.log("selecting " +filteredRow.length);
+	var val = $('#checkAllVal').val();
+	if (val == "0") {
+		$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
+		$('#checkAllVal').val("1");
+		setFilteredTextBoxValues("1");
+	} else if ((val == "1") || (val == "-1")) {
+		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
+		$('#checkAllVal').val("0");
+		setFilteredTextBoxValues("0");
+	}
+	refreshCheckBoxesFromTextBoxes();
+}
+
 /**
  * Programatically click the Refresh button.
  */
@@ -340,9 +348,10 @@ function calculateAndChangeCheckAll(){
 
 function getTotalStudentCount(){
 	var count = 0;
-	$("input[id^=check-status-]").each(function() {
+	/*$("input[id^=check-status-]").each(function() {
 		count = count + 1;
-	});
+	});*/
+	count = filteredRow.length;
 	return count;
 }
 
@@ -361,6 +370,14 @@ function setAllTextBoxValues(value){
 	$("input[id^=check-status-]").each(function() {
 		setATextBoxValue($(this), value);
 	});
+}
+
+function setFilteredTextBoxValues(value){
+	for (var i = 0; i < filteredRow.length; i++) {
+		var dtRowIndex = filteredRow[i]._DT_RowIndex;
+		var textBox = $("input[name=check-status-" + dtRowIndex + "]");
+		setATextBoxValue(textBox, value);
+	}
 }
 
 function setATextBoxValue(textBox, value){
