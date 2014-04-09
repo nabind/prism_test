@@ -225,12 +225,15 @@ $(document).ready(function() {
 			'aTargets' : [ 0, 3, 4 ]
 		} ],
 		'sPaginationType' : 'full_numbers',
-		'fnDrawCallback': function( oSettings ){
+		'fnDrawCallback': function( oSettings ) {
 			//Fix for TD 77864 - By Joy
-			$(".paginate_button").on("click", function() {
+			/*$(".paginate_button").on("click", function() {
 				refreshCheckBoxesFromTextBoxes();
-			});
+			});*/
 			filteredRow = this.$('tr', {"filter": "applied"} );
+			refreshCheckBoxesFromTextBoxes();
+			calculateAndChangeCheckAll();
+			//alert("fnDrawCallback");
 		}
 	});
 
@@ -265,30 +268,30 @@ $(document).ready(function() {
 	 * Refresh check boxes from text boxes.
 	 */
 	$('[name="studentTableGD_length"]').change(function() {
-		refreshCheckBoxesFromTextBoxes();
+		//refreshCheckBoxesFromTextBoxes();
 		//Fix for TD 77926 - By Joy
 		$(".formError").trigger("click");
 	});
 	
-	$(".sorting").live("click", function() {
-		refreshCheckBoxesFromTextBoxes();
+	/*$(".sorting").live("click", function() {
+		//refreshCheckBoxesFromTextBoxes();
 	});
 	
 	$(".sorting_asc").live("click", function() {
-		refreshCheckBoxesFromTextBoxes();
+		//refreshCheckBoxesFromTextBoxes();
 	});
 	
 	$(".sorting_desc").live("click", function() {
-		refreshCheckBoxesFromTextBoxes();
-	});
+		//refreshCheckBoxesFromTextBoxes();
+	});*/
 	
 	//Fix for TD 77880 - By Joy
-	$('#studentTableGD_filter input[type="text"]').live("keydown", function() {
+	/*$('#studentTableGD_filter input[type="text"]').live("keydown", function() {
 		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
 		$('#checkAllVal').val("0");
 		setAllTextBoxValues("0");
 		refreshCheckBoxesFromTextBoxes();
-	});
+	});*/
 
 	$('#groupDownload').validationEngine();
 	
@@ -327,13 +330,13 @@ function clickTheRefreshButton() {
 	}
 }
 
-function calculateAndChangeCheckAll(){
+function calculateAndChangeCheckAll() {
 	var totalStudents = getTotalStudentCount();
 	var checkedStudents = getCheckedStudentCount();
-	if(checkedStudents == 0){
+	if (checkedStudents == 0) {
 		$('#checkAllImg').prop('src', 'themes/acsi/img/empty.bmp');
 		$('#checkAllVal').val("0");
-	} else if(checkedStudents == totalStudents){
+	} else if (checkedStudents == totalStudents) {
 		$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
 		$('#checkAllVal').val("1");
 	} else {
