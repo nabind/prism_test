@@ -1064,7 +1064,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		} else if (requestTypeDescription.equals("CP")) {
 			requestTypeDescription = "Combined PDF";
 		} else if (requestTypeDescription.equals("SP")) {
-			requestTypeDescription = "Seperate PDF";
+			requestTypeDescription = "Separate PDF";
 		}
 
 		StringBuilder requestSummary = new StringBuilder();
