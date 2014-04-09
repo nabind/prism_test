@@ -7,8 +7,6 @@ var ANIMATION_TIME = 200;
 
 $(document).ready(function() {
 	
-	//openInorsHomePage();
-	
 	if($("#contentTable").length > 0) {
 		var allContents = $(".content-list-all");
 		if(allContents != null && allContents.length > 0) {
@@ -257,6 +255,17 @@ function openModifyGenericModalToEdit(type) {
 					resizable: false,
 					draggable: false,
 					onOpen: setCKEditor('modifyGeneric'),
+					actions: {
+						'Close' : {
+							color: 'red',
+							click: function(win) { 
+								//Fix for TD 77905 - By Joy
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
+								win.closeModal(); 
+							}
+						}
+					},
 					buttons: {
 						'Cancel': {
 							classes: 'glossy mid-margin-left',
@@ -525,7 +534,13 @@ function openContentModalToEdit(contentId) {
 					actions: {
 						'Close' : {
 							color: 'red',
-							click: function(win) { win.closeModal(); }
+							click: function(win) { 
+								//Fix for TD 77905 - By Joy
+								$('#editContent').validationEngine('hide');
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
+								win.closeModal(); 
+							}
 						},
 						'Maximize' : {
 							color: 'blue',
@@ -659,7 +674,13 @@ function openContentModalToAdd() {
 		actions: {
 			'Close' : {
 				color: 'red',
-				click: function(win) { win.closeModal(); }
+				click: function(win) { 
+					//Fix for TD 77905 - By Joy
+					$('#addNewContent').validationEngine('hide');
+					$('.mandatoryDescription').hide();
+					if($.browser.msie) setTimeout("hideMessage()", 300);
+					win.closeModal(); 
+				}
 			},
 			'Maximize' : {
 				color: 'blue',
