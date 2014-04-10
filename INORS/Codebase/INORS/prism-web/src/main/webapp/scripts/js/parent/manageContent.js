@@ -264,6 +264,18 @@ function openModifyGenericModalToEdit(type) {
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								win.closeModal(); 
 							}
+						},
+						'Maximize' : {
+							color: 'blue',
+							click: function(win) { 
+								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
+							}
+						},
+						'Restore' : {
+							color: 'green',
+							click: function(win) { 
+								$.modal.current.setModalContentSize(780,500).centerModal();
+							}
 						}
 					},
 					buttons: {
@@ -351,122 +363,6 @@ function modifyGeneric(form, win) {
 	}
 }
 
-/* As Standard/Objective is dependent upon Test Administration, so the code is blocked by Joy */
-//============Open Modal to Edit Description of Standard ===============
-/*
-function openModifyStandardModalToEdit() {
-	blockUI();
-	var objectiveId = $('#objectiveIdManageContent').val();
-	var dataUrl = 'objectiveId='+objectiveId;
-	$.ajax({
-			type : "GET",
-			url : "modifyStandardForEdit.do",
-			data : dataUrl,
-			dataType : 'json',
-			cache:false,
-			success : function(data) {
-				var custProdName = $('#custProdIdManageContent :selected').text();
-				var gradeName = $('#gradeIdManageContent :selected').text();
-				var subtestName = $('#subtestIdManageContent :selected').text();
-				var objectiveName = $('#objectiveIdManageContent :selected').text();
-				var contentTypeId = $('#contentTypeIdManageContent').val();
-				var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-				
-				var $modifyStandardModal = $('#modifyStandardModal');
-				$modifyStandardModal.find('#testAdministrationText').text(custProdName);
-				$modifyStandardModal.find('#gradeText').text(gradeName);
-				$modifyStandardModal.find('#subtestText').text(subtestName);
-				$modifyStandardModal.find('#objectiveText').text(objectiveName);
-				$modifyStandardModal.find('#objectiveId').val(objectiveId);
-				if(data != null && data.contentDescription != ""){
-					$modifyStandardModal.find('#objectiveDescriptionEditor').val(data.contentDescription);
-				}
-				
-				$("#modifyStandardModal").modal({
-					title: 'Modify Standard Description',
-					height: 500,
-					width: 780,
-					resizable: false,
-					draggable: false,
-					onOpen: setCKEditor('modifyStandard'),
-					buttons: {
-						'Cancel': {
-							classes: 'glossy mid-margin-left',
-							click: function(win,e) {
-										clickMe(e);
-										$('.mandatoryDescription').hide();
-										if($.browser.msie) setTimeout("hideMessage()", 300);
-										win.closeModal(); 
-									}
-								},
-						'Save': {
-							classes: 'blue-gradient glossy mid-margin-left',
-							click: function(win,e) {
-										clickMe(e);	
-										modifyStandard($("#modifyStandardForm"), win);
-									}
-								}
-							}
-					});					
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error1']);
-				unblockUI();
-			}
-		}); 
-}
-
-
-//============Insert/Update Standard Description ===============
-function modifyStandard(form, win) {
-	blockUI();
-	var descriptionFlag = true;
-	for(name in CKEDITOR.instances)	{
-		var editorVal = CKEDITOR.instances[name].getData();
-		if(editorVal == ""){
-			$('.mandatoryDescription').show(ANIMATION_TIME);
-			descriptionFlag = false;
-			break;
-		}
-	    $('#modifyStandardModal #contentDescription').val(editorVal);
-	}
-	
-	if(descriptionFlag == true){
-		var contentTypeId = $('#contentTypeIdManageContent').val();
-		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-		var modifyStandardModal = $('#modifyStandardModal');
-		modifyStandardModal.find('#contentType').val(contentTypeId);
-		modifyStandardModal.find('#contentTypeName').val(contentTypeName);
-		var formObj = $('#modifyStandardForm').serialize();
-		$.ajax({
-			type : "POST",
-			url : 'addNewContent.do',
-			data : formObj,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if(data.value >= 1) {
-					win.closeModal(); 
-					unblockUI();
-					$('.mandatoryDescription').hide();
-					$.modal.alert(strings['script.content.addSuccess']);
-				} else {
-					unblockUI();
-					$.modal.alert(strings['script.user.saveError']);
-				}
-			},
-			error : function(data) {
-				unblockUI();
-				$.modal.alert(strings['script.user.saveError']);
-			}
-		});
-	}else{
-		 unblockUI();
-	}
-}
-*/
-
-
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
 	blockUI();
@@ -551,7 +447,7 @@ function openContentModalToEdit(contentId) {
 						'Restore' : {
 							color: 'green',
 							click: function(win) { 
-								$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+								$.modal.current.setModalContentSize(780,430).centerModal();
 							}
 						}
 					},
@@ -691,7 +587,7 @@ function openContentModalToAdd() {
 			'Restore' : {
 				color: 'green',
 				click: function(win) { 
-					$.modal.current.setModalContentSize($(window).width()/3,$(window).height()/2).centerModal();
+					$.modal.current.setModalContentSize(780,430).centerModal();
 				}
 			}
 		},
@@ -879,20 +775,6 @@ function populateObjective(){
 	}
 }
 
-
-
-//----------------------------Resetting Modal Form---------------------
-
-/*function resetModalForm(formId)
-{
-	$("#"+formId).each (function() { this.reset(); });
-	$("input#userStatus").removeAttr('checked');
-	$("input#userStatus").change();
-	$("#userRole option").removeAttr('selected');
-	$("#userRole option").change();
-	$("#userRole option").trigger('update-select-list');
-}*/
-
 //============To populate any drop down ===============
 function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
 	elementObject.empty();
@@ -974,7 +856,7 @@ function getContentDetails(checkFirstLoad,data) {
 	    if(this.subHeader != undefined){
 	    	subHeaderVar = this.subHeader;
 	    }
-	    /* As per requirement, Performance level does not depend upon content */
+	    /* As per requirement, Performance level does not depend upon content - By Joy */
 	    /*
 		manageContent += '<tr name="contentIdRow" id="contentIdRow" value="'+this.contentId+'">'
 			         	+'<th scope="row"><h5>' + this.contentName +'</h5></th>'
@@ -1014,6 +896,8 @@ function enableContentSorting(flag) {
 	}
 
 }
+
+
 //============================= AJAX CALL TO TO POPULATE CONTENTS FROM DB TABLES THROUGH PACKAGE BY ARUNAVA END=============================
 
 //==To hide add,search buttons and table==========
