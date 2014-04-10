@@ -36,7 +36,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * 
 	 * @see com.ctb.prism.core.Service.IUsabilityService#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
-	@Async
+	// @Async // Async was throwing NullPointerException at com.ctb.prism.core.logger.UsabilityLogger.captureActivityLog(UsabilityLogger.java:195)
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
 		return usabilityBuisness.saveUsabilityData(usability);
 	}

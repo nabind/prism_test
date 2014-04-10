@@ -189,10 +189,13 @@ public class UsabilityLogger {
 			usability.setActivityTypeId(activityTypeId);
 			usability.setReportUrl(reportUrl);
 			usability.setIpAddress(ipAddress);
-			usabilityService.saveUsabilityData(usability);
-			/*
-			 * if(!usabilityService.saveUsabilityData(usability)){ logMessage(joinPoint, "ERROR while logging - usability details : ", IAppLogger.ERROR); }
-			 */
+			logger.log(IAppLogger.INFO, usability.toString());
+			// usabilityService.saveUsabilityData(usability);
+
+			if (!usabilityService.saveUsabilityData(usability)) {
+				logMessage(joinPoint, "ERROR while inserting - usability details : ", IAppLogger.ERROR);
+			}
+
 			// TODO call service to log report accessed by user with timestamp
 			/* write code here to log usability */
 		} catch (Throwable e) {
@@ -207,7 +210,7 @@ public class UsabilityLogger {
 	 * @throws Throwable
 	 */
 	private void logMessage(JoinPoint joinPoint, String message, int logLevel) {
-		logger.log(logLevel, CustomStringUtil.appendString(message, joinPoint.getTarget().getClass().getName(), " - ", joinPoint.getSignature().getName()));
+		logger.log(logLevel, CustomStringUtil.appendString(message, ". ", joinPoint.getTarget().getClass().getName(), " - ", joinPoint.getSignature().getName()));
 	}
 
 }

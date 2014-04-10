@@ -74,7 +74,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 */
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - saveUsabilityData");
-		
+		logger.log(IAppLogger.INFO, usability.toString());
 		try {
 			int count = getJdbcTemplatePrism().update((usability.isLoginAs())? IQueryConstants.INSERT_LoginAsACTIVITY_LOG : IQueryConstants.INSERT_ACTIVITY_LOG, 
 				usability.getUserId(),usability.getCustomerId(),usability.getActivityTypeId(),
