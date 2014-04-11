@@ -1123,12 +1123,21 @@ public class UserAccountPdf {
 		if (prop.getProperty("pdfGenPath") == null) {
 			logger.info("PDF generation path (pdfGenPath) is not defined");
 		}
+		String docName = null;
+		StringBuffer docBuff = new StringBuffer();
+		String pdfPrefix = prop.getProperty("testAdministrator");
+		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
+		docBuff.append(prop.getProperty("districtText")).append(school.getDistrictCode());
+		docBuff.append(prop.getProperty("schoolText")).append(school.getSchoolCode()).append("_");
+		docBuff.append(getDateTime("ddMMyyyyHHmmss")).append(".pdf");
+		
+		docName = docBuff.toString();
 		// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
-		String docLocation = PdfGenerator.generatePdfAcsi(prop, school, teachers, schoolUserPresent, isInitialLoad, migration, state);
+		String docLocation = PdfGenerator.generatePdfAcsi(prop, school, teachers, schoolUserPresent, isInitialLoad, migration, state, docName);
 		// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
 		// logElapsedTime("Create PDF : "); /** Log time difference*/ // difference
 
-		if (encrypt) {
+		if (ENCRYPTION_NEEDED) {
 			// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
 			String encLocation = encryptPdfAcsi(prop, docLocation, school.getSchoolCode(), school.getCustomerCode(), school.getDistrictCode(), state);
 			removeFileAcsi(docLocation);

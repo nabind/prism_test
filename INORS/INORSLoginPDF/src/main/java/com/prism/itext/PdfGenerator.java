@@ -615,18 +615,18 @@ public class PdfGenerator {
 	private static Image _img = null;
 	private static Font smallFont = FontFactory.getFont("Arial", 4.0F, 1, new Color(0, 0, 0));
 	public static String generatePdfAcsi(Properties prop, OrgTO school, java.util.List<OrgTO> teachers, 
-			boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state) {
+			boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state, String docLoc) {
 		Document document = null;
-		String docName = null;
+		String docName = docLoc;
 		try {
 			_img = Image.getInstance(prop.getProperty("imageLogo"));
 			_img.scalePercent(50); 
 			
 			document = new Document(PageSize.A4, 50.0F, 50.0F, 50.0F, 50.0F);
-			docName = prop.getProperty("pdfGenPath") + File.separator + 
+			/*docName = prop.getProperty("pdfGenPath") + File.separator + 
 						prop.getProperty("tempPdfLocation")+
 						school.getStructureElement() + "_" +
-						System.currentTimeMillis()+".pdf";
+						System.currentTimeMillis()+".pdf";*/
 			/*docName = System.getProperty("user.home") + File.separator + 
 								prop.getProperty("tempPdfLocation")+System.currentTimeMillis()+".pdf";*/
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(docName));
