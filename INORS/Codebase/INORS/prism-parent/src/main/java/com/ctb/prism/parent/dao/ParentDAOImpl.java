@@ -1568,8 +1568,15 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						rs = (ResultSet) cs.getObject(6);
 						if (rs.next()) {
 							manageContentTOResult = new ManageContentTO();
-							manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
-							manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob) rs.getClob("CONTENT_DESCRIPTION")));
+							if(IApplicationConstants.CONTENT_TYPE_STD.equals(type)){
+								manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
+								manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob) rs.getClob("CONTENT_DESCRIPTION")));
+								manageContentTOResult.setObjectiveDesc(rs.getString("OBJECTIVE_DESC"));
+							}else{
+								manageContentTOResult.setContentId(rs.getLong("METADATA_ID"));
+								manageContentTOResult.setContentDescription(Utils.convertClobToString((Clob) rs.getClob("CONTENT_DESCRIPTION")));
+							}
+							
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();

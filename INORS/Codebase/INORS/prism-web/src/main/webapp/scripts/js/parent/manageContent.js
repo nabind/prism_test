@@ -215,7 +215,13 @@ function openModifyGenericModalToEdit(type) {
 				var custProdName = $('#custProdIdManageContent :selected').text();
 				var gradeName = $('#gradeIdManageContent :selected').text();
 				var subtestName = $('#subtestIdManageContent :selected').text();
-				var objectiveName = $('#objectiveIdManageContent :selected').text();
+				
+				//As we need to show Objective description instead of objective name - By Joy 
+				//var objectiveName = $('#objectiveIdManageContent :selected').text();
+				var objectiveName = "";
+				if(data != null && data.objectiveDesc != ""){
+					objectiveName = data.objectiveDesc;
+				}
 				
 				var $modifyGenericModal = $('#modifyGenericModal');
 				$modifyGenericModal.find('#testAdministrationText').text(custProdName);

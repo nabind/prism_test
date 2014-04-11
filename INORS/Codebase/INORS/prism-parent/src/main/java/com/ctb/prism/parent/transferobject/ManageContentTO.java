@@ -26,6 +26,7 @@ public class ManageContentTO extends BaseTO {
 	private String subtestName = "";
 	private String proficiencyLevel = "";
 	private long objContentId = 0;
+	private String objectiveDesc = "";
 	
 	public long getContentId() {
 		return contentId;
@@ -128,6 +129,12 @@ public class ManageContentTO extends BaseTO {
 	}
 	public void setObjContentId(long objContentId) {
 		this.objContentId = objContentId;
+	}
+	public String getObjectiveDesc() {
+		return objectiveDesc;
+	}
+	public void setObjectiveDesc(String objectiveDesc) {
+		this.objectiveDesc = objectiveDesc;
 	}
 }
 
