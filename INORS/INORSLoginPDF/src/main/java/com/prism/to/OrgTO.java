@@ -22,9 +22,10 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String dateStr;
 	private String dateStrWtYear;
 	private List<UserTO> users;
-	
+
 	private String schoolCode;
 	private String districtCode;
+	private String districtName;
 
 	private String userId;
 	private String userName;
@@ -52,7 +53,8 @@ public class OrgTO implements Comparable<OrgTO> {
 	}
 
 	public void setSchoolCode(String schoolCode) {
-		if (schoolCode != null) {
+		this.schoolCode = schoolCode;
+		/*if (schoolCode != null) {
 			String[] codes = schoolCode.split("~");
 			if (codes.length == 4) {
 				this.schoolCode = codes[3];
@@ -61,7 +63,7 @@ public class OrgTO implements Comparable<OrgTO> {
 		} else {
 			this.schoolCode = schoolCode;
 			this.districtCode = "NA";
-		}
+		}*/
 	}
 
 	public String getDistrictCode() {
@@ -70,6 +72,14 @@ public class OrgTO implements Comparable<OrgTO> {
 
 	public void setDistrictCode(String districtCode) {
 		this.districtCode = districtCode;
+	}
+
+	public String getDistrictName() {
+		return districtName;
+	}
+
+	public void setDistrictName(String districtName) {
+		this.districtName = districtName;
 	}
 
 	/**
@@ -501,6 +511,7 @@ public class OrgTO implements Comparable<OrgTO> {
 		result = prime * result + gradeSeq;
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -519,17 +530,17 @@ public class OrgTO implements Comparable<OrgTO> {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int compareTo(OrgTO arg0) {
 		final int BEFORE = -1;
-	    final int AFTER = 1;
-	    
-	    if(this.gradeSeq > arg0.getGradeSeq()) {
-	    	return AFTER;
-	    } else {
-	    	return BEFORE;
-	    }
+		final int AFTER = 1;
+
+		if (this.gradeSeq > arg0.getGradeSeq()) {
+			return AFTER;
+		} else {
+			return BEFORE;
+		}
 	}
 
 }

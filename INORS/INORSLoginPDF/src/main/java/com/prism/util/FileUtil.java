@@ -1,5 +1,6 @@
 package com.prism.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,6 +11,14 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BadPdfFormatException;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfReader;
 
 /**
  * This class contains various file handling utility methods:
@@ -97,6 +106,44 @@ public class FileUtil {
 		return zipFilePath;
 	}
 	
+	public static String createZipFile(String zipFileName, String filePath) {
+		logger.info("Adding " + filePath + " file in " + zipFileName);
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+		String zipFilePath = null;
+		try {
+			File zipFile = new File(zipFileName);
+			fos = new FileOutputStream(zipFile);
+			zos = new ZipOutputStream(fos);
+			//for (String filePath : filePaths) {
+				logger.info("Adding " + filePath);
+				String fileName = getFileNameFromFilePath(filePath);
+				ZipEntry entry = new ZipEntry(fileName);
+				byte[] input = getBytes(filePath);
+				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
+				entry.setSize(input.length);
+				zos.putNextEntry(entry);
+				zos.write(input);
+				zos.closeEntry();
+			//}
+			zos.close();
+			logger.info("Zip file [" + zipFileName + "] created");
+			zipFilePath = zipFile.getAbsolutePath();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+				// zos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return zipFilePath;
+	}
+	
 	
 	/**
 	 * Creates a PDF file from the list of file paths.
@@ -151,7 +198,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String getFileNameFromFilePath(String filePath) {
-		String fileName = null;
+		String fileName = filePath;
 		int index = filePath.lastIndexOf('\\');
 		if (index != -1) {
 			fileName = filePath.substring(index + 1);
@@ -208,5 +255,90 @@ public class FileUtil {
 		// String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
 		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+	
+	/**
+	 * @param files
+	 * @param rootPath
+	 * @return
+	 */
+	public static byte[] getMergedPdfBytes(List<String> files, String rootPath) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		if (files != null && !files.isEmpty()) {
+			try {
+				Document document = new Document();
+				PdfCopy copy = new PdfCopy(document, baos);
+				document.open();
+				PdfReader reader;
+				int n;
+				// loop over the documents you want to concatenate
+				for (String file : files) {
+					file = CustomStringUtil.appendString(rootPath, file);
+					try {
+						reader = new PdfReader(file);
+						// loop over the pages in that document
+						n = reader.getNumberOfPages();
+						for (int page = 0; page < n;) {
+							copy.addPage(copy.getImportedPage(reader, ++page));
+						}
+						if (isOdd(n)) {
+							copy.addPage(new Rectangle(8.26F, 11.69F), 0); // TODO: This page intentionally left blank.
+							copy.add(new Paragraph("This page intentionally left blank."));
+						}
+						copy.freeReader(reader);
+						reader.close();
+					} catch (IOException e) {
+						logger.info("Skipping " + file);
+						logger.warn(file + ": " + e.getMessage());
+					} catch (BadPdfFormatException e) {
+						logger.info("Skipping " + file);
+						logger.error(file + ": " + e.getMessage());
+					}
+				}
+				document.close();
+			} catch (DocumentException e) {
+				logger.error(e.getMessage());
+			}
+			logger.info("merged pdf bytes [" + baos.size() + "] created");
+		}
+		return baos.toByteArray();
+	}
+	
+	/**
+	 * Creates a file in disk.
+	 * 
+	 * @param fileName
+	 * @param input
+	 */
+	public static void createFile(String fileName, byte[] input) {
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(fileName);
+			fos.write(input);
+			FileCopyUtils.copy(input, new FileOutputStream(fileName));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Checks whether an integer is odd or even.
+	 * 
+	 * @param n
+	 * @return
+	 */
+	public static boolean isOdd(int n) {
+		if (n % 2 == 0)
+			return false;
+		else
+			return true;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "L", "603833" };
+		// args = new String[] { "I", "603833" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -129,18 +130,30 @@ public class UserAccountPdf {
 			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
 			String adminId = dao.getCurrentAdminYear();
 			// List<String> studentIdList = dao.getStudentIdList(schoolId);
+			List<String> tempFileList = new ArrayList<String>();
 			List<String> pdfPathList = new ArrayList<String>();
+			pdfPathList.add(prop.getProperty("WHATS_IN_THE_BOX"));
 
-			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
-					+ school.getDateStrWtYear() + "_IC.zip";
+			String docName = getDocName(school, prop);
 			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
-			letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1", false); // -1 for all students combined pdf
+			// letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1", false, false); // -1 for all students combined pdf
+			String pdfPath = getPdfPath(prop, school.getElementName(), school.getCustomerCode());
+			String urlString = getURLString(prop, schoolId, adminId, "-1", false);
+			URL url = new URL(urlString);
+			letterLoc = ReportPDF.savePdfFromPrismWeb(pdfPath, url);
 			if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 				pdfPathList.add(letterLoc);
+				tempFileList.add(letterLoc);
 			}
 			// }
+			pdfPathList.add(prop.getProperty("COVER_CORP_PAGE"));
+			pdfPathList.add(prop.getProperty("COVER_SCHOOL_PAGE"));
 			if (!pdfPathList.isEmpty()) {
-				letterLoc = FileUtil.saveLetterFromFileServer(docName, pdfPathList);
+				byte[] mergedPdfBytes = FileUtil.getMergedPdfBytes(pdfPathList, "");
+				FileUtil.createFile(docName + "_IC.pdf", mergedPdfBytes);
+				letterLoc = docName + "_IC.pdf";
+				//letterLoc = FileUtil.createPDFFile(docName + "_IC.pdf", pdfPathList);
+				//letterLoc = FileUtil.createZipFile(docName + "_IC.zip", letterLoc);
 				logger.debug("IC letter created @ " + letterLoc);
 			} else {
 				logger.info("No pdf found");
@@ -153,7 +166,6 @@ public class UserAccountPdf {
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
 					String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
 					if (sendMail(schoolId, false, false, prop, school.getEmail(), letterLoc, null, null, false, true, supportEmail, mailSubject)) {
-						// logger.debug("	IC mail sent successfully ... for process id : " + processId);
 						// removeFile(encDocLocation);
 						logger.info("Mail sent successfully to " + school.getEmail());
 					} else {
@@ -163,7 +175,7 @@ public class UserAccountPdf {
 					logger.warn("FAILED: sending mail .. no school mail id is defined.");
 				}
 			}
-			FileUtil.removeFile(pdfPathList);
+			FileUtil.removeFile(tempFileList);
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());
 			e.printStackTrace();
@@ -189,7 +201,7 @@ public class UserAccountPdf {
 			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
 					+ school.getDateStrWtYear() + "_IC.zip";
 			for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
-				letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, "-1", school.getElementName(), school.getCustomerCode(), adminId, studentBioId, false);// for all students in school separate pdf
+				letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, "-1", school.getElementName(), school.getCustomerCode(), adminId, studentBioId, false, false);// for all students in school separate pdf
 				if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 					// pdfPathList.add(letterLoc);
 					pdfPathList.put(studentBioId, letterLoc);
@@ -248,7 +260,7 @@ public class UserAccountPdf {
 			String docName = prop.getProperty("pdfGenPath") + File.separator + prop.getProperty("tempPdfLocation") + prop.getProperty("districtText") + prop.getProperty("schoolText")
 					+ school.getDateStrWtYear() + "_IC.zip";
 			for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
-				letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, "-1", school.getElementName(), school.getCustomerCode(), adminId, studentBioId, true);// for all students in school separate pdf
+				letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, "-1", school.getElementName(), school.getCustomerCode(), adminId, studentBioId, true, false);// for all students in school separate pdf
 				if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 					// pdfPathList.add(letterLoc);
 					pdfPathList.put(studentBioId, letterLoc);
@@ -705,10 +717,14 @@ public class UserAccountPdf {
 	}
 
 	/**
-	 * Main method responsible for fetching data, storing password and sending mail
+	 * Main method responsible for fetching data, storing password and sending mail.
 	 * 
 	 * @param level3JasperOrgId
 	 * @param prop
+	 * @param acLetterLocation
+	 * @param migration
+	 * @param state
+	 * @return
 	 */
 	private static String manupulateTenants(String level3JasperOrgId, Properties prop, String acLetterLocation, boolean migration, boolean state) {
 		long processId = 0;
@@ -1110,6 +1126,21 @@ public class UserAccountPdf {
 		return encDocLocation;
 	}
 	
+	private static String getDocName(OrgTO school, Properties prop) {
+		StringBuffer docBuff = new StringBuffer();
+		String pdfPrefix = prop.getProperty("testAdministrator");
+		docBuff.append(prop.getProperty("pdfGenPath"));
+		docBuff.append(File.separator);
+		docBuff.append(pdfPrefix).append("_");
+		docBuff.append(school.getDistrictName()).append("_");
+		docBuff.append(school.getDistrictCode()).append("_");
+		docBuff.append(school.getElementName()).append("_");
+		docBuff.append(school.getSchoolCode()).append("_");
+		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
+		// docBuff.append(".pdf");
+		return docBuff.toString();
+	}
+	
 	/**
 	 * This calls create PDF method to create pdf with specified template
 	 * 
@@ -1123,15 +1154,15 @@ public class UserAccountPdf {
 		if (prop.getProperty("pdfGenPath") == null) {
 			logger.info("PDF generation path (pdfGenPath) is not defined");
 		}
-		String docName = null;
-		StringBuffer docBuff = new StringBuffer();
+		String docName = getDocName(school, prop) + ".pdf";
+		/*StringBuffer docBuff = new StringBuffer();
 		String pdfPrefix = prop.getProperty("testAdministrator");
 		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
 		docBuff.append(prop.getProperty("districtText")).append(school.getDistrictCode());
 		docBuff.append(prop.getProperty("schoolText")).append(school.getSchoolCode()).append("_");
 		docBuff.append(getDateTime("ddMMyyyyHHmmss")).append(".pdf");
 		
-		docName = docBuff.toString();
+		docName = docBuff.toString();*/
 		// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
 		String docLocation = PdfGenerator.generatePdfAcsi(prop, school, teachers, schoolUserPresent, isInitialLoad, migration, state, docName);
 		// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
@@ -1274,5 +1305,27 @@ public class UserAccountPdf {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private static String getURLString(Properties prop, String schoolId, String adminid, String studentBioId, boolean isExtTable) {
+		StringBuffer URLStringBuf = new StringBuffer();
+		URLStringBuf.append(prop.getProperty("jasperURL"));
+		URLStringBuf.append(prop.getProperty("jasperURLParams"));
+		URLStringBuf.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=").append(schoolId);
+		URLStringBuf.append("&p_AdminYear=").append(adminid).append("&assessmentId=105_InvLetter").append("&p_Student_Bio_Id=").append(studentBioId);
+		if (isExtTable) {
+			URLStringBuf.append("&p_ExtTable=Y");
+		} else {
+			URLStringBuf.append("&p_ExtTable=N");
+		}
+		return URLStringBuf.toString();
+	}
+
+	private static String getPdfPath(Properties prop, String elementName, String customerCode) {
+		StringBuffer docBuff = new StringBuffer();
+		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("temp_IC_");
+		docBuff.append(elementName).append("_").append(customerCode).append("_");
+		docBuff.append(System.currentTimeMillis()).append(".pdf");
+		return docBuff.toString();
 	}
 }

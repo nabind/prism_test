@@ -84,7 +84,7 @@ public class CommonDAOImpl implements CommonDAO {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				school = new OrgTO();
-				school.setElementName(rs.getString("ORG_NODE_NAME"));
+				school.setElementName(rs.getString("SCHOOL_NAME"));
 				school.setOrgNodeId(rs.getString("ORG_NODEID"));
 				school.setOrgNodeLevel(rs.getString("ORG_NODE_LEVEL"));
 				school.setJasperOrgId(rs.getString("ORG_NODEID"));
@@ -93,6 +93,9 @@ public class CommonDAOImpl implements CommonDAO {
 				school.setParentJasperOrgId("PARENT_ORG_NODEID");
 				school.setDateStr(rs.getString("DATE_STR"));
 				school.setDateStrWtYear(rs.getString("DATE_STR_WT_YEAR"));
+				school.setSchoolCode(rs.getString("SCHOOL_CODE"));
+				school.setDistrictCode(rs.getString("DISTRICT_CODE"));
+				school.setDistrictName(rs.getString("DISTRICT_NAME"));
 			} else {
 				logger.info("No school found");
 			}
@@ -775,40 +778,24 @@ public class CommonDAOImpl implements CommonDAO {
 		OrgTO school = null;
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			// conn = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-
-			/*
-			 * String query = "SELECT org.level3_element_name, org.org_nodeid, org.level3_jasper_orgid " + "FROM org_node_dim org WHERE rownum = 1 and org.level3_jasper_orgid = ?";
-			 */
-
-			String query = "";
-			if (state) {
-				query = /*
-						 * "SELECT org.level1_element_name, org.org_nodeid, org.level1_jasper_orgid, str.email, " + "str.STRUCTURE_ELEMENT, org.LEVEL1_CUSTOMER_CODE " +
-						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level1_jasper_orgid " +
-						 * "AND rownum = 1 and org.level1_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
-						 */
-				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid, org_node_code_path from org_node_dim where org_nodeid = ? and org_node_level=1";
-			} else {
-				query = /*
-						 * "SELECT org.level3_element_name, org.org_nodeid, org.level3_jasper_orgid, str.email, " + "str.STRUCTURE_ELEMENT, org.LEVEL3_CUSTOMER_CODE " +
-						 * "FROM org_node_dim org, org_structure_element str WHERE str.jasper_orgid = org.level3_jasper_orgid " +
-						 * "AND rownum = 1 and org.level3_jasper_orgid = ? and str.adminid = (select adminid from admin_dim where current_admin = 'Y') ";
-						 */
-				"select org_node_name, org_nodeid, org_nodeid, emails, strc_element, customerid, org_node_code_path from org_node_dim where org_nodeid = ? and org_node_level=3";
-			}
-			pstmt = conn.prepareCall(query);
+			pstmt = conn.prepareCall(Constants.GET_SCHOOL_DETAILS);
 			pstmt.setString(1, jasperOrgId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				school = new OrgTO();
-				school.setElementName(rs.getString(1));
-				school.setOrgNodeId(rs.getString(2));
-				school.setJasperOrgId(rs.getString(3));
-				school.setEmail(rs.getString(4));
-				school.setStructureElement(rs.getString(5));
-				school.setCustomerCode(rs.getString(6));
-				school.setSchoolCode(rs.getString(7));
+				school.setElementName(rs.getString("SCHOOL_NAME"));
+				school.setOrgNodeId(rs.getString("ORG_NODEID"));
+				school.setStructureElement(rs.getString("STRC_ELEMENT"));
+				school.setOrgNodeLevel(rs.getString("ORG_NODE_LEVEL"));
+				school.setJasperOrgId(rs.getString("ORG_NODEID"));
+				school.setEmail(rs.getString("EMAILS"));
+				school.setCustomerCode(rs.getString("CUSTOMERID"));
+				school.setParentJasperOrgId("PARENT_ORG_NODEID");
+				school.setDateStr(rs.getString("DATE_STR"));
+				school.setDateStrWtYear(rs.getString("DATE_STR_WT_YEAR"));
+				school.setSchoolCode(rs.getString("SCHOOL_CODE"));
+				school.setDistrictCode(rs.getString("DISTRICT_CODE"));
+				school.setDistrictName(rs.getString("DISTRICT_NAME"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

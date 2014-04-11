@@ -32,16 +32,14 @@ public class ReportPDF {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId, boolean isExtTable) throws IOException {
+	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId, boolean isExtTable, boolean encript) throws IOException {
 		logger.info("schoolId=" + schoolId);
 		logger.info("adminid=" + adminid);
-		logger.info("studentBioId=" + studentBioId);
-		// logger.info("studentBioId = " + studentBioId);
+		logger.info("studentBioId = " + studentBioId);
 		StringBuffer docBuff = new StringBuffer();
 		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("temp_IC_");
 		docBuff.append(elementName).append("_").append(customerCode).append("_");
 		docBuff.append(System.currentTimeMillis()).append(".pdf");
-		// logger.info(docBuff.toString());
 
 		StringBuffer URLStringBuf = new StringBuffer();
 		URLStringBuf.append(prop.getProperty("jasperURL"));
@@ -53,40 +51,71 @@ public class ReportPDF {
 		} else {
 			URLStringBuf.append("&p_ExtTable=N");
 		}
-		// logger.info(URLStringBuf.toString());
 
 		URL url1 = new URL(URLStringBuf.toString());
 		FileOutputStream fos = new FileOutputStream(docBuff.toString());
 		InputStream is = null;
 		try {
-			// Contacting the URL
-			// logger.info("\nConnecting to " + url1.toString() + " ... ");
 			logger.info("Connecting to Report Server ... ");
 			HttpURLConnection urlConn = (HttpURLConnection) url1.openConnection();
 
 			// Checking whether the URL contains a PDF
 			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-				logger.info(schoolId + " : FAILED.\n[Sorry. This is not a PDF.]");
+				logger.error(schoolId + " : FAILED.\n[Sorry. This is not a PDF.]");
 				return null;
 			} else {
 				try {
 					// Read the PDF from the URL and save to a local file
-					// is = url1.openStream();
-					is = urlConn.getInputStream();
+					is = urlConn.getInputStream(); // is = url1.openStream();
 					IOUtils.copy(is, fos);
 				} catch (ConnectException ce) {
-					logger.info(schoolId + " : FAILED.\n[" + ce.getMessage() + "]\n");
+					logger.error(schoolId + " : FAILED.\n[" + ce.getMessage() + "]\n");
 					return null;
 				}
 			}
 		} catch (NullPointerException npe) {
-			logger.info(schoolId + " : FAILED.\n[" + npe.getMessage() + "]\n");
+			logger.error(schoolId + " : FAILED.\n[" + npe.getMessage() + "]\n");
 			return null;
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(fos);
 		}
-		return encryptPdf(prop, docBuff.toString(), customerCode, elementName);
+		if (encript) {
+			return encryptPdf(prop, docBuff.toString(), customerCode, elementName);
+		} else {
+			return docBuff.toString();
+		}
+	}
+	
+	public static String savePdfFromPrismWeb(String pdfPath, URL url) throws IOException {
+		FileOutputStream fos = new FileOutputStream(pdfPath);
+		InputStream is = null;
+		try {
+			logger.info("Connecting to Report Server ... ");
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+
+			// Checking whether the URL contains a PDF
+			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+				logger.error("FAILED : This is not a PDF.");
+				return null;
+			} else {
+				try {
+					// Read the PDF from the URL and save to a local file
+					is = urlConn.getInputStream();
+					IOUtils.copy(is, fos);
+				} catch (ConnectException e) {
+					logger.error("FAILED : " + e.getMessage());
+					return null;
+				}
+			}
+		} catch (NullPointerException e) {
+			logger.error("FAILED : " + e.getMessage());
+			return null;
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(fos);
+		}
+		return pdfPath;
 	}
 
 	/**
