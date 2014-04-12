@@ -92,6 +92,7 @@ public class ReportPDF {
 		InputStream is = null;
 		try {
 			logger.info("Connecting to Report Server ... ");
+			logger.info(url);
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
 			// Checking whether the URL contains a PDF

@@ -50,7 +50,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "603833" };
+		 args = new String[] { "I", "603833" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -83,6 +83,7 @@ public class UserAccountPdf {
 						//// processLoginPdf(prop, dao, id);
 						encDocLocation = manupulateTenants(id, prop, null, false, false);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+						ARCHIVE_NEEDED = false;
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
@@ -132,36 +133,45 @@ public class UserAccountPdf {
 			// List<String> studentIdList = dao.getStudentIdList(schoolId);
 			List<String> tempFileList = new ArrayList<String>();
 			List<String> pdfPathList = new ArrayList<String>();
-			pdfPathList.add(prop.getProperty("WHATS_IN_THE_BOX"));
+			
+			String schoolCoverUrl = getSchoolCoverURLString(prop, schoolId);
+			String schoolCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), "SCHOOL"), new URL(schoolCoverUrl));
+			String districtCoverUrl = getDistrictCoverURLString(prop, schoolId);
+			String districtCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), "DISTRICT"), new URL(districtCoverUrl));
 
-			String docName = getDocName(school, prop);
+			pdfPathList.add(schoolCoverPath);
+			pdfPathList.add(prop.getProperty("WHATS_IN_THE_BOX"));
+			pdfPathList.add(prop.getProperty("GENERIC_LETTER"));
+			
+			String docName = getPdfPath(prop, school.getSchoolCode(), school.getDistrictCode(), false);//getDocName(school, prop);
 			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
 			// letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1", false, false); // -1 for all students combined pdf
-			String pdfPath = getPdfPath(prop, school.getElementName(), school.getCustomerCode());
+			String pdfPath = getPdfPath(prop, school.getSchoolCode(), school.getDistrictCode(), true);
 			String urlString = getURLString(prop, schoolId, adminId, "-1", false);
 			URL url = new URL(urlString);
 			letterLoc = ReportPDF.savePdfFromPrismWeb(pdfPath, url);
 			if ((letterLoc != null) && (!letterLoc.isEmpty())) {
 				pdfPathList.add(letterLoc);
 				tempFileList.add(letterLoc);
+				tempFileList.add(schoolCoverPath);
 			}
 			// }
-			pdfPathList.add(prop.getProperty("COVER_CORP_PAGE"));
-			pdfPathList.add(prop.getProperty("COVER_SCHOOL_PAGE"));
+			
 			if (!pdfPathList.isEmpty()) {
 				byte[] mergedPdfBytes = FileUtil.getMergedPdfBytes(pdfPathList, "");
-				FileUtil.createFile(docName + "_IC.pdf", mergedPdfBytes);
-				letterLoc = docName + "_IC.pdf";
+				FileUtil.createFile(docName, mergedPdfBytes);
+				letterLoc = docName;
 				//letterLoc = FileUtil.createPDFFile(docName + "_IC.pdf", pdfPathList);
 				//letterLoc = FileUtil.createZipFile(docName + "_IC.zip", letterLoc);
-				logger.debug("IC letter created @ " + letterLoc);
+				logger.info("IC letter created @ " + letterLoc);
 			} else {
 				logger.info("No pdf found");
 			}
 
-			if (letterLoc != null && !letterLoc.isEmpty()) {
+			/* mail sending is not needed
+			 * if (letterLoc != null && !letterLoc.isEmpty()) {
 				// send pdf to school
-				/* Fetch support email from customer table */
+				 Fetch support email from customer table 
 				String supportEmail = dao.getSupportEmailForCustomer(school.getCustomerCode());
 				if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
 					String mailSubject = dao.getSubjectPrefix(school.getOrgNodeId()) + "" + school.getElementName() + "" + school.getOrgNodeId();
@@ -174,7 +184,7 @@ public class UserAccountPdf {
 				} else {
 					logger.warn("FAILED: sending mail .. no school mail id is defined.");
 				}
-			}
+			}*/
 			FileUtil.removeFile(tempFileList);
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());
@@ -1307,6 +1317,15 @@ public class UserAccountPdf {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param prop
+	 * @param schoolId
+	 * @param adminid
+	 * @param studentBioId
+	 * @param isExtTable
+	 * @return
+	 */
 	private static String getURLString(Properties prop, String schoolId, String adminid, String studentBioId, boolean isExtTable) {
 		StringBuffer URLStringBuf = new StringBuffer();
 		URLStringBuf.append(prop.getProperty("jasperURL"));
@@ -1320,12 +1339,67 @@ public class UserAccountPdf {
 		}
 		return URLStringBuf.toString();
 	}
+	
+	/**
+	 * get school cover url
+	 * @param prop
+	 * @param schoolId
+	 * @return
+	 */
+	private static String getSchoolCoverURLString(Properties prop, String schoolId) {
+		StringBuffer URLStringBuf = new StringBuffer();
+		URLStringBuf.append(prop.getProperty("jasperURL"));
+		URLStringBuf.append(prop.getProperty("schoolCoverURLParams"));
+		URLStringBuf.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=").append(schoolId);
+		URLStringBuf.append("&assessmentId=105_InvLetter");
+		return URLStringBuf.toString();
+	}
+	
+	/**
+	 * get district cover url
+	 * @param prop
+	 * @param schoolId
+	 * @return
+	 */
+	private static String getDistrictCoverURLString(Properties prop, String schoolId) {
+		StringBuffer URLStringBuf = new StringBuffer();
+		URLStringBuf.append(prop.getProperty("jasperURL"));
+		URLStringBuf.append(prop.getProperty("districtCoverURLParams"));
+		URLStringBuf.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=").append(schoolId);
+		URLStringBuf.append("&assessmentId=105_InvLetter");
+		return URLStringBuf.toString();
+	}
 
-	private static String getPdfPath(Properties prop, String elementName, String customerCode) {
+	/**
+	 * Get PDF location
+	 * @param prop
+	 * @param elementName
+	 * @param customerCode
+	 * @return
+	 */
+	private static String getPdfPath(Properties prop, String districtCode, String schoolCode, boolean tempLoc) {
 		StringBuffer docBuff = new StringBuffer();
-		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("temp_IC_");
-		docBuff.append(elementName).append("_").append(customerCode).append("_");
-		docBuff.append(System.currentTimeMillis()).append(".pdf");
+		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("IC").append(File.separator);
+		docBuff.append(prop.getProperty("ICLetterFile"));
+		docBuff.append(districtCode).append(prop.getProperty("schoolText")).append(schoolCode).append("_");
+		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
+		if(tempLoc) docBuff.append(System.currentTimeMillis());
+		docBuff.append(".pdf");
+		return docBuff.toString();
+	}
+	
+	/**
+	 * PDF loc for school and district
+	 * @param prop
+	 * @param orgCode
+	 * @param orgType
+	 * @return
+	 */
+	private static String getOrgPdfPath(Properties prop, String orgCode, String orgType) {
+		StringBuffer docBuff = new StringBuffer();
+		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("IC").append(File.separator);
+		docBuff.append("Cover_").append(orgType).append("_").append(orgCode);
+		docBuff.append(".pdf");
 		return docBuff.toString();
 	}
 }
