@@ -166,10 +166,13 @@ public class UserAccountPdf {
 			if (!pdfDistPathList.isEmpty()) {
 				String distPdf = CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "IC", 
 						File.separator, prop.getProperty("ICLetterFile"), 
-						school.getDistrictCode(), "_", getDateTime("ddMMyyyyHHmmss"), ".pdf");
-				byte[] mergedPdfBytes = FileUtil.getMergedPdfBytes(pdfDistPathList, "");
-				FileUtil.createFile(distPdf, mergedPdfBytes);
-				logger.info("District letter created @ " + distPdf);
+						school.getDistrictCode(), ".pdf");
+				File file = new File(distPdf);
+				if(!file.exists()) {
+					byte[] mergedPdfBytes = FileUtil.getMergedPdfBytes(pdfDistPathList, "");
+					FileUtil.createFile(distPdf, mergedPdfBytes);
+					logger.info("District letter created @ " + distPdf);
+				}
 			} 
 			if (!pdfPathList.isEmpty()) {
 				byte[] mergedPdfBytes = FileUtil.getMergedPdfBytes(pdfPathList, "");
