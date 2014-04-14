@@ -38,6 +38,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BadPdfFormatException;
@@ -269,7 +270,7 @@ public class FileUtil {
 							copy.addPage(copy.getImportedPage(reader, ++page));
 						}
 						if (Utils.isOdd(n)) {
-							copy.addPage(new Rectangle(8.26F, 11.69F), 0); // TODO: This page intentionally left blank.
+							copy.addPage(new Rectangle(PageSize.A4), 0); // TODO: This page intentionally left blank.
 							copy.add(new Paragraph("This page intentionally left blank."));
 						}
 						copy.freeReader(reader);
@@ -537,7 +538,7 @@ public class FileUtil {
 				copy.addPage(copy.getImportedPage(reader, ++page));
 			}
 			if (Utils.isOdd(n)) {
-				copy.addPage(new Rectangle(8.26F, 11.69F), 0); // TODO: This page intentionally left blank.
+				copy.addPage(new Rectangle(PageSize.A4), 0); // TODO: This page intentionally left blank.
 				copy.add(new Paragraph("This page intentionally left blank."));
 			}
 			copy.freeReader(reader);
