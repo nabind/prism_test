@@ -251,6 +251,9 @@ public class FileUtil {
 	}
 
 	public static byte[] getMergedPdfBytes(List<String> files, String rootPath) {
+		if (rootPath.startsWith("/") && !rootPath.endsWith("/")) {
+			rootPath = rootPath + "/";
+		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		if (files != null && !files.isEmpty()) {
 			try {
