@@ -1,4 +1,3 @@
-package com.ctb.prism.report.api;
 /*
  * JasperReports - Free Java Reporting Library.
  * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
@@ -22,6 +21,8 @@ package com.ctb.prism.report.api;
  * You should have received a copy of the GNU Lesser General Public License
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.ctb.prism.report.api;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class WebReportContext implements ReportContext
 	 *
 	 */
 	private static final String SESSION_ATTRIBUTE_REPORT_CONTEXT_ID_PREFIX = "net.sf.jasperreports.web.report.context_";
-	public static final String REQUEST_PARAMETER_REPORT_CONTEXT_ID = "jr.ctxid";
+	public static final String REQUEST_PARAMETER_REPORT_CONTEXT_ID = "jr_ctxid";
 
 	/**
 	 * @deprecated Replaced by {@link #REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR}.
@@ -52,6 +53,8 @@ public class WebReportContext implements ReportContext
 	public static final String REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR = "net.sf.jasperreports.web.jasper_print.accessor";
 	//public static final String REPORT_CONTEXT_PARAMETER_JASPER_REPORT = "net.sf.jasperreports.web.jasper_report";
 	
+	public static final String APPLICATION_CONTEXT_PATH = "net.sf.jasperreports.web.app.context.path";
+	
 	/**
 	 *
 	 */
@@ -59,7 +62,7 @@ public class WebReportContext implements ReportContext
 	private Map<String, String> requestParameters = new HashMap<String, String>();
 	private Map<String, Object> parameterValues;
 	private String id;
-	
+
 	/**
 	 *
 	 */
@@ -90,7 +93,7 @@ public class WebReportContext implements ReportContext
 		if (webReportContext != null)
 		{
 			//webReportContext.setRequest(request);
-			webReportContext.setParameterValue("net.sf.jasperreports.web.app.context.path", request.getContextPath());
+			webReportContext.setParameterValue(APPLICATION_CONTEXT_PATH, request.getContextPath());
 			webReportContext.setParameterValue(JRParameter.REPORT_CONTEXT, webReportContext);
 		}
 		
@@ -201,4 +204,5 @@ public class WebReportContext implements ReportContext
 	{
 		return SESSION_ATTRIBUTE_REPORT_CONTEXT_ID_PREFIX + id;
 	}
+
 }

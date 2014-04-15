@@ -17,6 +17,6 @@ set jar_p=%%A
 set jar_n=!jar_p:~%length%,-4!
 ::set wq=!wq:\=.!
 ECHO ******************Installing Jar !jar_n! *************************
-call mvn install:install-file -DgroupId=net.jasper -DartifactId=!jar_n! -Dfile=!jar_p! -Dversion=5.0 -Dpackaging=jar
+call mvn install:install-file -DgroupId=net.jasper -DartifactId=!jar_n! -Dfile=!jar_p! -Dversion=5.5.0 -Dpackaging=jar
 )
 

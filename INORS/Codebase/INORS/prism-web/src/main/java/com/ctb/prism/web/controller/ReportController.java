@@ -23,6 +23,7 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.JRXhtmlExporter;
 import net.sf.jasperreports.engine.util.JRProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
-import com.ctb.prism.report.service.JRXhtmlExporter;
+//import com.ctb.prism.report.service.JRXhtmlExporter;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
@@ -234,7 +235,7 @@ public class ReportController extends BaseDAO {
 			logger.log(IAppLogger.INFO, "Exit: ReportController - openReportHtml");
 		}
 
-		return "forward:/ReportServlet.do?jr.report=" + reportUrl;
+		return "forward:/ReportServlet.do?jr.report=" + reportUrl + "&jr_report_uri=" + reportUrl;
 	}
 
 	/**

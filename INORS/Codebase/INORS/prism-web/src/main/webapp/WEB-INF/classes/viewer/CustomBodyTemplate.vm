@@ -1,17 +1,18 @@
+<div id='reportContainer' style='display: table-cell'></div>
 <script class='jasperreports'>
-	jasperreports.reportviewertoolbar.loadReport('${reportUrl}', '${jsonParamsObject}', '${toolbarId}');
-</script>
+    var reportPromise = null,
+            viewer = null;
 
-<style>
-#_maskDiv {
-	width: 100%  !important;
-	height: 100% !important;
-	left: 0% !important;
-	background: url(themes/acsi/img/standard/loaders/loading64.gif) no-repeat !important;
-	-moz-opacity: 0.48 !important;
-	opacity: 0.48 !important;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=48) !important;
-	filter:alpha(opacity=48) !important;
-	background-color: #ccc !important;
-}
-</style>
+    require(["jasperreports-viewer"], function(Viewer) {
+        viewer = new Viewer({
+            at: "reportContainer",
+            reporturi: "${reportUri}",
+            async: ${async},
+            page: "${page}",
+            applicationContextPath: "${contextPath}"
+        });
+
+        reportPromise = viewer.loadReport();
+    });
+
+</script>

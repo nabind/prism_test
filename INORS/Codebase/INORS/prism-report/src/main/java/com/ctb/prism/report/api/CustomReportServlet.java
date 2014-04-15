@@ -1,8 +1,6 @@
-package com.ctb.prism.report.api;
-
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2011 Jaspersoft Corporation. All rights reserved.
+ * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,13 +21,13 @@ package com.ctb.prism.report.api;
  * You should have received a copy of the GNU Lesser General Public License
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.ctb.prism.report.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -39,18 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.ReportContext;
+import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-import net.sf.jasperreports.engine.export.JRXhtmlExporter;
-import net.sf.jasperreports.web.JRInteractiveException;
-import net.sf.jasperreports.web.actions.Action;
-import net.sf.jasperreports.web.actions.AbstractAction;
-import net.sf.jasperreports.web.actions.MultiAction;
+import net.sf.jasperreports.engine.export.JsonExporter;
+//import net.sf.jasperreports.web.WebReportContext;
 import net.sf.jasperreports.web.servlets.AbstractServlet;
 import net.sf.jasperreports.web.servlets.JasperPrintAccessor;
 import net.sf.jasperreports.web.servlets.ReportExecutionStatus;
@@ -58,40 +49,25 @@ import net.sf.jasperreports.web.servlets.ReportPageStatus;
 import net.sf.jasperreports.web.util.JacksonUtil;
 import net.sf.jasperreports.web.util.ReportExecutionHyperlinkProducerFactory;
 import net.sf.jasperreports.web.util.VelocityUtil;
+import net.sf.jasperreports.web.util.WebHtmlResourceHandler;
 import net.sf.jasperreports.web.util.WebUtil;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.ctb.prism.core.util.CustomStringUtil;
 
 
 /**
- * @author Teodor Danciu (teodord@users.sourceforge.net)
+ * @author Narcis Marcu(nmarcu@users.sourceforge.net)
  * @version $Id$
  */
 public class CustomReportServlet extends AbstractServlet
 {
 	private static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 	
-	private static final Log log = LogFactory.getLog(CustomReportServlet.class);
-		
 	private static final String TEMPLATE_HEADER= "net/sf/jasperreports/web/servlets/resources/templates/HeaderTemplate.vm";
 	private static final String TEMPLATE_BETWEEN_PAGES= "net/sf/jasperreports/web/servlets/resources/templates/BetweenPagesTemplate.vm";
 	private static final String TEMPLATE_FOOTER= "net/sf/jasperreports/web/servlets/resources/templates/FooterTemplate.vm";
-	
+
 	private static final String TEMPLATE_HEADER_NOPAGES = "net/sf/jasperreports/web/servlets/resources/templates/HeaderTemplateNoPages.vm";
 	private static final String TEMPLATE_FOOTER_NOPAGES = "net/sf/jasperreports/web/servlets/resources/templates/FooterTemplateNoPages.vm";
-	
-	private static final String REQUEST_PARAMETER_IGNORE_PAGINATION = "jr.ignrpg";
-	private static final String REQUEST_PARAMETER_ACTION = "jr.action";
-	private static final String REQUEST_PARAMETER_PAGE = "jr.page";
-	private static final String REQUEST_PARAMETER_PAGE_TIMESTAMP = "jr.pagetimestamp";
-	private static final String REQUEST_PARAMETER_PAGE_UPDATE = "jr.pageUpdate";
 
-	
 
 	/**
 	 *
@@ -101,125 +77,43 @@ public class CustomReportServlet extends AbstractServlet
 		HttpServletResponse response
 		) throws IOException, ServletException
 	{
-		long start = System.currentTimeMillis();
-		response.setContentType("text/html; charset=UTF-8");
+		setNoExpire(response);
 		
-		// Set to expire far in the past.
-		response.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
-		// Set standard HTTP/1.1 no-cache headers.
-		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-		// Set IE extended HTTP/1.1 no-cache headers (use addHeader).
-		response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-		// Set standard HTTP/1.0 no-cache header.
-		response.setHeader("Pragma", "no-cache");
+		String contextId = request.getParameter(WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID);
 
-		PrintWriter out = response.getWriter();
-
-		WebReportContext webReportContext = WebReportContext.getInstance(request);
-
-		try
+		// render the html for a report
+		if (contextId != null && request.getHeader("accept").indexOf(HTML_ACCEPT_HEADER) >= 0) 
 		{
-			if (request.getParameterMap().containsKey(REQUEST_PARAMETER_PAGE_UPDATE))
+			WebReportContext webReportContext = WebReportContext.getInstance(request, false);
+			if (webReportContext != null) 
 			{
-				//FIXME move this to a different servlet
-				pageUpdate(request, response, webReportContext);
-			}
-			else
-			{
-				runReport(request, webReportContext);
-				render1(request, webReportContext, out);
-				long end = System.currentTimeMillis();
-				//System.out.println(" <<<< Time Taken: CustomReportServlet >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
-			}
-		}
-		catch (JRInteractiveException e) 
-		{
-			log.error("Jasper Interactive error", e);
-			
-			out.println("<div><pre id=\"jrInteractiveError\">");
-			if (e.getMessage() != null && e.getMessage().indexOf(AbstractAction.ERR_CONCAT_STRING) != -1) {
-				String[] tokens = e.getMessage().split(AbstractAction.ERR_CONCAT_STRING);
-				for (String token: tokens) {
-					out.println(token);
+				response.setContentType(HTML_CONTENT_TYPE);
+				try 
+				{
+					PrintWriter out = response.getWriter();
+					render(request, response, webReportContext, out);
 				}
-				
-			} else {
-				out.println(e.getMessage());
+				catch (JRException e) 
+				{
+					response.setContentType(JSON_CONTENT_TYPE);//FIXMEJIVE probably can't change contentType at this point, because getWriter() was already called once
+					response.setStatus(404);
+					response.getWriter().println("{\"msg\": \"JasperReports encountered an error!\"}");
+					return;
+				}
 			}
-			out.println("</pre></div>");
+			else 
+			{
+				response.setContentType(JSON_CONTENT_TYPE);
+				response.setStatus(404);
+				response.getWriter().println("{\"msg\": \"Resource with id '" + contextId + "' not found!\"}");
+				return;
+			}
 		}
-		catch (Exception e)
+		else
 		{
-			log.error("Error on report execution", e);
-			
-			out.println("<html>");//FIXMEJIVE do we need to render this? or should this be done by the viewer?
-			out.println("<head>");
-			out.println("<title>JasperReports - Web Application Sample</title>");
-			out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
-			
-			out.println("<body bgcolor=\"white\">");
-
-			out.println("<span class=\"bnew\">JasperReports encountered this error :</span>");
-			out.println("<pre>");
-			e.printStackTrace(out);
-			out.println("</pre>");
-			out.println("</body>");
-			out.println("</html>");
-		}
-		
-	}
-
-
-	/**
-	 * @throws JRInteractiveException 
-	 *
-	 */
-	public void runReport(
-		HttpServletRequest request, //FIXMEJIVE put request in report context, maybe as a thread local?
-		WebReportContext webReportContext
-		) throws JRException, JRInteractiveException //IOException, ServletException
-	{
-		JasperPrintAccessor jasperPrintAccessor = 
-			(JasperPrintAccessor) webReportContext.getParameterValue(
-				WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR
-			);
-
-		JRPropertiesUtil propUtil = JRPropertiesUtil.getInstance(getJasperReportsContext());
-		String runReportParamName = propUtil.getProperty(WebUtil.PROPERTY_REQUEST_PARAMETER_RUN_REPORT);
-		String runReport = request.getParameter(runReportParamName);
-		System.out.println("Run report : " + Boolean.valueOf(runReport));
-		System.out.println("jasperPrintAccessor == null : " + (jasperPrintAccessor == null));
-		System.out.println("getJasperReportsContext() : " + getJasperReportsContext());
-		if (jasperPrintAccessor == null || Boolean.valueOf(runReport))
-		{
-			String reportUriParamName = propUtil.getProperty(WebUtil.PROPERTY_REQUEST_PARAMETER_REPORT_URI);
-			System.out.println("reportUriParamName : "+reportUriParamName);
-			String reportUri = request.getParameter(reportUriParamName);
-			System.out.println("reportUri : "+reportUri);
-			if (reportUri != null)
-			{
-				webReportContext.setParameterValue(reportUriParamName, reportUri);
-			}
-			
-			Boolean isIgnorePagination = Boolean.valueOf(request.getParameter(REQUEST_PARAMETER_IGNORE_PAGINATION));
-			if (isIgnorePagination != null) 
-			{
-				webReportContext.setParameterValue(JRParameter.IS_IGNORE_PAGINATION, isIgnorePagination);
-			}		
-			
-			String asyncParamName = propUtil.getProperty(WebUtil.PROPERTY_REQUEST_PARAMETER_ASYNC_REPORT);
-			String async = request.getParameter(asyncParamName);
-			if (async != null)
-			{
-				webReportContext.setParameterValue(asyncParamName, Boolean.valueOf(async));
-			}
-
-			Action action = getAction(webReportContext, WebUtil.decodeUrl(request.getParameter(REQUEST_PARAMETER_ACTION)));
-
-			Controller controller = new Controller(getJasperReportsContext());
-			
-			controller.runReport(webReportContext, action, request);
-			
+			response.setContentType(JSON_CONTENT_TYPE);
+			response.setStatus(400);
+			response.getWriter().println("{\"msg\": \"Wrong parameters!\"}");
 		}
 	}
 
@@ -227,15 +121,16 @@ public class CustomReportServlet extends AbstractServlet
 	/**
 	 * 
 	 */
-	public void render1(
+	public void render(
 			HttpServletRequest request,
+			HttpServletResponse response,
 			WebReportContext webReportContext,
 			PrintWriter writer
 			) throws JRException //IOException, ServletException
 	{
 		JasperPrintAccessor jasperPrintAccessor = (JasperPrintAccessor) webReportContext.getParameterValue(
 				WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR);
-		System.out.println("jasperPrintAccessor : " + jasperPrintAccessor.toString());
+		
 		ReportExecutionStatus reportStatus = jasperPrintAccessor.getReportStatus();
 		if (reportStatus.getStatus() == ReportExecutionStatus.Status.ERROR)
 		{
@@ -246,15 +141,16 @@ public class CustomReportServlet extends AbstractServlet
 		// if the page count is null, it means that the fill is not yet done but there is at least a page
 		//boolean hasPages = pageCount == null || pageCount > 0;//FIXMEJIVE we should call pageStatus here
 		boolean hasPages = jasperPrintAccessor.pageStatus(0, null).pageExists();
-		System.out.println("hasPages : " + hasPages);
-		JRXhtmlExporter exporter = new JRXhtmlExporter(getJasperReportsContext());
+		
+//		JRXhtmlExporter exporter = new JRXhtmlExporter(getJasperReportsContext());
+		HtmlExporter exporter = new HtmlExporter(getJasperReportsContext());
 
 		ReportPageStatus pageStatus;
 		if (hasPages)
 		{
-			String reportPage = request.getParameter(REQUEST_PARAMETER_PAGE);
+			String reportPage = request.getParameter(WebUtil.REQUEST_PARAMETER_PAGE);
 			int pageIdx = reportPage == null ? 0 : Integer.parseInt(reportPage);
-			String pageTimestamp = request.getParameter(REQUEST_PARAMETER_PAGE_TIMESTAMP);
+			String pageTimestamp = request.getParameter(WebUtil.REQUEST_PARAMETER_PAGE_TIMESTAMP);
 			Long timestamp = pageTimestamp == null ? null : Long.valueOf(pageTimestamp);
 			
 			pageStatus = jasperPrintAccessor.pageStatus(pageIdx, timestamp);
@@ -271,24 +167,52 @@ public class CustomReportServlet extends AbstractServlet
 			pageStatus = ReportPageStatus.PAGE_FINAL;
 		}
 		
+		// set report status on response header
+		LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
+		WebUtil webUtil = WebUtil.getInstance(getJasperReportsContext());
+		boolean isComponentMetadataEmbedded = webUtil.isComponentMetadataEmbedded();
+		result.put("reportStatus", reportStatus.getStatus().toString().toLowerCase());
+		result.put("totalPages", reportStatus.getTotalPageCount());
+		result.put("partialPageCount", reportStatus.getCurrentPageCount());
+		result.put("pageFinal", pageStatus.isPageFinal());
+		result.put("isComponentMetadataEmbedded", isComponentMetadataEmbedded);
+		if (!pageStatus.isPageFinal()) {
+			result.put("pageTimestamp", String.valueOf(pageStatus.getTimestamp()));
+		}
+		response.setHeader("jasperreports-report-status", JacksonUtil.getInstance(getJasperReportsContext()).getJsonString(result));
+		
 		exporter.setReportContext(webReportContext);
 		exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintAccessor.getJasperPrint());
 		exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, writer);
-		exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image?" + WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID + "=" + webReportContext.getId() + "&image=");
+
+		String resourcesPath = request.getContextPath() + webUtil.getResourcesPath() + "?" + WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID + "=" + webReportContext.getId();
+		exporter.setImageHandler(new WebHtmlResourceHandler(resourcesPath + "&image={0}"));
+		exporter.setResourceHandler(new WebHtmlResourceHandler(resourcesPath + "/{0}"));
+		exporter.setFontHandler(new WebHtmlResourceHandler(resourcesPath + "&font={0}"));
 		
 		exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, getHeader(request, webReportContext, hasPages, pageStatus));
 		exporter.setParameter(JRHtmlExporterParameter.BETWEEN_PAGES_HTML, getBetweenPages(request, webReportContext));
-		exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, getFooter(request, webReportContext, hasPages, pageStatus));
+		exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, getFooter(request, webReportContext, hasPages, pageStatus, isComponentMetadataEmbedded));
 		
 		exporter.setParameter(
 			JRHtmlExporterParameter.HYPERLINK_PRODUCER_FACTORY, 
 			ReportExecutionHyperlinkProducerFactory.getInstance(getJasperReportsContext(), request)
 			);
 		
-		try { // added by amit to hide any error 
-			exporter.exportReport();
-		} catch(Exception ex) {
-			
+		exporter.exportReport();
+
+		// embed component JSON metadata into report's HTML output
+		if (isComponentMetadataEmbedded) {
+			JsonExporter jsonExporter = new JsonExporter(getJasperReportsContext());
+			StringWriter sw = new StringWriter();
+
+			jsonExporter.setReportContext(webReportContext);
+			jsonExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrintAccessor.getJasperPrint());
+			jsonExporter.setParameter(JRExporterParameter.OUTPUT_WRITER, sw);
+			jsonExporter.exportReport();
+
+			String serializedJson = sw.getBuffer().toString();
+			writer.write("<span id=\"reportComponents\" style=\"display:none\">" + serializedJson.replaceAll("\\s","") + "</span></div>");
 		}
 	}
 
@@ -300,19 +224,6 @@ public class CustomReportServlet extends AbstractServlet
 			ReportPageStatus pageStatus)
 	{
 		Map<String, Object> contextMap = new HashMap<String, Object>();
-
-		JasperPrintAccessor jasperPrintAccessor = (JasperPrintAccessor) webReportContext.getParameterValue(
-				WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR);
-		contextMap.put("totalPages", jasperPrintAccessor.getReportStatus().getTotalPageCount());
-
-		String reportPage = request.getParameter(REQUEST_PARAMETER_PAGE);
-		contextMap.put("currentPage", (reportPage != null ? reportPage : "0"));
-		
-		if (!pageStatus.isPageFinal())
-		{
-			contextMap.put("pageTimestamp", String.valueOf(pageStatus.getTimestamp()));
-		}
-		
 		if (hasPages) 
 		{
 			return VelocityUtil.processTemplate(TEMPLATE_HEADER, contextMap);
@@ -336,9 +247,10 @@ public class CustomReportServlet extends AbstractServlet
 	 * 
 	 */
 	protected String getFooter(HttpServletRequest request, WebReportContext webReportContext, boolean hasPages, 
-			ReportPageStatus pageStatus) 
+			ReportPageStatus pageStatus, boolean isComponentMetadataEmbedded)
 	{
 		Map<String, Object> contextMap = new HashMap<String, Object>();
+		contextMap.put("isComponentMetadataEmbedded", isComponentMetadataEmbedded);
 		if (hasPages) {
 			return VelocityUtil.processTemplate(TEMPLATE_FOOTER, contextMap);
 		} else 
@@ -348,138 +260,5 @@ public class CustomReportServlet extends AbstractServlet
 	}
 
 
-	/**
-	 *
-	 */
-	private Action getAction(ReportContext webReportContext, String jsonData)
-	{
-		Action result = null;
-		List<AbstractAction> actions = JacksonUtil.getInstance(getJasperReportsContext()).loadAsList(jsonData, AbstractAction.class);
-		if (actions != null)
-		{
-			if (actions.size() == 1) {
-				result = actions.get(0);
-			} else if (actions.size() > 1){
-				result = new MultiAction(actions);
-			}
-			
-			((AbstractAction)result).init(getJasperReportsContext(), webReportContext);
-		}
-		return result;
-	}
-
-
-	protected void pageUpdate(HttpServletRequest request, HttpServletResponse response, 
-			WebReportContext webReportContext) throws JRException, IOException
-	{
-		JasperPrintAccessor jasperPrintAccessor = (JasperPrintAccessor) webReportContext.getParameterValue(
-				WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR);
-		if (jasperPrintAccessor == null)
-		{
-			throw new JRRuntimeException("Did not find the report on the session.");
-		}
-		
-		String pageIdxParam = request.getParameter(REQUEST_PARAMETER_PAGE);
-		Integer pageIndex = pageIdxParam == null ? null : Integer.valueOf(pageIdxParam);
-		String pageTimestampParam = request.getParameter(REQUEST_PARAMETER_PAGE_TIMESTAMP);
-		Long pageTimestamp = pageTimestampParam == null ? null : Long.valueOf(pageTimestampParam);
-		
-		if (log.isDebugEnabled())
-		{
-			log.debug("report page update check for pageIndex: " + pageIndex 
-					+ ", pageTimestamp: " + pageTimestamp);
-		}
-		
-		LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
-		putReportStatusResult(response, jasperPrintAccessor, result);
-		
-		if (pageIndex != null && pageTimestamp != null)
-		{
-			ReportPageStatus pageStatus = jasperPrintAccessor.pageStatus(pageIndex, pageTimestamp);
-			boolean modified = pageStatus.hasModified();
-			result.put("pageModified", modified);
-			
-			if (log.isDebugEnabled())
-			{
-				log.debug("page " + pageIndex + " modified " + modified);
-			}
-		}
-		
-		String resultString = JacksonUtil.getInstance(getJasperReportsContext()).getJsonString(result);
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		out.write(resultString);
-		out.flush();
-	}
-
-	protected void putReportStatusResult(HttpServletResponse response,
-			JasperPrintAccessor printAccessor, LinkedHashMap<String, Object> result) throws JRException
-	{
-		ReportExecutionStatus reportStatus = printAccessor.getReportStatus();
-		result.put("partialPageCount", reportStatus.getCurrentPageCount());
-		
-		String status;
-		switch (reportStatus.getStatus())
-		{
-		case FINISHED:
-			status = "finished";
-			Integer totalPageCount = reportStatus.getTotalPageCount();
-			result.put("totalPages", totalPageCount);
-			
-			if (log.isDebugEnabled())
-			{
-				log.debug("report finished " + totalPageCount + " pages");
-			}
-			break;
-		case ERROR:
-			status = "error";
-			handleReportUpdateError(response, reportStatus);
-			break;
-		case CANCELED:
-			status = "canceled";
-			
-			if (log.isDebugEnabled())
-			{
-				log.debug("report canceled");
-			}
-			break;
-		case RUNNING:
-		default:
-			status = "running";
-			
-			if (log.isDebugEnabled())
-			{
-				log.debug("report running");
-			}
-			break;
-		}
-		
-		result.put("status", status);
-	}
-
-	protected void handleReportUpdateError(HttpServletResponse response, ReportExecutionStatus reportStatus) 
-			throws JRException
-	{
-		Throwable error = reportStatus.getError();
-		if (log.isDebugEnabled())
-		{
-			log.debug("report error " + error);// only message
-		}
-		// set a header so that the UI knows it's a report execution error
-		response.setHeader("reportError", "true");
-		// set as a header because we don't have other way to pass it
-		response.setHeader("lastPartialPageIndex", Integer.toString(reportStatus.getCurrentPageCount() - 1));
-		
-		// throw an exception to get to the error page
-		if (error instanceof JRException)
-		{
-			throw (JRException) error;
-		}
-		if (error instanceof JRRuntimeException)
-		{
-			throw (JRRuntimeException) error;
-		}
-		throw new JRRuntimeException("Error generating report", error);
-	}
 
 }

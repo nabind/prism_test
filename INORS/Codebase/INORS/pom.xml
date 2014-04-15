@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>3.1.0.RELEASE</springframework.version>
 		<spring-security.version>3.1.0.RELEASE</spring-security.version>
-		<jasper-reports-version>5.0</jasper-reports-version>
+		<jasper-reports-version>5.5.0</jasper-reports-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -347,62 +347,62 @@
 		<!-- Jasper report dependencies -->
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperreports-5.0.1</artifactId>
+			<artifactId>jasperreports-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperreports-fusion-5.0.0</artifactId>
+			<artifactId>jasperreports-fusion-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>ji-license-5.0.1</artifactId>
+			<artifactId>ji-license-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperreports-pro-5.0.0</artifactId>
+			<artifactId>jasperreports-pro-5.1.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-common-5.0.1</artifactId>
+			<artifactId>jasperserver-api-common-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-common-impl-5.0.1</artifactId>
+			<artifactId>jasperserver-api-common-impl-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-engine-5.0.1</artifactId>
+			<artifactId>jasperserver-api-engine-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-engine-impl-5.0.1</artifactId>
+			<artifactId>jasperserver-api-engine-impl-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-metadata-5.0.1</artifactId>
+			<artifactId>jasperserver-api-metadata-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-metadata-impl-5.0.1</artifactId>
+			<artifactId>jasperserver-api-metadata-impl-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperserver-api-metadata-impl-5.0.1</artifactId>
+			<artifactId>jasperserver-api-metadata-impl-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jasperreports-highcharts-5.0.1</artifactId>
+			<artifactId>jasperreports-highcharts-5.5.0</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
@@ -410,9 +410,12 @@
 			<artifactId>jug-2.0.0-lgpl</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
-
-		<!-- <dependency> <groupId>net.jasper</groupId> <artifactId>itext-2.1.7.js1</artifactId> 
-			<version>${jasper-reports-version}</version> </dependency> -->
+		
+		<!-- <dependency>
+			<groupId>net.jasper</groupId>
+			<artifactId>itext-2.1.7.js1</artifactId>
+			<version>${jasper-reports-version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
@@ -428,10 +431,10 @@
 			<artifactId>groovy-all-2.0.1</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
-
+		                                    
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>protection-4.5</artifactId>
+			<artifactId>protection-4.6.3</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
@@ -439,8 +442,11 @@
 			<artifactId>bcprov-jdk14-1.38</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
-		<!-- <dependency> <groupId>net.jasper</groupId> <artifactId>jcommon-1.0.15</artifactId> 
-			<version>${jasper-reports-version}</version> </dependency> -->
+		<!-- <dependency>
+			<groupId>net.jasper</groupId>
+			<artifactId>jcommon-1.0.15</artifactId>
+			<version>${jasper-reports-version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jcommon</artifactId>
@@ -448,12 +454,12 @@
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jackson-annotations-2.0.5</artifactId>
+			<artifactId>jackson-annotations-2.1.4</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jackson-core-2.0.5</artifactId>
+			<artifactId>jackson-core-2.1.4</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
@@ -463,7 +469,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.jasper</groupId>
-			<artifactId>jackson-databind-2.0.5</artifactId>
+			<artifactId>jackson-databind-2.1.4</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
 		<dependency>
@@ -496,7 +502,7 @@
 			<artifactId>xml-apis-ext</artifactId>
 			<version>1.3.04</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>net.jasper</groupId>
 			<artifactId>fonts-1.0</artifactId>
@@ -507,14 +513,14 @@
 			<artifactId>ChartCustomizer2D</artifactId>
 			<version>${jasper-reports-version}</version>
 		</dependency>
-
+	
 		<dependency>
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
 			<version>1.7R3</version>
 			<scope>compile</scope>
-		</dependency>
-
+	    </dependency>
+	
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-anim</artifactId>

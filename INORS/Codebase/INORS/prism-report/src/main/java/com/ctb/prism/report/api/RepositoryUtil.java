@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2011 Jaspersoft Corporation. All rights reserved.
+ * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,13 +31,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.ctb.prism.core.Service.IUsabilityService;
-import com.ctb.prism.core.Service.UsabilityServiceImpl;
-import com.ctb.prism.core.constant.IApplicationConstants;
-
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
@@ -56,17 +49,10 @@ import net.sf.jasperreports.repo.Resource;
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id$
  */
-@Component
 public final class RepositoryUtil
 {
 	//private static final Log log = LogFactory.getLog(RepositoryUtil.class);
 
-	@Autowired IUsabilityService usabilityService;
-	
-	public RepositoryUtil() {
-		
-	}
-	
 	/**
 	 * @deprecated To be removed.
 	 */
@@ -215,8 +201,6 @@ public final class RepositoryUtil
 	{
 		return getReport(reportContext, location, null);
 	}
-	
-	
 	/**
 	 *
 	 */
@@ -232,24 +216,18 @@ public final class RepositoryUtil
 
 		if (jasperReport == null)
 		{
+			/** PRISM **/
 			/*ReportResource resource = getResourceFromLocation(location, ReportResource.class);
 			if (resource == null)
 			{
 				throw new JRException("Report not found at : " + location);
-			}*/
-
-			//jasperReport = resource.getReport();
-			//jasperReport = JDBC.getReport();
-			if(request != null) jasperReport = (JasperReport) request.getSession().getAttribute("apiJasperReport"+location);
-			/** session to cache **/
-			/*if(usabilityService == null) {
-				usabilityService = new UsabilityServiceImpl();
 			}
-			if(request != null) jasperReport = (JasperReport) 
-				usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER), "apiJasperReport"+location, null);
-			*/
-			System.out.println("jasperReport object : " + jasperReport != null? jasperReport.getName() : "jasperReport from SESSION null");
 
+			jasperReport = resource.getReport();
+			*/
+			
+			if(request != null) jasperReport = (JasperReport) request.getSession().getAttribute("apiJasperReport"+location);
+			/** end PRISM **/
 			if (cache != null)
 			{
 				cache.set(location, jasperReport);

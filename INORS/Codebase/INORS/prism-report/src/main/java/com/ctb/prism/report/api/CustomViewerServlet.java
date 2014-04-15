@@ -1,8 +1,6 @@
-package com.ctb.prism.report.api;
-
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2011 Jaspersoft Corporation. All rights reserved.
+ * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +21,7 @@ package com.ctb.prism.report.api;
  * You should have received a copy of the GNU Lesser General Public License
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.ctb.prism.report.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,8 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
+//import net.sf.jasperreports.web.WebReportContext;
 import net.sf.jasperreports.web.servlets.AbstractServlet;
-import net.sf.jasperreports.web.util.JacksonUtil;
 import net.sf.jasperreports.web.util.VelocityUtil;
 import net.sf.jasperreports.web.util.WebUtil;
 
@@ -58,15 +57,12 @@ public class CustomViewerServlet extends AbstractServlet
 	public static final String PROPERTY_TEMPLATE_HEADER = "net.sf.jasperreports.web.servlets.viewer.header.template";
 	public static final String PROPERTY_TEMPLATE_BODY = "net.sf.jasperreports.web.servlets.viewer.body.template";
 	public static final String PROPERTY_TEMPLATE_FOOTER = "net.sf.jasperreports.web.servlets.viewer.footer.template";
-
-	public static final String PROPERTY_VIEWER_TOOLBAR_JS = "net.sf.jasperreports.web.servlets.viewer.toolbar.js";
 	
 	private String headerTemplate;
 	private String bodyTemplate;
 	private String footerTemplate;
-
+	/** added by PRISM **/
 	private String toolbarJavascript;
-	
 
 	@Override
 	public void init() throws ServletException 
@@ -76,8 +72,7 @@ public class CustomViewerServlet extends AbstractServlet
 		headerTemplate = getInitParameter(PROPERTY_TEMPLATE_HEADER);
 		bodyTemplate = getInitParameter(PROPERTY_TEMPLATE_BODY);
 		footerTemplate = getInitParameter(PROPERTY_TEMPLATE_FOOTER);
-
-		toolbarJavascript = getInitParameter(PROPERTY_VIEWER_TOOLBAR_JS);
+		
 	}
 
 	
@@ -117,19 +112,6 @@ public class CustomViewerServlet extends AbstractServlet
 			return JRPropertiesUtil.getInstance(getJasperReportsContext()).getProperty(PROPERTY_TEMPLATE_FOOTER);
 		}
 		return footerTemplate;
-	}
-	
-	
-	/**
-	 *
-	 */
-	public String getToolbarJavascript()
-	{
-		if (toolbarJavascript == null)
-		{
-			return JRPropertiesUtil.getInstance(getJasperReportsContext()).getProperty(PROPERTY_VIEWER_TOOLBAR_JS);
-		}
-		return toolbarJavascript;
 	}
 	
 	
@@ -195,42 +177,30 @@ public class CustomViewerServlet extends AbstractServlet
 		PrintWriter writer
 		)
 	{
-		String toolbarId = "toolbar_" + request.getSession().getId() + "_" + (int)(Math.random() * 99999);
 		
-		writer.write(getHeader(request, webReportContext, toolbarId));
-		writer.write(getBody(request, webReportContext, toolbarId));
+		writer.write(getHeader(request, webReportContext));
+		writer.write(getBody(request, webReportContext));
 		writer.write(getFooter());
 	}
-
-	protected String getCurrentUrl(HttpServletRequest request, WebReportContext webReportContext) 
-	{
-		String newQueryString = request.getQueryString();
-		//return request.getContextPath() + request.getServletPath() + "?" + newQueryString + "&" + WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID + "=" + webReportContext.getId();
-		//return request.getContextPath() + ReportServlet.DEFAULT_PATH + "?" + newQueryString + "&" + WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID + "=" + webReportContext.getId();
-		String reportUrl = WebUtil.getInstance(getJasperReportsContext()).getReportInteractionPath();
-		return request.getContextPath() + reportUrl + "?" + newQueryString + "&" + WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID + "=" + webReportContext.getId();
-	}
-
-
-	protected String getHeader(HttpServletRequest request, WebReportContext webReportContext, String toolbarId)
+	
+	
+	protected String getHeader(HttpServletRequest request, WebReportContext webReportContext)
 	{
 		Map<String, Object> contextMap = new HashMap<String, Object>();
 		WebUtil webUtil = WebUtil.getInstance(getJasperReportsContext());
 		String webResourcesBasePath = webUtil.getResourcesBasePath();
+
 		contextMap.put("contextPath", request.getContextPath());
 		contextMap.put("resourcesPath", request.getContextPath() + webResourcesBasePath);
-		contextMap.put("jasperreports_global_js", request.getContextPath() + webUtil.getResourcePath(webResourcesBasePath, WebUtil.RESOURCE_JR_GLOBAL_JS));
-		contextMap.put("jasperreports_reportViewerToolbar_js", request.getContextPath() + webUtil.getResourcePath(webResourcesBasePath, getToolbarJavascript()));
 		contextMap.put("jasperreports_global_css", request.getContextPath() + webUtil.getResourcePath(webResourcesBasePath, WebUtil.RESOURCE_JR_GLOBAL_CSS));
-		contextMap.put("toolbarId", toolbarId);
-		contextMap.put("currentUrl", getCurrentUrl(request, webReportContext));
-
+		
 		return VelocityUtil.processTemplate(getHeaderTemplate(), contextMap);
 	}
 	
-	protected String getBody(HttpServletRequest request, WebReportContext webReportContext, String toolbarId) {
+	protected String getBody(HttpServletRequest request, WebReportContext webReportContext) {
 		Map<String, Object> contextMap = new HashMap<String, Object>();
-		
+		String reportUri = request.getParameter(WebUtil.REQUEST_PARAMETER_REPORT_URI);
+		/** added by PRISM **/
 		@SuppressWarnings("unchecked")
 		Enumeration<String> paramsEnum = request.getParameterNames();
 		
@@ -241,16 +211,16 @@ public class CustomViewerServlet extends AbstractServlet
 			paramsMap.put(param, request.getParameter(param));
 		}
 		paramsMap.put(WebReportContext.REQUEST_PARAMETER_REPORT_CONTEXT_ID, String.valueOf(webReportContext.getId()));
-//		paramsMap.put(ReportServlet.REQUEST_PARAMETER_TOOLBAR_ID, toolbarId);
-		
-		//contextMap.put("reportUrl", request.getContextPath() + request.getServletPath());
-		//contextMap.put("reportUrl", request.getContextPath() + ReportServlet.DEFAULT_PATH);
 		String reportUrl = WebUtil.getInstance(getJasperReportsContext()).getReportInteractionPath();
-		//contextMap.put("contextPath", request.getContextPath());
-		contextMap.put("reportUrl", request.getContextPath() + reportUrl);
-		contextMap.put("jsonParamsObject", JacksonUtil.getInstance(getJasperReportsContext()).getEscapedJsonString(paramsMap));
-		contextMap.put("toolbarId", toolbarId);
+		/** end added by PRISM **/
+		contextMap.put("reportUri", reportUri);
+		contextMap.put("async", Boolean.valueOf(request.getParameter(WebUtil.REQUEST_PARAMETER_ASYNC_REPORT)));
 		
+		String reportPage = request.getParameter(WebUtil.REQUEST_PARAMETER_PAGE);
+		int pageIdx = reportPage == null ? 0 : Integer.parseInt(reportPage);
+		contextMap.put("page", pageIdx);
+        contextMap.put("contextPath", request.getContextPath());
+        
 		return VelocityUtil.processTemplate(getBodyTemplate(), contextMap);
 	}
 

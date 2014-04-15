@@ -1,8 +1,6 @@
-package com.ctb.prism.report.api;
-
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2011 Jaspersoft Corporation. All rights reserved.
+ * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +21,7 @@ package com.ctb.prism.report.api;
  * You should have received a copy of the GNU Lesser General Public License
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.ctb.prism.report.api;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,11 +34,14 @@ import net.sf.jasperreports.data.cache.DataCacheHandler;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.fill.AsynchronousFillHandle;
+//import net.sf.jasperreports.repo.RepositoryUtil;
 import net.sf.jasperreports.web.JRInteractiveException;
+//import net.sf.jasperreports.web.WebReportContext;
 import net.sf.jasperreports.web.actions.AbstractAction;
 import net.sf.jasperreports.web.actions.Action;
 import net.sf.jasperreports.web.commands.CommandStack;
@@ -50,6 +52,7 @@ import net.sf.jasperreports.web.util.WebUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
@@ -63,10 +66,8 @@ public class Controller
 	 *
 	 */
 	private JasperReportsContext jasperReportsContext;
+
 	
-	public Controller() {
-		// nothing to do
-	}
 	/**
 	 *
 	 */
@@ -85,9 +86,12 @@ public class Controller
 		Action action, HttpServletRequest request
 		) throws JRException, JRInteractiveException
 	{
-		JRPropertiesUtil propUtil = JRPropertiesUtil.getInstance(jasperReportsContext);
-		String reportUriParamName = propUtil.getProperty(WebUtil.PROPERTY_REQUEST_PARAMETER_REPORT_URI);
-		String reportUri = (String)webReportContext.getParameterValue(reportUriParamName);
+		/** PRISM **/
+		/*JRPropertiesUtil propUtil = JRPropertiesUtil.getInstance(jasperReportsContext);
+		String reportUriParamName = propUtil.getProperty(WebUtil.REQUEST_PARAMETER_REPORT_URI);
+		String reportUri = (String)webReportContext.getParameterValue(reportUriParamName);*/
+		String reportUri = (String)webReportContext.getParameterValue(WebUtil.REQUEST_PARAMETER_REPORT_URI);
+		/** end-PRISM **/
 		int initialStackSize = 0;
 		CommandStack commandStack = (CommandStack)webReportContext.getParameterValue(AbstractAction.PARAM_COMMAND_STACK);
 		if (commandStack != null) {
@@ -115,9 +119,12 @@ public class Controller
 		{
 			throw new JRException("Report not found at : " + reportUri);
 		}
-		
-		String asyncParamName = propUtil.getProperty(WebUtil.PROPERTY_REQUEST_PARAMETER_ASYNC_REPORT);
-		Boolean async = (Boolean)webReportContext.getParameterValue(asyncParamName);
+		/** PRISM **/
+		//String asyncParamName = propUtil.getProperty(WebUtil.REQUEST_PARAMETER_ASYNC_REPORT);
+		//Boolean async = (Boolean)webReportContext.getParameterValue(asyncParamName);
+		String asyncParamName = WebUtil.REQUEST_PARAMETER_ASYNC_REPORT;
+		Boolean async = (Boolean)webReportContext.getParameterValue(WebUtil.REQUEST_PARAMETER_ASYNC_REPORT);
+		/** end-PRISM **/
 		if (async == null)
 		{
 			async = Boolean.FALSE;
@@ -183,7 +190,7 @@ public class Controller
 	 */
 	protected void runReport(
 		WebReportContext webReportContext,
-		JasperReport jasperReport, 
+		JasperReport jasperReport,
 		boolean async, HttpServletRequest request, String reportUri
 		) throws JRException
 	{
@@ -218,7 +225,6 @@ public class Controller
 						jasperReport, 
 						webReportContext.getParameterValues()
 						);*/
-			
 			JasperPrint jasperPrint = null;
 			try {
 				//jasperPrint = JasperFillManager.fillReport(jasperReport, webReportContext.getParameterValues(), conn);
@@ -234,11 +240,9 @@ public class Controller
 			} 
 			System.out.println("jasperPrint object created : " + jasperPrint != null? jasperPrint.getName() : "jasperPrint from SESSION null");
 			/** End Custom */
-			
 			accessor = new SimpleJasperPrintAccessor(jasperPrint);
 		}
 		
 		webReportContext.setParameterValue(WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR, accessor);
 	}
 }
-

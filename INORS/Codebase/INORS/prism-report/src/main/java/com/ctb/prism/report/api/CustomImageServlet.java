@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2011 Jaspersoft Corporation. All rights reserved.
+ * Copyright (C) 2001 - 2013 Jaspersoft Corporation. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -28,35 +28,33 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintImage;
+import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JRWrappingSvgRenderer;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.Renderable;
 import net.sf.jasperreports.engine.RenderableUtil;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.type.ImageTypeEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.RenderableTypeEnum;
-import net.sf.jasperreports.web.servlets.AbstractServlet;
+//import net.sf.jasperreports.web.WebReportContext;
 import net.sf.jasperreports.web.servlets.JasperPrintAccessor;
+import net.sf.jasperreports.web.util.WebResourceHandler;
 
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id$
  */
-public class CustomImageServlet extends AbstractServlet
+public class CustomImageServlet implements WebResourceHandler
 {
-	private static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
-
-
 	/**
 	 *
 	 */
@@ -66,27 +64,29 @@ public class CustomImageServlet extends AbstractServlet
 	/**
 	 *
 	 */
-	public void service(
-		HttpServletRequest request,
-		HttpServletResponse response
-		) throws IOException, ServletException
+	public boolean handleResource(JasperReportsContext jasperReportsContext, HttpServletRequest request, HttpServletResponse response)
 	{
+		String imageName = request.getParameter(REQUEST_PARAMETER_IMAGE_NAME);
+		if (imageName == null)
+		{
+			return false;
+		}
+
 		byte[] imageData = null;
 		String imageMimeType = null;
 
-		String imageName = request.getParameter(REQUEST_PARAMETER_IMAGE_NAME);
 		if ("px".equals(imageName))
 		{
 			try
 			{
 				Renderable pxRenderer = 
-					RenderableUtil.getInstance(getJasperReportsContext()).getRenderable("net/sf/jasperreports/engine/images/pixel.GIF");
-				imageData = pxRenderer.getImageData(getJasperReportsContext());
+					RenderableUtil.getInstance(jasperReportsContext).getRenderable("net/sf/jasperreports/engine/images/pixel.GIF");
+				imageData = pxRenderer.getImageData(jasperReportsContext);
 				imageMimeType = ImageTypeEnum.GIF.getMimeType();
 			}
 			catch (JRException e)
 			{
-				throw new ServletException(e);
+				throw new JRRuntimeException(e);
 			}
 		}
 		else
@@ -95,14 +95,14 @@ public class CustomImageServlet extends AbstractServlet
 			
 			if (webReportContext == null)
 			{
-				throw new ServletException("No web report context found.");
+				throw new JRRuntimeException("No web report context found.");
 			}
 			
 			JasperPrintAccessor jasperPrintAccessor = (JasperPrintAccessor) webReportContext.getParameterValue(
 					WebReportContext.REPORT_CONTEXT_PARAMETER_JASPER_PRINT_ACCESSOR);
 			if (jasperPrintAccessor == null)
 			{
-				throw new ServletException("No JasperPrint found in report context.");
+				throw new JRRuntimeException("No JasperPrint found in report context.");
 			}
 			
 			List<JasperPrint> jasperPrintList = Collections.singletonList(jasperPrintAccessor.getJasperPrint());
@@ -124,11 +124,11 @@ public class CustomImageServlet extends AbstractServlet
 			
 			try
 			{
-				imageData = renderer.getImageData(getJasperReportsContext());
+				imageData = renderer.getImageData(jasperReportsContext);
 			}
 			catch (JRException e)
 			{
-				throw new ServletException(e);
+				throw new JRRuntimeException(e);
 			}
 		}
 
@@ -139,11 +139,34 @@ public class CustomImageServlet extends AbstractServlet
 				response.setHeader("Content-Type", imageMimeType);
 			}
 			response.setContentLength(imageData.length);
-			ServletOutputStream ouputStream = response.getOutputStream();
-			ouputStream.write(imageData, 0, imageData.length);
-			ouputStream.flush();
-			ouputStream.close();
+			
+			ServletOutputStream outputStream = null;
+			try
+			{
+				outputStream = response.getOutputStream();
+				outputStream.write(imageData, 0, imageData.length);
+				outputStream.flush();
+			}
+			catch (IOException e)
+			{
+				throw new JRRuntimeException(e);
+			}
+			finally
+			{
+				if (outputStream != null)
+				{
+					try
+					{
+						outputStream.close();
+					}
+					catch (IOException e)
+					{
+					}
+				}
+			}
 		}
+		
+		return true;
 	}
 
 
