@@ -26,7 +26,7 @@
 			 		<spring:message code="pre.grtload.message"/>
 			 	</dd>
 			 </c:if>
-			<c:if test="${not empty childDataMap.studentSubtest}">
+			<%-- <c:if test="${not empty childDataMap.studentSubtest}">
 				<c:forEach var="subtestTO"
 					items="${childDataMap.studentSubtest}"
 					varStatus="loopSubtestTO">
@@ -38,7 +38,7 @@
 							</a>
 						</dd>
 				</c:forEach>
-			 </c:if>	
+			 </c:if> --%>
 			</dl>
 		</div>
 	</c:if>
