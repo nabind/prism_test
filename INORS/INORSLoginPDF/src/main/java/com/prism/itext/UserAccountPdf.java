@@ -135,10 +135,15 @@ public class UserAccountPdf {
 			List<String> pdfPathList = new ArrayList<String>();
 			List<String> pdfDistPathList = new ArrayList<String>();
 			
+			File folder = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPathIC"), File.separator, school.getCustomerCode()));
+			if(!folder.exists()) {
+				folder.mkdir();
+			}
+			
 			String schoolCoverUrl = getSchoolCoverURLString(prop, schoolId);
-			String schoolCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), "SCHOOL"), new URL(schoolCoverUrl));
+			String schoolCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), school.getCustomerCode(), "SCHOOL"), new URL(schoolCoverUrl));
 			String districtCoverUrl = getDistrictCoverURLString(prop, schoolId);
-			String districtCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), "DISTRICT"), new URL(districtCoverUrl));
+			String districtCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPath(prop, school.getSchoolCode(), school.getCustomerCode(), "DISTRICT"), new URL(districtCoverUrl));
 			pdfDistPathList.add(districtCoverPath);
 			pdfDistPathList.add(prop.getProperty("WHATS_IN_THE_BOX"));
 			pdfDistPathList.add(prop.getProperty("GENERIC_LETTER"));
@@ -148,10 +153,10 @@ public class UserAccountPdf {
 			pdfPathList.add(prop.getProperty("WHATS_IN_THE_BOX"));
 			pdfPathList.add(prop.getProperty("GENERIC_LETTER"));
 			
-			String docName = getPdfPath(prop, school.getDistrictCode(), school.getSchoolCode(), false);//getDocName(school, prop);
+			String docName = getPdfPath(prop, school.getDistrictCode(), school.getSchoolCode(), school.getCustomerCode(), false);//getDocName(school, prop);
 			// for (String studentBioId : studentIdList) { // TODO : File is same for all students so skipping the loop
 			// letterLoc = ReportPDF.saveLetterFromPrismWeb(prop, schoolId, school.getElementName(), school.getCustomerCode(), adminId, /* studentBioId */"-1", false, false); // -1 for all students combined pdf
-			String pdfPath = getPdfPath(prop, school.getDistrictCode(), school.getSchoolCode(), true);
+			String pdfPath = getPdfPath(prop, school.getDistrictCode(), school.getSchoolCode(), school.getCustomerCode(), true);
 			String urlString = getURLString(prop, schoolId, adminId, "-1", false);
 			URL url = new URL(urlString);
 			letterLoc = ReportPDF.savePdfFromPrismWeb(pdfPath, url);
@@ -164,7 +169,7 @@ public class UserAccountPdf {
 			// }
 			
 			if (!pdfDistPathList.isEmpty()) {
-				String distPdf = CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "IC", 
+				String distPdf = CustomStringUtil.appendString(prop.getProperty("pdfGenPathIC"), File.separator, school.getCustomerCode(), 
 						File.separator, prop.getProperty("ICLetterFile"), 
 						school.getDistrictCode(), ".pdf");
 				File file = new File(distPdf);
@@ -1395,9 +1400,9 @@ public class UserAccountPdf {
 	 * @param customerCode
 	 * @return
 	 */
-	private static String getPdfPath(Properties prop, String districtCode, String schoolCode, boolean tempLoc) {
+	private static String getPdfPath(Properties prop, String districtCode, String schoolCode, String customerCode, boolean tempLoc) {
 		StringBuffer docBuff = new StringBuffer();
-		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("IC").append(File.separator);
+		docBuff.append(prop.getProperty("pdfGenPathIC")).append(File.separator).append(customerCode).append(File.separator);
 		docBuff.append(prop.getProperty("ICLetterFile"));
 		docBuff.append(districtCode).append(prop.getProperty("schoolText")).append(schoolCode).append("_");
 		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
@@ -1413,9 +1418,9 @@ public class UserAccountPdf {
 	 * @param orgType
 	 * @return
 	 */
-	private static String getOrgPdfPath(Properties prop, String orgCode, String orgType) {
+	private static String getOrgPdfPath(Properties prop, String orgCode, String customerCode, String orgType) {
 		StringBuffer docBuff = new StringBuffer();
-		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("IC").append(File.separator);
+		docBuff.append(prop.getProperty("pdfGenPathIC")).append(File.separator).append(customerCode).append(File.separator);
 		docBuff.append("Cover_").append(orgType).append("_").append(orgCode);
 		docBuff.append(".pdf");
 		return docBuff.toString();
