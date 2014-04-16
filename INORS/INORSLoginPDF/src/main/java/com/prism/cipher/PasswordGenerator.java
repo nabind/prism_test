@@ -82,6 +82,14 @@ public class PasswordGenerator {
 		return sb.toString();
 	}
 	
+	public static String generateRandomAlpha(int length) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			sb.append(goodCapChar[random.nextInt(goodCapChar.length)]);
+		}
+		return sb.toString();
+	}
+	
 	/**
 	 * Generate random text without any business validation
 	 * This text can be used as a salt

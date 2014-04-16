@@ -232,9 +232,11 @@ public class FileUtil {
 	public static void removeFile(List<String> files) {
 		for (String file : files) {
 			try {
-				File pdf = new File(file);
-				if (pdf.exists())
-					pdf.delete();
+				if(file != null) {
+					File pdf = new File(file);
+					if (pdf.exists())
+						pdf.delete();
+				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

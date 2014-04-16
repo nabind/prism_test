@@ -70,7 +70,7 @@ public class CommonDAOImpl implements CommonDAO {
 	 */
 	public OrgTO getSchoolDetails(String schoolId, boolean cascade) throws Exception {
 		logger.info("School Id: " + schoolId);
-		OrgTO school = new OrgTO();
+		OrgTO school = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -96,6 +96,7 @@ public class CommonDAOImpl implements CommonDAO {
 				school.setSchoolCode(rs.getString("SCHOOL_CODE"));
 				school.setDistrictCode(rs.getString("DISTRICT_CODE"));
 				school.setDistrictName(rs.getString("DISTRICT_NAME"));
+				school.setOrgMode(rs.getString("ORG_MODE"));
 			} else {
 				logger.warn("No school found");
 			}

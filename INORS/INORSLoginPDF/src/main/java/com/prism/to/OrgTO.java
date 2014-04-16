@@ -47,6 +47,16 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String studentCount;
 	private String grade;
 	private int gradeSeq;
+	
+	private String orgMode;
+
+	public String getOrgMode() {
+		return orgMode;
+	}
+
+	public void setOrgMode(String orgMode) {
+		this.orgMode = orgMode;
+	}
 
 	public String getSchoolCode() {
 		return schoolCode;
