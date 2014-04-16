@@ -197,7 +197,10 @@
 												</li>
 													
 												<li class="menu-third-level">
-													<a href="#" 
+													<a href="#" class="studResult"
+														subtestId="${subtestTO.value}" 
+														studentGradeId="${childDataMap.studentGradeId}" 
+														studentBioId="${childDataMap.studentBioId}" 
 														id="">
 														<spring:message code="menuName.stud.result"/>
 													</a>
