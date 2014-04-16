@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 
@@ -83,7 +85,7 @@ public class FileUtil {
 				}
 				ZipEntry entry = new ZipEntry(fileName);
 				byte[] input = getBytes(filePath);
-				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
+				logger.info(humanReadableByteCount(input.length) + " Data Read");
 				entry.setSize(input.length);
 				zos.putNextEntry(entry);
 				zos.write(input);
@@ -106,7 +108,7 @@ public class FileUtil {
 		}
 		return zipFilePath;
 	}
-	
+
 	public static String createZipFile(String zipFileName, String filePath) {
 		logger.info("Adding " + filePath + " file in " + zipFileName);
 		FileOutputStream fos = null;
@@ -121,7 +123,7 @@ public class FileUtil {
 				String fileName = getFileNameFromFilePath(filePath);
 				ZipEntry entry = new ZipEntry(fileName);
 				byte[] input = getBytes(filePath);
-				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
+				logger.info(humanReadableByteCount(input.length) + " Data Read");
 				entry.setSize(input.length);
 				zos.putNextEntry(entry);
 				zos.write(input);
@@ -144,8 +146,7 @@ public class FileUtil {
 		}
 		return zipFilePath;
 	}
-	
-	
+
 	/**
 	 * Creates a PDF file from the list of file paths.
 	 * 
@@ -159,18 +160,17 @@ public class FileUtil {
 		try {
 			File PDFFile = new File(PDFFileName);
 			fos = new FileOutputStream(PDFFile);
-			
+			int count = 0;
 			for (String filePath : filePaths) {
-				logger.info("Adding " + filePath);
+				logger.info("Adding " + ++count + " of " + filePaths.size() + ": " + filePath);
 				String fileName = getFileNameFromFilePath(filePath);
 				if (fileName == null) {
 					logger.warn("Skipping " + filePath);
 					continue;
 				}
 				byte[] input = getBytes(filePath);
-				logger.info(humanReadableByteCount(input.length, false) + " Data Read");
+				logger.info(humanReadableByteCount(input.length) + " Data Read");
 				fos.write(input);
-				
 			}
 			fos.close();
 			logger.info("PDF file [" + PDFFileName + "] created");
@@ -189,8 +189,6 @@ public class FileUtil {
 		}
 		return PDFFilePath;
 	}
-	
-	
 
 	/**
 	 * Returns the file name from the file path.
@@ -245,19 +243,18 @@ public class FileUtil {
 
 	/**
 	 * @param bytes
-	 * @param si
 	 * @return
 	 */
-	public static String humanReadableByteCount(long bytes, boolean si) {
-		int unit = si ? 1000 : 1024;
-		if (bytes < unit)
+	public static String humanReadableByteCount(long bytes) {
+		int unit = 1024;
+		if (bytes < unit) {
 			return bytes + " B";
+		}
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
-		// String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "");
+		String pre = "KMGTPE".charAt(exp - 1) + "";
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
-	
+
 	/**
 	 * @param files
 	 * @param rootPath
@@ -304,7 +301,7 @@ public class FileUtil {
 		}
 		return baos.toByteArray();
 	}
-	
+
 	/**
 	 * Creates a file in disk.
 	 * 
@@ -329,7 +326,7 @@ public class FileUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks whether an integer is odd or even.
 	 * 
@@ -341,5 +338,37 @@ public class FileUtil {
 			return false;
 		else
 			return true;
+	}
+
+	public static void moveFiles(String toDir, Set<String> pdfPaths) {
+		if (toDir == null || toDir.isEmpty()) {
+			logger.error("Error in moving files. Invalid toDir.");
+		} else {
+			int count = 0;
+			for (String pdf : pdfPaths) {
+				logger.info("Moving " + ++count + " of " + pdfPaths.size() + " + files: " + pdf);
+				try {
+					FileUtils.moveFileToDirectory(new File(pdf), new File(toDir), true);
+				} catch (IOException e) {
+					logger.warn(e.getMessage());
+				}
+			}
+		}
+	}
+
+	public static void copyFiles(String toDir, Set<String> pdfPaths) {
+		if (toDir == null || toDir.isEmpty()) {
+			logger.error("Error in copying files. Invalid toDir.");
+		} else {
+			int count = 0;
+			for (String pdf : pdfPaths) {
+				logger.info("Copying " + ++count + " of " + pdfPaths.size() + " + files: " + pdf);
+				try {
+					FileUtils.copyFileToDirectory(new File(pdf), new File(toDir), true);
+				} catch (IOException e) {
+					logger.warn(e.getMessage());
+				}
+			}
+		}
 	}
 }

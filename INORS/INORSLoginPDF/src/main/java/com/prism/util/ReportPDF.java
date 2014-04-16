@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -23,6 +22,8 @@ public class ReportPDF {
 	/**
 	 * Fetches Invitation code letters from prism and save into local.
 	 * 
+	 * @deprecated use {@link new(savePdfFromPrismWeb())} instead.
+	 * 
 	 * @param prop
 	 * @param schoolId
 	 * @param elementName
@@ -31,11 +32,9 @@ public class ReportPDF {
 	 * @param studentBioId
 	 * @return
 	 * @throws IOException
+	 * @Deprecated
 	 */
 	public static String saveLetterFromPrismWeb(Properties prop, String schoolId, String elementName, String customerCode, String adminid, String studentBioId, boolean isExtTable, boolean encript) throws IOException {
-		logger.info("schoolId=" + schoolId);
-		logger.info("adminid=" + adminid);
-		logger.info("studentBioId = " + studentBioId);
 		StringBuffer docBuff = new StringBuffer();
 		docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append("temp_IC_");
 		docBuff.append(elementName).append("_").append(customerCode).append("_");
@@ -56,7 +55,8 @@ public class ReportPDF {
 		FileOutputStream fos = new FileOutputStream(docBuff.toString());
 		InputStream is = null;
 		try {
-			logger.info("Connecting to Report Server ... ");
+			logger.info("Connecting to Report Server for " + studentBioId + " ... ");
+			logger.info(URLStringBuf.toString());
 			HttpURLConnection urlConn = (HttpURLConnection) url1.openConnection();
 
 			// Checking whether the URL contains a PDF
@@ -91,7 +91,6 @@ public class ReportPDF {
 		FileOutputStream fos = new FileOutputStream(pdfPath);
 		InputStream is = null;
 		try {
-			logger.info("Connecting to Report Server ... ");
 			logger.info(url);
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 

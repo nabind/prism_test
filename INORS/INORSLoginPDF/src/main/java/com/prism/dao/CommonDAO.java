@@ -98,4 +98,6 @@ public interface CommonDAO {
 	public List<OrgTO> getGradesAcsi(String jasperOrgIds) throws Exception;
 	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception;
 
+	public String getRootPath(String schoolId) throws Exception;
+
 }

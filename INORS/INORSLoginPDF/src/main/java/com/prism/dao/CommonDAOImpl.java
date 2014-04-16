@@ -97,7 +97,7 @@ public class CommonDAOImpl implements CommonDAO {
 				school.setDistrictCode(rs.getString("DISTRICT_CODE"));
 				school.setDistrictName(rs.getString("DISTRICT_NAME"));
 			} else {
-				logger.info("No school found");
+				logger.warn("No school found");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -567,20 +567,17 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @see com.prism.dao.CommonDAO#getStudentIdList(java.lang.String)
 	 */
 	public List<String> getStudentIdList(String schoolId) {
-		List<String> studentIdList = new ArrayList<String>();
-		
+		List<String> testElementIdList = new ArrayList<String>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		try{
+		try {
 			conn = driver.connect(DATA_SOURCE, null);
 			pstmt = conn.prepareCall(Constants.GET_STUDENT_ID_LIST);
 			pstmt.setLong(1, Long.valueOf(schoolId));
 			rs = pstmt.executeQuery();
-			
 			while (rs.next()) {
-				studentIdList.add(rs.getString("STUDENT_BIO_ID"));
+				testElementIdList.add(rs.getString("TEST_ELEMENT_ID"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -597,38 +594,34 @@ public class CommonDAOImpl implements CommonDAO {
 				conn.close();
 			} catch (Exception e2) {
 			}
-		
 		}
-		return studentIdList;
+		return testElementIdList;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String> pdfPathList)
+	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String>
+	 * pdfPathList)
 	 */
 	public int[] updateStudentsPDFloc(Map<String, String> pdfPathList) {
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int updateCount[] = null;
-		
-		try{
+		try {
 			conn = driver.connect(DATA_SOURCE, null);
-
 			pstmt = conn.prepareStatement(Constants.UPDATE_STUDENT_PDF_LOC);
-						
-			for (Entry entry : pdfPathList.entrySet()) {	
+			for (Entry entry : pdfPathList.entrySet()) {
 				pstmt.setString(1, entry.getValue().toString()); // IC_FILE_LOC
-				pstmt.setString(2, entry.getKey().toString()); // STUDENT_BIO_ID
+				pstmt.setString(2, entry.getKey().toString()); // TEST_ELEMENT_ID
 				pstmt.addBatch();
 			}
-			
 			updateCount = pstmt.executeBatch();
 			logger.debug("Records updated: " + updateCount);
-			conn.commit();
+			if (conn.getAutoCommit() == false) {
+				conn.commit();
+			}
 			logger.debug("commit successful");
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -642,7 +635,6 @@ public class CommonDAOImpl implements CommonDAO {
 			}
 		}
 		return updateCount;
-
 	}
 
 	/*
@@ -1261,5 +1253,34 @@ public class CommonDAOImpl implements CommonDAO {
 		}
 		logger.info("Returning " + students.size() + " Students");
 		return students;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.prism.dao.CommonDAO#getRootPath(java.lang.String)
+	 */
+	public String getRootPath(String schoolId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String adminid = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_ROOT_PATH);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			pstmt.setLong(2, Long.valueOf(schoolId));
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				adminid = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		logger.info("Returning Root Path = " + adminid);
+		return adminid;
 	}
 }

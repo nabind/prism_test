@@ -104,4 +104,22 @@ public class CustomStringUtil {
 		sb.replace(index, index + 1, newValue);
 		return sb.toString();
 	}
+	
+	/**
+	 * Usage: CustomStringUtil.replaceAll(fileName, "/", "\\\\");
+	 * It will replace all occurances of "/" to "\\"
+	 * 
+	 * @param s
+	 * @param old
+	 * @param now
+	 * @return
+	 */
+	public static String replaceAll(String s, String old, String now) {
+		int i = s.indexOf(old);
+		while (i > 0) {
+			s = s.substring(0, i) + now + s.substring(i + 1);
+			i = s.indexOf(old);
+		}
+		return s;
+	}
 }
