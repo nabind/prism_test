@@ -876,15 +876,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.DEBUG, "orgId=" + orgId);
 			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode, orgId,
-						searchParam);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, parentTenantId);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear, parentTenantId);
 			}
 			orgList = getOrgList(lstData, adminYear);
 		} else {
 			parentTenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, parentTenantId, orgMode, customerId, parentTenantId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, parentTenantId, orgMode, customerId,adminYear, parentTenantId);
 			orgList = getOrgList(lstData, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
@@ -950,7 +949,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
 		orgName = CustomStringUtil.appendString("%", orgName, "%");
 		List<OrgTO> orgList = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORGANNIZATION, customerId, orgName, orgMode, tenantId, tenantId);
+		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORGANNIZATION, customerId, orgName, orgMode, adminYear, tenantId, tenantId);
 		if (list != null && list.size() > 0) {
 			orgList = new ArrayList<OrgTO>();
 			for (Map<String, Object> data : list) {
@@ -978,7 +977,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		orgName = CustomStringUtil.appendString("%", orgName, "%");
 		// List<OrgTO> orgList = null;
 		String orgListJsonString = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORG_AUTO_COMPLETE, customerId, orgMode, tenantId, orgName);
+		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORG_AUTO_COMPLETE, customerId, orgMode, adminYear, tenantId, orgName);
 		if (list != null && list.size() > 0) {
 			orgListJsonString = "[";
 			for (Map<String, Object> data : list) {
