@@ -4,6 +4,8 @@
  * Version: 1
  */
 $(document).ready(function() {
+	$('.main-section').css('min-height', '850px');
+	
 	showContent($('#studentOverviewMessage'));
 	
 	$(".standard-activity").live('click', function() {
@@ -38,9 +40,69 @@ $(document).ready(function() {
 	$('#backLink').live('click', function() {
 		historyBack();
 	});
+	
+	// ============================ GET STUDENT REPORT ==========================================
+	$('.studResult').on('click', function() {
+		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, 'Overall Results', $(this), 0);
+	});
+	// tab 2
+	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
+		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
+			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, 'Results by Standard', $('.studResult'), 1);
+		}
+	});
 });
 //=====document.ready End===================================
 
+//============================ GET STUDENT REPORT ==========================================
+var parentContainer = '<div class="right-column">\
+							<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">\
+								<ul class="tabs reporttabs">\
+									<li class="active"><a href="#new-tab0" id="new-tab0_new-tab0">Overall Results</a></li>\
+									<li><a href="#new-tab1" id="new-tab1_new-tab1">Results by Standard</a></li>\
+								</ul>\
+								<div class="tabs-content" style="padding-bottom: 50px !important;">\
+									<div id="new-tab0" class="with-padding relative">';
+var parentContainerEnd = 			'</div>\
+								<div id="new-tab1" class="with-padding relative">\
+									<div style="width:100%; text-align: center;">Loading ...</div>\
+								</div>\
+							</div>\
+						</div>\
+						</div>';
+function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
+	blockUI();
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
+	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
+	var custProdId = 5001;//(typeof $(obj).attr('custProdId') !== 'undefined') ? $(obj).attr('custProdId') : 0; 
+	var customerId = 0;
+	//var reportUrl = "/public/PN/Report/resultsByStandard_files";
+	//var reportId = 1220;
+	//var reportName = "Results by Standard";
+	var dataURL = 'reportUrl='+ reportUrl + '&reportId='+reportId + '&reportName='+reportName+'&filter=true';
+	//dataURL = dataURL + '&p_test_administration='+custProdId+'&p_grade='+studentGradeId+'&p_Student_Bio_Id='+studentBioId+'&p_Subtest='+subtestId+'&p_customerid='+customerId;
+	dataURL = dataURL + '&p_Student_Bio_Id='+studentBioId+'&p_Subtest='+subtestId;
+	$.ajax({
+		type : "GET",
+		url : 'openReportHtml.do',
+		data : dataURL,
+		dataType : 'html',
+		cache:false,
+		success : function(data) {
+			unblockUI();
+			if(tabCount == 0) {
+				$(".main-section").html(parentContainer + data + parentContainerEnd);
+			} else if(tabCount == 1){
+				$("#new-tab1").html(data);
+			}
+		},
+		error : function(data) {						
+			unblockUI();
+			$.modal.alert(strings['script.common.error']);
+		}
+	});
+}
 //======== Function to get pn pages =================
 function getGenericPage(action, obj) {
 	blockUI();
