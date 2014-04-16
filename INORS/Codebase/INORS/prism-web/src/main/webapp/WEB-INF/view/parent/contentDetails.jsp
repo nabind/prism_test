@@ -4,7 +4,7 @@
 <%@ include file="../common/constant.jsp" %>
 <div class="margin-bottom-medium" style="min-height: 425px;">
 	
-	<div id="contentDetailsHeader" class="relative thin">	
+	<div id="contentDetailsHeader" class="relative thin" style="height: auto;">	
 		<c:choose>
 			<c:when test="${menuId == rsc}">
 				<h1>${menuName}</h1>
@@ -22,11 +22,20 @@
 	<div id="contentDescription" class="relative with-padding"
 		style="height: auto; text-align: justify">			
 	</div>
-	<!-- 
-	<a style="font-weight: bold" href="#nogo" id="backLink">
-		Go back
-	</a>
-	 -->
+	
+	<c:choose>
+		<c:when test="${(menuId == stdAct) || (menuId == stdInd)}">
+			<a style="font-weight: bold" href="#nogo" id="backLink">
+				Go back
+			</a>
+		</c:when>
+		<c:otherwise>
+			<c:if test="${studentBioId == 0}">
+				<a style="font-weight: bold" href="#nogo" id="backLink">
+					Go back
+				</a>
+			</c:if>
+		</c:otherwise>
+	</c:choose>
+
 </div>
-
-

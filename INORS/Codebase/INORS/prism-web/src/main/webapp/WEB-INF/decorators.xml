@@ -42,6 +42,7 @@
 		<pattern>/getGradeSubtestInfo*</pattern>
 		<pattern>/getBrowseContent*</pattern>
 		<pattern>/getStandardMatters*</pattern>
+		<pattern>/historyBack*</pattern>
     </decorator>
 	
 	<decorator name="report" page="reporttemplate.jsp">

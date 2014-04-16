@@ -4,6 +4,7 @@
  * Version: 1
  */
 $(document).ready(function() {
+	
 	$('.main-section').css('min-height', '850px');
 	
 	showContent($('#studentOverviewMessage'));
@@ -36,9 +37,9 @@ $(document).ready(function() {
 		getGenericPage($(this).attr('action'), $(this));
 	});
 	
-	//TODO - If required
+	//==============To implement back functionality - By Joy===========
 	$('#backLink').live('click', function() {
-		historyBack();
+		getGenericPage('historyBack', $(this));
 	});
 	
 	// ============================ GET STUDENT REPORT ==========================================
@@ -70,6 +71,7 @@ var parentContainerEnd = 			'</div>\
 							</div>\
 						</div>\
 						</div>';
+
 function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	blockUI();
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
@@ -103,11 +105,14 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 		}
 	});
 }
-//======== Function to get pn pages =================
+
+//======== Function to get parent network pages =================
 function getGenericPage(action, obj) {
 	blockUI();
+	
 	var dataUrl = getDataUrl(action, obj);
 	var urlParam = action +'.do';
+	
 	$.ajax({
 		type : "GET",
 		url : urlParam,
@@ -175,16 +180,6 @@ function showContent($container){
 	$container.html(taVal);
 }
 
-function historyBack() {
-	window.history.back();
-	return false;
-}
-
-
-/*$('#browseContent').live("click", function() {
-		var href = "getBrowseContent.do";
-		$(".browseContent").attr("href", href);
-});*/
 
 /**
  * This js file is for Parent Network - End

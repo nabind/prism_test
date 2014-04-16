@@ -15,6 +15,7 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.util.GenericStack;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
@@ -43,6 +44,7 @@ public class ParentNetworkController {
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
+	
 	
 	/*
 	 * Get Student's sub test and overview content
@@ -110,6 +112,9 @@ public class ParentNetworkController {
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardActivity()");
 		long t1 = System.currentTimeMillis();
 		
+		//To implement back functionality - By Joy
+		storeUrl(request);
+		
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		final long studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
 		final long subtestId = Long.parseLong(request.getParameter("subtestId")); 
@@ -161,6 +166,9 @@ public class ParentNetworkController {
 			throws ServletException, IOException,BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardIndicator()");
 		long t1 = System.currentTimeMillis();
+		
+		//To implement back functionality - By Joy
+		storeUrl(request);
 		
 		final Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		final long studentBioId = Long.parseLong(request.getParameter("studentBioId"));  
@@ -258,6 +266,7 @@ public class ParentNetworkController {
 		modelAndView.addObject("menuId", menuId);
 		modelAndView.addObject("menuName", menuName);
 		modelAndView.addObject("studentGradeName", studentGradeName);
+		modelAndView.addObject("studentBioId", studentBioId);
 		
 		return modelAndView;
 	}
@@ -307,6 +316,10 @@ public class ParentNetworkController {
 
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getGradeSubtestInfo()");
 		long t1 = System.currentTimeMillis();
+		
+		//To implement back functionality - By Joy
+		storeUrl(request);
+		
 		ModelAndView modelAndView = new ModelAndView("parent/gradeSubject");
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		long menuId = Long.parseLong(request.getParameter("menuId")); 
@@ -328,6 +341,54 @@ public class ParentNetworkController {
 		modelAndView.addObject("menuId", menuId);
 		modelAndView.addObject("menuName", menuName);
 		return modelAndView;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * To store the request URL in Stack - By Joy
+	 */
+	private void storeUrl(HttpServletRequest request)throws ServletException, IOException,BusinessException{
+		String requestURL = "";
+		requestURL = request.getServletPath() + "?" + request.getQueryString();
+		GenericStack<String> urlStack = (GenericStack<String>)request.getSession().getAttribute(IApplicationConstants.URL_STACK);
+		if(urlStack == null){
+			urlStack = new GenericStack<String>();
+		}
+		urlStack.push(requestURL);
+		request.getSession().setAttribute(IApplicationConstants.URL_STACK, urlStack);
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 * To implement back functionality - By Joy
+	 */
+	@RequestMapping(value="/historyBack", method=RequestMethod.GET)
+	public void historyBack(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, IOException,BusinessException{
+
+		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - historyBack()");
+		String requestURL = "";
+		GenericStack<String> urlStack = (GenericStack<String>)request.getSession().getAttribute(IApplicationConstants.URL_STACK);
+		if(!urlStack.isEmpty()){
+			requestURL = urlStack.pop();
+			requestURL += "&fromBack=true";
+		}else{
+			logger.log(IAppLogger.ERROR, "URL STACK is empty");
+		}
+		request.getRequestDispatcher(requestURL).forward(request, response);
+		logger.log(IAppLogger.INFO, "Exit: ParentNetworkController - historyBack()");	
 	}
 
 }

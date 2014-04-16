@@ -215,4 +215,7 @@ public interface IApplicationConstants {
 	public static final String COMMA = ",";
 	
 	public static enum WS_ROSTER_DATA_STATUS { NR, IP, ER, CO };
+	
+	//To implement back functionality - By Joy
+	public static final String URL_STACK = "URL_STACK";
 }
