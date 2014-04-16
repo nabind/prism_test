@@ -107,8 +107,7 @@ public interface IOrgQuery {
 			" AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL ", 
             "       WHERE   O.ORG_NODEID = OPL.ORG_NODEID ",
             " 		AND OPL.CUST_PROD_ID = ?)",
-			" AND O.ORG_NODE_LEVEL  > = ",
-			" (SELECT ORG_NODE_LEVEL  FROM ORG_NODE_DIM WHERE ORG_NODEID  = ?) ",
+			" AND O.ORG_NODE_LEVEL  > = (SELECT ORG_NODE_LEVEL  FROM ORG_NODE_DIM WHERE ORG_NODEID  = ?) ",
 			" CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID START WITH ORG_NODEID = ? ");
 	// search organization auto complete
 	public static final String SEARCH_ORG_AUTO_COMPLETE = CustomStringUtil.appendString("SELECT ABC.ORG_NODE_NAME ",
