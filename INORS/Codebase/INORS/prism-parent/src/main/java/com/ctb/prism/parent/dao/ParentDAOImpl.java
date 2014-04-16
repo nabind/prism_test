@@ -520,8 +520,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 				to.setStudentBioId(studentBioId);
 
-				if (getParentAccountDetails(String.valueOf(studentBioId), customerId) != null) {
-					to.setParentAccount(getParentAccountDetails(String.valueOf(studentBioId), customerId));
+				//Fix for TD 78028 - By Joy
+				to.setTestElementId((String) (fieldDetails.get("TESTELEMENTID")));
+				if (getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId) != null) {
+					to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
 				} else {
 					to.setParentAccount(Collections.<ParentTO> emptyList());
 				}
@@ -534,7 +536,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
 				tenantId = (tenantId == null) ? tenantId = "0" : tenantId;
 				to.setClikedOrgId(Long.parseLong(tenantId));
-				to.setTestElementId((String) (fieldDetails.get("TESTELEMENTID")));
 				studentTOs.add(to);
 			}
 		}
@@ -547,7 +548,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @param customerId
 	 * @return
 	 */
-	private ArrayList<ParentTO> getParentAccountDetails(String studentBioId, long customerId) {
+	//Fix for TD 78028 - By Joy [Block the code for further confusion]
+	/*private ArrayList<ParentTO> getParentAccountDetails(String studentBioId, long customerId) {
 
 		ArrayList<ParentTO> parentTOs = null;
 		List<Map<String, Object>> parentAccountData = null;
@@ -565,7 +567,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			}
 		}
 		return parentTOs;
-	}
+	}*/
 	
 	private ArrayList<ParentTO> getParentAccountDetailsByTestElementId(String testElementId, long customerId) {
 		ArrayList<ParentTO> parentTOs = null;
@@ -626,8 +628,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				StudentTO to = new StudentTO();
 				long studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue();
 				to.setStudentBioId(studentBioId);
-				if (getParentAccountDetails(String.valueOf(studentBioId), customerId) != null) {
-					to.setParentAccount(getParentAccountDetails(String.valueOf(studentBioId), customerId));
+				
+				//Fix for TD 78028 - By Joy
+				to.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
+				if (getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId) != null) {
+					to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
 				} else {
 					to.setParentAccount(Collections.<ParentTO> emptyList());
 				}
@@ -642,7 +647,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				// to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
 				// to. setActivationStatus((String) (fieldDetails.get("ACTIVATIONSTATUS")));
 				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
-				to.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
 				studentTOs.add(to);
 			}
 		}
