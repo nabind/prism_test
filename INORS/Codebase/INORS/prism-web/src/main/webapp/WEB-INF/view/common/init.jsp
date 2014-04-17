@@ -81,6 +81,9 @@
 			
 			// ========================== CODE FOR SHOW/HIDE ORG HIERARCHY ==========================
 			$('#hideHierarchy').live("click", function(e) {
+				e.stopImmediatePropagation();
+				$(document).click();
+				
 				// patch for safari
 				$("#searchUser").focus();
 				
