@@ -4,23 +4,7 @@
 	
 	<c:set var="currOrg" value="<%=request.getSession().getAttribute(IApplicationConstants.CURRORG) %>"/>
 		
-	<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
-		<li class="with-right-arrow">
-			<span>${assessments.assessmentName}</span>
-			<ul class="big-menu white-gradient">
-				<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
-					<sec:authorize ifAnyGranted="${report.allRoles}">
-					<c:set var="currLevel" value="<%=request.getSession().getAttribute(com.ctb.prism.core.constant.IApplicationConstants.CURRORGLVL)%>" />
-						<c:if test="${report.orgLevel == currLevel}">
-							<li style="padding: 8px 25px !important; font-size: 12px !important; font-weight: normal !important; text-shadow: none !important" id="select-tooltip-${loop.count}">
-								<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${report.reportName}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
-							</li>
-						</c:if>
-					</sec:authorize>
-				</c:forEach>
-			</ul>
-		</li>
-	</c:forEach>
+	<input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
 	<%-- <li class="with-right-arrow" id="select-tooltip-0">
 		<span>Resources</span>
 		<div id="select-context-0" class="secondLevelMenu display-none">
