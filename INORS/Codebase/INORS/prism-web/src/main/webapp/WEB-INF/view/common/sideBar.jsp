@@ -75,22 +75,7 @@
 			
 			 -->
 
-			<div class="" id="prismMenu">
-				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
-					<li class="with-right-arrow">
-						<span class="loader big"></span>
-					</li>
-					<li class="with-right-arrow">
-						<span class="loader big"></span>
-					</li>
-					<li class="with-right-arrow">
-						<span class="loader big"></span>
-					</li>
-					<li class="with-right-arrow">
-						<span class="loader big"></span>
-					</li>
-				</ul>
-			
+			<div id="adminMenuContainer">
 				<sec:authorize ifAnyGranted="ROLE_ADMIN">
 					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
 						<%@ include file="resources.jsp"%>
@@ -329,6 +314,22 @@
 						</li>
 					</ul>
 				</sec:authorize>
+			</div>
+			<div class="" id="prismMenu">
+				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
+					<li class="with-right-arrow">
+						<span class="loader big"></span>
+					</li>
+					<li class="with-right-arrow">
+						<span class="loader big"></span>
+					</li>
+					<li class="with-right-arrow">
+						<span class="loader big"></span>
+					</li>
+					<li class="with-right-arrow">
+						<span class="loader big"></span>
+					</li>
+				</ul>
 			</div>
 			<div style="background-color:#FFF">
 				<div id="productImage" class="with-small-padding align-center" style="border-bottom:1px solid #5f80ab;">

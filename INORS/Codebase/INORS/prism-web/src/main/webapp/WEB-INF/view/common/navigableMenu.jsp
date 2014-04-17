@@ -3,7 +3,7 @@
 	<ul class="big-menu blue-gradient collapsible">
 	
 		<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
-		<li class="with-right-arrow">
+		<li class="with-right-arrow" id="menu_${assessments.assessmentName}">
 			<span>${assessments.assessmentName}</span>
 			<ul class="big-menu white-gradient">
 				<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">

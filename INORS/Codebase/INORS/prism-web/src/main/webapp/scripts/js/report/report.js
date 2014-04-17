@@ -584,11 +584,12 @@ window.onload = function()
 //============================= FETCH ADMIN MENU =============================
 function openAdminMenu() {
 	if($("#adminMenu").length > 0) $("#adminMenu").show(200);
-	$("#tempMenu").hide(200);
+	//$("#tempMenu").hide(200);
+	fetchReportMenu('ADM');
 }
 
 //============================= FETCH REPORT MENU =============================
-function fetchReportMenu() {
+function fetchReportMenu(typ) {
 	var dataURL = "";
 	$.ajax({
 		type : "GET",
@@ -599,6 +600,12 @@ function fetchReportMenu() {
 		async : false,
 		success : function(data) {
 			$("#prismMenu").html(data);
+			if(typ == 'ADM') {
+				$("#menu_Reports").hide();
+				$("#menu_Downloads").hide();
+				$("#menu_Resources").addClass('black-gradient');
+				$("[id='menu_Useful Links']").addClass('black-gradient');
+			}
 			// $('#tab-1').removeTab();
 			callbackMenu();
 		},
