@@ -983,7 +983,7 @@ width: 51px;
 height: 16px;
 }
 .menu-second-level{
-	background-color: #A8A8A8 !important;
+	background-color: #C7CEEB !important;
     color: black !important;
     font-size: 12px !important;
     font-weight: bold !important;
@@ -1032,4 +1032,9 @@ height: 16px;
 	margin-top: -9px;
 	position: relative;
 	z-index: 88;
+}
+
+#parentMenu > li.menu-second-level > ul > li:last-child, 
+#parentMenu > li > ul > li.menu-second-level > ul > li:last-child {
+	margin-bottom: 7px;
 }
