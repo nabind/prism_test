@@ -344,6 +344,7 @@ $('.delete-Report').live("click", function() {
 				dataType: 'html',
 				cache:false,
 				success : function(data) {
+					enableSorting(true);
 					var obj = jQuery.parseJSON(data);
 					//win.closeModal(); 
 					if(obj.status == 'Success') {
