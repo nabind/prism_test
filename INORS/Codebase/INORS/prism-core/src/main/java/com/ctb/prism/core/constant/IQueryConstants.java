@@ -149,7 +149,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
                 "   WHERE PARENT_ORG_NODEID = O.ORG_NODEID ",
                 "     AND CUSTOMERID = ?) CHILD_ORG_NO ",
                 " FROM ORG_NODE_DIM O ",
-                " WHERE O.ORG_NODEID > ? ",
+                " WHERE O.ORG_NODEID <> ? ",
                 " AND O.ORG_MODE = ? ",
                 " AND O.CUSTOMERID = ? ",
                 " AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL ", 

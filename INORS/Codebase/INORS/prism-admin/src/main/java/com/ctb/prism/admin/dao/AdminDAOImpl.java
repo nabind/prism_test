@@ -949,7 +949,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
 		orgName = CustomStringUtil.appendString("%", orgName, "%");
 		List<OrgTO> orgList = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORGANNIZATION, customerId, orgName, orgMode, adminYear, tenantId, tenantId);
+		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORGANNIZATION, customerId, adminYear, orgName, orgMode, adminYear, tenantId, tenantId);
 		if (list != null && list.size() > 0) {
 			orgList = new ArrayList<OrgTO>();
 			for (Map<String, Object> data : list) {
