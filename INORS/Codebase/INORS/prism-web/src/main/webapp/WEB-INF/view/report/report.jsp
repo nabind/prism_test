@@ -135,8 +135,8 @@
 			</c:if>
 			</c:if>
 			<c:if test="${homeReport.reportApiUrl != 'openReportHtmlApi'}">
-				<div class="pagination pagination-${homeReport.tabCount} align-right panel-control panel-control-pagination margin-bottom-small rounded-border display-none"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}">
-					<span style="left:10px;position:absolute">Page <span class="pageCurrent">1</span> of <span class="pageEnd">1</span></span>
+				<div class="pagination pagination-${homeReport.tabCount} align-left panel-control panel-control-pagination margin-bottom-small rounded-border display-none"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}">
+					<span style="left:10px;position:absolute; display:none">Page <span class="pageCurrent">1</span> of <span class="pageEnd">1</span></span>
 					<a href="#nogo" class="page_first paginate button compact icon-previous grey-gradient glossy with-tooltip disabled" title="First" page="0" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}"></a>
 					<a href="#nogo" class="page_prev paginate button compact icon-backward grey-gradient glossy with-tooltip disabled" title="Prev" page="" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}"></a>
 					<a href="#nogo" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Next" page="" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}"></a>
