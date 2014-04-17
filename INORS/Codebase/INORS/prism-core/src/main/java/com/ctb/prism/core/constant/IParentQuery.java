@@ -242,7 +242,8 @@ public interface IParentQuery {
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM<=?");
 
-	public static final String GET_STUDENT_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
+	//Fix to associate cust_prode_id properly and performance(See next object) - By Joy
+	/*public static final String GET_STUDENT_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
 			"Select * From ( ",
 			" Select Std.Last_Name || Std.First_Name || Std.Middle_Name || '_' ||",
 			" To_Char(Std.Student_Bio_Id) As Rowidentifier, ",
@@ -262,9 +263,44 @@ public interface IParentQuery {
 			" And org.org_nodeid In (Select org_lstnodeid From org_lstnode_link Where org_nodeid =?)",
 			" And org.customerId = std.customerId",
 			" And org.customerId = ?",
-			" Order By Rowidentifier) Where Rownum <= 15");
+			" Order By Rowidentifier) Where Rownum <= 15");*/
+	
+	//Fix to associate cust_prode_id properly and performance - By Joy
+	public static final String GET_STUDENT_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
+			"SELECT *",
+			" FROM (SELECT STD.LAST_NAME || STD.FIRST_NAME || STD.MIDDLE_NAME || '_' ||",
+			" TO_CHAR(STD.STUDENT_BIO_ID) AS ROWIDENTIFIER,",
+			" STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||",
+			" STD.MIDDLE_NAME AS STUDENTNAME,",
+			" STD.STUDENT_BIO_ID,",
+			" STD.TEST_ELEMENT_ID AS TESTELEMENTID,",
+			" STD.INT_STUDENT_ID AS INTSTUDENTID,",
+			" STD.EXT_STUDENT_ID AS EXTSTUDENTID,",
+			" STD.STUDENT_MODE,",
+			" GRD.GRADE_NAME AS STUDENTGRADE,",
+			" ORG.ORG_NODE_NAME AS SCHOOL",
+			" FROM STUDENT_BIO_DIM STD, GRADE_DIM GRD, ORG_NODE_DIM ORG",
+			" WHERE ORG.ORG_MODE = ?",
+			" AND ORG.ORG_NODEID = STD.ORG_NODEID",
+			" AND STD.GRADEID = GRD.GRADEID",
+			" AND STD.ADMINID = (SELECT ADMINID",
+			" FROM CUST_PRODUCT_LINK",
+			" WHERE CUST_PROD_ID = ?)",
+			" AND EXISTS (SELECT 1",
+			" FROM ORG_LSTNODE_LINK OLNL",
+			" WHERE OLNL.ORG_LSTNODEID = ORG.ORG_NODEID",
+			" AND OLNL.ORG_NODEID = ?)",
+			" AND ORG.CUSTOMERID = STD.CUSTOMERID",
+			" AND ORG.CUSTOMERID = ?",
+			" AND EXISTS (SELECT 1",
+			" FROM ORG_PRODUCT_LINK OPL",
+			" WHERE OPL.ORG_NODEID = ORG.ORG_NODEID",
+			" AND OPL.CUST_PROD_ID = ?)",
+			" ORDER BY ROWIDENTIFIER)",
+			" WHERE ROWNUM <= 15");
 
-	public static final String GET_STUDENT_DETAILS_ON_SCROLL = CustomStringUtil.appendString(
+	//Fix to associate cust_prode_id properly and performance(See next object) - By Joy
+	/*public static final String GET_STUDENT_DETAILS_ON_SCROLL = CustomStringUtil.appendString(
 			"SELECT STU.ROWIDENTIFIER, STU.STUDENTNAME,STU.STUDENT_BIO_ID, ",
 			" STU.TESTELEMENTID AS TESTELEMENTID,STU.INTSTUDENTID AS INTSTUDENTID,",
 			" STU.EXTSTUDENTID AS EXTSTUDENTID, STU.STUDENTGRADE, STU.SCHOOL",
@@ -291,9 +327,63 @@ public interface IParentQuery {
 			" AND ORG.ORG_NODEID IN (SELECT ORG_LSTNODEID FROM ORG_LSTNODE_LINK WHERE ORG_NODEID = ?)",
 			" AND ST.ROWIDENTIFIER > ?",
 			" ORDER BY ST.ROWIDENTIFIER) STU",
+			" WHERE ROWNUM <= 15");*/
+	
+	//Fix to associate cust_prode_id properly and performance - By Joy
+	public static final String GET_STUDENT_DETAILS_ON_SCROLL = CustomStringUtil.appendString(
+			"SELECT STU.ROWIDENTIFIER,",
+			" STU.STUDENTNAME,",
+			" STU.STUDENT_BIO_ID,",
+			" STU.TESTELEMENTID AS TESTELEMENTID,",
+			" STU.INTSTUDENTID AS INTSTUDENTID,",
+			" STU.EXTSTUDENTID AS EXTSTUDENTID,",
+			" STU.STUDENTGRADE,",
+			" STU.SCHOOL",
+			" FROM (SELECT ST.ROWIDENTIFIER,",
+			" ST.STUDENTNAME,",
+			" ST.STUDENT_BIO_ID,",
+			" ST.TESTELEMENTID,",
+			" ST.INTSTUDENTID,",
+			" ST.EXTSTUDENTID,",
+			" GRD.GRADE_NAME AS STUDENTGRADE,",
+			" ORG.ORG_NODE_NAME AS SCHOOL",
+			" FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||",
+			" STD.MIDDLE_NAME AS STUDENTNAME,",
+			" STD.LAST_NAME || STD.FIRST_NAME || STD.MIDDLE_NAME || '_' ||",
+			" TO_CHAR(STD.STUDENT_BIO_ID) AS ROWIDENTIFIER,",
+			" STD.STUDENT_BIO_ID AS STUDENT_BIO_ID,",
+			" STD.TEST_ELEMENT_ID AS TESTELEMENTID,",
+			" STD.INT_STUDENT_ID AS INTSTUDENTID,",
+			" STD.EXT_STUDENT_ID AS EXTSTUDENTID,",
+			" STD.GRADEID,",
+			" STD.ORG_NODEID,",
+			" STD.CUSTOMERID",
+			" FROM STUDENT_BIO_DIM STD",
+			" WHERE STD.ADMINID = (select adminid",
+			" from cust_product_link",
+			" where cust_prod_id = ?)",
+			" AND STD.CUSTOMERID = ?) ST,",
+			" GRADE_DIM GRD,",
+			" ORG_NODE_DIM ORG",
+			" WHERE ORG.ORG_MODE = ?",
+			" AND ORG.ORG_NODEID = ST.ORG_NODEID",
+			" AND ST.GRADEID = GRD.GRADEID",
+			" AND ST.CUSTOMERID = ORG.CUSTOMERID",
+			" AND ORG.CUSTOMERID = ?",
+			" AND EXISTS (SELECT 1",
+			" FROM ORG_LSTNODE_LINK OLNL",
+			" WHERE OLNL.ORG_LSTNODEID = ORG.ORG_NODEID",
+			" AND OLNL.ORG_NODEID = ?)",
+			" AND ST.ROWIDENTIFIER > ?",
+			" AND EXISTS (SELECT 1",
+			" FROM ORG_PRODUCT_LINK OPL",
+			" WHERE OPL.ORG_NODEID = ORG.ORG_NODEID",
+			" AND OPL.CUST_PROD_ID = ?)",
+			" ORDER BY ST.ROWIDENTIFIER) STU",
 			" WHERE ROWNUM <= 15");
 
-	public static final String GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString(
+	//Fix to associate cust_prode_id properly and performance(See next object) - By Joy
+	/*public static final String GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString(
 			"SELECT STU.ROWIDENTIFIER, STU.STUDENTNAME,STU.STUDENT_BIO_ID,",
 			" STU.TESTELEMENTID AS TESTELEMENTID,STU.INTSTUDENTID AS INTSTUDENTID,",
 			" STU.EXTSTUDENTID AS EXTSTUDENTID,STU.STUDENTGRADE,STU.SCHOOL",
@@ -312,7 +402,63 @@ public interface IParentQuery {
 			" AND ORG.ORG_NODEID IN (SELECT ORG_LSTNODEID FROM ORG_LSTNODE_LINK WHERE ORG_NODEID =?)",
 			" AND ST.ROWIDENTIFIER > ? AND UPPER(ST.STUDENTNAME) LIKE UPPER(?)",
 			" ORDER BY ST.ROWIDENTIFIER) STU",
+			" WHERE ROWNUM <= 15");*/
+	
+	//Fix to associate cust_prode_id properly and performance - By Joy
+	public static final String GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString(
+			"SELECT STU.ROWIDENTIFIER,",
+			" STU.STUDENTNAME,",
+			" STU.STUDENT_BIO_ID,",
+			" STU.TESTELEMENTID AS TESTELEMENTID,",
+			" STU.INTSTUDENTID AS INTSTUDENTID,",
+			" STU.EXTSTUDENTID AS EXTSTUDENTID,",
+			" STU.STUDENTGRADE,",
+			" STU.SCHOOL",
+			" FROM (SELECT ST.ROWIDENTIFIER,",
+			" ST.STUDENTNAME,",
+			" ST.STUDENT_BIO_ID,",
+			" ST.TESTELEMENTID,",
+			" ST.INTSTUDENTID,",
+			" ST.EXTSTUDENTID,",
+			" GRD.GRADE_NAME AS STUDENTGRADE,",
+			" ORG.ORG_NODE_NAME AS SCHOOL",
+			" FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||",
+			" STD.MIDDLE_NAME AS STUDENTNAME,",
+			" STD.LAST_NAME || STD.FIRST_NAME || STD.MIDDLE_NAME || '_' ||",
+			" TO_CHAR(STD.STUDENT_BIO_ID) AS ROWIDENTIFIER,",
+			" STD.STUDENT_BIO_ID AS STUDENT_BIO_ID,",
+			" STD.TEST_ELEMENT_ID AS TESTELEMENTID,",
+			" STD.INT_STUDENT_ID AS INTSTUDENTID,",
+			" STD.EXT_STUDENT_ID AS EXTSTUDENTID,",
+			" STD.GRADEID,",
+			" STD.ORG_NODEID,",
+			" STD.CUSTOMERID",
+			" FROM STUDENT_BIO_DIM STD",
+			" WHERE STD.ADMINID =",
+			" (select adminid",
+			" from cust_product_link",
+			" where cust_prod_id = ?)",
+			" AND STD.CUSTOMERID = ?) ST,",
+			" GRADE_DIM GRD,",
+			" ORG_NODE_DIM ORG",
+			" WHERE ORG.ORG_MODE = ?",
+			" AND ORG.ORG_NODEID = ST.ORG_NODEID",
+			" AND ST.GRADEID = GRD.GRADEID",
+			" AND ORG.CUSTOMERID = ST.CUSTOMERID",
+			" AND ORG.CUSTOMERID = ?",
+			" AND ORG.ORG_NODEID IN",
+			" (SELECT ORG_LSTNODEID",
+			" FROM ORG_LSTNODE_LINK",
+			" WHERE ORG_NODEID = ?)",
+			" AND ST.ROWIDENTIFIER > ?",
+			" AND UPPER(ST.STUDENTNAME) LIKE UPPER(?)",
+			" AND EXISTS (SELECT 1",
+			" FROM ORG_PRODUCT_LINK OPL",
+			" WHERE OPL.ORG_NODEID = ORG.ORG_NODEID",
+			" AND OPL.CUST_PROD_ID = ?)",
+			" ORDER BY ST.ROWIDENTIFIER) STU",
 			" WHERE ROWNUM <= 15");
+	
 
 	public static final String GET_PARENT_DETAILS_FOR_CHILDREN = CustomStringUtil.appendString(
 			" SELECT USR.USERNAME, IC.INVITATION_CODE, IC.ACTIVATION_STATUS ",
@@ -347,6 +493,10 @@ public interface IParentQuery {
 			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
 			" AND STD.STUDENT_BIO_ID = ?");
 
+	/*
+	 * Fix for TD 78101 - Add exists clause with ORG_PRODUCT_LINK 
+	 * and Use Exists clause instead of in clause for ORG_NODEID for better performance - By Joy
+	 * */
 	public static final String SEARCH_STUDENT = CustomStringUtil.appendString(
 			"SELECT STU.ROWIDENTIFIER,STU.STUDENTNAME,STU.STUDENT_BIO_ID, ",
 			" STU.TESTELEMENT,STU.GRADE_NAME AS STUDENTGRADE,STU.SCHOOL AS SCHOOL",
@@ -363,9 +513,11 @@ public interface IParentQuery {
 			" WHERE STD.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)) ST, GRADE_DIM GRD,ORG_NODE_DIM ORG",
 			" WHERE ORG.ORG_MODE = ? AND ORG.ORG_NODEID = ST.ORG_NODEID",
 			" AND ST.GRADEID = GRD.GRADEID ",
-			" AND ORG.ORG_NODEID In (Select org_lstnodeid From org_lstnode_link Where org_nodeid =?)",
+			/*" AND ORG.ORG_NODEID In (Select org_lstnodeid From org_lstnode_link Where org_nodeid =?)",*/
+			"  AND EXISTS (SELECT 1 FROM ORG_LSTNODE_LINK OLNL WHERE OLNL.ORG_LSTNODEID = ORG.ORG_NODEID AND OLNL.ORG_NODEID = ?)",
 			" AND UPPER(ST.STUDENTNAME) LIKE UPPER(?)",
 			" AND ST.CUSTOMERID = ORG.CUSTOMERID AND ORG.CUSTOMERID = ?",
+			" AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL WHERE OPL.ORG_NODEID = ORG.ORG_NODEID AND OPL.CUST_PROD_ID = ?)",
 			" ORDER BY ST.ROWIDENTIFIER) STU",
 			" WHERE ROWNUM <= ?");
 

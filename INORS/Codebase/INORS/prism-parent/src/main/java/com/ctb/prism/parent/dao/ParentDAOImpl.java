@@ -501,14 +501,16 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				lstData = getJdbcTemplatePrism()
-						.queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId, searchParam);
+						.queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, 
+								adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId, searchParam, adminYear);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL, adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL, 
+						adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId, adminYear);
 			}
 
 		} else {
 			tenantId = orgId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_FIRST_LOAD, orgMode, adminYear, tenantId, customerId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_FIRST_LOAD, orgMode, adminYear, tenantId, customerId, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
 
@@ -595,7 +597,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode) {
 		studentName = CustomStringUtil.appendString("%", studentName, "%");
 		String studentListJsonString = null;
-		List<Map<String, Object>> listOfStudents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, adminyear, orgMode, tenantId, studentName, customerId, "100");
+		List<Map<String, Object>> listOfStudents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, 
+				adminyear, orgMode, tenantId, studentName, customerId, adminyear, "100");
 		if (listOfStudents != null && listOfStudents.size() > 0) {
 			studentListJsonString = "[";
 			for (Map<String, Object> data : listOfStudents) {
@@ -620,7 +623,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 		studentName = CustomStringUtil.appendString("%", studentName, "%");
 
-		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, adminyear, orgMode, tenantId, studentName, customerId, "15");
+		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, 
+				adminyear, orgMode, tenantId, studentName, customerId, adminyear, "15");
 
 		if (studentlist != null && studentlist.size() > 0) {
 			studentTOs = new ArrayList<StudentTO>();
