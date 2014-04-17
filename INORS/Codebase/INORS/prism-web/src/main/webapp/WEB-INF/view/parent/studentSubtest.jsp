@@ -18,7 +18,7 @@
 		<div id="studentOverviewMessage" class="wrapped relative white-gradient"
 			style="height: auto; text-align: justify">			
 		</div>
-		<div id="subtestDiv" class="left-column big-message blue-gradient" 
+		<%-- <div id="subtestDiv" class="left-column big-message blue-gradient" 
 			style="color: #fff; height: auto; width:22%" >
 			<dl>
 			 <c:if test="${empty childDataMap.studentSubtest}">
@@ -40,7 +40,7 @@
 				</c:forEach>
 			 </c:if>
 			</dl>
-		</div>
+		</div> --%>
 	</c:if>
 </div>
 
