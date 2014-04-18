@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <form:form id="manageProfile" name="manageProfile" class="manage-Profile-form">
 	<input type="hidden" name="userId" id="userId" value="${parentAccountDetail.userId}" />
@@ -52,7 +53,7 @@
 							</div>
 							<div class="field-block button-height" style="margin-left:0px; margin-right:0px">
 								<label for="displayName" class="label"><b>Display Name</b><span class="icon-star icon-size1 red"></span></label>
-								<input type="text" name="displayName" id="displayName" value="${parentAccountDetail.displayName}" class="input validate[required, minSize[3], maxSize[10]]">
+								<input type="text" name="displayName" id="displayName" value="${fn:substring(parentAccountDetail.displayName, 0, 10)}" class="input validate[required, minSize[3], maxSize[10]]">
 							</div>
 							<div class="field-block button-height">
 								<label for="password" class="label"><b>Change Password</b></label>
