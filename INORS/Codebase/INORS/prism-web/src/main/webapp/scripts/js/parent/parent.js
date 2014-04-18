@@ -315,11 +315,13 @@ $(document).ready(function() {
 	}
 	//Show if userName is available	
 	function showAvailability(){
-		$("span#imgHolder").html('<span id="validated" class="validated" style="color: green;">Username available.</span>');			
+		$("span#imgHolder").html('<span id="validated" class="validated" style="color: green;">Username available.</span>');
+		$("#addNewUser").validationEngine('validate');
 	}
 	//Show if userName is not available	
 	function showUnAvailability(){
 		$("span#imgHolder").html('<span class="" style="color: red;">Username already present. Please choose other.</span>');
+		$("#addNewUser").validationEngine('validate');
 	}
 	//Remove the alert prompt of User Profile
 	function removePromptOnBack()
