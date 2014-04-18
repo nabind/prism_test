@@ -1548,6 +1548,7 @@ public class AdminController {
 					paramMap.put("scrollId", scrollId);
 					paramMap.put("customer", customer);
 					paramMap.put("orgMode", orgMode);
+					paramMap.put("adminYear", adminYear);
 					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.valueOf(customer).longValue());
 					studentTOs = parentService.searchStudentOnRedirect(paramMap);
 					// (String)request.getSession().getAttribute(IApplicationConstants.CURRORG)
@@ -1849,6 +1850,7 @@ public class AdminController {
 				parameterMap.put("scrollId", request.getSession().getAttribute(IApplicationConstants.CURRORG));
 				parameterMap.put("customer", currCustomer);
 				parameterMap.put("orgMode", orgMode);
+				paramMap.put("adminYear", adminYear);
 				studentTOs = parentService.searchStudentOnRedirect(parameterMap);
 				logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
 			}

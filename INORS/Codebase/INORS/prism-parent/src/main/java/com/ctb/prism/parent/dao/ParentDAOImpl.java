@@ -664,15 +664,16 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchStudentOnRedirect(java.util.Map)
 	 */
 	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap) {
-		String studentBioId = (String) paramMap.get("studentBioId");
+		String tesElementId = (String) paramMap.get("studentBioId");
 		String tenantId = (String) paramMap.get("scrollId");
 		//Fix for java.lang.ClassCastException
 		String customerIdString = paramMap.get("customer").toString();
 		long customerId = Long.parseLong(customerIdString);
 		String orgMode = (String) paramMap.get("orgMode");
+		String adminYear =(String) paramMap.get("adminYear");
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<Map<String, Object>> studentlist = null;
-		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT_ON_REDIRECT, orgMode, tenantId,IApplicationConstants.ROLE_PARENT_ID, studentBioId);
+		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT_ON_REDIRECT, orgMode, tenantId,adminYear, tesElementId);
 		if (studentlist != null && studentlist.size() > 0) {
 			studentTOs = new ArrayList<StudentTO>();
 			for (Map<String, Object> fieldDetails : studentlist) {
