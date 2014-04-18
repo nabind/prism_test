@@ -1687,11 +1687,11 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: getStudentAssessmentList");
 		String jsonString = null;
 		try {
-			String studentBioId = (String) req.getParameter("studentBioId");
+			String testElementId = (String) req.getParameter("testElementId");
 			//List<StudentTO> childrenList = parentService.getChildrenList((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER));
-			if(studentBioId!= null)
+			if(testElementId!= null)
 			{
-				List<StudentTO> studentAssessmentList = parentService.getAssessmentList(studentBioId);
+				List<StudentTO> studentAssessmentList = parentService.getAssessmentList(testElementId);
 				if ( studentAssessmentList != null )
 				{
 					jsonString = JsonUtil.convertToJsonAdmin(studentAssessmentList);
@@ -1989,11 +1989,13 @@ public class AdminController {
 			String studentBioId = request.getParameter("studentBioId");
 			String adminYear = request.getParameter("adminYear");
 			String invitationCode = request.getParameter("invitationCode");
+			String testElementId = request.getParameter("testElementId");
 		
 			StudentTO student = new StudentTO();
 			student.setStudentBioId((studentBioId==null) ? 0 : Long.valueOf(studentBioId));
 			student.setAdminid(adminYear);
 			student.setInvitationcode(invitationCode);
+			student.setTestElementId(testElementId);
 			
 			boolean success = parentService.regenerateActivationCode(student);
 			String status = (success)? "Success" : "Failed";

@@ -501,7 +501,7 @@ public interface IParentQuery {
 			" AND link.ADMINID=STD.ADMINID",
 			" AND ADM.ADMINID=link.ADMINID",
 			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
-			" AND STD.STUDENT_BIO_ID = ?");
+			" AND TEST_ELEMENT_ID = ?");
 
 	/*
 	 * Fix for TD 78101 - Add exists clause with ORG_PRODUCT_LINK 

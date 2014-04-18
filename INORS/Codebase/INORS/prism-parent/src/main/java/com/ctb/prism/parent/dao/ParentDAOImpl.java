@@ -729,9 +729,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getAssessmentList(java.lang.String)
 	 */
-	public List<StudentTO> getAssessmentList(String studentBioId) {
+	public List<StudentTO> getAssessmentList(String testElementId) {
 		List<StudentTO> assessmentList = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ASSESSMENT_LIST, studentBioId);
+		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ASSESSMENT_LIST, testElementId);
 		if (list != null && list.size() > 0) {
 			assessmentList = new ArrayList<StudentTO>();
 			for (Map<String, Object> fieldDetails : list) {
