@@ -398,7 +398,8 @@ $('.view-Children').live("click", function() {
                 cache:false,
                 data: {
                     term : request.term,
-                    selectedOrg : $("a.jstree-clicked").parent().attr("id")
+                    selectedOrg : $("a.jstree-clicked").parent().attr("id"),
+                    AdminYear : $("#AdminYear").val()
                 },
                 success: function(data) {
                     response(data);
@@ -471,7 +472,7 @@ $('.view-Children').live("click", function() {
 		$.ajax({
 			type : "GET",
 			url : "searchParent.do",
-			data : "parentName="+searchString+"&browser="+browser+"&selectedOrg="+$("a.jstree-clicked").parent().attr("id")+"&isExactSeacrh="+isExactSeacrh,
+			data : "parentName="+searchString+"&browser="+browser+"&selectedOrg="+$("a.jstree-clicked").parent().attr("id")+"&isExactSeacrh="+isExactSeacrh+"&AdminYear="+$('#AdminYear').val(),
 			dataType : "json",
 			cache:false,
 			success : function(data){

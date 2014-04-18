@@ -375,18 +375,28 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 				logger.log(IAppLogger.INFO, "userName = " + userName);
 				logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, userName, searchParam, searchParam, searchParam);
+				
+				//Fix to implement cust_prod_id properly - By Joy
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM,
+						orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
 			} else {
 				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
 				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 				logger.log(IAppLogger.INFO, "userName = " + userName);
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, userName);
+				
+				//Fix to implement cust_prod_id properly - By Joy
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL,
+						orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID,adminYear, userName);
 			}
 		} else {
 			tenantId = orgId;
 			logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_FIRST_LOAD");
 			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_FIRST_LOAD, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID);
+			
+			//Fix to implement cust_prod_id properly - By Joy
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_FIRST_LOAD,
+					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
+			
 			logger.log(IAppLogger.DEBUG, "lstData.size() = " + lstData.size());
 		}
 		if (lstData.size() > 0) {
@@ -427,12 +437,18 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			logger.log(IAppLogger.INFO, "SEARCH_PARENT");
 			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 			logger.log(IAppLogger.INFO, "parentName = " + parentName);
-			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, parentName, parentName, parentName, "15");
+			
+			//Fix to implement cust_prod_id properly - By Joy
+			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT,
+					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, parentName, parentName, "15");
 		} else {
 			logger.log(IAppLogger.INFO, "SEARCH_PARENT_EXACT");
 			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
 			logger.log(IAppLogger.INFO, "parentName = " + parentName);
-			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT_EXACT, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, parentName, "15");
+			
+			//Fix to implement cust_prod_id properly - By Joy
+			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT_EXACT,
+					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, "15");
 		}
 		if (parentlist.size() > 0) {
 			parentTOs = new ArrayList<ParentTO>();
@@ -465,7 +481,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode) {
 		parentName = CustomStringUtil.appendString("%", parentName, "%");
 		String parentListJsonString = null;
-		List<Map<String, Object>> listOfParents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, parentName, parentName, parentName, "100");
+		
+		//Fix to implement cust_prod_id properly - By Joy
+		List<Map<String, Object>> listOfParents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT,
+				orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, parentName, parentName, "100");
+		
 		if (listOfParents != null && listOfParents.size() > 0) {
 			parentListJsonString = "[";
 			for (Map<String, Object> data : listOfParents) {

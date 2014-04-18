@@ -1487,8 +1487,23 @@ public class AdminController {
 			String searchParam= request.getParameter("searchParam");
 			//Added for TD 77154
 			String orgMode = (String)request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-			
 			if("Search".equals(searchParam)) searchParam = "";
+			
+			//Fix to implement cust_prod_id properly - By Joy
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("loggedinUserTO", loggedinUserTO);
+			if(adminYear == null){
+				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+				if(adminYear == null) {
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
+						adminYear = object.getValue();
+						break;
+					}
+				}
+			}
+			
 			
 			if (tenantId != null ) {
 				parentTOs = parentService.getParentList(tenantId, adminYear, searchParam, orgMode);
