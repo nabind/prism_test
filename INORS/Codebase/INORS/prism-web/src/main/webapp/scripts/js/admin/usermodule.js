@@ -838,7 +838,10 @@
 		showHideDataTable('hide');
 		//End Fixed QC defect - Joy
 		
-		var adminYear = $(selectedObj).val();
+		//Fix for TD 78117 - By Joy
+		//var adminYear = $(selectedObj).val();
+		var adminYear = $('#AdminYear').val();
+		
 		var queryData = "AdminYear="+adminYear+"&orgMode="+$("#orgMode").val();
 		$.ajax({
 			type : "GET",
