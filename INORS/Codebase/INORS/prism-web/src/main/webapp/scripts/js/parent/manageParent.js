@@ -260,7 +260,8 @@ $('.view-Children').live("click", function() {
 	
 	//======================OPEN VIEW CHILDREN  SCREEN==========================================
 	function openParentModalToViewStudent(parentName,clickedTreeNode) {
-		var row = $("#"+parentName);
+		//var row = $("#"+parentName);
+		var row = $("[id='"+parentName+"']");
 		var nodeid = "parentName=" + parentName +"&clickedTreeNode="+clickedTreeNode;	
 		blockUI();
 		$.ajax({
