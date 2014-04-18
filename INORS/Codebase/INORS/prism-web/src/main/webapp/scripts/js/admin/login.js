@@ -99,7 +99,7 @@ $(document).ready(function() {
 	//========================Code for Forgot Username================================
 		$(".login-username-help").click(function(e){
 			var cont='<p class="button-height inline-label">'
-					+'<label class="label isIE" style="width: 70px;" for="email">Enter Email Id</label>'
+					+'<label class="label isIE" style="width: 90px;" for="email">Enter Email Id</label>'
 					+'<input type="text" name="f_email" id="f_email" style="width:200px;margin:3px" class="input"/>'
 				   +'</p>'
 				   +'<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidEmailMsg">The Email Id entered is not valid. Make sure you have entered correct Email Id.</p>';
