@@ -1850,7 +1850,7 @@ public class AdminController {
 				parameterMap.put("scrollId", request.getSession().getAttribute(IApplicationConstants.CURRORG));
 				parameterMap.put("customer", currCustomer);
 				parameterMap.put("orgMode", orgMode);
-				paramMap.put("adminYear", adminYear);
+				parameterMap.put("adminYear", adminYear);
 				studentTOs = parentService.searchStudentOnRedirect(parameterMap);
 				logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
 			}
