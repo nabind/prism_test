@@ -186,6 +186,7 @@
 														subtestId="${subtestTO.value}" 
 														studentGradeId="${childDataMap.studentGradeId}" 
 														studentBioId="${childDataMap.studentBioId}" 
+														custProdId = "${subtestTO.other}" 
 														id="">
 														<spring:message code="menuName.stud.result"/>
 													</a>
