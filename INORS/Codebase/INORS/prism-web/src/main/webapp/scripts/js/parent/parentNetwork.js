@@ -5,8 +5,6 @@
  */
 $(document).ready(function() {
 	
-	$('.main-section').css('min-height', '850px');
-	
 	showContent($('#studentOverviewMessage'));
 	
 	$(".standard-activity").live('click', function() {
@@ -74,6 +72,7 @@ var parentContainerEnd = 			'</div>\
 
 function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	blockUI();
+	$('.main-section').css('min-height', '850px');
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var studentGradeId = (typeof $(obj).attr('studentGradeId') !== 'undefined') ? $(obj).attr('studentGradeId') : 0;
 	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
