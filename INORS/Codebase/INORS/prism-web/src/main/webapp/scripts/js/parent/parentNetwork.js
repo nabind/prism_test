@@ -94,8 +94,18 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 			unblockUI();
 			if(tabCount == 0) {
 				$(".main-section").html(parentContainer + data + parentContainerEnd);
+				
+				var foundHigh = $('span:contains("BLUE_IMAGE")');
+				$(foundHigh).html('<img src="themes/acsi/img/circle_blue.gif" name="BLUE_IMAGE" />');
+				foundHigh = $('span:contains("GREEN_IMAGE")');
+				$(foundHigh).html('<img src="themes/acsi/img/circle_dk_green.gif" name="GREEN_IMAGE" />');
+				foundHigh = $('span:contains("RED_IMAGE")');
+				$(foundHigh).html('<img src="themes/acsi/img/circle_red.gif" name="RED_IMAGE" />');
 			} else if(tabCount == 1){
 				$("#new-tab1").html(data);
+				
+				var foundHigh = $('span:contains("DMD_IMG")');
+				$(foundHigh).html('<img src="themes/acsi/img/diamond2.gif" name="DMD_IMG" />');
 			}
 		},
 		error : function(data) {						
