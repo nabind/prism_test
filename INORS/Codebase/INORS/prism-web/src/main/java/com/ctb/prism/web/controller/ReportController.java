@@ -369,7 +369,7 @@ public class ReportController extends BaseDAO {
 			/** session to cache **/
 			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
 					printSession, jasperPrint);
-			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?jrprint=" + printSession + "image=");
+			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?jrprint=" + printSession + "&image=");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, "");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, "");
 

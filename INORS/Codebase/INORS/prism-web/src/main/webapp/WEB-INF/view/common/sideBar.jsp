@@ -316,6 +316,7 @@
 					</ul>
 				</sec:authorize>
 			</div>
+			<sec:authorize ifNotGranted="ROLE_PARENT">
 			<div class="" id="prismMenu">
 				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
 					<li class="with-right-arrow">
@@ -332,6 +333,7 @@
 					</li>
 				</ul>
 			</div>
+			</sec:authorize>
 			<div style="background-color:#FFF">
 				<div id="productImage" class="with-small-padding align-center" style="border-bottom:1px solid #5f80ab;">
 					<img id="productImage101" class="productImage" src="<spring:theme code="contract.logo.single" />" />

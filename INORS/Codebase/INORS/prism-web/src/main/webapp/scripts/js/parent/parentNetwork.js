@@ -105,7 +105,7 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 				$("#new-tab1").html(data);
 				
 				var foundHigh = $('span:contains("DMD_IMG")');
-				$(foundHigh).html('<img src="themes/acsi/img/diamond2.gif" name="DMD_IMG" />');
+				$(foundHigh).html('<span class="icon-marker orange icon-size2"></span>');
 			}
 		},
 		error : function(data) {						
