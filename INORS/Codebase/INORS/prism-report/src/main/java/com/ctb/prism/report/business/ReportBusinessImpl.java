@@ -694,7 +694,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return reportDAO.getAllReportMessages(paramMap);
 	}
 
-	public String getStudentFileName(String type, String studentBioId) {
-		return reportDAO.getStudentFileName(type, studentBioId);
+	public String getStudentFileName(String type, String studentBioId, String custProdId) {
+		return reportDAO.getStudentFileName(type, studentBioId, custProdId);
 	}
 }

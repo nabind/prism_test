@@ -298,5 +298,5 @@ public interface IReportDAO {
 	 */
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
 
-	public String getStudentFileName(String type, String studentBioId);
+	public String getStudentFileName(String type, String studentBioId, String custProdId);
 }

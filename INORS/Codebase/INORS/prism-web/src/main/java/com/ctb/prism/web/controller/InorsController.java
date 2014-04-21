@@ -210,10 +210,11 @@ public class InorsController {
 	public ModelAndView getStudentFileName(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: getStudentFileName()");
 		String studentBioId = (String) req.getParameter("studentBioId");
+		String custProdId = (String) req.getParameter("custProdId");
 		String type = (String) req.getParameter("type");
 		String fileName = "";
 		try {
-			fileName = reportService.getStudentFileName(type, studentBioId);
+			fileName = reportService.getStudentFileName(type, studentBioId, custProdId);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
 			e.printStackTrace();
@@ -866,6 +867,33 @@ public class InorsController {
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: downloadZippedPdf(): " + String.valueOf(t2 - t1) + "ms");
+		}
+	}
+	
+	@RequestMapping(value = "/downloadFile", method = RequestMethod.GET)
+	public void downloadFile(HttpServletRequest request, HttpServletResponse response) {
+		long t1 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile()");
+		String fileName = request.getParameter("fileName");
+		try {
+			File studentFile = new File(fileName);
+			if (!studentFile.canRead()) {
+				logger.log(IAppLogger.WARN, "No Read Permission");
+			} else {
+				logger.log(IAppLogger.INFO, "Can Read File");
+			}
+			// Now read the pdf file from disk
+			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
+
+			// Download the file
+			FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(fileName));
+		} catch (Exception e) {
+			ReportController.showDownloadError(response);
+			logger.log(IAppLogger.ERROR, e.getMessage());
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: downloadStudentFile(): " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 

@@ -54,12 +54,12 @@ $(document).ready(function() {
 //=====document.ready End===================================
 
 //============================ GET STUDENT REPORT ==========================================
-var parentContainer = '<div class="right-column">\
+var parentContainer_1 = '<div class="right-column">\
 							<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">\
 								<ul class="tabs reporttabs">\
 									<li class="active"><a href="#new-tab0" id="new-tab0_new-tab0">Overall Results</a></li>\
-									<li><a href="#new-tab1" id="new-tab1_new-tab1">Results by Standard</a></li>\
-								</ul>\
+									<li><a href="#new-tab1" id="new-tab1_new-tab1">Results by Standard</a></li>';
+var parentContainer_2 = '</ul>\
 								<div class="tabs-content" style="padding-bottom: 50px !important;">\
 									<div id="new-tab0" class="with-padding relative">';
 var parentContainerEnd = 			'</div>\
@@ -70,6 +70,22 @@ var parentContainerEnd = 			'</div>\
 						</div>\
 						</div>';
 
+function getFileName(studentBioId, custProdId, type) {
+	var fileName = "";
+	$.ajax({
+		type : "GET",
+		url : 'getStudentFileName.do',
+		data : "studentBioId=" + studentBioId + "&type=" + type + "&custProdId=" + custProdId,
+		dataType : 'html',
+		async : false,
+		success : function(data) {
+			var obj = jQuery.parseJSON(data);
+			fileName = obj.fileName;
+		}
+	});
+	return fileName;
+}
+
 function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	blockUI();
 	$('.main-section').css('min-height', '850px');
@@ -78,6 +94,12 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 	var custProdId = (typeof $(obj).attr('custProdId') !== 'undefined') ? $(obj).attr('custProdId') : 0; 
 	var customerId = 0;
+	var isrFileName = getFileName(studentBioId, custProdId, 'ISR');
+	var ipFileName = getFileName(studentBioId, custProdId, 'IPR');
+	var linkContainer = '<div class="align-right">\
+		<a class="button compact icon-download green glossy with-tooltip" target="_blank" title="Individual Student Report" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"></a>\
+		<a class="button compact icon-download orange glossy with-tooltip" target="_blank" title="Image Print" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"></a>\
+		</div>';
 	//var reportUrl = "/public/PN/Report/resultsByStandard_files";
 	//var reportId = 1220;
 	//var reportName = "Results by Standard";
@@ -93,7 +115,7 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 		success : function(data) {
 			unblockUI();
 			if(tabCount == 0) {
-				$(".main-section").html(parentContainer + data + parentContainerEnd);
+				$(".main-section").html(parentContainer_1 + linkContainer + parentContainer_2 + data + parentContainerEnd);
 				
 				var foundHigh = $('span:contains("BLUE_IMAGE")');
 				$(foundHigh).html('<img src="themes/acsi/img/circle_blue.gif" name="BLUE_IMAGE" />');

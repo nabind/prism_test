@@ -768,7 +768,7 @@ public class ReportServiceImpl implements IReportService {
 		return fillManager.fillReport(jasperReport, parameterValues);
 	}
 
-	public String getStudentFileName(String type, String studentBioId) {
-		return reportBusiness.getStudentFileName(type, studentBioId);
+	public String getStudentFileName(String type, String studentBioId, String custProdId) {
+		return reportBusiness.getStudentFileName(type, studentBioId, custProdId);
 	}
 }

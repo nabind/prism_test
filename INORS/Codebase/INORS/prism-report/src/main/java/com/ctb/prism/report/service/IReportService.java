@@ -287,6 +287,6 @@ public interface IReportService {
 	public List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception;
 	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception;
 
-	public String getStudentFileName(String type, String studentBioId);
+	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
 }

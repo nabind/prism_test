@@ -1924,21 +1924,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return custProdId;
 	}
 
-	public String getStudentFileName(String type, String studentBioId) {
+	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		logger.log(IAppLogger.INFO, "Enter: getStudentFileName()");
+		logger.log(IAppLogger.INFO, "type = " + type);
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
 		String fileName = "";
 		List<Map<String, Object>> lstData = null;
-		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.equals(type)) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME_ICL, studentBioId);
-		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.equals(type)) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME_IPL, studentBioId);
+		if (IApplicationConstants.EXTRACT_FILETYPE.ISR.toString().equals(type)) {
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), studentBioId, IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), custProdId);
+		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.toString().equals(type)) {
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, "IP", studentBioId, "IP", custProdId);
 		}
 		if (lstData != null && !lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				fileName = (String) fieldDetails.get("FILENAME");
 			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: getStudentFileName() = " + fileName);
+		logger.log(IAppLogger.INFO, "fileName = " + fileName);
+		logger.log(IAppLogger.INFO, "Exit: getStudentFileName()");
 		return fileName;
 	}
 	
