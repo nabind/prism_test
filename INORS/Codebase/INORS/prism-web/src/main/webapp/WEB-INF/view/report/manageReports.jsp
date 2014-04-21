@@ -307,6 +307,7 @@
 							
 								<div id ="imgHolder"></div>	
 						</form:form>
+						<%@ include file="../common/required.jsp" %>
 					</div>
 				</div>
 			</div>
