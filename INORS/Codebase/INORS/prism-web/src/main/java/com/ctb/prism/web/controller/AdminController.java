@@ -106,7 +106,10 @@ public class AdminController {
 							break;
 						}
 					}
+				}else{
+					request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 				}
+				
 				paramMap.put("nodeid", currentOrg);
 				paramMap.put("currOrg", currentOrg);
 				paramMap.put("isFirstLoad", true);
@@ -349,7 +352,10 @@ public class AdminController {
 						break;
 					}
 				}
+			}else{
+				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			}
+			
 			if (currentOrg != null) {
 				if(isTree)
 				{
@@ -493,7 +499,11 @@ public class AdminController {
 							break;
 						}
 					}
+			}else{
+				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			}
+			
+			
 			String searchParam = (String) request.getParameter("searchParam");
 			if("Search".equals(searchParam)) searchParam = "";
 			logger.log(IAppLogger.INFO, "Node ID: " + nodeId);
@@ -1266,7 +1276,11 @@ public class AdminController {
 							break;
 						}
 					}
+				}else{
+					request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 				}
+				
+				
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree) {
 					paramMap.put("nodeid", currentOrg);
@@ -1349,7 +1363,11 @@ public class AdminController {
 							break;
 						}
 					}
+				}else{
+					request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 				}
+				
+				
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree)
 				{	
@@ -1422,7 +1440,10 @@ public class AdminController {
 							break;
 						}
 					}
+				}else{
+					request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 				}
+				
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree)
 				{
@@ -1502,6 +1523,8 @@ public class AdminController {
 						break;
 					}
 				}
+			}else{
+				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			}
 			
 			
