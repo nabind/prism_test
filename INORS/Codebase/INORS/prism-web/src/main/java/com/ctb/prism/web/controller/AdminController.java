@@ -1807,7 +1807,7 @@ public class AdminController {
 		List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		ModelAndView modelAndView = new ModelAndView("parent/manageStudent");
 		String hierarchialOrgIds = null;
-		String adminYear = null;//(String) request.getParameter("AdminYear");
+		String adminYear = (String) request.getParameter("AdminYear");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = null;
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
