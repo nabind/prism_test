@@ -152,7 +152,7 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available Assessments</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Invitation Code</span></th>'
 									//+'<th scope="col" class="blue-gradient glossy"><span class="white">Status</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available AC Claims</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available IC Claims</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Expiration Date</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">Action</span></th>'
 									+'</tr>'
