@@ -78,7 +78,8 @@ var regenerateAC=false;
 
 
 function openModalToViewAssessments(studentBioId, testElementId) {
-
+	
+	
 	//Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)
 	//var nodeid = "studentBioId=" + studentBioId;	
 	var nodeid = "testElementId=" + testElementId;
@@ -171,6 +172,10 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 												+'<td><span class="input"><span class="icon-calendar"></span>'
 												+'<input  type="text" name="expirationDate'+rowCounter+'"  id="expirationDate'+rowCounter+'" style="width:200px" class="input-unstyled datepicker" value="'+ new Date(this.expirationDate).toLocaleDateString()+'">'
 												+'<input type="hidden" name="studentBioIdAss'+rowCounter+'"  id="studentBioIdAss'+rowCounter+'" value="'+this.studentBioId+'" />'
+												
+												//Fix for TD 78188 - By Joy
+												+'<input type="hidden" name="testElementId'+rowCounter+'"  id="testElementId'+rowCounter+'" value="'+this.testElementId+'" />'
+												
 												+'</span></td>'
 												+' <td><button class="button blue-gradient glossy mid-margin-left btnSaveViewAssessment" type="button" rowCounter="'+rowCounter+'">Save</button></td>'
 												+'</tr>';
@@ -213,7 +218,11 @@ function confirmRecreationAC(rowcounter)
 		var studentBioId = $("#studentBioIdAss"+globalcounter).val();
 		var adminYear = $("#administration"+globalcounter).text();
 		var invitationCode = $("#invitationcode"+globalcounter).text();
-		var data = "studentBioId="+studentBioId+"&adminYear="+adminYear+"&invitationCode="+invitationCode;
+		
+		//Fix for TD 78188 - By Joy
+		var testElementId = $('#testElementId'+globalcounter).val();
+		var data = "studentBioId="+studentBioId+"&adminYear="+adminYear+"&invitationCode="+invitationCode+"&testElementId="+testElementId;
+		
 		$.ajax({
 			type : "GET",
 			url : "regenerateActivationCode.do",
@@ -222,7 +231,10 @@ function confirmRecreationAC(rowcounter)
 			cache:false,
 			success : function(data) {
 				$("#studentModal").closeModal();
-				openModalToViewAssessments(studentBioId);
+				
+				//Fix for TD 78188 - By Joy
+				openModalToViewAssessments(studentBioId,testElementId);
+				
 				regenerateAC=true;
 				unblockUI();
 			},

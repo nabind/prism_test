@@ -488,6 +488,7 @@ public interface IParentQuery {
 			" AND USR.CUSTOMERID = STD.CUSTOMERID",
 			" AND USR.CUSTOMERID = ?");
 
+	//Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)[IC.TEST_ELEMENT_ID - missing] - By Joy
 	public static final String GET_ASSESSMENT_LIST = CustomStringUtil.appendString(
 			" SELECT STD.STUDENT_BIO_ID, ",
 			" STD.TEST_ELEMENT_ID AS TESTELEMENT,IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
@@ -650,6 +651,7 @@ public interface IParentQuery {
 			" select ORG.level3_jasper_orgid from student_bio_dim std, ORG_NODE_DIM org ",
 			" where ORG.ORG_NODEID = std.ORG_NODEID and std.student_bio_id = ? ");
 
+	// Fix for 78188 - By Joy
 	//Query modified for Reset Activation Code issue - By Joy
 	public static final String ADD_NEW_INVITATION_CODE = CustomStringUtil.appendString(
 			"INSERT INTO INVITATION_CODE",
@@ -681,15 +683,16 @@ public interface IParentQuery {
 			" FROM INVITATION_CODE",
 			" WHERE INVITATION_CODE = ?",
 			" AND ACTIVATION_STATUS = 'AC'",
-			" AND STUDENT_BIO_ID = ?");
+			" AND TEST_ELEMENT_ID = ?");
 	
+	// Fix for 78188 - By Joy
 	//Query modified for Reset Activation Code issue - By Joy
 	public static final String UPDATE_ACTIVATION_CODE = CustomStringUtil.appendString(
 			"UPDATE INVITATION_CODE IC",
 			" SET IC.ACTIVATION_STATUS = 'IN', IC.UPDATED_DATE_TIME = SYSDATE",
 			" WHERE IC.INVITATION_CODE = ?",
 			" AND IC.ACTIVATION_STATUS = 'AC'",
-			" AND STUDENT_BIO_ID = ?");
+			" AND TEST_ELEMENT_ID = ?");
 
 	public static final String STUDENT_LIST_FOR_TREE = CustomStringUtil.appendString(
 			" select last_name || ' ' || first_name || ' ' || middle_name NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",

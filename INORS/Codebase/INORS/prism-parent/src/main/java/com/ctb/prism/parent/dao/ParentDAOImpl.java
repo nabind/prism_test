@@ -1096,7 +1096,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#generateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
 	public boolean generateActivationCode(StudentTO student) {
-		int count = getJdbcTemplatePrism().update(IQueryConstants.ADD_NEW_INVITATION_CODE, student.getInvitationcode(), student.getStudentBioId());
+		
+		// Fix for 78188 - By Joy
+		int count = getJdbcTemplatePrism().update(IQueryConstants.ADD_NEW_INVITATION_CODE, student.getInvitationcode(), student.getTestElementId());
+		
 		if (count > 0) {
 			return Boolean.TRUE;
 		}
@@ -1109,7 +1112,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#disableActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
 	public boolean disableActivationCode(StudentTO student) {
-		int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ACTIVATION_CODE, student.getInvitationcode(), student.getStudentBioId());
+		
+		// Fix for 78188 - By Joy
+		int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ACTIVATION_CODE, student.getInvitationcode(), student.getTestElementId());
+		
 		if (count > 0) {
 			return Boolean.TRUE;
 		}
