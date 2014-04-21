@@ -7,6 +7,12 @@ $(document).ready(function() {
 	
 	showContent($('#studentOverviewMessage'));
 	
+	$("a[title='standard-details']").live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		getGenericPage('getStandardActivity', $(this), 'report');
+	});
+
 	$(".standard-activity").live('click', function() {
 		getGenericPage('getStandardActivity', $(this));
 	});
@@ -138,10 +144,13 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 }
 
 //======== Function to get parent network pages =================
-function getGenericPage(action, obj) {
+function getGenericPage(action, obj, typ) {
 	blockUI();
 	
-	var dataUrl = getDataUrl(action, obj);
+	var dataUrl = getDataUrl(action, obj, typ);
+	if(typ == 'report') {
+		$(obj).attr('href', '#nogo');
+	}
 	var urlParam = action +'.do';
 	
 	$.ajax({
@@ -163,14 +172,18 @@ function getGenericPage(action, obj) {
 	});
 }
 
-function getDataUrl(action, obj){
+function getDataUrl(action, obj, typ){
 	var dataUrl = '';
 	if(action == 'getStandardActivity' || action == 'getStandardIndicator'){
-		dataUrl = 'subtestId='+$(obj).attr('subtestId')
+		if(typ == 'report') {
+			dataUrl = $(obj).attr('href');
+		} else {
+			dataUrl = 'subtestId='+$(obj).attr('subtestId')
 					+'&studentBioId='+$(obj).attr('studentBioId')
 					+'&studentName='+$(obj).attr('studentName')
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
 					+'&studentGradeId='+$(obj).attr('studentGradeId');
+		}
 	}else if(action == 'getArticleDescription'){
 		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 		var articleId = (typeof $(obj).attr('articleId') !== 'undefined') ? $(obj).attr('articleId') : 0;
