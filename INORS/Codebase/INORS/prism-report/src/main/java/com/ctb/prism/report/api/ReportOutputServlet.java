@@ -94,10 +94,10 @@ public class ReportOutputServlet extends AbstractServlet
 					render(request, response, webReportContext, out);
 				}
 				catch (JRException e) 
-				{
-					response.setContentType(JSON_CONTENT_TYPE);//FIXMEJIVE probably can't change contentType at this point, because getWriter() was already called once
+				{	//Blocked as we don't want to show the jasper error in the page
+					/*response.setContentType(JSON_CONTENT_TYPE);//FIXMEJIVE probably can't change contentType at this point, because getWriter() was already called once
 					response.setStatus(404);
-					response.getWriter().println("{\"msg\": \"JasperReports encountered an error!\"}");
+					response.getWriter().println("{\"msg\": \"JasperReports encountered an error!\"}");*/
 					return;
 				}
 			}
