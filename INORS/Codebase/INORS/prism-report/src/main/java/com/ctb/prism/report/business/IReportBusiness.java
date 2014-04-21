@@ -268,4 +268,6 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
+
+	public String getStudentFileName(String type, String studentBioId);
 }

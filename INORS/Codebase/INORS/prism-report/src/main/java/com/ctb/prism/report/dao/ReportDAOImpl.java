@@ -1923,5 +1923,23 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return custProdId;
 	}
+
+	public String getStudentFileName(String type, String studentBioId) {
+		logger.log(IAppLogger.INFO, "Enter: getStudentFileName()");
+		String fileName = "";
+		List<Map<String, Object>> lstData = null;
+		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.equals(type)) {
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME_ICL, studentBioId);
+		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.equals(type)) {
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME_IPL, studentBioId);
+		}
+		if (lstData != null && !lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				fileName = (String) fieldDetails.get("FILENAME");
+			}
+		}
+		logger.log(IAppLogger.INFO, "Exit: getStudentFileName() = " + fileName);
+		return fileName;
+	}
 	
 }

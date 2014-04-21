@@ -205,6 +205,24 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Exit: checkFileAvailability()");
 		return null;
 	}
+	
+	@RequestMapping(value = "/getStudentFileName", method = RequestMethod.GET)
+	public ModelAndView getStudentFileName(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		logger.log(IAppLogger.INFO, "Enter: getStudentFileName()");
+		String studentBioId = (String) req.getParameter("studentBioId");
+		String type = (String) req.getParameter("type");
+		String fileName = "";
+		try {
+			fileName = reportService.getStudentFileName(type, studentBioId);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error downloading Group File", e);
+			e.printStackTrace();
+		}
+		res.setContentType("text/plain");
+		res.getWriter().write("{\"fileName\":\"" + fileName + "\"}");
+		logger.log(IAppLogger.INFO, "Exit: getStudentFileName()");
+		return null;
+	}
 
 	/**
 	 * For getting the required data for a particular request while viewing. Arunava Datta

@@ -1411,6 +1411,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 				"datetimestamp) ",
 				" VALUES ",
 	      		" (activityid_seq.NEXTVAL ,?, ?, ?, SYSDATE, ?,?,SYSDATE) " );
+
+		public static final String GET_STUDENT_FILE_NAME_ICL = "SELECT FILENAME FROM INVITATION_CODE WHERE STUDENT_BIO_ID = ?";
+
+		public static final String GET_STUDENT_FILE_NAME_IPL = "SELECT SPF.FILENAME FROM STUDENT_PDF_FILES SPF, PDF_REPORTS PR WHERE  SPF.STUDENT_BIO_ID = ? AND PR.REPORT_NAME = 'IP' AND SPF.PDF_REPORTID = PR.PDF_REPORTID";
 		
 		
 }
