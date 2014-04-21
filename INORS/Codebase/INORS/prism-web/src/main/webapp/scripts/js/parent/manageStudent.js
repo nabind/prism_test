@@ -78,7 +78,11 @@ var regenerateAC=false;
 
 
 function openModalToViewAssessments(studentBioId, testElementId) {
-	var nodeid = "studentBioId=" + studentBioId;	
+
+	//Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)
+	//var nodeid = "studentBioId=" + studentBioId;	
+	var nodeid = "testElementId=" + testElementId;
+	
 	blockUI();
 	$.ajax({
 			type : "GET",
