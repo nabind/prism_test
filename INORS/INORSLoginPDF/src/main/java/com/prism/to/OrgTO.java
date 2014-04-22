@@ -49,6 +49,7 @@ public class OrgTO implements Comparable<OrgTO> {
 	private int gradeSeq;
 	
 	private String orgMode;
+	private String testAdministration;
 
 	public String getOrgMode() {
 		return orgMode;
@@ -551,6 +552,14 @@ public class OrgTO implements Comparable<OrgTO> {
 		} else {
 			return BEFORE;
 		}
+	}
+
+	public String getTestAdministration() {
+		return testAdministration;
+	}
+
+	public void setTestAdministration(String testAdministration) {
+		this.testAdministration = testAdministration;
 	}
 
 }
