@@ -234,6 +234,7 @@ public class UserAccountPdf {
 		String rootPath = null;
 		try {
 			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
+			CUSOMERID = school.getCustomerCode();
 			if(school != null) {
 				String adminId = "-1";
 				List<String> studentIdList = dao.getStudentIdList(schoolId); // Actually test element id list
