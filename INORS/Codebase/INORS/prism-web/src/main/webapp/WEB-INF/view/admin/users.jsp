@@ -209,26 +209,26 @@
 
 				<p class="button-height inline-label">
 					<label class="label" for="userId">User Id<span class="icon-star icon-size1 red"></span></label>
-					<input type="text" name="userId" id="userId" rel="userId" style="width:200px" class="input full-width newReportName validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" />
+					<input autocomplete="off" type="text" name="userId" id="userId" rel="userId" style="width:200px" class="input full-width newReportName validate[required,custom[onlyLetterNumber],maxSize[30],minSize[3]]" />
 				</p>
 				<p style="width:329px" id="imgHolderContainer"><span id="imgHolder"></span></p>
 				<p class="button-height inline-label">
 					<label class="label" for="userName">Display Name<span class="icon-star icon-size1 red"></span></label>
-					<input type="text" name="userName" id="userName" style="width:200px" class="input full-width newReportName validate[required,maxSize[10],minSize[3]]" />
+					<input autocomplete="off" type="text" name="userName" id="userName" style="width:200px" class="input full-width newReportName validate[required,maxSize[10],minSize[3]]" />
 				</p>
 				
 				<p class="button-height inline-label">
 					<label class="label"  for="validation-email">Email</label>
-					<input type="text" id="validation-email" name="emailId" style="width:200px" maxlength="100" class="input full-width validate[custom[email]]" /> <!-- validate[required,custom[email]] -->
+					<input autocomplete="off" type="text" id="validation-email" name="emailId" style="width:200px" maxlength="100" class="input full-width validate[custom[email]]" /> <!-- validate[required,custom[email]] -->
 					
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="password">Password<span class="icon-star icon-size1 red"></span></label>
-					<input type="password" name="password" id="password1" style="width:200px" class="input full-width newReportName validate[required,maxSize[15],minSize[8]]" />
+					<input autocomplete="off" type="password" name="password" id="password1" style="width:200px" class="input full-width newReportName validate[required,maxSize[15],minSize[8]]" />
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="confPassword">Confirm Password<span class="icon-star icon-size1 red"></span></label>
-					<input type="password" name="confPassword" id="confPassword" style="width:200px" class="input full-width newReportName validate[required,equalsPassword[password1]]"/>
+					<input autocomplete="off" type="password" name="confPassword" id="confPassword" style="width:200px" class="input full-width newReportName validate[required,equalsPassword[password1]]"/>
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="userStatus">Status</label>
