@@ -155,7 +155,7 @@
 								<input type="text" name="reportDescription" id="reportDescription" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
 							
-							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type staring with 'PN' are for parent network reports.</small></p>
+							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type starting with 'PN' are for parent network reports.</small></p>
 							<p class="button-height inline-label">
 									<label class="label" for="reportType">Report Type</label>
 									<select id="editReportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list" >
@@ -240,7 +240,7 @@
 								<input type="text" name="reportDescription" id="reportDescription" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
 						
-							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type staring with 'PN' are for parent network reports.</small></p>
+							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type starting with 'PN' are for parent network reports.</small></p>
 							<p class="button-height inline-label">
 									<label class="label" for="reportType">Report Type</label>
 									<select id="reportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list " >
