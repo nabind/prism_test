@@ -52,8 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "605286", "605810", "605209", "603940" };
-		//args = new String[] { "S", "38542" };
+		//args = new String[] { "L", "604893"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -90,6 +89,12 @@ public class UserAccountPdf {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						ARCHIVE_NEEDED = false;
 						logger.info("IC Letter Location: " + letterLocation);
+						archiveICLetter(prop);
+						
+						letterLocation = processIndividualIcLetterPdf(prop, dao, id);
+						identifier = "IC_";
+						logger.info("IC Letter Location: " + letterLocation);
+						//archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
 						////processLoginPdf(prop, dao, id);
