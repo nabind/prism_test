@@ -52,7 +52,8 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		//args = new String[] { "L", "604893"};
+		// args = new String[] { "I", "605286", "605810", "605209", "603940" };
+		//args = new String[] { "S", "38542" };
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
