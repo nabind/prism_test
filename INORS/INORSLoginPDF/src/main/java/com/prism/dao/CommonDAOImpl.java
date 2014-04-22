@@ -1042,21 +1042,27 @@ public class CommonDAOImpl implements CommonDAO {
 						          "U.USERNAME, U.ORG_ID " + 
 						 "ORDER BY ORG.ORG_NODEID";*/
 			CustomStringUtil.appendString(
-					"SELECT COUNT(SBD.STUDENT_BIO_ID),",
-					"       OND.ORG_NODE_NAME,",
-					"       OND.ORG_NODEID,",
-					"       OND.ORG_NODEID,",
-					"       U.USERID,",
-					"       U.USERNAME,",
-					"       OND.ORG_NODEID",
-					"  FROM USERS U, ORG_USERS OU, ORG_NODE_DIM OND, STUDENT_BIO_DIM SBD",
-					" WHERE U.USERID = OU.USERID",
-					" AND U.IS_NEW_USER = 'Y' AND U.ACTIVATION_STATUS = 'AC'",
-					"   AND OU.ORG_NODEID = OND.ORG_NODEID",
-					"   AND OND.PARENT_ORG_NODEID = ?",
-					"   AND SBD.ORG_NODEID = OND.ORG_NODEID",
-					" GROUP BY OND.ORG_NODE_NAME, OND.ORG_NODEID, U.USERID, U.USERNAME",
-					" ORDER BY OND.ORG_NODEID");
+					"SELECT COUNT(SBD.STUDENT_BIO_ID), ",
+       " OND.ORG_NODE_NAME, ",
+       " OND.ORG_NODEID, ",
+       " OND.ORG_NODEID, ",
+       " U.USERID, ",
+       " U.USERNAME, ",
+       " OND.ORG_NODEID, ",
+       " P.PRODUCT_CODE ",
+       " FROM USERS U, ORG_USERS OU, ORG_NODE_DIM OND, STUDENT_BIO_DIM SBD,  ",
+       " ORG_PRODUCT_LINK OPL,PRODUCT P, CUST_PRODUCT_LINK CPL  ",
+       " WHERE U.USERID = OU.USERID ",
+       " AND U.IS_NEW_USER = 'Y' ",
+       " AND U.ACTIVATION_STATUS = 'AC' ",
+       " AND OU.ORG_NODEID = OND.ORG_NODEID ",
+       " AND OND.PARENT_ORG_NODEID = ? ",
+       " AND SBD.ORG_NODEID = OND.ORG_NODEID ",
+       " AND OPL.ORG_NODEID = OU.ORG_NODEID ",
+       " AND OPL.CUST_PROD_ID = CPL.CUST_PROD_ID ",
+       " AND P.PRODUCTID = CPL.PRODUCTID ",
+       " GROUP BY OND.ORG_NODE_NAME, OND.ORG_NODEID, U.USERID, U.USERNAME, P.PRODUCT_CODE ",
+       " ORDER BY OND.ORG_NODEID");
 			
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
@@ -1072,6 +1078,7 @@ public class CommonDAOImpl implements CommonDAO {
 				teacher.setUserId(rs.getString(5)); // this is jasper user id
 				teacher.setUserName(rs.getString(6)); // userid 
 				teacher.setTenantId(rs.getString(7));
+				teacher.setTestAdministration(rs.getString(8));
 				allTeachers.add(teacher);
 			}
 		} catch (SQLException e) {

@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) {
-		// args = new String[] { "I", "605286", "605810", "605209", "603940" };
+		//args = new String[] { "L", "604893"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -96,16 +96,19 @@ public class UserAccountPdf {
 						encDocLocation = manupulateTenants(id, prop, letterLocation, false, false);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
+						archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
 						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
 						logger.info("IC Letter Location: " + letterLocation);
+						archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.X.toString())) {
 						String letterLocation = processIndividualIcLetterPdfFromExtractTable(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
+						archiveICLetter(prop);
 					}
 				}
-				archiveICLetter(prop);
+				
 				if(ARCHIVE_NEEDED) {
 					File arc = new File(CustomStringUtil.appendString(
 							prop.getProperty("pdfGenPath"),
@@ -1154,7 +1157,7 @@ public class UserAccountPdf {
 	
 	private static String getDocName(OrgTO school, Properties prop) {
 		StringBuffer docBuff = new StringBuffer();
-		String pdfPrefix = prop.getProperty("testAdministrator");
+		String pdfPrefix = school.getTestAdministration();//prop.getProperty("testAdministrator");
 		docBuff.append(prop.getProperty("pdfGenPath"));
 		docBuff.append(File.separator);
 		docBuff.append(pdfPrefix).append("_");
@@ -1174,11 +1177,20 @@ public class UserAccountPdf {
 	 * @param teachers
 	 * @param prop
 	 * @return
+	 * @throws Exception 
 	 */
-	private static String createPdfAcsi(OrgTO school, List<OrgTO> teachers, Properties prop, boolean encrypt, boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state) {
+	private static String createPdfAcsi(OrgTO school, List<OrgTO> teachers, Properties prop, boolean encrypt, boolean schoolUserPresent, boolean isInitialLoad, boolean migration, boolean state) throws Exception {
 		logger.debug("generating pdf... ");
 		if (prop.getProperty("pdfGenPath") == null) {
 			logger.info("PDF generation path (pdfGenPath) is not defined");
+		}
+		
+		for(OrgTO aU : teachers) {
+			school.setTestAdministration(aU.getTestAdministration());
+			if(aU.getTestAdministration() != school.getTestAdministration()) {
+				logger.info("One School is asssociated witth multiple adminstration Teacher user with IS_NEW_USER Y!!!!");
+				throw new Exception("One School is asssociated witth multiple adminstration Teacher user with IS_NEW_USER Y!!!!");
+			}
 		}
 		String docName = getDocName(school, prop) + ".pdf";
 		/*StringBuffer docBuff = new StringBuffer();
@@ -1196,7 +1208,7 @@ public class UserAccountPdf {
 
 		if (ENCRYPTION_NEEDED) {
 			// lStartTime = new Date().getTime(); /** Log time difference*/ // start time
-			String encLocation = encryptPdfAcsi(prop, docLocation, school.getSchoolCode(), school.getCustomerCode(), school.getDistrictCode(), state);
+			String encLocation = encryptPdfAcsi(prop, docLocation, school.getSchoolCode(), school.getCustomerCode(), school.getDistrictCode(), state, school.getTestAdministration());
 			removeFileAcsi(docLocation);
 			// lEndTime = new Date().getTime(); /** Log time difference*/ // end time
 			// logElapsedTime("Encrypt PDF : "); /** Log time difference*/ // difference
@@ -1291,12 +1303,12 @@ public class UserAccountPdf {
 	 * @return
 	 */
 	private static String encryptPdfAcsi(Properties prop, String docLocation, String schoolNum, 
-			String customerCode, String districtNumber, boolean state) {
+			String customerCode, String districtNumber, boolean state, String testAdministration) {
 		logger.debug("encrypting pdf... ");
 		String docName = null;
 		StringBuffer docBuff = new StringBuffer();
 		try {
-			String pdfPrefix = prop.getProperty("testAdministrator");
+			String pdfPrefix = testAdministration;
 			docBuff.append(prop.getProperty("pdfGenPath")).append(File.separator).append(pdfPrefix);
 			docBuff.append(prop.getProperty("districtText")).append(districtNumber);
 			docBuff.append(prop.getProperty("schoolText")).append(schoolNum).append("_");
