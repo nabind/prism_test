@@ -269,7 +269,7 @@ $(document).ready(function() {
 			e.stopImmediatePropagation();
 			var pattern = /^[0-9a-zA-Z]+$/g;
 		    var username = "username=" + $(fieldId).val();
-			if($(fieldId).val().replace(/ /g,'').length > 0 && pattern.test($(fieldId).val())) {
+			if($(fieldId).val().replace(/ /g,'').length > 2 && pattern.test($(fieldId).val())) {
 				 showLoadingImage();
 				  $.ajax({
 						type : "GET",
