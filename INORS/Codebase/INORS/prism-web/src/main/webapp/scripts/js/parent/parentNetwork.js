@@ -47,13 +47,16 @@ $(document).ready(function() {
 	});
 	
 	// ============================ GET STUDENT REPORT ==========================================
+	var tabReportObj;
 	$('.studResult').on('click', function() {
 		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, 'Overall Results', $(this), 0);
+		
+		tabReportObj = $(this);
 	});
 	// tab 2
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
-			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, 'Results by Standard', $('.studResult'), 1);
+			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, 'Results by Standard', $(tabReportObj), 1);
 		}
 	});
 });
