@@ -253,12 +253,19 @@ public class AdminController {
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-
+			String selectedOrg = (String) req.getParameter("selectedOrg");
 			/*List<OrgTO> orgs = adminService.searchOrganization(req
 					.getParameter("searchString"), (String) req.getSession()
 					.getAttribute(IApplicationConstants.CURRORG));*/
-			List<OrgTO> orgs = adminService.searchOrganization(req.getParameter("searchString")
-					, req.getParameter("selectedOrg"), adminYear,currCustomer,orgMode);
+			
+			List<OrgTO> orgs = null;
+			
+			if (selectedOrg != null && !selectedOrg.equals("unspecified")) {
+				orgs = adminService.searchOrganization(req.getParameter("searchString")
+						, selectedOrg, adminYear,currCustomer,orgMode);
+			} else {
+				logger.log(IAppLogger.INFO, "No Org selected");
+			}
 			if (orgs != null) {
 				String jsonString = JsonUtil.convertToJsonAdmin(orgs);
 
@@ -293,12 +300,18 @@ public class AdminController {
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-
+			String selectedOrg = (String) req.getParameter("selectedOrg");
+			String orgs = null;
 			/*String orgs = adminService.searchOrgAutoComplete(req
 					.getParameter("term"), (String) req.getSession()
 					.getAttribute(IApplicationConstants.CURRORG));*/
-			String orgs = adminService.searchOrgAutoComplete(req.getParameter("term")
-					, req.getParameter("selectedOrg"), adminYear, currCustomer,orgMode);
+			if (selectedOrg !=null && !selectedOrg.equals("unspecified")) {
+				orgs = adminService.searchOrgAutoComplete(req.getParameter("term")
+					,selectedOrg, adminYear, currCustomer,orgMode);
+			} else {
+				logger.log(IAppLogger.INFO, "No Org selected");
+			}
+			
 			if (orgs != null) {
 				res.setContentType("application/json");
 				res.getWriter().write(orgs);
@@ -880,8 +893,16 @@ public class AdminController {
 					res.getWriter().write( userJsonString );
 				}
 			}else {
-				List<UserTO> users = adminService.searchUser(req.getParameter("username"), 
-					req.getParameter("selectedOrg"), adminYear,isExactSearch,orgMode);
+				String tenantId = (String)req.getParameter("selectedOrg");
+				List<UserTO> users = new ArrayList<UserTO>();
+				
+				if(tenantId != null &&  !tenantId.equals("undefined")) {
+					 users = adminService.searchUser(req.getParameter("username"), 
+							 tenantId, adminYear,isExactSearch,orgMode);
+				} else {
+					logger.log(IAppLogger.INFO, "No org selected");
+					return null;
+				}				    
 				
 				if ( users != null ) {
 					String userJsonString = JsonUtil.convertToJsonAdmin(users);
@@ -922,6 +943,9 @@ public class AdminController {
 			if(IApplicationConstants.PURPOSE.equals(purpose)){
 				selectedOrg = (String) req.getParameter("eduCenterId");
 			}
+			
+			if(selectedOrg == null) 
+				return null;
 			
 			Map<String,Object> paramMap = new HashMap<String,Object>();
 			paramMap.put("adminYear",adminYear);
@@ -1599,7 +1623,6 @@ public class AdminController {
 					paramMap.put("currCustomer", currCustomer);
 					paramMap.put("orgMode", orgMode);
 					// studentTOs = parentService.getStudentList(scrollId, adminYear, searchParam, currCustomer);
-					logger.log(IAppLogger.INFO, "Invoking: parentService.getStudentList(" + paramMap + ")");
 					studentTOs = parentService.getStudentList(paramMap);
 				}
 			}
@@ -1753,9 +1776,18 @@ public class AdminController {
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-			String students = parentService.searchStudentAutoComplete(req.getParameter("term"), 
-					req.getParameter("selectedOrg"), adminYear,  currCustomer, orgMode);
-			logger.log(IAppLogger.INFO, "searchStudentAutoComplete.....................................");
+			
+			String selectedOrg = req.getParameter("selectedOrg");
+			String students = null;
+			
+			if(selectedOrg != null && !selectedOrg.equals("unspecified")) {
+				students = parentService.searchStudentAutoComplete(req.getParameter("term"), 
+						req.getParameter("selectedOrg"), adminYear,  currCustomer, orgMode);
+				logger.log(IAppLogger.INFO, "searchStudentAutoComplete.....................................");
+			} else {
+				logger.log(IAppLogger.INFO, "No Org selected");
+			}
+			
 			if ( students != null ) {
 				res.setContentType("application/json");
 				res.getWriter().write(students);
@@ -1791,15 +1823,22 @@ public class AdminController {
 			String browser = req.getParameter("browser");
 			String selectedOrg = req.getParameter("selectedOrg");
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-			if(("ie7".equals(browser)) && ("Search".equals(studentName))) {
-				studentName = "";
-				studentsList = parentService.searchStudent(studentName, 
-						selectedOrg, adminYear,currCustomer, orgMode);				
+			if (selectedOrg != null && !selectedOrg.equals("unspecified")) {
+				
+				if(("ie7".equals(browser)) && ("Search".equals(studentName))) {
+					studentName = "";
+					studentsList = parentService.searchStudent(studentName, 
+							selectedOrg, adminYear,currCustomer, orgMode);				
+				}
+				else {
+					studentsList = parentService.searchStudent(studentName, 
+							selectedOrg, adminYear, currCustomer, orgMode);				
+				}
+				
+			} else {
+				logger.log(IAppLogger.INFO, "No Org selected");
 			}
-			else {
-				studentsList = parentService.searchStudent(studentName, 
-						selectedOrg, adminYear, currCustomer, orgMode);				
-			}
+			
 
 			if ( studentsList != null ) {
 				String studentJsonString = JsonUtil.convertToJsonAdmin(studentsList);
