@@ -608,9 +608,9 @@ public interface IParentQuery {
 			" ORDER BY UPPER(ABC.STUDENTNAME)");*/
 	
 	
-	//Changed by abir
+	//Changed by abir, then by debashis
 	public static final String SEARCH_STUDENT_ON_REDIRECT = CustomStringUtil.appendString(
-			" SELECT DISTINCT (ABC.TEST_ELEMENT_ID) AS TEST_ELEMENT_ID, ABC.STUDENTNAME, ABC.ROWIDENTIFIER, ABC.STUDENTGRADE, ",
+			/*" SELECT DISTINCT (ABC.TEST_ELEMENT_ID) AS TEST_ELEMENT_ID, ABC.STUDENTNAME, ABC.ROWIDENTIFIER, ABC.STUDENTGRADE, ",
 			" ABC.INVITATIONCODE AS INVITATIONCODE, ABC.ORG_NODE_NAME AS ORG_NODE_NAME, ABC.ORG_NODEID AS ORG_NODEID ",
 			" FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||",
 			"  STD.MIDDLE_NAME AS STUDENTNAME,  STD.LAST_NAME || STD.FIRST_NAME || STD.MIDDLE_NAME || '_' || ",
@@ -625,7 +625,39 @@ public interface IParentQuery {
 			" AND ic.cust_prod_id = ?",
 			" AND STD.GRADEID = GRD.GRADEID) ABC",
 			" WHERE ABC.TEST_ELEMENT_ID = ?",
-			" ORDER BY UPPER(ABC.STUDENTNAME)");
+			" ORDER BY UPPER(ABC.STUDENTNAME)"*/
+			"SELECT DISTINCT (ABC.TEST_ELEMENT_ID) AS TEST_ELEMENT_ID,",
+			"                 ABC.STUDENTNAME,",
+			"                 ABC.ROWIDENTIFIER,",
+			"                 ABC.STUDENTGRADE,",
+			"                 ABC.INVITATIONCODE AS INVITATIONCODE,",
+			"                 ABC.ORG_NODE_NAME AS ORG_NODE_NAME,",
+			"                 ABC.ORG_NODEID AS ORG_NODEID",
+			"   FROM (SELECT IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID,",
+			"                REPLACE(REPLACE(IC.STUDENT_FULL_NAME || '_' ||",
+			"                                TO_CHAR(IC.STUDENT_BIO_ID),",
+			"                                ','),",
+			"                        ' ') AS ROWIDENTIFIER,",
+			"                IC.STUDENT_FULL_NAME AS STUDENTNAME,",
+			"                GRD.GRADE_NAME AS STUDENTGRADE,",
+			"                IC.ICID AS INVITATIONCODE,",
+			"                IC.ACTIVATION_STATUS AS ACTIVATIONSTATUS,",
+			"                (SELECT ORG_NODE_NAME",
+			"                   FROM ORG_NODE_DIM OND",
+			"                  WHERE OND.ORG_NODEID = ORG_USR.ORG_NODEID) AS ORG_NODE_NAME,",
+			"                ORG_USR.ORG_NODEID AS ORG_NODEID",
+			"           FROM ORG_USERS             ORG_USR,",
+			"                GRADE_DIM             GRD,",
+			"                INVITATION_CODE       IC,",
+			"                INVITATION_CODE_CLAIM ICC",
+			"          WHERE ORG_USR.ORG_USER_ID = ICC.ORG_USER_ID",
+			"            AND IC.ACTIVATION_STATUS = 'AC'",
+			"            AND ICC.ICID = IC.ICID",
+			"            AND IC.CUST_PROD_ID = ?",
+			"            AND IC.TEST_ELEMENT_ID = ?",
+			"            AND IC.GRADE_ID = GRD.GRADEID) ABC",
+			"  ORDER BY UPPER(ABC.STUDENTNAME)"
+			);
 	
 
 	public static final String UPDATE_ASSESSMENT = CustomStringUtil.appendString(
