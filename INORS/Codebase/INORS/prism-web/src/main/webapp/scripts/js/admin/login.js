@@ -331,7 +331,7 @@ $(document).ready(function() {
 						}
 					}else {
 						$("#invalidEmailMsg").show(500);	
-						$("#invalidEmailMsg").text("There are no users present with this email id.Please retry with the correct email id.");
+						$("#invalidEmailMsg").text("There are no users present with this email id. Please retry with the correct email id.");
 					}
 													
 				} else {
