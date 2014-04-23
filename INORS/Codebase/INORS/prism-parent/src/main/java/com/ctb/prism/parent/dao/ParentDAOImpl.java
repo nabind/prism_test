@@ -693,7 +693,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		String adminYear =(String) paramMap.get("adminYear");
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		List<Map<String, Object>> studentlist = null;
-		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT_ON_REDIRECT, orgMode, tenantId,adminYear, tesElementId);
+		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT_ON_REDIRECT, orgMode, tesElementId,adminYear, tesElementId);
 		if (studentlist != null && studentlist.size() > 0) {
 			studentTOs = new ArrayList<StudentTO>();
 			for (Map<String, Object> fieldDetails : studentlist) {

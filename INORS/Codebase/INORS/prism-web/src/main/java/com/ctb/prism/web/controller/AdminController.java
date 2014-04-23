@@ -1588,6 +1588,7 @@ public class AdminController {
 					paramMap.put("orgMode", orgMode);
 					paramMap.put("adminYear", adminYear);
 					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.valueOf(customer).longValue());
+					logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMap + ")");
 					studentTOs = parentService.searchStudentOnRedirect(paramMap);
 					// (String)request.getSession().getAttribute(IApplicationConstants.CURRORG)
 				} else {
@@ -1598,6 +1599,7 @@ public class AdminController {
 					paramMap.put("currCustomer", currCustomer);
 					paramMap.put("orgMode", orgMode);
 					// studentTOs = parentService.getStudentList(scrollId, adminYear, searchParam, currCustomer);
+					logger.log(IAppLogger.INFO, "Invoking: parentService.getStudentList(" + paramMap + ")");
 					studentTOs = parentService.getStudentList(paramMap);
 				}
 			}
@@ -1889,6 +1891,7 @@ public class AdminController {
 				parameterMap.put("customer", currCustomer);
 				parameterMap.put("orgMode", orgMode);
 				parameterMap.put("adminYear", adminYear);
+				logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMap + ")");
 				studentTOs = parentService.searchStudentOnRedirect(parameterMap);
 				logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
 			}
