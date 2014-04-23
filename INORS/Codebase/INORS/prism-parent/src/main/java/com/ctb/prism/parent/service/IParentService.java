@@ -41,7 +41,7 @@ public interface IParentService {
 	 * @param invitationCode
 	 * @return
 	 */
-	public ParentTO validateIC(String invitationCode);
+	public ParentTO validateIC(final Map<String, Object> paramMap);
 
 	/**
 	 * @param parentTO

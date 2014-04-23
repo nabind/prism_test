@@ -110,14 +110,27 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return Boolean.TRUE;
 	}
 
+	
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Fix for TD 78161 - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#validateIC(java.lang.String)
 	 */
-	public ParentTO validateIC(String invitationCode) {
+	public ParentTO validateIC(final Map<String, Object> paramMap) {
 
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_INVITATION_CODE, invitationCode);
+		String invitationCode = (String)paramMap.get("invitationCode");
+		
+		if(paramMap.get("loggedinUserTO") != null){
+			UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+			paramMap.put("userName", loggedinUserTO.getUserName());
+		}else{
+			paramMap.put("userName", "");
+		}
+		
+		long orgUserid = getOrgUserId(paramMap);
+		
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_INVITATION_CODE,orgUserid, invitationCode);
+		
 		ParentTO parentTO = null;
 		if (lstData.size() > 0) {
 			parentTO = new ParentTO();
@@ -126,6 +139,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				parentTO.setTotalAvailableCalim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
 				parentTO.setIcExpirationStatus((String) (fieldDetails.get("EXPIRATION_STATUS")));
 				parentTO.setIcActivationStatus((String) (fieldDetails.get("ACTIVATION_STATUS")));
+				parentTO.setIsAlreadyClaimed(((BigDecimal) fieldDetails.get("ALREADY_CLAIMED")).longValue());
 			}
 		}
 		return parentTO;
@@ -1053,26 +1067,36 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/**
 	 * Get OrgUserId depending upon student's school and parent userid. Add a record if the data does not exists.
-	 * 
+	 * Fix for TD 78161
 	 * @author Joy
 	 * @param paramMap
 	 * @return
 	 */
 	private long getOrgUserId(final Map<String, Object> paramMap) {
-
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getOrgUserId()");
+		long t1 = System.currentTimeMillis();
+		
 		String userName = (String) paramMap.get("userName");
 		String invitationCode = (String) paramMap.get("invitationCode");
 		long orgUserid = 0;
-		long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
-		if (lstData.size() > 0) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
+		
+		try{
+			long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
+			if (lstData.size() > 0) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
+				}
+			} else {
+				orgUserid = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+				// Insert data in ORG_USERS
+				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserid, userid, invitationCode, invitationCode, IApplicationConstants.ACTIVE_FLAG);
 			}
-		} else {
-			orgUserid = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-			// Insert data in ORG_USERS
-			getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserid, userid, invitationCode, invitationCode, IApplicationConstants.ACTIVE_FLAG);
+		}catch(Exception e){
+			logger.log(IAppLogger.INFO, "Exception: userName is blank "+e.getMessage());
+		}finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getOrgUserId() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return orgUserid;
 	}

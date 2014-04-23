@@ -2,7 +2,9 @@ package com.ctb.prism.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -23,6 +25,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
@@ -345,8 +348,19 @@ public class ParentController {
 		try {
 			List<ParentTO> parentToList = new ArrayList<ParentTO>();
 			String invitationCode = req.getParameter("invitationCode");
+			
+			//Fix for TD 78161 - By Joy
+			UserTO loggedinUserTO = null;
+			if(req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS)!= null){
+				loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			}
+			
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("loggedinUserTO", loggedinUserTO);
+			paramMap.put("invitationCode", invitationCode);
+			
 			// validate ic
-			ParentTO parentTO = parentService.validateIC(invitationCode);
+			ParentTO parentTO = parentService.validateIC(paramMap);
 			
 			if(parentTO != null) {
 				parentToList.add(parentTO);

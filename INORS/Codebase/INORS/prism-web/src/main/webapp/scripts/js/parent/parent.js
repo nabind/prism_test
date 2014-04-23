@@ -240,7 +240,18 @@ $(document).ready(function() {
 					$("#invalidICMsg").text("The code you have entered is expired.");
 					$("#displayChild").hide();
 					$("#displayInvitation").show();
-				} else {
+				} 
+				
+				//Fix for TD 78161 - By Joy
+				else if (data[0].errorMsg == "IC_ALREADY_CLAIMED" ){
+					isInvCoveValid = false;
+					$("#invalidICMsg").show(500);
+					$("#invalidICMsg").text("The code you have entered is already claimed by you.");
+					$("#displayChild").hide();
+					$("#displayInvitation").show();
+				} 
+				
+				else {
 					isInvCoveValid = false;
 					$("#invalidICMsg").show(500);
 					$("#invalidICMsg").text("The code you have entered is not valid. Make sure you have entered exactly same code as you received in letter.");

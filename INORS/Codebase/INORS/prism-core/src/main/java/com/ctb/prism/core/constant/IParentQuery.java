@@ -10,16 +10,20 @@ import com.ctb.prism.core.util.CustomStringUtil;
  */
 public interface IParentQuery {
 
+	//Fix for TD 78161 - By Joy
 	public static final String VALIDATE_INVITATION_CODE = CustomStringUtil.appendString(
 			" SELECT INV.ICID,",
 			" INV.TOTAL_AVAILABLE,",
 			" INV.TOTAL_ATTEMPT,",
-			" DECODE(SIGN(INV.EXPIRATION_DATE - SYSDATE),-1,'IN','AC') AS EXPIRATION_STATUS,",
-			" INV.ACTIVATION_STATUS AS ACTIVATION_STATUS",
+			" DECODE(SIGN(INV.EXPIRATION_DATE - SYSDATE), -1, 'IN', 'AC') AS EXPIRATION_STATUS,",
+			" INV.ACTIVATION_STATUS AS ACTIVATION_STATUS,",
+			" NVL((SELECT ICC.ORG_USER_ID",
+			" FROM INVITATION_CODE_CLAIM ICC",
+			" WHERE ICC.ICID = INV.ICID",
+			" AND ICC.ORG_USER_ID = ?),0) ALREADY_CLAIMED",
 			" FROM INVITATION_CODE INV",
 			" WHERE INV.INVITATION_CODE = ?",
-			" AND INV.ACTIVATION_STATUS = 'AC'",
-			" AND rownum = 1");
+			" AND INV.ACTIVATION_STATUS = 'AC'");
 
 	public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
 			" SELECT IC.STUDENT_FULL_NAME  AS STUDENT_NAME, ",
@@ -62,7 +66,8 @@ public interface IParentQuery {
 			" (SELECT DISTINCT CPL.CUSTOMERID FROM CUST_PRODUCT_LINK CPL, INVITATION_CODE INV WHERE CPL.CUST_PROD_ID = INV.CUST_PROD_ID  AND INV.ACTIVATION_STATUS = 'AC' AND INV.INVITATION_CODE = ?),?,'Y',",
 			" 'AC', SYSDATE, ?, ?)");
 	
-	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
+	//As INVITATION_CODE keeps school org_nodeid instead of class - See nex object - By Joy
+	/*public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" SELECT ORG_USER_ID",
 			" FROM ORG_USERS OU",
 			" WHERE OU.USERID = ?",
@@ -70,7 +75,16 @@ public interface IParentQuery {
 			" (SELECT N.PARENT_ORG_NODEID",
 			" FROM INVITATION_CODE M, ORG_NODE_DIM N",
 			" WHERE M.ORG_NODEID = N.ORG_NODEID",
-			" AND M.INVITATION_CODE = ?)");
+			" AND M.INVITATION_CODE = ?)");*/
+	
+	//As INVITATION_CODE keeps school org_nodeid instead of class - By Joy
+	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
+			" SELECT OU.ORG_USER_ID",
+			" FROM ORG_USERS OU, INVITATION_CODE IC",
+			" WHERE OU.ORG_NODEID = IC.ORG_NODEID",
+			" AND OU.USERID = ?",
+			" AND IC.INVITATION_CODE = ?");
+	
 	
 	public static final String GET_USERID_PARENT = CustomStringUtil.appendString(
 			" SELECT USERID FROM USERS U WHERE UPPER(U.USERNAME) = UPPER(?)");

@@ -63,7 +63,7 @@ public interface IParentDAO {
 	 * @param invitationCode
 	 * @return
 	 */
-	public ParentTO validateIC(String invitationCode);
+	public ParentTO validateIC(final Map<String, Object> paramMap);
 
 	/**
 	 * Save parent user information.

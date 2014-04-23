@@ -37,6 +37,7 @@ public class ParentTO extends BaseTO {
 	private long totalAttemptedCalim;
 	private String icExpirationStatus;
 	private String icActivationStatus;
+	private long isAlreadyClaimed = 0;
 	
 	
 	public String getOrgName() {
@@ -194,6 +195,12 @@ public class ParentTO extends BaseTO {
 	}
 	public void setIcActivationStatus(String icActivationStatus) {
 		this.icActivationStatus = icActivationStatus;
+	}
+	public long getIsAlreadyClaimed() {
+		return isAlreadyClaimed;
+	}
+	public void setIsAlreadyClaimed(long isAlreadyClaimed) {
+		this.isAlreadyClaimed = isAlreadyClaimed;
 	}
 }
 

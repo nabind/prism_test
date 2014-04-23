@@ -64,8 +64,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#validateIC(java.lang.String)
 	 */
-	public ParentTO validateIC(String invitationCode) {
-		return parentBusiness.validateIC(invitationCode);
+	public ParentTO validateIC(final Map<String, Object> paramMap) {
+		return parentBusiness.validateIC(paramMap);
 	}
 
 	/*

@@ -76,8 +76,11 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#validateIC(java.lang.String)
 	 */
-	public ParentTO validateIC(String invitationCode) {
-		ParentTO parentTO = parentDAO.validateIC(invitationCode);
+	public ParentTO validateIC(final Map<String, Object> paramMap) {
+		
+		String invitationCode = (String)paramMap.get("invitationCode");
+		
+		ParentTO parentTO = parentDAO.validateIC(paramMap);
 
 		if (parentTO == null) {
 			parentTO = new ParentTO();
@@ -89,6 +92,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 			parentTO.setErrorMsg("IC_EXPIRED");
 		} else if (IApplicationConstants.DELETED_FLAG.equals(parentTO.getIcActivationStatus())) {
 			parentTO.setErrorMsg("IC_INVALID");
+		} else if(parentTO.getIsAlreadyClaimed() > 0){
+			parentTO.setErrorMsg("IC_ALREADY_CLAIMED");
 		} else {
 			parentTO = new ParentTO();
 			parentTO = parentDAO.getStudentForIC(invitationCode);
