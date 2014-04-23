@@ -89,7 +89,6 @@ public class UserAccountPdf {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						ARCHIVE_NEEDED = false;
 						logger.info("IC Letter Location: " + letterLocation);
-						archiveICLetter(prop);
 						
 						letterLocation = processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
@@ -102,17 +101,18 @@ public class UserAccountPdf {
 						encDocLocation = manupulateTenants(id, prop, letterLocation, false, false);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
-						archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
 						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
 						logger.info("IC Letter Location: " + letterLocation);
-						archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.X.toString())) {
 						String letterLocation = processIndividualIcLetterPdfFromExtractTable(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
-						archiveICLetter(prop);
 					}
+				}
+				
+				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+					archiveICLetter(prop);
 				}
 				
 				if(ARCHIVE_NEEDED) {
