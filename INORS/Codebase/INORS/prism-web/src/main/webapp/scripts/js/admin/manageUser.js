@@ -661,6 +661,7 @@ $(document).ready(function() {
 	
 	function deleteRowValues(row) {
 		row.closest("tr").remove();
+		enableSorting(true);
 	}	
 	//----------------------------Resetting Modal Form---------------------
 	
