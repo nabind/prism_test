@@ -51,7 +51,7 @@ public class UserAccountPdf {
 	
 	private static CommonDAO dao = null;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		//args = new String[] { "L", "604893"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
@@ -90,9 +90,6 @@ public class UserAccountPdf {
 						ARCHIVE_NEEDED = false;
 						logger.info("IC Letter Location: " + letterLocation);
 						
-						letterLocation = processIndividualIcLetterPdf(prop, dao, id);
-						identifier = "IC_";
-						logger.info("IC Letter Location: " + letterLocation);
 						//archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
@@ -105,15 +102,32 @@ public class UserAccountPdf {
 						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
 						logger.info("IC Letter Location: " + letterLocation);
-					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.X.toString())) {
+					} /*else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.X.toString())) {
 						String letterLocation = processIndividualIcLetterPdfFromExtractTable(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
-					}
+					}*/
 				}
 				
 				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
 					archiveICLetter(prop);
+					// send mail
+					String subject = "Merged IC Letter Generatation completed ";
+					String body = CustomStringUtil.appendString(subject , "for all the schools. Individiual IC leter has been started.\n" ,
+								  "Different notification will go once Individiual IC leter is completed");
+					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
+					// individual student 
+					for (String id : ids) {
+						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
+						identifier = "IC_";
+						logger.info("IC Letter Location: " + letterLocation);
+					}
+					// send mail
+					subject = "Individiual IC Letter Generatation completed ";
+					body = CustomStringUtil.appendString(subject , "for all the schools. Individiual IC leter has been completed.\n" );
+					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
+					
 				}
+						
 				
 				if(ARCHIVE_NEEDED) {
 					File arc = new File(CustomStringUtil.appendString(
@@ -575,7 +589,7 @@ public class UserAccountPdf {
 			mailSubject = prop.getProperty("mailSubject");
 			logger.info("Email Subject: " + mailSubject);
 			mailBody = prop.getProperty("messageBody") + prop.getProperty("messageFooter");
-			EmailSender.sendMail(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
+			//EmailSender.sendMail(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
 			logger.warn("Mail sending failed " + e.getMessage());
@@ -650,7 +664,7 @@ public class UserAccountPdf {
 				password = prop.getProperty(tascPropertyPasswordString + OrgLevel);
 			}
 			mailBody = CustomStringUtil.replaceCharacterInString('~', password, messagePasswordBody);
-			EmailSender.sendMail(prop, toMailAddr, mailSubject, mailBody, supportEmail);
+			//EmailSender.sendMail(prop, toMailAddr, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
 			logger.error("Mail sending failed " + e.getMessage());
@@ -1290,7 +1304,7 @@ public class UserAccountPdf {
 					//updateLog("Sending mail for addl. users.");
 				}
 			}
-			EmailSender.sendMailAcsi(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody);
+			//EmailSender.sendMailAcsi(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody);
 			mailSent = true;
 		} catch (Exception e) {
 			logger.debug("Mail sending failed ..."+e.getMessage());
