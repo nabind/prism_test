@@ -120,21 +120,32 @@ $(document).ready(function() {
 				if(data != null) {
 					var userContent = '';
 					var menuContent = '';
-					$.each(data, function () { 
-						userContent += '<a href="getChildData.do?testElementId='+this.testElementId
-									+'&studentBioId='+this.studentBioId
-									+'&studentName='+this.studentName
-									+'&studentGradeName='+this.grade
-									+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
-									+ this.studentName + '</a><br/>'
-									+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+					$.each(data, function () {
 						
-						menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
-						+'&studentBioId='+this.studentBioId
-						+'&studentName='+this.studentName
-						+'&studentGradeName='+this.grade
-						+'&studentGradeId='+this.studentGradeId+'">'
-						+this.studentName+', (Grade: '+this.grade+')</a></li>';
+						if(this.bioExists != 0){
+							userContent += '<a href="getChildData.do?testElementId='+this.testElementId
+											+'&studentBioId='+this.studentBioId
+											+'&studentName='+this.studentName
+											+'&studentGradeName='+this.grade
+											+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
+											+ this.studentName + '</a><br/>'
+											+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+				
+							menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
+											+'&studentBioId='+this.studentBioId
+											+'&studentName='+this.studentName
+											+'&studentGradeName='+this.grade
+											+'&studentGradeId='+this.studentGradeId+'">'
+											+this.studentName+', (Grade: '+this.grade+')</a></li>';
+						}else{
+							userContent += '<span style="color: #fff; font-weight: bold">'
+								+this.studentName+'</span></br>'
+								+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+							
+							menuContent += '<li class="menu-third-level"><span>'
+								+this.studentName+', (Grade: '+this.grade+')</span></li>';
+						}
+						
 					});
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
