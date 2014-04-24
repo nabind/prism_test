@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.web.util.HtmlUtils;
+
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IApplicationConstants.USER_TYPE;
@@ -364,6 +366,24 @@ public final class Utils {
 			}
 		}
 		return obj;
+	}
+
+	/**
+	 * Turn special characters into HTML character references. Handles complete
+	 * character set defined in HTML 4.01 recommendation.
+	 * <p>
+	 * Escapes all special characters to their corresponding entity reference
+	 * (e.g. <code>&lt;</code>).
+	 * <p>
+	 * Reference: <a href="http://www.w3.org/TR/html4/sgml/entities.html">
+	 * http://www.w3.org/TR/html4/sgml/entities.html </a>
+	 * 
+	 * @param input
+	 *            the (unescaped) input string
+	 * @return the escaped string
+	 */
+	public static String convertSpecialCharToHtmlChar(String input) {
+		return HtmlUtils.htmlEscape(input);
 	}
 
 }
