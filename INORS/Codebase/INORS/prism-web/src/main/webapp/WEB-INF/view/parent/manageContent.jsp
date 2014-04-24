@@ -140,6 +140,7 @@
 									</div>
 								</div>
 							</div>
+							<%@ include file="../common/required.jsp" %>
 						</div>
 					</div>
 				</div>
