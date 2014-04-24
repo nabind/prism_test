@@ -768,7 +768,7 @@ $(document).ready(function() {
 				} else {
 					$(".pagination").hide(200);
 				}
-				if ( data != null || data != "") {
+				if ( data != null && data != "") {
 					getUserDetails(true, data); //this method is defined in usermodule.js
 					enableSorting(true);
 				}
