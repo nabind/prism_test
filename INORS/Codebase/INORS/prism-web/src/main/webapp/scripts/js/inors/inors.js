@@ -1319,13 +1319,7 @@ function groupDownloadSubmit(button) {
 		if ((button == "SP") || (button == "CP") || (button == "SS")) {
 			var errMsg = validateGroupDownloadForm(button, json);
 			if (errMsg == "") {
-				var checkedStudents = getCheckedStudentCount();
-				var pageCount = (checkedStudents + 1) * 2;
-				var groupFile = $("#q_groupFile");
-				if(groupFile == "BOTH"){
-					pageCount = pageCount + (checkedStudents * 2);
-				}
-				$.modal.confirm("You are requesting "+pageCount+" pages for download.<br /><br />Do you want to continue?<br /><br /><br />This is a resource intensive job and may take a long time to process. Duplex printing should be used.",
+				$.modal.confirm("This is a resource intensive job and may take a long time to process. Duplex printing should be used.<br /><br /><br />Do you want to continue?",
 					function() {
 						// Ajax Call
 						var serverResponseData = groupDownloadFunction(json);
