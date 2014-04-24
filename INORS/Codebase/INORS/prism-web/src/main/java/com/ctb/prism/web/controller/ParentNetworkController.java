@@ -383,7 +383,8 @@ public class ParentNetworkController {
 		GenericStack<String> urlStack = (GenericStack<String>)request.getSession().getAttribute(IApplicationConstants.URL_STACK);
 		if(!urlStack.isEmpty()){
 			requestURL = urlStack.pop();
-			requestURL += "&fromBack=true";
+			//fromBack not required - By Joy
+			//requestURL += "&fromBack=true";
 		}else{
 			logger.log(IAppLogger.ERROR, "URL STACK is empty");
 		}
