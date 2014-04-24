@@ -160,7 +160,7 @@
 										<label class="label" for="confPassword">Verify
 											Password</label> <input type="password" rel="editConfPwd"
 											name="confPassword" id="confPassword" style="width: 200px"
-											class="input full-width newReportName" />
+											class="input full-width newReportName validate[equalsPassword[password]]" />
 									</p>
 									<p class="button-height inline-label">
 										<label class="label" for="userStatus">Status</label> <input
