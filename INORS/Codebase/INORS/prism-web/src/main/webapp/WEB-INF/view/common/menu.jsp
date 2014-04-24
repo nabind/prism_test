@@ -16,10 +16,10 @@
 					<!-- Only for Admin users -->
 					<li><a href="userModule.do" class="shortcut-contacts" title="Manage Users">Manage Users</a></li>
 					<li><a href="manageOrganizations.do" class="shortcut-settings" title="Manage Organizations">Manage Organizations</a></li>
-					<sec:authorize ifNotGranted="ROLE_SSO">
+					<%-- <sec:authorize ifNotGranted="ROLE_SSO"> --%>
 						<li><a href="manageParent.do" class="shortcut-medias" title="Manage Parents">Manage Parents</a></li>
 						<li><a href="manageStudent.do" class="shortcut-agenda" title="Manage Students">Manage Students</a></li>
-					</sec:authorize>
+					<%-- </sec:authorize> --%>
 					<sec:authorize ifAnyGranted="ROLE_SUPER">
 						<!-- Only for CTB Admins -->
 						<!-- Remove Manage Education Center -->

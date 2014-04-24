@@ -85,14 +85,14 @@
 						<li>
 							<a href="manageOrganizations.do">Manage Organizations</a>
 						</li>
-						<sec:authorize ifNotGranted="ROLE_SSO">
+						<%-- <sec:authorize ifNotGranted="ROLE_SSO"> --%>
 							<li>
 								<a href="manageParent.do">Manage Parents</a>
 							</li>
 							<li>
 								<a href="manageStudent.do">Manage Students</a>
 							</li>
-						</sec:authorize>
+						<%-- </sec:authorize> --%>
 						<sec:authorize ifAnyGranted="ROLE_SUPER">
 							<!-- Remove Manage Education Center -->
 							<li>
