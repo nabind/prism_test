@@ -244,7 +244,7 @@
 					<div class="boxsshade">
 						<div class="rowTwo">
 							<!--<h1 class="h1style">Welcome to <span class="acsicol">Indiana Parent Network!</span></h1>-->
-							<h1 class="h1style"><spring:message code="pnlogin.page.welcome"/></h1>
+							<h1 class="h1style">Welcome to <spring:message code="pnlogin.page.welcome"/>!</h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
 							</div>
@@ -345,12 +345,12 @@
 							<ul style="" class="margin-bottom-medium bullet-list">
 								<li>
 									<a class=""  href="registration.do">
-										<small class="tag orange-bg">New User:</small> to create an account and enter the Invitation Code for your first child, click here.
+										<small class="tag orange-bg">New User:</small> Click here to enter your Invitation Code and create a new account!
 									</a>
 								</li><br>
 								<li>
 									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide_For_Parents.pdf',800,600)">
-										For questions about <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">Quick Start Guide For Parents</small> here.
+										For information about the <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
 									</a>
 								</li>
 							</ul>
