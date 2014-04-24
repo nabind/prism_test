@@ -122,6 +122,7 @@ $(document).ready(function() {
 					var menuContent = '';
 					$.each(data, function () {
 						
+						//Implement Joy: Before GRT loaded functionality - By Joy
 						if(this.bioExists != 0){
 							userContent += '<a href="getChildData.do?testElementId='+this.testElementId
 											+'&studentBioId='+this.studentBioId
