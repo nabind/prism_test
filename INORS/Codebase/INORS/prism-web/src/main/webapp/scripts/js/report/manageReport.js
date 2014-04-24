@@ -462,7 +462,8 @@ $('.delete-Report').live("click", function() {
 			var reportContent="";	
 			$.each(jsonData, function () { 
 		    
-				reportContent += '<tr id='+this.reportId+'>'
+				//Fix for TD 78098 - By Joy
+				reportContent += '<tr id='+this.reportId+'_'+this.reportId+'>'
 								+'<th scope="row"><span class="reportName">'+this.reportName+'</span><br>'
 								+'<small class="reportUrl">'+this.reportUrl+'</small></th>'
 								+'<td class="vertical-center">'
