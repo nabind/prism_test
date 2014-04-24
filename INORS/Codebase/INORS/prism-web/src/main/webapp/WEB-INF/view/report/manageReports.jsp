@@ -157,7 +157,7 @@
 							
 							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type starting with 'PN' are for parent network reports.</small></p>
 							<p class="button-height inline-label">
-									<label class="label" for="reportType">Report Type</label>
+									<label class="label" for="editReportType">Report Type</label>
 									<select id="editReportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list" >
 										<option value="API">API</option>
 										<option value="API_TABLE">API TABLE</option>
@@ -171,7 +171,7 @@
 							</p>
 							
 							<p class="button-height inline-label">
-									<label class="label" for="menuType">Menu Name</label>
+									<label class="label" for="editMenuType">Menu Name</label>
 									<select id="editMenuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
 										<option value="101">Reports</option>
 										<option value="102">Downloads</option>
@@ -186,7 +186,7 @@
 							</p>
 							
 							<p class="button-height inline-label">
-									<label class="label" for="customerType">Customer Product Link</label>
+									<label class="label" for="editCustomerType">Customer Product Link</label>
 									<select id="editCustomerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list ">
 										<c:forEach var="allCustomer" items="${allCustomer}">
 											<option value="${allCustomer.value}">${allCustomer.name}</option>
@@ -195,7 +195,7 @@
 							</p>
 
 							<p class="button-height inline-label">
-								<label class="label" for="reportStatus">Status</label>
+								<label class="label" for="editReportStatus">Status</label>
 								<input type="checkbox" name="reportStatus" id="editReportStatus" class="switch medium wide mid-margin-right" value="1" data-text-on="ENABLED" data-text-off="DISABLED">
 							</p>
 
@@ -210,7 +210,7 @@
 							
 							
 							<p class="button-height inline-label">
-									<label class="label" for="allOrgNode">Level<span class="icon-star icon-size1 red"></span></label>
+									<label class="label" for="orgNodeLevel">Level<span class="icon-star icon-size1 red"></span></label>
 									<select id="orgNodeLevel" name="allOrgNode" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple>
 										<c:forEach var="allOrgNode" items="${allOrgNode}">
 											<option value="${allOrgNode.value}">${allOrgNode.name}</option>
