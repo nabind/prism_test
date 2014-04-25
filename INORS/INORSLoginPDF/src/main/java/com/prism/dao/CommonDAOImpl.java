@@ -608,7 +608,7 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String>
 	 * pdfPathList)
 	 */
-	public int[] updateStudentsPDFloc(String rootPath, Map<String, String> pdfPathList) {
+	public int[] updateStudentsPDFloc(String schoolId, Map<String, String> pdfPathList) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int updateCount[] = null;
@@ -618,8 +618,16 @@ public class CommonDAOImpl implements CommonDAO {
 			for (Entry<String, String> entry : pdfPathList.entrySet()) {
 				String key = entry.getKey().toString();
 				String value = entry.getValue().toString();
+				String rootPath="/";
+				try {
+					rootPath = getRootPath(schoolId, key);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				FileUtil.copyFile(rootPath, value);
+				
 				value = FileUtil.replaceWithRootPath(rootPath, value);
-				pstmt.setString(1, value); // IC_FILE_LOC
+				pstmt.setString(1, value.substring(0, 99)); // IC_FILE_LOC
 				pstmt.setString(2, key); // TEST_ELEMENT_ID
 				pstmt.addBatch();
 			}
@@ -1276,7 +1284,7 @@ public class CommonDAOImpl implements CommonDAO {
 	/* (non-Javadoc)
 	 * @see com.prism.dao.CommonDAO#getRootPath(java.lang.String)
 	 */
-	public String getRootPath(String schoolId) throws Exception {
+	public String getRootPath(String schoolId, String testElementId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1285,7 +1293,7 @@ public class CommonDAOImpl implements CommonDAO {
 			conn = driver.connect(DATA_SOURCE, null);
 			pstmt = conn.prepareCall(Constants.GET_ROOT_PATH);
 			pstmt.setLong(1, Long.valueOf(schoolId));
-			pstmt.setLong(2, Long.valueOf(schoolId));
+			pstmt.setString(2, testElementId);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				rootPath = rs.getString(1);

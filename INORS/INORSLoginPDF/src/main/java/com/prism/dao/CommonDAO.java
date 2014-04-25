@@ -76,7 +76,7 @@ public interface CommonDAO {
 	 * @param pdfPathList
 	 * @return
 	 */
-	public int[] updateStudentsPDFloc(String rootPath, Map<String, String> pdfPathList);
+	public int[] updateStudentsPDFloc(String schoolId, Map<String, String> pdfPathList);
 
 	/**
 	 * @param schoolId
@@ -107,6 +107,6 @@ public interface CommonDAO {
 
 	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception;
 
-	public String getRootPath(String schoolId) throws Exception;
+	public String getRootPath(String schoolId, String testElementId) throws Exception;
 
 }

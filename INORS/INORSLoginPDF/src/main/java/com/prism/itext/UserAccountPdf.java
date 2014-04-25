@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) throws Exception {
-		// args = new String[] { "L", "605818"};
+		// args = new String[] { "S", "605302"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -99,9 +99,9 @@ public class UserAccountPdf {
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
-						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
+						processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
-						logger.info("IC Letter Location: " + letterLocation);
+						// logger.info("IC Letter Location: " + letterLocation);
 					} /*else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.X.toString())) {
 						String letterLocation = processIndividualIcLetterPdfFromExtractTable(prop, dao, id);
 						logger.info("IC Letter Location: " + letterLocation);
@@ -117,9 +117,9 @@ public class UserAccountPdf {
 					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
 					// individual student 
 					for (String id : ids) {
-						String letterLocation = processIndividualIcLetterPdf(prop, dao, id);
+						processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
-						logger.info("IC Letter Location: " + letterLocation);
+						// logger.info("IC Letter Location: " + letterLocation);
 					}
 					// send mail
 					subject = "Individiual IC Letter Generatation completed ";
@@ -246,10 +246,10 @@ public class UserAccountPdf {
 	/*
 	 * Individual IC letter in a school
 	 */
-	private static String processIndividualIcLetterPdf(Properties prop, CommonDAO dao, String schoolId) {
+	private static void processIndividualIcLetterPdf(Properties prop, CommonDAO dao, String schoolId) {
 		logger.info("Processing for IC Letter...");
 		String letterLoc = "";
-		String rootPath = null;
+		//String rootPath = null;
 		try {
 			OrgTO school = dao.getSchoolDetails(schoolId, false); // Users not required
 			CUSOMERID = school.getCustomerCode();
@@ -272,14 +272,14 @@ public class UserAccountPdf {
 						tempFileList.add(letterLoc);
 					}
 				}
-				rootPath = dao.getRootPath(schoolId);
+				//rootPath = dao.getRootPath(schoolId);
 				/*if("Y".equals(prop.getProperty("LOCAL_TEST_MODE"))){
 					rootPath = "D:\\Test\\IC" + CustomStringUtil.replaceAll(rootPath, "/", "\\\\");
 				}*/
-				FileUtil.copyFiles(rootPath, new HashSet<String>(pdfPathList.values()));
+				
 				if (!pdfPathList.isEmpty()) {
-					dao.updateStudentsPDFloc(rootPath, pdfPathList);
-					logger.debug("IC letter created @ " + rootPath);
+					dao.updateStudentsPDFloc(schoolId, pdfPathList);
+					logger.debug("IC letter created");
 				} else {
 					logger.warn("No pdf found");
 				}
@@ -287,10 +287,10 @@ public class UserAccountPdf {
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());
 			e.printStackTrace();
-			return "";
+			// return "";
 		}
 		logger.info("Processing for IC Letter Completed.");
-		return rootPath;
+		// return rootPath;
 	}
 
 	/*
@@ -316,8 +316,8 @@ public class UserAccountPdf {
 						pdfPathList.put(studentBioId, letterLoc);
 					}
 				}
-				String rootPath = dao.getRootPath(schoolId);
-				dao.updateStudentsPDFloc(rootPath, pdfPathList);
+				// String rootPath = dao.getRootPath(schoolId);
+				dao.updateStudentsPDFloc(schoolId, pdfPathList);
 	  
 				if (!pdfPathList.isEmpty()) {
 					letterLoc = FileUtil.createPDFFile(docName, new ArrayList<String>(pdfPathList.values()));
