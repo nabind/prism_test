@@ -333,7 +333,9 @@ public class CommonDAOImpl implements CommonDAO {
 			updateCount = pstmt.executeBatch();
 			for (int i = 0; i < updateCount.length; i++)
 			logger.debug("Records updated: " + updateCount[i]);
-			conn.commit();
+			if (conn.getAutoCommit() == false) {
+				conn.commit();
+			}
 			logger.debug("commit successful");
 			
 		} catch (SQLException e) {
@@ -1174,7 +1176,7 @@ public class CommonDAOImpl implements CommonDAO {
 					"AND ADM.CURRENT_ADMIN = 'Y' " +
 					"AND gsl.jasper_orgid in ( "+ jasperOrgIds +" ) ";*/
 					CustomStringUtil.appendString(
-							"select distinct gd.grade_name, ond.org_nodeid, GD.GRADE_SEQ",
+							"select distinct gd.grade_code, ond.org_nodeid, GD.GRADE_SEQ",
 							"  from users           u,",
 							"       org_users       ou,",
 							"       org_node_dim    ond,",
@@ -1193,7 +1195,9 @@ public class CommonDAOImpl implements CommonDAO {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				grades = new OrgTO();
-				grades.setGrade(rs.getString(1));
+				String grade = rs.getString(1);
+				Integer gradeInt = new Integer(grade);
+				grades.setGrade(gradeInt.toString());
 				grades.setJasperOrgId(rs.getString(2));
 				grades.setGradeSeq(rs.getInt(3));
 				allGrades.add(grades);
@@ -1226,7 +1230,7 @@ public class CommonDAOImpl implements CommonDAO {
 			conn = driver.connect(DATA_SOURCE, null);
 			
 			String query = " SELECT * FROM (SELECT stu.org_nodeid, " +
-					"stu.last_name || ', ' || stu.first_name || ' ' || stu.middle_name, grd.grade_name " +
+					"stu.last_name || ', ' || stu.first_name || ' ' || stu.middle_name, grd.grade_code " +
 					"FROM student_bio_dim stu, grade_dim grd WHERE grd.gradeid = stu.gradeid AND stu.org_nodeid = ? ORDER BY stu.last_name, stu.first_name, stu.middle_name " +
 					"  ) WHERE ROWNUM < 6 ";
 			
@@ -1252,7 +1256,9 @@ public class CommonDAOImpl implements CommonDAO {
 				student = new UserTO();
 				student.setOrgNodeId(rs.getString(1));
 				student.setStudentName(rs.getString(2));
-				student.setGrade(rs.getString(3));
+				String grade = rs.getString(3);
+				Integer gradeInt = new Integer(grade);
+				student.setGrade(gradeInt.toString());
 				students.add(student);
 			}
 		} catch (SQLException e) {

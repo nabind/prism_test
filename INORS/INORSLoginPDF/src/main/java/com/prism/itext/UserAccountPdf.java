@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) throws Exception {
-		//args = new String[] { "L", "604893"};
+		// args = new String[] { "L", "605818"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -1177,14 +1177,14 @@ public class UserAccountPdf {
 	
 	private static String getDocName(OrgTO school, Properties prop) {
 		StringBuffer docBuff = new StringBuffer();
-		String pdfPrefix = school.getTestAdministration();//prop.getProperty("testAdministrator");
+		String pdfPrefix = school.getTestAdministration().trim();//prop.getProperty("testAdministrator");
 		docBuff.append(prop.getProperty("pdfGenPath"));
 		docBuff.append(File.separator);
 		docBuff.append(pdfPrefix).append("_");
-		docBuff.append(school.getDistrictName()).append("_");
-		docBuff.append(school.getDistrictCode()).append("_");
-		docBuff.append(school.getElementName()).append("_");
-		docBuff.append(school.getSchoolCode()).append("_");
+		docBuff.append(school.getDistrictName().trim()).append("_");
+		docBuff.append(school.getDistrictCode().trim()).append("_");
+		docBuff.append(school.getElementName().trim()).append("_");
+		docBuff.append(school.getSchoolCode().trim()).append("_");
 		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
 		// docBuff.append(".pdf");
 		return docBuff.toString();

@@ -934,15 +934,13 @@ public class PdfGenerator {
 			document.add(_img);
 			document.add(Chunk.NEWLINE);
 		}
-		if(!schoolUserPresent) {
-			document.add(new Paragraph(CustomStringUtil.appendString(
-					"\nSchool: ", schoolName , ", Test Administration: " , prop.getProperty("testAdministrator")), fontBold));
+		if (!schoolUserPresent) {
+			document.add(new Paragraph(CustomStringUtil.appendString("\nSchool: ", schoolName), fontBold));
 		}
-		
-		document.add(new Paragraph("\nTeacher: "+tech.getFullName()+ ", Grade: "+tech.getGrade(), font));
-		//document.add(new Paragraph("\nOrganization: "+ tech.getTenantId(), fontCourier));
-		document.add(new Paragraph("User Name: "+ tech.getUserName(), fontCourier));
-		document.add(new Paragraph("User Password: "+ tech.getPassword(), fontCourier));
+		document.add(new Paragraph("Teacher: " + tech.getFullName() + ", Grade: " + tech.getGrade(), font));
+		document.add(new Paragraph("Test Administration: " + prop.getProperty("testAdministrator"), font));
+		document.add(new Paragraph("\nUsername: " + tech.getUserName(), fontCourier));
+		document.add(new Paragraph("User Password: " + tech.getPassword(), fontCourier));
 		
 		document.add(new Paragraph("\n"+prop.getProperty("TECH_TEXT"), font));
 		
