@@ -27,7 +27,7 @@
 					<div class="report-panel-content panel-content linen" style="height: 575px">
 
 						<div class="panel-control align-right">
-							<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left" style="box-shadow: grey -3px 4px 13px;">
+							<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="Add Report" style="box-shadow: grey -3px 4px 13px;">
 								<span class="button-icon blue-gradient manage-btn"><span class="icon-plus-round"></span></span>
 								Add Report
 							</a>
