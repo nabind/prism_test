@@ -772,6 +772,9 @@ $(document).ready(function() {
 					getUserDetails(true, data); //this method is defined in usermodule.js
 					enableSorting(true);
 				}
+				if ( data != null && data == "") {
+					getUserDetails(true, data); //this method is defined in usermodule.js
+				}
 				unblockUI();
 			},
 			error : function(data){
