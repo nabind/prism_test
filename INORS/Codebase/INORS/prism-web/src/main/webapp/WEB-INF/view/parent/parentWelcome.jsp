@@ -4,27 +4,28 @@
 	<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
 
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
-		<h1>Welcome, <%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></h1>
+		<h1>Welcome, <%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %>!</h1>
 	</hgroup>
 
 	
 
 
-	<div class="right-column margin-bottom-medium" style="min-height:680px;">
+	<div class="right-column margin-bottom-medium" style="min-height:417px;">
 			
 
 		<div class="right-column-200px">
 
 			<div class="right-column" style="min-width: 250px; width:22%">
-			<div class="" style="height: auto; margin-top:-45px;">
+			<div class="" style="height: 100px; margin-top:-45px;">
 				<h3 style="position:relative">Your Children</h3>
 				<!--<p class="big-message blue-gradient">-->
-				<p class="big-message blue-gradient" style="color : #fff">
-					<!--Choose one of the profiles below to see an individualized Action Plan for your child.-->
-					Select your child's name below to see their assessment results:
-					<br/><br/>
-					<span class="children-list"></span>
-				</p>
+				<div style="height: 381px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
+					<div class="" style="color : #fff;">
+						Choose one of the profiles below to see an individualized Action Plan for your child.
+						<br/><br/>
+						<span class="children-list"></span>
+					</div>
+				</div>
 			</div></div>
 
 			<div class="left-column" style="margin-right: 270px;"><div class="" style="height: auto">
@@ -51,31 +52,47 @@
 				
 				<div class="boxshade" style="max-width:938px">
 					<p style="text-align:justify">
-					In partnership with CTB/McGraw-Hill, INORS provides member schools a standardized assessment program called TerraNova3, INORS Edition. It combines TerraNova3 with the INORS Bible Assessment. <br><br>				
-					TerraNova3, INORS Edition is a next-generation achievement test that provides a research-based test blueprint that aligns to today's challenging content and performance standards. It assists educators in their plan to enhance classroom instruction and improve student achievement, and to empower all students to succeed.<br><br>
-					The Bible Assessment allows Christian school educators to assess students Bible knowledge and understanding and application of Scripture. The assessment also assists with evaluating the Bible curriculum and promoting dialogue among the staff and the school community.
-						<!--To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
-						Explore the links below for additional information, including <i>Why Standards Matter</i>, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.-->
+						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
+						Explore the links below for additional information, including <i>Why Standards Matter</i>, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.
 					</p>
 				</div>
 				
-				<div class="" style="max-width:980px">
-					<h4 class="blue">Manage Account</h4>
-					<div class="boxshade">
-						<p>Use this page to update your personal information. You can also view information about which test data is available on INORS Data Online for Parents for your school.</p>
-						<ul class="bullet-list">
-							<li><a href="myAccount.do">My Account</a></li>
-							<li><a href="#nogo" class="claim-Invitation">Enter next Invitation Code</a></li>
-							<!--<li><a href="#nogo">Create New Child Information</a></li>-->
-						</ul>
-					</div>
-				</div>
-			</div>
+				
 			</div>
 		</div>
 		
 		
 		
+	</div>
+	</div>
+	<div class="left-column-200px margin-bottom" style="margin-left: -20px;">
+
+		<div class="left-column" style="width: 240px"><div class="with-padding" style="height: 150px">
+			<h4 class="blue underline">Explore</h4>
+				<div class="boxshade">
+					<ul class="bullet-list">
+						<li><a href="#nogo" class="menu-link" action="getStandardMatters">Why Standards Matter</a></li>
+						<li><a href="#nogo" class="menu-link" action="getBrowseContent">Browse Content</a></li>
+						<li><a href="#nogo" class="">English Guide to the Student Report</a></li>
+						<li><a href="#nogo" class="">Spanish Guide to the Student Report</a></li>
+					</ul>
+				</div>
+		</div></div>
+
+		<div class="right-column">
+			<div class="with-padding" style="height: 170px; margin-right: -10px;">
+				<h4 class="blue underline">Manage My Account</h4>
+				<div class="boxshade" style="height: 126px;">
+					<p>Use this page to update your personal information. You can also view information about which test data is available on INORS Data Online for Parents for your school.</p>
+					<ul class="bullet-list">
+						<li><a href="myAccount.do">My Account</a></li>
+						<li><a href="#nogo" class="claim-Invitation">Claim new Invitation Code</a></li>
+						<!--<li><a href="#nogo">Create New Child Information</a></li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+
 	</div>
 	
 

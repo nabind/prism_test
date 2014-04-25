@@ -336,7 +336,7 @@
 			</sec:authorize>
 			<div style="background-color:#FFF">
 				<div id="productImage" class="with-small-padding align-center" style="border-bottom:1px solid #5f80ab;">
-					<img id="productImage101" class="productImage" src="<spring:theme code="contract.logo.single" />" />
+					<img id="productImage101" width="250px" class="productImage" src="<spring:theme code="contract.logo.single" />" />
 			    	<!--  <img id="productImage102" class="productImage display-none" src="themes/acsi/img/PTCSLogo.jpg" height="75px"/>
 					<img id="productImage103" class="productImage display-none" src="themes/acsi/img/InViewLogo.jpg" height="75px"/>
 					<img id="productImage104" class="productImage display-none" src="themes/acsi/img/BibleLogo.jpg" height="55px"/>

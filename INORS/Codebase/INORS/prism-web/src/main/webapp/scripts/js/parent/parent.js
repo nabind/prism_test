@@ -151,6 +151,10 @@ $(document).ready(function() {
 					$(".children-list").html(userContent);
 					$(".children-list").removeClass("loader big");
 					
+					$("#child-holder").customScroll({
+						showOnHover : false,
+						animate : false
+					});
 					// update right menu
 					$("#child_list").html(menuContent);
 				}else{
