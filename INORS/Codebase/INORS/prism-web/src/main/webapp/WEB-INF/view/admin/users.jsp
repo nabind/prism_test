@@ -21,7 +21,7 @@
 <div class="user-main" style="background-color: #FFF">
 
 	<input type="hidden" value="<c:if test='${not empty hierarchialOrgIds}'>${hierarchialOrgIds}</c:if><c:if test='${empty hierarchialOrgIds}'></c:if>" id="tempTree" name="tempTree">
-	<div class="content-panel margin-bottom" style="min-width: 725px;">
+	<div class="content-panel margin-bottom" style="min-width: 764px;">
 		<div class="panel-navigation silver-gradient">
 
 			<%@ include file="multiAdminYear.jsp" %>
