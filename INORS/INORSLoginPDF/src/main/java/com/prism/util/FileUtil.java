@@ -373,4 +373,9 @@ public class FileUtil {
 			}
 		}
 	}
+
+	public static String replaceWithRootPath(String rootPath, String filePath) {
+		String fileName = getFileNameFromFilePath(filePath);
+		return rootPath + fileName;
+	}
 }

@@ -7,8 +7,7 @@ import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 
 public interface CommonDAO {
-	
-		
+
 	/**
 	 * @param schoolId
 	 * @return
@@ -17,7 +16,8 @@ public interface CommonDAO {
 	public OrgTO getSchoolDetails(String schoolId, boolean cascade) throws Exception;
 
 	/**
-	 * Creates the organization Map where the organization id is the key and the organization name is the value.
+	 * Creates the organization Map where the organization id is the key and the
+	 * organization name is the value.
 	 * 
 	 * @param users
 	 * @return
@@ -72,10 +72,11 @@ public interface CommonDAO {
 	public List<String> getStudentIdList(String schoolId);
 
 	/**
+	 * @param rootPath
 	 * @param pdfPathList
 	 * @return
 	 */
-	public int[] updateStudentsPDFloc(Map<String, String> pdfPathList);
+	public int[] updateStudentsPDFloc(String rootPath, Map<String, String> pdfPathList);
 
 	/**
 	 * @param schoolId
@@ -87,15 +88,23 @@ public interface CommonDAO {
 	 * @return
 	 */
 	public String getSubjectPrefix(String schoolId);
-	
+
 	public OrgTO getSchoolDetailsAcsi(String jasperOrgId, boolean state) throws Exception;
+
 	public List<UserTO> getSchoolUsersAcsi(String jasperOrgId) throws Exception;
+
 	public List<UserTO> fetchAdminColumnAcsi(List<UserTO> users) throws Exception;
+
 	public List<UserTO> checkAdminAcsi(String allRoleIds) throws Exception;
+
 	public String getCurrentAdminYearAcsi() throws Exception;
+
 	public List<OrgTO> getAllTeachersAcsi(String jasperOrgId) throws Exception;
+
 	public List<OrgTO> getGradeForTeacherUsersAcsi(List<OrgTO> teachers) throws Exception;
+
 	public List<OrgTO> getGradesAcsi(String jasperOrgIds) throws Exception;
+
 	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception;
 
 	public String getRootPath(String schoolId) throws Exception;

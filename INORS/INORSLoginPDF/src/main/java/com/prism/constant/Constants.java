@@ -136,7 +136,7 @@ public interface Constants {
 	public static final String GET_ORG = "SELECT ORG_NODEID, ORG_NODE_NAME, PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ? AND ORG_NODE_LEVEL = ?";
 
 	public static final String GET_ROOT_PATH = CustomStringUtil.appendString(
-			"SELECT DISTINCT CUST.FILE_LOCATION",
+			"SELECT DISTINCT CUST.FILE_LOCATION || PROD.FILE_LOCATION || '/IC/'",
 			" FROM CUSTOMER_INFO     CUST,",
 			" PRODUCT           PROD,",
 			" CUST_PRODUCT_LINK LIN,",

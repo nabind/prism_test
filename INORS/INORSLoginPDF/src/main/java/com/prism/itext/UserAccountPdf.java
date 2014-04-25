@@ -127,7 +127,6 @@ public class UserAccountPdf {
 					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
 					
 				}
-						
 				
 				if(ARCHIVE_NEEDED) {
 					File arc = new File(CustomStringUtil.appendString(
@@ -279,7 +278,7 @@ public class UserAccountPdf {
 				}*/
 				FileUtil.copyFiles(rootPath, new HashSet<String>(pdfPathList.values()));
 				if (!pdfPathList.isEmpty()) {
-					dao.updateStudentsPDFloc(pdfPathList);
+					dao.updateStudentsPDFloc(rootPath, pdfPathList);
 					logger.debug("IC letter created @ " + rootPath);
 				} else {
 					logger.warn("No pdf found");
@@ -317,9 +316,9 @@ public class UserAccountPdf {
 						pdfPathList.put(studentBioId, letterLoc);
 					}
 				}
-	
-				dao.updateStudentsPDFloc(pdfPathList);
-	
+				String rootPath = dao.getRootPath(schoolId);
+				dao.updateStudentsPDFloc(rootPath, pdfPathList);
+	  
 				if (!pdfPathList.isEmpty()) {
 					letterLoc = FileUtil.createPDFFile(docName, new ArrayList<String>(pdfPathList.values()));
 					logger.debug("IC letter created @ " + letterLoc);

@@ -20,6 +20,7 @@ import com.prism.constant.Constants;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
 import com.prism.util.CustomStringUtil;
+import com.prism.util.FileUtil;
 import com.prism.util.JDCConnectionDriver;
 
 /**
@@ -605,16 +606,19 @@ public class CommonDAOImpl implements CommonDAO {
 	 * @see com.prism.dao.CommonDAO#updateStudentsPDFloc(Map<String,String>
 	 * pdfPathList)
 	 */
-	public int[] updateStudentsPDFloc(Map<String, String> pdfPathList) {
+	public int[] updateStudentsPDFloc(String rootPath, Map<String, String> pdfPathList) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int updateCount[] = null;
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
 			pstmt = conn.prepareStatement(Constants.UPDATE_STUDENT_PDF_LOC);
-			for (Entry entry : pdfPathList.entrySet()) {
-				pstmt.setString(1, entry.getValue().toString()); // IC_FILE_LOC
-				pstmt.setString(2, entry.getKey().toString()); // TEST_ELEMENT_ID
+			for (Entry<String, String> entry : pdfPathList.entrySet()) {
+				String key = entry.getKey().toString();
+				String value = entry.getValue().toString();
+				value = FileUtil.replaceWithRootPath(rootPath, value);
+				pstmt.setString(1, value); // IC_FILE_LOC
+				pstmt.setString(2, key); // TEST_ELEMENT_ID
 				pstmt.addBatch();
 			}
 			updateCount = pstmt.executeBatch();
@@ -1270,7 +1274,7 @@ public class CommonDAOImpl implements CommonDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String adminid = null;
+		String rootPath = null;
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
 			pstmt = conn.prepareCall(Constants.GET_ROOT_PATH);
@@ -1278,7 +1282,7 @@ public class CommonDAOImpl implements CommonDAO {
 			pstmt.setLong(2, Long.valueOf(schoolId));
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				adminid = rs.getString(1);
+				rootPath = rs.getString(1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1288,7 +1292,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		logger.info("Returning Root Path = " + adminid);
-		return adminid;
+		logger.info("Returning Root Path = " + rootPath);
+		return rootPath;
 	}
 }
