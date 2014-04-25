@@ -23,7 +23,7 @@
  */
 package com.ctb.prism.report.api;
 
-import java.sql.Connection;
+//import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class FillManagerImpl implements IFillManager
 		JasperReport jasperReport, 
 		Map<String,Object> parameters
 		) throws JRException, SQLException {
-		Connection conn = null;
+		//Connection conn = null;
 		ApplicationContext appContext = ApplicationContextProvider.getApplicationContext();
 		IReportDAO reportDao = (IReportDAO) appContext.getBean("reportDAO");
 		try {
@@ -57,9 +57,9 @@ public class FillManagerImpl implements IFillManager
 			throw new SQLException(e.getMessage());
 		} catch (Exception e) {
 			throw new SQLException(e.getMessage());
-		} finally {
+		}/* finally {
 			if(conn != null) try {conn.close();} catch (SQLException e) {}
-		}
+		}*/
 		
 	}
 
