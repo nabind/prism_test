@@ -328,8 +328,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
 				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.setString(2, loggedinUserTO.getOrgId());
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -339,7 +340,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			        			try {
 									cs.execute();
-									rsCustProd = (ResultSet) cs.getObject(2);
+									rsCustProd = (ResultSet) cs.getObject(3);
 
 									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 									while(rsCustProd.next()){
