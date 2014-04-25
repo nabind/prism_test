@@ -13,6 +13,7 @@ CREATE OR REPLACE PACKAGE PKG_PARENT_NETWORK IS
                                         P_IN_SUBTESTID             IN NUMBER,
                                         P_IN_GRADEID               IN NUMBER,
                                         P_IN_CATEGORY_TYPE         IN VARCHAR2,
+                                        P_IN_CUST_PROD_ID          IN NUMBER,
                                         P_OUT_CUR_STANDARD_DETAILS OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2);
 
@@ -114,6 +115,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                         P_IN_SUBTESTID             IN NUMBER,
                                         P_IN_GRADEID               IN NUMBER,
                                         P_IN_CATEGORY_TYPE         IN VARCHAR2,
+                                        P_IN_CUST_PROD_ID          IN NUMBER,
                                         P_OUT_CUR_STANDARD_DETAILS OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2) IS
   
@@ -150,6 +152,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            AND MAP1.SUBT_OBJ_MAPID = META.SUBT_OBJ_MAPID
            AND MAP1.OBJECTIVEID = OBJ.OBJECTIVEID
            AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
+           AND META.CUST_PROD_ID = P_IN_CUST_PROD_ID
          ORDER BY OBJ.OBJECTIVEID, META.ARTICLE_NAME;
     
     ELSE

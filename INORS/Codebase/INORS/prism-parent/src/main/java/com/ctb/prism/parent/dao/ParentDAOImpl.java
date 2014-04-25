@@ -1721,6 +1721,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final long subtestId = ((Long) paramMap.get("subtestId"));
 		final long studentGradeId = ((Long) paramMap.get("studentGradeId"));
 		final String contentType = (String) paramMap.get("contentType");
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 
 		try {
 			articleTypeDetailsList = (List<ManageContentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1730,8 +1731,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(2, subtestId);
 					cs.setLong(3, studentGradeId);
 					cs.setString(4, contentType);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setLong(5, custProdId);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1740,7 +1742,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					List<ManageContentTO> articleTypeDetailsResult = new ArrayList<ManageContentTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(5);
+						rs = (ResultSet) cs.getObject(6);
 						ManageContentTO articleTypeDetailsTO = null;
 
 						while (rs.next()) {

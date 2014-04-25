@@ -121,6 +121,7 @@ public class ParentNetworkController {
 		final long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
 		final String studentGradeName = request.getParameter("studentGradeName");
 		final String studentName = request.getParameter("studentName");
+		long custProdId = Long.parseLong(request.getParameter("custProdId")); 
 		
 		ModelAndView modelAndView = new ModelAndView("parent/standardActivity");
 		if(studentBioId != 0){
@@ -135,6 +136,7 @@ public class ParentNetworkController {
 		paramMap.put("studentGradeId", studentGradeId);
 		paramMap.put("subtestId", subtestId);
 		paramMap.put("contentType", IApplicationConstants.CONTENT_TYPE_ACT);
+		paramMap.put("custProdId", custProdId);
 		
 		try{
 			standardActivityDetailsList = parentService.getArticleTypeDetails(paramMap);
@@ -176,6 +178,7 @@ public class ParentNetworkController {
 		final long studentGradeId = Long.parseLong(request.getParameter("studentGradeId"));
 		final String studentGradeName = request.getParameter("studentGradeName");
 		final String studentName = request.getParameter("studentName");
+        long custProdId = Long.parseLong(request.getParameter("custProdId"));  
 		
 		ModelAndView modelAndView = new ModelAndView("parent/standardIndicator");
 		if(studentBioId != 0){
@@ -190,6 +193,7 @@ public class ParentNetworkController {
 		paramMap.put("studentGradeId", studentGradeId);
 		paramMap.put("subtestId", subtestId);
 		paramMap.put("contentType", IApplicationConstants.CONTENT_TYPE_IND);
+		paramMap.put("custProdId", custProdId);
 		
 		try{
 			standardIndicatorDetailsList = parentService.getArticleTypeDetails(paramMap);

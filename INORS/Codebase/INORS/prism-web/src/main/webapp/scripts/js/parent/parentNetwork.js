@@ -181,11 +181,13 @@ function getDataUrl(action, obj, typ){
 		if(typ == 'report') {
 			dataUrl = $(obj).attr('href');
 		} else {
+			var custProdId = (typeof $(obj).attr('custProdId') !== 'undefined') ? $(obj).attr('custProdId') : 0;
 			dataUrl = 'subtestId='+$(obj).attr('subtestId')
 					+'&studentBioId='+$(obj).attr('studentBioId')
 					+'&studentName='+$(obj).attr('studentName')
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
-					+'&studentGradeId='+$(obj).attr('studentGradeId');
+					+'&studentGradeId='+$(obj).attr('studentGradeId')
+					+'&custProdId='+custProdId;
 		}
 	}else if(action == 'getArticleDescription'){
 		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;

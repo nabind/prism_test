@@ -772,7 +772,7 @@ public interface IParentQuery {
 
 	public static final String GET_STUDENT_SUBTEST = "PKG_PARENT_NETWORK.SP_GET_SUBTEST_DETAILS(?,?,?)";
 
-	public static final String GET_ARTICLE_TYPE_DETAILS = "PKG_PARENT_NETWORK.SP_GET_ARTICLE_TYPE_DETAILS(?,?,?,?,?,?)";
+	public static final String GET_ARTICLE_TYPE_DETAILS = "PKG_PARENT_NETWORK.SP_GET_ARTICLE_TYPE_DETAILS(?,?,?,?,?,?,?)";
 
 	public static final String GET_ARTICLE_DESCRIPTION = "PKG_PARENT_NETWORK.SP_GET_ARTICLE_DESCRIPTION(?,?,?,?,?,?,?,?)";
 
