@@ -112,12 +112,12 @@ $(document).ready(function() {
 				draggable: true,
 				onOpen:ieModifyTag(),
 				buttons: {
-					'Close': {
+					/*'Close': {
 						classes: 'glossy',						
 						click: function(win) {
 							win.closeModal();
 						}
-					},
+					},*/
 					'Submit': {
 						classes: 'blue-gradient glossy mid-margin-left  submitUser',						
 						click: function(win,e) {
@@ -134,14 +134,14 @@ $(document).ready(function() {
 									}
 								}
 								else {
-									var selectedUser=$('input[name=radioUser]:radio:checked').val();
+									/*var selectedUser=$('input[name=radioUser]:radio:checked').val();
 									if ( (selectedUser != null) || (selectedUser != undefined)){
 										$("#j_username").val(selectedUser);
 										$("#j_username").focus();
 										$("#j_username").select();
 										win.closeModal();
-									}
-									
+									}*/
+									win.closeModal();
 								}
 						}
 					}
@@ -360,7 +360,7 @@ $(document).ready(function() {
 				selected = '';
 			} 
 			content +='<div class="block margin-bottom with-small-padding" style="width:384px;margin:3px">'
-				   +'<input id="radio-'+count+'" type="radio" value="'+this.userName+'" name="radioUser" '+selected+'>&nbsp;'
+				   //+'<input id="radio-'+count+'" type="radio" value="'+this.userName+'" name="radioUser" '+selected+'>&nbsp;'
 				   +'<label class="label" for="radio-'+count+'"><b>Username:&nbsp;</b>'+this.userName+' </label><br/>'
 					+'<small class="input-info margin-left">First Name: '+this.firstName+' </small><br/>'
 					+'<small class="input-info margin-left">Last Name: '+this.lastName+' </small>'
