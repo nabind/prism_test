@@ -574,7 +574,7 @@ details.details > summary {style.css:1488
 	vertical-align: baseline;
 }
 h1 {
-	font-size: 33px !important;
+	font-size: 30px !important;
 	color: #5F80AB;
 }
 /*
@@ -974,16 +974,49 @@ div#nav ul li a {
 	padding-bottom: 5px !important;
 }
 .below-proficient{
-background: url(../../acsi/img/below_target.gif) 0px 0 no-repeat;
-padding-bottom: 0px;
-width: 51px;
-height: 16px;
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -136px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
 }
 .proficient{
-background: url(../../acsi/img/at_or_above_target.gif) 0px 0 no-repeat;
-padding-bottom: 0px;
-width: 51px;
-height: 16px;
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -68px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
+}
+.unknown{
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -31px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
+}
+.prof-first {
+	margin-left: -7px;
+}
+.prof-first2 {
+	margin-left: -10px;
+}
+.prof-last {
+	margin-left: 23px;
+}
+.prof-last2 {
+	margin-left: 29px;
+}
+.prof-text {
+	margin-left: 45px;
+	line-height:35px;
+	width: 124px;
+	position: absolute;
 }
 .menu-second-level{
 	background-color: #C7CEEB !important;

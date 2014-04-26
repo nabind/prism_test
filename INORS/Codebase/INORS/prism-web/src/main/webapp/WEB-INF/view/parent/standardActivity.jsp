@@ -16,81 +16,88 @@
 		</c:choose>
 	</div>
 	
-	<div id="standardActivityMessage" class="relative"
-			style="height: auto; text-align: justify">
-			In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 
-			These activities give you the opportunity to help your child improve his or her skills in a fun and engaging way. 
-			Such support can significantly increase your child's appreciation for learning and his or her confidence when tackling new challenges. 
-			The activities are organized in easy-to-follow steps that utilize everyday materials likely available in your home.			
-	</div>
-	<div id="standardActivityDeatils" class="wrapped relative white-gradient" style="height: auto;float:left;width:98%;text-align: justify" >
-		<div class="simple-div-table wrapped">
-			<div class="simple-div-table-col">
-				<h4>Standards</h4>
-			</div>
-			<div class="simple-div-table-col">
-				<h4>Activities</h4>
-			</div>
-		</div>
-		<div>
-			&nbsp;
-		</div>
-		<c:set var="curStandardId" value="0" />
-		<c:forEach var="standardActivityTO" items="${standardActivityDetailsList}">
-			<c:if test="${curStandardId != standardActivityTO.objectiveId}">
-				<div class="simple-div-table wrapped">
-					<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
-					<div class="simple-div-table-col">
-						<p>
-							<a class="articledata" href="#nogo" 
-								articleId="${standardActivityTO.objContentId}" 
-								contentType= '<spring:message code="val.contentType.std"/>' 
-								style="font-weight: bold"
-								id="subtestIdLink">
-									${standardActivityTO.objectiveName}
-							</a>
-						</p>
-						<c:if test="${studentName != '-1'}">
-							<c:choose>
-								<c:when test="${standardActivityTO.proficiencyLevel == '+'}">
-									<p class="proficient"></p>
-									<p>Proficient</p>
-								</c:when>
-								<c:when test="${standardActivityTO.proficiencyLevel == '-'}">
-									<p class="below-proficient"></p>
-									<p>Below Proficient</p>
-								</c:when>
-								<c:otherwise>
-										Unknown
-								</c:otherwise>
-							</c:choose>
+	<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">
+		<ul class="tabs reporttabs">
+			<li class="active"><a href="#nogo">
+				Skill-Building Activities
+			</a></li>
+		</ul>
+		<div class="tabs-content">
+			<div class="relative with-padding" style="padding: 20px !important">
+				
+			
+	
+				<div id="standardActivityMessage" class="relative"
+						style="height: auto; text-align: justify">
+						In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 
+						These activities give you the opportunity to help your child improve his or her skills in a fun and engaging way. 
+						Such support can significantly increase your child's appreciation for learning and his or her confidence when tackling new challenges. 
+						The activities are organized in easy-to-follow steps that utilize everyday materials likely available in your home.			
+				</div>
+				
+				<div class="columns">
+					<div class="new-row three-columns" style="margin-bottom: 0px;"><h4 class="blue underline">Standards</h4></div>
+					<div class="nine-columns" style="margin-bottom: 0px;"><h4 class="blue underline">Activities</h4></div>
+				</div>
+				
+				<div id="standardActivityDeatils" class="">
+					<c:set var="curStandardId" value="0" />
+					<c:forEach var="standardActivityTO" items="${standardActivityDetailsList}">
+						<c:if test="${curStandardId != standardActivityTO.objectiveId}">
+							<div class="columns">
+								<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
+								<div class="new-row three-columns">
+									<a class="articledata" href="#nogo" 
+										articleId="${standardActivityTO.objContentId}" 
+										contentType= '<spring:message code="val.contentType.std"/>' 
+										style="font-weight: bold"
+										id="subtestIdLink">
+											${standardActivityTO.objectiveName}
+									</a>
+									
+									<c:if test="${studentName != '-1'}">
+										<c:choose>
+											<c:when test="${standardActivityTO.proficiencyLevel == '+'}">
+												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text green">Proficient</span></span></span>
+											</c:when>
+											<c:when test="${standardActivityTO.proficiencyLevel == '-'}">
+												<span class="prof-first below-proficient"><span class="unknown prof-last"><span class="prof-text red">Below Proficient</span></span></span>
+											</c:when>
+											<c:otherwise>
+												Unknown
+											</c:otherwise>
+										</c:choose>
+									</c:if>
+								</div>
+							
+							
+							
+								<div class="nine-columns">
+									<c:forEach var="activityTO" items="${standardActivityDetailsList}">
+										<c:if test="${standardId == activityTO.objectiveId}">
+											<c:set var="curStandardId" value="${activityTO.objectiveId}" />
+											<dd> 
+												<a class="articledata" href="#nogo" 
+													articleId="${activityTO.contentId}" 
+													contentType= '<spring:message code="val.contentType.act"/>'   
+													style="font-weight: bold"
+													id="subtestIdLink">
+														${activityTO.contentName}
+												</a>
+												<p>${activityTO.subHeader}</p>
+											</dd>
+											<br>
+										</c:if>
+									</c:forEach>
+								</div>
+							</div>
+							<hr/>
 						</c:if>
-					</div>
-					<div class="simple-div-table-col">
-						<dl>
-							<c:forEach var="activityTO" items="${standardActivityDetailsList}">
-								<c:if test="${standardId == activityTO.objectiveId}">
-									<c:set var="curStandardId" value="${activityTO.objectiveId}" />
-									<dd> 
-										<a class="articledata" href="#nogo" 
-											articleId="${activityTO.contentId}" 
-											contentType= '<spring:message code="val.contentType.act"/>'   
-											style="font-weight: bold"
-											id="subtestIdLink">
-												${activityTO.contentName}
-										</a>
-										<p>${activityTO.subHeader}</p>
-									</dd>
-									<br>
-								</c:if>
-							</c:forEach>
-						</dl>
-					</div>
+						
+					</c:forEach>
 				</div>
-				<div>
-					&nbsp;
-				</div>
-			</c:if>
-		</c:forEach>
+			</div>
+		</div>
 	</div>
+	
 </div>
