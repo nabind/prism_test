@@ -244,7 +244,7 @@
 					<div class="boxsshade">
 						<div class="rowTwo">
 							<!--<h1 class="h1style">Welcome to <span class="acsicol">Indiana Parent Network!</span></h1>-->
-							<h1 class="h1style">Welcome to <spring:message code="pnlogin.page.welcome"/>!</h1>
+							<h1 class="h1style">Welcome to the <spring:message code="pnlogin.page.welcome"/>!</h1>
 							<div class="loginMsg" height="auto">
 								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
 							</div>
