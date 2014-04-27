@@ -361,7 +361,7 @@ $(document).ready(function() {
 			} 
 			content +='<div class="block margin-bottom with-small-padding" style="width:384px;margin:3px">'
 				   //+'<input id="radio-'+count+'" type="radio" value="'+this.userName+'" name="radioUser" '+selected+'>&nbsp;'
-				   +'<label class="label" for="radio-'+count+'"><b>Username:&nbsp;</b>'+this.userName+' </label><br/>'
+				   +'<span  class="label" for="radio-'+count+'"><b>Username:&nbsp;</b>'+this.userName+' </span><br/>'
 					+'<small class="input-info margin-left">First Name: '+this.firstName+' </small><br/>'
 					+'<small class="input-info margin-left">Last Name: '+this.lastName+' </small>'
 					+'</div>';
