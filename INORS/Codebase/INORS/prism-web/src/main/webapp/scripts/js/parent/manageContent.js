@@ -274,12 +274,16 @@ function openModifyGenericModalToEdit(type) {
 						'Maximize' : {
 							color: 'blue',
 							click: function(win) { 
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 							}
 						},
 						'Restore' : {
 							color: 'green',
 							click: function(win) { 
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize(780,500).centerModal();
 							}
 						}
@@ -447,12 +451,18 @@ function openContentModalToEdit(contentId) {
 						'Maximize' : {
 							color: 'blue',
 							click: function(win) { 
+								$('#editContent').validationEngine('hide');
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 							}
 						},
 						'Restore' : {
 							color: 'green',
 							click: function(win) { 
+								$('#editContent').validationEngine('hide');
+								$('.mandatoryDescription').hide();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize(780,430).centerModal();
 							}
 						}
@@ -587,12 +597,18 @@ function openContentModalToAdd() {
 			'Maximize' : {
 				color: 'blue',
 				click: function(win) { 
+					$('#addNewContent').validationEngine('hide');
+					$('.mandatoryDescription').hide();
+					if($.browser.msie) setTimeout("hideMessage()", 300);
 					$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 				}
 			},
 			'Restore' : {
 				color: 'green',
 				click: function(win) { 
+					$('#addNewContent').validationEngine('hide');
+					$('.mandatoryDescription').hide();
+					if($.browser.msie) setTimeout("hideMessage()", 300);
 					$.modal.current.setModalContentSize(780,430).centerModal();
 				}
 			}
