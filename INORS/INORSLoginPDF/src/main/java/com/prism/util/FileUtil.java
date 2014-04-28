@@ -380,7 +380,6 @@ public class FileUtil {
 	}
 
 	public static void copyFile(String toDir, String filePath) {
-		// toDir = "D:\\Test\\IC\\";
 		if (toDir == null || toDir.isEmpty()) {
 			logger.error("Error in copying files. Invalid toDir.");
 		} else {
