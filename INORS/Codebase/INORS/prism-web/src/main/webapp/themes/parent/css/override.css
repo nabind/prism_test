@@ -574,8 +574,14 @@ details.details > summary {style.css:1488
 	vertical-align: baseline;
 }
 h1 {
-	font-size: 30px !important;
+	font-size: 26px !important;
 	color: #5F80AB;
+	line-height: 19px !important;
+}
+.browse-content {
+	color: #0000FF;
+	font-size: 15px;
+	font-weight: bold;	
 }
 /*
 .linen-custom {
