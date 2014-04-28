@@ -270,7 +270,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "students: " + students);
 			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
-			String zipFileName = fileName + ".zip";
+			String zipFileName = fileName + "_" + System.currentTimeMillis() +".zip";
 			zipFileName = CustomStringUtil.appendString(rootPath, "/GDF/", zipFileName);
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
