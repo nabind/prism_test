@@ -45,11 +45,11 @@
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>
 				</span>
 				
-				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left" >
+				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left with-tooltip" title="Add User">
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					Add User
 				</a>
-				<a class="button float-right" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> Download Users</a>
+				<a class="button float-right with-tooltip" title="Download Users" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> Download Users</a>
 			</div>
 			
 			<div
