@@ -28,7 +28,7 @@
 					</p>
 					<br>
 					<p>           
-					   <a class="browse-content" href="#nogo" 
+					   <a class="browse-content browsecontent" href="#nogo" 
 							menuId='<spring:message code="menuId.content.stdAct"/>' 
 							menuName='<spring:message code="menuName.content.stdAct"/>'  
 							id=""> -  <spring:message code="menuName.content.stdAct"/></a> <br><br>
@@ -37,7 +37,7 @@
 					</p>
 					<br>
 					<p>
-					  <a class="browse-content" href="#nogo" 
+					  <a class="browse-content browsecontent" href="#nogo" 
 							menuId='<spring:message code="menuId.content.stdInd"/>' 
 							menuName='<spring:message code="menuName.content.stdInd"/>'  
 							id=""> -  <spring:message code="menuName.content.stdInd"/> </a><br><br>
@@ -46,7 +46,7 @@
 					</p>
 					<br>
 					<p>
-						<a class="browse-content" href="#nogo" 
+						<a class="browse-content browsecontent" href="#nogo" 
 							menuId='<spring:message code="menuId.content.rsc"/>' 
 							menuName='<spring:message code="menuName.content.rsc"/>'
 							id=""> -  <spring:message code="menuName.content.rsc"/></a><br><br>
@@ -55,7 +55,7 @@
 					</p>
 					<br>
 					<p>
-						<a class="browse-content" href="#nogo" 
+						<a class="browse-content browsecontent" href="#nogo" 
 							menuId='<spring:message code="menuId.content.eda"/>' 
 							menuName='<spring:message code="menuName.content.eda"/>'
 							id=""> -  <spring:message code="menuName.content.eda"/> </a><br><br>
@@ -64,7 +64,7 @@
 					</p>
 					<br>
 					<p>
-						<a class="browse-content" href="#nogo"
+						<a class="browse-content browsecontent" href="#nogo"
 							menuId='<spring:message code="menuId.content.att"/>' 
 							menuName='<spring:message code="menuName.content.att"/>' 
 							id=""> -  <spring:message code="menuName.content.att"/> </a><br><br>
