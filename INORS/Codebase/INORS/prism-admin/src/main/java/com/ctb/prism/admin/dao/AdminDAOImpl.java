@@ -818,15 +818,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String userName = (String) paramMap.get("term");
 		String tenantId = (String) paramMap.get("selectedOrg");
 		String adminYear = (String) paramMap.get("adminYear");
-		String purpose = (String) paramMap.get("purpose");
 		String orgMode = (String) paramMap.get("orgMode");
 		
 		userName = CustomStringUtil.appendString("%", userName, "%");
 		String userListJsonString = null;
 		List<Map<String, Object>> listOfUser = null;
-		if (IApplicationConstants.PURPOSE.equals(purpose)) {
-			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, "100");
-		} else {
+		if (tenantId != null) {
 			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "100");
 		}
 		if (listOfUser != null && listOfUser.size() > 0) {

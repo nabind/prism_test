@@ -69,9 +69,10 @@ public interface IParentBusiness {
 	 * @param userName
 	 * @param clickedTreeNode
 	 * @param adminYear
+	 * @param orgMode
 	 * @return
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear);
+	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear,String orgMode);
 
 	/**
 	 * @param parentName

@@ -779,4 +779,6 @@ public interface IParentQuery {
 	public static final String GET_GRADE_SUBTEST_INFO = "PKG_PARENT_NETWORK.SP_GET_GRADE_SUBTEST_DETAILS(?,?,?)";
 
 	public static final String GET_STUDENT_DETAILS = "PKG_PARENT_NETWORK.SP_GET_STUDENT_DETAILS(?,?,?)";
+	
+	public static final String GET_STUDENT_DETAILS_ADMIN = "PKG_PARENT_NETWORK.SP_GET_STUDENT_DETAILS_ADMIN(?,?,?,?,?,?)";
 }

@@ -99,7 +99,7 @@ public interface IParentDAO {
 	 * @param adminYear
 	 * @return
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear);
+	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear, String orgMode);
 
 	/**
 	 * Searches and returns the parent names(use like operator) as a JSON string. Performs case insensitive searching. This method is used to perform auto complete in search box.

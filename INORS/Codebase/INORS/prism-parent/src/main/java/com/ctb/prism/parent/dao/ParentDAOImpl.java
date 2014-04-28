@@ -320,7 +320,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getChildrenList(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<StudentTO> getChildrenList(final String userName, final String clickedTreeNode, String adminYear) {
+	public List<StudentTO> getChildrenList(final String userName, final String clickedTreeNode, final String adminYear, final String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getChildrenList()");
 		long t1 = System.currentTimeMillis();
 		List<StudentTO> studentList = null;
@@ -328,10 +328,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		try {
 			studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_ADMIN + "}");
 					cs.setString(1, userName);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setString(2, clickedTreeNode);
+					cs.setString(3, orgMode);
+					cs.setString(4, adminYear);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -340,7 +343,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					List<StudentTO> studentResult = new ArrayList<StudentTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(2);
+						rs = (ResultSet) cs.getObject(5);
 						StudentTO studentTO = null;
 						while (rs.next()) {
 							studentTO = new StudentTO();
@@ -476,6 +479,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
 				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
+				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
 				try {
 					to.setClikedOrgId(Long.parseLong(tenantId));
 				} catch (Exception ex) {

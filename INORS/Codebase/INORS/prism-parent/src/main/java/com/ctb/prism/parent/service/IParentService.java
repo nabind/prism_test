@@ -56,7 +56,7 @@ public interface IParentService {
 	 * @param adminYear
 	 * @return
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear);
+	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear, String orgMode);
 
 	/**
 	 * @param orgId

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -46,6 +47,10 @@ public class ParentController {
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
+	
+	
+	@Autowired
+	private IAdminService adminService;
 
 	
 	/**
@@ -427,7 +432,26 @@ public class ParentController {
 		String parentName=null;
 		String clickedTreeNode=null;
 		try {
+			String orgMode = (String)req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String adminYear = (String) req.getParameter("AdminYear");
+			
+			if(adminYear == null){
+				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+				Map<String,Object> paramMap = new HashMap<String,Object>(); 
+				paramMap.put("loggedinUserTO", loggedinUserTO);
+				
+				adminYear = (String) req.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+				if(adminYear == null) {
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
+						adminYear = object.getValue();
+						break;
+					}
+				}
+			}else{
+				req.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
+			}
+			
 			 parentName = (String)req.getParameter("parentName");
 			 clickedTreeNode=(String)req.getParameter("clickedTreeNode");
 			//this check is to determine whether the parentName is retrieved from manage parent (view children)
@@ -441,7 +465,7 @@ public class ParentController {
 			
 			if(parentName!= null)
 			{
-				List<StudentTO> childrenList = parentService.getChildrenList(parentName,clickedTreeNode,adminYear);
+				List<StudentTO> childrenList = parentService.getChildrenList(parentName,clickedTreeNode,adminYear,orgMode);
 				if ( childrenList != null )
 				{
 					jsonString = JsonUtil.convertToJsonAdmin(childrenList);
