@@ -46,7 +46,7 @@
 										<c:forEach var="group" items="${groupList}">
 											<tr id="${group.jobId}">
 											    <td scope="row">
-											    	<a href="#"	 jobId="${group.jobId}" class="view-requestdetails" title="View Request Detail">${group.requestFilename}</a>
+											    	<a href="#"	 jobId="${group.jobId}" class="view-requestdetails" title="View Request Detail">${group.displayFilename}</a>
 											    </td>
 												<td scope="row">${group.createdDateTime}<br>
 											    </td>

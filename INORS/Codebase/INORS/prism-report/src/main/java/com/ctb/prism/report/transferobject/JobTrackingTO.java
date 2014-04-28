@@ -21,6 +21,7 @@ public class JobTrackingTO extends BaseTO {
 	private String requestSummary;
 	private String requestDetails;
 	private String requestFilename;
+	private String displayFilename;
 	private String requestEmail;
 	private String jobLog;
 	private String jobStatus;
@@ -163,6 +164,14 @@ public class JobTrackingTO extends BaseTO {
 
 	public void setRequestFilename(String requestFilename) {
 		this.requestFilename = requestFilename;
+	}
+	
+	public String getDisplayFilename() {
+		return displayFilename;
+	}
+
+	public void setDisplayFilename(String displayFilename) {
+		this.displayFilename = displayFilename;
 	}
 
 	public String getRequestEmail() {

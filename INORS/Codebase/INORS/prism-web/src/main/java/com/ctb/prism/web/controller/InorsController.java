@@ -102,6 +102,24 @@ public class InorsController {
 		paramMap.put("gdfExpiryTime", propertyLookup.get("gdfExpiryTime"));
 		List<JobTrackingTO> groupList = reportService.getAllGroupDownloadFiles(paramMap);
 		if (groupList != null && !groupList.isEmpty()) {
+			for (JobTrackingTO to : groupList) {
+				String displayFilename = to.getRequestFilename();
+				if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(to.getRequestType())) {
+					if (displayFilename != null && !displayFilename.isEmpty()) {
+						int length = displayFilename.length();
+						int u = displayFilename.lastIndexOf("_");
+						int e = displayFilename.lastIndexOf(".");
+						logger.log(IAppLogger.INFO, "length=" + length + ", u=" + u + ", e=" + e);
+						if (u > -1 && e > -1 && length > u && length > e && e > u) {
+							String prefix = displayFilename.substring(0, u);
+							String suffix = displayFilename.substring(e);
+							displayFilename = prefix + suffix;
+							logger.log(IAppLogger.INFO, "displayFilename=" + displayFilename);
+						}
+					}
+				}
+				to.setDisplayFilename(displayFilename);
+			}
 			modelAndView.addObject("groupList", groupList);
 			grpList = JsonUtil.convertToJsonAdmin(groupList);
 		}
