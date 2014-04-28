@@ -14,6 +14,7 @@ $(document).ready(function() {
 	//associateCustomFunction(step);
 	$("#manageProfile").validationEngine();	
 	$("#registrationForm").validationEngine();
+	$("#claim-Invitation-Form").validationEngine();
 	$("#changePasswordFrom").validationEngine();
 	$("#mandatoryValidation").hide(500);
 	
