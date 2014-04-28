@@ -1306,7 +1306,7 @@ public class CommonDAOImpl implements CommonDAO {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		logger.info("Returning Root Path = " + rootPath);
+		logger.info("TEST_ELEMENT_ID=" + testElementId + ", Returning Root Path = " + rootPath);
 		return rootPath;
 	}
 }
