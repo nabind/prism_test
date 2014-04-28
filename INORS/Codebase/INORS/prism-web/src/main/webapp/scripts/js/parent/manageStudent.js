@@ -112,6 +112,9 @@ function openModalToViewAssessments(studentBioId, testElementId) {
 							'Re-set Invitation Code': {
 								classes: 'orange-gradient glossy',						
 								click: function(win) {
+									
+									//RND for TD 78246 - By Joy
+									win.closeModal();
 									confirmRecreationAC(1);
 								}
 							},
@@ -143,9 +146,10 @@ function openModalToViewAssessments(studentBioId, testElementId) {
 //==========================CREATES THE TABULAR STRUCTURE FOR ASSESSMENT VIEW=======================
 function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 {	
+	//RND for TD 78246 - By Joy
 	var rowCounter=1;
-	$("#"+modalId +" > "+"#"+modalContainerDivId + ">" +"p.message").remove();
-	$("#"+modalId +" > "+"#"+modalContainerDivId ).find("table").remove();
+	//$("#"+modalId +" > "+"#"+modalContainerDivId + ">" +"p.message").remove();
+	//$("#"+modalId +" > "+"#"+modalContainerDivId ).find("table").remove();
 	var makeViewAssessmentTableDom = '<table id="assessmentTable" class="table " style="width:940px">'
 									+'<thead class ="table-header glossy ">'
 									+'<tr >'
@@ -185,7 +189,8 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 						});
 	
 	makeViewAssessmentTableDom += '</tbody></table>';
-	$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewAssessmentTableDom);	
+	//$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(makeViewAssessmentTableDom);	
+	$("#"+modalId+ " > "+"#"+modalContainerDivId ).html(makeViewAssessmentTableDom);
 		
 	if(regenerateAC) {
 		$("#invitationcode"+globalcounter).addClass("orange-bg");
@@ -230,12 +235,17 @@ function confirmRecreationAC(rowcounter)
 			dataType : 'json',
 			cache:false,
 			success : function(data) {
-				$("#studentModal").closeModal();
 				
-				//Fix for TD 78188 - By Joy
-				openModalToViewAssessments(studentBioId,testElementId);
-				
-				regenerateAC=true;
+				//RND for TD 78246 - By Joy
+				if(data.status == 'Success'){
+					//$("#studentModal").closeModal();
+					regenerateAC=true;
+					
+					//Fix for TD 78188 - By Joy
+					openModalToViewAssessments(studentBioId,testElementId);
+				}else{
+					$.modal.alert(strings['script.common.error1']);
+				}
 				unblockUI();
 			},
 			error : function(data) {
@@ -246,7 +256,12 @@ function confirmRecreationAC(rowcounter)
 
 	}, function()
 	{
-		// do nothing
+		//RND for TD 78246 - By Joy
+		var studentBioId = $("#studentBioIdAss"+globalcounter).val();
+		var testElementId = $('#testElementId'+globalcounter).val();
+		regenerateAC = false;
+		openModalToViewAssessments(studentBioId,testElementId);
+		
 	});
 };
 
