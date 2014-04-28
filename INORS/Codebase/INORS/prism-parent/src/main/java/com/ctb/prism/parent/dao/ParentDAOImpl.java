@@ -206,17 +206,20 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(), parentTO.getCountry(), parentTO.getZipCode(), parentTO.getStreet(), parentTO.getCity(), parentTO.getState(),
 						parentTO.getInvitationCode(), parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N,
 						SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt);
-
-				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserSeqId, user_seq_id, parentTO.getInvitationCode(), parentTO.getInvitationCode(),
-						IApplicationConstants.ACTIVE_FLAG);
+				
 			}
 			logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
 
 			if (count > 0) {
+				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserSeqId, user_seq_id, parentTO.getInvitationCode(), parentTO.getInvitationCode(),
+						IApplicationConstants.ACTIVE_FLAG);
+				
+				logger.log(IAppLogger.DEBUG, "INSERT_ORG_USER_PARENT DONE");
+				
 				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER, parentTO.getUserName(), "ROLE_USER");
 				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER, parentTO.getUserName(), "ROLE_PARENT");
 				logger.log(IAppLogger.DEBUG, "ADD_ROLE_TO_REGISTERED_USER DONE");
-				System.out.println("user_seq_id ::::" + user_seq_id);
+				
 				boolean isSavedInvitationCodeClaim = saveInvitationCodeClaim(orgUserSeqId, parentTO);
 
 				if (isSavedInvitationCodeClaim) {
