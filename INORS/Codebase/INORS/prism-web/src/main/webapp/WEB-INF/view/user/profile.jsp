@@ -59,7 +59,7 @@
 								<input type="password" name="password" id="password" value="" class="input validate[minSize[8], maxSize[15]]" autocomplete="off">
 								<span class="info-spot">
 									<span class="icon-info-round"></span>
-									<span class="info-bubble" style="width:275px">
+									<span class="info-bubble" style="width:250px">
 										Passwords are case-sensitive. They must be at least 8 characters long and include at least one number, one uppercase letter, and one lowercase letter.
 									</span>
 								</span>
@@ -87,7 +87,7 @@
 								<input type="text" name="verify_mail" id="verify_mail" value="${parentAccountDetail.mail}" maxlength="100" class="input validate[required, custom[email]]" >
 								<span class="info-spot">
 									<span class="icon-info-round"></span>
-									<span class="info-bubble" style="width:300px">
+									<span class="info-bubble" style="width:250px">
 										Your email may be used to communicate important announcements about your account and help you locate a lost password. We will never distribute your information to third parties. For more details, please refer to the Security and Privacy Policy.
 									</span>
 								</span>	
