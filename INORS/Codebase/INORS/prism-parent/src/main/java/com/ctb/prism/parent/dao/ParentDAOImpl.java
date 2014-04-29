@@ -333,45 +333,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		List<StudentTO> studentList = null;
 
 		try {
-			
-			if(IApplicationConstants.FLAG_Y.equals(isPN)){
-				//Parent Network flow
-				studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
-						cs.setString(1, userName);
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						ResultSet rs = null;
-						List<StudentTO> studentResult = new ArrayList<StudentTO>();
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(2);
-							StudentTO studentTO = null;
-							while (rs.next()) {
-								studentTO = new StudentTO();
-								studentTO.setStudentName(rs.getString("STUDENT_NAME"));
-								studentTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
-								studentTO.setAdministration(rs.getString("ADMIN_SEASON_YEAR"));
-								studentTO.setGrade(rs.getString("STUDENT_GRADE"));
-								studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
-								studentTO.setAdminid(rs.getString("ADMINID"));
-								studentTO.setBioExists(rs.getLong("BIO_EXISTS"));
-								studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
-								studentTO.setClikedOrgId(Long.valueOf(clickedTreeNode));
-								studentResult.add(studentTO);
-							}
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						return studentResult;
-					}
-				});
-			}else{
+			if(IApplicationConstants.FLAG_N.equals(isPN)){
 				//Admin Module(Manage Parent -> View Children flow) flow
 				studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -411,6 +373,44 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						return studentResult;
 					}
 				});
+			}else{
+				//Parent Network flow
+				studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
+						cs.setString(1, userName);
+						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<StudentTO> studentResult = new ArrayList<StudentTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(2);
+							StudentTO studentTO = null;
+							while (rs.next()) {
+								studentTO = new StudentTO();
+								studentTO.setStudentName(rs.getString("STUDENT_NAME"));
+								studentTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
+								studentTO.setAdministration(rs.getString("ADMIN_SEASON_YEAR"));
+								studentTO.setGrade(rs.getString("STUDENT_GRADE"));
+								studentTO.setStudentGradeId(rs.getLong("STUDENT_GRADEID"));
+								studentTO.setAdminid(rs.getString("ADMINID"));
+								studentTO.setBioExists(rs.getLong("BIO_EXISTS"));
+								studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+								studentTO.setClikedOrgId(Long.valueOf(clickedTreeNode));
+								studentResult.add(studentTO);
+							}
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return studentResult;
+					}
+				});
+			
 			}
 			
 		} catch (Exception e) {
