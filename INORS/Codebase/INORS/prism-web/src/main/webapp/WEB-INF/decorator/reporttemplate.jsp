@@ -19,7 +19,7 @@
 			}
 			.ie7span {
 				vertical-align:top !important;
-				line-height: 23px !important;
+				line-height: 18px !important;
 			}
 			.text {
 				font-family: Arial;
