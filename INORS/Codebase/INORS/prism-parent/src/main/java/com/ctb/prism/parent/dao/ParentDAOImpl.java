@@ -193,7 +193,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 		if (addToLdapStatus) {
 			long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-			long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+			long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.ORGUSER_SEQ_ID);
 			int count = 0;
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_DATA, user_seq_id, parentTO.getUserName(), parentTO.getDisplayName(), parentTO.getLastName(),

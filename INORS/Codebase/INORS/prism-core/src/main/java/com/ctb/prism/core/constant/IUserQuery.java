@@ -277,6 +277,9 @@ public interface IUserQuery {
 			" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	
 	public static final String USER_SEQ_ID = "SELECT USER_ID_SEQ.NEXTVAL AS PARENT_SEQ_ID FROM DUAL";
+	
+	public static final String ORGUSER_SEQ_ID = "ORG_USER_ID_SEQS.NEXTVAL AS ORGUSER_SEQ_ID FROM DUAL";
+	
 	public static final String DB_REPORT_SEQ_ID = "SELECT DB_REPORT_ID_SEQ.NEXTVAL AS REPORT_SEQ_ID FROM DUAL";
 	
 	public static final String CHECK_EXISTING_USER = "SELECT userid as USER_ID FROM USERS WHERE upper(USERNAME) = upper(?)";
