@@ -237,6 +237,10 @@ $(document).ready(function() {
 		}
 	});
 
+	$( "#studentTableGD_length > label" ).css( "cursor", "default" );
+	$( "#studentTableGD_filter > label" ).css( "cursor", "default" );
+	$( ".sorting_disabled" ).css( "cursor", "default" );
+
 	/**
 	 * Toggele self check status. Set all text box values.
 	 * Refresh check boxes from text boxes.
