@@ -431,13 +431,16 @@ public class ParentController {
 		String jsonString = null;
 		String parentName=null;
 		String clickedTreeNode=null;
+		Map<String,Object> paramChildMap = new HashMap<String,Object>();
+		
 		try {
 			String orgMode = (String)req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String adminYear = (String) req.getParameter("AdminYear");
 			String isPN = (String) req.getParameter("isPN");
 			
 			if(adminYear == null){
-				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) 
+						req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 				Map<String,Object> paramMap = new HashMap<String,Object>(); 
 				paramMap.put("loggedinUserTO", loggedinUserTO);
 				
@@ -464,8 +467,7 @@ public class ParentController {
 				clickedTreeNode =(String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			}
 			
-			if(parentName!= null)
-			{	Map<String,Object> paramChildMap = new HashMap<String,Object>(); 
+			if(parentName!= null){	 
 				paramChildMap.put("parentName", parentName);
 				paramChildMap.put("clickedTreeNode", clickedTreeNode);
 				paramChildMap.put("adminYear", adminYear);
@@ -473,8 +475,7 @@ public class ParentController {
 				paramChildMap.put("isPN", isPN);
 				
 				List<StudentTO> childrenList = parentService.getChildrenList(paramChildMap);
-				if ( childrenList != null )
-				{
+				if ( childrenList != null ){
 					jsonString = JsonUtil.convertToJsonAdmin(childrenList);
 					logger.log(IAppLogger.DEBUG,"View Studnet in Parent Search.............");
 					logger.log(IAppLogger.DEBUG,jsonString);

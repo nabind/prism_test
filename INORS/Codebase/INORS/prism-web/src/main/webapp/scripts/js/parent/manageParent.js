@@ -5,9 +5,9 @@
 	 */
 	
 	$(document).ready(function() {
-$('.view-Children').live("click", function() {
+		$('.view-Children').live("click", function() {
 			resetModalForm("editParent");
-			openParentModalToViewStudent($(this).attr("parentName"),$(this).attr("clickedTreeNode"));//,$(this).attr("tenantId")
+			openParentModalToViewStudent($(this).attr("parentName"),$(this).attr("clickedTreeNode"),$(this));//,$(this).attr("tenantId")
 		});
 		$('.reset-Password').live("click", function() {
 			resetModalForm("editParent");
@@ -128,7 +128,7 @@ $('.view-Children').live("click", function() {
 								+'<td class="vertical-center">'
 									+' <span class="button-group compact">' 
 										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
-										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.orgId +'"isPN='N'" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
+										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.orgId +'" isPN="N" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
 									+' </span>'
 								+'</td>'
 							+'</tr>' ;
@@ -259,10 +259,12 @@ $('.view-Children').live("click", function() {
 	
 	
 	//======================OPEN VIEW CHILDREN  SCREEN==========================================
-	function openParentModalToViewStudent(parentName,clickedTreeNode) {
+	function openParentModalToViewStudent(parentName,clickedTreeNode,$obj) {
 		//var row = $("#"+parentName);
 		var row = $("[id='"+parentName+"']");
-		var nodeid = "parentName=" + parentName +"&clickedTreeNode="+clickedTreeNode;	
+		var nodeid = "parentName=" + parentName 
+						+"&clickedTreeNode="+clickedTreeNode 
+						+"&isPN="+$obj.attr('isPN');	
 		blockUI();
 		$.ajax({
 				type : "GET",
