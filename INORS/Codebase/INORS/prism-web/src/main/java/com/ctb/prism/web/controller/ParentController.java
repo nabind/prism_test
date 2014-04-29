@@ -434,6 +434,7 @@ public class ParentController {
 		try {
 			String orgMode = (String)req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String adminYear = (String) req.getParameter("AdminYear");
+			String isPN = (String) req.getParameter("isPN");
 			
 			if(adminYear == null){
 				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
@@ -464,8 +465,14 @@ public class ParentController {
 			}
 			
 			if(parentName!= null)
-			{
-				List<StudentTO> childrenList = parentService.getChildrenList(parentName,clickedTreeNode,adminYear,orgMode);
+			{	Map<String,Object> paramChildMap = new HashMap<String,Object>(); 
+				paramChildMap.put("parentName", parentName);
+				paramChildMap.put("clickedTreeNode", clickedTreeNode);
+				paramChildMap.put("adminYear", adminYear);
+				paramChildMap.put("orgMode", orgMode);
+				paramChildMap.put("isPN", isPN);
+				
+				List<StudentTO> childrenList = parentService.getChildrenList(paramChildMap);
 				if ( childrenList != null )
 				{
 					jsonString = JsonUtil.convertToJsonAdmin(childrenList);
