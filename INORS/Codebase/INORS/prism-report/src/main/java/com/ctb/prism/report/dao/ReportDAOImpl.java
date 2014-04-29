@@ -1931,9 +1931,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String fileName = "";
 		List<Map<String, Object>> lstData = null;
 		if (IApplicationConstants.EXTRACT_FILETYPE.ISR.toString().equals(type)) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), studentBioId, IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), custProdId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, studentBioId, IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), custProdId);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.toString().equals(type)) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, "IP", studentBioId, "IP", custProdId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FILE_NAME, studentBioId, "IP", custProdId);
 		}
 		if (lstData != null && !lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {

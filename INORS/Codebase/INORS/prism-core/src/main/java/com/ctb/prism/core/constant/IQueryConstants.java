@@ -1413,7 +1413,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	      		" (activityid_seq.NEXTVAL ,?, ?, ?, SYSDATE, ?,?,SYSDATE) " );
 
 		public static final String GET_STUDENT_FILE_NAME = CustomStringUtil.appendString(
-				"SELECT CUST.FILE_LOCATION || PROD.FILE_LOCATION || '/' || ? || '/' || SPF.FILENAME FILENAME",
+				"SELECT CUST.FILE_LOCATION || PROD.FILE_LOCATION || SPF.FILENAME FILENAME",
 				" FROM STUDENT_PDF_FILES SPF,",
 				"       PDF_REPORTS       PR,",
 				"       CUSTOMER_INFO     CUST,",
