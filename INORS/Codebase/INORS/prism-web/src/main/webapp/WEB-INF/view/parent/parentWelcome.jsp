@@ -13,7 +13,7 @@
 	<div class="right-column margin-bottom-medium" style="min-height:417px;">
 			
 
-		<div class="right-column-200px">
+		<div class="right-column-200px" style="margin-top: 15px;">
 
 			<div class="right-column" style="min-width: 260px;">
 			<div class="" style="height: 100px; margin-top:-45px;">
@@ -50,7 +50,7 @@
 				</div>
 				<!-- End : Image slider -->
 				
-				<div class="boxshade" style="max-width:938px; height: 81px;">
+				<div class="boxshade scrollable" style="max-width:938px; height: 81px;">
 					<p style="text-align:justify">
 						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
 						Explore the links below for additional information, including <i>Why Standards Matter</i>, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.

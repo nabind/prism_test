@@ -8,10 +8,10 @@
 	<div id="gradeSubjectHeader" class="relative thin" style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${(menuId == stdAct) || (menuId == stdInd) || (menuId == rsc) }">
-				<h2>${menuName}: Choose a grade and subject</h2>
+				<h1>${menuName}: Choose a grade and subject</h1>
 			</c:when>
 			<c:otherwise>
-				<h2>${menuName}: Choose a grade</h2>
+				<h1>${menuName}: Choose a grade</h1>
 			</c:otherwise>
 		</c:choose>		
 	</div>

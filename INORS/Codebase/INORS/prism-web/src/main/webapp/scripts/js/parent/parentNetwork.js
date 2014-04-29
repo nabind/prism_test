@@ -117,7 +117,7 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	dataURL = dataURL + '&p_Student_Bio_Id='+studentBioId+'&p_Subtest='+subtestId+'&p_grade='+studentGradeId+'&p_test_administration='+custProdId;
 	$.ajax({
 		type : "GET",
-		url : 'openReportHtml.do',
+		url : 'openReportHtmlAjax.do',
 		data : dataURL,
 		dataType : 'html',
 		cache:false,

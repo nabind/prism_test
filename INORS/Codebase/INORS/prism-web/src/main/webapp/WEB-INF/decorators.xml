@@ -17,6 +17,8 @@
 		<pattern>/checkCascading*</pattern>
 		<pattern>/fetchReportMenu*</pattern>
 		<pattern>/acsipdf*</pattern>
+		<pattern>/inorspdf*</pattern>
+		<pattern>/resourcepdf*</pattern>
 		<pattern>/clearCache*</pattern>
 		<pattern>/showError.do</pattern>
 		<pattern>/clearAllCache.do</pattern>
@@ -28,6 +30,7 @@
 		<pattern>/servlets/report*</pattern>
 		<pattern>/servlets/resource*</pattern>
 		<pattern>/openReportHtmlApi*</pattern>
+		<pattern>/openReportHtmlAjax*</pattern>
 		<pattern>/jquery/*</pattern>
 		<pattern>/ajaxJSP/*</pattern>
 		<pattern>/StudentDataloadService*</pattern>

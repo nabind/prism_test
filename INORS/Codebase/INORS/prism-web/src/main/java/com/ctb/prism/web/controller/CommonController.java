@@ -251,6 +251,53 @@ public class CommonController extends BaseDAO {
 		return null;
 	}
 	
+	@RequestMapping(value="/resourcepdf", method=RequestMethod.GET)
+	public ModelAndView resourcepdf(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException {
+		OutputStream os = null;
+		try {
+			String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
+			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading pdf - file name : ", fileName));
+			
+			//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			//LdapUserDetailsImpl userDetails = (LdapUserDetailsImpl) auth.getPrincipal();
+			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			
+			File file = null;
+			file = new File(fileName);
+	
+			byte[] pdf = null;
+			if (file.isFile()) pdf = IOUtils.toByteArray(new FileInputStream(fileName)); //getFileData(file);
+			
+			if(pdf != null) {
+				res.setContentType("application/pdf");
+				res.setHeader("Content-Disposition",
+						CustomStringUtil.appendString("attachment; filename=\"", file.getName(), "\""));
+				res.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+				res.setHeader("Pragma", "public");
+		
+				os = res.getOutputStream();
+				os.write(pdf);
+				/*for (int i = 0; i < pdf.length; i++) {
+					os.write(pdf[i]);
+				}*/
+				os.flush();
+			} else {
+				logger.log(IAppLogger.DEBUG, "PDF file not present is the specified location");
+				return new ModelAndView("error/error");
+			}
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			return new ModelAndView("error/error");
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			return new ModelAndView("error/error");
+		} finally {
+			IOUtils.closeQuietly(os);
+		}
+		return null;
+	}
+	
 	/**
 	 * Utility method to convert file to byte[]
 	 * @param file

@@ -119,6 +119,7 @@
 						</li>
 						
 						<c:if test="${not empty childDataMap}">
+							<li class="title-menu">Action Plan</li>
 							<li class="menu-second-level" id="select-tooltip-10">
 								<!--  
 								<a class="menu-link" href="#nogo" 
@@ -276,13 +277,13 @@
 									 </li>
 									 
 									 <li class="menu-second-level"> 
-									 	<a href="#nogo"  id="">
+									 	<a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
 									 		<spring:message code="menuName.second.egsr"/>
 									 	</a>
 									 </li>
 									 
 									 <li class="menu-second-level"> 
-									 	<a href="#nogo"  id="">
+									 	<a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
 									 		<spring:message code="menuName.second.sgsr"/>
 									 	</a>
 									 </li>

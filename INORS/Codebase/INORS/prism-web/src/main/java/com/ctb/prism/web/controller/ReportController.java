@@ -266,6 +266,10 @@ public class ReportController extends BaseDAO {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/openReportHtmlAjax", method = RequestMethod.GET)
+	public ModelAndView openReportHtmlAjax(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		return openReportHtml(req, res);
+	}
 	/**
 	 * This method is responsible for rendering report in html format with default input controls.
 	 * 
