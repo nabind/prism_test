@@ -31,7 +31,7 @@
 				<div id="standardIndicatorMessage" class="relative"
 						style="height: auto; text-align: justify; margin-bottom: 10px">
 						
-						I To read the standards your child is working toward, click on each standard number below. 
+						To read the standards your child is working toward, click on each standard number below. 
 						The standards are organized so you can see how they align to the topics on the test. 
 						These standards describe in detail what your child is expected to achieve this year based on 
 						understanding the skills he or she needs to progress in school. 
