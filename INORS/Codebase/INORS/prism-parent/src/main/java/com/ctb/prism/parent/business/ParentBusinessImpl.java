@@ -117,8 +117,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#getChildrenList(java.lang.String, java.lang.String, java.lang.String, ava.lang.String)
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear, String orgMode) {
-		return parentDAO.getChildrenList(userName, clickedTreeNode, adminYear, orgMode);
+	public List<StudentTO> getChildrenList(final Map<String, Object> paramMap) {
+		return parentDAO.getChildrenList(paramMap);
 	}
 
 	/*

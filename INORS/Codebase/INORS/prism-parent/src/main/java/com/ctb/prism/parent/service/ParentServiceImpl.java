@@ -82,8 +82,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#getChildrenList(java.lang.String, java.lang.String, java.lang.String,, java.lang.String)
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear, String orgMode) {
-		return parentBusiness.getChildrenList(userName, clickedTreeNode, adminYear, orgMode);
+	public List<StudentTO> getChildrenList(final Map<String, Object> paramMap) {
+		return parentBusiness.getChildrenList(paramMap);
 	}
 
 	/*

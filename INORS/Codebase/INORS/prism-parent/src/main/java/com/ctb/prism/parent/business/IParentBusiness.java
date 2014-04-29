@@ -72,7 +72,7 @@ public interface IParentBusiness {
 	 * @param orgMode
 	 * @return
 	 */
-	public List<StudentTO> getChildrenList(String userName, String clickedTreeNode, String adminYear,String orgMode);
+	public List<StudentTO> getChildrenList(final Map<String, Object> paramMap);
 
 	/**
 	 * @param parentName
