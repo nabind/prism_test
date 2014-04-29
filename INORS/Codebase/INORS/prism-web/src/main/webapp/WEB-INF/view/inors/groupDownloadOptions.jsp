@@ -21,15 +21,15 @@
 						    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
 						    	<span class="button-group compact">
 						    	<c:choose>
-							    	<c:when test="${(not empty student.ic) && (student.icFlag == 'AC')}"><a class="button compact icon-download blue glossy with-tooltip" target="_blank" title="Invitation Code Letter" href="downloadZippedPdf.do?fileName=${student.ic}&fileType=Invitation_Code_Letter"></a></c:when>
+							    	<c:when test="${(not empty student.ic) && (student.ic != ' ') && (student.icFlag == 'AC')}"><a class="button compact icon-download blue glossy with-tooltip" target="_blank" title="Invitation Code Letter" href="downloadZippedPdf.do?fileName=${student.ic}&fileType=Invitation_Code_Letter"></a></c:when>
 									<c:otherwise><a class="button compact icon-forbidden red disabled with-tooltip" title="No IC Letter Available" href="#"></a></c:otherwise>
 								</c:choose>
 								<c:choose>
-									<c:when test="${(not empty student.isr) && (student.isrFlag == 'Y')}"><a class="button compact icon-download green glossy with-tooltip" target="_blank" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}&fileType=Individual_Student_Report"></a></c:when>
+									<c:when test="${(not empty student.isr) && (student.isr != ' ') && (student.isrFlag == 'Y')}"><a class="button compact icon-download green glossy with-tooltip" target="_blank" title="Individual Student Report" href="downloadZippedPdf.do?fileName=${student.isr}&fileType=Individual_Student_Report"></a></c:when>
 									<c:otherwise><a class="button compact icon-forbidden red disabled with-tooltip" title="No ISR Available" href="#"></a></c:otherwise>
 								</c:choose>
 								<c:choose>
-									<c:when test="${(not empty student.ip) && (student.ipFlag == 'Y')}"><a class="button compact icon-download orange glossy with-tooltip" target="_blank" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}&fileType=Image_Print"></a></c:when>
+									<c:when test="${(not empty student.ip) && (student.ip != ' ') && (student.ipFlag == 'Y')}"><a class="button compact icon-download orange glossy with-tooltip" target="_blank" title="Image Print" href="downloadZippedPdf.do?fileName=${student.ip}&fileType=Image_Print"></a></c:when>
 									<c:otherwise><a class="button compact icon-forbidden red disabled with-tooltip" title="No Image Print Available" href="#"></a></c:otherwise>
 								</c:choose>
 								</span>
