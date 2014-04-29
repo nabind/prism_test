@@ -325,7 +325,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		long t1 = System.currentTimeMillis();
 		
 		final String isPN = (String)paramMap.get("isPN");
-		final String userName = (String)paramMap.get("userName");
+		final String parentName = (String)paramMap.get("parentName");
 		final String clickedTreeNode = (String)paramMap.get("clickedTreeNode");
 		final String adminYear = (String)paramMap.get("adminYear");
 		final String orgMode = (String)paramMap.get("orgMode");
@@ -338,7 +338,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_ADMIN + "}");
-						cs.setString(1, userName);
+						cs.setString(1, parentName);
 						cs.setString(2, clickedTreeNode);
 						cs.setString(3, orgMode);
 						cs.setString(4, adminYear);
@@ -378,7 +378,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				studentList = (List<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
-						cs.setString(1, userName);
+						cs.setString(1, parentName);
 						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
