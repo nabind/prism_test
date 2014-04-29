@@ -612,7 +612,12 @@ public class InorsController {
 						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
 						studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
 					}
-					logger.log(IAppLogger.INFO, "Students: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
+					Integer rowNum = 0;
+					for(GroupDownloadStudentTO student : studentList) {
+						rowNum = rowNum + 1;
+						student.setRowNum(rowNum);
+					}
+					logger.log(IAppLogger.INFO, "Students after removing duplicates: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
 					modelAndView.addObject("studentList", studentList);
 					modelAndView.addObject("studentCount", studentList.size());
 				} catch (Exception e) {

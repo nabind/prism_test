@@ -1309,9 +1309,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		if ((dataList != null) && (!dataList.isEmpty())) {
-			Integer rowNum = 0;
 			for (Map<String, Object> data : dataList) {
-				rowNum = rowNum + 1;
 				String id = data.get("ID").toString();
 				String name = (String) data.get("NAME");
 				String klass = (String) data.get("CLASS");
@@ -1323,7 +1321,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String isrFlag = (String) data.get("ISR_FLAG");
 				String ipFlag = (String) data.get("IP_FLAG");
 
-				logger.log(IAppLogger.DEBUG, "rowNum = " + rowNum);
 				logger.log(IAppLogger.DEBUG, "id = " + id);
 				logger.log(IAppLogger.DEBUG, "name = " + name);
 				logger.log(IAppLogger.DEBUG, "klass = " + klass);
@@ -1333,7 +1330,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				logger.log(IAppLogger.DEBUG, "ip = " + ip);
 
 				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
-				student.setRowNum(rowNum);
 				student.setId(id);
 				student.setName(name);
 				student.setKlass(klass);
