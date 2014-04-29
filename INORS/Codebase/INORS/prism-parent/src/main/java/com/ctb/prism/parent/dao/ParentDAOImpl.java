@@ -410,7 +410,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						return studentResult;
 					}
 				});
-			
 			}
 			
 		} catch (Exception e) {
