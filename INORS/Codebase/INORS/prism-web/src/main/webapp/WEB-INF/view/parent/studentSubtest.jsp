@@ -3,7 +3,7 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 	
-<div class="margin-bottom-medium" style="min-height:800px">
+<div class="margin-bottom-medium" style="height:auto">
 	<c:if test="${not empty childDataMap}">
 		<textarea id="taContent" style="display:none;">
 			${childDataMap.studentOverviewMessage}
@@ -15,9 +15,21 @@
 		</div>
 		</hgroup>
 		
-		<div id="studentOverviewMessage" class="wrapped relative white-gradient"
+		<!-- <div id="studentOverviewMessage" class="relative"
 			style="height: auto; text-align: justify">			
+		</div> -->
+		
+		<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">
+			<ul class="tabs reporttabs">
+				<li class="active"><a href="#nogo">Overview</a></li>
+			</ul>
+			<div class="tabs-content">
+				<div id="studentOverviewMessage" class="with-padding relative" style="padding: 20px !important">
+					
+				</div>
+			</div>
 		</div>
+		
 		<%-- <div id="subtestDiv" class="left-column big-message blue-gradient" 
 			style="color: #fff; height: auto; width:22%" >
 			<dl>
