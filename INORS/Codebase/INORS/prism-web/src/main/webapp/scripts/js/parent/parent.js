@@ -85,6 +85,14 @@ $(document).ready(function() {
 		$("#command").css('margin-top', '0px');
 	});
 	
+	//Fix for TD 78174 - By Joy
+	$('.wizard-previous').live('click', function() {
+		var step = $('#registrationForm ul.wizard-steps li.active span.wizard-step').html();
+		if(step == "1"){
+			isInvCoveValid = false;
+		}
+	});
+	
 	//Added by Ravi for Claim New Invitation
 	/*$('.claim-Invitation').live("click", function() {
 		$("input#invitationCode").val("");
