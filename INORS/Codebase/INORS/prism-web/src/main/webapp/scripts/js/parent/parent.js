@@ -399,38 +399,41 @@ $(document).ready(function() {
 	
 	//Added by Ravi for Claim New Invitation
 	function openNewInvitationClaimModal(){
-	$("#newICModal").modal({
-		title: 'Enter Invitation Code',
-		height: false,
-		width: 670,
-		resizable: false,
-		draggable: false,
-		buttons: {
-			'Cancel': {
-				classes: 'glossy',
-				click: function(win) {
-					win.closeModal(); 
-				}
-			},
-			'Submit': {
-				classes: 'blue-gradient glossy',
-				click: function(win) {
-					// Submit clicked for the first time for validating IC
-					if(firstSubmit){
-						getChildList();
+		$("#newICModal").modal({
+			title: 'Enter Invitation Code',
+			height: false,
+			width: 670,
+			resizable: false,
+			draggable: false,
+			buttons: {
+				'Cancel': {
+					classes: 'glossy',
+					click: function(win) {
+						win.closeModal(); 
 					}
-					// Submit clicked for the second time for verify child info and insert an entry in invitation_code_claim table
-					else{
-						var invCode = $("input#invitationCode").val();
-						verifyChildInfoAndSaveIC(invCode, win);
+				},
+				'Submit': {
+					classes: 'blue-gradient glossy',
+					click: function(win) {
+						// Submit clicked for the first time for validating IC
+						if(firstSubmit){
+							getChildList();
+						}
+						// Submit clicked for the second time for verify child info and insert an entry in invitation_code_claim table
+						else{
+							var invCode = $("input#invitationCode").val();
+							verifyChildInfoAndSaveIC(invCode, win);
+						}
+	
 					}
-
 				}
 			}
-		}
-	});		
-	$("#displayChild").hide();
-	$("#displayInvitation").show();
+		});		
+		//Fix TD 78524 - By Joy
+		//$("#displayChild").hide();
+		//$("#displayInvitation").show();
+		$("#newICModal #displayChild").hide();
+		$("#newICModal #displayInvitation").show();
 	}
 	//End
 	
