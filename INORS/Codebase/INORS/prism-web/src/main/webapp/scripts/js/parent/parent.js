@@ -242,7 +242,7 @@ $(document).ready(function() {
 				} else if (data[0].errorMsg == "IC_INVALID" ) {
 					isInvCoveValid = false;
 					$("#invalidICMsg").show(500);
-					$("#invalidICMsg").text("The code you have entered is not valid. Make sure you have entered exactly same code as you received in letter.");
+					$("#invalidICMsg").text("The code you have entered is not valid. Make sure you have entered exactly the same code as you received in letter.");
 					$("#displayChild").hide();
 					$("#displayInvitation").show();
 				} else if (data[0].errorMsg == "IC_NOTAVAILABLE" ) {
