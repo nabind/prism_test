@@ -1143,7 +1143,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
 				}
 			} else {
-				orgUserid = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+				orgUserid = getJdbcTemplatePrism().queryForLong(IQueryConstants.ORGUSER_SEQ_ID);
 				// Insert data in ORG_USERS
 				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserid, userid, invitationCode, invitationCode, IApplicationConstants.ACTIVE_FLAG);
 			}
