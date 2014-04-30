@@ -122,30 +122,31 @@ $(document).ready(function() {
 					var userContent = '';
 					var menuContent = '';
 					$.each(data, function () {
-						
+						var studentNameToDisplay = getStudentNameToDisplay(this.studentName);
+						var gradeToDisplay = replaceString(this.grade, "Grade ", "");
 						//Implement Joy: Before GRT loaded functionality - By Joy
 						if(this.bioExists != 0){
 							userContent += '<a href="getChildData.do?testElementId='+this.testElementId
 											+'&studentBioId='+this.studentBioId
-											+'&studentName='+this.studentName
+											+'&studentName='+studentNameToDisplay
 											+'&studentGradeName='+this.grade
 											+'&studentGradeId='+this.studentGradeId+'" style="color: #fff; font-weight: bold">'
-											+ this.studentName + '</a><br/>'
-											+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+											+ studentNameToDisplay + '</a><br/>'
+											+ this.administration + ', Grade: ' + gradeToDisplay + '<br/><br/>';
 				
 							menuContent += '<li class="menu-third-level"><a class="child_report_menu" href="getChildData.do?testElementId='+this.testElementId
 											+'&studentBioId='+this.studentBioId
-											+'&studentName='+this.studentName
+											+'&studentName='+studentNameToDisplay
 											+'&studentGradeName='+this.grade
 											+'&studentGradeId='+this.studentGradeId+'">'
-											+this.studentName+', (Grade: '+this.grade+')</a></li>';
+											+studentNameToDisplay+' (Grade: ' + gradeToDisplay + ')</a></li>';
 						}else{
 							userContent += '<span style="color: #fff; font-weight: bold">'
-								+this.studentName+'</span></br>'
-								+ this.administration + ', Grade: ' +this.grade + '<br/><br/>';
+								+studentNameToDisplay+'</span></br>'
+								+ this.administration + ', Grade: ' + gradeToDisplay + '<br/><br/>';
 							
 							menuContent += '<li class="menu-third-level"><span>'
-								+this.studentName+', (Grade: '+this.grade+')</span></li>';
+								+studentNameToDisplay+' (Grade: '+ gradeToDisplay + ')</span></li>';
 						}
 						
 					});
@@ -596,4 +597,23 @@ $(document).ready(function() {
 				 else {
 				 return true;
 				 }
+	}
+	function replaceString(str, old, now) {
+		return str.replace(old, now);
+	}
+	function endsWith(str, suffix) {
+	    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+	}
+	function getStudentNameToDisplay(name){
+		var studentNameToDisplay = "";
+		if(endsWith(name, ", ") == true) {
+			studentNameToDisplay = name.substring(0, name.length-2);
+		} else if(endsWith(name, " ") == true) {
+			studentNameToDisplay = name.substring(0, name.length-1);
+		} else if(endsWith(name, ",") == true) {
+			studentNameToDisplay = name.substring(0, name.length-1);
+		} else {
+			studentNameToDisplay = name;
+		}
+		return studentNameToDisplay;
 	}
