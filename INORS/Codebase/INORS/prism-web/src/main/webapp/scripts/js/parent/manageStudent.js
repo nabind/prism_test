@@ -201,8 +201,8 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 			closeDelay:10000,
 			delay: 100,
 			showCloseOnHover:false,
-			textOneSimilar:'Invitation Code Regenated!',
-			textSeveralSimilars:'Invitation Code Regenated!',
+			textOneSimilar:'Invitation Code Regenerated!',
+			textSeveralSimilars:'Invitation Code Regenerated!',
 			icon: 'themes/acsi/img/demo/icon.png',
 			onDisplay: function() {
 				$(".createLetter").css('box-shadow', '0 0 15px blue');
