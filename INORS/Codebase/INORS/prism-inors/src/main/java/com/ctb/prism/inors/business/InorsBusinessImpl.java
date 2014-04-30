@@ -392,7 +392,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
 			String file = fileName;
-			if(file != null && file.lastIndexOf(File.separator) != -1) file = file.substring(file.lastIndexOf(File.separator)+1);
+			if(file != null && file.lastIndexOf(File.separator) != -1) {
+				file = file.substring(file.lastIndexOf(File.separator)+1);
+				if(file.lastIndexOf("_") != -1) {
+					file = file.substring(0, file.lastIndexOf("_"));
+					file = CustomStringUtil.appendString(file, ".zip");
+				}
+				
+			}
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
