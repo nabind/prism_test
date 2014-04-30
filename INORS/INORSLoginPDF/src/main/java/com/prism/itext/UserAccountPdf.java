@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) throws Exception {
-		// args = new String[] { "S", "605302"};
+		// args = new String[] { "L", "744432"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -1207,6 +1207,7 @@ public class UserAccountPdf {
 		
 		for(OrgTO aU : teachers) {
 			school.setTestAdministration(aU.getTestAdministration());
+			prop.setProperty("testAdministrator", aU.getTestAdministration());
 			if(aU.getTestAdministration() != school.getTestAdministration()) {
 				logger.info("One School is asssociated witth multiple adminstration Teacher user with IS_NEW_USER Y!!!!");
 				throw new Exception("One School is asssociated witth multiple adminstration Teacher user with IS_NEW_USER Y!!!!");
