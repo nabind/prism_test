@@ -430,11 +430,8 @@ $(document).ready(function() {
 				}
 			}
 		});		
-		//Fix TD 78524 - By Joy
-		//$("#displayChild").hide();
-		//$("#displayInvitation").show();
-		$("#newICModal #displayChild").hide();
-		$("#newICModal #displayInvitation").show();
+		$("#displayChild").hide();
+		$("#displayInvitation").show();
 	}
 	//End
 	
