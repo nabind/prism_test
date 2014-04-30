@@ -431,6 +431,7 @@ public class ParentController {
 		String jsonString = null;
 		String parentName=null;
 		String clickedTreeNode=null;
+		String orgId = null;
 		Map<String,Object> paramChildMap = new HashMap<String,Object>();
 		
 		try {
@@ -457,19 +458,23 @@ public class ParentController {
 			}
 			
 			 parentName = (String)req.getParameter("parentName");
-			 clickedTreeNode=(String)req.getParameter("clickedTreeNode");
+			 orgId=(String)req.getParameter("orgId");
 			//this check is to determine whether the parentName is retrieved from manage parent (view children)
 			// or from the PN login page
 			if (parentName == null || parentName.trim().length()<0){
 				parentName =(String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			}
+			
+			clickedTreeNode=(String)req.getParameter("clickedTreeNode");
 			if (clickedTreeNode == null || clickedTreeNode.trim().length()<0){
 				clickedTreeNode =(String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			}else{
+				req.getSession().setAttribute(IApplicationConstants.CURRORG, clickedTreeNode);
 			}
 			
 			if(parentName!= null){	 
 				paramChildMap.put("parentName", parentName);
-				paramChildMap.put("clickedTreeNode", clickedTreeNode);
+				paramChildMap.put("clickedTreeNode", orgId);
 				paramChildMap.put("adminYear", adminYear);
 				paramChildMap.put("orgMode", orgMode);
 				paramChildMap.put("isPN", isPN);
