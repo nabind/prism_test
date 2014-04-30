@@ -156,7 +156,8 @@
 
 			</div>
 			
-			<%@ include file="../parent/claimNewInvitation.jsp"%>
+			<!-- Fix for TD 78524,78525(Block the inclusion) -->
+			<!-- @ include file="../parent/claimNewInvitation.jsp" -->
 
 		</div>
 	
