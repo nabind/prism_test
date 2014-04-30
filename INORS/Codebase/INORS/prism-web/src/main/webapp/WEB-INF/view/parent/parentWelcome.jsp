@@ -1,5 +1,6 @@
 
 	<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
+	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 	
 	<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
 
@@ -71,10 +72,14 @@
 			<h4 class="blue underline">Explore</h4>
 				<div class="boxshade">
 					<ul class="bullet-list">
-						<li><a href="#nogo" class="menu-link" action="getStandardMatters">Why Standards Matter</a></li>
-						<li><a href="#nogo" class="menu-link" action="getBrowseContent">Browse Content</a></li>
-						<li><a href="#nogo" class="">English Guide to the Student Report</a></li>
-						<li><a href="#nogo" class="">Spanish Guide to the Student Report</a></li>
+						<li><a href="#nogo" class="menu-link" action="getStandardMatters"><spring:message code="menuName.std.matter"/></a></li>
+						<li><a href="#nogo" class="menu-link" action="getBrowseContent"><spring:message code="menuName.content.browse"/></a></li>
+						<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
+									 		<spring:message code="menuName.second.egsr"/>
+									 	</a></li>
+						<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
+									 		<spring:message code="menuName.second.sgsr"/>
+									 	</a></li>						
 					</ul>
 				</div>
 		</div></div>
