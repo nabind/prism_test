@@ -1,6 +1,7 @@
 	<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 	<!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary" style="margin-top:34px; width:262px;">
 	    <c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
