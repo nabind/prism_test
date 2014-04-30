@@ -752,7 +752,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					ManageMessageTO manageMessageTO = manageMessageTOList.get(i);
 					ps.setLong(1, manageMessageTO.getReportId());
 					ps.setLong(2, manageMessageTO.getMessageTypeId());
-					ps.setString(3, manageMessageTO.getMessage());
+					ps.setString(3, manageMessageTO.getMessage().replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>"));
 					ps.setLong(4, manageMessageTO.getCustProdIdHidden());
 					ps.setString(5, IApplicationConstants.CHECKED_CHECKBOX_VALUE.equalsIgnoreCase(manageMessageTO.getActivationStatus()) ? IApplicationConstants.CHECKED_VALUE_DRM_CHECKBOX
 							: IApplicationConstants.DEFAULT_VALUE_DRM_CHECKBOX);
