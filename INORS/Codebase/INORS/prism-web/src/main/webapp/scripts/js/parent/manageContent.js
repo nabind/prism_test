@@ -278,7 +278,7 @@ function openModifyGenericModalToEdit(type) {
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 							}
-						},
+						}/*,
 						'Restore' : {
 							color: 'green',
 							click: function(win) { 
@@ -286,7 +286,7 @@ function openModifyGenericModalToEdit(type) {
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize(780,500).centerModal();
 							}
-						}
+						}*/
 					},
 					buttons: {
 						'Cancel': {
@@ -456,7 +456,7 @@ function openContentModalToEdit(contentId) {
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 							}
-						},
+						}/*,
 						'Restore' : {
 							color: 'green',
 							click: function(win) { 
@@ -465,7 +465,7 @@ function openContentModalToEdit(contentId) {
 								if($.browser.msie) setTimeout("hideMessage()", 300);
 								$.modal.current.setModalContentSize(780,430).centerModal();
 							}
-						}
+						}*/
 					},
 					buttons: {
 						'Cancel': {
@@ -602,7 +602,7 @@ function openContentModalToAdd() {
 					if($.browser.msie) setTimeout("hideMessage()", 300);
 					$.modal.current.setModalContentSize($(window).width(), $(window).height()).centerModal();
 				}
-			},
+			}/*,
 			'Restore' : {
 				color: 'green',
 				click: function(win) { 
@@ -611,7 +611,7 @@ function openContentModalToAdd() {
 					if($.browser.msie) setTimeout("hideMessage()", 300);
 					$.modal.current.setModalContentSize(780,430).centerModal();
 				}
-			}
+			}*/
 		},
 		buttons: {
 			'Cancel': {

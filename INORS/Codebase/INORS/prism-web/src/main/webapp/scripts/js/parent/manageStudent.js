@@ -405,6 +405,7 @@ function confirmRecreationAC(rowcounter)
 						if (data != null && data.length > 14){
 							$(".pagination").show(200);
 							$("#moreStudent").removeClass("disabled");
+							if($.browser.msie) $("#moreStudent").removeClass("disabled-ie");
 						} else {
 							$(".pagination").hide(200);
 						}

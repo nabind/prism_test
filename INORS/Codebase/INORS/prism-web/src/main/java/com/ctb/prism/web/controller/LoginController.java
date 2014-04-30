@@ -377,6 +377,10 @@ public class LoginController {
 						logger.log(IAppLogger.INFO, "Login As feature is used Admin");
 					}
 				}
+				String loginAs = (String) req.getSession().getAttribute(IApplicationConstants.LOGIN_AS);
+				if (loginAs != null && IApplicationConstants.ACTIVE_FLAG.equals(loginAs)) {
+					isSwitchUser = true;
+				}
 				if (!isSwitchUser && IApplicationConstants.FLAG_Y.equals(user.getFirstTimeLogin())) {
 					req.getSession().setAttribute(IApplicationConstants.FIRST_TIME_LOGIN, IApplicationConstants.TRUE);
 					// res.sendRedirect("changePassword.do");

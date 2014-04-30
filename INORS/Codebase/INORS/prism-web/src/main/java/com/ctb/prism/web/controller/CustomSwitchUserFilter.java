@@ -168,6 +168,14 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			if(prevAdminUser != null) {
 				UserDetails   userDetails = (UserDetails) prevAdminUser.getPrincipal();
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, userDetails.getUsername());
+				//Get details of prev admin user details
+				UserTO prevAdminuserDetails;
+				try {
+					prevAdminuserDetails = loginService.getUserByEmail(userDetails.getUsername());
+					request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
+				} catch (SystemException e) {
+					e.printStackTrace();
+				}
 			}
 
 			// update the current context back to the original user

@@ -29,7 +29,7 @@
 			
 		}
 		//Added for disabling browser back
-		//window.history.forward();
+		window.history.forward();
 		function noBack() { window.history.forward(); }
 		</script>
 	</head>

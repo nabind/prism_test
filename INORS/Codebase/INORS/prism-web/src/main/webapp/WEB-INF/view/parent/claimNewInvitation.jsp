@@ -8,8 +8,8 @@
 			<div id="displayInvitation">			
 				<h3>Invitation code</h3>
 				<div class="margin-bottom">
-					<p class="message blue-gradient">Enter the 16-digit Invitation Code supplied by your children's school here. Please type in the Activation Code exactly as it appears in the letter you received from your children's school (use capital letters and include hyphens).
-					<br/><br/>If you do not have a letter, please contact your children's school.</p>
+					<p class="message blue-gradient">Enter the 16-digit Invitation Code supplied by your child's school here. Please type in the Invitation Code exactly as it appears in the letter you received from your child's school (use capital letters and include hyphens).
+					<br/><br/>If you do not have a letter, please contact your child's school.</p>
 				</div>
 				<div class="field-block button-height">
 					

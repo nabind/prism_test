@@ -12,6 +12,10 @@
 		#reportContainer > div > div > table > tbody > tr > td:nth-child(2) {
 			border: 0px solid #FFF !important;
 		}
+		/* this is for IE 8*/
+		#reportContainer > div > div > table > tbody > tr > td:first-child + td {
+			border: 0px solid #FFF !important;
+		}
     </style>
 	<script src='${contextPath}/scripts/js/libs/jquery-1.7.2.min.js'></script>
    	<script src='${contextPath}/scripts/js/libs/jquery-ui.min.js'></script>

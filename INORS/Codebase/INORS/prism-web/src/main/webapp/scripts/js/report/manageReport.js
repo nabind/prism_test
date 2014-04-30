@@ -135,7 +135,11 @@ var row = $("#"+reportId + '_' +reportId);
 			if(typeof nodeLevels != "undefined") {
 				$.each(nodeLevels, function(index, value) {
 					$("#orgNodeLevel option").each(function() {
-						if($(this).html() == nodeLevels[index]) {
+						if($(this).html().indexOf("/") != -1) {
+							if($(this).html().substring(0,$(this).html().indexOf("/")) == nodeLevels[index]) {
+								$(this).attr('selected', 'true');
+							} 
+						} else if($(this).html() == nodeLevels[index]) {
 							$(this).attr('selected', 'true');
 						} 
 						$(this).change();
