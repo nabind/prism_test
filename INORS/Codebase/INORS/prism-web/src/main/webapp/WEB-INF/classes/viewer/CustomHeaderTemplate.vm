@@ -16,6 +16,9 @@
 		#reportContainer > div > div > table > tbody > tr > td:first-child + td {
 			border: 0px solid #FFF !important;
 		}
+		span {
+			font-family: Arial, Helvetica, sans-serif !important;
+		}
     </style>
 	<script src='${contextPath}/scripts/js/libs/jquery-1.7.2.min.js'></script>
    	<script src='${contextPath}/scripts/js/libs/jquery-ui.min.js'></script>
