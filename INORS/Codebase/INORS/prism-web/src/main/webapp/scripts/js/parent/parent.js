@@ -419,6 +419,8 @@ $(document).ready(function() {
 				'Cancel': {
 					classes: 'glossy',
 					click: function(win) {
+						$('#claim-Invitation-Form').validationEngine('hide');
+						if($.browser.msie) setTimeout("hideICMessage()", 300);
 						win.closeModal(); 
 					}
 				},
@@ -437,10 +439,17 @@ $(document).ready(function() {
 	
 					}
 				}
+			},
+			onClose: function() {
+				$('#claim-Invitation-Form').validationEngine('hide');
+				if($.browser.msie) setTimeout("hideICMessage()", 300);
 			}
 		});		
 		$("#displayChild").hide();
 		$("#displayInvitation").show();
+	}
+	function hideICMessage() {
+		$('#claim-Invitation-Form').validationEngine('hide');
 	}
 	//End
 	
