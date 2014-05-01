@@ -54,6 +54,9 @@
 			<%@ include file="../view/common/footer.jsp"%>
 			<%@ include file="messages.jsp"%>
 			<%@ include	file="../view/common/commonScripts.jsp"%>	
+			<script src="scripts/js/highchart/highcharts-2.3.2.src.js"></script>
+			<script src="scripts/js/highchart/default.service.js"></script>
+			<script src="scripts/js/highchart/item.hyperlink.service.js"></script>
 			<%@ include file="../view/common/init.jsp"%>
 			<%@ include file="../view/common/keepAlive.jsp"%>
 			<%@ include file="../view/parent/claimNewInvitation.jsp"%>

@@ -55,7 +55,6 @@
 									<a class="articledata" href="#nogo" 
 										articleId="${standardIndicatorTO.objContentId}" 
 										contentType= '<spring:message code="val.contentType.std"/>'  
-										style="font-weight: bold"
 										id="subtestIdLink">
 											${standardIndicatorTO.objectiveName}
 									</a>
@@ -63,7 +62,7 @@
 									<c:if test="${studentName != '-1'}">
 										<c:choose>
 											<c:when test="${standardIndicatorTO.proficiencyLevel == '+'}">
-												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text green">Proficient</span></span></span>
+												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text blue">Proficient</span></span></span>
 											</c:when>
 											<c:when test="${standardIndicatorTO.proficiencyLevel == '-'}">
 												<span class="prof-first below-proficient"><span class="unknown prof-last"><span class="prof-text red">Below Proficient</span></span></span>
@@ -78,22 +77,22 @@
 							
 							
 								<div class="nine-columns">
+									<ul class="bullet-list">
 									<c:forEach var="IndicatorTO" items="${standardIndicatorDetailsList}">
 										<c:if test="${standardId == IndicatorTO.objectiveId}">
 											<c:set var="curStandardId" value="${IndicatorTO.objectiveId}" />
-											<dd> 
+											<li> 
 												<a class="articledata" href="#nogo" 
 													articleId="${IndicatorTO.contentId}" 
 													contentType= '<spring:message code="val.contentType.ind"/>' 
-													style="font-weight: bold"
 													id="subtestIdLink">
 														${IndicatorTO.contentName}
 												</a>
 												<p>${IndicatorTO.subHeader}</p>
-											</dd>
-											<br>
+											</li>
 										</c:if>
 									</c:forEach>
+									</ul>
 								</div>
 							</div>
 							<hr/>

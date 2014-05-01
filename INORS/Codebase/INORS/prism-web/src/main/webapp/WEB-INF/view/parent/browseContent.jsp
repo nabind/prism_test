@@ -16,8 +16,8 @@
 			<div class="relative with-padding" style="padding: 20px !important">
 			
 			
-					Choose from the links below to search through content for all grades and subjects:
-				
+					<b>Choose from the links below to search through content for all grades and subjects:</b>
+					<br/>
 					<p>
 					   All children must master challenging academic standards in order to succeed in school and beyond. Being engaged in your child's 
 					   education is important to his or her continued progress. Understanding these academic standards will enable you to help your 

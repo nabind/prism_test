@@ -529,7 +529,7 @@ details.details > summary {style.css:1488
 	background-attachment: scroll;
 	background-clip: border-box;
 	background-color: transparent;
-	background-image: -webkit-linear-gradient(top, #F7F7FA, #E4E7EB);
+	background-image: -webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
 	background-origin: padding-box;
 	background-size: 100% 100%;
 	border-bottom-color: #CCC;
@@ -1001,7 +1001,7 @@ div#nav ul li a {
 	display: block;
 	width: 34px;
 	height: 34px;
-	background: url(../../acsi/img/standard/sprites.png) no-repeat -68px -94px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -168px -94px;
 	margin-top: 10px;
 	position: relative;
 	z-index: 88;
@@ -1034,7 +1034,7 @@ div#nav ul li a {
 	position: absolute;
 }
 .menu-second-level{
-	background-color: #C7CEEB !important;
+	background-color: #D3D5EB !important;
     color: black !important;
     font-size: 12px !important;
     font-weight: bold !important;
@@ -1088,4 +1088,8 @@ div#nav ul li a {
 #parentMenu > li.menu-second-level > ul > li:last-child, 
 #parentMenu > li > ul > li.menu-second-level > ul > li:last-child {
 	margin-bottom: 7px;
+}
+
+.articledata {
+	color: #005CFF;
 }

@@ -50,7 +50,6 @@
 									<a class="articledata" href="#nogo" 
 										articleId="${standardActivityTO.objContentId}" 
 										contentType= '<spring:message code="val.contentType.std"/>' 
-										style="font-weight: bold"
 										id="subtestIdLink">
 											${standardActivityTO.objectiveName}
 									</a>
@@ -58,7 +57,7 @@
 									<c:if test="${studentName != '-1'}">
 										<c:choose>
 											<c:when test="${standardActivityTO.proficiencyLevel == '+'}">
-												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text green">Proficient</span></span></span>
+												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text blue">Proficient</span></span></span>
 											</c:when>
 											<c:when test="${standardActivityTO.proficiencyLevel == '-'}">
 												<span class="prof-first below-proficient"><span class="unknown prof-last"><span class="prof-text red">Below Proficient</span></span></span>
@@ -73,22 +72,23 @@
 							
 							
 								<div class="nine-columns">
+									<ul class="bullet-list">
 									<c:forEach var="activityTO" items="${standardActivityDetailsList}">
 										<c:if test="${standardId == activityTO.objectiveId}">
 											<c:set var="curStandardId" value="${activityTO.objectiveId}" />
-											<dd> 
+											<li> 
 												<a class="articledata" href="#nogo" 
 													articleId="${activityTO.contentId}" 
 													contentType= '<spring:message code="val.contentType.act"/>'   
-													style="font-weight: bold"
 													id="subtestIdLink">
 														${activityTO.contentName}
 												</a>
+											
 												<p>${activityTO.subHeader}</p>
-											</dd>
-											<br>
+											</li>
 										</c:if>
 									</c:forEach>
+									</ul>
 								</div>
 							</div>
 							<hr/>

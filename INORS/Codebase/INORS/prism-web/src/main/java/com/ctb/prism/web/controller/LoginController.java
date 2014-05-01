@@ -421,10 +421,12 @@ public class LoginController {
 				if (homeReport.isRegularUser() || ((null != req.getSession().getAttribute("PARENT_LOGIN")) && ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN"))))) {
 					if ((null != req.getSession().getAttribute("PARENT_LOGIN")) && ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN")))) {
 						modelAndView = new ModelAndView("parent/parentWelcome");
+						themeResolver.setThemeName(req, res, "parent");
 					} else {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");
 						modelAndView.addObject("homeReport", homeReport);
+						themeResolver.setThemeName(req, res, "acsi");
 					}
 				} else if (homeReport.isAccessDenied()) {
 					modelAndView = new ModelAndView("error/accessDenied");

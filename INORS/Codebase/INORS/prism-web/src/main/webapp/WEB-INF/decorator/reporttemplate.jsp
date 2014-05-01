@@ -42,6 +42,10 @@
 					$('span').addClass('otherspan'); 
 				}
 				
+				if($.browser.version == '7.0') { 
+					$(".rotated").css('-ms-transform', 'none !important');
+				}
+				
 				// ============================ PATCH TO DISPLAY IMAGES IN CLASS DASHBOARD (WEB ONLY) ================================	
 				/*
 				var legendHigh = $('span:contains("High Mastery")');

@@ -11,7 +11,7 @@
 	
 
 
-	<div class="right-column margin-bottom-medium" style="min-height:417px;">
+	<div class="right-column margin-bottom-medium" style="min-height:636px;">
 			
 
 		<div class="right-column-200px" style="margin-top: 15px;">
@@ -20,7 +20,7 @@
 			<div class="" style="height: 100px; margin-top:-45px;">
 				<h3 style="position:relative">Your Children</h3>
 				<!--<p class="big-message blue-gradient">-->
-				<div style="height: 381px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
+				<div style="height: 607px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
 					<div class="" style="color : #fff;">
 						Choose one of the profiles below to see an individualized Action Plan for your child.
 						<br/><br/>
@@ -29,7 +29,8 @@
 				</div>
 			</div></div>
 
-			<div class="left-column" style="margin-right: 270px;"><div class="" style="height: auto">
+		<div class="left-column" style="margin-right: 270px;">
+			<div class="" style="height: auto">
 				<!-- Image slider -->
 				<div id="header" class="slide-image-outer margin-bottom">
 					<div class="wrap">
@@ -52,53 +53,50 @@
 				<!-- End : Image slider -->
 				
 				<div class="boxshade scrollable" style="max-width:938px; height: 81px;">
-					<p style="text-align:justify">
-						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
-						Explore the links below for additional information, including <i>Why Standards Matter</i>, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.
+					<p style="text-align:justify; margin-bottom: 0px;">
+						To choose an action plan for your child, click on his or her name on the right side of this screen. The action plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
+						From the "Explore" menu on the right you may view additional information, including Why Standards Matter, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.
 					</p>
 				</div>
-				
-				
-			</div>
-		</div>
-		
-		
-		
-	</div>
-	</div>
-	<div class="left-column-200px margin-bottom" style="margin-left: -20px;">
-
-		<div class="left-column" style="width: 240px"><div class="with-padding" style="height: 150px">
-			<h4 class="blue underline">Explore</h4>
-				<div class="boxshade">
-					<ul class="bullet-list">
-						<li><a href="#nogo" class="menu-link" action="getStandardMatters"><spring:message code="menuName.std.matter"/></a></li>
-						<li><a href="#nogo" class="menu-link" action="getBrowseContent"><spring:message code="menuName.content.browse"/></a></li>
-						<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
-									 		<spring:message code="menuName.second.egsr"/>
-									 	</a></li>
-						<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
-									 		<spring:message code="menuName.second.sgsr"/>
-									 	</a></li>						
-					</ul>
-				</div>
-		</div></div>
-
-		<div class="right-column">
-			<div class="with-padding" style="height: 170px; margin-right: -10px;">
-				<h4 class="blue underline">Manage My Account</h4>
-				<div class="boxshade" style="height: 126px;">
-					<p>Use this page to update your personal information. You can also view information about which test data is available on INORS Data Online for Parents for your school.</p>
-					<ul class="bullet-list">
-						<li><a href="myAccount.do">My Account</a></li>
-						<li><a href="#nogo" class="claim-Invitation">Claim new Invitation Code</a></li>
-						<!--<li><a href="#nogo">Create New Child Information</a></li>-->
-					</ul>
+			
+				<div class="margin-bottom" style="margin-left: -20px;margin-top: -30px;">
+					<div class="" style="float:left; width: 240px;">
+						<div class="with-padding" style="height: 170px">
+							<h4 class="blue underline">Explore</h4>
+							<div class="boxshade">
+								<ul class="bullet-list">
+									<li><a href="#nogo" class="menu-link" action="getStandardMatters"><spring:message code="menuName.std.matter"/></a></li>
+									<li><a href="#nogo" class="menu-link" action="getBrowseContent"><spring:message code="menuName.content.browse"/></a></li>
+									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
+														<spring:message code="menuName.second.egsr"/>
+													</a></li>
+									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
+														<spring:message code="menuName.second.sgsr"/>
+													</a></li>						
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="" style="margin-left: 220px;">
+						<div class="with-padding" style="height: 170px; margin-right: -19px;">
+							<h4 class="blue underline">Manage My Account</h4>
+							<div class="boxshade scrollable" style="height: 126px;">
+								<p>Use this page to update your personal information. You can also view information about which test data is available on the Parent Network for your school.</p>
+								<ul class="bullet-list">
+									<li><a href="myAccount.do">My Account</a></li>
+									<li><a href="#nogo" class="claim-Invitation">Claim new Invitation Code</a></li>
+									<!--<li><a href="#nogo">Create New Child Information</a></li>-->
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
+		
 	</div>
+	</div>
+	
 	
 
 

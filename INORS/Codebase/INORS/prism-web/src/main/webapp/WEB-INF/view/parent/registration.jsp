@@ -17,8 +17,10 @@
 			<legend class="legend">Invitation Code</legend>
 
 			<div class="margin-bottom">
-				<p class="message blue-gradient">Enter the 16-digit Invitation Code supplied by your child's school here. Please type in the Invitation Code exactly as it appears in the letter you received from your child's school (use capital letters and include hyphens).
-				<br/><br/>If you have previously entered the Invitation Code for one child, and are attempting to enter Invitation Codes for additional children, please return to the main screen, log in and under "Manage Account", click "Enter new Invitation Code".</p>
+				<p class="message blue-gradient">
+				<b>Enter Invitation Code</b><br/><br/>
+				To create an account and gain access to the site enter the 16-digit Invitation Code exactly as it appears in the letter supplied by your child's school (use capital letter and include hyphens).
+				<br/><br/>If you already have an account, please return to the login page, log in, then click Claim New Invitation Code to add this data to your existing account.</p>
 			</div>
 
 			<div class="field-block button-height">
@@ -44,7 +46,7 @@
 					</div>
 				<p class="message blue-gradient margin-top">
 					<span class="message-icon icon-warning"></span>
-					<b>Note:</b> Please contact your child's school if you have questions regarding the invitation code.
+					<b>Note:</b> Please contact your child's school if you have questions regarding the Invitation Code. If you are not the parent or guardian authorized to view this student information, or if you believe you have entered the wrong Invitation Code, you must press "Back" and contact your child's school.
 				</p>
 			</div>
 

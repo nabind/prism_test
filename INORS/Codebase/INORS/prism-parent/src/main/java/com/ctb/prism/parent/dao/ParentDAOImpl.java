@@ -161,6 +161,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			studentTO.setStudentName((String) (fieldDetails.get("STUDENT_NAME")));
 			studentTO.setGrade((String) (fieldDetails.get("ADMINISTRATION")));
 			studentTO.setAdministration((String) (fieldDetails.get("GRADE")));
+			studentTO.setOrgName((String) (fieldDetails.get("org_name")));
 			studentToList.add(studentTO);
 		}
 		parentTO.setStudentToList(studentToList);
@@ -173,6 +174,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean registerUser(ParentTO parentTO) throws BusinessException {
 		try {
 			// incase the user exists into LDAP
@@ -572,7 +574,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
-	@Cacheable(value="defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
+	@Cacheable(value="adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		String orgId = (String) paramMap.get("scrollId");
 		String adminYear = (String) paramMap.get("adminYear");
@@ -1096,6 +1098,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean addInvitationToAccount(String userName, String invitationCode) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
 		long t1 = System.currentTimeMillis();
@@ -1174,6 +1177,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#generateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
+	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean generateActivationCode(StudentTO student) {
 		
 		// Fix for 78188 - By Joy

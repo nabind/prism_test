@@ -15,20 +15,18 @@
 		<div class="tabs-content">
 			<div class="relative with-padding" style="padding: 20px !important">
 				<p>
-					Parents and caretakers, teachers, and schools all have a
-					responsibility to help children acquire the skills and knowledge
-					necessary to earn good jobs, make informed decisions, and become
-					successful and contributing citizens. These skills and knowledge are
-					described by your state's <b>standards</b>.
+					Parents and caretakers, teachers, and schools all have a responsibility to 
+					help children acquire the skills and knowledge necessary to earn good jobs, 
+					make informed decisions, and become successful and contributing citizens. 
+					These skills and knowledge are described by your state's <b>standards</b>.
 				</p>
 				<p>
-					State <b>testing</b> is one important tool that is used to determine
-					whether your child is achieving these important standards. In
-					addition, state tests inform decisions regarding the effectiveness of
-					schools' and districts' efforts to support your child. The federal
-					legislation that sets the parameters for this decision-making process
-					is known as the No Child Left Behind Act (or NCLB). <b>NCLB</b> is the
-					2002 reauthorization of the Elementary and Secondary Education Act.
+					State <b>testing</b> is one important tool that is used to determine whether 
+					your child is achieving these important standards. In addition, state tests 
+					inform decisions regarding the effectiveness of schools' and districts' efforts 
+					to support your child. The federal legislation that sets the parameters 
+					for this decision-making process is known as the No Child Left Behind Act 
+					(or NCLB). <b>NCLB</b> is the 2002 reauthorization of the Elementary and Secondary Education Act.
 				</p>
 
 				<div class="content-panel accordion-div">

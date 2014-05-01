@@ -239,6 +239,7 @@ $(document).ready(function() {
 											+'<strong>'+ studentList[index].studentName+'</strong>'
 											+'<br>'+studentList[index].grade
 											+'<br>'+studentList[index].administration
+											+'<br>'+studentList[index].orgName
 											+'</p>'; 
 					});
 					$("#ic_student_list").html(student_details);

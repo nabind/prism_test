@@ -5,7 +5,7 @@
 	<h3>Everyday Activities: ${gradeName}</h3>
 
 	<div>
-		<p>Your day-to-day involvement in your child’s education makes an
+		<p>Your day-to-day involvement in your child's education makes an
 			important difference to their success in school. According to
 			research published by the Southwest Educational Development
 			Laboratory*, students whose parents are involved in their education,

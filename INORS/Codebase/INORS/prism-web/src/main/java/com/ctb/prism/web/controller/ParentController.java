@@ -261,6 +261,10 @@ public class ParentController {
 		String city = req.getParameter("city");
 		String state = req.getParameter("state");
 		String displayName = req.getParameter("displayName");
+		
+		// update session with new display name
+		req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, displayName);
+		
 		String status = "Fail";
 		
 	//checking for valid password
