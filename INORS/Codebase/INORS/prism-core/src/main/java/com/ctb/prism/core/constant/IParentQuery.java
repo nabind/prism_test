@@ -528,13 +528,13 @@ public interface IParentQuery {
 			" STD.TEST_ELEMENT_ID AS TESTELEMENT,IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
 			" IC.total_available,",
 			" DECODE(SIGN(IC.EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
-			" ADM.ADMIN_SEASON || ' ' || ADM.ADMIN_YEAR AS ASSESSMENT_YEAR ",
-			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, ADMIN_DIM ADM, cust_product_link link",
+			" prod.product_name AS ASSESSMENT_YEAR ",
+			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, product prod, cust_product_link link",
 			" WHERE link.ADMINID = STD.ADMINID ",
 			" AND ic.cust_prod_id = link.cust_prod_id",
 			" AND IC.ACTIVATION_STATUS = 'AC' ",
 			" AND link.ADMINID=STD.ADMINID",
-			" AND ADM.ADMINID=link.ADMINID",
+			" and prod.productid = link.productid",
 			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
 			" AND IC.TEST_ELEMENT_ID = ?");
 
