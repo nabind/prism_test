@@ -475,6 +475,9 @@ public class ParentController {
 			}else{
 				req.getSession().setAttribute(IApplicationConstants.CURRORG, clickedTreeNode);
 			}
+			if (orgId == null || orgId.trim().length()<0) {
+				orgId = clickedTreeNode;
+			}
 			
 			if(parentName!= null){	 
 				paramChildMap.put("parentName", parentName);

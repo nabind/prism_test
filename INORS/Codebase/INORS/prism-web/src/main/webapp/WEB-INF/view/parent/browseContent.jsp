@@ -17,13 +17,13 @@
 			
 			
 					<b>Choose from the links below to search through content for all grades and subjects:</b>
-					<br/>
+					<br/><br/>
 					<p>
 					   All children must master challenging academic standards in order to succeed in school and beyond. Being engaged in your child's 
 					   education is important to his or her continued progress. Understanding these academic standards will enable you to help your 
 					   child achieve his or her goals.
 
-					   Parent NetworkTM gives you the tools and resources to be an informed and active parent or guardian. The following text highlights 
+					   Parent Network<sup>TM</sup> gives you the tools and resources to be an informed and active parent or guardian. The following text highlights 
 					   these tools and resources available to you. We encourage you to take a few minutes to understand them.
 					</p>
 					<br>

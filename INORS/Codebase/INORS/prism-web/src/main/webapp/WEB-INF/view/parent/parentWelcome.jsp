@@ -20,7 +20,7 @@
 			<div class="" style="height: 100px; margin-top:-45px;">
 				<h3 style="position:relative">Your Children</h3>
 				<!--<p class="big-message blue-gradient">-->
-				<div style="height: 607px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
+				<div style="height: 621px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
 					<div class="" style="color : #fff;">
 						Choose one of the profiles below to see an individualized Action Plan for your child.
 						<br/><br/>
@@ -52,7 +52,7 @@
 				</div>
 				<!-- End : Image slider -->
 				
-				<div class="boxshade scrollable" style="max-width:938px; height: 81px;">
+				<div class="boxshade scrollable" style="max-width:938px; height: 96px;">
 					<p style="text-align:justify; margin-bottom: 0px;">
 						To choose an action plan for your child, click on his or her name on the right side of this screen. The action plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
 						From the "Explore" menu on the right you may view additional information, including Why Standards Matter, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.

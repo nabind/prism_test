@@ -281,6 +281,7 @@ public class LoginController {
 				ReportTO homeReport = null;
 				String username = null;
 				Collection<GrantedAuthority> authorities = null;
+				String userDisplay = (String) req.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY);
 				UserTO user = null;
 				if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
 					LdapUserDetailsImpl userDetails = (LdapUserDetailsImpl) auth.getPrincipal();
@@ -348,7 +349,11 @@ public class LoginController {
 					username = user.getUserName();
 				}
 				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
-				req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
+				if(userDisplay != null && userDisplay.length() > 0) {
+					req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, userDisplay);
+				} else {
+					req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
+				}
 				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
 				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
 				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
