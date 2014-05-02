@@ -131,17 +131,16 @@ var row = $("#"+reportId + '_' +reportId);
 				$("#userRole option").change();
 				$("#userRole option").trigger('update-select-list');
 			}
+			$("#orgNodeLevel option").each(function() {
+				$(this).removeAttr('selected');
+				$(this).change();
+				$(this).trigger('update-select-list');
+			});
 			var nodeLevels = data[0].orgNodeLevelArr;
 			if(typeof nodeLevels != "undefined") {
 				$.each(nodeLevels, function(index, value) {
 					$("#orgNodeLevel option").each(function() {
-						if($(this).html().indexOf("/") != -1) {
-							if($(this).html().substring(0,$(this).html().indexOf("/")) == nodeLevels[index]) {
-								$(this).attr('selected', 'true');
-							} else {
-								$(this).removeAttr('selected');
-							}
-						} else if($(this).html() == nodeLevels[index]) {
+						if(nodeLevels[index].match("^" + $(this).text())) {
 							$(this).attr('selected', 'true');
 						} 
 						$(this).change();

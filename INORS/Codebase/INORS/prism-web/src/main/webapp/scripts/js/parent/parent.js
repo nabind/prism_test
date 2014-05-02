@@ -237,8 +237,9 @@ $(document).ready(function() {
 					$.each(studentList, function(index, value) { 
 						student_details += '<p class="margin-bottom" id="student_info">'
 											+'<strong>'+ studentList[index].studentName+'</strong>'
-											+'<br>'+studentList[index].grade
 											+'<br>'+studentList[index].administration
+											+'<br>'+studentList[index].grade
+											+'<br>'+studentList[index].schoolName
 											+'<br>'+studentList[index].orgName
 											+'</p>'; 
 					});

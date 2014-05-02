@@ -159,9 +159,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		for (Map<String, Object> fieldDetails : lstData) {
 			studentTO = new StudentTO();
 			studentTO.setStudentName((String) (fieldDetails.get("STUDENT_NAME")));
-			studentTO.setGrade((String) (fieldDetails.get("ADMINISTRATION")));
-			studentTO.setAdministration((String) (fieldDetails.get("GRADE")));
-			studentTO.setOrgName((String) (fieldDetails.get("org_name")));
+			studentTO.setGrade((String) (fieldDetails.get("GRADE")));
+			studentTO.setAdministration((String) (fieldDetails.get("ADMINISTRATION")));
+			studentTO.setSchoolName((String) (fieldDetails.get("ORG_NODE_NAME")));
 			studentToList.add(studentTO);
 		}
 		parentTO.setStudentToList(studentToList);

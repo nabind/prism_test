@@ -34,7 +34,7 @@
 					</div>
 				<p class="message blue-gradient margin-top">
 					<span class="message-icon icon-warning"></span>
-					<b>Note:</b> Please contact your child's school if you have questions regarding the invitation code.
+					<b>Note:</b> Please contact your child's school if you have questions regarding the Invitation Code. If you are not the parent or guardian authorized to view this student information, or if you believe you have entered the wrong Invitation Code, you must press "Back" and contact your child's school.
 				</p>
 			</div>
 			</div>

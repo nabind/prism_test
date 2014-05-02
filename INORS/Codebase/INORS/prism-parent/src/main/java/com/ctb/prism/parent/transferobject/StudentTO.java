@@ -27,6 +27,7 @@ public class StudentTO extends BaseTO{
 	private long studentGradeId = 0;
 	private String testElementId ="";
 	private long bioExists = 0;
+	private String schoolName ="";
 	
 	
 	public String getTestElementId() {
@@ -151,5 +152,11 @@ public class StudentTO extends BaseTO{
 	}
 	public void setBioExists(long bioExists) {
 		this.bioExists = bioExists;
+	}
+	public String getSchoolName() {
+		return schoolName;
+	}
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
 	}
 }

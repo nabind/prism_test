@@ -25,38 +25,19 @@ public interface IParentQuery {
 			" WHERE INV.INVITATION_CODE = ?",
 			" AND INV.ACTIVATION_STATUS = 'AC'");
 
-	/*public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
+	public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
 			" SELECT IC.STUDENT_FULL_NAME  AS STUDENT_NAME, ",
-			" ADM.ADMIN_NAME AS ADMINISTRATION, ",
-			" GRD.GRADE_NAME AS GRADE ",
+			" P.PRODUCT_NAME AS ADMINISTRATION, ",
+			" GRD.GRADE_NAME AS GRADE , OND.ORG_NODE_NAME",
 			" FROM INVITATION_CODE IC, ",
 			" CUST_PRODUCT_LINK CPL, ",
-			" ADMIN_DIM       ADM, ",
-			" GRADE_DIM       GRD ",
+			" PRODUCT       P, ",
+			" GRADE_DIM       GRD , ORG_NODE_DIM OND",
 			" WHERE IC.CUST_PROD_ID = CPL.CUST_PROD_ID ",
-			" AND CPL.ADMINID =  ADM.ADMINID ", 
+			" AND CPL.PRODUCTID =  P.PRODUCTID ", 
 			" AND IC.GRADE_ID = GRD.GRADEID ",
+			" AND IC.ORG_NODEID = OND.ORG_NODEID",
 			" AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.INVITATION_CODE = ?");*/
-	
-	public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
-			" SELECT IC.STUDENT_FULL_NAME  AS STUDENT_NAME,  ",
-			" 		 prd.product_name AS ADMINISTRATION, ",
-			" 		 GRD.GRADE_NAME AS GRADE, ",
-			" 		 org.org_node_name as org_name ",
-			" 		 FROM INVITATION_CODE IC,  ",
-			" 		 CUST_PRODUCT_LINK CPL,  ",
-			" 		 ADMIN_DIM       ADM,  ",
-			" 		 GRADE_DIM       GRD, ",
-			" 		 product prd, ",
-			" 		 org_node_dim org  ",
-			"  WHERE IC.CUST_PROD_ID = CPL.CUST_PROD_ID  ",
-			"  AND CPL.ADMINID =  ADM.ADMINID   ",
-			"  AND IC.GRADE_ID = GRD.GRADEID  ",
-			" and prd.productid = cpl.productid ",
-			" and org.customerid = cpl.customerid ",
-			" and ic.org_nodeid = org.org_nodeid ",
-			" AND IC.ACTIVATION_STATUS = 'AC' ", 
 			" AND IC.INVITATION_CODE = ?");
 
 	/**
