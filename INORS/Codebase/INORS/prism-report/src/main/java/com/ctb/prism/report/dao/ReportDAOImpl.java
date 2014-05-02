@@ -417,7 +417,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setReportType((String) data.get("REPORT_TYPE"));
 				to.setEnabled(((String) data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
 				String orgLevels = (String) data.get("ORG_NODE_LEVEL");
-				orgLevels = CustomStringUtil.replaceAll(orgLevels, "Corporation,Diocese", "Corporation/Diocese");
+				orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
 				to.setAllOrgNode(orgLevels);
 				to.setLinkName(((BigDecimal) data.get("CUST_PROD_ID")).longValue());
 				to.setProducttName((String) data.get("product_name"));
@@ -434,7 +434,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					}
 				}
 				String strOrgLevl = (String) data.get("ORG_NODE_LEVEL");
-				strOrgLevl = CustomStringUtil.replaceAll(strOrgLevl, "Corporation,Diocese", "Corporation/Diocese");
+				strOrgLevl = strOrgLevl.replace("Corporation,Diocese", "Corporation/Diocese");
 				if (strOrgLevl != null && strOrgLevl.length() > 0) {
 					String[] orgLevel = strOrgLevl.split(",");
 					to.setOrgNodeLevelArr(orgLevel);
