@@ -53,7 +53,7 @@
 										id="subtestIdLink">
 											${standardActivityTO.objectiveName}
 									</a>
-									
+									<br>
 									<c:if test="${studentName != '-1'}">
 										<c:choose>
 											<c:when test="${standardActivityTO.proficiencyLevel == '+'}">
