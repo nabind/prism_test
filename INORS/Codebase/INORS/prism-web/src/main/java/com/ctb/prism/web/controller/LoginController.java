@@ -358,6 +358,10 @@ public class LoginController {
 				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
 				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
 				String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+				
+				if (switchUser != null && switchUser.trim().length() > 0) {
+					req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
+				}
 
 				// Due to introduction of Org Mode - By Joy
 				req.getSession().setAttribute(IApplicationConstants.ORG_MODE, propertyLookup.get("orgMode.val.public"));
