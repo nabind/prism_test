@@ -138,7 +138,9 @@ var row = $("#"+reportId + '_' +reportId);
 						if($(this).html().indexOf("/") != -1) {
 							if($(this).html().substring(0,$(this).html().indexOf("/")) == nodeLevels[index]) {
 								$(this).attr('selected', 'true');
-							} 
+							} else {
+								$(this).removeAttr('selected');
+							}
 						} else if($(this).html() == nodeLevels[index]) {
 							$(this).attr('selected', 'true');
 						} 
