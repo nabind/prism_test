@@ -55,10 +55,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
     SELECT DISTINCT IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID,
                     IC.STUDENT_FULL_NAME AS STUDENT_NAME,
                     GRD.GRADEID AS STUDENT_GRADEID,
-                    GRD.GRADE_NAME AS STUDENT_GRADE,
+                    GRD.GRADE_CODE AS STUDENT_GRADE,
                     LINK.CUST_PROD_ID ADMINID,
-                    AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
-                    AD.ADMIN_SEQ,
+                    --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
+                    prod.product_name AS ADMIN_SEASON_YEAR,
+                    --AD.ADMIN_SEQ,
+                    prod.product_seq,
                     NVL((SELECT 1
                           FROM STUDENT_BIO_DIM
                          WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
@@ -69,7 +71,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            INVITATION_CODE_CLAIM ICC,
            INVITATION_CODE       IC,
            CUST_PRODUCT_LINK     LINK,
-           ADMIN_DIM             AD,
+           --ADMIN_DIM             AD,
+           product               prod,
            GRADE_DIM             GRD
      WHERE UPPER(U.USERNAME) = UPPER(P_IN_PARENT_NAME)
        AND OU.USERID = U.USERID
@@ -79,9 +82,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
        AND IC.ACTIVATION_STATUS = 'AC'
        AND IC.ICID = ICC.ICID
        AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
-       AND LINK.ADMINID = AD.ADMINID
+       -- AND LINK.ADMINID = AD.ADMINID
+       and link.productid = prod.productid 
        AND IC.GRADE_ID = GRD.GRADEID
-     ORDER BY AD.ADMIN_SEQ;
+--     ORDER BY AD.ADMIN_SEQ;
+     ORDER BY prod.product_seq;
   
   EXCEPTION
     WHEN OTHERS THEN
@@ -109,8 +114,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                     GRD.GRADEID AS STUDENT_GRADEID,
                     GRD.GRADE_NAME AS STUDENT_GRADE,
                     LINK.CUST_PROD_ID ADMINID,
-                    AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
-                    AD.ADMIN_SEQ,
+                    --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
+                    prod.product_name AS ADMIN_SEASON_YEAR,
+                    --AD.ADMIN_SEQ,
+                    prod.product_seq,
                     NVL((SELECT 1
                           FROM STUDENT_BIO_DIM
                          WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
@@ -121,7 +128,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
           -- INVITATION_CODE_CLAIM ICC,
            INVITATION_CODE       IC,
            CUST_PRODUCT_LINK     LINK,
-           ADMIN_DIM             AD,
+           --ADMIN_DIM             AD,
+           product               prod,
            GRADE_DIM             GRD,
            (SELECT *
                   FROM ORG_NODE_DIM D
@@ -144,9 +152,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                    )
       -- AND IC.ICID = ICC.ICID
        AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
-       AND LINK.ADMINID = AD.ADMINID
+       --AND LINK.ADMINID = AD.ADMINID
+       and link.productid = prod.productid 
        AND IC.GRADE_ID = GRD.GRADEID
-     ORDER BY AD.ADMIN_SEQ;
+--     ORDER BY AD.ADMIN_SEQ;
+     ORDER BY prod.product_seq;
   
   EXCEPTION
     WHEN OTHERS THEN
@@ -210,7 +220,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                AND CUST_PROD_ID = META.CUST_PROD_ID
                                AND CATEGORY_TYPE = 'STD'),
                             -1) STD_ARTICLEID,
-                        META.CUST_PROD_ID CUST_PROD_ID
+                        META.CUST_PROD_ID CUST_PROD_ID, meta.category_seq
           FROM SUBTEST_OBJECTIVE_MAP MAP1,
                SUBTEST_DIM           SUB,
                OBJECTIVE_DIM         OBJ,
@@ -225,7 +235,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            AND MAP1.OBJECTIVEID = OBJ.OBJECTIVEID
            AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
            AND META.CUST_PROD_ID = P_IN_CUST_PROD_ID
-         ORDER BY OBJ.OBJECTIVEID, META.ARTICLE_NAME;
+         ORDER BY OBJ.OBJECTIVEID, meta.category_seq/*META.ARTICLE_NAME*/;
     
     ELSE
     
@@ -242,7 +252,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                AND CUST_PROD_ID = META.CUST_PROD_ID
                                AND CATEGORY_TYPE = 'STD'),
                             -1) STD_ARTICLEID,
-                        META.CUST_PROD_ID CUST_PROD_ID
+                        META.CUST_PROD_ID CUST_PROD_ID, meta.category_seq
           FROM STUDENT_BIO_DIM       SBD,
                OBJECTIVE_SCORE_FACT  OBJ_FACT,
                SUBTEST_OBJECTIVE_MAP MAP1,
@@ -259,7 +269,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            AND MAP1.SUBT_OBJ_MAPID = META.SUBT_OBJ_MAPID
            AND MAP1.OBJECTIVEID = OBJ.OBJECTIVEID
            AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
-         ORDER BY OBJ.OBJECTIVEID, META.ARTICLE_NAME;
+         ORDER BY OBJ.OBJECTIVEID, meta.category_seq/*META.ARTICLE_NAME*/;
     
     END IF;
   
