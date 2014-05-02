@@ -498,7 +498,8 @@ $(document).ready(function() {
 	});	
 //========================REGISTRATION FORM SUBMISSION=====================	
 	$("#regSubmit").click(function(e){
-		if($("#usernameDiv #imgHolder > #validated").hasClass("validated")){
+		//Fix for TD 78521 - By Joy
+		if($("#usernameDiv #imgHolder > #validated").hasClass("validated") || $("#usernameDiv #imgHolder").html() == ""){
 			e.stopImmediatePropagation();
 			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
 		}else{
