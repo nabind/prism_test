@@ -60,6 +60,7 @@
 									</a>
 									
 									<c:if test="${studentName != '-1'}">
+										<br>
 										<c:choose>
 											<c:when test="${standardIndicatorTO.proficiencyLevel == '+'}">
 												<span class="prof-first2 unknown"><span class="proficient prof-last2"><span class="prof-text blue">Proficient</span></span></span>
