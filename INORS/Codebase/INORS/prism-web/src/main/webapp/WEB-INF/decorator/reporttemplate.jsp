@@ -46,6 +46,12 @@
 					$(".rotated").css('-ms-transform', 'none !important');
 				}
 				
+				$('tspan').each(function(index){
+					if( $.isNumeric( $(this).html() ) ) {
+						$(this).html( $(this).html() + '%');
+					}
+				});
+				
 				// ============================ PATCH TO DISPLAY IMAGES IN CLASS DASHBOARD (WEB ONLY) ================================	
 				/*
 				var legendHigh = $('span:contains("High Mastery")');
