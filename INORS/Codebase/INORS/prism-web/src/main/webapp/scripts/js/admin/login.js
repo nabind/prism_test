@@ -229,7 +229,7 @@ $(document).ready(function() {
 			content += '<div class="block margin-bottom padding-bottom" style="width:400px;margin:3px">'
 						+'<h4 class="block-title" style="font-size: 16px;line-height: 6px;">Question '+counter+'</h4>'
 						+'<div class="padding-left margin-bottom"><p class=""><b>'+this.question+'</b></p>'
-						+'<div class="button-height inline-label ">'
+						+'<div class="button-height inline-small-label ">'
 						+'<label class="label isIE" for="ans'+counter+'">Answer</label>'
 						+'<input type="text" name="ans'+counter+'" id="ans'+counter+'" style="width:200px;margin:3px" class="input" maxlength="200"/></div>'
 						+'</div></div>'
