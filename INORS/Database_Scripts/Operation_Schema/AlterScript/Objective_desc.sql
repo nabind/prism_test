@@ -37,6 +37,10 @@ UPDATE OBJECTIVE_DIM
    SET OBJECTIVE_DESC = 'Standard 7-Common Themes'
  WHERE objective_name = 'Common Themes'; 
  
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Standard 2 - Earth Science'
+ WHERE objective_name = 'Earth Science'; 
+ 
 -- Grade 6 Science
 
 UPDATE OBJECTIVE_DIM
@@ -114,6 +118,10 @@ UPDATE OBJECTIVE_DIM
 UPDATE OBJECTIVE_DIM
    SET OBJECTIVE_DESC = 'Standard 6-Problem Solving'
  WHERE objective_name = 'Problem Solving'; 
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Standard 6-Data Analysis and Probability'
+ WHERE objective_name = 'Data Analysis & Prob';  
  
  -- Social Study
  
