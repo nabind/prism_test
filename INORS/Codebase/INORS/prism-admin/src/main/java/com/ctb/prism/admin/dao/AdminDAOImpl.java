@@ -134,7 +134,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )")
+	// @Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )")
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTree()");
 		String nodeId = (String) paramMap.get("nodeid");
@@ -160,7 +160,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				String orgParentId = nodeId.substring(0, nodeId.indexOf("_"));
 				String orgLevel = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
 				if (!("1".equals(orgLevel))) {
-					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, orgParentId, currOrg, customerId);
+					lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_TENANT_DETAILS_NON_ACSI, adminYear, orgMode, orgParentId, currOrg, customerId, currOrg);
 					logger.log(IAppLogger.DEBUG, "Tree for non TASC Users...Currorg=" + currOrg);
 				} else {
 					if(Integer.parseInt(orgParentId) == 0){
@@ -187,6 +187,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				treeTo.setState("closed");
 				treeTo.setOrgTreeId(Long.valueOf(fieldDetails.get("ORG_NODEID").toString()));
 				treeTo.setData((String) (fieldDetails.get("ORG_NODE_NAME")));
+				//treeTo.setOrgMode((String) (fieldDetails.get("ORG_MODE")));
+				//treeTo.setOrgNodeLevel(((BigDecimal) (fieldDetails.get("ORG_NODE_LEVEL"))).toString());
 				treeTo.setMetadata(to);
 				treeTo.setAttr(to);
 				OrgTreeTOs.add(treeTo);
@@ -859,7 +861,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantId
 	 * @return list of orgTO
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
+	// @Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);

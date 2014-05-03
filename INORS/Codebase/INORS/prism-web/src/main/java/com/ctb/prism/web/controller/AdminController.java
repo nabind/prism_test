@@ -450,6 +450,13 @@ public class AdminController {
 			{
 				if (nodeid != null) {
 					OrgTreeTOs = adminService.getOrganizationTree(paramMap);
+					/*for (OrgTreeTO to : OrgTreeTOs) {
+						String orgNodeLevel = to.getOrgNodeLevel();
+						String organizationMode = to.getOrgMode();
+						if (orgNodeLevel.equals("2")) {
+							request.getSession().setAttribute(IApplicationConstants.ORG_MODE, organizationMode);
+						}
+					}*/
 				}
 				 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
 			}

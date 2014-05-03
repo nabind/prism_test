@@ -9,6 +9,8 @@ import com.ctb.prism.core.transferobject.BaseTO;
 public class OrgTreeTO extends BaseTO {
 	private String state;
 	private String data;
+	// private String orgMode;
+	//private String orgNodeLevel;
 	private long orgTreeId;
 	private OrgTO metadata;
 	private OrgTO attr;
@@ -40,6 +42,22 @@ public class OrgTreeTO extends BaseTO {
 	public void setData(String data) {
 		this.data = data;
 	}
+	
+	/*public String getOrgMode() {
+		return orgMode;
+	}
+
+	public void setOrgMode(String orgMode) {
+		this.orgMode = orgMode;
+	}
+
+	public String getOrgNodeLevel() {
+		return orgNodeLevel;
+	}
+
+	public void setOrgNodeLevel(String orgNodeLevel) {
+		this.orgNodeLevel = orgNodeLevel;
+	}*/
 
 	/**
 	 * @return
