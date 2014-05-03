@@ -603,8 +603,8 @@ function fetchReportMenu(typ) {
 			if(typ == 'ADM') {
 				$("#menu_Reports").hide();
 				$("#menu_Downloads").hide();
-				$("#menu_Resources").addClass('black-gradient');
-				$("[id='menu_Useful Links']").addClass('black-gradient');
+				//$("#menu_Resources").addClass('black-gradient');
+				//$("[id='menu_Useful Links']").addClass('black-gradient');
 			}
 			// $('#tab-1').removeTab();
 			callbackMenu();
