@@ -42,11 +42,13 @@
 					$('span').addClass('otherspan'); 
 				}
 				
-				if($.browser.version == '7.0') { 
-					$(".rotated").css('-ms-transform', 'none !important');
-				}
-				
 				$('tspan').each(function(index){
+					if( $.isNumeric( $(this).html() ) ) {
+						$(this).html( $(this).html() + '%');
+					}
+				});
+				
+				$('.highcharts-data-labels > div > span').each(function(index){
 					if( $.isNumeric( $(this).html() ) ) {
 						$(this).html( $(this).html() + '%');
 					}

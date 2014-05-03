@@ -29,7 +29,7 @@
 	
 				<div id="standardActivityMessage" class="relative"
 						style="height: auto; text-align: justify">
-						In this section, you can select from a wide variety of ${studentGradeName} Skill-Building Activities. 
+						In this section, you can select from a wide variety of Grade ${studentGradeName} Skill-Building Activities. 
 						These activities give you the opportunity to help your child improve his or her skills in a fun and engaging way. 
 						Such support can significantly increase your child's appreciation for learning and his or her confidence when tackling new challenges. 
 						The activities are organized in easy-to-follow steps that utilize everyday materials likely available in your home.			
@@ -63,7 +63,7 @@
 												<span class="prof-first below-proficient"><span class="unknown prof-last"><span class="prof-text red">Below Proficient</span></span></span>
 											</c:when>
 											<c:otherwise>
-												Unknown
+												
 											</c:otherwise>
 										</c:choose>
 									</c:if>

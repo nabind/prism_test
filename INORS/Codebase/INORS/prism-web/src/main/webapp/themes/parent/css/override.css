@@ -11,10 +11,10 @@ html {
 #access > li {
 	width: 33% !important;
 }
-.wizard-steps > li {
+/*.wizard-steps > li {
 	height: 32px !important;
 	line-height: 50px !important;
-}
+}*/
 .iframeWrapper {
 	width:100%;height:100%;
 	padding-top:20px; 
@@ -1092,4 +1092,8 @@ div#nav ul li a {
 
 .articledata {
 	color: #005CFF;
+}
+
+.button > .button-icon.right-side {
+	margin: -2px -14px -1px 9px !important;
 }

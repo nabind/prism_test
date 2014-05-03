@@ -69,7 +69,7 @@
 												<span class="prof-first below-proficient"><span class="unknown prof-last"><span class="prof-text red">Below Proficient</span></span></span>
 											</c:when>
 											<c:otherwise>
-												Unknown
+												
 											</c:otherwise>
 										</c:choose>
 									</c:if>
