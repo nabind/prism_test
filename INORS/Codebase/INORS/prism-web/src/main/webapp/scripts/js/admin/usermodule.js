@@ -859,6 +859,37 @@
 				$.modal.alert(strings['script.org.error']);
 			}
 		});
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'getUserDetails.do',
+			data : "tenantId=" + $('input#last_user_tenant').val() + "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val(),
+			dataType : 'json',
+			cache:false,
+			success : function(data) {
+				if (data != null && data.length > 0){
+					getUserDetails(false, data);
+					enableSorting(true);
+					retainUniqueValue();
+					//setLastRowId ();
+					unblockUI();
+					//$("#userTable").animate({scrollTop: currentScrollTop+600}, 500);
+				} else {
+					$("#moreUser").addClass("disabled");
+					if($.browser.msie) $("#moreUser").addClass("disabled-ie");
+					retainUniqueValue();
+					unblockUI();
+				}
+				if (data != null && data.length < 14) {
+					// check if this is the last set of result
+					$("#moreUser").addClass("disabled");
+					if($.browser.msie) $("#moreUser").addClass("disabled-ie");
+				}
+			},
+			error : function(data) {
+				unblockUI();
+			}
+		});
 	}
 	
 	/* Fixed QC defect - Joy
