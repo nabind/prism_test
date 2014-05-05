@@ -32,6 +32,9 @@
 			a {
 			    text-decoration: none;
 			}
+			.formatIcon {
+				display: none !important;
+			}
 		</style>
 		
 		

@@ -20,6 +20,9 @@
 		span {
 			font-family: Arial, Helvetica, sans-serif !important;
 		}
+		.formatIcon {
+			display: none !important;
+		}
     </style>
 	<script src='${contextPath}/scripts/js/libs/jquery-1.7.2.min.js'></script>
    	<script src='${contextPath}/scripts/js/libs/jquery-ui.min.js'></script>
