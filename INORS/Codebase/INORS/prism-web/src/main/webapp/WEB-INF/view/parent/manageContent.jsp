@@ -135,6 +135,7 @@
 												<option value='<spring:message code="val.contentType.rsc"/>'><spring:message code="name.contentType.rsc"/></option>
 												<option value='<spring:message code="val.contentType.eda"/>'><spring:message code="name.contentType.eda"/></option>
 												<option value='<spring:message code="val.contentType.att"/>'><spring:message code="name.contentType.att"/></option>
+												<option value='<spring:message code="val.contentType.rbs"/>'><spring:message code="name.contentType.rbs"/></option>
 											</select>
 										</p>
 									</div>
@@ -201,6 +202,14 @@
 								<span class="icon-page-list"></span>
 							</span> 
 							<spring:message code="button.modify.att"/>
+						</a>
+					</div>
+					<div id="modifyRbsDiv" style="display: none;" >
+						<a id="modifyRbsButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.rbs"/>
 						</a>
 					</div>
 				</sec:authorize>

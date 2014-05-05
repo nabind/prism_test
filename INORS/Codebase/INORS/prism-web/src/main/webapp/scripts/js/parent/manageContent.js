@@ -99,6 +99,14 @@ $(document).ready(function() {
 		openModifyGenericModalToEdit('ATT');
 	});
 	
+	$('#modifyRbsButton').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
+		openModifyGenericModalToEdit('RBS');
+	});
+	
 	$('#refresh-content').live('click',function(){
 		loadManageContentList();
 	});
@@ -194,7 +202,7 @@ function openModifyGenericModalToEdit(type) {
 	var contentTypeId = $('#contentTypeIdManageContent').val();
 	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 	
-	if(type == 'RSC' || type == 'STD'){
+	if(type == 'RSC' || type == 'STD' || type == 'RBS'){
 		subtestId = $('#subtestIdManageContent').val();
 	}
 	if(type == 'STD'){
@@ -229,7 +237,7 @@ function openModifyGenericModalToEdit(type) {
 				
 				$('#p_subtest').hide();
 				$('#p_objective').hide();
-				if(type == 'RSC'){
+				if(type == 'RSC' || type == 'RBS'){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 				}else if(type == 'STD'){
@@ -251,7 +259,9 @@ function openModifyGenericModalToEdit(type) {
 				}else if(type == 'EDA'){
 					modalTitle+='Modify Everyday Activity Description';
 				}else if(type == 'ATT'){
-					modalTitle+='Modify About the Test  Description';
+					modalTitle+='Modify About the Test Description';
+				}else if(type == 'RBS'){
+					modalTitle+='Modify Result by Standard Description';
 				} 
 				
 				$("#modifyGenericModal").modal({
@@ -930,6 +940,7 @@ function hideContentElements(){
 	$('#modifyRscDiv').hide();
 	$('#modifyEdaDiv').hide();
 	$('#modifyAttDiv').hide();
+	$('#modifyRbsDiv').hide();
 	$('#contentTableDiv').hide();
 }
 
@@ -950,6 +961,8 @@ function showContentElements(){
 		if(subtestId != -1){
 			if(contentTypeId == 'RSC'){
 				$('#modifyRscDiv').show();
+			}else if(contentTypeId == 'RBS'){
+				$('#modifyRbsDiv').show();
 			}
 			
 			if(objectiveId != -1){
