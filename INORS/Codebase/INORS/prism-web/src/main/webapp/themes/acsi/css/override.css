@@ -1042,6 +1042,9 @@ height: 16px;
 .button > .button-icon.right-side {
 	margin: -2px -14px -1px 9px !important;
 }
+.button > .button-icon {
+	margin: -1px 9px -1px -14px !important;
+}
 
 .inline-small-label {
 		padding-left: 70px;

@@ -1097,3 +1097,6 @@ div#nav ul li a {
 .button > .button-icon.right-side {
 	margin: -2px -14px -1px 9px !important;
 }
+.button > .button-icon {
+	margin: -1px 9px -1px -14px !important;
+}
