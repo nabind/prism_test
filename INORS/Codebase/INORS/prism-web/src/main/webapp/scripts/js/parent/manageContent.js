@@ -331,6 +331,7 @@ function modifyGeneric(form, win) {
 	var descriptionFlag = true;
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
+		editorVal = editorVal.trim();
 		if(editorVal == ""){
 			$('.mandatoryDescription').show(ANIMATION_TIME);
 			descriptionFlag = false;
