@@ -286,7 +286,7 @@
 									// END : open tree on clicking # of users in org screen
 									
 									//Code to select the first node on load
-									if((redirectLevel == 1 || redirectLevel == 0) || objectTree == null) {
+									if((redirectLevel == 1 || redirectLevel == 0) || objectTree == null || tempTree == null) {
 										selectTheFirstNodeOfTree($("#treeViewForOrg > ul > li:first").attr("id"));
 									}
 									if($("#isRedirectedTree").val()=='Yes'){
