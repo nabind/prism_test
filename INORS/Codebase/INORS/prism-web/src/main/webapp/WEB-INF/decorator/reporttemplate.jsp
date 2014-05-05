@@ -2,9 +2,9 @@
 		<!DOCTYPE html>
 		<html>
 		<head>
-		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<!-- Fixed for IE crashed issue -->
-		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">-->
 		</head>
 		<script src="scripts/js/libs/modernizr.custom.js"></script>
 		<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>
@@ -12,6 +12,7 @@
 		<script src="scripts/js/highchart/highcharts-2.3.2.src.js"></script>
 		<script src="scripts/js/highchart/default.service.js"></script>
 		<script src="scripts/js/highchart/item.hyperlink.service.js"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="themes/acsi/css/ie9.css" type="text/css" /><![endif]-->
 		<style>
 			.otherspan {
 				vertical-align:middle !important;
