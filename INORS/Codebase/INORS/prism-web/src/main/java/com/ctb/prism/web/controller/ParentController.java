@@ -264,6 +264,7 @@ public class ParentController {
 		
 		// update session with new display name
 		req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, displayName);
+		req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 		
 		String status = "Fail";
 		

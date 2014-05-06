@@ -784,7 +784,7 @@ public class AdminController {
 			}
 			
 			// Check if password contains part of user name
-			if (password.equalsIgnoreCase(userName) || password.toLowerCase().indexOf(userName.toLowerCase()) != -1 || userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
+			if (password.equalsIgnoreCase(userId) || password.toLowerCase().indexOf(userId.toLowerCase()) != -1 || userId.toLowerCase().indexOf(password.toLowerCase()) != -1) {
 				throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
 			}
 			

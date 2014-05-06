@@ -310,7 +310,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear, IApplicationConstants.ROLE_PARENT_ID);
+			if(!"undefined".equals(tenantId)) {
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear, IApplicationConstants.ROLE_PARENT_ID);
+			}
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		if (lstData.size() > 0) {
@@ -539,7 +541,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					ldapFlag = ldapManager.updateUser(userId, userId, userId, password);
 				} else {
 					String salt = PasswordGenerator.getNextSalt();
-					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_N,
+					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
 							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userId, salt)), salt, userId);
 					ldapFlag = true;
 				}

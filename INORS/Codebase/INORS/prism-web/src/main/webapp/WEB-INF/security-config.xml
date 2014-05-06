@@ -15,6 +15,7 @@
 	<http pattern="/img/**" security="none" />
 	<http pattern="/media/**" security="none" />
 	<http pattern="/scripts/**" security="none" />
+	<http pattern="/staticfiles/**" security="none" />
 	<http pattern="/themes/**" security="none" />
 	<http pattern="/styles/**" security="none" />
 	<http pattern="/loadJSPView*" security="none" />
