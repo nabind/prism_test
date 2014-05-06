@@ -1100,3 +1100,7 @@ div#nav ul li a {
 .button > .button-icon {
 	margin: -1px 9px -1px -14px !important;
 }
+
+.button > .button-icon.anthracite-gradient {
+	margin: -6px 4px -5px -15px !important;
+}
