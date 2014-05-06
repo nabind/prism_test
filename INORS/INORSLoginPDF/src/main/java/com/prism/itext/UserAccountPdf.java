@@ -81,6 +81,7 @@ public class UserAccountPdf {
 				}
 				String encDocLocation = "";
 				String identifier = "";
+				long count = 1;
 				for (String id : ids) {
 					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
 						//// processLoginPdf(prop, dao, id);
@@ -89,7 +90,7 @@ public class UserAccountPdf {
 						String letterLocation = processIcLetterPdf(prop, dao, id);
 						ARCHIVE_NEEDED = false;
 						logger.info("IC Letter Location: " + letterLocation);
-						
+						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ---------------------------------------------------------------------------------");
 						//archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
@@ -116,10 +117,12 @@ public class UserAccountPdf {
 								  "Different notification will go once Individiual IC leter is completed");
 					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
 					// individual student 
+					count = 1;
 					for (String id : ids) {
 						processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
 						// logger.info("IC Letter Location: " + letterLocation);
+						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE FOR INDV ------------------------------------------------------------------------");
 					}
 					// send mail
 					subject = "Individiual IC Letter Generatation completed ";
