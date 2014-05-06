@@ -863,7 +863,8 @@
 		$.ajax({
 			type : "GET",
 			url : 'getUserDetails.do',
-			data : "tenantId=" + $('input#last_user_tenant').val() + "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val(),
+			//data : "tenantId=" + $('input#last_user_tenant').val() + "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val(),
+			data : "tenantId=" + $("#CurrentOrg").val() + "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val(),
 			dataType : 'json',
 			cache:false,
 			success : function(data) {

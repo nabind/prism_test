@@ -7,6 +7,7 @@
 <%
 String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 %>
 
 <div class="panel-control">
@@ -15,6 +16,7 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 	</div>
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
+	<input type="hidden" value="<%=currentOrg %>" name="CurrentOrg" id="CurrentOrg">
 	<div class="float-right">
 		<select style="width: 100px;" name="AdminYear" id="AdminYear" 
 			title='Select administration to refresh the hierarchy.'
