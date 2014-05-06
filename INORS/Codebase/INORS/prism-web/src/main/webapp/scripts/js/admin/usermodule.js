@@ -179,6 +179,10 @@
 											if(redirectLevel > 1 && tempTree != '' && tempTree != null) {
 												isOpeningFromRemote = true;
 												objectTree = tempTree.split(",");
+												if(!loadFullpath) {
+													objectTreeStack = tempTree.split(",");
+													loadFullpath = true;
+												}
 												
 												var count = 0;
 												var newTempTree = '';

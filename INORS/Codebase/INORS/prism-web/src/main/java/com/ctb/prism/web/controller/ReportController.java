@@ -1778,6 +1778,8 @@ public class ReportController extends BaseDAO {
 				//IFillManager fillManager = new FillManagerImpl();
 				//jasperPrint = fillManager.fillReport(jasperReport, parameterValues);
 				jasperPrint = reportService.fillReportForTableApi(reportUrl, jasperReport, parameterValues);
+				// reset the value for regular report
+				parameterValues.put("p_Is3D", IApplicationConstants.FLAG_Y);
 			}
 			// get jasper print object
 			if (jasperPrint == null)
