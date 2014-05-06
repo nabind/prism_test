@@ -769,7 +769,7 @@ public interface IParentQuery {
 
 	public static final String GET_OBJECTIVE_DETAILS_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS_EDIT(?,?)";
 
-	public static final String GET_GENERIC_DETAILS_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_GENERIC_DETAILS_EDIT(?,?,?,?,?,?)";
+	public static final String GET_GENERIC_DETAILS_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_GENERIC_DETAILS_EDIT(?,?,?,?,?,?,?)";
 
 	public static final String GET_STUDENT_SUBTEST = "PKG_PARENT_NETWORK.SP_GET_SUBTEST_DETAILS(?,?,?)";
 

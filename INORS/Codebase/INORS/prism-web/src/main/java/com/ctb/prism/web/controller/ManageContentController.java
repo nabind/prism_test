@@ -358,6 +358,7 @@ public class ManageContentController {
 		long subtestId = Long.parseLong(request.getParameter("subtestId"));
 		long objectiveId = Long.parseLong(request.getParameter("objectiveId"));
 		String type = request.getParameter("type");
+		String performanceLevelId = request.getParameter("performanceLevelId");
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("custProdId", custProdId);
@@ -365,6 +366,7 @@ public class ManageContentController {
 		paramMap.put("subtestId", subtestId);
 		paramMap.put("objectiveId", objectiveId);
 		paramMap.put("type", type);
+		paramMap.put("performanceLevelId", performanceLevelId);
 		
 		ManageContentTO manageContentTO = null;
 		Gson gson = new Gson();

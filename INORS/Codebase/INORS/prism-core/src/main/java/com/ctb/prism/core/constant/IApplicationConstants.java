@@ -209,6 +209,7 @@ public interface IApplicationConstants {
 	public static final String CONTENT_TYPE_ACT = "ACT";
 	public static final String CONTENT_TYPE_IND = "IND";
 	public static final String CONTENT_TYPE_STD = "STD";
+	public static final String CONTENT_TYPE_OAR = "OAR";
 	public static final String CHILD_MAP = "CHILD_MAP";
 	
 	public static final String[] ORG_MODE_DESC = { "NON-PUBLIC", "PUBLIC" };

@@ -136,13 +136,39 @@
 												<option value='<spring:message code="val.contentType.eda"/>'><spring:message code="name.contentType.eda"/></option>
 												<option value='<spring:message code="val.contentType.att"/>'><spring:message code="name.contentType.att"/></option>
 												<option value='<spring:message code="val.contentType.rbs"/>'><spring:message code="name.contentType.rbs"/></option>
+												<option value='<spring:message code="val.contentType.oar"/>'><spring:message code="name.contentType.oar"/></option>
 											</select>
 										</p>
 									</div>
 								</div>
 							</div>
-							<%@ include file="../common/required.jsp" %>
+							
+							<div id="div_performanceLevel"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								style="height: 10px; display: none;">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.content.performanceLevel"/>
+									</h6>
+									<div class="float-left margin-right margin-bottom">
+										<p class="button-height">
+											<select id="performanceLevelIdManageContent" name="performanceLevelId"
+												class="select navy-gradient expandable-list"
+												style="width: 150px;">
+												<option value='<spring:message code="val.pl.pas"/>'><spring:message code="name.pl.pas"/></option>
+												<option value='<spring:message code="val.pl.dnp"/>'><spring:message code="name.pl.dnp"/></option>
+												<option value='<spring:message code="val.pl.und"/>'><spring:message code="name.pl.und"/></option>
+												<option value='<spring:message code="val.pl.dnr"/>'><spring:message code="name.pl.dnr"/></option>
+												<option value='<spring:message code="val.pl.psp"/>'><spring:message code="name.pl.psp"/></option>
+												<option value='<spring:message code="val.pl.pri"/>'><spring:message code="name.pl.pri"/></option>
+											</select>
+										</p>
+									</div>
+								</div>
+							</div>
+							
 						</div>
+						<%@ include file="../common/required.jsp" %>
 					</div>
 				</div>
 			</form:form>
@@ -210,6 +236,14 @@
 								<span class="icon-page-list"></span>
 							</span> 
 							<spring:message code="button.modify.rbs"/>
+						</a>
+					</div>
+					<div id="modifyOarDiv" style="display: none;" >
+						<a id="modifyOarButton" href="#" class="button glossy margin-left">
+							<span class="button-icon blue-gradient manage-btn"> 
+								<span class="icon-page-list"></span>
+							</span> 
+							<spring:message code="button.modify.oar"/>
 						</a>
 					</div>
 				</sec:authorize>
@@ -316,7 +350,7 @@
 							</fieldset>
 						</p>
 						
-						<!-- As per requirement, Performance level does not depend upon content -->
+						<!-- As per requirement, Performance level does not depend upon Activity/Indicator -->
 						<!-- 
 						<p class="button-height inline-label">
 							<label class="label" for="performanceLevel"><spring:message code="label.content.performanceLevel"/><span
@@ -386,7 +420,7 @@
 							</fieldset>
 						</p>
 						
-						<!-- As per requirement, proficiency level does not depend upon content -->
+						<!-- As per requirement, proficiency level does not depend upon Activity/Indicator -->
 						<!-- 
 						<p class="button-height inline-label">
 							<label class="label" for="subHeader"><spring:message code="label.content.performanceLevel"/><span
@@ -486,6 +520,7 @@
 						<input type="hidden" id="objectiveId" name="objectiveId"/>
 						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
 						<input type="hidden" id="contentType" name="contentType"/>
+						<input type="hidden" id="performanceLevel" name="performanceLevel"/>
 						
 						<p class="button-height inline-label">
 							<label class="label" style="width: 150px;">
@@ -506,6 +541,13 @@
 								<spring:message code="label.subtest"/>
 							</label> 
 							<span id="subtestText"></span>
+						</p>
+						
+						<p id="p_performanceLevel" class="button-height inline-label" style="display:none;">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.content.performanceLevel"/>
+							</label> 
+							<span id="performanceLevelText"></span>
 						</p>
 						
 						<p id="p_objective" class="button-height inline-label" style="display:none;">

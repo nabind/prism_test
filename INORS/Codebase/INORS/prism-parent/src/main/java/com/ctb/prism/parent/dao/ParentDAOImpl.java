@@ -1664,6 +1664,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
 		final long objectiveId = ((Long) paramMap.get("objectiveId")).longValue();
 		final String type = (String) paramMap.get("type");
+		final String performanceLevelId = (String) paramMap.get("performanceLevelId");
 
 		try {
 			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1674,7 +1675,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(3, subtestId);
 					cs.setLong(4, objectiveId);
 					cs.setString(5, type);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.setString(6, performanceLevelId);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1683,7 +1685,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ManageContentTO manageContentTOResult = null;
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(6);
+						rs = (ResultSet) cs.getObject(7);
 						if (rs.next()) {
 							manageContentTOResult = new ManageContentTO();
 							if(IApplicationConstants.CONTENT_TYPE_STD.equals(type)){

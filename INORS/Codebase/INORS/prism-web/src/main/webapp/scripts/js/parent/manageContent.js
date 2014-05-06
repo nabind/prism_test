@@ -107,6 +107,14 @@ $(document).ready(function() {
 		openModifyGenericModalToEdit('RBS');
 	});
 	
+	$('#modifyOarButton').live("click", function() {
+		resetModalForm("addNewContent");
+		resetModalForm("editContent");
+		resetModalForm("modifyStandardForm");
+		resetModalForm("modifyGenericForm");
+		openModifyGenericModalToEdit('OAR');
+	});
+	
 	$('#refresh-content').live('click',function(){
 		loadManageContentList();
 	});
@@ -199,11 +207,13 @@ function openModifyGenericModalToEdit(type) {
 	var gradeId = $('#gradeIdManageContent').val();
 	var subtestId = 0;
 	var objectiveId = 0;
+	var performanceLevelId = 0;
 	var contentTypeId = $('#contentTypeIdManageContent').val();
 	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 	
-	if(type == 'RSC' || type == 'STD' || type == 'RBS'){
+	if(type == 'RSC' || type == 'STD' || type == 'RBS' || type == 'OAR'){
 		subtestId = $('#subtestIdManageContent').val();
+		performanceLevelId = $('#performanceLevelIdManageContent').val();
 	}
 	if(type == 'STD'){
 		objectiveId = $('#objectiveIdManageContent').val();
@@ -211,7 +221,7 @@ function openModifyGenericModalToEdit(type) {
 	
 	var dataUrl = 'custProdId='+custProdId+'&gradeId='+gradeId
 					+'&subtestId='+subtestId+'&objectiveId='+objectiveId
-					+'&type='+type;
+					+'&type='+type+'&performanceLevelId='+performanceLevelId;
 	
 	$.ajax({
 			type : "GET",
@@ -223,6 +233,7 @@ function openModifyGenericModalToEdit(type) {
 				var custProdName = $('#custProdIdManageContent :selected').text();
 				var gradeName = $('#gradeIdManageContent :selected').text();
 				var subtestName = $('#subtestIdManageContent :selected').text();
+				var performanceLevelName = $('#performanceLevelIdManageContent :selected').text();
 				
 				//As we need to show Objective description instead of objective name - By Joy 
 				//var objectiveName = $('#objectiveIdManageContent :selected').text();
@@ -237,6 +248,8 @@ function openModifyGenericModalToEdit(type) {
 				
 				$('#p_subtest').hide();
 				$('#p_objective').hide();
+				$('#p_performanceLevel').hide();
+				
 				if(type == 'RSC' || type == 'RBS'){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
@@ -245,6 +258,11 @@ function openModifyGenericModalToEdit(type) {
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 					$('#p_objective').show();
 					$modifyGenericModal.find('#objectiveText').text(objectiveName);
+				}else if(type == 'OAR'){
+					$('#p_subtest').show();
+					$modifyGenericModal.find('#subtestText').text(subtestName);
+					$('#p_performanceLevel').show();
+					$modifyGenericModal.find('#performanceLevelText').text(performanceLevelName);
 				}
 				
 				if(data != null && data.contentDescription != ""){
@@ -262,7 +280,9 @@ function openModifyGenericModalToEdit(type) {
 					modalTitle+='Modify About the Test Description';
 				}else if(type == 'RBS'){
 					modalTitle+='Modify Result by Standard Description';
-				} 
+				}else if(type == 'OAR'){
+					modalTitle+='Modify Overall Result Description';
+				}
 				
 				$("#modifyGenericModal").modal({
 					title: modalTitle,
@@ -347,6 +367,7 @@ function modifyGeneric(form, win) {
 		var objectiveId = $('#objectiveIdManageContent').val();
 		var contentTypeId = $('#contentTypeIdManageContent').val();
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
+		var performanceLevelId = (contentTypeId == 'OAR') ?  $('#performanceLevelIdManageContent').val() : "";
 		
 		var $modifyGenericModal = $('#modifyGenericModal');
 		$modifyGenericModal.find('#custProdId').val(custProdId);
@@ -355,6 +376,7 @@ function modifyGeneric(form, win) {
 		$modifyGenericModal.find('#objectiveId').val(objectiveId);
 		$modifyGenericModal.find('#contentType').val(contentTypeId);
 		$modifyGenericModal.find('#contentTypeName').val(contentTypeName);
+		$modifyGenericModal.find('#performanceLevel').val(performanceLevelId);
 		
 		var formObj = $('#modifyGenericForm').serialize();
 		$.ajax({
@@ -384,6 +406,46 @@ function modifyGeneric(form, win) {
 	}
 }
 
+function buildPerformanceLevelDOM($container,performanceLevel){
+	
+	var option = "";
+	if(performanceLevel == 'A' || performanceLevel == ''){
+		option += "<option selected value='A'>Pass</option>";
+		option += "<option value='B'>Did Not Pass</option>";
+		option += "<option value='U'>Undefined</option>";	
+		option += "<option value='N'>DNR</option>";		
+		option += "<option value='P'>Pass+</option>";
+	}else if(performanceLevel == 'B'){
+		option += "<option value='A'>Pass</option>";
+		option += "<option selected value='B'>Did Not Pass</option>";
+		option += "<option value='U'>Undefined</option>";	
+		option += "<option value='N'>DNR</option>";		
+		option += "<option value='P'>Pass+</option>";
+	}else if(performanceLevel == 'U'){
+		option += "<option value='A'>Pass</option>";
+		option += "<option value='B'>Did Not Pass</option>";
+		option += "<option selected value='U'>Undefined</option>";	
+		option += "<option value='N'>DNR</option>";		
+		option += "<option value='P'>Pass+</option>";
+	}else if(performanceLevel == 'N'){
+		option += "<option value='A'>Pass</option>";
+		option += "<option value='B'>Did Not Pass</option>";
+		option += "<option value='U'>Undefined</option>";	
+		option += "<option selected value='N'>DNR</option>";		
+		option += "<option value='P'>Pass+</option>";
+	}else if(performanceLevel == 'P'){
+		option += "<option value='A'>Pass</option>";
+		option += "<option value='B'>Did Not Pass</option>";
+		option += "<option value='U'>Undefined</option>";	
+		option += "<option value='N'>DNR</option>";		
+		option += "<option selected value='P'>Pass+</option>";
+	}
+	$container.find('#performanceLevel').html(option);
+	$container.find('#performanceLevel').change();
+	$container.find('#performanceLevel').trigger('update-select-list');						
+	
+}
+
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
 	blockUI();
@@ -402,44 +464,6 @@ function openContentModalToEdit(contentId) {
 				$editContentModal.find('#contentName').val(data.contentName);
 				$editContentModal.find('#subHeader').val(data.subHeader);
 				$editContentModal.find('#contentDescriptionEditorEdit').val(data.contentDescription);
-				
-				var performanceLevel = data.performanceLevel;
-				$editContentModal.find('#performanceLevel option').removeAttr('selected');
-				var option = "";
-				if(data.performanceLevel == 'A'){
-					option += "<option selected value='A'>Pass</option>";
-					option += "<option value='B'>Did Not Pass</option>";
-					option += "<option value='U'>Undefined</option>";	
-					option += "<option value='N'>DNR</option>";		
-					option += "<option value='P'>Pass+</option>";
-				}else if(data.performanceLevel == 'B'){
-					option += "<option value='A'>Pass</option>";
-					option += "<option selected value='B'>Did Not Pass</option>";
-					option += "<option value='U'>Undefined</option>";	
-					option += "<option value='N'>DNR</option>";		
-					option += "<option value='P'>Pass+</option>";
-				}else if(data.performanceLevel == 'U'){
-					option += "<option value='A'>Pass</option>";
-					option += "<option value='B'>Did Not Pass</option>";
-					option += "<option selected value='U'>Undefined</option>";	
-					option += "<option value='N'>DNR</option>";		
-					option += "<option value='P'>Pass+</option>";
-				}else if(data.performanceLevel == 'N'){
-					option += "<option value='A'>Pass</option>";
-					option += "<option value='B'>Did Not Pass</option>";
-					option += "<option value='U'>Undefined</option>";	
-					option += "<option selected value='N'>DNR</option>";		
-					option += "<option value='P'>Pass+</option>";
-				}else if(data.performanceLevel == 'P'){
-					option += "<option value='A'>Pass</option>";
-					option += "<option value='B'>Did Not Pass</option>";
-					option += "<option value='U'>Undefined</option>";	
-					option += "<option value='N'>DNR</option>";		
-					option += "<option selected value='P'>Pass+</option>";
-				}
-				$editContentModal.find('#performanceLevel').html(option);
-				$editContentModal.find('#performanceLevel').change();
-				$editContentModal.find('#performanceLevel').trigger('update-select-list');
 				
 				$("#editContentModal").modal({
 					title: 'Edit Content',
@@ -942,6 +966,8 @@ function hideContentElements(){
 	$('#modifyEdaDiv').hide();
 	$('#modifyAttDiv').hide();
 	$('#modifyRbsDiv').hide();
+	$('#modifyOarDiv').hide();
+	$('#div_performanceLevel').hide();
 	$('#contentTableDiv').hide();
 }
 
@@ -964,6 +990,9 @@ function showContentElements(){
 				$('#modifyRscDiv').show();
 			}else if(contentTypeId == 'RBS'){
 				$('#modifyRbsDiv').show();
+			}else if(contentTypeId == 'OAR'){
+				$('#div_performanceLevel').show();
+				$('#modifyOarDiv').show();
 			}
 			
 			if(objectiveId != -1){
