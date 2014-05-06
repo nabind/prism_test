@@ -626,7 +626,7 @@ public class CommonDAOImpl implements CommonDAO {
 				}
 				FileUtil.copyFile(rootPath, value);
 				
-				value = "IC/" + FileUtil.getFileNameFromFilePath(value);
+				value = "/IC/" + FileUtil.getFileNameFromFilePath(value);
 				pstmt.setString(1, value); // IC_FILE_LOC
 				pstmt.setString(2, key); // TEST_ELEMENT_ID
 				pstmt.addBatch();
