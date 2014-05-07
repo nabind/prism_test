@@ -170,6 +170,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setUserEmail((fieldDetails.get("EMAIL") != null) ? fieldDetails.get("EMAIL").toString() : "");
 				//user.setProduct(fieldDetails.get("PRODUCT").toString());
 				user.setUserType(userType);
+				user.setOrgMode(fieldDetails.get("ORG_MODE").toString());
 			}
 		}
 		return user;
