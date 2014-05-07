@@ -11,7 +11,7 @@
 	
 
 
-	<div class="right-column margin-bottom-medium" style="min-height:636px;">
+	<div class="right-column margin-bottom-medium" style="min-height:650px;">
 			
 
 		<div class="right-column-200px" style="margin-top: 15px;">
