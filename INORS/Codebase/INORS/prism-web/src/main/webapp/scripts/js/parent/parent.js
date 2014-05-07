@@ -218,8 +218,8 @@ $(document).ready(function() {
 		$("#ic_student_list").find("p").remove();
 	}
 	//============================= Get Child List for Invitation Code ================================
-	function getChildList() {
-		var ic = "invitationCode=" + $("input#invitationCode").val();
+	function getChildList(fromLogin) {
+		var ic = "invitationCode=" + $("input#invitationCode").val()+ "&fromLogin=" +fromLogin;
 		var student_details = "";
 		blockUI();
 		$.ajax({
@@ -430,7 +430,7 @@ $(document).ready(function() {
 					click: function(win) {
 						// Submit clicked for the first time for validating IC
 						if(firstSubmit){
-							getChildList();
+							getChildList('N');
 						}
 						// Submit clicked for the second time for verify child info and insert an entry in invitation_code_claim table
 						else{

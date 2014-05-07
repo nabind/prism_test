@@ -358,10 +358,11 @@ public class ParentController {
 		try {
 			List<ParentTO> parentToList = new ArrayList<ParentTO>();
 			String invitationCode = req.getParameter("invitationCode");
+			String fromLogin = req.getParameter("fromLogin");
 			
 			//Fix for TD 78161 - By Joy
 			UserTO loggedinUserTO = null;
-			if(req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS)!= null){
+			if(req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS)!= null && fromLogin.equals("N")){ //formLogin patch is required for browser shared session issue
 				loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			}
 			

@@ -303,6 +303,7 @@
 				active = form.find('fieldset.active'),
 				next = active.nextAll('fieldset').first(),
 				valid = true;
+				fromLogin ='Y';
 
 			// If valid
 			if (next.length > 0)
@@ -319,7 +320,7 @@
 					// CHANGED FOR PRISM
 					if(!isInvCoveValid) {
 						removePreviousChild();
-						getChildList();
+						getChildList(fromLogin);
 					}
 					if(isInvCoveValid) {
 						active.markWizardStepAsComplete();
