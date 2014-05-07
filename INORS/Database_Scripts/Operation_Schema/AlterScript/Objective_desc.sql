@@ -116,7 +116,7 @@ UPDATE OBJECTIVE_DIM
  WHERE objective_name = 'Measurement';
  
 UPDATE OBJECTIVE_DIM
-   SET OBJECTIVE_DESC = 'Standard 6-Problem Solving'
+   SET OBJECTIVE_DESC = 'Standard 7-Problem Solving'
  WHERE objective_name = 'Problem Solving'; 
  
 UPDATE OBJECTIVE_DIM
