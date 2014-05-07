@@ -530,7 +530,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				reportTO.setReportName((String) data.get("REPORT_NAME"));
 				reportTO.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
 				reportTO.setEnabled(data.get("STATUS").equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-				String strRoles = (String) data.get("ROLES");
+				//Changed to get this from cache
+				//String strRoles = (String) data.get("ROLES");
+				String strRoles = getListOfRoles(reportTO.getReportId());
 				reportTO.setAllRoles(strRoles);
 				if (strRoles != null && strRoles.length() > 0) {
 					String[] roles = strRoles.split(",");
@@ -1942,6 +1944,19 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "fileName = " + fileName);
 		logger.log(IAppLogger.INFO, "Exit: getStudentFileName()");
 		return fileName;
+	}
+	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getListOfRoles' )")
+	private String getListOfRoles(Long reportId) {
+		logger.log(IAppLogger.INFO, "Enter: getListOfRoles()"); 
+		String roles = null;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_LIST_OF_ROLES,reportId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				roles = fieldDetails.get("ROLES").toString();
+			}
+		}
+		return roles;
 	}
 	
 }

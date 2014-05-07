@@ -204,7 +204,7 @@ public interface IReportQuery {
 			"' ORDER BY ASS.ASSESSMENTID,RE.REPORT_NAME DESC");*/
 			"SELECT DISTINCT ASS.DB_MENUID MENU_ID, ",
 			" ASS.MENU_NAME MENU_NAME,RE.DB_REPORTID REPORT_ID, ",
-			" REPORT_NAME, REPORT_FOLDER_URI, RE.ACTIVATION_STATUS STATUS, SF_GET_LIST_OF_ROLES(RE.DB_REPORTID) ROLES, ", 
+			" REPORT_NAME, REPORT_FOLDER_URI, RE.ACTIVATION_STATUS STATUS,  ", 
 			" REPORT_TYPE TYPE, ASS.MENU_SEQ, acc.report_seq, acc.org_level ORGLEVEL ",
 			" FROM DASH_REPORTS RE, dash_menus ASS, dash_menu_rpt_access acc ", 
 			" WHERE RE.REPORT_TYPE LIKE (?) ",
@@ -215,7 +215,8 @@ public interface IReportQuery {
 				"(SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ?)",
 	" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 
-
+	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(
+			"SELECT SF_GET_LIST_OF_ROLES(?) ROLES from DUAL"); 
 
 	public static final String REPORT_TYPE = CustomStringUtil.appendString("select REPORT_TYPE as TYPE, DB_REPORTID as ID, " +
 	" REPORT_FOLDER_URI As URI from dash_reports WHERE (REPORT_FOLDER_URI = ? OR DB_REPORTID = ?) ");
