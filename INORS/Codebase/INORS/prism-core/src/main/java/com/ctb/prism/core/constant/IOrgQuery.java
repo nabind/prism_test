@@ -89,7 +89,7 @@ public interface IOrgQuery {
 							" OND.ORG_MODE",
 							" FROM ORG_NODE_DIM OND",
 							" WHERE OND.ORG_NODEID = ?",
-							" AND OND.ORG_NODE_LEVEL = 2",
+							" AND OND.ORG_NODE_LEVEL = 1",
 							" ORDER BY ORG_NODE_NAME ");
 	
 	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
