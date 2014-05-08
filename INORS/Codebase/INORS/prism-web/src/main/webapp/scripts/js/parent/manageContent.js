@@ -255,7 +255,7 @@ function openModifyGenericModalToEdit(type) {
 				$('#p_performanceLevel').hide();
 				$('#p_statusCode').hide();
 				
-				if(type == 'RSC' || type == 'RBS'){
+				if(type == 'RSC' ){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 				}else if(type == 'STD'){
@@ -263,7 +263,7 @@ function openModifyGenericModalToEdit(type) {
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 					$('#p_objective').show();
 					$modifyGenericModal.find('#objectiveText').text(objectiveName);
-				}else if(type == 'OAR'){
+				}else if(type == 'OAR' || type == 'RBS'){
 					$('#p_subtest').show();
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 					$('#p_performanceLevel').show();
@@ -374,8 +374,8 @@ function modifyGeneric(form, win) {
 		var objectiveId = $('#objectiveIdManageContent').val();
 		var contentTypeId = $('#contentTypeIdManageContent').val();
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
-		var performanceLevelId = (contentTypeId == 'OAR') ?  $('#performanceLevelIdManageContent').val() : "";
-		var statusCodeId = (contentTypeId == 'OAR') ?  $('#statusCodeIdManageContent').val() : "";
+		var performanceLevelId = (contentTypeId == 'OAR' || contentTypeId == 'RBS') ?  $('#performanceLevelIdManageContent').val() : "";
+		var statusCodeId = (contentTypeId == 'OAR' || contentTypeId == 'RBS') ?  $('#statusCodeIdManageContent').val() : "";
 		
 		var $modifyGenericModal = $('#modifyGenericModal');
 		$modifyGenericModal.find('#custProdId').val(custProdId);
@@ -1053,6 +1053,8 @@ function showContentElements(){
 			if(contentTypeId == 'RSC'){
 				$('#modifyRscDiv').show();
 			}else if(contentTypeId == 'RBS'){
+				$('#div_performanceLevel').show();
+				$('#div_statusCode').show();
 				$('#modifyRbsDiv').show();
 			}else if(contentTypeId == 'OAR'){
 				$('#div_performanceLevel').show();
