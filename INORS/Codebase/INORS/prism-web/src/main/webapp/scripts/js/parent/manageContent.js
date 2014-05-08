@@ -208,12 +208,14 @@ function openModifyGenericModalToEdit(type) {
 	var subtestId = 0;
 	var objectiveId = 0;
 	var performanceLevelId = 0;
+	var statusCodeId = 0;
 	var contentTypeId = $('#contentTypeIdManageContent').val();
 	var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 	
 	if(type == 'RSC' || type == 'STD' || type == 'RBS' || type == 'OAR'){
 		subtestId = $('#subtestIdManageContent').val();
 		performanceLevelId = $('#performanceLevelIdManageContent').val();
+		statusCodeId = $('#statusCodeIdManageContent').val();
 	}
 	if(type == 'STD'){
 		objectiveId = $('#objectiveIdManageContent').val();
@@ -221,7 +223,8 @@ function openModifyGenericModalToEdit(type) {
 	
 	var dataUrl = 'custProdId='+custProdId+'&gradeId='+gradeId
 					+'&subtestId='+subtestId+'&objectiveId='+objectiveId
-					+'&type='+type+'&performanceLevelId='+performanceLevelId;
+					+'&type='+type+'&performanceLevelId='+performanceLevelId
+					+ '&statusCodeId='+statusCodeId;
 	
 	$.ajax({
 			type : "GET",
@@ -234,6 +237,7 @@ function openModifyGenericModalToEdit(type) {
 				var gradeName = $('#gradeIdManageContent :selected').text();
 				var subtestName = $('#subtestIdManageContent :selected').text();
 				var performanceLevelName = $('#performanceLevelIdManageContent :selected').text();
+				var statusCodeName = $('#statusCodeIdManageContent :selected').text();
 				
 				//As we need to show Objective description instead of objective name - By Joy 
 				//var objectiveName = $('#objectiveIdManageContent :selected').text();
@@ -249,6 +253,7 @@ function openModifyGenericModalToEdit(type) {
 				$('#p_subtest').hide();
 				$('#p_objective').hide();
 				$('#p_performanceLevel').hide();
+				$('#p_statusCode').hide();
 				
 				if(type == 'RSC' || type == 'RBS'){
 					$('#p_subtest').show();
@@ -263,6 +268,8 @@ function openModifyGenericModalToEdit(type) {
 					$modifyGenericModal.find('#subtestText').text(subtestName);
 					$('#p_performanceLevel').show();
 					$modifyGenericModal.find('#performanceLevelText').text(performanceLevelName);
+					$('#p_statusCode').show();
+					$modifyGenericModal.find('#statusCodeText').text(statusCodeName);
 				}
 				
 				if(data != null && data.contentDescription != ""){
@@ -368,6 +375,7 @@ function modifyGeneric(form, win) {
 		var contentTypeId = $('#contentTypeIdManageContent').val();
 		var contentTypeName = $('#contentTypeIdManageContent :selected').text();
 		var performanceLevelId = (contentTypeId == 'OAR') ?  $('#performanceLevelIdManageContent').val() : "";
+		var statusCodeId = (contentTypeId == 'OAR') ?  $('#statusCodeIdManageContent').val() : "";
 		
 		var $modifyGenericModal = $('#modifyGenericModal');
 		$modifyGenericModal.find('#custProdId').val(custProdId);
@@ -377,6 +385,7 @@ function modifyGeneric(form, win) {
 		$modifyGenericModal.find('#contentType').val(contentTypeId);
 		$modifyGenericModal.find('#contentTypeName').val(contentTypeName);
 		$modifyGenericModal.find('#performanceLevel').val(performanceLevelId);
+		$modifyGenericModal.find('#statusCode').val(statusCodeId);
 		
 		var formObj = $('#modifyGenericForm').serialize();
 		$.ajax({
@@ -445,6 +454,60 @@ function buildPerformanceLevelDOM($container,performanceLevel){
 	$container.find('#performanceLevel').trigger('update-select-list');						
 	
 }
+
+
+function buildStatusCodeDOM($container,statusCode){
+	
+	var option = "";
+	if(statusCode == 'Blank' || statusCode == ''){
+		option += "<option selected value='Blank'>Student scores reported</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option value='7'>Student Participated in IMAST</option>";	
+		option += "<option value='5'>Invalid by School</option>";		
+		option += "<option value='8'>Test Interrupted-Valid</option>";
+		option += "<option value='9'>Test Interrupted-Invalid</option>";
+	}else if(performanceLevel == '3'){
+		option += "<option value='Blank'>Student scores reported</option>";
+		option += "<option selected value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option value='7'>Student Participated in IMAST</option>";	
+		option += "<option value='5'>Invalid by School</option>";		
+		option += "<option value='8'>Test Interrupted-Valid</option>";
+		option += "<option value='9'>Test Interrupted-Invalid</option>";
+	}else if(performanceLevel == '7'){
+		option += "<option value='Blank'>Student scores reported</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option selected value='7'>Student Participated in IMAST</option>";	
+		option += "<option value='5'>Invalid by School</option>";		
+		option += "<option value='8'>Test Interrupted-Valid</option>";
+		option += "<option value='9'>Test Interrupted-Invalid</option>";
+	}else if(performanceLevel == '5'){
+		option += "<option value='Blank'>Student scores reported</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option value='7'>Student Participated in IMAST</option>";	
+		option += "<option selected value='5'>Invalid by School</option>";		
+		option += "<option value='8'>Test Interrupted-Valid</option>";
+		option += "<option value='9'>Test Interrupted-Invalid</option>";
+	}else if(performanceLevel == '8'){
+		option += "<option value='Blank'>Student scores reported</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option value='7'>Student Participated in IMAST</option>";	
+		option += "<option value='5'>Invalid by School</option>";		
+		option += "<option selected value='8'>Test Interrupted-Valid</option>";
+		option += "<option value='9'>Test Interrupted-Invalid</option>";
+	}else if(performanceLevel == '9'){
+		option += "<option value='Blank'>Student scores reported</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken</option>";
+		option += "<option value='7'>Student Participated in IMAST</option>";	
+		option += "<option value='5'>Invalid by School</option>";		
+		option += "<option value='8'>Test Interrupted-Valid</option>";
+		option += "<option selected value='9'>Test Interrupted-Invalid</option>";
+	}
+	$container.find('#statusCode').html(option);
+	$container.find('#statusCode').change();
+	$container.find('#statusCode').trigger('update-select-list');						
+	
+}
+
 
 //============Open Modal to Edit Content ===============
 function openContentModalToEdit(contentId) {
@@ -968,6 +1031,7 @@ function hideContentElements(){
 	$('#modifyRbsDiv').hide();
 	$('#modifyOarDiv').hide();
 	$('#div_performanceLevel').hide();
+	$('#div_statusCode').hide();
 	$('#contentTableDiv').hide();
 }
 
@@ -992,6 +1056,7 @@ function showContentElements(){
 				$('#modifyRbsDiv').show();
 			}else if(contentTypeId == 'OAR'){
 				$('#div_performanceLevel').show();
+				$('#div_statusCode').show();
 				$('#modifyOarDiv').show();
 			}
 			

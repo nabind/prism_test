@@ -14,6 +14,7 @@ public class ManageContentTO extends BaseTO {
 	private String subHeader = "";
 	private String gradeName = "";
 	private String performanceLevel = "";
+	private String statusCode = "";
 	private String contentDescription = "";
 	private long subObjMapId = 0;
 	private long custProdId = 0;
@@ -118,6 +119,12 @@ public class ManageContentTO extends BaseTO {
 	public void setPerformanceLevel(String performanceLevel) {
 		this.performanceLevel = performanceLevel;
 	}
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}	
 	public String getProficiencyLevel() {
 		return proficiencyLevel;
 	}

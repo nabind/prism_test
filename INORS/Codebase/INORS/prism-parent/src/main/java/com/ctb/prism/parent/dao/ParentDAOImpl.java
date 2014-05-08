@@ -1385,8 +1385,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(8, manageContentTO.getSubHeader());
 					cs.setLong(9, manageContentTO.getGradeId());
 					cs.setString(10, manageContentTO.getPerformanceLevel());
-					cs.registerOutParameter(11, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(12, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setString(11, manageContentTO.getStatusCode());
+					cs.registerOutParameter(12, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1395,11 +1396,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(11);
+						executionStatus = cs.getLong(12);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
-						if(cs.getString(12)!= null && cs.getString(12).length() > 0) {
-							logger.log(IAppLogger.ERROR, "Error while adding Content "+ cs.getString(12));
+						if(cs.getString(13)!= null && cs.getString(13).length() > 0) {
+							logger.log(IAppLogger.ERROR, "Error while adding Content "+ cs.getString(13));
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -1668,6 +1669,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final long objectiveId = ((Long) paramMap.get("objectiveId")).longValue();
 		final String type = (String) paramMap.get("type");
 		final String performanceLevelId = (String) paramMap.get("performanceLevelId");
+		final String statusCodeId = (String) paramMap.get("statusCodeId");
 
 		try {
 			manageContentTO = (ManageContentTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1679,7 +1681,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(4, objectiveId);
 					cs.setString(5, type);
 					cs.setString(6, performanceLevelId);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+					cs.setString(7, statusCodeId);
+					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1688,7 +1691,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ManageContentTO manageContentTOResult = null;
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(7);
+						rs = (ResultSet) cs.getObject(8);
 						if (rs.next()) {
 							manageContentTOResult = new ManageContentTO();
 							if(IApplicationConstants.CONTENT_TYPE_STD.equals(type)){

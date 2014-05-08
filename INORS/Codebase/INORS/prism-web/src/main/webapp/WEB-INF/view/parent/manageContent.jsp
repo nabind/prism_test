@@ -167,6 +167,30 @@
 								</div>
 							</div>
 							
+							<div id="div_statusCode"
+								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
+								style="height: 10px; display: none;">
+								<div class="three-columns report-inputs" style="width: 15%; margin-bottom: 20px !important;">
+									<h6 class="margin-bottom-small">
+										<spring:message code="label.content.statusCode"/>
+									</h6>
+									<div class="float-left margin-right margin-bottom">
+										<p class="button-height">
+											<select id="statusCodeIdManageContent" name="statusCodeId"
+												class="select navy-gradient expandable-list"
+												style="width: 150px;">
+												<option value='<spring:message code="val.sc.bnk"/>'><spring:message code="name.sc.bnk"/></option>
+												<option value='<spring:message code="val.sc.tnt"/>'><spring:message code="name.sc.tnt"/></option>
+												<option value='<spring:message code="val.sc.spi"/>'><spring:message code="name.sc.spi"/></option>
+												<option value='<spring:message code="val.sc.ibs"/>'><spring:message code="name.sc.ibs"/></option>
+												<option value='<spring:message code="val.sc.tiv"/>'><spring:message code="name.sc.tiv"/></option>
+												<option value='<spring:message code="val.sc.tii"/>'><spring:message code="name.sc.tii"/></option>
+											</select>
+										</p>
+									</div>
+								</div>
+							</div>
+							
 						</div>
 						<%@ include file="../common/required.jsp" %>
 					</div>
@@ -521,6 +545,7 @@
 						<input type="hidden" id="contentTypeName" name="contentTypeName"/>
 						<input type="hidden" id="contentType" name="contentType"/>
 						<input type="hidden" id="performanceLevel" name="performanceLevel"/>
+						<input type="hidden" id="statusCode" name="statusCode"/>
 						
 						<p class="button-height inline-label">
 							<label class="label" style="width: 150px;">
@@ -548,6 +573,13 @@
 								<spring:message code="label.content.performanceLevel"/>
 							</label> 
 							<span id="performanceLevelText"></span>
+						</p>
+						
+						<p id="p_statusCode" class="button-height inline-label" style="display:none;">
+							<label class="label" style="width: 150px;">
+								<spring:message code="label.content.statusCode"/>
+							</label> 
+							<span id="statusCodeText"></span>
 						</p>
 						
 						<p id="p_objective" class="button-height inline-label" style="display:none;">
