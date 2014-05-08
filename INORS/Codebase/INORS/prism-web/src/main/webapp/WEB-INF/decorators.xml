@@ -36,6 +36,7 @@
 		<pattern>/StudentDataloadService*</pattern>
 		<pattern>/landing*</pattern>
 		<pattern>/downloadZippedPdf*</pattern>
+		<pattern>/downloadFile*</pattern>
 	</excludes>
 	
 	<decorator name="parentnetwork" page="parentnetwork.jsp">

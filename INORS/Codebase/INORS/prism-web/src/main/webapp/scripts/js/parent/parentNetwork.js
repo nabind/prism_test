@@ -107,14 +107,16 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	var ipFileName = getFileName(studentBioId, custProdId, 'IPR');
 	var linkContainer = '<div class="align-right">';
 	if(isrFileName == null || isrFileName == "null" || isrFileName == "" || isrFileName == " ") {
-		linkContainer = linkContainer + '<a class="button compact icon-forbidden red disabled with-tooltip" title="No ISR Available" href="#"></a>';
+		linkContainer = linkContainer + '<a class="button compact icon-forbidden disabled with-tooltip" title="No Student Report Available" href="#"><span class="button-icon red-gradient"><span class="icon-download"></span></span>Student Report</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact icon-download green glossy with-tooltip" target="_blank" title="Individual Student Report" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"></a>';
+		//linkContainer = linkContainer + '<a class="button compact icon-download green glossy with-tooltip" target="_blank" title="Individual Student Report" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"></a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip" target="_blank" title="Individual Student Report" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"><span class="button-icon"><span class="icon-download"></span></span>Student Report</a>';
 	}
 	if(ipFileName == null || ipFileName == "null" || ipFileName == "" || ipFileName == " ") {
-		linkContainer = linkContainer + '<a class="button compact icon-forbidden red disabled with-tooltip" title="No Image Print Available" href="#"></a>';
+		linkContainer = linkContainer + '<a class="button compact icon-forbidden red disabled with-tooltip margin-left" title="No Image Print Available" href="#"><span class="button-icon red-gradient"><span class="icon-download"></span></span>Image PDF</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact icon-download orange glossy with-tooltip" target="_blank" title="Image Print" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"></a>';
+		//linkContainer = linkContainer + '<a class="button compact icon-download orange glossy with-tooltip" target="_blank" title="Image Print" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"></a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip margin-left" target="_blank" title="Applied Skills Image PDF" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"><span class="button-icon"><span class="icon-download"></span></span>Image PDF</a>';
 	}
 	linkContainer = linkContainer + '</div>';
 	//var reportUrl = "/public/PN/Report/resultsByStandard_files";
