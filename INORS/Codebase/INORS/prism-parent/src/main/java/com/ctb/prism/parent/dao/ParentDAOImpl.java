@@ -1398,6 +1398,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(11);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
+						if(cs.getString(12)!= null && cs.getString(12).length() > 0) {
+							logger.log(IAppLogger.ERROR, "Error while adding Content "+ cs.getString(12));
+						}
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
