@@ -2030,15 +2030,4 @@ public class ReportController extends BaseDAO {
 		return false; 
 	}
 
-	/**
-	 * Opens the Rescore Request Form.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(value = "/rescoreRequestForm", method = RequestMethod.GET)
-	public ModelAndView rescoreRequestForm() throws IOException {
-		ModelAndView modelAndView = new ModelAndView("report/rescoreRequestForm");
-		return modelAndView;
-	}
 }
