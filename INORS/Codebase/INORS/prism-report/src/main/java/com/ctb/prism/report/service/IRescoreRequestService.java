@@ -23,6 +23,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
 
 public interface IRescoreRequestService {
 	/**
@@ -288,5 +289,7 @@ public interface IRescoreRequestService {
 	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception;
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
+	
+	public List<RescoreStudentTO> getRescoreStudentList(Map<String, Object> paramMap);
 
 }

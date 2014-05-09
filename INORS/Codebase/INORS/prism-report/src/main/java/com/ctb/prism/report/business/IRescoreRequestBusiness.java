@@ -19,6 +19,7 @@ import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
 
 public interface IRescoreRequestBusiness {
 	/**
@@ -270,4 +271,6 @@ public interface IRescoreRequestBusiness {
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
+	
+	public List<RescoreStudentTO> getRescoreStudentList(Map<String, Object> paramMap);
 }

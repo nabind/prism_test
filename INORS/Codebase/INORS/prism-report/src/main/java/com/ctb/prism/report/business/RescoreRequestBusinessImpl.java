@@ -23,6 +23,7 @@ import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.dao.IReportDAO;
+import com.ctb.prism.report.dao.IRescoreRequestDAO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -34,6 +35,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
 
 @Component("rescoreRequestBusiness")
 public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
@@ -42,6 +44,9 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 
 	@Autowired
 	private IReportDAO reportDAO;
+	
+	@Autowired
+	private IRescoreRequestDAO rescoreRequestDAO;
 
 	@Autowired
 	private ILoginDAO loginDAO;
@@ -696,5 +701,9 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		return reportDAO.getStudentFileName(type, studentBioId, custProdId);
+	}
+
+	public List<RescoreStudentTO> getRescoreStudentList(Map<String, Object> paramMap) {
+		return rescoreRequestDAO.getRescoreStudentList(paramMap);
 	}
 }

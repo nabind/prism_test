@@ -30,6 +30,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.business.IReportBusiness;
+import com.ctb.prism.report.business.IRescoreRequestBusiness;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -41,12 +42,16 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
 
 @Service("rescoreRequestService")
 public class RescoreRequestServiceImpl implements IRescoreRequestService {
 
 	@Autowired
 	private IReportBusiness reportBusiness;
+	
+	@Autowired
+	private IRescoreRequestBusiness rescoreRequestBusiness;
 	
 	@Autowired
 	IUsabilityService usabilityService;
@@ -770,5 +775,9 @@ public class RescoreRequestServiceImpl implements IRescoreRequestService {
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		return reportBusiness.getStudentFileName(type, studentBioId, custProdId);
+	}
+
+	public List<RescoreStudentTO> getRescoreStudentList(Map<String, Object> paramMap) {
+		return rescoreRequestBusiness.getRescoreStudentList(paramMap);
 	}
 }

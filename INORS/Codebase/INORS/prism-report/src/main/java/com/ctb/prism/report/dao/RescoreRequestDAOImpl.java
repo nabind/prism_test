@@ -64,6 +64,7 @@ import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 //import com.googlecode.ehcache.annotations.Cacheable;
 //import com.googlecode.ehcache.annotations.TriggersRemove;
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
 
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
@@ -1943,6 +1944,35 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		logger.log(IAppLogger.INFO, "fileName = " + fileName);
 		logger.log(IAppLogger.INFO, "Exit: getStudentFileName()");
 		return fileName;
+	}
+	
+	public List<RescoreStudentTO> getRescoreStudentList(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getRescoreStudentList()");
+
+		String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
+		String testProgram = (String) paramMap.get("testProgram");
+		String corpDiocese = (String) paramMap.get("corpDiocese");
+		String school = (String) paramMap.get("school");
+		String grade = (String) paramMap.get("grade");
+
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+
+		List<RescoreStudentTO> rescoreStudentList = null;
+		List<Map<String, Object>> lstData = getJdbcTemplate().queryForList(IQueryConstants.GET_RESCORE_STUDENT_LIST, testAdministrationVal, testProgram, school, grade);
+		if (lstData != null && !lstData.isEmpty()) {
+			rescoreStudentList = new ArrayList<RescoreStudentTO>();
+			for (Map<String, Object> fieldDetails : lstData) {
+				RescoreStudentTO to = new RescoreStudentTO();
+				to.setName((String) fieldDetails.get("STUDENT_LAST_NAME") + ", " + (String) fieldDetails.get("STUDENT_FIRST_NAME") + " " + (String) fieldDetails.get("STUDENT_MIDDLE_INITIAL"));
+				rescoreStudentList.add(to);
+			}
+		}
+		logger.log(IAppLogger.INFO, "Exit: getRescoreStudentList()");
+		return rescoreStudentList;
 	}
 	
 }

@@ -24,6 +24,8 @@ import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.service.IRescoreRequestService;
 import com.ctb.prism.report.transferobject.InputControlTO;
  
+import com.ctb.prism.report.transferobject.RescoreStudentTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,6 +97,7 @@ public class RescoreRequestController {
 					testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
 					corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
 					school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
+					grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
 				}
 			} else {
 				Map<String, String[]> sessionParams = (Map<String, String[]>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
@@ -116,7 +119,13 @@ public class RescoreRequestController {
 			
 			//TODO
 			//service call to get student, report message etc
-		
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("testAdministrationVal", testAdministrationVal);
+			paramMap.put("testProgram", testProgram);
+			paramMap.put("corpDiocese", corpDiocese);
+			paramMap.put("school", school);
+			paramMap.put("grade", grade);
+			List<RescoreStudentTO> rescoreStudentList = rescoreRequestService.getRescoreStudentList(paramMap);
 		
 			//Add object to modelAndView
 			modelAndView.addObject("reportUrl", reportUrl);
@@ -125,6 +134,7 @@ public class RescoreRequestController {
 			modelAndView.addObject("corpDiocese", corpDiocese);
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("grade", grade);
+			modelAndView.addObject("rescoreStudentList", rescoreStudentList);
 			
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);
