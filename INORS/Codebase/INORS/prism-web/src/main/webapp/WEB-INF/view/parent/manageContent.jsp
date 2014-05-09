@@ -155,12 +155,12 @@
 											<select id="performanceLevelIdManageContent" name="performanceLevelId"
 												class="select navy-gradient expandable-list"
 												style="width: 150px;">
+												<option value='<spring:message code="val.pl.psp"/>'><spring:message code="name.pl.psp"/></option>
 												<option value='<spring:message code="val.pl.pas"/>'><spring:message code="name.pl.pas"/></option>
 												<option value='<spring:message code="val.pl.dnp"/>'><spring:message code="name.pl.dnp"/></option>
 												<option value='<spring:message code="val.pl.und"/>'><spring:message code="name.pl.und"/></option>
-												<option value='<spring:message code="val.pl.dnr"/>'><spring:message code="name.pl.dnr"/></option>
-												<option value='<spring:message code="val.pl.psp"/>'><spring:message code="name.pl.psp"/></option>
 												<option value='<spring:message code="val.pl.pri"/>'><spring:message code="name.pl.pri"/></option>
+												<option value='<spring:message code="val.pl.dnr"/>'><spring:message code="name.pl.dnr"/></option>
 											</select>
 										</p>
 									</div>
@@ -181,8 +181,8 @@
 												style="width: 150px;">
 												<option value='<spring:message code="val.sc.bnk"/>'><spring:message code="name.sc.bnk"/></option>
 												<option value='<spring:message code="val.sc.tnt"/>'><spring:message code="name.sc.tnt"/></option>
-												<option value='<spring:message code="val.sc.spi"/>'><spring:message code="name.sc.spi"/></option>
 												<option value='<spring:message code="val.sc.ibs"/>'><spring:message code="name.sc.ibs"/></option>
+												<option value='<spring:message code="val.sc.spi"/>'><spring:message code="name.sc.spi"/></option>
 												<option value='<spring:message code="val.sc.tiv"/>'><spring:message code="name.sc.tiv"/></option>
 												<option value='<spring:message code="val.sc.tii"/>'><spring:message code="name.sc.tii"/></option>
 											</select>

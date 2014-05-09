@@ -54,6 +54,10 @@ public class ManageContentTO extends BaseTO {
 		this.gradeName = gradeName;
 	}
 	public String getContentDescription() {
+		if(contentDescription != null) {
+			contentDescription = contentDescription.replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>");
+			contentDescription = contentDescription.replaceAll("<em>", "<i>").replaceAll("</em>", "</i>");
+		}
 		return contentDescription;
 	}
 	public void setContentDescription(String contentDescription) {

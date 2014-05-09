@@ -418,36 +418,36 @@ function modifyGeneric(form, win) {
 function buildPerformanceLevelDOM($container,performanceLevel){
 	
 	var option = "";
-	if(performanceLevel == 'A' || performanceLevel == ''){
-		option += "<option selected value='A'>Pass</option>";
+	if(performanceLevel == 'P' || performanceLevel == ''){
+		option += "<option selected value='P'>Pass+</option>";
+		option += "<option value='A'>Pass</option>";
 		option += "<option value='B'>Did Not Pass</option>";
 		option += "<option value='U'>Undefined</option>";	
 		option += "<option value='N'>DNR</option>";		
-		option += "<option value='P'>Pass+</option>";
 	}else if(performanceLevel == 'B'){
+		option += "<option value='P'>Pass+</option>";
 		option += "<option value='A'>Pass</option>";
 		option += "<option selected value='B'>Did Not Pass</option>";
 		option += "<option value='U'>Undefined</option>";	
 		option += "<option value='N'>DNR</option>";		
-		option += "<option value='P'>Pass+</option>";
 	}else if(performanceLevel == 'U'){
+		option += "<option value='P'>Pass+</option>";
 		option += "<option value='A'>Pass</option>";
 		option += "<option value='B'>Did Not Pass</option>";
 		option += "<option selected value='U'>Undefined</option>";	
 		option += "<option value='N'>DNR</option>";		
-		option += "<option value='P'>Pass+</option>";
 	}else if(performanceLevel == 'N'){
+		option += "<option value='P'>Pass+</option>";
 		option += "<option value='A'>Pass</option>";
 		option += "<option value='B'>Did Not Pass</option>";
 		option += "<option value='U'>Undefined</option>";	
 		option += "<option selected value='N'>DNR</option>";		
+	}else if(performanceLevel == 'A'){
 		option += "<option value='P'>Pass+</option>";
-	}else if(performanceLevel == 'P'){
-		option += "<option value='A'>Pass</option>";
+		option += "<option selected value='A'>Pass</option>";
 		option += "<option value='B'>Did Not Pass</option>";
 		option += "<option value='U'>Undefined</option>";	
 		option += "<option value='N'>DNR</option>";		
-		option += "<option selected value='P'>Pass+</option>";
 	}
 	$container.find('#performanceLevel').html(option);
 	$container.find('#performanceLevel').change();
@@ -461,46 +461,46 @@ function buildStatusCodeDOM($container,statusCode){
 	var option = "";
 	if(statusCode == 'Blank' || statusCode == ''){
 		option += "<option selected value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option value='7'>Student Participated in IMAST</option>";	
-		option += "<option value='5'>Invalid by School</option>";		
-		option += "<option value='8'>Test Interrupted-Valid</option>";
-		option += "<option value='9'>Test Interrupted-Invalid</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option value='5'>Invalid by School (5)</option>";		
+		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
 	}else if(performanceLevel == '3'){
 		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option selected value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option value='7'>Student Participated in IMAST</option>";	
-		option += "<option value='5'>Invalid by School</option>";		
-		option += "<option value='8'>Test Interrupted-Valid</option>";
-		option += "<option value='9'>Test Interrupted-Invalid</option>";
+		option += "<option selected value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option value='5'>Invalid by School (5)</option>";		
+		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
 	}else if(performanceLevel == '7'){
 		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option selected value='7'>Student Participated in IMAST</option>";	
-		option += "<option value='5'>Invalid by School</option>";		
-		option += "<option value='8'>Test Interrupted-Valid</option>";
-		option += "<option value='9'>Test Interrupted-Invalid</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option value='5'>Invalid by School (5)</option>";		
+		option += "<option selected value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
 	}else if(performanceLevel == '5'){
 		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option value='7'>Student Participated in IMAST</option>";	
-		option += "<option selected value='5'>Invalid by School</option>";		
-		option += "<option value='8'>Test Interrupted-Valid</option>";
-		option += "<option value='9'>Test Interrupted-Invalid</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option selected value='5'>Invalid by School (5)</option>";		
+		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
 	}else if(performanceLevel == '8'){
 		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option value='7'>Student Participated in IMAST</option>";	
-		option += "<option value='5'>Invalid by School</option>";		
-		option += "<option selected value='8'>Test Interrupted-Valid</option>";
-		option += "<option value='9'>Test Interrupted-Invalid</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option value='5'>Invalid by School (5)</option>";		
+		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option selected value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
 	}else if(performanceLevel == '9'){
 		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken</option>";
-		option += "<option value='7'>Student Participated in IMAST</option>";	
-		option += "<option value='5'>Invalid by School</option>";		
-		option += "<option value='8'>Test Interrupted-Valid</option>";
-		option += "<option selected value='9'>Test Interrupted-Invalid</option>";
+		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
+		option += "<option value='5'>Invalid by School (5)</option>";		
+		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
+		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
+		option += "<option selected value='9'>Test Interrupted-Invalid (9)</option>";
 	}
 	$container.find('#statusCode').html(option);
 	$container.find('#statusCode').change();
