@@ -1427,6 +1427,17 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 				" AND LIN.PRODUCTID = PROD.PRODUCTID",
 				" AND LIN.CUST_PROD_ID = ?"
 				);
+		
+		
+		public static final String GET_CURRENT_MSGTYPE = CustomStringUtil.appendString(
+				"SELECT A.MSG_TYPEID MSGTYPEID ",
+				" FROM DASH_MESSAGE_TYPE A, DASH_MESSAGE_TYPE B ",
+				" WHERE A.CUST_PROD_ID = ? ",
+				" AND A.CUST_PROD_ID <> B.CUST_PROD_ID ",
+				" AND B.MSG_TYPEID = ? ",
+				" AND A.MESSAGE_NAME = B.MESSAGE_NAME" +
+				" AND ROWNUM =1"
+				);
 
 }
 

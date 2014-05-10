@@ -756,8 +756,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
 					ManageMessageTO manageMessageTO = manageMessageTOList.get(i);
 					ps.setLong(1, manageMessageTO.getReportId());
-					ps.setLong(2, manageMessageTO.getMessageTypeId());
-					ps.setString(3, manageMessageTO.getMessage().replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>"));
+					ps.setLong(2, getCurrentMsgType (manageMessageTO.getCustProdIdHidden() , manageMessageTO.getMessageTypeId()));
+					ps.setString(3, manageMessageTO.getMessage());
 					ps.setLong(4, manageMessageTO.getCustProdIdHidden());
 					ps.setString(5, IApplicationConstants.CHECKED_CHECKBOX_VALUE.equalsIgnoreCase(manageMessageTO.getActivationStatus()) ? IApplicationConstants.CHECKED_VALUE_DRM_CHECKBOX
 							: IApplicationConstants.DEFAULT_VALUE_DRM_CHECKBOX);
@@ -1957,6 +1957,20 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		return roles;
+	}
+	
+	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0,#p1, 'getCurrentMsgType' )")
+	private Long getCurrentMsgType (Long currentCustProdId, Long oldMsgTypeId) {
+		logger.log(IAppLogger.INFO, "Enter: getCurrentAdminMsgType()"); 
+		long msgTypeId = 0;
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_CURRENT_MSGTYPE,currentCustProdId,oldMsgTypeId);
+		if (!lstData.isEmpty()) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				msgTypeId =  ((BigDecimal) fieldDetails.get("MSGTYPEID")).longValue() ;
+			}
+		}
+		return msgTypeId;
 	}
 	
 }
