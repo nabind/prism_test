@@ -66,11 +66,16 @@ public class ManageMessageTO extends BaseTO {
 	}
 	
 	public String getMessage() {
+		if(message != null) {
+			message = message.replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>");
+			message = message.replaceAll("<em>", "<i>").replaceAll("</em>", "</i>");
+		}
 		return message;
 	}
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
 	public String getActivationStatus() {
 		return activationStatus;
 	}
