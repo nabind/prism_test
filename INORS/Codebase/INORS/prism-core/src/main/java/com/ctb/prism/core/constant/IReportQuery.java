@@ -211,8 +211,8 @@ public interface IReportQuery {
 			" and ass.db_menuid = acc.db_menuid ",
 			" and acc.db_reportid = re.db_reportid ",
 			" AND RE.ACTIVATION_STATUS IN ('AC','SS') ",
-			"  AND ACC.CUST_PROD_ID IN",
-				"(SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ?)",
+			//"  AND ACC.CUST_PROD_ID IN",
+			//	"(SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ?)",
 	" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 
 	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(

@@ -496,8 +496,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	//Fix for TD 77939 - implement customerId, caching param change - By Joy
 	//@Cacheable(value = "defaultCache", key="(T(com.ctb.prism.core.util.CacheKeyUtils).string(#p0)).concat(#root.method.name)")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAssessments') )")
-	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p1, 'getAssessments' )")
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, String customerId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
