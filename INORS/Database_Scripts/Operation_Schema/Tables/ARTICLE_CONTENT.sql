@@ -1,3 +1,6 @@
+-- drop table
+drop table ARTICLE_CONTENT;
+
 -- Create table
 create table ARTICLE_CONTENT
 (
