@@ -57,6 +57,7 @@ public class ManageContentTO extends BaseTO {
 		if(contentDescription != null) {
 			contentDescription = contentDescription.replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>");
 			contentDescription = contentDescription.replaceAll("<em>", "<i>").replaceAll("</em>", "</i>");
+			contentDescription = contentDescription.replaceAll("Click here to add text","");
 		}
 		return contentDescription;
 	}

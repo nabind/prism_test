@@ -69,6 +69,7 @@ public class ManageMessageTO extends BaseTO {
 		if(message != null) {
 			message = message.replaceAll("<strong>", "<b>").replaceAll("</strong>", "</b>");
 			message = message.replaceAll("<em>", "<i>").replaceAll("</em>", "</i>");
+			message = message.replaceAll("Click here to add text","");
 		}
 		return message;
 	}
