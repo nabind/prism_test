@@ -22,6 +22,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
+import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.dao.IReportDAO;
 import com.ctb.prism.report.dao.IRescoreRequestDAO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
@@ -500,7 +501,8 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
 	 */
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
-		return reportDAO.getAssessments(paramMap);
+		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		return reportDAO.getAssessments(paramMap, loggedinUserTO.getCustomerId());
 	}
 
 	/*
