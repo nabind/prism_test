@@ -1439,5 +1439,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 				" AND ROWNUM =1"
 				);
 
+		public static final String UPDATE_JOB_TRACKING_STATUS = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATE WHERE JOB_ID = ?";
+
 }
 

@@ -1489,10 +1489,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#updateJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public int updateJobTracking(GroupDownloadTO to) {
+		logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
+		int updateCount = 0;
 		try {
-			logger.log(IAppLogger.INFO, "Enter: updateJobTracking()");
-			int updateCount = 0;
-
 			String request_filename = to.getFileName();
 			String gdfExpiryTime = to.getGdfExpiryTime();
 			String job_log = to.getJobLog();
@@ -1516,12 +1515,29 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 
 			logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
-			return updateCount;
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return 0;
+		return updateCount;
+	}
+	
+	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
+		logger.log(IAppLogger.INFO, "Enter: updateJobTrackingStatus()");
+		int updateCount = 0;
+		try {
+			logger.log(IAppLogger.INFO, "jobId: " + jobId);
+			logger.log(IAppLogger.INFO, "jobStatus: " + jobStatus);
+			logger.log(IAppLogger.INFO, "jobLog: " + jobLog);
+
+			updateCount = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB_TRACKING_STATUS, jobStatus, jobLog, jobId);
+			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
+
+			logger.log(IAppLogger.INFO, "Exit: updateJobTrackingStatus()");
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		}
+		return updateCount;
 	}
 
 	/*

@@ -699,4 +699,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		return reportDAO.getStudentFileName(type, studentBioId, custProdId);
 	}
+
+	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
+		return reportDAO.updateJobTrackingStatus(jobId, jobStatus, jobLog);
+	}
 }

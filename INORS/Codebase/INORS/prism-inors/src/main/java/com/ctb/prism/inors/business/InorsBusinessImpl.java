@@ -234,9 +234,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		try {
 			batchPDFDownload(jobId, null);
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "BULK DOWNLOAD FAILED .................. ");
+			logger.log(IAppLogger.ERROR, "Bulk Download Failed for Job Id: " + jobId);
 			e.printStackTrace();
 		}
+		logger.log(IAppLogger.INFO, "END   ================== f r o m  async method --------------- ");
 	}
 
 	/**
@@ -247,6 +248,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	private void batchPDFDownload(String jobId, BulkDownloadTO jobTO) {
 		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
+		try{
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String fileSize = null;
@@ -375,12 +377,18 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		to.setJobId(jobId);
 		int updateCount = reportBusiness.updateJobTracking(to);
 		logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
-		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 
 		// email notification
-		notificationMailGD(to.getEmail(), to.getFileName());
-
-		logger.log(IAppLogger.INFO, "END   ================== f r o m  async method --------------- ");
+		if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
+			notificationMailGD(to.getEmail(), to.getFileName());
+		} else {
+			logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
+		}
+		}catch(Exception e){
+			int updateCount = reportBusiness.updateJobTrackingStatus(jobId, IApplicationConstants.JOB_STATUS.ER.toString(), e.getMessage());
+			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);	
+		}
+		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 	}
 
 	/**
