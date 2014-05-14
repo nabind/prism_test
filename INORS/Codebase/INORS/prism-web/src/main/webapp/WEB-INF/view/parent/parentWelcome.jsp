@@ -54,7 +54,7 @@
 				
 				<div class="boxshade scrollable" style="max-width:938px; height: 96px;">
 					<p style="text-align:justify; margin-bottom: 0px;">
-						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The action plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
+						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
 						From the "Explore" menu on the right you may view additional information, including Why Standards Matter, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.
 					</p>
 				</div>
