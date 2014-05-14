@@ -37,6 +37,6 @@
     </ul>
     
     <br>
-    <p>Click <a href="userlogin.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
+    <p>Click <a href="<%=request.getContextPath()%>/userlogin.do?theme=<%=request.getParameter("theme") %>&parent=<%=request.getParameter("parent") %>">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
   </div>
 
