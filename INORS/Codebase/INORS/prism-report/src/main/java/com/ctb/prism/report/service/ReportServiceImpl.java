@@ -17,6 +17,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +59,16 @@ public class ReportServiceImpl implements IReportService {
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		return reportBusiness.getFilledReport(jasperReport, parameters);
+	}
+	
+	@Async
+	public void getFilledReportForPDF(JasperReport jasperReport, Map<String, Object> parameters, boolean isPrinterFriendly, 
+			String user, String sessionParam) throws Exception {
+		System.out.println("-------- for PDF --------- ");
+		parameters.put("p_Is3D", IApplicationConstants.FLAG_N);
+		JasperPrint jasperPrint = reportBusiness.getFilledReport(jasperReport, parameters);
+		/** session to cache **/
+		usabilityService.getSetCache(user, sessionParam, jasperPrint);
 	}
 
 	/*

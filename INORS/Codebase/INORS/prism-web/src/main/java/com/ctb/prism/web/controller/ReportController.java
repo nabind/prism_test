@@ -396,8 +396,8 @@ public class ReportController extends BaseDAO {
 			if (jasperPrint != null) {
 				reportName = jasperPrint.getName();
 				/** session to cache **/
-				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						reportUrl, jasperPrint);
+				/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUrl, jasperPrint);*/
 			}
 			// export the report
 			res.setContentType("text/html");
@@ -661,14 +661,18 @@ public class ReportController extends BaseDAO {
 			}
 			// fill the report with parameter
 			// conn = getPrismConnection();
-			if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.filled.report.cache"))) {
+			/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.filled.report.cache"))) {
 				jasperPrint = (JasperPrint) //req.getSession().getAttribute(sessionParam);
-				/** session to cache **/
+				*//** session to cache **//*
 					usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), sessionParam, null);
-			}
+			}*/
 			if (jasperPrint == null) {
 				// jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
 				jasperPrint = reportService.getFilledReport(jasperReport, parameters);
+				
+				// Async call for PDF
+				reportService.getFilledReportForPDF(jasperReport, parameters, isPrinterFriendly, 
+						(String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), reportUrl);
 			}
 			req.getSession().setAttribute("apiJasperParameters" + reportUrl, parameters);
 		} catch (DataAccessException exception) {

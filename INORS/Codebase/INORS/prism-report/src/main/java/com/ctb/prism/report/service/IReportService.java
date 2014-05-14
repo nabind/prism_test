@@ -44,6 +44,9 @@ public interface IReportService {
 	 * @throws Exception
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
+	
+	public void getFilledReportForPDF(JasperReport jasperReport, Map<String, Object> parameters, boolean isPrinterFriendly, 
+			String user, String sessionParam) throws Exception;
 
 	/**
 	 * @param reportPath

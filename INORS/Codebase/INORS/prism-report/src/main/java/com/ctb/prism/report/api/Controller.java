@@ -55,6 +55,7 @@ import org.springframework.context.ApplicationContext;
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.ApplicationContextProvider;
+import com.ctb.prism.report.service.IReportService;
 
 
 /**
@@ -231,19 +232,27 @@ public class Controller
 			JasperPrint jasperPrint = null;
 			try {
 				//jasperPrint = JasperFillManager.fillReport(jasperReport, webReportContext.getParameterValues(), conn);
-				IFillManager fillManager = new FillManagerImpl();
-				jasperPrint = fillManager.fillReport(jasperReport, webReportContext.getParameterValues());
+				ApplicationContext appContext = ApplicationContextProvider.getApplicationContext();
+				IReportService reportService = (IReportService) appContext.getBean("reportService");
+				jasperPrint = reportService.getFilledReport(jasperReport, webReportContext.getParameterValues());
+				
+				// Async call for PDF
+				reportService.getFilledReportForPDF(jasperReport, parameters, true, 
+						(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER), reportUri);
+				
+				//IFillManager fillManager = new FillManagerImpl();
+				//jasperPrint = fillManager.fillReport(jasperReport, webReportContext.getParameterValues());
 				
 				Map<String, Object> sessionObj = new HashMap<String, Object>();
 				sessionObj.put("jasperReport", jasperReport);
 				sessionObj.put("parameterValues", webReportContext.getParameterValues());
 				request.getSession().setAttribute("apiJasperPrint"+reportUri, sessionObj);
 				
-				ApplicationContext appContext = ApplicationContextProvider.getApplicationContext();
-				IUsabilityService usabilityService = (IUsabilityService) appContext.getBean("usabilityService");
+				
+				//IUsabilityService usabilityService = (IUsabilityService) appContext.getBean("usabilityService");
 				/** session to cache **/
-				usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						reportUri, jasperPrint);
+				/*usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUri, jasperPrint);*/
 				
 			} catch (Exception e) {
 				e.printStackTrace();
