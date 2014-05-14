@@ -23,9 +23,8 @@ import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.service.IRescoreRequestService;
 import com.ctb.prism.report.transferobject.InputControlTO;
+import com.ctb.prism.report.transferobject.RescoreRequestTO;
  
-import com.ctb.prism.report.transferobject.RescoreStudentTO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -125,7 +124,8 @@ public class RescoreRequestController {
 			paramMap.put("corpDiocese", corpDiocese);
 			paramMap.put("school", school);
 			paramMap.put("grade", grade);
-			List<RescoreStudentTO> rescoreStudentList = rescoreRequestService.getRescoreStudentList(paramMap);
+			paramMap.put("loggedinUserTO", loggedinUserTO);
+			List<RescoreRequestTO> rescoreStudentList = rescoreRequestService.getDnpStudentList(paramMap);
 		
 			//Add object to modelAndView
 			modelAndView.addObject("reportUrl", reportUrl);

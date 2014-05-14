@@ -19,220 +19,145 @@ public class RescoreRequestTO extends BaseTO {
 	private String district;
 	private String school;
 	private String grade;
-	private String students;
-	private String userId;
-	private String userName;
-	private String adminId;
-	private String customerId;
-	private String orgNodeLevel;
-	private String extractStartDate;
+	private String studentFullName = "";
+	private long userId = 0;
+	private String userName = "";
+	private long adminId = 0;
+	private long customerId = 0;
+	private long orgNodeId= 0;
+	private String parentRescoreDate = "";
+	private long studentBioId = 0;
+	private String requestedDate = "";
+	private long subtestId = 0;
+	private long sessionId = 0;
+	private String performanceLevel = "";
+	private long itemsetId = 0;
+	private String isRequested = "";
 	
-	/**
-	 * @return the button
-	 */
 	public String getButton() {
 		return button;
 	}
-
-	/**
-	 * @param button
-	 *            the button to set
-	 */
 	public void setButton(String button) {
 		this.button = button;
 	}
-
-	/**
-	 * @return the testAdministrationVal
-	 */
 	public String getTestAdministrationVal() {
 		return testAdministrationVal;
 	}
-
-	/**
-	 * @param testAdministrationVal
-	 *            the testAdministrationVal to set
-	 */
 	public void setTestAdministrationVal(String testAdministrationVal) {
 		this.testAdministrationVal = testAdministrationVal;
 	}
-
-	/**
-	 * @return the testAdministrationText
-	 */
 	public String getTestAdministrationText() {
 		return testAdministrationText;
 	}
-
-	/**
-	 * @param testAdministrationText
-	 *            the testAdministrationText to set
-	 */
 	public void setTestAdministrationText(String testAdministrationText) {
 		this.testAdministrationText = testAdministrationText;
 	}
-
-	/**
-	 * @return the testProgram
-	 */
 	public String getTestProgram() {
 		return testProgram;
 	}
-
-	/**
-	 * @param testProgram
-	 *            the testProgram to set
-	 */
 	public void setTestProgram(String testProgram) {
 		this.testProgram = testProgram;
 	}
-
-	/**
-	 * @return the district
-	 */
 	public String getDistrict() {
 		return district;
 	}
-
-	/**
-	 * @param district
-	 *            the district to set
-	 */
 	public void setDistrict(String district) {
 		this.district = district;
 	}
-
-	/**
-	 * @return the school
-	 */
 	public String getSchool() {
 		return school;
 	}
-
-	/**
-	 * @param school
-	 *            the school to set
-	 */
 	public void setSchool(String school) {
 		this.school = school;
 	}
-
-	/**
-	 * @return the grade
-	 */
 	public String getGrade() {
 		return grade;
 	}
-
-	/**
-	 * @param grade
-	 *            the grade to set
-	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
 	}
-
-	/**
-	 * @return the students
-	 */
-	public String getStudents() {
-		return students;
+	public String getStudentFullName() {
+		return studentFullName;
 	}
-
-	/**
-	 * @param students
-	 *            the students to set
-	 */
-	public void setStudents(String students) {
-		this.students = students;
+	public void setStudentFullName(String studentFullName) {
+		this.studentFullName = studentFullName;
 	}
-
-	/**
-	 * @return the userId
-	 */
-	public String getUserId() {
+	public long getUserId() {
 		return userId;
 	}
-
-	/**
-	 * @param userId
-	 *            the userId to set
-	 */
-	public void setUserId(String userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
-
-	/**
-	 * @return the userName
-	 */
 	public String getUserName() {
 		return userName;
 	}
-
-	/**
-	 * @param userName
-	 *            the userName to set
-	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
-	/**
-	 * @return the adminId
-	 */
-	public String getAdminId() {
+	public long getAdminId() {
 		return adminId;
 	}
-
-	/**
-	 * @param adminId
-	 *            the adminId to set
-	 */
-	public void setAdminId(String adminId) {
+	public void setAdminId(long adminId) {
 		this.adminId = adminId;
 	}
-
-	/**
-	 * @return the customerId
-	 */
-	public String getCustomerId() {
+	public long getCustomerId() {
 		return customerId;
 	}
-
-	/**
-	 * @param customerId
-	 *            the customerId to set
-	 */
-	public void setCustomerId(String customerId) {
+	public void setCustomerId(long customerId) {
 		this.customerId = customerId;
 	}
-
-	/**
-	 * @return
-	 */
-	public String getOrgNodeLevel() {
-		return orgNodeLevel;
+	public long getOrgNodeId() {
+		return orgNodeId;
 	}
-
-	/**
-	 * @param orgNodeLevel
-	 */
-	public void setOrgNodeLevel(String orgNodeLevel) {
-		this.orgNodeLevel = orgNodeLevel;
+	public void setOrgNodeId(long orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
-
-	/**
-	 * @return the extractStartDate
-	 */
-	public String getExtractStartDate() {
-		return extractStartDate;
+	public String getParentRescoreDate() {
+		return parentRescoreDate;
 	}
-
-	/**
-	 * @param extractStartDate
-	 *            the extractStartDate to set
-	 */
-	public void setExtractStartDate(String extractStartDate) {
-		this.extractStartDate = extractStartDate;
+	public void setParentRescoreDate(String parentRescoreDate) {
+		this.parentRescoreDate = parentRescoreDate;
+	}
+	public long getStudentBioId() {
+		return studentBioId;
+	}
+	public void setStudentBioId(long studentBioId) {
+		this.studentBioId = studentBioId;
+	}
+	public String getRequestedDate() {
+		return requestedDate;
+	}
+	public void setRequestedDate(String requestedDate) {
+		this.requestedDate = requestedDate;
+	}
+	public long getSubtestId() {
+		return subtestId;
+	}
+	public void setSubtestId(long subtestId) {
+		this.subtestId = subtestId;
+	}
+	public long getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(long sessionId) {
+		this.sessionId = sessionId;
+	}
+	public String getPerformanceLevel() {
+		return performanceLevel;
+	}
+	public void setPerformanceLevel(String performanceLevel) {
+		this.performanceLevel = performanceLevel;
+	}
+	public long getItemsetId() {
+		return itemsetId;
+	}
+	public void setItemsetId(long itemsetId) {
+		this.itemsetId = itemsetId;
+	}
+	public String getIsRequested() {
+		return isRequested;
+	}
+	public void setIsRequested(String isRequested) {
+		this.isRequested = isRequested;
 	}
 }
