@@ -176,14 +176,63 @@ public class ReportController extends BaseDAO {
 			//req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
 			req.getSession().setAttribute("apiJasperReport" + reportUrl, getMainReport(jasperReports));
 			/** session to cache **/
-			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
-					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
+			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
+					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));*/
 			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
 					"apiJasperReport" + reportUrl, getMainReport(jasperReports));*/
+			JasperReport jasperReport = getMainReport(jasperReports);
+			if (jasperReport != null) {
+				reportName = jasperReport.getName();
+				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_HEIGHT), jasperReport.getPageHeight());
+				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperReport.getPageWidth());
+			}
+			
+			/** perf issue */
+			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
+			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			
+			// get all input controls for report
+			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
+			Map<String, Object> parameters = null;
+			if (IApplicationConstants.TRUE.equals(filter)) {
+				parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, drilldown);
+				// remove jasper print object from session when filtering
+				req.getSession().removeAttribute(sessionParam);
+			} else {
+				// get default parameters for logged-in user
+				//long start = System.currentTimeMillis();
+				Object reportFilterTO = reportService
+						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
+								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+				parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, req, reportUrl);
+			}
+			
+			if (studentBioId != null && studentBioId.trim().length() > 0) {
+				parameters.put("p_Student_Bio_Id", studentBioId);
+			}
+			// add subreports
+			if (jasperReports.size() > 1) {
+				int count = 0;
+				// add subreports
+				for (ReportTO reportTo : jasperReports) {
+					if (!reportTo.isMainReport() && reportTo.isJrxml()) {
+						count++;
+						parameters.put("Subreport_" + count, reportTo.getCompiledReport());
+					}
+				}
+			}
+			// put parameters into session - will be used in controller
+			req.getSession().setAttribute("apiJasperParameters" + reportUrl, parameters);
+			/** perf issue */
+			
+			
+			
 			
 			// get jasper print object
 			// JasperPrint jasperPrint = getJasperPrintObject(reportUrl, filter, assessmentId, sessionParam, req, drilldown);
-			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
+			/*JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
 			if (jasperPrint != null)
 				reportName = jasperPrint.getName();
 
@@ -193,9 +242,9 @@ public class ReportController extends BaseDAO {
 			pageStr = pageStr == null ? "0" : pageStr;
 			if (noOfPages > 1) {
 				//req.getSession().setAttribute(sessionParam, jasperPrint);
-				/** session to cache **/
+				*//** session to cache **//*
 				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						sessionParam, jasperPrint);
+						reportUrl, jasperPrint);
 				// exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.parseInt(pageStr));
 				req.getSession().setAttribute(reportUrl, IApplicationConstants.TRUE);
 				// req.setAttribute("enablePagination", "true");
@@ -217,7 +266,7 @@ public class ReportController extends BaseDAO {
 			} else {
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_HEIGHT), jasperPrint.getPageHeight());
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperPrint.getPageWidth());
-			}
+			}*/
 
 			// exporter.exportReport();
 		} catch (JRException exception) {
@@ -338,14 +387,18 @@ public class ReportController extends BaseDAO {
 			List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
 			//req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
 			/** session to cache **/
-			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
+			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));*/
 
 			// get jasper print object
 			// JasperPrint jasperPrint = getJasperPrintObject(reportUrl, filter, assessmentId, sessionParam, req, drilldown);
 			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
-			if (jasperPrint != null)
+			if (jasperPrint != null) {
 				reportName = jasperPrint.getName();
+				/** session to cache **/
+				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUrl, jasperPrint);
+			}
 			// export the report
 			res.setContentType("text/html");
 			PrintWriter out = res.getWriter();
@@ -371,8 +424,8 @@ public class ReportController extends BaseDAO {
 			String printSession = net.sf.jasperreports.j2ee.servlets.ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE + reportId;
 			//req.getSession().setAttribute(printSession, jasperPrint);
 			/** session to cache **/
-			usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-					printSession, jasperPrint);
+			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+					reportUrl, jasperPrint);*/
 			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?jrprint=" + printSession + "&image=");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, "");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, "");
@@ -383,9 +436,9 @@ public class ReportController extends BaseDAO {
 			pageStr = pageStr == null ? "0" : pageStr;
 			if (noOfPages > 1) {
 				//req.getSession().setAttribute(sessionParam, jasperPrint);
-				/** session to cache **/
+				/** session to cache **//*
 				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						sessionParam, jasperPrint);
+						reportUrl, jasperPrint);*/
 				exporter.setParameter(JRExporterParameter.PAGE_INDEX, Integer.parseInt(pageStr));
 				req.getSession().setAttribute(reportUrl, IApplicationConstants.TRUE);
 				// req.setAttribute("enablePagination", "true");
@@ -1770,7 +1823,10 @@ public class ReportController extends BaseDAO {
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
 			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
 			JasperPrint jasperPrint = null;
-			if (sessionObj != null) {
+			/** session to cache **/
+			jasperPrint = (JasperPrint) usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+					reportUrl, null);
+			if (sessionObj != null && jasperPrint == null) {
 				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
 				Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
 				if (isPrinterFriendly)

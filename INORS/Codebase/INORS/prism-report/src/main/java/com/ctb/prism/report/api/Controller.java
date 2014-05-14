@@ -32,9 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.jasperreports.data.cache.ColumnDataCacheHandler;
 import net.sf.jasperreports.data.cache.DataCacheHandler;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
@@ -52,6 +50,11 @@ import net.sf.jasperreports.web.util.WebUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+
+import com.ctb.prism.core.Service.IUsabilityService;
+import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.util.ApplicationContextProvider;
 
 
 /**
@@ -235,6 +238,13 @@ public class Controller
 				sessionObj.put("jasperReport", jasperReport);
 				sessionObj.put("parameterValues", webReportContext.getParameterValues());
 				request.getSession().setAttribute("apiJasperPrint"+reportUri, sessionObj);
+				
+				ApplicationContext appContext = ApplicationContextProvider.getApplicationContext();
+				IUsabilityService usabilityService = (IUsabilityService) appContext.getBean("usabilityService");
+				/** session to cache **/
+				usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUri, jasperPrint);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 

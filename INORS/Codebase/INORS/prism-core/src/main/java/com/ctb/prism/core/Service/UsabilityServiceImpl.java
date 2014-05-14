@@ -24,7 +24,7 @@ import com.ctb.prism.webservice.transferobject.StudentListTO;
  * @author d-abir_dutta Service to report usability
  * 
  */
-@Service
+@Service("usabilityService")
 public class UsabilityServiceImpl implements IUsabilityService {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityServiceImpl.class.getName());
