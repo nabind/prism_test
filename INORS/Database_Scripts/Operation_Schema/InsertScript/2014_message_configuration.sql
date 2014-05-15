@@ -3,7 +3,7 @@
 */
 
 begin
-/* 105 is the adminid for 2014 */
+/* 105 is the adminid for 2014 - Use same msg_typeid for same message type */
   for rec in (select cust_prod_id from cust_product_link where adminid = 105) loop
     insert into dash_message_type
       (msg_typeid,
