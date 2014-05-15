@@ -144,7 +144,16 @@ public class RescoreRequestController {
 			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - rescoreRequestForm() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		
-		// String reportId = (String) request.getParameter("reportId");
+		List<ReportMessageTO> reportMessages = getAllReportMessages(request, testAdministrationVal);
+		modelAndView.addObject("reportMessages", reportMessages);
+		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+		logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
+		modelAndView.addObject("dataloadMessage", dataloadMessage);
+		return modelAndView;
+	}
+	
+	private List<ReportMessageTO> getAllReportMessages(HttpServletRequest request, String testAdministrationVal) {
+		String reportId = (String) request.getParameter("reportId");
 		String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
@@ -159,12 +168,7 @@ public class RescoreRequestController {
 		messageParamMap.put("CUSTOMER_ID", customerId);
 		messageParamMap.put("ORG_NODE_LEVEL", orgNodeLevel);
 		messageParamMap.put("USER_ID", currentUserId);
-		List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(messageParamMap);
-		modelAndView.addObject("reportMessages", reportMessages);
-		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
-		logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
-		modelAndView.addObject("dataloadMessage", dataloadMessage);
-		return modelAndView;
+		return reportService.getAllReportMessages(messageParamMap);
 	}
 	
 	private String getReportMessage(List<ReportMessageTO> reportMessages, String messageType, String messageName) {
