@@ -64,7 +64,6 @@ public class ReportServiceImpl implements IReportService {
 	@Async
 	public void getFilledReportForPDF(JasperReport jasperReport, Map<String, Object> parameters, boolean isPrinterFriendly, 
 			String user, String sessionParam) throws Exception {
-		System.out.println("-------- for PDF --------- ");
 		parameters.put("p_Is3D", IApplicationConstants.FLAG_N);
 		JasperPrint jasperPrint = reportBusiness.getFilledReport(jasperReport, parameters);
 		/** session to cache **/

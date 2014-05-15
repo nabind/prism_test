@@ -1827,9 +1827,11 @@ public class ReportController extends BaseDAO {
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
 			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
 			JasperPrint jasperPrint = null;
-			/** session to cache **/
-			jasperPrint = (JasperPrint) usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-					reportUrl, null);
+			if(!IApplicationConstants.TRUE.equals(req.getAttribute("icDownload"))) { // if not IC - Download
+				/** session to cache **/
+				jasperPrint = (JasperPrint) usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUrl, null);
+			}
 			if (sessionObj != null && jasperPrint == null) {
 				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
 				Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
@@ -1859,6 +1861,7 @@ public class ReportController extends BaseDAO {
 	 */
 	@RequestMapping(value = "/icDownload", method = RequestMethod.GET)
 	public void icDownload(HttpServletRequest req, HttpServletResponse response) {
+		req.setAttribute("icDownload", IApplicationConstants.TRUE);
 		download(req, response);
 	}
 
