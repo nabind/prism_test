@@ -6,13 +6,33 @@
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none">Success</p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display: none">Error</p>
 		<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl">
-		<div class="columns accordion with-padding big-message">
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType=='DM'}">
+						<div class="big-message">
+							<%-- <span class="big-message-icon icon-warning with-text color" style="margin-top: -15px;">Important</span> --%>
+							<%-- <strong>${ reportMessage.messageName }</strong><br> --%>
+							${ reportMessage.message }
+						</div>
+						<p>&nbsp;</p>
+					</c:if>
+					<c:if test="${reportMessage.messageType!='DM'}">
+						<fieldset class="fieldset">
+							<legend class="legend">${ reportMessage.messageName }</legend>
+							<p class="inline-label">${ reportMessage.message }</p>
+						</fieldset>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
+		<!-- <div class="columns accordion with-padding big-message">
 			<span>Rescore requests will be accepted for the ISTEP+ Spring 2013 test administration from 09-09-2013 to 09-30-2013 for English/Language Arts, Mathematics and Social Studies and from 10-24-2013 to 11-15-2013 for Science.</span>
-		</div>
-		<div class="columns accordion with-padding">
+		</div> -->
+		<!-- <div class="columns accordion with-padding">
 			<span>Only parents can initiate a rescore request. The school will complete the Rescore Request Form per the parents' instructions. A Parent-Request Date is required in order to have the item(s) rescored. Enter the month and day of the request in the proper column.</span>
-		</div>
-		<div class="columns accordion with-padding">
+		</div> -->
+		<!-- <div class="columns accordion with-padding">
 			<span id="ctl00_MainPageContent_instructionVideo" class="tag">
 				<a href="https://ctb-mcgraw-hill.webex.com/ctb-mcgraw-hill/ldr.php?AT=pb&SP=MC&rID=67284132&rKey=1df53fff97245310" id="ctl00_MainPageContent_linkUrl" target="_blank" style="color:White; font-size: small;">Link to Instruction Video</a>
 			</span>
@@ -29,7 +49,7 @@
 					<li>To submit a rescore request for Undetermined students call the CTB/Indiana Help Desk Toll Free at 800-282-1132.</li>
 				</ul>
 			</span>
-		</div>
+		</div> -->
 		<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF">
 				<thead>
