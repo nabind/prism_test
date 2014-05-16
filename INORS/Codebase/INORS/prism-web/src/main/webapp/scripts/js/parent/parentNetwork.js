@@ -176,7 +176,7 @@ function getGenericPage(action, obj, typ) {
 			unblockUI();
 			$(".main-section").html(data);
 			if(action == 'getArticleDescription'){
-				showContent($('#contentDescription'));
+				showContent($('#contentDescription'), $(obj).attr('count'));
 			}
 		},
 		error : function(data) {						
@@ -234,9 +234,10 @@ function getDataUrl(action, obj, typ){
 }
 
 //============To show dynamic content in HTML===============
-function showContent($container){
+function showContent($container, stdCount){
 	var taVal = $('#taContent').val();
 	$container.html(taVal);
+	$('.standardCount').html(stdCount);
 }
 
 

@@ -22,7 +22,7 @@
 					${menuName}: ${studentGradeName}
 				</c:when>
 			</c:choose>
-			${articleTypeDescription.contentName}
+			<span class="standardCount">&nbsp;</span> ${articleTypeDescription.contentName}
 			</a></li>
 		</ul>
 		<div class="tabs-content">

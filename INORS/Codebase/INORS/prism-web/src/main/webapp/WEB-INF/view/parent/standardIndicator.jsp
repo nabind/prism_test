@@ -47,16 +47,18 @@
 				
 				<div id="standardActivityDeatils" class="">
 					<c:set var="curStandardId" value="0" />
+					<c:set var="count" value="0" scope="page" />
 					<c:forEach var="standardIndicatorTO" items="${standardIndicatorDetailsList}">
 						<c:if test="${curStandardId != standardIndicatorTO.objectiveId}">
+							<c:set var="count" value="${count + 1}" scope="page"/>
 							<div class="columns">
 								<c:set var="standardId" value="${standardIndicatorTO.objectiveId}" />
 								<div class="new-row three-columns">
 									<a class="articledata" href="#nogo" 
 										articleId="${standardIndicatorTO.objContentId}" 
 										contentType= '<spring:message code="val.contentType.std"/>'  
-										id="subtestIdLink">
-											${standardIndicatorTO.objectiveName}
+										id="subtestIdLink" count="Standard ${count} -">
+											Standard ${count} - ${standardIndicatorTO.objectiveName}
 									</a>
 									
 									<c:if test="${studentName != '-1'}">
