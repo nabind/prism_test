@@ -3,8 +3,9 @@
  */
 package com.ctb.prism.report.transferobject;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.ctb.prism.core.transferobject.BaseTO;
-import com.ctb.prism.core.util.CustomStringUtil;
 
 /**
  * @author Joy
@@ -33,6 +34,10 @@ public class RescoreRequestTO extends BaseTO {
 	private String performanceLevel = "";
 	private long itemsetId = 0;
 	private String isRequested = "";
+	private String subtestCode = "";
+	private List<RescoreSubtestTO> rescoreSubtestTOList = new ArrayList<RescoreSubtestTO>();
+	private String originalScore = "";
+	private long rrfId = 0;
 	
 	public String getButton() {
 		return button;
@@ -160,4 +165,29 @@ public class RescoreRequestTO extends BaseTO {
 	public void setIsRequested(String isRequested) {
 		this.isRequested = isRequested;
 	}
+	public String getSubtestCode() {
+		return subtestCode;
+	}
+	public void setSubtestCode(String subtestCode) {
+		this.subtestCode = subtestCode;
+	}
+	public List<RescoreSubtestTO> getRescoreSubtestTOList() {
+		return rescoreSubtestTOList;
+	}
+	public void setRescoreSubtestTOList(List<RescoreSubtestTO> rescoreSubtestTOList) {
+		this.rescoreSubtestTOList = rescoreSubtestTOList;
+	}
+	public String getOriginalScore() {
+		return originalScore;
+	}
+	public void setOriginalScore(String originalScore) {
+		this.originalScore = originalScore;
+	}
+	public long getRrfId() {
+		return rrfId;
+	}
+	public void setRrfId(long rrfId) {
+		this.rrfId = rrfId;
+	}
+	
 }

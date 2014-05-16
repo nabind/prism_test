@@ -52,12 +52,13 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(RescoreRequestDAOImpl.class.getName());
 
+	@SuppressWarnings("unchecked")
 	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap) throws BusinessException {
 		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getDnpStudentList()");
-		List<RescoreRequestTO> dnpStudentList = null;
 		long t1 = System.currentTimeMillis();
-
+		
+		List<RescoreRequestTO> dnpStudentList = null;
 		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
 		final String testProgram = (String) paramMap.get("testProgram");
 		final String corpDiocese = (String) paramMap.get("corpDiocese");
@@ -88,14 +89,20 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
+							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
 							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
 							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
+							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
 							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
+							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
 							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
+							rescoreRequestTO.setUserId(rs.getLong("USERID"));
+							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
+							dnpStudentResult.add(rescoreRequestTO);
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
