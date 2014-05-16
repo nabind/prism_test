@@ -253,7 +253,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String fileSize = null;
 		JobTrackingTO jobTrackingTO = reportBusiness.getProcessDataGD(jobId);
-		String clobStr = jobTrackingTO.getRequestDetails();
+		String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
 		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal());
