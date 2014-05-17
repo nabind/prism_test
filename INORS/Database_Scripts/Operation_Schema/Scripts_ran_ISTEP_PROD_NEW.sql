@@ -645,8 +645,26 @@ rename column STANDARD to OBJECTIVEID;
  INSERT /*+APPEND*/  INTO stfd_fact SELECT * FROM <Backup Table Created in STEP 6> ; 
 
  commit ; 
+
+--9-- Cutscore Ipi loads -- 
+
+update cutscoreipi c
+   set c.objectiveid = (select vw.objectiveid
+                        from cutscoreipi               cut,
+                             vw_subtest_grade_objective_map vw,
+                             cust_product_link              cpl,
+                             assessment_dim                 ad
+                       where cut.subtestid = vw.subtestid
+                         and cut.gradeid = vw.gradeid
+                         and cut.objectiveid = vw.objective_code
+                         and cut.cust_prod_id = cpl.cust_prod_id
+                         and cpl.productid = ad.productid
+                         and ad.assessmentid = vw.assessmentid
+                         and cut.cutscoreipiid=c.cutscoreipiid); 
+						 
+commit ;  
  
- --9-- Objective Score Fact Load-- 
+ --10-- Objective Score Fact Load-- 
  
  -- Note -- Before the load starts we need to compile the pkg_inors_migration by commenting all the procedure because ISTEP_DATAMIG schema is 
  -- not there, also we need to create a sequence. 
@@ -697,6 +715,137 @@ commit ;
 
  
 --11-- Updating Objective Dim for Objective Description & ITEMSET_DIM changes  -- 
+
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Nature of Science and Technology'
+ WHERE objective_name = 'Nature of Sci & Tech';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Scientific Thinking'
+ WHERE objective_name = 'Scientific Thinking';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Physical Setting'
+ WHERE objective_name = 'The Physical Setting';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Living Environment'
+ WHERE objective_name = 'The Living Environment';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Mathematical World'
+ WHERE objective_name = 'The Mathematical World';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Common Themes'
+ WHERE objective_name = 'Common Themes'; 
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Earth Science'
+ WHERE objective_name = 'Earth Science'; 
+ 
+-- Grade 6 Science
+
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Physical Science'
+ WHERE objective_name = 'Physical Science';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Earth and Space Science'
+ WHERE objective_name = 'Earth & Space Science';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Life Science'
+ WHERE objective_name = 'Life Science';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Science, Engineering and Technology'
+ WHERE objective_name = 'Science Eng & Tech';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Nature of Science'
+ WHERE objective_name = 'The Nature of Science';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'The Design Process'
+ WHERE objective_name = 'The Design Process'; 
+ 
+--For ELA
+
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Word Recognition, Fluency, and Vocabulary Development'
+ WHERE objective_name = 'Vocabulary';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Comprehension and Analysis of Nonfiction and Informational Text'
+ WHERE objective_name = 'Nonfiction/Info Text†';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Comprehension and Analysis of Literary Text'
+ WHERE objective_name = 'Literary Text†';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'WRITING: Processes and Features'
+ WHERE objective_name = 'Writing Process';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'WRITING: Applications (Different Types of Writing and Their Characteristics)'
+ WHERE objective_name = 'Writing Applications';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'WRITING: English Language Conventions'
+ WHERE objective_name = 'Lang. Conventions'; 
+
+--For Mathematics
+
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Number Sense'
+ WHERE objective_name = 'Number Sense';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Computation'
+ WHERE objective_name = 'Computation';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Algebra and Functions'
+ WHERE objective_name = 'Algebra & Functions';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Geometry'
+ WHERE objective_name = 'Geometry';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Measurement'
+ WHERE objective_name = 'Measurement';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Problem Solving'
+ WHERE objective_name = 'Problem Solving'; 
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Data Analysis and Probability'
+ WHERE objective_name = 'Data Analysis & Prob';  
+ 
+ -- Social Study
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'History'
+ WHERE objective_name = 'History';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Civics and Government'
+ WHERE objective_name = 'Civics & Government'; 
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Geography'
+ WHERE objective_name = 'Geography';
+ 
+UPDATE OBJECTIVE_DIM
+   SET OBJECTIVE_DESC = 'Economics'
+ WHERE objective_name = 'Economics'; 
+ 
+COMMIT;
+End;
 
 MERGE INTO ITEMSET_DIM TGT
 USING (SELECT * FROM ITEMSET_DIM@PROD_TO_ISTEPMASTER) SRC
@@ -1599,6 +1748,8 @@ select * from dash_menu_rpt_access where db_reportid in  (2046,2049,2048,2047,10
 -- 23 -- Change REQUEST_FILENAME length in job_tracking
 alter table job_tracking modify REQUEST_FILENAME varchar2(500);
 
+CREATE INDEX idx_job_tracking_1 ON job_tracking(userid,job_status);
+
 
 -- 24 -- Create sequence ACTIVITYID_SEQ
 create sequence ACTIVITYID_SEQ
@@ -1633,7 +1784,139 @@ prompt Enabling triggers for ACTIVITY_TYPE...
 alter table ACTIVITY_TYPE enable all triggers;
 set feedback on
 set define on
-prompt Done.
+prompt Done. 
+
+-- 26-- ETL Related Changes -- 
+
+create or replace procedure PRC_MV_REFRESH_UDTR_ROSTER
+as
+begin
+
+ DBMS_MVIEW.REFRESH('UDTR_ROSTER_TEST_SESSION_CNT', 'C');
+
+end PRC_MV_REFRESH_UDTR_ROSTER;
+
+create table STG_STATE_MEAN_IPI_SCORE
+(
+  STG_STATE_MEAN_IPI_SCORE_ID                      NUMBER not null,
+  ORG_NODEID                   NUMBER not null,
+  CUST_PROD_ID                 NUMBER not null,
+  ADMINID                      NUMBER not null,
+  ENGLANG_ARTS_SUBTESTID       NUMBER,
+  MATHEMATICS_SUBTESTID        NUMBER,
+  SCIENCE_SUBTESTID            NUMBER,
+  SOCIAL_SUBTESTID             NUMBER,
+  GRADEID                      NUMBER not null,
+  LEVELID                      NUMBER not null,  
+  MEAN_IPI_1                   VARCHAR2(5),
+  MEAN_IPI_2                   VARCHAR2(5),
+  MEAN_IPI_3                   VARCHAR2(5),
+  MEAN_IPI_4                   VARCHAR2(5),
+  MEAN_IPI_5                   VARCHAR2(5),
+  MEAN_IPI_6                   VARCHAR2(5),
+  MEAN_IPI_7                   VARCHAR2(5),
+  MEAN_IPI_8                   VARCHAR2(5),
+  MEAN_IPI_9                   VARCHAR2(5),
+  MEAN_IPI_10                  VARCHAR2(5),
+  MEAN_IPI_11                  VARCHAR2(5),
+  MEAN_IPI_12                  VARCHAR2(5),
+  MEAN_IPI_13                  VARCHAR2(5),
+  MEAN_IPI_14                  VARCHAR2(5),
+  MEAN_IPI_15                  VARCHAR2(5),
+  MEAN_IPI_16                  VARCHAR2(5),
+  MEAN_IPI_17                  VARCHAR2(5),
+  MEAN_IPI_18                  VARCHAR2(5),
+  MEAN_IPI_19                  VARCHAR2(5),
+  MEAN_IPI_20                  VARCHAR2(5),
+  MEAN_IPI_21                  VARCHAR2(5),
+  MEAN_IPI_22                  VARCHAR2(5),
+  MEAN_IPI_23                  VARCHAR2(5),
+  MEAN_IPI_24                  VARCHAR2(5),
+  MEAN_IPI_25                  VARCHAR2(5),
+  MEAN_IPI_26                  VARCHAR2(5),
+  MEAN_IPI_27                  VARCHAR2(5),
+  MEAN_IPI_28                  VARCHAR2(5),
+  MEAN_IPI_29                  VARCHAR2(5),
+  MEAN_IPI_30                  VARCHAR2(5),
+  MEAN_IPI_31                  VARCHAR2(5),
+  STRUCTURE_LEVEL              VARCHAR2(2),
+  ELEMENT_NUMBER               VARCHAR2(7),
+  ISPUBLIC                     VARCHAR2(20),
+  DATETIMESTAMP                DATE not null
+);
+
+CREATE OR REPLACE TYPE INT_ARRAY AS TABLE OF NUMBER;
+
+
+create sequence SEQ_STATE_MEAN_IPI_SCORE
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 3095
+increment by 1
+cache 20; 
+
+-- Packages & Procedure to be copied (ETL)-- 
+
+1- PKG_INORS_CREATE_CUSTOMER 
+2- PRC_DELETE_RESCORE_FACT  
+
+--Packages & Procedure to be copied (OPR) : 
+
+1-PKG_MANAGE_CONTENT.pck
+2-PKG_PARENT_NETWORK.pck 
+3-PKG_GET_MIG_RESULTS_GRT.pck 
+
+-- Partition Script -- 
+
+Note- Please make sure that the cust_prod_id is validated, it should be the cust_prod_id for ISTEP+ Spring 2014 product customer 1000 
+
+ALTER TABLE DISA_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE CLASS_SUMM_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE ASFD_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE MEDIA_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE SUMT_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE UDTR_ROSTER_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE UDTR_SUMM_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE PEID_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE DISAGGREGATION_CATEGORY SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE DISAGGREGATION_CATEGORY_TYPE SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE ACAD_STD_SUMM_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE SPPR_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE RESULTS_GRT_FACT SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE STFD_FACT  SPLIT PARTITION PART_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OTHERS );
+
+ALTER TABLE OBJECTIVE_SCORE_FACT SPLIT PARTITION PART_OBJ_OTHERS  VALUES (5024)
+  INTO ( PARTITION PART_P5024, PARTITION PART_OBJ_OTHERS );
+
+
+
  
 
 
