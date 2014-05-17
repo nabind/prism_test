@@ -488,10 +488,11 @@ BEGIN
                           LOOP 
                                  v_ProductId := r_Get_Product_Default.PRODUCTID;
                           END LOOP;
+                          
                      END IF; 
-                    
+                       
                      
-                     IF  v_OrgNodeLevel = 1 THEN
+                     IF v_OrgNodeLevel=1  THEN
                            ---get default grade         
                             FOR r_Get_Grade_SchoolOth IN c_Get_Grade_SchoolOth(v_ProductId,v_test_program)
                             LOOP
@@ -509,13 +510,13 @@ BEGIN
                         LOOP
                                v_CorpId := r_Get_Corp_Default.ORG_NODEID;
                         END LOOP;
-                       ---get default School
+                      /* ---get default School
                         FOR r_Get_School_Default IN c_Get_School_Default (v_ProductId,v_CorpId,v_test_program)
                         LOOP
                                v_SchoolId := r_Get_School_Default.ORG_NODEID;
-                        END LOOP;
+                        END LOOP;*/
                         ---get default grade
-                        FOR r_Get_Grade IN c_Get_Grade (v_ProductId,v_SchoolId)
+                        FOR r_Get_Grade IN c_Get_Grade (v_ProductId,v_CorpId)
                         LOOP
                                  t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
 
