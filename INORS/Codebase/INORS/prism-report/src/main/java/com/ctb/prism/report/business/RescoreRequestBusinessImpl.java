@@ -60,6 +60,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				curStudentBioId = rescoreRequestTOStud.getStudentBioId();
 				modifiedRescoreRequestTO.setStudentBioId(rescoreRequestTOStud.getStudentBioId());
 				modifiedRescoreRequestTO.setStudentFullName(rescoreRequestTOStud.getStudentFullName());
+				modifiedRescoreRequestTO.setRequestedDate(rescoreRequestTOStud.getRequestedDate());
 				curSubtestId = 0;
 				addToList = true;
 			}
