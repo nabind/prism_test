@@ -26,6 +26,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -51,6 +52,8 @@ public class ParentController {
 	
 	@Autowired
 	private IAdminService adminService;
+	@Autowired
+	private ILoginService loginService;
 
 	
 	/**
@@ -85,15 +88,18 @@ public class ParentController {
 	public ModelAndView addNewInvitation(HttpServletRequest req,
 			HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: Add new invitation code with existing parent account");
-		
-		String curruser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String invitationCode = (String)req.getParameter("invitationCode");
-		boolean success= parentService.addInvitationToAccount(curruser,invitationCode);
 		String status = "Fail";
-		res.setContentType("text/plain");
-		if(success) {
-			status = "Success";
-		} 
+		String curruser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		if(IApplicationConstants.PARENT_LOGIN.equals(req.getSession().getAttribute("PARENT_LOGIN"))) {
+			String invitationCode = (String)req.getParameter("invitationCode");
+			boolean success= parentService.addInvitationToAccount(curruser,invitationCode);
+			res.setContentType("text/plain");
+			if(success) {
+				status = "Success";
+			} 
+		} else {
+			status = "INVALID_USER";
+		}
 		res.getWriter().write( "{\"status\":\""+status+"\"}" );
 		logger.log(IAppLogger.INFO, "Exit: Add new invitation code with existing parent account");
 		return null;

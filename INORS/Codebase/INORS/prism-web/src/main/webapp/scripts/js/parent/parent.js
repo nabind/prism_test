@@ -475,6 +475,8 @@ $(document).ready(function() {
 					//calling ajax to refresh children list
 					refreshChildrenList();
 					
+				} else if(obj.status == 'Success') { 
+					$.modal.alert('Multiple user session detected. Please logout from all user sessions and relogin with only one user at a time.');
 				} else {
 					$.modal.alert(strings['script.parent.alreadyClaimed']);
 				}
