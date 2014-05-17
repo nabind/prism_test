@@ -59,8 +59,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @see com.ctb.prism.report.business.IReportBusiness#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		if ((jasperReport != null && "Invitation_Pdf".equals(jasperReport.getName().trim())) || "false".equals(propertyLookup.get("jasper.filled.report.cache"))) {
-			return reportDAO.getFilledReportNoCache(jasperReport, parameters);
+		if (jasperReport != null && "Invitation Pdf".equals(jasperReport.getName().trim())) {
+			return reportDAO.getFilledReportIC(jasperReport, parameters);
 		} else {
 			return reportDAO.getFilledReport(jasperReport, parameters);
 		}

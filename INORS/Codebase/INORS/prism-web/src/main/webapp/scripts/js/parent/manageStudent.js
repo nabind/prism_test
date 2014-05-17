@@ -121,7 +121,7 @@ function openModalToViewAssessments(studentBioId, testElementId) {
 							'Create Letter':{
 								classes: 'blue-gradient glossy createLetter',
 								click: function(win) {
-									var url = 'download.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+testElementId;
+									var url = 'icDownload.do'+'?type=pdf'+'&token=0&reportUrl=/public/PN/Report/Invitation_pdf_files&drillDown=true&assessmentId=105_InvLetter&p_Student_Bio_Id='+testElementId;
 									url = url + '&p_L3_Jasper_Org_Id=-1&p_AdminYear=-1'; // TODO : Remove hardcode 101
 									window.open(url);
 								}
