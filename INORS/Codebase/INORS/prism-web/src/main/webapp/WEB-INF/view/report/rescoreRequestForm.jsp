@@ -64,15 +64,21 @@
 					</tr>
 				</thead>
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF">
-					<c:forEach var="student" items="${rescoreStudentList}">
+					<c:forEach var="rescoreRequestStudentTO" items="${rescoreStudentList}">
 						<tr>
-						    <td class="vertical-center">${student.name}</td>
-						    <td class="vertical-center"></td>
-						    <td class="vertical-center"></td>
-						    <td class="vertical-center"></td>
-						    <td class="vertical-center"></td>
-						    <td class="vertical-center"></td>
-						    <td class="vertical-center"></td>
+						    <td class="vertical-center">${rescoreRequestStudentTO.studentFullName}</td>
+						    <td class="vertical-center">${rescoreRequestStudentTO.requestedDate}</td>
+						    
+						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
+						    	<td class="vertical-center">${rescoreSubtestTO.performanceLevel}</td>
+						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
+						    		<td class="vertical-center">
+							    		<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}">
+							    			${rescoreItemTO.itemsetId} ,
+							    		</c:forEach>
+						    		</td>
+						    	</c:forEach>
+						    </c:forEach>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -100,9 +106,7 @@
 			<p class="button-height">
 				Students Pass/Pass+/UND  in all content areas:<br />
 				<select id="selectStudentRRF" name="" class="select navy-gradient expandable-list float-left" style="width: 250px;">
-					<c:forEach var="student" items="${rescoreStudentList}">
-						<option value="${student.name}">${student.name}</option>
-					</c:forEach>
+					
 				</select>
 				<a class="button blue-gradient glossy float-left margin-left disabled" id="addRRF" href="#">Add </a>
 			</p>
@@ -124,7 +128,7 @@
 					<c:forEach var="student" items="${rescoreStudentList}">
 						<tr>
 						    <td class="vertical-center"></td>
-						    <td class="vertical-center">${student.name}</td>
+						    <td class="vertical-center"></td>
 						    <td class="vertical-center"></td>
 						    <td class="vertical-center"></td>
 						    <td class="vertical-center"></td>
