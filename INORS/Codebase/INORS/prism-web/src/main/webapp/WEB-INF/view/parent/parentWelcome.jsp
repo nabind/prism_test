@@ -11,7 +11,7 @@
 	
 
 
-	<div class="right-column margin-bottom-medium" style="min-height:650px;">
+	<div class="right-column margin-bottom-medium" style="min-height:675px;">
 			
 
 		<div class="right-column-200px" style="margin-top: 15px;">
@@ -20,7 +20,7 @@
 			<div class="" style="height: 100px; margin-top:-45px;">
 				<h3 style="position:relative">Your Children</h3>
 				<!--<p class="big-message blue-gradient">-->
-				<div style="height: 621px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
+				<div style="height: 647px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
 					<div class="" style="color : #fff;">
 						Choose one of the profiles below to see an individualized Action Plan for your child.
 						<br/><br/>
@@ -72,7 +72,10 @@
 													</a></li>
 									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
 														<spring:message code="menuName.second.sgsr"/>
-													</a></li>						
+													</a></li>
+									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/Parent_Network_User_Guide.pdf"  target="_blank">
+														User Guide
+													</a></li>
 								</ul>
 							</div>
 						</div>
@@ -80,7 +83,7 @@
 					<div class="" style="margin-left: 220px;">
 						<div class="with-padding" style="height: 170px; margin-right: -19px;">
 							<h4 class="blue underline">Manage My Account</h4>
-							<div class="boxshade scrollable" style="height: 126px;">
+							<div class="boxshade scrollable" style="height: 152px;">
 								<p>Use this page to update your personal information. You can also view information about which test data is available on the Parent Network for your school.</p>
 								<ul class="bullet-list">
 									<li><a href="myAccount.do">My Account</a></li>

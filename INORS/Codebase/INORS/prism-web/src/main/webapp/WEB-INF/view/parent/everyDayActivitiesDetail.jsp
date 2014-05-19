@@ -2,7 +2,7 @@
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 <div id="" style="height: auto; width: auto">
-	<h3>Everyday Activities: ${gradeName}</h3>
+	<h3>Everyday Activities: Grade ${gradeName}</h3>
 
 	<div>
 		<p>Your day-to-day involvement in your child's education makes an
@@ -20,8 +20,8 @@
 		</p>
 
 		<p>These Everyday Activities give you practical guidance on how to
-			take part in your childâ€™s education. They help create a learning-rich
-			home environment, making education a natural part of your familyâ€™s
+			take part in your child'€™s education. They help create a learning-rich
+			home environment, making education a natural part of your family'€™s
 			daily routine. These activities, along with your own ideas that the
 			activities may inspire, will help your child develop the lifelong
 			study skills and enthusiasm for learning that ensures continued

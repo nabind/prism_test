@@ -19,7 +19,7 @@
 					${menuName}
 				</c:when>
 				<c:when test="${(menuId == eda) || (menuId == att)}">
-					${menuName}: ${studentGradeName}
+					${menuName}: Grade ${studentGradeName}
 				</c:when>
 			</c:choose>
 			<span class="standardCount">&nbsp;</span> ${articleTypeDescription.contentName}
