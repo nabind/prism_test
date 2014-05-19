@@ -48,6 +48,10 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                WHERE ((p_corpdioceseAll = -1 AND p_schoolAll = -1 AND ORG.ORG_NODEID = (SELECT  ORG.ORG_NODEID FROM  ORG_NODE_DIM ORG WHERE ORG.ORG_NODE_LEVEL= 1 START WITH ORG.ORG_NODEID =LoggedInUserJasperOrgId CONNECT BY NOCYCLE PRIOR ORG.PARENT_ORG_NODEID=ORG.ORG_NODEID ))
                       OR
                       (p_corpdioceseAll = -99 AND p_schoolAll = -99 AND ORG.ORG_NODEID = (SELECT  ORG.ORG_NODEID FROM  ORG_NODE_DIM ORG WHERE ORG.ORG_NODE_LEVEL= 1 START WITH ORG.ORG_NODEID =LoggedInUserJasperOrgId CONNECT BY NOCYCLE PRIOR ORG.PARENT_ORG_NODEID=ORG.ORG_NODEID ))
+                       OR
+                      (p_corpdioceseAll = -1 AND p_schoolAll = -99 AND ORG.ORG_NODEID = (SELECT  ORG.ORG_NODEID FROM  ORG_NODE_DIM ORG WHERE ORG.ORG_NODE_LEVEL= 1 START WITH ORG.ORG_NODEID =LoggedInUserJasperOrgId CONNECT BY NOCYCLE PRIOR ORG.PARENT_ORG_NODEID=ORG.ORG_NODEID ))
+                      OR
+                      (p_corpdioceseAll <> -1 AND p_schoolAll = -99 AND ORG.ORG_NODEID = p_corpdioceseAll)
                       OR
                       (p_corpdioceseAll<>-1 AND p_schoolAll=-1 AND ORG.ORG_NODEID = p_corpdioceseAll)
                       OR
