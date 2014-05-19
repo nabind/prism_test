@@ -145,7 +145,7 @@
 								id="">${subtestTO.name}</a>
 										<ul class="big-menu white-gradient collapsible">
 												<li class="menu-third-level">
-													<a class="standard-activity" href="#nogo" 
+													<a class="standard-activity" href="#" 
 														subtestId="${subtestTO.value}" 
 														studentName="${childDataMap.studentName}" 
 														studentGradeId="${childDataMap.studentGradeId}" 
@@ -157,7 +157,7 @@
 												</li>
 												
 												<li class="menu-third-level">
-													<a class="standard-indicator" href="#nogo"  
+													<a class="standard-indicator" href="#"  
 														subtestId="${subtestTO.value}" 
 														studentName="${childDataMap.studentName}" 
 														studentGradeId="${childDataMap.studentGradeId}" 
@@ -169,7 +169,7 @@
 												</li>	
 												
 												<li class="menu-third-level">
-													<a class="articledata" href="#nogo" 
+													<a class="articledata" href="#" 
 														subtestId="${subtestTO.value}"
 														studentName="${childDataMap.studentName}" 
 														studentGradeId="${childDataMap.studentGradeId}" 
@@ -204,7 +204,7 @@
 											menuName = '<spring:message code="menuName.content.eda"/>' 
 											contentType = '<spring:message code="val.contentType.eda"/>' 
 											style="font-weight: bold"
-											href="#nogo" id="">-  <spring:message code="menuName.content.eda"/>
+											href="#" id="">-  <spring:message code="menuName.content.eda"/>
 								</a>
 							</li>
 							<li class="menu-second-level">
@@ -214,7 +214,7 @@
 											menuName = '<spring:message code="menuName.content.att"/>' 
 											contentType = '<spring:message code="val.contentType.att"/>' 
 											style="font-weight: bold"
-											href="#nogo" id="">-  <spring:message code="menuName.content.att"/>
+											href="#" id="">-  <spring:message code="menuName.content.att"/>
 								</a>
 							</li>
 						</c:if>
@@ -223,7 +223,7 @@
 							<span><spring:message code="menuName.first.explore"/></span>
 								<ul class="big-menu white-gradient collapsible">
 									 <li class="menu-second-level"> 
-									 	<a class="menu-link" href="#nogo" 
+									 	<a class="menu-link" href="#" 
 									 		action="getStandardMatters"  
 									 		id="">
 									 			<spring:message code="menuName.std.matter"/>
@@ -234,41 +234,41 @@
 									 	<span><spring:message code="menuName.content.browse"/></span>
 									 		 <ul class="big-menu white-gradient collapsible">
 											 		<li class="menu-third-level">
-											 			<a class="menu-link" href="#nogo" 
+											 			<a class="menu-link" href="#" 
 															action="getBrowseContent" id="">
 																- <spring:message code="menuName.content.overview"/>
 														</a>
 											 		</li>
 											 		<li class="menu-third-level">
-												 		<a class="browse-content" href="#nogo" 
+												 		<a class="browse-content" href="#" 
 	           												menuId='<spring:message code="menuId.content.stdAct"/>' 
 											           		menuName='<spring:message code="menuName.content.stdAct"/>'  
 											           		id=""> -  <spring:message code="menuName.content.stdAct"/>
 											           	</a>
 											        </li>
 											 		<li class="menu-third-level">
-											 			<a class="browse-content" href="#nogo" 
+											 			<a class="browse-content" href="#" 
 															menuId='<spring:message code="menuId.content.stdInd"/>' 
 											           		menuName='<spring:message code="menuName.content.stdInd"/>'  
 											         		id=""> -  <spring:message code="menuName.content.stdInd"/> 
 											         	</a>
 											 		</li>
 											 		<li class="menu-third-level">
-											 			<a class="browse-content" href="#nogo" 
+											 			<a class="browse-content" href="#" 
 															menuId='<spring:message code="menuId.content.rsc"/>' 
 											           		menuName='<spring:message code="menuName.content.rsc"/>'
 											           		id=""> -  <spring:message code="menuName.content.rsc"/>
 											           	</a>
 													</li>
 											 		<li class="menu-third-level">
-											 			<a class="browse-content" href="#nogo" 
+											 			<a class="browse-content" href="#" 
 															menuId='<spring:message code="menuId.content.eda"/>' 
 											           		menuName='<spring:message code="menuName.content.eda"/>'
 											           		id=""> -  <spring:message code="menuName.content.eda"/> 
 											           	</a>
 													</li>
 											 		<li class="menu-third-level">
-											 			<a class="browse-content" href="#nogo"
+											 			<a class="browse-content" href="#"
 															menuId='<spring:message code="menuId.content.att"/>' 
 											           		menuName='<spring:message code="menuName.content.att"/>' 
 															id=""> -  <spring:message code="menuName.content.att"/> 
@@ -309,7 +309,7 @@
 										</a>
 									</li>
 									<li class="menu-third-level">
-										<a class="claim-Invitation" href="#nogo">
+										<a class="claim-Invitation" href="#">
 											<spring:message code="menuName.second.enac"/>
 										</a>
 									</li>
