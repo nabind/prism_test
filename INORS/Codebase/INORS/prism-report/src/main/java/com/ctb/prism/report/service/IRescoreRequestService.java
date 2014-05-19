@@ -10,4 +10,6 @@ public interface IRescoreRequestService {
 	
 	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap) throws BusinessException;
 
+	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) throws BusinessException;
+	
 }

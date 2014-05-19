@@ -67,14 +67,68 @@
 					<c:forEach var="rescoreRequestStudentTO" items="${rescoreStudentList}">
 						<tr>
 						    <td class="vertical-center">${rescoreRequestStudentTO.studentFullName}</td>
-						    <td class="vertical-center">${rescoreRequestStudentTO.requestedDate}</td>
+						    <td class="vertical-center">
+						    	<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    </td>
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
-						    	<td class="vertical-center">${rescoreSubtestTO.performanceLevel}</td>
+						    	<td class="vertical-center">
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+						    			<a class="performance-level" 
+						    				subtestId="${rescoreSubtestTO.subtestId}"
+											href="#">
+												${rescoreSubtestTO.performanceLevel}
+										</a>
+						    		</c:if>
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
+						    			${rescoreSubtestTO.performanceLevel}
+						    		</c:if>
+						    	</td>
+						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
-							    		<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}">
-							    			${rescoreItemTO.itemsetId} ,
+							    		<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
+							    			<div class="item-div">
+							    				<c:choose>
+							    					<c:when test="${rescoreItemTO.requestedDate == ''}">
+							    						<div class="item-state_${rescoreSubtestTO.subtestId}">
+															<small class="item-tag tag orange-bg">0${theCount.count}</small>
+														</div>
+								    				</c:when>
+								    				<c:otherwise>
+								    					<c:choose>
+								    						<c:when test="${rescoreItemTO.isRequested=='N'}">
+									    						<div class="item-state_${rescoreSubtestTO.subtestId}">
+									    							<a class="item-link" 
+																		action="submitRescoreRequest" 
+																		itemsetId = "${rescoreItemTO.itemsetId}"
+												    					rrfId = "${rescoreItemTO.rrfId}" 
+												    					userId = "${rescoreItemTO.userId}"
+												    					userName = "${rescoreItemTO.userName}"
+																		href="#" 
+																		id="item_${rescoreItemTO.itemsetId}">
+																			<small class="item-tag tag">0${theCount.count}</small>	
+																	</a>
+									    						</div>
+									    					</c:when>
+									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
+									    						<div class="item-state_${rescoreSubtestTO.subtestId}">
+									    							<a class="item-link" 
+																		action="submitRescoreRequest" 
+																		itemsetId = "${rescoreItemTO.itemsetId}"
+												    					rrfId = "${rescoreItemTO.rrfId}" 
+												    					userId = "${rescoreItemTO.userId}"
+												    					userName = "${rescoreItemTO.userName}"
+																		href="#" 
+																		id="item_${rescoreItemTO.itemsetId}">
+																			<small class="item-tag tag red-bg">0${theCount.count}</small>
+																	</a>		
+									    						</div>
+									    					</c:when>
+								    					</c:choose>		
+								    				</c:otherwise>
+								    			</c:choose>
+							    			</div>
 							    		</c:forEach>
 						    		</td>
 						    	</c:forEach>

@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -25,10 +27,12 @@ import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.service.IRescoreRequestService;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.RescoreRequestTO;
+import com.google.gson.Gson;
 
 /**
  * @author Joy
@@ -116,8 +120,7 @@ public class RescoreRequestController {
 			logger.log(IAppLogger.INFO, "school=" + school);
 			logger.log(IAppLogger.INFO, "grade=" + grade);
 			
-			//TODO
-			//service call to get student, report message etc
+			//service call to get student's re-score data
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("testAdministrationVal", testAdministrationVal);
 			paramMap.put("testProgram", testProgram);
@@ -183,5 +186,45 @@ public class RescoreRequestController {
 		}
 		return message;
 	}
+	
+	
+	/**
+	 * Re-score request submission
+	 */
+	@RequestMapping(value = "/submitRescoreRequest", method = RequestMethod.GET)
+	public @ResponseBody 
+	String submitRescoreRequest(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestController - submitRescoreRequest()");
+		long t1 = System.currentTimeMillis();
+		
+		long itemsetId = Long.parseLong(request.getParameter("itemsetId"));
+		long rrfId = Long.parseLong(request.getParameter("rrfId"));
+		long userId = Long.parseLong(request.getParameter("userId"));
+		String requestedStatus = request.getParameter("requestedStatus");
+		
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("itemsetId", itemsetId);
+		paramMap.put("rrfId", rrfId);
+		paramMap.put("userId", userId);
+		paramMap.put("requestedStatus", requestedStatus);
+		
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			statusTO = rescoreRequestService.submitRescoreRequest(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - submitRescoreRequest() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
+    }
 
 }

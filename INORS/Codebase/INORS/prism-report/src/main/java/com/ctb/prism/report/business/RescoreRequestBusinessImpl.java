@@ -135,4 +135,9 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		logger.log(IAppLogger.INFO, "Exit: RescoreRequestBusinessImpl - arrangeRescoreData() took time: " + String.valueOf(t2 - t1) + "ms");
 		return modifiedStudentList;
 	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) 
+			throws BusinessException{
+		return rescoreRequestDAO.submitRescoreRequest(paramMap);
+	}
 }
