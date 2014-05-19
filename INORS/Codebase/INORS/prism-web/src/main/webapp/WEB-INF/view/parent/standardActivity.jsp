@@ -49,7 +49,7 @@
 							<div class="columns">
 								<c:set var="standardId" value="${standardActivityTO.objectiveId}" />
 								<div class="new-row three-columns">
-									<a class="articledata" href="#nogo" 
+									<a class="articledata" href="#" 
 										articleId="${standardActivityTO.objContentId}" 
 										contentType= '<spring:message code="val.contentType.std"/>' 
 										id="subtestIdLink" count="Standard ${count} -">
@@ -79,7 +79,7 @@
 										<c:if test="${standardId == activityTO.objectiveId}">
 											<c:set var="curStandardId" value="${activityTO.objectiveId}" />
 											<li> 
-												<a class="articledata" href="#nogo" 
+												<a class="articledata" href="#" 
 													articleId="${activityTO.contentId}" 
 													contentType= '<spring:message code="val.contentType.act"/>'   
 													id="subtestIdLink">
