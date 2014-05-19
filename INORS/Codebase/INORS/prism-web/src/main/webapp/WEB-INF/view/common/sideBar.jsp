@@ -288,6 +288,12 @@
 									 		<spring:message code="menuName.second.sgsr"/>
 									 	</a>
 									 </li>
+									 
+									 <li class="menu-second-level"> 
+									 	<a href="resourcepdf.do?pdfFileName=/Static_PDF/Parent_Network_User_Guide.pdf"  target="_blank">
+									 		User Guide
+									 	</a>
+									 </li>
 									  
 								</ul>
 						</li>
