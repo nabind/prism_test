@@ -44,29 +44,35 @@ $(document).ready(function() {
 		if($("#manageProfile").validationEngine('validate')) {
 			blockUI();
 			
-			if( $("#firstName").val() != "" && $("#lastName").val() != "" && $("#verify_mail").val() != ""
-				&& $("#ans1").val() != "" && $("#ans2").val() != "" && $("#ans3").val() != "" ) {
-				$('#manageProfile').validationEngine('hide');
-				$("#mandatoryValidation").hide(500);
-				
-				if ( ($("span.qsn1").children(".select-value").text()==$("span.qsn2").children(".select-value").text())
-					||($("span.qsn1").children(".select-value").text()==$("span.qsn3").children(".select-value").text())||($("span.qsn2").children(".select-value").text()==$("span.qsn3").children(".select-value").text())
-					){
-					unblockUI();
-					$.modal.alert(strings['script.parent.question']);
+			if($('#password').val() != "" && $('#password_again').val() == ""){
+				unblockUI();
+				$.modal.alert("verify password can not be empty");
+			}  else{
+				if( $("#firstName").val() != "" && $("#lastName").val() != "" && $("#verify_mail").val() != ""
+					&& $("#ans1").val() != "" && $("#ans2").val() != "" && $("#ans3").val() != "" ) {
+					$('#manageProfile').validationEngine('hide');
+					$("#mandatoryValidation").hide(500);
+					
+					if ( ($("span.qsn1").children(".select-value").text()==$("span.qsn2").children(".select-value").text())
+						||($("span.qsn1").children(".select-value").text()==$("span.qsn3").children(".select-value").text())||($("span.qsn2").children(".select-value").text()==$("span.qsn3").children(".select-value").text())
+						){
+						unblockUI();
+						$.modal.alert(strings['script.parent.question']);
+					}
+					else{
+						saveParentProfileInfo($(".manage-Profile-form"));
+					}	
 				}
 				else{
-					saveParentProfileInfo($(".manage-Profile-form"));
-				}	
-			}
-			else{
-				$("#mandatoryValidation").show();
-				unblockUI();
-			}
+					$("#mandatoryValidation").show();
+					unblockUI();
+				}				
+			}			
+					
 		} else {
 			$('#manageProfile').validationEngine('show');
 		}
-	});	
+	});
 	
 	// -------------------------- reset invitation code -------------------------
 	$("#invitationCode").keypress(function() {
