@@ -80,7 +80,7 @@
 													contentType = '<spring:message code="val.contentType.eda"/>' 
 													custProdId = "${gradeSubtestTO.custProdId}"
 													style="font-weight: bold"
-													href="#nogo" id="">
+													href="#" id="">
 														${gradeSubtestTO.gradeName}
 												</a>
 											</p>
@@ -94,7 +94,7 @@
 													contentType = '<spring:message code="val.contentType.att"/>' 
 													custProdId = "${gradeSubtestTO.custProdId}"
 													style="font-weight: bold"
-													href="#nogo" id="">
+													href="#" id="">
 														${gradeSubtestTO.gradeName}
 												</a>
 											</p>
@@ -116,7 +116,7 @@
 															studentBioId="0" studentGradeName="${subtestTO.gradeName}"
 															custProdId = "${gradeSubtestTO.custProdId}"
 															style="font-weight: bold"
-															href="#nogo" id="">
+															href="#" id="">
 																${subtestTO.subtestName}
 														</a>
 													</c:when>
@@ -126,7 +126,7 @@
 															studentBioId="0" studentGradeName="${subtestTO.gradeName}"
 															custProdId = "${gradeSubtestTO.custProdId}"
 															style="font-weight: bold"
-															href="#nogo" id="">
+															href="#" id="">
 																${subtestTO.subtestName}
 														</a>
 													</c:when>
@@ -138,7 +138,7 @@
 															contentType = '<spring:message code="val.contentType.rsc"/>' 
 															custProdId = "${gradeSubtestTO.custProdId}"
 															style="font-weight: bold"
-															href="#nogo" id="">
+															href="#" id="">
 																${subtestTO.subtestName}
 														</a>
 													</c:when>

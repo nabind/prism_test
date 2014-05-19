@@ -34,13 +34,13 @@
 	
 	<c:choose>
 		<c:when test="${(menuId == stdAct) || (menuId == stdInd)}">
-			<a style="font-weight: bold" href="#nogo" id="backLink" class="button blue-gradient glossy icon-replay-all">
+			<a style="font-weight: bold" href="#" id="backLink" class="button blue-gradient glossy icon-replay-all">
 				Go back
 			</a>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${studentBioId == 0}">
-				<a style="font-weight: bold" href="#nogo" id="backLink" class="button blue-gradient glossy icon-replay-all">
+				<a style="font-weight: bold" href="#" id="backLink" class="button blue-gradient glossy icon-replay-all">
 					Go back
 				</a>
 			</c:if>
