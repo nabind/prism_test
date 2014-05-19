@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <noscript class="message black-gradient simpler">Your browser
 	does not support JavaScript! Some features won't work as expected...</noscript>
 <%@ include file="../common/constant.jsp" %>
@@ -19,7 +20,14 @@
 					${menuName}
 				</c:when>
 				<c:when test="${(menuId == eda) || (menuId == att)}">
-					${menuName}: ${studentGradeName}
+					<c:choose>
+						<c:when test="${fn:contains(studentGradeName, 'Grade')}">
+							${menuName}: ${studentGradeName}
+						</c:when>
+						<c:otherwise>
+							${menuName}: Grade ${studentGradeName}
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 			</c:choose>
 			<span class="standardCount">&nbsp;</span> ${articleTypeDescription.contentName}
