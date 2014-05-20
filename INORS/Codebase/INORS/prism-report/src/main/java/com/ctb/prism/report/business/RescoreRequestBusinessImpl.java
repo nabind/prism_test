@@ -142,4 +142,9 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 			throws BusinessException{
 		return rescoreRequestDAO.submitRescoreRequest(paramMap);
 	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap) 
+			throws BusinessException{
+		return rescoreRequestDAO.resetItemState(paramMap);
+	}
 }

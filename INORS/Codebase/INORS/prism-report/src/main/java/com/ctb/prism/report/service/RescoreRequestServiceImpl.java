@@ -30,4 +30,8 @@ public class RescoreRequestServiceImpl implements IRescoreRequestService {
 	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) throws BusinessException{
 		return rescoreRequestBusiness.submitRescoreRequest(paramMap);
 	}
+	
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap) throws BusinessException{
+		return rescoreRequestBusiness.resetItemState(paramMap);
+	}
 }

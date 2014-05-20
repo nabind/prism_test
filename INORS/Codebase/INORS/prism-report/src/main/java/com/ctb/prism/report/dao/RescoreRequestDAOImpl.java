@@ -172,4 +172,50 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		return objectValueTO;
 	}
 	
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap)
+			throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - resetItemState()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
+		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
+		final long userId = ((Long) paramMap.get("userId")).longValue();
+		final String requestedStatus = (String)paramMap.get("requestedStatus");
+		
+		try {
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.RESET_ITEM_STATE + "}");
+					cs.setLong(1, subtestId);
+					cs.setLong(2, studentBioId);
+					cs.setLong(3, userId);
+					cs.setString(4, requestedStatus);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(5);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setName("");
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+		} catch (Exception e) {
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - resetItemState() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return objectValueTO;
+	}
+	
 }

@@ -152,7 +152,19 @@ public class RescoreRequestTO extends BaseTO {
 		return performanceLevel;
 	}
 	public void setPerformanceLevel(String performanceLevel) {
-		this.performanceLevel = performanceLevel;
+		if("A".equals(performanceLevel)){
+			this.performanceLevel = "Pass"; 
+		}else if("B".equals(performanceLevel)){
+			this.performanceLevel = "DNP";
+		}else if("U".equals(performanceLevel)){
+			this.performanceLevel = "Undefined";
+		}else if("N".equals(performanceLevel)){
+			this.performanceLevel = "DNR";
+		}else if("P".equals(performanceLevel)){
+			this.performanceLevel = "Pass+";
+		}else{
+			this.performanceLevel = performanceLevel;
+		}
 	}
 	public long getItemsetId() {
 		return itemsetId;

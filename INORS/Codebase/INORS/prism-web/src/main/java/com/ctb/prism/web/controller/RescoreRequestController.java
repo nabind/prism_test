@@ -200,10 +200,12 @@ public class RescoreRequestController {
 		
 		long itemsetId = Long.parseLong(request.getParameter("itemsetId"));
 		long rrfId = Long.parseLong(request.getParameter("rrfId"));
-		long userId = Long.parseLong(request.getParameter("userId"));
 		String requestedStatus = request.getParameter("requestedStatus");
 		String requestedDate = request.getParameter("requestedDate"); 
 	
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		long userId = Long.parseLong(loggedinUserTO.getUserId());
+		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("itemsetId", itemsetId);
 		paramMap.put("rrfId", rrfId);
@@ -225,6 +227,48 @@ public class RescoreRequestController {
 		}finally{
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - submitRescoreRequest() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
+    }
+	
+	
+	/**
+	 * Re-score request submission
+	 */
+	@RequestMapping(value = "/resetItemState", method = RequestMethod.GET)
+	public @ResponseBody 
+	String resetItemState(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestController - resetItemState()");
+		long t1 = System.currentTimeMillis();
+		
+		long subtestId = Long.parseLong(request.getParameter("subtestId"));
+		long studentBioId = Long.parseLong(request.getParameter("studentBioId"));
+		String requestedStatus = "N";
+		
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		long userId = Long.parseLong(loggedinUserTO.getUserId());
+		
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("userId", userId);
+		paramMap.put("requestedStatus", requestedStatus);
+		
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			statusTO = rescoreRequestService.resetItemState(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - resetItemState() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return jsonString;
     }

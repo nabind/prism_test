@@ -48,7 +48,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                   WHERE UPDATED_DATE_TIME =
                         (SELECT MAX(A.UPDATED_DATE_TIME)
                            FROM RESCORE_REQUEST_FORM A
-                          WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID)),
+                          WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID)
+                    AND ROWNUM = 1),
                  -1) REQUESTED_DATE,
              RRF.SUBTESTID SUBTESTID,
              SD.SUBTEST_CODE SUBTEST_CODE,

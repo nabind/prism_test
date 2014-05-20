@@ -50,8 +50,8 @@
 				</ul>
 			</span>
 		</div> -->
-		<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
-			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF">
+		<div id="sorting-advanced_wrapper_" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
+			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF_g38">
 				<thead>
 					<tr role="row">
 						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
@@ -61,6 +61,16 @@
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">E/la<br />Session 3</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Math<br />Session 1</th>
+						<c:choose>
+							<c:when test="${grade =='10002' || grade =='10004'}">
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Science<br />Session 4</th>
+						    </c:when>
+						    <c:when test="${grade =='10003' || grade =='10005'}">
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Social Studies<br />Session 4</th>
+						    </c:when>
+						</c:choose>
 					</tr>
 				</thead>
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF">
@@ -83,6 +93,7 @@
 						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
 						    			<a class="performance-level" 
 						    				subtestId="${rescoreSubtestTO.subtestId}"
+						    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
 											href="#nogo">
 												${rescoreSubtestTO.performanceLevel}
 										</a>
@@ -94,15 +105,23 @@
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
-							    		<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
-							    			<div class="item-div">
-							    				<c:choose>
-							    					<c:when test="${rescoreItemTO.requestedDate == '-1'}">
-							    						<%-- <div class="item-state_${rescoreSubtestTO.subtestId}"> --%>
+						    		<!-- item-div start -->
+						    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+						    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+						    			</c:if>
+						    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
+						    				<div class="item-div-${rescoreSubtestTO.subtestId}">
+						    			</c:if>
+						    			
+							    			<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
+							    			
+							    				<%-- <c:choose> --%>
+							    					<%-- <c:when test="${rescoreItemTO.requestedDate == '-1'}">
+							    						<div class="item-state_${rescoreSubtestTO.subtestId}">
 															<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
 														<!-- </div> -->
-								    				</c:when>
-								    				<c:otherwise>
+								    				</c:when> --%>
+								    				<%-- <c:otherwise> --%>
 								    					<c:choose>
 								    						<c:when test="${rescoreItemTO.isRequested=='N'}">
 									    						<%-- <div class="item-state_${rescoreSubtestTO.subtestId}"> --%>
@@ -135,10 +154,11 @@
 									    						<!-- </div> -->
 									    					</c:when>
 								    					</c:choose>		
-								    				</c:otherwise>
-								    			</c:choose>
-							    			</div>
-							    		</c:forEach>
+								    				<%-- </c:otherwise> --%>
+								    			<%-- </c:choose> --%>
+							    			</c:forEach>
+							    		</div>
+							    		<!-- item-div end -->
 						    		</td>
 						    	</c:forEach>
 						    </c:forEach>

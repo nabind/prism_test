@@ -16,8 +16,11 @@ $(document).ready(function() {
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
 			//filteredRow = this.$('tr', {"filter": "applied"} );
-			$(".item-link").on("click", function(){
+			$('.item-link').on('click', function(){
 				submitRescoreRequest($(this));
+			});
+			$('.performance-level').on('click', function(){
+				showHideItems($(this));
 			});
 		}
 	});
@@ -51,7 +54,6 @@ function submitRescoreRequest(obj){
 	
 	var itemsetId = (typeof $(obj).attr('itemsetId') !== 'undefined') ? $(obj).attr('itemsetId') : 0;
 	var rrfId = (typeof $(obj).attr('rrfId') !== 'undefined') ? $(obj).attr('rrfId') : 0;
-	var userId = (typeof $(obj).attr('userId') !== 'undefined') ? $(obj).attr('userId') : 0;
 	var elementId = (typeof $(obj).attr('id') !== 'undefined') ? $(obj).attr('id') : 0;
 	
 	var requestedStatus = "Y";
@@ -65,7 +67,6 @@ function submitRescoreRequest(obj){
 	
 	var urlData = 'itemsetId='+itemsetId
 					+'&rrfId='+rrfId
-					+'&userId='+userId
 					+'&requestedStatus='+requestedStatus
 					+'&requestedDate='+requestedDate;
 	
@@ -93,6 +94,40 @@ function submitRescoreRequest(obj){
 			unblockUI();
 		}
 	});
+}
+
+function showHideItems(obj){
+	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	
+	if($('.item-div-'+subtestId).is(':hidden')){
+		$('.item-div-'+subtestId).show();
+	}else{
+		unblockUI();
+		var urlData = 'subtestId='+subtestId
+						+'&studentBioId='+studentBioId;
+		blockUI();
+		$.ajax({
+			type : 'GET',
+			url : 'resetItemState.do',
+			data : urlData,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				if(data.value >= 1){
+					$('.item-div-'+subtestId).hide();
+					$('.item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+				}else{
+					$.modal.alert("Error occured");
+				}
+			},
+			error : function(data) {	
+				$.modal.alert("Error occured");
+				unblockUI();
+			}
+		});					
+	}
 }
 
 /**
