@@ -883,13 +883,13 @@
 					enableSorting(true);
 					retainUniqueValue();
 					//setLastRowId ();
-					updateOrgNameHeading("-1");
 					unblockUI();
 					//$("#userTable").animate({scrollTop: currentScrollTop+600}, 500);
 				} else {
 					$("#moreUser").addClass("disabled");
 					if($.browser.msie) $("#moreUser").addClass("disabled-ie");
 					retainUniqueValue();
+					updateOrgNameHeading("-1");
 					unblockUI();
 				}
 				if (data != null && data.length < 14) {
