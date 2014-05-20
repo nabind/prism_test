@@ -201,6 +201,7 @@ public class Controller
 		JasperPrintAccessor accessor;
 		/** Start Custom */
 		Map<String, Object> parameters = (Map<String, Object>) request.getSession().getAttribute("apiJasperParameters"+reportUri);
+		parameters.put("p_Is3D", IApplicationConstants.FLAG_Y);
 		Iterator it = parameters.entrySet().iterator();
 		while (it.hasNext()) {
 		    Map.Entry pairs = (Map.Entry)it.next();
