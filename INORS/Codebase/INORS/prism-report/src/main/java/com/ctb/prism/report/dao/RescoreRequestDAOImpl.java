@@ -100,6 +100,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
 							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
 							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
+							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
 							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
@@ -132,6 +133,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		final long rrfId = ((Long) paramMap.get("rrfId")).longValue();
 		final long userId = ((Long) paramMap.get("userId")).longValue();
 		final String requestedStatus = (String)paramMap.get("requestedStatus");
+		final String requestedDate = (String)paramMap.get("requestedDate");
 
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -141,8 +143,9 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(2, rrfId);
 					cs.setLong(3, userId);
 					cs.setString(4, requestedStatus);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setString(5, requestedDate);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -151,7 +154,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(5);
+						executionStatus = cs.getLong(6);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {

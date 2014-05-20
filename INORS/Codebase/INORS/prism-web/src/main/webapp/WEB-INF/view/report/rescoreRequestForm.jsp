@@ -68,7 +68,14 @@
 						<tr>
 						    <td class="vertical-center">${rescoreRequestStudentTO.studentFullName}</td>
 						    <td class="vertical-center">
-						    	<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    	<c:choose>
+						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
+						    			<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="" /> 
+						    		</c:when>
+						    		<c:otherwise>
+						    			<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    		</c:otherwise>
+						    	</c:choose>
 						    </td>
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
@@ -76,7 +83,7 @@
 						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
 						    			<a class="performance-level" 
 						    				subtestId="${rescoreSubtestTO.subtestId}"
-											href="#">
+											href="#nogo">
 												${rescoreSubtestTO.performanceLevel}
 										</a>
 						    		</c:if>
@@ -90,40 +97,42 @@
 							    		<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
 							    			<div class="item-div">
 							    				<c:choose>
-							    					<c:when test="${rescoreItemTO.requestedDate == ''}">
-							    						<div class="item-state_${rescoreSubtestTO.subtestId}">
-															<small class="item-tag tag orange-bg">0${theCount.count}</small>
-														</div>
+							    					<c:when test="${rescoreItemTO.requestedDate == '-1'}">
+							    						<%-- <div class="item-state_${rescoreSubtestTO.subtestId}"> --%>
+															<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
+														<!-- </div> -->
 								    				</c:when>
 								    				<c:otherwise>
 								    					<c:choose>
 								    						<c:when test="${rescoreItemTO.isRequested=='N'}">
-									    						<div class="item-state_${rescoreSubtestTO.subtestId}">
-									    							<a class="item-link" 
-																		action="submitRescoreRequest" 
-																		itemsetId = "${rescoreItemTO.itemsetId}"
-												    					rrfId = "${rescoreItemTO.rrfId}" 
-												    					userId = "${rescoreItemTO.userId}"
-												    					userName = "${rescoreItemTO.userName}"
-																		href="#" 
+									    						<%-- <div class="item-state_${rescoreSubtestTO.subtestId}"> --%>
+									    							<a class="item-link align-row" 
+									    								action="submitRescoreRequest" 
+																		itemsetId="${rescoreItemTO.itemsetId}"
+												    					rrfId="${rescoreItemTO.rrfId}" 
+												    					userId="${rescoreItemTO.userId}"
+												    					userName="${rescoreItemTO.userName}"
+												    					studentBioId="${rescoreItemTO.studentBioId}"
+																		href="#nogo" 
 																		id="item_${rescoreItemTO.itemsetId}">
-																			<small class="item-tag tag">0${theCount.count}</small>	
+																			<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
 																	</a>
-									    						</div>
+									    						<!-- </div> -->
 									    					</c:when>
 									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-									    						<div class="item-state_${rescoreSubtestTO.subtestId}">
-									    							<a class="item-link" 
-																		action="submitRescoreRequest" 
+									    						<!-- <div class="item-state_${rescoreSubtestTO.subtestId}"> -->
+									    							<a class="item-link align-row" 
+									    								action="submitRescoreRequest" 
 																		itemsetId = "${rescoreItemTO.itemsetId}"
 												    					rrfId = "${rescoreItemTO.rrfId}" 
 												    					userId = "${rescoreItemTO.userId}"
 												    					userName = "${rescoreItemTO.userName}"
-																		href="#" 
+												    					studentBioId = "${rescoreItemTO.studentBioId}"
+																		href="#nogo" 
 																		id="item_${rescoreItemTO.itemsetId}">
-																			<small class="item-tag tag red-bg">0${theCount.count}</small>
+																			<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
 																	</a>		
-									    						</div>
+									    						<!-- </div> -->
 									    					</c:when>
 								    					</c:choose>		
 								    				</c:otherwise>

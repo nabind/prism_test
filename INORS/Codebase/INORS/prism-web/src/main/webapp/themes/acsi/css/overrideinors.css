@@ -235,3 +235,8 @@
 }
 
 /****** END : LIGHT CYAN GRADIENT ***********/
+
+.align-row{
+	float: left;
+	margin-left: 2px;
+}

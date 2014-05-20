@@ -202,12 +202,14 @@ public class RescoreRequestController {
 		long rrfId = Long.parseLong(request.getParameter("rrfId"));
 		long userId = Long.parseLong(request.getParameter("userId"));
 		String requestedStatus = request.getParameter("requestedStatus");
-		
+		String requestedDate = request.getParameter("requestedDate"); 
+	
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("itemsetId", itemsetId);
 		paramMap.put("rrfId", rrfId);
 		paramMap.put("userId", userId);
 		paramMap.put("requestedStatus", requestedStatus);
+		paramMap.put("requestedDate", requestedDate);
 		
 		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
 		Gson gson = new Gson();

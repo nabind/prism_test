@@ -20,6 +20,8 @@ public class RescoreItemTO extends BaseTO {
 	private String requestedDate = "";
 	private long userId = 0;
 	private String userName = "";
+	private long itemNumber = 0;
+	private long studentBioId = 0;
 	
 	public long getItemsetId() {
 		return itemsetId;
@@ -62,6 +64,18 @@ public class RescoreItemTO extends BaseTO {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public long getItemNumber() {
+		return itemNumber;
+	}
+	public void setItemNumber(long itemNumber) {
+		this.itemNumber = itemNumber;
+	}
+	public long getStudentBioId() {
+		return studentBioId;
+	}
+	public void setStudentBioId(long studentBioId) {
+		this.studentBioId = studentBioId;
 	}
 	
 }

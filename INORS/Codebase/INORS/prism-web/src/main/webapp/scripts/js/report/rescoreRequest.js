@@ -60,10 +60,14 @@ function submitRescoreRequest(obj){
 		requestedStatus = "N";
 	}
 	
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	var requestedDate =  $('#rescoreDate_'+studentBioId).val();
+	
 	var urlData = 'itemsetId='+itemsetId
 					+'&rrfId='+rrfId
 					+'&userId='+userId
-					+'&requestedStatus='+requestedStatus;
+					+'&requestedStatus='+requestedStatus
+					+'&requestedDate='+requestedDate;
 	
 	$.ajax({
 		type : "GET",

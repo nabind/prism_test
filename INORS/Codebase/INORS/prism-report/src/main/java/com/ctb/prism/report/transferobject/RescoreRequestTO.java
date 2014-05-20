@@ -38,6 +38,7 @@ public class RescoreRequestTO extends BaseTO {
 	private List<RescoreSubtestTO> rescoreSubtestTOList = new ArrayList<RescoreSubtestTO>();
 	private String originalScore = "";
 	private long rrfId = 0;
+	private long itemNumber = 0;
 	
 	public String getButton() {
 		return button;
@@ -188,6 +189,12 @@ public class RescoreRequestTO extends BaseTO {
 	}
 	public void setRrfId(long rrfId) {
 		this.rrfId = rrfId;
+	}
+	public long getItemNumber() {
+		return itemNumber;
+	}
+	public void setItemNumber(long itemNumber) {
+		this.itemNumber = itemNumber;
 	}
 	
 }

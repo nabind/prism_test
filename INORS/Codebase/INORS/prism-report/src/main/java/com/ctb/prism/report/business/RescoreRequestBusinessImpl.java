@@ -105,7 +105,9 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 										&& (rescoreSubtestTO.getSubtestId() == rescoreRequestTOItem.getSubtestId())
 										&& (rescoreRequestTOSession.getSessionId() == rescoreRequestTOItem.getSessionId())){
 									rescoreItemTO =  new RescoreItemTO();
+									rescoreItemTO.setStudentBioId(rescoreRequestTOItem.getStudentBioId());
 									rescoreItemTO.setItemsetId(rescoreRequestTOItem.getItemsetId());
+									rescoreItemTO.setItemNumber(rescoreRequestTOItem.getItemNumber());
 									rescoreItemTO.setIsRequested(rescoreRequestTOItem.getIsRequested());
 									rescoreItemTO.setOriginalScore(rescoreRequestTOItem.getOriginalScore());
 									rescoreItemTO.setRrfId(rescoreRequestTOItem.getRrfId());
