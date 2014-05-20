@@ -420,14 +420,14 @@ BEGIN
        ------for reports that do not have "All"  as an option in district and school dropdown, for  users other than teacher users               
        ELSIF p_type = v_SCHOOL_OTH AND v_OrgNodeLevel < 4 THEN
 
-                 IF  p_school = -99   OR  p_school IS NULL  THEN
+                 IF  (p_corpdiocese = -99 OR p_corpdiocese IS NULL ) AND (p_school = -99   OR  p_school IS NULL)  THEN
                     -----get  default product
                     IF  v_OrgNodeLevel > 1 THEN
                        FOR r_Get_Product_Specific IN c_Get_Product_Specific
                          LOOP
                               v_ProductId := r_Get_Product_Specific.PRODUCTID;
                        END LOOP;
-                     ELSE   
+                    ELSE   
                           FOR r_Get_Product_Default IN c_Get_Product_Default
                           LOOP 
                                  v_ProductId := r_Get_Product_Default.PRODUCTID;
@@ -463,8 +463,56 @@ BEGIN
                                t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
                                t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
                       END LOOP;
+                ---This portion will excute when we open any other report after opening Academic Standards Frequency Distribution    
+                    ELSIF p_school = -99 AND p_corpdiocese <> -1   THEN
+                    
+                         ---get default School
+                      FOR r_Get_School_Default IN c_Get_School_Default (p_test_administration,p_corpdiocese,v_test_program)
+                      LOOP
+                             v_SchoolId := r_Get_School_Default.ORG_NODEID;
+                      END LOOP;
 
+                      ---get default grade
+                      FOR r_Get_Grade IN c_Get_Grade (p_test_administration,v_SchoolId)
+                      LOOP
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
 
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Grade.GRADEID;
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Grade.GRADE_NAME;
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := r_Get_Grade.GRADE_SEQ;
+
+                               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
+                               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
+                      END LOOP; 
+                             
+               ---This portion will excute when we open any other report after opening Academic Standards Frequency Distribution 
+               ---without changing input controls and clicking on Refresh       
+               ELSIF   p_school = -99 AND p_corpdiocese = -1    THEN
+               
+                     ---get default Corp
+                      FOR r_Get_Corp_Default IN c_Get_Corp_Default (p_test_administration,v_test_program)
+                      LOOP
+                             v_CorpId := r_Get_Corp_Default.ORG_NODEID;
+                      END LOOP;
+
+                       ---get default School
+                      FOR r_Get_School_Default IN c_Get_School_Default (p_test_administration,v_CorpId,v_test_program)
+                      LOOP
+                             v_SchoolId := r_Get_School_Default.ORG_NODEID;
+                      END LOOP;
+
+                      ---get default grade
+                      FOR r_Get_Grade IN c_Get_Grade (p_test_administration,v_SchoolId)
+                      LOOP
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
+
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Grade.GRADEID;
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Grade.GRADE_NAME;
+                               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := r_Get_Grade.GRADE_SEQ;
+
+                               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
+                               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
+                      END LOOP;   
                     ELSIF p_school  = -1 AND p_corpdiocese = -1   THEN
                      
                         FOR r_Get_Grade_School_For_All IN c_Get_Grade_School_For_All (p_test_administration)

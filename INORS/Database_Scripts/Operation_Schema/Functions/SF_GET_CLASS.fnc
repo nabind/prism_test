@@ -392,8 +392,8 @@ BEGIN
         ELSIF  /* p_test_administration = -99   OR  p_test_administration IS NULL
            OR p_corpdiocese =-99 OR p_corpdiocese IS NULL
            OR*/
-           p_school = -99 OR p_school IS NULL OR
-           p_grade = -99   OR  p_grade IS NULL  THEN
+          ( p_school = -99 OR p_school IS NULL) AND 
+          ( p_grade = -99   OR  p_grade IS NULL)  THEN
 
             ---get default product
             IF  v_OrgNodeLevel > 1 THEN
@@ -422,12 +422,12 @@ BEGIN
 
             ---get default Grade
             IF p_type = 'CLASS_PRF_GRPNG' THEN ---for class proficiency grouping
-                FOR r_Get_Grade_For_ClassPrfGrpng IN c_Get_Grade_For_ClassPrfGrpng (v_ProductId,LoggedInUserJasperOrgId)
+                FOR r_Get_Grade_For_ClassPrfGrpng IN c_Get_Grade_For_ClassPrfGrpng (v_ProductId,v_SchoolId)
                 LOOP
                        v_GradeId := r_Get_Grade_For_ClassPrfGrpng.GRADEID;
                 END LOOP;
             ELSE
-                FOR r_Get_Grade IN c_Get_Grade (v_ProductId,LoggedInUserJasperOrgId)
+                FOR r_Get_Grade IN c_Get_Grade (v_ProductId,v_SchoolId)
                 LOOP
                        v_GradeId := r_Get_Grade.GRADEID;
                 END LOOP;
@@ -445,7 +445,47 @@ BEGIN
                      t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
                      t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
             END LOOP;
+      ELSIF   ---This portion will excute when we open any other report after opening Academic Standards Frequency Distribution 
+              ---without changing input controls and clicking on Refresh 
+           p_school = -99 AND  (p_grade <> -99   OR  p_grade IS NOT NULL OR p_grade <> -1 OR p_grade <> -2 )
+            THEN
+            ---get default Corp
+            FOR r_Get_Corp_Default IN c_Get_Corp_Default (p_test_administration,v_test_program)
+            LOOP
+                   v_CorpId := r_Get_Corp_Default.ORG_NODEID;
+            END LOOP;
 
+             ---get default School
+            FOR r_Get_School_Default IN c_Get_School_Default (p_test_administration,v_CorpId,v_test_program)
+            LOOP
+                   v_SchoolId := r_Get_School_Default.ORG_NODEID;
+            END LOOP;
+
+            ---get default Grade
+            /*IF p_type = 'CLASS_PRF_GRPNG' THEN ---for class proficiency grouping
+                FOR r_Get_Grade_For_ClassPrfGrpng IN c_Get_Grade_For_ClassPrfGrpng (p_test_administration,v_SchoolId)
+                LOOP
+                       v_GradeId := r_Get_Grade_For_ClassPrfGrpng.GRADEID;
+                END LOOP;
+            ELSE
+                FOR r_Get_Grade IN c_Get_Grade (p_test_administration,v_SchoolId)
+                LOOP
+                       v_GradeId := r_Get_Grade.GRADEID;
+                END LOOP;
+            END IF;*/
+
+            ---get default Class
+            FOR r_Get_Class_Default IN c_Get_Class_Default (p_test_administration,v_SchoolId,v_test_program,p_grade)
+            LOOP
+                     t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
+
+                     t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Class_Default.ORG_NODEID;
+                     t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Class_Default.ORG_NODE_NAME;
+                     t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := 1;
+
+                     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
+                     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
+            END LOOP; 
           ELSE
            FOR r_Get_Class_Cascade IN c_Get_Class_Cascade(v_test_program)
             LOOP
