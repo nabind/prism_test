@@ -39,7 +39,7 @@
 		<div class="panel-content linen">
 			<div class="panel-control align-right">
 				<div class = "align-left" style="float:left"><b>
-					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameUser">Users of ${orgName} </span></b></div>
+					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameUser"><c:if test='${not empty userList}'>Users of ${orgName}</c:if> </span></b></div>
 				<span class="input search-input">
 					<input type="text" name="searchUser" id="searchUser" class="input-unstyled with-tooltip" title="Search Users by User ID OR <br/>Full Name (Last Name OR First Name)" placeholder="Search">
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>

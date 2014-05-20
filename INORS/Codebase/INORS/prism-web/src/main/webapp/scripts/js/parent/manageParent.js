@@ -205,6 +205,7 @@
 			data : nodeid,
 			dataType : 'json',
 			cache:false,
+			async : false,
 			success : function(data) {
 				unblockUI();
 				if(data.length >= 1){
@@ -217,7 +218,11 @@
 				} else {
 					$(".pagination").hide(200);
 				}
-				$("span#showOrgNameParent").text('Parents of '+$("a.jstree-clicked").text())
+				if (data != null && data.length == 0) {
+					$("span#showOrgNameParent").text(' ');
+				} else {
+					$("span#showOrgNameParent").text('Parents of '+$("a.jstree-clicked").text());
+				}
 				getParentDetails(true, data);
 				enableSorting(true);
 				$("tbody#parent_details").removeClass("loader big");				

@@ -29,6 +29,9 @@ $(document).ready(function() {
 		} else {
 			$(".pagination").hide(200);
 		}
+		if(orgCount == 0) {
+			updateOrgNameHeading("-1");
+		}
 		//=======================SCROLL FOR THE ORGANISATION TABLE==============================
 		var tempScrollTop, currentScrollTop = 0
 		$("#moreOrg").click(function() {

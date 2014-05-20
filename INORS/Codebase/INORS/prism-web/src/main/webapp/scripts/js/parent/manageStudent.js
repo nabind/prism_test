@@ -409,7 +409,12 @@ function confirmRecreationAC(rowcounter)
 						} else {
 							$(".pagination").hide(200);
 						}
-						$("span#showOrgNameStudent").text('Students of '+$("a.jstree-clicked").text())
+						
+						if (data != null && data.length == 0) {
+							$("span#showOrgNameStudent").text(' ');
+						} else {
+							$("span#showOrgNameStudent").text('Students of '+$("a.jstree-clicked").text());
+						}
 						getStudentDetails(true, data);
 						enableSorting(true);
 						$("#isRedirectedTree").val("No");

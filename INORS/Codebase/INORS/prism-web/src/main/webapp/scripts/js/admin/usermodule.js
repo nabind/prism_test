@@ -514,6 +514,12 @@
 		{
 			if($('#showOrgNameUser') != null) $('#showOrgNameUser').html("Users of " + tenantName);
 			if($('#showOrgName') != null) $('#showOrgName').html("Organizations of " + tenantName);
+			if(tenantName == "-1") {
+				$('#showOrgNameUser').html(" ");
+				$('#showOrgName').html(" ");
+				$("span#showOrgNameParent").text(' ');
+				$("span#showOrgNameStudent").text(' ');
+			}
 		}
 		
 		
@@ -877,6 +883,7 @@
 					enableSorting(true);
 					retainUniqueValue();
 					//setLastRowId ();
+					updateOrgNameHeading("-1");
 					unblockUI();
 					//$("#userTable").animate({scrollTop: currentScrollTop+600}, 500);
 				} else {
