@@ -359,7 +359,7 @@ function modifyGeneric(form, win) {
 	for(name in CKEDITOR.instances)	{
 		var editorVal = CKEDITOR.instances[name].getData();
 		editorVal = editorVal.trim();
-		if(editorVal == ""){
+		if(editorVal == "" || editorVal.indexOf('Click here to add text') > 0){
 			$('.mandatoryDescription').show(ANIMATION_TIME);
 			descriptionFlag = false;
 			break;
