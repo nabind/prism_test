@@ -410,6 +410,11 @@
 			$(".headerSortUp").removeClass("headerSortUp");
 			setLastRowId ($("#last_user_tenant"));
 		}
+		
+		// ======================== CLOSE ALL OPEN MENUS - WHILE OPENING NEW =====================
+		$(document).on('collapsible-open', '.collapsible > li', function(event) {
+			$(this).siblings('.collapsible-open').click();
+		});
 	</script>
 	
 	  	
