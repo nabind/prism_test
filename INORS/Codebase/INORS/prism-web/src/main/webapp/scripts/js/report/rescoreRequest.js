@@ -55,6 +55,7 @@ function activeInactiveItems(obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	$('.item-div-normal-'+studentBioId).hide();
 	$('.item-div-act-'+studentBioId).hide();
+	$('.item-div-inact-'+studentBioId).hide();
 	
 	var requestedDate =  $(obj).val();
 	if(requestedDate.length > 0){
@@ -72,7 +73,7 @@ function activeInactiveItems(obj){
 	}else{
 		$(obj).css('background-color','white');
 		$(obj).css('color','black');
-		$('.item-div-normal-'+studentBioId).show();
+		$('.item-div-inact-'+studentBioId).show();
 	}
 }
 
