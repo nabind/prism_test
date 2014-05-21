@@ -212,7 +212,7 @@
 			*To submit a rescore request for Undetermined students please call the CTB/Indiana Help Desk Toll Free at 800-282-1132.
 		</span></p>
 		<div class="columns accordion" style="text-align: center; border: none;">
-			<a class="button blue-gradient glossy" id="reviewRRF" href="#">Review </a>
+			<a class="button blue-gradient glossy" id="reviewRRF" >Review </a>
 		</div>
 		<div class="columns accordion with-padding">
 			<strong>Instructions</strong>
