@@ -46,10 +46,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
              NVL((SELECT REQUESTED_DATE
                    FROM RESCORE_REQUEST_FORM
                   WHERE UPDATED_DATE_TIME =
-                        (SELECT MAX(A.UPDATED_DATE_TIME)
-                           FROM RESCORE_REQUEST_FORM A
-                          WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID)
-                    AND ROWNUM = 1),
+                        (SELECT MAX(UPDATED_DATE_TIME)
+                           FROM RESCORE_REQUEST_FORM
+                          WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                            AND IS_REQUESTED = 'Y')),
                  -1) REQUESTED_DATE,
              RRF.SUBTESTID SUBTESTID,
              SD.SUBTEST_CODE SUBTEST_CODE,
@@ -79,7 +79,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
        (SELECT 1
                 FROM RESCORE_REQUEST_FORM R
                WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                 AND R.ORIGINAL_PERFORMANCE_LEVEL = 'B')
+                 AND (R.ORIGINAL_PERFORMANCE_LEVEL = 'B' OR
+                     R.ORIGINAL_PERFORMANCE_LEVEL = 'U'))
        ORDER BY STUDENT_FULL_NAME,
                 SD.SUBTEST_SEQ,
                 ISD.SESSION_ID,
