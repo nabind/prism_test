@@ -5,6 +5,8 @@
  * Don't include it in custom.all.js
  */
 var ANIMATION_TIME = 200;
+var ERROR_MESSAGE = "Error Occured";
+var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
 
 $(document).ready(function() {
 	
@@ -22,6 +24,9 @@ $(document).ready(function() {
 			$('.performance-level').on('click', function(){
 				showHideItems($(this));
 			});
+			$('.rescore-date').focusout(function(){
+				activeInactiveItems($(this));
+		   });
 		}
 	});
 	$( "#studentTableRRF_length > label" ).css( "cursor", "default" );
@@ -46,12 +51,32 @@ $(document).ready(function() {
 });
 //=====document.ready End=========================================
 
+function activeInactiveItems(obj){
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	$('.item-div-normal-'+studentBioId).hide();
+	$('.item-div-act-'+studentBioId).hide();
+	
+	var requestedDate =  $(obj).val();
+	if(requestedDate.length > 0){
+		if(isDate(requestedDate)){
+	    	$(obj).css('background-color','white');
+	    	$(obj).css('color','black');
+	    	$(obj).val();
+	    	$('.item-div-act-'+studentBioId).show();
+	    }else{
+	    	$(obj).css('background-color','red');
+	    	$(obj).val(DATE_VALIDATION_ERROR_MESSAGE);
+	    	$(obj).css('color','white');
+	    	$('.item-div-normal-'+studentBioId).show();
+	    }
+	}else{
+		$(obj).css('background-color','white');
+		$(obj).css('color','black');
+		$('.item-div-normal-'+studentBioId).show();
+	}
+}
+
 function submitRescoreRequest(obj){
-	blockUI();
-	
-	var actionUrl = $(obj).attr('action');
-	actionUrl = actionUrl + '.do';
-	
 	var itemsetId = (typeof $(obj).attr('itemsetId') !== 'undefined') ? $(obj).attr('itemsetId') : 0;
 	var rrfId = (typeof $(obj).attr('rrfId') !== 'undefined') ? $(obj).attr('rrfId') : 0;
 	var elementId = (typeof $(obj).attr('id') !== 'undefined') ? $(obj).attr('id') : 0;
@@ -65,35 +90,44 @@ function submitRescoreRequest(obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var requestedDate =  $('#rescoreDate_'+studentBioId).val();
 	
-	var urlData = 'itemsetId='+itemsetId
-					+'&rrfId='+rrfId
-					+'&requestedStatus='+requestedStatus
-					+'&requestedDate='+requestedDate;
+	if((requestedDate.length > 0) && isDate(requestedDate)){
+		blockUI();
+		var actionUrl = $(obj).attr('action');
+		actionUrl = actionUrl + '.do';
+		var urlData = 'itemsetId='+itemsetId
+						+'&rrfId='+rrfId
+						+'&requestedStatus='+requestedStatus
+						+'&requestedDate='+requestedDate;
 	
-	$.ajax({
-		type : "GET",
-		url : actionUrl,
-		data : urlData,
-		dataType : 'json',
-		cache: false,
-		success : function(data) {
-			unblockUI();
-			if(data.value >= 1){
-				//$.modal.alert("Request submitted successfully");
-				if(requestedStatus == "Y"){
-					$('#'+elementId +' .item-tag').addClass('red-bg');
+		$.ajax({
+			type : "GET",
+			url : actionUrl,
+			data : urlData,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				if(data.value >= 1){
+					// $.modal.alert("Request submitted successfully");
+					if(requestedStatus == "Y"){
+						$('#'+elementId +' .item-tag').addClass('red-bg');
+					}else{
+						$('#'+elementId +' .item-tag').removeClass('red-bg');
+					}
 				}else{
-					$('#'+elementId +' .item-tag').removeClass('red-bg');
+					$.modal.alert(ERROR_MESSAGE);
 				}
-			}else{
-				$.modal.alert("Error occured");
-			}
-		},
-		error : function(data) {	
-			$.modal.alert("Error occured");
+			},
+			error : function(data) {	
+			$.modal.alert(ERROR_MESSAGE);
 			unblockUI();
-		}
-	});
+			}
+		});
+    }else{
+    	$('#rescoreDate_'+studentBioId).css('background-color','red');
+    	$('#rescoreDate_'+studentBioId).val(DATE_VALIDATION_ERROR_MESSAGE);
+    	$('#rescoreDate_'+studentBioId).css('color','white');
+    }	
 }
 
 function showHideItems(obj){
@@ -103,31 +137,64 @@ function showHideItems(obj){
 	if($('.item-div-'+subtestId).is(':hidden')){
 		$('.item-div-'+subtestId).show();
 	}else{
-		unblockUI();
-		var urlData = 'subtestId='+subtestId
-						+'&studentBioId='+studentBioId;
-		blockUI();
-		$.ajax({
-			type : 'GET',
-			url : 'resetItemState.do',
-			data : urlData,
-			dataType : 'json',
-			cache: false,
-			success : function(data) {
-				unblockUI();
-				if(data.value >= 1){
-					$('.item-div-'+subtestId).hide();
-					$('.item-div-'+subtestId+' .item-tag').removeClass('red-bg');
-				}else{
-					$.modal.alert("Error occured");
+		$('.item-div-'+subtestId).hide();
+		var requestedDate =  $('#rescoreDate_'+studentBioId).val();
+		if((requestedDate.length > 0) && isDate(requestedDate)){
+			var urlData = 'subtestId='+subtestId
+							+'&studentBioId='+studentBioId;
+			blockUI();
+			$.ajax({
+				type : 'GET',
+				url : 'resetItemState.do',
+				data : urlData,
+				dataType : 'json',
+				cache: false,
+				success : function(data) {
+					unblockUI();
+					if(data.value >= 1){
+						$('.item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+					}else{
+						$.modal.alert(ERROR_MESSAGE);
+					}
+				},
+				error : function(data) {	
+					$.modal.alert(ERROR_MESSAGE);
+					unblockUI();
 				}
-			},
-			error : function(data) {	
-				$.modal.alert("Error occured");
-				unblockUI();
-			}
-		});					
+			});	
+		}				
 	}
+}
+
+function isDate(txtDate){
+    var currVal = txtDate;
+    if(currVal == '')
+        return false;
+    
+    var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/; //Declare Regex
+    var dtArray = currVal.match(rxDatePattern); // is format OK?
+    
+    if (dtArray == null) 
+        return false;
+    
+    //Checks for mm/dd/yyyy format.
+    dtMonth = dtArray[1];
+    dtDay= dtArray[3];
+    dtYear = dtArray[5];        
+    
+    if (dtMonth < 1 || dtMonth > 12) 
+        return false;
+    else if (dtDay < 1 || dtDay> 31) 
+        return false;
+    else if ((dtMonth==4 || dtMonth==6 || dtMonth==9 || dtMonth==11) && dtDay ==31) 
+        return false;
+    else if (dtMonth == 2) 
+    {
+        var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
+        if (dtDay> 29 || (dtDay ==29 && !isleap)) 
+                return false;
+    }
+    return true;
 }
 
 /**

@@ -55,7 +55,7 @@
 				<thead>
 					<tr role="row">
 						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 160px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD)</th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 160px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD/YYYY)</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">E/la</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">E/la<br />Session 2</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">E/la<br />Session 3</th>
@@ -80,10 +80,18 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
-						    			<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="" /> 
+						    			<input type="text" 
+						    				class="rescore-date"
+						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
+							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
+							    			value="" /> 
 						    		</c:when>
 						    		<c:otherwise>
-						    			<input type="text" id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    			<input type="text" 
+						    				class="rescore-date"
+											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
+						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
+						    				value="${rescoreRequestStudentTO.requestedDate}" /> 
 						    		</c:otherwise>
 						    	</c:choose>
 						    </td>
@@ -105,60 +113,88 @@
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
-						    		<!-- item-div start -->
-						    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
-						    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
-						    			</c:if>
-						    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-						    				<div class="item-div-${rescoreSubtestTO.subtestId}">
-						    			</c:if>
-						    			
-							    			<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
-							    			
-							    				<%-- <c:choose> --%>
-							    					<%-- <c:when test="${rescoreItemTO.requestedDate == '-1'}">
-							    						<div class="item-state_${rescoreSubtestTO.subtestId}">
-															<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
-														<!-- </div> -->
-								    				</c:when> --%>
-								    				<%-- <c:otherwise> --%>
-								    					<c:choose>
-								    						<c:when test="${rescoreItemTO.isRequested=='N'}">
-									    						<%-- <div class="item-state_${rescoreSubtestTO.subtestId}"> --%>
-									    							<a class="item-link align-row" 
-									    								action="submitRescoreRequest" 
-																		itemsetId="${rescoreItemTO.itemsetId}"
-												    					rrfId="${rescoreItemTO.rrfId}" 
-												    					userId="${rescoreItemTO.userId}"
-												    					userName="${rescoreItemTO.userName}"
-												    					studentBioId="${rescoreItemTO.studentBioId}"
-																		href="#nogo" 
-																		id="item_${rescoreItemTO.itemsetId}">
-																			<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
-																	</a>
-									    						<!-- </div> -->
+						    			<div class="item-div-active">
+							    			<!-- item-div start -->
+							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+							    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+							    			</c:if>
+							    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
+							    				<div class="item-div-${rescoreSubtestTO.subtestId}">
+							    			</c:if>
+							    				<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
+							    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
+							    						<c:choose>
+								    						<c:when test="${rescoreItemTO.requestedDate == '-1'}">
+								    							<div class="item-state_${rescoreSubtestTO.subtestId}">
+																	<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
+																</div>
 									    					</c:when>
+									    					<c:otherwise>
+								    							<c:choose>
+								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
+									    								<a class="item-link align-row" 
+										    								action="submitRescoreRequest" 
+																			itemsetId="${rescoreItemTO.itemsetId}"
+													    					rrfId="${rescoreItemTO.rrfId}" 
+													    					userId="${rescoreItemTO.userId}"
+													    					userName="${rescoreItemTO.userName}"
+													    					studentBioId="${rescoreItemTO.studentBioId}"
+																			href="#nogo" 
+																			id="item_${rescoreItemTO.itemsetId}">
+																				<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+																		</a>
+									    							</c:when>
+										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
+										    							<a class="item-link align-row" 
+										    								action="submitRescoreRequest" 
+																			itemsetId = "${rescoreItemTO.itemsetId}"
+													    					rrfId = "${rescoreItemTO.rrfId}" 
+													    					userId = "${rescoreItemTO.userId}"
+													    					userName = "${rescoreItemTO.userName}"
+													    					studentBioId = "${rescoreItemTO.studentBioId}"
+																			href="#nogo" 
+																			id="item_${rescoreItemTO.itemsetId}">
+																				<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+																		</a>		
+									    							</c:when>
+								    							</c:choose>		
+								    						</c:otherwise>
+								    					</c:choose>
+							    					</div>
+							    					<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
+							    						<c:choose>
+							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
+								    							<a class="item-link align-row" 
+								    								action="submitRescoreRequest" 
+																	itemsetId="${rescoreItemTO.itemsetId}"
+											    					rrfId="${rescoreItemTO.rrfId}" 
+											    					userId="${rescoreItemTO.userId}"
+											    					userName="${rescoreItemTO.userName}"
+											    					studentBioId="${rescoreItemTO.studentBioId}"
+																	href="#nogo" 
+																	id="item_${rescoreItemTO.itemsetId}">
+																		<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+																</a>
+								    						</c:when>
 									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-									    						<!-- <div class="item-state_${rescoreSubtestTO.subtestId}"> -->
-									    							<a class="item-link align-row" 
-									    								action="submitRescoreRequest" 
-																		itemsetId = "${rescoreItemTO.itemsetId}"
-												    					rrfId = "${rescoreItemTO.rrfId}" 
-												    					userId = "${rescoreItemTO.userId}"
-												    					userName = "${rescoreItemTO.userName}"
-												    					studentBioId = "${rescoreItemTO.studentBioId}"
-																		href="#nogo" 
-																		id="item_${rescoreItemTO.itemsetId}">
-																			<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
-																	</a>		
-									    						<!-- </div> -->
-									    					</c:when>
-								    					</c:choose>		
-								    				<%-- </c:otherwise> --%>
-								    			<%-- </c:choose> --%>
-							    			</c:forEach>
+								    							<a class="item-link align-row" 
+								    								action="submitRescoreRequest" 
+																	itemsetId = "${rescoreItemTO.itemsetId}"
+											    					rrfId = "${rescoreItemTO.rrfId}" 
+											    					userId = "${rescoreItemTO.userId}"
+											    					userName = "${rescoreItemTO.userName}"
+											    					studentBioId = "${rescoreItemTO.studentBioId}"
+																	href="#nogo" 
+																	id="item_${rescoreItemTO.itemsetId}">
+																		<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+																</a>		
+								    						</c:when>
+								    					</c:choose>
+							    					</div>
+							    				</c:forEach>
+								    		</div>
+								    		<!-- item-div end -->
 							    		</div>
-							    		<!-- item-div end -->
 						    		</td>
 						    	</c:forEach>
 						    </c:forEach>
