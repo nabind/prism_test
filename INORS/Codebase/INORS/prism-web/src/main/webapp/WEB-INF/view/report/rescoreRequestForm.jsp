@@ -109,6 +109,9 @@
 						    		<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
 						    			${rescoreSubtestTO.performanceLevel}
 						    		</c:if>
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Undefined'}">
+						    			${rescoreSubtestTO.performanceLevel}
+						    		</c:if>
 						    	</td>
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
