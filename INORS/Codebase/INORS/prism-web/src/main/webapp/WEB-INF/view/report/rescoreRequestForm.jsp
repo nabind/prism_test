@@ -128,7 +128,7 @@
 							    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
 							    						<c:choose>
 								    						<c:when test="${rescoreItemTO.requestedDate == '-1'}">
-								    							<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
+								    							<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
 									    					</c:when>
 									    					<c:otherwise>
 								    							<c:choose>
@@ -193,7 +193,7 @@
 								    					</c:choose>
 							    					</div>
 							    					<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-							    						<small class="item-tag tag align-row orange-bg">${rescoreItemTO.itemNumber}</small>
+							    						<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
 							    					</div>
 							    				</c:forEach>
 								    		</div>
