@@ -27,10 +27,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 
 	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap)
 			throws BusinessException {
-		return arrangeRescoreData(rescoreRequestDAO.getDnpStudentList(paramMap));
+		return arrangeRescoreData(rescoreRequestDAO.getDnpStudentList(paramMap),paramMap);
 	}
 
-	private List<RescoreRequestTO> arrangeRescoreData(List<RescoreRequestTO> studentList) {
+	private List<RescoreRequestTO> arrangeRescoreData(List<RescoreRequestTO> studentList,Map<String, Object> paramMap) {
 		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestBusinessImpl - arrangeRescoreData()");
 		long t1 = System.currentTimeMillis();
@@ -135,7 +135,159 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		
 		long t2 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Exit: RescoreRequestBusinessImpl - arrangeRescoreData() took time: " + String.valueOf(t2 - t1) + "ms");
+		refreshRescoreData(modifiedStudentList,paramMap);
 		return modifiedStudentList;
+	}
+	
+	private void refreshRescoreData(List<RescoreRequestTO> modifiedStudentList,Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestBusinessImpl - refreshRescoreData()");
+		long t1 = System.currentTimeMillis();
+		
+		long grade = Long.valueOf((String) paramMap.get("grade"));
+		RescoreSubtestTO rescoreSubtestTO = null;
+		RescoreSessionTO rescoreSessionTO = null;
+		RescoreItemTO rescoreItemTO = null;
+		
+		for (RescoreRequestTO rescoreRequestTOStud : modifiedStudentList) {
+			//Checking session format
+			for (RescoreSubtestTO rescoreRequestTOSubt : rescoreRequestTOStud.getRescoreSubtestTOList()) {
+				if("ELA".equals(rescoreRequestTOSubt.getSubtestCode())){
+					if(rescoreRequestTOSubt.getRescoreSessionTOList().size() == 1){
+						//For ELA Session
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						if(rescoreRequestTOSubt.getRescoreSessionTOList().get(0).getSessionId() == 2){
+							rescoreRequestTOSubt.getRescoreSessionTOList().add(0,rescoreSessionTO);
+						}else{
+							rescoreRequestTOSubt.getRescoreSessionTOList().add(rescoreSessionTO);
+						}
+					}
+				}
+			}
+			
+			//Checking subtest format
+			if(grade == 10001 || grade == 10006){
+				if(rescoreRequestTOStud.getRescoreSubtestTOList().size() < 2){
+					if("ELA".equals(rescoreRequestTOStud.getRescoreSubtestTOList().get(0).getSubtestCode())){
+						rescoreSubtestTO = new RescoreSubtestTO();
+						//For Math Session1
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
+					}else{
+						rescoreSubtestTO = new RescoreSubtestTO();
+						//For ELA Session2
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						//For ELA Session3
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(0,rescoreSubtestTO);
+					}
+				}
+			}else{
+				if(rescoreRequestTOStud.getRescoreSubtestTOList().size() == 2){
+					//if ELS exist then it will be the first object  
+					String subt1Code = rescoreRequestTOStud.getRescoreSubtestTOList().get(0).getSubtestCode();
+					String subt2Code = rescoreRequestTOStud.getRescoreSubtestTOList().get(1).getSubtestCode();
+					if("ELA".equals(subt1Code)){
+						rescoreSubtestTO = new RescoreSubtestTO();
+						//For one subtest
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						if("MATH".equals(subt2Code)){
+							//For SCI/SS
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
+						}else{
+							//For MATH
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(2,rescoreSubtestTO);
+						}
+						
+					}else{
+						//For ELA
+						rescoreSubtestTO = new RescoreSubtestTO();
+						//For Session2
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						//For Session3
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(0,rescoreSubtestTO);
+					}
+				}else if(rescoreRequestTOStud.getRescoreSubtestTOList().size() == 1){
+					String subtCode = rescoreRequestTOStud.getRescoreSubtestTOList().get(0).getSubtestCode();
+					if("ELA".equals(subtCode)){
+						//For one subtest
+						rescoreSubtestTO = new RescoreSubtestTO();
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
+						
+						//For another subtest
+						rescoreSubtestTO = new RescoreSubtestTO();
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
+					}else{
+						//For ELA
+						rescoreSubtestTO = new RescoreSubtestTO();
+						//For Session2
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						//For Session3
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						rescoreRequestTOStud.getRescoreSubtestTOList().add(0,rescoreSubtestTO);
+						
+						//For one subtest
+						rescoreSubtestTO = new RescoreSubtestTO();
+						rescoreItemTO = new RescoreItemTO();
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
+						rescoreSubtestTO.getRescoreSessionTOList().add(rescoreSessionTO);
+						
+						if("MATH".equals(subtCode)){
+							//For SCI/SS
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
+						}else{
+							//For MATH
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(1,rescoreSubtestTO);
+						}
+					}
+				}
+			}
+		}
+		
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: RescoreRequestBusinessImpl - refreshRescoreData() took time: " + String.valueOf(t2 - t1) + "ms");
 	}
 	
 	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) 
