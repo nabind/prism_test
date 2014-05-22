@@ -98,7 +98,7 @@
 						    		<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
 						    			${rescoreSubtestTO.performanceLevel}
 						    		</c:if>
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Undefined'}">
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='UND'}">
 						    			${rescoreSubtestTO.performanceLevel}
 						    		</c:if>
 						    	</td>
