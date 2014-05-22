@@ -142,7 +142,7 @@ public class RescoreRequestController {
 			modelAndView.addObject("corpDiocese", corpDiocese);
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("grade", grade);
-			modelAndView.addObject("rescoreStudentList", dnpStudentList);
+			modelAndView.addObject("dnpStudentList", dnpStudentList);
 			modelAndView.addObject("notDnpStudents", notDnpStudents);
 			modelAndView.addObject("notDnpStudentList", notDnpStudentList);
 			
