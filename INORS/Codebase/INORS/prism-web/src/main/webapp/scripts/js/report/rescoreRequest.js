@@ -13,7 +13,6 @@ $(document).ready(function() {
 	$("#reviewRRF").live("click", function(event) {
 		var disableLinks = $('#q_dataloadMessage').val();
 		if(disableLinks == 'Y') {
-			alert('disabled');
 		} else if(disableLinks == 'N') {
 			$.modal({
 				title: 'Modal window',
