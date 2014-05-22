@@ -218,4 +218,205 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		return objectValueTO;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public List<RescoreRequestTO> getNotDnpStudents(Map<String, Object> paramMap) throws BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudent()");
+		long t1 = System.currentTimeMillis();
+		
+		List<RescoreRequestTO> notDnpStudents = null;
+		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
+		final String testProgram = (String) paramMap.get("testProgram");
+		final String corpDiocese = (String) paramMap.get("corpDiocese");
+		final String school = (String) paramMap.get("school");
+		final String grade = (String) paramMap.get("grade");
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		
+		try {
+			notDnpStudents = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_NOT_DNP_STUDENT + "}");
+					cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));
+					cs.setLong(2, Long.valueOf(testAdministrationVal));
+					cs.setLong(3, Long.valueOf(school));
+					cs.setLong(4, Long.valueOf(grade));
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<RescoreRequestTO> notDnpStudentsResult = new ArrayList<RescoreRequestTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(5);
+						RescoreRequestTO rescoreRequestTO = null;
+						while (rs.next()) {
+							rescoreRequestTO = new RescoreRequestTO();
+							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
+							notDnpStudentsResult.add(rescoreRequestTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return notDnpStudentsResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - getNotDnpStudent() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return notDnpStudents;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<RescoreRequestTO> getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudentDetails()");
+		long t1 = System.currentTimeMillis();
+		
+		List<RescoreRequestTO> notDnpStudentDetails = null;
+		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
+		
+		try {
+			notDnpStudentDetails = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_NOT_DNP_STUDENT_DETAILS + "}");
+					cs.setLong(1, 0);
+					cs.setLong(2, 0);
+					cs.setLong(3, 0);
+					cs.setLong(4, 0);
+					cs.setLong(5, studentBioId);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<RescoreRequestTO> notDnpStudentResult = new ArrayList<RescoreRequestTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(6);
+						RescoreRequestTO rescoreRequestTO = null;
+						while (rs.next()) {
+							rescoreRequestTO = new RescoreRequestTO();
+							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
+							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
+							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
+							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
+							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
+							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
+							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
+							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
+							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
+							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
+							rescoreRequestTO.setUserId(rs.getLong("USERID"));
+							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
+							notDnpStudentResult.add(rescoreRequestTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return notDnpStudentResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - getNotDnpStudentDetails() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return notDnpStudentDetails;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<RescoreRequestTO> getNotDnpStudentList(Map<String, Object> paramMap) throws BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudentList()");
+		long t1 = System.currentTimeMillis();
+		
+		List<RescoreRequestTO> notDnpStudentList = null;
+		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
+		final String testProgram = (String) paramMap.get("testProgram");
+		final String corpDiocese = (String) paramMap.get("corpDiocese");
+		final String school = (String) paramMap.get("school");
+		final String grade = (String) paramMap.get("grade");
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		
+		try {
+			notDnpStudentList = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_NOT_DNP_STUDENT_DETAILS + "}");
+					cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));
+					cs.setLong(2, Long.valueOf(testAdministrationVal));
+					cs.setLong(3, Long.valueOf(school));
+					cs.setLong(4, Long.valueOf(grade));
+					cs.setLong(5, 0);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<RescoreRequestTO> notDnpStudentResult = new ArrayList<RescoreRequestTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(6);
+						RescoreRequestTO rescoreRequestTO = null;
+						while (rs.next()) {
+							rescoreRequestTO = new RescoreRequestTO();
+							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
+							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
+							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
+							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
+							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
+							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
+							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
+							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
+							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
+							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
+							rescoreRequestTO.setUserId(rs.getLong("USERID"));
+							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
+							notDnpStudentResult.add(rescoreRequestTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return notDnpStudentResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - getNotDnpStudentList() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return notDnpStudentList;
+	}
+	
 }

@@ -65,6 +65,7 @@ public class RescoreRequestController {
 	 * @return
 	 * @throws ServletException, IOException,BusinessException
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/rescoreRequestForm", method = RequestMethod.GET)
 	public ModelAndView rescoreRequestForm(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException {
@@ -128,7 +129,11 @@ public class RescoreRequestController {
 			paramMap.put("school", school);
 			paramMap.put("grade", grade);
 			paramMap.put("loggedinUserTO", loggedinUserTO);
-			List<RescoreRequestTO> rescoreStudentList = rescoreRequestService.getDnpStudentList(paramMap);
+			
+			Map<String, Object> rescoreRequestMap = rescoreRequestService.getRescoreRequestForm(paramMap);
+			List<RescoreRequestTO> dnpStudentList = (List<RescoreRequestTO>) rescoreRequestMap.get("dnpStudentList");
+			List<RescoreRequestTO> notDnpStudents = (List<RescoreRequestTO>) rescoreRequestMap.get("notDnpStudents");
+			List<RescoreRequestTO> notDnpStudentList = (List<RescoreRequestTO>) rescoreRequestMap.get("notDnpStudentList");
 		
 			//Add object to modelAndView
 			modelAndView.addObject("reportUrl", reportUrl);
@@ -137,7 +142,9 @@ public class RescoreRequestController {
 			modelAndView.addObject("corpDiocese", corpDiocese);
 			modelAndView.addObject("school", school);
 			modelAndView.addObject("grade", grade);
-			modelAndView.addObject("rescoreStudentList", rescoreStudentList);
+			modelAndView.addObject("rescoreStudentList", dnpStudentList);
+			modelAndView.addObject("notDnpStudents", notDnpStudents);
+			modelAndView.addObject("notDnpStudentList", notDnpStudentList);
 			
 		}catch(Exception e){
 			logger.log(IAppLogger.ERROR, "", e);

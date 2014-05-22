@@ -23,8 +23,8 @@ public class RescoreRequestServiceImpl implements IRescoreRequestService {
 	@Autowired
 	private IRescoreRequestBusiness rescoreRequestBusiness;
 	
-	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap) throws BusinessException {
-		return rescoreRequestBusiness.getDnpStudentList(paramMap);
+	public Map<String, Object> getRescoreRequestForm(Map<String, Object> paramMap) throws BusinessException {
+		return rescoreRequestBusiness.getRescoreRequestForm(paramMap);
 	}
 	
 	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) throws BusinessException{

@@ -1,6 +1,7 @@
 package com.ctb.prism.report.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,13 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 	@Autowired
 	private IRescoreRequestDAO rescoreRequestDAO;
 
-	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap)
-			throws BusinessException {
-		return arrangeRescoreData(rescoreRequestDAO.getDnpStudentList(paramMap),paramMap);
+	public Map<String, Object> getRescoreRequestForm(Map<String, Object> paramMap) throws BusinessException {
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>(); 
+		returnMap.put("dnpStudentList", arrangeRescoreData(rescoreRequestDAO.getDnpStudentList(paramMap),paramMap));
+		returnMap.put("notDnpStudents", rescoreRequestDAO.getNotDnpStudents(paramMap));
+		returnMap.put("notDnpStudentList", arrangeRescoreData(rescoreRequestDAO.getNotDnpStudentList(paramMap),paramMap));
+		return returnMap;
 	}
 
 	private List<RescoreRequestTO> arrangeRescoreData(List<RescoreRequestTO> studentList,Map<String, Object> paramMap) {
