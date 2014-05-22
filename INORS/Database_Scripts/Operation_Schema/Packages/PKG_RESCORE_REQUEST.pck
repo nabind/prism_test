@@ -23,6 +23,21 @@ CREATE OR REPLACE PACKAGE PKG_RESCORE_REQUEST AS
                                 P_OUT_STATUS_NUMBER   OUT NUMBER,
                                 P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
+  PROCEDURE SP_GET_NOT_DNP_STUDENT(P_IN_CUSTOMERID     IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                   P_IN_PRODUCTID      IN PRODUCT.PRODUCTID%TYPE,
+                                   P_IN_ORG_NODEID     IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                   P_IN_GRADEID        IN GRADE_DIM.GRADEID%TYPE,
+                                   P_OUT_CUR_NOT_DNP   OUT GET_REFCURSOR,
+                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+
+  PROCEDURE SP_GET_NOT_DNP_STUDENT_DETAILS(P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                           P_IN_PRODUCTID            IN PRODUCT.PRODUCTID%TYPE,
+                                           P_IN_ORG_NODEID           IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                           P_IN_GRADEID              IN GRADE_DIM.GRADEID%TYPE,
+                                           P_IN_STUDENT_BIO_ID       IN STUDENT_BIO_DIM.STUDENT_BIO_ID%TYPE,
+                                           P_OUT_CUR_NOT_DNP_DETAILS OUT GET_REFCURSOR,
+                                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
+
 END PKG_RESCORE_REQUEST;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
@@ -140,6 +155,157 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
       ROLLBACK;
   END SP_RESET_ITEM_STATE;
+
+  PROCEDURE SP_GET_NOT_DNP_STUDENT(P_IN_CUSTOMERID     IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                   P_IN_PRODUCTID      IN PRODUCT.PRODUCTID%TYPE,
+                                   P_IN_ORG_NODEID     IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                   P_IN_GRADEID        IN GRADE_DIM.GRADEID%TYPE,
+                                   P_OUT_CUR_NOT_DNP   OUT GET_REFCURSOR,
+                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  
+  BEGIN
+    OPEN P_OUT_CUR_NOT_DNP FOR
+      SELECT DISTINCT RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
+                      RRF.STUDENT_LAST_NAME || ',' ||
+                      RRF.STUDENT_FIRST_NAME || ' ' ||
+                      SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME
+        FROM RESCORE_REQUEST_FORM RRF,
+             CUST_PRODUCT_LINK    CPL,
+             ORG_NODE_DIM         OND
+       WHERE RRF.ELIGIBLE_FOR_RESCORE = 'Y'
+         AND RRF.ORG_NODEID = OND.ORG_NODEID
+         AND OND.PARENT_ORG_NODEID = P_IN_ORG_NODEID
+         AND RRF.GRADEID = P_IN_GRADEID
+         AND RRF.CUST_PROD_ID = CPL.CUST_PROD_ID
+         AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+         AND CPL.PRODUCTID = P_IN_PRODUCTID
+         AND (RRF.ORIGINAL_PERFORMANCE_LEVEL = 'A' OR
+             RRF.ORIGINAL_PERFORMANCE_LEVEL = 'P' OR
+             RRF.ORIGINAL_PERFORMANCE_LEVEL = 'U')
+         AND NOT EXISTS (SELECT 1
+                FROM RESCORE_REQUEST_FORM R
+               WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                 AND R.IS_REQUESTED = 'Y')
+         AND NOT EXISTS
+       (SELECT 1
+                FROM RESCORE_REQUEST_FORM R
+               WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                 AND R.ORIGINAL_PERFORMANCE_LEVEL = 'B')
+       ORDER BY STUDENT_FULL_NAME;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_NOT_DNP_STUDENT;
+
+  PROCEDURE SP_GET_NOT_DNP_STUDENT_DETAILS(P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                           P_IN_PRODUCTID            IN PRODUCT.PRODUCTID%TYPE,
+                                           P_IN_ORG_NODEID           IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                           P_IN_GRADEID              IN GRADE_DIM.GRADEID%TYPE,
+                                           P_IN_STUDENT_BIO_ID       IN STUDENT_BIO_DIM.STUDENT_BIO_ID%TYPE,
+                                           P_OUT_CUR_NOT_DNP_DETAILS OUT GET_REFCURSOR,
+                                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
+  
+  BEGIN
+    IF P_IN_STUDENT_BIO_ID = 0 THEN
+      OPEN P_OUT_CUR_NOT_DNP_DETAILS FOR
+        SELECT RRF.RRF_ID RRF_ID,
+               RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
+               RRF.STUDENT_LAST_NAME || ',' || RRF.STUDENT_FIRST_NAME || ' ' ||
+               SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
+               NVL(RRF.REQUESTED_DATE, -1) ACTUAL_REQUESTED_DATE,
+               NVL((SELECT REQUESTED_DATE
+                     FROM RESCORE_REQUEST_FORM
+                    WHERE UPDATED_DATE_TIME =
+                          (SELECT MAX(UPDATED_DATE_TIME)
+                             FROM RESCORE_REQUEST_FORM
+                            WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                              AND IS_REQUESTED = 'Y')),
+                   -1) REQUESTED_DATE,
+               RRF.SUBTESTID SUBTESTID,
+               SD.SUBTEST_CODE SUBTEST_CODE,
+               ISD.SESSION_ID SESSION_ID,
+               RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
+               RRF.ORIGINAL_SCORE ORIGINAL_SCORE,
+               RRF.ITEMSETID ITEMSETID,
+               ISD.ITEM_NUMBER ITEM_NUMBER,
+               RRF.IS_REQUESTED IS_REQUESTED,
+               RRF.REQUESTED_USERID USERID,
+               (SELECT USERNAME
+                  FROM USERS
+                 WHERE USERID = RRF.REQUESTED_USERID) USERNAME
+          FROM RESCORE_REQUEST_FORM RRF,
+               ITEMSET_DIM          ISD,
+               SUBTEST_DIM          SD,
+               CUST_PRODUCT_LINK    CPL,
+               ORG_NODE_DIM         OND
+         WHERE RRF.ELIGIBLE_FOR_RESCORE = 'Y'
+           AND RRF.ORG_NODEID = OND.ORG_NODEID
+           AND OND.PARENT_ORG_NODEID = P_IN_ORG_NODEID
+           AND RRF.GRADEID = P_IN_GRADEID
+           AND RRF.CUST_PROD_ID = CPL.CUST_PROD_ID
+           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+           AND CPL.PRODUCTID = P_IN_PRODUCTID
+           AND RRF.ITEMSETID = ISD.ITEMSETID
+           AND RRF.SUBTESTID = SD.SUBTESTID
+           AND (RRF.ORIGINAL_PERFORMANCE_LEVEL = 'A' OR
+               RRF.ORIGINAL_PERFORMANCE_LEVEL = 'P' OR
+               RRF.ORIGINAL_PERFORMANCE_LEVEL = 'U')
+           AND EXISTS (SELECT 1
+                  FROM RESCORE_REQUEST_FORM R
+                 WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                   AND R.IS_REQUESTED = 'Y')
+           AND NOT EXISTS
+         (SELECT 1
+                  FROM RESCORE_REQUEST_FORM R
+                 WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                   AND R.ORIGINAL_PERFORMANCE_LEVEL = 'B')
+         ORDER BY STUDENT_FULL_NAME,
+                  SD.SUBTEST_SEQ,
+                  ISD.SESSION_ID,
+                  RRF.ITEMSETID;
+    ELSE
+      OPEN P_OUT_CUR_NOT_DNP_DETAILS FOR
+        SELECT RRF.RRF_ID RRF_ID,
+               RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
+               RRF.STUDENT_LAST_NAME || ',' || RRF.STUDENT_FIRST_NAME || ' ' ||
+               SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
+               NVL(RRF.REQUESTED_DATE, -1) ACTUAL_REQUESTED_DATE,
+               NVL((SELECT REQUESTED_DATE
+                     FROM RESCORE_REQUEST_FORM
+                    WHERE UPDATED_DATE_TIME =
+                          (SELECT MAX(UPDATED_DATE_TIME)
+                             FROM RESCORE_REQUEST_FORM
+                            WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                              AND IS_REQUESTED = 'Y')),
+                   -1) REQUESTED_DATE,
+               RRF.SUBTESTID SUBTESTID,
+               SD.SUBTEST_CODE SUBTEST_CODE,
+               ISD.SESSION_ID SESSION_ID,
+               RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
+               RRF.ORIGINAL_SCORE ORIGINAL_SCORE,
+               RRF.ITEMSETID ITEMSETID,
+               ISD.ITEM_NUMBER ITEM_NUMBER,
+               RRF.IS_REQUESTED IS_REQUESTED,
+               RRF.REQUESTED_USERID USERID,
+               (SELECT USERNAME
+                  FROM USERS
+                 WHERE USERID = RRF.REQUESTED_USERID) USERNAME
+          FROM RESCORE_REQUEST_FORM RRF, ITEMSET_DIM ISD, SUBTEST_DIM SD
+         WHERE RRF.ELIGIBLE_FOR_RESCORE = 'Y'
+           AND RRF.ITEMSETID = ISD.ITEMSETID
+           AND RRF.SUBTESTID = SD.SUBTESTID
+           AND RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
+         ORDER BY STUDENT_FULL_NAME,
+                  SD.SUBTEST_SEQ,
+                  ISD.SESSION_ID,
+                  RRF.ITEMSETID;
+    END IF;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_NOT_DNP_STUDENT_DETAILS;
 
 END PKG_RESCORE_REQUEST;
 /
