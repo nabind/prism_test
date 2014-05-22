@@ -70,14 +70,14 @@
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
 						    			<input type="text" 
-						    				class="rescore-date"
+						    				class="rescore-date-dnp"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 							    			value="" /> 
 						    		</c:when>
 						    		<c:otherwise>
 						    			<input type="text" 
-						    				class="rescore-date"
+						    				class="rescore-date-dnp"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 						    				value="${rescoreRequestStudentTO.requestedDate}" /> 
@@ -87,8 +87,8 @@
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
 						    	<td class="vertical-center">
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
-						    			<a class="performance-level" 
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+						    			<a class="performance-level-dnp" 
 						    				subtestId="${rescoreSubtestTO.subtestId}"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
 											href="#nogo">
@@ -107,7 +107,7 @@
 						    		<td class="vertical-center">
 						    			<div class="item-div-active">
 							    			<!-- item-div start -->
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
 							    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
 							    			</c:if>
 							    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
@@ -122,7 +122,7 @@
 									    					<c:otherwise>
 								    							<c:choose>
 								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
-									    								<a class="item-link align-row" 
+									    								<a class="item-link-dnp align-row" 
 										    								action="submitRescoreRequest" 
 																			itemsetId="${rescoreItemTO.itemsetId}"
 													    					rrfId="${rescoreItemTO.rrfId}" 
@@ -135,7 +135,7 @@
 																		</a>
 									    							</c:when>
 										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
-										    							<a class="item-link align-row" 
+										    							<a class="item-link-dnp align-row" 
 										    								action="submitRescoreRequest" 
 																			itemsetId = "${rescoreItemTO.itemsetId}"
 													    					rrfId = "${rescoreItemTO.rrfId}" 
@@ -154,7 +154,7 @@
 							    					<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
 							    						<c:choose>
 							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
-								    							<a class="item-link align-row" 
+								    							<a class="item-link-dnp align-row" 
 								    								action="submitRescoreRequest" 
 																	itemsetId="${rescoreItemTO.itemsetId}"
 											    					rrfId="${rescoreItemTO.rrfId}" 
@@ -167,7 +167,7 @@
 																</a>
 								    						</c:when>
 									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-								    							<a class="item-link align-row" 
+								    							<a class="item-link-dnp align-row" 
 								    								action="submitRescoreRequest" 
 																	itemsetId = "${rescoreItemTO.itemsetId}"
 											    					rrfId = "${rescoreItemTO.rrfId}" 
@@ -241,6 +241,7 @@
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF_2">
 				<thead>
 					<tr role="row">
+						<th aria-label="Text: activate to sort column ascending" style="width: 75px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"></th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 160px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD/YYYY)</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">E/la</th>
@@ -260,9 +261,15 @@
 						</c:choose>
 					</tr>
 				</thead>
-				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF">
+				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF_2">
 					<c:forEach var="rescoreRequestStudentTO" items="${notDnpStudentList}">
-						<tr>
+						<tr id="row_${rescoreRequestStudentTO.studentBioId}">
+							<td class="vertical-center">
+								<a class="button blue-gradient glossy float-left margin-left remove-student"
+									studentBioId="${rescoreRequestStudentTO.studentBioId}" 
+									studentFullName="${rescoreRequestStudentTO.studentFullName}" 
+									href="#nogo">Remove</a>
+							</td>
 						    <td class="vertical-center">${rescoreRequestStudentTO.studentFullName}</td>
 						    <td class="vertical-center">
 						    	<c:choose>
@@ -285,7 +292,7 @@
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
 						    	<td class="vertical-center">
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
 						    			<a class="performance-level" 
 						    				subtestId="${rescoreSubtestTO.subtestId}"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
@@ -305,7 +312,7 @@
 						    		<td class="vertical-center">
 						    			<div class="item-div-active">
 							    			<!-- item-div start -->
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass'}">
+							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
 							    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
 							    			</c:if>
 							    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">

@@ -32,14 +32,14 @@ $(document).ready(function() {
 		'fnDrawCallback': function( oSettings ) {
 			disableLinks();
 			//filteredRow = this.$('tr', {"filter": "applied"} );
-			$('.item-link').on('click', function(){
-				submitRescoreRequest($(this));
+			$('.item-link-dnp').on('click', function(){
+				submitRescoreRequest('#studentTableRRF',$(this));
 			});
-			$('.performance-level').on('click', function(){
-				showHideItems($(this));
+			$('.performance-level-dnp').on('click', function(){
+				showHideItems('#studentTableRRF',$(this));
 			});
-			$('.rescore-date').focusout(function(){
-				activeInactiveItems($(this));
+			$('.rescore-date-dnp').focusout(function(){
+				activeInactiveItems('#studentTableRRF',$(this));
 		   });
 		}
 	});
@@ -47,21 +47,35 @@ $(document).ready(function() {
 	$( "#studentTableRRF_filter > label" ).css( "cursor", "default" );
 	$( ".sorting_disabled" ).css( "cursor", "default" );
 	
-	/*var filteredRow_2;
+	var filteredRow_2;
 	$("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
-			'aTargets' : [ 0, 3, 4, 6 ]
+			'aTargets' : [0, 1 ]
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			filteredRow_2 = this.$('tr', {"filter": "applied"} );
+			//filteredRow_2 = this.$('tr', {"filter": "applied"} );
+			$('.item-link').on('click', function(){
+				submitRescoreRequest('#studentTableRRF_2',$(this));
+			});
+			$('.performance-level').on('click', function(){
+				showHideItems('#studentTableRRF_2',$(this));
+			});
+			$('.rescore-date').focusout(function(){
+				activeInactiveItems('#studentTableRRF_2',$(this));
+			});
+			$('.remove-student').on('click', function(){
+				removeStudent($(this));
+			});
 		}
 	});
 	$( "#studentTableRRF_2_length > label" ).css( "cursor", "default" );
-	$( "#studentTableRRF_2_filter > label" ).css( "cursor", "default" );*/
+	$( "#studentTableRRF_2_filter > label" ).css( "cursor", "default" );
 	
-	
+	$('#addStudent').on('click', function(){
+		addStudent();
+	});
 });
 //=====document.ready End=========================================
 function disableLinks() {
@@ -80,11 +94,11 @@ function disableElement(e) {
 	e.addClass('silver-bg');
 }
 
-function activeInactiveItems(obj){
+function activeInactiveItems(containerId,obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
-	$('.item-div-normal-'+studentBioId).hide();
-	$('.item-div-act-'+studentBioId).hide();
-	$('.item-div-inact-'+studentBioId).hide();
+	$(containerId+' .item-div-normal-'+studentBioId).hide();
+	$(containerId+' .item-div-act-'+studentBioId).hide();
+	$(containerId+' .item-div-inact-'+studentBioId).hide();
 	
 	var requestedDate =  $(obj).val();
 	if(requestedDate.length > 0){
@@ -92,33 +106,33 @@ function activeInactiveItems(obj){
 	    	$(obj).css('background-color','white');
 	    	$(obj).css('color','black');
 	    	$(obj).val();
-	    	$('.item-div-act-'+studentBioId).show();
+	    	$(containerId+' .item-div-act-'+studentBioId).show();
 	    }else{
 	    	$(obj).css('background-color','red');
 	    	$(obj).val(DATE_VALIDATION_ERROR_MESSAGE);
 	    	$(obj).css('color','white');
-	    	$('.item-div-normal-'+studentBioId).show();
+	    	$(containerId+' .item-div-normal-'+studentBioId).show();
 	    }
 	}else{
 		$(obj).css('background-color','white');
 		$(obj).css('color','black');
-		$('.item-div-inact-'+studentBioId).show();
+		$(containerId+' .item-div-inact-'+studentBioId).show();
 	}
 }
 
-function submitRescoreRequest(obj){
+function submitRescoreRequest(containerId,obj){
 	var itemsetId = (typeof $(obj).attr('itemsetId') !== 'undefined') ? $(obj).attr('itemsetId') : 0;
 	var rrfId = (typeof $(obj).attr('rrfId') !== 'undefined') ? $(obj).attr('rrfId') : 0;
 	var elementId = (typeof $(obj).attr('id') !== 'undefined') ? $(obj).attr('id') : 0;
 	
 	var requestedStatus = "Y";
-	var isRequested = $('#'+elementId +' .item-tag').hasClass('red-bg');
+	var isRequested = $(containerId+' #'+elementId +' .item-tag').hasClass('red-bg');
 	if(isRequested){
 		requestedStatus = "N";
 	}
 	
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
-	var requestedDate =  $('#rescoreDate_'+studentBioId).val();
+	var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 	
 	if((requestedDate.length > 0) && isDate(requestedDate)){
 		blockUI();
@@ -140,9 +154,9 @@ function submitRescoreRequest(obj){
 				if(data.value >= 1){
 					// $.modal.alert("Request submitted successfully");
 					if(requestedStatus == "Y"){
-						$('#'+elementId +' .item-tag').addClass('red-bg');
+						$(containerId+' #'+elementId +' .item-tag').addClass('red-bg');
 					}else{
-						$('#'+elementId +' .item-tag').removeClass('red-bg');
+						$(containerId+' #'+elementId +' .item-tag').removeClass('red-bg');
 					}
 				}else{
 					$.modal.alert(ERROR_MESSAGE);
@@ -154,21 +168,22 @@ function submitRescoreRequest(obj){
 			}
 		});
     }else{
-    	$('#rescoreDate_'+studentBioId).css('background-color','red');
-    	$('#rescoreDate_'+studentBioId).val(DATE_VALIDATION_ERROR_MESSAGE);
-    	$('#rescoreDate_'+studentBioId).css('color','white');
+    	$(containerId+' #rescoreDate_'+studentBioId).css('background-color','red');
+    	$(containerId+' #rescoreDate_'+studentBioId).val(DATE_VALIDATION_ERROR_MESSAGE);
+    	$(containerId+' #rescoreDate_'+studentBioId).css('color','white');
     }	
 }
 
-function showHideItems(obj){
+function showHideItems(containerId,obj){
+	
 	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	
-	if($('.item-div-'+subtestId).is(':hidden')){
-		$('.item-div-'+subtestId).show();
+	if($(containerId+' .item-div-'+subtestId).is(':hidden')){
+		$(containerId+' .item-div-'+subtestId).show();
 	}else{
-		$('.item-div-'+subtestId).hide();
-		var requestedDate =  $('#rescoreDate_'+studentBioId).val();
+		$(containerId+' .item-div-'+subtestId).hide();
+		var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 		if((requestedDate.length > 0) && isDate(requestedDate)){
 			var urlData = 'subtestId='+subtestId
 							+'&studentBioId='+studentBioId;
@@ -182,7 +197,7 @@ function showHideItems(obj){
 				success : function(data) {
 					unblockUI();
 					if(data.value >= 1){
-						$('.item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+						$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
 					}else{
 						$.modal.alert(ERROR_MESSAGE);
 					}
@@ -194,6 +209,23 @@ function showHideItems(obj){
 			});	
 		}				
 	}
+}
+
+function removeStudent(obj){
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	var studentFullName = (typeof $(obj).attr('studentFullName') !== 'undefined') ? $(obj).attr('studentFullName') : 0;
+	$('#studentTableRRF_2 #row_'+studentBioId).hide();
+	$('#addStudent').removeClass('disabled');
+	var option = $('#selectStudentRRF').html();
+	option += "<option selected value='"+studentBioId+"'>"+studentFullName+"</option>";
+	$('#selectStudentRRF').html(option);
+	$('#selectStudentRRF').change();
+	$('#selectStudentRRF').trigger('update-select-list');
+}
+
+function addStudent(){
+	var studentBioId = $('#selectStudentRRF').val();
+	$('#studentTableRRF_2 #row_'+studentBioId).show();
 }
 
 function isDate(txtDate){
