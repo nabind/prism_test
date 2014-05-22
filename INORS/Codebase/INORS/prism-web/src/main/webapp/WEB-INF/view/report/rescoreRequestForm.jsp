@@ -409,4 +409,8 @@
 	<input type="hidden" id="q_testProgram" value="${testProgram}" />
 	<input type="hidden" id="q_corpDiocese" value="${corpDiocese}" />
 	<input type="hidden" id="q_school" value="${school}" />
+	<c:choose>
+		<c:when test="${not empty dataloadMessage}"><input type="hidden" id="q_dataloadMessage" value="Y" /></c:when>
+		<c:otherwise><input type="hidden" id="q_dataloadMessage" value="N" /></c:otherwise>
+	</c:choose>
 </div>

@@ -10,6 +10,20 @@ var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
 
 $(document).ready(function() {
 	
+	$("#reviewRRF").live("click", function(event) {
+		var disableLinks = $('#q_dataloadMessage').val();
+		if(disableLinks == 'Y') {
+			alert('disabled');
+		} else if(disableLinks == 'N') {
+			$.modal({
+				title: 'Modal window',
+				content: $("#sorting-advanced_wrapper_").html(),
+				height: 500
+			});
+		} else {
+		}
+	});
+	
 	$("#studentTableRRF").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
@@ -17,6 +31,7 @@ $(document).ready(function() {
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
+			disableLinks();
 			//filteredRow = this.$('tr', {"filter": "applied"} );
 			$('.item-link').on('click', function(){
 				submitRescoreRequest($(this));
@@ -50,6 +65,21 @@ $(document).ready(function() {
 	
 });
 //=====document.ready End=========================================
+function disableLinks() {
+	var disableLinks = $('#q_dataloadMessage').val();
+	if(disableLinks == 'Y') {
+		disableElement($('#studentListRRF a'));
+		disableElement($('#reviewRRF'));
+	} else if(disableLinks == 'N') {
+	} else {
+	}
+}
+
+function disableElement(e) {
+	e.removeAttr("href");
+	e.addClass('disabled');
+	e.addClass('silver-bg');
+}
 
 function activeInactiveItems(obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
