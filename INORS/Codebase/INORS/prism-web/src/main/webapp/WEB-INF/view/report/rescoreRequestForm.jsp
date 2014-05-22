@@ -9,47 +9,36 @@
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
-					<c:if test="${reportMessage.messageType=='DM'}">
+					<c:if test="${reportMessage.messageType == 'DM'}"><%-- Dataload Message --%>
 						<div class="big-message">
-							<%-- <span class="big-message-icon icon-warning with-text color" style="margin-top: -15px;">Important</span> --%>
-							<%-- <strong>${ reportMessage.messageName }</strong><br> --%>
-							${ reportMessage.message }
+							<span>${ reportMessage.message }</span>
 						</div>
-						<p>&nbsp;</p>
-					</c:if>
-					<c:if test="${reportMessage.messageType!='DM'}">
-						<fieldset class="fieldset">
-							<legend class="legend">${ reportMessage.messageName }</legend>
-							<p class="inline-label">${ reportMessage.message }</p>
-						</fieldset>
 					</c:if>
 				</c:if>
 			</c:forEach>
 		</c:if>
-		<!-- <div class="columns accordion with-padding big-message">
-			<span>Rescore requests will be accepted for the ISTEP+ Spring 2013 test administration from 09-09-2013 to 09-30-2013 for English/Language Arts, Mathematics and Social Studies and from 10-24-2013 to 11-15-2013 for Science.</span>
-		</div> -->
-		<!-- <div class="columns accordion with-padding">
-			<span>Only parents can initiate a rescore request. The school will complete the Rescore Request Form per the parents' instructions. A Parent-Request Date is required in order to have the item(s) rescored. Enter the month and day of the request in the proper column.</span>
-		</div> -->
-		<!-- <div class="columns accordion with-padding">
-			<span id="ctl00_MainPageContent_instructionVideo" class="tag">
-				<a href="https://ctb-mcgraw-hill.webex.com/ctb-mcgraw-hill/ldr.php?AT=pb&SP=MC&rID=67284132&rKey=1df53fff97245310" id="ctl00_MainPageContent_linkUrl" target="_blank" style="color:White; font-size: small;">Link to Instruction Video</a>
-			</span>
-			<br />
-			<span>
-				<strong>Instructions:</strong>
-				<ul>
-					<li>Only the students that received DNP in at least one content area are listed in this table.</li>
-					<li>If a student received DNP and did not receive full credit, items eligible for rescore are automatically displayed for a specific subject.</li>
-					<li>If a student received Pass or Pass+ in a subject, items are not automatically displayed for the subject. Click Pass or Pass+ to display items eligible for rescore in a specific subject. </li>
-					<li>Enter the date the parent requested a rescore. Select the item to be rescored by clicking on the item. The item will be highlighted to indicate it has been selected for rescore.</li>
-					<li>Deselect an item to be rescored by clicking on the highlighted item. The highlighting will be removed to indicate the item has been deselected.</li>
-					<li>By clicking Pass or Pass+ a second time, all items will disappear and be deselected in a specific subject.</li>
-					<li>To submit a rescore request for Undetermined students call the CTB/Indiana Help Desk Toll Free at 800-282-1132.</li>
-				</ul>
-			</span>
-		</div> -->
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType == 'RP'}"><%-- Report Purpose --%>
+						<div class="columns accordion with-padding">
+							<span>${ reportMessage.message }</span>
+						</div>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType =='RSCM' && reportMessage.messageName == 'Group Download Instruction'}">
+						<div class="columns accordion with-padding">
+							<span>${ reportMessage.message }</span>
+						</div>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
 		<div id="sorting-advanced_wrapper_" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF">
 				<thead>
@@ -207,24 +196,29 @@
 				</tbody>
 			</table>
 		</div>
-		<p><span>
-			UND: Undetermined - No score due to invalid or omitted items. DNP: Did Not Pass.<br />
-			*To submit a rescore request for Undetermined students please call the CTB/Indiana Help Desk Toll Free at 800-282-1132.
-		</span></p>
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType == 'FN'}"><%-- Foot Note --%>
+						<p><span>${ reportMessage.message }</span></p>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
 		<div class="columns accordion" style="text-align: center; border: none;">
 			<a class="button blue-gradient glossy" id="reviewRRF" >Review </a>
 		</div>
-		<div class="columns accordion with-padding">
-			<strong>Instructions</strong>
-			<ul>
-				<li>To request rescore items for students that received Pass, Pass+ or UND  in all content areas, select student name from the Pass/Pass+/UND dropdown list and click ADD.</li>
-				<li>Once the student has been added to the table below, click Pass or Pass+ to display items eligible for rescore in a specific subject.</li>
-				<li>Enter the date the parent requested a rescore. Select the item to be rescored by clicking on the item. The item will be highlighted to indicate it has been selected for rescore.</li>
-				<li>Deselect an item to be rescored by clicking on the highlighted item. The highlighting will be removed to indicate the item has been deselected.</li>
-				<li>By clicking Pass or Pass+ a second time, all items will disappear and be deselected in a specific subject.</li>
-				<li>To submit a rescore request for Undetermined students call the CTB/Indiana Help Desk Toll Free at 800-282-1132.</li>
-			</ul>
-		</div>
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType == 'RL'}"><%-- Report Legend --%>
+						<div class="columns accordion with-padding">
+							<span>${ reportMessage.message }</span>
+						</div>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
 		<div class="columns accordion with-padding">
 			<p class="button-height">
 				Students Pass/Pass+/UND  in all content areas:<br />
@@ -262,10 +256,15 @@
 				</tbody>
 			</table>
 		</div>
-		<p><span>
-			* To submit a rescore request for Undetermined students please call the CTB/Indiana Help Desk Toll Free at 800-282-1132.<br />
-			You do not have to submit this form. This form submits automatically.
-		</span></p>
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType =='RSCM' && reportMessage.messageName == 'More Info'}">
+						<p><span>${ reportMessage.message }</span></p>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
 	</form:form>
 	<input type="hidden" id="q_testAdministrationVal" value="${testAdministrationVal}" />
 	<input type="hidden" id="q_testAdministrationText" value="${testAdministrationText}" />
