@@ -157,7 +157,7 @@ public class RescoreRequestTO extends BaseTO {
 		}else if("B".equals(performanceLevel)){
 			this.performanceLevel = "DNP";
 		}else if("U".equals(performanceLevel)){
-			this.performanceLevel = "Undefined";
+			this.performanceLevel = "UND";
 		}else if("N".equals(performanceLevel)){
 			this.performanceLevel = "DNR";
 		}else if("P".equals(performanceLevel)){
