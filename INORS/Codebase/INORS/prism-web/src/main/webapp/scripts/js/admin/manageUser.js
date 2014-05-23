@@ -397,7 +397,7 @@ $(document).ready(function() {
 	    $("#userRole").find("option").remove();
 		var availableRole = "";
 		$.each(data[0].availableRoleList, function(index, value){
-			if(data[0].availableRoleList[index].roleDescription != 'Class Admin user'){
+			if(data[0].availableRoleList[index].roleDescription != 'Class Admin User'){
 				availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
 			}
 		});
