@@ -78,6 +78,13 @@ $(document).ready(function() {
 		moreInfo($(this).attr("reportId"));
 	});
 	
+	$(".review-button-pdf").live("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadPdf($(this).attr('count'), $(this).attr('param'), $(this).attr('assessment'));
+	});
+	
 	// ============================= Remove report tab =============================
 	$(".closereport").live("click", function(e) {
 		e.stopImmediatePropagation();
@@ -1043,6 +1050,8 @@ function downloadPdf(count, reportUrl, assessmentId, event) {
 	//event.stopPropagation();
 	download(count, reportUrl, assessmentId, 'pdf');
 }
+
+
 
 function download(count, reportUrl, assessmentId, type) {
 	var reportForm = $('.report-form');

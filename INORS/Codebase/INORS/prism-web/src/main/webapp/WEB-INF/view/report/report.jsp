@@ -95,6 +95,7 @@
 			<c:if test="${homeReport.refreshButtonClass != 'customRefresh'}">
 				<c:set var="name" scope="page" value="Report"/>
 			</c:if>	
+			
 			<c:if test="${homeReport.studentBioId == null}">
 			<c:if test="${homeReport.hideFilter != 'hide'}">
 			<form:form method="GET" class="report-form report-form-${homeReport.tabCount}" tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}">
@@ -122,6 +123,16 @@
 					
 					<div class="cyan-gradient icholder icholder-${homeReport.tabCount} rounded-border-bottom display-none" style="border-bottom: 1px solid #CCC;">
 						<div class="refresh-report" style="position: absolute; top: 3px; right: 15px;">
+							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/Rescore_Request_Form_files' }">
+								<a href="#nogo" class="button review-button-pdf orange-gradient glossy compact with-tooltip" 
+									title="Review Rescore" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
+									<span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span>
+									Review
+								</a>
+								<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
+	                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
+	                            </a>
+							</c:if>
 							<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass} refreh-button-${homeReport.tabCount}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>
 						</div>
 						<div class="with-mid-padding mid-margin-bottom icholderinner icholderinner-${homeReport.tabCount}" style="min-width:200px;overflow-x:auto !important">
