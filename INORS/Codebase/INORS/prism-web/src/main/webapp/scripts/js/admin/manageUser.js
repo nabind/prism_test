@@ -414,7 +414,7 @@ $(document).ready(function() {
 	    var masterRole = "";
 		$.each(data, function(index, value){
 			if(orgLevel == '4'){
-				if(data[index].roleDescription != 'Admin user'){
+				if(data[index].roleDescription != 'Admin User'){
 					masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
 				}
 			}else{
