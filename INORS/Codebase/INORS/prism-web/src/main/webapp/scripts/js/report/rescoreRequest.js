@@ -30,7 +30,7 @@ $(document).ready(function() {
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			disableLinks();
+			// disableLinks();
 			//filteredRow = this.$('tr', {"filter": "applied"} );
 			$('.item-link-dnp').on('click', function(){
 				submitRescoreRequest('#studentTableRRF',$(this));
@@ -92,6 +92,47 @@ function disableElement(e) {
 	e.removeAttr("href");
 	e.addClass('disabled');
 	e.addClass('silver-bg');
+}
+
+function getReviewFormContent() {
+	var reviewFormContent;
+	var testAdministrationVal = $("#q_testAdministrationVal").val();
+	var testProgram = $("#q_testProgram").val();
+	var corpDiocese = $("#q_corpDiocese").val();
+	var school = $("#q_school").val();
+	var grade = $("#q_grade").val();
+	var reportUrl = $("#reportUrl").val();
+	var requestUrl = 'rescoreRequestReviewData.do?testAdministrationVal=' + testAdministrationVal;
+	requestUrl = requestUrl + "&testProgram=" + testProgram;
+	requestUrl = requestUrl + "&corpDiocese=" + corpDiocese;
+	requestUrl = requestUrl + "&school=" + school;
+	requestUrl = requestUrl + "&grade=" + grade;
+	requestUrl = requestUrl + "&reportUrl=" + reportUrl;
+	alert(requestUrl);
+	blockUI();
+	$.ajax({
+		type : 'GET',
+		url : requestUrl,
+		//data : urlData,
+		dataType : 'json',
+		cache: false,
+		success : function(data) {
+			alert(data);
+			alert(JSON.stringify(data));
+			unblockUI();
+			/*if(data.value >= 1){
+				$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+			}else{
+				$.modal.alert(ERROR_MESSAGE);
+			}*/
+			reviewFormContent = data;
+		},
+		error : function(data) {	
+			$.modal.alert(ERROR_MESSAGE);
+			unblockUI();
+		}
+	});
+	return reviewFormContent;
 }
 
 function activeInactiveItems(containerId,obj){
