@@ -205,10 +205,6 @@
 			</c:forEach>
 		</c:if>
 
-		<div class="columns accordion" style="text-align: center; border: none;">
-			<a class="button blue-gradient glossy" id="reviewRRF" >Review </a>
-		</div>
-
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
