@@ -8,8 +8,11 @@ CREATE OR REPLACE PACKAGE PKG_RESCORE_REQUEST AS
                                        P_OUT_CUR_DNP       OUT GET_REFCURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
-  PROCEDURE SP_SUBMIT_RESCORE_REQUEST(P_IN_ITEMSETID        IN ITEMSET_DIM.ITEMSETID%TYPE,
-                                      P_IN_RRF_ID           IN RESCORE_REQUEST_FORM.RRF_ID%TYPE,
+  PROCEDURE SP_SUBMIT_RESCORE_REQUEST(P_IN_STUDENT_BIO_ID   IN STUDENT_BIO_DIM.STUDENT_BIO_ID%TYPE,
+                                      P_IN_SUBTESTID        IN SUBTEST_DIM.SUBTESTID %TYPE,
+                                      P_IN_SESSION_ID       ITEMSET_DIM.SESSION_ID %TYPE,
+                                      P_IN_MODEULEID        ITEMSET_DIM. MODEULEID%TYPE,
+                                      P_IN_ITEM_NUMBER      ITEMSET_DIM.ITEM_NUMBER%TYPE,
                                       P_IN_USERID           RESCORE_REQUEST_FORM.REQUESTED_USERID%TYPE,
                                       P_IN_REQUESTED_STATUS RESCORE_REQUEST_FORM.IS_REQUESTED%TYPE,
                                       P_IN_REQUESTED_DATE   RESCORE_REQUEST_FORM.REQUESTED_DATE%TYPE,
@@ -51,29 +54,30 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
   
   BEGIN
     OPEN P_OUT_CUR_DNP FOR
-      SELECT RRF.RRF_ID RRF_ID,
-             RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
-             RRF.STUDENT_LAST_NAME || ',' || RRF.STUDENT_FIRST_NAME || ' ' ||
-             SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
-             NVL(RRF.REQUESTED_DATE, -1) ACTUAL_REQUESTED_DATE,
-             NVL((SELECT REQUESTED_DATE
-                   FROM RESCORE_REQUEST_FORM
-                  WHERE UPDATED_DATE_TIME =
-                        (SELECT MAX(UPDATED_DATE_TIME)
-                           FROM RESCORE_REQUEST_FORM
-                          WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                            AND IS_REQUESTED = 'Y')),
-                 -1) REQUESTED_DATE,
-             RRF.SUBTESTID SUBTESTID,
-             SD.SUBTEST_CODE SUBTEST_CODE,
-             ISD.SESSION_ID SESSION_ID,
-             RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
-             RRF.ORIGINAL_SCORE ORIGINAL_SCORE,
-             RRF.ITEMSETID ITEMSETID,
-             ISD.ITEM_NUMBER ITEM_NUMBER,
-             RRF.IS_REQUESTED IS_REQUESTED,
-             RRF.REQUESTED_USERID USERID,
-             (SELECT USERNAME FROM USERS WHERE USERID = RRF.REQUESTED_USERID) USERNAME
+      SELECT DISTINCT RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
+                      RRF.STUDENT_LAST_NAME || ',' ||
+                      RRF.STUDENT_FIRST_NAME || ' ' ||
+                      SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
+                      NVL((SELECT DISTINCT REQUESTED_DATE
+                            FROM RESCORE_REQUEST_FORM
+                           WHERE UPDATED_DATE_TIME =
+                                 (SELECT MAX(UPDATED_DATE_TIME)
+                                    FROM RESCORE_REQUEST_FORM
+                                   WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                                     AND IS_REQUESTED = 'Y')),
+                          -1) REQUESTED_DATE,
+                      RRF.SUBTESTID SUBTESTID,
+                      SD.SUBTEST_CODE SUBTEST_CODE,
+                      SD.SUBTEST_SEQ SUBTEST_SEQ,
+                      ISD.SESSION_ID SESSION_ID,
+                      ISD.MODEULEID MODEULEID,
+                      RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
+                      ISD.ITEM_NUMBER ITEM_NUMBER,
+                      NVL(RRF.IS_REQUESTED, 'N') IS_REQUESTED,
+                      RRF.REQUESTED_USERID USERID,
+                      (SELECT USERNAME
+                         FROM USERS
+                        WHERE USERID = RRF.REQUESTED_USERID) USERNAME
         FROM RESCORE_REQUEST_FORM RRF,
              ITEMSET_DIM          ISD,
              SUBTEST_DIM          SD,
@@ -92,18 +96,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                 FROM RESCORE_REQUEST_FORM R
                WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
                  AND R.ORIGINAL_PERFORMANCE_LEVEL = 'B')
-       ORDER BY STUDENT_FULL_NAME,
-                SD.SUBTEST_SEQ,
-                ISD.SESSION_ID,
-                RRF.ITEMSETID;
+       ORDER BY STUDENT_FULL_NAME, SUBTEST_SEQ, SESSION_ID, ITEM_NUMBER;
   
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DNP_STUDENT_DETAILS;
 
-  PROCEDURE SP_SUBMIT_RESCORE_REQUEST(P_IN_ITEMSETID        IN ITEMSET_DIM.ITEMSETID%TYPE,
-                                      P_IN_RRF_ID           IN RESCORE_REQUEST_FORM.RRF_ID%TYPE,
+  PROCEDURE SP_SUBMIT_RESCORE_REQUEST(P_IN_STUDENT_BIO_ID   IN STUDENT_BIO_DIM.STUDENT_BIO_ID%TYPE,
+                                      P_IN_SUBTESTID        IN SUBTEST_DIM.SUBTESTID %TYPE,
+                                      P_IN_SESSION_ID       ITEMSET_DIM.SESSION_ID %TYPE,
+                                      P_IN_MODEULEID        ITEMSET_DIM. MODEULEID%TYPE,
+                                      P_IN_ITEM_NUMBER      ITEMSET_DIM.ITEM_NUMBER%TYPE,
                                       P_IN_USERID           RESCORE_REQUEST_FORM.REQUESTED_USERID%TYPE,
                                       P_IN_REQUESTED_STATUS RESCORE_REQUEST_FORM.IS_REQUESTED%TYPE,
                                       P_IN_REQUESTED_DATE   RESCORE_REQUEST_FORM.REQUESTED_DATE%TYPE,
@@ -117,8 +121,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
            RRF.UPDATED_DATE_TIME = SYSDATE,
            RRF.REQUESTED_USERID  = P_IN_USERID,
            RRF.REQUESTED_DATE    = P_IN_REQUESTED_DATE
-     WHERE RRF.RRF_ID = P_IN_RRF_ID
-       AND RRF.ITEMSETID = P_IN_ITEMSETID;
+     WHERE RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
+       AND RRF.SUBTESTID = P_IN_SUBTESTID
+       AND RRF.ITEMSETID IN
+           (SELECT RRF.ITEMSETID
+              FROM RESCORE_REQUEST_FORM RRF, ITEMSET_DIM ISD
+             WHERE RRF.ELIGIBLE_FOR_RESCORE = 'Y'
+               AND RRF.ITEMSETID = ISD.ITEMSETID
+               AND RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
+               AND ISD.SESSION_ID = P_IN_SESSION_ID
+               AND ISD.MODEULEID = P_IN_MODEULEID
+               AND ISD.ITEM_NUMBER = P_IN_ITEM_NUMBER);
   
     P_OUT_STATUS_NUMBER := 1;
   
@@ -209,31 +222,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
   BEGIN
     IF P_IN_STUDENT_BIO_ID = 0 THEN
       OPEN P_OUT_CUR_NOT_DNP_DETAILS FOR
-        SELECT RRF.RRF_ID RRF_ID,
-               RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
-               RRF.STUDENT_LAST_NAME || ',' || RRF.STUDENT_FIRST_NAME || ' ' ||
-               SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
-               NVL(RRF.REQUESTED_DATE, -1) ACTUAL_REQUESTED_DATE,
-               NVL((SELECT REQUESTED_DATE
-                     FROM RESCORE_REQUEST_FORM
-                    WHERE UPDATED_DATE_TIME =
-                          (SELECT MAX(UPDATED_DATE_TIME)
-                             FROM RESCORE_REQUEST_FORM
-                            WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                              AND IS_REQUESTED = 'Y')),
-                   -1) REQUESTED_DATE,
-               RRF.SUBTESTID SUBTESTID,
-               SD.SUBTEST_CODE SUBTEST_CODE,
-               ISD.SESSION_ID SESSION_ID,
-               RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
-               RRF.ORIGINAL_SCORE ORIGINAL_SCORE,
-               RRF.ITEMSETID ITEMSETID,
-               ISD.ITEM_NUMBER ITEM_NUMBER,
-               RRF.IS_REQUESTED IS_REQUESTED,
-               RRF.REQUESTED_USERID USERID,
-               (SELECT USERNAME
-                  FROM USERS
-                 WHERE USERID = RRF.REQUESTED_USERID) USERNAME
+        SELECT DISTINCT RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
+                        RRF.STUDENT_LAST_NAME || ',' ||
+                        RRF.STUDENT_FIRST_NAME || ' ' ||
+                        SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
+                        NVL((SELECT DISTINCT REQUESTED_DATE
+                              FROM RESCORE_REQUEST_FORM
+                             WHERE UPDATED_DATE_TIME =
+                                   (SELECT MAX(UPDATED_DATE_TIME)
+                                      FROM RESCORE_REQUEST_FORM
+                                     WHERE STUDENT_BIO_ID =
+                                           RRF.STUDENT_BIO_ID
+                                       AND IS_REQUESTED = 'Y')),
+                            -1) REQUESTED_DATE,
+                        RRF.SUBTESTID SUBTESTID,
+                        SD.SUBTEST_CODE SUBTEST_CODE,
+                        SD.SUBTEST_SEQ SUBTEST_SEQ,
+                        ISD.SESSION_ID SESSION_ID,
+                        ISD.MODEULEID MODEULEID,
+                        RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
+                        ISD.ITEM_NUMBER ITEM_NUMBER,
+                        NVL(RRF.IS_REQUESTED, 'N') IS_REQUESTED,
+                        RRF.REQUESTED_USERID USERID,
+                        (SELECT USERNAME
+                           FROM USERS
+                          WHERE USERID = RRF.REQUESTED_USERID) USERNAME
           FROM RESCORE_REQUEST_FORM RRF,
                ITEMSET_DIM          ISD,
                SUBTEST_DIM          SD,
@@ -260,46 +273,39 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                   FROM RESCORE_REQUEST_FORM R
                  WHERE R.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
                    AND R.ORIGINAL_PERFORMANCE_LEVEL = 'B')
-         ORDER BY STUDENT_FULL_NAME,
-                  SD.SUBTEST_SEQ,
-                  ISD.SESSION_ID,
-                  RRF.ITEMSETID;
+         ORDER BY STUDENT_FULL_NAME, SUBTEST_SEQ, SESSION_ID, ITEM_NUMBER;
     ELSE
       OPEN P_OUT_CUR_NOT_DNP_DETAILS FOR
-        SELECT RRF.RRF_ID RRF_ID,
-               RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
-               RRF.STUDENT_LAST_NAME || ',' || RRF.STUDENT_FIRST_NAME || ' ' ||
-               SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
-               NVL(RRF.REQUESTED_DATE, -1) ACTUAL_REQUESTED_DATE,
-               NVL((SELECT REQUESTED_DATE
-                     FROM RESCORE_REQUEST_FORM
-                    WHERE UPDATED_DATE_TIME =
-                          (SELECT MAX(UPDATED_DATE_TIME)
-                             FROM RESCORE_REQUEST_FORM
-                            WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                              AND IS_REQUESTED = 'Y')),
-                   -1) REQUESTED_DATE,
-               RRF.SUBTESTID SUBTESTID,
-               SD.SUBTEST_CODE SUBTEST_CODE,
-               ISD.SESSION_ID SESSION_ID,
-               RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
-               RRF.ORIGINAL_SCORE ORIGINAL_SCORE,
-               RRF.ITEMSETID ITEMSETID,
-               ISD.ITEM_NUMBER ITEM_NUMBER,
-               RRF.IS_REQUESTED IS_REQUESTED,
-               RRF.REQUESTED_USERID USERID,
-               (SELECT USERNAME
-                  FROM USERS
-                 WHERE USERID = RRF.REQUESTED_USERID) USERNAME
+        SELECT DISTINCT RRF.STUDENT_LAST_NAME || ',' ||
+                        RRF.STUDENT_FIRST_NAME || ' ' ||
+                        SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
+                        NVL((SELECT DISTINCT REQUESTED_DATE
+                              FROM RESCORE_REQUEST_FORM
+                             WHERE UPDATED_DATE_TIME =
+                                   (SELECT MAX(UPDATED_DATE_TIME)
+                                      FROM RESCORE_REQUEST_FORM
+                                     WHERE STUDENT_BIO_ID =
+                                           RRF.STUDENT_BIO_ID
+                                       AND IS_REQUESTED = 'Y')),
+                            -1) REQUESTED_DATE,
+                        RRF.SUBTESTID SUBTESTID,
+                        SD.SUBTEST_CODE SUBTEST_CODE,
+                        SD.SUBTEST_SEQ SUBTEST_SEQ,
+                        ISD.SESSION_ID SESSION_ID,
+                        ISD.MODEULEID MODEULEID,
+                        RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
+                        ISD.ITEM_NUMBER ITEM_NUMBER,
+                        NVL(RRF.IS_REQUESTED, 'N') IS_REQUESTED,
+                        RRF.REQUESTED_USERID USERID,
+                        (SELECT USERNAME
+                           FROM USERS
+                          WHERE USERID = RRF.REQUESTED_USERID) USERNAME
           FROM RESCORE_REQUEST_FORM RRF, ITEMSET_DIM ISD, SUBTEST_DIM SD
          WHERE RRF.ELIGIBLE_FOR_RESCORE = 'Y'
            AND RRF.ITEMSETID = ISD.ITEMSETID
            AND RRF.SUBTESTID = SD.SUBTESTID
            AND RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
-         ORDER BY STUDENT_FULL_NAME,
-                  SD.SUBTEST_SEQ,
-                  ISD.SESSION_ID,
-                  RRF.ITEMSETID;
+         ORDER BY STUDENT_FULL_NAME, SUBTEST_SEQ, SESSION_ID, ITEM_NUMBER;
     END IF;
   
   EXCEPTION
