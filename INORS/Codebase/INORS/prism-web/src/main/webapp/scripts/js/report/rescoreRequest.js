@@ -121,8 +121,11 @@ function activeInactiveItems(containerId,obj){
 }
 
 function submitRescoreRequest(containerId,obj){
-	var itemsetId = (typeof $(obj).attr('itemsetId') !== 'undefined') ? $(obj).attr('itemsetId') : 0;
-	var rrfId = (typeof $(obj).attr('rrfId') !== 'undefined') ? $(obj).attr('rrfId') : 0;
+	var itemNumber = (typeof $(obj).attr('itemNumber') !== 'undefined') ? $(obj).attr('itemNumber') : 0;
+	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
+	var sessionId = (typeof $(obj).attr('sessionId') !== 'undefined') ? $(obj).attr('sessionId') : 0;
+	var moduleId = (typeof $(obj).attr('moduleId') !== 'undefined') ? $(obj).attr('moduleId') : 0;
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var elementId = (typeof $(obj).attr('id') !== 'undefined') ? $(obj).attr('id') : 0;
 	
 	var requestedStatus = "Y";
@@ -131,15 +134,17 @@ function submitRescoreRequest(containerId,obj){
 		requestedStatus = "N";
 	}
 	
-	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 	
 	if((requestedDate.length > 0) && isDate(requestedDate)){
 		blockUI();
 		var actionUrl = $(obj).attr('action');
 		actionUrl = actionUrl + '.do';
-		var urlData = 'itemsetId='+itemsetId
-						+'&rrfId='+rrfId
+		var urlData = 'itemNumber='+itemNumber
+						+'&subtestId='+subtestId
+						+'&sessionId='+sessionId
+						+'&moduleId='+moduleId
+						+'&studentBioId='+studentBioId
 						+'&requestedStatus='+requestedStatus
 						+'&requestedDate='+requestedDate;
 	
@@ -152,7 +157,6 @@ function submitRescoreRequest(containerId,obj){
 			success : function(data) {
 				unblockUI();
 				if(data.value >= 1){
-					// $.modal.alert("Request submitted successfully");
 					if(requestedStatus == "Y"){
 						$(containerId+' #'+elementId +' .item-tag').addClass('red-bg');
 					}else{

@@ -124,26 +124,26 @@
 								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
 									    								<a class="item-link-dnp align-row" 
 										    								action="submitRescoreRequest" 
-																			itemsetId="${rescoreItemTO.itemsetId}"
-													    					rrfId="${rescoreItemTO.rrfId}" 
-													    					userId="${rescoreItemTO.userId}"
-													    					userName="${rescoreItemTO.userName}"
-													    					studentBioId="${rescoreItemTO.studentBioId}"
-																			href="#nogo" 
-																			id="item_${rescoreItemTO.itemsetId}">
+										    								itemNumber="${rescoreItemTO.itemNumber}"
+										    								subtestId="${rescoreSubtestTO.subtestId}"
+																			sessionId="${rescoreSessionTO.sessionId}"
+																			moduleId="${rescoreSessionTO.moduleId}"
+																			studentBioId="${rescoreItemTO.studentBioId}"
+																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																			href="#nogo">
 																				<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
 																		</a>
 									    							</c:when>
 										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
 										    							<a class="item-link-dnp align-row" 
 										    								action="submitRescoreRequest" 
-																			itemsetId = "${rescoreItemTO.itemsetId}"
-													    					rrfId = "${rescoreItemTO.rrfId}" 
-													    					userId = "${rescoreItemTO.userId}"
-													    					userName = "${rescoreItemTO.userName}"
-													    					studentBioId = "${rescoreItemTO.studentBioId}"
-																			href="#nogo" 
-																			id="item_${rescoreItemTO.itemsetId}">
+										    								itemNumber="${rescoreItemTO.itemNumber}"
+										    								subtestId="${rescoreSubtestTO.subtestId}"
+																			sessionId="${rescoreSessionTO.sessionId}"
+																			moduleId="${rescoreSessionTO.moduleId}"
+																			studentBioId = "${rescoreItemTO.studentBioId}"
+																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																			href="#nogo">
 																				<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
 																		</a>		
 									    							</c:when>
@@ -156,26 +156,26 @@
 							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
 								    							<a class="item-link-dnp align-row" 
 								    								action="submitRescoreRequest" 
-																	itemsetId="${rescoreItemTO.itemsetId}"
-											    					rrfId="${rescoreItemTO.rrfId}" 
-											    					userId="${rescoreItemTO.userId}"
-											    					userName="${rescoreItemTO.userName}"
-											    					studentBioId="${rescoreItemTO.studentBioId}"
-																	href="#nogo" 
-																	id="item_${rescoreItemTO.itemsetId}">
+																	itemNumber="${rescoreItemTO.itemNumber}"
+								    								subtestId="${rescoreSubtestTO.subtestId}"
+																	sessionId="${rescoreSessionTO.sessionId}"
+																	moduleId="${rescoreSessionTO.moduleId}"
+																	studentBioId = "${rescoreItemTO.studentBioId}"
+																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																	href="#nogo">
 																		<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
 																</a>
 								    						</c:when>
 									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
 								    							<a class="item-link-dnp align-row" 
 								    								action="submitRescoreRequest" 
-																	itemsetId = "${rescoreItemTO.itemsetId}"
-											    					rrfId = "${rescoreItemTO.rrfId}" 
-											    					userId = "${rescoreItemTO.userId}"
-											    					userName = "${rescoreItemTO.userName}"
-											    					studentBioId = "${rescoreItemTO.studentBioId}"
-																	href="#nogo" 
-																	id="item_${rescoreItemTO.itemsetId}">
+																	itemNumber="${rescoreItemTO.itemNumber}"
+								    								subtestId="${rescoreSubtestTO.subtestId}"
+																	sessionId="${rescoreSessionTO.sessionId}"
+																	moduleId="${rescoreSessionTO.moduleId}"
+																	studentBioId = "${rescoreItemTO.studentBioId}"
+																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																	href="#nogo">
 																		<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
 																</a>		
 								    						</c:when>
@@ -329,26 +329,26 @@
 								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
 									    								<a class="item-link align-row" 
 										    								action="submitRescoreRequest" 
-																			itemsetId="${rescoreItemTO.itemsetId}"
-													    					rrfId="${rescoreItemTO.rrfId}" 
-													    					userId="${rescoreItemTO.userId}"
-													    					userName="${rescoreItemTO.userName}"
-													    					studentBioId="${rescoreItemTO.studentBioId}"
-																			href="#nogo" 
-																			id="item_${rescoreItemTO.itemsetId}">
+																			itemNumber="${rescoreItemTO.itemNumber}"
+										    								subtestId="${rescoreSubtestTO.subtestId}"
+																			sessionId="${rescoreSessionTO.sessionId}"
+																			moduleId="${rescoreSessionTO.moduleId}"
+																			studentBioId = "${rescoreItemTO.studentBioId}"
+																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																			href="#nogo">
 																				<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
 																		</a>
 									    							</c:when>
 										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
 										    							<a class="item-link align-row" 
 										    								action="submitRescoreRequest" 
-																			itemsetId = "${rescoreItemTO.itemsetId}"
-													    					rrfId = "${rescoreItemTO.rrfId}" 
-													    					userId = "${rescoreItemTO.userId}"
-													    					userName = "${rescoreItemTO.userName}"
-													    					studentBioId = "${rescoreItemTO.studentBioId}"
-																			href="#nogo" 
-																			id="item_${rescoreItemTO.itemsetId}">
+																			itemNumber="${rescoreItemTO.itemNumber}"
+										    								subtestId="${rescoreSubtestTO.subtestId}"
+																			sessionId="${rescoreSessionTO.sessionId}"
+																			moduleId="${rescoreSessionTO.moduleId}"
+																			studentBioId = "${rescoreItemTO.studentBioId}"
+																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																			href="#nogo">
 																				<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
 																		</a>		
 									    							</c:when>
@@ -361,26 +361,26 @@
 							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
 								    							<a class="item-link align-row" 
 								    								action="submitRescoreRequest" 
-																	itemsetId="${rescoreItemTO.itemsetId}"
-											    					rrfId="${rescoreItemTO.rrfId}" 
-											    					userId="${rescoreItemTO.userId}"
-											    					userName="${rescoreItemTO.userName}"
-											    					studentBioId="${rescoreItemTO.studentBioId}"
-																	href="#nogo" 
-																	id="item_${rescoreItemTO.itemsetId}">
+																	itemNumber="${rescoreItemTO.itemNumber}"
+								    								subtestId="${rescoreSubtestTO.subtestId}"
+																	sessionId="${rescoreSessionTO.sessionId}"
+																	moduleId="${rescoreSessionTO.moduleId}"
+																	studentBioId = "${rescoreItemTO.studentBioId}"
+																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																	href="#nogo">
 																		<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
 																</a>
 								    						</c:when>
 									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
 								    							<a class="item-link align-row" 
 								    								action="submitRescoreRequest" 
-																	itemsetId = "${rescoreItemTO.itemsetId}"
-											    					rrfId = "${rescoreItemTO.rrfId}" 
-											    					userId = "${rescoreItemTO.userId}"
-											    					userName = "${rescoreItemTO.userName}"
-											    					studentBioId = "${rescoreItemTO.studentBioId}"
-																	href="#nogo" 
-																	id="item_${rescoreItemTO.itemsetId}">
+																	itemNumber="${rescoreItemTO.itemNumber}"
+								    								subtestId="${rescoreSubtestTO.subtestId}"
+																	sessionId="${rescoreSessionTO.sessionId}"
+																	moduleId="${rescoreSessionTO.moduleId}"
+																	studentBioId = "${rescoreItemTO.studentBioId}"
+																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																	href="#nogo">
 																		<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
 																</a>		
 								    						</c:when>

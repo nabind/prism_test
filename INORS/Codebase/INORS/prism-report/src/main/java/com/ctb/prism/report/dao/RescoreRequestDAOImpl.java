@@ -90,16 +90,14 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
-							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
 							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
 							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
 							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
-							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
-							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
@@ -129,23 +127,31 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - submitRescoreRequest()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
-		final long itemsetId = ((Long) paramMap.get("itemsetId")).longValue();
-		final long rrfId = ((Long) paramMap.get("rrfId")).longValue();
-		final long userId = ((Long) paramMap.get("userId")).longValue();
+		
+		final long itemNumber = ((Long) paramMap.get("itemNumber")).longValue();
+		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
+		final long sessionId = ((Long) paramMap.get("sessionId")).longValue();
+		final String moduleId = (String)paramMap.get("moduleId");
+		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
 		final String requestedStatus = (String)paramMap.get("requestedStatus");
 		final String requestedDate = (String)paramMap.get("requestedDate");
+		final long userId = ((Long) paramMap.get("userId")).longValue();
+		
 
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.SUBMIT_RESCORE_REQUEST + "}");
-					cs.setLong(1, itemsetId);
-					cs.setLong(2, rrfId);
-					cs.setLong(3, userId);
-					cs.setString(4, requestedStatus);
-					cs.setString(5, requestedDate);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setLong(1, studentBioId);
+					cs.setLong(2, subtestId);
+					cs.setLong(3, sessionId);
+					cs.setString(4, moduleId);
+					cs.setLong(5, itemNumber);
+					cs.setLong(6, userId);
+					cs.setString(7, requestedStatus);
+					cs.setString(8, requestedDate);
+					cs.registerOutParameter(9, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -312,16 +318,14 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
-							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
 							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
 							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
 							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
-							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
-							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
@@ -385,16 +389,14 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
-							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
 							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
 							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
 							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
-							rescoreRequestTO.setOriginalScore(rs.getString("ORIGINAL_SCORE"));
-							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));

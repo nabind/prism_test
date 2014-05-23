@@ -205,8 +205,11 @@ public class RescoreRequestController {
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestController - submitRescoreRequest()");
 		long t1 = System.currentTimeMillis();
 		
-		long itemsetId = Long.parseLong(request.getParameter("itemsetId"));
-		long rrfId = Long.parseLong(request.getParameter("rrfId"));
+		long itemNumber = Long.parseLong(request.getParameter("itemNumber"));
+		long subtestId = Long.parseLong(request.getParameter("subtestId"));
+		long sessionId = Long.parseLong(request.getParameter("sessionId"));
+		String moduleId = request.getParameter("moduleId");
+		long studentBioId = Long.parseLong(request.getParameter("studentBioId"));
 		String requestedStatus = request.getParameter("requestedStatus");
 		String requestedDate = request.getParameter("requestedDate"); 
 	
@@ -214,11 +217,14 @@ public class RescoreRequestController {
 		long userId = Long.parseLong(loggedinUserTO.getUserId());
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("itemsetId", itemsetId);
-		paramMap.put("rrfId", rrfId);
-		paramMap.put("userId", userId);
+		paramMap.put("itemNumber", itemNumber);
+		paramMap.put("subtestId", subtestId);
+		paramMap.put("sessionId", sessionId);
+		paramMap.put("moduleId", moduleId);
+		paramMap.put("studentBioId", studentBioId);
 		paramMap.put("requestedStatus", requestedStatus);
 		paramMap.put("requestedDate", requestedDate);
+		paramMap.put("userId", userId);
 		
 		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
 		Gson gson = new Gson();

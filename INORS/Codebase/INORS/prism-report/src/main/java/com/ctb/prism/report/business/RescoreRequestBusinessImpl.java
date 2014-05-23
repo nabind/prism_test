@@ -96,6 +96,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 								&& (rescoreSubtestTO.getSubtestId() == rescoreRequestTOSession.getSubtestId())){
 							if(curSessionId != rescoreRequestTOSession.getSessionId()){
 								rescoreSessionTO = new RescoreSessionTO();
+								rescoreSessionTO.setModuleId(rescoreRequestTOSession.getModuleId());
 								rescoreSessionTO.setSessionId(rescoreRequestTOSession.getSessionId());
 								curSessionId = rescoreRequestTOSession.getSessionId();
 							}
