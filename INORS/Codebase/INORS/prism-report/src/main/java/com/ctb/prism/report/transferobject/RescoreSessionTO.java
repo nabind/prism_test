@@ -16,6 +16,7 @@ public class RescoreSessionTO extends BaseTO {
 	
 	private static final long serialVersionUID = 1L;
 	private long sessionId = 0;
+	private String moduleId = "";
 	private List<RescoreItemTO> rescoreItemTOList = new ArrayList<RescoreItemTO>();
 	
 	public long getSessionId() {
@@ -29,5 +30,11 @@ public class RescoreSessionTO extends BaseTO {
 	}
 	public void setRescoreItemTOList(List<RescoreItemTO> rescoreItemTOList) {
 		this.rescoreItemTOList = rescoreItemTOList;
+	}
+	public String getModuleId() {
+		return moduleId;
+	}
+	public void setModuleId(String moduleId) {
+		this.moduleId = moduleId;
 	}
 }

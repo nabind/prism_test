@@ -39,6 +39,7 @@ public class RescoreRequestTO extends BaseTO {
 	private String originalScore = "";
 	private long rrfId = 0;
 	private long itemNumber = 0;
+	private String moduleId = "";
 	
 	public String getButton() {
 		return button;
@@ -207,6 +208,12 @@ public class RescoreRequestTO extends BaseTO {
 	}
 	public void setItemNumber(long itemNumber) {
 		this.itemNumber = itemNumber;
+	}
+	public String getModuleId() {
+		return moduleId;
+	}
+	public void setModuleId(String moduleId) {
+		this.moduleId = moduleId;
 	}
 	
 }

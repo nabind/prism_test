@@ -160,7 +160,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(6);
+						executionStatus = cs.getLong(9);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
