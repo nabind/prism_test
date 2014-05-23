@@ -7,6 +7,7 @@
 var ANIMATION_TIME = 200;
 var ERROR_MESSAGE = "Error Occured";
 var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
+var oTable = "";
 
 $(document).ready(function() {
 	
@@ -47,24 +48,26 @@ $(document).ready(function() {
 	$( "#studentTableRRF_filter > label" ).css( "cursor", "default" );
 	$( ".sorting_disabled" ).css( "cursor", "default" );
 	
-	var filteredRow_2;
-	$("#studentTableRRF_2").dataTable({
+	oTable = $("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
 			'aTargets' : [0, 1 ]
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			//filteredRow_2 = this.$('tr', {"filter": "applied"} );
+			
 			$('.item-link').on('click', function(){
 				submitRescoreRequest('#studentTableRRF_2',$(this));
 			});
+			
 			$('.performance-level').on('click', function(){
 				showHideItems('#studentTableRRF_2',$(this));
 			});
+			
 			$('.rescore-date').focusout(function(){
 				activeInactiveItems('#studentTableRRF_2',$(this));
 			});
+			
 			$('.remove-student').on('click', function(){
 				removeStudent($(this));
 			});
@@ -257,9 +260,12 @@ function showHideItems(containerId,obj){
 }
 
 function removeStudent(obj){
+	var target_row = $(obj).closest("tr").get(0);
+    var aPos = oTable.fnGetPosition(target_row); 
+    oTable.fnDeleteRow(aPos);
+	
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var studentFullName = (typeof $(obj).attr('studentFullName') !== 'undefined') ? $(obj).attr('studentFullName') : 0;
-	$('#studentTableRRF_2 #row_'+studentBioId).hide();
 	$('#addStudent').removeClass('disabled');
 	var option = $('#selectStudentRRF').html();
 	option += "<option selected value='"+studentBioId+"'>"+studentFullName+"</option>";
@@ -270,7 +276,78 @@ function removeStudent(obj){
 
 function addStudent(){
 	var studentBioId = $('#selectStudentRRF').val();
-	$('#studentTableRRF_2 #row_'+studentBioId).show();
+	var grade = $('#q_grade').val();
+	var urlData = 'studentBioId='+studentBioId
+					+'&grade='+grade;;
+	blockUI();
+	$.ajax({
+		type : 'GET',
+		url : 'addStudent.do',
+		data : urlData,
+		dataType : 'json',
+		cache: false,
+		success : function(data) {
+			unblockUI();
+			if(data != null){
+				var col1 = '<a class="button blue-gradient glossy float-left margin-left remove-student"'
+							+' studentBioId="'+data.studentBioId+'"'
+							+' studentFullName="'+data.studentFullName+'"'
+							+' href="#nogo">Remove</a>';
+				var col2 = '<td class="vertical-center">'+data.studentFullName+'</td>';
+				oTable.fnAddData( [
+				                   col1,
+				                   col2,
+				                   '1',
+				                   '1',
+				                   '1',
+				                   '1',
+				                   '1',
+				                   '1' ] );
+			}else{
+				$.modal.alert(ERROR_MESSAGE);
+			}
+		},
+		error : function(data) {	
+			$.modal.alert(ERROR_MESSAGE);
+			unblockUI();
+		}
+	});
+	
+	$("#selectStudentRRF option[value='"+studentBioId+"']").each(function() {
+	    $(this).remove();
+	});
+	var option = $('#selectStudentRRF').html();
+	if(!(option == null)){
+		$('#addStudent').addClass('disabled');
+		$('#selectStudentRRF').change();
+		$('#selectStudentRRF').trigger('update-select-list');
+	}
+	
+}
+
+function reloadStudentDropDown(studentBioId){
+	var urlData = 'subtestId='+subtestId
+	+'&studentBioId='+studentBioId;
+	blockUI();
+	$.ajax({
+		type : 'GET',
+		url : 'resetItemState.do',
+		data : urlData,
+		dataType : 'json',
+		cache: false,
+		success : function(data) {
+		unblockUI();
+			if(data.value >= 1){
+				$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+			}else{
+				$.modal.alert(ERROR_MESSAGE);
+			}
+		},
+		error : function(data) {	
+			$.modal.alert(ERROR_MESSAGE);
+			unblockUI();
+		}
+	});	
 }
 
 function isDate(txtDate){

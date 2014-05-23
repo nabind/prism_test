@@ -305,4 +305,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 			throws BusinessException{
 		return rescoreRequestDAO.resetItemState(paramMap);
 	}
+	
+	public RescoreRequestTO getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException{
+		List<RescoreRequestTO> notDnpStudentDetails =  arrangeRescoreData(rescoreRequestDAO.getNotDnpStudentDetails(paramMap),paramMap);
+		RescoreRequestTO rescoreStudentTO = notDnpStudentDetails.get(0);
+		return rescoreStudentTO;
+	}
 }

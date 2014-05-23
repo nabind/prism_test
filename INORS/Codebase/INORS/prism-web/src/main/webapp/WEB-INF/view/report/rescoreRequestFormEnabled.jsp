@@ -1,8 +1,11 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="rescoreRequestForm" modelAttribute="rescoreRequestForm">
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none">Success</p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display: none">Error</p>
-		<input type="hidden" value="/public/INORS/Report/Rescore_Request_Form_files" id="reportUrl" name="reportUrl">
+		<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl">
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -36,7 +39,6 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
-
 		<div id="sorting-advanced_wrapper_" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF">
 				<thead>
@@ -194,7 +196,6 @@
 				</tbody>
 			</table>
 		</div>
-
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -204,7 +205,9 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
-
+		<div class="columns accordion" style="text-align: center; border: none;">
+			<a class="button blue-gradient glossy" id="reviewRRF" >Review </a>
+		</div>
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -226,15 +229,14 @@
 				</select>
 				<c:choose>
 					<c:when test="${not empty notDnpStudents}">
-						<a class="button blue-gradient glossy float-left margin-left" id="addStudent" href="#">Add </a>
+						<a class="button blue-gradient glossy float-left margin-left" id="addStudent" href="#nogo">Add </a>
 					</c:when>
 					<c:otherwise>
-						<a class="button blue-gradient glossy float-left margin-left disabled" id="addStudent" href="#">Add </a>
+						<a class="button blue-gradient glossy float-left margin-left disabled" id="addStudent" href="#nogo">Add </a>
 					</c:otherwise>
 				</c:choose>
 			</p>
 		</div>
-
 		<div id="sorting-advanced_wrapper_" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF_2">
 				<thead>
@@ -399,7 +401,6 @@
 				</tbody>
 			</table>
 		</div>
-
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -416,5 +417,8 @@
 	<input type="hidden" id="q_corpDiocese" value="${corpDiocese}" />
 	<input type="hidden" id="q_school" value="${school}" />
 	<input type="hidden" id="q_grade" value="${grade}" />
-	<input type="hidden" id="q_dataloadMessage" value="N" />
+	<c:choose>
+		<c:when test="${not empty dataloadMessage}"><input type="hidden" id="q_dataloadMessage" value="Y" /></c:when>
+		<c:otherwise><input type="hidden" id="q_dataloadMessage" value="N" /></c:otherwise>
+	</c:choose>
 </div>

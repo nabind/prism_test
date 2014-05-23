@@ -34,4 +34,8 @@ public class RescoreRequestServiceImpl implements IRescoreRequestService {
 	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap) throws BusinessException{
 		return rescoreRequestBusiness.resetItemState(paramMap);
 	}
+	
+	public RescoreRequestTO getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException{
+		return rescoreRequestBusiness.getNotDnpStudentDetails(paramMap);
+	}
 }
