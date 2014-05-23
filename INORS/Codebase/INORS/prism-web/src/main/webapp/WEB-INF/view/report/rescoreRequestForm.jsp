@@ -404,7 +404,7 @@
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
-					<c:if test="${reportMessage.messageType =='RSCM' && reportMessage.messageName == 'More Info'}">
+					<c:if test="${reportMessage.messageType =='RM' && reportMessage.messageName == 'Report Message'}">
 						<p><span>${ reportMessage.message }</span></p>
 					</c:if>
 				</c:if>
