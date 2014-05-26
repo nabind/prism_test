@@ -102,90 +102,88 @@
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
-						    			<div class="item-div-active">
-							    			<!-- item-div start -->
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-							    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
-							    			</c:if>
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-							    				<div class="item-div-${rescoreSubtestTO.subtestId}">
-							    			</c:if>
-							    				<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
-							    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
-							    						<c:choose>
-								    						<c:when test="${rescoreItemTO.requestedDate == '-1'}">
-								    							<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
-									    					</c:when>
-									    					<c:otherwise>
-								    							<c:choose>
-								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
-									    								<a class="item-link-dnp align-row" 
-										    								action="submitRescoreRequest" 
-										    								itemNumber="${rescoreItemTO.itemNumber}"
-										    								subtestId="${rescoreSubtestTO.subtestId}"
-																			sessionId="${rescoreSessionTO.sessionId}"
-																			moduleId="${rescoreSessionTO.moduleId}"
-																			studentBioId="${rescoreItemTO.studentBioId}"
-																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																			href="#nogo">
-																				<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
-																		</a>
-									    							</c:when>
-										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
-										    							<a class="item-link-dnp align-row" 
-										    								action="submitRescoreRequest" 
-										    								itemNumber="${rescoreItemTO.itemNumber}"
-										    								subtestId="${rescoreSubtestTO.subtestId}"
-																			sessionId="${rescoreSessionTO.sessionId}"
-																			moduleId="${rescoreSessionTO.moduleId}"
-																			studentBioId = "${rescoreItemTO.studentBioId}"
-																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																			href="#nogo">
-																				<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
-																		</a>		
-									    							</c:when>
-								    							</c:choose>		
-								    						</c:otherwise>
-								    					</c:choose>
-							    					</div>
-							    					<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-							    						<c:choose>
-							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
-								    							<a class="item-link-dnp align-row" 
-								    								action="submitRescoreRequest" 
-																	itemNumber="${rescoreItemTO.itemNumber}"
-								    								subtestId="${rescoreSubtestTO.subtestId}"
-																	sessionId="${rescoreSessionTO.sessionId}"
-																	moduleId="${rescoreSessionTO.moduleId}"
-																	studentBioId = "${rescoreItemTO.studentBioId}"
-																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																	href="#nogo">
-																		<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
-																</a>
-								    						</c:when>
-									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-								    							<a class="item-link-dnp align-row" 
-								    								action="submitRescoreRequest" 
-																	itemNumber="${rescoreItemTO.itemNumber}"
-								    								subtestId="${rescoreSubtestTO.subtestId}"
-																	sessionId="${rescoreSessionTO.sessionId}"
-																	moduleId="${rescoreSessionTO.moduleId}"
-																	studentBioId = "${rescoreItemTO.studentBioId}"
-																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																	href="#nogo">
-																		<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
-																</a>		
-								    						</c:when>
-								    					</c:choose>
-							    					</div>
-							    					<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-							    						<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
-							    					</div>
-							    				</c:forEach>
-								    		</div>
-								    		<!-- item-div end -->
-							    		</div>
-						    		</td>
+										<!-- item-div start -->
+										<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+											<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+										</c:if>
+										<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
+											<div class="item-div-${rescoreSubtestTO.subtestId}">
+										</c:if>
+											<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
+												<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
+													<c:choose>
+														<c:when test="${rescoreItemTO.requestedDate == '-1'}">
+															<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+														</c:when>
+														<c:otherwise>
+															<c:choose>
+																<c:when test="${rescoreItemTO.isRequested=='N'}">
+																	<a class="item-link-dnp align-row" 
+																		action="submitRescoreRequest" 
+																		itemNumber="${rescoreItemTO.itemNumber}"
+																		subtestId="${rescoreSubtestTO.subtestId}"
+																		sessionId="${rescoreSessionTO.sessionId}"
+																		moduleId="${rescoreSessionTO.moduleId}"
+																		studentBioId="${rescoreItemTO.studentBioId}"
+																		id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																		href="#nogo">
+																			<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+																	</a>
+																</c:when>
+																<c:when test="${rescoreItemTO.isRequested=='Y'}">
+																	<a class="item-link-dnp align-row" 
+																		action="submitRescoreRequest" 
+																		itemNumber="${rescoreItemTO.itemNumber}"
+																		subtestId="${rescoreSubtestTO.subtestId}"
+																		sessionId="${rescoreSessionTO.sessionId}"
+																		moduleId="${rescoreSessionTO.moduleId}"
+																		studentBioId = "${rescoreItemTO.studentBioId}"
+																		id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																		href="#nogo">
+																			<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+																	</a>		
+																</c:when>
+															</c:choose>		
+														</c:otherwise>
+													</c:choose>
+												</div>
+												<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
+													<c:choose>
+														<c:when test="${rescoreItemTO.isRequested=='N'}">
+															<a class="item-link-dnp align-row" 
+																action="submitRescoreRequest" 
+																itemNumber="${rescoreItemTO.itemNumber}"
+																subtestId="${rescoreSubtestTO.subtestId}"
+																sessionId="${rescoreSessionTO.sessionId}"
+																moduleId="${rescoreSessionTO.moduleId}"
+																studentBioId = "${rescoreItemTO.studentBioId}"
+																id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																href="#nogo">
+																	<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+															</a>
+														</c:when>
+														<c:when test="${rescoreItemTO.isRequested=='Y'}">
+															<a class="item-link-dnp align-row" 
+																action="submitRescoreRequest" 
+																itemNumber="${rescoreItemTO.itemNumber}"
+																subtestId="${rescoreSubtestTO.subtestId}"
+																sessionId="${rescoreSessionTO.sessionId}"
+																moduleId="${rescoreSessionTO.moduleId}"
+																studentBioId = "${rescoreItemTO.studentBioId}"
+																id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																href="#nogo">
+																	<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+															</a>		
+														</c:when>
+													</c:choose>
+												</div>
+												<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
+													<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+												</div>
+											</c:forEach>
+										</div>
+										<!-- item-div end -->
+							    	</td>
 						    	</c:forEach>
 						    </c:forEach>
 						</tr>
@@ -224,7 +222,7 @@
 				</select>
 				<c:choose>
 					<c:when test="${not empty notDnpStudents}">
-						<a class="button blue-gradient glossy float-left margin-left" id="addStudent" href="#nogo">Add </a>
+						<a class="button blue-gradient glossy float-left margin-left addStudent" id="addStudent" href="#nogo">Add </a>
 					</c:when>
 					<c:otherwise>
 						<a class="button blue-gradient glossy float-left margin-left disabled" id="addStudent" href="#nogo">Add </a>
@@ -305,90 +303,88 @@
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
-						    			<div class="item-div-active">
-							    			<!-- item-div start -->
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-							    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
-							    			</c:if>
-							    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-							    				<div class="item-div-${rescoreSubtestTO.subtestId}">
-							    			</c:if>
-							    				<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
-							    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
-							    						<c:choose>
-								    						<c:when test="${rescoreItemTO.requestedDate == '-1'}">
-								    							<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
-									    					</c:when>
-									    					<c:otherwise>
-								    							<c:choose>
-								    								<c:when test="${rescoreItemTO.isRequested=='N'}">
-									    								<a class="item-link align-row" 
-										    								action="submitRescoreRequest" 
-																			itemNumber="${rescoreItemTO.itemNumber}"
-										    								subtestId="${rescoreSubtestTO.subtestId}"
-																			sessionId="${rescoreSessionTO.sessionId}"
-																			moduleId="${rescoreSessionTO.moduleId}"
-																			studentBioId = "${rescoreItemTO.studentBioId}"
-																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																			href="#nogo">
-																				<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
-																		</a>
-									    							</c:when>
-										    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
-										    							<a class="item-link align-row" 
-										    								action="submitRescoreRequest" 
-																			itemNumber="${rescoreItemTO.itemNumber}"
-										    								subtestId="${rescoreSubtestTO.subtestId}"
-																			sessionId="${rescoreSessionTO.sessionId}"
-																			moduleId="${rescoreSessionTO.moduleId}"
-																			studentBioId = "${rescoreItemTO.studentBioId}"
-																			id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																			href="#nogo">
-																				<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
-																		</a>		
-									    							</c:when>
-								    							</c:choose>		
-								    						</c:otherwise>
-								    					</c:choose>
-							    					</div>
-							    					<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-							    						<c:choose>
-							    							<c:when test="${rescoreItemTO.isRequested=='N'}">
-								    							<a class="item-link align-row" 
-								    								action="submitRescoreRequest" 
-																	itemNumber="${rescoreItemTO.itemNumber}"
-								    								subtestId="${rescoreSubtestTO.subtestId}"
-																	sessionId="${rescoreSessionTO.sessionId}"
-																	moduleId="${rescoreSessionTO.moduleId}"
-																	studentBioId = "${rescoreItemTO.studentBioId}"
-																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																	href="#nogo">
-																		<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
-																</a>
-								    						</c:when>
-									    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-								    							<a class="item-link align-row" 
-								    								action="submitRescoreRequest" 
-																	itemNumber="${rescoreItemTO.itemNumber}"
-								    								subtestId="${rescoreSubtestTO.subtestId}"
-																	sessionId="${rescoreSessionTO.sessionId}"
-																	moduleId="${rescoreSessionTO.moduleId}"
-																	studentBioId = "${rescoreItemTO.studentBioId}"
-																	id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
-																	href="#nogo">
-																		<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
-																</a>		
-								    						</c:when>
-								    					</c:choose>
-							    					</div>
-							    					<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-							    						<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
-							    					</div>
-							    				</c:forEach>
-								    		</div>
-								    		<!-- item-div end -->
+					    				<!-- item-div start -->
+						    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+						    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+						    			</c:if>
+						    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
+						    				<div class="item-div-${rescoreSubtestTO.subtestId}">
+						    			</c:if>
+						    				<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
+						    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
+						    						<c:choose>
+							    						<c:when test="${rescoreItemTO.requestedDate == '-1'}">
+							    							<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+								    					</c:when>
+								    					<c:otherwise>
+							    							<c:choose>
+							    								<c:when test="${rescoreItemTO.isRequested=='N'}">
+								    								<a class="item-link align-row" 
+									    								action="submitRescoreRequest" 
+																		itemNumber="${rescoreItemTO.itemNumber}"
+									    								subtestId="${rescoreSubtestTO.subtestId}"
+																		sessionId="${rescoreSessionTO.sessionId}"
+																		moduleId="${rescoreSessionTO.moduleId}"
+																		studentBioId = "${rescoreItemTO.studentBioId}"
+																		id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																		href="#nogo">
+																			<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+																	</a>
+								    							</c:when>
+									    						<c:when test="${rescoreItemTO.isRequested=='Y'}">
+									    							<a class="item-link align-row" 
+									    								action="submitRescoreRequest" 
+																		itemNumber="${rescoreItemTO.itemNumber}"
+									    								subtestId="${rescoreSubtestTO.subtestId}"
+																		sessionId="${rescoreSessionTO.sessionId}"
+																		moduleId="${rescoreSessionTO.moduleId}"
+																		studentBioId = "${rescoreItemTO.studentBioId}"
+																		id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																		href="#nogo">
+																			<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+																	</a>		
+								    							</c:when>
+							    							</c:choose>		
+							    						</c:otherwise>
+							    					</c:choose>
+						    					</div>
+						    					<div class="item-div-act-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
+						    						<c:choose>
+						    							<c:when test="${rescoreItemTO.isRequested=='N'}">
+							    							<a class="item-link align-row" 
+							    								action="submitRescoreRequest" 
+																itemNumber="${rescoreItemTO.itemNumber}"
+							    								subtestId="${rescoreSubtestTO.subtestId}"
+																sessionId="${rescoreSessionTO.sessionId}"
+																moduleId="${rescoreSessionTO.moduleId}"
+																studentBioId = "${rescoreItemTO.studentBioId}"
+																id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																href="#nogo">
+																	<small class="item-tag tag">${rescoreItemTO.itemNumber}</small>	
+															</a>
+							    						</c:when>
+								    					<c:when test="${rescoreItemTO.isRequested=='Y'}">
+							    							<a class="item-link align-row" 
+							    								action="submitRescoreRequest" 
+																itemNumber="${rescoreItemTO.itemNumber}"
+							    								subtestId="${rescoreSubtestTO.subtestId}"
+																sessionId="${rescoreSessionTO.sessionId}"
+																moduleId="${rescoreSessionTO.moduleId}"
+																studentBioId = "${rescoreItemTO.studentBioId}"
+																id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.itemNumber}"
+																href="#nogo">
+																	<small class="item-tag tag red-bg">${rescoreItemTO.itemNumber}</small>
+															</a>		
+							    						</c:when>
+							    					</c:choose>
+						    					</div>
+						    					<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
+						    						<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+						    					</div>
+						    				</c:forEach>
 							    		</div>
-						    		</td>
+							    		<!-- item-div end -->
+							    	</td>
 						    	</c:forEach>
 						    </c:forEach>
 						</tr>

@@ -11,19 +11,6 @@ var oTable = "";
 
 $(document).ready(function() {
 	
-	$("#reviewRRF").live("click", function(event) {
-		var disableLinks = $('#q_dataloadMessage').val();
-		if(disableLinks == 'Y') {
-		} else if(disableLinks == 'N') {
-			$.modal({
-				title: 'Modal window',
-				content: $("#sorting-advanced_wrapper_").html(),
-				height: 500
-			});
-		} else {
-		}
-	});
-	
 	$("#studentTableRRF").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
@@ -31,8 +18,6 @@ $(document).ready(function() {
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			// disableLinks();
-			//filteredRow = this.$('tr', {"filter": "applied"} );
 			$('.item-link-dnp').on('click', function(){
 				submitRescoreRequest('#studentTableRRF',$(this));
 			});
@@ -76,67 +61,11 @@ $(document).ready(function() {
 	$( "#studentTableRRF_2_length > label" ).css( "cursor", "default" );
 	$( "#studentTableRRF_2_filter > label" ).css( "cursor", "default" );
 	
-	$('#addStudent').on('click', function(){
+	$('.addStudent').live('click', function(){
 		addStudent();
 	});
 });
 //=====document.ready End=========================================
-function disableLinks() {
-	var disableLinks = $('#q_dataloadMessage').val();
-	if(disableLinks == 'Y') {
-		disableElement($('#studentListRRF a'));
-		disableElement($('#reviewRRF'));
-	} else if(disableLinks == 'N') {
-	} else {
-	}
-}
-
-function disableElement(e) {
-	e.removeAttr("href");
-	e.addClass('disabled');
-	e.addClass('silver-bg');
-}
-
-function getReviewFormContent() {
-	var reviewFormContent;
-	var testAdministrationVal = $("#q_testAdministrationVal").val();
-	var testProgram = $("#q_testProgram").val();
-	var corpDiocese = $("#q_corpDiocese").val();
-	var school = $("#q_school").val();
-	var grade = $("#q_grade").val();
-	var reportUrl = $("#reportUrl").val();
-	var requestUrl = 'rescoreRequestReviewData.do?testAdministrationVal=' + testAdministrationVal;
-	requestUrl = requestUrl + "&testProgram=" + testProgram;
-	requestUrl = requestUrl + "&corpDiocese=" + corpDiocese;
-	requestUrl = requestUrl + "&school=" + school;
-	requestUrl = requestUrl + "&grade=" + grade;
-	requestUrl = requestUrl + "&reportUrl=" + reportUrl;
-	alert(requestUrl);
-	blockUI();
-	$.ajax({
-		type : 'GET',
-		url : requestUrl,
-		//data : urlData,
-		dataType : 'json',
-		cache: false,
-		success : function(data) {
-			alert(data);
-			alert(JSON.stringify(data));
-			unblockUI();
-			/*if(data.value >= 1){
-				$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
-			}else{
-				$.modal.alert(ERROR_MESSAGE);
-			}*/
-			reviewFormContent = data;
-		},
-		error : function(data) {	
-			$.modal.alert(ERROR_MESSAGE);
-			unblockUI();
-		}
-	});
-	return reviewFormContent;
-}
 
 function activeInactiveItems(containerId,obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
@@ -155,7 +84,7 @@ function activeInactiveItems(containerId,obj){
 	    	$(obj).css('background-color','red');
 	    	$(obj).val(DATE_VALIDATION_ERROR_MESSAGE);
 	    	$(obj).css('color','white');
-	    	$(containerId+' .item-div-normal-'+studentBioId).show();
+	    	$(containerId+' .item-div-inact-'+studentBioId).show();
 	    }
 	}else{
 		$(obj).css('background-color','white');
@@ -267,6 +196,7 @@ function removeStudent(obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var studentFullName = (typeof $(obj).attr('studentFullName') !== 'undefined') ? $(obj).attr('studentFullName') : 0;
 	$('#addStudent').removeClass('disabled');
+	$('#addStudent').addClass('addStudent');
 	var option = $('#selectStudentRRF').html();
 	option += "<option selected value='"+studentBioId+"'>"+studentFullName+"</option>";
 	$('#selectStudentRRF').html(option);
@@ -289,20 +219,165 @@ function addStudent(){
 		success : function(data) {
 			unblockUI();
 			if(data != null){
-				var col1 = '<a class="button blue-gradient glossy float-left margin-left remove-student"'
+				var removeButton = '<a class="button blue-gradient glossy float-left margin-left remove-student"'
 							+' studentBioId="'+data.studentBioId+'"'
 							+' studentFullName="'+data.studentFullName+'"'
 							+' href="#nogo">Remove</a>';
-				var col2 = '<td class="vertical-center">'+data.studentFullName+'</td>';
-				oTable.fnAddData( [
-				                   col1,
-				                   col2,
-				                   '1',
-				                   '1',
-				                   '1',
-				                   '1',
-				                   '1',
-				                   '1' ] );
+				
+				var student = data.studentFullName;
+				
+				var parentRescoreDate = '';
+				if(data.requestedDate =='-1'){
+					parentRescoreDate ='<input type="text" class="rescore-date"'
+							+' studentBioId="'+data.studentBioId+'"' 
+							+' id="rescoreDate_"'+data.studentBioId+'"'
+							+' value="" />';
+				}else{
+					parentRescoreDate ='<input type="text" class="rescore-date"'
+						+' studentBioId="'+data.studentBioId+'"' 
+						+' id="rescoreDate_'+data.studentBioId+'"'
+						+' value="'+data.requestedDate+'" />';
+				}
+				
+				var jsonSubtestList = data.rescoreSubtestTOList;
+				var ela = '';
+				var math = '';
+				var scOrss = '';
+				var elaSession2 = '';
+				var elaSession3 = '';
+				var mathSession1 = '';
+				var scOrssSession4 = '';
+				$.each(jsonSubtestList, function (subtestIndex,jsonSubtestTO){
+					var jsonSubtest = '';
+					if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
+						jsonSubtest = '<a class="performance-level"'
+								+' subtestId="'+jsonSubtestTO.subtestId+'"'
+								+' studentBioId="'+studentBioId+'"'
+								+' href="#nogo">'+jsonSubtestTO.performanceLevel+'</a>';
+					}else{
+						jsonSubtest = jsonSubtestTO.performanceLevel;
+					}
+					
+					var jsonSessionList = jsonSubtestTO.rescoreSessionTOList;
+					$.each(jsonSessionList, function (sessionIndex,jsonSessionTO){
+						//item-div start
+						var jsonSession = '';
+						if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
+							jsonSession = '<div class="item-div-'+jsonSubtestTO.subtestId+'" style="display: none;">';
+						}else if(this.performanceLevel=='DNP'){
+							jsonSession = '<div class="item-div-'+jsonSubtestTO.subtestId+'" >';
+						}
+						
+						var jsonItemList = jsonSessionTO.rescoreItemTOList;
+						$.each(jsonItemList, function (itemIndex,jsonItemTO){
+							jsonSession += '<div class="item-div-normal-'+studentBioId+'">';
+							if(jsonItemTO.requestedDate == '-1'){
+								jsonSession += '<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>';
+							}else{
+								var itemLink = '';
+								if(jsonItemTO.isRequested=='N'){
+									itemLink = '<a class="item-link align-row"'
+										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+										+' subtestId="'+jsonSubtestTO.subtestId+'"'
+										+' sessionId="'+jsonSessionTO.sessionId+'"'
+										+' moduleId="'+jsonSessionTO.moduleId+'"'
+										+' studentBioId="'+studentBioId+'"'
+										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+										+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
+								}else if (jsonItemTO.isRequested=='Y'){
+									itemLink = '<a class="item-link align-row"'
+										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+										+' subtestId="'+jsonSubtestTO.subtestId+'"'
+										+' sessionId="'+jsonSessionTO.sessionId+'"'
+										+' moduleId="'+jsonSessionTO.moduleId+'"'
+										+' studentBioId="'+studentBioId+'"'
+										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+										+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
+								}
+								jsonSession += itemLink;
+							}
+							jsonSession += '</div>';
+							
+							jsonSession += '<div class="item-div-act-'+studentBioId+'" style="display: none;">';
+							if(jsonItemTO.requestedDate == '-1'){
+								jsonSession += '<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>';
+							}else{
+								var itemLink = '';
+								if(jsonItemTO.isRequested=='N'){
+									itemLink = '<a class="item-link align-row"'
+										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+										+' subtestId="'+jsonSubtestTO.subtestId+'"'
+										+' sessionId="'+jsonSessionTO.sessionId+'"'
+										+' moduleId="'+jsonSessionTO.moduleId+'"'
+										+' studentBioId="'+studentBioId+'"'
+										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+										+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
+								}else if (jsonItemTO.isRequested=='Y'){
+									itemLink = '<a class="item-link align-row"'
+										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+										+' subtestId="'+jsonSubtestTO.subtestId+'"'
+										+' sessionId="'+jsonSessionTO.sessionId+'"'
+										+' moduleId="'+jsonSessionTO.moduleId+'"'
+										+' studentBioId="'+studentBioId+'"'
+										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+										+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
+								}
+								jsonSession += itemLink;
+							}
+							jsonSession += '</div>';
+							
+							jsonSession += '<div class="item-div-inact-'+studentBioId+'" style="display: none;">';
+							jsonSession += 		'<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>'
+							jsonSession += '</div>';
+						});
+						jsonSession += '</div>';
+						//item-div end
+						
+						if(jsonSessionTO.sessionId == '2'){
+							elaSession2 = jsonSession;
+						}else if(jsonSessionTO.sessionId == '3'){
+							elaSession3 = jsonSession;
+						}else if(jsonSessionTO.sessionId == '1'){
+							mathSession1 = jsonSession;
+						}else if(jsonSessionTO.sessionId == '4'){
+							scOrssSession4 = jsonSession;
+						}
+						
+					});
+					
+					
+					if(subtestIndex==0){
+						ela = jsonSubtest;
+					}else if(subtestIndex==1){
+						math = jsonSubtest;
+					}else if(subtestIndex==2){
+						scOrss = jsonSubtest;
+					}
+				});
+				
+				if(grade == 10001 || grade == 10006){
+					oTable.fnAddData( [
+					                   removeButton,
+					                   student,
+					                   parentRescoreDate,
+					                   ela,
+					                   elaSession2,
+					                   elaSession3,
+					                   math,
+					                   mathSession1 ] );
+				}else{
+					oTable.fnAddData( [
+					                   removeButton,
+					                   student,
+					                   parentRescoreDate,
+					                   ela,
+					                   elaSession2,
+					                   elaSession3,
+					                   math,
+					                   mathSession1,
+					                   scOrss,
+					                   scOrssSession4] );
+				}
 			}else{
 				$.modal.alert(ERROR_MESSAGE);
 			}
@@ -319,11 +394,13 @@ function addStudent(){
 	var option = $('#selectStudentRRF').html();
 	if(!(option == null)){
 		$('#addStudent').addClass('disabled');
+		$('#addStudent').removeClass('addStudent');
 		$('#selectStudentRRF').change();
 		$('#selectStudentRRF').trigger('update-select-list');
 	}
 	
 }
+
 
 function reloadStudentDropDown(studentBioId){
 	var urlData = 'subtestId='+subtestId
