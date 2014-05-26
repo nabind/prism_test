@@ -449,7 +449,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 								eduCenterId, user_seq_id);
 					} else {
 						// insert into org_users
-						long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
+						long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.ORGUSER_SEQ_ID);
 						getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_SSO,
 								orgUserSeqId, user_seq_id, tenantId,
 								orgLevel, adminYear, IApplicationConstants.ACTIVE_FLAG);
