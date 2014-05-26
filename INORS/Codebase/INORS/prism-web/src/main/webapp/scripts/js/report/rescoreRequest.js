@@ -327,7 +327,9 @@ function addStudent(){
 							jsonSession += '</div>';
 							
 							jsonSession += '<div class="item-div-inact-'+studentBioId+'" style="display: none;">';
-							jsonSession += 		'<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>'
+							if(jsonItemTO.itemNumber != 0){
+								jsonSession += 		'<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>'
+							}
 							jsonSession += '</div>';
 						});
 						jsonSession += '</div>';

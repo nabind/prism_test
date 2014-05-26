@@ -178,7 +178,9 @@
 													</c:choose>
 												</div>
 												<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-													<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+													<c:if test="${rescoreItemTO.itemNumber != 0}">
+														<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+													</c:if>
 												</div>
 											</c:forEach>
 										</div>
@@ -379,7 +381,9 @@
 							    					</c:choose>
 						    					</div>
 						    					<div class="item-div-inact-${rescoreRequestStudentTO.studentBioId}" style="display: none;">
-						    						<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+						    						<c:if test="${rescoreItemTO.itemNumber != 0}">
+														<small class="item-tag tag align-row grey-bg">${rescoreItemTO.itemNumber}</small>
+													</c:if>
 						    					</div>
 						    				</c:forEach>
 							    		</div>
