@@ -1306,11 +1306,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					String grades = Utils.convertListToCommaString(gradeList);
 					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*//*stateOrgNodeId, testAdministrationVal, districtId, schoolId, -99, testProgram, customerId*//*SF_GET_CLASS_END,*/ custProdId, testProgram });//
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, testProgram });//
 				} else {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, gradeId, custProdId, testProgram});
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, gradeId, custProdId, testProgram});
 				}
 			}
 		} else {
@@ -1321,13 +1321,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					String grades = Utils.convertListToCommaString(gradeList);
 					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
 					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, custProdId, testProgram});
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, classId, custProdId, testProgram});
 				} else {
 					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD); 
 					logger.log(IAppLogger.INFO, query);
-				//	System.out.println("<<query>> "+ query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, classId, gradeId, custProdId, testProgram });
-				//	System.out.println("<<datlist>> custProdId: "+custProdId + " classId:" + classId+ " gradeId:"+gradeId+ " testProgram:" + testProgram );
+					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, classId, gradeId, custProdId, testProgram });
 				}
 			}
 		}
