@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.business.ILoginBusiness;
@@ -116,6 +118,7 @@ public class LoginServiceImpl implements ILoginService {
 	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#addNewUser(java.util.Map)
 	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void addNewUser(Map<String, Object> paramMap) throws Exception {
 		loginBusiness.addNewUser(paramMap);
 	}
