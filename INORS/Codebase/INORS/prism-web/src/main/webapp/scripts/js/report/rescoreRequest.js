@@ -156,10 +156,10 @@ function showHideItems(containerId,obj){
 	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	
-	if($(containerId+' .item-div-'+subtestId).is(':hidden')){
-		$(containerId+' .item-div-'+subtestId).show();
+	if($(containerId+' .item-div-'+studentBioId+'-'+subtestId).is(':hidden')){
+		$(containerId+' .item-div-'+studentBioId+'-'+subtestId).show();
 	}else{
-		$(containerId+' .item-div-'+subtestId).hide();
+		$(containerId+' .item-div-'+studentBioId+'-'+subtestId).hide();
 		var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 		if((requestedDate.length > 0) && isDate(requestedDate)){
 			var urlData = 'subtestId='+subtestId
@@ -174,7 +174,7 @@ function showHideItems(containerId,obj){
 				success : function(data) {
 					unblockUI();
 					if(data.value >= 1){
-						$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
+						$(containerId+' .item-div-'+studentBioId+'-'+subtestId+' .item-tag').removeClass('red-bg');
 					}else{
 						$.modal.alert(ERROR_MESSAGE);
 					}
@@ -263,9 +263,9 @@ function addStudent(){
 						//item-div start
 						var jsonSession = '';
 						if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
-							jsonSession = '<div class="item-div-'+jsonSubtestTO.subtestId+'" style="display: none;">';
+							jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" style="display: none;">';
 						}else if(this.performanceLevel=='DNP'){
-							jsonSession = '<div class="item-div-'+jsonSubtestTO.subtestId+'" >';
+							jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
 						}
 						
 						var jsonItemList = jsonSessionTO.rescoreItemTOList;
@@ -403,31 +403,6 @@ function addStudent(){
 	
 }
 
-
-function reloadStudentDropDown(studentBioId){
-	var urlData = 'subtestId='+subtestId
-	+'&studentBioId='+studentBioId;
-	blockUI();
-	$.ajax({
-		type : 'GET',
-		url : 'resetItemState.do',
-		data : urlData,
-		dataType : 'json',
-		cache: false,
-		success : function(data) {
-		unblockUI();
-			if(data.value >= 1){
-				$(containerId+' .item-div-'+subtestId+' .item-tag').removeClass('red-bg');
-			}else{
-				$.modal.alert(ERROR_MESSAGE);
-			}
-		},
-		error : function(data) {	
-			$.modal.alert(ERROR_MESSAGE);
-			unblockUI();
-		}
-	});	
-}
 
 function isDate(txtDate){
     var currVal = txtDate;

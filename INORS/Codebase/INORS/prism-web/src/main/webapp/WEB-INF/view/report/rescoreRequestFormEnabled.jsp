@@ -104,10 +104,10 @@
 						    		<td class="vertical-center">
 										<!-- item-div start -->
 										<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-											<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+											<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
 										</c:if>
 										<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-											<div class="item-div-${rescoreSubtestTO.subtestId}">
+											<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}">
 										</c:if>
 											<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
 												<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
@@ -307,10 +307,10 @@
 						    		<td class="vertical-center">
 					    				<!-- item-div start -->
 						    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-						    				<div class="item-div-${rescoreSubtestTO.subtestId}" style="display: none;">
+						    				<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
 						    			</c:if>
 						    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-						    				<div class="item-div-${rescoreSubtestTO.subtestId}">
+						    				<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}">
 						    			</c:if>
 						    				<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
 						    					<div class="item-div-normal-${rescoreRequestStudentTO.studentBioId}">
