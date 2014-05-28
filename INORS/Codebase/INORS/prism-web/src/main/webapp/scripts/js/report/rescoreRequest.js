@@ -18,13 +18,13 @@ $(document).ready(function() {
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			$('.item-link-dnp').on('click', function(){
+			$('.item-link-dnp').off().on('click', function(){
 				submitRescoreRequest('#studentTableRRF',$(this));
 			});
-			$('.performance-level-dnp').on('click', function(){
+			$('.performance-level-dnp').off().on('click', function(){
 				showHideItems('#studentTableRRF',$(this));
 			});
-			$('.rescore-date-dnp').focusout(function(){
+			$('.rescore-date-dnp').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF',$(this));
 		   });
 		}
@@ -41,19 +41,19 @@ $(document).ready(function() {
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
 			
-			$('.item-link').on('click', function(){
+			$('.item-link').off().on('click', function(){
 				submitRescoreRequest('#studentTableRRF_2',$(this));
 			});
 			
-			$('.performance-level').on('click', function(){
+			$('.performance-level').off().on('click', function(){
 				showHideItems('#studentTableRRF_2',$(this));
 			});
 			
-			$('.rescore-date').focusout(function(){
+			$('.rescore-date').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF_2',$(this));
 			});
 			
-			$('.remove-student').on('click', function(){
+			$('.remove-student').off().on('click', function(){
 				removeStudent($(this));
 			});
 		}
@@ -393,14 +393,13 @@ function addStudent(){
 	$("#selectStudentRRF option[value='"+studentBioId+"']").each(function() {
 	    $(this).remove();
 	});
-	var option = $('#selectStudentRRF').html();
-	if(!(option == null)){
+	var option = $('#selectStudentRRF').html().trim();
+	if(option == ""){
 		$('#addStudent').addClass('disabled');
 		$('#addStudent').removeClass('addStudent');
-		$('#selectStudentRRF').change();
-		$('#selectStudentRRF').trigger('update-select-list');
 	}
-	
+	$('#selectStudentRRF').change();
+	$('#selectStudentRRF').trigger('update-select-list');
 }
 
 
