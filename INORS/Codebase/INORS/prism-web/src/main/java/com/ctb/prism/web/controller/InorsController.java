@@ -788,10 +788,55 @@ public class InorsController {
 	 * @return {"handler" : "success/failure", "type" ; "sync/async"}
 	 * @throws SystemException
 	 */
-	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.GET)
+	@RequestMapping(value = "/groupDownloadFunction", method = RequestMethod.POST)
 	public @ResponseBody
-	String groupDownloadFunction(@ModelAttribute GroupDownloadTO to, HttpServletRequest request, HttpServletResponse response) throws SystemException {
+	String groupDownloadFunction(HttpServletRequest request, HttpServletResponse response) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
+		String json = (String) request.getParameter("json");
+		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
+		/*GroupDownloadTO to = new GroupDownloadTO();
+		String button = (String) request.getParameter("button");
+		String testAdministrationVal = (String) request.getParameter("testAdministrationVal");
+		String testAdministrationText = (String) request.getParameter("testAdministrationText");
+		String testProgram = (String) request.getParameter("testProgram");
+		String district = (String) request.getParameter("district");
+		String school = (String) request.getParameter("school");
+		String klass = (String) request.getParameter("klass");
+		String grade = (String) request.getParameter("grade");
+		String students = (String) request.getParameter("students");
+		String groupFile = (String) request.getParameter("groupFile");
+		String collationHierarchy = (String) request.getParameter("collationHierarchy");
+		String fileName = (String) request.getParameter("fileName");
+		String email = (String) request.getParameter("email");
+
+		logger.log(IAppLogger.INFO, "button=" + button);
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testAdministrationText=" + testAdministrationText);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "district=" + district);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		logger.log(IAppLogger.INFO, "klass=" + klass);
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "students=" + students);
+		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+		logger.log(IAppLogger.INFO, "fileName=" + fileName);
+		logger.log(IAppLogger.INFO, "email=" + email);
+		
+		to.setButton(button);
+		to.setTestAdministrationVal(testAdministrationVal);
+		to.setTestAdministrationText(testAdministrationText);
+		to.setTestProgram(testProgram);
+		to.setDistrict(district);
+		to.setSchool(school);
+		to.setKlass(klass);
+		to.setGrade(grade);
+		to.setStudents(students);
+		to.setGroupFile(groupFile);
+		to.setCollationHierarchy(collationHierarchy);
+		to.setFileName(fileName);
+		to.setEmail(email);*/
+
 		String handler = "";
 		String type = "";
 		String downloadFileName = "";

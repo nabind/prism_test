@@ -1250,7 +1250,9 @@ function populateStudentTableByJson(json) {
  */
 function GroupDownloadTO(button, testAdministrationVal, testAdministrationText,
 		testProgram, district, school, klass, grade, students, groupFile,
-		collationHierarchy, fileName, email) {
+		collationHierarchy, fileName, email, userId, userName, adminId,
+		customerId, orgNodeLevel, extractStartDate, gdfExpiryTime,
+		requestDetails, jobLog, jobStatus, fileSize, jobId) {
 	this.button = button;
 	this.testAdministrationVal = testAdministrationVal;
 	this.testAdministrationText = testAdministrationText;
@@ -1264,6 +1266,19 @@ function GroupDownloadTO(button, testAdministrationVal, testAdministrationText,
 	this.collationHierarchy = collationHierarchy;
 	this.fileName = fileName;
 	this.email = email;
+	this.userId = userId;
+	this.userName = userName;
+	this.adminId = adminId;
+	this.customerId = customerId;
+	this.orgNodeLevel = orgNodeLevel;
+
+	this.extractStartDate = extractStartDate;
+	this.gdfExpiryTime = gdfExpiryTime;
+	this.requestDetails = requestDetails;
+	this.jobLog = jobLog;
+	this.jobStatus = jobStatus;
+	this.fileSize = fileSize;
+	this.jobId = jobId;
 }
 
 /**
@@ -1284,9 +1299,25 @@ function getGroupDownloadTO() {
 	var collationHierarchy = $("#q_collationHierarchy").val();
 	var fileName = $("#fileName").val();
 	var email = $("#email").val();
+	var userId = "";
+	var userName = "";
+	var adminId = "";
+	var customerId = "";
+	var orgNodeLevel = "";
+
+	var extractStartDate = "";
+	var gdfExpiryTime = "";
+	var requestDetails = "";
+	var jobLog = "";
+	var jobStatus = "";
+	var fileSize = "";
+	var jobId = "";
 	var to = new GroupDownloadTO(button, testAdministrationVal,
 			testAdministrationText, testProgram, district, school, klass,
-			grade, students, groupFile, collationHierarchy, fileName, email);
+			grade, students, groupFile, collationHierarchy, fileName, email,
+			userId, userName, adminId, customerId, orgNodeLevel,
+			extractStartDate, gdfExpiryTime, requestDetails, jobLog, jobStatus,
+			fileSize, jobId);
 	return to;
 }
 
@@ -1403,13 +1434,38 @@ function displayGroupDownloadStatus(status){
  * @returns {"handler" : "success/failure", "type" ; "sync/async", "downloadFileName" : "file-name", "jobTrackingId" : "tracking-id"}
  */
 function groupDownloadFunction(jsonInputData) {
+	
+	/*var button = $("#buttonGD").val();
+	var testAdministrationVal = $("#q_testAdministrationVal").val();
+	var testAdministrationText = $("#q_testAdministrationText").val();
+	var testProgram = $("#q_testProgram").val();
+	var district = $("#q_corpDiocese").val();
+	var school = $("#q_school").val();
+	var klass = $("#q_klass").val();
+	var grade = $("#q_grade").val();
+	var students = getSelectedStudentIdsAsCommaString();
+	var groupFile = $("#q_groupFile").val();
+	var collationHierarchy = $("#q_collationHierarchy").val();
+	var fileName = $("#fileName").val();
+	var email = $("#email").val();*/
+	
+	var dataUrl = $("#groupDownload").serialize()+'&json='+JSON.stringify(jsonInputData);
+	/*dataUrl = dataUrl + '&button='+button+'&testAdministrationVal='+testAdministrationVal;
+	dataUrl = dataUrl + '&button='+button+'&testAdministrationVal='+testAdministrationVal;
+	dataUrl = dataUrl + '&testAdministrationText='+testAdministrationText+'&testProgram='+testProgram;
+	dataUrl = dataUrl + '&district='+district+'&school='+school;
+	dataUrl = dataUrl + '&klass='+klass+'&grade='+grade;
+	dataUrl = dataUrl + '&students='+students+'&groupFile='+groupFile;
+	dataUrl = dataUrl + '&collationHierarchy='+collationHierarchy+'&fileName='+fileName+'&email='+email;*/
+	//alert(dataUrl);
+	
 	var jsonOutputData = "";
 	blockUI();
 	$.ajax({
-		type : "GET",
+		type : "POST",
 		url : 'groupDownloadFunction.do',
-		data : jsonInputData,
-		dataType : 'json',
+		data : dataUrl,
+		dataType : 'html',
 		cache : false,
 		async : false,
 		success : function(data) {
