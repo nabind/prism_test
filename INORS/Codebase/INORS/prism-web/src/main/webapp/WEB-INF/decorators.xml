@@ -37,6 +37,7 @@
 		<pattern>/landing*</pattern>
 		<pattern>/downloadZippedPdf*</pattern>
 		<pattern>/downloadFile*</pattern>
+		<pattern>/groupDownloadFunction*</pattern>
 	</excludes>
 	
 	<decorator name="parentnetwork" page="parentnetwork.jsp">

@@ -1465,7 +1465,7 @@ function groupDownloadFunction(jsonInputData) {
 		type : "POST",
 		url : 'groupDownloadFunction.do',
 		data : dataUrl,
-		dataType : 'html',
+		dataType : 'json',
 		cache : false,
 		async : false,
 		success : function(data) {
