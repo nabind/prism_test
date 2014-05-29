@@ -59,7 +59,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @see com.ctb.prism.report.business.IReportBusiness#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		if (jasperReport != null && "Invitation Pdf".equals(jasperReport.getName().trim())) {
+		if (jasperReport != null 
+				&& ("Rescore Request Form".equals(jasperReport.getName().trim()) 
+						|| "Invitation Pdf".equals(jasperReport.getName().trim()))) {
 			return reportDAO.getFilledReportIC(jasperReport, parameters);
 		} else {
 			return reportDAO.getFilledReport(jasperReport, parameters);
