@@ -14,7 +14,7 @@ $(document).ready(function() {
 	$("#studentTableRRF").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
-			'aTargets' : [ 1 ]
+			'aTargets' : [1]
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
@@ -36,7 +36,7 @@ $(document).ready(function() {
 	oTable = $("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
-			'aTargets' : [0, 1 ]
+			'aTargets' : [0,2]
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
