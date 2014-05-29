@@ -230,7 +230,7 @@ function addStudent(){
 				if(data.requestedDate =='-1'){
 					parentRescoreDate ='<input type="text" class="rescore-date"'
 							+' studentBioId="'+data.studentBioId+'"' 
-							+' id="rescoreDate_"'+data.studentBioId+'"'
+							+' id="rescoreDate_'+data.studentBioId+'"'
 							+' value="" />';
 				}else{
 					parentRescoreDate ='<input type="text" class="rescore-date"'
@@ -299,31 +299,27 @@ function addStudent(){
 							jsonSession += '</div>';
 							
 							jsonSession += '<div class="item-div-act-'+studentBioId+'" style="display: none;">';
-							if(jsonItemTO.requestedDate == '-1'){
-								jsonSession += '<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>';
-							}else{
-								var itemLink = '';
-								if(jsonItemTO.isRequested=='N'){
-									itemLink = '<a class="item-link align-row"'
-										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
-										+' subtestId="'+jsonSubtestTO.subtestId+'"'
-										+' sessionId="'+jsonSessionTO.sessionId+'"'
-										+' moduleId="'+jsonSessionTO.moduleId+'"'
-										+' studentBioId="'+studentBioId+'"'
-										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
-										+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
-								}else if (jsonItemTO.isRequested=='Y'){
-									itemLink = '<a class="item-link align-row"'
-										+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
-										+' subtestId="'+jsonSubtestTO.subtestId+'"'
-										+' sessionId="'+jsonSessionTO.sessionId+'"'
-										+' moduleId="'+jsonSessionTO.moduleId+'"'
-										+' studentBioId="'+studentBioId+'"'
-										+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
-										+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
-								}
-								jsonSession += itemLink;
+							var itemLink = '';
+							if(jsonItemTO.isRequested=='N'){
+								itemLink = '<a class="item-link align-row"'
+									+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+									+' subtestId="'+jsonSubtestTO.subtestId+'"'
+									+' sessionId="'+jsonSessionTO.sessionId+'"'
+									+' moduleId="'+jsonSessionTO.moduleId+'"'
+									+' studentBioId="'+studentBioId+'"'
+									+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+									+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
+							}else if (jsonItemTO.isRequested=='Y'){
+								itemLink = '<a class="item-link align-row"'
+									+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+									+' subtestId="'+jsonSubtestTO.subtestId+'"'
+									+' sessionId="'+jsonSessionTO.sessionId+'"'
+									+' moduleId="'+jsonSessionTO.moduleId+'"'
+									+' studentBioId="'+studentBioId+'"'
+									+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+									+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
 							}
+							jsonSession += itemLink;
 							jsonSession += '</div>';
 							
 							jsonSession += '<div class="item-div-inact-'+studentBioId+'" style="display: none;">';
