@@ -1824,6 +1824,9 @@ public class ReportController extends BaseDAO {
 		}
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading report as ", type));
 		try {
+			if(reportUrl.indexOf("Rescore_Request_Form") != -1) {
+				req.setAttribute("icDownload", IApplicationConstants.TRUE);
+			}
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
 			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
 			JasperPrint jasperPrint = null;
