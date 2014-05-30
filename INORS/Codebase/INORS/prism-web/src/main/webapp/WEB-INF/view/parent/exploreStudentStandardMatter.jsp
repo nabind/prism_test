@@ -73,9 +73,7 @@
 						</dt>
 						<dd style="height: auto;" class="accordion-body with-padding">
 							<p>Testing is one way to determine if children are reaching
-								standards. We all want our children to be successful, and it's a
-								common worry that your child's test results will label him or her
-								as a "good" or "bad" student. But tests help to identify your
+								standards. We all want our children to be successful, and tests help to identify your
 								child's strengths and highlight skill areas that could be improved,
 								which is essential information for you and your child's teacher(s).
 								In order to make the right decisions about how to help your child,
