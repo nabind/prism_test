@@ -101,7 +101,6 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
-							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
 							dnpStudentResult.add(rescoreRequestTO);
 						}
 					} catch (SQLException e) {
@@ -329,7 +328,6 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
-							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
 							notDnpStudentResult.add(rescoreRequestTO);
 						}
 					} catch (SQLException e) {
@@ -400,7 +398,6 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
-							rescoreRequestTO.setUserName(rs.getString("USERNAME"));
 							notDnpStudentResult.add(rescoreRequestTO);
 						}
 					} catch (SQLException e) {
