@@ -392,7 +392,6 @@ function addStudent(){
 	
 	//Fix for TD 79220 - By Joy
 	var option = $.trim($('#selectStudentRRF').val());
-	alert(option);
 	if(option == ""){
 		$('#addStudent').addClass('disabled');
 		$('#addStudent').removeClass('addStudent');
