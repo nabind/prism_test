@@ -389,7 +389,10 @@ function addStudent(){
 	$("#selectStudentRRF option[value='"+studentBioId+"']").each(function() {
 	    $(this).remove();
 	});
-	var option = $('#selectStudentRRF').html().trim();
+	
+	//Fix for TD 79220 - By Joy
+	var option = $.trim($('#selectStudentRRF').val());
+	alert(option);
 	if(option == ""){
 		$('#addStudent').addClass('disabled');
 		$('#addStudent').removeClass('addStudent');
