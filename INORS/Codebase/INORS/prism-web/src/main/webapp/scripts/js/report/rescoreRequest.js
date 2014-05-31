@@ -190,6 +190,9 @@ function showHideItems(containerId,obj){
 	}else{
 		$(containerId+' .item-div-'+studentBioId+'-'+subtestId).hide();
 		var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
+		if(requestedDate == 'undefined' || requestedDate == null) {
+			requestedDate = $('#rescoreDate_'+studentBioId).val();
+		}
 		if((requestedDate.length > 0) && isDate(requestedDate)){
 			var urlData = 'subtestId='+subtestId
 							+'&studentBioId='+studentBioId;
@@ -204,6 +207,7 @@ function showHideItems(containerId,obj){
 					unblockUI();
 					if(data.value >= 1){
 						$(containerId+' .item-div-'+studentBioId+'-'+subtestId+' .item-tag').removeClass('red-bg');
+						$('.item-div-'+studentBioId+'-'+subtestId).show(100);
 					}else{
 						$.modal.alert(ERROR_MESSAGE);
 					}
@@ -384,7 +388,7 @@ function addStudent(){
 				
 				if(grade == 10001 || grade == 10006){
 					oTable.fnAddData( [
-					                   removeButton,
+					                   /*removeButton,*/
 					                   student,
 					                   parentRescoreDate,
 					                   ela,
@@ -394,7 +398,7 @@ function addStudent(){
 					                   mathSession1 ] );
 				}else{
 					oTable.fnAddData( [
-					                   removeButton,
+					                   /*removeButton,*/
 					                   student,
 					                   parentRescoreDate,
 					                   ela,
