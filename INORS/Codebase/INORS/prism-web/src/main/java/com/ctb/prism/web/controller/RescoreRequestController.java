@@ -298,6 +298,7 @@ public class RescoreRequestController {
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("requestedDate", request.getParameter("requestedDate"));
 		paramMap.put("userId", userId);
 		
 		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
