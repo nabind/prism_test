@@ -72,26 +72,29 @@ $(document).ready(function() {
 function resetRequestedDate(obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var urlData = 'studentBioId='+studentBioId;
-	blockUI();
-	$.ajax({
-		type : 'GET',
-		url : 'resetItemState.do',
-		data : urlData,
-		dataType : 'json',
-		cache: false,
-		success : function(data) {
-			unblockUI();
-			if(data.value >= 1){
-				
-			}else{
+	var requestedDate =  $(obj).val();
+	if(requestedDate.length == 0){
+		blockUI();
+		$.ajax({
+			type : 'GET',
+			url : 'resetItemDate.do',
+			data : urlData,
+			dataType : 'json',
+			cache: false,
+			success : function(data) {
+				unblockUI();
+				if(data.value >= 1){
+					
+				}else{
+					$.modal.alert(ERROR_MESSAGE);
+				}
+			},
+			error : function(data) {	
 				$.modal.alert(ERROR_MESSAGE);
+				unblockUI();
 			}
-		},
-		error : function(data) {	
-			$.modal.alert(ERROR_MESSAGE);
-			unblockUI();
-		}
-	});	
+		});	
+	}
 }
 
 function activeInactiveItems(containerId,obj){
