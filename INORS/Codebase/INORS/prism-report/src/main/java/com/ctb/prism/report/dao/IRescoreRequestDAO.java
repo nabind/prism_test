@@ -14,6 +14,8 @@ public interface IRescoreRequestDAO {
 	
 	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap) throws BusinessException;
 	
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemDate(final Map<String, Object> paramMap) throws BusinessException;
+	
 	public List<RescoreRequestTO> getNotDnpStudents(Map<String, Object> paramMap) throws BusinessException;
 	
 	public List<RescoreRequestTO> getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException;

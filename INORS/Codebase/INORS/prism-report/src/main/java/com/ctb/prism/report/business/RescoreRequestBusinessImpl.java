@@ -306,6 +306,11 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		return rescoreRequestDAO.resetItemState(paramMap);
 	}
 	
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemDate(final Map<String, Object> paramMap) 
+			throws BusinessException{
+		return rescoreRequestDAO.resetItemDate(paramMap);
+	}
+	
 	public RescoreRequestTO getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException{
 		List<RescoreRequestTO> notDnpStudentDetails =  arrangeRescoreData(rescoreRequestDAO.getNotDnpStudentDetails(paramMap),paramMap);
 		RescoreRequestTO rescoreStudentTO = notDnpStudentDetails.get(0);

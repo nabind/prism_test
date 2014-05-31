@@ -284,6 +284,41 @@ public class RescoreRequestController {
     }
 	
 	
+	@RequestMapping(value = "/resetItemDate", method = RequestMethod.GET)
+	public @ResponseBody 
+	String resetItemDate(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestController - resetItemDate()");
+		long t1 = System.currentTimeMillis();
+		
+		long studentBioId = Long.parseLong(request.getParameter("studentBioId"));
+		
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		long userId = Long.parseLong(loggedinUserTO.getUserId());
+		
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("studentBioId", studentBioId);
+		paramMap.put("userId", userId);
+		
+		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
+		Gson gson = new Gson();
+		String jsonString = "";
+		try{
+			statusTO = rescoreRequestService.resetItemDate(paramMap); 
+			jsonString = gson.toJson(statusTO);
+			logger.log(IAppLogger.INFO, "jsonString of status:");
+			logger.log(IAppLogger.INFO, jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - resetItemDate() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return jsonString;
+    }
+	
+	
 	@RequestMapping(value = "/addStudent", method = RequestMethod.GET)
 	public @ResponseBody 
 	String addStudent(HttpServletRequest request, HttpServletResponse response) 

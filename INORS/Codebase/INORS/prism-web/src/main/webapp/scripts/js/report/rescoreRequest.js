@@ -26,6 +26,7 @@ $(document).ready(function() {
 			});
 			$('.rescore-date-dnp').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF',$(this));
+				resetRequestedDate($(this));
 		   });
 		}
 	});
@@ -51,6 +52,7 @@ $(document).ready(function() {
 			
 			$('.rescore-date').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF_2',$(this));
+				resetRequestedDate($(this));
 			});
 			
 			$('.remove-student').off().on('click', function(){
@@ -66,6 +68,31 @@ $(document).ready(function() {
 	});
 });
 //=====document.ready End=========================================
+
+function resetRequestedDate(obj){
+	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+	var urlData = 'studentBioId='+studentBioId;
+	blockUI();
+	$.ajax({
+		type : 'GET',
+		url : 'resetItemState.do',
+		data : urlData,
+		dataType : 'json',
+		cache: false,
+		success : function(data) {
+			unblockUI();
+			if(data.value >= 1){
+				
+			}else{
+				$.modal.alert(ERROR_MESSAGE);
+			}
+		},
+		error : function(data) {	
+			$.modal.alert(ERROR_MESSAGE);
+			unblockUI();
+		}
+	});	
+}
 
 function activeInactiveItems(containerId,obj){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;

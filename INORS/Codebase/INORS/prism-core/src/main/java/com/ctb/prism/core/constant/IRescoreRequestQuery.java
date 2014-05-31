@@ -16,6 +16,8 @@ public interface IRescoreRequestQuery {
 	
 	public static final String RESET_ITEM_STATE = "PKG_RESCORE_REQUEST.SP_RESET_ITEM_STATE(?,?,?,?,?,?)";
 	
+	public static final String RESET_ITEM_DATE = "PKG_RESCORE_REQUEST.SP_RESET_ITEM_DATE(?,?,?,?)";
+	
 	public static final String GET_NOT_DNP_STUDENT = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT(?,?,?,?,?,?)";
 	
 	public static final String GET_NOT_DNP_STUDENT_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT_DETAILS(?,?,?,?,?,?,?)";
