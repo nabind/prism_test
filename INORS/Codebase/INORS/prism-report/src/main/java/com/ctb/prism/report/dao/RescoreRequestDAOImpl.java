@@ -231,6 +231,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		long t1 = System.currentTimeMillis();
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
 		final long userId = ((Long) paramMap.get("userId")).longValue();
+		final String requestedDate = (String) paramMap.get("requestedDate");
 		
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -238,8 +239,9 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.RESET_ITEM_DATE + "}");
 					cs.setLong(1, studentBioId);
 					cs.setLong(2, userId);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setString(3, requestedDate);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -248,7 +250,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(3);
+						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
