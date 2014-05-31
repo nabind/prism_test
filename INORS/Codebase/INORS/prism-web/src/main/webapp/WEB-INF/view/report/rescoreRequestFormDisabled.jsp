@@ -81,20 +81,26 @@
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
 						    	<td class="vertical-center">
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-						    			<span class="performance-level-dnp" 
-						    				subtestId="${rescoreSubtestTO.subtestId}"
-						    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
-											>
-												${rescoreSubtestTO.performanceLevel}
-										</span>
-						    		</c:if>
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-						    			${rescoreSubtestTO.performanceLevel}
-						    		</c:if>
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='UND'}">
-						    			${rescoreSubtestTO.performanceLevel}
-						    		</c:if>
+						    		<c:choose>
+							    		<c:when test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+							    			<span class="performance-level-dnp" 
+							    				subtestId="${rescoreSubtestTO.subtestId}"
+							    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
+												>
+													${rescoreSubtestTO.performanceLevel}
+											</span>
+							    		</c:when>
+							    		<c:otherwise>
+											<c:choose>
+									    		<c:when test="${rescoreSubtestTO.performanceLevel==''}">
+									    			UND
+									    		</c:when>
+									    		<c:otherwise>
+									    			${rescoreSubtestTO.performanceLevel}
+									    		</c:otherwise>
+							    			</c:choose>
+							    		</c:otherwise>
+						    		</c:choose>
 						    	</td>
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
@@ -247,17 +253,23 @@
 						    
 						    <c:forEach var="rescoreSubtestTO" items="${rescoreRequestStudentTO.rescoreSubtestTOList}">
 						    	<td class="vertical-center">
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-						    			<span class="performance-level">
-												${rescoreSubtestTO.performanceLevel}
-										</span>
-						    		</c:if>
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
-						    			${rescoreSubtestTO.performanceLevel}
-						    		</c:if>
-						    		<c:if test="${rescoreSubtestTO.performanceLevel=='UND'}">
-						    			${rescoreSubtestTO.performanceLevel}
-						    		</c:if>
+						    		<c:choose>
+							    		<c:when test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+							    			<span class="performance-level">
+													${rescoreSubtestTO.performanceLevel}
+											</span>
+							    		</c:when>
+							    		<c:otherwise>
+											<c:choose>
+									    		<c:when test="${rescoreSubtestTO.performanceLevel==''}">
+									    			UND
+									    		</c:when>
+									    		<c:otherwise>
+									    			${rescoreSubtestTO.performanceLevel}
+									    		</c:otherwise>
+							    			</c:choose>
+							    		</c:otherwise>
+						    		</c:choose>
 						    	</td>
 						    	
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
