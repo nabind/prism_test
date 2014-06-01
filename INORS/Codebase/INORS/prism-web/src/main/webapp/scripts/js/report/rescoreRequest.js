@@ -37,7 +37,8 @@ $(document).ready(function() {
 	oTable = $("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
-			'aTargets' : [0,2]
+			//'aTargets' : [0,2]
+			'aTargets' : [1]
 		} ],
 		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
@@ -185,11 +186,10 @@ function showHideItems(containerId,obj){
 	var subtestId = (typeof $(obj).attr('subtestId') !== 'undefined') ? $(obj).attr('subtestId') : 0;
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	
-	$('.item-div-'+studentBioId+'-'+subtestId).toggle();
 	if($(containerId+' .item-div-'+studentBioId+'-'+subtestId).is(':hidden')){
-		//$(containerId+' .item-div-'+studentBioId+'-'+subtestId).show();
+		$(containerId+' .item-div-'+studentBioId+'-'+subtestId).show();
 	}else{
-		//$(containerId+' .item-div-'+studentBioId+'-'+subtestId).hide();
+		$(containerId+' .item-div-'+studentBioId+'-'+subtestId).hide();
 		var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 		if(requestedDate == 'undefined' || requestedDate == null) {
 			requestedDate = $('#rescoreDate_'+studentBioId).val();
@@ -208,7 +208,6 @@ function showHideItems(containerId,obj){
 					unblockUI();
 					if(data.value >= 1){
 						$(containerId+' .item-div-'+studentBioId+'-'+subtestId+' .item-tag').removeClass('red-bg');
-						//$('.item-div-'+studentBioId+'-'+subtestId).toggle();
 					}else{
 						$.modal.alert(ERROR_MESSAGE);
 					}
