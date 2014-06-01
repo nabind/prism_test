@@ -110,7 +110,23 @@
 						    		<td class="vertical-center">
 										<!-- item-div start -->
 										<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-											<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
+											<c:set var="isVisible" value="N" />
+											<c:forEach var="innerrescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
+												<c:forEach var="innerrescoreItemTO" items="${innerrescoreSessionTO.rescoreItemTOList}">
+													<c:if test="${innerrescoreItemTO.isRequested=='Y'}">
+														<c:set var="isVisible" value="Y" />
+													</c:if>
+												</c:forEach>
+											</c:forEach>
+											
+											<c:choose>
+												<c:when test="${isVisible=='Y'}">
+													<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" >
+												</c:when>
+												<c:otherwise>
+													<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
+												</c:otherwise>
+											</c:choose>
 										</c:if>
 										<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
 											<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}">
@@ -295,7 +311,7 @@
 						    	<td class="vertical-center">
 						    		<c:choose>
 							    		<c:when test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-							    			<a class="performance-level-dnp" 
+							    			<a class="performance-level" 
 							    				subtestId="${rescoreSubtestTO.subtestId}"
 							    				studentBioId="${rescoreRequestStudentTO.studentBioId}"
 												href="#nogo">
@@ -318,9 +334,26 @@
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
 						    		<td class="vertical-center">
 					    				<!-- item-div start -->
-						    			<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
-						    				<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
-						    			</c:if>
+					    				<c:if test="${rescoreSubtestTO.performanceLevel=='Pass' || rescoreSubtestTO.performanceLevel=='Pass+'}">
+											<c:set var="isVisible" value="N" />
+											<c:forEach var="innerrescoreSessionTO" items="${rescoreSubtestTO.rescoreSessionTOList}">
+												<c:forEach var="innerrescoreItemTO" items="${innerrescoreSessionTO.rescoreItemTOList}">
+													<c:if test="${innerrescoreItemTO.isRequested=='Y'}">
+														<c:set var="isVisible" value="Y" />
+													</c:if>
+												</c:forEach>
+											</c:forEach>
+											
+											<c:choose>
+												<c:when test="${isVisible=='Y'}">
+													<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" >
+												</c:when>
+												<c:otherwise>
+													<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}" style="display: none;">
+												</c:otherwise>
+											</c:choose>
+										</c:if>
+						    			
 						    			<c:if test="${rescoreSubtestTO.performanceLevel=='DNP'}">
 						    				<div class="item-div-${rescoreRequestStudentTO.studentBioId}-${rescoreSubtestTO.subtestId}">
 						    			</c:if>
