@@ -164,9 +164,11 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 						rescoreSessionTO = new RescoreSessionTO();
 						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
 						if(rescoreRequestTOSubt.getRescoreSessionTOList().get(0).getSessionId() == 2){
-							rescoreRequestTOSubt.getRescoreSessionTOList().add(0,rescoreSessionTO);
-						}else{
+							//For Session 3
 							rescoreRequestTOSubt.getRescoreSessionTOList().add(rescoreSessionTO);
+						}else{
+							//For Session 2
+							rescoreRequestTOSubt.getRescoreSessionTOList().add(0,rescoreSessionTO);
 						}
 					}
 				}
