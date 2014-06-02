@@ -93,11 +93,11 @@ function resetRequestedDate(obj,callback){
 					callback(returnVal);
 				}
 			}else{
-				$.modal.alert(ERROR_MESSAGE);
+				//$.modal.alert(ERROR_MESSAGE);
 			}
 		},
 		error : function(data) {	
-			$.modal.alert(ERROR_MESSAGE);
+			//$.modal.alert(ERROR_MESSAGE);
 			unblockUI();
 		}
 	});	
