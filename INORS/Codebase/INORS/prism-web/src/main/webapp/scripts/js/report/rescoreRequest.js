@@ -296,7 +296,21 @@ function addStudent(){
 						//item-div start
 						var jsonSession = '';
 						if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
-							jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" style="display: none;">';
+							
+							var isVisible = 'N';
+							$.each(jsonSessionList, function (innerSessionIndex,innerJsonSessionTO){
+								var innerJsonItemList = innerJsonSessionTO.rescoreItemTOList;
+								$.each(innerJsonItemList, function (innerItemIndex,innerJsonItemTO){
+									if (innerJsonItemTO.isRequested=='Y'){
+										isVisible = 'Y';
+									}
+								});
+							});
+							if(isVisible == 'Y'){
+								jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
+							}else{
+								jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" style="display: none;">';
+							}
 						}else if(this.performanceLevel=='DNP'){
 							jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
 						}
