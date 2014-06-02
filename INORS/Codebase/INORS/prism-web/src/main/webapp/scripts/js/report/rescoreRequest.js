@@ -8,7 +8,7 @@ var ANIMATION_TIME = 200;
 var ERROR_MESSAGE = "Error Occured";
 var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
 var oTable = "";
-
+var oldDate = "";
 $(document).ready(function() {
 	
 	$("#studentTableRRF").dataTable({
@@ -26,7 +26,10 @@ $(document).ready(function() {
 			});
 			$('.rescore-date-dnp').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF',$(this));
-		   });
+		    });
+			$('.rescore-date-dnp').on().focusin(function(){
+				oldDate = $(this).val();
+		    });
 		}
 	});
 	$( "#studentTableRRF_length > label" ).css( "cursor", "default" );
@@ -53,6 +56,9 @@ $(document).ready(function() {
 			$('.rescore-date').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF_2',$(this));
 			});
+			$('.rescore-date').on().focusin(function(){
+				oldDate = $(this).val();
+		    });
 			
 			$('.remove-student').off().on('click', function(){
 				removeStudent($(this));
@@ -107,9 +113,12 @@ function activeInactiveItems(containerId,obj){
 	if(requestedDate.length > 0){
 		if(isDate(requestedDate)){
 	    	$(obj).css('background-color','white');
-	    	$(obj).css('color','black');
+	    	$(obj).css('color','#666666');
 	    	$(obj).val();
 	    	$(containerId+' .item-div-act-'+studentBioId).show();
+	    	if(oldDate != requestedDate) {
+	    		resetRequestedDate(obj);
+	    	}
 	    }else{
 	    	$(obj).css('background-color','red');
 	    	$(obj).val(DATE_VALIDATION_ERROR_MESSAGE);
@@ -117,16 +126,20 @@ function activeInactiveItems(containerId,obj){
 	    	$(containerId+' .item-div-inact-'+studentBioId).show();
 	    }
 	}else{
-		resetRequestedDate(obj,function(returnVal){
-			if(returnVal == 1){
-				$(containerId+' .item-div-act-'+studentBioId).show();
-				$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
-				$(containerId+' .item-div-act-'+studentBioId).hide();
-			}
-		});
-		$(obj).css('background-color','white');
-		$(obj).css('color','black');
-		$(containerId+' .item-div-inact-'+studentBioId).show();
+		if(oldDate != requestedDate) {
+			resetRequestedDate(obj,function(returnVal){
+				if(returnVal == 1){
+					$(containerId+' .item-div-act-'+studentBioId).show();
+					$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
+					$(containerId+' .item-div-act-'+studentBioId).hide();
+				}
+			});
+			$(obj).css('background-color','white');
+			$(obj).css('color','#666666');
+			$(containerId+' .item-div-inact-'+studentBioId).show();
+		} else {
+			$(containerId+' .item-div-inact-'+studentBioId).show();
+		}
 	}
 }
 
