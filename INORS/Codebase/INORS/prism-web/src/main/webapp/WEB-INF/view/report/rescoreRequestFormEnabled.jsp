@@ -94,15 +94,8 @@
 											</a>
 							    		</c:when>
 							    		<c:otherwise>
-											<c:choose>
-									    		<c:when test="${rescoreSubtestTO.performanceLevel==''}">
-									    			UND
-									    		</c:when>
-									    		<c:otherwise>
-									    			${rescoreSubtestTO.performanceLevel}
-									    		</c:otherwise>
-							    			</c:choose>
-							    		</c:otherwise>
+											${rescoreSubtestTO.performanceLevel}
+									    </c:otherwise>
 						    		</c:choose>
 						    	</td>
 						    	
@@ -319,15 +312,8 @@
 											</a>
 							    		</c:when>
 							    		<c:otherwise>
-											<c:choose>
-									    		<c:when test="${rescoreSubtestTO.performanceLevel==''}">
-									    			UND
-									    		</c:when>
-									    		<c:otherwise>
-									    			${rescoreSubtestTO.performanceLevel}
-									    		</c:otherwise>
-							    			</c:choose>
-							    		</c:otherwise>
+											${rescoreSubtestTO.performanceLevel}
+										</c:otherwise>
 						    		</c:choose>
 						    	</td>
 						    	
