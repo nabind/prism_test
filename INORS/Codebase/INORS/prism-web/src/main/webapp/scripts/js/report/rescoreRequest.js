@@ -26,7 +26,6 @@ $(document).ready(function() {
 			});
 			$('.rescore-date-dnp').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF',$(this));
-				resetRequestedDate($(this));
 		   });
 		}
 	});
@@ -53,7 +52,6 @@ $(document).ready(function() {
 			
 			$('.rescore-date').off().focusout(function(){
 				activeInactiveItems('#studentTableRRF_2',$(this));
-				resetRequestedDate($(this));
 			});
 			
 			$('.remove-student').off().on('click', function(){
@@ -70,10 +68,10 @@ $(document).ready(function() {
 });
 //=====document.ready End=========================================
 
-function resetRequestedDate(obj){
+function resetRequestedDate(obj,callback){
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var urlData = 'studentBioId='+studentBioId+'&requestedDate='+$(obj).val();
-	
+	var returnVal = 0;
 	blockUI();
 	$.ajax({
 		type : 'GET',
@@ -84,7 +82,10 @@ function resetRequestedDate(obj){
 		success : function(data) {
 			unblockUI();
 			if(data.value >= 1){
-				
+				returnVal = 1;
+				if(typeof callback === "function"){
+					callback(returnVal);
+				}
 			}else{
 				$.modal.alert(ERROR_MESSAGE);
 			}
@@ -94,7 +95,6 @@ function resetRequestedDate(obj){
 			unblockUI();
 		}
 	});	
-	
 }
 
 function activeInactiveItems(containerId,obj){
@@ -117,6 +117,13 @@ function activeInactiveItems(containerId,obj){
 	    	$(containerId+' .item-div-inact-'+studentBioId).show();
 	    }
 	}else{
+		resetRequestedDate(obj,function(returnVal){
+			if(returnVal == 1){
+				$(containerId+' .item-div-act-'+studentBioId).show();
+				$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
+				$(containerId+' .item-div-act-'+studentBioId).hide();
+			}
+		});
 		$(obj).css('background-color','white');
 		$(obj).css('color','black');
 		$(containerId+' .item-div-inact-'+studentBioId).show();
