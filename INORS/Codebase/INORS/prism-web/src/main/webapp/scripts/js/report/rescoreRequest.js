@@ -29,6 +29,9 @@ $(document).ready(function() {
 		    });
 			$('.rescore-date-dnp').on().focusin(function(){
 				oldDate = $(this).val();
+				if(oldDate == 'Enter valid date') {
+					$(this).val('');
+				}
 		    });
 		}
 	});
@@ -58,6 +61,9 @@ $(document).ready(function() {
 			});
 			$('.rescore-date').on().focusin(function(){
 				oldDate = $(this).val();
+				if(oldDate == 'Enter valid date') {
+					$(this).val('');
+				}
 		    });
 			
 			$('.remove-student').off().on('click', function(){
@@ -484,7 +490,15 @@ function isDate(txtDate){
     //Checks for mm/dd/yyyy format.
     dtMonth = dtArray[1];
     dtDay= dtArray[3];
-    dtYear = dtArray[5];        
+    dtYear = dtArray[5];       
+    
+    
+    var myDate = new Date(dtYear, dtMonth - 1, dtDay);
+    var today = new Date();
+    if (myDate > today) {
+    	$.modal.alert("Entered date is greater than today's date.");
+		return false;
+    }
     
     if (dtMonth < 1 || dtMonth > 12) 
         return false;
