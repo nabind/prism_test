@@ -70,7 +70,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                                  (SELECT MAX(UPDATED_DATE_TIME)
                                     FROM RESCORE_REQUEST_FORM
                                    WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                                     AND IS_REQUESTED = 'Y')),
+                                     /*AND IS_REQUESTED = 'Y'*/)),
                           -1) REQUESTED_DATE,
                       RRF.SUBTESTID SUBTESTID,
                       SD.SUBTEST_CODE SUBTEST_CODE,
@@ -182,8 +182,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
     P_OUT_STATUS_NUMBER := 0;
   
     UPDATE RESCORE_REQUEST_FORM RRF
-       SET RRF.IS_REQUESTED      = 'N',
-           RRF.REQUESTED_DATE    = NULL,
+       SET /*RRF.IS_REQUESTED      = 'N',*/
+           RRF.REQUESTED_DATE    = P_IN_REQUESTED_DATE,
            RRF.UPDATED_DATE_TIME = SYSDATE,
            RRF.REQUESTED_USERID  = P_IN_USERID
      WHERE RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID;
@@ -262,7 +262,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                                       FROM RESCORE_REQUEST_FORM
                                      WHERE STUDENT_BIO_ID =
                                            RRF.STUDENT_BIO_ID
-                                       AND IS_REQUESTED = 'Y')
+                                       /*AND IS_REQUESTED = 'Y'*/)
                                and rownum = 1),
                             -1) REQUESTED_DATE,
                         RRF.SUBTESTID SUBTESTID,
