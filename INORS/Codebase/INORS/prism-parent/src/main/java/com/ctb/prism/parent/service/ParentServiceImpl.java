@@ -73,6 +73,7 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean registerUser(ParentTO parentTO) throws BusinessException {
 		return parentBusiness.registerUser(parentTO);
 	}
