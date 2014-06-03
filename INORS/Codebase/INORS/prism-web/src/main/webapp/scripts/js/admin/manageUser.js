@@ -151,7 +151,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			cache:false,
 			success : function(data) {
-				if (data != null && data.length > 14){
+				if (data != null && data.length > 15){
 					$(".pagination").show(200);
 				} else {
 					$(".pagination").hide(200);
@@ -159,7 +159,7 @@ $(document).ready(function() {
 				getUserDetails(true, data);
 				enableSorting(true);
 				$("tbody#user_details").removeClass("loader big");				
-				if (data != null && data.length > 14){
+				if (data != null && data.length > 15){
 					$("#moreUser").removeClass("disabled");
 					if($.browser.msie) $("#moreUser").removeClass("disabled-ie");
 				} else {
@@ -546,7 +546,7 @@ $(document).ready(function() {
 							dataType : 'json',
 							cache:false,
 							success : function(data) {
-								if (data != null && data.length > 14){
+								if (data != null && data.length > 15){
 									$(".pagination").show(200);
 								} else {
 									$(".pagination").hide(200);
@@ -761,7 +761,7 @@ $(document).ready(function() {
 			dataType : "json",
 			cache:false,
 			success : function(data){
-				if (data != null && data.length > 14){
+				if (data != null && data.length > 15){
 					$(".pagination").show(200);
 					$("#moreStudent").removeClass("disabled");
 					if($.browser.msie) $("#moreStudent").removeClass("disabled-ie");
