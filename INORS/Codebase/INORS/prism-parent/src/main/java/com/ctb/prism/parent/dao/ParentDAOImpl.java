@@ -176,72 +176,91 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean registerUser(ParentTO parentTO) throws BusinessException {
-		try {
-			// incase the user exists into LDAP
-			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-				ldapManager.deleteUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName());
-			}
-		} catch (Exception ex) {
-		}
-		/*
-		 * String displayName=(CustomStringUtil.appendString(parentTO.getLastName(), parentTO.getFirstName())).trim(); if (displayName.length()>10) displayName=displayName.substring(0, 10);
-		 */
-		boolean addToLdapStatus = false;
-		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-			addToLdapStatus = ldapManager.addUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
-		} else {
-			addToLdapStatus = true;
-		}
-
-		if (addToLdapStatus) {
-			long user_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.USER_SEQ_ID);
-			long orgUserSeqId = getJdbcTemplatePrism().queryForLong(IQueryConstants.ORGUSER_SEQ_ID);
-			int count = 0;
-			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-				count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_DATA, user_seq_id, parentTO.getUserName(), parentTO.getDisplayName(), parentTO.getLastName(),
-						parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(), parentTO.getCountry(), parentTO.getZipCode(), parentTO.getStreet(), parentTO.getCity(), parentTO.getState(),
-						parentTO.getInvitationCode(), parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N);
-			} else {
+		
+			
+	
 				// insert user with password into DAO
+				final String userName = parentTO.getUserName();
+				final String userDisplayName =  parentTO.getDisplayName();
+				final String emailId =  parentTO.getMail();
+				final String isFirstTimeLogin =  parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N;
 				String salt = PasswordGenerator.getNextSalt();
-				count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_DATA_WITH_PASSWD, user_seq_id, parentTO.getUserName(), parentTO.getDisplayName(), parentTO.getLastName(),
-						parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(), parentTO.getCountry(), parentTO.getZipCode(), parentTO.getStreet(), parentTO.getCity(), parentTO.getState(),
-						parentTO.getInvitationCode(), parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N,
-						SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt);
+				final String password = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt));
+				final String invitaionCode = parentTO.getInvitationCode();
 				
-			}
-			logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
-
-			if (count > 0) {
-				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserSeqId, user_seq_id, parentTO.getInvitationCode(), parentTO.getInvitationCode(),
-						IApplicationConstants.ACTIVE_FLAG);
+				final String mobileNo = parentTO.getMobile();
+				final String country = parentTO.getCountry();
+				final String zip = parentTO.getZipCode();
+				final String street = parentTO.getStreet();
+				final String city = parentTO.getCity();
+				final String state = parentTO.getState();
 				
-				logger.log(IAppLogger.DEBUG, "INSERT_ORG_USER_PARENT DONE");
+				final String lastName = parentTO.getLastName();
+				final String firstName = parentTO.getFirstName();
 				
-				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER, parentTO.getUserName(), "ROLE_USER");
-				getJdbcTemplatePrism().update(IQueryConstants.ADD_ROLE_TO_REGISTERED_USER, parentTO.getUserName(), "ROLE_PARENT");
-				logger.log(IAppLogger.DEBUG, "ADD_ROLE_TO_REGISTERED_USER DONE");
 				
-				boolean isSavedInvitationCodeClaim = saveInvitationCodeClaim(orgUserSeqId, parentTO);
-
-				if (isSavedInvitationCodeClaim) {
-					boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(parentTO.getInvitationCode());
-					if (isUpdatedInvitationCodeClaimCount) {
-						boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(user_seq_id, parentTO.getQuestionToList());
-
-						if (isSavedPasswordHistAnswer) {
-							/*
-							 * ldapManager.addUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
-							 */
-							return Boolean.TRUE;
-						}
+				logger.log(IAppLogger.INFO, "Add User");
+				
+				String userId = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					int count =1;
+					String salt = PasswordGenerator.getNextSalt();
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall("{call " +IQueryConstants.CREATE_PARENT + "}");
+						cs.setString(count++, userName);
+						cs.setString(count++, userDisplayName);
+						cs.setString(count++, emailId);
+						cs.setString(count++, IApplicationConstants.ACTIVE_FLAG);
+						cs.setString(count++, isFirstTimeLogin);
+						cs.setString(count++, password);
+						cs.setString(count++, salt);
+						cs.setString(count++, IApplicationConstants.FLAG_N);
+						cs.setString(count++, invitaionCode);
+						cs.setString(count++, mobileNo);
+						cs.setString(count++, country);
+						cs.setString(count++, zip);
+						cs.setString(count++, street);
+						cs.setString(count++, city);
+						cs.setString(count++, state);
+						cs.setString(count++, lastName);
+						cs.setString(count++, firstName);
+						cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
 					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						String strUserId = null; 
+						try {
+							cs.execute();
+							strUserId =  cs.getString(18);
+							if( cs.getString(19) != null &&  cs.getString(19).trim().length() > 0) {
+								logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(19));
+								return null;
+							} else if(strUserId!=null && strUserId.equals("0")){ 
+								logger.log(IAppLogger.DEBUG, "User already exists");
+						    } else {
+								logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
+								logger.log(IAppLogger.INFO, "User added : " + strUserId);
+							}
+							
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return strUserId;
+					}
+				});
+				
+				
+			if (userId != null && userId.trim().length() > 0 && !userId.equals("0")) {
+				boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(Long.valueOf(userId), parentTO.getQuestionToList());
+	
+				if (isSavedPasswordHistAnswer) {
+					return Boolean.TRUE;
 				}
 			}
-			return Boolean.FALSE;
-		} else {
-			return Boolean.FALSE;
-		}
+			
+			
+		return Boolean.FALSE;
 	}
 
 	/**

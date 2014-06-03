@@ -309,7 +309,7 @@ $(document).ready(function() {
 	
 	//============================= Check Availability of the username on blur ================================	
 	function CheckUserNameAvailability(fieldId) {
-		$("#imgHolder").find("span").remove();
+		//$("#imgHolder").find("span").remove();
 		$(fieldId).blur(function(e) {
 			e.stopImmediatePropagation();
 			var pattern = /^[0-9a-zA-Z]+$/g;
