@@ -321,32 +321,58 @@ function addStudent(){
 					$.each(jsonSessionList, function (sessionIndex,jsonSessionTO){
 						//item-div start
 						var jsonSession = '';
-						if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
-							
-							var isVisible = 'N';
-							$.each(jsonSessionList, function (innerSessionIndex,innerJsonSessionTO){
-								var innerJsonItemList = innerJsonSessionTO.rescoreItemTOList;
-								$.each(innerJsonItemList, function (innerItemIndex,innerJsonItemTO){
-									if (innerJsonItemTO.isRequested=='Y'){
-										isVisible = 'Y';
-									}
+						if(jsonSubtestTO.performanceLevel != 'UND'){
+							if(jsonSubtestTO.performanceLevel=='Pass' || jsonSubtestTO.performanceLevel=='Pass+'){
+								
+								var isVisible = 'N';
+								$.each(jsonSessionList, function (innerSessionIndex,innerJsonSessionTO){
+									var innerJsonItemList = innerJsonSessionTO.rescoreItemTOList;
+									$.each(innerJsonItemList, function (innerItemIndex,innerJsonItemTO){
+										if (innerJsonItemTO.isRequested=='Y'){
+											isVisible = 'Y';
+										}
+									});
 								});
-							});
-							if(isVisible == 'Y'){
+								if(isVisible == 'Y'){
+									jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
+								}else{
+									jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" style="display: none;">';
+								}
+							}else if(this.performanceLevel=='DNP'){
 								jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
-							}else{
-								jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" style="display: none;">';
 							}
-						}else if(this.performanceLevel=='DNP'){
-							jsonSession = '<div class="item-div-'+studentBioId+'-'+jsonSubtestTO.subtestId+'" >';
-						}
-						
-						var jsonItemList = jsonSessionTO.rescoreItemTOList;
-						$.each(jsonItemList, function (itemIndex,jsonItemTO){
-							jsonSession += '<div class="item-div-normal-'+studentBioId+'">';
-							if(jsonItemTO.requestedDate == '-1'){
-								jsonSession += '<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>';
-							}else{
+							
+							var jsonItemList = jsonSessionTO.rescoreItemTOList;
+							$.each(jsonItemList, function (itemIndex,jsonItemTO){
+								jsonSession += '<div class="item-div-normal-'+studentBioId+'">';
+								if(jsonItemTO.requestedDate == '-1'){
+									jsonSession += '<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>';
+								}else{
+									var itemLink = '';
+									if(jsonItemTO.isRequested=='N'){
+										itemLink = '<a class="item-link align-row"'
+											+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+											+' subtestId="'+jsonSubtestTO.subtestId+'"'
+											+' sessionId="'+jsonSessionTO.sessionId+'"'
+											+' moduleId="'+jsonSessionTO.moduleId+'"'
+											+' studentBioId="'+studentBioId+'"'
+											+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+											+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
+									}else if (jsonItemTO.isRequested=='Y'){
+										itemLink = '<a class="item-link align-row"'
+											+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
+											+' subtestId="'+jsonSubtestTO.subtestId+'"'
+											+' sessionId="'+jsonSessionTO.sessionId+'"'
+											+' moduleId="'+jsonSessionTO.moduleId+'"'
+											+' studentBioId="'+studentBioId+'"'
+											+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
+											+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
+									}
+									jsonSession += itemLink;
+								}
+								jsonSession += '</div>';
+								
+								jsonSession += '<div class="item-div-act-'+studentBioId+'" style="display: none;">';
 								var itemLink = '';
 								if(jsonItemTO.isRequested=='N'){
 									itemLink = '<a class="item-link align-row"'
@@ -368,42 +394,18 @@ function addStudent(){
 										+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
 								}
 								jsonSession += itemLink;
-							}
+								jsonSession += '</div>';
+								
+								jsonSession += '<div class="item-div-inact-'+studentBioId+'" style="display: none;">';
+								if(jsonItemTO.itemNumber != 0){
+									jsonSession += 		'<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>'
+								}
+								jsonSession += '</div>';
+							});
 							jsonSession += '</div>';
-							
-							jsonSession += '<div class="item-div-act-'+studentBioId+'" style="display: none;">';
-							var itemLink = '';
-							if(jsonItemTO.isRequested=='N'){
-								itemLink = '<a class="item-link align-row"'
-									+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
-									+' subtestId="'+jsonSubtestTO.subtestId+'"'
-									+' sessionId="'+jsonSessionTO.sessionId+'"'
-									+' moduleId="'+jsonSessionTO.moduleId+'"'
-									+' studentBioId="'+studentBioId+'"'
-									+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
-									+' href="#nogo"> <small class="item-tag tag">'+jsonItemTO.itemNumber+'</small> </a>';
-							}else if (jsonItemTO.isRequested=='Y'){
-								itemLink = '<a class="item-link align-row"'
-									+' action="submitRescoreRequest" itemNumber="'+jsonItemTO.itemNumber+'"'
-									+' subtestId="'+jsonSubtestTO.subtestId+'"'
-									+' sessionId="'+jsonSessionTO.sessionId+'"'
-									+' moduleId="'+jsonSessionTO.moduleId+'"'
-									+' studentBioId="'+studentBioId+'"'
-									+' id="item_'+studentBioId+'_'+jsonSubtestTO.subtestId+'_'+jsonSessionTO.sessionId+'_'+jsonItemTO.itemNumber+'"'
-									+' href="#nogo"> <small class="item-tag tag red-bg">'+jsonItemTO.itemNumber+'</small> </a>';
-							}
-							jsonSession += itemLink;
-							jsonSession += '</div>';
-							
-							jsonSession += '<div class="item-div-inact-'+studentBioId+'" style="display: none;">';
-							if(jsonItemTO.itemNumber != 0){
-								jsonSession += 		'<small class="item-tag tag align-row grey-bg">'+jsonItemTO.itemNumber+'</small>'
-							}
-							jsonSession += '</div>';
-						});
-						jsonSession += '</div>';
-						//item-div end
-						
+							//item-div end
+						}
+					
 						if(jsonSessionTO.sessionId == '2'){
 							elaSession2 = jsonSession;
 						}else if(jsonSessionTO.sessionId == '3'){
