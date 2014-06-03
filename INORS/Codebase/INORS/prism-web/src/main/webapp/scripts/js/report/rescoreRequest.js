@@ -135,9 +135,10 @@ function activeInactiveItems(containerId,obj){
 		if(oldDate != requestedDate) {
 			resetRequestedDate(obj,function(returnVal){
 				if(returnVal == 1){
-					$(containerId+' .item-div-act-'+studentBioId).show();
-					$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
-					$(containerId+' .item-div-act-'+studentBioId).hide();
+					//Commented the code as updation of date should not impact on is_requested state.
+					//$(containerId+' .item-div-act-'+studentBioId).show();
+					//$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
+					//$(containerId+' .item-div-act-'+studentBioId).hide();
 				}
 			});
 			$(obj).css('background-color','white');
