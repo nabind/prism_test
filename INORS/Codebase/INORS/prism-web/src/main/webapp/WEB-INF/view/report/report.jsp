@@ -124,7 +124,7 @@
 					<div class="cyan-gradient icholder icholder-${homeReport.tabCount} rounded-border-bottom display-none" style="border-bottom: 1px solid #CCC;">
 						<div class="refresh-report" style="position: absolute; top: 3px; right: 15px;">
 							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/Rescore_Request_Form_files' }">
-								<a href="#nogo" class="button review-button-pdf orange-gradient glossy compact with-tooltip" 
+								<a href="#nogo" class="button review-button-pdf review-button-pdf-${homeReport.tabCount} orange-gradient glossy compact with-tooltip" 
 									title="Review Rescore" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 									<span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span>
 									Review

@@ -907,6 +907,7 @@ function closeProgress(reportUrl, id, firstCall) {
 	
 	// show download buttons
 	$(".download-button-"+id).show(100);
+	$(".review-button-pdf-"+id).show(100);
 	// change refresh button color
 	$(".refreh-button-"+id).addClass('blue-gradient');
 	$(".reportButton").removeTooltip();
@@ -989,6 +990,7 @@ function getCascading(selectedObj) {
 	dataURL = dataURL + "&" + $(formObj).serialize();
 	// hide download buttons
 	$(".download-button-"+tabCount).hide(100);
+	$(".review-button-pdf-"+tabCount).hide(100);
 	// change refresh report button color
 	$(".refreh-button-"+tabCount).removeClass('blue-gradient').addClass('green-gradient');
 	// show tooltip on refresh button
