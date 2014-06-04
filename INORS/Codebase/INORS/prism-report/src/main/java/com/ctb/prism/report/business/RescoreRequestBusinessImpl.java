@@ -154,6 +154,8 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		RescoreSessionTO rescoreSessionTO = null;
 		RescoreItemTO rescoreItemTO = null;
 		
+		RescoreSubtestTO rescoreSubtestTempTO = null;
+		
 		for (RescoreRequestTO rescoreRequestTOStud : modifiedStudentList) {
 			//Checking session format
 			for (RescoreSubtestTO rescoreRequestTOSubt : rescoreRequestTOStud.getRescoreSubtestTOList()) {
@@ -171,7 +173,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 							rescoreRequestTOSubt.getRescoreSessionTOList().add(0,rescoreSessionTO);
 						}
 					}
-				}
+				} 
 			}
 			
 			//Checking subtest format
@@ -220,7 +222,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 							rescoreRequestTOStud.getRescoreSubtestTOList().add(rescoreSubtestTO);
 						}else{
 							//For MATH
-							rescoreRequestTOStud.getRescoreSubtestTOList().add(2,rescoreSubtestTO);
+							rescoreSubtestTempTO = rescoreRequestTOStud.getRescoreSubtestTOList().get(1);
+							rescoreRequestTOStud.getRescoreSubtestTOList().remove(1);
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(1,rescoreSubtestTO);
+							rescoreRequestTOStud.getRescoreSubtestTOList().add(2,rescoreSubtestTempTO);
 						}
 						
 					}else{

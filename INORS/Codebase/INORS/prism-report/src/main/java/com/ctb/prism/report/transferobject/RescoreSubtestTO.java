@@ -17,7 +17,7 @@ public class RescoreSubtestTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 	private long subtestId = 0;
 	private String subtestCode = "";
-	private String performanceLevel = "UND";
+	private String performanceLevel = "";
 	private List<RescoreSessionTO> rescoreSessionTOList = new ArrayList<RescoreSessionTO>();
 	
 	public long getSubtestId() {
