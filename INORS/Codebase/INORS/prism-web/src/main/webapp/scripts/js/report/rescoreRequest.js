@@ -495,14 +495,6 @@ function isDate(txtDate){
     dtDay= dtArray[3];
     dtYear = dtArray[5];       
     
-    
-    var myDate = new Date(dtYear, dtMonth - 1, dtDay);
-    var today = new Date();
-    if (myDate > today) {
-    	$.modal.alert("Entered date is greater than today's date.");
-		return false;
-    }
-    
     if (dtMonth < 1 || dtMonth > 12) 
         return false;
     else if (dtDay < 1 || dtDay> 31) 
@@ -514,6 +506,14 @@ function isDate(txtDate){
         var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
         if (dtDay> 29 || (dtDay ==29 && !isleap)) 
                 return false;
+    }
+    
+    // check if date is greater than current date
+    var myDate = new Date(dtYear, dtMonth - 1, dtDay);
+    var today = new Date();
+    if (myDate > today) {
+    	$.modal.alert("Entered date is greater than today's date.");
+		return false;
     }
     return true;
 }
