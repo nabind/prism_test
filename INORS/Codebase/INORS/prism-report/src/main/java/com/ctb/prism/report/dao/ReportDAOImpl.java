@@ -1556,8 +1556,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return updateCount;
 	}
 	
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameById' )")
-	public String getProductNameById(Long productId) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameFromId' )")
+	private String getProductNameFromId(Long productId) {
 		String productName = "";
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
 		if (lstData.size() > 0) {
@@ -1585,7 +1585,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		try {
 			Long productId = Long.parseLong(to.getTestAdministrationVal());
 			logger.log(IAppLogger.INFO, "productId: " + productId);
-			String productName = getProductNameById(productId);
+			String productName = getProductNameFromId(productId);
 			if (productName.length() > 4) {
 				productStr = productName.substring(0, 5);
 			}
