@@ -1555,6 +1555,18 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return updateCount;
 	}
+	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameById' )")
+	public String getProductNameById(Long productId) {
+		String productName = "";
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				productName = fieldDetails.get("PRODUCT_NAME").toString();
+			}
+		}
+		return productName;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1568,18 +1580,32 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		logger.log(IAppLogger.INFO, "students: " + students);
 		logger.log(IAppLogger.INFO, "groupFile: " + groupFile);
+
+		String productStr = "";
+		try {
+			Long productId = Long.parseLong(to.getTestAdministrationVal());
+			logger.log(IAppLogger.INFO, "productId: " + productId);
+			String productName = getProductNameById(productId);
+			if (productName.length() > 4) {
+				productStr = productName.substring(0, 5);
+			}
+		} catch (NumberFormatException e) {
+			logger.log(IAppLogger.WARN, "Invalid productId");
+		}
+		logger.log(IAppLogger.INFO, "productStr: " + productStr);
+
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			// Invitation Code Letter
-			filePaths = getICLetterPaths(students);
+			filePaths = getICLetterPaths(students, productStr);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString().equals(groupFile)) {
 			// Both (IP and ISR)
-			filePaths = getBothPaths(students);
+			filePaths = getBothPaths(students, productStr);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.toString().equals(groupFile)) {
 			// Image Prints
-			filePaths = getIPPaths(students);
+			filePaths = getIPPaths(students, productStr);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.ISR.toString().equals(groupFile)) {
 			// Individual Student Report
-			filePaths = getISRPaths(students);
+			filePaths = getISRPaths(students, productStr);
 		}
 		logger.log(IAppLogger.INFO, "filePaths.size(): " + filePaths.size());
 		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
@@ -1593,15 +1619,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getICLetterPaths' )")
-	private Map<String, String> getICLetterPaths(String students) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getICLetterPaths' )")
+	private Map<String, String> getICLetterPaths(String students, String productStr) {
 		Map<String, String> icPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
 		int icPrefixSequence = 0;
 		for (String studentId : studentIds) { // TODO : Don't use loop
 			String query = IQueryConstants.GET_IC_FILE_PATH;
+			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			logger.log(IAppLogger.INFO, "query: " + query);
 			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
@@ -1624,15 +1652,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getISRPaths' )")
-	private Map<String, String> getISRPaths(String students) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getISRPaths' )")
+	private Map<String, String> getISRPaths(String students, String productStr) {
 		Map<String, String> isrPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
 		int isrPrefixSequence = 0;
 		for (String studentId : studentIds) { // TODO : Don't use loop
 			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_ISR_ONLY;
+			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			logger.log(IAppLogger.INFO, "query: " + query);
 			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
@@ -1655,15 +1685,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getIPPaths' )")
-	private Map<String, String> getIPPaths(String students) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getIPPaths' )")
+	private Map<String, String> getIPPaths(String students, String productStr) {
 		Map<String, String> iprPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
 		int iprPrefixSequence = 0;
 		for (String studentId : studentIds) { // TODO : Don't use loop
 			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_IPR_ONLY;
+			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			logger.log(IAppLogger.INFO, "query: " + query);
 			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
@@ -1685,8 +1717,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param students
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getBothPaths' )")
-	private Map<String, String> getBothPaths(String students) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getBothPaths' )")
+	private Map<String, String> getBothPaths(String students, String productStr) {
 		Map<String, String> bothPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
@@ -1694,7 +1726,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		int iprPrefixSequence = 0;
 		for (String studentId : studentIds) { // TODO : Don't use loop
 			String query = IQueryConstants.GET_STUDENTS_PDF_FILE_PATH_BOTH;
+			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
+			logger.log(IAppLogger.INFO, "query: " + query);
 			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
