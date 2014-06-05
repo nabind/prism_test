@@ -221,7 +221,7 @@ function showHideItems(containerId,obj){
 		if(requestedDate == 'undefined' || requestedDate == null) {
 			requestedDate = $('#rescoreDate_'+studentBioId).val();
 		}
-		if((requestedDate.length > 0) && isDate(requestedDate)){
+		//if((requestedDate.length > 0) && isDate(requestedDate)){
 			var urlData = 'subtestId='+subtestId
 							+'&studentBioId='+studentBioId;
 			blockUI();
@@ -244,7 +244,7 @@ function showHideItems(containerId,obj){
 					unblockUI();
 				}
 			});	
-		} 			
+		//} 			
 	}
 }
 
