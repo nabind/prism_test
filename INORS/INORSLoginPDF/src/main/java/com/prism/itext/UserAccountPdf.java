@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) throws Exception {
-		// args = new String[] { "L", "744432"};
+		// args = new String[] { "L", "604861"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -1193,7 +1193,7 @@ public class UserAccountPdf {
 		docBuff.append(prop.getProperty("districtText"));
 		docBuff.append(school.getDistrictCode().trim());
 		docBuff.append(prop.getProperty("schoolText"));
-		docBuff.append(school.getSchoolCode().trim());
+		docBuff.append(school.getSchoolCode().trim()).append("_");
 		
 		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
 		// docBuff.append(".pdf");
