@@ -1183,11 +1183,18 @@ public class UserAccountPdf {
 		String pdfPrefix = school.getTestAdministration().trim();//prop.getProperty("testAdministrator");
 		docBuff.append(prop.getProperty("pdfGenPath"));
 		docBuff.append(File.separator);
-		docBuff.append(pdfPrefix).append("_");
+		/*docBuff.append(pdfPrefix).append("_");
 		docBuff.append(school.getDistrictName().trim()).append("_");
 		docBuff.append(school.getDistrictCode().trim()).append("_");
 		docBuff.append(school.getElementName().trim()).append("_");
-		docBuff.append(school.getSchoolCode().trim()).append("_");
+		docBuff.append(school.getSchoolCode().trim()).append("_");*/
+		
+		docBuff.append(pdfPrefix);
+		docBuff.append(prop.getProperty("districtText"));
+		docBuff.append(school.getDistrictCode().trim());
+		docBuff.append(prop.getProperty("schoolText"));
+		docBuff.append(school.getSchoolCode().trim());
+		
 		docBuff.append(getDateTime("ddMMyyyyHHmmss"));
 		// docBuff.append(".pdf");
 		return docBuff.toString();
