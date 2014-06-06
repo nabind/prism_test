@@ -65,14 +65,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                       RRF.STUDENT_FIRST_NAME || ' ' ||
                       SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
                       NVL((SELECT DISTINCT REQUESTED_DATE
-                            FROM RESCORE_REQUEST_FORM
-                           WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                             AND UPDATED_DATE_TIME =
+                            FROM RESCORE_REQUEST_FORM A
+                           WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                             AND A.UPDATED_DATE_TIME =
                                  (SELECT MAX(UPDATED_DATE_TIME)
                                     FROM RESCORE_REQUEST_FORM
-                                   WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                                  /*AND IS_REQUESTED = 'Y'*/
-                                  )),
+                                   WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID)
+                             AND A.REQUESTED_DATE IS NOT NULL),
                           -1) REQUESTED_DATE,
                       RRF.SUBTESTID SUBTESTID,
                       SD.SUBTEST_CODE SUBTEST_CODE,
@@ -159,7 +158,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
   
     UPDATE RESCORE_REQUEST_FORM RRF
        SET RRF.IS_REQUESTED      = P_IN_REQUESTED_STATUS,
-           RRF.REQUESTED_DATE    = NULL,
            RRF.UPDATED_DATE_TIME = SYSDATE,
            RRF.REQUESTED_USERID  = P_IN_USERID
      WHERE RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
@@ -184,7 +182,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
     P_OUT_STATUS_NUMBER := 0;
   
     UPDATE RESCORE_REQUEST_FORM RRF
-       SET /*RRF.IS_REQUESTED      = 'N',*/    RRF.REQUESTED_DATE = P_IN_REQUESTED_DATE,
+       SET RRF.REQUESTED_DATE    = P_IN_REQUESTED_DATE,
            RRF.UPDATED_DATE_TIME = SYSDATE,
            RRF.REQUESTED_USERID  = P_IN_USERID
      WHERE RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID;
@@ -257,15 +255,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                         RRF.STUDENT_FIRST_NAME || ' ' ||
                         SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
                         NVL((SELECT DISTINCT REQUESTED_DATE
-                              FROM RESCORE_REQUEST_FORM
-                             WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                               AND UPDATED_DATE_TIME =
+                              FROM RESCORE_REQUEST_FORM A
+                             WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                               AND A.UPDATED_DATE_TIME =
                                    (SELECT MAX(UPDATED_DATE_TIME)
                                       FROM RESCORE_REQUEST_FORM
                                      WHERE STUDENT_BIO_ID =
-                                           RRF.STUDENT_BIO_ID
-                                    /*AND IS_REQUESTED = 'Y'*/
-                                    )),
+                                           RRF.STUDENT_BIO_ID)
+                               AND A.REQUESTED_DATE IS NOT NULL),
                             -1) REQUESTED_DATE,
                         RRF.SUBTESTID SUBTESTID,
                         SD.SUBTEST_CODE SUBTEST_CODE,
@@ -310,15 +307,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                         RRF.STUDENT_FIRST_NAME || ' ' ||
                         SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
                         NVL((SELECT DISTINCT REQUESTED_DATE
-                              FROM RESCORE_REQUEST_FORM
-                             WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                               AND UPDATED_DATE_TIME =
+                              FROM RESCORE_REQUEST_FORM A
+                             WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
+                               AND A.UPDATED_DATE_TIME =
                                    (SELECT MAX(UPDATED_DATE_TIME)
                                       FROM RESCORE_REQUEST_FORM
                                      WHERE STUDENT_BIO_ID =
-                                           RRF.STUDENT_BIO_ID
-                                    /*AND IS_REQUESTED = 'Y'*/
-                                    )),
+                                           RRF.STUDENT_BIO_ID)
+                               AND A.REQUESTED_DATE IS NOT NULL),
                             -1) REQUESTED_DATE,
                         RRF.SUBTESTID SUBTESTID,
                         SD.SUBTEST_CODE SUBTEST_CODE,
