@@ -867,7 +867,7 @@ function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId
 	$.ajax({
 		type : "GET",
 		url : 'loadReportView.do',
-		data : encodeURIComponent(dataURL),
+		data : dataURL,
 		dataType: 'html',
 		cache:false,
 		success : function(data) {
@@ -1000,7 +1000,7 @@ function getCascading(selectedObj) {
 	$.ajax({
 		type : "GET",
 		url : 'checkCascading.do',
-		data : encodeURIComponent(dataURL),
+		data : dataURL,
 		dataType: 'html',
 		cache:false,
 		success : function(data) {
