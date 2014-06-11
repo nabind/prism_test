@@ -7,6 +7,7 @@
 var ANIMATION_TIME = 200;
 var ERROR_MESSAGE = "Error Occured";
 var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
+var DATE_RANGE_ERROR_MESSAGE = "Entered date is greater than today's date.";
 var oTable = "";
 var oldDate = "";
 $(document).ready(function() {
@@ -29,7 +30,7 @@ $(document).ready(function() {
 		    });
 			$('.rescore-date-dnp').on().focusin(function(){
 				oldDate = $(this).val();
-				if(oldDate == 'Enter valid date') {
+				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
 					$(this).val('');
 				}
 		    });
@@ -61,7 +62,7 @@ $(document).ready(function() {
 			});
 			$('.rescore-date').on().focusin(function(){
 				oldDate = $(this).val();
-				if(oldDate == 'Enter valid date') {
+				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
 					$(this).val('');
 				}
 		    });
@@ -484,7 +485,8 @@ function isDate(txtDate){
     
     //Declare Regex - Fix for TD 79122 - By Joy
     //var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/; 
-    var rxDatePattern = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
+    //var rxDatePattern = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
+    var rxDatePattern = /^(\d{2})(\/)(\d{2})(\/)(\d{4})$/;
     var dtArray = currVal.match(rxDatePattern); // is format OK?
     
     if (dtArray == null) 
@@ -512,7 +514,7 @@ function isDate(txtDate){
     var myDate = new Date(dtYear, dtMonth - 1, dtDay);
     var today = new Date();
     if (myDate > today) {
-    	$.modal.alert("Entered date is greater than today's date.");
+    	$.modal.alert(DATE_RANGE_ERROR_MESSAGE);
 		return false;
     }
     return true;
