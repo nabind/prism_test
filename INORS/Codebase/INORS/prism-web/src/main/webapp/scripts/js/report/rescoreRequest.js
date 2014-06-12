@@ -100,6 +100,7 @@ function resetRequestedDate(obj,callback){
 					callback(returnVal);
 				}
 			}else{
+				//Transaction failure portion
 				//$.modal.alert(ERROR_MESSAGE);
 			}
 		},
@@ -115,16 +116,26 @@ function activeInactiveItems(containerId,obj){
 	$(containerId+' .item-div-normal-'+studentBioId).hide();
 	$(containerId+' .item-div-act-'+studentBioId).hide();
 	$(containerId+' .item-div-inact-'+studentBioId).hide();
-	
+	var activeFlag = 0;
 	var requestedDate =  $(obj).val();
 	if(requestedDate.length > 0){
 		if(isDate(requestedDate)){
 	    	$(obj).css('background-color','white');
 	    	$(obj).css('color','#666666');
 	    	$(obj).val();
-	    	$(containerId+' .item-div-act-'+studentBioId).show();
 	    	if(oldDate != requestedDate) {
-	    		resetRequestedDate(obj);
+	    		resetRequestedDate(obj,function(returnVal){
+					if(returnVal == 1){
+						activeFlag = 1;
+					}
+				});
+	    	}else{
+	    		activeFlag = 1;
+	    	}
+	    	if(activeFlag == 1){
+	    		$(containerId+' .item-div-act-'+studentBioId).show();
+	    	}else{
+	    		$(containerId+' .item-div-inact-'+studentBioId).show();
 	    	}
 	    }else{
 	    	$(obj).css('background-color','red');
@@ -140,6 +151,8 @@ function activeInactiveItems(containerId,obj){
 					//$(containerId+' .item-div-act-'+studentBioId).show();
 					//$(containerId+' .item-div-act-'+studentBioId +' .item-tag').removeClass('red-bg');
 					//$(containerId+' .item-div-act-'+studentBioId).hide();
+				}else{
+					//Transaction failure portion - no risk because the items will be inactivated irrespective of transaction state.
 				}
 			});
 			$(obj).css('background-color','white');
