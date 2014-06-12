@@ -485,8 +485,8 @@ function isDate(txtDate){
     
     //Declare Regex - Fix for TD 79122 - By Joy
     //var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/; 
-    //var rxDatePattern = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
-    var rxDatePattern = /^(\d{2})(\/)(\d{2})(\/)(\d{4})$/;
+    var rxDatePattern = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
+    //var rxDatePattern = /^(\d{2})(\/)(\d{2})(\/)(\d{4})$/;
     var dtArray = currVal.match(rxDatePattern); // is format OK?
     
     if (dtArray == null) 
