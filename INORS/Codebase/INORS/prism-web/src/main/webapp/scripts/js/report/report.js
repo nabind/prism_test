@@ -998,7 +998,7 @@ function getCascading(selectedObj) {
 	
 	if($(selectedObj).val() != null) {
 	$.ajax({
-		type : "GET",
+		type : "POST",
 		url : 'checkCascading.do',
 		data : dataURL,
 		dataType: 'html',

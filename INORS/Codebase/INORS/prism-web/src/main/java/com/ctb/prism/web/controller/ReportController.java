@@ -1409,7 +1409,7 @@ public class ReportController extends BaseDAO {
 	 * @throws IOException
 	 */
 	@Secured({ "ROLE_USER" })
-	@RequestMapping(value = "/checkCascading", method = RequestMethod.GET)
+	@RequestMapping(value = "/checkCascading", method = RequestMethod.POST)
 	public @ResponseBody
 	String checkCascading(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		//long start = System.currentTimeMillis();
@@ -1426,125 +1426,128 @@ public class ReportController extends BaseDAO {
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 
 			// get all input controls for report
-			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
-			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
-					(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
-			// get default parameters for logged-in user
-			/*
-			 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
-			 */
-			Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, false, req, reportUrl);
-			//Class<?> c = reportFilterFactory.getReportFilterTO();
-			/** PATCH FOR STUDENT ROSTER */
-			// Rank order is dependent on both Score type and Subtest selection - so for cascading we need to consider both
-			/* commenting as this is not needed for inors
-			List<ObjectValueTO> newObjectList = null;
-			if (changedObj != null && changedObj.equals("p_Roster_Score_List")) {
-				String[] selectedSubtests = req.getParameterValues("p_Roster_Subtest_MultiSelect");
-				if (selectedSubtests != null) {
-					newObjectList = new ArrayList<ObjectValueTO>();
-					List<String> currentSubtests = Arrays.asList(selectedSubtests);
-					// List<ObjectValueTO> defaultSubtests = reportFilterTO.getP_Roster_Subtest_MultiSelect();
-					List<ObjectValueTO> defaultSubtests = (List<ObjectValueTO>) c.getMethod("getP_Roster_Subtest_MultiSelect").invoke(reportFilterTO);
-					for (ObjectValueTO objectVal : defaultSubtests) {
-						if (currentSubtests.contains(objectVal.getValue())) {
-							newObjectList.add(objectVal);
-						}
-					}
-					// updating subtest list based on current selection
-					// reportFilterTO.setP_Roster_Subtest_MultiSelect(newObjectList);
-					// Class<List<ObjectValueTO>> genericList = (Class) List.class;
-					// c.getMethod("setP_Roster_Subtest_MultiSelect", genericList).invoke(reportFilterTO);
-					Method setterMethod = c.getMethod("setP_Roster_Subtest_MultiSelect", new Class[] { List.class });
-					setterMethod.invoke(reportFilterTO, newObjectList);
-				}
-			} */ 
-			/*
-			 * else { // need to check if we should reset the subtest list | if yes uncomment this section reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId,
-			 * "", reportUrl); }
-			 */
-			/** END : PATCH FOR STUDENT ROSTER */
-			/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
-			//String[] defaultValues = null;
-			//boolean checkDefault = false;
-			List<String> defaultInputNames = new ArrayList<String>();
-			Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
-			/* commenting as this is not needed for inors
-			try {
-				for (InputControlTO inputControlTO : allInputControls) {
-					for (IApplicationConstants.PATCH_FOR_SUBTEST subtest : IApplicationConstants.PATCH_FOR_SUBTEST.values()) {
-						if (subtest.name().equals(inputControlTO.getLabelId())) {
-							defaultInputNames.add(inputControlTO.getLabelId());
-							// get jasper report
-							List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
-							JasperReport jasperReport = getMainReport(jasperReports);
-							for (int i = 0; i < jasperReport.getParameters().length; i++) {
-								if (inputControlTO.getLabelId().equals(jasperReport.getParameters()[i].getName())) {
-									String value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
-									value = value.replace("Arrays.asList(", "");
-									value = value.replace(")", "");
-									value = value.replace("\"", "");
-									defaultValues = value.split(",");
-									checkDefault = true;
-									break;
-								}
+			if(reportUrl!=null) {
+				List<InputControlTO> allInputControls = getInputControlList(reportUrl);
+				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
+						(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+				// get default parameters for logged-in user
+				/*
+				 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
+				 */
+				Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, false, req, reportUrl);
+				//Class<?> c = reportFilterFactory.getReportFilterTO();
+				/** PATCH FOR STUDENT ROSTER */
+				// Rank order is dependent on both Score type and Subtest selection - so for cascading we need to consider both
+				/* commenting as this is not needed for inors
+				List<ObjectValueTO> newObjectList = null;
+				if (changedObj != null && changedObj.equals("p_Roster_Score_List")) {
+					String[] selectedSubtests = req.getParameterValues("p_Roster_Subtest_MultiSelect");
+					if (selectedSubtests != null) {
+						newObjectList = new ArrayList<ObjectValueTO>();
+						List<String> currentSubtests = Arrays.asList(selectedSubtests);
+						// List<ObjectValueTO> defaultSubtests = reportFilterTO.getP_Roster_Subtest_MultiSelect();
+						List<ObjectValueTO> defaultSubtests = (List<ObjectValueTO>) c.getMethod("getP_Roster_Subtest_MultiSelect").invoke(reportFilterTO);
+						for (ObjectValueTO objectVal : defaultSubtests) {
+							if (currentSubtests.contains(objectVal.getValue())) {
+								newObjectList.add(objectVal);
 							}
-							defaultInputValues.put(inputControlTO.getLabelId(), defaultValues);
-							break;
+						}
+						// updating subtest list based on current selection
+						// reportFilterTO.setP_Roster_Subtest_MultiSelect(newObjectList);
+						// Class<List<ObjectValueTO>> genericList = (Class) List.class;
+						// c.getMethod("setP_Roster_Subtest_MultiSelect", genericList).invoke(reportFilterTO);
+						Method setterMethod = c.getMethod("setP_Roster_Subtest_MultiSelect", new Class[] { List.class });
+						setterMethod.invoke(reportFilterTO, newObjectList);
+					}
+				} */ 
+				/*
+				 * else { // need to check if we should reset the subtest list | if yes uncomment this section reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, assessmentId,
+				 * "", reportUrl); }
+				 */
+				/** END : PATCH FOR STUDENT ROSTER */
+				/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
+				//String[] defaultValues = null;
+				//boolean checkDefault = false;
+				List<String> defaultInputNames = new ArrayList<String>();
+				Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
+				/* commenting as this is not needed for inors
+				try {
+					for (InputControlTO inputControlTO : allInputControls) {
+						for (IApplicationConstants.PATCH_FOR_SUBTEST subtest : IApplicationConstants.PATCH_FOR_SUBTEST.values()) {
+							if (subtest.name().equals(inputControlTO.getLabelId())) {
+								defaultInputNames.add(inputControlTO.getLabelId());
+								// get jasper report
+								List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
+								JasperReport jasperReport = getMainReport(jasperReports);
+								for (int i = 0; i < jasperReport.getParameters().length; i++) {
+									if (inputControlTO.getLabelId().equals(jasperReport.getParameters()[i].getName())) {
+										String value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
+										value = value.replace("Arrays.asList(", "");
+										value = value.replace(")", "");
+										value = value.replace("\"", "");
+										defaultValues = value.split(",");
+										checkDefault = true;
+										break;
+									}
+								}
+								defaultInputValues.put(inputControlTO.getLabelId(), defaultValues);
+								break;
+							}
 						}
 					}
-				}
-			} catch (Exception e) {
-				logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured or subtest multiselect : ", e.getMessage()));
-			}*/
-			/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
+				} catch (Exception e) {
+					logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured or subtest multiselect : ", e.getMessage()));
+				}*/
+				/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
-			// replace all parameters with jasper parameter string
-			Map<String, String> replacableParams = new HashMap<String, String>();
-			Iterator it = parameters.entrySet().iterator();
-			try {
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					if (pairs.getValue() != null && pairs.getValue() instanceof String) {
-						replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), (String) pairs.getValue());
+				// replace all parameters with jasper parameter string
+				Map<String, String> replacableParams = new HashMap<String, String>();
+				Iterator it = parameters.entrySet().iterator();
+				try {
+					while (it.hasNext()) {
+						Map.Entry pairs = (Map.Entry) it.next();
+						if (pairs.getValue() != null && pairs.getValue() instanceof String) {
+							replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), (String) pairs.getValue());
+						}
 					}
+					// Update replacable params with request parameters -- TODO need to check for multiselect values
+					for (InputControlTO inputTO : allInputControls) {
+						String param = req.getParameter(inputTO.getLabelId());
+						replacableParams.put(CustomStringUtil.getJasperParameterString(inputTO.getLabelId()), param);
+					}
+				} catch (Exception e) {
+					logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.", e);
 				}
-				// Update replacable params with request parameters -- TODO need to check for multiselect values
-				for (InputControlTO inputTO : allInputControls) {
-					String param = req.getParameter(inputTO.getLabelId());
-					replacableParams.put(CustomStringUtil.getJasperParameterString(inputTO.getLabelId()), param);
-				}
-			} catch (Exception e) {
-				logger.log(IAppLogger.WARN, "Some error occuered getting cascading values.", e);
-			}
 
-			// get list of cascading input controls
-			//long start1 = System.currentTimeMillis();
-			List<InputControlTO> allCascading = getCascadingInputControls(allInputControls, changedObj);
-			List<ObjectValueTO> objectValueList = recurrsiveCascading(reportUrl, allInputControls, allCascading, new ArrayList<ObjectValueTO>(), currentUser, changedObj, changedValue,
-					replacableParams, tabCount, reportFilterTO, defaultInputValues, defaultInputNames, req);
-			//long end1 = System.currentTimeMillis();
-			//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start1)+" <<<< Time Taken: recurrsiveCascading  >>>> " );
-			String jsonStr = JsonUtil.convertToJson(objectValueList);
-			jsonStr = CustomStringUtil.appendString("[", jsonStr.replace("\"", "\\\""), "]");
-			// return json string to page
-			// res.setContentType("application/json");
-			// res.getWriter().write( jsonStr );
-			res.setContentType("text/plain");
-			// res.getWriter().write( objectValueList.get(0).getValue() );
-			String status = "Fail";
-			//String optionValue = "";
-			//String optionName = "";
-			if (objectValueList != null && objectValueList.size() > 0) {
-				status = "Success";
-				//optionValue = objectValueList.get(0).getValue();
-				//optionName = objectValueList.get(0).getName();
+				// get list of cascading input controls
+				//long start1 = System.currentTimeMillis();
+				List<InputControlTO> allCascading = getCascadingInputControls(allInputControls, changedObj);
+				List<ObjectValueTO> objectValueList = recurrsiveCascading(reportUrl, allInputControls, allCascading, new ArrayList<ObjectValueTO>(), currentUser, changedObj, changedValue,
+						replacableParams, tabCount, reportFilterTO, defaultInputValues, defaultInputNames, req);
+				//long end1 = System.currentTimeMillis();
+				//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start1)+" <<<< Time Taken: recurrsiveCascading  >>>> " );
+				String jsonStr = JsonUtil.convertToJson(objectValueList);
+				jsonStr = CustomStringUtil.appendString("[", jsonStr.replace("\"", "\\\""), "]");
+				// return json string to page
+				// res.setContentType("application/json");
+				// res.getWriter().write( jsonStr );
+				res.setContentType("text/plain");
+				// res.getWriter().write( objectValueList.get(0).getValue() );
+				String status = "Fail";
+				//String optionValue = "";
+				//String optionName = "";
+				if (objectValueList != null && objectValueList.size() > 0) {
+					status = "Success";
+					//optionValue = objectValueList.get(0).getValue();
+					//optionName = objectValueList.get(0).getName();
+				}
+				// res.getWriter().write( "{\"status\":\""+status+"\", \"target\":\""+optionName+"\", \"inputDom\":\""+optionValue+"\"}" );
+				res.getWriter().write("{\"status\":\"" + status + "\", \"dom\":\"" + jsonStr + "\"}");
+				
+				//long end = System.currentTimeMillis();
+				//System.out.println(CustomStringUtil.getHMSTimeFormat(end - start)+" <<<< Time Taken: Cascading >>>> " + changedObj );
 			}
-			// res.getWriter().write( "{\"status\":\""+status+"\", \"target\":\""+optionName+"\", \"inputDom\":\""+optionValue+"\"}" );
-			res.getWriter().write("{\"status\":\"" + status + "\", \"dom\":\"" + jsonStr + "\"}");
 			
-			//long end = System.currentTimeMillis();
-			//System.out.println(CustomStringUtil.getHMSTimeFormat(end - start)+" <<<< Time Taken: Cascading >>>> " + changedObj );
 		} catch (SystemException e) {
 			res.getWriter().write("{\"status\":\"Fail\"}");
 			e.printStackTrace();
