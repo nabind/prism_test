@@ -26,6 +26,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class contains application specific utility methods. This class is not meant to be sub-classed. All the methods declared in this class are static.
@@ -384,6 +385,19 @@ public final class Utils {
 	 */
 	public static String convertSpecialCharToHtmlChar(String input) {
 		return HtmlUtils.htmlEscape(input);
+	}
+	
+	public static String encryptData(String data){		
+		byte[] bytesEncoded = Base64.encodeBase64(data .getBytes());
+		return new String(bytesEncoded );
+		//System.out.println("ecncoded value is " + new String(bytesEncoded ));
+	}
+	
+	public static String decryptData(String data){
+		byte[] bytesEncoded = data.getBytes();
+		byte[] valueDecoded = Base64.decodeBase64(bytesEncoded );
+		return new String(valueDecoded );
+		//System.out.println("Decoded value is " + new String(valueDecoded));
 	}
 
 }
