@@ -25,14 +25,9 @@ $(document).ready(function() {
 			$('.performance-level-dnp').off().on('click', function(){
 				showHideItems('#studentTableRRF',$(this));
 			});
-			$('.rescore-date-dnp').off().focusout(function(){
+			runDatePickerScripts($(".rescore-date-dnp"));
+			$(".rescore-date-dnp").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF',$(this));
-		    });
-			$('.rescore-date-dnp').on().focusin(function(){
-				oldDate = $(this).val();
-				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
-					$(this).val('');
-				}
 		    });
 		}
 	});
@@ -56,16 +51,10 @@ $(document).ready(function() {
 			$('.performance-level').off().on('click', function(){
 				showHideItems('#studentTableRRF_2',$(this));
 			});
-			
-			$('.rescore-date').off().focusout(function(){
+			runDatePickerScripts($(".rescore-date"));
+			$(".rescore-date").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF_2',$(this));
 			});
-			$('.rescore-date').on().focusin(function(){
-				oldDate = $(this).val();
-				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
-					$(this).val('');
-				}
-		    });
 			
 			$('.remove-student').off().on('click', function(){
 				removeStudent($(this));
@@ -91,6 +80,7 @@ function resetRequestedDate(obj,callback){
 		url : 'resetItemDate.do',
 		data : urlData,
 		dataType : 'json',
+		async: false,
 		cache: false,
 		success : function(data) {
 			unblockUI();
@@ -469,6 +459,7 @@ function addStudent(){
 			}else{
 				$.modal.alert(ERROR_MESSAGE);
 			}
+			runDatePickerScripts($(".rescore-date"));
 		},
 		error : function(data) {	
 			$.modal.alert(ERROR_MESSAGE);
@@ -490,6 +481,32 @@ function addStudent(){
 	$('#selectStudentRRF').trigger('update-select-list');
 }
 
+function runDatePickerScripts(e) {
+	e.datepicker({
+		showButtonPanel : true,
+		beforeShow : function(input) {
+			setTimeout(function() {
+				var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
+				buttonPane.empty();
+				var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button" style="margin-left: 85px;">Clear</button>');
+				btn.unbind("click").bind("click", function() {
+					$.datepicker._clearDate(input);
+				});
+				btn.appendTo(buttonPane);
+			}, 1);
+			oldDate = e.val();
+			if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
+				//e.val('');
+				$.datepicker._clearDate(input);
+			}
+		},
+		showOn: "button",
+		buttonImage: "themes/acsi/img/calendar.png",
+		buttonImageOnly: true
+	});
+	e.attr("style", "width: 100px; color: #000000;");
+	$(".ui-datepicker-trigger").attr("style", "width: 20px; height: 20px; cursor: pointer;");
+}
 
 function isDate(txtDate){
     var currVal = txtDate;
