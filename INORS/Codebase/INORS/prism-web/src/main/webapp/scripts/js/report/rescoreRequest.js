@@ -292,12 +292,12 @@ function addStudent(){
 				
 				var parentRescoreDate = '';
 				if(data.requestedDate =='-1'){
-					parentRescoreDate ='<input type="text" class="rescore-date"'
+					parentRescoreDate ='<input type="text" class="rescore-date" readonly="true"'
 							+' studentBioId="'+data.studentBioId+'"' 
 							+' id="rescoreDate_'+data.studentBioId+'"'
 							+' value="" />';
 				}else{
-					parentRescoreDate ='<input type="text" class="rescore-date"'
+					parentRescoreDate ='<input type="text" class="rescore-date" readonly="true"'
 						+' studentBioId="'+data.studentBioId+'"' 
 						+' id="rescoreDate_'+data.studentBioId+'"'
 						+' value="'+data.requestedDate+'" />';

@@ -66,14 +66,14 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
-						    			<input type="text" readonly='true'
+						    			<input type="text" readonly="true"
 						    				class="rescore-date-dnp"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 							    			value="" /> 
 						    		</c:when>
 						    		<c:otherwise>
-						    			<input type="text" readonly='true'
+						    			<input type="text" readonly="true"
 						    				class="rescore-date-dnp"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
@@ -286,14 +286,14 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
-						    			<input type="text" readonly='true'
+						    			<input type="text" readonly="true"
 						    				class="rescore-date"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 							    			value="" /> 
 						    		</c:when>
 						    		<c:otherwise>
-						    			<input type="text" readonly='true'
+						    			<input type="text" readonly="true"
 						    				class="rescore-date"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
