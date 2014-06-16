@@ -9,6 +9,9 @@ import net.sf.jasperreports.engine.JRChart;
 import net.sf.jasperreports.engine.JRChartCustomizer;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
@@ -40,11 +43,24 @@ public class Chart2D implements JRChartCustomizer
 	    renderer.setBaseItemLabelsVisible(true);
 	    renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_CENTER));
 	    
+	       
 	    //to remove the grid lines
 	    plot.setRangeGridlinesVisible(false);
 	    
 	    //to remove extra space around the plot area
-	    plot.setAxisOffset(new RectangleInsets(-5, -10, -8,  0));
+	    plot.setAxisOffset(new RectangleInsets(-5, -10, -5, 0));
+	    
+	  //to hide the x(category axis) axis
+	    CategoryAxis categoryAxis =  plot.getDomainAxis();
+	    categoryAxis.setVisible(false);
+        categoryAxis.setAxisLineVisible(false);
+        categoryAxis.setTickMarksVisible(false);
+        
+        //to hide y(value axis ) axis
+	    ValueAxis valueAxis  =  plot.getRangeAxis();
+	    valueAxis.setVisible(false);
+	    valueAxis.setAxisLineVisible(false);
+	    valueAxis.setTickMarksVisible(false);
 	  
 	    System.out.println("Chart printed!!!!");
 	}
