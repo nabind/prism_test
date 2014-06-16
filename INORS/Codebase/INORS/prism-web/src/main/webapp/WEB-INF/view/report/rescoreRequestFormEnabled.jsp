@@ -231,7 +231,7 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
-		<div class="columns accordion with-padding">
+		<div class="columns accordion with-padding" style="z-index: 0;">
 			<p class="button-height">
 				Students Pass/Pass+/UND  in all content areas:<br />
 				<select id="selectStudentRRF" name="" class="select navy-gradient expandable-list float-left" style="width: 250px;">
