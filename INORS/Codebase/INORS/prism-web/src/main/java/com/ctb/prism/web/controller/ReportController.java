@@ -422,13 +422,15 @@ public class ReportController extends BaseDAO {
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 			exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, out);
 			String printSession = net.sf.jasperreports.j2ee.servlets.ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE + reportId;
-			//req.getSession().setAttribute(printSession, jasperPrint);
+			req.getSession().setAttribute(printSession, jasperPrint);
 			/** session to cache **/
 			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
 					reportUrl, jasperPrint);*/
 			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?jrprint=" + printSession + "&image=");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, "");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, "");
+			
+			
 
 			// for pagination
 			int noOfPages = jasperPrint.getPages().size();
