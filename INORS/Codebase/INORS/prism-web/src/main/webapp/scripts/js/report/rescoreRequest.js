@@ -28,6 +28,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date-dnp"));
 			$(".rescore-date-dnp").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF',$(this));
+				$(".rescore-date-dnp").attr("style", "width: 100px; float: right;");
 		    });
 		}
 	});
@@ -54,6 +55,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date"));
 			$(".rescore-date").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF_2',$(this));
+				$(".rescore-date").attr("style", "width: 100px; float: right;");
 			});
 			
 			$('.remove-student').off().on('click', function(){
@@ -292,15 +294,15 @@ function addStudent(){
 				
 				var parentRescoreDate = '';
 				if(data.requestedDate =='-1'){
-					parentRescoreDate ='<input type="text" class="rescore-date" readonly="true"'
+					parentRescoreDate ='<span class="input"><input type="text" class="rescore-date input-unstyled" readonly="true"'
 							+' studentBioId="'+data.studentBioId+'"' 
 							+' id="rescoreDate_'+data.studentBioId+'"'
-							+' value="" />';
+							+' value="" /></span>';
 				}else{
-					parentRescoreDate ='<input type="text" class="rescore-date" readonly="true"'
+					parentRescoreDate ='<span class="input"><input type="text" class="rescore-date input-unstyled" readonly="true"'
 						+' studentBioId="'+data.studentBioId+'"' 
 						+' id="rescoreDate_'+data.studentBioId+'"'
-						+' value="'+data.requestedDate+'" />';
+						+' value="'+data.requestedDate+'" /></span>';
 				}
 				
 				var jsonSubtestList = data.rescoreSubtestTOList;
@@ -493,19 +495,33 @@ function runDatePickerScripts(e) {
 					$.datepicker._clearDate(input);
 				});
 				btn.appendTo(buttonPane);
+				oldDate = $(input).val();
+				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
+					$.datepicker._clearDate(input);
+				}
 			}, 1);
-			oldDate = e.val();
-			if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
-				//e.val('');
-				$.datepicker._clearDate(input);
-			}
+		},
+		onChangeMonthYear : function(year, month, instance) {
+			setTimeout(function() {
+				var buttonPane = $(instance).datepicker("widget").find(".ui-datepicker-buttonpane");
+				buttonPane.empty();
+				var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button" style="margin-left: 85px;">Clear</button>');
+				btn.unbind("click").bind("click", function() {
+					$.datepicker._clearDate(instance.input);
+				});
+				btn.appendTo(buttonPane);
+				oldDate = $(instance).val();
+				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
+					$.datepicker._clearDate(input);
+				}
+			}, 1);
 		},
 		showOn: "button",
 		buttonImage: "themes/acsi/img/calendar.png",
 		buttonImageOnly: true
 	});
-	e.attr("style", "width: 100px; color: #000000;");
-	$(".ui-datepicker-trigger").attr("style", "width: 20px; height: 20px; cursor: pointer;");
+	e.attr("style", "width: 100px; float: right;");
+	$(".ui-datepicker-trigger").attr("style", "margin: 7px 10px 0px 0px; width: 16px; height: 16px; cursor: pointer;");
 }
 
 function isDate(txtDate){

@@ -66,18 +66,22 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
+						    		<span class="input">
 						    			<input type="text" readonly="true"
-						    				class="rescore-date-dnp"
+						    				class="rescore-date-dnp input-unstyled"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 							    			value="" /> 
+							    	</span>
 						    		</c:when>
 						    		<c:otherwise>
+						    		<span class="input">
 						    			<input type="text" readonly="true"
-						    				class="rescore-date-dnp"
+						    				class="rescore-date-dnp input-unstyled"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 						    				value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    		</span>
 						    		</c:otherwise>
 						    	</c:choose>
 						    </td>
@@ -286,18 +290,22 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
+						    		<span class="input">
 						    			<input type="text" readonly="true"
-						    				class="rescore-date"
+						    				class="rescore-date input-unstyled"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 							    			id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
-							    			value="" /> 
+							    			value="" />
+							    	</span> 
 						    		</c:when>
 						    		<c:otherwise>
+						    		<span class="input">
 						    			<input type="text" readonly="true"
-						    				class="rescore-date"
+						    				class="rescore-date input-unstyled"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
 						    				id="rescoreDate_${rescoreRequestStudentTO.studentBioId}" 
 						    				value="${rescoreRequestStudentTO.requestedDate}" /> 
+						    		</span>
 						    		</c:otherwise>
 						    	</c:choose>
 						    </td>
