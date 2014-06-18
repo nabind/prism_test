@@ -6,7 +6,7 @@
  */
 var ANIMATION_TIME = 200;
 var ERROR_MESSAGE = "Error Occured";
-var DATE_VALIDATION_ERROR_MESSAGE = "Enter valid date";
+var DATE_VALIDATION_ERROR_MESSAGE = "Invalid date";
 var DATE_RANGE_ERROR_MESSAGE = "Entered date is greater than today's date.";
 var oTable = "";
 var oldDate = "";
