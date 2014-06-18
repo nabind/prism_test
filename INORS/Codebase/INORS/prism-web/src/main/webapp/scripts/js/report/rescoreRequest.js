@@ -28,7 +28,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date-dnp"));
 			$(".rescore-date-dnp").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF',$(this));
-				$(".rescore-date-dnp").attr("style", "width: 100px; float: right;");
+				$(".rescore-date-dnp").attr("style", "width: 100px; float: right; cursor:default;");
 		    });
 		}
 	});
@@ -55,7 +55,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date"));
 			$(".rescore-date").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF_2',$(this));
-				$(".rescore-date").attr("style", "width: 100px; float: right;");
+				$(".rescore-date").attr("style", "width: 100px; float: right; cursor:default;");
 			});
 			
 			$('.remove-student').off().on('click', function(){
@@ -112,8 +112,9 @@ function activeInactiveItems(containerId,obj){
 	var requestedDate =  $(obj).val();
 	if(requestedDate.length > 0){
 		if(isDate(requestedDate)){
-	    	$(obj).css('background-color','white');
-	    	$(obj).css('color','#666666');
+	    	//$(obj).css('background-color','white');
+	    	//$(obj).css('color','#666666');
+			$(obj).closest("span").attr("class", "input");
 	    	$(obj).val();
 	    	if(oldDate != requestedDate) {
 	    		resetRequestedDate(obj,function(returnVal){
@@ -130,9 +131,10 @@ function activeInactiveItems(containerId,obj){
 	    		$(containerId+' .item-div-inact-'+studentBioId).show();
 	    	}
 	    }else{
-	    	$(obj).css('background-color','red');
+	    	//$(obj).css('background-color','red');
 	    	$(obj).val(DATE_VALIDATION_ERROR_MESSAGE);
-	    	$(obj).css('color','white');
+	    	//$(obj).css('color','white');
+	    	$(obj).closest("span").attr("class", "input red-bg");
 	    	$(containerId+' .item-div-inact-'+studentBioId).show();
 	    }
 	}else{
@@ -147,8 +149,9 @@ function activeInactiveItems(containerId,obj){
 					//Transaction failure portion - no risk because the items will be inactivated irrespective of transaction state.
 				}
 			});
-			$(obj).css('background-color','white');
-			$(obj).css('color','#666666');
+			//$(obj).css('background-color','white');
+			//$(obj).css('color','#666666');
+			$(obj).closest("span").attr("class", "input");
 			$(containerId+' .item-div-inact-'+studentBioId).show();
 		} else {
 			$(containerId+' .item-div-inact-'+studentBioId).show();
@@ -208,9 +211,10 @@ function submitRescoreRequest(containerId,obj){
 			}
 		});
     }else{
-    	$(containerId+' #rescoreDate_'+studentBioId).css('background-color','red');
+    	//$(containerId+' #rescoreDate_'+studentBioId).css('background-color','red');
     	$(containerId+' #rescoreDate_'+studentBioId).val(DATE_VALIDATION_ERROR_MESSAGE);
-    	$(containerId+' #rescoreDate_'+studentBioId).css('color','white');
+    	//$(containerId+' #rescoreDate_'+studentBioId).css('color','white');
+    	$(containerId+' #rescoreDate_'+studentBioId).closest("span").attr("class", "input red-bg");
     }	
 }
 
@@ -487,6 +491,10 @@ function runDatePickerScripts(e) {
 	e.datepicker({
 		showButtonPanel : true,
 		beforeShow : function(input) {
+			oldDate = $(input).val();
+			if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
+				$.datepicker._clearDate(input);
+			}
 			setTimeout(function() {
 				var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
 				buttonPane.empty();
@@ -495,13 +503,13 @@ function runDatePickerScripts(e) {
 					$.datepicker._clearDate(input);
 				});
 				btn.appendTo(buttonPane);
-				oldDate = $(input).val();
-				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
-					$.datepicker._clearDate(input);
-				}
 			}, 1);
 		},
 		onChangeMonthYear : function(year, month, instance) {
+			oldDate = $(instance).val();
+			if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
+				$.datepicker._clearDate(input);
+			}
 			setTimeout(function() {
 				var buttonPane = $(instance).datepicker("widget").find(".ui-datepicker-buttonpane");
 				buttonPane.empty();
@@ -510,15 +518,12 @@ function runDatePickerScripts(e) {
 					$.datepicker._clearDate(instance.input);
 				});
 				btn.appendTo(buttonPane);
-				oldDate = $(instance).val();
-				if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
-					$.datepicker._clearDate(input);
-				}
 			}, 1);
 		},
 		showOn: "button",
 		buttonImage: "themes/acsi/img/calendar.png",
-		buttonImageOnly: true
+		buttonImageOnly: true,
+		buttonText: "Click here to select Parent-Rescore Date"
 	});
 	e.attr("style", "width: 100px; float: right;");
 	$(".ui-datepicker-trigger").attr("style", "margin: 7px 10px 0px 0px; width: 16px; height: 16px; cursor: pointer;");
