@@ -30,6 +30,9 @@ $(document).ready(function() {
 				activeInactiveItems('#studentTableRRF',$(this));
 				$(".rescore-date-dnp").attr("style", "width: 70px; float: right; cursor:default;");
 		    });
+			$(".rescore-date-dnp").on("focus", function(event) {
+				$(this).blur();
+		    });
 		}
 	});
 	$( "#studentTableRRF_length > label" ).css( "cursor", "default" );
@@ -57,7 +60,9 @@ $(document).ready(function() {
 				activeInactiveItems('#studentTableRRF_2',$(this));
 				$(".rescore-date").attr("style", "width: 70px; float: right; cursor:default;");
 			});
-			
+			$(".rescore-date").on("focus", function(event) {
+				$(this).blur();
+		    });
 			$('.remove-student').off().on('click', function(){
 				removeStudent($(this));
 			});
@@ -525,7 +530,7 @@ function runDatePickerScripts(e) {
 		buttonImageOnly: true,
 		buttonText: "Click here to select Parent-Rescore Date"
 	});
-	e.attr("style", "width: 70px; float: right;");
+	e.attr("style", "width: 70px; float: right; cursor:default;");
 	$(".ui-datepicker-trigger").attr("style", "margin: 7px 10px 0px 0px; width: 16px; height: 16px; cursor: pointer;");
 }
 
