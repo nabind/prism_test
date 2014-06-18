@@ -506,10 +506,10 @@ function runDatePickerScripts(e) {
 			}, 1);
 		},
 		onChangeMonthYear : function(year, month, instance) {
-			oldDate = $(instance).val();
+			/*oldDate = $(instance).val();
 			if(oldDate == DATE_VALIDATION_ERROR_MESSAGE) {
 				$.datepicker._clearDate(input);
-			}
+			}*/
 			setTimeout(function() {
 				var buttonPane = $(instance).datepicker("widget").find(".ui-datepicker-buttonpane");
 				buttonPane.empty();
