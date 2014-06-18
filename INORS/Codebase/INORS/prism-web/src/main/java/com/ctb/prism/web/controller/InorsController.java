@@ -480,6 +480,7 @@ public class InorsController {
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
@@ -608,6 +609,8 @@ public class InorsController {
 					to.setCustomerId(customerId);
 					to.setOrgNodeLevel(orgNodeLevel);
 					to.setGroupFile(groupFile);
+					to.setUserId(currentUserId);
+					to.setUserName(currentUserName);
 					if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
 						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
 						studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
@@ -865,8 +868,8 @@ public class InorsController {
 			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId);
-			// inorsService.batchPDFDownload(jobTrackingId);
+			// messageProducer.sendJobForProcessing(jobTrackingId);
+			inorsService.batchPDFDownload(jobTrackingId);
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
 					jobTrackingId, "\"}");

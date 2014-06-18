@@ -946,7 +946,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" #"
 			);*/
 	
-	public static final String GET_STUDENT_TABLE_GD = CustomStringUtil.appendString(
+	/*public static final String GET_STUDENT_TABLE_GD = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID,",
 			" (SELECT ORG_NODE_NAME FROM ORG_NODE_DIM A WHERE A.ORG_NODEID = SBD.ORG_NODEID) CLASS,",
 			" SBD.STUDENT_LAST_NAME,",
@@ -979,7 +979,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
-			" #");
+			" #");*/
 	
 /*	public static final String GET_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID, CLASS.ORG_NODE_NAME CLASS, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME,",
@@ -1006,7 +1006,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);*/
 	
 	
-	public static final String GET_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
+	/*public static final String GET_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
 	"SELECT SBD.STUDENT_BIO_ID ID,",
 	" (SELECT ORG_NODE_NAME FROM ORG_NODE_DIM A WHERE A.ORG_NODEID = SBD.ORG_NODEID) CLASS,",
 	" SBD.STUDENT_LAST_NAME,",
@@ -1039,7 +1039,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	" AND SBD.CUST_PROD_ID = ? ",
 	" AND ISPUBLIC = ? ",
 	" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
-	" #");
+	" #");*/
 	
 		
 	/*public static final String GET_ALL_STUDENT_TABLE_GD = CustomStringUtil.appendString(
@@ -1066,7 +1066,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" #"
 			);*/
 	
-	public static final String GET_ALL_STUDENT_TABLE_GD = CustomStringUtil.appendString(
+	/*public static final String GET_ALL_STUDENT_TABLE_GD = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID,",
 			" (SELECT ORG_NODE_NAME FROM ORG_NODE_DIM A WHERE A.ORG_NODEID = SBD.ORG_NODEID) CLASS,",
 			" SBD.STUDENT_LAST_NAME,",
@@ -1099,10 +1099,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND SBD.CUST_PROD_ID = ? ",
 			" AND ISPUBLIC = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
-			" #");
+			" #");*/
 	
 	
-	public static final String GET_ALL_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
+	/*public static final String GET_ALL_STUDENT_TABLE_GD_ALL_GRADES = CustomStringUtil.appendString(
 			"SELECT SBD.STUDENT_BIO_ID ID,",
 			" (SELECT ORG_NODE_NAME FROM ORG_NODE_DIM A WHERE A.ORG_NODEID = SBD.ORG_NODEID) CLASS,",
 			" SBD.STUDENT_LAST_NAME,",
@@ -1136,7 +1136,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND ISPUBLIC = ? ",
 			" AND SBD.STUDENT_BIO_ID = IC.STUDENT_BIO_ID(+)",
 			" #"
-			);
+			);*/
 	public static final String GET_ALL_GRADES = "SELECT VC1 AS GRADEID FROM TABLE (SELECT SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL)";
 	public static final String GET_ALL_GRADE_NAMES = "SELECT VC2 AS GRADE_NAME FROM TABLE(SELECT  SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL) WHERE VC1 != -1 ORDER BY 1";
 	public static final String GET_SELECTED_CLASS_NAMES = CustomStringUtil.appendString(
@@ -1409,6 +1409,11 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 				);
 
 		public static final String UPDATE_JOB_TRACKING_STATUS = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATE WHERE JOB_ID = ?";
+		
+		public static final String SP_GET_STUDENTS_ALL_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_STUDENTS_ALL_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_STUDENTS_ONE_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_STUDENTS_ONE_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?)}";
 
 }
 

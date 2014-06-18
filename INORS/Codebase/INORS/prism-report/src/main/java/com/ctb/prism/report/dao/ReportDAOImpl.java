@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,10 +27,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -1252,22 +1254,20 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 
-		String schoolId = to.getSchool();
-		String classId = to.getKlass();
-		String gradeId = to.getGrade();
-		String testProgram = to.getTestProgram();
-		String collationHierarchy = to.getCollationHierarchy();
-		String groupFile = to.getGroupFile();
-		String customerId = to.getCustomerId();
-		String orgNodeLevel = to.getOrgNodeLevel();
-		String prodId = to.getTestAdministrationVal();
-		String custProdId = getCustProdId(customerId, prodId);
+		final String schoolId = to.getSchool();
+		final String classId = to.getKlass();
+		final String gradeId = to.getGrade();
+		final String testProgram = to.getTestProgram();
+		final String collationHierarchy = to.getCollationHierarchy();
+		final String groupFile = to.getGroupFile();
+		final String customerId = to.getCustomerId();
+		final String userId = to.getUserId();
+		String userName = to.getUserName();
 		if (testProgram == null || testProgram.isEmpty()) {
 			logger.log(IAppLogger.ERROR, "testProgram cannot be null or empty: " + testProgram);
 			logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
 			return studentList;
 		}
-		//String orgMode = IApplicationConstants.ORG_MODE_DESC[Integer.parseInt(testProgram)];
 
 		logger.log(IAppLogger.INFO, "schoolId = " + schoolId);
 		logger.log(IAppLogger.INFO, "classId = " + classId);
@@ -1275,97 +1275,191 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		logger.log(IAppLogger.INFO, "collationHierarchy = " + collationHierarchy);
 		logger.log(IAppLogger.INFO, "customerId = " + customerId);
-		//logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "userName = " + userName);
 
-		String stateOrgNodeId = getAncestorOrgNodeId(schoolId, 1);
-		String testAdministrationVal = to.getTestAdministrationVal();
-		String districtId = to.getDistrict();
+		final String testAdministrationVal = to.getTestAdministrationVal();
+		final String districtId = to.getDistrict();
 
-		logger.log(IAppLogger.INFO, "stateOrgNodeId = " + stateOrgNodeId);
 		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
 
-		String orderBy = "";
-		if (collationHierarchy != null) {
-			if ("11".equals(collationHierarchy)) {
-				//orderBy = "ORDER BY CLASS.ORG_NODE_NAME, SBD.LAST_NAME, SBD.FIRST_NAME, SBD.MIDDLE_NAME";
-				orderBy = "ORDER BY 2, SBD.STUDENT_LAST_NAME, SBD.STUDENT_FIRST_NAME, SBD.STUDENT_MIDDLE_INITIAL";
-			} else if ("12".equals(collationHierarchy)) {
-				orderBy = "ORDER BY SBD.STUDENT_LAST_NAME, SBD.STUDENT_FIRST_NAME, SBD.STUDENT_MIDDLE_INITIAL";
-			}
-		}
-
-		List<Map<String, Object>> dataList = null;
 		if ("-1".equals(classId)) {
 			if ((schoolId != null) && (!"undefined".equalsIgnoreCase(schoolId))) {
 				logger.log(IAppLogger.INFO, "ALL Classes");
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD_ALL_GRADES); 
-					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram,customerId);
-					String grades = Utils.convertListToCommaString(gradeList);
-					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
-					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, custProdId, testProgram });//
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G("+userId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ALL_C_ALL_G);
+							cs.setLong(1, Long.parseLong(userId));
+							cs.setLong(2, Long.parseLong(testAdministrationVal));
+							cs.setLong(3, Long.parseLong(districtId));
+							cs.setLong(4, Long.parseLong(schoolId));
+							cs.setLong(5, Long.parseLong(testProgram));
+							cs.setLong(6, Long.parseLong(customerId));
+							cs.setString(7, groupFile);
+							cs.setString(8, collationHierarchy);
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(9);
+								studentList = getStudentListFromResultSet(rs);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return studentList;
+						}
+					});
 				} else {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_ALL_STUDENT_TABLE_GD); 
-					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, /*SF_GET_CLASS_START*/stateOrgNodeId, testAdministrationVal, districtId, schoolId, gradeId, testProgram, customerId/*SF_GET_CLASS_END*/, gradeId, custProdId, testProgram});
+					logger.log(IAppLogger.INFO, "One Grade");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G("+userId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+gradeId+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ALL_C_ONE_G);
+							cs.setLong(1, Long.parseLong(userId));
+							cs.setLong(2, Long.parseLong(testAdministrationVal));
+							cs.setLong(3, Long.parseLong(districtId));
+							cs.setLong(4, Long.parseLong(schoolId));
+							cs.setLong(5, Long.parseLong(testProgram));
+							cs.setLong(6, Long.parseLong(customerId));
+							cs.setLong(7, Long.parseLong(gradeId));
+							cs.setString(8, collationHierarchy);
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(9);
+								studentList = getStudentListFromResultSet(rs);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return studentList;
+						}
+					});
 				}
 			}
 		} else {
+			logger.log(IAppLogger.INFO, "One Class");
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
 				if ("-1".equals(gradeId)) {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD_ALL_GRADES); 
-					List<String> gradeList = getAllGrades(stateOrgNodeId, testAdministrationVal, districtId, schoolId, groupFile, testProgram, customerId);
-					String grades = Utils.convertListToCommaString(gradeList);
-					query = CustomStringUtil.replaceCharacterInString('$', grades, query);
-					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, classId, custProdId, testProgram});
+					logger.log(IAppLogger.INFO, "ALL Grades");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G("+testAdministrationVal+", "+customerId+", "+userId+", "+districtId+", "+schoolId+", "+classId+", "+testProgram+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ONE_C_ALL_G);
+							cs.setLong(1, Long.parseLong(testAdministrationVal));
+							cs.setLong(2, Long.parseLong(customerId));
+							cs.setLong(3, Long.parseLong(userId));
+							cs.setLong(4, Long.parseLong(districtId));
+							cs.setLong(5, Long.parseLong(schoolId));
+							cs.setLong(6, Long.parseLong(classId));
+							cs.setLong(7, Long.parseLong(testProgram));
+							cs.setString(8, groupFile);
+							cs.setString(9, collationHierarchy);
+							cs.registerOutParameter(10, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(11, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(10);
+								studentList = getStudentListFromResultSet(rs);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return studentList;
+						}
+					});
 				} else {
-					String query = CustomStringUtil.replaceCharacterInString('#', orderBy, IQueryConstants.GET_STUDENT_TABLE_GD); 
-					logger.log(IAppLogger.INFO, query);
-					dataList = getJdbcTemplatePrism().queryForList(query, new Object[] { custProdId, custProdId, custProdId, custProdId, custProdId, custProdId, classId, gradeId, custProdId, testProgram });
+					logger.log(IAppLogger.INFO, "One Grade");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ONE_G("+testAdministrationVal+", "+customerId+""+classId+", "+testProgram+", "+gradeId+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ONE_C_ONE_G);
+							cs.setLong(1, Long.parseLong(testAdministrationVal));
+							cs.setLong(2, Long.parseLong(customerId));
+							cs.setLong(3, Long.parseLong(classId));
+							cs.setLong(4, Long.parseLong(testProgram));
+							cs.setLong(5, Long.parseLong(gradeId));
+							cs.setString(6, collationHierarchy);
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(7);
+								studentList = getStudentListFromResultSet(rs);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return studentList;
+						}
+					});
 				}
-			}
-		}
-		if ((dataList != null) && (!dataList.isEmpty())) {
-			for (Map<String, Object> data : dataList) {
-				String id = data.get("ID").toString();
-				String name = (String) data.get("NAME");
-				String klass = (String) data.get("CLASS");
-				String grade = (String) data.get("GRADE");
-				String ic = (String) data.get("IC");
-				String isr = (String) data.get("ISR");
-				String ip = (String) data.get("IP");
-				String icFlag = (String) data.get("IC_FLAG");
-				String isrFlag = (String) data.get("ISR_FLAG");
-				String ipFlag = (String) data.get("IP_FLAG");
-
-				logger.log(IAppLogger.DEBUG, "id = " + id);
-				logger.log(IAppLogger.DEBUG, "name = " + name);
-				logger.log(IAppLogger.DEBUG, "klass = " + klass);
-				logger.log(IAppLogger.DEBUG, "grade = " + grade);
-				logger.log(IAppLogger.DEBUG, "ic = " + ic);
-				logger.log(IAppLogger.DEBUG, "isr = " + isr);
-				logger.log(IAppLogger.DEBUG, "ip = " + ip);
-
-				GroupDownloadStudentTO student = new GroupDownloadStudentTO();
-				student.setId(id);
-				student.setName(name);
-				student.setKlass(klass);
-				student.setGrade(grade);
-				student.setIc(ic);
-				student.setIsr(isr);
-				student.setIp(ip);
-				student.setIcFlag(icFlag);
-				student.setIsrFlag(isrFlag);
-				student.setIpFlag(ipFlag);
-				studentList.add(student);
 			}
 		}
 		logger.log(IAppLogger.INFO, "studentList.size() = " + studentList.size());
 		logger.log(IAppLogger.INFO, "Exit: populateStudentTableGD()");
+		return studentList;
+	}
+	
+	private List<GroupDownloadStudentTO> getStudentListFromResultSet(ResultSet rs) throws SQLException {
+		List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+		while (rs.next()) {
+			String id = rs.getString("ID").toString();
+			String name = (String) rs.getString("NAME");
+			String klass = (String) rs.getString("CLASS");
+			String grade = (String) rs.getString("GRADE");
+			String ic = (String) rs.getString("IC");
+			String isr = (String) rs.getString("ISR");
+			String ip = (String) rs.getString("IP");
+			String icFlag = (String) rs.getString("IC_FLAG");
+			String isrFlag = (String) rs.getString("ISR_FLAG");
+			String ipFlag = (String) rs.getString("IP_FLAG");
+			logger.log(IAppLogger.DEBUG, "id = " + id);
+			logger.log(IAppLogger.DEBUG, "name = " + name);
+			logger.log(IAppLogger.DEBUG, "klass = " + klass);
+			logger.log(IAppLogger.DEBUG, "grade = " + grade);
+			logger.log(IAppLogger.DEBUG, "ic = " + ic);
+			logger.log(IAppLogger.DEBUG, "isr = " + isr);
+			logger.log(IAppLogger.DEBUG, "ip = " + ip);
+			GroupDownloadStudentTO student = new GroupDownloadStudentTO();
+			student.setId(id);
+			student.setName(name);
+			student.setKlass(klass);
+			student.setGrade(grade);
+			student.setIc(ic);
+			student.setIsr(isr);
+			student.setIp(ip);
+			student.setIcFlag(icFlag);
+			student.setIsrFlag(isrFlag);
+			student.setIpFlag(ipFlag);
+			studentList.add(student);
+		}
 		return studentList;
 	}
 
