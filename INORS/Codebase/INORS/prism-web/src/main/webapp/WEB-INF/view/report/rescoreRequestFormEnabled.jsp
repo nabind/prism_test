@@ -49,11 +49,11 @@
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math<br />Session 1</th>
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
 								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Science<br />Session 4</th>
 						    </c:when>
 						    <c:when test="${grade =='10003' || grade =='10005'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
 								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Social Studies<br />Session 4</th>
 						    </c:when>
 						</c:choose>
@@ -66,7 +66,7 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
-						    		<span class="input">
+						    		<span class="input" style="width: 100px;">
 						    			<input type="text" readonly="true"
 						    				class="rescore-date-dnp input-unstyled"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
@@ -75,7 +75,7 @@
 							    	</span>
 						    		</c:when>
 						    		<c:otherwise>
-						    		<span class="input">
+						    		<span class="input" style="width: 100px;">
 						    			<input type="text" readonly="true"
 						    				class="rescore-date-dnp input-unstyled"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 
@@ -267,11 +267,11 @@
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math<br />Session 1</th>
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
 								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Science<br />Session 4</th>
 						    </c:when>
 						    <c:when test="${grade =='10003' || grade =='10005'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
 								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Social Studies<br />Session 4</th>
 						    </c:when>
 						</c:choose>
@@ -290,7 +290,7 @@
 						    <td class="vertical-center">
 						    	<c:choose>
 						    		<c:when test="${rescoreRequestStudentTO.requestedDate =='-1'}">
-						    		<span class="input">
+						    		<span class="input" style="width: 100px;">
 						    			<input type="text" readonly="true"
 						    				class="rescore-date input-unstyled"
 						    				studentBioId="${rescoreRequestStudentTO.studentBioId}" 
@@ -299,7 +299,7 @@
 							    	</span> 
 						    		</c:when>
 						    		<c:otherwise>
-						    		<span class="input">
+						    		<span class="input" style="width: 100px;">
 						    			<input type="text" readonly="true"
 						    				class="rescore-date input-unstyled"
 											studentBioId="${rescoreRequestStudentTO.studentBioId}" 

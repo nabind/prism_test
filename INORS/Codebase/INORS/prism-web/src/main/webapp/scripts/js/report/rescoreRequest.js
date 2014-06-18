@@ -28,7 +28,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date-dnp"));
 			$(".rescore-date-dnp").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF',$(this));
-				$(".rescore-date-dnp").attr("style", "width: 100px; float: right; cursor:default;");
+				$(".rescore-date-dnp").attr("style", "width: 70px; float: right; cursor:default;");
 		    });
 		}
 	});
@@ -55,7 +55,7 @@ $(document).ready(function() {
 			runDatePickerScripts($(".rescore-date"));
 			$(".rescore-date").on("change", function(event) {
 				activeInactiveItems('#studentTableRRF_2',$(this));
-				$(".rescore-date").attr("style", "width: 100px; float: right; cursor:default;");
+				$(".rescore-date").attr("style", "width: 70px; float: right; cursor:default;");
 			});
 			
 			$('.remove-student').off().on('click', function(){
@@ -298,12 +298,12 @@ function addStudent(){
 				
 				var parentRescoreDate = '';
 				if(data.requestedDate =='-1'){
-					parentRescoreDate ='<span class="input"><input type="text" class="rescore-date input-unstyled" readonly="true"'
+					parentRescoreDate ='<span class="input" style="width: 100px;"><input type="text" class="rescore-date input-unstyled" readonly="true"'
 							+' studentBioId="'+data.studentBioId+'"' 
 							+' id="rescoreDate_'+data.studentBioId+'"'
 							+' value="" /></span>';
 				}else{
-					parentRescoreDate ='<span class="input"><input type="text" class="rescore-date input-unstyled" readonly="true"'
+					parentRescoreDate ='<span class="input" style="width: 100px;"><input type="text" class="rescore-date input-unstyled" readonly="true"'
 						+' studentBioId="'+data.studentBioId+'"' 
 						+' id="rescoreDate_'+data.studentBioId+'"'
 						+' value="'+data.requestedDate+'" /></span>';
@@ -525,7 +525,7 @@ function runDatePickerScripts(e) {
 		buttonImageOnly: true,
 		buttonText: "Click here to select Parent-Rescore Date"
 	});
-	e.attr("style", "width: 100px; float: right;");
+	e.attr("style", "width: 70px; float: right;");
 	$(".ui-datepicker-trigger").attr("style", "margin: 7px 10px 0px 0px; width: 16px; height: 16px; cursor: pointer;");
 }
 
