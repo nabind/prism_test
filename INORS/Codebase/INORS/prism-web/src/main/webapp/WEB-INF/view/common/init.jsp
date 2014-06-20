@@ -213,16 +213,22 @@
 				$.each(secondLevelMenu, function(index, value) { 
 					$('#select-tooltip-'+index).removeTooltip(true, true);
 				});
-				//Fix for TD 77474 - remove tooltip
+				//Fix for TD 77474 - remove tooltip By Joy
 				$("a[class*='refreh-button-']").removeTooltip();
 				$(".customRefresh").removeTooltip();
+				
+				//Fix to remove calender from RRF - By Joy
+				$('.report-frame').contents().find('.ui-datepicker').hide();
 			});
 			
-			//Fix for TD 77474 - remove tooltip
+			//Fix for TD 77474 - remove tooltip By Joy
 			// To remove tooltip by clicking on report Tab
 			$("li[id^='new-tab']").live("click", function() { 
 				$("a[class*='refreh-button-']").removeTooltip();
                 $(".customRefresh").removeTooltip(); 
+                
+              	//Fix to remove calender from RRF - By Joy
+                $('.report-frame').contents().find('.ui-datepicker').hide();
         	}); 
 			
 		});
