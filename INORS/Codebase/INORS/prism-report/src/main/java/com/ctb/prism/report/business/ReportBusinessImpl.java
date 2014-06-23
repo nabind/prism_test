@@ -62,7 +62,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		if (jasperReport != null 
 				&& ("Rescore Request Form".equals(jasperReport.getName().trim()) 
 						|| "Invitation Pdf".equals(jasperReport.getName().trim()))
-						|| "Rescore Request Log".equals(jasperReport.getName().trim())) {
+						|| "Rescore Request Log".equals(jasperReport.getName().trim())
+						|| "Rescore Request Summary".equals(jasperReport.getName().trim())) {
 			return reportDAO.getFilledReportIC(jasperReport, parameters);
 		} else {
 			return reportDAO.getFilledReport(jasperReport, parameters);
