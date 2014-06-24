@@ -590,113 +590,168 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
+	@SuppressWarnings("unchecked")
 	@Cacheable(value="adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
-		String orgId = (String) paramMap.get("scrollId");
-		String adminYear = (String) paramMap.get("adminYear");
-		String searchParam = (String) paramMap.get("searchParam");
-		long customerId = (Long) paramMap.get("currCustomer");
-		String orgMode = (String) paramMap.get("orgMode");
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
+		final String orgId = (String) paramMap.get("scrollId");
+		final String adminYear = (String) paramMap.get("adminYear");
+		final String searchParam = (String) paramMap.get("searchParam");
+		final long customerId = (Long) paramMap.get("currCustomer");
+		final String orgMode = (String) paramMap.get("orgMode");
 
-		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
-		String studentNameAndId = "";
-		String tenantId = "";
-		List<Map<String, Object>> lstData = null;
-		if (orgId.lastIndexOf("|") > 0) {
-			tenantId = orgId.substring((orgId.lastIndexOf("|") + 1), orgId.length());
-			studentNameAndId = orgId.substring(0, orgId.lastIndexOf("|"));
-			if (searchParam != null && searchParam.trim().length() > 0) {
-				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism()
-						.queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, 
-								adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId, searchParam, adminYear);
-			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_SCROLL, 
-						adminYear, customerId, orgMode, customerId, tenantId, studentNameAndId, adminYear);
-			}
-
-		} else {
-			tenantId = orgId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_DETAILS_ON_FIRST_LOAD, orgMode, adminYear, tenantId, customerId, adminYear);
-			logger.log(IAppLogger.DEBUG, lstData.size() + "");
-		}
-
-		if (lstData.size() > 0) {
-			studentTOs = new ArrayList<StudentTO>();
-			for (Map<String, Object> fieldDetails : lstData) {
-				StudentTO to = new StudentTO();
-				long studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue();
-
-				to.setStudentBioId(studentBioId);
-
-				//Fix for TD 78028 - By Joy
-				to.setTestElementId((String) (fieldDetails.get("TESTELEMENTID")));
-				if (getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId) != null) {
-					to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
-				} else {
-					to.setParentAccount(Collections.<ParentTO> emptyList());
+		ArrayList<StudentTO> studentTOs = null;
+		try {
+			studentTOs = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					if (orgId.lastIndexOf("|") > 0) {
+						String tenantId = orgId.substring((orgId.lastIndexOf("|") + 1), orgId.length());
+						String studentNameAndId = orgId.substring(0, orgId.lastIndexOf("|"));
+						if (searchParam != null && searchParam.trim().length() > 0) {
+							String searchParamNew = CustomStringUtil.appendString("%", searchParam, "%");
+							cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+							cs.setString(1, adminYear);
+							cs.setLong(2,customerId);
+							cs.setString(3, orgMode);
+							cs.setString(4, tenantId);
+							cs.setString(5, studentNameAndId);
+							cs.setString(6, searchParamNew);
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						} else {
+							cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+							cs.setString(1, adminYear);
+							cs.setLong(2,customerId);
+							cs.setString(3, orgMode);
+							cs.setString(4, tenantId);
+							cs.setString(5, studentNameAndId);
+							cs.setString(6, "-99");
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					} else {
+						String tenantId = orgId;
+						cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+						cs.setString(1, adminYear);
+						cs.setLong(2,customerId);
+						cs.setString(3, orgMode);
+						cs.setString(4, tenantId);
+						cs.setString(5, "-99");
+						cs.setString(6, "-99");
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
 				}
-				//As data type of TESTELEMENTID 
-				//to.setStructureElement(String.valueOf((BigDecimal) (fieldDetails.get("TESTELEMENTID"))));
-				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
-				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
-				to.setStudentMode((String) (fieldDetails.get("STUDENT_MODE")));
-				to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
-				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
-				tenantId = (tenantId == null) ? tenantId = "0" : tenantId;
-				to.setClikedOrgId(Long.parseLong(tenantId));
-				studentTOs.add(to);
-			}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(7);
+						StudentTO studentTO = null;
+						while (rs.next()){
+							studentTO = new StudentTO();
+							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							//Fix for TD 78028 - By Joy
+							studentTO.setTestElementId(rs.getString("TESTELEMENTID"));
+							studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							studentTO.setStudentName(rs.getString("STUDENTNAME"));
+							studentTO.setGrade(rs.getString("STUDENTGRADE"));
+							studentTO.setStudentMode(rs.getString("STUDENT_MODE"));
+							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
+							studentTO.setOrgName(rs.getString("SCHOOL"));
+							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
+							studentTOResult.add(studentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(8));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getStudentList() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getStudentList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-
 		return studentTOs;
 	}
 
-	/**
-	 * @param studentBioId
-	 * @param customerId
-	 * @return
-	 */
-	//Fix for TD 78028 - By Joy [Block the code for further confusion]
-	/*private ArrayList<ParentTO> getParentAccountDetails(String studentBioId, long customerId) {
-
-		ArrayList<ParentTO> parentTOs = null;
-		List<Map<String, Object>> parentAccountData = null;
-		if (studentBioId != null) {
-			parentAccountData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_FOR_CHILDREN, studentBioId, customerId);
-
-			if (parentAccountData.size() > 0) {
-				parentTOs = new ArrayList<ParentTO>();
-				for (Map<String, Object> fieldDetails : parentAccountData) {
-					ParentTO to = new ParentTO();
-					to.setUserName((String) (fieldDetails.get("USERNAME")));
-					to.setStatus((String) (fieldDetails.get("STATUS")));
-					parentTOs.add(to);
-				}
-			}
-		}
-		return parentTOs;
-	}*/
-	
-	private ArrayList<ParentTO> getParentAccountDetailsByTestElementId(String testElementId, long customerId) {
-		ArrayList<ParentTO> parentTOs = null;
-		List<Map<String, Object>> parentAccountData = null;
+	//Moved to PKG_MANAGE_STUDENT by Joy
+	//Fix for TD 78028 - By Joy
+	@SuppressWarnings("unchecked")
+	private ArrayList<ParentTO> getParentAccountDetailsByTestElementId(final String testElementId,final long customerId) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getParentAccountDetailsByTestElementId()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
+		//If no parent found for associated student the the method will return empty object of ArrayList
+		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
 		if (testElementId != null) {
-			parentAccountData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_FOR_CHILDREN, testElementId, customerId);
-			if (parentAccountData.size() > 0) {
-				parentTOs = new ArrayList<ParentTO>();
-				for (Map<String, Object> fieldDetails : parentAccountData) {
-					ParentTO to = new ParentTO();
-					to.setUserName((String) (fieldDetails.get("USERNAME")));
-					to.setStatus((String) (fieldDetails.get("STATUS")));
-					parentTOs.add(to);
-				}
+			try {
+				parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = null;
+						cs = con.prepareCall("{call " + IQueryConstants.GET_PARENT_DETAILS_FOR_CHILDREN + "}");
+						cs.setString(1, testElementId);
+						cs.setLong(2,customerId);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						ArrayList<ParentTO> parentTOResult = new ArrayList<ParentTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(3);
+							ParentTO parentTO = null;
+							while (rs.next()){
+								parentTO = new ParentTO();
+								parentTO.setUserName(rs.getString("USERNAME"));
+								parentTO.setStatus(rs.getString("STATUS"));
+								parentTOResult.add(parentTO);
+							}
+							
+							statusTO.setErrorMsg(cs.getString(4));
+							logger.log(IAppLogger.ERROR, "ParentDAOImpl - getParentAccountDetailsByTestElementId() with error: " + statusTO.getErrorMsg());
+							
+						} catch (SQLException e) {
+							e.printStackTrace();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return parentTOResult;
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				long t2 = System.currentTimeMillis();
+				logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getParentAccountDetailsByTestElementId() took time: " + String.valueOf(t2 - t1) + "ms");
 			}
 		}
 		return parentTOs;
+		
 	}
 
 	/*
@@ -770,47 +825,75 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchStudentOnRedirect(java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap) {
-		String tesElementId = (String) paramMap.get("studentBioId");
-		String tenantId = (String) paramMap.get("scrollId");
+		
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudentOnRedirect()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
+		final String tesElementId = (String) paramMap.get("studentBioId");
+		final String tenantId = (String) paramMap.get("scrollId");
 		//Fix for java.lang.ClassCastException
 		String customerIdString = paramMap.get("customer").toString();
-		long customerId = Long.parseLong(customerIdString);
+		final long customerId = Long.parseLong(customerIdString);
 		String orgMode = (String) paramMap.get("orgMode");
-		String adminYear =(String) paramMap.get("adminYear");
-		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
-		List<Map<String, Object>> studentlist = null;
-		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT_ON_REDIRECT, adminYear, tesElementId);
-		if (studentlist != null && studentlist.size() > 0) {
-			studentTOs = new ArrayList<StudentTO>();
-			for (Map<String, Object> fieldDetails : studentlist) {
-				StudentTO to = new StudentTO();
-				to.setTestElementId((String) (fieldDetails.get("TEST_ELEMENT_ID")));
-				BigDecimal orgNodeId = (BigDecimal) (fieldDetails.get("ORG_NODEID"));
-				if (orgNodeId != null) {
-					to.setOrgId(orgNodeId.longValue());
+		final String adminYear =(String) paramMap.get("adminYear");
+		ArrayList<StudentTO> studentTOs = null;
+		
+		try {
+			studentTOs = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.SEARCH_STUDENT_ON_REDIRECT + "}");
+					cs.setString(1, adminYear);
+					cs.setString(2, tesElementId);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
 				}
-				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
-				to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
-				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
-				to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
-				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
-				BigDecimal invCode = (BigDecimal) (fieldDetails.get("INVITATIONCODE"));
-				if (invCode != null) {
-					to.setInvitationcode(invCode.toString());
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(3);
+						StudentTO studentTO = null;
+						while (rs.next()){
+							studentTO = new StudentTO();
+							studentTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
+							studentTO.setOrgId(rs.getLong("ORG_NODEID"));
+							studentTO.setOrgName(rs.getString("ORG_NODE_NAME"));
+							studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							studentTO.setStudentName(rs.getString("STUDENTNAME"));
+							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
+							studentTO.setGrade(rs.getString("STUDENTGRADE"));
+							studentTO.setGrade(rs.getString("INVITATIONCODE"));
+							studentTO.setClikedOrgId(Long.parseLong(tenantId));
+							studentTO.setActivationStatus(rs.getString("ACTIVATIONSTATUS"));
+							studentTOResult.add(studentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(4));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudentOnRedirect() with error: " + statusTO.getErrorMsg());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentTOResult;
 				}
-				try {
-					to.setClikedOrgId(Long.parseLong(tenantId));
-				} catch (Exception ex) {
-				}
-				to.setActivationStatus((String) (fieldDetails.get("ACTIVATIONSTATUS")));
-				studentTOs.add(to);
-			}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - searchStudentOnRedirect() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-
 		return studentTOs;
 	}
 

@@ -26,7 +26,7 @@ public class BaseTO implements Serializable {
 	@XmlJavaTypeAdapter(TimestampAdapter.class)
 	private Timestamp updatedAt;
 	private String rowIndentifier;
-	private String errorMsg;
+	private String errorMsg = "";
 	
 	public long getCreatedBy() {
 		return createdBy;

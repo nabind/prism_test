@@ -10,9 +10,9 @@ package com.ctb.prism.core.transferobject;
 public class ObjectValueTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
-	private String value;
-	private String other;
+	private String name = "";
+	private String value = "";
+	private String other = "";
 	
 	public String getOther() {
 		return other;
