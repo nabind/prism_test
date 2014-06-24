@@ -207,6 +207,7 @@ $(document).ready(function() {
 							click: function(win,e) {
 								clickMe(e);
 										$('#addNewUser').validationEngine('hide');
+										$('#imgHolder').empty();
 										if($.browser.msie) setTimeout("hideMessage()", 300);
 										win.closeModal(); 
 									}
