@@ -103,8 +103,8 @@
             	<!-- NAME|URL|Name|report_id|assessment_id -->
                	<value>${home.acsi.state}</value>
                <!--   <value>${home.acsi.school}</value>
-                <value>${home.acsi.class}</value>-->
-                <value>${home.istep.state}</value>
+                <value>${home.acsi.class}</value>
+                <value>${home.istep.state}</value>-->
                 <value>ROLE_PARENT|parent/parentWelcome</value>
                 <value>ROLE_CTB|admin/users</value>
                 <value>ROLE_USER|error/accessDenied</value>

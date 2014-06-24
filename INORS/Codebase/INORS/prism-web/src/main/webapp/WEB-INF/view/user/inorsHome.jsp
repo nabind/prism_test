@@ -17,6 +17,7 @@ function openInorsHomePageTemp() {
 			url : "loadHomePageMsg.do",
 			data : null,
 			dataType : 'json',
+			async : false,
 			cache: true,
 			success : function(data) {
 				$('#taContent').val(data.value);
@@ -32,6 +33,7 @@ function openInorsHomePageTemp() {
 		  }
 		});
 	}
+	return false;
 	
 }
 </script>
