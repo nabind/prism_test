@@ -5,6 +5,8 @@ package com.ctb.prism.core.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +35,8 @@ public abstract class BaseDAO {
 	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplatePrism;
+	
+	private CallableStatementExecutor cse = new CallableStatementExecutor();
 
 	/**
 	 * @return the jdbcTemplate to access jasper server database
@@ -66,4 +70,7 @@ public abstract class BaseDAO {
 	// this.jdbcTemplatePrism = new JdbcTemplate(dataSource);
 	// }
 
+	public List<ArrayList<String>> executeCallableStatement(String stotedProcedure, List<PlaceHolder> placeHolderList, Integer paramNumber, String[] aliases) {
+		return cse.execute(jdbcTemplate, stotedProcedure, placeHolderList, paramNumber, aliases);
+	}
 }
