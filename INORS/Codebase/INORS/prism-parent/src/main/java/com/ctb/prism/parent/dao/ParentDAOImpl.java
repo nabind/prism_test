@@ -1003,7 +1003,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(6);
+						rs = (ResultSet) cs.getObject(2);
 						StudentTO studentTO = null;
 						while (rs.next()){
 							studentTO = new StudentTO();
@@ -1017,7 +1017,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTOResult.add(studentTO);
 						}
 						
-						statusTO.setErrorMsg(cs.getString(7));
+						statusTO.setErrorMsg(cs.getString(3));
 						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getAssessmentList() with error: " + statusTO.getErrorMsg());
 						
 					} catch (SQLException e) {
