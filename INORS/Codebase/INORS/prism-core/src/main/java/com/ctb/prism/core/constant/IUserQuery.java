@@ -76,7 +76,7 @@ public interface IUserQuery {
 			" WHERE ROWNUM <= 15 ",
 			" ORDER BY UPPER(ABC.USERNAME)");*/	
 	
-	public static final String GET_USER_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
+	/*public static final String GET_USER_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
 			" SELECT ABC.USERROWID,",
 			" ABC.USERID AS USER_ID,",
 			" ABC.USERNAME,",
@@ -110,9 +110,9 @@ public interface IUserQuery {
 			" AND NOT EXISTS (SELECT 1 FROM USER_ROLE WHERE USER_ROLE.ROLEID = ? AND USER_ROLE.USERID = USR.USERID)", // IApplicationConstants.ROLE_PARENT_ID
 			" ORDER BY UPPER(USR.USERNAME)) ABC",
 			" WHERE ROWNUM <= 15",
-			" ORDER BY UPPER(ABC.USERNAME)");
+			" ORDER BY UPPER(ABC.USERNAME)");*/
 	
-	public static final String GET_USER_DETAILS_ON_SCROLL=	CustomStringUtil
+	/*public static final String GET_USER_DETAILS_ON_SCROLL=	CustomStringUtil
 	.appendString(" SELECT ABC.USERROWID, ABC.USERID AS USER_ID, ABC.USERNAME, ",
 			" ABC.FULLNAME, ABC.STATUS, ABC.ORG_NODE_NAME AS ORG_NAME, ABC.ORG_NODEID AS ORG_ID, ABC.PARENT_ORG_NODEID AS ORG_PARENT_ID ",
 			" FROM (SELECT ROWIDTOCHAR(USR.ROWID) AS USERROWID , ",
@@ -132,9 +132,9 @@ public interface IUserQuery {
 			" AND UPPER(USR.USERNAME) > UPPER(?)  ",
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
-			" ORDER BY UPPER(ABC.USERNAME)");
+			" ORDER BY UPPER(ABC.USERNAME)");*/
 	
-	public static final String GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM=	CustomStringUtil
+	/*public static final String GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM=	CustomStringUtil
 	.appendString(" SELECT ABC.USERROWID, ABC.USERID AS USER_ID, ABC.USERNAME, ",
 			" ABC.FULLNAME, ABC.STATUS, ABC.ORG_NODE_NAME AS ORG_NAME, ABC.ORG_NODEID AS ORG_ID, ABC.PARENT_ORG_NODEID AS ORG_PARENT_ID ", 
 			" FROM (SELECT ROWIDTOCHAR(USR.ROWID) AS USERROWID ,  ",
@@ -157,7 +157,7 @@ public interface IUserQuery {
 			" 	OR UPPER(USR.FIRST_NAME) LIKE UPPER(?))  ",
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM <= 15 ",
-			" ORDER BY UPPER(ABC.USERNAME)");
+			" ORDER BY UPPER(ABC.USERNAME)");*/
 	
 	public static final String GET_USER_DATA = CustomStringUtil.appendString(
 			"SELECT DISTINCT ABC.USERNAME,",

@@ -1415,5 +1415,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_GET_STUDENTS_ONE_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 		public static final String SP_GET_STUDENTS_ONE_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?)}";
 
+		public static final String SP_GET_USERS_ONSCROLL_WITH_SP = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL_WITH_SP(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ONSCROLL = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL(?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ON_FIRST_LOAD = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ON_FIRST_LOAD(?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USER_ROLE = "{CALL PKG_MANAGE_USERS.SP_GET_USER_ROLE(?, ?, ?)}";
+		public static final String SP_GET_USERS_SEARCH = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_SEARCH(?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_SEARCH_EXACT = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_SEARCH_EXACT(?, ?, ?, ?, ?, ?, ?)}";
+
 }
 
