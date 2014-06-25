@@ -252,7 +252,7 @@ public interface IParentQuery {
 			" OR UPPER(USR.LAST_NAME) LIKE UPPER(?) OR UPPER(USR.FIRST_NAME) LIKE UPPER(?)) ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM<=?");
 
-	//Fix to implement cust_prod_id properly - By Joy
+	
 	public static final String SEARCH_PARENT_EXACT = CustomStringUtil.appendString(
 			"SELECT ABC.USERID, ABC.USERNAME,ABC.FULLNAME, ABC.STATUS,ABC.LAST_NAME,ABC.FIRST_NAME,TO_CHAR(ABC.LAST_LOGIN_ATTEMPT,'MM/DD/YY') AS LAST_LOGIN_ATTEMPT,",
 			" ABC.ORG_NODE_NAME, ABC.ORG_NODEID FROM (SELECT USR.USERID, ",
@@ -267,63 +267,45 @@ public interface IParentQuery {
 			" ORDER BY UPPER(USR.USERNAME)) ABC ",
 			" WHERE ROWNUM<=?");
 
-	//Moved to PKG_MANAGE_STUDENT by Joy
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 */
 	public static final String GET_STUDENT_DETAILS_MANAGE_STUDENT = "PKG_MANAGE_STUDENT.SP_GET_STUDENT_DETAILS(?,?,?,?,?,?,?,?)";
 	
-	//Moved to PKG_MANAGE_STUDENT by Joy
-	public static final String GET_PARENT_DETAILS_FOR_CHILDREN = "PKG_MANAGE_STUDENT.SP_GET_PARENT_FOR_CHILD(?,?,?,?)";
-
-	//Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)[IC.TEST_ELEMENT_ID - missing] - By Joy
-	public static final String GET_ASSESSMENT_LIST = CustomStringUtil.appendString(
-			" SELECT STD.STUDENT_BIO_ID, ",
-			" STD.TEST_ELEMENT_ID AS TESTELEMENT,IC.INVITATION_CODE,TO_CHAR(IC.EXPIRATION_DATE,'mm/dd/yyyy') AS EXPIRATION_DATE, ",
-			" IC.total_available,",
-			" DECODE(SIGN(IC.EXPIRATION_DATE - SYSDATE),-1,'Expired','Active') AS EXPIRATION_STATUS, ",
-			" prod.product_name AS ASSESSMENT_YEAR ",
-			" FROM INVITATION_CODE IC, STUDENT_BIO_DIM STD, product prod, cust_product_link link",
-			" WHERE link.ADMINID = STD.ADMINID ",
-			" AND ic.cust_prod_id = link.cust_prod_id",
-			" AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND link.ADMINID=STD.ADMINID",
-			" and prod.productid = link.productid",
-			" AND IC.STUDENT_BIO_ID = STD.STUDENT_BIO_ID",
-			" AND IC.TEST_ELEMENT_ID = ?");
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 */
+	public static final String GET_PARENT_DETAILS_FOR_STUDENT = "PKG_MANAGE_STUDENT.SP_GET_PARENT_FOR_STUDENT(?,?,?,?)";
 
 	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 * Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)[IC.TEST_ELEMENT_ID - missing] - By Joy
+	 */
+	public static final String GET_ASSESSMENT_LIST = "PKG_MANAGE_STUDENT.SP_GET_ASSESSMENT_FOR_STUDENT(?,?,?)";
+	
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * Fix for TD 78101 - Add exists clause with ORG_PRODUCT_LINK 
 	 * and Use Exists clause instead of in clause for ORG_NODEID for better performance - By Joy
 	 * */
-	public static final String SEARCH_STUDENT = CustomStringUtil.appendString(
-			"SELECT STU.ROWIDENTIFIER,STU.STUDENTNAME,STU.STUDENT_BIO_ID, ",
-			" STU.TESTELEMENT,STU.GRADE_NAME AS STUDENTGRADE,STU.SCHOOL AS SCHOOL",
-			" FROM (SELECT ST.ROWIDENTIFIER,ST.STUDENTNAME,ST.STUDENT_BIO_ID,",
-			" ST.TESTELEMENT,GRD.GRADE_NAME,ORG.ORG_NODE_NAME AS SCHOOL",
-			" FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||",
-			" STD.MIDDLE_NAME AS STUDENTNAME,",
-			" STD.LAST_NAME || STD.FIRST_NAME || STD.MIDDLE_NAME || '_' ||",
-			" TO_CHAR(STD.STUDENT_BIO_ID) AS ROWIDENTIFIER,",
-			" STD.STUDENT_BIO_ID AS STUDENT_BIO_ID,",
-			" STD.TEST_ELEMENT_ID AS TESTELEMENT,",
-			" STD.GRADEID, STD.ORG_NODEID, STD.CUSTOMERID",
-			" FROM STUDENT_BIO_DIM STD",
-			" WHERE STD.ADMINID = (select adminid from cust_product_link where cust_prod_id=?)) ST, GRADE_DIM GRD,ORG_NODE_DIM ORG",
-			" WHERE ORG.ORG_MODE = ? AND ORG.ORG_NODEID = ST.ORG_NODEID",
-			" AND ST.GRADEID = GRD.GRADEID ",
-			/*" AND ORG.ORG_NODEID In (Select org_lstnodeid From org_lstnode_link Where org_nodeid =?)",*/
-			"  AND EXISTS (SELECT 1 FROM ORG_LSTNODE_LINK OLNL WHERE OLNL.ORG_LSTNODEID = ORG.ORG_NODEID AND OLNL.ORG_NODEID = ?)",
-			" AND UPPER(ST.STUDENTNAME) LIKE UPPER(?)",
-			" AND ST.CUSTOMERID = ORG.CUSTOMERID AND ORG.CUSTOMERID = ?",
-			" AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL WHERE OPL.ORG_NODEID = ORG.ORG_NODEID AND OPL.CUST_PROD_ID = ?)",
-			" ORDER BY ST.ROWIDENTIFIER) STU",
-			" WHERE ROWNUM <= ?");
+	public static final String SEARCH_STUDENT = "PKG_MANAGE_STUDENT.SP_SEARCH_STUDENT(?,?,?,?,?,?,?,?)";
 
-	//Moved to PKG_MANAGE_STUDENT by Joy
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 */
 	public static final String SEARCH_STUDENT_ON_REDIRECT = "PKG_MANAGE_STUDENT.SP_SEARCH_STUDENT_REDIRECT(?,?,?,?)";
 	
-	public static final String UPDATE_ASSESSMENT = CustomStringUtil.appendString(
-			"UPDATE INVITATION_CODE IC SET IC.total_available = ?, IC.EXPIRATION_DATE= TO_DATE(?,'mm/dd/yyyy')",
-			" WHERE IC.INVITATION_CODE = ? AND IC.ACTIVATION_STATUS = 'AC' ");
-			//" AND IC.ADMINID = (SELECT STD.ADMINID FROM STUDENT_BIO_DIM STD WHERE STD.STUDENT_BIO_ID = ?)");
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 */
+	public static final String UPDATE_ASSESSMENT = "PKG_MANAGE_STUDENT.SP_UPDATE_ASSESSMENT(?,?,?,?,?)";
+	
+	/*
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 *  Fix for 78188 - By Joy
+	 *  Query modified for Reset Activation Code issue - By Joy
+	 */
+	public static final String REGENERATE_ACTIVATION_CODE = "PKG_MANAGE_CONTENT.SP_REGENERATE_ACTIVATION_CODE(?,?,?,?)";
 
 	/**
 	 * update user profile when they login for the first time
@@ -344,49 +326,6 @@ public interface IParentQuery {
 	public static final String FETCH_SCHOOLID_FOR_STUDENT = CustomStringUtil.appendString(
 			" select ORG.level3_jasper_orgid from student_bio_dim std, ORG_NODE_DIM org ",
 			" where ORG.ORG_NODEID = std.ORG_NODEID and std.student_bio_id = ? ");
-
-	// Fix for 78188 - By Joy
-	//Query modified for Reset Activation Code issue - By Joy
-	public static final String ADD_NEW_INVITATION_CODE = CustomStringUtil.appendString(
-			"INSERT INTO INVITATION_CODE",
-			" SELECT INVITATION_CODE_CLAIM_ID_SEQ.NEXTVAL,",
-			" (SELECT SF_GEN_INVITE_CODE FROM DUAL),",
-			" TEST_ELEMENT_ID,",
-			" TOTAL_AVAILABLE,",
-			" TOTAL_ATTEMPT,",
-			" EXPIRATION_DATE,",
-			//" ORG_NODEID,",
-			//" ADMINID,",
-			//" CUSTOMERID,",
-			" INT_STUDENT_ID,",
-			" CUST_PROD_ID,",
-			" STUDENT_BIO_ID,",
-			" GRADE_ID,",
-			" STUDENT_FULL_NAME,",
-			" 'N',",
-			" FILENAME,",
-			" 'AC',",
-			" CREATED_SOURCE,",
-			" CREATED_BY_ID,",
-			" BIRTHDATE,",
-			" ORG_NODEID,",
-			" SYSDATE,",
-			" NULL",
-			// " STUDENT_BIO_ID,",
-			// " FILENAME IC_FILE_LOC",
-			" FROM INVITATION_CODE",
-			" WHERE INVITATION_CODE = ?",
-			" AND ACTIVATION_STATUS = 'AC'",
-			" AND TEST_ELEMENT_ID = ?");
-	
-	// Fix for 78188 - By Joy
-	//Query modified for Reset Activation Code issue - By Joy
-	public static final String UPDATE_ACTIVATION_CODE = CustomStringUtil.appendString(
-			"UPDATE INVITATION_CODE IC",
-			" SET IC.ACTIVATION_STATUS = 'IN', IC.UPDATED_DATE_TIME = SYSDATE",
-			" WHERE IC.INVITATION_CODE = ?",
-			" AND IC.ACTIVATION_STATUS = 'AC'",
-			" AND TEST_ELEMENT_ID = ?");
 
 	public static final String STUDENT_LIST_FOR_TREE = CustomStringUtil.appendString(
 			" select last_name || ' ' || first_name || ' ' || middle_name NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",

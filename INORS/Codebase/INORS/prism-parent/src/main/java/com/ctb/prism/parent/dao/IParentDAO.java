@@ -260,24 +260,6 @@ public interface IParentDAO {
 	public List<UserTO> getUserNamesByEmail(String emailId);
 
 	/**
-	 * Insert new Invitation code.
-	 * 
-	 * @param student
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean generateActivationCode(StudentTO student) throws Exception;
-
-	/**
-	 * Disable Invitation code.
-	 * 
-	 * @param student
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean disableActivationCode(StudentTO student) throws Exception;
-
-	/**
 	 * To populate grade.
 	 * 
 	 * @author Joy
@@ -416,4 +398,6 @@ public interface IParentDAO {
 	 * @throws BusinessException
 	 */
 	public List<ManageContentTO> getGradeSubtestInfo(final Map<String, Object> paramMap) throws BusinessException;
+	
+	public boolean regenerateActivationCode(final StudentTO student) throws Exception;
 }

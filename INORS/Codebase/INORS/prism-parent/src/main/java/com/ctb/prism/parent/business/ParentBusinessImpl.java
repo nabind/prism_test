@@ -285,11 +285,7 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * @see com.ctb.prism.parent.business.IParentBusiness#regenerateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
 	public boolean regenerateActivationCode(StudentTO student) throws Exception {
-		if (parentDAO.generateActivationCode(student)) {
-			return parentDAO.disableActivationCode(student);
-		} else {
-			return false;
-		}
+		return regenerateActivationCode(student);
 	}
 
 	/*

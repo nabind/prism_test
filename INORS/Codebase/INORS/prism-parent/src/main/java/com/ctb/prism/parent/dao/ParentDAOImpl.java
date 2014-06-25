@@ -37,8 +37,7 @@ import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
-//import com.googlecode.ehcache.annotations.Cacheable;
-//import com.googlecode.ehcache.annotations.TriggersRemove;
+import com.google.gson.Gson;
 
 @Repository("parentDAO")
 public class ParentDAOImpl extends BaseDAO implements IParentDAO {
@@ -620,7 +619,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(1, adminYear);
 							cs.setLong(2,customerId);
 							cs.setString(3, orgMode);
-							cs.setString(4, tenantId);
+							cs.setLong(4, Long.parseLong(tenantId));
 							cs.setString(5, studentNameAndId);
 							cs.setString(6, searchParamNew);
 							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
@@ -631,7 +630,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(1, adminYear);
 							cs.setLong(2,customerId);
 							cs.setString(3, orgMode);
-							cs.setString(4, tenantId);
+							cs.setLong(4, Long.parseLong(tenantId));
 							cs.setString(5, studentNameAndId);
 							cs.setString(6, "-99");
 							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
@@ -644,7 +643,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(1, adminYear);
 						cs.setLong(2,customerId);
 						cs.setString(3, orgMode);
-						cs.setString(4, tenantId);
+						cs.setLong(4, Long.parseLong(tenantId));
 						cs.setString(5, "-99");
 						cs.setString(6, "-99");
 						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
@@ -710,7 +709,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = null;
-						cs = con.prepareCall("{call " + IQueryConstants.GET_PARENT_DETAILS_FOR_CHILDREN + "}");
+						cs = con.prepareCall("{call " + IQueryConstants.GET_PARENT_DETAILS_FOR_STUDENT + "}");
 						cs.setString(1, testElementId);
 						cs.setLong(2,customerId);
 						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
@@ -756,70 +755,148 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchStudentAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public String searchStudentAutoComplete(String studentName, String tenantId, String adminyear, long customerId, String orgMode) {
-		studentName = CustomStringUtil.appendString("%", studentName, "%");
-		String studentListJsonString = null;
-		List<Map<String, Object>> listOfStudents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, 
-				adminyear, orgMode, tenantId, studentName, customerId, adminyear, "100");
-		if (listOfStudents != null && listOfStudents.size() > 0) {
-			studentListJsonString = "[";
-			for (Map<String, Object> data : listOfStudents) {
-				String studentNameStr = (String) data.get("STUDENTNAME");
-				studentListJsonString = CustomStringUtil.appendString(studentListJsonString, "\"", studentNameStr, "\",");
-			}
-			studentListJsonString = CustomStringUtil.appendString(studentListJsonString.substring(0, studentListJsonString.length() - 1), "]");
+	@SuppressWarnings("unchecked")
+	public String searchStudentAutoComplete(final String studentName,final String tenantId, final String adminyear, final long customerId, final String orgMode) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudentAutoComplete()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
+		Gson gson = new Gson();
+		String studentListJsonString = "";
+		final String searchParam = CustomStringUtil.appendString("%", studentName, "%");
+		final long rowNum = 100;
+		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
+		try {
+			studentTOs = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.SEARCH_STUDENT + "}");
+					cs.setString(1, adminyear);
+					cs.setLong(2,customerId);
+					cs.setString(3, orgMode);
+					cs.setLong(4, Long.parseLong(tenantId));
+					cs.setString(5, searchParam);
+					cs.setLong(6,rowNum);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(7);
+						StudentTO studentTO = null;
+						while (rs.next()){
+							studentTO = new StudentTO();
+							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							//Fix for TD 78028 - By Joy
+							studentTO.setTestElementId(rs.getString("TESTELEMENTID"));
+							studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							studentTO.setStudentName(rs.getString("STUDENTNAME"));
+							studentTO.setGrade(rs.getString("STUDENTGRADE"));
+							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
+							studentTO.setOrgName(rs.getString("SCHOOL"));
+							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
+							studentTOResult.add(studentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(8));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudentAutoComplete() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentTOResult;
+				}
+			});
+			
+			studentListJsonString = gson.toJson(studentTOs);
+			logger.log(IAppLogger.INFO, studentListJsonString);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - searchStudentAutoComplete() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		logger.log(IAppLogger.DEBUG, studentListJsonString);
 		return studentListJsonString;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchStudent(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public ArrayList<StudentTO> searchStudent(String studentName, String tenantId, String adminyear, long customerId, String orgMode) {
+	@SuppressWarnings("unchecked")
+	public ArrayList<StudentTO> searchStudent(final String studentName,final String tenantId,final String adminyear,final long customerId,final String orgMode) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudent()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
 
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
-		List<Map<String, Object>> studentlist = null;
-
-		studentName = CustomStringUtil.appendString("%", studentName, "%");
-
-		studentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_STUDENT, 
-				adminyear, orgMode, tenantId, studentName, customerId, adminyear, "15");
-
-		if (studentlist != null && studentlist.size() > 0) {
-			studentTOs = new ArrayList<StudentTO>();
-			for (Map<String, Object> fieldDetails : studentlist) {
-				StudentTO to = new StudentTO();
-				long studentBioId = ((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue();
-				to.setStudentBioId(studentBioId);
-				
-				//Fix for TD 78028 - By Joy
-				to.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
-				if (getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId) != null) {
-					to.setParentAccount(getParentAccountDetailsByTestElementId(to.getTestElementId(), customerId));
-				} else {
-					to.setParentAccount(Collections.<ParentTO> emptyList());
+		final long rowNum = 15;
+		final String searchParam = CustomStringUtil.appendString("%", studentName, "%");	
+		try {
+			studentTOs = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.SEARCH_STUDENT + "}");
+					cs.setString(1, adminyear);
+					cs.setLong(2,customerId);
+					cs.setString(3, orgMode);
+					cs.setLong(4, Long.parseLong(tenantId));
+					cs.setString(5, searchParam);
+					cs.setLong(6,rowNum);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
 				}
-				//As data type of TESTELEMENTID 
-				//to.setStructureElement(String.valueOf((BigDecimal) fieldDetails.get("TESTELEMENT")));
-				to.setStudentName((String) (fieldDetails.get("STUDENTNAME")));
-				to.setRowIndentifier((String) (fieldDetails.get("ROWIDENTIFIER")));
-				to.setGrade((String) (fieldDetails.get("STUDENTGRADE")));
-				tenantId = (tenantId == null) ? tenantId = "0" : tenantId;
-				to.setClikedOrgId(Long.parseLong(tenantId));
-				// to.setInvitationcode((String) (fieldDetails.get("INVITATIONCODE")));
-				// to.setOrgId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-				// to. setActivationStatus((String) (fieldDetails.get("ACTIVATIONSTATUS")));
-				to.setOrgName((String) (fieldDetails.get("SCHOOL")));
-				studentTOs.add(to);
-			}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(7);
+						StudentTO studentTO = null;
+						while (rs.next()){
+							studentTO = new StudentTO();
+							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							//Fix for TD 78028 - By Joy
+							studentTO.setTestElementId(rs.getString("TESTELEMENTID"));
+							studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							studentTO.setStudentName(rs.getString("STUDENTNAME"));
+							studentTO.setGrade(rs.getString("STUDENTGRADE"));
+							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
+							studentTO.setOrgName(rs.getString("SCHOOL"));
+							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
+							studentTOResult.add(studentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(8));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudent() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - searchStudent() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-
 		return studentTOs;
 	}
 
@@ -902,24 +979,62 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getAssessmentList(java.lang.String)
 	 */
-	public List<StudentTO> getAssessmentList(String testElementId) {
-		List<StudentTO> assessmentList = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ASSESSMENT_LIST, testElementId);
-		if (list != null && list.size() > 0) {
-			assessmentList = new ArrayList<StudentTO>();
-			for (Map<String, Object> fieldDetails : list) {
-				StudentTO studentTO = new StudentTO();
-				studentTO.setStudentBioId(((BigDecimal) fieldDetails.get("STUDENT_BIO_ID")).longValue());
-				studentTO.setAdministration((String) fieldDetails.get("ASSESSMENT_YEAR"));
-				studentTO.setInvitationcode((String) fieldDetails.get("INVITATION_CODE"));
-				studentTO.setExpirationDate((String) fieldDetails.get("EXPIRATION_DATE"));
-				studentTO.setIcExpirationStatus((String) fieldDetails.get("EXPIRATION_STATUS"));
-				studentTO.setTotalAvailableClaim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
-				studentTO.setTestElementId((String) (fieldDetails.get("TESTELEMENT")));
-				assessmentList.add(studentTO);
-			}
+	@SuppressWarnings("unchecked")
+	public List<StudentTO> getAssessmentList(final String testElementId) {
+
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getAssessmentList()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+
+		ArrayList<StudentTO> studentAssessmentList = new ArrayList<StudentTO>();
+		try {
+			studentAssessmentList = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_ASSESSMENT_LIST + "}");
+					cs.setString(1, testElementId);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(6);
+						StudentTO studentTO = null;
+						while (rs.next()){
+							studentTO = new StudentTO();
+							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							studentTO.setTestElementId(rs.getString("TESTELEMENTID"));
+							studentTO.setAdministration(rs.getString("ASSESSMENT_YEAR"));
+							studentTO.setInvitationcode(rs.getString("INVITATION_CODE"));
+							studentTO.setExpirationDate(rs.getString("EXPIRATION_DATE"));
+							studentTO.setIcExpirationStatus(rs.getString("EXPIRATION_STATUS"));
+							studentTO.setTotalAvailableClaim(rs.getLong("TOTAL_AVAILABLE"));
+							studentTOResult.add(studentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(7));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getAssessmentList() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getAssessmentList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return assessmentList;
+		return studentAssessmentList;
 	}
 
 	/*
@@ -927,19 +1042,52 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateAssessmentDetails(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean updateAssessmentDetails(String studentBioId, String administration, String invitationcode, String icExpirationStatus, String totalAvailableClaim, String expirationDate)
+	public boolean updateAssessmentDetails(final String studentBioId, final String administration, final String invitationcode,
+			final String icExpirationStatus, final String totalAvailableClaim, final String expirationDate)
 			throws Exception {
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUser");
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateAssessmentDetails()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		boolean returnFlag = false;
+		
 		try {
-			// update invitation_code table
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ASSESSMENT, totalAvailableClaim, expirationDate, invitationcode);
-
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.UPDATE_ASSESSMENT + "}");
+					cs.setString(1, totalAvailableClaim);
+					cs.setString(2, expirationDate);
+					cs.setString(3, invitationcode);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(4);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setErrorMsg(cs.getString(5));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+			
+			if(Long.parseLong(objectValueTO.getValue()) > 0){
+				returnFlag = true;
+			}
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while updating assessment details.", e);
-			return false;
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.ERROR, "ParentDAOImpl - updateAssessmentDetails() with error: " + objectValueTO.getErrorMsg());
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateAssessmentDetails() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUser");
-		return true;
+		return returnFlag;
 	}
 
 	/*
@@ -1275,37 +1423,56 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.parent.dao.IParentDAO#generateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
+	 * Moved to PKG_MANAGE_STUDENT by Joy
+	 * Generate a new invitation code and disable the old activation code - By Joy
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean generateActivationCode(StudentTO student) {
+	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - regenerateActivationCode()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		boolean returnFlag = false;
 		
-		// Fix for 78188 - By Joy
-		int count = getJdbcTemplatePrism().update(IQueryConstants.ADD_NEW_INVITATION_CODE, student.getInvitationcode(), student.getTestElementId());
-		
-		if (count > 0) {
-			return Boolean.TRUE;
+		try {
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.REGENERATE_ACTIVATION_CODE + "}");
+					cs.setString(1, student.getInvitationcode());
+					cs.setString(2, student.getTestElementId());
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(3);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setErrorMsg(cs.getString(4));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+			
+			if(Long.parseLong(objectValueTO.getValue()) > 0){
+				returnFlag = true;
+			}
+		} catch (Exception e) {
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.ERROR, "ParentDAOImpl - regenerateActivationCode() with error: " + objectValueTO.getErrorMsg());
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - regenerateActivationCode() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return Boolean.FALSE;
+		return returnFlag;
+	
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.parent.dao.IParentDAO#disableActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
-	 */
-	public boolean disableActivationCode(StudentTO student) {
-		
-		// Fix for 78188 - By Joy
-		int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_ACTIVATION_CODE, student.getInvitationcode(), student.getTestElementId());
-		
-		if (count > 0) {
-			return Boolean.TRUE;
-		}
-		return Boolean.FALSE;
-	}
+	
 
 	/*
 	 * (non-Javadoc)
