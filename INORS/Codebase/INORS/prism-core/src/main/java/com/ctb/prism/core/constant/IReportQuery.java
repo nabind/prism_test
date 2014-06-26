@@ -215,6 +215,20 @@ public interface IReportQuery {
 			//"  AND ACC.CUST_PROD_ID IN",
 			//	"(SELECT CUST_PROD_ID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ?)",
 	" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
+	
+	
+	public static final String GET_GROWTH_ASSESSMENT_LIST = CustomStringUtil.appendString(
+			" SELECT DISTINCT ASS.DB_MENUID MENU_ID, ",
+			" ASS.MENU_NAME MENU_NAME,RE.DB_REPORTID REPORT_ID, ",
+			" REPORT_NAME, REPORT_FOLDER_URI, RE.ACTIVATION_STATUS STATUS,  ", 
+			" REPORT_TYPE TYPE, ASS.MENU_SEQ, acc.report_seq, acc.org_level ORGLEVEL ",
+			" FROM DASH_REPORTS RE, dash_menus ASS, dash_menu_rpt_access acc ", 
+			" WHERE RE.REPORT_TYPE LIKE (?) ",
+			" and ass.db_menuid = acc.db_menuid ",
+			" and acc.db_reportid = re.db_reportid ",
+			" AND RE.ACTIVATION_STATUS IN ('AC','SS') ",
+			" AND ACC.ROLEID = 8 ",
+			" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 
 	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(
 			"SELECT SF_GET_LIST_OF_ROLES(?) ROLES from DUAL"); 

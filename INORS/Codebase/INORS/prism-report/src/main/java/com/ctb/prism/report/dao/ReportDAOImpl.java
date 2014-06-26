@@ -37,6 +37,8 @@ import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -519,16 +521,31 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, String customerId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 
-		//UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		authList = loggedinUserTO.getRoles();	
 		
 		List<AssessmentTO> assessments = null;
 		List<Map<String, Object>> dataList = null;
-		if (parentReports) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
-		} else {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+		
+		/* For growth user*/
+		for(int i=0;i<authList.size();i++){
+			if(authList.get(i).getAuthority().equals("ROLE_GRW")) {
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+				break;
+			}
 		}
+		
+		if(dataList == null) {
+			if (parentReports) {
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
+			}  else {
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+			}
+		}
+		
 		if (dataList != null && dataList.size() > 0) {
 			assessments = new ArrayList<AssessmentTO>();
 			long oldAssessmentId = -1;
