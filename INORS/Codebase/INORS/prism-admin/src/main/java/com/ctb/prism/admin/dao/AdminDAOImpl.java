@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,6 @@ import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-//import com.googlecode.ehcache.annotations.Cacheable;
-//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository("adminDAO")
 public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
@@ -277,15 +276,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #root.method.name )")
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerId, String orgMode) {
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerid, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
 		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
 		logger.log(IAppLogger.INFO, "currorg=" + currorg);
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 		logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
-		logger.log(IAppLogger.INFO, "customerId=" + customerId);
+		logger.log(IAppLogger.INFO, "customerid=" + customerid);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
-		List<UserTO> userList = null;
+		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
+		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
 		String userName = "";
 		String tenantId = "";
 		List<Map<String, Object>> lstData = new ArrayList<Map<String, Object>>();
@@ -298,122 +298,97 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, orgMode, tenantId, customerid, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId,IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
 			if(!"undefined".equals(tenantId)) {
-				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear, IApplicationConstants.ROLE_PARENT_ID);
 			}
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
-		logger.log(IAppLogger.INFO, "Users: " + userList.size());
-		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnClick()");
-		return new ArrayList<UserTO>(userList);
-	}
-	
-	/**
-	 * String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-	 * 
-	 * @param currorg
-	 * @param resultList
-	 * @return
-	 */
-	private List<UserTO> getUserListFromResultList(String currorg, List<ArrayList<String>> resultList) {
-		List<UserTO> userList = new ArrayList<UserTO>();
-		if (resultList != null && !resultList.isEmpty()) {
-			for (ArrayList<String> rowData : resultList) {
+		if (lstData.size() > 0) {
+			UserTOs = new ArrayList<UserTO>();
+			for (Map<String, Object> fieldDetails : lstData) {
 				UserTO to = new UserTO();
-				to.setUserId(Long.parseLong(rowData.get(1)));
-				List<RoleTO> roleList = getUserRole(rowData.get(1));
-				if (!roleList.isEmpty()) {
-					to.setAvailableRoleList(roleList);
+				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
+				to.setUserId(userId);
+				// fetching role for each users
+				if ((String.valueOf(userId) != null) && ((String) (fieldDetails.get("USERNAME")) != null)) {
+					List<RoleTO> roleList = null;
+					roleList = getRoleList(userId);
+					if (roleList.size() > 0) {
+						to.setAvailableRoleList(roleList);
+					}
+
 				}
-				to.setUserName(rowData.get(2));
-				if (rowData.get(3) != null) {
-					to.setUserDisplayName(rowData.get(3));
+				to.setUserName((String) (fieldDetails.get("USERNAME")));
+				if ((String) (fieldDetails.get("FULLNAME")) != null) {
+					to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
 				} else {
 					to.setUserDisplayName("");
 				}
 
-				to.setStatus(rowData.get(4));
-				to.setTenantId(Long.parseLong(rowData.get(7)));
-				to.setParentId(Long.parseLong(rowData.get(7)));
+				to.setStatus((String) (fieldDetails.get("STATUS")));
+				to.setTenantId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
+				to.setParentId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
 				try {
 					to.setLoggedInOrgId(Long.parseLong(currorg));
 				} catch (NumberFormatException e) {
-					logger.log(IAppLogger.WARN, "Invalid number: " + currorg);
 				}
-				to.setTenantName(rowData.get(5));
-				userList.add(to);
+				to.setTenantName((String) (fieldDetails.get("ORG_NAME")));
+				// to.setUserType((String) (fieldDetails.get("USER_TYPE")));
+				UserTOs.add(to);
 			}
 		}
-		return userList;
+		logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
+		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnClick()");
+		return UserTOs;
 	}
 	
-	private List<UserTO> getUserDetailsOnScrollWithSrchParam(String currorg, String customerId, String orgMode, String tenantId, Long roleId, String custProdId, String userName, String searchParam) {
-		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnScrollWithSrchParam()");
-		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, Long.parseLong(customerId)));
-		placeHolderList.add(new PlaceHolder(2, "IN", oracle.jdbc.OracleTypes.VARCHAR, orgMode));
-		placeHolderList.add(new PlaceHolder(3, "IN", oracle.jdbc.OracleTypes.VARCHAR, tenantId));
-		placeHolderList.add(new PlaceHolder(4, "IN", oracle.jdbc.OracleTypes.NUMBER, roleId));
-		placeHolderList.add(new PlaceHolder(5, "IN", oracle.jdbc.OracleTypes.VARCHAR, custProdId));
-		placeHolderList.add(new PlaceHolder(6, "IN", oracle.jdbc.OracleTypes.VARCHAR, userName));
-		placeHolderList.add(new PlaceHolder(7, "IN", oracle.jdbc.OracleTypes.VARCHAR, searchParam));
-		placeHolderList.add(new PlaceHolder(8, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
-		placeHolderList.add(new PlaceHolder(9, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
-		String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-		List<ArrayList<String>> resultList = executeCallableStatement(IQueryConstants.SP_GET_USERS_ONSCROLL_WITH_SP, placeHolderList, 8, aliases);
-		List<UserTO> userList = getUserListFromResultList(currorg, resultList);
-		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnScrollWithSrchParam(): " + userList.size());
-		return userList;
+	@SuppressWarnings("unchecked")
+	private List<RoleTO> getRoleList(final Long userId){
+		return (List<RoleTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_ROLE);
+				cs.setLong(1, userId);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				List<RoleTO> roleList = new ArrayList<RoleTO>();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					while(rs.next()){
+						RoleTO to = new RoleTO();
+						to.setRoleId(Long.parseLong(rs.getString("ROLEID")));
+						to.setRoleName(rs.getString("ROLE_NAME"));
+						to.setRoleDescription(rs.getString("DESCRIPTION"));
+						to.setLabel(rs.getString("ORG_LABEL"));
+						roleList.add(to);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "getRoleList().roleList.size()=" + roleList.size());
+				return roleList;
+			}
+		});
 	}
 	
-	private List<UserTO> getUserDetailsOnScroll(String currorg, String customerId, String orgMode, String tenantId, Long roleId, String custProdId, String userName) {
-		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnScroll()");
-		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, Long.parseLong(customerId)));
-		placeHolderList.add(new PlaceHolder(2, "IN", oracle.jdbc.OracleTypes.VARCHAR, orgMode));
-		placeHolderList.add(new PlaceHolder(3, "IN", oracle.jdbc.OracleTypes.VARCHAR, tenantId));
-		placeHolderList.add(new PlaceHolder(4, "IN", oracle.jdbc.OracleTypes.NUMBER, roleId));
-		placeHolderList.add(new PlaceHolder(5, "IN", oracle.jdbc.OracleTypes.VARCHAR, custProdId));
-		placeHolderList.add(new PlaceHolder(6, "IN", oracle.jdbc.OracleTypes.VARCHAR, userName));
-		placeHolderList.add(new PlaceHolder(7, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
-		placeHolderList.add(new PlaceHolder(8, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
-		String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-		List<ArrayList<String>> resultList = executeCallableStatement(IQueryConstants.SP_GET_USERS_ONSCROLL, placeHolderList, 7, aliases);
-		List<UserTO> userList = getUserListFromResultList(currorg, resultList);
-		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnScroll(): " + userList.size());
-		return userList;
-	}
-	
-	private List<UserTO> getUserDetailsOnFirstLoad(String currorg, String customerId, String orgMode, String tenantId, Long roleId, String custProdId) {
-		logger.log(IAppLogger.INFO, "Enter getUserDetailsOnFirstLoad()");
-		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, Long.parseLong(customerId)));
-		placeHolderList.add(new PlaceHolder(2, "IN", oracle.jdbc.OracleTypes.VARCHAR, orgMode));
-		placeHolderList.add(new PlaceHolder(3, "IN", oracle.jdbc.OracleTypes.VARCHAR, tenantId));
-		placeHolderList.add(new PlaceHolder(4, "IN", oracle.jdbc.OracleTypes.NUMBER, roleId));
-		placeHolderList.add(new PlaceHolder(5, "IN", oracle.jdbc.OracleTypes.VARCHAR, custProdId));
-		placeHolderList.add(new PlaceHolder(6, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
-		placeHolderList.add(new PlaceHolder(7, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
-		String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-		List<ArrayList<String>> resultList = executeCallableStatement(IQueryConstants.SP_GET_USERS_ON_FIRST_LOAD, placeHolderList, 6, aliases);
-		List<UserTO> userList = getUserListFromResultList(currorg, resultList);
-		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnFirstLoad(): " + userList.size());
-		return userList;
-	}
-	
-	private List<RoleTO> getUserRole(String userId) {
+	/*private List<RoleTO> getUserRole(Long userId) {
 		logger.log(IAppLogger.INFO, "Enter: getUserRole()");
 		List<RoleTO> roleList = new ArrayList<RoleTO>();
 		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, Long.parseLong(userId)));
+		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, userId));
 		placeHolderList.add(new PlaceHolder(2, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
 		placeHolderList.add(new PlaceHolder(3, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
 		String[] aliases = { "ROLEID", "ROLE_NAME", "ORG_LABEL", "DESCRIPTION" };
@@ -430,7 +405,36 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		}
 		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnFirstLoad(): " + roleList.size());
 		return roleList;
-	}
+	}*/
+	
+	/*private List<Map<String, Object>> getUserDetailsOnFirstLoad(final String customerid, final String orgMode, final String tenantId, final Long roleId, final String custProdId) {
+		return (List<Map<String, Object>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS_ON_FIRST_LOAD);
+				cs.setLong(1, Long.parseLong(customerid));
+				cs.setString(2, orgMode);
+				cs.setLong(3, Long.parseLong(tenantId));
+				cs.setLong(4, roleId);
+				cs.setLong(5, Long.parseLong(custProdId));
+				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(9);
+					studentList = getStudentListFromResultSet(rs);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return studentList;
+			}
+		});
+	}*/
 
 	/**
 	 * Returns the userTO on Edit.
@@ -786,65 +790,60 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public ArrayList<UserTO> searchUser(String userName, String tenantId, String adminYear, String isExactSearch, String orgMode) {
-		List<UserTO> userList = null;
+		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
+		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
+		List<Map<String, Object>> userslist = null;
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
 			userName = CustomStringUtil.appendString("%", userName, "%");
-			userList = getSearchUser(IQueryConstants.SP_GET_USERS_SEARCH, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+			// List<OrgTO> orgList = null;
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER,orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		} else {
-			userList = getSearchUser(IQueryConstants.SP_GET_USERS_SEARCH_EXACT, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,orgMode, tenantId, tenantId, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		}
-		return new ArrayList<UserTO>(userList);
-	}
-	
-	/**
-	 * String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "LAST_NAME", "FIRST_NAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-	 * 
-	 * @param currorg
-	 * @param resultList
-	 * @return
-	 */
-	private List<UserTO> getSearchUserListFromResultList(String tenantId, List<ArrayList<String>> resultList) {
-		List<UserTO> userList = new ArrayList<UserTO>();
-		if (resultList != null && !resultList.isEmpty()) {
-			for (ArrayList<String> rowData : resultList) {
+		if (userslist.size() > 0) {
+			UserTOs = new ArrayList<UserTO>();
+			for (Map<String, Object> fieldDetails : userslist) {
+
 				UserTO to = new UserTO();
-				to.setUserId(Long.parseLong(rowData.get(1)));
-				to.setUserName(rowData.get(2));
-				to.setUserDisplayName(rowData.get(3));
-				to.setStatus(rowData.get(6));
-				to.setTenantId(Long.parseLong(rowData.get(8)));
-				to.setParentId(Long.parseLong(rowData.get(9)));
-				to.setTenantName(rowData.get(7));
+				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
+				to.setUserId(userId);
+				/*
+				 * to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")) .longValue());
+				 */
+				to.setUserName((String) (fieldDetails.get("USERNAME")));
+				to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
+				to.setStatus((String) (fieldDetails.get("STATUS")));
+				to.setTenantId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
+				to.setParentId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
+				to.setTenantName((String) (fieldDetails.get("ORG_NAME")));
+				// to.setUserType((String) (fieldDetails.get("USER_TYPE")));
 				try {
 					to.setLoggedInOrgId(Long.parseLong(tenantId));
 				} catch (NumberFormatException e) {
-					logger.log(IAppLogger.WARN, "Invalid number: " + tenantId);
+					// TODO : ??
 				}
-				List<RoleTO> roleList = getUserRole(rowData.get(1));
-				if (!roleList.isEmpty()) {
-					to.setAvailableRoleList(roleList);
+				// fetching role for each users
+				if ((String.valueOf(userId) != null) && ((String) (fieldDetails.get("USERNAME")) != null)) {
+					List<Map<String, Object>> roleList = null;
+					roleList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE, userId);
+					if (roleList.size() > 0) {
+						RoleTOs = new ArrayList<RoleTO>();
+						for (Map<String, Object> roleDetails : roleList) {
+
+							RoleTO rleTo = new RoleTO();
+							rleTo.setRoleId(((BigDecimal) roleDetails.get("ROLEID")).longValue());
+							rleTo.setRoleName((String) (roleDetails.get("ROLE_NAME")));
+							rleTo.setRoleDescription((String) (roleDetails.get("DESCRIPTION")));
+							rleTo.setLabel((String) (roleDetails.get("ORG_LABEL")));
+							RoleTOs.add(rleTo);
+						}
+						to.setAvailableRoleList(RoleTOs);
+					}
 				}
-				userList.add(to);
+				UserTOs.add(to);
 			}
 		}
-		return userList;
-	}
-	
-	private List<UserTO> getSearchUser(String storedProcedure, String orgMode, String tenantId, Long roleId, String custProdId, String searchParam) {
-		logger.log(IAppLogger.INFO, "Enter: getSearchUser()");
-		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.VARCHAR, orgMode));
-		placeHolderList.add(new PlaceHolder(2, "IN", oracle.jdbc.OracleTypes.VARCHAR, tenantId));
-		placeHolderList.add(new PlaceHolder(3, "IN", oracle.jdbc.OracleTypes.NUMBER, roleId));
-		placeHolderList.add(new PlaceHolder(4, "IN", oracle.jdbc.OracleTypes.VARCHAR, custProdId));
-		placeHolderList.add(new PlaceHolder(5, "IN", oracle.jdbc.OracleTypes.VARCHAR, searchParam));
-		placeHolderList.add(new PlaceHolder(6, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
-		placeHolderList.add(new PlaceHolder(7, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
-		String[] aliases = { "USERROWID", "USER_ID", "USERNAME", "FULLNAME", "LAST_NAME", "FIRST_NAME", "STATUS", "ORG_NAME", "ORG_ID", "ORG_PARENT_ID" };
-		List<ArrayList<String>> resultList = executeCallableStatement(storedProcedure, placeHolderList, 6, aliases);
-		List<UserTO> userList = getSearchUserListFromResultList(tenantId, resultList);
-		logger.log(IAppLogger.INFO, "Exit: getSearchUser(): " + userList.size());
-		return userList;
+		return UserTOs;
 	}
 
 	/**
