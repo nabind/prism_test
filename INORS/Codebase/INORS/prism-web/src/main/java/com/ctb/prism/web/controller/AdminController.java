@@ -1747,8 +1747,7 @@ public class AdminController {
 			if(testElementId!= null)
 			{
 				List<StudentTO> studentAssessmentList = parentService.getAssessmentList(testElementId);
-				if ( studentAssessmentList != null )
-				{
+				if ( studentAssessmentList != null && studentAssessmentList.size() > 0){
 					jsonString = JsonUtil.convertToJsonAdmin(studentAssessmentList);
 					logger.log(IAppLogger.INFO, jsonString);
 					res.setContentType("application/json");

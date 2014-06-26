@@ -764,7 +764,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
-		String studentListJsonString = "";
+		String studentListJsonString = null;
 		final String searchParam = CustomStringUtil.appendString("%", studentName, "%");
 		final long rowNum = 100;
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
@@ -817,11 +817,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				}
 			});
 			
-			studentListJsonString = "[";
-			for (StudentTO studentTO : studentTOs) {
-				studentListJsonString = CustomStringUtil.appendString(studentListJsonString, "\"", studentTO.getStudentName(), "\",");
+			if(studentTOs.size() > 0){
+				studentListJsonString = "[";
+				for (StudentTO studentTO : studentTOs) {
+					studentListJsonString = CustomStringUtil.appendString(studentListJsonString, "\"", studentTO.getStudentName(), "\",");
+				}
+				studentListJsonString = CustomStringUtil.appendString(studentListJsonString.substring(0, studentListJsonString.length() - 1), "]");
 			}
-			studentListJsonString = CustomStringUtil.appendString(studentListJsonString.substring(0, studentListJsonString.length() - 1), "]");
 			logger.log(IAppLogger.INFO, studentListJsonString);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -989,7 +991,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 
-		ArrayList<StudentTO> studentAssessmentList = new ArrayList<StudentTO>();
+		ArrayList<StudentTO> studentAssessmentList = null;
 		try {
 			studentAssessmentList = (ArrayList<StudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
