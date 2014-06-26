@@ -36,7 +36,6 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IOrgQuery;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.dao.PlaceHolder;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -50,6 +49,7 @@ import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 
 @Repository("adminDAO")
+@SuppressWarnings("unchecked")
 public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	@Autowired
@@ -276,16 +276,15 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #root.method.name )")
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerid, String orgMode) {
+	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerId, String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
 		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
 		logger.log(IAppLogger.INFO, "currorg=" + currorg);
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 		logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
-		logger.log(IAppLogger.INFO, "customerid=" + customerid);
+		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
-		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
-		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
+		List<UserTO> userList = null;
 		String userName = "";
 		String tenantId = "";
 		List<Map<String, Object>> lstData = new ArrayList<Map<String, Object>>();
@@ -298,59 +297,24 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM, customerid, orgMode, tenantId, customerid, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
+				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_SCROLL, customerid, orgMode, tenantId, customerid, tenantId,IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
 			if(!"undefined".equals(tenantId)) {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_FIRST_LOAD, customerid, orgMode, tenantId, customerid, tenantId, adminYear, IApplicationConstants.ROLE_PARENT_ID);
+				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 			}
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
-		if (lstData.size() > 0) {
-			UserTOs = new ArrayList<UserTO>();
-			for (Map<String, Object> fieldDetails : lstData) {
-				UserTO to = new UserTO();
-				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
-				to.setUserId(userId);
-				// fetching role for each users
-				if ((String.valueOf(userId) != null) && ((String) (fieldDetails.get("USERNAME")) != null)) {
-					List<RoleTO> roleList = null;
-					roleList = getRoleList(userId);
-					if (roleList.size() > 0) {
-						to.setAvailableRoleList(roleList);
-					}
-
-				}
-				to.setUserName((String) (fieldDetails.get("USERNAME")));
-				if ((String) (fieldDetails.get("FULLNAME")) != null) {
-					to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
-				} else {
-					to.setUserDisplayName("");
-				}
-
-				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setTenantId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
-				to.setParentId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
-				try {
-					to.setLoggedInOrgId(Long.parseLong(currorg));
-				} catch (NumberFormatException e) {
-				}
-				to.setTenantName((String) (fieldDetails.get("ORG_NAME")));
-				// to.setUserType((String) (fieldDetails.get("USER_TYPE")));
-				UserTOs.add(to);
-			}
-		}
-		logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
+		logger.log(IAppLogger.INFO, "Users: " + userList.size());
 		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnClick()");
-		return UserTOs;
+		return new ArrayList<UserTO>(userList);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private List<RoleTO> getRoleList(final Long userId){
 		return (List<RoleTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -384,57 +348,133 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		});
 	}
 	
-	/*private List<RoleTO> getUserRole(Long userId) {
-		logger.log(IAppLogger.INFO, "Enter: getUserRole()");
-		List<RoleTO> roleList = new ArrayList<RoleTO>();
-		List<PlaceHolder> placeHolderList = new ArrayList<PlaceHolder>();
-		placeHolderList.add(new PlaceHolder(1, "IN", oracle.jdbc.OracleTypes.NUMBER, userId));
-		placeHolderList.add(new PlaceHolder(2, "OUT", oracle.jdbc.OracleTypes.CURSOR, null));
-		placeHolderList.add(new PlaceHolder(3, "OUT", oracle.jdbc.OracleTypes.VARCHAR, null));
-		String[] aliases = { "ROLEID", "ROLE_NAME", "ORG_LABEL", "DESCRIPTION" };
-		List<ArrayList<String>> resultList = executeCallableStatement(IQueryConstants.SP_GET_USER_ROLE, placeHolderList, 2, aliases);
-		if (resultList != null && !resultList.isEmpty()) {
-			for (ArrayList<String> rowData : resultList) {
-				RoleTO to = new RoleTO();
-				to.setRoleId(Long.parseLong(rowData.get(0)));
-				to.setRoleName(rowData.get(1));
-				to.setLabel(rowData.get(2));
-				to.setRoleDescription(rowData.get(3));
-				roleList.add(to);
+	private List<UserTO> getUserListFromResultSet(String currorg, ResultSet rs) throws SQLException {
+		List<UserTO> userList = new ArrayList<UserTO>();
+		while (rs.next()) {
+			UserTO to = new UserTO();
+			to.setUserId(Long.parseLong(rs.getString("USER_ID")));
+			List<RoleTO> roleList = getRoleList(Long.parseLong(rs.getString("USER_ID")));
+			if (!roleList.isEmpty()) {
+				to.setAvailableRoleList(roleList);
 			}
+			to.setUserName(rs.getString("USERNAME"));
+			if (rs.getString("FULLNAME") != null) {
+				to.setUserDisplayName(rs.getString("FULLNAME"));
+			} else {
+				to.setUserDisplayName("");
+			}
+			to.setStatus(rs.getString("STATUS"));
+			to.setTenantId(Long.parseLong(rs.getString("ORG_PARENT_ID")));
+			to.setParentId(Long.parseLong(rs.getString("ORG_PARENT_ID")));
+			try {
+				to.setLoggedInOrgId(Long.parseLong(currorg));
+			} catch (NumberFormatException e) {
+				logger.log(IAppLogger.WARN, "Invalid number: " + currorg);
+			}
+			to.setTenantName(rs.getString("ORG_NAME"));
+			userList.add(to);
 		}
-		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnFirstLoad(): " + roleList.size());
-		return roleList;
-	}*/
+		return userList;
+	}
 	
-	/*private List<Map<String, Object>> getUserDetailsOnFirstLoad(final String customerid, final String orgMode, final String tenantId, final Long roleId, final String custProdId) {
-		return (List<Map<String, Object>>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS_ON_FIRST_LOAD);
-				cs.setLong(1, Long.parseLong(customerid));
-				cs.setString(2, orgMode);
-				cs.setLong(3, Long.parseLong(tenantId));
-				cs.setLong(4, roleId);
-				cs.setLong(5, Long.parseLong(custProdId));
-				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet rs = null;
-				List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
-				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(9);
-					studentList = getStudentListFromResultSet(rs);
-				} catch (SQLException e) {
-					e.printStackTrace();
+	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam) {
+		return (List<UserTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL_WITH_SP);
+						cs.setLong(1, Long.parseLong(customerId));
+						cs.setString(2, orgMode);
+						cs.setLong(3, Long.parseLong(tenantId));
+						cs.setLong(4, roleId);
+						cs.setLong(5, Long.parseLong(custProdId));
+						cs.setString(6, userName);
+						cs.setString(7, searchParam);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<UserTO> userList = new ArrayList<UserTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(8);
+							userList = getUserListFromResultSet(currorg, rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						logger.log(IAppLogger.INFO, "getUserDetailsOnScrollWithSrchParam().userList.size()=" + userList.size());
+						return userList;
+					}
 				}
-				return studentList;
+			);
+	}
+	
+	private List<UserTO> getUserDetailsOnScroll(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName) {
+		return (List<UserTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL);
+						cs.setLong(1, Long.parseLong(customerId));
+						cs.setString(2, orgMode);
+						cs.setLong(3, Long.parseLong(tenantId));
+						cs.setLong(4, roleId);
+						cs.setLong(5, Long.parseLong(custProdId));
+						cs.setString(6, userName);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<UserTO> userList = new ArrayList<UserTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(7);
+							userList = getUserListFromResultSet(currorg, rs);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						logger.log(IAppLogger.INFO, "getUserDetailsOnScroll().userList.size()=" + userList.size());
+						return userList;
+					}
+				}
+			);
+	}
+	
+	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId) {
+		return (List<UserTO>) getJdbcTemplatePrism().execute(
+			new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ON_FIRST_LOAD);
+					cs.setLong(1, Long.parseLong(customerId));
+					cs.setString(2, orgMode);
+					cs.setLong(3, Long.parseLong(tenantId));
+					cs.setLong(4, roleId);
+					cs.setLong(5, Long.parseLong(custProdId));
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<UserTO> userList = new ArrayList<UserTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(6);
+						userList = getUserListFromResultSet(currorg, rs);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					logger.log(IAppLogger.INFO, "getUserDetailsOnFirstLoad().userList.size()=" + userList.size());
+					return userList;
+				}
 			}
-		});
-	}*/
+		);
+	}
 
 	/**
 	 * Returns the userTO on Edit.
@@ -855,7 +895,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            parentId of the logged in user
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<EduCenterTO> searchEduUser(Map<String, Object> paramMap) {
 		String userName = (String) paramMap.get("userName");
 		String tenantId = (String) paramMap.get("tenantId");
@@ -1512,7 +1551,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#loadEduCenterUsers(java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: loadEduCenterUsers()");
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
