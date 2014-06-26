@@ -764,7 +764,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
-		Gson gson = new Gson();
 		String studentListJsonString = "";
 		final String searchParam = CustomStringUtil.appendString("%", studentName, "%");
 		final long rowNum = 100;
@@ -818,7 +817,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				}
 			});
 			
-			studentListJsonString = gson.toJson(studentTOs);
+			studentListJsonString = "[";
+			for (StudentTO studentTO : studentTOs) {
+				studentListJsonString = CustomStringUtil.appendString(studentListJsonString, "\"", studentTO.getStudentName(), "\",");
+			}
+			studentListJsonString = CustomStringUtil.appendString(studentListJsonString.substring(0, studentListJsonString.length() - 1), "]");
 			logger.log(IAppLogger.INFO, studentListJsonString);
 		} catch (Exception e) {
 			e.printStackTrace();
