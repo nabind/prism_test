@@ -517,28 +517,25 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	//Fix for TD 77939 - implement customerId, caching param change - By Joy
 	//@Cacheable(value = "defaultCache", key="(T(com.ctb.prism.core.util.CacheKeyUtils).string(#p0)).concat(#root.method.name)")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p1, 'getAssessments' )")
-	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, String customerId) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1,'getAssessments' )")
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap,  boolean isGrowthUser,  boolean isSuperUser) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
 
-		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+	//	UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
 		
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		authList = loggedinUserTO.getRoles();	
+		
 		
 		List<AssessmentTO> assessments = null;
 		List<Map<String, Object>> dataList = null;
 		
+		
 		/* For growth user*/
-		for(int i=0;i<authList.size();i++){
-			if(authList.get(i).getAuthority().equals("ROLE_GRW")) {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
-				break;
-			}
+		if(isGrowthUser){
+				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);				
 		}
 		
-		if(dataList == null) {
+		if(dataList == null || isSuperUser) {
 			if (parentReports) {
 				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
 			}  else {

@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -500,8 +501,24 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
 	 */
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
+		
+		boolean isSuperUser = false;
+		boolean isGrowthUser = false;
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		return reportDAO.getAssessments(paramMap, loggedinUserTO.getCustomerId());
+		
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		authList = loggedinUserTO.getRoles();	
+		
+		for(int i=0;i<authList.size();i++){
+			if(authList.get(i).getAuthority().equals("ROLE_GRW")) {
+				isGrowthUser = true;
+			}
+			if(authList.get(i).getAuthority().equals("ROLE_SUPER")){ // This is needed if a super user is having growth role as well 
+				isSuperUser = true;
+			}
+		}
+		
+		return reportDAO.getAssessments(paramMap, isGrowthUser, isSuperUser);
 	}
 
 	/*
