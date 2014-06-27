@@ -954,9 +954,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setStudentName(rs.getString("STUDENTNAME"));
 							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
 							studentTO.setGrade(rs.getString("STUDENTGRADE"));
-							studentTO.setGrade(rs.getString("INVITATIONCODE"));
 							studentTO.setClikedOrgId(Long.parseLong(tenantId));
-							studentTO.setActivationStatus(rs.getString("ACTIVATIONSTATUS"));
+							
+							//TODO Need to omit two lins after testing
+							//studentTO.setInvitationcode(rs.getString("INVITATIONCODE"));
+							//studentTO.setActivationStatus(rs.getString("ACTIVATIONSTATUS"));
+							
 							studentTOResult.add(studentTO);
 						}
 						
