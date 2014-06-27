@@ -392,6 +392,7 @@ $(document).ready(function() {
 		})	
 	}
 
+	//ROLE_GRW user cannot be created/edited from Manage User - By Joy
 	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON EDIT USER==========================================	
 	function createRoleListOnEdit(data) {
@@ -399,8 +400,10 @@ $(document).ready(function() {
 	    $("#userRole").find("option").remove();
 		var availableRole = "";
 		$.each(data[0].availableRoleList, function(index, value){
-			if(data[0].availableRoleList[index].roleDescription != 'Class Admin User'){
-				availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+			if(data[0].availableRoleList[index].roleName != 'ROLE_GRW'){
+				if(data[0].availableRoleList[index].roleDescription != 'Class Admin User'){
+					availableRole += '<option value="'+ data[0].availableRoleList[index].roleName +'" >' +data[0].availableRoleList[index].roleDescription+'</option>';
+				}
 			}
 		});
 		$("#userRole").append(availableRole);		
@@ -410,19 +413,21 @@ $(document).ready(function() {
 		//alert(masterRole);
 	}
 	
+	//ROLE_GRW user cannot be created/edited from Manage User - By Joy
 	//Fix for TD 77811 - By Joy
 	//======================CREATE MASTER ROLE LIST ON ADD USER==========================================	
 	function createRoleListOnAdd(data,orgLevel) {
 	    var masterRole = "";
 		$.each(data, function(index, value){
-			if(orgLevel == '4'){
-				if(data[index].roleDescription != 'Admin User'){
+			if(data[index].roleName != 'ROLE_GRW'){
+				if(orgLevel == '4'){
+					if(data[index].roleDescription != 'Admin User'){
+						masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
+					}
+				}else{
 					masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
 				}
-			}else{
-				masterRole += '<option value="'+ data[index].roleName +'" '+data[index].defaultSelection+'>' +data[index].roleDescription+'</option>';
 			}
-			
 		});
 		//alert(masterRole);
 		$("#addUserRole").empty().append(masterRole);
