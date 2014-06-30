@@ -211,7 +211,7 @@
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF_2">
 				<thead>
 					<tr role="row">
-						<th aria-label="Text: activate to sort column ascending" style="width: 75px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"></th>
+						<!-- <th aria-label="Text: activate to sort column ascending" style="width: 75px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"></th> -->
 						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 160px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD/YYYY)</th>
 						<th aria-label="Text: activate to sort column ascending" style="width: 50px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA</th>
@@ -234,9 +234,9 @@
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF_2">
 					<c:forEach var="rescoreRequestStudentTO" items="${notDnpStudentList}">
 						<tr id="row_${rescoreRequestStudentTO.studentBioId}">
-							<td class="vertical-center">
+							<!-- <td class="vertical-center">
 								<span class="button blue-gradient glossy float-left margin-left remove-student disabled">Remove</span>
-							</td>
+							</td> -->
 						    <td class="vertical-center">${rescoreRequestStudentTO.studentFullName}</td>
 						    <td class="vertical-center">
 						    	<c:choose>

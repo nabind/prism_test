@@ -864,9 +864,10 @@ function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId
 
 function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId, currentTabNumber, reportType, customUrl) {
 	var dataURL = 'path=report/report&reportUrl='+reportUrl+'&reportName='+reportName+'&reportId='+reportId+'&tabCount='+tabCount+'&assessmentId='+assessmentId+'&currentTabNumber='+currentTabNumber+'&studentId='+$(".studentIdForTab").val()+'&reportType='+reportType+'&customUrl='+customUrl;
+	dataURL = dataURL + "&CSRFToken=" + $( "input[name='CSRFToken']" ).val();
 	$.ajax({
-		type : "GET",
-		url : 'loadReportView.do',
+		type : "POST",
+		url : 'loadReport.do',
 		data : dataURL,
 		dataType: 'html',
 		cache:false,

@@ -13,7 +13,7 @@
         <pattern>/denied.jsp</pattern>
         <pattern>/accessDenied.jsp</pattern>
         <pattern>/loadJSPView*</pattern>
-		<pattern>/loadReportView*</pattern>
+		<pattern>/loadReport*</pattern>
 		<pattern>/checkCascading*</pattern>
 		<pattern>/fetchReportMenu*</pattern>
 		<pattern>/acsipdf*</pattern>

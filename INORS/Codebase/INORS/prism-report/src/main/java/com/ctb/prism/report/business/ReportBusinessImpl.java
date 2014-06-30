@@ -518,7 +518,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			}
 		}
 		
-		return reportDAO.getAssessments(paramMap, isGrowthUser, isSuperUser);
+		return reportDAO.getAssessments(paramMap, loggedinUserTO.getCustomerId(), isGrowthUser, isSuperUser);
 	}
 
 	/*

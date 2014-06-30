@@ -134,7 +134,8 @@ public interface IReportDAO {
 	 * @param parentReports
 	 * @return
 	 */
-	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, boolean isGrowthUser,  boolean isSuperUser);
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, String customerId, 
+			boolean isGrowthUser,  boolean isSuperUser);
 
 	/**
 	 * Retrieves and returns tenantId corresponding to the userName.

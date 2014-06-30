@@ -135,6 +135,17 @@ public class CommonController extends BaseDAO {
 	}
 	
 	/**
+	 * Load report jsp - parameter will come in post
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping(value = "/loadReport", method = RequestMethod.POST)
+	public ModelAndView loadReport(HttpServletRequest req, HttpServletResponse res) {
+		return loadJSPView(req, res);
+	}
+	
+	/**
 	 * This method is for showing static PDF files from mount location
 	 * 
 	 * @param req
