@@ -1,8 +1,4 @@
-/**
  * This js file is to manage report module
- * Author: Tata Consultancy Services Ltd.
- * Version: 1
- */
 $(window).load(function() {
 	$("#blockDiv").remove();
 });
@@ -308,8 +304,11 @@ function updateRowValuesForRole(row) {
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
 			else if ($(this).val()=="ROLE_CLASS")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");	
+			else if ($(this).val()=="ROLE_GRW")
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "yellow-bg");
 			else ($(this).val()=="ROLE_PARENT")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
+			
 				
 			roleTag = roleTag + roleTagTemp;
 			//alert(roleTag);
@@ -519,8 +518,10 @@ $('.delete-Report').live("click", function() {
 					reportRoleDom +='<small class="tag grey-bg role ROLE_CLASS">'+rolesArray[i]+'</small><br/>'
 				}else if (rolesArray[i]=="ROLE_PARENT"){
 					reportRoleDom +='<small class="tag red-bg role ROLE_PARENT">'+rolesArray[i]+'</small><br/>'
-				}else if (rolesArray[i]=="ROLE_ADMIN"){
+				} else if (rolesArray[i]=="ROLE_ADMIN"){
 					reportRoleDom +='<small class="tag orange-bg role ROLE_ADMIN">'+rolesArray[i]+'</small><br/>'
+				} else if (rolesArray[i]=="ROLE_GRW"){
+					reportRoleDom +='<small class="tag yellow-bg role ROLE_GRW">'+rolesArray[i]+'</small><br/>'
 				} else if (rolesArray[i]=="ROLE_USER"){
 					reportRoleDom +='<small class="tag black-bg role ROLE_USER">'+rolesArray[i]+'</small><br/>'
 				}else {

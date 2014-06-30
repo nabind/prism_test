@@ -227,7 +227,7 @@ public interface IReportQuery {
 			" and ass.db_menuid = acc.db_menuid ",
 			" and acc.db_reportid = re.db_reportid ",
 			" AND RE.ACTIVATION_STATUS IN ('AC','SS') ",
-			" AND ACC.ROLEID = 8 ",
+			" AND ACC.ROLEID = ? ",
 			" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 	
 	public static final String GET_ALL_BUT_GROWTH_ASSESSMENT_LIST = CustomStringUtil.appendString(
@@ -240,7 +240,7 @@ public interface IReportQuery {
 			" and ass.db_menuid = acc.db_menuid ",
 			" and acc.db_reportid = re.db_reportid ",
 			" AND RE.ACTIVATION_STATUS IN ('AC','SS') ",
-			" AND NOT EXISTS (SELECT 1 FROM DASH_MENU_RPT_ACCESS R WHERE R.DB_REPORTID = ACC.DB_REPORTID AND R.ROLEID = 8) ",
+			" AND NOT EXISTS (SELECT 1 FROM DASH_MENU_RPT_ACCESS R WHERE R.DB_REPORTID = ACC.DB_REPORTID AND R.ROLEID = ?) ",
 			" ORDER BY ASS.MENU_SEQ, acc.report_seq, RE.REPORT_NAME DESC");
 
 	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(

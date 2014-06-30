@@ -90,6 +90,10 @@
 															<small class="tag orange-bg role ${role}">${role}</small>
 															<br />
 														</c:if>
+														<c:if test="${role == 'ROLE_GRW'}">
+															<small class="tag yellow-bg role ${role}">${role}</small>
+															<br />
+														</c:if>
 														<c:if test="${role == 'ROLE_USER'}">
 															<small class="tag black-bg role ${role}">${role}</small>
 															<br />

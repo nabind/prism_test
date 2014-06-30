@@ -532,13 +532,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		
 		if (parentReports) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%");
 		} else if(isSuperUser){ /* For super user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%");
 		} else if(isGrowthUser){/* For growth user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);	    
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%",IApplicationConstants.ROLE_GROWTH_ID);	    
 		} else { /* For All users other than growth user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%",IApplicationConstants.ROLE_GROWTH_ID);
 		}
 		
 		
