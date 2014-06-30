@@ -527,21 +527,20 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		
 		
 		List<AssessmentTO> assessments = null;
-		List<Map<String, Object>> dataList = null;
+		List<Map<String, Object>> dataList = null;		
 		
+
 		
-		/* For growth user*/
-		if(isGrowthUser){
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);				
+		if (parentReports) {
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
+		} else if(isSuperUser){ /* For super user*/
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
+		} else if(isGrowthUser){/* For growth user*/
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);	    
+		} else { /* For All users other than growth user*/
+			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
 		}
 		
-		if(dataList == null || isSuperUser) {
-			if (parentReports) {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%"/*,loggedinUserTO.getCustomerId()*/);
-			}  else {
-				dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%"/*,loggedinUserTO.getCustomerId()*/);
-			}
-		}
 		
 		if (dataList != null && dataList.size() > 0) {
 			assessments = new ArrayList<AssessmentTO>();
