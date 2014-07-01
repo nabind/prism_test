@@ -1,4 +1,8 @@
+/**
  * This js file is to manage report module
+ * Author: Tata Consultancy Services Ltd.
+ * Version: 1
+ */
 $(window).load(function() {
 	$("#blockDiv").remove();
 });
