@@ -976,6 +976,13 @@ public class LoginController {
 		return modelAndView;
 	}
 	
+	@RequestMapping(value = "/loadGrowthHome", method = RequestMethod.GET)
+	public ModelAndView loadGrowthHome(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		//Fetching Home page Content moved to ajax call: loadHomePageMsg()
+		ModelAndView modelAndView = new ModelAndView("user/growthHome");
+		return modelAndView;
+	}
+	
 	
 	/**
 	 * Changed by Abir Load user specific dynamic login page message
