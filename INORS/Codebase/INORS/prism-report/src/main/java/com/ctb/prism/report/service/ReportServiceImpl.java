@@ -165,11 +165,11 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#getValuesOfSingleInput(java .lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.lang.Object)
+	 * @see com.ctb.prism.report.service.IReportService#getValuesOfSingleInput(java .lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.lang.Object, java.lang.String)
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
 			throws SystemException {
-		return reportBusiness.getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, clazz);
+		return reportBusiness.getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, clazz, userId);
 	}
 
 	/*

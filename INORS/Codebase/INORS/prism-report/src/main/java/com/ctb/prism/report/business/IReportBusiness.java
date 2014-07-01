@@ -99,10 +99,11 @@ public interface IReportBusiness {
 	 * @param changedValue
 	 * @param replacableParams
 	 * @param clazz
+	 * @param userId
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
 			throws SystemException;
 
 	/**

@@ -1525,7 +1525,7 @@ public class ReportController extends BaseDAO {
 				//long start1 = System.currentTimeMillis();
 				List<InputControlTO> allCascading = getCascadingInputControls(allInputControls, changedObj);
 				List<ObjectValueTO> objectValueList = recurrsiveCascading(reportUrl, allInputControls, allCascading, new ArrayList<ObjectValueTO>(), currentUser, changedObj, changedValue,
-						replacableParams, tabCount, reportFilterTO, defaultInputValues, defaultInputNames, req);
+						replacableParams, tabCount, reportFilterTO, defaultInputValues, defaultInputNames, req, currentUserId);
 				//long end1 = System.currentTimeMillis();
 				//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start1)+" <<<< Time Taken: recurrsiveCascading  >>>> " );
 				String jsonStr = JsonUtil.convertToJson(objectValueList);
@@ -1581,7 +1581,7 @@ public class ReportController extends BaseDAO {
 	 */
 	private List<ObjectValueTO> recurrsiveCascading(String reportUrl, List<InputControlTO> allInputControls, List<InputControlTO> allCascading, List<ObjectValueTO> objectValueList, String userName,
 			String changedObject, String changedValue, Map<String, String> replacableParams, String tabCount, Object reportFilterTO, Map<String, String[]> defaultValues,
-			List<String> defaultInputNames, HttpServletRequest req) throws SystemException {
+			List<String> defaultInputNames, HttpServletRequest req, String userId) throws SystemException {
 		if (allCascading != null) {
 			//List<InputControlTO> reCascadingInputControls = null;
 			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
@@ -1590,7 +1590,7 @@ public class ReportController extends BaseDAO {
 			InputControlFactory inputControlFact = new InputControlFactoryImpl();
 			for (InputControlTO inputControlTO : allCascading) {
 				// get list of values
-				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName,customerId, changedObject, changedValue, replacableParams, reportFilterTO);
+				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName,customerId, changedObject, changedValue, replacableParams, reportFilterTO, userId);
 
 				// req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER+inputControlTO.getLabelId(), objects);
 				/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {

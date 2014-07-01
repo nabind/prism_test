@@ -71,32 +71,23 @@
 												</td>
 												<td class="roleContainer vertical-center">
 													<c:forEach var="role" items="${report.roles}">
-														<c:if test="${role == 'ROLE_ACSI'}">
-														<small class="tag blue-bg role ${role}">${role}</small><br/>
-														</c:if>
 														<c:if test="${role == 'ROLE_CTB'}">
 														<small class="tag green-bg role ${role}">${role}</small><br/>
 														</c:if>
-														<c:if test="${role == 'ROLE_SCHOOL'}">
-														<small class="tag orange-bg role ${role}">${role}</small><br/>
-														</c:if>
-														<c:if test="${role == 'ROLE_CLASS'}">
-														<small class="tag grey-bg role ${role}">${role}</small><br/>
+														<c:if test="${role == 'ROLE_SUPER'}">
+														<small class="tag blue-bg role ${role}">${role}</small><br/>
 														</c:if>												
 														<c:if test="${role == 'ROLE_PARENT'}">
 														<small class="tag red-bg role ${role}">${role}</small><br/>
 														</c:if>	
 														<c:if test="${role == 'ROLE_ADMIN'}">
-															<small class="tag orange-bg role ${role}">${role}</small>
-															<br />
+														<small class="tag orange-bg role ${role}">${role}</small><br />
 														</c:if>
 														<c:if test="${role == 'ROLE_GRW'}">
-															<small class="tag yellow-bg role ${role}">${role}</small>
-															<br />
+														<small class="tag grey-bg role ${role}">${role}</small><br />
 														</c:if>
 														<c:if test="${role == 'ROLE_USER'}">
-															<small class="tag black-bg role ${role}">${role}</small>
-															<br />
+														<small class="tag black-bg role ${role}">${role}</small><br />
 														</c:if>
 													</c:forEach>
 												</td>

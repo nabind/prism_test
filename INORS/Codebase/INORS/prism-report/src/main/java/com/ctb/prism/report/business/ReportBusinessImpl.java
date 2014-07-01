@@ -357,11 +357,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param query
 	 * @param userName
 	 * @param customerId
+	 * @param changedObject
+	 * @param changedValue
+	 * @param replacableParams
+	 * @param obj 
+	 * @param userId 
 	 * @return
 	 * @throws SystemException
 	 * @throws IllegalArgumentException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object obj)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object obj, String userId)
 			throws SystemException {
 		if (query == null)
 			return null;
@@ -373,6 +378,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), CustomStringUtil.appendString("'", changedValue, "'"));
 
 			// replace all required params
@@ -512,9 +518,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 		for(int i=0;i<authList.size();i++){
 			if(authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
+				break;
 			}
 			if(authList.get(i).getAuthority().equals("ROLE_SUPER")){ // This is needed if a super user is having growth role as well 
 				isSuperUser = true;
+				break;
 			}
 		}
 		
