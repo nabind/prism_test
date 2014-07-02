@@ -76,6 +76,7 @@
 		<pattern>/downloadStudentFile*</pattern>
 		<pattern>/grtICFileForm*</pattern>
 		<pattern>/loadHomePage*</pattern>
+		<pattern>/loadGrowthHome*</pattern>
 		<pattern>/rescoreRequestForm*</pattern>
     </decorator>
 	
