@@ -1,7 +1,8 @@
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <style>
 	li.jstree-open > ul {
@@ -11,8 +12,8 @@
 
 <div class="content-panel" style="padding-left:0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="grtDownload" modelAttribute="grtDownload">
-	<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF File Generation has been requested.<br/>Click on 'Group Download Files' for Status of request(s).</p>
-	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.groupDownload"/></p>
+	<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
 	<input type="hidden" value="/public/INORS/Report/Report1_files" name="reportUrl" >
 	<c:if test="${not empty reportMessages}">
 		<c:forEach var="reportMessage" items="${reportMessages}">
