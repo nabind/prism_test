@@ -1,11 +1,13 @@
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 
 <div class="content-panel" style="padding-left:0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="groupDownload" modelAttribute="groupDownload">
-	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><strong>PDF File Generation has been requested. Click on 'Group Download Files' for Status of request(s).</strong></p>
-	<p class="error-message message small-margin-bottom red-gradient" style="display:none">Error submitting download request. Please try later.</p>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.groupDownload"/></p>
+	<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
 	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	<dl class="download-instructions accordion same-height">
 		<c:if test="${not empty testAdministrationVal}"><dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
