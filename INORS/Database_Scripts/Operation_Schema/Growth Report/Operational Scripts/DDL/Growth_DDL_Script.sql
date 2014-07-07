@@ -164,21 +164,21 @@ ON COMMIT DELETE ROWS;
 
 CREATE TABLE CHECK_RECS
 (
-  AA     NUMBER,
-  TYPE1  VARCHAR2(40),
-  TIMETO DATE
+AA     NUMBER,
+TYPE1  VARCHAR2(100),
+TIMETO DATE
 )
 TABLESPACE USERS
-  PCTFREE 10
-  INITRANS 1
-  MAXTRANS 255
-  STORAGE
-  (
-    INITIAL 64K
-    NEXT 1M
-    MINEXTENTS 1
-    MAXEXTENTS UNLIMITED
-  );
+PCTFREE 10
+INITRANS 1
+MAXTRANS 255
+STORAGE
+(
+  INITIAL 64K
+  NEXT 1M
+  MINEXTENTS 1
+  MAXEXTENTS UNLIMITED
+);
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE PERF_MATRIX_FACT
 (
