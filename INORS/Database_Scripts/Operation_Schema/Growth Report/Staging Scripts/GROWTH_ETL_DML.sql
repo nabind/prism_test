@@ -141,6 +141,32 @@ values
    sysdate,
    sysdate);
    
+insert into stg_etl_jobmaster
+  (MAPPING_NAME,
+   SESSION_NAME,
+   WORKFLOW_NAME,
+   CREATED_DATE_TIME,
+   UPDATED_DATE_TIME)
+values
+  ('M_GROWTH_PERF_MATRIX_INDX_DROP',
+   'S_GROWTH_PERF_MATRIX_INDX_DROP',
+   'WKF_GROWTH_REPORT',
+   sysdate,
+   sysdate); 
+
+insert into stg_etl_jobmaster
+  (MAPPING_NAME,
+   SESSION_NAME,
+   WORKFLOW_NAME,
+   CREATED_DATE_TIME,
+   UPDATED_DATE_TIME)
+values
+  ('M_GROWTH_PERF_MATRIX_INDX_CREATE',
+   'S_GROWTH_PERF_MATRIX_INDX_CREATE',
+   'WKF_GROWTH_REPORT',
+   sysdate,
+   sysdate);     
+   
  insert into stg_etl_jobmaster
   (MAPPING_NAME,
    SESSION_NAME,
