@@ -1,19 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<noscript class="message black-gradient simpler">Your browser
-	does not support JavaScript! Some features won't work as expected...</noscript>
+<noscript class="message black-gradient simpler"><spring:message code="error.noscript"/></noscript>
 
 <hgroup id="main-title" class="thin">
-<p class="big-message">This section includes files for the ISTEP+, IMAST and IREAD-3 Student Reports, and for ISTEP+ only the Image Prints and Invitation Code Letters.
-<br/><br/>If the Image Print document (Applied Skills) is not available for a student, please contact your School or Corporation Test Coordinator.<br/>If the ISR (Individual Student Report) is not available for a student, please contact the CTB/Indiana Help Desk.</p>
-<p class="red">
-	<span class="tag red-gradient">Please Note:</span> The length of time to create your file depends upon the volume of requests made by all INORS users. Thanks for your patience!
-</p>
-<p class="red">Files will be deleted automatically after the expiration date/time. Click <b>Refresh</b> to get the current job status.</p>
+<p class="big-message"><spring:message code="msg.groupDownloadFiles.bigMessage"/></p>
+<p class="red"><spring:message code="msg.groupDownloadFiles.note"/></p>
+<p class="red"><spring:message code="msg.groupDownloadFiles.notice"/></p>
 <a href="javascript:location.reload();" class="button with-tooltip tooltip-right" title="Click to get the current status.">
 	<span class="button-icon"><span class="icon-refresh"></span></span>
-	Refresh
+	<spring:message code="button.groupDownloadFiles.refresh"/>
 </a>
 
 <hr/>
@@ -33,12 +30,12 @@
 
 									<thead>
 										<tr>
-											<th scope="col" width="30%">Request File Name</th>
-											<th scope="col" width="20%">Created Date</th>
-											<th scope="col" width="20%">Expiration Date</th>
-											<th scope="col" width="12%">Job Status</th>
-											<th scope="col" width="10%">File Size</th>
-											<th scope="col" width="8%">Actions</th>
+											<th scope="col" width="30%"><spring:message code="thead.groupDownloadFiles.fileName"/></th>
+											<th scope="col" width="20%"><spring:message code="thead.groupDownloadFiles.createdDate"/></th>
+											<th scope="col" width="20%"><spring:message code="thead.groupDownloadFiles.expDate"/></th>
+											<th scope="col" width="12%"><spring:message code="thead.groupDownloadFiles.jobStatus"/></th>
+											<th scope="col" width="10%"><spring:message code="thead.groupDownloadFiles.fileSize"/></th>
+											<th scope="col" width="8%"><spring:message code="thead.groupDownloadFiles.actions"/></th>
 										</tr>
 									</thead>
 
@@ -86,7 +83,7 @@
 						<form:form id="viewRequestDetail" method="post">
 							<br>
 							<p class="button-height inline-label">
-							    <label class="label" for="requestSummary"><Strong>Request Summary</Strong></label><br>
+							    <label class="label" for="requestSummary"><Strong><spring:message code="label.groupDownloadFiles.summary"/></Strong></label><br>
 							    <p align="left">
 								<textarea type="text" name="requestSummary"  id="requestSummary" align="left"  style="width: 500px; height: 250px;" class="textarea full-width wrapped relative white-gradient"  disabled="disabled"></textarea>
 								</p>
