@@ -181,9 +181,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 			String labelId = ito.getLabelId();
 			String query = ito.getQuery();
 			if (query != null) {
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));				
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 
 				/*** NEW ***/
@@ -235,6 +235,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
 				logger.log(IAppLogger.DEBUG, query);
+				
+				//System.out.println("Query for default filter:" +query);
+				
 				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
 				/*
 				 * if(list != null && list.size() == 0) { // patch for form level if(IApplicationConstants.IC_FORM_LEVEL.equals(ito.getLabel())) { ObjectValueTO formObj = new ObjectValueTO();
@@ -375,10 +378,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 			Class<?> c = reportFilterFactory.getReportFilterTO();
 			// replace all params
 			String tenantId = reportDAO.getTenantId(userName);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
-			query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
-			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);			
 			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), CustomStringUtil.appendString("'", changedValue, "'"));
 
 			// replace all required params
@@ -425,6 +428,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			}
 
 			logger.log(IAppLogger.DEBUG, query);
+			//System.out.println("Query for Cascading filter:" +query);
 
 			// fetch data
 			return reportDAO.getValuesOfSingleInput(query);

@@ -304,12 +304,12 @@ function updateRowValuesForRole(row) {
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "black-bg");
 			else if ($(this).val()=="ROLE_CTB")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "green-bg");
+			else if ($(this).val()=="ROLE_SUPER")
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "blue-bg");
 			else if ($(this).val()=="ROLE_ADMIN")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
-			else if ($(this).val()=="ROLE_CLASS")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");	
 			else if ($(this).val()=="ROLE_GRW")
-				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "yellow-bg");
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");
 			else ($(this).val()=="ROLE_PARENT")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
 			
@@ -512,20 +512,16 @@ $('.delete-Report').live("click", function() {
 		{
 			var reportRoleDom="";
 			for(var i = 0; i < rolesArray.length; i++) {
-				if(rolesArray[i]=="ROLE_ACSI"){
-					reportRoleDom +='<small class="tag blue-bg role ROLE_ACSI">'+rolesArray[i]+'</small><br/>'
-				}else if (rolesArray[i]=="ROLE_CTB"){
+				if (rolesArray[i]=="ROLE_CTB"){
 					reportRoleDom +='<small class="tag green-bg role ROLE_CTB">'+rolesArray[i]+'</small><br/>'
-				}else if (rolesArray[i]=="ROLE_SCHOOL"){
-					reportRoleDom +='<small class="tag orange-bg role ROLE_SCHOOL">'+rolesArray[i]+'</small><br/>'
-				}else if (rolesArray[i]=="ROLE_CLASS"){
-					reportRoleDom +='<small class="tag grey-bg role ROLE_CLASS">'+rolesArray[i]+'</small><br/>'
+				}else if (rolesArray[i]=="ROLE_SUPER"){
+					reportRoleDom +='<small class="tag blue-bg role ROLE_SUPER">'+rolesArray[i]+'</small><br/>'
 				}else if (rolesArray[i]=="ROLE_PARENT"){
 					reportRoleDom +='<small class="tag red-bg role ROLE_PARENT">'+rolesArray[i]+'</small><br/>'
 				} else if (rolesArray[i]=="ROLE_ADMIN"){
 					reportRoleDom +='<small class="tag orange-bg role ROLE_ADMIN">'+rolesArray[i]+'</small><br/>'
 				} else if (rolesArray[i]=="ROLE_GRW"){
-					reportRoleDom +='<small class="tag yellow-bg role ROLE_GRW">'+rolesArray[i]+'</small><br/>'
+					reportRoleDom +='<small class="tag grey-bg role ROLE_GRW">'+rolesArray[i]+'</small><br/>'
 				} else if (rolesArray[i]=="ROLE_USER"){
 					reportRoleDom +='<small class="tag black-bg role ROLE_USER">'+rolesArray[i]+'</small><br/>'
 				}else {
