@@ -38,6 +38,7 @@ public class ParentTO extends BaseTO {
 	private String icExpirationStatus;
 	private String icActivationStatus;
 	private long isAlreadyClaimed = 0;
+	private String fullName = "";
 	
 	
 	public String getOrgName() {
@@ -201,6 +202,12 @@ public class ParentTO extends BaseTO {
 	}
 	public void setIsAlreadyClaimed(long isAlreadyClaimed) {
 		this.isAlreadyClaimed = isAlreadyClaimed;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }
 

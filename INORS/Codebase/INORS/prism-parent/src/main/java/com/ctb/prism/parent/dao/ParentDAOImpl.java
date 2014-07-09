@@ -445,145 +445,272 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_PARENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode) {
-		logger.log(IAppLogger.INFO, "Enter: getParentList()");
+	@SuppressWarnings("unchecked")
+	public ArrayList<ParentTO> getParentList(final String orgId, final String adminYear, final String searchParam, final String orgMode) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
-		String userName = "";
-		String tenantId = "";
-		List<Map<String, Object>> lstData = null;
-		if (orgId.indexOf("_") > 0) {
-			userName = orgId.substring((orgId.indexOf("_") + 1), orgId.length());
-			tenantId = orgId.substring(0, orgId.indexOf("_"));
-			if (searchParam != null && searchParam.trim().length() > 0) {
-				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-				logger.log(IAppLogger.INFO, "userName = " + userName);
-				logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
-				
-				//Fix to implement cust_prod_id properly - By Joy
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM,
-						orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, searchParam, searchParam);
-			} else {
-				logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
-				logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-				logger.log(IAppLogger.INFO, "userName = " + userName);
-				
-				//Fix to implement cust_prod_id properly - By Joy
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_SCROLL,
-						orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID,adminYear, userName);
-			}
-		} else {
-			tenantId = orgId;
-			logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_FIRST_LOAD");
-			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-			
-			//Fix to implement cust_prod_id properly - By Joy
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_ON_FIRST_LOAD,
-					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
-			
-			logger.log(IAppLogger.DEBUG, "lstData.size() = " + lstData.size());
-		}
-		if (lstData.size() > 0) {
-			parentTOs = new ArrayList<ParentTO>();
-			for (Map<String, Object> fieldDetails : lstData) {
-				ParentTO to = new ParentTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USERID")).longValue());
-				to.setUserName((String) (fieldDetails.get("USERNAME")));
-				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
-				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
-				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
-
-				try {
-					to.setClikedOrgId(Long.parseLong(tenantId));
-				} catch (Exception ex) {
+		try {
+			parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_PARENT_DETAILS_MANAGE_PARENT + "}");
+					if (orgId.indexOf("_") > 0) {
+						String userName = orgId.substring((orgId.indexOf("_") + 1), orgId.length());
+						String tenantId = orgId.substring(0, orgId.indexOf("_"));
+						if (searchParam != null && searchParam.trim().length() > 0) {
+							String searchParamNew = CustomStringUtil.appendString("%", searchParam, "%");
+							logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
+							logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+							logger.log(IAppLogger.INFO, "userName = " + userName);
+							logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
+							cs.setString(1, adminYear);
+							cs.setString(2, orgMode);
+							cs.setLong(3, Long.parseLong(tenantId));
+							cs.setString(4, userName);
+							cs.setString(5, searchParamNew);
+							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						} else {
+							logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
+							logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+							logger.log(IAppLogger.INFO, "userName = " + userName);
+							cs.setString(1, adminYear);
+							cs.setString(2, orgMode);
+							cs.setLong(3, Long.parseLong(tenantId));
+							cs.setString(4, userName);
+							cs.setString(5, "-99");
+							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
+							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					} else {
+						String tenantId = orgId;
+						logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_FIRST_LOAD");
+						logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+						cs.setString(1, adminYear);
+						cs.setString(2, orgMode);
+						cs.setLong(3, Long.parseLong(tenantId));
+						cs.setString(4, "-99");
+						cs.setString(5, "-99");
+						cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+					}
+					return cs;
 				}
-				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
-				parentTOs.add(to);
-			}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<ParentTO> parentTOResult = new ArrayList<ParentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(7);
+						ParentTO parentTO = null;
+						while (rs.next()){
+							parentTO = new ParentTO();
+							parentTO.setUserId(rs.getLong("USERID"));
+							parentTO.setUserName(rs.getString("USERNAME"));
+							parentTO.setDisplayName(rs.getString("FULLNAME"));
+							parentTO.setStatus(rs.getString("STATUS"));
+							parentTO.setOrgId(rs.getLong("ORG_NODEID"));
+							parentTO.setOrgName(rs.getString("ORG_NODE_NAME"));
+							parentTO.setClikedOrgId(rs.getLong("TENANTID"));
+							parentTO.setLastLoginAttempt(rs.getString("LAST_LOGIN_ATTEMPT"));
+							parentTOResult.add(parentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(8));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getParentList() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return parentTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getParentList() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		logger.log(IAppLogger.DEBUG, "parentTOs.size() = " + parentTOs.size());
-		logger.log(IAppLogger.INFO, "Exit: getParentList()");
 		return parentTOs;
 	}
+	
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_PARENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchParent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<ParentTO> searchParent(String parentName, String tenantId, String adminYear, String isExactSeacrh, String orgMode) {
-		logger.log(IAppLogger.INFO, "Enter: searchParent()");
+	@SuppressWarnings("unchecked")
+	public ArrayList<ParentTO> searchParent(final String parentName, final String tenantId, final String adminYear, final String isExactSeacrh, final String orgMode) {
+
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchParent()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
-		List<Map<String, Object>> parentlist = null;
-		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSeacrh)) {
-			parentName = CustomStringUtil.appendString("%", parentName, "%");
-			logger.log(IAppLogger.INFO, "SEARCH_PARENT");
-			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-			logger.log(IAppLogger.INFO, "parentName = " + parentName);
-			
-			//Fix to implement cust_prod_id properly - By Joy
-			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT,
-					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, parentName, parentName, "15");
-		} else {
-			logger.log(IAppLogger.INFO, "SEARCH_PARENT_EXACT");
-			logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
-			logger.log(IAppLogger.INFO, "parentName = " + parentName);
-			
-			//Fix to implement cust_prod_id properly - By Joy
-			parentlist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT_EXACT,
-					orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, "15");
-		}
-		if (parentlist.size() > 0) {
-			parentTOs = new ArrayList<ParentTO>();
-			for (Map<String, Object> fieldDetails : parentlist) {
-				ParentTO to = new ParentTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USERID")).longValue());
-				to.setUserName((String) (fieldDetails.get("USERNAME")));
-				to.setDisplayName((String) (fieldDetails.get("FULLNAME")));
-				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setOrgName((String) (fieldDetails.get("ORG_NODE_NAME")));
-				to.setOrgId(((BigDecimal) fieldDetails.get("ORG_NODEID")).longValue());
-				try {
-					to.setClikedOrgId(Long.parseLong(tenantId));
-				} catch (Exception ex) {
-					logger.log(IAppLogger.WARN, "Skipping Cliked OrgId");
+		final long rowNum = 15;
+		try {
+			parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.SEARCH_PARENT + "}");
+					if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSeacrh)) {
+						String searchParam = CustomStringUtil.appendString("%", parentName, "%");	
+						logger.log(IAppLogger.INFO, "SEARCH_PARENT");
+						logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+						logger.log(IAppLogger.INFO, "parentName = " + parentName);
+						cs.setString(1, adminYear);
+						cs.setLong(2,IApplicationConstants.ROLE_PARENT_ID);
+						cs.setString(3, orgMode);
+						cs.setLong(4, Long.parseLong(tenantId));
+						cs.setString(5, searchParam);
+						cs.setLong(6,rowNum);
+						cs.setString(7, isExactSeacrh);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+					}else{
+						logger.log(IAppLogger.INFO, "SEARCH_PARENT_EXACT");
+						logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+						logger.log(IAppLogger.INFO, "parentName = " + parentName);
+						cs.setString(1, adminYear);
+						cs.setLong(2,IApplicationConstants.ROLE_PARENT_ID);
+						cs.setString(3, orgMode);
+						cs.setLong(4, Long.parseLong(tenantId));
+						cs.setString(5, parentName);
+						cs.setLong(6,rowNum);
+						cs.setString(7, isExactSeacrh);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+					}
+					return cs;
 				}
-				to.setLastLoginAttempt((String) (fieldDetails.get("LAST_LOGIN_ATTEMPT")));
-				parentTOs.add(to);
-			}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<ParentTO> parentTOResult = new ArrayList<ParentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(8);
+						ParentTO parentTO = null;
+						while (rs.next()){
+							parentTO = new ParentTO();
+							parentTO.setUserId(rs.getLong("USERID"));
+							parentTO.setUserName(rs.getString("USERNAME"));
+							parentTO.setDisplayName(rs.getString("FULLNAME"));
+							parentTO.setStatus(rs.getString("STATUS"));
+							parentTO.setOrgId(rs.getLong("ORG_NODEID"));
+							parentTO.setOrgName(rs.getString("ORG_NODE_NAME"));
+							parentTO.setClikedOrgId(rs.getLong("TENANTID"));
+							parentTO.setLastLoginAttempt(rs.getString("LAST_LOGIN_ATTEMPT"));
+							parentTOResult.add(parentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(9));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchParent() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return parentTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - searchParent() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		logger.log(IAppLogger.DEBUG, "parentTOs.size() = " + parentTOs.size());
-		logger.log(IAppLogger.INFO, "Exit: searchParent()");
 		return parentTOs;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * Moved to PKG_MANAGE_PARENT by Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#searchParentAutoComplete(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String searchParentAutoComplete(String parentName, String tenantId, String adminYear, String orgMode) {
-		parentName = CustomStringUtil.appendString("%", parentName, "%");
+	@SuppressWarnings("unchecked")
+	public String searchParentAutoComplete(final String parentName,final String tenantId,final String adminYear,final String orgMode) {
+
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchParentAutoComplete()");
+		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+		long t1 = System.currentTimeMillis();
+		
 		String parentListJsonString = null;
-		
-		//Fix to implement cust_prod_id properly - By Joy
-		List<Map<String, Object>> listOfParents = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_PARENT,
-				orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, parentName, parentName, parentName, "100");
-		
-		if (listOfParents != null && listOfParents.size() > 0) {
-			parentListJsonString = "[";
-			for (Map<String, Object> data : listOfParents) {
-				// String parentNameStr = (String) data.get("USERNAME");
-				parentListJsonString = CustomStringUtil.appendString(parentListJsonString, "\"", (String) data.get("USERNAME"), "<br/>", (String) data.get("FULLNAME"), "\",");
+		final String searchParam = CustomStringUtil.appendString("%", parentName, "%");
+		final long rowNum = 100;
+		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
+		try {
+			parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.SEARCH_PARENT + "}");
+					cs.setString(1, adminYear);
+					cs.setLong(2,IApplicationConstants.ROLE_PARENT_ID);
+					cs.setString(3, orgMode);
+					cs.setLong(4, Long.parseLong(tenantId));
+					cs.setString(5, searchParam);
+					cs.setLong(6,rowNum);
+					cs.setString(7, IApplicationConstants.FLAG_N);
+					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					ArrayList<ParentTO> parentTOResult = new ArrayList<ParentTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(8);
+						ParentTO parentTO = null;
+						while (rs.next()){
+							parentTO = new ParentTO();
+							parentTO.setUserName(rs.getString("USERNAME"));
+							parentTO.setFullName(rs.getString("FULLNAME"));
+							parentTOResult.add(parentTO);
+						}
+						
+						statusTO.setErrorMsg(cs.getString(9));
+						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchParentAutoComplete() with error: " + statusTO.getErrorMsg());
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return parentTOResult;
+				}
+			});
+			
+			if(parentTOs.size() > 0){
+				parentListJsonString = "[";
+				for (ParentTO parentTO : parentTOs) {
+					parentListJsonString = CustomStringUtil.appendString(parentListJsonString, "\"", parentTO.getUserName(), "<br/>", parentTO.getFullName(), "\",");
+				}
+				parentListJsonString = CustomStringUtil.appendString(parentListJsonString.substring(0, parentListJsonString.length() - 1), "]");
 			}
-			parentListJsonString = CustomStringUtil.appendString(parentListJsonString.substring(0, parentListJsonString.length() - 1), "]");
+			logger.log(IAppLogger.INFO, "parentListJsonString: "+parentListJsonString);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - searchParentAutoComplete() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		logger.log(IAppLogger.DEBUG, parentListJsonString);
 		return parentListJsonString;
 	}
 
