@@ -7,8 +7,8 @@ create table STG_USC_LINK
   DATETIMESTAMP  DATE
 );
 ------------------
-alter table users add (USER_TYPE varchar2(10), activation_status1 varchar2(2),
-created_date_time1  date default sysdate NOT NULL  ,updated_date_time1  date );
+alter table users add (USER_TYPE varchar2(10) default 'FE', activation_status1 varchar2(2),
+created_date_time1  date default sysdate NOT NULL  ,updated_date_time1  date ); 
 
 update users
 set activation_status1=activation_status
