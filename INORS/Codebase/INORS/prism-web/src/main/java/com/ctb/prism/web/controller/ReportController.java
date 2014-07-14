@@ -60,7 +60,7 @@ import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 
 @Controller
-public class ReportController extends BaseDAO {
+public class ReportController{
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportController.class.getName());
 
