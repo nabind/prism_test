@@ -601,6 +601,40 @@ public class CommonDAOImpl implements CommonDAO {
 		}
 		return testElementIdList;
 	}
+	
+	/** 
+	 * Check if new student present
+	 */
+	public boolean getNewStudents(String schoolId) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_NEW_STUDENTS);
+			pstmt.setLong(1, Long.valueOf(schoolId));
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return false;
+	}
 
 	/*
 	 * (non-Javadoc)

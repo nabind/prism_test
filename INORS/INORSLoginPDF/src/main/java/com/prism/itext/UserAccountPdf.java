@@ -87,18 +87,31 @@ public class UserAccountPdf {
 						//// processLoginPdf(prop, dao, id);
 						encDocLocation = manupulateTenants(id, prop, null, false, false);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
-						String letterLocation = processIcLetterPdf(prop, dao, id);
-						ARCHIVE_NEEDED = false;
-						logger.info("IC Letter Location: " + letterLocation);
+						logger.info("Checking if new student present for school # " + id);
+						boolean newStudentPresent = dao.getNewStudents(id);
+						if(newStudentPresent) {
+							String letterLocation = processIcLetterPdf(prop, dao, id);
+							ARCHIVE_NEEDED = false;
+							logger.info("IC Letter Location: " + letterLocation);
+							//archiveICLetter(prop);
+						} else {
+							logger.info("No new student found for school # " + id);
+						}
 						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ---------------------------------------------------------------------------------");
-						//archiveICLetter(prop);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
 						////processLoginPdf(prop, dao, id);
-						String letterLocation = processIcLetterPdf(prop, dao, id);
+						String letterLocation = "";
+						boolean newStudentPresent = dao.getNewStudents(id);
+						if(newStudentPresent) {
+							letterLocation = processIcLetterPdf(prop, dao, id);
+						} else {
+							logger.info("No new IC letter found for school # " + id);
+						}
 						encDocLocation = manupulateTenants(id, prop, letterLocation, false, false);
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
+						
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
 						processIndividualIcLetterPdf(prop, dao, id);
 						identifier = "IC_";
@@ -1180,7 +1193,15 @@ public class UserAccountPdf {
 	
 	private static String getDocName(OrgTO school, Properties prop) {
 		StringBuffer docBuff = new StringBuffer();
-		String pdfPrefix = school.getTestAdministration().trim();//prop.getProperty("testAdministrator");
+		String pdfPrefix = school.getTestAdministration().trim();
+		
+		// changed for defect # 79605
+		if(pdfPrefix.startsWith("IREAD")) pdfPrefix = "IREAD-3";
+		if(pdfPrefix.startsWith("ISTEP")) pdfPrefix = "ISTEP+";
+		if(pdfPrefix.startsWith("IMAST")) pdfPrefix = "IMAST";
+		pdfPrefix = pdfPrefix + prop.getProperty("TestSpringSummer");
+		// end- changed for defect # 79605
+		
 		docBuff.append(prop.getProperty("pdfGenPath"));
 		docBuff.append(File.separator);
 		/*docBuff.append(pdfPrefix).append("_");

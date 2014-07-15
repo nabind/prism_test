@@ -108,5 +108,7 @@ public interface CommonDAO {
 	public List<UserTO> getStudentsAcsi(String nodeId) throws Exception;
 
 	public String getRootPath(String schoolId, String testElementId) throws Exception;
+	
+	public boolean getNewStudents(String schoolId);
 
 }
