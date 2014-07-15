@@ -12,7 +12,6 @@ CREATE OR REPLACE PACKAGE PKG_ISTEP_MATRIX IS
   PROCEDURE ISTEP_ALL_DATA_LOAD(P_QUERY_TYP   VARCHAR2,
                                 P_IS_FIRST    VARCHAR2,
                                 P_CUST_PROD_ID   NUMBER,
-                                P_SUBTESTCODE VARCHAR2,
                                 P_DUMMY     OUT NUMBER);
 /*  PROCEDURE ISTEP_MATRIX_REPORT_LOAD(P_QUERY_TYP   VARCHAR2,
                                      P_IS_FIRST_LD VARCHAR2);*/
@@ -155,7 +154,6 @@ END ISTEP_GRW_SUBTEST_SCORE_FACT;
   PROCEDURE ISTEP_ALL_DATA_LOAD(P_QUERY_TYP   VARCHAR2,
                                 P_IS_FIRST    VARCHAR2,
                                 P_CUST_PROD_ID   NUMBER, 
-                                P_SUBTESTCODE VARCHAR2, 
                                 P_DUMMY     OUT NUMBER) IS
 
   BEGIN
@@ -196,7 +194,12 @@ END ISTEP_GRW_SUBTEST_SCORE_FACT;
     END LOOP;
     ELSE
       /*To populate all the combinations one by one parallely*/
-      ISTEP_MATRIX_REPORT_LOAD(P_QUERY_TYP, P_IS_FIRST,P_CUST_PROD_ID,P_SUBTESTCODE);
+      FOR J IN (SELECT 'ELA' SUB FROM DUAL 
+               UNION ALL
+               SELECT 'MATH' SUB FROM DUAL )
+       LOOP 
+        ISTEP_MATRIX_REPORT_LOAD(P_QUERY_TYP, P_IS_FIRST,P_CUST_PROD_ID,J.SUB);
+      END LOOP;
     END IF;
 
     P_DUMMY := 1;
@@ -230,12 +233,13 @@ END ISTEP_GRW_SUBTEST_SCORE_FACT;
 
     CURSOR C_USERNAME IS
       SELECT USERNAME
-        FROM USERS USR
+        FROM USERS USR,USERS_MAP UMP
        WHERE EXISTS (SELECT 1
-                FROM USER_role  ump
-               WHERE UMP.USERID = USR.USERID
-               AND roleid = 8 
-                 /*AND ROWNUM = 1*/) 
+                FROM USER_ROLE  URL
+               WHERE URL.USERID = USR.USERID
+               AND URL.ROLEID = 8 
+                 /*AND ROWNUM = 1*/)
+            AND UMP.USERID = USR.USERID  
       /*AND username = '104279022750' */         
      /* AND rownum < 501*/; --USERNAME = DECODE(P_USERNAME, 'ALL', USERNAME, P_USERNAME)
       
@@ -339,8 +343,9 @@ END ISTEP_GRW_SUBTEST_SCORE_FACT;
            --AND USR.USERNAME ='102895183841' .
            AND upper(USR.USERNAME)  IN (SELECT upper(column_value)  FROM TABLE(LV_TYP_VARCHAR_ARR))
            AND USR.USERID = USL.USERID
+           AND CPL.CUST_PROD_ID = P_CUST_PROD_ID
            AND CPL.CUST_PROD_ID = USL.CUST_PROD_ID
-         AND ou.ADMINID = CPL.ADMINID          
+         --AND ou.ADMINID = CPL.ADMINID (commented as for the user created in the previous admin students will be linked in current admin to this user )         
 --           AND ou.USERID = USC.USERID -- Removed to use the new data structure 
           AND ou.org_user_id =  usc.org_user_id
            AND USL.SUBTESTID = USC.SUBTESTID  ; 
