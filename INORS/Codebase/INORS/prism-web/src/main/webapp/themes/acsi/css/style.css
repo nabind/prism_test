@@ -2362,6 +2362,7 @@ li.message-menu {
 			.shortcut-settings	{ background-position: -66px -425px; }
 			.shortcut-notes		{ background-position: -66px -495px; }
 			.shortcut-content	{ background-position: -66px -565px; }
+			.shortcut-reset		{ background-position: -66px -635px; }
 
 			span.shortcut-dashboard	{ background-position: 1px -5px; }
 			span.shortcut-messages	{ background-position: 1px -75px; }
@@ -2372,6 +2373,7 @@ li.message-menu {
 			span.shortcut-settings	{ background-position: 1px -425px; }
 			span.shortcut-notes		{ background-position: 1px -495px; }
 			span.shortcut-content	{ background-position: 1px -565px; }
+			span.shortcut-reset		{ background-position: 1px -635px;}
 
 /* Sidebar/drop-down menu */
 #menu {

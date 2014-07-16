@@ -240,6 +240,7 @@ h2 {
 			.shortcut-settings,		span.shortcut-settings	{ background-position: 0 -420px; }
 			.shortcut-notes,		span.shortcut-notes		{ background-position: 0 -490px; }
 			.shortcut-content,		span.shortcut-content	{ background-position: 0 -560px; }
+			.shortcut-reset,        span.shortcut-reset	    { background-position: 0 -630px; }
 			#shortcuts > li > a:before,
 			#shortcuts > li:after {
 				display: block;
@@ -351,6 +352,7 @@ h2 {
 				a.shortcut-settings:before	{ background-position: -70px -425px; }
 				a.shortcut-notes:before		{ background-position: -70px -495px; }
 				a.shortcut-content:before	{ background-position: -70px -565px; }
+				a.shortcut-reset:before	    { background-position: -70px -635px; }
 
 #menu {
 	position: fixed;
