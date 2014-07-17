@@ -15,11 +15,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	// query to retrieve prelogin message dynamically
 	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE =  CustomStringUtil.appendString(
-			"select DM.REPORT_MSG as REPORT_MSG from DASH_REPORTS DR ",
-			" join DASH_MENU_RPT_ACCESS DMRA on DR.DB_REPORTID=DMRA.DB_REPORTID ",
-			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID ",
-			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID ",
-			" where DR.REPORT_NAME= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
+			"SELECT DM.REPORT_MSG AS REPORT_MSG ",
+			"  FROM DASH_REPORTS DR ",
+			"  JOIN DASH_MESSAGES DM ON DR.DB_REPORTID = DM.DB_REPORTID ",
+			"  JOIN DASH_MESSAGE_TYPE DMT ON DM.MSG_TYPEID = DMT.MSG_TYPEID ",
+			" WHERE DR.REPORT_NAME = ? ",
+			"   AND DMT.MESSAGE_TYPE = ? ",
+			"   AND DMT.MESSAGE_NAME = ? ",
+			"   AND DM.ACTIVATION_STATUS = 'AC'");
 	
 	// query to retrieve more info message dynamically
 	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC =  CustomStringUtil.appendString(
