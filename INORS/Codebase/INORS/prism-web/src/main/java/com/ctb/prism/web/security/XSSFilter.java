@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.web.controller.CommonController;
+
 
 /**
  * This is a Custom generic Cross Site Scripting(XSS) Filter captured all XSS
@@ -52,10 +52,13 @@ public class XSSFilter implements Filter {
 	
 	private static class WrappedResponse extends HttpServletResponseWrapper {
 		private CharArrayWriter buffer;
+		private HttpServletRequest request;
 
-		public WrappedResponse(HttpServletResponse response) {
+
+		public WrappedResponse(HttpServletResponse response,HttpServletRequest request) {
 			super(response);
 			buffer = new CharArrayWriter();
+			this.request = request;
 		}
 
 		public PrintWriter getWriter() {
@@ -74,16 +77,21 @@ public class XSSFilter implements Filter {
 	public void doFilter(ServletRequest _req, ServletResponse _res,
 			FilterChain _chain) throws IOException, ServletException {
 		long t1 = System.currentTimeMillis();
+
+		HttpServletRequest request = (HttpServletRequest) _req;
 		/* Wrap the response object */
 		WrappedResponse wrappedRes = new WrappedResponse(
-				(HttpServletResponse) _res);
+				(HttpServletResponse) _res,request);
 
 		// Build an list of user input values which will be used to remove
 		// unescaped characters from response
-		HttpServletRequest request = (HttpServletRequest) _req;
+		//HttpServletRequest request = (HttpServletRequest) _req;
 		String url = request.getRequestURI();
 		final String queryString = request.getQueryString();
-		if (queryString!=null && queryString.contains("alert(")) {
+		if (queryString!= null && (queryString.contains("alert(")|| queryString.contains("alert") 
+									|| queryString.contains("prompt(") || queryString.contains("prompt")  
+									|| queryString.contains("eval(")  || queryString.contains("eval") 
+									|| queryString.contains("confirm(") || queryString.contains("whscheck"))) {
 			HttpSession session = request.getSession(false);
 			if(session != null){session.invalidate();}
 			wrappedRes.sendRedirect("showError.do");
@@ -113,12 +121,22 @@ public class XSSFilter implements Filter {
 					if (isXssSensitiveInput(value)) {
 						inputValues.add(value);
 					}
-//					build a second line of defense - onsite 7/22/2011
-					if(value.toLowerCase().indexOf("demo.testfire.net") >= 0 ||
-					   value.toUpperCase().indexOf("WF_XSRF.HTML") >= 0 ||
-					   value.toUpperCase().indexOf("%2BALERT") >= 0 || 
-					   value.toLowerCase().indexOf("alert(")>=0){
-						
+//					build a second line of defense - onsite 7/22/2011 - Updated For White Hat
+					if (value.toLowerCase().indexOf("demo.testfire.net") >= 0
+							|| value.toUpperCase().indexOf("WF_XSRF.HTML") >= 0
+							|| value.toUpperCase().indexOf("%2BALERT") >= 0
+							|| value.toLowerCase().indexOf("alert(") >= 0
+							|| value.toLowerCase().indexOf("prompt(") >= 0
+							|| value.toLowerCase().indexOf("eval(") >= 0
+							|| value.toLowerCase().indexOf("confirm(") >= 0
+							|| value.toLowerCase().indexOf("alert (") >= 0
+							|| value.toLowerCase().indexOf("prompt (") >= 0
+							|| value.toLowerCase().indexOf("eval (") >= 0
+							|| value.toLowerCase().indexOf("confirm (") >= 0
+							|| value.toLowerCase().indexOf("whscheck") >= 0
+							|| value.toLowerCase().indexOf("%00") >= 0 // Test Code !!!
+							|| value.toLowerCase().indexOf("promp\\u0074(") >= 0) {
+
 						HttpSession session = request.getSession(false);
 						if(session != null){session.invalidate();}
 						wrappedRes.sendRedirect("showError.do");
