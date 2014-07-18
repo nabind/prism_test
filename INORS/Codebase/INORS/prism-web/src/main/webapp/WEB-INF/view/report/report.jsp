@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 <style>
 /* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
@@ -109,7 +110,8 @@
 								<span class="button-icon blue-gradient report-btn"><span class="icon-download"></span></span>
 								PDF
 							</a>
-							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/IStep_Growth_Matrix_1_files' }">
+							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/IStep_Growth_Matrix_1_files' 
+											|| homeReport.reportUrl == '/public/INORS/Report/Student_Tabular_Report_files'}">
 								 <a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
 									title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 									<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
