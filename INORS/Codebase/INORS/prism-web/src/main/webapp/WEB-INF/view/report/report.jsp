@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 <style>
 /* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
@@ -110,14 +110,13 @@
 								<span class="button-icon blue-gradient report-btn"><span class="icon-download"></span></span>
 								PDF
 							</a>
-							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/IStep_Growth_Matrix_1_files' 
-											|| homeReport.reportUrl == '/public/INORS/Report/Student_Tabular_Report_files'}">
-								 <a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
-									title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
-									<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
-									Excel
-								</a> 
-							</c:if>
+							<sec:authorize ifAnyGranted="ROLE_GRW">
+							<a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
+								title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
+								<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
+								Excel
+							</a>
+							</sec:authorize>
 							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
                                <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
                             </a>							
