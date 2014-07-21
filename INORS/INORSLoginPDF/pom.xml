@@ -59,10 +59,15 @@
 			<artifactId>ojdbc5</artifactId>
 			<version>11.2.0.2</version>
 		</dependency> -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId>
 			<version>7</version>
+		</dependency> -->
+		<dependency>
+    		<groupId>com.oracle</groupId>
+    		<artifactId>ojdbc6</artifactId>
+    		<version>11.2.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -124,8 +129,7 @@
 				</configuration>
 				<version>2.9.1</version>
 			</plugin>
-			<!-- Maven Findbugs Plugin, classes need to be compiled before generating 
-				the report -->
+			<!-- Maven Findbugs Plugin, classes need to be compiled before generating the report -->
 			<!-- mvn clean install -->
 			<!-- mvn findbugs:findbugs -->
 			<!-- mvn findbugs:gui -->
