@@ -299,4 +299,6 @@ public interface IAdminBusiness {
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String, Object> paramMap) throws BusinessException;
 
+	public UserTO getUserForResetPassword(Map<String, String> paramMap);
+
 }

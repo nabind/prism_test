@@ -301,8 +301,149 @@ $(document).ready(function() {
 	$('#groupDownload').validationEngine();
 	
 	clickTheRefreshButton();
+
+	$("a[id='userSearchIconRP']").live("click", function(e) {
+		if ($("#userSearchRP").val() != "" && $("#userSearchRP").val() != "Search") {
+			getUserForManagePassword($("#userSearchRP").val());
+		}
+	});
+
+	$(".reset-pwd").click(function() {
+		resetUserPwd($("#userSearchRP").val());
+	});
+
+	$(".reset-pwd-search").click(function() {
+		resetUserPwdSearch();
+	});
 	
 });
+
+function resetUserPwdSearch() {
+	$("#userIdRP").val("0");
+	$("#userSearchRP").val("");
+
+	$("#firstNameRP").val("");
+	$("#middleNameRP").val("");
+	$("#lastNameRP").val("");
+	$("#emailRP").val("");
+
+	$("#question1RP").val("");
+	$("#answer1RP").val("");
+	$("#question2RP").val("");
+	$("#answer2RP").val("");
+	$("#question3RP").val("");
+	$("#answer3RP").val("");
+
+	$("#passwordResetStatusMsgRP").html("");
+	$("#statusUsernameRP").val("");
+	$("#statusPasswordRP").val("");
+
+	$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
+	$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
+	$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
+}
+
+function resetUserPwd(username) {
+	var userId = $("#userIdRP").val();
+	var email = $("#emailRP").val();
+	if (userId == "0") {
+		$.modal.alert("User not found. Please search user and try again.");
+	} else {
+		$.modal.confirm("Reset Password for Username: " + username + "?", function() {
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : "resetUserPassword.do",
+				data : "username=" + username + "&email=" + email,
+				dataType : 'json',
+				cache : false,
+				success : function(data) {
+					unblockUI();
+					if (data != null && data.resetPwdFlag == "1") {
+						$("#passwordResetStatusMsgRP").html("<span style=\"color: green\">Password Set Successfully !!!</span>");
+						$("#statusUsernameRP").val(username);
+						$("#statusPasswordRP").val(data.password);
+						if (data.sendEmailFlag == "1") {
+							$("#statusEmailRP").html("<span style=\"color: green\">Email Sent Successfully !!!</span>");
+						} else {
+							$("#statusEmailRP").html("<span style=\"color: red\">Email Sending Failed !!!</span>");
+						}
+						$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list");
+					} else {
+						$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
+						$.modal.alert(strings['script.parent.passwordResetError']);
+					}
+				},
+				error : function(data) {
+					unblockUI();
+					$.modal.alert(strings['script.parent.passwordResetError']);
+				}
+			});
+		}, function() {
+			// this function closes the confirm modal on clicking cancel button
+		});
+	}
+}
+
+function getUserForManagePassword(username) {
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "getUserForResetPassword.do",
+		data : "username=" + username,
+		dataType : "json",
+		cache : false,
+		success : function(data) {
+			unblockUI();
+			//alert(JSON.stringify(data));
+			if (data) {
+				$("#userIdRP").val(data.userId);
+
+				$("#firstNameRP").val(data.firstName);
+				$("#middleNameRP").val(data.middleName);
+				$("#lastNameRP").val(data.lastName);
+				$("#emailRP").val(data.emailId);
+				$("#contactNumberRP").val(data.phoneNumber);
+				$("#streetRP").val(data.street);
+				$("#cityRP").val(data.city);
+				$("#stateRP").val(data.state);
+				$("#zipRP").val(data.zip);
+				$("#countryRP").val(data.country);
+
+				if (data.pwdHintList[0]) {
+					$("#question1RP").val(data.pwdHintList[0].questionValue);
+					$("#answer1RP").val(data.pwdHintList[0].answerValue);
+				}
+				if (data.pwdHintList[1]) {
+					$("#question2RP").val(data.pwdHintList[1].questionValue);
+					$("#answer2RP").val(data.pwdHintList[1].answerValue);
+				}
+				if (data.pwdHintList[2]) {
+					$("#question3RP").val(data.pwdHintList[2].questionValue);
+					$("#answer3RP").val(data.pwdHintList[2].answerValue);
+				}
+				if (data.userId == 0) {
+					$.modal.alert("1User " + username + " Not Found");
+					$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
+					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
+				} else {
+					$("#userDetailsRP").attr("class", "wizard-fieldset fields-list");
+					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list");
+				}
+			} else {
+				$.modal.alert("2User " + username + " Not Found");
+				$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
+				$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
+			}
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.user.search']);
+		},
+		complete : function(data) {
+		}
+	});
+}
 
 function selectAllFilteredRows(){
 	//alert(JSON.stringify(filteredRow));

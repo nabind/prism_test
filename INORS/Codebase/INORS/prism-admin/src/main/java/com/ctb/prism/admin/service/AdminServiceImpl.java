@@ -360,4 +360,8 @@ public class AdminServiceImpl implements IAdminService {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String, Object> paramMap) throws BusinessException {
 		return adminBusiness.getCustomerProduct(paramMap);
 	}
+
+	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
+		return adminBusiness.getUserForResetPassword(paramMap);
+	}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +26,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.EduCenterTO;
-import com.ctb.prism.admin.transferobject.ObjectValueTO;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
@@ -34,11 +34,14 @@ import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.admin.util.StudentDataUtil;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
@@ -2010,6 +2013,7 @@ public class AdminController {
 			if ( userName != null ) {
 				String newPassword = adminService.resetPassword(userName);
 				if (newPassword != null) {
+					logger.log(IAppLogger.INFO, "{\"password\":\"" + newPassword + "\"}");
 					res.getWriter().write("{\"password\":\"" + newPassword + "\"}");
 				}
 			}
@@ -2267,5 +2271,96 @@ public class AdminController {
 		}
 		FileUtil.browserDownload(response, data, InorsDownloadConstants.USERS_ZIP_FILE_PATH);
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
+	}
+
+	@RequestMapping(value = "/resetUserPasswordForm", method = RequestMethod.GET)
+	public ModelAndView resetUserPasswordForm() {
+		logger.log(IAppLogger.INFO, "Enter: resetUserPasswordForm()");
+		ModelAndView modelAndView = new ModelAndView("admin/resetUserPasswordForm");
+		logger.log(IAppLogger.INFO, "Exit: resetUserPasswordForm()");
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/getUserForResetPassword", method = RequestMethod.GET)
+	@ResponseBody
+	public String getUserForResetPassword(HttpServletRequest request) {
+		logger.log(IAppLogger.INFO, "Enter: getUserForResetPassword()");
+		String username = (String) request.getParameter("username");
+		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+		String currentOrgLvl = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("username", username);
+		paramMap.put("currentOrg", currentOrg);
+		paramMap.put("currentOrgLvl", currentOrgLvl);
+		UserTO user = adminService.getUserForResetPassword(paramMap);
+		String jsonString = Utils.objectToJson(user);
+		logger.log(IAppLogger.INFO, jsonString);
+		logger.log(IAppLogger.INFO, "Exit: getUserForResetPassword()");
+		return jsonString;
+	}
+
+	@RequestMapping(value = "/resetUserPassword", method = RequestMethod.GET)
+	@ResponseBody
+	public String resetUserPassword(HttpServletRequest request) {
+		logger.log(IAppLogger.INFO, "Enter: resetUserPassword()");
+		String username = (String) request.getParameter("username");
+		String email = (String) request.getParameter("email");
+		String password = "";
+		String resetPwdFlag = "0";
+		String sendEmailFlag = "0";
+		try {
+			if (username != null) {
+				password = adminService.resetPassword(username);
+				if (password != null) {
+					resetPwdFlag = "1";
+				}
+			}
+		} catch (Exception e) {
+			resetPwdFlag = "0";
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+		}
+		if (resetPwdFlag.equals("1")){
+			try {
+				sendUserPassword(email, username, password);
+				sendEmailFlag = "1";
+			} catch (Exception e) {
+				sendEmailFlag = "0";
+				logger.log(IAppLogger.ERROR, e.getMessage(), e);
+			}
+		}
+		String jsonString = "{\"username\" : \"" + username
+				+ "\", \"password\" : \"" + password
+				+ "\", \"resetPwdFlag\" : \"" + resetPwdFlag
+				+ "\", \"sendEmailFlag\" : \"" + sendEmailFlag + "\"}";
+		logger.log(IAppLogger.INFO, jsonString);
+		logger.log(IAppLogger.INFO, "Exit: resetUserPasswordForm()");
+		return jsonString;
+	}
+
+	private void sendUserPassword(String email, String username, String password) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
+		Properties prop = new Properties();
+		prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+		prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+		prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+		String subject = propertyLookup.get("mail.rp.subject");
+		String mailBody = propertyLookup.get("mail.rp.body");
+		subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
+		mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
+		mailBody = CustomStringUtil.replaceCharacterInString('?', password, mailBody);
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "SMTP_HOST: " + prop.getProperty(IEmailConstants.SMTP_HOST));
+		logger.log(IAppLogger.INFO, "SMTP_PORT: " + prop.getProperty(IEmailConstants.SMTP_PORT));
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Subject: " + subject);
+		logger.log(IAppLogger.INFO, "From: " + prop.getProperty("senderMail"));
+		logger.log(IAppLogger.INFO, "To: " + email);
+		logger.log(IAppLogger.INFO, "Body: " + mailBody);
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
+		EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+		logger.log(IAppLogger.INFO, "Email sent to: " + email);
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 }

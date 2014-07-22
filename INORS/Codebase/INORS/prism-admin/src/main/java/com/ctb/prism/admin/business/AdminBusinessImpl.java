@@ -366,4 +366,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String, Object> paramMap) throws BusinessException {
 		return loginDAO.getCustomerProduct(paramMap);
 	}
+
+	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
+		return adminDAO.getUserForResetPassword(paramMap);
+	}
 }
