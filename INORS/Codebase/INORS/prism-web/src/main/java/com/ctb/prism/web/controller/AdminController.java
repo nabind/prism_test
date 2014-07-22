@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import net.lingala.zip4j.core.ZipFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -2273,6 +2274,7 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 
+	@Secured({"ROLE_SUPER"})
 	@RequestMapping(value = "/resetUserPasswordForm", method = RequestMethod.GET)
 	public ModelAndView resetUserPasswordForm() {
 		logger.log(IAppLogger.INFO, "Enter: resetUserPasswordForm()");

@@ -360,13 +360,13 @@ function resetUserPwd(username) {
 				success : function(data) {
 					unblockUI();
 					if (data != null && data.resetPwdFlag == "1") {
-						$("#passwordResetStatusMsgRP").html("<span style=\"color: green\">Password Set Successfully !!!</span>");
+						$("#passwordResetStatusMsgRP").html("<span>Password reset successfully</span>");
 						$("#statusUsernameRP").val(username);
 						$("#statusPasswordRP").val(data.password);
 						if (data.sendEmailFlag == "1") {
-							$("#statusEmailRP").html("<span style=\"color: green\">Email Sent Successfully !!!</span>");
+							$("#statusEmailRP").html("<span style=\"color: green\">Email sent successfully</span>");
 						} else {
-							$("#statusEmailRP").html("<span style=\"color: red\">Email Sending Failed !!!</span>");
+							$("#statusEmailRP").html("<span style=\"color: red\">Email Sending Failed</span>");
 						}
 						$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list");
 					} else {
