@@ -1,5 +1,26 @@
 CREATE OR REPLACE TYPE typ_varchar_arr IS TABLE OF VARCHAR2(40);
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE GRW_DUPLICATE_STUDENTS
+(
+  CNT             NUMBER,
+  STUDENT_BIO_ID  NUMBER NOT NULL,
+  CUST_PROD_ID    NUMBER NOT NULL,
+  STUDENT_TEST_AI VARCHAR2(9),
+  ADMINID         NUMBER NOT NULL,
+  GRADEID         NUMBER NOT NULL
+)
+TABLESPACE USERS
+  PCTFREE 10
+  INITRANS 1
+  MAXTRANS 255
+  STORAGE
+  (
+    INITIAL 64K
+    NEXT 1M
+    MINEXTENTS 1
+    MAXEXTENTS UNLIMITED
+  );
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE GRW_SUBTEST_SCORE_FACT
 (
   ORG_NODEID     NUMBER,
@@ -215,22 +236,47 @@ CREATE MATERIALIZED VIEW MV_PRINCIPAL_USER_SEL_LOOKUP
                             REFRESH COMPLETE ON DEMAND
                             AS
                             SELECT USR.CUSTOMERID ,
-                                   ORG.ORG_NODEID,
-                                   ORG.USERID AS PRINCIPAL_USERID,
-                                   USR.USERID  AS NORMAL_GRW_USERID,
-                                   SUBSTR(USR.USERNAME,1,8)  AS NORMAL_GRW_USER_SPN,
-                                   USL.CUST_PROD_ID,
-                                   USL.GRADEID,
-                                   USL.SUBTESTID
-                            FROM ORG_USERS OUSR, USERS USR,USER_SELECTION_LOOKUP USL,
-                                 (SELECT USR.USERID,OUSR.ORG_NODEID
-                                  FROM USERS USR,
-                                       ORG_USERS OUSR
-                                  WHERE USER_TYPE = 'GRW_P'
-                                    AND USR.USERID = OUSR.USERID
-                                    AND OUSR.ORG_NODE_LEVEL = 3)ORG
-                            WHERE OUSR.ORG_NODEID = ORG.ORG_NODEID
-                              AND OUSR.USERID = USR.USERID
-                              AND USR.USER_TYPE = 'GRW'
-                              AND OUSR.USERID = USL.USERID;  
-
+								   ORG.ORG_NODEID,
+								   ORG.USERID AS PRINCIPAL_USERID,
+								   USR.USERID  AS NORMAL_GRW_USERID,
+								   SUBSTR(USR.USERNAME,1,8)  AS NORMAL_GRW_USER_SPN,
+								   USL.CUST_PROD_ID,
+								   USL.GRADEID,
+								   USL.SUBTESTID
+							FROM ORG_USERS OUSR, USERS USR,USER_SELECTION_LOOKUP USL,
+								 (SELECT USR.USERID,OUSR.ORG_NODEID
+								  FROM USERS USR,
+									   ORG_USERS OUSR
+								  WHERE USER_TYPE = 'GRW_P'
+									AND USR.USERID = OUSR.USERID
+									AND OUSR.ORG_NODE_LEVEL = 3)ORG
+							WHERE OUSR.ORG_NODEID = ORG.ORG_NODEID
+							  AND OUSR.USERID = USR.USERID
+							  AND USR.USER_TYPE = 'GRW'
+							  AND OUSR.USERID = USL.USERID;  
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW MV_LVL2_PRCPL_USER_SEL_LOOKUP
+                            REFRESH COMPLETE ON DEMAND
+                            AS
+							SELECT USR.CUSTOMERID ,
+								   ORG.PARENT_ORG_NODEID AS DISTRICT_ORG_NODEID,
+								   ORGUSR.USERID AS DISTRICT_PRINCIPAL_USERID,
+								   ORG.ORG_NODEID AS SCHOOL_ORG_NODEID,
+								   USR.USERID  AS NORMAL_GRW_USERID,
+								   SUBSTR(USR.USERNAME,1,8)  AS NORMAL_GRW_USER_SPN,
+								   USL.CUST_PROD_ID,
+								   USL.GRADEID,
+								   USL.SUBTESTID
+							FROM ORG_USERS OUSR, USERS USR,USER_SELECTION_LOOKUP USL,ORG_NODE_DIM ORG,
+								 (SELECT USR.USERID,OUSR.ORG_NODEID
+								  FROM USERS USR,
+									   ORG_USERS OUSR
+								  WHERE USER_TYPE = 'GRW_P'
+									AND USR.USERID = OUSR.USERID
+									AND OUSR.ORG_NODE_LEVEL = 2)ORGUSR
+							WHERE ORG.PARENT_ORG_NODEID  = ORGUSR.ORG_NODEID
+							  AND ORG.ORG_NODEID = OUSR.ORG_NODEID
+							  AND OUSR.ORG_NODE_LEVEL =3
+							  AND OUSR.USERID = USR.USERID
+							  AND USR.USER_TYPE = 'GRW'
+							  AND OUSR.USERID = USL.USERID;
