@@ -25,6 +25,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
   v_PRINCIPAL_USER_TYPE CONSTANT  VARCHAR2(10):='GRW_P';
   v_NORMAL_USER_TYPE CONSTANT  VARCHAR2(10):='GRW';
   v_User_Type USERS.USER_TYPE%TYPE;
+  v_User_Level ORG_USERS.ORG_NODE_LEVEL%TYPE;
 
  CURSOR c_Get_Principal_User
   IS
@@ -35,6 +36,17 @@ PRAGMA AUTONOMOUS_TRANSACTION;
     AND PSL.CUSTOMERID = p_customerid
   ORDER BY PSL.NORMAL_GRW_USER_SPN ,
            PSL.NORMAL_GRW_USERID ;
+           
+   CURSOR c_Get_Lvl2_Principal_User
+    IS          
+   SELECT DISTINCT PSL.NORMAL_GRW_USER_SPN ,
+         PSL.NORMAL_GRW_USERID
+  FROM MV_LVL2_PRCPL_USER_SEL_LOOKUP PSL
+  WHERE PSL.DISTRICT_PRINCIPAL_USERID=LoggedInUserId
+    AND PSL.CUSTOMERID = p_customerid
+  ORDER BY PSL.NORMAL_GRW_USER_SPN ,
+           PSL.NORMAL_GRW_USERID; 
+                  
            
   CURSOR c_Get_Normal_User
   IS
@@ -48,10 +60,17 @@ PRAGMA AUTONOMOUS_TRANSACTION;
  CURSOR c_Get_Grwth_User_Type
  IS
  SELECT USER_TYPE 
- FROM USERS
+ FROM USERS  
  WHERE USER_TYPE IN(v_PRINCIPAL_USER_TYPE,v_NORMAL_USER_TYPE)
  AND USERID =LoggedInUserId
  AND CUSTOMERID = p_customerid;
+ 
+ 
+ CURSOR c_Get_User_Level
+ IS
+ SELECT ORG_NODE_LEVEL FROM ORG_USERS   
+ WHERE USERID =LoggedInUserId;
+ 
 
 BEGIN
 
@@ -61,16 +80,34 @@ BEGIN
         END LOOP;
 
        IF v_User_Type = v_PRINCIPAL_USER_TYPE THEN
-        FOR r_Get_Principal_User IN c_Get_Principal_User
-           LOOP
-               t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
+              
+        FOR r_Get_User_Level IN c_Get_User_Level
+            LOOP
+                 v_User_Level := r_Get_User_Level.ORG_NODE_LEVEL;
+        END LOOP;        
+        IF v_User_Level= 3 THEN 
+          FOR r_Get_Principal_User IN c_Get_Principal_User
+             LOOP
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
 
-               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Principal_User.NORMAL_GRW_USERID;
-               t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Principal_User.NORMAL_GRW_USER_SPN;
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Principal_User.NORMAL_GRW_USERID;
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Principal_User.NORMAL_GRW_USER_SPN;
 
-               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
-               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
-        END LOOP;
+                 t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
+                 t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
+           END LOOP;
+        ELSE  
+          FOR r_Get_Lvl2_Principal_User IN c_Get_Lvl2_Principal_User
+             LOOP
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
+
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Lvl2_Principal_User.NORMAL_GRW_USERID;
+                 t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Lvl2_Principal_User.NORMAL_GRW_USER_SPN;
+
+                 t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
+                 t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
+           END LOOP; 
+         END IF;  
        ELSE
           FOR r_Get_Normal_User IN c_Get_Normal_User
              LOOP

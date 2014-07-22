@@ -28,6 +28,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
   v_PRINCIPAL_USER_TYPE CONSTANT  VARCHAR2(10):='GRW_P';
   v_NORMAL_USER_TYPE CONSTANT  VARCHAR2(10):='GRW';
   v_User_Type USERS.USER_TYPE%TYPE;
+  v_User_Level ORG_USERS.ORG_NODE_LEVEL%TYPE;
   v_UserId  USERS.USERID%TYPE;
   v_ProductId  PRODUCT.PRODUCTID%TYPE;
   v_3RD_GARDE  CONSTANT NUMBER := 10001;
@@ -112,6 +113,19 @@ SELECT DISTINCT PDT.PRODUCTID,
   WHERE ROWNUM = 1 ;
 
 
+CURSOR c_Get_Lvl2_Prncpl_User_Default
+    IS 
+    SELECT A.NORMAL_GRW_USERID
+     FROM          
+   (SELECT DISTINCT PSL.NORMAL_GRW_USER_SPN ,
+         PSL.NORMAL_GRW_USERID
+    FROM MV_LVL2_PRCPL_USER_SEL_LOOKUP PSL
+    WHERE PSL.DISTRICT_PRINCIPAL_USERID=LoggedInUserId
+      AND PSL.CUSTOMERID = p_customerid
+    ORDER BY PSL.NORMAL_GRW_USER_SPN ,
+             PSL.NORMAL_GRW_USERID) A
+  WHERE ROWNUM=1; 
+  
 
  CURSOR c_Get_Grwth_User_Type
  IS
@@ -120,6 +134,13 @@ SELECT DISTINCT PDT.PRODUCTID,
  WHERE USER_TYPE IN(v_PRINCIPAL_USER_TYPE,v_NORMAL_USER_TYPE)
  AND USERID =LoggedInUserId
  AND CUSTOMERID = p_customerid;
+ 
+ CURSOR c_Get_User_Level
+ IS
+ SELECT ORG_NODE_LEVEL FROM ORG_USERS   
+ WHERE USERID =LoggedInUserId;
+ 
+ 
 
 BEGIN
        ---get the user type
@@ -132,11 +153,25 @@ BEGIN
         IF p_grade = -99 OR p_UserId = -99 THEN
 
            IF v_User_Type = v_PRINCIPAL_USER_TYPE THEN
+              ---get the user level
+              FOR r_Get_User_Level IN c_Get_User_Level
+                LOOP
+                     v_User_Level := r_Get_User_Level.ORG_NODE_LEVEL;
+                END LOOP;  
               ---get the first default user in the list
-              FOR r_Get_Principal_User_Default IN c_Get_Principal_User_Default
-                 LOOP
-                     v_UserId := r_Get_Principal_User_Default.NORMAL_GRW_USERID;
-              END LOOP;
+              IF v_User_Level= 3 THEN
+               ---get the first school level principal user in the list 
+                FOR r_Get_Principal_User_Default IN c_Get_Principal_User_Default
+                   LOOP
+                       v_UserId := r_Get_Principal_User_Default.NORMAL_GRW_USERID;
+                END LOOP;
+              ELSE 
+                ---get the first district level principal user in the list 
+                FOR r_Get_Lvl2_Prncpl_User_Default IN c_Get_Lvl2_Prncpl_User_Default
+                   LOOP
+                       v_UserId := r_Get_Lvl2_Prncpl_User_Default.NORMAL_GRW_USERID;
+                END LOOP;
+              END IF;  
            ELSE
                      v_UserId := LoggedInUserId;
            END IF;
