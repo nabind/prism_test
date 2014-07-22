@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +43,7 @@ public class UserAccountPdf {
 	private static final Logger logger = Logger.getLogger(UserAccountPdf.class);
 	private static boolean ENCRYPTION_NEEDED = false;
 	private static boolean ARCHIVE_NEEDED = false;
+	private static int icLetterCount = 0;
 	private static String DDMMYY = "";
 	private static Map<Integer, String> orgMap = null;
 	private static StringBuffer processLog = null;
@@ -52,7 +52,7 @@ public class UserAccountPdf {
 	private static CommonDAO dao = null;
 
 	public static void main(String[] args) throws Exception {
-		// args = new String[] { "L", "604861"};
+		// args = new String[] { "I", "604861"};
 		logger.info("Program Starts...");
 		boolean validArgs = validateCommandLineArgs(args);
 		if (validArgs) {
@@ -83,6 +83,7 @@ public class UserAccountPdf {
 				String identifier = "";
 				long count = 1;
 				for (String id : ids) {
+					CUSOMERID = dao.getCustomerId(id);
 					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
 						//// processLoginPdf(prop, dao, id);
 						encDocLocation = manupulateTenants(id, prop, null, false, false);
@@ -91,12 +92,13 @@ public class UserAccountPdf {
 						boolean newStudentPresent = dao.getNewStudents(id);
 						if(newStudentPresent) {
 							String letterLocation = processIcLetterPdf(prop, dao, id);
-							ARCHIVE_NEEDED = false;
+							icLetterCount = icLetterCount + 1;
 							logger.info("IC Letter Location: " + letterLocation);
 							//archiveICLetter(prop);
 						} else {
 							logger.info("No new student found for school # " + id);
 						}
+						ARCHIVE_NEEDED = false;
 						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ---------------------------------------------------------------------------------");
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
 						logger.info("All/Both Login Pdf and IC Letter...");
@@ -123,12 +125,16 @@ public class UserAccountPdf {
 				}
 				
 				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
-					archiveICLetter(prop);
+					if (icLetterCount > 0) archiveICLetter(prop);
 					// send mail
 					String subject = "Merged IC Letter Generatation completed ";
 					String body = CustomStringUtil.appendString(subject , "for all the schools. Individiual IC leter has been started.\n" ,
 								  "Different notification will go once Individiual IC leter is completed");
-					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
+					try {
+						EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
+					} catch (Exception e) {
+						logger.error("Failed to send email" + e.getMessage());
+					}
 					// individual student 
 					count = 1;
 					for (String id : ids) {
@@ -140,8 +146,11 @@ public class UserAccountPdf {
 					// send mail
 					subject = "Individiual IC Letter Generatation completed ";
 					body = CustomStringUtil.appendString(subject , "for all the schools. Individiual IC leter has been completed.\n" );
-					EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
-					
+					try {
+						EmailSender.sendMail(prop, prop.getProperty("supportEmail"), subject, body, null);
+					} catch (Exception e) {
+						logger.error("Failed to send email" + e.getMessage());
+					}
 				}
 				
 				if(ARCHIVE_NEEDED) {
@@ -165,7 +174,7 @@ public class UserAccountPdf {
 				}*/
 			}
 		}
-		logger.info("The End!");
+		logger.info("Program Ends!");
 	}
 	
 	private static void archiveICLetter(Properties prop) {

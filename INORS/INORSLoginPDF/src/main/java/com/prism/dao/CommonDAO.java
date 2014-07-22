@@ -111,4 +111,6 @@ public interface CommonDAO {
 	
 	public boolean getNewStudents(String schoolId);
 
+	public String getCustomerId(String schoolId);
+
 }

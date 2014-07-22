@@ -1343,4 +1343,35 @@ public class CommonDAOImpl implements CommonDAO {
 		logger.info("TEST_ELEMENT_ID=" + testElementId + ", Returning Root Path = " + rootPath);
 		return rootPath;
 	}
+
+	public String getCustomerId(String schoolId) {
+		String customerId = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall("SELECT CUSTOMERID FROM ORG_NODE_DIM WHERE ORG_NODEID = " + schoolId);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				customerId = rs.getString("CUSTOMERID");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (Exception e2) {
+			}
+			try {
+				pstmt.close();
+			} catch (Exception e2) {
+			}
+			try {
+				conn.close();
+			} catch (Exception e2) {
+			}
+		}
+		return customerId;
+	}
 }
