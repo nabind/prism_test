@@ -42,7 +42,7 @@
 		
 		<sec:authorize ifAnyGranted="ROLE_SUPER">
 			<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
-			<li><a href="resetPassword.do" class="shortcut-reset" title="Reset Password">Reset Password</a></li>
+			<li><a href="resetUserPasswordForm.do" class="shortcut-reset" title="Reset Password">Reset Password</a></li>
 		</sec:authorize>
 		<!-- 
 		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
