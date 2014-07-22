@@ -1,8 +1,9 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Server is not responding</title>
+  <title><spring:message code="title.page.503"/></title>
   <style>
     ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
     ::selection { background: #fe57a1; color: #fff; text-shadow: none; }

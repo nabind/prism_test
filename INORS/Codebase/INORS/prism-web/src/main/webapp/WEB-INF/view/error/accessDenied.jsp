@@ -1,8 +1,9 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Access Denied</title>
+  <title><spring:message code="title.page.accessDenied"/></title>
   <style>
     ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
     ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
