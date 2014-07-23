@@ -43,7 +43,7 @@ padding-top: 0px !important;
 					</p>
 			</div>
 			<div class="field-block button-height">
-				<label for="statusUsernameRP" class="label"><b>Userame</b></label>
+				<label for="statusUsernameRP" class="label"><b>UserName</b></label>
 				<input name="statusUsernameRP" id="statusUsernameRP" class="input-unstyled">
 			</div>
 			<div class="field-block button-height">
