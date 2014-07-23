@@ -12,4 +12,5 @@ public interface IEmailConstants {
 	public static final String EMAIL_ATTACHMENT = "EMAIL_ATTACHMENT";
 	public static final String SMTP_HOST = "mail.smtp.host";
 	public static final String SMTP_PORT = "mail.smtp.port";
+	public static final String REALTIME_EMAIL_FLAG = "REALTIME_EMAIL_FLAG";
 }

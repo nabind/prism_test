@@ -316,6 +316,12 @@ $(document).ready(function() {
 		resetUserPwdSearch();
 	});
 	
+	if($('#userIdRP').length > 0) {
+		$('.clearfix').addClass('menu-hidden');
+		$("ul#shortcuts li").removeClass("current");
+		$(".shortcut-reset").parent().addClass("current");
+	}
+	
 });
 
 function resetUserPwdSearch() {
@@ -347,9 +353,9 @@ function resetUserPwd(username) {
 	var userId = $("#userIdRP").val();
 	var email = $("#emailRP").val();
 	if (userId == "0") {
-		$.modal.alert("User not found. Please search user and try again.");
+		$.modal.alert(strings['script.trySearch']);
 	} else {
-		$.modal.confirm("Reset Password for Username: " + username + "?", function() {
+		$.modal.confirm(strings['msg.rp.confirm'] + username + "?", function() {
 			blockUI();
 			$.ajax({
 				type : "GET",
@@ -360,13 +366,13 @@ function resetUserPwd(username) {
 				success : function(data) {
 					unblockUI();
 					if (data != null && data.resetPwdFlag == "1") {
-						$("#passwordResetStatusMsgRP").html("<span>Password reset successfully</span>");
+						$("#passwordResetStatusMsgRP").html("<span>"+strings['msg.rp.success']+"</span>");
 						$("#statusUsernameRP").val(username);
 						$("#statusPasswordRP").val(data.password);
 						if (data.sendEmailFlag == "1") {
-							$("#statusEmailRP").html("<span style=\"color: green\">Email sent successfully</span>");
+							$("#statusEmailRP").html("<span style=\"color: green\">"+strings['msg.rp.email.success']+"</span>");
 						} else {
-							$("#statusEmailRP").html("<span style=\"color: red\">Email Sending Failed</span>");
+							$("#statusEmailRP").html("<span style=\"color: red\">"+strings['msg.rp.email.failure']+"</span>");
 						}
 						$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list");
 					} else {
@@ -423,7 +429,7 @@ function getUserForManagePassword(username) {
 					$("#answer3RP").val(data.pwdHintList[2].answerValue);
 				}
 				if (data.userId == 0) {
-					$.modal.alert("1User " + username + " Not Found");
+					$.modal.alert(strings['script.noUserFound']);
 					$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
 					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
 				} else {
@@ -431,7 +437,7 @@ function getUserForManagePassword(username) {
 					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list");
 				}
 			} else {
-				$.modal.alert("2User " + username + " Not Found");
+				$.modal.alert(strings['script.noUserFound']);
 				$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
 				$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
 			}

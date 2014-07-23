@@ -2323,7 +2323,7 @@ public class AdminController {
 		}
 		if (resetPwdFlag.equals("1")){
 			try {
-				sendUserPassword(email, username, password);
+				sendUserPasswordEmail(email, username, password);
 				sendEmailFlag = "1";
 			} catch (Exception e) {
 				sendEmailFlag = "0";
@@ -2339,7 +2339,7 @@ public class AdminController {
 		return jsonString;
 	}
 
-	private void sendUserPassword(String email, String username, String password) throws Exception {
+	private void sendUserPasswordEmail(String email, String username, String password) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		Properties prop = new Properties();
 		prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
@@ -2361,7 +2361,13 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Body: " + mailBody);
 		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
 		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
-		EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
+		} else {
+			logger.log(IAppLogger.ERROR, "Invalid property value. " + IEmailConstants.REALTIME_EMAIL_FLAG + "=" + propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG));
+		}
 		logger.log(IAppLogger.INFO, "Email sent to: " + email);
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}

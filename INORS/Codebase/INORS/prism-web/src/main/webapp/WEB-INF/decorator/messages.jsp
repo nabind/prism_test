@@ -56,4 +56,11 @@
 	strings['script.content.addSuccess'] = "<spring:message code='script.content.addSuccess' javaScriptEscape='true' />";
 	strings['script.content.editSuccess'] = "<spring:message code='script.content.editSuccess' javaScriptEscape='true' />";
 	strings['script.content.deleteSuccess'] = "<spring:message code='script.content.deleteSuccess' javaScriptEscape='true' />";
+	
+	strings['script.noUserFound'] = "<spring:message code='script.noUserFound' javaScriptEscape='true' />";
+	strings['script.trySearch'] = "<spring:message code='script.trySearch' javaScriptEscape='true' />";
+	strings['msg.rp.success'] = "<spring:message code='msg.rp.success' javaScriptEscape='true' />";
+	strings['msg.rp.email.success'] = "<spring:message code='msg.rp.email.success' javaScriptEscape='true' />";
+	strings['msg.rp.email.failure'] = "<spring:message code='msg.rp.email.failure' javaScriptEscape='true' />";
+	strings['msg.rp.confirm'] = "<spring:message code='msg.rp.confirm' javaScriptEscape='true' />";
 </script>
