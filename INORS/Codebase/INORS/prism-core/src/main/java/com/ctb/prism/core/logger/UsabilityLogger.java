@@ -154,7 +154,7 @@ public class UsabilityLogger {
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
-	public void captureActivityLog(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res, Long activityType) {
+	private void captureActivityLog(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res, Long activityType) {
 		UsabilityTO usability = new UsabilityTO();
 		String userId = null;
 		try {
