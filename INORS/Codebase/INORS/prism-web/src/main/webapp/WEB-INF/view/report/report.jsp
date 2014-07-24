@@ -118,11 +118,10 @@
 								</a>
 							</sec:authorize>
 							
-							<sec:authorize ifNotGranted="ROLE_GRW">
-								<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
-	                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
-	                            </a>
-                            </sec:authorize>							
+							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
+                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
+                            </a>
+                            							
 						</div>
 						</c:if>	
 					</div>
