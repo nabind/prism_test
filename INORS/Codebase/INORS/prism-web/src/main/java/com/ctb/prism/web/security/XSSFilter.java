@@ -162,8 +162,18 @@ public class XSSFilter implements Filter {
 				, " milli seconds for URL:",url,"\n*****************************************\n"));
 		/* Write content to browser */
 		_res.setContentLength(xssFreeOutputHtml.length());
-		try {_res.getWriter().print(xssFreeOutputHtml);} catch (Exception ex) {}
-		_res.getWriter().close();
+		try {_res.getWriter().print(xssFreeOutputHtml);
+		} catch (Exception ex) {}
+		finally{
+			try{
+				if(!_res.isCommitted()){
+					_res.getWriter().flush();
+					_res.getWriter().close();
+				}
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 	
