@@ -1,4 +1,3 @@
-
 // ================ Create Tree ==========================
 var isOpeningFromRemote = false;
 var isOpeningComplete = false;
@@ -304,6 +303,7 @@ $(document).ready(function() {
 
 	$("a[id='userSearchIconRP']").live("click", function(e) {
 		if ($("#userSearchRP").val() != "" && $("#userSearchRP").val() != "Search") {
+			$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
 			getUserForManagePassword($("#userSearchRP").val());
 		}
 	});
@@ -328,21 +328,21 @@ function resetUserPwdSearch() {
 	$("#userIdRP").val("0");
 	$("#userSearchRP").val("");
 
-	$("#firstNameRP").val("");
-	$("#middleNameRP").val("");
-	$("#lastNameRP").val("");
-	$("#emailRP").val("");
+	$("#firstNameRP").text("");
+	$("#middleNameRP").text("");
+	$("#lastNameRP").text("");
+	$("#emailRP").text("");
 
-	$("#question1RP").val("");
-	$("#answer1RP").val("");
-	$("#question2RP").val("");
-	$("#answer2RP").val("");
-	$("#question3RP").val("");
-	$("#answer3RP").val("");
+	$("#question1RP").text("");
+	$("#answer1RP").text("");
+	$("#question2RP").text("");
+	$("#answer2RP").text("");
+	$("#question3RP").text("");
+	$("#answer3RP").text("");
 
 	$("#passwordResetStatusMsgRP").html("");
-	$("#statusUsernameRP").val("");
-	$("#statusPasswordRP").val("");
+	$("#statusUsernameRP").text("");
+	$("#statusPasswordRP").text("");
 
 	$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
 	$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
@@ -367,8 +367,7 @@ function resetUserPwd(username) {
 					unblockUI();
 					if (data != null && data.resetPwdFlag == "1") {
 						$("#passwordResetStatusMsgRP").html("<span>"+strings['msg.rp.success']+"</span>");
-						$("#statusUsernameRP").val(username);
-						$("#statusPasswordRP").val(data.password);
+						$("#statusUsernameRP").text(username);
 						if (data.sendEmailFlag == "1") {
 							$("#statusEmailRP").html("<span style=\"color: green\">"+strings['msg.rp.email.success']+"</span>");
 						} else {
@@ -405,28 +404,28 @@ function getUserForManagePassword(username) {
 			if (data) {
 				$("#userIdRP").val(data.userId);
 
-				$("#firstNameRP").val(data.firstName);
-				$("#middleNameRP").val(data.middleName);
-				$("#lastNameRP").val(data.lastName);
-				$("#emailRP").val(data.emailId);
-				$("#contactNumberRP").val(data.phoneNumber);
-				$("#streetRP").val(data.street);
-				$("#cityRP").val(data.city);
-				$("#stateRP").val(data.state);
-				$("#zipRP").val(data.zip);
-				$("#countryRP").val(data.country);
+				$("#firstNameRP").text(data.firstName);
+				$("#middleNameRP").text(data.middleName);
+				$("#lastNameRP").text(data.lastName);
+				$("#emailRP").text(data.emailId);
+				$("#contactNumberRP").text(data.phoneNumber);
+				$("#streetRP").text(data.street);
+				$("#cityRP").text(data.city);
+				$("#stateRP").text(data.state);
+				$("#zipRP").text(data.zip);
+				$("#countryRP").text(data.country);
 
 				if (data.pwdHintList[0]) {
-					$("#question1RP").val(data.pwdHintList[0].questionValue);
-					$("#answer1RP").val(data.pwdHintList[0].answerValue);
+					$("#question1RP").text(data.pwdHintList[0].questionValue);
+					$("#answer1RP").text(data.pwdHintList[0].answerValue);
 				}
 				if (data.pwdHintList[1]) {
-					$("#question2RP").val(data.pwdHintList[1].questionValue);
-					$("#answer2RP").val(data.pwdHintList[1].answerValue);
+					$("#question2RP").text(data.pwdHintList[1].questionValue);
+					$("#answer2RP").text(data.pwdHintList[1].answerValue);
 				}
 				if (data.pwdHintList[2]) {
-					$("#question3RP").val(data.pwdHintList[2].questionValue);
-					$("#answer3RP").val(data.pwdHintList[2].answerValue);
+					$("#question3RP").text(data.pwdHintList[2].questionValue);
+					$("#answer3RP").text(data.pwdHintList[2].answerValue);
 				}
 				if (data.userId == 0) {
 					$.modal.alert(strings['script.noUserFound']);

@@ -2331,7 +2331,6 @@ public class AdminController {
 			}
 		}
 		String jsonString = "{\"username\" : \"" + username
-				+ "\", \"password\" : \"" + password
 				+ "\", \"resetPwdFlag\" : \"" + resetPwdFlag
 				+ "\", \"sendEmailFlag\" : \"" + sendEmailFlag + "\"}";
 		logger.log(IAppLogger.INFO, jsonString);
