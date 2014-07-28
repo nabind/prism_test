@@ -15,7 +15,7 @@ function openInorsHomePageTemp() {
 		$.ajax({
 			type : "GET",
 			url : "loadHomePageMsg.do",
-			data : null,
+			data : 'homeMessage=inors',
 			dataType : 'json',
 			async : false,
 			cache: true,

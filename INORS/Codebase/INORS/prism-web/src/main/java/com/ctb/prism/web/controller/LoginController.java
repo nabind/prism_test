@@ -996,11 +996,16 @@ public class LoginController {
 	@ResponseBody
 	public String loadHomePageMsg(HttpServletRequest req, HttpServletResponse res) throws IOException,BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: LoginController - loadHomePageMsg()");
+		String homePage = req.getParameter("homeMessage");
 		long t1 = System.currentTimeMillis();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
+		if(homePage.equals("growth")) {
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
+		} else {
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
+		}
 		String inorsHomePageInfoMessage = "";
 		String jsonString = "";
 		try {
