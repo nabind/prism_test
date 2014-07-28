@@ -1104,3 +1104,7 @@ div#nav ul li a {
 .button > .button-icon.anthracite-gradient {
 	margin: -6px 4px -5px -15px !important;
 }
+
+#tooltips {
+	z-index: 1000000 !important;
+}
