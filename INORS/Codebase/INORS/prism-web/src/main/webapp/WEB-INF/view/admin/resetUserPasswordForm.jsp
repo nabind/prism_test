@@ -15,7 +15,7 @@ padding-top: 0px !important;
 		<fieldset class="wizard-fieldset fields-list" style="border-bottom: 1px solid #e0e0e0;">
 			<legend class="legend"><spring:message code="label.searchUser" /></legend>
 			<div class="field-block button-height">
-				<label for="first_name" class="label"><b><spring:message code="label.username" /></b></label>
+				<label for="userSearchRP" class="label"><b><spring:message code="label.username" /></b></label>
 				<span class="input search-input">
 					<input type="text" name="userSearchRP" id="userSearchRP" class="input-unstyled with-tooltip" title="<spring:message code="title.searchUser" />" placeholder="Search">
 					<a href="javascript:void(0)" class="button icon-search compact" id="userSearchIconRP"></a>
@@ -43,60 +43,59 @@ padding-top: 0px !important;
 					</p>
 			</div>
 			<div class="field-block button-height">
-				<label class="label"><b><spring:message code="label.username" /></b></label>
+				<span class="label"><b><spring:message code="label.username" /></b></span>
 				<span id="statusUsernameRP" class="input-unstyled"></span>
 			</div>
 			<div class="field-block button-height">
-				<label class="label"><b><spring:message code="label.emailSendingStatus" /></b></label>
+				<span class="label"><b><spring:message code="label.emailSendingStatus" /></b></span>
 				<span id="statusEmailRP" class="input-unstyled"></span>
 			</div>
 		</fieldset>
 		<fieldset id="userDetailsRP" class="wizard-fieldset fields-list hidden" style="border-bottom: 1px solid #e0e0e0;">
 			<legend class="legend"><spring:message code="label.userDetails" /></legend>
 			<div class="field-block button-height">
-				<label for="firstNameRP" class="label"><b><spring:message code="label.firstName" /></b></label>
+				<span class="label"><b><spring:message code="label.firstName" /></b></span>
 				<span id="firstNameRP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="middleNameRP" class="label"><b><spring:message code="label.middleName" /></b></label>
+				<span class="label"><b><spring:message code="label.middleName" /></b></span>
 				<span id="middleNameRP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="lastNameRP" class="label"><b><spring:message code="label.lastName" /></b></label>
+				<span class="label"><b><spring:message code="label.lastName" /></b></span>
 				<span id="lastNameRP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="emailRP" class="label"><b><spring:message code="label.email" /></b></label>
+				<span class="label"><b><spring:message code="label.email" /></b></span>
 				<span id="emailRP" class="input-unstyled" style="width: 300px; "></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="contactNumberRP" class="label"><spring:message code="label.contactNumber" /></label>
+				<span class="label"><b><spring:message code="label.contactNumber" /></b></span>
 				<span id="contactNumberRP" class="input-unstyled"></span>
 			</div>
 			<div class="field-block button-height addressContainer">
-				<label class="label"><spring:message code="label.address" /></label>
+				<span class="label"><b><spring:message code="label.address" /></b></span>
 				<p class="button-height">
 					<span class="">
-						<label for="streetRP" class="blue"><spring:message code="label.street" />:</label>
+						<span class="blue"><spring:message code="label.street" />:</span>
 						<span id="streetRP" class="input-unstyled"></span>
 					</span>
 				</p>
 				<p class="button-height">
 					<span class="label">&nbsp;</span>
-
 					<span class="">
-						<label for="cityRP" class="blue"><spring:message code="label.city" />:</label>
+						<span class="blue"><spring:message code="label.city" />:</span>
 						<span id="cityRP" class="input-unstyled"></span>
 					</span>
 				</p>
 				<p class="button-height">
 					<span class="">
-						<label for="stateRP" class="blue"><spring:message code="label.state" />:</label>
+						<span class="blue"><spring:message code="label.state" />:</span>
 						<span id="stateRP" class="input-unstyled"></span>
 					</span>
 					<span class="label">&nbsp;</span>
 					<span class="">
-						<label for="zipRP" class="blue"><spring:message code="label.zip" />:</label>
+						<span class="blue"><spring:message code="label.zip" />:</span>
 						<span id="zipRP" class="input-unstyled"></span>
 					</span>
 				</p>
@@ -108,29 +107,30 @@ padding-top: 0px !important;
 		<fieldset id="securityQuestionsRP" class="wizard-fieldset fields-list hidden" style="border-bottom: 1px solid #e0e0e0;">
 			<legend class="legend"><spring:message code="label.securityQuestions" /></legend>
 			<div class="field-block button-height">
-				<label for="question1RP" class="label"><b><spring:message code="label.question1" /></b></label>
+				<span class="label"><b><spring:message code="label.question1" /></b></span>
 				<span id="question1RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="answer1RP" class="label"><b><spring:message code="label.answer" /></b></label>
+				<span class="label"><b><spring:message code="label.answer" /></b></span>
 				<span id="answer1RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="question2RP" class="label"><b><spring:message code="label.question2" /></b></label>
+				<span class="label"><b><spring:message code="label.question2" /></b></span>
 				<span id="question2RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="answer2RP" class="label"><b><spring:message code="label.answer" /></b></label>
+				<span class="label"><b><spring:message code="label.answer" /></b></span>
 				<span id="answer2RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="question3RP" class="label"><b><spring:message code="label.question3" /></b></label>
+				<span class="label"><b><spring:message code="label.question3" /></b></span>
 				<span id="question3RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 			<div class="field-block button-height">
-				<label for="answer3RP" class="label"><b><spring:message code="label.answer" /></b></label>
+				<span class="label"><b><spring:message code="label.answer" /></b></span>
 				<span id="answer3RP" class="input-unstyled" style="width: 300px;"></span>
 			</div>
 		</fieldset>
 		<input type="hidden" id="userIdRP" value="0"/>
+		<input type="hidden" id="userSearchRpHidden" value=""/>
 	</div>

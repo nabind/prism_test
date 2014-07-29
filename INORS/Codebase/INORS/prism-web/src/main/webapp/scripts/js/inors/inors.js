@@ -309,7 +309,7 @@ $(document).ready(function() {
 	});
 
 	$(".reset-pwd").click(function() {
-		resetUserPwd($("#userSearchRP").val());
+		resetUserPwd($("#userSearchRpHidden").val());
 	});
 
 	$(".reset-pwd-search").click(function() {
@@ -327,6 +327,7 @@ $(document).ready(function() {
 function resetUserPwdSearch() {
 	$("#userIdRP").val("0");
 	$("#userSearchRP").val("");
+	$("#userSearchRpHidden").val("");
 
 	$("#firstNameRP").text("");
 	$("#middleNameRP").text("");
@@ -378,6 +379,7 @@ function resetUserPwd(username) {
 						$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
 						$.modal.alert(strings['script.parent.passwordResetError']);
 					}
+					$('#userSearchRP').val(username);
 				},
 				error : function(data) {
 					unblockUI();
@@ -402,6 +404,7 @@ function getUserForManagePassword(username) {
 			unblockUI();
 			//alert(JSON.stringify(data));
 			if (data) {
+				$("#userSearchRpHidden").val(username);
 				$("#userIdRP").val(data.userId);
 
 				$("#firstNameRP").text(data.firstName);
