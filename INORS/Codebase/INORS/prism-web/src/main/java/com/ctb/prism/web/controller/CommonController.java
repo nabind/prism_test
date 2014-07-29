@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.BusinessException;
@@ -60,6 +61,12 @@ public class CommonController extends BaseDAO {
 	private IPropertyLookup propertyLookup;
 	
 	@Autowired	private ILoginService loginService;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
+	
+	private String ASSET_PATH = "/ACSIREPORTS/Static_Files";
+
 	
 	/**
 	 * Load error page
@@ -478,6 +485,16 @@ public class CommonController extends BaseDAO {
 			logger.log(IAppLogger.ERROR, "", e);
 			mv.addObject("message", e.getMessage());
 		} 
+		return mv;
+	}
+	
+	@RequestMapping(value="/getAssestList" , method=RequestMethod.GET)
+	public ModelAndView getAssestList (HttpServletRequest request,
+			HttpServletResponse response)throws ServletException, IOException {
+		ModelAndView mv = new ModelAndView("common/assetList");
+		List<String> assets = repositoryService.getAssetList(ASSET_PATH);
+		logger.log(IAppLogger.INFO, "assets count: " + assets.size());
+		mv.addObject("assets", assets);
 		return mv;
 	}
 

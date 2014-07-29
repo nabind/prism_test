@@ -38,6 +38,7 @@
 		<pattern>/downloadZippedPdf*</pattern>
 		<pattern>/downloadFile*</pattern>
 		<pattern>/groupDownloadFunction*</pattern>
+		<pattern>/getAssestList.do</pattern>
 	</excludes>
 	
 	<decorator name="parentnetwork" page="parentnetwork.jsp">
