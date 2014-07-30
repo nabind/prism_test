@@ -353,7 +353,7 @@ function resetUserPwdSearch() {
 
 function resetUserPwd(username) {
 	var userId = $("#userIdRP").val();
-	var email = $("#emailRP").val();
+	var email = $("#emailRP").text();
 	if (userId == "0") {
 		$.modal.alert(strings['script.trySearch']);
 	} else {
