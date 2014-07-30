@@ -325,6 +325,7 @@ $(document).ready(function() {
 });
 
 function resetUserPwdSearch() {
+	$("#userSearchRP").attr('readonly', false);
 	$("#userIdRP").val("0");
 	$("#userSearchRP").val("");
 	$("#userSearchRpHidden").val("");
@@ -434,7 +435,9 @@ function getUserForManagePassword(username) {
 					$.modal.alert(strings['script.noUserFound']);
 					$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
 					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
+					$("#userSearchRP").attr('readonly', false);
 				} else {
+					$("#userSearchRP").attr('readonly', true);
 					$("#userDetailsRP").attr("class", "wizard-fieldset fields-list");
 					$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list");
 				}
@@ -442,6 +445,7 @@ function getUserForManagePassword(username) {
 				$.modal.alert(strings['script.noUserFound']);
 				$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
 				$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
+				$("#userSearchRP").attr('readonly', false);
 			}
 		},
 		error : function(data) {
