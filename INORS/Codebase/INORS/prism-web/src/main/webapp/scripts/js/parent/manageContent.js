@@ -75,7 +75,7 @@ $(document).ready(function() {
 		openModifyGenericModalToEdit('STD');
 	});
 	
-	$('#modifyRscDiv').live("click", function() {
+	$('#modifyRscButton').live("click", function() {
 		resetModalForm("addNewContent");
 		resetModalForm("editContent");
 		resetModalForm("modifyStandardForm");
