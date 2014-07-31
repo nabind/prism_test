@@ -390,7 +390,7 @@ function modifyGeneric(form, win) {
 		var formObj = $('#modifyGenericForm').serialize();
 		$.ajax({
 			type : "POST",
-			url : 'addNewContent.do',
+			url : 'addNewContent.htm',
 			data : formObj,
 			dataType: 'json',
 			cache:false,
@@ -615,7 +615,7 @@ function updateContent(form, win) {
 		var formObj = $('#editContent').serialize();
 		$.ajax({
 			type : "POST",
-			url : 'updateContent.do',
+			url : 'updateContent.htm',
 			data : formObj,
 			dataType: 'json',
 			cache:false,
@@ -794,7 +794,7 @@ function addNewContent(form, win) {
 		var formObj = $('#addNewContent').serialize();
 		$.ajax({
 			type : "POST",
-			url : 'addNewContent.do',
+			url : 'addNewContent.htm',
 			data : formObj,
 			dataType: 'json',
 			cache:false,
