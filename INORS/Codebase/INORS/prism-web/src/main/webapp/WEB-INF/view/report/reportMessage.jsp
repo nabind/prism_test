@@ -12,7 +12,7 @@
 		</div> --%>
 		<form:form
 			id="editManageMessageForm"
-			method="post" action="ajaxJSP/saveManageMessage.do"
+			method="post" action="ajaxJSP/saveManageMessage.htm"
 			modelAttribute="manageMessageForm">
 			<div class="float-right">
 				<a href="javascript:void(0)" id="editManageMessageButtonSave" 

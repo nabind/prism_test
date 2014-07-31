@@ -76,7 +76,7 @@ $(document).ready(function() {
 		blockUI();
 		$.ajax({
 			type : "POST",
-			url : 'ajaxJSP/saveManageMessage.do',
+			url : 'ajaxJSP/saveManageMessage.htm',
 			data : formObj,
 			dataType: 'html',
 			cache:false,
