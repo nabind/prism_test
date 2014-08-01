@@ -2347,8 +2347,8 @@ public class AdminController {
 		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
 		String subject = propertyLookup.get("mail.rp.subject");
 		String mailBody = propertyLookup.get("mail.rp.body");
-		subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
-		mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
+		// subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
+		// mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
 		mailBody = CustomStringUtil.replaceCharacterInString('?', password, mailBody);
 		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
 		logger.log(IAppLogger.INFO, "SMTP_HOST: " + prop.getProperty(IEmailConstants.SMTP_HOST));
