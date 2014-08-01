@@ -300,6 +300,17 @@ $(document).ready(function() {
 	$('#groupDownload').validationEngine();
 	
 	clickTheRefreshButton();
+	
+	$('#userSearchRP').focus();
+	
+	$("#userSearchRP").live("keyup", function(e) {
+		if ( e.keyCode == 13 && $(this).val()!="") {
+			if ($("#userSearchRP").val() != "" && $("#userSearchRP").val() != "Search") {
+				$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
+				getUserForManagePassword($("#userSearchRP").val());
+			}
+		}
+	});
 
 	$("a[id='userSearchIconRP']").live("click", function(e) {
 		if ($("#userSearchRP").val() != "" && $("#userSearchRP").val() != "Search") {
@@ -407,6 +418,7 @@ function getUserForManagePassword(username) {
 			if (data) {
 				$("#userSearchRpHidden").val(username);
 				$("#userIdRP").val(data.userId);
+				$('#userSearchRP').blur(); 
 
 				$("#firstNameRP").text(data.firstName);
 				$("#middleNameRP").text(data.middleName);
