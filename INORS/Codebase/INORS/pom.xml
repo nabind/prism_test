@@ -22,6 +22,11 @@
 		<springframework.version>3.1.0.RELEASE</springframework.version>
 		<spring-security.version>3.1.0.RELEASE</spring-security.version>
 		<jasper-reports-version>5.5.0</jasper-reports-version>
+		<version-findbugs>3.0.0</version-findbugs>
+		<version-checkstyle>2.9.1</version-checkstyle>
+		<version-pmd>2.7.1</version-pmd>
+		<version-changes>2.10</version-changes>
+		<version-javadoc>2.9.1</version-javadoc>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -883,6 +888,77 @@
             </snapshots>
         </repository>
     </repositories>
+    
+    <build>
+		<plugins>
+			<!-- Checkstyle plugin -->
+			<!-- http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
+			<!-- mvn checkstyle:checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${version-checkstyle}</version>
+				<!--configuration>
+					<consoleOutput>true</consoleOutput>
+					<configLocation>https://svn.java.net/svn/appfuse~svn/trunk/www/checkstyle.xml</configLocation>
+					<failsOnError>false</failsOnError>
+					<maxAllowedViolations>3</maxAllowedViolations>
+				</configuration-->
+			</plugin>
+			<!-- Maven Findbugs Plugin, classes need to be compiled before generating the report -->
+			<!-- http://mojo.codehaus.org/findbugs-maven-plugin/plugin-info.html -->
+			<!-- mvn findbugs:findbugs -->
+			<!-- mvn findbugs:gui -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>${version-findbugs}</version>
+				<configuration>
+					<classFilesDirectory>target/classes</classFilesDirectory>
+					<testClassFilesDirectory>target/test-classes</testClassFilesDirectory>
+					<xmlOutput>false</xmlOutput>
+					<outputDirectory>target/findbugs</outputDirectory>
+				</configuration>
+			</plugin>
+			<!-- PMD Code analysis plug-in -->
+			<!-- http://maven.apache.org/plugins/maven-pmd-plugin/ -->
+			<!-- mvn pmd:pmd -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.6</targetJdk>
+				</configuration>
+				<version>${version-pmd}</version>
+			</plugin>
+			<!-- Maven Changes Plugin -->
+			<!-- http://maven.apache.org/plugins/maven-changes-plugin/ -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>${version-changes}</version>
+				<configuration>
+					<reportSets>
+						<reportSet>
+							<reports>
+								<report>changes-report</report>
+							</reports>
+						</reportSet>
+					</reportSets>
+				</configuration>
+			</plugin>
+			<!-- To generate Javadoc -->
+			<!-- http://maven.apache.org/plugins/maven-javadoc-plugin/ -->
+			<!-- mvn javadoc:javadoc -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${version-javadoc}</version>
+			</plugin>
+		</plugins>
+	</build>
 
 	<description>Prism Enterprise Reporting Platform</description>
 </project>
