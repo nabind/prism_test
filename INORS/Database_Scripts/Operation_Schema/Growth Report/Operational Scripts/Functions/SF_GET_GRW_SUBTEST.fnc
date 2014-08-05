@@ -1,6 +1,8 @@
 CREATE OR REPLACE FUNCTION SF_GET_GRW_SUBTEST(
                                LoggedInUserId IN USERS.USERID%TYPE
+                              ,LoggedInUserJasperOrgId IN ORG_NODE_DIM.ORG_NODEID%TYPE
                               ,p_customerid IN CUSTOMER_INFO.CUSTOMERID%TYPE
+                              ,p_school IN ORG_NODE_DIM.ORG_NODEID%TYPE
                               ,p_UserId IN USERS.USERID%TYPE
                               ,p_test_administration IN PRODUCT.PRODUCTID%TYPE
                               ,p_grade IN GRADE_DIM.GRADEID%TYPE
@@ -35,6 +37,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
   v_GradeId GRADE_DIM.GRADEID%TYPE;
   v_ELA_CODE CONSTANT  VARCHAR2(10):='ELA';
   v_MATH_CODE CONSTANT  VARCHAR2(10):='MATH';
+  v_School_Orgid ORG_NODE_DIM.ORG_NODEID%TYPE;
   
   
 
@@ -99,32 +102,45 @@ SELECT DISTINCT PDT.PRODUCTID,
 
 
 
- CURSOR c_Get_Principal_User_Default
+ CURSOR c_Get_Principal_User_Default (p_Schoolid1 ORG_NODE_DIM.ORG_NODEID%TYPE)
   IS
   SELECT A.NORMAL_GRW_USERID
-  FROM
+  FROM 
   (SELECT DISTINCT PSL.NORMAL_GRW_USER_SPN ,
          PSL.NORMAL_GRW_USERID
   FROM MV_PRINCIPAL_USER_SEL_LOOKUP PSL
   WHERE PSL.PRINCIPAL_USERID=LoggedInUserId
     AND PSL.CUSTOMERID = p_customerid
+    AND PSL.ORG_NODEID = p_Schoolid1
   ORDER BY PSL.NORMAL_GRW_USER_SPN ,
-           PSL.NORMAL_GRW_USERID) A
+           PSL.NORMAL_GRW_USERID ) A
   WHERE ROWNUM = 1 ;
-
-
-CURSOR c_Get_Lvl2_Prncpl_User_Default
+  
+    
+  CURSOR c_Get_Lvl2_Prncpl_User_Default (p_Schoolid ORG_NODE_DIM.ORG_NODEID%TYPE)
     IS 
     SELECT A.NORMAL_GRW_USERID
      FROM          
    (SELECT DISTINCT PSL.NORMAL_GRW_USER_SPN ,
          PSL.NORMAL_GRW_USERID
-    FROM MV_LVL2_PRCPL_USER_SEL_LOOKUP PSL
-    WHERE PSL.DISTRICT_PRINCIPAL_USERID=LoggedInUserId
-      AND PSL.CUSTOMERID = p_customerid
-    ORDER BY PSL.NORMAL_GRW_USER_SPN ,
-             PSL.NORMAL_GRW_USERID) A
+  FROM MV_LVL2_PRCPL_USER_SEL_LOOKUP PSL
+  WHERE PSL.DISTRICT_PRINCIPAL_USERID=LoggedInUserId
+    AND PSL.CUSTOMERID = p_customerid
+    AND PSL.SCHOOL_ORG_NODEID = p_Schoolid
+  ORDER BY PSL.NORMAL_GRW_USER_SPN ,
+           PSL.NORMAL_GRW_USERID) A
   WHERE ROWNUM=1; 
+                  
+ CURSOR c_Get_School_Name_For_Lvl2
+  IS
+   SELECT A.ORG_NODEID FROM
+  (SELECT ORG.ORG_NODE_NAME,ORG.ORG_NODEID
+  FROM ORG_NODE_DIM ORG
+  WHERE ORG.PARENT_ORG_NODEID=LoggedInUserJasperOrgId 
+    AND ORG.CUSTOMERID = p_customerid
+    AND ORG.ORG_NODE_LEVEL = 3
+    ORDER BY ORG.ORG_NODE_NAME, ORG.ORG_NODEID)A
+    WHERE ROWNUM=1;  
   
 
  CURSOR c_Get_Grwth_User_Type
@@ -150,7 +166,7 @@ BEGIN
         END LOOP;
 
 
-        IF p_grade = -99 OR p_UserId = -99 THEN
+        IF p_school = -99 OR p_UserId = -99 THEN
 
            IF v_User_Type = v_PRINCIPAL_USER_TYPE THEN
               ---get the user level
@@ -161,13 +177,18 @@ BEGIN
               ---get the first default user in the list
               IF v_User_Level= 3 THEN
                ---get the first school level principal user in the list 
-                FOR r_Get_Principal_User_Default IN c_Get_Principal_User_Default
+                FOR r_Get_Principal_User_Default IN c_Get_Principal_User_Default (LoggedInUserJasperOrgId)
                    LOOP
                        v_UserId := r_Get_Principal_User_Default.NORMAL_GRW_USERID;
                 END LOOP;
               ELSE 
+               ---get the first default school in the list
+                  FOR r_Get_School_Name_For_Lvl2 IN c_Get_School_Name_For_Lvl2
+                     LOOP
+                        v_School_Orgid:= r_Get_School_Name_For_Lvl2.ORG_NODEID;
+                   END LOOP;
                 ---get the first district level principal user in the list 
-                FOR r_Get_Lvl2_Prncpl_User_Default IN c_Get_Lvl2_Prncpl_User_Default
+                FOR r_Get_Lvl2_Prncpl_User_Default IN c_Get_Lvl2_Prncpl_User_Default (v_School_Orgid)
                    LOOP
                        v_UserId := r_Get_Lvl2_Prncpl_User_Default.NORMAL_GRW_USERID;
                 END LOOP;

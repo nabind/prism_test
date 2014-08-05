@@ -1,5 +1,12 @@
 CREATE OR REPLACE TYPE typ_varchar_arr IS TABLE OF VARCHAR2(40);
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE SEQUENCE PERF_MATRIX_SEQ
+MINVALUE 1
+MAXVALUE 9999999999999999999999999999
+START WITH 36773961
+INCREMENT BY 1
+CACHE 20;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE GRW_DUPLICATE_STUDENTS
 (
   CNT             NUMBER,
@@ -83,6 +90,32 @@ PARTITION BY  LIST (CUST_PROD_ID)
       MINEXTENTS 1
       MAXEXTENTS UNLIMITED
     ));
+	
+	-- Create/Recreate indexes 
+create index IDX_GRW_SUBTEST_SCORE_FACT_1 on GRW_SUBTEST_SCORE_FACT (ORG_NODEID, ADMINID, GRADEID, SUBTESTID, CUST_PROD_ID, STUDENT_BIO_ID)
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index IDX_GRW_SUBTEST_SCORE_FACT_2 on GRW_SUBTEST_SCORE_FACT (CUST_PROD_ID, STUDENT_BIO_ID, SUBTESTID, ADMINID, GRADEID, PL)
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE USERS_MAP
 (

@@ -1,3 +1,4 @@
+INSERT INTO ROLE VALUES (8,'ROLE_GRW','Growth Report User',SYSDATE,SYSDATE);
 insert into stg_etl_jobmaster
   (MAPPING_NAME,
    SESSION_NAME,
@@ -179,3 +180,5 @@ values
    'WKF_GROWTH_REPORT_DUPLICATE_STN',
    sysdate,
    sysdate);
+   
+   commit;
