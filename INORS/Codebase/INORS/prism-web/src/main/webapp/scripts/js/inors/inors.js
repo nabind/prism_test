@@ -345,6 +345,13 @@ function resetUserPwdSearch() {
 	$("#middleNameRP").text("");
 	$("#lastNameRP").text("");
 	$("#emailRP").text("");
+	//Fix for TD 80117
+	$("#contactNumberRP").text("");
+	$("#streetRP").text("");
+	$("#cityRP").text("");
+	$("#stateRP").text("");
+	$("#zipRP").text("");
+	$("#countryRP").text("");
 
 	$("#question1RP").text("");
 	$("#answer1RP").text("");
