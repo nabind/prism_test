@@ -716,7 +716,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				// delete from org_users table
 				getJdbcTemplatePrism().update(IQueryConstants.DELETE_ORG_USER, Id);
 			}
+			
+			//delete from user activity
+			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ACTIVITY, Id);
 
+			
 			// delete the user from users table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);
 
