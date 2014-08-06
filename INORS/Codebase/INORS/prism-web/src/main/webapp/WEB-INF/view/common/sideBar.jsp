@@ -105,6 +105,9 @@
 							<li>
 								<a href="manageContent.do">Manage Content</a>
 							</li>
+							<li>
+								<a href="resetUserPasswordForm.do">Reset Password</a>
+							</li>
 						</sec:authorize>
 						</sec:authorize>
 					</ul>
