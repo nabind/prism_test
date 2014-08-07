@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -46,6 +48,8 @@ import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 import com.google.gson.Gson;
+import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.EmailSender;
 
 @Controller
 public class LoginController {
@@ -893,24 +897,42 @@ public class LoginController {
 	public @ResponseBody
 	String getUserNames(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Fectching the User Names");
+		String sendEmailFlag = "0";
+		String jsonString = null;
 		try {
 			List<UserTO> userToList = new ArrayList<UserTO>();
 			String emailId = req.getParameter("emailId");
 			userToList = parentService.getUserNamesByEmail(emailId);
-			if (userToList != null) {
-				String jsonString = JsonUtil.convertToJsonAdmin(userToList);
+			if (userToList != null && userToList.size()> 0) {
+				/*String jsonString = JsonUtil.convertToJsonAdmin(userToList);
 				res.setContentType("application/json");
 				res.getWriter().write(jsonString);
 				// res.getWriter().write( "{\"status\":\"Success\"}" );
-				logger.log(IAppLogger.DEBUG, jsonString);
+				logger.log(IAppLogger.DEBUG, jsonString);*/
+				try {
+					sendUserPasswordEmail(emailId,userToList,null);
+					sendEmailFlag = "1";
+				} catch (Exception e) {
+					sendEmailFlag = "0";
+					logger.log(IAppLogger.ERROR, e.getMessage(), e);
+				}
+				//return jsonString;
+				
+			} else {
+				sendEmailFlag = "0";
+				logger.log(IAppLogger.INFO, "No user found");
 			}
+			
+			jsonString = "{\"sendEmailFlag\" : \"" + sendEmailFlag + "\"}";
+			logger.log(IAppLogger.INFO, jsonString);
+			logger.log(IAppLogger.INFO, "Exit: Forgot username");
 
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {
 			logger.log(IAppLogger.INFO, "Fectching the User Names");
 		}
-		return null;
+		return jsonString;
 	}
 
 	/**
@@ -1024,5 +1046,61 @@ public class LoginController {
 		}
 		return  jsonString;
 	}
-
+	
+	
+	private void sendUserPasswordEmail(String email, List<UserTO> userToList, String password) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: Forgot username/password");
+		Properties prop = new Properties();
+		prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+		prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+		prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+		String subject = propertyLookup.get("mail.fu.subject");
+		String mailBody = null;
+		// subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
+		// mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
+		
+		if(userToList.size() == 1) {
+			mailBody = propertyLookup.get("mail.fu.body");
+			mailBody = CustomStringUtil.appendString(mailBody, propertyLookup.get("mail.fu.details"));
+			mailBody = CustomStringUtil.replaceCharacterInString('?', userToList.get(0).getUserName()!=null?userToList.get(0).getUserName():"", mailBody);
+			mailBody = CustomStringUtil.replaceCharacterInString('#', userToList.get(0).getFirstName()!=null?userToList.get(0).getFirstName():"", mailBody);
+			mailBody = CustomStringUtil.replaceCharacterInString('^', userToList.get(0).getLastName()!=null?userToList.get(0).getLastName():"", mailBody);
+			
+		} else if(userToList.size() > 1) {
+			mailBody = propertyLookup.get("mail.fu.multi.body");
+			Iterator<UserTO>  it = userToList.iterator();
+			while(it.hasNext()){
+				mailBody = CustomStringUtil.appendString(mailBody, propertyLookup.get("mail.fu.details"));
+				String username = ((UserTO)it.next()).getUserName();
+				mailBody = CustomStringUtil.replaceCharacterInString('?', username!=null?username:"", mailBody);
+				String firstName = ((UserTO)it.next()).getFirstName();
+				mailBody = CustomStringUtil.replaceCharacterInString('#', firstName!=null?firstName:"", mailBody);
+				String lastName = ((UserTO)it.next()).getLastName();
+				mailBody = CustomStringUtil.replaceCharacterInString('^', lastName!=null?lastName:"", mailBody);
+			}
+		}
+						
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "SMTP_HOST: " + prop.getProperty(IEmailConstants.SMTP_HOST));
+		logger.log(IAppLogger.INFO, "SMTP_PORT: " + prop.getProperty(IEmailConstants.SMTP_PORT));
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Subject: " + subject);
+		logger.log(IAppLogger.INFO, "From: " + prop.getProperty("senderMail"));
+		logger.log(IAppLogger.INFO, "To: " + email);
+		logger.log(IAppLogger.INFO, "Body: " + mailBody);
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
+		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
+		} else {
+			logger.log(IAppLogger.ERROR, "Invalid property value. " + IEmailConstants.REALTIME_EMAIL_FLAG + "=" + propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG));
+		}
+		logger.log(IAppLogger.INFO, "Email sent to: " + email);
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
+	}
+	
+	
 }

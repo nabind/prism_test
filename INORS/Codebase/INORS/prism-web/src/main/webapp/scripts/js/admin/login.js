@@ -102,10 +102,13 @@ $(document).ready(function() {
 					+'<label class="label isIE" style="width: 90px;" for="email">Enter Email Id</label>'
 					+'<input type="text" name="f_email" id="f_email" style="width:200px;margin:3px" class="input"/>'
 				   +'</p>'
-				   +'<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidEmailMsg">The Email Id entered is not valid. Make sure you have entered correct Email Id.</p>';
+				   +'<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidEmailMsg">The Email Id entered is not valid. Make sure you have entered correct Email Id.</p>'
+				   +'<p style="width:306px;margin:3px" class="message green-gradient margin-top display-none" id="mailSentNotofication"/>' 
+				   ;
 			$("#forgotUserNameContainer").html(cont);			
 			$("#f_email").val("");
 			$("#invalidEmailMsg").hide();
+			$("#mailSentNotofication").hide();
 			$("#forgotUserName").modal({
 				title: 'Forgot Username?',
 				resize:true,
@@ -126,10 +129,12 @@ $(document).ready(function() {
 									if(	(($("#f_email").val()).replace(/\s/g,"").length==0) || (!patt.test($("#f_email").val())) ){
 										$("#invalidEmailMsg").text("The email id entered is not valid.");
 										$("#invalidEmailMsg").show(500);
+										$("#mailSentNotofication").hide();
 										
 									}
 									else{
 										$("#invalidEmailMsg").hide();
+										$("#mailSentNotofication").hide();
 										getUserNames($("#f_email").val());
 									}
 								}
@@ -322,17 +327,21 @@ $(document).ready(function() {
 			cache:false,
 			success : function(data) {
 				unblockUI();
-				if (data != null) {
-					$("#invalidEmailMsg").hide();
-					if(data.length>0){
-						var iscrearted = makeuserDom(data);	
+				if (data != null ) {
+					if( data.sendEmailFlag == "1") {
+						$("#invalidEmailMsg").hide();
+						$("#mailSentNotofication").show(500);
+						$("#mailSentNotofication").html("<span style=\"color: green\">UserName has been sent Successfully!!</span>");
+						/*var iscrearted = makeuserDom(data);	
 						if (iscrearted){
 							$("button.submitUser").text("OK");
-						}
-					}else {
-						$("#invalidEmailMsg").show(500);	
-						$("#invalidEmailMsg").text("There are no users present with this email id. Please retry with the correct email id.");
-					}
+						}*/
+						
+						} else {
+							$("#mailSentNotofication").hide();
+							$("#invalidEmailMsg").show(500);	
+							$("#invalidEmailMsg").text("There are no users present with this email id. Please retry with the correct email id.");
+						}					
 													
 				} else {
 					$.modal.alert("Some error occurred while fetching username.");											
