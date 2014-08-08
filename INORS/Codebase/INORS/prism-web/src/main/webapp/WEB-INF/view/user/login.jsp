@@ -313,6 +313,9 @@
 			</div>
 		</div>
 		
+		<p class="intro" style="width: 420px;">
+			<spring:message code="msg.fp.info"/>
+		</p>
 			
 	</div>
 	
