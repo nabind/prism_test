@@ -657,9 +657,12 @@
 			success : function(data) {
 				if (data!= null) {
 				//=========REBUILD THE MODAL DOM========
-					win.setModalTitle('New Parent Password');
-					buildResetPasswordDom(data,parentDisplayName,"passwordModal","passwordModalContainer");
-			
+					if( data.sendEmailFlag == "1") {
+						win.setModalTitle('New Parent Password');
+						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");				
+					} else {
+						$.modal.alert(strings['script.parent.passwordResetError']);
+					}	
 				}
 				else {
 					$.modal.alert(strings['script.parent.passwordResetError']);
@@ -676,15 +679,14 @@
 	
 	
 	//==========================CREATES THE STRUCTURE FOR RESET PASSWORD=======================
-	function buildResetPasswordDom(jsonData,parentDisplayName,modalId,modalContainerDivId)
+	function buildResetPasswordDom(parentDisplayName,modalId,modalContainerDivId)
 	{	
 				// alert("buildResetPasswordDom ");
 		$("#"+modalId +" > "+"#"+modalContainerDivId ).find("div").remove();
 		var newPassword ='<div id="newPassword">'
 							 +'<p class="message blue-gradient" style="width:400px">The password for the following user has been reset:</p>'
 							 +'<p><b>Full Name:</b>&nbsp;'+parentDisplayName+'</p>'
-							 +'<p><b>Temporary Password:</b>&nbsp;'+jsonData.password+'</p>'
-							 +'<p class="big-message" style="width:400px">Please provide this password to the user. The user will need to change the password after log in.</p>'
+							 +'<p class="big-message" style="width:400px">Password will be sent to Parent email address</p>'
 							 +'</div>';
 				
 			$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(newPassword);		

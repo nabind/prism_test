@@ -278,7 +278,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#resetPassword(java.lang.String)
 	 */
-	public String resetPassword(String userName) throws Exception {
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception {
 		return adminDAO.resetPassword(userName);
 	}
 

@@ -867,14 +867,22 @@ public class LoginController {
 	@RequestMapping(value = "/regn/generateTempPwd", method = RequestMethod.GET)
 	public String generateTempPwd(HttpServletRequest req, HttpServletResponse res) {
 		logger.log(IAppLogger.INFO, "Enter: generateTempPwd()");
+		String sendEmailFlag = "0";
 		try {
 			String userName = (String) req.getParameter("username");
 			if (userName != null) {
-				String newPassword = adminService.resetPassword(userName);
-				if (newPassword != null) {
-					res.getWriter().write("{\"password\":\"" + newPassword + "\"}");
+				UserTO userTO = adminService.resetPassword(userName);
+				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
+					try{
+						sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
+						sendEmailFlag = "1";						
+					} catch (Exception e) {
+						sendEmailFlag = "0";
+						logger.log(IAppLogger.ERROR, e.getMessage(), e);
+					}					
 				}
 			}
+				res.getWriter().write("{\"sendEmailFlag\":\"" + sendEmailFlag + "\"}");
 
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
@@ -1055,30 +1063,34 @@ public class LoginController {
 		prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
 		prop.setProperty("senderMail", propertyLookup.get("senderMail"));
 		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-		String subject = propertyLookup.get("mail.fu.subject");
 		String mailBody = null;
-		// subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
-		// mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
-		
-		if(userToList.size() == 1) {
-			mailBody = propertyLookup.get("mail.fu.body");
-			mailBody = CustomStringUtil.appendString(mailBody, propertyLookup.get("mail.fu.details"));
-			mailBody = CustomStringUtil.replaceCharacterInString('?', userToList.get(0).getUserName()!=null?userToList.get(0).getUserName():"", mailBody);
-			mailBody = CustomStringUtil.replaceCharacterInString('#', userToList.get(0).getFirstName()!=null?userToList.get(0).getFirstName():"", mailBody);
-			mailBody = CustomStringUtil.replaceCharacterInString('^', userToList.get(0).getLastName()!=null?userToList.get(0).getLastName():"", mailBody);
-			
-		} else if(userToList.size() > 1) {
-			mailBody = propertyLookup.get("mail.fu.multi.body");
-			Iterator<UserTO>  it = userToList.iterator();
-			while(it.hasNext()){
+		String subject = null;
+
+		/**for forgot username **/
+		if(userToList != null) {
+			subject = propertyLookup.get("mail.fu.subject");
+			if(userToList.size() == 1) {
+				mailBody = propertyLookup.get("mail.fu.body");
 				mailBody = CustomStringUtil.appendString(mailBody, propertyLookup.get("mail.fu.details"));
-				String username = ((UserTO)it.next()).getUserName();
-				mailBody = CustomStringUtil.replaceCharacterInString('?', username!=null?username:"", mailBody);
-				String firstName = ((UserTO)it.next()).getFirstName();
-				mailBody = CustomStringUtil.replaceCharacterInString('#', firstName!=null?firstName:"", mailBody);
-				String lastName = ((UserTO)it.next()).getLastName();
-				mailBody = CustomStringUtil.replaceCharacterInString('^', lastName!=null?lastName:"", mailBody);
+				mailBody = CustomStringUtil.replaceCharacterInString('?', userToList.get(0).getUserName()!=null?userToList.get(0).getUserName():"", mailBody);
+				mailBody = CustomStringUtil.replaceCharacterInString('#', userToList.get(0).getFirstName()!=null?userToList.get(0).getFirstName():"", mailBody);
+				mailBody = CustomStringUtil.replaceCharacterInString('^', userToList.get(0).getLastName()!=null?userToList.get(0).getLastName():"", mailBody);
+				
+			} else if(userToList.size() > 1) {
+				mailBody = propertyLookup.get("mail.fu.multi.body");
+				Iterator<UserTO>  it = userToList.iterator();
+				while(it.hasNext()){
+					UserTO userto = (UserTO)it.next();
+					mailBody = CustomStringUtil.appendString(mailBody, propertyLookup.get("mail.fu.details"));
+					mailBody = CustomStringUtil.replaceCharacterInString('?', userto.getUserName()!=null?userto.getUserName():"", mailBody);
+					mailBody = CustomStringUtil.replaceCharacterInString('#', userto.getFirstName()!=null?userto.getFirstName():"", mailBody);
+					mailBody = CustomStringUtil.replaceCharacterInString('^', userto.getLastName()!=null? userto.getLastName():"", mailBody);
+				}
 			}
+		} else { /**for forgot password **/
+			subject = propertyLookup.get("mail.fp.subject");
+			mailBody = propertyLookup.get("mail.fp.body");
+			mailBody = CustomStringUtil.replaceCharacterInString('?', password, mailBody);
 		}
 						
 		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");

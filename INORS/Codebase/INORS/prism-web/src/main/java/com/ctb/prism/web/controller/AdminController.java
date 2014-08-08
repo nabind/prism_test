@@ -2009,15 +2009,24 @@ public class AdminController {
 	@RequestMapping(value="/resetPassword", method=RequestMethod.GET)
 	public String resetPassword(HttpServletRequest req, HttpServletResponse res ) {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - resetPassword");
+		String sendEmailFlag = "0";
 		try {
 			String userName= (String) req.getParameter("userName");
 			if ( userName != null ) {
-				String newPassword = adminService.resetPassword(userName);
-				if (newPassword != null) {
-					logger.log(IAppLogger.INFO, "{\"password\":\"" + newPassword + "\"}");
-					res.getWriter().write("{\"password\":\"" + newPassword + "\"}");
+			//	String newPassword = adminService.resetPassword(userName);
+				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(userName);
+				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
+					try{
+						sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
+						sendEmailFlag = "1";
+					} catch (Exception e) {
+						sendEmailFlag = "0";
+						logger.log(IAppLogger.ERROR, e.getMessage(), e);
+					}										
 				}
 			}
+			
+			res.getWriter().write("{\"sendEmailFlag\":\"" + sendEmailFlag + "\"}");
 			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
@@ -2307,29 +2316,29 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: resetUserPassword()");
 		String username = (String) request.getParameter("username");
 		String email = (String) request.getParameter("email");
-		String password = "";
+	//	String password = "";
 		String resetPwdFlag = "0";
 		String sendEmailFlag = "0";
 		try {
 			if (username != null) {
-				password = adminService.resetPassword(username);
-				if (password != null) {
+				//password = adminService.resetPassword(username);
+				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(username);
+				if (userTO.getPassword() != null) {
 					resetPwdFlag = "1";
+					try {
+						sendUserPasswordEmail(email, username, userTO.getPassword());
+						sendEmailFlag = "1";
+					} catch (Exception e) {
+						sendEmailFlag = "0";
+						logger.log(IAppLogger.ERROR, e.getMessage(), e);
+					}
 				}
 			}
 		} catch (Exception e) {
 			resetPwdFlag = "0";
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		}
-		if (resetPwdFlag.equals("1")){
-			try {
-				sendUserPasswordEmail(email, username, password);
-				sendEmailFlag = "1";
-			} catch (Exception e) {
-				sendEmailFlag = "0";
-				logger.log(IAppLogger.ERROR, e.getMessage(), e);
-			}
-		}
+	
 		String jsonString = "{\"username\" : \"" + username
 				+ "\", \"resetPwdFlag\" : \"" + resetPwdFlag
 				+ "\", \"sendEmailFlag\" : \"" + sendEmailFlag + "\"}";

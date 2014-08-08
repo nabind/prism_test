@@ -48,6 +48,7 @@ import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import org.springframework.jdbc.core.RowMapper;
 
 @Repository("adminDAO")
 @SuppressWarnings("unchecked")
@@ -1347,22 +1348,33 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#resetPassword(java.lang.String)
 	 */
-	public String resetPassword(String userName) throws Exception {
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception {
+		com.ctb.prism.login.transferobject.UserTO userTO = new com.ctb.prism.login.transferobject.UserTO();
+		String email =  getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_USER_DETAILS, new Object[] { userName }, new RowMapper<String>() {
+			public String mapRow(ResultSet rs, int col) throws SQLException {
+				return rs.getString("EMAIL");
+			}
+		});
+		
 		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 			boolean isUpdated = ldapManager.updateUser(userName, userName, userName, password);
 			if (isUpdated) {
 				getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FIRSTTIMEUSERFLAG_DATA, IApplicationConstants.FLAG_Y, userName);
-				return password;
+			//	return password;
 			} else {
-				return null;
+			//	return null;
 			}
 		} else {
 			String salt = PasswordGenerator.getNextSalt();
 			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
 					salt, userName);
-			return password;
+			//return password;
 		}
+		
+		userTO.setUserEmail(email);
+		userTO.setPassword(password);
+		return userTO;
 	}
 
 	/*

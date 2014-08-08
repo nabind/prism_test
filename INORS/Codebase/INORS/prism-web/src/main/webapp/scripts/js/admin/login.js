@@ -284,11 +284,13 @@ $(document).ready(function() {
 			success : function(data) {
 			unblockUI();
 			if(data != null) {
-					var isgenarated = buildPasswordDom(data,userName);	
-					if (isgenarated){
-						$("button.submit").hide();
-					}
-				} else{
+				if( data.sendEmailFlag == "1") {
+					$("#forgotPasswordContainer").html("The password for the user has been reset.<br/>Temporary password will be sent to user email.");
+					$("button.submit").hide();					
+				} else {
+					$.modal.alert("Could not reset password. Please try later.");
+				}					
+			} else{
 					$.modal.alert("Could not reset password. Please try later.");
 				}
 			},
@@ -302,7 +304,7 @@ $(document).ready(function() {
 	function buildPasswordDom(jsonData,userName){
 		if (jsonData.password != null) {
 			var pwdContent='<div id="newPassword">'
-							 +'<p class="message blue-gradient" style="width:400px">The password for the following user has been reset:</p>'
+							 +'<p class="message blue-gradient" style="width:400px">The password for the user has been reset:</p>'
 							 +'<p><b>Username:</b>&nbsp;'+userName+'</p>'
 							 +'<p><b>Temporary Password:</b>&nbsp;'+jsonData.password+'</p>'
 							 +'<p class="big-message" style="width:400px">The user will need to change the password after log in.</p>'

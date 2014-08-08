@@ -238,7 +238,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public String resetPassword(String userName) throws Exception;
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception;
 
 	/**
 	 * @return

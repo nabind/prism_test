@@ -253,7 +253,7 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public String resetPassword(String userName) throws Exception;
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception;
 
 	/**
 	 * Get user list for selected role.
