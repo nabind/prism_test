@@ -56,7 +56,7 @@
 							</div>
 							<div class="field-block button-height">
 								<label for="password" class="label"><b>Change Password</b></label>
-								<input type="password" name="password" id="password" value="" class="input validate[minSize[8], maxSize[15]]" autocomplete="off">
+								<input type="password" name="password" id="password" value="" class="input validate[minSize[8], maxSize[15], custom[validatePassword]]" autocomplete="off">
 								<span class="info-spot">
 									<span class="icon-info-round"></span>
 									<span class="info-bubble" style="width:250px">

@@ -32,7 +32,7 @@
 			
 			<div class="field-block button-height passwordContainer">
 				<label for="password" class="label"><b>Create Password</b><span class="icon-star icon-size1 red"></span></label>
-				<input type="password" name="password" id="password" value="" class="input validate[required]">
+				<input type="password" name="password" id="password" value="" class="input validate[required,custom[validatePassword]]">
 				<span class="info-spot">
 					<span class="icon-info-round"></span>
 					<span class="info-bubble" style="width:300px">

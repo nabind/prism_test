@@ -76,7 +76,7 @@
 			
 			<div class="field-block button-height">
 				<label for="password" class="label"><b>Create a Password</b><span class="icon-star icon-size1 red"></span></label>
-				<input type="password" name="password" id="password" value="" class="input validate[required,maxSize[15],minSize[8]]" autocomplete="off">
+				<input type="password" name="password" id="password" value="" class="input validate[required,maxSize[15],minSize[8],custom[validatePassword]]" autocomplete="off">
 				<span class="info-spot">
 					<span class="icon-info-round"></span>
 					<span class="info-bubble" style="width:300px">
