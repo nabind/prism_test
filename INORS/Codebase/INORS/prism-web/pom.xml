@@ -242,7 +242,7 @@
 				<version>2.5</version>
 				<executions>
 					<execution>
-						<id>copy-resources</id>
+						<id>copy-webapp</id>
 						<!-- here the phase you need -->
 						<phase>validate</phase>
 						<goals>
@@ -257,7 +257,7 @@
 					        </excludes>
 							<resources>
 								<resource>
-									<directory>${basedir}</directory>
+									<directory>${basedir}/src/main/webapp</directory>
 									<!-- <includes>
 										<include>**/*.js</include>
 										<include>**/*.css</include>
