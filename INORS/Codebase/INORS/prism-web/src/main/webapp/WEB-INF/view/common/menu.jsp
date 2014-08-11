@@ -42,6 +42,9 @@
 		
 		<sec:authorize ifAnyGranted="ROLE_SUPER">
 			<li><a href="manageContent.do" class="shortcut-content" title="Manage Content">Manage Content</a></li>
+		</sec:authorize>
+		
+		<sec:authorize ifAnyGranted="ROLE_SUPER, ROLE_CTB">
 			<li><a href="resetUserPasswordForm.do" class="shortcut-reset" title="Reset Password">Reset Password</a></li>
 		</sec:authorize>
 		<!-- 

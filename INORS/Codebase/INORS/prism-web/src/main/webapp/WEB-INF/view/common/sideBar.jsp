@@ -77,8 +77,9 @@
 			 -->
 
 			<div id="adminMenuContainer">
-				<sec:authorize ifAnyGranted="ROLE_ADMIN">
+				<sec:authorize ifAnyGranted="ROLE_ADMIN, ROLE_SUPER, ROLE_CTB">
 					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
+						<sec:authorize ifAnyGranted="ROLE_ADMIN">
 						<%@ include file="resources.jsp"%>
 						<li>
 							<a href="userModule.do">Manage Users</a>
@@ -105,13 +106,13 @@
 							<li>
 								<a href="manageContent.do">Manage Content</a>
 							</li>
-							<li>
-								<a href="resetUserPasswordForm.do">Reset Password</a>
-							</li>
 						</sec:authorize>
+						</sec:authorize>
+						<sec:authorize ifAnyGranted="ROLE_SUPER, ROLE_CTB">
+							<li><a href="resetUserPasswordForm.do">Reset Password</a></li>
 						</sec:authorize>
 					</ul>
-			
+				</sec:authorize>
 				
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
 					<ul class="big-menu blue-gradient collapsible" id="parentMenu">

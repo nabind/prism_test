@@ -2283,7 +2283,7 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 
-	@Secured({"ROLE_SUPER"})
+	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/resetUserPasswordForm", method = RequestMethod.GET)
 	public ModelAndView resetUserPasswordForm() {
 		logger.log(IAppLogger.INFO, "Enter: resetUserPasswordForm()");
@@ -2292,6 +2292,7 @@ public class AdminController {
 		return modelAndView;
 	}
 
+	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/getUserForResetPassword", method = RequestMethod.GET)
 	@ResponseBody
 	public String getUserForResetPassword(HttpServletRequest request) {
@@ -2310,6 +2311,7 @@ public class AdminController {
 		return jsonString;
 	}
 
+	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/resetUserPassword", method = RequestMethod.GET)
 	@ResponseBody
 	public String resetUserPassword(HttpServletRequest request) {
