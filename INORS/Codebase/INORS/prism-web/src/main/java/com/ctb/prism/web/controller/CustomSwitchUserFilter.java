@@ -159,6 +159,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		} else if (requiresExitUser(request)) {
 			// remove previous admin user
 			request.getSession().removeAttribute(IApplicationConstants.PREV_ADMIN);
+			// Added for story(defect) 76956 by Abir
+			request.getSession().removeAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME);
 			request.getSession().removeAttribute(IApplicationConstants.SSO_PREV_ADMIN);
 			
 			// get the original authentication object (if exists)
@@ -168,10 +170,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			if(prevAdminUser != null) {
 				UserDetails   userDetails = (UserDetails) prevAdminUser.getPrincipal();
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, userDetails.getUsername());
-				//Get details of prev admin user details
-				UserTO prevAdminuserDetails;
+				//Get details of prev admin user details				
 				try {
-					prevAdminuserDetails = loginService.getUserByEmail(userDetails.getUsername());
+					UserTO prevAdminuserDetails = loginService.getUserByEmail(userDetails.getUsername());
 					request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				} catch (SystemException e) {
 					e.printStackTrace();
