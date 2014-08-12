@@ -109,7 +109,6 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	 * @see com.ctb.prism.core.Service.IRepositoryService#uploadAsset(java.io.File)
 	 */
 	public void uploadAsset(File file) {
-		String key = "ads/" + file.getName();
-		s3client.putObject(bucket, key, file);
+		s3client.putObject(bucket, file.getName(), file);
 	}
 }
