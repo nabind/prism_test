@@ -201,6 +201,17 @@ $(document).ready(function() {
 					resizable: false,
 					draggable: false,
 					onOpen: CheckUserNameAndEnableStaus(),//CheckUserNameAvailability("#addNewUser #userId"),
+					actions: {
+						'Close' : {
+							color: 'red',
+							click: function(win) { 
+								$('#addNewUser').validationEngine('hide');
+								$('#imgHolder').empty();
+								if($.browser.msie) setTimeout("hideMessage()", 300);
+								win.closeModal(); 
+							}
+						}
+					},
 					buttons: {
 						'Cancel': {
 							classes: 'glossy mid-margin-left',
