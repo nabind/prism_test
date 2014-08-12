@@ -119,3 +119,34 @@ Host: 168.116.31.218
 Path: /data/cvs/
 
 Project location -> Head > prism > Phase II > prism
+
+#------------------- Checkstyle plugin -------------------
+1. Build the project
+mvn clean install
+
+2. Generate checkstyle report
+mvn checkstyle:checkstyle
+
+#------------------- Findbugs Plugin -------------------
+1. Build the project
+mvn clean install
+
+2. Generate findbugs report
+mvn findbugs:findbugs
+
+3. View findbugs report
+mvn findbugs:gui
+
+#------------------- PMD Code analysis plugin -------------------
+1. Build the project
+mvn clean install
+
+2. Generate PMD report
+mvn pmd:pmd
+
+#------------------- Javadoc Plugin -------------------
+1. Build the project
+mvn clean install
+
+2. Generate Javadoc
+mvn javadoc:javadoc
