@@ -217,7 +217,7 @@ $(document).ready(function() {
 							click: function(win,e) {
 								clickMe(e);	
 									 if($("#addNewUser").validationEngine('validate') 
-											 && ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
+											 || ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
 										$('#addNewUser').validationEngine('hide');
 										$('#imgHolder').empty();
 										if($("input[rel^='userStatusCheck']").closest("span").hasClass("checked")){
