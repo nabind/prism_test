@@ -6,18 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -31,19 +26,16 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
-import com.ctb.prism.report.transferobject.AssessmentTO;
-import com.ctb.prism.report.transferobject.ManageMessageTO;
-import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
 @Controller
@@ -488,14 +480,48 @@ public class CommonController extends BaseDAO {
 		return mv;
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/getAssestList" , method=RequestMethod.GET)
-	public ModelAndView getAssestList (HttpServletRequest request,
-			HttpServletResponse response)throws ServletException, IOException {
+	public ModelAndView getAssestList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView("common/assetList");
-		List<String> assets = repositoryService.getAssetList(ASSET_PATH);
+		String assetPath = request.getParameter("assetPath");
+		List<String> assets = repositoryService.getAssetList(assetPath);
 		logger.log(IAppLogger.INFO, "assets count: " + assets.size());
 		mv.addObject("assets", assets);
 		return mv;
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/downloadAssest" , method=RequestMethod.GET)
+	public void downloadAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String assetPath = request.getParameter("assetPath");
+		byte[] data = repositoryService.getAssetBytes(assetPath);
+		logger.log(IAppLogger.INFO, "data.length = " + data.length);
+		FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(assetPath));
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/uploadAssest" , method=RequestMethod.GET)
+	public void uploadAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String assetPath = request.getParameter("assetPath");
+		repositoryService.uploadAsset(new File(assetPath));
+		logger.log(IAppLogger.INFO, "Asset(" + assetPath + ") uploaded successfully");
 	}
 
 }

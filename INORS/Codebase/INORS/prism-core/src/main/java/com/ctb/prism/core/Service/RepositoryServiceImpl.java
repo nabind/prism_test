@@ -1,19 +1,29 @@
 package com.ctb.prism.core.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.ObjectValueTO;
 
 @Service("repositoryService")
 public class RepositoryServiceImpl implements IRepositoryService {
+	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(RepositoryServiceImpl.class.getName());
 	
 	private static final String FOLDER_SUFFIX = "/";
 
@@ -37,21 +47,27 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	}*/
 	
 	public List<String> getAssetList(String path) {
-		List<String> result = new ArrayList<String>();		
+		logger.log(IAppLogger.INFO, "path = " + path);
+		List<String> result = new ArrayList<String>();
+		if (path == null || path.isEmpty()) {
+			return result;
+		}
 		ObjectListing objList = s3client.listObjects(bucket, getS3Path(path));
-		for (S3ObjectSummary summary:objList.getObjectSummaries()) {
-			//ignore folders
-			if(! summary.getKey().endsWith(FOLDER_SUFFIX)){
+		logger.log(IAppLogger.INFO, "size = " + objList.getObjectSummaries().size());
+		for (S3ObjectSummary summary : objList.getObjectSummaries()) {
+			// ignore folders
+			if (!summary.getKey().endsWith(FOLDER_SUFFIX)) {
 				result.add(summary.getKey().substring(path.length()));
 			}
 		}
-
+		logger.log(IAppLogger.INFO, "result = " + result);
 		return result;
 	}
 	
 	public List<ObjectValueTO> getAssetListWithPath(String path) {
 		List<ObjectValueTO> result = new ArrayList<ObjectValueTO>();		
-		ObjectListing objList = s3client.listObjects(bucket, getS3Path(path));
+		// ObjectListing objList = s3client.listObjects(bucket, getS3Path(path));
+		ObjectListing objList = s3client.listObjects(new ListObjectsRequest().withBucketName(bucket));
 		for (S3ObjectSummary summary:objList.getObjectSummaries()) {
 			//ignore folders
 			if(! summary.getKey().endsWith(FOLDER_SUFFIX)){
@@ -75,5 +91,25 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		}	
 
 		return path + FOLDER_SUFFIX;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.Service.IRepositoryService#getAssetBytes(java.lang.String)
+	 */
+	public byte[] getAssetBytes(String assetPath) throws IOException {
+		System.out.println("Downloading an object");
+		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
+		S3ObjectInputStream inputStream = object.getObjectContent();
+		byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+		inputStream.close(); // Must be closed as it is directly opened from Amazon
+		return bytes;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.Service.IRepositoryService#uploadAsset(java.io.File)
+	 */
+	public void uploadAsset(File file) {
+		String key = "ads/" + file.getName();
+		s3client.putObject(bucket, key, file);
 	}
 }
