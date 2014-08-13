@@ -19,7 +19,8 @@ public interface IRepositoryService {
 	public byte[] getAssetBytes(String assetPath) throws IOException;
 
 	/**
+	 * @param key 
 	 * @param file
 	 */
-	public void uploadAsset(File file);
+	public void uploadAsset(String key, File file);
 }

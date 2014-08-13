@@ -517,10 +517,27 @@ public class CommonController extends BaseDAO {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/uploadAssest" , method=RequestMethod.GET)
-	public void uploadAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@RequestMapping(value="/displayAssest" , method=RequestMethod.GET)
+	public void displayAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String assetPath = request.getParameter("assetPath");
-		repositoryService.uploadAsset(new File(assetPath));
+		byte[] data = repositoryService.getAssetBytes(assetPath);
+		logger.log(IAppLogger.INFO, "data.length = " + data.length);
+		FileUtil.browserDisplay(response, data);
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/uploadAssest" , method=RequestMethod.GET)
+	public void uploadAssest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String assetPath = request.getParameter("assetPath");
+		String assetType = request.getParameter("assetType");
+		int index = Integer.parseInt(assetType);
+		String key = IApplicationConstants.ASSET_LOCATIONS[index];
+		repositoryService.uploadAsset(key, new File(assetPath));
 		logger.log(IAppLogger.INFO, "Asset(" + assetPath + ") uploaded successfully");
 	}
 

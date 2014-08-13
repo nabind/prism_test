@@ -88,8 +88,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		//remove root path: /
 		if (path.startsWith(FOLDER_SUFFIX)) {
 			path = path.substring(1);
-		}	
-
+		}
 		return path + FOLDER_SUFFIX;
 	}
 
@@ -108,7 +107,9 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.core.Service.IRepositoryService#uploadAsset(java.io.File)
 	 */
-	public void uploadAsset(File file) {
-		s3client.putObject(bucket, file.getName(), file);
+	public void uploadAsset(String key, File file) {
+		key = key + file.getName();
+		logger.log(IAppLogger.INFO, "key = " + key);
+		s3client.putObject(bucket, key, file);
 	}
 }

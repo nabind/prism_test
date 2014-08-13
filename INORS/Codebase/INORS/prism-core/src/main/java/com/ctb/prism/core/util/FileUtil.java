@@ -109,6 +109,28 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Displays the content of the byte[] on the browser.
+	 * 
+	 * @param response
+	 * @param data
+	 * @throws IOException
+	 */
+	public static void browserDisplay(HttpServletResponse response, byte[] data) throws IOException {
+		FileCopyUtils.copy(data, response.getOutputStream());
+	}
+	
+	/**
+	 * Displays the content of the InputStream on the browser.
+	 * 
+	 * @param response
+	 * @param in
+	 * @throws IOException
+	 */
+	public static void browserDisplay(HttpServletResponse response, InputStream in) throws IOException  {
+		FileCopyUtils.copy(in, response.getOutputStream());
+	}
 
 	/**
 	 * Creates a zip byte array from a byte array. The zip byte array can be used to create a zip file.

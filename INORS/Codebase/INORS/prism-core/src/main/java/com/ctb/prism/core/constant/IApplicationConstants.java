@@ -221,4 +221,6 @@ public interface IApplicationConstants {
 	
 	//To implement back functionality - By Joy
 	public static final String URL_STACK = "URL_STACK";
+
+	public static final String[] ASSET_LOCATIONS = { "Static_Files/" };
 }

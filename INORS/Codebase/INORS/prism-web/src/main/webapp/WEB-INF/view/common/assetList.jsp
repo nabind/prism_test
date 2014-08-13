@@ -14,7 +14,7 @@
 	</hgroup>
  
 	<c:forEach items="${assets}" var="asset">
-		<a href="downloadAssest.do?assetPath=ads/<c:out value="${asset}"/>"><c:out value="${asset}"/></a>
+		<a href="downloadAssest.do?assetPath=Static_Files/<c:out value="${asset}"/>"><c:out value="${asset}"/></a>
 		<br />
 	</c:forEach>
 

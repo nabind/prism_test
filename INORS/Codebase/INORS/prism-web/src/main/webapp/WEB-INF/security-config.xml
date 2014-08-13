@@ -26,6 +26,7 @@
 	<http pattern="/icDownload.do" security="none" />
 	<http pattern="/landing*" security="none" />
 	<http pattern="/getLoginMessage.do" security="none" />
+	<http pattern="/displayAssest.do" security="none" />
 	<!-- <http pattern="/StudentDataloadService*" security="none" /> -->
 	    
    	<http auto-config="false" use-expressions="false" entry-point-ref="loginUrlAuthenticationEntryPoint">
