@@ -2310,7 +2310,9 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: getUserForResetPassword()");
 		String username = (String) request.getParameter("username");
 		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
-		String currentOrgLvl = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+		Object currOrgLvl = request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
+		String currentOrgLvl = ((Long) currOrgLvl == null ? "0" : currOrgLvl).toString();
+		logger.log(IAppLogger.INFO, "currentOrgLvl = " + currentOrgLvl);
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("username", username);
 		paramMap.put("currentOrg", currentOrg);
