@@ -50,6 +50,7 @@ import com.ctb.prism.web.util.JsonUtil;
 import com.google.gson.Gson;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
+import com.ctb.prism.core.util.SESMailService;
 
 @Controller
 public class LoginController {
@@ -918,7 +919,7 @@ public class LoginController {
 				// res.getWriter().write( "{\"status\":\"Success\"}" );
 				logger.log(IAppLogger.DEBUG, jsonString);*/
 				try {
-					sendUserPasswordEmail(emailId,userToList,null);
+					SESMailService.sendUserPasswordEmail(emailId,userToList,null);
 					sendEmailFlag = "1";
 				} catch (Exception e) {
 					sendEmailFlag = "0";
