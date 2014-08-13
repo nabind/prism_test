@@ -8,6 +8,7 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -49,6 +50,8 @@ public class EmailSender {
 		String port = prop.getProperty("mail.smtp.port");
 		String sender = prop.getProperty("senderMail");
 		String supportEmail = prop.getProperty("supportEmail");
+		String SMTP_USERNAME = prop.getProperty("mail.smtp.user");
+		String SMTP_PASSWORD = prop.getProperty("mail.smtp.pass");
 		ArrayList<String> attach = new ArrayList<String>();
 		attach.add(attachment);
 		if(attachment2 != null && attachment2.length() > 0) {
@@ -59,7 +62,7 @@ public class EmailSender {
 		}
 		
 		//sendMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach);
-		sendHTMLMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach);
+		sendHTMLMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 	}
 
 	/**
@@ -167,7 +170,7 @@ public class EmailSender {
 
 	public static String sendHTMLMail(String asSmtpServer, String port, String asSender,
 			String asRecipient, String asCcRecipient, String asBccRecipient,
-			String asSubject, String asBody, ArrayList arAttachments)
+			String asSubject, String asBody, ArrayList arAttachments, final String SMTP_USERNAME, final String SMTP_PASSWORD)
 			throws Exception {
 
 		// Initialise the return value
@@ -177,8 +180,12 @@ public class EmailSender {
 			Properties props = System.getProperties();
 			props.put("mail.smtp.host", asSmtpServer);
 			props.put("mail.smtp.port", port);
-			//props.put("mail.smtp.auth", "true");
-			Session mvSession = Session.getDefaultInstance(props, null);
+			props.put("mail.smtp.auth", "true");
+			Session mvSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+				}
+			});
 			// Create a message;
 			MimeMessage mvMimeMessage = new MimeMessage(mvSession);
 			// Extracts the senders and adds them to the message.
