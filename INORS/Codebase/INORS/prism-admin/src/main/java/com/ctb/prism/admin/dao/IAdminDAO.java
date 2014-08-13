@@ -318,5 +318,11 @@ public interface IAdminDAO {
 	 */
 	public List<UserDataTO> getUserData(Map<String, String> paramMap);
 
+	/**
+	 * Gets the user for Reset Password.
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
 	public UserTO getUserForResetPassword(Map<String, String> paramMap);
 }

@@ -1681,6 +1681,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return buff.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserForResetPassword(java.util.Map)
+	 */
 	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
 		final String username = paramMap.get("username");
 		final Long currentOrg = Long.parseLong(paramMap.get("currentOrg"));
@@ -1731,6 +1734,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		);
 	}
 
+	/**
+	 * Gets the password hint list with answers.
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public List<PwdHintTO> getUserPwdHintList(final String userId) {
 		logger.log(IAppLogger.INFO, "userId = " + userId);
 		return (List<PwdHintTO>) getJdbcTemplatePrism().execute(

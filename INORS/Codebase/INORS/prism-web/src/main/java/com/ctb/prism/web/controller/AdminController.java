@@ -2283,6 +2283,11 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Exit: AdminController.downloadUsers");
 	}
 
+	/**
+	 * Display the Reset Password form.
+	 * 
+	 * @return
+	 */
 	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/resetUserPasswordForm", method = RequestMethod.GET)
 	public ModelAndView resetUserPasswordForm() {
@@ -2292,6 +2297,12 @@ public class AdminController {
 		return modelAndView;
 	}
 
+	/**
+	 * Gets the user for Reset Password.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/getUserForResetPassword", method = RequestMethod.GET)
 	@ResponseBody
@@ -2311,6 +2322,12 @@ public class AdminController {
 		return jsonString;
 	}
 
+	/**
+	 * Reset password for the user.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@Secured({"ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/resetUserPassword", method = RequestMethod.GET)
 	@ResponseBody
@@ -2349,6 +2366,14 @@ public class AdminController {
 		return jsonString;
 	}
 
+	/**
+	 * Sends a mail to the user after Reset Password.
+	 * 
+	 * @param email
+	 * @param username
+	 * @param password
+	 * @throws Exception
+	 */
 	private void sendUserPasswordEmail(String email, String username, String password) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		Properties prop = new Properties();

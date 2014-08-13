@@ -361,6 +361,9 @@ public class AdminServiceImpl implements IAdminService {
 		return adminBusiness.getCustomerProduct(paramMap);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.service.IAdminService#getUserForResetPassword(java.util.Map)
+	 */
 	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
 		return adminBusiness.getUserForResetPassword(paramMap);
 	}
