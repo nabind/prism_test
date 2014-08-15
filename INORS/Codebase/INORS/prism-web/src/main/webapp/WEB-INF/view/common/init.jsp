@@ -426,3 +426,4 @@
 	  	
 <%String currentUser = (String)request.getSession().getAttribute(IApplicationConstants.CURRUSER);%>
 <input type="hidden" value="<%=currentUser%>" id="currentUser">
+<input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
