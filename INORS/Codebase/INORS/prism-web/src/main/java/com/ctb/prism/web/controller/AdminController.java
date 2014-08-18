@@ -2367,6 +2367,9 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Exit: resetUserPasswordForm()");
 		return jsonString;
 	}
+	
+	@Autowired
+	private EmailSender emailSender;
 
 	/**
 	 * Sends a mail to the user after Reset Password.
@@ -2399,7 +2402,7 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
 		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
 		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
-			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, subject, mailBody);
 		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
 			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
 		} else {

@@ -286,6 +286,9 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	
 	public static final String VALIDATE_USER_NAME = "SELECT USR.USERNAME AS USERNAME FROM USERS USR WHERE upper(USR.USERNAME) = upper(?) ";
+	public static final String GET_USER_ORG = "select ou.org_nodeid NODEID from users u, org_users ou where u.userid = ou.userid and upper(USR.USERNAME) = upper(?) ";
+	public static final String UPDATE_USER_ORG = "update org_users set org_nodeid = ? where org_nodeid = ? and userid = (select userid from users where upper(USR.USERNAME) = upper(?) )";
+	
 	
 	public static final String VALIDATE_ACTIVE_USER_NAME = "SELECT USR.USERNAME AS USERNAME FROM USERS USR WHERE upper(USR.USERNAME) = upper(?) AND USR.ACTIVATION_STATUS IN ('AC','SS')";
 	

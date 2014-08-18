@@ -112,6 +112,14 @@ public class LoginServiceImpl implements ILoginService {
 	public boolean checkUserAvailability(String username) {
 		return loginBusiness.checkUserAvailability(username);
 	}
+	
+	public String getUserOrgNode(String username) {
+		return loginBusiness.getUserOrgNode(username);
+	}
+	
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid) {
+		loginBusiness.updateUserOrg(username, OrgNodeId, oldOrgNodeid);
+	}
 
 	/*
 	 * (non-Javadoc)

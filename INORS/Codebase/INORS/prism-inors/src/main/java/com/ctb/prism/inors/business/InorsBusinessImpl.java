@@ -391,6 +391,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
 	}
 
+	@Autowired
+	private EmailSender emailSender;
 	/**
 	 * This method is used to send a notification mail after Group Download
 	 * 
@@ -416,7 +418,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String subject = propertyLookup.get("mail.gd.subject");
 			String mailBody = CustomStringUtil.appendString(file, propertyLookup.get("mail.gd.body"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
-			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, subject, mailBody);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());

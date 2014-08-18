@@ -74,6 +74,9 @@ public interface ILoginService {
 	 * @return
 	 */
 	public boolean checkUserAvailability(String username);
+	public String getUserOrgNode(String username);
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid);
+
 
 	/**
 	 * @param paramMap

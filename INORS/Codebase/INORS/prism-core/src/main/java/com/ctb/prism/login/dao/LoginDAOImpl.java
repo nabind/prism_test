@@ -405,6 +405,32 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	}
 	
 	/**
+	 * check provided user availability and return org_nodeid
+	 * 
+	 * @return String
+	 */
+	public String getUserOrgNode(String username) {
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
+		if (lstData == null || lstData.isEmpty()) {
+			String orgNodeId = "";
+			List<Map<String, Object>> usrData = null;
+			usrData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ORG, username);
+			if (lstData.size() > 0) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					orgNodeId = fieldDetails.get("NODEID").toString();
+				}
+			}
+			return orgNodeId;
+		}
+		return null;
+	}
+	
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid) {
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_USER, OrgNodeId, oldOrgNodeid, username);
+	}
+	
+	/**
 	 * add new user
 	 * @param String userId, String tenantId, String userName,
 			String emailId, String password, String userStatus,

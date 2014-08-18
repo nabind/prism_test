@@ -8,12 +8,19 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 
 /**
  * <p>
@@ -29,8 +36,11 @@ import javax.mail.internet.MimeMultipart;
  * @author TATA Consultancy Services
  * @version 1.0
  */
-
+@Component("emailSender")
 public class EmailSender {
+	
+	@Autowired
+	private IPropertyLookup propertyLookup;
 
 	/**
 	 * @param args
@@ -53,11 +63,13 @@ public class EmailSender {
 	 * @param mailBody
 	 * @throws Exception
 	 */
-	public static void sendMail(final Properties prop, String recipientEmail, String attachment, String attachmentTwo, String subject, String mailBody) throws Exception {
+	public void sendMail(final Properties prop, String recipientEmail, String attachment, String attachmentTwo, String subject, String mailBody) throws Exception {
 		String host = prop.getProperty("mail.smtp.host");
 		String port = prop.getProperty("mail.smtp.port");
 		String sender = prop.getProperty("senderMail");
 		String supportEmail = prop.getProperty("supportEmail");
+		String SMTP_USERNAME = propertyLookup.get("mail.smtp.user");
+		String SMTP_PASSWORD = propertyLookup.get("mail.smtp.pass");
 		ArrayList<String> attach = new ArrayList<String>();
 		attach.add(attachment);
 		if (attachmentTwo != null) {
@@ -69,7 +81,7 @@ public class EmailSender {
 
 		// sendMail(host, port, sender, recipientEmail, "", supportEmail,
 		// subject, mailBody, attach);
-		sendHTMLMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach);
+		sendHTMLMail(host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 	}
 
 	/**
@@ -95,7 +107,7 @@ public class EmailSender {
 	 * @return String <strong>Success</strong> if sent successfully, else the error message
 	 * @throws Exception
 	 */
-	public static String sendMail(String asSmtpServer, String port, String asSender, String asRecipient, String asCcRecipient, String asBccRecipient, String asSubject, String asBody,
+	public String sendMail(String asSmtpServer, String port, String asSender, String asRecipient, String asCcRecipient, String asBccRecipient, String asSubject, String asBody,
 			ArrayList arAttachments) throws Exception {
 
 		// Initialize the return value
@@ -187,8 +199,9 @@ public class EmailSender {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String sendHTMLMail(String asSmtpServer, String port, String asSender, String asRecipient, String asCcRecipient, String asBccRecipient, String asSubject, String asBody,
-			ArrayList arAttachments) throws Exception {
+	public String sendHTMLMail(String asSmtpServer, String port, String asSender, String asRecipient, 
+			String asCcRecipient, String asBccRecipient, String asSubject, String asBody,
+			ArrayList arAttachments, final String SMTP_USERNAME, final String SMTP_PASSWORD) throws Exception {
 
 		// Initialise the return value
 		String msErrorStatus = "Faliure";
@@ -197,7 +210,12 @@ public class EmailSender {
 			Properties props = System.getProperties();
 			props.put("mail.smtp.host", asSmtpServer);
 			props.put("mail.smtp.port", port);
-			Session mvSession = Session.getDefaultInstance(props, null);
+			props.put("mail.smtp.auth", "true");
+			Session mvSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+				}
+			});
 			// Create a message;
 			MimeMessage mvMimeMessage = new MimeMessage(mvSession);
 			/**
@@ -260,6 +278,7 @@ public class EmailSender {
 			// Send the message;
 			Transport.send(mvMimeMessage);
 		} catch (Exception exException) {
+			exException.printStackTrace();
 			throw new Exception(exException.getMessage());
 		}
 		msErrorStatus = "Success";

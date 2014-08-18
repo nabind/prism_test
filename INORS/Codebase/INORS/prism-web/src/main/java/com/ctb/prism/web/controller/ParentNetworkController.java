@@ -49,7 +49,7 @@ public class ParentNetworkController {
 	/*
 	 * Get Student's sub test and overview content
 	 */
-	@RequestMapping(value="/getChildData", method=RequestMethod.GET)
+	@RequestMapping(value="/getChildData")
 	public ModelAndView getChildData(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException{
 		
@@ -105,7 +105,7 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get Standards/objective and associated activities for selected subtest,grade.
 	 */
-	@RequestMapping(value="/getStandardActivity", method=RequestMethod.GET)
+	@RequestMapping(value="/getStandardActivity")
 	public ModelAndView getStandardActivity(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException{
 
@@ -163,7 +163,7 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get Student's standards
 	 */
-	@RequestMapping(value="/getStandardIndicator", method=RequestMethod.GET)
+	@RequestMapping(value="/getStandardIndicator")
 	public ModelAndView getStandardIndicator(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException,BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: ParentNetworkController - getStandardIndicator()");
@@ -220,7 +220,7 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get description of any article like Standard/Activity/Indicator.
 	 */
-	@RequestMapping(value="/getArticleDescription", method=RequestMethod.GET)
+	@RequestMapping(value="/getArticleDescription")
 	public ModelAndView getArticleDescription(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 
@@ -314,7 +314,7 @@ public class ParentNetworkController {
 	 * @throws BusinessException
 	 * Get grade and subtest/subject combination for different menu.
 	 */
-	@RequestMapping(value="/getGradeSubtestInfo", method=RequestMethod.GET)
+	@RequestMapping(value="/getGradeSubtestInfo")
 	public ModelAndView getGradeSubtestInfo(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
 

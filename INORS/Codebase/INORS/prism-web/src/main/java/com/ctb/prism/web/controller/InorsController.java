@@ -868,8 +868,8 @@ public class InorsController {
 			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			// messageProducer.sendJobForProcessing(jobTrackingId);
-			inorsService.batchPDFDownload(jobTrackingId);
+			messageProducer.sendJobForProcessing(jobTrackingId);
+			// inorsService.batchPDFDownload(jobTrackingId);
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
 					jobTrackingId, "\"}");
@@ -968,6 +968,8 @@ public class InorsController {
 		}
 	}
 
+	@Autowired
+	private EmailSender emailSender;
 	/**
 	 * This method is used to send a notification mail after Group Download
 	 * 
@@ -984,7 +986,7 @@ public class InorsController {
 			String subject = propertyLookup.get("mail.gd.subject");
 			String mailBody = propertyLookup.get("mail.gd.body");
 			logger.log(IAppLogger.INFO, "Email triggered...");
-			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, subject, mailBody);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());

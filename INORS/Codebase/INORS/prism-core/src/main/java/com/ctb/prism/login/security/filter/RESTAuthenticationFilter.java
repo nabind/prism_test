@@ -148,7 +148,10 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						// create sso user in prism
 						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, RANDOM_STRING);
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
-						if(loginService.checkUserAvailability(ssoUsername)) {
+						
+						String existingUserOrg = loginService.getUserOrgNode(ssoUsername);
+						if(existingUserOrg == null) {
+						//if(loginService.checkUserAvailability(ssoUsername)) {
 							// if user  not present into system
 							Map<String,Object> paramMap = new HashMap<String,Object>();
 							paramMap.put("userName", ssoUsername);
@@ -161,6 +164,18 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 							paramMap.put("userRoles", new String[]{"ROLE_USER"});
 							loginService.addNewUser(paramMap);
 							logger.info("SSO user is created : " + ssoUsername);
+						}else {
+							/** handle user move to different school */
+							// user exists into system
+							if(userTO.getOrgCode() != null) {
+								String ssoOrg = userTO.getOrgCode();
+								ssoOrg = ssoOrg.substring(ssoOrg.lastIndexOf("~")+1);
+								if(!existingUserOrg.equals(ssoOrg)) {
+									// user org is changed from last login - update org_nodeid
+									logger.info("Updating user Org_nodeid as seems it moved to differnt school/org");
+									loginService.updateUserOrg(ssoUsername, ssoOrg, existingUserOrg);
+								}
+							}
 						}
 						
 						userTO.setUserName(ssoUsername);
