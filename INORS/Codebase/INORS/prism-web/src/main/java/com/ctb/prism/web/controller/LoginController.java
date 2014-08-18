@@ -919,7 +919,8 @@ public class LoginController {
 				// res.getWriter().write( "{\"status\":\"Success\"}" );
 				logger.log(IAppLogger.DEBUG, jsonString);*/
 				try {
-					SESMailService.sendUserPasswordEmail(emailId,userToList,null);
+					//SESMailService.sendUserPasswordEmail(emailId,userToList,null);
+					sendUserPasswordEmail(emailId,userToList,null);
 					sendEmailFlag = "1";
 				} catch (Exception e) {
 					sendEmailFlag = "0";
