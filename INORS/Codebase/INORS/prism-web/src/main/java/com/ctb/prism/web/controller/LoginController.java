@@ -1056,6 +1056,8 @@ public class LoginController {
 		return  jsonString;
 	}
 	
+	@Autowired
+	private EmailSender emailSender;
 	
 	private void sendUserPasswordEmail(String email, List<UserTO> userToList, String password) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: Forgot username/password");
@@ -1105,7 +1107,7 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
 		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
 		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
-			EmailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, subject, mailBody);
 		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
 			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
 		} else {
