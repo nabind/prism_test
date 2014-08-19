@@ -412,12 +412,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public String getUserOrgNode(String username) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
 				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
-		if (lstData == null || lstData.isEmpty()) {
+		if (lstData != null && !lstData.isEmpty()) {
 			String orgNodeId = "";
 			List<Map<String, Object>> usrData = null;
 			usrData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ORG, username);
-			if (lstData.size() > 0) {
-				for (Map<String, Object> fieldDetails : lstData) {
+			if (usrData.size() > 0) {
+				for (Map<String, Object> fieldDetails : usrData) {
 					orgNodeId = fieldDetails.get("NODEID").toString();
 				}
 			}

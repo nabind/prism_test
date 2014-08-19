@@ -167,13 +167,11 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						}else {
 							/** handle user move to different school */
 							// user exists into system
-							if(userTO.getOrgCode() != null) {
-								String ssoOrg = userTO.getOrgCode();
-								ssoOrg = ssoOrg.substring(ssoOrg.lastIndexOf("~")+1);
-								if(!existingUserOrg.equals(ssoOrg)) {
+							if(userTO.getOrgId() != null) {
+								if(!existingUserOrg.equals(userTO.getOrgId())) {
 									// user org is changed from last login - update org_nodeid
 									logger.info("Updating user Org_nodeid as seems it moved to differnt school/org");
-									loginService.updateUserOrg(ssoUsername, ssoOrg, existingUserOrg);
+									loginService.updateUserOrg(ssoUsername, userTO.getOrgId(), existingUserOrg);
 								}
 							}
 						}
