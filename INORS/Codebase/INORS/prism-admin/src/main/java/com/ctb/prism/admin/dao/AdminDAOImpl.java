@@ -1725,6 +1725,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							user.setState(rs.getString("STATE"));
 							user.setPwdHintList(getUserPwdHintList(rs.getString("USERID")));
 						}
+						Utils.logError(cs.getString(5));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1769,6 +1770,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							to.setAnswerValue(rs.getString("ANSWER_VALUE"));
 							pwdHintList.add(to);
 						}
+						Utils.logError(cs.getString(3));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

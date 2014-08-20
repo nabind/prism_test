@@ -26,6 +26,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -398,6 +399,17 @@ public final class Utils {
 		byte[] valueDecoded = Base64.decodeBase64(bytesEncoded );
 		return new String(valueDecoded );
 		//System.out.println("Decoded value is " + new String(valueDecoded));
+	}
+
+	/**
+	 * Print Error log.
+	 * 
+	 * @param error
+	 */
+	public static void logError(String error) {
+		if (error != null && !error.isEmpty()) {
+			logger.log(IAppLogger.ERROR, error);
+		}
 	}
 
 }
