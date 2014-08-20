@@ -112,16 +112,19 @@
 </head>
 <body style="min-width:982px" class="">
 	<div id="logo" class="newStyle" style="border-bottom: 0px solid #CCC">
-		<h1><span class="logo-title"> <img alt="" src="<spring:theme code="contract.logo.header" />"> </span>
+		<h1>
+		<span class="logo-title custom-p"> 
+			${messageMap.commonHeaderMessage}
+		</span>
 		<br>
 		<span class="description"> </span></h1>
 	</div>
 	
 	<!-- State user page -->
-	<div class="columns" style="min-width:982px">
+	<div class="columns landing" style="min-width:982px">
 		<div class="twelve-columns">
-			<div style="text-align:center; background-color: #C6DAF3" class="rounded-border">
-				<img alt="" src="themes/acsi/img/slide/CommonLoginPageImage.jpg" />
+			<div style="text-align:center; background-color: #C6DAF3" class="rounded-border custom-p">
+				${messageMap.landingPageContent}
 			</div>
 		</div>
 	</div>
@@ -147,14 +150,15 @@
 			<a href="userlogin.do?theme=parent&parent=true" class="button blue-gradient full-width">Login</a>
 		</div>
 		<div class="two-columns"></div>
-		<div class="twelve-columns align-center">
-			${commonLogInInfoMessage}
+		<div class="twelve-columns align-center custom-p">
+			${messageMap.commonLoginMessage}
 		</div>
 	</div>
 				
 	<footer class="margin-top">
-		<div class="float-center"><spring:message code="footer.copyright"/></div>
-		<%-- <div class="float-center"> <spring:message code="footer.helpdesk"/> </div>  --%>
+		<div class="float-center custom-p">
+			${messageMap.commonFooterMessage}
+		</div>
 	</footer>    
   
 	<%@ include	file="../common/minimalScripts.jsp"%>	

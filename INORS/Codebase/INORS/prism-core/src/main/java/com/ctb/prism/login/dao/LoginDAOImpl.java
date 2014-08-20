@@ -280,36 +280,59 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	
 
 	/**
+	 * Convert to stored procedure and implement all static message as configurable - By Joy
 	 * @author Arunavo
 	 * Retrieves and returns message corresponding configured in database
-	 * @param msgtype,reportname and infoname
+	 * @param reportName, messageType, messageName
 	 * @return message
 	 */
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
-		String MESSAGE_NAME=(String) paramMap.get("MESSAGE_NAME");
-		String REPORT_NAME=(String) paramMap.get("REPORT_NAME");
-		String MESSAGE_TYPE=(String) paramMap.get("MESSAGE_TYPE");
 		
-		String systemConfig = "";
-		List<Map<String, Object>> lstData =  getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE, REPORT_NAME,MESSAGE_TYPE,MESSAGE_NAME);
+		final String reportName = (String) paramMap.get("REPORT_NAME");
+		final String messageType = (String) paramMap.get("MESSAGE_TYPE");
+		final String messageName = (String) paramMap.get("MESSAGE_NAME");
 		
-			if(!lstData.isEmpty()){
-				for (Map<String, Object> fieldDetails : lstData) {
-					if(fieldDetails.get("REPORT_MSG")!= null || fieldDetails.get("REPORT_MSG")!="")
-					{
-						if(null!=fieldDetails.get("REPORT_MSG")){
-							systemConfig = fieldDetails.get("REPORT_MSG").toString().trim();
+		String systemMessage = "";
+		try {
+			systemMessage = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE + "}");
+					cs.setString(1, reportName);
+					cs.setString(2, messageType);
+					cs.setString(3, messageName);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					String systemMessageResult = "";
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(4);
+						if (rs.next()) {
+							systemMessageResult = rs.getString("REPORT_MSG");
 						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-			}
+					return systemMessageResult.trim();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-			
-		long t2 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: "+String.valueOf(t2 - t1)+"ms");
-		return systemConfig;
+		return systemMessage;
 	}
 	
 	/*

@@ -1052,4 +1052,10 @@ height: 16px;
 
 .inline-small-label {
 		padding-left: 70px;
-		}
+}
+
+.custom-p p{
+	margin: 0!important;
+}
+		
+		

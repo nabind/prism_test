@@ -48,7 +48,7 @@ public interface ILoginService {
 	 * @param paramMap
 	 * @return
 	 */
-	public String getSystemConfigurationMessage(Map<String, Object> paramMap);
+	public Map<String,Object> getSystemConfigurationMessage(Map<String, Object> paramMap);
 
 	/**
 	 * @param username

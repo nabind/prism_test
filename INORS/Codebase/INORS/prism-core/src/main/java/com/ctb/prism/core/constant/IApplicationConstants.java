@@ -192,6 +192,12 @@ public interface IApplicationConstants {
 
 	// System Configuration Message
 	public static final String COMMON_LOG_IN = "Common Log In";
+	public static final String COMMON_HEADER = "Common Header";
+	public static final String COMMON_FOOTER = "Common Footer";
+	public static final String TEACHER_FOOTER = "Teacher Footer";
+	public static final String PARENT_FOOTER = "Parent Footer";
+	public static final String LANDING_PAGE_CONTENT = "Landing Page Content";
+	public static final String LOGIN_PAGE_CONTENT = "Login Page Content";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
 	public static final String INORS_HOME_PAGE = "Inors Home Page";
 	public static final String GROWTH_HOME_PAGE = "Growth Home Page";

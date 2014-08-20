@@ -17,7 +17,7 @@ public interface ILoginBusiness {
 	
 	public String getTenant(String username);
 	
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
+	public Map<String,Object> getSystemConfigurationMessage(Map<String,Object> paramMap);
 	
 	public boolean checkFirstTimeLogin(String username);
 	

@@ -105,8 +105,8 @@ public class LoginController {
 	}
 
 	/**
+	 * Changed by Joy for getSystemConfigurationMessage() architecture change
 	 * This method is to display landing page
-	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -119,17 +119,16 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
-		String commonLogInInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
+		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		ModelAndView modelAndView = new ModelAndView("common/landing");
-		modelAndView.addObject("commonLogInInfoMessage", commonLogInInfoMessage);
+		modelAndView.addObject("messageMap", messageMap);
 		logger.log(IAppLogger.INFO, "Exit: loadLandingPage()");
 		return modelAndView;
 	}
 
 	/**
+	 * Changed by Joy for getSystemConfigurationMessage() architecture change
 	 * This method is to display login page
-	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -146,7 +145,8 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
-		String logInInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
+		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
+		String logInInfoMessage = (String)messageMap.get("systemMessage");
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";
@@ -201,6 +201,7 @@ public class LoginController {
 	}
 	
 	/**
+	 * Changed by Joy for getSystemConfigurationMessage() architecture change
 	 * @author Joy
 	 * @param request
 	 * @param response
@@ -232,7 +233,9 @@ public class LoginController {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			}
 			
-			loginMessage = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
+			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
+			loginMessage = (String)messageMap.get("systemMessage");
+			
 			com.ctb.prism.core.transferobject.ObjectValueTO loginMessageObject = new com.ctb.prism.core.transferobject.ObjectValueTO();
 			loginMessageObject.setValue(loginMessage);
 			jsonString = new Gson().toJson(loginMessageObject);
@@ -1017,8 +1020,8 @@ public class LoginController {
 	
 	
 	/**
+	 * Changed by Joy for getSystemConfigurationMessage() architecture change
 	 * Changed by Abir Load user specific dynamic login page message
-	 * 
 	 * @param req
 	 * @param res
 	 * @return
@@ -1041,7 +1044,8 @@ public class LoginController {
 		String inorsHomePageInfoMessage = "";
 		String jsonString = "";
 		try {
-			inorsHomePageInfoMessage = loginService.getSystemConfigurationMessage(paramMap);
+			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
+			inorsHomePageInfoMessage = (String)messageMap.get("systemMessage");
 			//Fixed for TD 77263 - By Joy
 			com.ctb.prism.core.transferobject.ObjectValueTO homePageMsgObj = new com.ctb.prism.core.transferobject.ObjectValueTO();
 			homePageMsgObj.setValue(inorsHomePageInfoMessage);

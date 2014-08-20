@@ -64,7 +64,7 @@ public class LoginServiceImpl implements ILoginService {
 	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#getSystemConfigurationMessage(java.util.Map)
 	 */
-	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
+	public Map<String,Object> getSystemConfigurationMessage(Map<String, Object> paramMap) {
 		return loginBusiness.getSystemConfigurationMessage(paramMap);
 	}
 

@@ -1882,8 +1882,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	//Fix for TD 77743 - By Joy
 	/**
 	 * @author Arunavo Retrieves and returns message corresponding configured in database
-	 * @param msgtype
-	 *            ,reportname and infoname
+	 * @param msgtype,reportname and infoname
 	 * @return message
 	 */
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")

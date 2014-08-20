@@ -1,5 +1,6 @@
 package com.ctb.prism.login.business;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +41,30 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.getTenantId(username);
 	}
 
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap) {
-		return loginDAO.getSystemConfigurationMessage(paramMap);
+	public Map<String,Object> getSystemConfigurationMessage(Map<String,Object> paramMap) {
+		Map<String, Object> messageMap = new HashMap<String, Object>();
+		String systemMessage = "";
+		if(paramMap.get("MESSAGE_NAME") == null){
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("commonLoginMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_HEADER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("commonHeaderMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_FOOTER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("commonFooterMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.LANDING_PAGE_CONTENT);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("landingPageContent", systemMessage);
+		}else{
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("systemMessage", systemMessage);
+		}
+		return messageMap;
 	}
 	
 
