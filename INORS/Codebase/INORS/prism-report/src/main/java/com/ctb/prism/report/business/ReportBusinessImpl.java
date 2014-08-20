@@ -377,7 +377,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		try {
 			Class<?> c = reportFilterFactory.getReportFilterTO();
 			// replace all params
-			String tenantId = reportDAO.getTenantId(userName);
+			//String tenantId = reportDAO.getTenantId(userName);
+			String tenantId = replacableParams.get(IApplicationConstants.CURRORG);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));

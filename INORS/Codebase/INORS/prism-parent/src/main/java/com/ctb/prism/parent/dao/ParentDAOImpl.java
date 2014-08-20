@@ -126,7 +126,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			paramMap.put("userName", "");
 		}
 		
-		long orgUserid = getOrgUserId(paramMap);
+		long orgUserid = getParentOrgUserId(paramMap);
 		
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_INVITATION_CODE,orgUserid, invitationCode);
 		
@@ -1543,6 +1543,38 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return orgUserid;
 	}
+	
+	
+	/**
+	 * Get OrgUserId depending upon student's school and parent userid. 
+	 * @param paramMap
+	 * @return
+	 */
+	private long getParentOrgUserId(final Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getOrgUserId()");
+		long t1 = System.currentTimeMillis();
+		
+		String userName = (String) paramMap.get("userName");
+		String invitationCode = (String) paramMap.get("invitationCode");
+		long orgUserid = 0;
+		
+		try{
+			long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
+			if (lstData.size() > 0) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
+				}
+			} 
+		}catch(Exception e){
+			logger.log(IAppLogger.INFO, "Exception: userName is blank "+e.getMessage());
+		}finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getOrgUserId() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return orgUserid;
+	}
+
 
 	/*
 	 * (non-Javadoc)

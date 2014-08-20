@@ -1585,7 +1585,8 @@ public class ReportController{
 		if (allCascading != null) {
 			//List<InputControlTO> reCascadingInputControls = null;
 			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			
+			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
+			replacableParams.put(IApplicationConstants.CURRORG, currentOrg);
 			ObjectValueTO objectValueTo = null;
 			InputControlFactory inputControlFact = new InputControlFactoryImpl();
 			for (InputControlTO inputControlTO : allCascading) {

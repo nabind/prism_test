@@ -84,6 +84,7 @@ public class ParentController {
 	 * @return
 	 * @throws IOException
 	 */
+	@Secured({"ROLE_PARENT"})
 	@RequestMapping(value = "/claimInvitation", method = RequestMethod.GET)
 	public ModelAndView addNewInvitation(HttpServletRequest req,
 			HttpServletResponse res) throws IOException {
