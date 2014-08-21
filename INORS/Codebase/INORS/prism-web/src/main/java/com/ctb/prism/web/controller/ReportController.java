@@ -1830,7 +1830,9 @@ public class ReportController{
 		}
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading report as ", type));
 		try {
-			if(reportUrl.indexOf("Rescore_Request_Form") != -1 || reportUrl.indexOf("Rescore Request Summary") != -1) {
+			// For Proficiency Roster PDF has been designed as separate report, so it should not be fetched form cache 
+			if(reportUrl.indexOf("Rescore_Request_Form") != -1 || reportUrl.indexOf("Rescore Request Summary") != -1
+					|| reportUrl.indexOf("Pdfs") != -1) {
 				req.setAttribute("icDownload", IApplicationConstants.TRUE);
 			}
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
