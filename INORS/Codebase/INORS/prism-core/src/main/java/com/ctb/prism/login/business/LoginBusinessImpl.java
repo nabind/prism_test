@@ -107,4 +107,11 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public String getRootPath(String customerId, String testAdmin) {
 		return loginDAO.getRootPath(customerId, testAdmin);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.login.business.ILoginBusiness#getMenuMap(java.util.Map)
+	 */
+	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+		return loginDAO.getMenuMap(paramMap);
+	}
 }

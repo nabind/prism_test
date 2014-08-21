@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -573,6 +574,42 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_ROOT_PATH, new Object[] { customerId, testAdmin }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
 				return rs.getString(1);
+			}
+		});
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.login.dao.ILoginDAO#getMenuMap(java.util.Map)
+	 */
+	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+		final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		return (Map<String, String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
+				cs.setLong(1, userId);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				Map<String, String> menuMap = new HashMap<String, String>();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					while (rs.next()) {
+						String key = rs.getString("KEY");
+						String value = rs.getString("VALUE");
+						menuMap.put(key, value);
+					}
+					Utils.logError(cs.getString(3));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "menuMap = " + menuMap);
+				return menuMap;
 			}
 		});
 	}

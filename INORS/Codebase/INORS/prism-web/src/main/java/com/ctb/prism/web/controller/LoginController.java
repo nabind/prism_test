@@ -36,21 +36,17 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
-import com.ctb.prism.core.transferobject.ObjectValueTO;
+import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
-import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
-import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
 import com.google.gson.Gson;
-import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.core.util.EmailSender;
-import com.ctb.prism.core.util.SESMailService;
 
 @Controller
 public class LoginController {
@@ -356,6 +352,11 @@ public class LoginController {
 					}
 					username = user.getUserName();
 				}
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("userId", user.getUserId());
+				Map<String, String> menuMap = loginService.getMenuMap(paramMap);
+				req.getSession().setAttribute(IApplicationConstants.MENU_MAP, menuMap);
+
 				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
 				req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
 				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());

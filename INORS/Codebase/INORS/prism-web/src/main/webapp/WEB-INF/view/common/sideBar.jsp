@@ -4,6 +4,7 @@
 	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 	<!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary" style="margin-top:34px; width:262px;">
+		<c:set var="menuMap" value="<%=request.getSession().getAttribute(IApplicationConstants.MENU_MAP) %>" />
 	    <c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 		<c:set var="currOrg" value="<%=request.getSession().getAttribute(IApplicationConstants.CURRORG) %>"/>
 		
@@ -81,35 +82,46 @@
 					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
 						<sec:authorize ifAnyGranted="ROLE_ADMIN">
 						<%@ include file="resources.jsp"%>
+						<c:if test="${not empty menuMap['Manage Users']}">
 						<li>
-							<a href="userModule.do">Manage Users</a>
+							<a href="${menuMap['Manage Users']}">Manage Users</a>
 						</li>
+						</c:if>
+						<c:if test="${not empty menuMap['Manage Organizations']}">
 						<li>
-							<a href="manageOrganizations.do">Manage Organizations</a>
+							<a href="${menuMap['Manage Organizations']}">Manage Organizations</a>
 						</li>
+						</c:if>
 						<%-- <sec:authorize ifNotGranted="ROLE_SSO"> --%>
+						<c:if test="${not empty menuMap['Manage Parents']}">
 							<li>
-								<a href="manageParent.do">Manage Parents</a>
+								<a href="${menuMap['Manage Parents']}">Manage Parents</a>
 							</li>
+						</c:if>
+						<c:if test="${not empty menuMap['Manage Students']}">
 							<li>
-								<a href="manageStudent.do">Manage Students</a>
+								<a href="${menuMap['Manage Students']}">Manage Students</a>
 							</li>
+						</c:if>
 						<%-- </sec:authorize> --%>
 						<sec:authorize ifAnyGranted="ROLE_SUPER">
 							<!-- Remove Manage Education Center -->
+							<c:if test="${not empty menuMap['Manage Reports']}">
 							<li>
-								<a href="manageReports.do">Manage Reports</a>
+								<a href="${menuMap['Manage Reports']}">Manage Reports</a>
 							</li>
-							<!-- <li>
-								<a href="manageRole.do">Manage Roles</a>
-							</li> -->
+							</c:if>
+							<c:if test="${not empty menuMap['Manage Content']}">
 							<li>
-								<a href="manageContent.do">Manage Content</a>
+								<a href="${menuMap['Manage Content']}">Manage Content</a>
 							</li>
+							</c:if>
 						</sec:authorize>
 						</sec:authorize>
 						<sec:authorize ifAnyGranted="ROLE_SUPER, ROLE_CTB">
-							<li><a href="resetUserPasswordForm.do">Reset Password</a></li>
+							<c:if test="${not empty menuMap['Reset Password']}">
+							<li><a href="${menuMap['Reset Password']}">Reset Password</a></li>
+							</c:if>
 						</sec:authorize>
 					</ul>
 				</sec:authorize>

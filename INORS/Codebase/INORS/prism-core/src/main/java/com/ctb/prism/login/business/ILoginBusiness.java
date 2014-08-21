@@ -30,4 +30,5 @@ public interface ILoginBusiness {
 	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid);
 	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 	public String getRootPath(String customerId, String testAdmin);
+	public Map<String, String> getMenuMap(Map<String, Object> paramMap);
 }

@@ -84,4 +84,10 @@ public interface ILoginService {
 	 */
 	public void addNewUser(Map<String, Object> paramMap) throws Exception;
 	public String getRootPath(String customerId, String testAdmin);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String, String> getMenuMap(Map<String, Object> paramMap);
 }

@@ -48,6 +48,7 @@ public interface IApplicationConstants {
 		"link", "ilayer", "meta", "object" };
 
 	public static String DEFAULT_PRODUCT_ID = "3001";
+	public static String MENU_MAP = "menuMap";
 
 	// input control default value ALL
 	public static final String VALUE_ALL = "ALL";

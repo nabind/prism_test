@@ -135,4 +135,13 @@ public class LoginServiceImpl implements ILoginService {
 		return loginBusiness.getRootPath(customerId, testAdmin);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.login.Service.ILoginService#getMenuMap(java.util.Map)
+	 */
+	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+		return loginBusiness.getMenuMap(paramMap);
+	}
+
 }
