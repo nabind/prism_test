@@ -436,6 +436,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
 				to.setReportOriginalUrl((String) data.get("REPORT_FOLDER_URI"));
 				to.setReportType((String) data.get("REPORT_TYPE"));
+				to.setReportSequence(data.get("REPORT_SEQ") == null ? to.getReportId() : ((BigDecimal) data.get("REPORT_SEQ")).longValue());
 				to.setEnabled(((String) data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
 				String orgLevels = (String) data.get("ORG_NODE_LEVEL");
 				orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
@@ -624,6 +625,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setReportDescription((String) data.get("REPORT_DESC"));
 				to.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
 				to.setReportType((String) data.get("REPORT_TYPE"));
+				to.setReportSequence(data.get("REPORT_SEQ") == null ? to.getReportId() : ((BigDecimal) data.get("REPORT_SEQ")).longValue());
 				to.setEnabled(((String) data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
 				to.setAllOrgNode((String) data.get("ORG_NODE_LEVEL"));
 				to.setLinkName(((BigDecimal) data.get("CUST_PROD_ID")).longValue());
@@ -839,7 +841,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 				for (orgLevelLoop = 0; orgLevelLoop < reportTO.getOrgNodeLevelArr().length - 1; orgLevelLoop++) {
 					getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT_ROLE, reportTO.getMenuId(), reportTO.getReportId(), reportTO.getUserRoles()[userRoleLoop],
-							reportTO.getOrgNodeLevelArr()[orgLevelLoop], reportTO.getCustomerLinks(), reportTO.getReportId(), IApplicationConstants.ACTIVE_FLAG);
+							reportTO.getOrgNodeLevelArr()[orgLevelLoop], reportTO.getCustomerLinks(), reportTO.getReportSequence(), IApplicationConstants.ACTIVE_FLAG);
 				}
 			}
 		} catch (Exception e) {

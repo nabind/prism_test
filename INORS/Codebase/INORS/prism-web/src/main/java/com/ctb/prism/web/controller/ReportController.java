@@ -1727,6 +1727,7 @@ public class ReportController{
 			String[] roles = req.getParameterValues("userRole");
 			String reportDescription = req.getParameter("reportDescription");
 			String reportType = req.getParameter("reportType");
+			String reportSequence = req.getParameter("reportSequence");
 			String reportStatus = req.getParameter("reportStatus");
 			String customerLinks = req.getParameter("customerType");
 			String[] orgNodeLevel = req.getParameterValues("allOrgNode");
@@ -1745,6 +1746,7 @@ public class ReportController{
 			reportTO.setEnabled((isEnabled != null && "1".equals(isEnabled)) ? true : false);
 			reportTO.setReportDescription(reportDescription);
 			reportTO.setReportType(reportType);
+			reportTO.setReportSequence(Long.valueOf(reportSequence == null ? reportId : reportSequence));
 			reportTO.setReportStatus(reportStatus);
 			reportTO.setUserRoles(roles);
 			reportTO.setCustomerLinks(customerLinks);

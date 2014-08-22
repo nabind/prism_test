@@ -27,6 +27,7 @@ public class ReportTO extends BaseTO {
 	private String producttName;
 	private long productId;
 	private String reportType;
+	private long reportSequence;
 	private boolean enabled;
 	private List<IApplicationConstants.ROLE_TYPE>/*List<IApplicationConstants.USER_TYPE>*/ roles = new ArrayList<IApplicationConstants.ROLE_TYPE>();//new ArrayList<IApplicationConstants.USER_TYPE>();
 	private String assessmentName;
@@ -143,6 +144,12 @@ public class ReportTO extends BaseTO {
 	}
 	public void setReportType(String reportType) {
 		this.reportType = reportType;
+	}
+	public long getReportSequence() {
+		return reportSequence;
+	}
+	public void setReportSequence(long reportSequence) {
+		this.reportSequence = reportSequence;
 	}
 	public List<ObjectValueTO> getObjectList2() {
 		return objectList2;

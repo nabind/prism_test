@@ -69,6 +69,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("input#reportUrl").val(data[0].reportOriginalUrl);
 			$("input#menuType").val(data[0].menuType);
 			$("input#reportType").val(data[0].reportType);
+			$("input#reportSequence").val(data[0].reportSequence);
 			$("input#customerType").val(data[0].customerType);
 			$("input#reportStatus").val(data[0].reportStatus);
 			//$("input#userRole").val(data[0].userRole);

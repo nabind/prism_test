@@ -178,6 +178,15 @@
 							</p>
 							
 							<p class="button-height inline-label">
+								<label for="reportSequence" class="label">Report Sequence</label>
+								<span class="number input margin-right">
+									<button type="button" class="button number-down">-</button>
+									<input type="text" name="reportSequence" id="reportSequence" value="" class="input-unstyled">
+									<button type="button" class="button number-up">+</button>
+								</span>
+							</p>
+							
+							<p class="button-height inline-label">
 								<label class="label" for="reportUrl">Report URI<span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportUrl" id="reportUrl" style="width:200px" class="input full-width newReportName reset validate[required]"/>
 							</p>
