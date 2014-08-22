@@ -1057,5 +1057,9 @@ height: 16px;
 .custom-p p{
 	margin: 0!important;
 }
+
+.color-white,.color-white a{
+	color: white;
+}
 		
 		
