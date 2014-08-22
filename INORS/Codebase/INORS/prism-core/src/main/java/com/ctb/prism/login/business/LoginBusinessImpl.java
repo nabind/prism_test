@@ -44,7 +44,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public Map<String,Object> getSystemConfigurationMessage(Map<String,Object> paramMap) {
 		Map<String, Object> messageMap = new HashMap<String, Object>();
 		String systemMessage = "";
-		if(paramMap.get("MESSAGE_NAME") == null){
+		if(IApplicationConstants.PURPOSE_LANDING_PAGE.equals((String)paramMap.get("purpose"))){
+			
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("commonLoginMessage", systemMessage);
@@ -60,9 +61,48 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.LANDING_PAGE_CONTENT);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("landingPageContent", systemMessage);
+			
+		} else if(IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE.equals((String)paramMap.get("purpose"))){
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_HEADER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("commonHeaderMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_FOOTER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("teacherFooterMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOGIN_PAGE_CONTENT);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("teacherPageContent", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOGIN_OUTAGE_CONTENT);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("teacherOutageContent", systemMessage);
+			
+		} else if(IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE.equals((String)paramMap.get("purpose"))){
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_HEADER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("commonHeaderMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_FOOTER);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("parentFooterMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOGIN_PAGE_CONTENT);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("parentPageContent", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOGIN_OUTAGE_CONTENT);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("parentOutageContent", systemMessage);
+			
 		}else{
+			
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
+			
 		}
 		return messageMap;
 	}

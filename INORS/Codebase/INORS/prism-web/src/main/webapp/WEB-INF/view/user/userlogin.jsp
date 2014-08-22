@@ -73,6 +73,9 @@
 				.acsicol {
 					color: #BA1A22;
 				}
+				.custom-p p{
+					margin: 0!important;
+				}
 		  </style>
 	</c:when>
 	<c:otherwise>
@@ -134,6 +137,9 @@
 			.acsicol {
 				color: #BA1A22;
 			}
+			.custom-p p{
+				margin: 0!important;
+			}
 	  </style>
 	</c:otherwise>
 </c:choose>
@@ -142,7 +148,10 @@
 <body style="min-width:800px" class="">
 	<a href="#" id="open-menu" class="" onClick="return false;"><span>Login</span></a>
 	<div id="logo" class="newStyle" style="border-bottom: 1px solid #CCC">
-		<h1><span class="logo-title"> <img alt="" src="<spring:theme code="contract.logo.header" />"> </span>
+		<h1>
+		 	<span class="logo-title custom-p"> 
+				${messageMap.commonHeaderMessage}
+			</span>
 		<br>
 		<span class="description"> </span></h1>
 	</div>
@@ -152,45 +161,13 @@
 		<!-- State user page -->
 			<div class="columnss">
 				<div class="seven-columns">
-					<div>
-						<img alt="" src="<spring:theme code="login.welcome" />">
-					</div>
-					<div class="boxsshade scrollable">
-						<div class="rowTwo">
-							<h1 class="h1style" style="margin-left:0px"><spring:message code="login.page.welcome"/></h1>
-							<div class="loginMsg" height="auto">
-								<p style="line-height:120%"><spring:message code="login.page.message"/></p>
-							</div>
-							
-					        <div class="boxshade" style="margin-top:10px">
-						    <div class="columns">
-							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
-							<img src="themes/acsi/img/slide/ladybugicon64x64.gif" />
-							</div>
-							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								<!-- For teacher -->
-								<textarea id="taContent" style="display:none;">
-								</textarea>
-								<div id="contentDescription" class="relative" style="height: auto; text-align: justify">
-									<span class="loader big"></span>
-								</div>
-							</div>
-							</div>
-					       </div>
-				           
-							<div class="loginBtn margin-top margin-bottom-medium">
-								<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
-									Download Quick Start Guide PDF
-								</button>
-								
-							</div>
-						</div>
+					${messageMap.teacherPageContent}
+					<div class="loginBtn margin-top margin-bottom-medium">
+						<button type="button" class="button blue-gradient glossy icon-download" onclick="javascript:window.open('/onlineresults/scripts/Quick_Start_Guide.pdf',800,600)">
+							Download Quick Start Guide PDF
+						</button>
 					</div>
 				</div>
-				
-				
-				
-				
 			</div>
 			
 			<section id="menu" class="menu">
@@ -225,10 +202,10 @@
 						</div>
 					</div>
 					
-					<div class="margin-bottom-medium">
-						<p class="wrapped relative white-gradient" style="height: auto">
-							 <spring:message code="login.otage.message"/>
-						</p>
+					<div class="margin-top">
+						<div class="wrapped relative white-gradient" style="height: auto">
+							${messageMap.teacherOutageContent}
+						</div>
 					</div>
 					
 				</div>
@@ -238,70 +215,12 @@
 		<!-- Parent page -->
 			<div class="columnss">
 				<div class="seven-columns">
-					<div>
-						<img alt="" src="themes/acsi/img/login_welcome_inors.bmp" >
-					</div>
-					<div class="boxsshade">
-						<div class="rowTwo">
-							<!--<h1 class="h1style">Welcome to <span class="acsicol">Indiana Parent Network!</span></h1>-->
-							<h1 class="h1style" style="margin-left: 0px">Welcome to the <spring:message code="pnlogin.page.welcome"/>!</h1>
-							<div class="loginMsg" height="auto">
-								<p style="line-height:120%"><spring:message code="parentlogin.page.message"/></p>
-							</div>
-							
-						</div>
-					</div>
+					${messageMap.parentPageContent}
 				</div>
-				
-				<!--<div class="seven-columns" style="margin-top:35px">
-					<div class="boxshade scrollable">
-						<div class="columns">
-							<div class="two-columns" style="float:left;padding-top:50px;margin: 0;">
-								<h2 class="rotate">Results</h2>
-							</div>
-							<div class="nine-columns" style="box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								<h3>ACSI Assessment Results</h3>
-								
-								<p style="line-height:120%"><small class="tag orange-bg">NEW</small> - Assessment results for Spring 2012 ACSI + results:</p>
-		
-								<p style="padding-left:10px">Grades 3 - 8: English/Language Arts & Mathematics,</p>
-								<p style="padding-left:10px">Grades 4 & 6: Science,</p>
-								<p style="padding-left:10px">Grades 5 & 7: Social Studies.</p>
-		
-								<p style="line-height:120%"><small class="tag orange-bg">NEW</small> - Parents may request a rescore of open-ended items or essay questions. Requests for rescore must be submitted to the school between May 29 and June 15, 2012.</p>
-		
-								<p style="line-height:120%">For more information see the English/Spanish Guide to the Student Report.</p>
-							</div>
-							
-						</div>
-					</div>
-				</div>-->
-				<div class="seven-columns" style="margin-top:15px;margin-bottom:30px;min-height: 230px;">
-					<div class="boxshade scrollable" style="height: 125px,width:100px;">
-						<div class="columns">
-							<div class="two-column" style="float:left;padding-top:0px;margin: 0;">
-								<img src="themes/acsi/img/slide/butterflyicon64x64.gif" />
-							</div>
-							<div class="nine-columns" style="border:1px solid #CCCCCC;box-shadow: 0px 0px 20px 5px #CCCCCC; padding: 20px">
-								<!-- For parent -->
-								<textarea id="taContent" style="display:none;">
-								</textarea>
-								<div id="contentDescription" class="relative" style="height: auto; text-align: justify">
-									<span class="loader big"></span>
-								</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-				
-				
-				
 			</div>
 			
 			<section id="menu" class="menu">
 				<div class="">
-					
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
 		
@@ -326,17 +245,15 @@
 		
 								<p class="button-height">
 									<button type="submit" class="button big glossy" id="login">Login</button>
-									<!--<input type="checkbox" name="_spring_security_remember_me" id="remind" value="1" checked="checked" class="switch tiny mid-margin-right with-tooltip" title="Enable auto-login">
-									<label for="remind">Remind me</label>-->
 								</p>
 							</form:form>
 		
 						</div>
 					</div>
 					<div class="margin-top">
-						<p class="wrapped relative white-gradient" style="height: auto;text-align: justify">
-						<spring:message code="login.otage.message"/>
-						</p>
+						<div class="wrapped relative white-gradient" style="height: auto;text-align: justify">
+							${messageMap.parentOutageContent}
+						</div>
 					</div>
 					
 					<div class="margin-bottom-medium margin-top">
@@ -366,13 +283,12 @@
 	</c:choose>
 	
 	<footer class="margin-top">
-		<div class="float-center"><spring:message code="footer.copyright"/> </div>
 		<c:choose>
 			<c:when test="${themeName == 'acsi'}">
-				<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
+				<div class="float-center custom-p"> ${messageMap.teacherFooterMessage} </div> 
 			</c:when>
 			<c:otherwise>
-				<div class="float-center"> <spring:message code="footer.helpdesk.parent"/> </div> 
+				<div class="float-center custom-p"> ${messageMap.parentFooterMessage} </div>  
 			</c:otherwise>
 		</c:choose>
 	</footer>  

@@ -198,7 +198,13 @@ public interface IApplicationConstants {
 	public static final String TEACHER_FOOTER = "Teacher Footer";
 	public static final String PARENT_FOOTER = "Parent Footer";
 	public static final String LANDING_PAGE_CONTENT = "Landing Page Content";
-	public static final String LOGIN_PAGE_CONTENT = "Login Page Content";
+	public static final String PURPOSE_LANDING_PAGE = "landingPage";
+	public static final String PURPOSE_TEACHER_LOGIN_PAGE = "teacherLoginPage";
+	public static final String PURPOSE_PARENT_LOGIN_PAGE = "parentLoginPage";
+	public static final String TEACHER_LOGIN_PAGE_CONTENT = "Teacher Login Page Content";
+	public static final String PARENT_LOGIN_PAGE_CONTENT = "Parent Login Page Content";
+	public static final String TEACHER_LOGIN_OUTAGE_CONTENT = "Teacher Login Outage Content";
+	public static final String PARENT_LOGIN_OUTAGE_CONTENT = "Parent Login Outage Content";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
 	public static final String INORS_HOME_PAGE = "Inors Home Page";
 	public static final String GROWTH_HOME_PAGE = "Growth Home Page";

@@ -1,6 +1,11 @@
 
 $(document).ready(function() {
-	getLoginMessage();
+	/**
+	 * Commented the call - By Joy
+	 * Every content of login page is configurable and DB driven
+	 * */
+	//getLoginMessage();
+	
 	$(".login-password-help").keypress(function(evt){
 			if (evt.keyCode  == 13) { 
 				return false;

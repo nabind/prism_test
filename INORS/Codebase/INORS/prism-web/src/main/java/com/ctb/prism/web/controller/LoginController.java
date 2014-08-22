@@ -115,6 +115,7 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+		paramMap.put("purpose", IApplicationConstants.PURPOSE_LANDING_PAGE);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
@@ -181,6 +182,8 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "theme -------------> "+themeResolver.resolveThemeName(request));
 		String mess_login_error = (String) request.getParameter("login_error");
 		String message = null;
+		String parent = "";
+		Map<String, Object> messageMap = new HashMap<String, Object>();
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";
@@ -189,9 +192,21 @@ public class LoginController {
 			message = "error.login.sessionexpired";
 		} else {
 			// this is proper login
+			parent = themeResolver.resolveThemeName(request); 
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+			if (IApplicationConstants.PARENT_LOGIN.equals(parent)) {
+				paramMap.put("purpose", IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
+			}else{
+				paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
+			}
+			//TODO - Pass contractId
+			messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		}
 		ModelAndView modelAndView = new ModelAndView("user/userlogin");
 		modelAndView.addObject("message", message);
+		modelAndView.addObject("messageMap", messageMap);
 		logger.log(IAppLogger.INFO, "Exit: userlogin()");
 		return modelAndView;
 	}
