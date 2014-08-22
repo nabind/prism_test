@@ -163,7 +163,7 @@
 				<div class="seven-columns">
 					${messageMap.teacherPageContent}
 					<div class="loginBtn margin-top margin-bottom-medium">
-						<button type="button" class="button blue-gradient glossy icon-download" onclick="javascript:window.open('/onlineresults/scripts/Quick_Start_Guide.pdf',800,600)">
+						<button type="button" class="button blue-gradient glossy icon-download" onclick="javascript:window.open('/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide.pdf',800,600)">
 							Download Quick Start Guide PDF
 						</button>
 					</div>
@@ -266,7 +266,7 @@
 									</a>
 								</li><br>
 								<li>
-									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide_For_Parents.pdf?theme=parent&parent=true#nogo',800,600)">
+									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide_For_Parents.pdf?theme=parent&parent=true#nogo',800,600)">
 										For information about the <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
 									</a>
 								</li>
