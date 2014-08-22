@@ -2,13 +2,16 @@
 
 <spring:theme code="theme.name" var="themeName"/>
 <footer class="margin-top main-footer">
-	<div class="align-center" style="color: white;font-size: 11px; padding-left: 120px;"><spring:message code="footer.copyright"/> </div>
 	<c:choose>
 		<c:when test="${themeName == 'acsi'}">
-			<div class="align-center" style="color: white;font-size: 11px;"> <spring:message code="footer.helpdesk"/> </div>
+			<div class="align-center custom-p color-white" style="font-size: 11px;">
+				${messageMapSession.teacherFooterMessage} 
+			</div>
 		</c:when>
 		<c:otherwise>
-			<div class="align-center" style="color: white;font-size: 11px;"> <spring:message code="footer.helpdesk.parent"/> </div>
+			<div class="align-center custom-p color-white" style="font-size: 11px;"> 
+				${messageMapSession.parentFooterMessage}
+			</div>
 		</c:otherwise>
 	</c:choose>
 </footer>

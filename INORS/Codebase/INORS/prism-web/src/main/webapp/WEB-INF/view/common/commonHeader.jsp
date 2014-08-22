@@ -2,7 +2,10 @@
 		<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 		
 		<div id="logo" class="newStyle" style="z-index:100">
-			<h1><span class="logo-title"> <img alt="" src="<spring:theme code="contract.logo.header" />"> </span>
+			<h1>
+				<span class="logo-title custom-p"> 
+					${messageMapSession.commonHeaderMessage} 
+				</span>
 			<br>
 			<span class="description"> </span></h1>
 		</div>

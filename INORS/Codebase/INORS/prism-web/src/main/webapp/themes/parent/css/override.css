@@ -1108,3 +1108,11 @@ div#nav ul li a {
 #tooltips {
 	z-index: 1000000 !important;
 }
+
+.custom-p p{
+	margin: 0!important;
+}
+
+.color-white,.color-white a{
+	color: white;
+}
