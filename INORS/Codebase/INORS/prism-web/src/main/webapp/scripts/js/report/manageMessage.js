@@ -50,7 +50,9 @@ $(document).ready(function() {
 				$("#reportMessage").empty();
 				$("#reportMessage").html(data);
 				$('.manage-rpt-textarea').each(function(){
-					CKEDITOR.inline( $(this).attr('id') );
+					CKEDITOR.inline( $(this).attr('id'), {
+						allowedContent: true
+					} );
 				});
 				showHideCopyMessageDiv(1);
 				$(".switch.tiny").first().css("top", "32px");
