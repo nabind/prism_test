@@ -155,6 +155,7 @@
 									<label class="label" for="editReportType">Report Type</label>
 									<select id="editReportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list" >
 										<option value="API">API</option>
+										<option value="API_LINK">API_LINK</option>
 										<option value="API_TABLE">API TABLE</option>
 										<option value="API_CUSTOM">API CUSTOM</option>
 										<option value="API_NFCUSTOM">API NO FILTER CUSTOM</option>
@@ -172,6 +173,7 @@
 										<option value="102">Downloads</option>
 										<option value="103">Resources</option>
 										<option value="104">Useful Links</option>
+										<option value="105">Manage</option>
 									</select>
 							</p>
 							
@@ -240,6 +242,7 @@
 									<label class="label" for="reportType">Report Type</label>
 									<select id="reportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list " >
 										<option value="API">API</option>
+										<option value="API_LINK">API_LINK</option>
 										<option value="API_TABLE">API TABLE</option>
 										<option value="API_CUSTOM">API CUSTOM</option>
 										<option value="API_NFCUSTOM">API NO FILTER CUSTOM</option>
@@ -257,6 +260,7 @@
 										<option value="102">Downloads</option>
 										<option value="103">Resources</option>
 										<option value="104">Useful Links</option>
+										<option value="105">Manage</option>
 									</select>
 							</p>
 							

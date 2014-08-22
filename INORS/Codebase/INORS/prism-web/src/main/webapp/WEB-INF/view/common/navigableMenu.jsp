@@ -11,7 +11,14 @@
 					<c:set var="currLevel" value="<%=request.getSession().getAttribute(com.ctb.prism.core.constant.IApplicationConstants.CURRORGLVL)%>" />
 						<c:if test="${report.orgLevel == currLevel}">
 							<li style="padding: 8px 25px !important; font-size: 12px !important; font-weight: normal !important; text-shadow: none !important" id="select-tooltip-${loop.count}">
-								<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${report.reportName}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
+								<c:choose>
+									<c:when test="${report.reportType == 'API_LINK'}">
+										<a href="${report.reportOriginalUrl}" title="${report.reportName}">${report.reportName}</a>
+									</c:when>
+									<c:otherwise>
+										<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${report.reportName}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
+									</c:otherwise>
+								</c:choose>
 							</li>
 						</c:if>
 					</sec:authorize>

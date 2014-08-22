@@ -77,7 +77,7 @@
 			
 			 -->
 
-			<div id="adminMenuContainer">
+			<%-- <div id="adminMenuContainer">
 				<sec:authorize ifAnyGranted="ROLE_ADMIN, ROLE_SUPER, ROLE_CTB">
 					<ul class="big-menu blue-gradient display-none collapsible" id="adminMenu">
 						<sec:authorize ifAnyGranted="ROLE_ADMIN">
@@ -92,7 +92,7 @@
 							<a href="${menuMap['Manage Organizations']}">Manage Organizations</a>
 						</li>
 						</c:if>
-						<%-- <sec:authorize ifNotGranted="ROLE_SSO"> --%>
+						<sec:authorize ifNotGranted="ROLE_SSO">
 						<c:if test="${not empty menuMap['Manage Parents']}">
 							<li>
 								<a href="${menuMap['Manage Parents']}">Manage Parents</a>
@@ -103,7 +103,7 @@
 								<a href="${menuMap['Manage Students']}">Manage Students</a>
 							</li>
 						</c:if>
-						<%-- </sec:authorize> --%>
+						</sec:authorize>
 						<sec:authorize ifAnyGranted="ROLE_SUPER">
 							<!-- Remove Manage Education Center -->
 							<c:if test="${not empty menuMap['Manage Reports']}">
@@ -339,7 +339,7 @@
 						</li>
 					</ul>
 				</sec:authorize>
-			</div>
+			</div> --%>
 			<sec:authorize ifNotGranted="ROLE_PARENT">
 			<div class="" id="prismMenu">
 				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
