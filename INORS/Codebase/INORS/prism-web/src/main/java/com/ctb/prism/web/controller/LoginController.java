@@ -116,6 +116,7 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("purpose", IApplicationConstants.PURPOSE_LANDING_PAGE);
+		//TODO - Need to pass contractId in Controller and DAO
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
@@ -142,6 +143,7 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
+		//TODO - Need to pass contractId in Controller and DAO
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		String logInInfoMessage = (String)messageMap.get("systemMessage");
 		if ("1".equalsIgnoreCase(mess_login_error)) {
@@ -201,7 +203,7 @@ public class LoginController {
 			}else{
 				paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
 			}
-			//TODO - Pass contractId
+			//TODO - Need to pass contractId in Controller and DAO
 			messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		}
 		ModelAndView modelAndView = new ModelAndView("user/userlogin");
@@ -243,7 +245,7 @@ public class LoginController {
 			} else {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			}
-			
+			//TODO - Need to pass contractId in Controller and DAO
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
 			loginMessage = (String)messageMap.get("systemMessage");
 			
@@ -1060,6 +1062,7 @@ public class LoginController {
 		String inorsHomePageInfoMessage = "";
 		String jsonString = "";
 		try {
+			//TODO - Need to pass contractId in Controller and DAO
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 			inorsHomePageInfoMessage = (String)messageMap.get("systemMessage");
 			//Fixed for TD 77263 - By Joy

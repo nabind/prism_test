@@ -87,6 +87,15 @@ insert into dash_message_type
        'Image or Content for Landing page',
        5001,
        sysdate);
+	   
+DELETE FROM DASH_MESSAGES
+ WHERE MSG_TYPEID IN
+       (SELECT MSG_TYPEID
+          FROM DASH_MESSAGE_TYPE
+         WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN'));
+
+DELETE FROM DASH_MESSAGE_TYPE
+ WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN');	   
 
 insert into dash_message_type
       (msg_typeid,
@@ -97,8 +106,53 @@ insert into dash_message_type
        created_date_time)
     values
       (1093,
-       'Login Page Content',
+       'Teacher Login Page Content',
        'GSCM',
-       'Image or Content for Login page',
+       'Image or Content for Teacher Login page',
        5001,
        sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1094,
+       'Parent Login Page Content',
+       'GSCM',
+       'Image or Content for Parent Login page',
+       5001,
+       sysdate);	   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1095,
+       'Teacher Login Outage Content',
+       'GSCM',
+       'Content of outage for Teacher Login page',
+       5001,
+       sysdate);	   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1096,
+       'Parent Login Outage Content',
+       'GSCM',
+       'Content of outage for Parent Login page',
+       5001,
+       sysdate);	  
