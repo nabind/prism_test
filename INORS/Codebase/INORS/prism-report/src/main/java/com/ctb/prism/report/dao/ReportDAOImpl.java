@@ -732,7 +732,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ManageMessageTO> loadManageMessage(final Map<String, Object> paramMap) throws SystemException {
-
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - loadManageMessage()");
+		long t1 = System.currentTimeMillis();
+		
 		long reportId = ((Long) paramMap.get("reportId")).longValue();
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		String reportName = ((String) paramMap.get("reportName"));
@@ -763,6 +765,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred in loadManageMessage():", e);
 			return null;
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - loadManageMessage() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return manageMessageTOList;
 	}
