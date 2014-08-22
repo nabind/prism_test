@@ -203,7 +203,7 @@
 					</div>
 					
 					<div class="margin-top">
-						<div class="wrapped relative white-gradient" style="height: auto">
+						<div class="wrapped relative white-gradient custom-p" style="height: auto">
 							${messageMap.teacherOutageContent}
 						</div>
 					</div>
@@ -251,7 +251,7 @@
 						</div>
 					</div>
 					<div class="margin-top">
-						<div class="wrapped relative white-gradient" style="height: auto;text-align: justify">
+						<div class="wrapped relative white-gradient custom-p" style="height: auto;text-align: justify">
 							${messageMap.parentOutageContent}
 						</div>
 					</div>
