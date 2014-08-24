@@ -137,7 +137,7 @@
 				<strong><spring:message code="title.tab.application"/></strong><br>
 				Teachers click here
 			</p>
-			<a href="userlogin.do?theme=acsi&parent=false" class="button blue-gradient full-width">Login</a>
+			<a href="userlogin.do?theme=inors&parent=false" class="button blue-gradient full-width">Login</a>
 		</div>
 		
 		<div class="four-columns" style="min-width:317px">
@@ -147,7 +147,7 @@
 				<strong><spring:message code="pnlogin.page.welcome"/></strong><br>
 				Parents/Guardians click here
 			</p>
-			<a href="userlogin.do?theme=parent&parent=true" class="button blue-gradient full-width">Login</a>
+			<a href="userlogin.do?theme=inorsparent&parent=true" class="button blue-gradient full-width">Login</a>
 		</div>
 		<div class="two-columns"></div>
 		<div class="twelve-columns align-center custom-p">

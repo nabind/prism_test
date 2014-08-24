@@ -26,12 +26,23 @@ public class UserDetailsManager implements UserDetailsService {
 	@Autowired
 	private ILoginService loginService;
 	
+	private String contractName;
+	
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
+	}
+	
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException, DataAccessException {
 		logger.log(IAppLogger.INFO, "Enter: UserDetailsManager - loadUserByUsername");
 		try {
 			logger.log(IAppLogger.INFO, "EMAIL ::::::::::::::: "+username);
-			UserTO user = loginService.getUserByEmail(username);
+			UserTO user = loginService.getUserByEmail(username, this.contractName);
+			user.setContractName(this.contractName);
 			UserDetails authenticatedUser = null;
 			if(user!=null)
 				authenticatedUser = new AuthenticatedUser(user);

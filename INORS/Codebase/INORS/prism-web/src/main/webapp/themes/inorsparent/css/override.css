@@ -1,0 +1,1118 @@
+html, body { height: 100% !important; background-color: #5F80AB !important; /*font-family:verdana,geneva,sans-serif*/ }
+html {
+	overflow-x: hidden;
+	min-width:550px;
+}
+.aside-icon-block {
+	padding-left: 80px;
+	position: relative;
+	margin-bottom: 3em;
+}
+#access > li {
+	width: 33% !important;
+}
+/*.wizard-steps > li {
+	height: 32px !important;
+	line-height: 50px !important;
+}*/
+.iframeWrapper {
+	width:100%;height:100%;
+	padding-top:20px; 
+	background:url('../../acsi/img/textures/grid.png') repeat-x;
+	cursor: col-resize;	
+}
+.icon-butterfly {
+	position: relative;
+	left: 0;
+	top: -12px;
+	width: 64px;
+	height: 80px;
+	background: url(../../acsi/img/slide/butterflyicon64x64.gif) no-repeat;
+	margin-right: 10px;
+}
+.icon-ladybug {
+	position: relative;
+	left: 0;
+	top: -12px;
+	width: 64px;
+	height: 80px;
+	background: url(../../acsi/img/slide/ladybugicon64x64.gif) no-repeat;
+	margin-right: 10px;
+}
+.disabled-ie {
+	background: #B9B9B9 url(../../acsi/img/old-browsers/colors/bg_button_grey-gradient_disabled.png) repeat-x !important;
+	cursor: not-allowed;
+}
+.field-block .label, .field-drop .label {
+	width: 160px !important;
+}
+.input-control-box {
+	height: 100% !important;
+	width: 47.55% !important;	
+}
+.input-control-box-2 {
+	border-left:1px solid #5f80ab !important; 
+	width: 47.55% !important;
+	height: 100% !important;
+	padding-left: 10px !important;
+	margin-left: 0px !important;
+}
+.ui-autocomplete-loading {
+    background: transparent url('../../acsi/img/standard/loaders/loading16.gif') right center no-repeat;
+}
+.modal-bar {
+	cursor: default !important;	
+}
+.ui-menu .ui-menu-item {
+	border-bottom: 1px solid #CCC;
+	/*font-family: Arial, Helvetica, sans-serif;*/
+	max-width: 170px;
+}
+.panel-control-pagination {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    box-shadow: 0 0px 0 rgba(255, 255, 255, 255) inset, 0 1px 1px rgba(0, 0, 0, 0) !important;
+    display: block;
+    height: 22px;
+    line-height: 20px;
+    padding: 5px;
+}
+.loginTitle {
+	font-weight: bold;
+	padding: 5px 0;
+}
+.login-username-help {
+	position: relative;
+	top: 0px;
+	right: -44px;
+}.login-password-help {
+	position: relative;
+	top: 0px;
+	right: -48px;
+}
+.report-inputs {
+	min-width: 163px;
+}
+.label-ie {
+	float: left;
+	line-height: 30px;
+}
+.download-button {
+	/*position: relative;*/
+	float: right;
+}
+.download-button-ie {
+	position: absolute;
+	/*float: right;*/
+	right: 5px;
+	top: 7px;
+	/*top: -22px;*/
+	margin: 0px !important;
+}
+.download-button-right {
+	right: 140px;
+	margin-right: 140px;
+}
+.custom-hscrollbar > div, .custom-vscrollbar > div, .custom-hscrollbar, .custom-vscrollbar {
+	-webkit-border-radius: 14px;
+	border-radius: 14px;
+}
+.linen, .linen-custom  {
+	background: none;
+}
+#title-bar, /*#shortcuts,*/ #open-menu {
+    position: absolute !important;
+}
+.main-footer {
+	/*position:relative; */
+	z-index: 2;
+	/*top: 0px;*/
+	height: 50px;
+	background: url(../../acsi/img/effects/dashboard-top-shadow.png) no-repeat center top;
+	background-position-y: 25px;
+	background-position: 50% 25px;
+	width: 850px;
+	right: 25%;
+	position:absolute !important;
+}
+.main-footer > div > a {
+	color: white !important;
+	text-decoration: underline !important;	
+}
+#menu-content {
+	background: #5f80ab;
+}
+#menu header {
+	/*padding: 11px 12px;
+	color: #bfbfbf;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Corbel, Lucida Grande, Lucida Sans Unicode, Lucida Sans, DejaVu Sans, Bitstream Vera Sans, Liberation Sans, Verdana;
+	background: -moz-linear-gradient(center top , #65B2DD, #045AB2 50%, #004995 50%, #0A5DB8) repeat scroll 0 0 transparent;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;*/
+	padding: 11px 12px;
+	color: #FFFFFF;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Corbel, Lucida Grande, Lucida Sans Unicode, Lucida Sans, DejaVu Sans, Bitstream Vera Sans, Liberation Sans, Verdana;
+	background: #056fc9 url(../../acsi/img/old-browsers/colors/bg_a_blue-gradient_glossy_hover.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#65b2dd), to(#0a5db8), color-stop(0.5, #045ab2), color-stop(0.5, #004995));
+	background: -webkit-linear-gradient(top, #65b2dd, #045ab2 50%, #004995 50%, #0a5db8);
+	background: -moz-linear-gradient(top, #65b2dd, #045ab2 50%, #004995 50%, #0a5db8);
+	background: -ms-linear-gradient(top, #65b2dd, #045ab2 50%, #004995 50%, #0a5db8);
+	background: -o-linear-gradient(top, #65b2dd, #045ab2 50%, #004995 50%, #0a5db8);
+	background: linear-gradient(top, #65b2dd, #045ab2 50%, #004995 50%, #0a5db8);
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	height: 12px;
+}
+#menu {
+	/*background: -moz-linear-gradient(center top , rgba(0, 0, 0, 0.4), transparent) repeat scroll 0 0%, url("../../acsi/img/textures/grid.png") repeat scroll 0 0 #5F80AB;*/
+	/*min-height: 600px;*/
+	background-color: #5F80AB;
+	position: absolute !important;
+	background: none;
+	box-shadow: none;
+	margin-top: -3px;
+	/*-webkit-background-size: auto, auto;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.746094) 5px 5px 30px 0px inset;
+	-webkit-transition-delay: 0s;
+	-webkit-transition-duration: 0.2s;
+	-webkit-transition-property: margin-right;
+	-webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+	background-attachment: scroll, scroll;
+	background-clip: border-box, border-box;
+	background-color: #5F80AB;
+	background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.398438), transparent), url("../../acsi/img/textures/grid.png");
+	background-origin: padding-box, padding-box;
+	background-size: auto, auto;
+	border-bottom-color: white;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+	border-bottom-style: none;
+	border-bottom-width: 0px;
+	border-left-color: white;
+	border-left-style: none;
+	border-left-width: 0px;
+	border-right-color: white;
+	border-right-style: none;
+	border-right-width: 0px;
+	border-top-color: white;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-top-style: none;
+	border-top-width: 0px;
+	bottom: 0px;
+	box-shadow: rgba(0, 0, 0, 0.746094) 5px 5px 30px 0px inset;
+	color: white;
+	display: block;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	height: 277px;
+	left: auto;
+	line-height: 16px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 33px;
+	max-height: none;
+	outline-color: white;
+	outline-style: none;
+	outline-width: 0px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	position: fixed;
+	right: 0px;
+	top: 35px;
+	vertical-align: baseline;
+	width: 260px;
+	z-index: 1;*/
+}
+#profile {
+    /*background: -moz-linear-gradient(center top , #e7f3ff, #5F80AB) repeat scroll 0 0 transparent;*/
+	display: block;
+	padding: 10px;
+	font-size: 14px;
+	line-height: 11px;
+	color: #5F80AB;
+	background: #5F80AB url(../../acsi/img/old-browsers/style/bg_profile_new.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5F80AB));
+	background: -webkit-linear-gradient( top, #e7f3ff, #5F80AB );
+	background: -moz-linear-gradient( top, #e7f3ff, #5F80AB );
+	background: -ms-linear-gradient( top, #e7f3ff, #5F80AB );
+	background: -o-linear-gradient( top, #e7f3ff, #5F80AB );
+	background: linear-gradient( top, #e7f3ff, #5F80AB );
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+	-webkit-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+	-moz-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+.blockDiv{
+	-moz-opacity: 0.48;
+	opacity: 0.48;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=48);
+	filter:alpha(opacity=48);
+	background-color: #ccc;
+}
+.panel-content.linen, .panel-content.carbon {
+    box-shadow: 0 2px 9px #5F80AB inset !important;
+	-webkit-box-shadow: inset 0 2px 9px #5F80AB inset !important;
+	-moz-box-shadow: inset 0 2px 9px #5F80AB inset !important;
+	box-shadow: inset 0 2px 9px #5F80AB inset !important;
+}
+.linen > .panel-control, .carbon > .panel-control {
+    -webkit-box-shadow: 0 5px 9px  #5F80AB !important;
+	-moz-box-shadow: 0 5px 9px  #5F80AB !important;
+	box-shadow: 0 5px 9px  #5F80AB !important;
+}
+h6 {
+	line-height: 11px !important;
+}
+.input-compact {
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+	font-weight: bold;
+}
+.panel-control-report{
+	height: 3px !important;
+    line-height: 3px !important;
+	padding: 1px !important;
+}
+.report-filter{
+	height: 24px !important;
+    line-height: 24px !important;
+	padding: 5px !important;
+	border-bottom: 1px solid #9c9c9c;
+	cursor:pointer;
+}
+.active a {
+	font-weight: bold;
+}
+#modals {
+	position: absolute !important;
+}
+.modal-blocker {
+	position: fixed !important;
+}
+.blue-background {
+	background-color: #5F80AB;
+}
+.standard-tabs > .tabs > li.active > a {
+	background: #EFEFF4 !important
+}
+.report-layout {
+	height:auto;margin: 10px;
+}
+.icon-size1 {
+	font-size: 11px;
+	vertical-align: 1px;
+	padding-left:5px;
+}
+#logo {
+	height: 30px;
+	margin: 0 auto;
+	text-align: center;
+	/*float: left;*/
+	text-align: left;
+}
+
+.reportTabContainer {
+	margin: 0 0px 10px !important;
+}
+.small-line-height {
+	line-height: 1px !important;
+}
+.reportTab {
+	padding:0px !important;
+	margin-bottom: -16px;
+}
+
+.display-inline {
+	display: inline;	
+}
+.margin-bottom-small {
+	margin-bottom: 5px !important;	
+}
+.margin-bottom-medium {
+	margin-bottom: 10px !important;	
+}
+.margin-bottom-medium-ve {
+	margin-bottom: -10px !important;	
+}
+
+.margin-bottom-medium > div {
+	margin-bottom: 10px !important;	
+	height: 35px;
+}
+.padding-none {
+	padding: 0px !important;	
+}
+.padding-very-small {
+	padding: 1px !important;	
+}
+.padding-small {
+	padding: 5px !important;	
+}
+.padding-right {
+	padding-right: 10px !important;	
+}
+.padding-left {
+	padding-left: 10px !important;	
+}
+.padding-bottom {
+	padding-bottom: 10px !important;	
+}
+.margin-top {
+	margin-top:10px
+}
+.mid-margin-bottom	{ 
+	overflow:hidden !important; /*Fixed 70927*/
+} 
+.top-registration {
+	top:70px
+}
+
+.block-title, details.details > summary {
+	padding: 10px 15px !important;
+}
+details.details > summary {style.css:1488
+	-webkit-border-radius: 5px !important;
+	-moz-border-radius: 5px !important;
+	border-radius: 5px !important;
+}
+.report-frame {
+	width:100%; 
+	height:100%; 
+	min-height: 600px; 
+	position: absolute;
+	display:block; 
+	position: relative
+}
+.reporttabs {
+	/*padding-top: 10px !important;*/	
+}
+.report-panel-content {
+	-webkit-border-radius: 6px;
+	border-radius: 0 6px 6px 6px; 
+}
+.display-none {
+	display:none;	
+}
+.tabs-content > .with-padding {
+	padding: 0px !important;
+}
+.closereport-ie {
+	position: relative;
+	left: 5px;
+	top:-8px;
+	/*float: right;*/
+}
+.closereport {
+	/*left: -12px;
+    margin-top: 0;
+    position: relative;
+    top: -27px;*/
+	top:5px;
+	right:7px;
+}
+.margin10 {
+	margin: 10px;
+}
+.height-mid {
+	height: 500px;
+}
+
+.rounded-border {
+	border-radius: 5px 5px 5px 5px !important;	
+}
+.rounded-border-bottom {
+	border-radius: 0px 0px 8px 8px !important;	
+}
+.reportLoading {
+	line-height: 64px; 
+	position: absolute; 
+	z-index: 1001;
+}
+.refresh-report {
+	position: absolute; top: 3px; right: 15px;z-index:101;
+}
+
+#org_details li b, #org_details span {
+	cursor: pointer;
+}
+
+.h1-title {
+	padding: 0 0 15px !important;	
+}
+.h1-font {
+	font-size: 33px;
+}
+.main-section{
+	-moz-box-shadow: 0 0 15px 3px #FFF;
+	-webkit-box-shadow: 0 0 15px 3px #FFF;
+	box-shadow: 0 0 15px 3px #FFF;
+	/*border-radius: 7px 0 0 0;*/
+	overflow-x: auto !important;
+	overflow-y: hidden;
+}
+#main-title {
+    padding: 0px 0px 5px !important;
+}
+.h1style {
+	font-size: 20px !important;
+}
+#logo {
+	background-color: #FFFFFF;
+    border-radius: 0 0 7px 7px;
+    height: 52px;
+    padding-top: 3px;
+    margin-left: -6px;
+    padding-left: 18px;
+}
+.rotate1 {
+	/* Safari */
+	-webkit-transform: rotate(-90deg);
+	/* Firefox */
+	-moz-transform: rotate(-90deg);
+	/* IE */
+	-ms-transform: rotate(-90deg);
+	/* Opera */
+	-o-transform: rotate(-90deg);
+	/* Internet Explorer */
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+.rotate {
+  -webkit-transform: rotate(-90deg);  /* Saf3.1+, Chrome */
+     -moz-transform: rotate(-90deg);  /* FF3.5+ */
+      -ms-transform: rotate(-90deg);  /* IE9 */
+       -o-transform: rotate(-90deg);  /* Opera 10.5 */
+          transform: rotate(-90deg);
+             writing-mode: lr-tb;
+			 filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+               zoom: 1;
+}
+#drilldown {
+	background: -moz-linear-gradient(center top , rgba(0, 0, 0, 0), transparent) repeat scroll 0 0%, url("../../acsi/img/frame_background_sprite.png") repeat scroll 0 0 #5F80AB;
+	background: #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0))), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -webkit-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -moz-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -ms-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -o-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: linear-gradient( top, rgba(0,0,0,0.4), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+}
+.boxshade {
+	-webkit-background-clip: border-box;
+	-webkit-background-size: 100% 100%;
+	-webkit-box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.296875) 0px 1px 5px 0px;
+	background-attachment: scroll;
+	background-clip: border-box;
+	background-color: transparent;
+	background-image: -webkit-linear-gradient(top, #FFFFFF, #FFFFFF);
+	background-origin: padding-box;
+	background-size: 100% 100%;
+	border-bottom-color: #CCC;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-left-color: #CCC;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-right-color: #CCC;
+	border-right-style: solid;
+	border-right-width: 1px;
+	/*border-top-color: #CCC;*/
+	border-top-color: #28BCEB;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	border-top-style: solid;
+	/*border-top-width: 1px;*/
+	border-top-width: 3px;
+	box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.296875) 0px 1px 5px 0px;
+	color: #666;
+	display: block;
+	/*font-family: Arial, Helvetica, sans-serif;*/
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: 16px;
+	margin-bottom: 16px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	outline-color: #666;
+	outline-style: none;
+	outline-width: 0px;
+	padding-bottom: 16px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 16px;
+	position: relative;
+	vertical-align: baseline;
+}
+h1 {
+	font-size: 26px !important;
+	color: #5F80AB;
+	line-height: 19px !important;
+}
+.browsecontent {
+	color: #0000FF;
+	font-size: 15px;
+	font-weight: bold;	
+}
+hr {
+	border-top: 1px solid #e7e7e7;	
+}
+h4 {
+	padding-top: 20px;	
+}
+footer.margin-top.main-footer {
+	font-family: Arial, Helvetica, sans-serif;
+}
+/*
+.linen-custom {
+	color: white;
+	border-color: #F3E5AB;
+	background: #F3E5AB url(../../acsi/img/textures/scratches.png);
+	background: url(../../acsi/img/textures/scratches.png), -webkit-gradient(linear, left top, left bottom, from(#F3E5AB), to(#FFD700)) repeat-x, #F3E5AB;
+	background: url(../../acsi/img/textures/scratches.png), -webkit-linear-gradient(top, #F3E5AB, #FFD700) repeat-x, #F3E5AB;
+	background: url(../../acsi/img/textures/scratches.png), -moz-linear-gradient(top, #F3E5AB, #FFD700) repeat-x, #F3E5AB;
+	background: url(../../acsi/img/textures/scratches.png), -ms-linear-gradient(top, #F3E5AB, #FFD700) repeat-x, #F3E5AB;
+	background: url(../../acsi/img/textures/scratches.png), -o-linear-gradient(top, #F3E5AB, #FFD700) repeat-x, #F3E5AB;
+	background: url(../../acsi/img/textures/scratches.png), linear-gradient(top, #F3E5AB, #FFD700) repeat-x, #F3E5AB;
+}*/
+.font-12 {
+	font-size: 12px !important;
+}
+.with-left-arrow {
+	padding-left: 25px !important;
+}
+.no-shadow {
+	box-shadow: none !important;
+}
+
+/*****************************************************************************/
+/* CSS For IMAGE SLIDER in PARENT HOME */
+div.wrap {
+	width: 100%;
+	margin: 0 auto;
+	text-align: left;
+}
+div#top div#nav {
+	float: left;
+	clear: both;
+	width: 75%;
+	height: 52px;
+	margin: 22px 0 0;
+}
+div#top div#nav ul {
+	float: left;
+	width: 60%;
+	height: 52px;
+	list-style-type: none;
+}
+div#nav ul li {
+	float: left;
+	height: 52px;
+}
+
+div#nav ul li a {
+	border: 0;
+	height: 52px;
+	display: block;
+	line-height: 52px;
+	text-indent: -9999px;
+}
+div#header {
+	margin: -1px 0 0;
+}
+div#video-header {
+	height: 683px;
+	margin: -1px 0 0;
+}
+div#header div.wrap { 
+	/*
+	height : 299px;
+	background : url(images/header-bg.png) no-repeat 50% 0;
+	*/
+}
+div#header div#slide-holder {
+	width: 100%;
+	position: relative;
+	top: 10px
+}
+div#header div#slide-holder div#slide-runner {
+	top: -10px;
+	left: 0px;
+	width: 100%;
+	height: 278px;
+	overflow: hidden;
+	position: relative;
+}
+div#header div#slide-holder img {
+	margin: 0;
+	display: none;
+	position: absolute;
+}
+div#header div#slide-holder div#slide-controls {
+	left: 0;
+	bottom: 5px;
+	width: 99%;
+	height: 35px;
+	display: none;
+	position: absolute;
+	background: url(../../acsi/img/slide-bg.png) 0 0;
+	border-radius: 0 5px 5px 0;
+}
+div#header div#slide-holder div#slide-controls p.text {
+	float: left;
+	color: #fff;
+	display: inline;
+	font-size: 10px;
+	line-height: 16px;
+	margin: 10px 0 0 5px;
+	text-transform: uppercase;
+}
+div#header div#slide-holder div#slide-controls p#slide-nav {
+	float: right;
+	height: 24px;
+	display: inline;
+	margin: 5px 15px 0 0;
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a {
+	float: left;
+	width: 24px;
+	height: 24px;
+	display: inline;
+	font-size: 11px;
+	margin: 0 5px 0 0;
+	line-height: 24px;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: none;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a.on {
+	background-position: 0 -24px;
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a {
+	background-image: url(../../acsi/img/silde-nav.png);
+}
+div#nav ul li a {
+	/*background: url(../../acsi/img/nav.png) no-repeat;*/
+}
+.slide-image-outer {
+	max-width:972px; 
+	padding:4px 4px 0px 4px;
+	background-color:#c3bec4;
+	border-radius: 5px;
+}
+/* END : CSS For IMAGE SLIDER in PARENT HOME */
+
+
+/****** LIGHT NAVY GRADIENT ***********/
+.navy-bg,
+.navy-gradient > .drop-down {
+	background: #f1f3f4;
+	color: #666666;
+	border-color: #5f80ab;
+	}
+	a.navy-bg:hover {
+		color: #666666;
+		background: #f3f5f6;
+	}
+.navy-gradient, .navy-gradient:visited,
+.navy-gradient > .select-value, .navy-gradient > .select-arrow {
+	color: #00001F;
+	background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_navy-gradient.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab));
+	background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -moz-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -ms-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -o-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: linear-gradient(top, #e7f3ff, #5f80ab);
+	border-color: #5f80ab;
+	}
+	a.navy-gradient:hover, button.navy-gradient:hover,
+	:hover > .button-icon.navy-gradient,
+	.navy-gradient > a.select-value:hover, .navy-gradient > .select-arrow:hover {
+		color: #666666;
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_hover.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab));
+		background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -moz-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -ms-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -o-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: linear-gradient(top, #e7f3ff, #5f80ab);
+		border-color: #5f80ab;
+	}
+	.navy-gradient.glossy,
+	.glossy > .button-icon.navy-gradient, .button-icon.glossy.navy-gradient,
+	.navy-gradient.glossy > .select-value, .navy-gradient.glossy > .select-arrow {
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_navy-gradient_glossy.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab), color-stop(0.5, #ededf0), color-stop(0.5, #e3e3e5));
+		background: -webkit-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -moz-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -ms-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -o-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		}
+		a.navy-gradient.glossy:hover, button.navy-gradient.glossy:hover,
+		.glossy:hover > .button-icon.navy-gradient, :hover > .button-icon.glossy.navy-gradient,
+		.navy-gradient.glossy > a.select-value:hover, .navy-gradient.glossy > .select-arrow:hover {
+			background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_glossy_hover.png) repeat-x;
+			-webkit-background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+			-o-background-size: 100% 100%;
+			background-size: 100% 100%;
+			background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab), color-stop(0.5, #5f80ab), color-stop(0.5, #efeff1));
+			background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -moz-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -ms-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -o-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+		}
+	a.navy-gradient:active, button.navy-gradient:active, .button.navy-gradient:active, .navy-gradient.active,
+	:active > .button-icon.navy-gradient, .active > .button-icon.navy-gradient,
+	.switch-off {
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_active.png) repeat-x !important;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab)) !important;
+		background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -moz-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -ms-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -o-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		border-color: #5f80ab;
+	}
+	
+.button.navy-gradient:disabled, .button.navy-gradient.disabled, .disabled .button.navy-gradient,
+.button.glossy.navy-gradient:disabled, .button.glossy.navy-gradient.disabled, .disabled .button.glossy.navy-gradient,
+.navy-gradient.disabled > .select-value, .navy-gradient.disabled > .select-arrow,
+.disabled .navy-gradient > .select-value, .disabled .navy-gradient > .select-arrow {
+	color: #666666 !important;
+	border-color: #5f80ab !important;
+	background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_button_navy-gradient_disabled.png) repeat-x !important;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab)) !important;
+	background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -moz-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -ms-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -o-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: linear-gradient(top, #e7f3ff, #5f80ab) !important;
+}
+
+/****** END : LIGHT NAVY GRADIENT ***********/
+/****** LIGHT CYAN GRADIENT ***********/
+.cyan-bg,
+.cyan-gradient > .drop-down {
+	background: #f1f3f4;
+	color: #666666;
+	border-color: #cccccc;
+	}
+	a.white-bg:hover {
+		color: #666666;
+		background: #f3f5f6;
+	}
+.cyan-gradient, .cyan-gradient:visited,
+.cyan-gradient > .select-value, .cyan-gradient > .select-arrow {
+	color: #666666;
+	background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_cyan-gradient.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f7f7fa), to(#e7f3ff));
+	background: -webkit-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -moz-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -ms-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -o-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: linear-gradient(top, #f7f7fa, #e7f3ff);
+	border-color: #cccccc;
+	}
+	a.cyan-gradient:hover, button.cyan-gradient:hover,
+	:hover > .button-icon.cyan-gradient,
+	.cyan-gradient > a.select-value:hover, .cyan-gradient > .select-arrow:hover {
+		color: #666666;
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_hover.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#e7f3ff));
+		background: -webkit-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -moz-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -ms-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -o-linear-gradient(top, #fefefe, #e7f3ff);
+		background: linear-gradient(top, #fefefe, #e7f3ff);
+		border-color: #cccccc;
+	}
+	.cyan-gradient.glossy,
+	.glossy > .button-icon.cyan-gradient, .button-icon.glossy.cyan-gradient,
+	.cyan-gradient.glossy > .select-value, .cyan-gradient.glossy > .select-arrow {
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_cyan-gradient_glossy.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fafafc), to(#e7f3ff), color-stop(0.5, #ededf0), color-stop(0.5, #e3e3e5));
+		background: -webkit-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -moz-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -ms-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -o-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		}
+		a.cyan-gradient.glossy:hover, button.cyan-gradient.glossy:hover,
+		.glossy:hover > .button-icon.cyan-gradient, :hover > .button-icon.glossy.cyan-gradient,
+		.cyan-gradient.glossy > a.select-value:hover, .cyan-gradient.glossy > .select-arrow:hover {
+			background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_glossy_hover.png) repeat-x;
+			-webkit-background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+			-o-background-size: 100% 100%;
+			background-size: 100% 100%;
+			background: -webkit-gradient(linear, left top, left bottom, from(#fefeff), to(#e7f3ff), color-stop(0.5, #e7f3ff), color-stop(0.5, #efeff1));
+			background: -webkit-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -moz-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -ms-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -o-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+		}
+	a.cyan-gradient:active, button.cyan-gradient:active, .button.cyan-gradient:active, .cyan-gradient.active,
+	:active > .button-icon.cyan-gradient, .active > .button-icon.cyan-gradient,
+	.switch-off {
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_active.png) repeat-x !important;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#5f80ab), to(#e7f3ff)) !important;
+		background: -webkit-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -moz-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -ms-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -o-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		border-color: #cccccc;
+	}
+	
+.button.cyan-gradient:disabled, .button.cyan-gradient.disabled, .disabled .button.cyan-gradient,
+.button.glossy.cyan-gradient:disabled, .button.glossy.cyan-gradient.disabled, .disabled .button.glossy.cyan-gradient,
+.cyan-gradient.disabled > .select-value, .cyan-gradient.disabled > .select-arrow,
+.disabled .cyan-gradient > .select-value, .disabled .cyan-gradient > .select-arrow {
+	color: #666666 !important;
+	border-color: #5f80ab !important;
+	background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_button_cyan-gradient_disabled.png) repeat-x !important;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e7f3ff)) !important;
+	background: -webkit-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -moz-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -ms-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -o-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: linear-gradient(top, #ffffff, #e7f3ff) !important;
+}
+
+/****** END : LIGHT CYAN GRADIENT ***********/
+
+.link-dark{
+	color:#222625;
+	font-size: 15px;
+	}
+
+.inline-label {
+		padding-left: 120px;
+		}
+.inline-label > .label{
+			float: left;
+			width: 140px;
+			margin-left: -120px;
+			line-height: inherit;
+			//line-height:expression(this.parentNode.currentStyle['line-height']);
+}
+
+/*Introduce style for div table - By Joy*/
+.simple-div-table{
+	float: left; 
+	clear: both; 
+	background-color: #FFFFFF;
+	width: 99%;
+	padding: 5px !important;
+	text-align: justify;
+}
+.simple-div-table-col{
+	float: left; 
+	width: 50%;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}
+.below-proficient{
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -136px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
+}
+.proficient{
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -72px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
+}
+.unknown{
+	display: block;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -31px -94px;
+	margin-top: 10px;
+	position: relative;
+	z-index: 88;
+}
+.prof-first {
+	margin-left: -7px;
+}
+.prof-first2 {
+	margin-left: -10px;
+}
+.prof-last {
+	margin-left: 23px;
+}
+.prof-last2 {
+	margin-left: 29px;
+}
+.prof-text {
+	margin-left: 45px;
+	line-height:35px;
+	width: 124px;
+	position: absolute;
+}
+.menu-second-level{
+	background-color: #D3D5EB !important;
+    color: black !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    padding-bottom: 8px !important;
+    padding-left: 17px !important;
+    padding-top: 8px !important;
+    text-shadow: none !important;
+}
+.menu-third-level{
+	padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 30px !important;
+	font-size: 12px !important; 
+	font-weight: normal !important; 
+	text-shadow: none !important
+}
+.std-matter-parent-div{
+	min-height: 550px; 
+	height: auto;
+}
+.accordion-div{
+	padding-left: 0px; 
+	padding-right: 10px; 
+	border: none; 
+	height: auto !important;
+}
+
+.enable {
+	display: block;
+	float: left;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -68px -94px;
+	margin-left: -12px;
+	margin-top: -9px;
+	position: relative;
+	z-index: 88;
+}
+.disable {
+	display: block;
+	float: left;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -136px -94px;
+	margin-left: -12px;
+	margin-top: -9px;
+	position: relative;
+	z-index: 88;
+}
+
+#parentMenu > li.menu-second-level > ul > li:last-child, 
+#parentMenu > li > ul > li.menu-second-level > ul > li:last-child {
+	margin-bottom: 7px;
+}
+
+.articledata {
+	color: #005CFF;
+}
+
+.button > .button-icon.right-side {
+	margin: -2px -14px -1px 9px !important;
+}
+.button > .button-icon {
+	margin: -1px 9px -1px -14px !important;
+}
+
+.button > .button-icon.anthracite-gradient {
+	margin: -6px 4px -5px -15px !important;
+}
+
+#tooltips {
+	z-index: 1000000 !important;
+}
+
+.custom-p p{
+	margin: 0!important;
+}
+
+.color-white,.color-white a{
+	color: white;
+}

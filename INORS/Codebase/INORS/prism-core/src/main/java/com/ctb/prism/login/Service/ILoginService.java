@@ -25,6 +25,7 @@ public interface ILoginService {
 	 * @throws SystemException
 	 */
 	public UserTO getUserByEmail(String userEmail) throws SystemException;
+	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException;
 
 	/**
 	 * @param username

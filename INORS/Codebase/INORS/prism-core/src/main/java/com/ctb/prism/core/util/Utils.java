@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.HtmlUtils;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -24,6 +26,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IApplicationConstants.USER_TYPE;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -35,6 +38,16 @@ import org.apache.commons.codec.binary.Base64;
 public final class Utils {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(Utils.class.getName());
 
+	public static String getContractName() {
+		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+		if(currentAuth != null) {
+			AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
+			if(authenticatedUser.getContractName() != null) {
+				return authenticatedUser.getContractName();
+			} 
+		}
+		return "";
+	}
 	public static String getSaltWithUser(String userName, String salt) {
 		if (userName != null) {
 			return CustomStringUtil.appendString(userName.toLowerCase(), salt);

@@ -5,13 +5,15 @@ package com.ctb.prism.core.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.ctb.prism.login.security.provider.AuthenticatedUser;
 
 /**
  * @author TCS-1
@@ -34,9 +36,13 @@ public abstract class BaseDAO {
 	 * JDBC template points to prism database
 	 */
 	@Autowired
-	private JdbcTemplate jdbcTemplatePrism;
+	private JdbcTemplate jdbcTemplateInors;
 	
-	private CallableStatementExecutor cse = new CallableStatementExecutor();
+	/**
+	 * JDBC template points to tasc database
+	 */
+	@Autowired
+	private JdbcTemplate jdbcTemplateTasc;
 
 	/**
 	 * @return the jdbcTemplate to access jasper server database
@@ -49,7 +55,33 @@ public abstract class BaseDAO {
 	 * @return the jdbcTemplate to access prism database
 	 */
 	public JdbcTemplate getJdbcTemplatePrism() {
-		return jdbcTemplatePrism;
+		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+		if(currentAuth != null) {
+			AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
+			return getJdbcTemplatePrism(authenticatedUser.getContractName());
+		}
+		return null;
+	}
+	
+	public JdbcTemplate getJdbcTemplatePrism(String contractName) {
+		if("inors".equals(contractName)) return jdbcTemplateInors;
+		if("tasc".equals(contractName)) return jdbcTemplateTasc;
+		else return null;
+	}
+	
+	
+	/**
+	 * @return the jdbcTemplate to access INORS database
+	 */
+	public JdbcTemplate getJdbcTemplateInors() {
+		return jdbcTemplateInors;
+	}
+	
+	/**
+	 * @return the jdbcTemplate to access TASC database
+	 */
+	public JdbcTemplate getJdbcTemplateTasc() {
+		return jdbcTemplateTasc;
 	}
 
 	/**
@@ -58,6 +90,14 @@ public abstract class BaseDAO {
 	 */
 	public Connection getPrismConnection() throws SQLException {
 		return getJdbcTemplatePrism().getDataSource().getConnection();
+	}
+	
+	/**
+	 * @return the connection object for tasc DB
+	 * @throws SQLException
+	 */
+	public Connection getTascConnection() throws SQLException {
+		return getJdbcTemplateTasc().getDataSource().getConnection();
 	}
 
 	// @Autowired
@@ -70,7 +110,4 @@ public abstract class BaseDAO {
 	// this.jdbcTemplatePrism = new JdbcTemplate(dataSource);
 	// }
 
-	public List<ArrayList<String>> executeCallableStatement(String stotedProcedure, List<PlaceHolder> placeHolderList, Integer paramNumber, String[] aliases) {
-		return cse.execute(jdbcTemplate, stotedProcedure, placeHolderList, paramNumber, aliases);
-	}
 }

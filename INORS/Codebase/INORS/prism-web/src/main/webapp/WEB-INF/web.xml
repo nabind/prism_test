@@ -317,7 +317,12 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 	<resource-ref>
-		<res-ref-name>jdbc/prism</res-ref-name>
+		<res-ref-name>jdbc/inors</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	<resource-ref>
+		<res-ref-name>jdbc/tasc</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>

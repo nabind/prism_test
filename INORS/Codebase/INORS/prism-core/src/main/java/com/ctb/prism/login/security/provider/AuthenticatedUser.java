@@ -60,5 +60,9 @@ public class AuthenticatedUser implements UserDetails {
 	public void setUserTO(UserTO user) {
 		this.user = user;
 	}
+	
+	public String getContractName() {		
+		return user.getContractName();
+	}
 
 }

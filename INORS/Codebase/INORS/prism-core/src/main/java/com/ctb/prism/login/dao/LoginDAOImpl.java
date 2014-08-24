@@ -91,6 +91,45 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	}
 	
 	/**
+	 * 
+	 * @param username
+	 * @param orgLevel
+	 * @param userType
+	 * @return
+	 */
+	public List<GrantedAuthority> getGrantedAuthorities(String username, long orgLevel, String userType, String contractName) {
+		List<GrantedAuthority> userPerms = null;
+
+		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
+			userPerms = getJdbcTemplatePrism(contractName).query(IQueryConstants.SELECT_EDU_USER_AUTHORITIES, new String[] { username },
+					new RowMapper<GrantedAuthority>() {
+						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
+							return new SimpleGrantedAuthority(rs.getString(1));
+						}
+					});
+
+			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
+					IApplicationConstants.ROLE_INIT,
+					"LEVEL",
+					"" + IApplicationConstants.DEFAULT_LEVELID_VALUE
+			)));
+		} else {
+			userPerms = getJdbcTemplatePrism(contractName).query(IQueryConstants.SELECT_USER_AUTHORITIES, new String[] { username/*, String.valueOf(orgLevel)*/ },
+					new RowMapper<GrantedAuthority>() {
+						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
+							return new SimpleGrantedAuthority(rs.getString(1));
+						}
+					});
+			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
+					IApplicationConstants.ROLE_INIT,
+					"LEVEL",
+					"" + orgLevel
+			)));
+		}
+		return userPerms;
+	}
+	
+	/**
 	 * This method is used to return user login status (is first time login)
 	 * @param username
 	 * @return
@@ -128,6 +167,16 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#root.method.name) )")
 	private String getUserType(String username) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_TYPE, username);
+		if (!lstData.isEmpty()) {
+			return IApplicationConstants.PARENT_USER_FLAG;
+		} else {
+			return IApplicationConstants.ORG_USER_FLAG;
+		}
+	}
+	
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1).concat(#root.method.name) )")
+	private String getUserType(String username, String contractName) {
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_USER_TYPE, username);
 		if (!lstData.isEmpty()) {
 			return IApplicationConstants.PARENT_USER_FLAG;
 		} else {
@@ -177,6 +226,50 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return user;
 	}
 	
+	/**
+	 * Retrieves and returns loggedin user details
+	 * @param username
+	 * @return UserTO with associated orgId, userid and firsttime loggedin flag
+	 */
+	public UserTO getUserDetails(String username, String contractName) {
+		UserTO user = null;
+		List<Map<String, Object>> lstData = null;
+
+		String userType = getUserType(username, contractName);
+		logger.log(IAppLogger.INFO, "getUserDetails :: userType = " + userType);
+
+		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
+			lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_EDU_USER_DETAILS, username);
+		} else {
+			lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_USER_DETAILS, username);
+		}
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				user = new UserTO();
+				user.setFirstTimeLogin(fieldDetails.get("IS_FIRSTTIME_LOGIN").toString());
+				user.setUserId(fieldDetails.get("USERID").toString());
+				user.setOrgId(fieldDetails.get("ORG_NODEID").toString());
+				user.setOrgNodeLevel(((BigDecimal) fieldDetails.get("ORG_NODE_LEVEL")).longValue());
+				user.setDisplayName((fieldDetails.get("DISPLAY_USERNAME") != null) ? fieldDetails.get("DISPLAY_USERNAME").toString() : "Anonymous");
+				user.setUserStatus(fieldDetails.get("ACTIVATION_STATUS").toString());
+				user.setUserName(username);
+
+				user.setPassword((fieldDetails.get("PASSWORD") != null) ? fieldDetails.get("PASSWORD").toString() : "");
+				user.setSalt(Utils.getSaltWithUser(username, (fieldDetails.get("SALT") != null) ? fieldDetails.get("SALT").toString() : ""));
+				user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, contractName));
+				user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
+				user.setCustomerId(((BigDecimal) fieldDetails.get("CUSTID")).toString());
+				user.setUserEmail((fieldDetails.get("EMAIL") != null) ? fieldDetails.get("EMAIL").toString() : "");
+				//user.setProduct(fieldDetails.get("PRODUCT").toString());
+				user.setUserType(userType);
+				user.setOrgMode(fieldDetails.get("ORG_MODE").toString());
+			}
+		}
+		return user;
+	}
+	
+
+	
 	public boolean selectTest(){
 		
 		String sql = "SELECT WOM_WORKFLOW_PK" +
@@ -196,44 +289,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return true;
 	}
 	
-	public UserTO getUserByEmail(String userEmail) throws SystemException
-	{
-		logger.log(IAppLogger.INFO,	"Enter: LoginDAOImpl - getUserByEmail");
-		/*Object[] params = null;
-		int[] types = null;
-		UserTO user = null;
-		
-		
-		params = new Object[]{userEmail};
-		types = new int[]{Types.VARCHAR};	
-		List<Map<String,Object>> userRows = getJdbcTemplate().queryForList(IQueryConstants.GET_USER_BY_EMAIL, params, types);
-		if(userRows.size() == 1){
-			for (Map row : userRows) {			
-				user = new UserTO();
-				user.setUserName((String)row.get("USER_ID"));
-				user.setPassword((String)row.get("USER_PASSWD_HASH"));//"c20ad4d76fe97759aa27a0c99bff6710");
-				user.setUserEmail((String)row.get("USER_EMAIL"));
-				user.setUserStatus((String)row.get("USER_STATUS"));
-				user.setIsAdminFlag((String)row.get("IS_SUPER_ADMIN"));
-			}
-		} else {
-			// all the failure scenario is taken care of by the security framework;
-		}
-		
-		user = new UserTO();
-		if("devadmin".equals(userEmail)) {
-			user.setUserName("devadmin");
-		} else {
-			user.setUserName("school");
-		}
-		
-		user.setPassword("e64b78fc3bc91bcbc7dc232ba8ec59e0");
-		user.setUserEmail("abc@gmail.com");
-		user.setUserStatus("active");
-		user.setIsAdminFlag("Y");
-		
-		logger.log(IAppLogger.INFO,	"Exit: LoginDAOImpl - getUserByEmail");*/
+	public UserTO getUserByEmail(String userEmail) throws SystemException {
 		return getUserDetails(userEmail);
+	}
+	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException {
+		logger.log(IAppLogger.INFO,	"Enter: LoginDAOImpl - getUserByEmail");
+		return getUserDetails(userEmail, contractName);
 	}
 	
 	/**
@@ -297,8 +358,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String messageName = (String) paramMap.get("MESSAGE_NAME");
 		
 		String systemMessage = "";
+		String contractName = (String) paramMap.get("contractName");
+		if(contractName == null) {
+			contractName = Utils.getContractName();
+		}
 		try {
-			systemMessage = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			systemMessage = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = null;
 					cs = con.prepareCall("{call " + IQueryConstants.GET_SYSTEM_CONFIGURATION_MESSAGE + "}");

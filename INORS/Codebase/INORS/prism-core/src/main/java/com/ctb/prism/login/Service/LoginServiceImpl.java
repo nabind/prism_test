@@ -40,6 +40,10 @@ public class LoginServiceImpl implements ILoginService {
 	public UserTO getUserByEmail(String userEmail) throws SystemException {
 		return loginBusiness.getUserByEmail(userEmail);
 	}
+	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException {
+		return loginBusiness.getUserByEmail(userEmail, contractName);
+	}
+
 
 	/*
 	 * (non-Javadoc)

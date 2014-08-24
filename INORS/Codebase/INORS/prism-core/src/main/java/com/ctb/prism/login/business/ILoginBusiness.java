@@ -12,7 +12,8 @@ public interface ILoginBusiness {
 
 	public boolean selectTest();
 	public UserTO getUserByEmail(String userEmail) throws SystemException;
-	
+	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException;
+
 	public List<GrantedAuthority> getGrantedAuthorities(String username);
 	
 	public String getTenant(String username);

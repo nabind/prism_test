@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -32,6 +32,7 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
+import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 import com.ctb.prism.login.transferobject.UserTO;
 
 @Slf4j
@@ -184,7 +185,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						
 						// Authenticate user
 			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_PASSWD);
-						//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
+						// added to pass contract name in custom UsernamePasswordAuthenticationToken
+			        	authRequest.setContractName(request.getParameter("j_contract"));
+			        	//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
 				
 				        // Allow subclasses to set the "details" property
 				        setDetails(request, authRequest);
@@ -211,7 +214,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         		
         		// Authenticate user
 	        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(DUMMY_SSO_USERNAME, DUMMY_SSO_PASSWORD);
-				
+				// added to pass contract name in custom UsernamePasswordAuthenticationToken
+	        	authRequest.setContractName(request.getParameter("j_contract"));
 		        // Allow subclasses to set the "details" property
 		        setDetails(request, authRequest);
 		
@@ -236,7 +240,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	            username = username.trim();
 	
 	            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
-	
+	            // added to pass contract name in custom UsernamePasswordAuthenticationToken
+	        	authRequest.setContractName(request.getParameter("j_contract"));
 	            // Allow subclasses to set the "details" property
 	            setDetails(request, authRequest);
 	

@@ -32,6 +32,9 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public UserTO getUserByEmail(String userEmail) throws SystemException{
 		return loginDAO.getUserByEmail(userEmail);
 	}
+	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException{
+		return loginDAO.getUserByEmail(userEmail, contractName);
+	}
 	
 	public List<GrantedAuthority> getGrantedAuthorities(String username) {
 		return loginDAO.getGrantedAuthorities(username);

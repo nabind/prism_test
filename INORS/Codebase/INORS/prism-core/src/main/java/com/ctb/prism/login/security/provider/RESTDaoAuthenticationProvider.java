@@ -3,11 +3,13 @@ package com.ctb.prism.login.security.provider;
 import groovy.util.logging.Slf4j;
 
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+/*import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;*/
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 
 @Slf4j
 public class RESTDaoAuthenticationProvider extends DaoAuthenticationProvider {
