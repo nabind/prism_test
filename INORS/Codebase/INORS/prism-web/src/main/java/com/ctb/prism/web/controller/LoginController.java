@@ -38,6 +38,7 @@ import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -208,11 +209,10 @@ public class LoginController {
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
 			paramMap.put("purpose", IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
-			theme = theme.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
 		}else{
 			paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
 		}
-		paramMap.put("contractName", theme);
+		paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 		//TODO - Need to pass contractId in Controller and DAO
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		return messageMap;
@@ -247,12 +247,11 @@ public class LoginController {
 			
 			if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
-				theme = theme.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
 			} else {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			}
 			//TODO - Need to pass contractId in Controller and DAO
-			paramMapLoginMessage.put("contractName", theme);
+			paramMapLoginMessage.put("contractName", Utils.getContractNameNoLogin(theme));
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
 			loginMessage = (String)messageMap.get("systemMessage");
 			

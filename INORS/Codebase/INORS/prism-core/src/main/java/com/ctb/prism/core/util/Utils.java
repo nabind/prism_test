@@ -38,6 +38,10 @@ import org.apache.commons.codec.binary.Base64;
 public final class Utils {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(Utils.class.getName());
 
+	/**
+	 * get contract name after user logs into the system
+	 * @return
+	 */
 	public static String getContractName() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 		if(currentAuth != null) {
@@ -48,6 +52,15 @@ public final class Utils {
 		}
 		return "";
 	}
+	
+	/**
+	 * Get contract name before login - from theme name
+	 * @return
+	 */
+	public static String getContractNameNoLogin(String themeName) {
+		return themeName.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
+	}
+	
 	public static String getSaltWithUser(String userName, String salt) {
 		if (userName != null) {
 			return CustomStringUtil.appendString(userName.toLowerCase(), salt);
