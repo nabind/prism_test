@@ -206,11 +206,13 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		if (IApplicationConstants.PARENT_LOGIN.equals(theme)) {
+		if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
 			paramMap.put("purpose", IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
+			theme = theme.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
 		}else{
 			paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
 		}
+		paramMap.put("contractName", theme);
 		//TODO - Need to pass contractId in Controller and DAO
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		return messageMap;
@@ -233,22 +235,24 @@ public class LoginController {
 	throws ServletException, IOException,BusinessException{
 		logger.log(IAppLogger.INFO, "Enter: LoginController - getLoginMessage()");
 		long t1 = System.currentTimeMillis();
-		String parent = "";
+		String theme = "";
 		Map<String, Object> paramMapLoginMessage = null;
 		String loginMessage = "";
 		String jsonString = "";
 		try{
-			parent = themeResolver.resolveThemeName(request); 
+			theme = themeResolver.resolveThemeName(request); 
 			paramMapLoginMessage = new HashMap<String, Object>();
 			paramMapLoginMessage.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 			paramMapLoginMessage.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			
-			if (IApplicationConstants.PARENT_LOGIN.equals(parent)) {
+			if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
+				theme = theme.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
 			} else {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			}
 			//TODO - Need to pass contractId in Controller and DAO
+			paramMapLoginMessage.put("contractName", theme);
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
 			loginMessage = (String)messageMap.get("systemMessage");
 			
@@ -465,7 +469,7 @@ public class LoginController {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");
 						modelAndView.addObject("homeReport", homeReport);
-						themeResolver.setThemeName(req, res, "acsi");
+						themeResolver.setThemeName(req, res, user.getContractName());
 					}
 				} else if (homeReport.isAccessDenied()) {
 					modelAndView = new ModelAndView("error/accessDenied");

@@ -42,7 +42,7 @@
 	<tx:annotation-driven transaction-manager="txManager"/>
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSourcePrism" />
+		<property name="dataSource" ref="dataSourceInors" />
 	</bean>
 	
 	<!-- JNDI Connection Configuration -->
@@ -50,9 +50,13 @@
   	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<constructor-arg ref="dataSource" />
 	</bean>
-	<jee:jndi-lookup id="dataSourcePrism" jndi-name="java:comp/env/jdbc/prism"/>
-  	<bean id="jdbcTemplatePrism" class="org.springframework.jdbc.core.JdbcTemplate">
-		<constructor-arg ref="dataSourcePrism" />
+	<jee:jndi-lookup id="dataSourceInors" jndi-name="java:comp/env/jdbc/inors"/>
+  	<bean id="jdbcTemplateInors" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceInors" />
+	</bean>
+	<jee:jndi-lookup id="dataSourceTasc" jndi-name="java:comp/env/jdbc/tasc"/>
+  	<bean id="jdbcTemplateTasc" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceTasc" />
 	</bean>
 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
     	<constructor-arg ref="contextSource" />

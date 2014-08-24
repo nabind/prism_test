@@ -20,7 +20,7 @@
 
 	<bean id="themeResolver"
 		class="org.springframework.web.servlet.theme.CookieThemeResolver">
-		<property name="defaultThemeName" value="acsi" />
+		<property name="defaultThemeName" value="inors" />
 	</bean>
 
 	<bean id="themeSource"

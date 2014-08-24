@@ -33,7 +33,14 @@ public class UserTO extends BaseTO{
 	private String userType;
 	private String adminId;
 	private String orgMode;
+	private String contractName;
 	
+	public String getContractName() {
+		return contractName;
+	}
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
+	}
 	public String getOrgNodeLevelStr() {
 		return orgNodeLevelStr;
 	}
