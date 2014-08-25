@@ -30,6 +30,7 @@ import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
@@ -53,6 +54,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private static final String EXPIRY_DATE_PARAM = "time_stamp";
     private static final String USER_ROLE_PARAM = "user_role";
     private static final String USER_NAME_PARAM = "user_name";
+    
+    private static final String THEME_PARAM = "theme";
     
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "j_password";
@@ -96,6 +99,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         String role = null;
         String userName = null;
         
+        //Added for single Codebase
+        String theme = null;
+        
         /*String customerId, String orgNode, 
 			String orgLevel, String applicationName, String role, 
 			String validUntilDate, String secretValue*/
@@ -113,6 +119,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
             applicationName = getHeaderValue(request, APPLICATION_NAME_PARAM);
             role = getHeaderValue(request, USER_ROLE_PARAM);
             userName = getHeaderValue(request, USER_NAME_PARAM);
+            theme = getHeaderValue(request, THEME_PARAM);
         } catch (Exception ex) {ex.printStackTrace();}
         
         logger.info("customerId : {}" + customerId);
@@ -127,7 +134,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
         	try {
-				if(hmac.isValidRequest(customerId, orgNode, orgLevel, applicationName, role, userName, expiryTime, signature)) {
+				if(hmac.isValidRequest(customerId, orgNode, orgLevel, applicationName, role, userName, expiryTime, signature, theme)) {
 					logger.info("Authentication Filter : User request is valid, authenticating with dummy user.");
 					
 					// TODO -- here we need to change the logic based on i/p parameters
@@ -136,11 +143,14 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 					 *  dummyssouser user will have role ROLE_SSO and ROLE_USER in system and will have a default password
 					 *  based on admin flag from request ROLE_ADMIN will be added by system
 					 *  This user will not be associated with any ORG
-					 */
+					 */														
 					UserTO userTO = new UserTO();
 					userTO.setCustomerId(customerId);
 					userTO.setOrgNodeLevelStr(orgLevel);
 					userTO.setOrgCode(CustomStringUtil.appendString("0~", URLDecoder.decode(orgNode, "UTF-8")));
+					
+					userTO.setContractName(Utils.getContractNameNoLogin(theme));
+					
 					// get prism customer id and orgnode id
 					userTO = loginService.getOrgLevel(userTO);
 					if(userTO != null) {
@@ -150,7 +160,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, RANDOM_STRING);
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
 						
-						String existingUserOrg = loginService.getUserOrgNode(ssoUsername);
+						String existingUserOrg = loginService.getUserOrgNode(ssoUsername,Utils.getContractNameNoLogin(theme));
 						if(existingUserOrg == null) {
 						//if(loginService.checkUserAvailability(ssoUsername)) {
 							// if user  not present into system
@@ -163,6 +173,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 							paramMap.put("tenantId", userTO.getOrgId());
 							paramMap.put("orgLevel", orgLevel);
 							paramMap.put("userRoles", new String[]{"ROLE_USER"});
+							paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 							loginService.addNewUser(paramMap);
 							logger.info("SSO user is created : " + ssoUsername);
 						}else {
@@ -172,7 +183,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 								if(!existingUserOrg.equals(userTO.getOrgId())) {
 									// user org is changed from last login - update org_nodeid
 									logger.info("Updating user Org_nodeid as seems it moved to differnt school/org");
-									loginService.updateUserOrg(ssoUsername, userTO.getOrgId(), existingUserOrg);
+									loginService.updateUserOrg(ssoUsername, userTO.getOrgId(), existingUserOrg, Utils.getContractNameNoLogin(theme));
 								}
 							}
 						}
@@ -186,7 +197,12 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						// Authenticate user
 			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_PASSWD);
 						// added to pass contract name in custom UsernamePasswordAuthenticationToken
-			        	authRequest.setContractName(request.getParameter("j_contract"));
+			        	if(request.getParameter("j_contract") != null) {
+			        		authRequest.setContractName(request.getParameter("j_contract"));
+			        	} else {
+			        		authRequest.setContractName(Utils.getContractNameNoLogin(theme));
+			        	}
+			        	
 			        	//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
 				
 				        // Allow subclasses to set the "details" property

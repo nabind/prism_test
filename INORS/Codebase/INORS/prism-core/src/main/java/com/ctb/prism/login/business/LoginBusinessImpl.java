@@ -137,12 +137,12 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.checkUserAvailability(username);
 	}
 	
-	public String getUserOrgNode(String username) {
-		return loginDAO.getUserOrgNode(username);
+	public String getUserOrgNode(String username, String contractName) {
+		return loginDAO.getUserOrgNode(username,contractName);
 	}
 	
-	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid) {
-		loginDAO.updateUserOrg(username, OrgNodeId, oldOrgNodeid);
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid, String contractName) {
+		loginDAO.updateUserOrg(username, OrgNodeId, oldOrgNodeid, contractName);
 	}
 	
 	public void addNewUser(Map<String,Object> paramMap) throws Exception {

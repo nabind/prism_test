@@ -39,6 +39,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
     private static final String USER_NAME_PARAM = "&user_name=";
     private static final String SIGNATURE_PARAM = "&signature=";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    
+    private static final String THEME_PARAM = "&theme=";
 	
 	public DigitalMeasuresHMACQueryStringBuilder() {
 	}
@@ -100,10 +102,10 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	}*/
 	
 	public String buildAuthenticatedQueryString(String customerId, String orgNode, 
-			String orgLevel, String applicationName, String role, String userName) throws Exception
+			String orgLevel, String applicationName, String role, String userName, String theme) throws Exception
 	{
 		String validUntilDate = getISO8601UTCDate();
-		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNode, orgLevel, applicationName, role, userName, validUntilDate);
+		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNode, orgLevel, applicationName, role, userName, validUntilDate, theme);
 		String signature = getAuthenticationCode(queryString.toString());
 
 		appendAuthenticationCode(queryString, signature);
@@ -122,7 +124,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	 */
 	public boolean isValidRequest(String customerId, String orgNode, 
 			String orgLevel, String applicationName, String role, String userName,
-			String validUntilDate, String secretValue) throws Exception
+			String validUntilDate, String secretValue, String theme) throws Exception
 	{
 		
 		TimeZone timeZone = TimeZone.getTimeZone(getTimeZone());
@@ -144,7 +146,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					URLDecoder.decode(applicationName, URL_ENCODING), 
 					URLDecoder.decode(role, URL_ENCODING), 
 					URLDecoder.decode(userName, URL_ENCODING),
-					URLDecoder.decode(validUntilDate, URL_ENCODING));
+					URLDecoder.decode(validUntilDate, URL_ENCODING),
+					URLDecoder.decode(theme, URL_ENCODING));
 			String signature = urlEncode(getAuthenticationCode(queryString.toString()));
 			
 			if(secretValue != null && secretValue.equals(URLDecoder.decode(signature, URL_ENCODING))) {
@@ -210,7 +213,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	 */
 	private Appendable buildUnauthenticatedQueryString(String customerId, String orgNode, 
 			String orgLevel, String applicationName, String role, String userName,
-			String validUntilDate) throws Exception
+			String validUntilDate, String theme) throws Exception
 	{
 		StringBuilder builder = new StringBuilder();
 		
@@ -221,6 +224,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 		builder.append(EXPIRY_DATE_PARAM).append(urlEncode(validUntilDate));
 		builder.append(USER_ROLE_PARAM).append(urlEncode(role));
 		builder.append(USER_NAME_PARAM).append(urlEncode(userName));
+		builder.append(THEME_PARAM).append(theme);
 		
 		/*builder.append(API_KEY_PARAMETER_NAME).append(urlEncode(username));
 		builder.append(EXPIRY_DATE_PARAMETER_NAME).append(urlEncode(validUntilDate));

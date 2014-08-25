@@ -119,12 +119,12 @@ public class LoginServiceImpl implements ILoginService {
 		return loginBusiness.checkUserAvailability(username);
 	}
 	
-	public String getUserOrgNode(String username) {
-		return loginBusiness.getUserOrgNode(username);
+	public String getUserOrgNode(String username, String contractName) {
+		return loginBusiness.getUserOrgNode(username,contractName);
 	}
 	
-	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid) {
-		loginBusiness.updateUserOrg(username, OrgNodeId, oldOrgNodeid);
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid, String contractName) {
+		loginBusiness.updateUserOrg(username, OrgNodeId, oldOrgNodeid, contractName);
 	}
 
 	/*

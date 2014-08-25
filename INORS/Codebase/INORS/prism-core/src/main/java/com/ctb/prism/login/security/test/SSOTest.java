@@ -21,8 +21,11 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class SSOTest {
 	
-	private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults";
-	private static String REQUEST_PATH = "/reports.do?";
+	//private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults";
+	//private static String REQUEST_PATH = "/reports.do?";  
+	
+	//private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults/userlogin.do?theme=inors";
+	private static String REQUEST_URL = "http://localhost:8080/onlineresults/reports.do";
 	
 	private static String IP = "127.0.0.1";
 	private static String SECRET_KEY =  "BTCguSF49hYaPmAfe9Q29LtsQ2X";
@@ -31,12 +34,14 @@ public class SSOTest {
 	private static String timeZone = "GMT";
 	
 	private static String customer_id = "M013883003"; //tp code
-	private static String org_code = "D1"; //org_code path
-	private static String org_level ="1";
+	private static String org_code = "D1~9210~A470"; //org_code path
+	private static String org_level ="3";
 	private static String application_name = "CTB.COM"; 
 	private static String user_role = "Admin";
 	private static String user_regular = "Regular";
 	private static String user_name ="istep_admin_prism";
+	
+	private static String theme ="inors";//or tasc
 	
 	static final String JDBC_DRIVER = "oracle.jdbc.OracleDriver";
 	private static SecretKey secretKey;
@@ -45,7 +50,7 @@ public class SSOTest {
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		
 		Mac messageAuthenticationCode = Mac.getInstance(ENCODING_ALGORITHM);
 		secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ENCODING_ALGORITHM);
@@ -139,20 +144,41 @@ public class SSOTest {
 		
 		
 		
-		/*
+		
 		DigitalMeasuresHMACQueryStringBuilder queryStringBuilder = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 60*24*60*60, ENCODING_ALGORITHM);
 		queryStringBuilder.setTimeZone(timeZone);
 		queryStringBuilder.setENCODING_ALGORITHM(ENCODING_ALGORITHM);
 		queryStringBuilder.setURL_ENCODING(URL_ENCODING);
 	
 		String requestParam = queryStringBuilder.buildAuthenticatedQueryString(customer_id, org_code, org_level, application_name, user_role, user_name);
-		System.out.println(REQUEST_URL + "?" + requestParam);*/
+		System.out.println(REQUEST_URL + "?" + requestParam);
 		
 		//requestWithQueryString(requestParam);
 		
 	//	invalidRequestWithQueryString(requestParam.replace("validUntil=2013", "validUntil=2012"));
 	
+	}*/
+	
+	
+	
+	public static void main(String[] args) throws Exception {
+		
+		DigitalMeasuresHMACQueryStringBuilder queryStringBuilder = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 3600*60, ENCODING_ALGORITHM);
+		queryStringBuilder.setTimeZone(timeZone);
+		queryStringBuilder.setENCODING_ALGORITHM(ENCODING_ALGORITHM);
+		queryStringBuilder.setURL_ENCODING(URL_ENCODING);
+	
+		String requestParam = queryStringBuilder.buildAuthenticatedQueryString(customer_id, org_code, org_level, application_name, user_role, user_name, theme);
+		System.out.println(REQUEST_URL + "?" + requestParam);
+		
+		requestWithQueryString(requestParam);
+		
+	//	invalidRequestWithQueryString(requestParam.replace("validUntil=2013", "validUntil=2012"));
+	
 	}
+	
+	
+	
 	
 	private static String orgType(int orgLevel) {
 		if(orgLevel == 1) return "State";

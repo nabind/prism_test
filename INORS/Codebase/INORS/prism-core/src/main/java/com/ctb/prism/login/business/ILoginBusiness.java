@@ -29,8 +29,8 @@ public interface ILoginBusiness {
 	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
 	public UserTO getOrgLevel(UserTO userTO);
 	public boolean checkUserAvailability(String username);
-	public String getUserOrgNode(String username);
-	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid);
+	public String getUserOrgNode(String username, String contractName);
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid, String contractName);
 	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 	public String getRootPath(String customerId, String testAdmin);
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);

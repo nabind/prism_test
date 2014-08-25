@@ -327,7 +327,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public UserTO getOrgLevel(UserTO argUserTO) {
 		UserTO userTO = null;
 		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_LEVEL, 
+		lstData = getJdbcTemplatePrism(argUserTO.getContractName()).queryForList(IQueryConstants.GET_ORG_LEVEL, 
 				argUserTO.getOrgCode(), argUserTO.getCustomerId(), argUserTO.getOrgNodeLevelStr());
 		logger.log(IAppLogger.DEBUG, lstData.size()+"");
 
@@ -500,13 +500,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * 
 	 * @return String
 	 */
-	public String getUserOrgNode(String username) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+	public String getUserOrgNode(String username, String contractName) {
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
 				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
 		if (lstData != null && !lstData.isEmpty()) {
 			String orgNodeId = "";
 			List<Map<String, Object>> usrData = null;
-			usrData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ORG, username);
+			usrData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_USER_ORG, username);
 			if (usrData.size() > 0) {
 				for (Map<String, Object> fieldDetails : usrData) {
 					orgNodeId = fieldDetails.get("NODEID").toString();
@@ -517,8 +517,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return null;
 	}
 	
-	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_USER, OrgNodeId, oldOrgNodeid, username);
+	
+	/*
+	 * Update user org
+	 * @see com.ctb.prism.login.dao.ILoginDAO#updateUserOrg(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid, String contractName) {
+		getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_USER_ORG, OrgNodeId, oldOrgNodeid, username);
 	}
 	
 	/**
@@ -542,10 +547,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		//String adminYear =  (String) paramMap.get("adminYear");
 		final String[] userRoles =  (String[]) paramMap.get("userRoles");
 		
+		final String contractName = (String) paramMap.get("contractName");
+		
 		
 		final StringBuilder roles = new StringBuilder();
 		try {
-			ObjectValueTO currAdmin = getCurrentAdmin();
+			ObjectValueTO currAdmin = getCurrentAdmin(contractName);
 			final String adminYear = currAdmin.getValue();
 			
 			
@@ -563,7 +570,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 			logger.log(IAppLogger.INFO, "Add User");
 			
-			String nodeId = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			String nodeId = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				String salt = PasswordGenerator.getNextSalt();
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.CREATE_USER);
@@ -612,13 +619,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	}
 	
 	/**
-	 * get user list for selected role
-	 * @param role id
+	 * get current admin details
+	 * @param contractName
 	 * @return List of users
 	 */
-	public ObjectValueTO getCurrentAdmin() throws SystemException {
+	public ObjectValueTO getCurrentAdmin(String contractName) throws SystemException {
 		ObjectValueTO to = null;
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CURR_ADMIN_YEAR);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.CURR_ADMIN_YEAR);
 		logger.log(IAppLogger.DEBUG, lstData.size()+"");
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
