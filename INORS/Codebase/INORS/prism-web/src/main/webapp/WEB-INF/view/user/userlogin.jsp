@@ -420,8 +420,8 @@
 	
 	<footer class="margin-top">
 		<c:choose>
-			<c:when test="${themeName == 'acsi'}">
-				<div class="float-center custom-p"> ${messageMap.teacherFooterMessage} </div> 
+			<c:when test="${themeName == 'inors'}">
+				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
 			</c:when>
 			<c:otherwise>
 				<div class="float-center custom-p"> ${messageMap.parentFooterMessage} </div>  
