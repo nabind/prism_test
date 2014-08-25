@@ -3,7 +3,7 @@
 <spring:theme code="theme.name" var="themeName"/>
 <footer class="margin-top main-footer">
 	<c:choose>
-		<c:when test="${themeName == 'acsi'}">
+		<c:when test="${themeName == 'inors'}">
 			<div class="align-center custom-p color-white" style="font-size: 11px;">
 				${messageMapSession.teacherFooterMessage} 
 			</div>
