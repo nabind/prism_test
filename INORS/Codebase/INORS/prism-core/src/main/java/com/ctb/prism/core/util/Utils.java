@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +27,9 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IApplicationConstants.USER_TYPE;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -44,15 +47,15 @@ public final class Utils {
 	 */
 	public static String getContractName() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-		if(currentAuth != null) {
+		if (currentAuth != null) {
 			AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
-			if(authenticatedUser.getContractName() != null) {
+			if (authenticatedUser.getContractName() != null) {
 				return authenticatedUser.getContractName();
-			} 
+			}
 		}
 		return "";
 	}
-	
+
 	/**
 	 * Get contract name before login - from theme name
 	 * @return
@@ -60,7 +63,7 @@ public final class Utils {
 	public static String getContractNameNoLogin(String themeName) {
 		return themeName.replaceAll(IApplicationConstants.PARENT_LOGIN, "");
 	}
-	
+
 	public static String getSaltWithUser(String userName, String salt) {
 		if (userName != null) {
 			return CustomStringUtil.appendString(userName.toLowerCase(), salt);
@@ -137,7 +140,7 @@ public final class Utils {
 		// String pattern ="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 		String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$";
 		/**
-     	 ^                # start-of-string
+    	 ^                # start-of-string
 		(?=.*[0-9])       # a digit must occur at least once
 		(?=.*[a-z])       # a lower case letter must occur at least once
 		(?=.*[A-Z])       # an upper case letter must occur at least once
@@ -352,7 +355,7 @@ public final class Utils {
 		else
 			return true;
 	}
-	
+
 	public static byte[] serialize(Object obj) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectOutputStream os = null;
@@ -413,18 +416,18 @@ public final class Utils {
 	public static String convertSpecialCharToHtmlChar(String input) {
 		return HtmlUtils.htmlEscape(input);
 	}
-	
-	public static String encryptData(String data){		
-		byte[] bytesEncoded = Base64.encodeBase64(data .getBytes());
-		return new String(bytesEncoded );
-		//System.out.println("ecncoded value is " + new String(bytesEncoded ));
+
+	public static String encryptData(String data) {
+		byte[] bytesEncoded = Base64.encodeBase64(data.getBytes());
+		return new String(bytesEncoded);
+		// System.out.println("ecncoded value is " + new String(bytesEncoded ));
 	}
-	
-	public static String decryptData(String data){
+
+	public static String decryptData(String data) {
 		byte[] bytesEncoded = data.getBytes();
-		byte[] valueDecoded = Base64.decodeBase64(bytesEncoded );
-		return new String(valueDecoded );
-		//System.out.println("Decoded value is " + new String(valueDecoded));
+		byte[] valueDecoded = Base64.decodeBase64(bytesEncoded);
+		return new String(valueDecoded);
+		// System.out.println("Decoded value is " + new String(valueDecoded));
 	}
 
 	/**
@@ -436,6 +439,56 @@ public final class Utils {
 		if (error != null && !error.isEmpty()) {
 			logger.log(IAppLogger.ERROR, error);
 		}
+	}
+
+	/**
+	 * Calls the setter method for css class on each menu item.
+	 * 
+	 * @param menuSet
+	 * @param propertyLookup
+	 * @param contractName
+	 * @return
+	 */
+	public static Set<MenuTO> attachCSSClassToMenuSet(Set<MenuTO> menuSet,
+			IPropertyLookup propertyLookup, String contractName) {
+		String REPORT_NAME_CLASS = propertyLookup.get(contractName
+				+ "_REPORT_NAME_CLASS");
+		logger.log(IAppLogger.INFO, "REPORT_NAME_CLASS = " + REPORT_NAME_CLASS);
+		String[] reportNameClasses = REPORT_NAME_CLASS.split("\\|");
+		for (String token : reportNameClasses) {
+			String[] pairs = token.split("\\^");
+			MenuTO menu = getMenuFromSet(menuSet, pairs[0].trim());
+			if (menu != null
+					&& menu.getReportName().equalsIgnoreCase(pairs[0].trim())) {
+				menu.setCssClass(pairs[1].trim());
+				logger.log(IAppLogger.INFO, menu.getReportName() + " = "
+						+ pairs[1].trim());
+			}
+		}
+		return menuSet;
+	}
+
+	/**
+	 * Returns a menu object from a set.
+	 * 
+	 * @param menuSet
+	 * @param menuName
+	 * @return
+	 */
+	public static MenuTO getMenuFromSet(Set<MenuTO> menuSet, String reportName) {
+		MenuTO to = null;
+		for (MenuTO menu : menuSet) {
+			logger.log(
+					IAppLogger.INFO,
+					reportName + ".equalsIgnoreCase(" + menu.getReportName()
+							+ ") = "
+							+ reportName.equalsIgnoreCase(menu.getReportName()));
+			if (reportName.equalsIgnoreCase(menu.getReportName())) {
+				to = menu;
+				break;
+			}
+		}
+		return to;
 	}
 
 }
