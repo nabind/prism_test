@@ -1,13 +1,15 @@
 package com.ctb.prism.login.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
-import java.util.Map;
 
 
 public interface ILoginDAO {
@@ -29,5 +31,5 @@ public interface ILoginDAO {
 	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid);
 	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 	public String getRootPath(String customerId, String testAdmin);
-	public Map<String, String> getMenuMap(Map<String, Object> paramMap);
+	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 }

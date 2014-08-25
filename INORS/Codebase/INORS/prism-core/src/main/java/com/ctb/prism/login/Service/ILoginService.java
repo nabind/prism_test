@@ -2,10 +2,12 @@ package com.ctb.prism.login.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 
 /**
@@ -90,5 +92,5 @@ public interface ILoginService {
 	 * @param paramMap
 	 * @return
 	 */
-	public Map<String, String> getMenuMap(Map<String, Object> paramMap);
+	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 }

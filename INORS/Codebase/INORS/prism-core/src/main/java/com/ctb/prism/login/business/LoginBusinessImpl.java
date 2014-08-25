@@ -3,6 +3,7 @@ package com.ctb.prism.login.business;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.login.dao.ILoginDAO;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 
 
@@ -154,7 +156,7 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.login.business.ILoginBusiness#getMenuMap(java.util.Map)
 	 */
-	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		return loginDAO.getMenuMap(paramMap);
 	}
 }

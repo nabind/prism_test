@@ -7,9 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,6 +33,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 //import com.googlecode.ehcache.annotations.Cacheable;
 //import com.googlecode.ehcache.annotations.TriggersRemove;
@@ -646,10 +648,11 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.login.dao.ILoginDAO#getMenuMap(java.util.Map)
 	 */
-	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getMenuMap') )")
+	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
 		logger.log(IAppLogger.INFO, "userId = " + userId);
-		return (Map<String, String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		return (Set<MenuTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
 				cs.setLong(1, userId);
@@ -660,21 +663,30 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		}, new CallableStatementCallback<Object>() {
 			public Object doInCallableStatement(CallableStatement cs) {
 				ResultSet rs = null;
-				Map<String, String> menuMap = new HashMap<String, String>();
+				Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
 				try {
 					cs.execute();
 					rs = (ResultSet) cs.getObject(2);
 					while (rs.next()) {
+						MenuTO to = new MenuTO();
+						String menuName = rs.getString("MENU_NAME");
 						String key = rs.getString("KEY");
 						String value = rs.getString("VALUE");
-						menuMap.put(key, value);
+						String menuSeq = rs.getString("MENU_SEQ");
+						String reportSeq = rs.getString("REPORT_SEQ");
+						to.setMenuName(menuName);
+						to.setReportName(key);
+						to.setReportFolderUri(value);
+						to.setMenuSequence(menuSeq);
+						to.setReportSequence(reportSeq);
+						menuSet.add(to);
 					}
 					Utils.logError(cs.getString(3));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				logger.log(IAppLogger.INFO, "menuMap = " + menuMap);
-				return menuMap;
+				logger.log(IAppLogger.INFO, "menuSet = " + menuSet);
+				return menuSet;
 			}
 		});
 	}

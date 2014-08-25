@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -377,8 +379,11 @@ public class LoginController {
 				}
 				Map<String, Object> paramMap = new HashMap<String, Object>();
 				paramMap.put("userId", user.getUserId());
-				Map<String, String> menuMap = loginService.getMenuMap(paramMap);
-				req.getSession().setAttribute(IApplicationConstants.MENU_MAP, menuMap);
+				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
+				// TODO - Need to pass contractName
+				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup, "INORS");
+				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));
+				req.getSession().setAttribute(IApplicationConstants.MENU_SET, menuSet);
 				
 				Map<String, Object> messageMap = getMessage(themeResolver.resolveThemeName(req));
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);

@@ -2,6 +2,7 @@ package com.ctb.prism.login.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.business.ILoginBusiness;
+import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 
 /**
@@ -144,7 +146,7 @@ public class LoginServiceImpl implements ILoginService {
 	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#getMenuMap(java.util.Map)
 	 */
-	public Map<String, String> getMenuMap(Map<String, Object> paramMap) {
+	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		return loginBusiness.getMenuMap(paramMap);
 	}
 
