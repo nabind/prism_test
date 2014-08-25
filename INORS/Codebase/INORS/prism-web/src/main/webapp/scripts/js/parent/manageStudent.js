@@ -96,7 +96,7 @@ function openModalToViewAssessments(studentBioId, testElementId) {
 				if(data.status != 'Blank') {
 				//=========OPEN THE MODAL========
 				$("#studentModal").modal({
-					title: 'Student Assessment Details',
+					title: strings['msg.studentAssessmentDetails'],
 					//height: 320,
 					//width: 350,
 					resize:true,
@@ -153,12 +153,11 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 	var makeViewAssessmentTableDom = '<table id="assessmentTable" class="table " style="width:940px">'
 									+'<thead class ="table-header glossy ">'
 									+'<tr >'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available Assessments</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Invitation Code</span></th>'
-									//+'<th scope="col" class="blue-gradient glossy"><span class="white">Status</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Available IC Claims</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Expiration Date</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">Action</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.availableAssessments']+'</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.invitationCode']+'</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.availableICClaims']+'</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.groupDownloadFiles.expDate']+'</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.action']+'</span></th>'
 									+'</tr>'
 									+'</thead>'
 									+'<tbody>';
@@ -217,7 +216,7 @@ var globalcounter = 0;
 function confirmRecreationAC(rowcounter)
 {
 	globalcounter = rowcounter;
-	$.modal.confirm('Re-setting the invitation code should be used cautiously. Once the code is re-set, the old invitation code will no longer be linked to that student\'s results. Parents and family will no longer be able to view results, although the account is still active. Do you want to continue?', function()
+	$.modal.confirm(strings['msg.confirm.resetIc'], function()
 	{
 		blockUI();
 		var studentBioId = $("#studentBioIdAss"+globalcounter).val();

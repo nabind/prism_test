@@ -63,4 +63,69 @@
 	strings['msg.rp.email.success'] = "<spring:message code='msg.rp.email.success' javaScriptEscape='true' />";
 	strings['msg.rp.email.failure'] = "<spring:message code='msg.rp.email.failure' javaScriptEscape='true' />";
 	strings['msg.rp.confirm'] = "<spring:message code='msg.rp.confirm' javaScriptEscape='true' />";
+	
+	strings['msg.confirm.delete'] = "<spring:message code='msg.confirm.delete' javaScriptEscape='true' />";
+	strings['msg.fnf'] = "<spring:message code='msg.fnf' javaScriptEscape='true' />";
+	strings['msg.jobDeleted'] = "<spring:message code='msg.jobDeleted' javaScriptEscape='true' />";
+	strings['msg.fileDeleteError'] = "<spring:message code='msg.fileDeleteError' javaScriptEscape='true' />";
+	strings['msg.studentNotFound'] = "<spring:message code='msg.studentNotFound' javaScriptEscape='true' />";
+	strings['msg.duplexPrintConfirm'] = "<spring:message code='msg.duplexPrintConfirm' javaScriptEscape='true' />";
+	strings['msg.isr'] = "<spring:message code='msg.isr' javaScriptEscape='true' />";
+	strings['msg.urt'] = "<spring:message code='msg.urt' javaScriptEscape='true' />";
+	strings['msg.selectStudent'] = "<spring:message code='msg.selectStudent' javaScriptEscape='true' />";
+	strings['msg.nff'] = "<spring:message code='msg.nff' javaScriptEscape='true' />";
+	strings['msg.validFileName'] = "<spring:message code='msg.validFileName' javaScriptEscape='true' />";
+	strings['msg.validEmail'] = "<spring:message code='msg.validEmail' javaScriptEscape='true' />";
+	strings['msg.oneStudent'] = "<spring:message code='msg.oneStudent' javaScriptEscape='true' />";
+
+	strings['option.statusCode.0'] = "<spring:message code='option.statusCode.0' javaScriptEscape='true' />";
+	strings['option.statusCode.3'] = "<spring:message code='option.statusCode.3' javaScriptEscape='true' />";
+	strings['option.statusCode.5'] = "<spring:message code='option.statusCode.5' javaScriptEscape='true' />";
+	strings['option.statusCode.7'] = "<spring:message code='option.statusCode.7' javaScriptEscape='true' />";
+	strings['option.statusCode.8'] = "<spring:message code='option.statusCode.8' javaScriptEscape='true' />";
+	strings['option.statusCode.9'] = "<spring:message code='option.statusCode.9' javaScriptEscape='true' />";
+	strings['msg.pleaseSelect'] = "<spring:message code='msg.pleaseSelect' javaScriptEscape='true' />";
+	strings['msg.err.homePageContent'] = "<spring:message code='msg.err.homePageContent' javaScriptEscape='true' />";
+	strings['msg.confirm.deleteContent'] = "<spring:message code='msg.confirm.deleteContent' javaScriptEscape='true' />";
+	
+	strings['msg.studentAssessmentDetails'] = "<spring:message code='msg.studentAssessmentDetails' javaScriptEscape='true' />";
+	strings['msg.confirm.resetIc'] = "<spring:message code='msg.confirm.resetIc' javaScriptEscape='true' />";
+	strings['thead.assessment.availableAssessments'] = "<spring:message code='thead.assessment.availableAssessments' javaScriptEscape='true' />";
+	strings['thead.assessment.invitationCode'] = "<spring:message code='thead.assessment.invitationCode' javaScriptEscape='true' />";
+	strings['thead.assessment.availableICClaims'] = "<spring:message code='thead.assessment.availableICClaims' javaScriptEscape='true' />";
+	strings['thead.assessment.action'] = "<spring:message code='thead.assessment.action' javaScriptEscape='true' />";
+	
+	strings['label.AdminSeason'] = "<spring:message code='label.AdminSeason' javaScriptEscape='true' />";
+	strings['label.Grade'] = "<spring:message code='label.Grade' javaScriptEscape='true' />";
+	strings['th.studentTable.studentName'] = "<spring:message code='th.studentTable.studentName' javaScriptEscape='true' />";
+	strings['th.studentTable.adminSeason'] = "<spring:message code='th.studentTable.adminSeason' javaScriptEscape='true' />";
+	strings['th.studentTable.grade'] = "<spring:message code='th.studentTable.grade' javaScriptEscape='true' />";
+	strings['msg.studentNotAvailable'] = "<spring:message code='msg.studentNotAvailable' javaScriptEscape='true' />";
+	strings['msg.clickStudent'] = "<spring:message code='msg.clickStudent' javaScriptEscape='true' />";
+	strings['msg.newParentPassword'] = "<spring:message code='msg.newParentPassword' javaScriptEscape='true' />";
+	strings['msg.passwordReset'] = "<spring:message code='msg.passwordReset' javaScriptEscape='true' />";
+	strings['msg.passwordSent'] = "<spring:message code='msg.passwordSent' javaScriptEscape='true' />";
+	strings['msg.clickingSubmit'] = "<spring:message code='msg.clickingSubmit' javaScriptEscape='true' />";
+	strings['msg.confirmIdentity'] = "<spring:message code='msg.confirmIdentity' javaScriptEscape='true' />";
+	strings['msg.userName'] = "<spring:message code='msg.userName' javaScriptEscape='true' />";
+	strings['msg.fullName'] = "<spring:message code='msg.fullName' javaScriptEscape='true' />";
+
+	strings['label.overallResults'] = "<spring:message code='label.overallResults' javaScriptEscape='true' />";
+	strings['label.resultsByStandard'] = "<spring:message code='label.resultsByStandard' javaScriptEscape='true' />";
+	strings['title.noImagePrintAvailable'] = "<spring:message code='title.noImagePrintAvailable' javaScriptEscape='true' />";
+	strings['title.appliedSkillsImagePDF'] = "<spring:message code='title.appliedSkillsImagePDF' javaScriptEscape='true' />";
+	strings['title.noStudentReportAvailable'] = "<spring:message code='title.noStudentReportAvailable' javaScriptEscape='true' />";
+	strings['title.individualStudentReport'] = "<spring:message code='title.individualStudentReport' javaScriptEscape='true' />";
+	strings['msg.studentReport'] = "<spring:message code='msg.studentReport' javaScriptEscape='true' />";
+	strings['msg.imagePDF'] = "<spring:message code='msg.imagePDF' javaScriptEscape='true' />";
+	
+	strings['confirm.deleteUser'] = "<spring:message code='confirm.deleteUser' javaScriptEscape='true' />";
+	strings['label.delete'] = "<spring:message code='label.delete' javaScriptEscape='true' />";
+	strings['title.removeFromAssociation'] = "<spring:message code='title.removeFromAssociation' javaScriptEscape='true' />";
+	
+	strings['msg.err.userCount'] = "<spring:message code='msg.err.userCount' javaScriptEscape='true' />";
+	strings['title.viewUserNumber'] = "<spring:message code='title.viewUserNumber' javaScriptEscape='true' />";
+	strings['label.userCount'] = "<spring:message code='label.userCount' javaScriptEscape='true' />";
+	strings['msg.clickRedirectManageUsers'] = "<spring:message code='msg.clickRedirectManageUsers' javaScriptEscape='true' />";
+	
 </script>

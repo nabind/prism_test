@@ -184,7 +184,7 @@ $(document).ready(function() {
 	$('.delete-content').live("click", function() {
 	    var row = $(this);
 		var contentId = $(this).attr("contentId");
-		$.modal.confirm("Do you want to delete this content?" ,
+		$.modal.confirm(strings['msg.confirm.deleteContent'],
 			function () {
 				deleteContentDetails(contentId, row);
 				enableSorting(true);
@@ -460,47 +460,47 @@ function buildStatusCodeDOM($container,statusCode){
 	
 	var option = "";
 	if(statusCode == 'Blank' || statusCode == ''){
-		option += "<option selected value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option value='5'>Invalid by School (5)</option>";		
-		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option selected value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option value='9'>"+strings['option.statusCode.9']+"</option>";
 	}else if(performanceLevel == '3'){
-		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option selected value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option value='5'>Invalid by School (5)</option>";		
-		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option selected value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option value='9'>"+strings['option.statusCode.9']+"</option>";
 	}else if(performanceLevel == '7'){
-		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option value='5'>Invalid by School (5)</option>";		
-		option += "<option selected value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option selected value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option value='9'>"+strings['option.statusCode.9']+"</option>";
 	}else if(performanceLevel == '5'){
-		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option selected value='5'>Invalid by School (5)</option>";		
-		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option selected value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option value='9'>"+strings['option.statusCode.9']+"</option>";
 	}else if(performanceLevel == '8'){
-		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option value='5'>Invalid by School (5)</option>";		
-		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option selected value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option selected value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option value='9'>"+strings['option.statusCode.9']+"</option>";
 	}else if(performanceLevel == '9'){
-		option += "<option value='Blank'>Student scores reported</option>";
-		option += "<option value='3'>Test Not received/Test Not Taken (3)</option>";
-		option += "<option value='5'>Invalid by School (5)</option>";		
-		option += "<option value='7'>Student Participated in IMAST (7)</option>";	
-		option += "<option value='8'>Test Interrupted-Valid (8)</option>";
-		option += "<option selected value='9'>Test Interrupted-Invalid (9)</option>";
+		option += "<option value='Blank'>"+strings['option.statusCode.0']+"</option>";
+		option += "<option value='3'>"+strings['option.statusCode.3']+"</option>";
+		option += "<option value='5'>"+strings['option.statusCode.5']+"</option>";		
+		option += "<option value='7'>"+strings['option.statusCode.7']+"</option>";	
+		option += "<option value='8'>"+strings['option.statusCode.8']+"</option>";
+		option += "<option selected value='9'>"+strings['option.statusCode.9']+"</option>";
 	}
 	$container.find('#statusCode').html(option);
 	$container.find('#statusCode').change();
@@ -900,7 +900,7 @@ function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,cl
 	elementObject.empty();
 	var option = "";
 	if((typeof plsSelectFlag !== 'undefined') && (plsSelectFlag == 1)){
-		option += "<option value='-1'>Please Select</option>";
+		option += "<option value='-1'>"+strings['msg.pleaseSelect']+"</option>";
 	}
 	
 	if((typeof clearFlag === 'undefined')){
@@ -1148,7 +1148,7 @@ function openInorsHomePage() {
 				$('#report-iframe-0').contents().find('#taContent').val(data.responseText);
 				$('#report-iframe-0').contents().find('#inorsHome').html($('#report-iframe-0').contents().find('#taContent').val());
 			} else {
-				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+				inorsHomeObj.html("<p class='big-message icon-warning red-gradient'>"+strings['msg.err.homePageContent']+"</p>");
 			}				
 		  }
 		});

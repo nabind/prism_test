@@ -328,11 +328,11 @@
 										  +'<dd style="height: 150px; ">'
 										  	+'<div class="with-padding">'
 											  		+'<p class="button-height inline-label">'
-											  				+'<label class="label" for="studentAdminSeason"> Admin Season: </label>'
+											  				+'<label class="label" for="studentAdminSeason"> '+strings['label.AdminSeason']+' </label>'
 											  					+'<label class="full-width newReportName" id="studentAdminSeason"> '+this.administration+' </label>'
 											  		+'</p>'	
 											  		+'<p class="button-height inline-label">'
-											  				+'<label class="label" for="studentAdminGrade"> Grade: </label>'
+											  				+'<label class="label" for="studentAdminGrade"> '+strings['label.Grade']+' </label>'
 											  					+'<label class="full-width newReportName" id="studentAdminGrade"> '+this.grade+' </label>'
 								  					+'</p>'	
 								  			+'</div>'
@@ -342,7 +342,7 @@
 		makeViewStudentDom += '</dl>';
 		makeViewStudentDom += '<p class="message" style="width:329px">'
 								+'<span class="big-message-icon icon-speech left-side with-text blue"></span>'
-								+'<span class="blue">Click on each student name to view their details.</span>'
+								+'<span class="blue">'+strings['msg.clickStudent']+'</span>'
 								+'</p>';
 							
 		
@@ -359,9 +359,9 @@
 		var makeViewStudentTableDom = '<table id="studentTable" class="table " style="width:400px">'
 										+'<thead class ="table-header blue-gradient glossy ">'
 										+'<tr >'
-										+'<th scope="col" class="blue-gradient glossy"><span class="white">Student Name</span></th>'
-										+'<th scope="col" class="blue-gradient glossy"><span class="white">Admin Season</span></th>'
-										+'<th scope="col" class="blue-gradient glossy"><span class="white">Grade</span></th>'
+										+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['th.studentTable.studentName']+'</span></th>'
+										+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['th.studentTable.adminSeason']+'</span></th>'
+										+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['th.studentTable.grade']+'</span></th>'
 										+'</tr>'
 										+'</thead>'
 										+'<tbody>';
@@ -389,7 +389,7 @@
 				+obj.studentName 
 				+'</a>'
 		}else{
-			studentNameHTML += '<span class="with-tooltip tooltip-left" title="Student data is not available<br> at this time.">'
+			studentNameHTML += '<span class="with-tooltip tooltip-left" title="'+strings['msg.studentNotAvailable']+'">'
 				+obj.studentName+'</span>';
 		}
 		return studentNameHTML;
@@ -612,7 +612,6 @@
 	
 	//======================OPEN RESET PASSWORD ==========================================
 	function openResetPasswordModal(parentName,parentDisplayName) {
-		//alert("openResetPasswordModal");
 		$("#passwordModal").modal({
 			title: '<b>Reset User Password</b>',
 			width: 480,
@@ -644,7 +643,7 @@
 		}	
    //=======================================AJAX CALL TO RESET THE PASSWORD IN THE DATABASE============
 	function resetPassword(win,parentName,parentDisplayName)
-	{   //alert("resetPassword");
+	{
 		var row = $("#"+parentName);
 		var nodeid = "userName=" + parentName;	
 		blockUI();
@@ -658,7 +657,7 @@
 				if (data!= null) {
 				//=========REBUILD THE MODAL DOM========
 					if( data.sendEmailFlag == "1") {
-						win.setModalTitle('New Parent Password');
+						win.setModalTitle(strings['msg.newParentPassword']);
 						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");				
 					} else {
 						$.modal.alert(strings['script.parent.passwordResetError']);
@@ -681,12 +680,11 @@
 	//==========================CREATES THE STRUCTURE FOR RESET PASSWORD=======================
 	function buildResetPasswordDom(parentDisplayName,modalId,modalContainerDivId)
 	{	
-				// alert("buildResetPasswordDom ");
 		$("#"+modalId +" > "+"#"+modalContainerDivId ).find("div").remove();
 		var newPassword ='<div id="newPassword">'
-							 +'<p class="message blue-gradient" style="width:400px">The password for the following user has been reset:</p>'
+							 +'<p class="message blue-gradient" style="width:400px">'+strings['msg.passwordReset']+'</p>'
 							 +'<p><b>Full Name:</b>&nbsp;'+parentDisplayName+'</p>'
-							 +'<p class="big-message" style="width:400px">Password will be sent to Parent email address</p>'
+							 +'<p class="big-message" style="width:400px">'string['msg.passwordSent']'</p>'
 							 +'</div>';
 				
 			$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(newPassword);		
@@ -696,17 +694,16 @@
 	//==========================CREATES THE STRUCTURE FOR THE POP UP FOR CONFIRMATION TO THE USER FOR  RESETTING THE  PASSWORD=======================
 	function showPasswordChangeWindow (parentName,parentDisplayName,modalId,modalContainerDivId)
 	{
-		//alert("showPasswordChangeWindow ");
 		$("#"+modalId +" > "+"#"+modalContainerDivId ).find("div").remove();
 		var content ='<div>'
-						+'<p  class="message blue-gradient" style="width:350px">Clicking the submit button will generate a new password and the previous password will be deleted. Please confirm if you want to continue.</p>'
-						+'<p class="big-message" style="width:350px">Please be sure you have confirmed the identity of this user.<br/>'
+						+'<p  class="message blue-gradient" style="width:350px">'+strings['msg.clickingSubmit']+'</p>'
+						+'<p class="big-message" style="width:350px">'+strings['msg.confirmIdentity']+'<br/>'
 						+'</p>'
 						+'<br/>'
-						+'<strong>User Name:</strong>&nbsp;&nbsp;&nbsp;'
+						+'<strong>'+strings['msg.userName']+'</strong>&nbsp;&nbsp;&nbsp;'
 						+parentName
 						+'<br/>'
-						+'<strong>Full Name:</strong>&nbsp;&nbsp;&nbsp;'
+						+'<strong>'+string['msg.fullName']+'</strong>&nbsp;&nbsp;&nbsp;'
 						+ parentDisplayName
 						+'</div>'
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(content);					

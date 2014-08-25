@@ -358,8 +358,8 @@ function buildOrgDOM(checkFirstLoad, data) {
 						+'<td>' + this.tenantName +'</td>'
 						+'<td>'+this.noOfChildOrgs+'</td>'
 						//+ buildRedirectToUserLink(this.tenantId,this.parentTenantId,this.noOfUsers)
-						+'<td><span class="button-group compact"><a tenantId="'+this.tenantId+'" id="count_'+this.tenantId+'" orgname="'+this.tenantName+'" parentTenantId="'+this.parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="View number of users">'
-							+'User Count</a></span></td>'
+						+'<td><span class="button-group compact"><a tenantId="'+this.tenantId+'" id="count_'+this.tenantId+'" orgname="'+this.tenantName+'" parentTenantId="'+this.parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">'
+							+strings['label.userCount']+'</a></span></td>'
 						+'</tr>'				
 										
 										
@@ -411,17 +411,16 @@ function buildOrgDOM(checkFirstLoad, data) {
 					
 				}
 				else {
-					$.modal.alert("Error in retrieving user count");
-					var buttonTag ='<span class="button-group compact"><a tenantId="'+tenantId+'" id="count_'+tenantId+'" orgname="'+orgname+'" parentTenantId="'+parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="View number of users">User Count</a></span>'
+					$.modal.alert(strings['msg.err.userCount']);
+					var buttonTag ='<span class="button-group compact"><a tenantId="'+tenantId+'" id="count_'+tenantId+'" orgname="'+orgname+'" parentTenantId="'+parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">'+strings['label.userCount']+'</a></span>'
 					$("#count_"+tenantId).html(buttonTag);
 				}
 				
 			},
 			error : function(data){
-				var buttonTag ='<span class="button-group compact"><a tenantId="'+tenantId+'" id="count_'+tenantId+'" orgname="'+orgname+'" parentTenantId="'+parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="View number of users">User Count</a></span>'
+				var buttonTag ='<span class="button-group compact"><a tenantId="'+tenantId+'" id="count_'+tenantId+'" orgname="'+orgname+'" parentTenantId="'+parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">'+strings['label.userCount']+'</a></span>'
 				$("#count_"+tenantId).html(buttonTag);							
-				//$.modal.alert(strings['script.org.searchError']);
-				$.modal.alert("Error in retrieving user count");
+				$.modal.alert(strings['msg.err.userCount']);
 				
 			}
 		});
@@ -438,7 +437,7 @@ function buildOrgDOM(checkFirstLoad, data) {
 				if (data[0].noOfUsers!="0"){
 					 content +='<p class="message icon-speech blue-gradient glossy" style="width:500px">'
 									+'<a class="close show-on-parent-hover" title="Hide message" href="#"></a>'	
-									+'Click on the User count to redirect to Manage Users'
+									+strings['msg.clickRedirectManageUsers']
 									+'</p>';
 				}				
 				content +='</div>';

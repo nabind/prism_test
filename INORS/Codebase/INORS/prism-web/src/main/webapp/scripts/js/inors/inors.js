@@ -148,7 +148,6 @@ $(document).ready(function() {
 			} else { // One Selected
 				$("#schoolCount").val("1");
 			}
-			//alert("schoolCount=" + $("#schoolCount").val());
 		}
 		var href = "downloadGRTInvitationCodeFiles.do?type=GRT&testAdministrationVal=" + testAdministrationVal + "&testProgram=" + testProgram + "&corpDiocese=" + corpDiocese + "&school=" + school;
 		// $(".customRefresh").click();
@@ -169,7 +168,6 @@ $(document).ready(function() {
 			} else { // One Selected
 				$("#classCount").val("1");
 			}
-			//alert("klassCount=" + $("#classCount").val());
 		}
 		// $(".customRefresh").click();
 	});
@@ -193,9 +191,7 @@ $(document).ready(function() {
 	// Group Download
 	$("#studentTableGDSelect").on("change", function(event) {
 		var num = $("#studentTableGDSelect").val();
-		// alert("num=" + num);
 		$("#studentTableGDSelectedVal").html(num);
-		// alert("html=" + $("#studentTableGDSelectedVal").html());
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").on("click", function(event) {
@@ -232,7 +228,6 @@ $(document).ready(function() {
 			filteredRow = this.$('tr', {"filter": "applied"} );
 			refreshCheckBoxesFromTextBoxes();
 			calculateAndChangeCheckAll();
-			//alert("fnDrawCallback");
 		}
 	});
 
@@ -421,7 +416,6 @@ function getUserForManagePassword(username) {
 		cache : false,
 		success : function(data) {
 			unblockUI();
-			//alert(JSON.stringify(data));
 			if (data) {
 				$("#userSearchRpHidden").val(username);
 				$("#userIdRP").val(data.userId);
@@ -477,8 +471,6 @@ function getUserForManagePassword(username) {
 }
 
 function selectAllFilteredRows(){
-	//alert(JSON.stringify(filteredRow));
-	//console.log("selecting " +filteredRow.length);
 	var val = $('#checkAllVal').val();
 	if (val == "0") {
 		$('#checkAllImg').prop('src', 'themes/acsi/img/selected.bmp');
@@ -499,7 +491,6 @@ var refreshUrls = new Array("/public/INORS/Report/Report1_files", "/public/INORS
 function clickTheRefreshButton() {
 	var reportUrl = $("#reportUrl").val();
 	for (var i = 0; i < refreshUrls.length; i++) {
-		// alert(reportUrl + "\n" + refreshUrls[i]);
 		if (reportUrl == refreshUrls[i]) {
 			$(".customRefresh").click();
 			break;
@@ -566,7 +557,6 @@ function setATextBoxValue(textBox, value){
  * @param value
  */
 function toggleAllCheckBoxes(value) {
-	alert("toggleAllCheckBoxes(value)=" + value);
 	$("input[id^=check-status-]").each(function() {
 		toggleACheckBox($(this));
 	});
@@ -887,7 +877,7 @@ function downloadBulkPdf(type, mode) {
 		$('.delete-GroupFiles').on("click", function() {
 		    var row = $(this);
 			var jobId = $(this).attr("jobId");
-			$.modal.confirm("Confirm delete?" ,
+			$.modal.confirm(strings['msg.rp.confirm'],
 				function () {
 				deleteGroupFilesDetails(jobId,row);
 				},function() {//this function closes the confirm modal on clicking cancel button
@@ -913,7 +903,7 @@ function downloadBulkPdf(type, mode) {
 				$(".download-GroupFiles").attr("href", href);
 			} else {
 				$(".download-GroupFiles").attr("href", "#");
-				$.modal.alert('File not found in the filepath mentioned');
+				$.modal.alert(strings['msg.fnf']);
 			}
 		});
 		
@@ -964,7 +954,6 @@ function downloadBulkPdf(type, mode) {
 							});*/
 							var requestDetails = data[0].requestSummary;
 							requestDetails = requestDetails.replace(/\n/g, '<br />');
-							// alert(requestDetails);
 							$("#requestDetailsContainerGD").html(requestDetails);
 							$("#requestDetailsContainerGD").modal({
 								title: 'View Request Details',
@@ -989,18 +978,18 @@ function downloadBulkPdf(type, mode) {
 						success : function(data) {
 							var obj = jQuery.parseJSON(data);
 							if(obj.status == 'Success') {
-								$.modal.alert('Job deleted successfully.');
+								$.modal.alert(strings['msg.jobDeleted']);
 								unblockUI();
 								//deleteRowValues(row);//this method is present in manageUser.js
 								row.closest("tr").remove();
 							} else {
-								$.modal.alert('Error while deleting the file');
+								$.modal.alert(strings['msg.fileDeleteError']);
 								unblockUI();
 							}
 							unblockUI();
 						},
 						error : function(data) {
-							$.modal.alert('Error while deleting the file');
+							$.modal.alert(strings['msg.fileDeleteError']);
 							unblockUI();
 						}
 					});
@@ -1098,254 +1087,6 @@ function populateDropdownByIdWithJson(element, json, selectValue, selectText, sh
 	element.trigger('update-select-list');
 }
 
-/**
- * This function loads the values for all dropdowns in "GRT/IC File Download"
- * page in case of page onLoad handler.
- * 
- * @unused
- */
-function populateGrtDropdownsOnLoad() {
-	var testAdministration = $("#testAdministration").val();
-	if (testAdministration && testAdministration != "-1") { // then populate test program
-		populateTestProgramGrt();
-	}
-	var testProgram = $("#testProgram").val();
-	if (testProgram && testProgram != "-1") { // then populate district
-		populateDistrictGrt(testProgram);
-	}
-	var corpDiocese = $("#corpDiocese").val();
-	if (corpDiocese && corpDiocese != "-1") { // then populate school
-		populateSchoolGrt(testProgram, corpDiocese);
-	}
-	var school = $("#school").val();
-	if (school) { // then display download links
-		// No code here
-		// It will be handled by the onChange handler of $("#school")
-	}
-}
-
-/**
- * @unused
- */
-function populateTestProgramGrt() {
-	// As of now hard coded, but we can call customAjaxCall() to hit the database.
-	var json = [ {
-		"value" : "1",
-		"name" : "Public Schools"
-	}, {
-		"value" : "0",
-		"name" : "Non Public Schools"
-	} ];
-	populateDropdownByIdWithJson($("#testProgram"), json);
-}
-
-/**
- * Populates the "Corp/Diocese" drop down in "GRT/IC File Download" page
- * 
- * @param testProgram
- * @unused
- */
-function populateDistrictGrt(testProgram) {
-	if (testProgram == "-1") {
-		populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select Test Program");
-	} else {
-		var dataUrl = "testProgram=" + testProgram;
-		var json = customAjaxCall("GET", "populateDistrictGrt.do", dataUrl, "json", false, false, "Server responds in Error");
-		if ((json != null) && (json.length > 0)) {
-			populateDropdownByIdWithJson($("#corpDiocese"), json, "-1", "Please Select");
-		} else {
-			$.modal.alert("No Corp/Diocese Found for Test Program");
-			populateDropdownByIdWithJson($("#corpDiocese"), null, "-1", "Please Select Test Program");
-		}
-	}
-}
-
-/**
- * Populates the "School" drop down in "GRT/IC File Download" page
- * 
- * @param testProgram
- * @param districtId
- * @unused
- */
-function populateSchoolGrt(testProgram, districtId) {
-	if (districtId == "-1") {
-		populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
-	} else {
-		var dataUrl = 'testProgram=' + testProgram + '&districtId=' + districtId;
-		var json = customAjaxCall("GET", "populateSchoolGrt.do", dataUrl, "json", false, false, "Server responds in Error");
-		if ((json != null) && (json.length > 0)) {
-			populateDropdownByIdWithJson($("#school"), json, "-1", "Please Select");
-		} else {
-			$.modal.alert("No Corp/Diocese Found for Test Program");
-			populateDropdownByIdWithJson($("#school"), null, "-1", "Please Select Corp/Diocese");
-		}
-	}
-}
-
-/**
- * This function loads the values for all dropdowns in "Group Download" page in
- * case of page onLoad handler.
- * @unused
- */
-function populateGDDropdownsOnLoad() {
-	populateTestAdministrationGD(); // Default
-	var testAdministration = $("#testAdministrationGD").val();
-	//alert(testAdministration);
-	if (testAdministration && testAdministration != "-1") { // then populate test program
-		populateTestProgramGD();
-	}
-	var testProgram = $("#testProgramGD").val();
-	if (testProgram && testProgram != "-1") { // then populate district
-		populateDistrictGD(testProgram);
-	}
-	var corpDiocese = $("#corpDioceseGD").val();
-	if (corpDiocese && corpDiocese != "-1") { // then populate school
-		populateSchoolGD(corpDiocese);
-	}
-	var school = $("#schoolGD").val();
-	if (school) { // then display class
-		populateClassGD(school);
-	}
-	var klass = $("#classGD").val();
-	if (klass) { // then display student table
-		populateStudentTableGD();
-	}
-}
-
-/**
- * Populates the Test Administration dropdown
- * @unused
- */
-function populateTestAdministrationGD() {
-	var json = customAjaxCall("GET", "populateTestAdministrationGD.do", "", "json", false, false, "Server responds in Error");
-	if ((json != null) && (json.length > 0)) {
-		populateDropdownByIdWithJson($("#testAdministrationGD"), json);
-	} else {
-		$.modal.alert("No Test Administration Found");
-		populateDropdownByIdWithJson($("#testAdministrationGD"), null, "-1", "Please Select");
-	}
-
-}
-
-/**
- * Populates the Test Program dropdown
- * @unused
- */
-function populateTestProgramGD() {
-	// As of now hard coded, but we can call customAjaxCall() to hit the database.
-	var json = [ {
-		"value" : "1",
-		"name" : "Public Schools"
-	}, {
-		"value" : "0",
-		"name" : "Non Public Schools"
-	} ];
-	populateDropdownByIdWithJson($("#testProgramGD"), json);
-}
-
-/**
- * Populates the "Corp/Diocese" drop down in "Group Download" page
- * 
- * @param testProgram
- *            value of the "Test Program" dropdown
- * @unused
- */
-function populateDistrictGD(testProgram) {
-	populateDropdownGD(testProgram, "-1", "Please Select", "-1",
-			"Please Select Test Program", $("#corpDioceseGD"), "GET",
-			"populateDistrictGD.do", "json", false, false,
-			"Server responds in Error", "No Corp/Diocese Found for Test Program", false);
-}
-
-/**
- * 
- * @param parentVal
- *            value of parent dropdown
- * @param selectValue
- *            value for selectText = -1
- * @param selectText
- *            Example: "Please Select"
- * @param selectNullValue
- *            value for selectNullText = -1
- * @param selectNullText
- *            Example: "Please Select Test Program"
- * @param element
- *            html dropdown element. Example: $("#corpDioceseGD")
- * @param requestType
- *            Example:
- * @param requestUrl
- *            Example: "populateSchoolGD.do"
- * @param outputDataType
- *            Example: "json"
- * @param browserCache
- *            boolean
- * @param asyncRequest
- *            boolean
- * @param errMsg
- *            meaasage on $.ajax error. Example: "Server responds in Error"
- * @param emptyMsg
- *            Example: "No Corp/Diocese Found for Test Program"
- * @param showId
- *            boolean. Whether to show the value along with the text in the
- *            dropdown
- * @author <a href="mailto:amitabha.roy@tcs.com">Amitabha Roy</a>
- * @unused Kept for reference
- */
-function populateDropdownGD(parentVal, selectValue, selectText,
-		selectNullValue, selectNullText, element, requestType, requestUrl,
-		outputDataType, browserCache, asyncRequest, errMsg, emptyMsg, showId) {
-	if (parentVal == selectNullValue) {
-		populateDropdownByIdWithJson(element, null, selectNullValue, selectNullText, showId);
-	} else {
-		var transferObject = getGroupDownloadTO();
-		var responseJson = customAjaxCall(requestType, requestUrl,
-				transferObject, outputDataType, browserCache, asyncRequest,
-				errMsg);
-		if ((responseJson != null) && (responseJson.length > 0)) {
-			populateDropdownByIdWithJson(element, responseJson, selectValue, selectText, showId);
-		} else {
-			$.modal.alert(emptyMsg);
-			populateDropdownByIdWithJson(element, null, selectNullValue, selectNullText, showId);
-		}
-	}
-}
-
-/**
- * Populates the School dropdown
- * 
- * @param districtId
- * @unused
- */
-function populateSchoolGD(districtId) {
-	populateDropdownGD(districtId, "-1", "Please Select", "-1",
-			"Please Select Corp/Diocese", $("#schoolGD"), "GET",
-			"populateSchoolGD.do", "json", false, false,
-			"Server responds in Error", "No School Found for this Corp/Diocese", false);
-}
-
-/**
- * Populates the Class dropdown
- * 
- * @param schoolId
- * @unused
- */
-function populateClassGD(schoolId) {
-	populateDropdownGD(schoolId, "-1", "Please Select", "-1",
-			"Please Select School", $("#classGD"), "GET",
-			"populateClassGD.do", "json", false, false,
-			"Server responds in Error", "No Class Found for this School", true);
-}
-
-/**
- * Populates the Grade dropdown
- * @unused
- */
-function populateGradeGD() {
-	populateDropdownGD("", "-1", "Please Select", "-1",
-			"Please Select", $("#gradeGD"), "GET",
-			"populateGradeGD.do", "json", false, false,
-			"Server responds in Error", "No Data Found", false);
-}
 
 /**
  * Populates the Student Table
@@ -1371,16 +1112,14 @@ function populateStudentTableGD() {
 						//$("#studentTableGD").removeClass('hidden');
 						//$("#studentTableGD").show();
 					} else {
-						// $.modal.alert("No Student Found for this Class");
-						$(".error-message").html("No Student Found for this Class");
+						$(".error-message").html(strings['msg.studentNotFound']);
 						$(".error-message").show(200);
 						//$("#studentTableGD").hide();
 					}
 					unblockUI();
 				},
 				error : function(data) {
-					// $.modal.alert(strings['script.common.error']);
-					$(".error-message").html("No Student Found for this Class");
+					$(".error-message").html(strings['msg.studentNotFound']);
 					$(".error-message").show(200);
 					unblockUI();
 				}
@@ -1526,7 +1265,7 @@ function groupDownloadSubmit(button) {
 		if ((button == "SP") || (button == "CP") || (button == "SS")) {
 			var errMsg = validateGroupDownloadForm(button, json);
 			if (errMsg == "") {
-				$.modal.confirm("This is a resource intensive job and may take a long time to process. Duplex printing should be used.<br /><br /><br />Do you want to continue?",
+				$.modal.confirm(strings['msg.duplexPrintConfirm'],
 					function() {
 						// Ajax Call
 						var serverResponseData = groupDownloadFunction(json);
@@ -1561,7 +1300,7 @@ function groupDownloadSubmit(button) {
 							}
 							displayGroupDownloadStatus(status);
 						} else {
-							$.modal.alert("Invalid Server Response");
+							$.modal.alert(strings['msg.isr']);
 						}
 					}, function() {
 						// this function closes the confirm modal on
@@ -1570,14 +1309,14 @@ function groupDownloadSubmit(button) {
 					}
 				);
 			} else {
-				if (errMsg == "Please select student") {
+				if (errMsg == strings['msg.selectStudent']) {
 					// clearGDCache();
 					// location.reload();
 				}
 				$.modal.alert(errMsg);
 			}
 		} else {
-			$.modal.alert('Unknown Request Type');
+			$.modal.alert(strings['msg.urt']);
 		}
 	}
 }
@@ -1644,7 +1383,7 @@ function groupDownloadFunction(jsonInputData) {
 			if (data) {
 				jsonOutputData = data;
 			} else {
-				$.modal.alert("No File Found");
+				$.modal.alert(strings['msg.nff']);
 			}
 			unblockUI();
 		},
@@ -1652,7 +1391,7 @@ function groupDownloadFunction(jsonInputData) {
 			if (data.status == "200") {
 				jsonOutputData = data;
 			} else {
-				$.modal.alert("No File Found");
+				$.modal.alert(strings['msg.nff']);
 			}
 			unblockUI();
 		}
@@ -1696,22 +1435,22 @@ function validateGroupDownloadForm(button, json) {
 	var fileName = $("#fileName").val();
 	if (fileName) {
 		if (fileName.length == 0) {
-			errMsg = "Please enter valid file name";
+			errMsg = strings['msg.validFileName'];
 			return errMsg;
 		}
 	} else {
-		errMsg = "Please enter valid file name";
+		errMsg = strings['msg.validFileName'];
 		return errMsg;
 	}
 	// Email
 	var email = $("#email").val();
 	var isValidEmail = validateEmail(email);
 	if (isValidEmail == false) {
-		errMsg = "Please enter valid email address";
+		errMsg = strings['msg.validEmail'];
 		return errMsg;
 	} else {
 		if (email.length == 0) {
-			errMsg = "Please enter valid email address";
+			errMsg = strings['msg.validEmail'];
 			return errMsg;
 		}
 	}
@@ -1720,14 +1459,14 @@ function validateGroupDownloadForm(button, json) {
 	var students = json.students;
 	var studentIds = students.split(',');
 	if (students.length == 0) {
-		errMsg = "Please select student";
+		errMsg = strings['msg.selectStudent'];
 		return errMsg;
 	}
 
 	// Button
 	if (button == "SS") {
 		if (studentIds.length > 1) {
-			errMsg = "Please select only one student";
+			errMsg = strings['msg.oneStudent'];
 			return errMsg;
 		}
 	}

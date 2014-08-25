@@ -49,14 +49,14 @@ $(document).ready(function() {
 	// ============================ GET STUDENT REPORT ==========================================
 	var tabReportObj;
 	$('.studResult').on('click', function() {
-		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, 'Overall Results', $(this), 0);
+		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
 		
 		tabReportObj = $(this);
 	});
 	// tab 2
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
-			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, 'Results by Standard', $(tabReportObj), 1);
+			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
 		}
 	});
 });
@@ -66,8 +66,8 @@ $(document).ready(function() {
 var parentContainer_1 = '<div class="right-column">\
 							<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">\
 								<ul class="tabs reporttabs">\
-									<li class="active"><a href="#new-tab0" id="new-tab0_new-tab0">Overall Results</a></li>\
-									<li><a href="#new-tab1" id="new-tab1_new-tab1">Results by Standard</a></li>';
+									<li class="active"><a href="#new-tab0" id="new-tab0_new-tab0">'+strings['label.overallResults']+'</a></li>\
+									<li><a href="#new-tab1" id="new-tab1_new-tab1">'+strings['label.resultsByStandard']+'</a></li>';
 var parentContainer_2 = '</ul>\
 								<div class="tabs-content" style="padding-bottom: 50px !important;">\
 									<div id="new-tab0" class="with-padding relative">';
@@ -107,14 +107,14 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	var ipFileName = getFileName(studentBioId, custProdId, 'IPR');
 	var linkContainer = '<div class="align-right">';
 	if(isrFileName != null && (isrFileName.indexOf(".pdf") != -1 || isrFileName.indexOf(".PDF") != -1 )) {
-		linkContainer = linkContainer + '<a class="button compact with-tooltip" target="_blank" title="Individual Student Report" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"><span class="button-icon"><span class="icon-download"></span></span>Student Report</a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip" target="_blank" title="'+strings['title.individualStudentReport']+'" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.studentReport']+'</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip" title="No Student Report Available" href="#"><span class="button-icon"><span class="icon-download"></span></span>Student Report</a>';
+		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip" title="'+strings['title.noStudentReportAvailable']+'" href="#"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.studentReport']+'</a>';
 	}
 	if(ipFileName != null && (ipFileName.indexOf(".pdf") != -1 || ipFileName.indexOf(".PDF") != -1 )) {
-		linkContainer = linkContainer + '<a class="button compact with-tooltip margin-left" target="_blank" title="Applied Skills Image PDF" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"><span class="button-icon"><span class="icon-download"></span></span>Image PDF</a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip margin-left" target="_blank" title="'+strings['title.appliedSkillsImagePDF']+'" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.imagePDF']+'</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip margin-left" title="No Image Print Available" href="#"><span class="button-icon"><span class="icon-download"></span></span>Image PDF</a>';
+		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip margin-left" title="'+strings['title.noImagePrintAvailable']+'" href="#"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.imagePDF']+'</a>';
 	}
 	linkContainer = linkContainer + '</div>';
 	//var reportUrl = "/public/PN/Report/resultsByStandard_files";

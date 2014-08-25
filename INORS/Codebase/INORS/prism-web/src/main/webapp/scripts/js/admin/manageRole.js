@@ -26,7 +26,7 @@ $(document).ready(function() {
 		
 		$('.dissociate-user').live("click", function() {
 			var userId = $(this).attr('userid');
-			$.modal.confirm("Do you want to delete this user?" ,
+			$.modal.confirm(strings['confirm.deleteUser'] ,
 					function () {
 						//alert($("#roleId").val());
 						//alert(userId);
@@ -109,7 +109,7 @@ function openModalRoleDetails(jsonData, roleId) {
 									+'<td>'+ value.userName +'</td>'
 									+'<td class=""><div class="controls">'
 										+'<span class="button-group compact children-tooltip">'
-											+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="Remove from association">Delete</a>'
+											+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="'+strings['title.removeFromAssociation']+'">'+strings['label.delete']+'</a>'
 										+'</span>'
 									+'</div></td>'
 								+'</tr>';
@@ -246,7 +246,7 @@ function associateUserToRole(roleId, userName) {
 													+'<td>'+ value.userName +'</td>'
 													+'<td class=""><div class="controls">'
 														+'<span class="button-group compact children-tooltip">'
-															+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="Remove from association">Delete</a>'
+															+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="'+strings['title.removeFromAssociation']+'">'+strings['label.delete']+'</a>'
 														+'</span>'
 													+'</div></td>'
 												+'</tr>';				
@@ -294,7 +294,7 @@ function dissociateUserFromRole(roleId, userId) {
 											+'<td>'+ value.userName +'</td>'
 											+'<td class=""><div class="controls">'
 												+'<span class="button-group compact children-tooltip">'
-													+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="Remove from association">Delete</a>'
+													+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="'+strings['title.removeFromAssociation']+'">'+strings['label.delete']+'</a>'
 												+'</span>'
 											+'</div></td>'
 										+'</tr>';
@@ -363,7 +363,7 @@ $('.delete-Role').live("click", function() {
 									+'<td>'+ value.userName +'</td>'
 									+'<td class=""><div class="controls">'
 										+'<span class="button-group compact children-tooltip">'
-											+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="Remove from association">Delete</a>'
+											+'<a href="#" roleid="'+this.roleId+'" userid="'+value.userId+'" class="button dissociate-user icon-delete" title="'+strings['title.removeFromAssociation']+'">'+strings['label.delete']+'</a>'
 										+'</span>'
 									+'</div></td>'
 								+'</tr>';
