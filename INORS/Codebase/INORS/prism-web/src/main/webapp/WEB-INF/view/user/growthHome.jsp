@@ -25,7 +25,7 @@ function openGrowthHomePageTemp() {
 				$('#taContent').val(data.responseText);
 				$('#growthHome').html($('#taContent').val());
 			} else {
-				$('#growthHome').html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+				$('#growthHome').html("<p class='big-message icon-warning red-gradient'>"+strings['msg.err.homePageContent']+"</p>");
 			}				
 		  }
 		});

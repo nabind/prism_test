@@ -6,11 +6,8 @@
 </div>
 
 <script>
-//alert("jquery");
-//For temporary fix
 openInorsHomePageTemp();
 function openInorsHomePageTemp() {
-	//Fixed for TD 77263 -  By Joy
 	if($('#inorsHome').length) {
 		$.ajax({
 			type : "GET",
@@ -28,13 +25,11 @@ function openInorsHomePageTemp() {
 				$('#taContent').val(data.responseText);
 				$('#inorsHome').html($('#taContent').val());
 			} else {
-				$('#inorsHome').html("<p class='big-message icon-warning red-gradient'>Error getting home page content. Please try later.</p>");
+				$('#inorsHome').html("<p class='big-message icon-warning red-gradient'>"+strings['msg.err.homePageContent']+"</p>");
 			}				
 		  }
 		});
 	}
 	return false;
-	
 }
 </script>
-
