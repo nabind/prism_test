@@ -29,14 +29,14 @@
 </head>
 <body>
   <div class="container">
-    <h1>Server is not responding</h1>
-    <p>Sorry, the server you are trying to connect is facing some issues.</p>
-    <p>It looks like this was the result of either:</p>
+    <h1><spring:message code="h1.503" /></h1>
+    <p><spring:message code="p.503.1" /></p>
+    <p><spring:message code="p.503.2" /></p>
     <ul>
-      <li>Server is down due to maintenance</li>
-      <li>Some unexpected error occured at server side.</li>
+      <li><spring:message code="li.503.1" /></li>
+      <li><spring:message code="li.503.2" /></li>
     </ul>
-    <p>Please contact system administrator.</p>
+    <p><spring:message code="p.503.3" /></p>
     
     <br>
     <p>Click <a href="/onlineresults/landing.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>

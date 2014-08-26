@@ -3,10 +3,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-
 <div class="content-panel" style="padding-left:0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="groupDownload" modelAttribute="groupDownload">
-	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.groupDownload"/></p>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.fileDownload"/></p>
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
 	<input type="hidden" value="/public/INORS/Report/Report2_files" name="reportUrl" >
 	<dl class="download-instructions accordion same-height">

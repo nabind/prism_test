@@ -21,13 +21,11 @@
 	div.scrollingHotSpotLeft, div.scrollingHotSpotRight {display: none}
 </style>
 <div class="" style="background-color: #FFF">
-
 	<div class="side-tabs1 same-height margin-bottom" id="manageReportParentTab">
 		<div class="tabs-content">
-<div class="panel-load-target with-padding margin10 padding-none height-mid">
+			<div class="panel-load-target with-padding margin10 padding-none height-mid">
 							<div class="report-container1 tabs-content height-mid manage-report-container">
 								<div><table class="simple-table responsive-table">
-
 									<thead>
 										<tr>
 											<th scope="col" width="30%"><spring:message code="thead.groupDownloadFiles.fileName"/></th>
@@ -38,7 +36,6 @@
 											<th scope="col" width="8%"><spring:message code="thead.groupDownloadFiles.actions"/></th>
 										</tr>
 									</thead>
-
 									<tbody id ="deleteGroupFiles">
 										<c:forEach var="group" items="${groupList}">
 											<tr id="${group.jobId}">
@@ -50,7 +47,6 @@
 												<td scope="row">${group.updatedDateTime}<br>
 											    </td>
 											    <td scope="row">
-
 		                                            <c:choose>
 		    											<c:when test="${group.jobStatus=='ER'}">
 		    												<span class="button icon-cross-round icon-size2 red with-tooltip" title="Error in file generation"></span>
@@ -68,8 +64,7 @@
 	                                            </td>
 	                                            <td scope="row">${group.fileSize}<br>
 	                                            <td>
-												<a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles"
-															title="Delete"></a>
+												<a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles" title="Delete"></a>
 											</tr>
 										</c:forEach>
 									</tbody>
@@ -78,7 +73,6 @@
 						</div>
 					</div>
 				</div>
-			
 				<div class="viewRequestDetailDivId" id="viewRequestDetailDivId" style="display:none">
 						<form:form id="viewRequestDetail" method="post">
 							<br>
@@ -93,5 +87,4 @@
 				<div id="requestDetailsContainerGD" style="display:none">
 					<div id="requestDetailsContentGD"></div>
 				</div>
-			
 	</div>

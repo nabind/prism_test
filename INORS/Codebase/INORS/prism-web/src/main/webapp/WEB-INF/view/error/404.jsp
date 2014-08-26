@@ -29,12 +29,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Not found <span>:(</span></h1>
-    <p>Sorry, but the page you were trying to view does not exist.</p>
-    <p>It looks like this was the result of either:</p>
+    <h1><spring:message code="h1.404" /> <span>:(</span></h1>
+    <p><spring:message code="p.404.1" /></p>
+    <p><spring:message code="p.404.2" /></p>
     <ul>
-      <li>a mistyped address</li>
-      <li>an out-of-date link</li>
+      <li><spring:message code="li.404.1" /></li>
+      <li><spring:message code="li.404.2" /></li>
     </ul>
     
     <br>

@@ -12,7 +12,7 @@
 
 <div class="content-panel" style="padding-left:0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="grtDownload" modelAttribute="grtDownload">
-	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.groupDownload"/></p>
+	<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.fileDownload"/></p>
 	<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
 	<input type="hidden" value="/public/INORS/Report/Report1_files" name="reportUrl" >
 	<c:if test="${not empty reportMessages}">
@@ -20,8 +20,6 @@
 			<c:if test="${reportMessage.displayFlag=='Y'}">
 				<c:if test="${reportMessage.messageType=='DM'}">
 					<div class="big-message">
-						<%-- <span class="big-message-icon icon-warning with-text color" style="margin-top: -15px;">Important</span> --%>
-						<%-- <strong>${ reportMessage.messageName }</strong><br> --%>
 						${ reportMessage.message }
 					</div>
 					<p>&nbsp;</p>
@@ -44,8 +42,7 @@
 			<%@ include file="grtIcOptions.jsp" %>
 		</c:if>
 	</sec:authorize>
-	
-	
+
 	</form:form>
 	<input type="hidden" id="q_testAdministrationVal" value="${testAdministrationVal}" />
 	<input type="hidden" id="q_testAdministrationText" value="${testAdministrationText}" />

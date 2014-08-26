@@ -4,7 +4,7 @@
 
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="downloadStudentFile" modelAttribute="downloadStudentFile">
-		<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF <spring:message code="msg.success.groupDownload" /></p>
+		<p class="success-message message small-margin-bottom green-gradient" style="display:none">PDF <spring:message code="msg.success.fileDownload" /></p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.fileDownload" /></p>
 		<div class="reportFilterCriteria panel-control report-filter report-filter-0" reportid="1" param="/public/TASC/Reports/TASC_Org_Hier/High_School_Equivalency_Dashboard_files" tabcount="0" count="0" assessment="1002">
 			<span id="filter-icon" class="icon-leaf icon-size2"></span> <b><spring:message code="label.dataFilterOptions" /></b>

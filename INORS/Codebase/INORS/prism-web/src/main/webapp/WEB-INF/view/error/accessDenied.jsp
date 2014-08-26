@@ -29,9 +29,9 @@
 </head>
 <body>
   <div class="container">
-    <h1>Access Denied</h1>
-    <p>Sorry, but you are not authorized to view the page you requested.</p>
-    <p>Please contact system administrator for details.</p>
+    <h1><spring:message code="h1.accessDenied" /></h1>
+    <p><spring:message code="p.accessDenied.1" /></p>
+    <p><spring:message code="p.accessDenied.2" /></p>
     <br>
     <p>Click <a href="/onlineresults/landing.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
     

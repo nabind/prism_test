@@ -29,9 +29,9 @@
 </head>
 <body>
   <div class="container">
-    <h1>Server Error</h1>
-    <p>The system is experiencing some problem. Please contact system administrator.</p>
-    <p>Sorry for the inconvenience caused.</p>
+    <h1><spring:message code="h1.error" /></h1>
+    <p><spring:message code="p.error.1" /></p>
+    <p><spring:message code="p.error.2" /></p>
     
     <br>
     <p>Click <a href="/onlineresults/landing.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>

@@ -5,10 +5,10 @@
 						<th aria-label="" style="width: 13px;" colspan="1" rowspan="1" role="columnheader" class="sorting_disabled" scope="col">
 							<img id="checkAllImg" src="themes/acsi/img/empty.bmp" /><input type="hidden" id="checkAllVal" value="0" /><br />
 						</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 350px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.student"/></th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.class"/></th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.grade"/></th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 120px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.pdf"/></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 350px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.student" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.class" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.grade" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 120px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="msg.thead.groupDownload.pdf" /></th>
 					</tr>
 				</thead>
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
@@ -39,32 +39,32 @@
 				</tbody>
 			</table>
 		</div>
-		<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.groupDownload"/></p>
-		<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
+		<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.fileDownload" /></p>
+		<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload" /></p>
 		<div class="columns accordion with-padding" id="nameMailDiv">
 			<p class="inline-label">
-				<label for="fileName" class="label" style="width: 345px !important; float: left;"><spring:message code="msg.label.groupDownload.fileName"/> </label>
+				<label for="fileName" class="label" style="width: 345px !important; float: left;"><spring:message code="msg.label.groupDownload.fileName" /> </label>
 				<input name="fileName" type="text" value="${fileName}" id="fileName" class="input validate[required, custom[fileNameGD, maxSize[50]]" maxlength="50" style="width:200px;">
 				<span class="info-spot">
 					<span class="icon-info-round"></span>
 					<span class="info-bubble" style="width: 123px;">
-						<spring:message code="msg.label.groupDownload.span"/>
+						<spring:message code="msg.label.groupDownload.span" />
 					</span>
 				</span>
 			</p>
 			<p class="inline-label">
-				<label for="email" class="label" style="width: 345px !important; float: left;"><spring:message code="msg.label.groupDownload.email"/> </label>
+				<label for="email" class="label" style="width: 345px !important; float: left;"><spring:message code="msg.label.groupDownload.email" /> </label>
 				<input name="email" type="text" value="${email}" id="email" class="input validate[required,custom[email]]" maxlength="100" style="width:200px;">
 			</p>
 		</div>
 		<div class="columns accordion with-padding" style="margin-bottom:0">
 			<a href="#" class="downloadBulkPdf button" id="downloadSeparatePdfsGD" style="margin-left: 0px; float: left;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
-				<spring:message code="msg.label.groupDownload.downloadSeparatePdfsGD"/>
+				<spring:message code="msg.label.groupDownload.downloadSeparatePdfsGD" />
 			</a>
 			<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsGD" style="margin-left: 10px; float: right;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
-				<spring:message code="msg.label.groupDownload.downloadCombinedPdfsGD"/>
+				<spring:message code="msg.label.groupDownload.downloadCombinedPdfsGD" />
 			</a>
 			<input type="hidden" name="buttonGD" id="buttonGD" />
 			<input type="hidden" name="startIndex" id="startIndex" />
