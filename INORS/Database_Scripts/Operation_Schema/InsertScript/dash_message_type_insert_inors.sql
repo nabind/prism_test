@@ -3,14 +3,14 @@ insert into dash_message_type
        message_name,
        message_type,
        description,
-       cust_prod_id,
+	   cust_prod_id,
        created_date_time)
     values
       (1087,
        'Common Header',
        'GSCM',
        'Message configuration for common header',
-       5001,
+	   5001,
        sysdate);
 	   
 insert into dash_message_type
