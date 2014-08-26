@@ -684,7 +684,7 @@
 		var newPassword ='<div id="newPassword">'
 							 +'<p class="message blue-gradient" style="width:400px">'+strings['msg.passwordReset']+'</p>'
 							 +'<p><b>Full Name:</b>&nbsp;'+parentDisplayName+'</p>'
-							 +'<p class="big-message" style="width:400px">'string['msg.passwordSent']'</p>'
+							 +'<p class="big-message" style="width:400px">'+strings['msg.passwordSent']+'</p>'
 							 +'</div>';
 				
 			$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(newPassword);		
