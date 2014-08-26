@@ -137,6 +137,9 @@
 				.acsicol {
 					color: #BA1A22;
 				}
+				.custom-p p{
+					margin: 0!important;
+				}
 		  </style>
 	</c:when>
 	
