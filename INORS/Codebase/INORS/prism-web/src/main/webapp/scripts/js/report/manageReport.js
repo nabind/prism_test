@@ -154,7 +154,7 @@ var row = $("#"+reportId + '_' +reportId);
 			}
 			
 			$("#editReportForm").modal({
-				title: 'Edit Report',
+				title: strings['msg.editReport'],
 				height: 470,
 				width: 400,
 				resizable: false,
@@ -335,7 +335,7 @@ $('.delete-Report').live("click", function() {
     var row = $(this);
 	var reportId = $(this).attr("reportId");
 	var reportName = $(this).attr("reportName");
-	$.modal.confirm("Confirm delete?" ,
+	$.modal.confirm(strings['msg.confirm.delete'],
 		function () {
 			deleteReportDetails(reportId, reportName,row);
 		},function() {//this function closes the confirm modal on clicking cancel button
@@ -357,7 +357,7 @@ $('.delete-Report').live("click", function() {
 					var obj = jQuery.parseJSON(data);
 					//win.closeModal(); 
 					if(obj.status == 'Success') {
-						$.modal.alert('Report deleted successfully.');				
+						$.modal.alert(strings['msg.reportDeletedSuccessfully']);				
 						deleteRowValues(row);//this method is present in manageUser.js
 					} else {
 						$.modal.alert(strings['script.user.deleteError']);
@@ -384,7 +384,7 @@ $('.delete-Report').live("click", function() {
 		$("#reportStatusCheck").attr('checked', true);
 		$("#reportStatusCheck").change();
 		$("#addReport").modal({
-			title: 'Add Report',
+			title: strings['msg.addReport'],
 			height:470,
 			width:400,
 			draggable: false,
@@ -491,8 +491,8 @@ $('.delete-Report').live("click", function() {
 								+'<td class="vertical-center">'
 								+'<span class="button-group compact">'
 								+'<a href="#nogo" class="button icon-pencil edit-report" reportId="'+this.reportId+'"></a>'
-								+'<a href="getReportMessageFilter.do?reportId='+this.reportId+'&reportName='+this.reportName+'&reportUrl='+this.reportUrl+'" class="button icon-chat configure-report-message with-tooltip" title="Configure Massage"></a>'
-								+'<a href="#nogo" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="Delete"></a>'
+								+'<a href="getReportMessageFilter.do?reportId='+this.reportId+'&reportName='+this.reportName+'&reportUrl='+this.reportUrl+'" class="button icon-chat configure-report-message with-tooltip" title="'+strings['msg.configureMassage']+'"></a>'
+								+'<a href="#nogo" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>'
 								+'</span>'
 								+'</td>'
 								+'</tr>';

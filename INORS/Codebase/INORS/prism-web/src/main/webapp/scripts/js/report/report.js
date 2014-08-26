@@ -250,7 +250,7 @@ $(document).ready(function() {
 				if( (subtest1.val() == subtest2.val()) || 
 					(subtest1.val() == subtest3.val()) ||
 					(subtest2.val() == subtest3.val()) ) {
-					$.modal.alert('This subtest has already been selected.');
+					$.modal.alert(strings['msg.selectSubtest']);
 					passSubtest = false;
 				}
 			}
@@ -946,7 +946,7 @@ function setInputControlForStudentRoster(data, containerObj){
 	$(containerObj).html(data.inputDom);
 	//patch for rank order in Student Roster
 	var selectedScores = $('#p_Roster_Score_List').val();
-	var rankOrderDom="<option value='1Alpha-' >Name(Alphabetical)</option>";
+	var rankOrderDom="<option value='1Alpha-' >"+strings['option.p_Roster_Score_List.0']+"</option>";
 $("select#p_Roster_Rank_Order option").each(function(index){
 	var rankOrderName=$(this).text();
 	var rankOrder=$(this).val();

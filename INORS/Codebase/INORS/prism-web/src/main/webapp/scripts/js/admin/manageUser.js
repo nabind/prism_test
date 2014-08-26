@@ -53,7 +53,7 @@ $(document).ready(function() {
 	    var row = $(this);
 		var userId = $(this).attr("id");
 		var userName = $(this).attr("userName");
-		$.modal.confirm("Do you want to delete this user?" ,
+		$.modal.confirm(strings['confirm.deleteUser'],
 			function () {
 				deleteUserDetails(userId,userName, row);
 				enableSorting(true);
@@ -364,7 +364,7 @@ $(document).ready(function() {
 				$("input#userStatus").change();
 				//$("input#userName").val(this.userName);
 				$("#userModal").modal({
-					title: 'Edit User',
+					title: strings['msg.editUser'],
 					height: 370,
 					width: 370,
 					resizable: false,

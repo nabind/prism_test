@@ -85,7 +85,7 @@ $(document).ready(function() {
 			success : function(data) {
 				var obj = jQuery.parseJSON(data);
 				if(obj.status == "1"){
-					$.modal.alert("Saved Successfully");
+					$.modal.alert(strings['msg.savedSuccessfully']);
 				}else{
 					$.modal.alert(strings['script.common.error1']);
 				}

@@ -128,4 +128,16 @@
 	strings['label.userCount'] = "<spring:message code='label.userCount' javaScriptEscape='true' />";
 	strings['msg.clickRedirectManageUsers'] = "<spring:message code='msg.clickRedirectManageUsers' javaScriptEscape='true' />";
 	
+	strings['msg.savedSuccessfully'] = "<spring:message code='msg.savedSuccessfully' javaScriptEscape='true' />";
+	
+	strings['msg.editReport'] = "<spring:message code='msg.editReport' javaScriptEscape='true' />";
+	strings['msg.reportDeletedSuccessfully'] = "<spring:message code='msg.reportDeletedSuccessfully' javaScriptEscape='true' />";
+	strings['msg.addReport'] = "<spring:message code='msg.addReport' javaScriptEscape='true' />";
+	strings['msg.configureMassage'] = "<spring:message code='msg.configureMassage' javaScriptEscape='true' />";
+	
+	strings['msg.editUser'] = "<spring:message code='msg.editUser' javaScriptEscape='true' />";
+	
+	strings['option.p_Roster_Score_List.0'] = "<spring:message code='option.p_Roster_Score_List.0' javaScriptEscape='true' />";
+	strings['msg.selectSubtest'] = "<spring:message code='msg.selectSubtest' javaScriptEscape='true' />";
+	
 </script>
