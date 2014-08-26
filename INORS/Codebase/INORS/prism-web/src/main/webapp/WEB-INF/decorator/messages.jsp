@@ -93,7 +93,7 @@
 	strings['thead.assessment.availableAssessments'] = "<spring:message code='thead.assessment.availableAssessments' javaScriptEscape='true' />";
 	strings['thead.assessment.invitationCode'] = "<spring:message code='thead.assessment.invitationCode' javaScriptEscape='true' />";
 	strings['thead.assessment.availableICClaims'] = "<spring:message code='thead.assessment.availableICClaims' javaScriptEscape='true' />";
-	strings['thead.assessment.action'] = "<spring:message code='thead.assessment.action' javaScriptEscape='true' />";
+	strings['thead.action'] = "<spring:message code='thead.action' javaScriptEscape='true' />";
 	
 	strings['label.AdminSeason'] = "<spring:message code='label.AdminSeason' javaScriptEscape='true' />";
 	strings['label.Grade'] = "<spring:message code='label.Grade' javaScriptEscape='true' />";

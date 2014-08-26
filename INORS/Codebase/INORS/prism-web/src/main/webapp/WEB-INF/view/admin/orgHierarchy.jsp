@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <c:if test="${treeSturcture != 'Yes'}">
 	<ul id="org_details" class="files-list mini open-on-panel-content org_list">
@@ -15,8 +15,6 @@
 </c:if>	
 <c:if test="${treeSturcture == 'Yes'}">
 		<div id="treeViewForOrg" style="height: 510px;" class="jstree jstree-0 jstree-focused jstree-apple" rootid="${rootOrgId}_${rootOrgLevel}" >
-			
 		</div>
 </c:if>
-
 		

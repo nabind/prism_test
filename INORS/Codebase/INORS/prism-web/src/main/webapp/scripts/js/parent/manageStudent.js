@@ -157,7 +157,7 @@ function buildAssessmentTableDom(jsonData,modalId,modalContainerDivId)
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.invitationCode']+'</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.availableICClaims']+'</span></th>'
 									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.groupDownloadFiles.expDate']+'</span></th>'
-									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.assessment.action']+'</span></th>'
+									+'<th scope="col" class="blue-gradient glossy"><span class="white">'+strings['thead.action']+'</span></th>'
 									+'</tr>'
 									+'</thead>'
 									+'<tbody>';

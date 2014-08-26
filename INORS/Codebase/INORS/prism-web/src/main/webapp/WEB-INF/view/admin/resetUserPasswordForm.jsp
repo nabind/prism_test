@@ -3,11 +3,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page import="com.ctb.prism.core.constant.IApplicationConstants" %>
 <style>
-.field-block, .button-height {
-margin-top: 0px !important;
-padding-top: 0px !important;
-margin-bottom: 0px !important;
-}
+	.field-block, .button-height {
+		margin-top: 0px !important;
+		padding-top: 0px !important;
+		margin-bottom: 0px !important;
+	}
 </style>
 <div class="main-title same-height" style="min-height: 613px;">
 		<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
