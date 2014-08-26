@@ -10,7 +10,7 @@
 <p class="red"><spring:message code="msg.groupDownloadFiles.notice"/></p>
 <a href="javascript:location.reload();" class="button with-tooltip tooltip-right" title="Click to get the current status.">
 	<span class="button-icon"><span class="icon-refresh"></span></span>
-	<spring:message code="button.groupDownloadFiles.refresh"/>
+	<spring:message code="button.refresh"/>
 </a>
 
 <hr/>
