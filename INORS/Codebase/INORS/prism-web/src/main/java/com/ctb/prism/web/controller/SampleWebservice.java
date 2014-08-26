@@ -200,6 +200,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     	  String ENCODING_ALGORITHM = "HmacSHA1";
     	  String URL_ENCODING = "UTF-8";
     	  String timeZone = "PST";
+    	  String theme ="inors";
         
         if(userList!=null && ipAddressList!=null && validUntilDateList!=null && signatureList!=null){
         	//get username
@@ -216,7 +217,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 				if(hMAcSecure.isValidRequest(URLDecoder.decode(username, URL_ENCODING), 
 						URLDecoder.decode(ipAddress, URL_ENCODING), 
 						URLDecoder.decode(validUntilDate, URL_ENCODING),
-						URLDecoder.decode(signature, URL_ENCODING), null, null, null, null)){
+						URLDecoder.decode(signature, URL_ENCODING), null, null, null, null,theme)){
 					return "Hello " + userName;
 				 } else{
 			        	return "Unknown User!";
