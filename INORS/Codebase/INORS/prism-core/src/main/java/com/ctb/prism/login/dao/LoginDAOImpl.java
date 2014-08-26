@@ -345,9 +345,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 	/**
 	 * Convert to stored procedure and implement all static message as configurable - By Joy
-	 * @author Arunavo
 	 * Retrieves and returns message corresponding configured in database
-	 * @param reportName, messageType, messageName
+	 * @param reportName, messageType, messageName, contractName
 	 * @return message
 	 */
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
@@ -358,12 +357,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String reportName = (String) paramMap.get("REPORT_NAME");
 		final String messageType = (String) paramMap.get("MESSAGE_TYPE");
 		final String messageName = (String) paramMap.get("MESSAGE_NAME");
-		
-		String systemMessage = "";
 		String contractName = (String) paramMap.get("contractName");
+		
 		if(contractName == null) {
 			contractName = Utils.getContractName();
 		}
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+		
+		String systemMessage = "";
 		try {
 			systemMessage = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {

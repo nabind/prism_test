@@ -85,10 +85,8 @@ public class ManageMessageController {
 		String reportName = request.getParameter("reportName");
 		String reportUrl = request.getParameter("reportUrl");
 		long custProdId=0L;
-		if(null==request.getParameter("custProdId")){
-		custProdId = 5001L;}
-		else{
-		custProdId = Long.parseLong(request.getParameter("custProdId"));
+		if(request.getParameter("custProdId") != null){
+			custProdId = Long.parseLong(request.getParameter("custProdId"));
 		}
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("reportId", reportId);

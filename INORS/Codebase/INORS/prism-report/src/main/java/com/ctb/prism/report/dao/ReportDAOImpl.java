@@ -2,9 +2,11 @@ package com.ctb.prism.report.dao;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,6 +48,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -737,34 +740,65 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - loadManageMessage()");
 		long t1 = System.currentTimeMillis();
 		
-		long reportId = ((Long) paramMap.get("reportId")).longValue();
-		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
-		String reportName = ((String) paramMap.get("reportName"));
-		@SuppressWarnings("rawtypes")
-		List placeHolderValueList = new ArrayList();
+		final long reportId = ((Long) paramMap.get("reportId")).longValue();
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
+		final String reportName = ((String) paramMap.get("reportName"));
 		List<ManageMessageTO> manageMessageTOList = null;
-		try {
-			if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.GENERIC_REPORT_NAME))) {
-				placeHolderValueList.add(reportId);
-				custProdId = 5001L;
-				placeHolderValueList.add(custProdId);
-				placeHolderValueList.add(reportId);
-				placeHolderValueList.add(custProdId);
-				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM_GENERIC, placeHolderValueList.toArray(), new ManageMessageTOMapper());
-			} else if (null != reportName && (reportName.equalsIgnoreCase(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME))) {
-				placeHolderValueList.add(reportId);
-				placeHolderValueList.add(custProdId);
-				placeHolderValueList.add(reportId);
-				placeHolderValueList.add(custProdId);
-				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST_SCM_PRODUCT_SPECIFIC, placeHolderValueList.toArray(), new ManageMessageTOMapper());
-			} else {
-				placeHolderValueList.add(reportId);
-				placeHolderValueList.add(custProdId);
-				placeHolderValueList.add(reportId);
-				placeHolderValueList.add(custProdId);
-				manageMessageTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_MANAGE_MESSAGE_LIST, placeHolderValueList.toArray(), new ManageMessageTOMapper());
-			}
-		} catch (Exception e) {
+		try{
+			manageMessageTOList = (List<ManageMessageTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_MESSAGE_LIST + "}");
+				            cs.setLong(1, reportId);	
+				            if (IApplicationConstants.GENERIC_REPORT_NAME.equalsIgnoreCase(reportName)) {
+				            	cs.setString(2, IApplicationConstants.GENERIC_MESSAGE_TYPE);
+				            }else if(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME.equalsIgnoreCase(reportName)) {
+				            	cs.setString(2, IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
+				            }else{
+				            	cs.setString(2, "-99");
+				            }
+				            cs.setLong(3, custProdId);	
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsMessage = null;
+			        			List<ManageMessageTO> manageMessageTOResult = new ArrayList<ManageMessageTO>();
+			        			try {
+									cs.execute();
+									rsMessage = (ResultSet) cs.getObject(4);
+									ManageMessageTO manageMessageTO = null;
+									while(rsMessage.next()){
+										manageMessageTO = new ManageMessageTO();
+										String message = Utils.convertClobToString((Clob) rsMessage.getClob("MESSAGE")).trim();
+										manageMessageTO.setMessage(("".equals(message)) ? IApplicationConstants.EMPTY_MESSAGE : message);
+										manageMessageTO.setMessageTypeDesc(rsMessage.getString("MESSAGE_DESC").trim());
+										manageMessageTO.setMessageTypeName(rsMessage.getString("MESSAGE_NAME").trim());
+										manageMessageTO.setMessageTypeId(rsMessage.getLong("MESSAGE_TYPEID"));
+										manageMessageTO.setMessageType(rsMessage.getString("MESSAGE_TYPE").trim());
+										manageMessageTO.setReportId(rsMessage.getLong("REPORTID"));
+										manageMessageTO.setActivationStatus(null != rsMessage.getString("ACTIVATION_STATUS") 
+												? rsMessage.getString("ACTIVATION_STATUS").trim() 
+														: IApplicationConstants.DEFAULT_VALUE_DRM_CHECKBOX);
+										manageMessageTO.setCustProdIdHidden(rsMessage.getLong("CUST_PROD_ID"));
+										if(rsMessage.getString("MESSAGE_TYPE").trim().equals("GSCM")){
+											manageMessageTO.setReportName(IApplicationConstants.GENERIC_REPORT_NAME);
+										}else if(rsMessage.getString("MESSAGE_TYPE").trim().equals("PSCM")){
+											manageMessageTO.setReportName(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+										}
+										manageMessageTOResult.add(manageMessageTO);
+									}
+								} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			} catch (IOException e) {
+									e.printStackTrace();
+								}
+			        			return manageMessageTOResult;
+				        }
+				    });
+		}catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred in loadManageMessage():", e);
 			return null;
 		} finally {

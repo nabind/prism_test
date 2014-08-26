@@ -119,7 +119,8 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("purpose", IApplicationConstants.PURPOSE_LANDING_PAGE);
-		//TODO - Need to pass contractId in Controller and DAO
+		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
+		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
@@ -146,7 +147,8 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
-		//TODO - Need to pass contractId in Controller and DAO
+		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
+		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		String logInInfoMessage = (String)messageMap.get("systemMessage");
 		if ("1".equalsIgnoreCase(mess_login_error)) {
@@ -215,12 +217,13 @@ public class LoginController {
 			paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
 		}
 		paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
-		//TODO - Need to pass contractId in Controller and DAO
+		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		return messageMap;
 	}
 	
 	/**
+	 * Blocked by Joy
 	 * @deprecated - All the messages are configurable and load at the time of page load - By Joy 
 	 * @author Joy
 	 * @param request
@@ -231,7 +234,7 @@ public class LoginController {
 	 * @throws BusinessException
 	 * Get login message for particular user(teacher/parent).
 	 */
-	@RequestMapping(value="/getLoginMessage", method=RequestMethod.GET)
+	/*@RequestMapping(value="/getLoginMessage", method=RequestMethod.GET)
 	public @ResponseBody 
 	String getLoginMessage(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException,BusinessException{
@@ -252,7 +255,6 @@ public class LoginController {
 			} else {
 				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
 			}
-			//TODO - Need to pass contractId in Controller and DAO
 			paramMapLoginMessage.put("contractName", Utils.getContractNameNoLogin(theme));
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
 			loginMessage = (String)messageMap.get("systemMessage");
@@ -270,7 +272,7 @@ public class LoginController {
 			logger.log(IAppLogger.INFO, "Exit: LoginController - getLoginMessage() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return jsonString;
-	}
+	}*/
 
 
 	/**
@@ -1068,15 +1070,16 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		if(homePage.equals("growth")) {
+		if("growth".equals(homePage)) {
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
 		} else {
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
 		}
+		paramMap.put("contractName", Utils.getContractName());
+		
 		String inorsHomePageInfoMessage = "";
 		String jsonString = "";
 		try {
-			//TODO - Need to pass contractId in Controller and DAO
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 			inorsHomePageInfoMessage = (String)messageMap.get("systemMessage");
 			//Fixed for TD 77263 - By Joy
