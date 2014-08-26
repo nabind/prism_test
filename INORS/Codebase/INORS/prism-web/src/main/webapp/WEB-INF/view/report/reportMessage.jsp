@@ -1,5 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <style>
 	.switch.tiny {
 		right: 216px; top: 20px;
@@ -7,23 +9,20 @@
 </style>
 <c:if test="${not empty serviceMapManageMessage}">
 	<div class="with-padding">
-		<%-- <div>
-			<h5>Report URL: ${serviceMapManageMessage.reportUrl}</h5>
-		</div> --%>
 		<form:form
 			id="editManageMessageForm"
 			method="post" action="ajaxJSP/saveManageMessage.htm"
 			modelAttribute="manageMessageForm">
 			<div class="float-right">
 				<a href="javascript:void(0)" id="editManageMessageButtonSave" 
-							class="button blue-gradient glossy" reportId="${serviceMapManageMessage.reportId}">Save</a>
+							class="button blue-gradient glossy" reportId="${serviceMapManageMessage.reportId}"><spring:message code="button.save" /></a>
 				<c:choose>
 	                <c:when test="${serviceMapManageMessage.reportName!='Generic System Configuration'}">			
-						<a href="javascript:void(0);" class="button blue-gradient glossy" id="copyMessage"> Copy Message </a>
+						<a href="javascript:void(0);" class="button blue-gradient glossy" id="copyMessage"> <spring:message code="button.copyMessage" /> </a>
 					</c:when>
 				</c:choose>
 				<a href="manageReports.do" id="editManageMessageButtonCancel" 
-							class="button white-gradient glossy">Cancel</a>
+							class="button white-gradient glossy"><spring:message code="button.cancel" /></a>
 			</div>
 			<div> 
 			<c:forEach var="manageMessageTO"

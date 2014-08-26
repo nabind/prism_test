@@ -1,9 +1,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <div class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
-		<h1>Configure Report Message</h1>
+		<h1><spring:message code="h1.reportMessageSearch" /></h1>
 	</hgroup>
 	<div class="right-column">
 				<div class="content-panel" style="padding-left: 0px; border-radius: 0px 8px 8px 8px">
@@ -19,14 +20,14 @@
 				<div class="mid-margin-bottom">
 					<div class="panel-control rounded-border">
 						<span id="filter-icon" class="icon-leaf icon-size2"></span> 
-						<b>Configure message for: ${serviceMapReportMessageFilter.reportName}</b>
+						<b><spring:message code="msg.configureMessageFor" />: ${serviceMapReportMessageFilter.reportName}</b>
 					</div>
 					<div class="cyan-gradient icholder rounded-border-bottom"
 						style="border-bottom: 1px solid #CCC;">
 						<div class="refresh-report"
 							style="position: absolute; top: 5px; right: 20px;">
 							<a href="javascript:void(0)" id="searchMessage"
-								class="button blue-gradient glossy">Search Message</a> <input
+								class="button blue-gradient glossy"><spring:message code="label.searchMessage" /></a> <input
 								type="hidden" name="reportId" id="reportId"
 								value="${serviceMapReportMessageFilter.reportId}" /> <input
 								type="hidden" name="reportName" id="reportName"
@@ -43,7 +44,7 @@
 								class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer"
 								style="height: 10px; min-width: 720px">
 								<div class="three-columns report-inputs">
-									<h6 class="margin-bottom-small">Test Administration</h6>
+									<h6 class="margin-bottom-small"><spring:message code="label.testAdministration" /></h6>
 									<div class="float-left margin-right margin-bottom">
 										<p class="button-height">
 											<select id="custProdId" name="custProdId"
@@ -71,7 +72,7 @@
 		<div id="reportMessage"></div>
 		<div id="copyMessageModal" class="display-none">
 			<p class="button-height inline-label">
-				<label class="label" for="reportType" style="width:150px">Test Administration</label> 
+				<label class="label" for="reportType" style="width:150px"><spring:message code="label.testAdministration" /></label> 
 				<select
 					id="custProdIdModal" name="custProdIdModal"
 					class="select multiple-as-single easy-multiple-selection check-list expandable-list">

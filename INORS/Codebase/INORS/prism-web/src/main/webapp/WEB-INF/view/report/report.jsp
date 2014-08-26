@@ -1,7 +1,9 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 <style>
 /* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
 
@@ -143,10 +145,10 @@
 								<a href="#nogo" class="button review-button-pdf review-button-pdf-${homeReport.tabCount} orange-gradient glossy compact with-tooltip" 
 									title="Review Rescore" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 									<span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span>
-									Review
+									<spring:message code="label.review" />
 								</a>
 								<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
-	                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
+	                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span><spring:message code="label.moreInfo" />
 	                            </a>
 							</c:if>
 							<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass} refreh-button-${homeReport.tabCount}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>

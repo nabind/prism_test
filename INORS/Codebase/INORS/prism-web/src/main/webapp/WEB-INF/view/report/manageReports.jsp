@@ -5,7 +5,7 @@
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
 <hgroup id="main-title" class="thin">
-<h1>Manage Reports</h1>
+	<h1><spring:message code="h1.manageReports" /></h1>
 </hgroup>
 <!--[if gt IE 6]>
 <style>
@@ -20,53 +20,45 @@
 <style>
 	.label {width: 160px !important}
 </style>
-<!--<div class="with-padding">-->
 <div class="" style="background-color: #FFF">
 		<div class="right-column">
 				<div class="content-panel" style="padding-left: 0px; border-radius: 0px 8px 8px 8px">
 					<div class="report-panel-content panel-content linen" style="height: 575px">
-
 						<div class="panel-control align-right">
-							<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="Add Report" style="box-shadow: grey -3px 4px 13px;">
+							<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="<spring:message code="msg.addReport" />" style="box-shadow: grey -3px 4px 13px;">
 								<span class="button-icon blue-gradient manage-btn"><span class="icon-plus-round"></span></span>
-								Add Report
+								<spring:message code="msg.addReport" />
 							</a>
 						</div>
-
 						<div class="panel-load-target with-padding margin10 padding-none height-mid">
 							<div class="report-container1 tabs-content height-mid manage-report-container" style="padding-bottom: 20px;">
 								<div class="panel-load-target scrollable with-padding margin10 height-mid padding-none">
 								  <table class="simple-table responsive-table" id="report-list">
-
 									<thead>
 										<tr>
-											<th scope="col" width="23%">Report</th>
-											<!--<th scope="col" width="15%">Date</th>-->
-											<th scope="col" width="13%">Status</th>
-											<th scope="col" width="22%">Role</th>
-											<th scope="col" width="20%">Menu Name</th>
-											<th scope="col" width="22%" class="">Actions</th>
+											<th scope="col" width="23%"><spring:message code="label.report" /></th>
+											<th scope="col" width="13%"><spring:message code="table.label.status" /></th>
+											<th scope="col" width="22%"><spring:message code="label.role" /></th>
+											<th scope="col" width="20%"><spring:message code="label.menuName" /></th>
+											<th scope="col" width="22%" class=""><spring:message code="table.label.actions" /></th>
 										</tr>
 									</thead>
-
 									<tbody id ="reportDetails">
 										<c:forEach var="report" items="${reportList}">
 											<tr id="${report.reportId}_${report.reportId}">
 												<th scope="row"><span class="reportName">${report.reportName}</span>
 												<br>
 													<small class="reportUrl">${report.reportUrl}</small></th>
-												<!--<td class="vertical-center">Jul 5, 2011</td>-->
 												<td class="vertical-center">
 											     <input type="hidden" class="reportDescription" name="reportDescription" value="${report.reportDescription}" />
 											     <input type="hidden" class="reportType" name="reportType" id="reportType" value="${report.reportType}" />
 											     <input type="hidden" class="linkName" name="linkName" id="linkName" value="${report.linkName}" />
 											     <input type="hidden" class="allOrgNode" name="allOrgNode" id="allOrgNode" value="${report.allOrgNode}" />
-											     
 													<c:if test="${report.enabled}">
-														<small class="tag green-bg status">Enabled</small>
+														<small class="tag green-bg status"><spring:message code="label.enabled" /></small>
 													</c:if>
 													<c:if test="${not report.enabled}">
-														<small class="tag red-bg status">Disabled</small>
+														<small class="tag red-bg status"><spring:message code="label.disabled" /></small>
 													</c:if>
 												</td>
 												<td class="roleContainer vertical-center">
@@ -134,25 +126,22 @@
 						</div>
 					</div>
 				</div>
-					
 				<div id="editRole" class="display-none">
 					<div class="">
-					
 						<form:form id="editReportForm" method="post" class="edit-report-form" action="updateReport.do">
 							<input type="hidden" name="reportId" id="reportId"/>
 							<p  style="width:329px"><span  id="imgHolder"></span></p>
 							<p class="button-height inline-label">
-								<label class="label" for="reportName">Report Name<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportName"><spring:message code="label.reportName" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportName" value="${report.reportName}" id="reportName" style="width:200px" class="input full-width newReportName reset validate[required]"/>
 							</p>
 							<p class="button-height inline-label">
-								<label class="label" for="reportDescription">Report Description <span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportDescription"><spring:message code="label.reportDescription" /> <span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportDescription" id="reportDescription" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
-							
-							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type starting with 'PN' are for parent network reports.</small></p>
+							<p style="width: 385px;"><small class="input-info"><spring:message code="info.report" /></small></p>
 							<p class="button-height inline-label">
-									<label class="label" for="editReportType">Report Type</label>
+									<label class="label" for="editReportType"><spring:message code="label.reportType" /></label>
 									<select id="editReportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list" >
 										<option value="API">API</option>
 										<option value="API_LINK">API_LINK</option>
@@ -165,58 +154,50 @@
 										<option value="PN_NFCUSTOM">PN NO FILTER CUSTOM</option>
 									</select>
 							</p>
-							
 							<p class="button-height inline-label">
-									<label class="label" for="editMenuType">Menu Name</label>
+									<label class="label" for="editMenuType"><spring:message code="label.menuName" /></label>
 									<select id="editMenuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
-										<option value="101">Reports</option>
-										<option value="102">Downloads</option>
-										<option value="103">Resources</option>
-										<option value="104">Useful Links</option>
-										<option value="105">Manage</option>
+										<option value="101"><spring:message code="label.reports" /></option>
+										<option value="102"><spring:message code="label.downloads" /></option>
+										<option value="103"><spring:message code="menuName.content.rsc" /></option>
+										<option value="104"><spring:message code="label.usefulLinks" /></option>
+										<option value="105"><spring:message code="label.manage" /></option>
 									</select>
 							</p>
-							
 							<p class="button-height inline-label">
-								<label for="reportSequence" class="label">Report Sequence</label>
+								<label for="reportSequence" class="label"><spring:message code="label.reportSequence" /></label>
 								<span class="number input margin-right">
 									<button type="button" class="button number-down">-</button>
 									<input type="text" name="reportSequence" id="reportSequence" value="" class="input-unstyled">
 									<button type="button" class="button number-up">+</button>
 								</span>
 							</p>
-							
 							<p class="button-height inline-label">
-								<label class="label" for="reportUrl">Report URI<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportUrl"><spring:message code="label.reportURI" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportUrl" id="reportUrl" style="width:200px" class="input full-width newReportName reset validate[required]"/>
 							</p>
-							
 							<p class="button-height inline-label">
-									<label class="label" for="editCustomerType">Customer Product Link</label>
+									<label class="label" for="editCustomerType"><spring:message code="label.customerProductLink" /></label>
 									<select id="editCustomerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list ">
 										<c:forEach var="allCustomer" items="${allCustomer}">
 											<option value="${allCustomer.value}">${allCustomer.name}</option>
 										</c:forEach>
 									</select>
 							</p>
-
 							<p class="button-height inline-label">
-								<label class="label" for="editReportStatus">Status</label>
+								<label class="label" for="editReportStatus"><spring:message code="table.label.status" /></label>
 								<input type="checkbox" name="reportStatus" id="editReportStatus" class="switch medium wide mid-margin-right" value="1" data-text-on="ENABLED" data-text-off="DISABLED">
 							</p>
-
 							<p class="button-height inline-label">
-								<label class="label" for="userRole">Roles<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="userRole"><spring:message code="table.label.roles" /><span class="icon-star icon-size1 red"></span></label>
 								<select id="userRole" name="userRole" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple>
 									<c:forEach var="allRoles" items="${allRoles}">
 										<option value="${allRoles.name}">${allRoles.name}</option>
 									</c:forEach>
 								</select>
 							</p>
-							
-							
 							<p class="button-height inline-label">
-									<label class="label" for="orgNodeLevel">Level<span class="icon-star icon-size1 red"></span></label>
+									<label class="label" for="orgNodeLevel"><spring:message code="label.level" /><span class="icon-star icon-size1 red"></span></label>
 									<select id="orgNodeLevel" name="allOrgNode" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple>
 										<c:forEach var="allOrgNode" items="${allOrgNode}">
 											<option value="${allOrgNode.value}">${allOrgNode.name}</option>
@@ -224,31 +205,25 @@
 									</select>
 							</p>
 							<input type="hidden" name="allOrgNode" id="allOrgNode" value="${report.allOrgNode}" />
-														
 						</form:form>
 					</div>
 				</div>
 				<div id="addReport" class="display-none">
 					<div class="">
 						<form:form id="addNewReport" name="addNewReport" class="add-User-form small-margin-top">
-							<!--<input type="hidden" name="tenantId" id="tenantId" value="" />
-							<input type="hidden" name="orgLevel" id="orgLevel" value="" />-->
 							<input type="hidden" name="reportStatus" id="reportStatus" value="" />
-
 							<p  style="width:329px"><span  id="imgHolder"></span></p>
 							<p class="button-height inline-label">
-								<label class="label" for="reportName">Report Name<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportName"><spring:message code="label.reportName" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportName" id="reportName" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
-							
 							<p class="button-height inline-label">
-								<label class="label" for="reportDescription">Report Description<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportDescription"><spring:message code="label.reportDescription" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportDescription" id="reportDescription" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
-						
-							<p style="width: 385px;"><small class="input-info">Report Type should be aligned with report development (otherwise report may not be loaded properly). Type starting with 'PN' are for parent network reports.</small></p>
+							<p style="width: 385px;"><small class="input-info"><spring:message code="info.report" /></small></p>
 							<p class="button-height inline-label">
-									<label class="label" for="reportType">Report Type</label>
+									<label class="label" for="reportType"><spring:message code="label.reportType" /></label>
 									<select id="reportType" name="reportType" class="select multiple-as-single easy-multiple-selection check-list " >
 										<option value="API">API</option>
 										<option value="API_LINK">API_LINK</option>
@@ -261,48 +236,42 @@
 										<option value="PN_NFCUSTOM">PN NO FILTER CUSTOM</option>
 									</select>
 							</p>
-							
 							<p class="button-height inline-label">
-									<label class="label" for="reportType">Menu Name</label>
+									<label class="label" for="reportType"><spring:message code="label.menuName" /></label>
 									<select id="menuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
-										<option value="101">Reports</option>
-										<option value="102">Downloads</option>
-										<option value="103">Resources</option>
-										<option value="104">Useful Links</option>
-										<option value="105">Manage</option>
+										<option value="101"><spring:message code="label.reports" /></option>
+										<option value="102"><spring:message code="label.downloads" /></option>
+										<option value="103"><spring:message code="menuName.content.rsc" /></option>
+										<option value="104"><spring:message code="label.usefulLinks" /></option>
+										<option value="105"><spring:message code="label.manage" /></option>
 									</select>
 							</p>
-							
 							<p class="button-height inline-label">
-								<label class="label" for="reportUri">Report URI<span class="icon-star icon-size1 red"></span></label>
+								<label class="label" for="reportUri"><spring:message code="label.reportURI" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportUri" id="reportUri" style="width:200px" class="input full-width newReportName reset validate[required]" />
 							</p>
-													
 							<p class="button-height inline-label">
-									<label class="label" for="customerType">Customer Product Link</label>
+									<label class="label" for="customerType"><spring:message code="label.customerProductLink" /></label>
 									<select id="customerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list ">
 										<c:forEach var="allCustomer" items="${allCustomer}">
 											<option value="${allCustomer.value}">${allCustomer.name}</option>
 										</c:forEach>
 									</select>
 							</p>
-							
-							
 							<p class="button-height inline-label">
-								<label class="label" for="reportStatusCheck">Status</label>
+								<label class="label" for="reportStatusCheck"><spring:message code="table.label.status" /></label>
 								<input type="checkbox" name="reportStatusCheck"  id="reportStatusCheck" class="statusButton switch medium wide mid-margin-right" value="1" data-text-on="ENABLED" data-text-off="DISABLED">
 							</p>
 							<p class="button-height inline-label">
-									<label class="label" for="addUserRole">Roles<span class="icon-star icon-size1 red"></span></label>
+									<label class="label" for="addUserRole"><spring:message code="table.label.roles" /><span class="icon-star icon-size1 red"></span></label>
 									<select id="addUserRole" name="userRole" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple >
 										<c:forEach var="allRoles" items="${allRoles}">
 											<option value="${allRoles.name}">${allRoles.name}</option>
 										</c:forEach>
 									</select>
 							</p>
-							
 							<p class="button-height inline-label">
-									<label class="label" for="allOrgNode">Level<span class="icon-star icon-size1 red"></span></label>
+									<label class="label" for="allOrgNode"><spring:message code="label.level" /><span class="icon-star icon-size1 red"></span></label>
 									<select id="allOrgNode" name="allOrgNode" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple>
 									                                                                     
 										<c:forEach var="allOrgNode" items="${allOrgNode}">
@@ -310,14 +279,10 @@
 										</c:forEach>
 									</select>
 							</p>
-							
-							
-							
-								<div id ="imgHolder"></div>	
+							<div id ="imgHolder"></div>	
 						</form:form>
 						<%@ include file="../common/required.jsp" %>
 					</div>
 				</div>
 			</div>
-
 </div>
