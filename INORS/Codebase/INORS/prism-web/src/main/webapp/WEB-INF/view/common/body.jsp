@@ -1,7 +1,7 @@
 	<!-- Main content -->
 	<section role="main" id="main" style="margin-top:69px" >
 
-		<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
+		<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
 		<!--<hgroup id="main-title" class="thin">
 			<h1>Medias</h1>

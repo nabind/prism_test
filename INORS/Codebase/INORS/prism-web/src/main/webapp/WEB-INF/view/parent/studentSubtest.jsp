@@ -1,7 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<noscript class="message black-gradient simpler">Your browser
-	does not support JavaScript! Some features won't work as expected...</noscript>
+
+<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 	
 <div class="margin-bottom-medium" style="height:auto">
 	<c:if test="${not empty childDataMap}">

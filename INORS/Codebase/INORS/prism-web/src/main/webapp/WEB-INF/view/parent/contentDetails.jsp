@@ -1,7 +1,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<noscript class="message black-gradient simpler">Your browser
-	does not support JavaScript! Some features won't work as expected...</noscript>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 <%@ include file="../common/constant.jsp" %>
 <div class="margin-bottom-medium" style="min-height: 425px;">
 	

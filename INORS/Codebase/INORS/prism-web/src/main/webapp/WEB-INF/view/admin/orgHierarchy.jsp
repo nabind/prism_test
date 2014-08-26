@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <c:if test="${treeSturcture != 'Yes'}">
 	<ul id="org_details" class="files-list mini open-on-panel-content org_list">
 			<c:forEach var="organization" items="${organizationList}">

@@ -1,10 +1,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <form:form id="manageProfile" name="manageProfile" class="manage-Profile-form">
 	<input type="hidden" name="userId" id="userId" value="${parentAccountDetail.userId}" />
-	<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
+	<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
 		<h1>My Account</h1>
