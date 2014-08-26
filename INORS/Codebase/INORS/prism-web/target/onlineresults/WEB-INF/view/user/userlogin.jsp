@@ -211,7 +211,7 @@
  
 </head>
 <body style="min-width:800px" class="">
-	<a href="#" id="open-menu" class="" onClick="return false;"><span><spring:message code="login.from.head" /></span></a>
+	<a href="#" id="open-menu" class="" onClick="return false;"><span>Login</span></a>
 	<div id="logo" class="newStyle" style="border-bottom: 1px solid #CCC">
 		<h1>
 		 	<span class="logo-title custom-p"> 
@@ -229,7 +229,7 @@
 					${messageMap.teacherPageContent}
 					<div class="loginBtn margin-top margin-bottom-medium">
 						<button type="button" class="button blue-gradient glossy icon-download" onclick="javascript:window.open('/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide.pdf',800,600)">
-							<spring:message code="button.downloadQuickStartGuidePDF" />
+							Download Quick Start Guide PDF
 						</button>
 					</div>
 				</div>
@@ -239,6 +239,7 @@
 				<div class="">
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
+		
 							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
 								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 								<ul class="inputs large">
@@ -258,16 +259,21 @@
 								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
 		
 								<p class="button-height">
-									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
+									<button type="submit" class="button big glossy" id="login">Login</button>
+									<!--<input type="checkbox" name="_spring_security_remember_me" id="remind" value="1" checked="checked" class="switch tiny mid-margin-right with-tooltip" title="Enable auto-login">
+									<label for="remind">Remind me</label>-->
 								</p>
 							</form:form>
+		
 						</div>
 					</div>
+					
 					<div class="margin-top">
 						<div class="wrapped relative white-gradient custom-p" style="height: auto">
 							${messageMap.teacherOutageContent}
 						</div>
 					</div>
+					
 				</div>
 			</section>
 		</c:when>
@@ -278,15 +284,17 @@
 					${messageMap.teacherPageContent}
 					<div class="loginBtn margin-top margin-bottom-medium">
 						<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
-							<spring:message code="button.downloadQuickStartGuidePDF" />
+							Download Quick Start Guide PDF
 						</button>
 					</div>
 				</div>
 			</div>
+			
 			<section id="menu" class="menu">
 				<div class="">
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
+		
 							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
 								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 								<ul class="inputs large">
@@ -304,10 +312,14 @@
 									</li>
 								</ul>
 								<input type="hidden" name="j_contract" id="j_contract" value="tasc" autocomplete="off">
+		
 								<p class="button-height">
 									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head"/></button>
+									<!--<input type="checkbox" name="_spring_security_remember_me" id="remind" value="1" checked="checked" class="switch tiny mid-margin-right with-tooltip" title="Enable auto-login">
+									<label for="remind">Remind me</label>-->
 								</p>
 							</form:form>
+		
 						</div>
 					</div>
 					
@@ -319,6 +331,7 @@
 				</div>
 			</section>
 		</c:when>
+		
 		<c:otherwise>
 		<!-- Parent page -->
 			<div class="columnss">
@@ -326,31 +339,37 @@
 					${messageMap.parentPageContent}
 				</div>
 			</div>
+			
 			<section id="menu" class="menu">
 				<div class="">
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
+		
 							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
 								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 								<ul class="inputs large">
 									<li><span class="icon-user mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-											<a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
+											<a href="#" class="icon-play login-username-help">Forgot Username <span class="icon-question"></span></a>
+										
+										
 										</span>
 									</li>
 									<li><span class="icon-lock mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
+											<a href="#" class="icon-play login-password-help">Forgot Password <span class="icon-question"></span></a>
 										</span>
 									</li>
 								</ul>
 								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
+		
 								<p class="button-height">
-									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
+									<button type="submit" class="button big glossy" id="login">Login</button>
 								</p>
 							</form:form>
+		
 						</div>
 					</div>
 					<div class="margin-top">
@@ -358,12 +377,14 @@
 							${messageMap.parentOutageContent}
 						</div>
 					</div>
+					
 					<div class="margin-bottom-medium margin-top">
+						
 						<div class="boxshade" style="height: auto">
 							<ul style="" class="margin-bottom-medium bullet-list">
 								<li>
 									<a class=""  href="registration.do">
-										<small class="tag orange-bg"><spring:message code="label.newUser" />:</small> <spring:message code="msg.clickHereNewInvitationCode" />
+										<small class="tag orange-bg">New User:</small> Click here to enter your Invitation Code and create a new account!
 									</a>
 								</li><br>
 								<li>
@@ -372,15 +393,23 @@
 									</a>
 								</li>
 							</ul>
+							
+						
+						
 						</div>
 					</div>
+					
 				</div>
 			</section>	  
 		</c:otherwise>
 	</c:choose>
+	
 	<footer class="margin-top">
 		<c:choose>
 			<c:when test="${themeName == 'inors'}">
+				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
+			</c:when>
+			<c:when test="${themeName == 'tasc'}">
 				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
 			</c:when>
 			<c:otherwise>
@@ -529,17 +558,17 @@
 			<div class="">
 			<div id ="forgotPasswordContainer"  name="forgotPasswordContainer">
 				<p class="button-height inline-label">
-					<label class="label isIE" for="username"><spring:message code="label.username" /></label>
+					<label class="label isIE" for="username">Username</label>
 					<input type="text" name="f_username" id="f_username" style="width:200px;margin:3px" class="input" />
 				</p>
-				<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidUsernameMsg"><spring:message code="msg.invalidUser" /></p>
+				<p style="width:306px;margin:3px" class="message red-gradient margin-top display-none" id="invalidUsernameMsg">The Username entered is not valid. Make sure you have entered correct username.</p>
 				</div>
 			</div>
 			
 		<div id="forgotUserName" class="display-none">
 			<div id ="forgotUserNameContainer"  name="forgotUserNameContainer" class="">
 				<p class="button-height inline-label">
-					<label class="label isIE" for="email"><spring:message code="label.enterEmailId" /></label>
+					<label class="label isIE" for="email">Enter Email Id</label>
 					<input type="text" name="f_email" id="f_email" style="width:200px;margin:3px" maxlength="100" class="input" />
 				</p>
 			</div>
