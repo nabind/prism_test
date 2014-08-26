@@ -21,7 +21,7 @@
 		<pattern>/resourcepdf*</pattern>
 		<pattern>/clearCache*</pattern>
 		<pattern>/showError.do</pattern>
-		<pattern>/clearAllCache.do</pattern>
+		<pattern>/clearAllCache.do*</pattern>
 		<pattern>/clearConfigCache.do</pattern>
 		<pattern>/clearReportCache.do</pattern>
 		<pattern>/ReportServlet.do</pattern>
