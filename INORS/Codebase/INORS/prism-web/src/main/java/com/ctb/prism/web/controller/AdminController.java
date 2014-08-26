@@ -503,6 +503,7 @@ public class AdminController {
 		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		Map<String,Object> paramUserMap = new HashMap<String,Object>(); ; 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		
@@ -532,13 +533,23 @@ public class AdminController {
 			if("Search".equals(searchParam)) searchParam = "";
 			logger.log(IAppLogger.INFO, "Node ID: " + nodeId);
 			if (nodeId != null) {
-				if (currentOrg.equals(nodeId)) {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, currentOrg, adminYear, searchParam, customerid, orgMode);
-				} else if (nodeId.indexOf("_") > 0) {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId.substring(0, nodeId.indexOf("_")), adminYear, searchParam, customerid, orgMode);
+				paramUserMap.put("NODEID", nodeId);
+				
+				if (currentOrg.equals(nodeId)) {					
+					paramUserMap.put("CURRENTORG", currentOrg);	
+				} else if (nodeId.indexOf("_") > 0) {			
+					paramUserMap.put("CURRENTORG", nodeId.substring(0, nodeId.indexOf("_")));
 				} else {
-					UserTOs = adminService.getUserDetailsOnClick(nodeId, nodeId, adminYear, searchParam, customerid, orgMode);
+					paramUserMap.put("CURRENTORG", nodeId);	
 				}
+				paramUserMap.put("ADMINYEAR", adminYear);
+				paramUserMap.put("SEARCHPARAM", searchParam);
+				paramUserMap.put("CUSTOMERID", customerid);
+				paramUserMap.put("ORGMODE", orgMode);
+				paramUserMap.put("CONTRACT", Utils.getContractName());
+				
+				UserTOs = adminService.getUserDetailsOnClick(paramUserMap);
+				
 			}
 			logger.log(IAppLogger.INFO, "Users: " + UserTOs.size());
 			String userJsonString = JsonUtil.convertToJsonAdmin(UserTOs);

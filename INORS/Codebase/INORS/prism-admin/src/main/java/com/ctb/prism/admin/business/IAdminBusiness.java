@@ -33,15 +33,11 @@ public interface IAdminBusiness {
 	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String, Object> paramMap) throws Exception;
 
 	/**
-	 * @param nodeid
-	 * @param currorg
-	 * @param adminYear
-	 * @param searchParam
-	 * @param customerid
+	 * @param paramUserMap
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid, String orgMode) throws Exception;
+	public ArrayList<UserTO> getUserDetailsOnClick(Map<String,Object> paramUserMap) throws Exception;
 
 	/**
 	 * @param paramMap

@@ -96,6 +96,22 @@ public final class CacheKeyUtils {
 		return encryptedKey(buf.toString());
     }
     
+    
+    public static String generateKeyNew(Object... param) {
+    	StringBuffer buf = new StringBuffer();
+		for (Object n : param) {
+			if(n != null) {
+				if (n instanceof Map<?, ?>){
+					buf.append( mapKey((Map<String, Object>) n));
+				} else {
+					buf.append(String.valueOf(n));
+				}
+			}						
+		}
+		return encryptedKey(buf.toString());
+    }
+    
+    
     public static void main(String[] args) {
 		System.out.println( generateKey("abc", 123, true, null) );
 	}

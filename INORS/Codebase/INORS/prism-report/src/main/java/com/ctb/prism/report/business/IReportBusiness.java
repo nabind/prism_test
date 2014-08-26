@@ -31,6 +31,8 @@ public interface IReportBusiness {
 	 */
 	public void removeCache();
 	
+	public void removeCache(String contractName);
+	
 	public void removeConfigurationCache();
 
 	/**

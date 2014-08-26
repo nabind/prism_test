@@ -30,6 +30,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -207,6 +208,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@CacheEvict(value = { "defaultCache", "adminCache" }, allEntries = true)
 	public void removeCache() {
 		logger.log(IAppLogger.INFO, "Removed all cache");
+	}
+	
+	@Caching(evict = { @CacheEvict(value = { "defaultCache", "adminCache" }, key = "#p0") })
+	public void removeCache(String contractName) {
+		logger.log(IAppLogger.INFO, "Removed all cache for " +contractName );
 	}
 	
 	@CacheEvict(value = {"configCache"}, allEntries = true)

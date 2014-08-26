@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -57,8 +58,12 @@ public class CommonController extends BaseDAO {
 	@Autowired
 	private IRepositoryService repositoryService;
 	
+	
+	@Autowired private CookieThemeResolver themeResolver;
+	
 	private String ASSET_PATH = "/ACSIREPORTS/Static_Files";
 
+	
 	
 	/**
 	 * Load error page
@@ -468,8 +473,11 @@ public class CommonController extends BaseDAO {
 		ModelAndView mv = new ModelAndView("common/success");
 		System.out.println("Inside clearAllCache");
 		
+		String theme = themeResolver.resolveThemeName(req);
+		
 		try {
 			reportService.removeCache();
+			//reportService.removeCache(Utils.getContractNameNoLogin(theme));
 			logger.log(IAppLogger.INFO, "All Cache cleared ....");
 			
 			mv.addObject("message", "All Cache cleared !!!");

@@ -273,19 +273,30 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * Added contract
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #root.method.name )")
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeId, String currorg, String adminYear, String searchParam, String customerId, String orgMode) {
+	//	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKeyNew( #p0, #p1, #root.method.name )")
+	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramUserMap)).concat('getUserDetailsOnClick'))")
+	public ArrayList<UserTO> getUserDetailsOnClick(Map<String,Object> paramUserMap) {
+		String nodeId = (String)paramUserMap.get("NODEID");
+		String currorg = (String)paramUserMap.get("CURRENTORG");
+		String adminYear = (String)paramUserMap.get("ADMINYEAR");
+		String searchParam = (String)paramUserMap.get("SEARCHPARAM");
+		String customerId = (String)paramUserMap.get("CUSTOMERID");
+		String orgMode = (String)paramUserMap.get("ORGMODE");
+		String contract = (String)paramUserMap.get("CONTRACT");
+		
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
-		logger.log(IAppLogger.INFO, "nodeId=" + nodeId);
-		logger.log(IAppLogger.INFO, "currorg=" + currorg);
+		logger.log(IAppLogger.INFO, "nodeId=" + nodeId );
+		logger.log(IAppLogger.INFO, "currorg=" + currorg );
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 		logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
+		logger.log(IAppLogger.INFO, "contract=" + contract);
+		
 		List<UserTO> userList = null;
 		String userName = "";
 		String tenantId = "";
@@ -299,16 +310,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam);
+				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, contract);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, contract);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
 			if(!"undefined".equals(tenantId)) {
-				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
+				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, contract);
 			}
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
@@ -379,8 +390,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return userList;
 	}
 	
-	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam) {
-		return (List<UserTO>) getJdbcTemplatePrism().execute(
+	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam, final String contract) {
+		return (List<UserTO>) getJdbcTemplatePrism(contract).execute(
 				new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL_WITH_SP);
@@ -413,8 +424,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			);
 	}
 	
-	private List<UserTO> getUserDetailsOnScroll(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName) {
-		return (List<UserTO>) getJdbcTemplatePrism().execute(
+	private List<UserTO> getUserDetailsOnScroll(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String contract) {
+		return (List<UserTO>) getJdbcTemplatePrism(contract).execute(
 				new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL);
@@ -446,8 +457,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			);
 	}
 	
-	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId) {
-		return (List<UserTO>) getJdbcTemplatePrism().execute(
+	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String contract) {
+		return (List<UserTO>) getJdbcTemplatePrism(contract).execute(
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ON_FIRST_LOAD);

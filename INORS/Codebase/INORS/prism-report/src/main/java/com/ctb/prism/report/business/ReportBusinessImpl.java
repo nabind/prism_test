@@ -89,6 +89,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 		reportDAO.removeCache();
 	}
 	
+	public void removeCache(String contractName) {
+		reportDAO.removeCache(contractName);
+	}
+	
+	
+	
 	public void removeConfigurationCache() {
 		reportDAO.removeConfigurationCache();
 	}

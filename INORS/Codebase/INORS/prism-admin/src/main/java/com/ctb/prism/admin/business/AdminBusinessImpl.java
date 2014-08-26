@@ -60,10 +60,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#getUserDetailsOnClick(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getUserDetailsOnClick(Map<String,Object> paramUserMap)
 	 */
-	public ArrayList<UserTO> getUserDetailsOnClick(String nodeid, String currorg, String adminYear, String searchParam, String customerid, String orgMode) throws Exception {
-		return adminDAO.getUserDetailsOnClick(nodeid, currorg, adminYear, searchParam, customerid, orgMode);
+	public ArrayList<UserTO> getUserDetailsOnClick(Map<String,Object> paramUserMap) throws Exception {
+		return adminDAO.getUserDetailsOnClick(paramUserMap);
 	}
 
 	/*
