@@ -4,7 +4,7 @@
 	</header>
 
 	<!-- Button to open/hide menu -->
-	<a href="#" id="open-menu" class="with-tooltip tooltip-left" title="Show/hide menu"><span>Menu</span></a>
+	<a href="#" id="open-menu" class="with-tooltip tooltip-left" title="Show/hide menu"><span><spring:message code="label.menu" /></span></a>
 
 	<!-- Button to open/hide shortcuts -->
 	<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span></a>

@@ -1,19 +1,13 @@
-
 	<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 	
 	<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
-		<h1>Welcome, <%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %>!</h1>
+		<h1><spring:message code="label.welcome" />, <%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %>!</h1>
 	</hgroup>
 
-	
-
-
 	<div class="right-column margin-bottom-medium" style="min-height:675px;">
-			
-
 		<div class="right-column-200px" style="margin-top: 15px;">
 
 			<div class="right-column" style="min-width: 260px;">
@@ -22,13 +16,13 @@
 				<!--<p class="big-message blue-gradient">-->
 				<div style="height: 647px; z-index: 100;" id="child-holder" class="big-message blue-gradient">
 					<div class="" style="color : #fff;">
-						Choose one of the profiles below to see an individualized Action Plan for your child.
-						<br/><br/>
+						<spring:message code="p.parentWelcome.1" />
+						<br /><br />
 						<span class="children-list"></span>
 					</div>
 				</div>
-			</div></div>
-
+			</div>
+			</div>
 		<div class="left-column" style="margin-right: 270px;">
 			<div class="" style="height: auto">
 				<!-- Image slider -->
@@ -51,30 +45,28 @@
 					</div>
 				</div>
 				<!-- End : Image slider -->
-				
 				<div class="boxshade scrollable" style="max-width:938px; height: 96px;">
 					<p style="text-align:justify; margin-bottom: 0px;">
-						To choose an Action Plan for your child, click on his or her name on the right side of this screen. The Action Plan includes detailed information about important subject standards. It also provides standards-based activities you can do together to help your child learn and be more successful in school.
-						From the "Explore" menu on the right you may view additional information, including Why Standards Matter, an easy-to-understand overview of standards and testing; and informative websites recommended by your state education agency.
+						<spring:message code="p.parentWelcome.2" />
+						<spring:message code="p.parentWelcome.3" />
 					</p>
 				</div>
-			
 				<div class="margin-bottom" style="margin-left: -20px;margin-top: -30px;">
 					<div class="" style="float:left; width: 240px;">
 						<div class="with-padding" style="height: 170px">
-							<h4 class="blue underline">Explore</h4>
+							<h4 class="blue underline"><spring:message code="menuName.first.explore" /></h4>
 							<div class="boxshade">
 								<ul class="bullet-list">
-									<li><a href="#nogo" class="menu-link" action="getStandardMatters"><spring:message code="menuName.std.matter"/></a></li>
-									<li><a href="#nogo" class="menu-link" action="getBrowseContent"><spring:message code="menuName.content.browse"/></a></li>
+									<li><a href="#nogo" class="menu-link" action="getStandardMatters"><spring:message code="menuName.std.matter" /></a></li>
+									<li><a href="#nogo" class="menu-link" action="getBrowseContent"><spring:message code="menuName.content.browse" /></a></li>
 									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
-														<spring:message code="menuName.second.egsr"/>
+														<spring:message code="menuName.second.egsr" />
 													</a></li>
 									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ESPANOL.PDF"  target="_blank">
-														<spring:message code="menuName.second.sgsr"/>
+														<spring:message code="menuName.second.sgsr" />
 													</a></li>
 									<li><a href="resourcepdf.do?pdfFileName=/Static_PDF/Parent_Network_User_Guide.pdf"  target="_blank">
-														User Guide
+														<spring:message code="label.userGuide" />
 													</a></li>
 								</ul>
 							</div>
@@ -82,13 +74,12 @@
 					</div>
 					<div class="" style="margin-left: 220px;">
 						<div class="with-padding" style="height: 170px; margin-right: -19px;">
-							<h4 class="blue underline">Manage My Account</h4>
+							<h4 class="blue underline"><spring:message code="label.manageMyAccount" /></h4>
 							<div class="boxshade scrollable" style="height: 152px;">
-								<p>Use this page to update your personal information. You can also view information about which test data is available on the Parent Network for your school.</p>
+								<p><spring:message code="p.parentWelcome.4" /></p>
 								<ul class="bullet-list">
-									<li><a href="myAccount.do">My Account</a></li>
-									<li><a href="#nogo" class="claim-Invitation">Claim new Invitation Code</a></li>
-									<!--<li><a href="#nogo">Create New Child Information</a></li>-->
+									<li><a href="myAccount.do"><spring:message code="menuName.second.myac" /></a></li>
+									<li><a href="#nogo" class="claim-Invitation"><spring:message code="menuName.second.enac" /></a></li>
 								</ul>
 							</div>
 						</div>
@@ -96,11 +87,5 @@
 				</div>
 			</div>
 		</div>
-		
 	</div>
 	</div>
-	
-	
-
-
-

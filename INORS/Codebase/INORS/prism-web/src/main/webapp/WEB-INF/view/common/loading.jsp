@@ -1,3 +1,3 @@
 <div style="line-height: 64px">
-	Loading ...
+	<spring:message code="label.loading" />
 </div>

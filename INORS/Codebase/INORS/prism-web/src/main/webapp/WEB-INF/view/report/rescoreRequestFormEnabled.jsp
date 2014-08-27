@@ -1,7 +1,7 @@
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="rescoreRequestForm" modelAttribute="rescoreRequestForm">
-		<p class="success-message message small-margin-bottom green-gradient" style="display: none">Success</p>
-		<p class="error-message message small-margin-bottom red-gradient" style="display: none">Error</p>
+		<p class="success-message message small-margin-bottom green-gradient" style="display: none"><spring:message code="label.success" /></p>
+		<p class="error-message message small-margin-bottom red-gradient" style="display: none"><spring:message code="title.page.error" /></p>
 		<input type="hidden" value="/public/INORS/Report/Rescore_Request_Form_files" id="reportUrl" name="reportUrl">
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
@@ -40,21 +40,21 @@
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF">
 				<thead>
 					<tr role="row">
-						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 190px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD/YYYY)</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA<br />Session 2</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA<br />Session 3</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math<br />Session 1</th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.student" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 190px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.parentRescoreDate" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /><br /><spring:message code="thead.thead.session.2" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /><br /><spring:message code="thead.thead.session.3" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.math" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.math" /><br /><spring:message code="thead.thead.session.1" /></th>
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
-								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Science<br />Session 4</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.science" /></th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.science" /><br /><spring:message code="thead.thead.session.4" /></th>
 						    </c:when>
 						    <c:when test="${grade =='10003' || grade =='10005'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
-								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Social Studies<br />Session 4</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.socialStudies" /></th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.socialStudies" /><br /><spring:message code="thead.thead.session.4" /></th>
 						    </c:when>
 						</c:choose>
 					</tr>
@@ -237,7 +237,7 @@
 		</c:if>
 		<div class="columns accordion with-padding" style="z-index: 0;">
 			<p class="button-height">
-				Students Pass/Pass+/UND  in all content areas:<br />
+				<spring:message code="p.rescoreRequestFormDisabled.1" /><br />
 				<select id="selectStudentRRF" name="" class="select navy-gradient expandable-list float-left" style="width: 250px;">
 					<c:forEach var="rescoreStudentTO" items="${notDnpStudents}">
 						<option value="${rescoreStudentTO.studentBioId}">${rescoreStudentTO.studentFullName}</option>
@@ -257,22 +257,21 @@
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableRRF_2">
 				<thead>
 					<tr role="row">
-						<!-- <th aria-label="Text: activate to sort column ascending" style="width: 75px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"></th> -->
-						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Student</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 190px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Parent-Rescore Date<br />(MM/DD/YYYY)</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA<br />Session 2</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">ELA<br />Session 3</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math</th>
-						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Math<br />Session 1</th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 230px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.student" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 190px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.parentRescoreDate" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /><br /><spring:message code="thead.thead.session.2" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.ELA" /><br /><spring:message code="thead.thead.session.3" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.math" /></th>
+						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.math" /><br /><spring:message code="thead.thead.session.1" /></th>
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Science</th>
-								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Science<br />Session 4</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.science" /></th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.science" /><br /><spring:message code="thead.thead.session.4" /></th>
 						    </c:when>
 						    <c:when test="${grade =='10003' || grade =='10005'}">
-						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">Social Studies</th>
-								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col">Social Studies<br />Session 4</th>
+						    	<th aria-label="Text: activate to sort column ascending" style="width: 35px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col"><spring:message code="thead.socialStudies" /></th>
+								<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="" scope="col"><spring:message code="thead.socialStudies" /><br /><spring:message code="thead.thead.session.4" /></th>
 						    </c:when>
 						</c:choose>
 					</tr>

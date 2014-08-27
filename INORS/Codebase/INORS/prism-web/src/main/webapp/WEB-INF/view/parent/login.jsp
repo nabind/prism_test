@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>ACSI : Login</title>
+  <title><spring:message code="title.ACSILogin" /></title>
   <%@ include file="../common/commonStyle.jsp"%>
   
   <style>
@@ -79,8 +79,6 @@
 		<br>
 		<span class="description"> </span></h1>
 	</div>
-	
-	
 	<div class="columnss">
 		<div class="seven-columns">
 			<div>
@@ -98,7 +96,6 @@
 				</div>
 			</div>
 		</div>
-		
 		<div class="seven-columns" style="margin-top:35px">
 			<div class="boxshade scrollable">
 				<div class="columns">
@@ -107,26 +104,17 @@
 					</div>
 					<div class="nine-columns" style="box-shadow: 0px 0px 20px 5px #5F80AB; padding: 20px">
 						<h3>ACSI Assessment Results</h3>
-						
 						<p style="line-height:120%"><small class="tag orange-bg">NEW</small> - Assessment results for Spring 2012 ACSI + results:</p>
-
 						<p style="padding-left:10px">Grades 3 - 8: English/Language Arts & Mathematics,</p>
 						<p style="padding-left:10px">Grades 4 & 6: Science,</p>
 						<p style="padding-left:10px">Grades 5 & 7: Social Studies.</p>
-
 						<p style="line-height:120%"><small class="tag orange-bg">NEW</small> - Parents may request a rescore of open-ended items or essay questions. Requests for rescore must be submitted to the school between May 29 and June 15, 2012.</p>
-
 						<p style="line-height:120%">For more information see the English/Spanish Guide to the Student Report.</p>
 					</div>
-					
 				</div>
 			</div>
 		</div>
-		
-		
-		
 	</div>
-	
 	<section id="menu" class="menu">
 		<div class="">
 			<div class="margin-bottom-medium">
@@ -137,14 +125,12 @@
 			</div>
 			<div id="form-block" class="boxfshaxde">
 				<div id="form-viewport">
-
 					<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy" title="Login">
 						<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 						<ul class="inputs large">
 							<li><span class="icon-user mid-margin-right"></span><input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off"></li>
 							<li><span class="icon-lock mid-margin-right"></span><input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off"></li>
 						</ul>
-
 						<p class="button-height">
 							<button type="submit" class="button glossy float-right" id="login">Login</button>
 							<!--<input type="checkbox" name="_spring_security_remember_me" id="remind" value="1" checked="checked" class="switch tiny mid-margin-right with-tooltip" title="Enable auto-login">
@@ -153,12 +139,9 @@
 							<label class="button grey-gradient">Forgot Username?</label>
 						</p>
 					</form:form>
-
 				</div>
 			</div>
-			
 			<div class="margin-bottom-medium margin-top">
-				
 				<div class="boxshade" style="height: 146px;" >
 					<h4 style="color:#5f80ab">New User?</h4>
 					<ul style="padding-left: 15px;" class="margin-bottom-medium">
@@ -178,25 +161,17 @@
 							</a>
 						</li>
 					</ul>
-					
 					For questions about the <spring:message code="pnlogin.page.welcome"/>, please email support@ctb.com or call 1-800-481-4769.
-				
 				</div>
 			</div>
-			
 		</div>
 	</section>
-	
 	<footer class="margin-top">
 		<div class="float-center"><spring:message code="footer.copyright"/></div>
 		<div class="float-center"> <spring:message code="footer.helpdesk"/> </div> 
 	</footer>  
-  
 	<%@ include	file="../common/commonScripts.jsp"%>	
-	
-	
 	<script>
-	
 		$(document).ready(function() {
 			//display/hide menu section collapse icon
 			if($("#menu").hasClass("custom-scroll")) {

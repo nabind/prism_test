@@ -17,7 +17,6 @@
 		}
     </style>
 	<![endif]-->
-
 	
 	<script>
 		// Call template init (optional, but faster if called manually)

@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
@@ -9,10 +8,10 @@
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta charset="utf-8">
-  <title><spring:message code="title.tab.application"/></title>
+  <title><spring:message code="title.tab.application" /></title>
   <link rel="shortcut icon" href="themes/acsi/img/favicons/favicon.ico">
   <%@ include file="../common/commonStyle.jsp"%>
-  <spring:theme code="theme.name" var="themeName"/>
+  <spring:theme code="theme.name" var="themeName" />
   
   <style>
 		html, body {height: auto !important;}
@@ -134,20 +133,20 @@
 			<p class="big-message white-gradient" style="height:50px">
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-ladybug"></span>
-				<strong><spring:message code="title.tab.application"/></strong><br>
-				Teachers click here
+				<strong><spring:message code="title.tab.application" /></strong><br>
+				<spring:message code="label.teachersClickHere" />
 			</p>
-			<a href="userlogin.do?theme=inors&parent=false" class="button blue-gradient full-width">Login</a>
+			<a href="userlogin.do?theme=inors&parent=false" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
 		</div>
 		
 		<div class="four-columns" style="min-width:317px">
 			<p class="big-message white-gradient" style="height:50px">
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-butterfly"></span>
-				<strong><spring:message code="pnlogin.page.welcome"/></strong><br>
-				Parents/Guardians click here
+				<strong><spring:message code="pnlogin.page.welcome" /></strong><br>
+				<spring:message code="label.parentsClickHere" />
 			</p>
-			<a href="userlogin.do?theme=inorsparent&parent=true" class="button blue-gradient full-width">Login</a>
+			<a href="userlogin.do?theme=inorsparent&parent=true" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
 		</div>
 		<div class="two-columns"></div>
 		<div class="twelve-columns align-center custom-p">

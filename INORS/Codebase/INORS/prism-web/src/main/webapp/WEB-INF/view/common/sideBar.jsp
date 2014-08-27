@@ -1,7 +1,8 @@
-	<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
+	<%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+
 	<!-- Sidebar/drop-down menu -->
 	<section id="menu" role="complementary" style="margin-top:34px; width:262px;">
 	    <c:set var="menuSet" value="<%=request.getSession().getAttribute(IApplicationConstants.MENU_SET) %>"/>
@@ -13,33 +14,32 @@
 
 			<header class="blue-gradient glossy">
 				<sec:authorize ifAnyGranted="ROLE_ADMIN">
-					Administrator
+					<spring:message code="label.administrator" />
 				</sec:authorize>
 				<sec:authorize ifAnyGranted="ROLE_ACSI">
 					<sec:authorize ifNotGranted="ROLE_ADMIN">
-						State
+						<spring:message code="label.state" />
 					</sec:authorize>
 				</sec:authorize>
 				<sec:authorize ifAnyGranted="ROLE_SCHOOL">
 					<sec:authorize ifNotGranted="ROLE_ADMIN">
-						School
+						<spring:message code="label.school" />
 					</sec:authorize>
 				</sec:authorize>
 				<sec:authorize ifAnyGranted="ROLE_CLASS">
-					Group
+					<spring:message code="label.group" />
 				</sec:authorize>
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
-					Parent
+					<spring:message code="label.parent" />
 				</sec:authorize>
 			</header>
 
 			<div id="profile">
 				<img src='<spring:theme code="user.png" />' width="38" height="38" alt="User name" class="user-icon">
-				Welcome
+				<spring:message code="label.welcome" />
 				<sec:authorize ifNotGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 					<span class="name"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 				</sec:authorize>
-				
 				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME) %></span>
 					<span style="color:#FFF">as </span> <span class="name"  style="padding-left: 45px;"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>

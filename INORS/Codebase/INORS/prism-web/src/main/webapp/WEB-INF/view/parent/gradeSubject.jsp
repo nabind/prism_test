@@ -4,19 +4,16 @@
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 <%@ include file="../common/constant.jsp" %>
 <div class="margin-bottom-medium">
-	
 	<div id="gradeSubjectHeader" class="relative thin" style="height: auto; text-align: justify">
 		<c:choose>
 			<c:when test="${(menuId == stdAct) || (menuId == stdInd) || (menuId == rsc) }">
-				<h1>${menuName}: Choose a grade and subject</h1>
+				<h1>${menuName}: <spring:message code="label.chooseGradeSubject" /></h1>
 			</c:when>
 			<c:otherwise>
-				<h1>${menuName}: Choose a grade</h1>
+				<h1>${menuName}: <spring:message code="label.chooseGrade" /></h1>
 			</c:otherwise>
 		</c:choose>		
 	</div>
-	
-	
 	<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">
 		<ul class="tabs reporttabs">
 			<li class="active"><a href="#nogo">
@@ -25,42 +22,36 @@
 		</ul>
 		<div class="tabs-content">
 			<div class="relative with-padding" style="padding: 20px !important">
-				
-			
 				<div id="gradeSubjectMessage" class="relative" style="height: auto; text-align: justify;margin-bottom: 10px">
 						<c:choose>
 							<c:when test="${menuId == stdAct}">
-								Select one of the grade/subject combinations below to find additional Skill-Building Activities.
+								<spring:message code="p.gradeSubject.1" />
 							</c:when>
 							<c:when test="${menuId == stdInd}">
-								Select one of the grade/subject combinations below to learn about the State Standards.
+								<spring:message code="p.gradeSubject.2" />
 							</c:when>
 							<c:when test="${menuId == rsc}">
-								Select one of the grade/subject combinations below to find resources to help your child.
+								<spring:message code="p.gradeSubject.3" />
 							</c:when>
 							<c:when test="${menuId == eda}">
-								Select one of the grades below to see additional Everyday Activities you can do with your child.
+								<spring:message code="p.gradeSubject.4" />
 							</c:when>
 							<c:when test="${menuId == att}">
-								Select one of the grades below to learn About the Tests your child is expected to take.
+								<spring:message code="p.gradeSubject.5" />
 							</c:when>
 						</c:choose>				
 				</div>
-				
 				<div class="columns">
-					
 					<c:choose>
 						<c:when test="${(menuId == stdAct) || (menuId == stdInd) || (menuId == rsc) }">
-							<div class="new-row three-columns" style="margin-bottom: 0px;"><h4 class="blue underline">Grade</h4></div>
-							<div class="nine-columns" style="margin-bottom: 0px;"><h4 class="blue underline">Subtest</h4></div>
+							<div class="new-row three-columns" style="margin-bottom: 0px;"><h4 class="blue underline"><spring:message code="label.grade" /></h4></div>
+							<div class="nine-columns" style="margin-bottom: 0px;"><h4 class="blue underline"><spring:message code="label.subtest" /></h4></div>
 						</c:when>
 						<c:otherwise>
-							<div class="new-row twelve-columns" style="margin-bottom: 0px;"><h4 class="blue underline">Grade</h4></div>
+							<div class="new-row twelve-columns" style="margin-bottom: 0px;"><h4 class="blue underline"><spring:message code="label.grade" /></h4></div>
 						</c:otherwise>
 					</c:choose>	
-					
 				</div>
-				
 				<div id="gradeSubjectDeatils" class="">
 					<c:set var="curGradeId" value="0" />
 					<c:forEach var="gradeSubtestTO" items="${gradeSubtestList}">
@@ -101,9 +92,6 @@
 										</c:when>
 									</c:choose>
 								</div>
-							
-							
-							
 								<div class="nine-columns">
 									<c:forEach var="subtestTO" items="${gradeSubtestList}">
 										<c:if test="${gradeId == subtestTO.gradeId}">
@@ -157,6 +145,4 @@
 			</div>
 		</div>
 	</div>
-	
-	
 </div>

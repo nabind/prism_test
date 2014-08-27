@@ -140,4 +140,6 @@
 	strings['option.p_Roster_Score_List.0'] = "<spring:message code='option.p_Roster_Score_List.0' javaScriptEscape='true' />";
 	strings['msg.selectSubtest'] = "<spring:message code='msg.selectSubtest' javaScriptEscape='true' />";
 	
+	strings['msg.keepAlive'] = "<spring:message code='msg.keepAlive' javaScriptEscape='true' />";
+	
 </script>

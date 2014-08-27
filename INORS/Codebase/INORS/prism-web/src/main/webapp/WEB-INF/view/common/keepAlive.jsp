@@ -11,7 +11,7 @@
 	
 	resetTimer();
 	function keepAliveACSI() {
-		$.modal.confirm('Your Online session is about to expire. Confirm to remain in the session.', function()
+		$.modal.confirm(strings['msg.keepAlive'], function()
 		{
 			// user clicked confirm
 			$.ajax({

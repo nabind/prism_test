@@ -1,1 +1,1 @@
-<small class="input-info"><span class="icon-star icon-size1 red"></span> &nbsp; = Required fields</small>
+<small class="input-info"><span class="icon-star icon-size1 red"></span> &nbsp; = <spring:message code="label.requiredFields" /></small>

@@ -1,7 +1,7 @@
 	<!-- Title bar -->
 	
 		<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-		<%@page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
+		<%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 		
 		<script src="scripts/js/libs/modernizr.custom.js"></script>
 		<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>
@@ -18,22 +18,17 @@
 		</div>
 		<% if(request.getSession().getAttribute(IApplicationConstants.CURRUSER) != null) { %>
 		<div id="" class="" style="text-align:right;margin: -26px 64px 0 0; z-index:101;position: relative;">
-			<h5><span class="logo-title blue">Welcome:</span>
+			<h5><span class="logo-title blue"><spring:message code="label.welcome" />:</span>
 				<sec:authorize ifNotGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 					<span class="name"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
-					
 				</sec:authorize>
-				
 				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME) %></span>
 					as <span class="name black"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
-					
 				</sec:authorize>
-				
 			</h5>
 		</div>
 		<%}%>
-		
 	<div class="panel-control align-right padding-right margin-top rounded-border drilldown-pagination" style="padding:0 5px 0 5px; margin:0 50px !important">
 		<div class="float-left drilldown-head-pagination" count="_TAB_COUNT_">
 			<%if(request.getAttribute("totalPages") != null) { %>
@@ -60,11 +55,5 @@
 				<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
 				PDF
 			</a>
-			<!-- <a href="#" class="button margin-left glossy compact with-tooltip" 
-				title="Download report as Excel" param="_REPORT_URL_" count="_TAB_COUNT_" assessment="_ASSESSMENT_" onClick="downloadXls()">
-				<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
-				Excel
-			</a> -->
 		</div>
 	</div>
-	

@@ -1,8 +1,9 @@
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Success</title>
+  <title><spring:message code="label.success" /></title>
   <style>
     ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
     ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -28,7 +29,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Success</h1>
+    <h1><spring:message code="label.success" /></h1>
     <p>${message}</p>
   </div>
 
