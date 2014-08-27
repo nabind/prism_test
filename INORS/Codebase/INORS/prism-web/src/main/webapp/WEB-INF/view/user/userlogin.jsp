@@ -383,6 +383,9 @@
 			<c:when test="${themeName == 'inors'}">
 				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
 			</c:when>
+			<c:when test="${themeName == 'tasc'}">
+				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
+			</c:when>
 			<c:otherwise>
 				<div class="float-center custom-p"> ${messageMap.parentFooterMessage} </div>  
 			</c:otherwise>
