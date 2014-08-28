@@ -5,6 +5,10 @@ package com.ctb.prism.core.constant;
  * 
  */
 public interface IApplicationConstants {
+	
+	public static enum CONTRACT_NAME {
+		inors,tasc
+	};
 
 	// different kind of users
 	public static enum USER_TYPE {
