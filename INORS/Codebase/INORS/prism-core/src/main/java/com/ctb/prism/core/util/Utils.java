@@ -449,20 +449,21 @@ public final class Utils {
 	 * @param contractName
 	 * @return
 	 */
-	public static Set<MenuTO> attachCSSClassToMenuSet(Set<MenuTO> menuSet,
-			IPropertyLookup propertyLookup, String contractName) {
-		String REPORT_NAME_CLASS = propertyLookup.get(contractName
-				+ "_REPORT_NAME_CLASS");
+	public static Set<MenuTO> attachCSSClassToMenuSet(Set<MenuTO> menuSet, IPropertyLookup propertyLookup) {
+		String contractName = getContractName().toUpperCase();
+		String REPORT_NAME_CLASS = propertyLookup.get(contractName + "_REPORT_NAME_CLASS");
+		if (REPORT_NAME_CLASS == null) {
+			logger.log(IAppLogger.ERROR, "_REPORT_NAME_CLASS Property not defined for contractName = " + contractName);
+			return menuSet;
+		}
 		logger.log(IAppLogger.INFO, "REPORT_NAME_CLASS = " + REPORT_NAME_CLASS);
 		String[] reportNameClasses = REPORT_NAME_CLASS.split("\\|");
 		for (String token : reportNameClasses) {
 			String[] pairs = token.split("\\^");
 			MenuTO menu = getMenuFromSet(menuSet, pairs[0].trim());
-			if (menu != null
-					&& menu.getReportName().equalsIgnoreCase(pairs[0].trim())) {
+			if (menu != null && menu.getReportName().equalsIgnoreCase(pairs[0].trim())) {
 				menu.setCssClass(pairs[1].trim());
-				logger.log(IAppLogger.INFO, menu.getReportName() + " = "
-						+ pairs[1].trim());
+
 			}
 		}
 		return menuSet;
@@ -478,11 +479,6 @@ public final class Utils {
 	public static MenuTO getMenuFromSet(Set<MenuTO> menuSet, String reportName) {
 		MenuTO to = null;
 		for (MenuTO menu : menuSet) {
-			logger.log(
-					IAppLogger.INFO,
-					reportName + ".equalsIgnoreCase(" + menu.getReportName()
-							+ ") = "
-							+ reportName.equalsIgnoreCase(menu.getReportName()));
 			if (reportName.equalsIgnoreCase(menu.getReportName())) {
 				to = menu;
 				break;

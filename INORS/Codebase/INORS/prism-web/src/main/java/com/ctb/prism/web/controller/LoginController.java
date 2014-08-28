@@ -382,8 +382,7 @@ public class LoginController {
 				Map<String, Object> paramMap = new HashMap<String, Object>();
 				paramMap.put("userId", user.getUserId());
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
-				// TODO - Need to pass contractName
-				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup, "INORS");
+				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
 				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));
 				req.getSession().setAttribute(IApplicationConstants.MENU_SET, menuSet);
 				
