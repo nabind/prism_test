@@ -548,8 +548,7 @@ public class AdminController {
 				paramUserMap.put("SEARCHPARAM", searchParam);
 				paramUserMap.put("CUSTOMERID", customerid);
 				paramUserMap.put("ORGMODE", orgMode);
-				paramUserMap.put("CONTRACT", Utils.getContractName());
-				
+								
 				UserTOs = adminService.getUserDetailsOnClick(paramUserMap);
 				
 			}

@@ -6,8 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.ctb.prism.core.constant.IApplicationConstants;
+
 public final class CacheKeyUtils {
     
+	
     private CacheKeyUtils() {
         throw new UnsupportedOperationException();
     }
@@ -48,12 +53,15 @@ public final class CacheKeyUtils {
     }
 
     public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
-        if (col == null) {
+        
+    	String contractName = null; 
+        
+    	if (col == null) {
             return "";
         }
 
         final List<K> sorted = new ArrayList<K>(col.keySet());
-
+    
         if (col.size() > 1) {
             Collections.sort(sorted);
         }
@@ -71,6 +79,14 @@ public final class CacheKeyUtils {
             }
         }
         b.append("]");
+        
+        if(col.get("contractName")!=null && ((String)col.get("contractName")).length() > 0) {
+        	contractName = (String)col.get("contractName");
+        } else {
+        	contractName = Utils.getContractName();
+        }
+        storeCacheKey(b.toString(),contractName); //Key will be stored in queue. It will help later for clear cache
+        
         return b.toString();
     }
     
@@ -96,19 +112,21 @@ public final class CacheKeyUtils {
 		return encryptedKey(buf.toString());
     }
     
-    
-    public static String generateKeyNew(Object... param) {
-    	StringBuffer buf = new StringBuffer();
-		for (Object n : param) {
-			if(n != null) {
-				if (n instanceof Map<?, ?>){
-					buf.append( mapKey((Map<String, Object>) n));
-				} else {
-					buf.append(String.valueOf(n));
-				}
-			}						
-		}
-		return encryptedKey(buf.toString());
+    /*
+     * Store cache key in SQS for clearing based on contract
+     * creates message and push into amazon SQS
+     * @param key
+     * @param contractName
+     * 
+     */
+    private static void storeCacheKey(String key, String contractName){
+    	//TODO
+    	if(contractName.equals(IApplicationConstants.CONTRACT_NAME.inors)){
+    	//	sendKeyToINORSQueue(key);
+    	} else if(contractName.equals(IApplicationConstants.CONTRACT_NAME.tasc)){
+    	//	sendKeyToTASCQueue(key);	
+    	}    	
+    	return;
     }
     
     
