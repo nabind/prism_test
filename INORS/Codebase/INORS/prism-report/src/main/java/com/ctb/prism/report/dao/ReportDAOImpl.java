@@ -761,7 +761,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				            }else if(IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME.equalsIgnoreCase(reportName)) {
 				            	cs.setString(2, IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 				            }else{
-				            	cs.setString(2, "-99");
+				            	cs.setString(2, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 				            }
 				            cs.setLong(3, custProdId);	
 				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
