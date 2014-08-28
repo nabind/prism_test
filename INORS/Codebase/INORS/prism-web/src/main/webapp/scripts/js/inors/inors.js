@@ -103,11 +103,29 @@ $(document).ready(function() {
 		$("#downloadStudentFileCSV").attr("href", href);
 	});
 	
-	$("#downloadStudentFileDAT").on("click", function() {
-		var startDate = $("#p_Start_Date").val();
-		var endDate = $("#p_End_Date").val();
-		var href = "downloadStudentFile.do?type=DAT&startDate=" + startDate + "&endDate=" + endDate;
-		$("#downloadStudentFileDAT").attr("href", href);
+	$("#downloadStudentFileDAT").live("click", function() {
+		$(".success-message").hide(100);
+		$(".error-message").hide(100);
+		$(".error-message2").hide(100);
+		var formObj = $('#downloadStudentFile');
+		$(formObj).validationEngine();
+		if(formObj.validationEngine('validate')) {
+			if(($("#p_Start_Date").val() != '' && $("#p_End_Date").val() != '')
+				|| ($("#p_Start_Date").val() == '' && $("#p_End_Date").val() == '')) {
+				var diff = new Date($("#p_End_Date").val()) - new Date($("#p_Start_Date").val());
+				diff = diff/1000/60/60/24;
+				if(diff > 30) {
+					$(".error-message2").show(200);
+				} else if(diff < 0) { 
+					$.modal.alert('End date should be greater than start date.');
+				} else {
+					downloadStudentDataFile('DAT');
+				}
+			} else {
+				if($("#p_Start_Date").val() == '') $.modal.alert('Please provide start date.');
+				if($("#p_End_Date").val() == '') $.modal.alert('Please provide end date.');
+			}
+		}
 	});
 	
 	/*$(".jqdatepicker").glDatePicker({
@@ -1486,4 +1504,33 @@ function validateEmail($email) {
 	} else {
 		return true;
 	}
+}
+
+//=============== Download Student Data File =====================
+function downloadStudentDataFile(fileType) {
+	var startDate = $("#p_Start_Date").val();
+	var endDate = $("#p_End_Date").val();
+	var dateType = $("#p_Date_Type").val();
+	var href = "type=" + fileType + "&dateType=" + dateType + "&startDate=" + startDate + "&endDate=" + endDate;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "downloadStudentFile.do",
+		data : href,
+		dataType: 'html',
+		cache:false,
+		success : function(data) {
+			unblockUI();
+			var obj = jQuery.parseJSON(data);
+			if (obj.status == 'Success') {
+				$(".success-message").show(200);
+			} else {
+				$(".error-message").show(200);
+			}
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.common.error']);
+		}
+	});
 }

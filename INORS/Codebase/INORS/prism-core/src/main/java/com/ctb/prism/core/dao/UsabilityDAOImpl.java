@@ -955,7 +955,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		//String adminid = jobTrackingTO.getAdminId();
 		String customerid = jobTrackingTO.getCustomerId();
 
-		getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING,
+		getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING_DATE,
 				jobId, jobTrackingTO.getUserId(), job_name, jobTrackingTO.getExtractStartdate(),
 				extract_enddate, extract_category, extract_filetype,
 				request_type, request_summary, request_details,

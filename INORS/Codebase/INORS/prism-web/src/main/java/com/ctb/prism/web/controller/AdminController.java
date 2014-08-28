@@ -1,8 +1,6 @@
 package com.ctb.prism.web.controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,13 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.lingala.zip4j.core.ZipFile;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,23 +25,27 @@ import com.ctb.prism.admin.transferobject.EduCenterTO;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
-import com.ctb.prism.admin.transferobject.StudentDataTO;
 import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
-import com.ctb.prism.admin.util.StudentDataUtil;
+import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IApplicationConstants.EXTRACT_CATEGORY;
+import com.ctb.prism.core.constant.IApplicationConstants.EXTRACT_FILETYPE;
+import com.ctb.prism.core.constant.IApplicationConstants.JOB_STATUS;
+import com.ctb.prism.core.constant.IApplicationConstants.REQUEST_TYPE;
 import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.BusinessException;
-import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
+import com.ctb.prism.login.security.filter.RESTAuthenticationFilter;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
@@ -67,6 +66,9 @@ public class AdminController {
 	
 	@Autowired
 	private IParentService parentService;
+	
+	@Autowired
+	private IUsabilityService usabilityService;
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -2113,40 +2115,79 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "/downloadStudentFile", method = RequestMethod.GET)
-	public void downloadStudentFile(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String downloadStudentFile(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile");
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			String startDate = (String) request.getParameter("startDate");
 			String endDate = (String) request.getParameter("endDate");
 			String fileType = (String) request.getParameter("type");
+			String dateType = request.getParameter("dateType");
 			paramMap.put("userId", userId);
 			paramMap.put("startDate", startDate);
 			paramMap.put("endDate", endDate);
+			paramMap.put("dateType", dateType);
+			
+			JobTrackingTO jobTrackingTO = new JobTrackingTO(); 
+			String docName = CustomStringUtil.appendString(currentUser, "_" ,Utils.getDateTime(), "_Querysheet.pdf");
+            jobTrackingTO.setJobName(docName);
+            jobTrackingTO.setUserId((String) request.getSession().getAttribute(
+            		IApplicationConstants.CURRUSERID));
+            String username = currentUser;
+            if(username != null && username.indexOf(RESTAuthenticationFilter.RANDOM_STRING) != -1) {
+            	// remove random character for SSO users
+            	username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
+            }
+            jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(
+            		username, "_StudentDataFile_csv_", Utils.getDateTime(), ".", fileType)
+                    );
+            //jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
+            jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.valueOf(dateType).toString());
+            jobTrackingTO.setRequestType(REQUEST_TYPE.SDF.toString());  
+            jobTrackingTO.setExtractFiletype(EXTRACT_FILETYPE.valueOf(fileType).toString());
+            String type = ("TTD".equals(dateType))? "Test Taken Date" : "Last Updated Date";
+            jobTrackingTO.setRequestSummary(CustomStringUtil.appendString(
+            		"Download student data file in ", fileType, " format.",
+            		//"\n\nRequest parameters:",
+            		"\n\nDate Type: ", type,
+            		"\n\nStart Date: ", startDate,
+            		"\n\nEnd Date: ", endDate));
+            jobTrackingTO.setJobStatus(JOB_STATUS.SU.toString()); 
+            jobTrackingTO.setCustomerId(customer);
+            jobTrackingTO.setExtractStartdate(startDate);
+            jobTrackingTO.setExtractEnddate(endDate);
+             
+			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO); 
+			
+			response.setContentType("application/json");
+			response.getWriter().write( "{\"status\":\"Success\"}" );
+			/*
+			 * Student data file generation is moved to ETL 
 			List<StudentDataTO> studentDataList = adminService.downloadStudentFile(paramMap);
 
 			Long orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL));
 			char[] pwd = propertyLookup.get("STUDENT_FILE_PWD").toCharArray();
 			ZipFile zipFile = StudentDataUtil.createPasswordProtectedZipFile(orgNodeLevel, studentDataList, fileType, pwd);
-
+			 
 			response.setContentType("application/zip");
 			response.setContentLength((int) zipFile.getFile().length());
 			response.setHeader("Content-Disposition", "attachment; filename=StudentDataFile.zip");
-
+	
 			InputStream is = new FileInputStream(zipFile.getFile());
 			FileCopyUtils.copy(is, response.getOutputStream());
 
 			is.close();
 			StudentDataUtil.cleanup();
-		} catch (IOException e) {
+			*/
+		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			e.printStackTrace();
-		} catch (SystemException e) {
-			logger.log(IAppLogger.ERROR, "", e);
-			e.printStackTrace();
-		}
+		} 
 		logger.log(IAppLogger.INFO, "Exit: downloadStudentFile");
+		return null;
 	}
 	
 	/**

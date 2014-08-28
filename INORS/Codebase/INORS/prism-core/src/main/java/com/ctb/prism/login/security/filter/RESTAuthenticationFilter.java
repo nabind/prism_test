@@ -69,7 +69,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private boolean isWebServiceCall = false;
     private boolean postOnly = true;
     
-    String RANDOM_STRING = "9rc^wH7KRg[B";
+    public static String RANDOM_STRING = "9rc^wH7KRg[B";
     String RANDOM_PASSWD = "8rc^wK6HRg[C";
     
 	@Autowired

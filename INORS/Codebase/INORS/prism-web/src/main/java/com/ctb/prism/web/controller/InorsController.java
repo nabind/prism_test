@@ -944,7 +944,7 @@ public class InorsController {
 	@RequestMapping(value = "/downloadFile", method = RequestMethod.GET)
 	public void downloadFile(HttpServletRequest request, HttpServletResponse response) {
 		long t1 = System.currentTimeMillis();
-		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile()");
+		logger.log(IAppLogger.INFO, "Enter: downloadFile()");
 		String fileName = request.getParameter("fileName");
 		try {
 			File studentFile = new File(fileName);
@@ -964,7 +964,7 @@ public class InorsController {
 			e.printStackTrace();
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: downloadStudentFile(): " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "Exit: downloadFile(): " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 
