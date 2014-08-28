@@ -5,6 +5,7 @@
 	<html>
 		<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<%@ include file="messages.jsp"%>
 		</head>
 		
 		<script src="scripts/js/libs/modernizr.custom.js"></script>
