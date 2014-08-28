@@ -237,4 +237,5 @@ public interface IApplicationConstants {
 	public static final String URL_STACK = "URL_STACK";
 
 	public static final String[] ASSET_LOCATIONS = { "Static_Files/" };
+	public static final long DEFAULT_PRISM_VALUE = -99;
 }
