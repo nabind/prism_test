@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
@@ -14,136 +15,7 @@
   <%@ include file="../common/commonStyle.jsp"%>
   <spring:theme code="theme.name" var="themeName"/>
   <c:choose>
-		<c:when test="${themeName == 'inors'}">
-		  <style>
-				html, body {height: auto !important;}
-			    html { padding: 30px 20px; font-size: 20px; line-height: 1.4; color: #737373; background: #5F80AB; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-			    html, input { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-			    body { /*max-width: 1200px; _width: 500px;*/ background-color: #FFFFFF !important; padding: 5px 20px 20px; border: 1px solid #b3b3b3; border-radius: 8px; margin: 0 auto; box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff; background: #fcfcfc; }
-			    h1 { margin: 0 10px; font-size: 50px; text-align: left; }
-			    h1 span { color: #bbb; }
-			    h3 { margin: 1.5em 0 0.5em; }
-			    p { margin: 1em 0; }
-			    /*ul { padding: 0 0 0 40px; margin: 1em 0; }*/
-			    .container { max-width: 380px; _width: 380px; margin: 0 auto; }
-			    /* google search */
-			    #goog-fixurl ul { list-style: none; padding: 0; margin: 0; }
-			    #goog-fixurl form { margin: 0; }
-			    #goog-wm-qt, #goog-wm-sb { border: 1px solid #bbb; font-size: 16px; line-height: normal; vertical-align: top; color: #444; border-radius: 2px; }
-			    #goog-wm-qt { width: 220px; height: 20px; padding: 5px; margin: 5px 10px 0 0; box-shadow: inset 0 1px 1px #ccc; }
-			    #goog-wm-sb { display: inline-block; height: 32px; padding: 0 10px; margin: 5px 0 0; white-space: nowrap; cursor: pointer; background-color: #f5f5f5; background-image: -webkit-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -moz-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -ms-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -o-linear-gradient(rgba(255,255,255,0), #f1f1f1); -webkit-appearance: none; -moz-appearance: none; appearance: none; *overflow: visible; *display: inline; *zoom: 1; }
-			    #goog-wm-sb:hover, #goog-wm-sb:focus { border-color: #aaa; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); background-color: #f8f8f8; }
-			    #goog-wm-qt:focus, #goog-wm-sb:focus { border-color: #105cb6; outline: 0; color: #222; }
-			    input::-moz-focus-inner { padding: 0; border: 0; }
-				
-				.menu {
-					background: none !important;
-					background-color: #FFF !important;
-					border-left: 1px solid #FFF !important;
-					height: 370px !important;
-					min-height: 370px !important;
-					position: absolute !important;
-					right: 35px !important;
-					top: 100px !important;
-					width: 400px !important;
-					z-index: 1 !important;
-					box-shadow: none !important;
-					padding: 10px !important;
-					
-				}
-				#open-menu {
-					margin-top: 42px;
-					margin-right: 28px;
-					position: absolute !important;
-					/*display: none;*/
-					z-index: 1;
-				}
-				#open-menu > span {
-					color: #5F80AB;
-				}
-				footer {
-					border-top: 1px solid #ccc; text-align: center; color: #AAA;
-					box-shadow: 0px -9px 23px -7px #CCC;
-					border-radius: 7px 7px 0 0;
-					padding-top: 10px;
-				}
-				.newStyle {
-					padding: 5px 0 5px 0
-				}
-				.acsicol {
-					color: #BA1A22;
-				}
-				.custom-p p{
-					margin: 0!important;
-				}
-		  </style>
-	</c:when>
-		<c:when test="${themeName == 'tasc'}">
-		  <style>
-				html, body {height: auto !important;}
-			    html { padding: 30px 20px; font-size: 20px; line-height: 1.4; color: #737373; background: #5F80AB; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-			    html, input { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-			    body { /*max-width: 1200px; _width: 500px;*/ background-color: #FFFFFF !important; padding: 5px 20px 20px; border: 1px solid #b3b3b3; border-radius: 8px; margin: 0 auto; box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff; background: #fcfcfc; }
-			    h1 { margin: 0 10px; font-size: 50px; text-align: left; }
-			    h1 span { color: #bbb; }
-			    h3 { margin: 1.5em 0 0.5em; }
-			    p { margin: 1em 0; }
-			    /*ul { padding: 0 0 0 40px; margin: 1em 0; }*/
-			    .container { max-width: 380px; _width: 380px; margin: 0 auto; }
-			    /* google search */
-			    #goog-fixurl ul { list-style: none; padding: 0; margin: 0; }
-			    #goog-fixurl form { margin: 0; }
-			    #goog-wm-qt, #goog-wm-sb { border: 1px solid #bbb; font-size: 16px; line-height: normal; vertical-align: top; color: #444; border-radius: 2px; }
-			    #goog-wm-qt { width: 220px; height: 20px; padding: 5px; margin: 5px 10px 0 0; box-shadow: inset 0 1px 1px #ccc; }
-			    #goog-wm-sb { display: inline-block; height: 32px; padding: 0 10px; margin: 5px 0 0; white-space: nowrap; cursor: pointer; background-color: #f5f5f5; background-image: -webkit-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -moz-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -ms-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -o-linear-gradient(rgba(255,255,255,0), #f1f1f1); -webkit-appearance: none; -moz-appearance: none; appearance: none; *overflow: visible; *display: inline; *zoom: 1; }
-			    #goog-wm-sb:hover, #goog-wm-sb:focus { border-color: #aaa; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); background-color: #f8f8f8; }
-			    #goog-wm-qt:focus, #goog-wm-sb:focus { border-color: #105cb6; outline: 0; color: #222; }
-			    input::-moz-focus-inner { padding: 0; border: 0; }
-				
-				.menu {
-					background: none !important;
-					background-color: #FFF !important;
-					border-left: 1px solid #FFF !important;
-					height: 370px !important;
-					min-height: 370px !important;
-					position: absolute !important;
-					right: 35px !important;
-					top: 100px !important;
-					width: 400px !important;
-					z-index: 1 !important;
-					box-shadow: none !important;
-					padding: 10px !important;
-					
-				}
-				#open-menu {
-					margin-top: 42px;
-					margin-right: 28px;
-					position: absolute !important;
-					/*display: none;*/
-					z-index: 1;
-				}
-				#open-menu > span {
-					color: #5F80AB;
-				}
-				footer {
-					border-top: 1px solid #ccc; text-align: center; color: #AAA;
-					box-shadow: 0px -9px 23px -7px #CCC;
-					border-radius: 7px 7px 0 0;
-					padding: 12px;
-				}
-				.newStyle {
-					padding: 5px 0 5px 0
-				}
-				.acsicol {
-					color: #BA1A22;
-				}
-				.custom-p p{
-					margin: 0!important;
-				}
-		  </style>
-	</c:when>
-	
-	<c:otherwise>
+  	<c:when test="${fn:contains(themeName, 'parent')}" >
 		<style>
 			html, body {height: auto !important}
 		    html { padding: 30px 20px; font-size: 20px; line-height: 1.4; color: #737373; background: #5F80AB; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
@@ -206,6 +78,70 @@
 				margin: 0!important;
 			}
 	  </style>
+	</c:when>
+	<c:otherwise>
+		  <style>
+				html, body {height: auto !important;}
+			    html { padding: 30px 20px; font-size: 20px; line-height: 1.4; color: #737373; background: #5F80AB; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+			    html, input { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+			    body { /*max-width: 1200px; _width: 500px;*/ background-color: #FFFFFF !important; padding: 5px 20px 20px; border: 1px solid #b3b3b3; border-radius: 8px; margin: 0 auto; box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff; background: #fcfcfc; }
+			    h1 { margin: 0 10px; font-size: 50px; text-align: left; }
+			    h1 span { color: #bbb; }
+			    h3 { margin: 1.5em 0 0.5em; }
+			    p { margin: 1em 0; }
+			    /*ul { padding: 0 0 0 40px; margin: 1em 0; }*/
+			    .container { max-width: 380px; _width: 380px; margin: 0 auto; }
+			    /* google search */
+			    #goog-fixurl ul { list-style: none; padding: 0; margin: 0; }
+			    #goog-fixurl form { margin: 0; }
+			    #goog-wm-qt, #goog-wm-sb { border: 1px solid #bbb; font-size: 16px; line-height: normal; vertical-align: top; color: #444; border-radius: 2px; }
+			    #goog-wm-qt { width: 220px; height: 20px; padding: 5px; margin: 5px 10px 0 0; box-shadow: inset 0 1px 1px #ccc; }
+			    #goog-wm-sb { display: inline-block; height: 32px; padding: 0 10px; margin: 5px 0 0; white-space: nowrap; cursor: pointer; background-color: #f5f5f5; background-image: -webkit-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -moz-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -ms-linear-gradient(rgba(255,255,255,0), #f1f1f1); background-image: -o-linear-gradient(rgba(255,255,255,0), #f1f1f1); -webkit-appearance: none; -moz-appearance: none; appearance: none; *overflow: visible; *display: inline; *zoom: 1; }
+			    #goog-wm-sb:hover, #goog-wm-sb:focus { border-color: #aaa; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); background-color: #f8f8f8; }
+			    #goog-wm-qt:focus, #goog-wm-sb:focus { border-color: #105cb6; outline: 0; color: #222; }
+			    input::-moz-focus-inner { padding: 0; border: 0; }
+				
+				.menu {
+					background: none !important;
+					background-color: #FFF !important;
+					border-left: 1px solid #FFF !important;
+					height: 370px !important;
+					min-height: 370px !important;
+					position: absolute !important;
+					right: 35px !important;
+					top: 100px !important;
+					width: 400px !important;
+					z-index: 1 !important;
+					box-shadow: none !important;
+					padding: 10px !important;
+					
+				}
+				#open-menu {
+					margin-top: 42px;
+					margin-right: 28px;
+					position: absolute !important;
+					/*display: none;*/
+					z-index: 1;
+				}
+				#open-menu > span {
+					color: #5F80AB;
+				}
+				footer {
+					border-top: 1px solid #ccc; text-align: center; color: #AAA;
+					box-shadow: 0px -9px 23px -7px #CCC;
+					border-radius: 7px 7px 0 0;
+					padding-top: 10px;
+				}
+				.newStyle {
+					padding: 5px 0 5px 0
+				}
+				.acsicol {
+					color: #BA1A22;
+				}
+				.custom-p p{
+					margin: 0!important;
+				}
+		  </style>
 	</c:otherwise>
 </c:choose>
  
@@ -222,104 +158,7 @@
 	</div>
 	<input type="hidden" id="userLogin" value="userLogin">
 	<c:choose>
-		<c:when test="${themeName == 'inors'}">
-		<!-- State user page -->
-			<div class="columnss">
-				<div class="seven-columns">
-					${messageMap.teacherPageContent}
-					<div class="loginBtn margin-top margin-bottom-medium">
-						<button type="button" class="button blue-gradient glossy icon-download" onclick="javascript:window.open('/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide.pdf',800,600)">
-							<spring:message code="button.downloadQuickStartGuidePDF" />
-						</button>
-					</div>
-				</div>
-			</div>
-			
-			<section id="menu" class="menu">
-				<div class="">
-					<div id="form-block" class="boxfshaxde">
-						<div id="form-viewport">
-							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
-								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
-								<ul class="inputs large">
-									<li><span class="icon-user mid-margin-right"></span>
-										<span class="input-unstyled no-padding">
-											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-											 <a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
-										</span>
-									</li>
-									<li><span class="icon-lock mid-margin-right"></span>
-										<span class="input-unstyled  no-padding">
-											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
-										</span>
-									</li>
-								</ul>
-								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
-		
-								<p class="button-height">
-									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
-								</p>
-							</form:form>
-						</div>
-					</div>
-					<div class="margin-top">
-						<div class="wrapped relative white-gradient custom-p" style="height: auto">
-							${messageMap.teacherOutageContent}
-						</div>
-					</div>
-				</div>
-			</section>
-		</c:when>
-		<c:when test="${themeName == 'tasc'}">
-		<!-- State user page -->
-			<div class="columnss">
-				<div class="seven-columns">
-					${messageMap.teacherPageContent}
-					<div class="loginBtn margin-top margin-bottom-medium">
-						<button type="button" class="button blue-gradient glossy icon-download" onClick="javascript:window.open('<%=request.getContextPath()%>/scripts/Quick_Start_Guide.pdf',800,600)">
-							<spring:message code="button.downloadQuickStartGuidePDF" />
-						</button>
-					</div>
-				</div>
-			</div>
-			<section id="menu" class="menu">
-				<div class="">
-					<div id="form-block" class="boxfshaxde">
-						<div id="form-viewport">
-							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
-								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
-								<ul class="inputs large">
-									<li><span class="icon-user mid-margin-right"></span>
-										<span class="input-unstyled no-padding">
-											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-											 <a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
-										</span>
-									</li>
-									<li><span class="icon-lock mid-margin-right"></span>
-										<span class="input-unstyled  no-padding">
-											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-											 <a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
-										</span>
-									</li>
-								</ul>
-								<input type="hidden" name="j_contract" id="j_contract" value="tasc" autocomplete="off">
-								<p class="button-height">
-									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head"/></button>
-								</p>
-							</form:form>
-						</div>
-					</div>
-					
-					<div class="margin-top">
-						<div class="wrapped relative white-gradient custom-p" style="height: auto">
-							${messageMap.teacherOutageContent}
-						</div>
-					</div>
-				</div>
-			</section>
-		</c:when>
-		<c:otherwise>
+		<c:when test="${fn:contains(themeName, 'parent')}" >
 		<!-- Parent page -->
 			<div class="columnss">
 				<div class="seven-columns">
@@ -376,20 +215,63 @@
 					</div>
 				</div>
 			</section>	  
+		</c:when>
+		<c:otherwise>
+		<!-- State user/Teacher page -->
+			<div class="columnss">
+				<div class="seven-columns">
+					${messageMap.teacherPageContent}
+				</div>
+			</div>
+			
+			<section id="menu" class="menu">
+				<div class="">
+					<div id="form-block" class="boxfshaxde">
+						<div id="form-viewport">
+							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
+								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
+								<ul class="inputs large">
+									<li><span class="icon-user mid-margin-right"></span>
+										<span class="input-unstyled no-padding">
+											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
+											 <a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
+										</span>
+									</li>
+									<li><span class="icon-lock mid-margin-right"></span>
+										<span class="input-unstyled  no-padding">
+											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
+											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
+										</span>
+									</li>
+								</ul>
+								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
+		
+								<p class="button-height">
+									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
+								</p>
+							</form:form>
+						</div>
+					</div>
+					<div class="margin-top">
+						<div class="wrapped relative white-gradient custom-p" style="height: auto">
+							${messageMap.teacherOutageContent}
+						</div>
+					</div>
+				</div>
+			</section>
 		</c:otherwise>
 	</c:choose>
 	<footer class="margin-top">
-		<c:choose>
-			<c:when test="${themeName == 'inors'}">
-				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
-			</c:when>
-			<c:when test="${themeName == 'tasc'}">
-				<div class="float-center custom-p">${messageMap.teacherFooterMessage} </div> 
-			</c:when>
-			<c:otherwise>
-				<div class="float-center custom-p"> ${messageMap.parentFooterMessage} </div>  
-			</c:otherwise>
-		</c:choose>
+		<div class="float-center custom-p"> 
+			<c:choose>
+				<c:when test="${fn:contains(themeName, 'parent')}" >
+					${messageMap.parentFooterMessage} 
+				</c:when>
+				<c:otherwise>
+					${messageMap.teacherFooterMessage}
+				</c:otherwise>
+			</c:choose>
+		</div>  
 	</footer>  
   
 	<%@ include	file="../common/minimalScripts.jsp"%>	
