@@ -320,8 +320,13 @@ function updateRowValuesForRole(row) {
 		}
 	});
 	
-	row.find('.reportName').html( $("#reportName").val() );
-	//alert($("#reportName").val());
+	/*
+	 * Fix for TD 79043 - By Joy
+	 * As the method updateRowValuesForRole() called only from updateReportDetails() so
+	 * we use $("#editReportForm #reportName").val() to get edited report name
+	 * */
+	row.find('.reportName').html( $("#editReportForm #reportName").val() );
+	
 	row.find('.reportUrl').html( $("#reportUrl").val() );
 	row.find('.status').parent().html(statusTag);
 	row.find('.roleContainer').html(roleTag);
