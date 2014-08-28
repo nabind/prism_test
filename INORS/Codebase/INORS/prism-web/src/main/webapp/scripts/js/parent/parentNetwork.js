@@ -107,14 +107,14 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 	var ipFileName = getFileName(studentBioId, custProdId, 'IPR');
 	var linkContainer = '<div class="align-right">';
 	if(isrFileName != null && (isrFileName.indexOf(".pdf") != -1 || isrFileName.indexOf(".PDF") != -1 )) {
-		linkContainer = linkContainer + '<a class="button compact with-tooltip" target="_blank" title="'+strings['title.individualStudentReport']+'" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.studentReport']+'</a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip" target="_blank" title="'+strings['title.individualStudentReport']+'" href="downloadFile.do?fileName='+isrFileName+'&fileType=Individual_Student_Report"><span class="button-icon"><span class="icon-read"></span></span>'+strings['msg.studentReport']+'</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip" title="'+strings['title.noStudentReportAvailable']+'" href="#"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.studentReport']+'</a>';
+		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip" title="'+strings['title.noStudentReportAvailable']+'" href="#"><span class="button-icon"><span class="icon-read"></span></span>'+strings['msg.studentReport']+'</a>';
 	}
 	if(ipFileName != null && (ipFileName.indexOf(".pdf") != -1 || ipFileName.indexOf(".PDF") != -1 )) {
-		linkContainer = linkContainer + '<a class="button compact with-tooltip margin-left" target="_blank" title="'+strings['title.appliedSkillsImagePDF']+'" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.imagePDF']+'</a>';
+		linkContainer = linkContainer + '<a class="button compact with-tooltip margin-left" target="_blank" title="'+strings['title.appliedSkillsImagePDF']+'" href="downloadFile.do?fileName='+ipFileName+'&fileType=Image_Print"><span class="button-icon"><span class="icon-pages"></span></span>'+strings['msg.imagePDF']+'</a>';
 	} else {
-		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip margin-left" title="'+strings['title.noImagePrintAvailable']+'" href="#"><span class="button-icon"><span class="icon-download"></span></span>'+strings['msg.imagePDF']+'</a>';
+		linkContainer = linkContainer + '<a class="button compact disabled with-tooltip margin-left" title="'+strings['title.noImagePrintAvailable']+'" href="#"><span class="button-icon"><span class="icon-pages"></span></span>'+strings['msg.imagePDF']+'</a>';
 	}
 	linkContainer = linkContainer + '</div>';
 	//var reportUrl = "/public/PN/Report/resultsByStandard_files";
