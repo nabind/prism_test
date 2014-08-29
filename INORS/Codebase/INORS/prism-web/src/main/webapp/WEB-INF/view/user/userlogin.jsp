@@ -185,7 +185,7 @@
 										</span>
 									</li>
 								</ul>
-								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
+								<input type="hidden" name="j_contract" id="j_contract" value="" autocomplete="off">
 								<p class="button-height">
 									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
 								</p>
@@ -244,7 +244,7 @@
 										</span>
 									</li>
 								</ul>
-								<input type="hidden" name="j_contract" id="j_contract" value="inors" autocomplete="off">
+								<input type="hidden" name="j_contract" id="j_contract" value="" autocomplete="off">
 		
 								<p class="button-height">
 									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
