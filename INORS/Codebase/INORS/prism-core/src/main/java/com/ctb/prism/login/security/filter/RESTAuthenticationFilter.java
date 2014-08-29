@@ -27,6 +27,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.CustomStringUtil;
@@ -77,6 +78,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     
 	@Autowired
 	private ILoginService loginService;
+	
+	@Autowired
+	private CookieThemeResolver themeResolver;
 	
 	/**
 	 * @param defaultFilterProcessesUrl
@@ -257,7 +261,11 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	
 	            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
 	            // added to pass contract name in custom UsernamePasswordAuthenticationToken
-	        	authRequest.setContractName(request.getParameter("j_contract"));
+	            // Blocked as j_contract was hardcoded in jsp
+	        	// authRequest.setContractName(request.getParameter("j_contract"));
+	            String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+	            logger.info("RESTAuthenticationFilter.contractName = " + contractName);
+	            authRequest.setContractName(contractName);
 	            // Allow subclasses to set the "details" property
 	            setDetails(request, authRequest);
 	
