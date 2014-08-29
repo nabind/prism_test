@@ -1374,6 +1374,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL PKG_MANAGE_USERS.SP_GET_USER_PWD_HINT_LIST(?, ?, ?)}";
 
 		public static final String SP_GET_MENU_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_MENU_MAP(?, ?, ?)}";
+		
+		public static final String SP_GET_ACTION_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_ACTION_MAP(?, ?, ?, ?)}";
 
 		public static final String GET_FILE_SIZE = CustomStringUtil.appendString(" SELECT JOB_ID,REQUEST_FILENAME,FILE_SIZE FROM JOB_TRACKING WHERE JOB_ID = ?");
 		public static final String UPDATE_FILE_SIZE = CustomStringUtil.appendString("UPDATE JOB_TRACKING SET FILE_SIZE = ? WHERE JOB_ID = ?");

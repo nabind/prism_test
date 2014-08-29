@@ -1,5 +1,8 @@
 package com.ctb.prism.login.security.provider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +44,10 @@ public class UserDetailsManager implements UserDetailsService {
 		logger.log(IAppLogger.INFO, "Enter: UserDetailsManager - loadUserByUsername");
 		try {
 			logger.log(IAppLogger.INFO, "EMAIL ::::::::::::::: "+username);
-			UserTO user = loginService.getUserByEmail(username, this.contractName);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("username", username);
+			paramMap.put("contractName", this.contractName);
+			UserTO user = loginService.getUserByEmail(paramMap);
 			user.setContractName(this.contractName);
 			UserDetails authenticatedUser = null;
 			if(user!=null)

@@ -1,12 +1,14 @@
 package com.ctb.prism.web.manager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
 
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -31,7 +33,9 @@ public class UserDetailsManager implements UserDetailsService {
 		logger.log(IAppLogger.INFO, "Enter: UserDetailsManager - loadUserByUsername");
 		try {
 			logger.log(IAppLogger.INFO, "EMAIL ::::::::::::::: "+username);
-			UserTO user = loginService.getUserByEmail(username);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("username", username);
+			UserTO user = loginService.getUserByEmail(paramMap);
 			UserDetails authenticatedUser = null;
 			if(user!=null)
 				authenticatedUser = new AuthenticatedUser(user);

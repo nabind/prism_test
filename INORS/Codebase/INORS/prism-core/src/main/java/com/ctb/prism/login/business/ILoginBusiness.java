@@ -13,8 +13,8 @@ import com.ctb.prism.login.transferobject.UserTO;
 public interface ILoginBusiness {
 
 	public boolean selectTest();
-	public UserTO getUserByEmail(String userEmail) throws SystemException;
-	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException;
+	//public UserTO getUserByEmail(String userEmail) throws SystemException;
+	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
 
 	public List<GrantedAuthority> getGrantedAuthorities(String username);
 	
@@ -24,7 +24,9 @@ public interface ILoginBusiness {
 	
 	public boolean checkFirstTimeLogin(String username);
 	
-	public UserTO getUserDetails(String username);
+	//public UserTO getUserDetails(String username);
+	
+	public UserTO getUserDetails(Map<String, Object> paramMap);
 	
 	public UserTO getUsersForSSO(UserTO userTO) throws Exception;
 	public UserTO getOrgLevel(UserTO userTO);
@@ -34,4 +36,5 @@ public interface ILoginBusiness {
 	public void addNewUser(Map<String,Object> paramMap) throws Exception;
 	public String getRootPath(String customerId, String testAdmin);
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
+	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 }

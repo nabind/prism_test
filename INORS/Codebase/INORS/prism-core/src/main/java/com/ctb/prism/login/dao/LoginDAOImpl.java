@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -191,7 +192,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return UserTO with associated orgId, userid and firsttime loggedin flag
 	 */
-	public UserTO getUserDetails(String username) {
+	/*public UserTO getUserDetails(String username) {
 		UserTO user = null;
 		List<Map<String, Object>> lstData = null;
 
@@ -226,14 +227,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			}
 		}
 		return user;
-	}
+	}*/
 	
 	/**
 	 * Retrieves and returns loggedin user details
 	 * @param username
 	 * @return UserTO with associated orgId, userid and firsttime loggedin flag
 	 */
-	public UserTO getUserDetails(String username, String contractName) {
+	/*public UserTO getUserDetails(String username, String contractName) {
 		UserTO user = null;
 		List<Map<String, Object>> lstData = null;
 
@@ -268,8 +269,117 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			}
 		}
 		return user;
-	}
+	}*/
 	
+	/**
+	 * Retrieves and returns loggedin user details
+	 * @param username
+	 * @return UserTO with associated orgId, userid and firsttime loggedin flag
+	 */
+	public UserTO getUserDetails(Map<String, Object> paramMap) {
+		UserTO user = null;
+		final String username = (String)paramMap.get("username");
+		//final String contractName = (String)paramMap.get("contractName");
+		final String contractName = Utils.getContractName();
+		final String userType = getUserType(username, contractName);
+		
+		logger.log(IAppLogger.INFO, "getUserDetails :: username = " + username);
+		logger.log(IAppLogger.INFO, "getUserDetails :: contractName = " + contractName);
+		logger.log(IAppLogger.INFO, "getUserDetails :: userType = " + userType);
+
+		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
+						
+			return (UserTO) getJdbcTemplatePrism(contractName).execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_EDU_USER_DETAILS);
+							cs.setString(1, username);
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							UserTO user = new UserTO();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(2);
+								while (rs.next()) {
+									user.setFirstTimeLogin(rs.getString("IS_FIRSTTIME_LOGIN"));
+									user.setUserId(String.valueOf(rs.getLong("USERID")));
+									user.setOrgId(String.valueOf(rs.getLong("ORG_NODEID")));
+									user.setOrgNodeLevel(rs.getLong("ORG_NODE_LEVEL"));
+									user.setDisplayName(rs.getString("DISPLAY_USERNAME") != null ? rs.getString("DISPLAY_USERNAME") : "Anonymous");
+									user.setUserStatus(rs.getString("ACTIVATION_STATUS"));
+									user.setUserName(username);
+
+									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
+									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
+									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, contractName));
+									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
+									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
+									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
+									user.setUserType(userType);
+									user.setOrgMode(rs.getString("ORG_MODE"));
+									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+								}
+								
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return user;
+						}
+					}
+				);
+			
+		} else {
+			return (UserTO) getJdbcTemplatePrism(contractName).execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS);
+							cs.setString(1, username);
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							UserTO user = new UserTO();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(2);
+								while (rs.next()) {
+									user.setFirstTimeLogin(rs.getString("IS_FIRSTTIME_LOGIN"));
+									user.setUserId(String.valueOf(rs.getLong("USERID")));
+									user.setOrgId(String.valueOf(rs.getLong("ORG_NODEID")));
+									user.setOrgNodeLevel(rs.getLong("ORG_NODE_LEVEL"));
+									user.setDisplayName(rs.getString("DISPLAY_USERNAME") != null ? rs.getString("DISPLAY_USERNAME") : "Anonymous");
+									user.setUserStatus(rs.getString("ACTIVATION_STATUS"));
+									user.setUserName(username);
+
+									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
+									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
+									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, contractName));
+									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
+									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
+									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
+									user.setUserType(userType);
+									user.setOrgMode(rs.getString("ORG_MODE"));
+									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+								}
+								
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return user;
+						}
+					}
+				);
+		}	
+	
+	}
 
 	
 	public boolean selectTest(){
@@ -291,12 +401,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return true;
 	}
 	
-	public UserTO getUserByEmail(String userEmail) throws SystemException {
+	/*public UserTO getUserByEmail(String userEmail) throws SystemException {
 		return getUserDetails(userEmail);
-	}
-	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException {
+	}*/
+	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO,	"Enter: LoginDAOImpl - getUserByEmail");
-		return getUserDetails(userEmail, contractName);
+		return getUserDetails(paramMap);
 	}
 	
 	/**
@@ -698,5 +808,48 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			}
 		});
 	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getActionMap') )")
+	public Map<String,String> getActionMap(Map<String, Object> paramMap) {
+		
+		final Long userId = paramMap.get("userId") == null ? 0 : Long.parseLong((String)paramMap.get("userId"));
+		final Long custProdId = paramMap.get("custProdId") == null ? 0: Long.parseLong((String)paramMap.get("custProdId"));
+		
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+		
+		return (Map<String,String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ACTION_MAP);
+				cs.setLong(1, userId);
+				cs.setLong(2, custProdId);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				Map<String,String> actionMap = new LinkedHashMap<String,String>();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					while (rs.next()) {
+						actionMap.put(rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"));
+					}
+					Utils.logError(cs.getString(3));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "actionMap = " + actionMap);
+				return actionMap;
+			}
+		});
+	}
+	
+	
 	
 }

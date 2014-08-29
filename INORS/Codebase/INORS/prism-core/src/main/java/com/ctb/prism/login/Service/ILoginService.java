@@ -26,8 +26,8 @@ public interface ILoginService {
 	 * @return
 	 * @throws SystemException
 	 */
-	public UserTO getUserByEmail(String userEmail) throws SystemException;
-	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException;
+//	public UserTO getUserByEmail(String userEmail) throws SystemException;
+	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
 
 	/**
 	 * @param username
@@ -57,8 +57,14 @@ public interface ILoginService {
 	 * @param username
 	 * @return
 	 */
-	public UserTO getUserDetails(String username);
+	//public UserTO getUserDetails(String username);
 
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public UserTO getUserDetails(Map<String, Object> paramMap);
+	
 	/**
 	 * @param userTO
 	 * @return
@@ -93,4 +99,10 @@ public interface ILoginService {
 	 * @return
 	 */
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
+	
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 }

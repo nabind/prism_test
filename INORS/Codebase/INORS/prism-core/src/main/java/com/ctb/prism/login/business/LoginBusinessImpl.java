@@ -31,11 +31,11 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.selectTest();
 	}
 	
-	public UserTO getUserByEmail(String userEmail) throws SystemException{
+/*	public UserTO getUserByEmail(String userEmail) throws SystemException{
 		return loginDAO.getUserByEmail(userEmail);
-	}
-	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException{
-		return loginDAO.getUserByEmail(userEmail, contractName);
+	}*/
+	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException{
+		return loginDAO.getUserByEmail(paramMap);
 	}
 	
 	public List<GrantedAuthority> getGrantedAuthorities(String username) {
@@ -121,8 +121,12 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		}
 	}
 
-	public UserTO getUserDetails(String username) {
+/*	public UserTO getUserDetails(String username) {
 		return loginDAO.getUserDetails(username);
+	}*/
+	
+	public UserTO getUserDetails(Map<String, Object> paramMap) {
+		return loginDAO.getUserDetails(paramMap);
 	}
 	
 	public UserTO getUsersForSSO(UserTO userTO) throws Exception {
@@ -159,4 +163,9 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		return loginDAO.getMenuMap(paramMap);
 	}
+	
+	public Map<String,String> getActionMap(Map<String, Object> paramMap) {
+		return loginDAO.getActionMap(paramMap);
+	}
+	
 }

@@ -34,7 +34,14 @@ public class UserTO extends BaseTO{
 	private String adminId;
 	private String orgMode;
 	private String contractName;
+	private long defultCustProdId;
 	
+	public long getDefultCustProdId() {
+		return defultCustProdId;
+	}
+	public void setDefultCustProdId(long defultCustProdId) {
+		this.defultCustProdId = defultCustProdId;
+	}
 	public String getContractName() {
 		return contractName;
 	}

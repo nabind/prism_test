@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.management.InvalidApplicationException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,10 +89,11 @@ public class LoginController {
 	public @ResponseBody
 	String getDisplayName(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: ReportController - checkpagination");
-
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		UserTO user = null;
 		try {
-			user = loginService.getUserDetails(req.getParameter("loginAsUsername"));
+			paramMap.put("username", req.getParameter("loginAsUsername"));
+			user = loginService.getUserDetails(paramMap);
 
 			res.setContentType("plain/text");
 			res.getWriter().write(user.getDisplayName());
@@ -306,6 +308,7 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Enter: validateUser()");
 		ModelAndView modelAndView = null;
 		String orgLvl = null;
+		Map<String,Object> paramMap = new HashMap<String, Object>();; 
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -318,20 +321,22 @@ public class LoginController {
 					LdapUserDetailsImpl userDetails = (LdapUserDetailsImpl) auth.getPrincipal();
 					req.getSession().setAttribute(IApplicationConstants.CURRUSER, userDetails.getUsername());
 					req.getSession().setAttribute(IApplicationConstants.AUTHORITIES, userDetails.getAuthorities());
-					user = loginService.getUserDetails(userDetails.getUsername());
+					paramMap.put("username", userDetails.getUsername());
+					user = loginService.getUserDetails(paramMap);
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
-
+					req.getSession().setAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID, user.getDefultCustProdId());
 					authorities = userDetails.getAuthorities();
 					username = userDetails.getUsername();
 				} else if (auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
 					org.springframework.security.core.userdetails.User userDetails = (User) auth.getPrincipal();
 					req.getSession().setAttribute(IApplicationConstants.CURRUSER, userDetails.getUsername());
 					req.getSession().setAttribute(IApplicationConstants.AUTHORITIES, userDetails.getAuthorities());
-					user = loginService.getUserDetails(userDetails.getUsername());
+					paramMap.put("username", userDetails.getUsername());
+					user = loginService.getUserDetails(paramMap);
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
-
+					req.getSession().setAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID, user.getDefultCustProdId());
 					authorities = userDetails.getAuthorities();
 					username = userDetails.getUsername();
 				} else {
@@ -349,11 +354,13 @@ public class LoginController {
 					String reloadUserRequestScope = (String) req.getAttribute(IApplicationConstants.RELOAD_USER);
 					String reloadUserSessionScope = (String) req.getSession().getAttribute(IApplicationConstants.RELOAD_USER);
 					if ((IApplicationConstants.TRUE.equals(reloadUserRequestScope)) || (IApplicationConstants.TRUE.equals(reloadUserSessionScope))) {
+						paramMap.put("username", user.getUserName());
 						// system reloading user after first-time change password
-						user = loginService.getUserDetails(user.getUserName());
+						user = loginService.getUserDetails(paramMap);
 					}
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
+					req.getSession().setAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID, user.getDefultCustProdId());
 
 					authorities = authenticatedUser.getAuthorities();
 
@@ -379,12 +386,20 @@ public class LoginController {
 					}
 					username = user.getUserName();
 				}
-				Map<String, Object> paramMap = new HashMap<String, Object>();
 				paramMap.put("userId", user.getUserId());
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
 				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));
 				req.getSession().setAttribute(IApplicationConstants.MENU_SET, menuSet);
+				
+			//	Map<String,String> actionParamMap = new HashMap<String,String>();
+				paramMap.put("userId", user.getUserId());
+				paramMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
+				
+				//this Map is now need to add in Modelview
+				Map<String, String> actionMap= loginService.getActionMap(paramMap);
+				req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
+				
 				
 				Map<String, Object> messageMap = getMessage(themeResolver.resolveThemeName(req));
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);

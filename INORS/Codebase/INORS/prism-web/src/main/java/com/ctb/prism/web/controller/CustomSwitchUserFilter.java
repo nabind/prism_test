@@ -3,7 +3,9 @@ package com.ctb.prism.web.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -113,7 +115,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		// check for switch or exit request
 		if (requiresSwitchUser(request)) {
 			// if set, attempt switch and store original
@@ -131,7 +133,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 					}
 				}
 				//Get details of prev admin user details
-				UserTO prevAdminuserDetails = loginService.getUserByEmail(prevAdmin);
+				
+				paramMap.put("username", prevAdmin);
+				UserTO prevAdminuserDetails = loginService.getUserByEmail(paramMap);
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, prevAdmin);
 				// ADDED FOR SSO (and then using LOGIN-AS)
@@ -172,7 +176,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, userDetails.getUsername());
 				//Get details of prev admin user details				
 				try {
-					UserTO prevAdminuserDetails = loginService.getUserByEmail(userDetails.getUsername());
+					paramMap.put("username", userDetails.getUsername());
+					UserTO prevAdminuserDetails = loginService.getUserByEmail(paramMap);
 					request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				} catch (SystemException e) {
 					e.printStackTrace();

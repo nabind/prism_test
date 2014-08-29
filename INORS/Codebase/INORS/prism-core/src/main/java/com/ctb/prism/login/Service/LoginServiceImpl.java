@@ -39,11 +39,12 @@ public class LoginServiceImpl implements ILoginService {
 	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#getUserByEmail(java.lang.String)
 	 */
-	public UserTO getUserByEmail(String userEmail) throws SystemException {
+	/*	public UserTO getUserByEmail(String userEmail) throws SystemException {
 		return loginBusiness.getUserByEmail(userEmail);
-	}
-	public UserTO getUserByEmail(String userEmail, String contractName) throws SystemException {
-		return loginBusiness.getUserByEmail(userEmail, contractName);
+	}*/
+	
+	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException {
+		return loginBusiness.getUserByEmail(paramMap);
 	}
 
 
@@ -88,8 +89,12 @@ public class LoginServiceImpl implements ILoginService {
 	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#getUserDetails(java.lang.String)
 	 */
-	public UserTO getUserDetails(String username) {
+/*	public UserTO getUserDetails(String username) {
 		return loginBusiness.getUserDetails(username);
+	}*/
+	
+	public UserTO getUserDetails(Map<String, Object> paramMap) {
+		return loginBusiness.getUserDetails(paramMap);
 	}
 
 	/*
@@ -149,5 +154,8 @@ public class LoginServiceImpl implements ILoginService {
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		return loginBusiness.getMenuMap(paramMap);
 	}
-
+	
+	public Map<String,String> getActionMap(Map<String, Object> paramMap) {
+		return loginBusiness.getActionMap(paramMap);
+	}
 }

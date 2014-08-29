@@ -244,4 +244,9 @@ public interface IApplicationConstants {
 
 	public static final String[] ASSET_LOCATIONS = { "Static_Files/" };
 	public static final long DEFAULT_PRISM_VALUE = -99;
+	
+	public static final String DEFAULT_CUST_PROD_ID= "defaultCustProdId"; 
+	
+	public static final String ACTION_MAP_SESSION = "actionMap";
+	
 }
