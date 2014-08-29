@@ -269,6 +269,13 @@ public interface IReportQuery {
 			" customerid,created_date_time,updated_date_time, OTHER_REQUEST_PARAMS) ",
 			" VALUES (?,?,?,TO_DATE(?,'MM/DD/YYYY'),TO_DATE(?,'MM/DD/YYYY'),?,?,?,?,?,?,?,?,?, ",
 			"(select adminid from admin_dim Where is_current_admin = 'Y'),?,SYSDATE,SYSDATE,?)");
+	public static final String INSERT_JOB_TRACKING_DEFAULT_DATE = CustomStringUtil.appendString(
+			" insert into JOB_TRACKING(job_id,userid,",
+			" job_name,extract_startdate,extract_enddate,extract_category,extract_filetype,request_type,",
+			" request_summary,request_details,request_filename, request_email,job_log,job_status,adminid,",
+			" customerid,created_date_time,updated_date_time, OTHER_REQUEST_PARAMS) ",
+			" VALUES (?,?,?,SYSDATE,SYSDATE+10,?,?,?,?,?,?,?,?,?, ",
+			"(select adminid from admin_dim Where is_current_admin = 'Y'),?,SYSDATE,SYSDATE,?)");
 	
 	public static final String UPDATE_JOB_TRACKING = "UPDATE JOB_TRACKING SET EXTRACT_ENDDATE=SYSDATE+#, REQUEST_FILENAME=?, REQUEST_SUMMARY=?, JOB_LOG=?, JOB_STATUS=?, UPDATED_DATE_TIME=SYSDATE, FILE_SIZE=? WHERE JOB_ID=?";
 	

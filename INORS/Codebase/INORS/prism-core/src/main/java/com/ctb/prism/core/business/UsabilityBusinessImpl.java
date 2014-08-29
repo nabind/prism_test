@@ -118,4 +118,18 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 		return usabilityDAO.updateWSRosterData(studentDataLoadTO, wsRosterDataId);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#getFileSize(java.lang.String)
+	 */
+	public JobTrackingTO getFileSize(String jobId) {
+		return usabilityDAO.getFileSize(jobId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.business.IUsabilityBusiness#updateFileSize(com.ctb.prism.core.transferobject.JobTrackingTO)
+	 */
+	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO) {
+		return usabilityDAO.updateFileSize(jobTrackingTO);
+	}
+
 }

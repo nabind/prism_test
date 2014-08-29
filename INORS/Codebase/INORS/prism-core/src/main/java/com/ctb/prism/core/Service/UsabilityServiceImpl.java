@@ -136,4 +136,15 @@ public class UsabilityServiceImpl implements IUsabilityService {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.Service.IUsabilityService#getFileSize(java.lang.String)
+	 */
+	public JobTrackingTO getFileSize(String jobId) {
+		return usabilityBuisness.getFileSize(jobId);
+	}
+
+	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO) {
+		return usabilityBuisness.updateFileSize(jobTrackingTO);
+	}
+
 }

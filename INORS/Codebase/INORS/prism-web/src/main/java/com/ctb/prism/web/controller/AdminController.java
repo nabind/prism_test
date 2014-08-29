@@ -1,6 +1,8 @@
 package com.ctb.prism.web.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -2187,6 +2189,57 @@ public class AdminController {
 		} 
 		logger.log(IAppLogger.INFO, "Exit: downloadStudentFile");
 		return null;
+	}
+	
+	/**
+	 * Retrive File size
+	 * 
+	 * @param bulkDownloadTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getFileSize", method = RequestMethod.GET)
+	public void getFileSize(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Start: getFileSize()");
+		JobTrackingTO jobTrackingTO = new JobTrackingTO();
+		List<JobTrackingTO> fileDetails = new ArrayList<JobTrackingTO>();
+		String jsonString = null;
+		String jobId = (String) request.getParameter("jobId");
+		String filePath = (String) request.getParameter("filePath");
+		String fileName = (String) request.getParameter("fileName");
+		try {
+			jobTrackingTO = usabilityService.getFileSize(jobId);
+			if (jobTrackingTO.getFileSize() != null) {
+				fileDetails.add(jobTrackingTO);
+			} else {
+				File file = new File(filePath);
+				if (file.exists()) {
+					double bytes = file.length();
+					double kilobytes = (bytes / 1024);
+					double megabytes = (kilobytes / 1024);
+					DecimalFormat df = new DecimalFormat("0.000");
+					df.setMaximumFractionDigits(3);
+					jobTrackingTO.setFileSize(df.format(megabytes) + "M");
+					jobTrackingTO.setJobId(Long.valueOf(jobId));
+					jobTrackingTO.setFilePath(filePath);
+					jobTrackingTO.setRequestFilename(fileName);
+					fileDetails.add(jobTrackingTO);
+					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
+				}
+			}
+			if (fileDetails.size() != 0) {
+				jsonString = JsonUtil.convertToJsonAdmin(fileDetails);
+				response.setContentType("application/json");
+				response.getWriter().write(jsonString);
+			} else {
+				logger.log(IAppLogger.INFO, "File does not exists!");
+			}
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getFileSize()");
 	}
 	
 	/**

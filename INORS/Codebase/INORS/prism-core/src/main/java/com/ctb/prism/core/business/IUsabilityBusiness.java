@@ -78,4 +78,17 @@ public interface IUsabilityBusiness {
 	 * @return
 	 */
 	public int updateWSRosterData(StudentDataLoadTO studentDataLoadTO, long wsRosterDataId);
+
+	/**
+	 * @param jobId
+	 * @return
+	 */
+	public JobTrackingTO getFileSize(String jobId);
+
+	/**
+	 * @param jobTrackingTO
+	 * @return
+	 */
+	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO);
+
 }

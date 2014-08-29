@@ -955,13 +955,22 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		//String adminid = jobTrackingTO.getAdminId();
 		String customerid = jobTrackingTO.getCustomerId();
 
-		getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING_DATE,
-				jobId, jobTrackingTO.getUserId(), job_name, jobTrackingTO.getExtractStartdate(),
-				extract_enddate, extract_category, extract_filetype,
-				request_type, request_summary, request_details,
-				request_filename, request_email, job_log, job_status, 
-				/*adminid,*/ customerid, jobTrackingTO.getOtherRequestparams());
-
+		if (jobTrackingTO.getExtractStartdate() == null || extract_enddate == null) {
+			getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING_DEFAULT_DATE, jobId,
+					jobTrackingTO.getUserId(), job_name, extract_category,
+					extract_filetype, request_type, request_summary,
+					request_details, request_filename, request_email, job_log,
+					job_status, customerid,
+					jobTrackingTO.getOtherRequestparams());
+		} else {
+			getJdbcTemplatePrism().update(IQueryConstants.INSERT_JOB_TRACKING_DATE, jobId,
+					jobTrackingTO.getUserId(), job_name,
+					jobTrackingTO.getExtractStartdate(), extract_enddate,
+					extract_category, extract_filetype, request_type,
+					request_summary, request_details, request_filename,
+					request_email, job_log, job_status, customerid,
+					jobTrackingTO.getOtherRequestparams());
+		}
 		jobTrackingTO.setJobId(jobId);
 		return jobTrackingTO;
 	}
@@ -1115,6 +1124,33 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 					wsRosterDataId);
 		logger.log(IAppLogger.INFO, "Exit updateWSRosterData ");
 		return count;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.dao.IUsabilityDAO#getFileSize(java.lang.String)
+	 */
+	public JobTrackingTO getFileSize(String jobId) {
+		JobTrackingTO jobTrackingTO = null;
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_FILE_SIZE, jobId);
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				jobTrackingTO = new JobTrackingTO();
+				jobTrackingTO.setJobId(((BigDecimal)fieldDetails.get("JOB_ID")).longValue());
+				jobTrackingTO.setRequestFilename((String)(fieldDetails.get("REQUEST_FILENAME")));
+				jobTrackingTO.setFileSize((String)(fieldDetails.get("FILE_SIZE")));
+			}
+		}
+		return jobTrackingTO;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.dao.IUsabilityDAO#updateFileSize(com.ctb.prism.core.transferobject.JobTrackingTO)
+	 */
+	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO) {
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FILE_SIZE,jobTrackingTO.getFileSize(),jobTrackingTO.getJobId());
+		jobTrackingTO.setSuccess(true);
+		return jobTrackingTO;
 	}
 	
 }

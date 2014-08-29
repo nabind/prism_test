@@ -346,6 +346,37 @@ $(document).ready(function() {
 		$(".shortcut-reset").parent().addClass("current");
 	}
 	
+	$(".view-FileSize").live("click",function(e){
+		var row =  $(this);
+		var jobId = row.attr("jobId");
+		var filePath = row.attr("filePath");
+		var fileName = row.attr("fileName");
+		row.closest('td').attr("id","count_"+jobId);
+		row.closest('td').html('<span class="loader"></span>');
+		$.ajax({
+			type : "GET",
+			url : "getFileSize.do",
+			data : "jobId="+jobId+"&fileName="+fileName+"&filePath="+filePath,
+			dataType : "json",
+			cache:false,
+			success : function(data){
+				if (data != null){
+					var count = data[0].fileSize; // buildRedirectToUserLink(jobId,data[0].fileSize);
+					$("#count_"+jobId).html(count);
+				} else {
+					$.modal.alert("Error in retrieving file size");
+					var buttonTag ='<span class="button-group compact"><a jobId="'+jobId+'" id="count_'+jobId+'" fileName="'+fileName+'" filePath="'+filePath+'" href="#nogo" class="button green-gradient disabled  with-tooltip view-FileSize" title="File not found" style="cursor: pointer;">Size</a></span>'
+					$("#count_"+jobId).html(buttonTag);
+				}
+			},
+			error : function(data){
+				var buttonTag ='<span class="button-group compact"><a jobId="'+jobId+'" id="count_'+jobId+'" fileName="'+fileName+'" filePath="'+filePath+'" href="#nogo" class="button green-gradient disabled with-tooltip view-FileSize" title="File not found" style="cursor: pointer;">Size</a></span>'
+				$("#count_"+jobId).html(buttonTag);							
+				$.modal.alert("Error in retrieving file size");
+			}
+		});
+		
+	});
 });
 
 function resetUserPwdSearch() {

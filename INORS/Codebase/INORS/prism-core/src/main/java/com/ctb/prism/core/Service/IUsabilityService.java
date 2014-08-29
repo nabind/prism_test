@@ -91,4 +91,16 @@ public interface IUsabilityService {
 	 * @return
 	 */
 	public Object removeFromCache(String username, String sessionName);
+
+	/**
+	 * @param jobId
+	 * @return
+	 */
+	public JobTrackingTO getFileSize(String jobId);
+
+	/**
+	 * @param jobTrackingTO
+	 * @return
+	 */
+	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO);
 }

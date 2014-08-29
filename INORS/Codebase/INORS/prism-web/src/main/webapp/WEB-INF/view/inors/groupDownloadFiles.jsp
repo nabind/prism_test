@@ -62,9 +62,24 @@
 		      											</c:otherwise>
 		                                            </c:choose>
 	                                            </td>
-	                                            <td scope="row">${group.fileSize}<br>
+	                                           <%--  <td scope="row">${group.fileSize}<br> --%>
 	                                            <td>
-												<a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles" title="Delete"></a>
+	                                           		 <c:choose>
+	                                           		 	<c:when test="${group.jobStatus=='CO'}">
+				                                            <span class="button-group compact"><a jobId="${group.jobId}" id="count_${group.jobId}" 
+				                                            	fileName="${group.requestFilename}" filePath="${group.filePath}" href="#nogo" 
+				                                            	class="button green-gradient with-tooltip view-FileSize" title="View file size" 
+				                                            	style="cursor: pointer;">Size</a></span>
+			                                            </c:when>
+			                                            <c:when test="${group.jobStatus=='ER'}">
+			                                            	<span class="icon-cross-round icon-size2 red" title="Error"></span>
+			                                            </c:when>
+			                                            <c:otherwise>
+												 			<span class="icon-hourglass icon-size2" title="In Progress"></span>
+      												   </c:otherwise>	
+	                                            	</c:choose>
+	                                            </td>
+	                                            <td><a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles" title="Delete"></a></td>
 											</tr>
 										</c:forEach>
 									</tbody>
