@@ -456,7 +456,7 @@ public final class Utils {
 			logger.log(IAppLogger.ERROR, "_REPORT_NAME_CLASS Property not defined for contractName = " + contractName);
 			return menuSet;
 		}
-		logger.log(IAppLogger.INFO, "REPORT_NAME_CLASS = " + REPORT_NAME_CLASS);
+		logger.log(IAppLogger.INFO, contractName + "_REPORT_NAME_CLASS = " + REPORT_NAME_CLASS);
 		String[] reportNameClasses = REPORT_NAME_CLASS.split("\\|");
 		for (String token : reportNameClasses) {
 			String[] pairs = token.split("\\^");
