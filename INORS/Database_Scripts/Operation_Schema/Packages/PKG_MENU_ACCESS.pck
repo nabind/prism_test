@@ -85,7 +85,7 @@ BEGIN
        AND EXISTS (SELECT 1
               FROM USERS
              WHERE USERS.CUSTOMERID = CPL.CUSTOMERID
-               AND USERS.USERID = 1);
+               AND USERS.USERID = P_IN_USERID);
   ELSE
     V_CUST_PRODID := P_IN_CUST_PROD_ID;
   END IF;
