@@ -211,7 +211,9 @@ public interface IApplicationConstants {
 	public static final String PARENT_LOGIN_OUTAGE_CONTENT = "Parent Login Outage Content";
 	public static final String MESSAGE_MAP_SESSION = "messageMapSession";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
-	public static final String INORS_HOME_PAGE = "Inors Home Page";
+	public static final String TEACHER_HOME_PAGE = "Teacher Home Page";
+	public static final String PARENT_HOME_PAGE = "Parent Home Page";
+	public static final String PARENT = "parent";
 	public static final String GROWTH_HOME_PAGE = "Growth Home Page";
 	public static final String TEACHER_LOG_IN = "Teacher Log In";
 	public static final String PARENT_LOG_IN = "Parent Log In";	

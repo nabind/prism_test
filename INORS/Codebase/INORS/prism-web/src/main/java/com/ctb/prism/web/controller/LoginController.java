@@ -466,10 +466,12 @@ public class LoginController {
 					homeReport = getBestHomeURLForUser(authorities, orgLvl);
 				}
 				// open home page based on user role
-				if (homeReport.isRegularUser() || ((null != req.getSession().getAttribute("PARENT_LOGIN")) && ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN"))))) {
-					if ((null != req.getSession().getAttribute("PARENT_LOGIN")) && ("parent".equals(req.getSession().getAttribute("PARENT_LOGIN")))) {
+				if (homeReport.isRegularUser() || ((null != req.getSession().getAttribute("PARENT_LOGIN")) 
+						&& (IApplicationConstants.PARENT.equals(req.getSession().getAttribute("PARENT_LOGIN"))))) {
+					if ((null != req.getSession().getAttribute("PARENT_LOGIN")) 
+							&& (IApplicationConstants.PARENT.equals(req.getSession().getAttribute("PARENT_LOGIN")))) {
 						modelAndView = new ModelAndView("parent/parentWelcome");
-						themeResolver.setThemeName(req, res, "parent");
+						themeResolver.setThemeName(req, res, IApplicationConstants.PARENT);
 					} else {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");
@@ -1069,21 +1071,26 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		if("growth".equals(homePage)) {
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
-		} else {
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.INORS_HOME_PAGE);
+		
+		if(IApplicationConstants.PARENT.contains(themeResolver.resolveThemeName(req))){
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_HOME_PAGE);
+		}else{
+			if("growth".equals(homePage)) {
+				paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
+			} else {
+				paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_HOME_PAGE);
+			}
 		}
 		paramMap.put("contractName", Utils.getContractName());
 		
-		String inorsHomePageInfoMessage = "";
+		String homePageInfoMessage = "";
 		String jsonString = "";
 		try {
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
-			inorsHomePageInfoMessage = (String)messageMap.get("systemMessage");
+			homePageInfoMessage = (String)messageMap.get("systemMessage");
 			//Fixed for TD 77263 - By Joy
 			com.ctb.prism.core.transferobject.ObjectValueTO homePageMsgObj = new com.ctb.prism.core.transferobject.ObjectValueTO();
-			homePageMsgObj.setValue(inorsHomePageInfoMessage);
+			homePageMsgObj.setValue(homePageInfoMessage);
 			jsonString = new Gson().toJson(homePageMsgObj);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
