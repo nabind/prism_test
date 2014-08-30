@@ -18,6 +18,23 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
                                        P_OUT_CUR_MESSAGE   OUT GET_REFCURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
+  PROCEDURE SP_GET_REPORT_LIST(P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
+                               P_OUT_CUR_REPORT    OUT GET_REFCURSOR,
+                               P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+
+  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       DASH_REPORTS.REPORT_NAME%TYPE,
+                          P_IN_REPORT_DESC       DASH_REPORTS.REPORT_DESC%TYPE,
+                          P_IN_REPORT_TYPE       DASH_REPORTS.REPORT_TYPE%TYPE,
+                          P_IN_REPORT_FOLDER_URI DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
+                          P_IN_ACTIVATION_STATUS DASH_REPORTS.ACTIVATION_STATUS%TYPE,
+                          P_IN_USER_ROLES        VARCHAR2,
+                          P_IN_ORG_NODE_LEVELS   VARCHAR2,
+                          P_IN_DB_MENUID         DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
+                          P_IN_CUST_PROD_ID      CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_OUT_STATUS_NUMBER    OUT NUMBER,
+                          P_OUT_CUR_REPORT       OUT GET_REFCURSOR,
+                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
+
 END PKG_MANAGE_REPORT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
@@ -125,6 +142,291 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_REPORT_MESSAGE_LIST;
+
+  /*
+  THIS PROCEDURE RETURNS THE REPORTS IN MANAGE REPORT SCREEN 
+  OR RETURN A PARTICULAR REPORT DETAILS BASED ON REPORT ID.
+  */
+  PROCEDURE SP_GET_REPORT_LIST(P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
+                               P_OUT_CUR_REPORT    OUT GET_REFCURSOR,
+                               P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  
+  BEGIN
+    IF P_IN_REPORT_ID = '-99' THEN
+      OPEN P_OUT_CUR_REPORT FOR
+        SELECT ID,
+               REPORT_DESC,
+               REPORT_TYPE,
+               CUST_PROD_ID,
+               REPORT_NAME,
+               REPORT_FOLDER_URI,
+               PRODUCT_NAME,
+               PRODUCTID,
+               STATUS,
+               ROLES,
+               LISTAGG(ORG_LABEL, ',') WITHIN
+         GROUP(
+         ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
+          FROM (SELECT ID,
+                       REPORT_DESC,
+                       REPORT_TYPE,
+                       CUST_PROD_ID,
+                       REPORT_NAME,
+                       REPORT_FOLDER_URI,
+                       STATUS,
+                       ORG_LABEL,
+                       LISTAGG(ROLE_NAME, ',') WITHIN
+                 GROUP(
+                 ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
+                  FROM (SELECT DISTINCT RE.DB_REPORTID ID,
+                                        RE.REPORT_DESC,
+                                        RE.REPORT_TYPE,
+                                        DMRA.CUST_PROD_ID,
+                                        RE.REPORT_NAME,
+                                        RE.REPORT_FOLDER_URI,
+                                        RE.ACTIVATION_STATUS STATUS,
+                                        ROLE_NAME,
+                                        ORG_LABEL,
+                                        P.PRODUCT_NAME,
+                                        P.PRODUCTID,
+                                        DMRA.DB_MENUID MENUID,
+                                        DMENU.MENU_SEQ,
+                                        DMRA.REPORT_SEQ,
+                                        DMENU.MENU_NAME MENUNAME
+                          FROM DASH_REPORTS         RE,
+                               DASH_MENU_RPT_ACCESS DMRA,
+                               DASH_MENUS           DMENU,
+                               ROLE                 R,
+                               ORG_TP_STRUCTURE     OTS,
+                               CUST_PRODUCT_LINK    CPL,
+                               PRODUCT              P
+                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                           AND R.ROLEID = DMRA.ROLEID
+                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                           AND P.PRODUCTID = CPL.PRODUCTID)
+                 GROUP BY ID,
+                          REPORT_DESC,
+                          REPORT_TYPE,
+                          CUST_PROD_ID,
+                          REPORT_NAME,
+                          REPORT_FOLDER_URI,
+                          STATUS,
+                          PRODUCT_NAME,
+                          PRODUCTID,
+                          ORG_LABEL,
+                          MENUID,
+                          MENUNAME,
+                          MENU_SEQ,
+                          REPORT_SEQ)
+         GROUP BY ID,
+                  REPORT_DESC,
+                  REPORT_TYPE,
+                  CUST_PROD_ID,
+                  REPORT_NAME,
+                  REPORT_FOLDER_URI,
+                  PRODUCT_NAME,
+                  PRODUCTID,
+                  STATUS,
+                  ROLES,
+                  MENUID,
+                  MENUNAME,
+                  MENU_SEQ,
+                  REPORT_SEQ;
+    ELSE
+      OPEN P_OUT_CUR_REPORT FOR
+        SELECT ID,
+               REPORT_DESC,
+               REPORT_TYPE,
+               CUST_PROD_ID,
+               REPORT_NAME,
+               REPORT_FOLDER_URI,
+               PRODUCT_NAME,
+               PRODUCTID,
+               STATUS,
+               ROLES,
+               LISTAGG(ORG_LABEL, ',') WITHIN
+         GROUP(
+         ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
+          FROM (SELECT ID,
+                       REPORT_DESC,
+                       REPORT_TYPE,
+                       CUST_PROD_ID,
+                       REPORT_NAME,
+                       REPORT_FOLDER_URI,
+                       STATUS,
+                       ORG_LABEL,
+                       LISTAGG(ROLE_NAME, ',') WITHIN
+                 GROUP(
+                 ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
+                  FROM (SELECT DISTINCT RE.DB_REPORTID ID,
+                                        RE.REPORT_DESC,
+                                        RE.REPORT_TYPE,
+                                        DMRA.CUST_PROD_ID,
+                                        RE.REPORT_NAME,
+                                        RE.REPORT_FOLDER_URI,
+                                        RE.ACTIVATION_STATUS STATUS,
+                                        ROLE_NAME,
+                                        ORG_LABEL,
+                                        P.PRODUCT_NAME,
+                                        P.PRODUCTID,
+                                        DMRA.DB_MENUID MENUID,
+                                        DMENU.MENU_SEQ,
+                                        DMRA.REPORT_SEQ,
+                                        DMENU.MENU_NAME MENUNAME
+                          FROM DASH_REPORTS         RE,
+                               DASH_MENU_RPT_ACCESS DMRA,
+                               DASH_MENUS           DMENU,
+                               ROLE                 R,
+                               ORG_TP_STRUCTURE     OTS,
+                               CUST_PRODUCT_LINK    CPL,
+                               PRODUCT              P
+                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                           AND R.ROLEID = DMRA.ROLEID
+                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                           AND P.PRODUCTID = CPL.PRODUCTID
+                           AND RE.DB_REPORTID = P_IN_REPORT_ID)
+                 GROUP BY ID,
+                          REPORT_DESC,
+                          REPORT_TYPE,
+                          CUST_PROD_ID,
+                          REPORT_NAME,
+                          REPORT_FOLDER_URI,
+                          STATUS,
+                          PRODUCT_NAME,
+                          PRODUCTID,
+                          ORG_LABEL,
+                          MENUID,
+                          MENUNAME,
+                          MENU_SEQ,
+                          REPORT_SEQ)
+         GROUP BY ID,
+                  REPORT_DESC,
+                  REPORT_TYPE,
+                  CUST_PROD_ID,
+                  REPORT_NAME,
+                  REPORT_FOLDER_URI,
+                  PRODUCT_NAME,
+                  PRODUCTID,
+                  STATUS,
+                  ROLES,
+                  MENUID,
+                  MENUNAME,
+                  MENU_SEQ,
+                  REPORT_SEQ;
+    
+    END IF;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_REPORT_LIST;
+
+  /*
+  THIS PROCEDURE ADD A NEW REPORT AND RETURS THE NEW REPORT DATA
+  */
+  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       DASH_REPORTS.REPORT_NAME%TYPE,
+                          P_IN_REPORT_DESC       DASH_REPORTS.REPORT_DESC%TYPE,
+                          P_IN_REPORT_TYPE       DASH_REPORTS.REPORT_TYPE%TYPE,
+                          P_IN_REPORT_FOLDER_URI DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
+                          P_IN_ACTIVATION_STATUS DASH_REPORTS.ACTIVATION_STATUS%TYPE,
+                          P_IN_USER_ROLES        VARCHAR2,
+                          P_IN_ORG_NODE_LEVELS   VARCHAR2,
+                          P_IN_DB_MENUID         DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
+                          P_IN_CUST_PROD_ID      CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_OUT_STATUS_NUMBER    OUT NUMBER,
+                          P_OUT_CUR_REPORT       OUT GET_REFCURSOR,
+                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
+  
+    V_DB_REPORTID DASH_REPORTS.DB_REPORTID%TYPE := 0;
+  BEGIN
+  
+    P_OUT_STATUS_NUMBER := 0;
+  
+    SELECT NVL(DB_REPORTID, 0)
+      INTO V_DB_REPORTID
+      FROM DASH_REPORTS
+     WHERE REPORT_NAME = P_IN_REPORT_NAME
+       AND REPORT_FOLDER_URI = P_IN_REPORT_FOLDER_URI;
+  
+    IF V_DB_REPORTID = 0 THEN
+    
+      SELECT DB_REPORT_ID_SEQ.NEXTVAL INTO V_DB_REPORTID FROM DUAL;
+    
+      INSERT INTO DASH_REPORTS
+        (DB_REPORTID,
+         REPORT_NAME,
+         REPORT_DESC,
+         REPORT_TYPE,
+         REPORT_FOLDER_URI,
+         ACTIVATION_STATUS,
+         CREATED_DATE_TIME)
+      VALUES
+        (V_DB_REPORTID,
+         P_IN_REPORT_NAME,
+         P_IN_REPORT_DESC,
+         P_IN_REPORT_TYPE,
+         P_IN_REPORT_FOLDER_URI,
+         P_IN_ACTIVATION_STATUS,
+         SYSDATE);
+    
+      FOR REC_ROLE IN (WITH T AS (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                             '[^,]+',
+                                             1,
+                                             LEVEL) AS ROLE_NAME
+                         FROM T
+                       CONNECT BY LEVEL <=
+                                  LENGTH(REGEXP_REPLACE(TXT,
+                                                        '[^,]*')) + 1) LOOP
+      
+        FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_NODE_LEVELS AS TXT
+                                                 FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                         '[^,]+',
+                                                         1,
+                                                         LEVEL) AS ORG_NODE_LEVEL
+                                     FROM T
+                                   CONNECT BY LEVEL <=
+                                              LENGTH(REGEXP_REPLACE(TXT,
+                                                                    '[^,]*')) + 1) LOOP
+        
+          INSERT INTO DASH_MENU_RPT_ACCESS
+            (DB_MENUID,
+             DB_REPORTID,
+             ROLEID,
+             ORG_LEVEL,
+             CUST_PROD_ID,
+             REPORT_SEQ,
+             ACTIVATION_STATUS,
+             CREATED_DATE_TIME)
+          VALUES
+            (P_IN_DB_MENUID,
+             V_DB_REPORTID,
+             (SELECT ROLEID FROM ROLE WHERE ROLE_NAME = REC_ROLE.ROLE_NAME),
+             REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
+             P_IN_CUST_PROD_ID,
+             V_DB_REPORTID,
+             'AC',
+             SYSDATE);
+        
+        END LOOP;
+      END LOOP;
+    
+      COMMIT;
+      SP_GET_REPORT_LIST(V_DB_REPORTID,
+                         P_OUT_CUR_REPORT,
+                         P_OUT_EXCEP_ERR_MSG);
+      P_OUT_STATUS_NUMBER := 1;
+    END IF;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_STATUS_NUMBER := 0;
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      ROLLBACK;
+  END SP_ADD_REPORT;
 
 END PKG_MANAGE_REPORT; --END OF PACKAGE
 /

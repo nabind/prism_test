@@ -486,5 +486,24 @@ public final class Utils {
 		}
 		return to;
 	}
-
+	
+	/**
+	 * @author Joy
+	 * @param String array
+	 * @return Comma separated string
+	 * */
+	public static String arrayToCommaString(String[] strArr){
+		if (strArr.length > 0) {
+		    StringBuilder strBuilder = new StringBuilder();
+		    for (String n : strArr) {
+		    	strBuilder.append(n).append(",");
+		    	//strBuilder.append("'").append(n.replaceAll("'", "\\\\'")).append("',");
+		        // strBuilder.append("'").append(n.replaceAll("'", "''")).append("',");
+		    }
+		    strBuilder.deleteCharAt(strBuilder.length() - 1);
+		    return strBuilder.toString();
+		} else {
+		    return "";
+		}
+	}
 }

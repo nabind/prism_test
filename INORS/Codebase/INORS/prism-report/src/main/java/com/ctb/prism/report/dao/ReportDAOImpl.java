@@ -417,66 +417,94 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 	}
 
-	/*
+	/**@author Joy
+	 * Move the queries to package
 	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getAllReportList(java.util.Map)
-	 * 
 	 * @Cacheable(cacheName = "allReports")
 	 */
+	@SuppressWarnings("unchecked")
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportList') )")
-	public List<ReportTO> getAllReportList(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList");
-		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		List<ReportTO> reports = null;
-		List<Map<String, Object>> dataList = null;
-		if (paramMap.get("editReport") != null && paramMap.get("editReport").equals("editReport")) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, /*loggedinUserTO.getCustomerId(),*/ paramMap.get("reportId"));
-		} else {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_LIST/*, loggedinUserTO.getCustomerId()*/);
-		}
-		if (dataList != null && dataList.size() > 0) {
-			reports = new ArrayList<ReportTO>();
-			for (Map<String, Object> data : dataList) {
-				ReportTO to = new ReportTO();
-				to.setReportId(((BigDecimal) data.get("ID")).longValue());
-				to.setReportName((String) data.get("REPORT_NAME"));
-				to.setReportDescription((String) data.get("REPORT_DESC"));
-				to.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
-				to.setReportOriginalUrl((String) data.get("REPORT_FOLDER_URI"));
-				to.setReportType((String) data.get("REPORT_TYPE"));
-				to.setReportSequence(data.get("REPORT_SEQ") == null ? to.getReportId() : ((BigDecimal) data.get("REPORT_SEQ")).longValue());
-				to.setEnabled(((String) data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-				String orgLevels = (String) data.get("ORG_NODE_LEVEL");
-				orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
-				to.setAllOrgNode(orgLevels);
-				to.setLinkName(((BigDecimal) data.get("CUST_PROD_ID")).longValue());
-				to.setProducttName((String) data.get("product_name"));
-				to.setProductId(((BigDecimal) data.get("productid")).longValue());
+	public List<ReportTO> getAllReportList(final Map<String, Object> paramMap) {
 
-				String strRoles = (String) data.get("ROLES");
-				if (strRoles != null && strRoles.length() > 0) {
-					String[] roles = strRoles.split(",");
-					for (String role : roles) {
-						ROLE_TYPE role_type = Utils.getRoles(role);
-						if (role_type != null) {
-							to.addRole(role_type);
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList()");
+		long t1 = System.currentTimeMillis();
+		
+		List<ReportTO> reports = null;
+		try {
+			reports = (List<ReportTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = null;
+						cs = con.prepareCall("{call " + IQueryConstants.GET_DASHBOARD_DETAILS + "}");
+						if (IApplicationConstants.PURPOSE_EDIT_REPORT.equals((String)paramMap.get("editReport"))) {
+							cs.setLong(1, ((Long)paramMap.get("reportId")).longValue());
+						}else{
+							cs.setLong(1, IApplicationConstants.DEFAULT_PRISM_VALUE);
 						}
+						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
 					}
-				}
-				String strOrgLevl = (String) data.get("ORG_NODE_LEVEL");
-				strOrgLevl = strOrgLevl.replace("Corporation,Diocese", "Corporation/Diocese");
-				if (strOrgLevl != null && strOrgLevl.length() > 0) {
-					String[] orgLevel = strOrgLevl.split(",");
-					to.setOrgNodeLevelArr(orgLevel);
-				}
-				to.setAssessmentName((String) data.get("ASSESSMENT_NAME"));
-				to.setMenuId(((BigDecimal) data.get("MENUID")).toString());
-				to.setMenuName((String) data.get("MENUNAME"));
-				reports.add(to);
-			}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+	        			ResultSet rsReport = null;
+	        			List<ReportTO> reportTOResult 
+	        							= new ArrayList<ReportTO>();
+	        			try {
+							cs.execute();
+							rsReport = (ResultSet) cs.getObject(2);
+	
+							ReportTO to = null;
+							while(rsReport.next()){
+								to = new ReportTO();
+								to.setReportId(rsReport.getLong("ID"));
+								to.setReportName(rsReport.getString("REPORT_NAME"));
+								to.setReportDescription(rsReport.getString("REPORT_DESC"));
+								to.setReportUrl(rsReport.getString("REPORT_FOLDER_URI"));
+								to.setReportOriginalUrl(rsReport.getString("REPORT_FOLDER_URI"));
+								to.setReportType(rsReport.getString("REPORT_TYPE"));
+								to.setReportSequence(rsReport.getString("REPORT_SEQ") == null ? to.getReportId() : rsReport.getLong("REPORT_SEQ"));
+								to.setEnabled(IApplicationConstants.ACTIVE_FLAG.equals(rsReport.getString("STATUS")) ? true : false);
+								String orgLevels = rsReport.getString("ORG_NODE_LEVEL");
+								orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
+								to.setAllOrgNode(orgLevels);
+								to.setLinkName(rsReport.getLong("CUST_PROD_ID"));
+								to.setProducttName(rsReport.getString("PRODUCT_NAME"));
+								to.setProductId(rsReport.getLong("PRODUCTID"));
+	
+								String strRoles = rsReport.getString("ROLES");
+								if (strRoles != null && strRoles.length() > 0) {
+									String[] roles = strRoles.split(",");
+									for (String role : roles) {
+										ROLE_TYPE role_type = Utils.getRoles(role);
+										if (role_type != null) {
+											to.addRole(role_type);
+										}
+									}
+								}
+								String strOrgLevl = rsReport.getString("ORG_NODE_LEVEL");
+								strOrgLevl = strOrgLevl.replace("Corporation,Diocese", "Corporation/Diocese");
+								if (strOrgLevl != null && strOrgLevl.length() > 0) {
+									String[] orgLevel = strOrgLevl.split(",");
+									to.setOrgNodeLevelArr(orgLevel);
+								}
+								to.setMenuId(rsReport.getString("MENUID"));
+								to.setMenuName(rsReport.getString("MENUNAME"));
+								reportTOResult.add(to);
+							}
+							
+	        			} catch (SQLException e) {
+	        				e.printStackTrace();
+	        			}
+	        			return reportTOResult;
+					}	
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllReportList() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllReportList");
 		return reports;
 	}
 
@@ -616,15 +644,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	/**
+	 * Blocked the method, as this functionality can be solved using getAllReportList() - By Joy
 	 * Returns the reportTO on add.
-	 * 
 	 * @param nodeid
 	 * @return
 	 */
-	private ReportTO getDashboardData(String reportid, String customerid) {
+	/*private ReportTO getDashboardData(String reportid, String customerid) {
 
 		ReportTO to = null;
-		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, /*customerid,*/ reportid);
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, customerid, reportid);
 		if (dataList != null && dataList.size() > 0) {
 			to = new ReportTO();
 			for (Map<String, Object> data : dataList) {
@@ -657,7 +685,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		return to;
 
-	}
+	}*/
 
 	@Cacheable(value = "defaultCache", key="'getAllRoles'.concat(#root.method.name)")
 	public List<ObjectValueTO> getAllRoles() {
@@ -893,29 +921,113 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	/**
+	 * @author Joy
 	 * add new dashboard
-	 * 
-	 * @param String
-	 *            reportName, String reportDescription, String userName, String reportType, String password, String assessmentType,String reportStatus, String[] userRoles
+	 * Moved to package and minimize multiple DB Calls - By Joy
+	 * @param reportParameterTO
 	 * @return ReportTO
 	 */
-
-	// Arunava Datta
+	@SuppressWarnings("unchecked")
 	@CacheEvict(value = "configCache", allEntries = true)
-	public ReportTO addNewDashboard(ReportParameterTO reportParameterTO) throws Exception {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard");
+	public ReportTO addNewDashboard(final ReportParameterTO reportParameterTO) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard()");
+		long t1 = System.currentTimeMillis();
+		
+		final String reportName = reportParameterTO.getReportName();
+		final String reportDescription = reportParameterTO.getReportDescription();
+		final String reportType = reportParameterTO.getReportType();
+		final String reportUri = reportParameterTO.getReportUrl();
+		final String assessmentType = reportParameterTO.getAssessmentName();
+		final String reportStatus = reportParameterTO.getReportStatus();
+		final long customerLink = reportParameterTO.getLinkName().longValue();
+		final String userRoles = Utils.arrayToCommaString(reportParameterTO.getUserRoles());
+		final String orgNodeLevels = Utils.arrayToCommaString(reportParameterTO.getOrgNodeLevel());
+		final String dbMenuId = reportParameterTO.getMenuId();
+		final String customerId = reportParameterTO.getCustomerId();
+		ReportTO report = null;
+		
+		try {
+			report = (ReportTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = null;
+						cs = con.prepareCall("{call " + IQueryConstants.ADD_REPORT + "}");
+						cs.setString(1, reportName);
+						cs.setString(2, reportDescription);
+						cs.setString(3, reportType);
+						cs.setString(4, reportUri);
+						cs.setString(5, reportStatus);
+						cs.setString(6, userRoles);
+						cs.setString(7, orgNodeLevels);
+						cs.setString(8, dbMenuId);
+						cs.setLong(9, customerLink);
+						cs.registerOutParameter(10, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(11, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+	        			ResultSet rsReport = null;
+	        			ReportTO reportTOResult = new ReportTO();
+	        			try {
+							cs.execute();
+							rsReport = (ResultSet) cs.getObject(11);
+	
+							ReportTO to = null;
+							if(rsReport.next()){
+								to = new ReportTO();
+								to.setReportId(rsReport.getLong("ID"));
+								to.setReportName(rsReport.getString("REPORT_NAME"));
+								to.setReportDescription(rsReport.getString("REPORT_DESC"));
+								to.setReportUrl(rsReport.getString("REPORT_FOLDER_URI"));
+								to.setReportOriginalUrl(rsReport.getString("REPORT_FOLDER_URI"));
+								to.setReportType(rsReport.getString("REPORT_TYPE"));
+								to.setReportSequence(rsReport.getString("REPORT_SEQ") == null ? to.getReportId() : rsReport.getLong("REPORT_SEQ"));
+								to.setEnabled(IApplicationConstants.ACTIVE_FLAG.equals(rsReport.getString("STATUS")) ? true : false);
+								String orgLevels = rsReport.getString("ORG_NODE_LEVEL");
+								orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
+								to.setAllOrgNode(orgLevels);
+								to.setLinkName(rsReport.getLong("CUST_PROD_ID"));
+								to.setProducttName(rsReport.getString("PRODUCT_NAME"));
+								to.setProductId(rsReport.getLong("PRODUCTID"));
+	
+								String strRoles = rsReport.getString("ROLES");
+								if (strRoles != null && strRoles.length() > 0) {
+									String[] roles = strRoles.split(",");
+									for (String role : roles) {
+										ROLE_TYPE role_type = Utils.getRoles(role);
+										if (role_type != null) {
+											to.addRole(role_type);
+										}
+									}
+								}
+								String strOrgLevl = rsReport.getString("ORG_NODE_LEVEL");
+								strOrgLevl = strOrgLevl.replace("Corporation,Diocese", "Corporation/Diocese");
+								if (strOrgLevl != null && strOrgLevl.length() > 0) {
+									String[] orgLevel = strOrgLevl.split(",");
+									to.setOrgNodeLevelArr(orgLevel);
+								}
+								to.setAssessmentName(rsReport.getString("ASSESSMENT_NAME"));
+								to.setMenuId(rsReport.getString("MENUID"));
+								to.setMenuName(rsReport.getString("MENUNAME"));
+							}
+						} catch (SQLException e) {
+	        				e.printStackTrace();
+	        			}
+	        			return reportTOResult;
+					}	
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - addNewDashboard() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+		return report;
+		/*logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard");
 
 		ReportTO reportTo = null;
-		String reportName = reportParameterTO.getReportName();
-		String reportDescription = reportParameterTO.getReportDescription();
-		String reportType = reportParameterTO.getReportType();
-		String reportUri = reportParameterTO.getReportUrl();
-		String assessmentType = reportParameterTO.getAssessmentName();
-		String reportStatus = reportParameterTO.getReportStatus();
-		Long customerLinks = reportParameterTO.getLinkName();
-		String[] userRoles = reportParameterTO.getUserRoles();
-		String[] orgNodeLevel = reportParameterTO.getOrgNodeLevel();
-		String customerId = reportParameterTO.getCustomerId();
+		
 		try {
 
 			List<Map<String, Object>> reportMap = null;
@@ -929,18 +1041,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				for (userRoleLoop = 0; userRoleLoop < userRoles.length; userRoleLoop++) {
 					for (orgNodeLevelLoop = 0; orgNodeLevelLoop < orgNodeLevel.length; orgNodeLevelLoop++) {
 						getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT_ROLE, reportParameterTO.getMenuId(), report_seq_id, userRoles[userRoleLoop], orgNodeLevel[orgNodeLevelLoop],
-								customerLinks, report_seq_id, IApplicationConstants.ACTIVE_FLAG);
+								customerLink, report_seq_id, IApplicationConstants.ACTIVE_FLAG);
 					}
 				}
 
-				reportTo = getDashboardData(String.valueOf(report_seq_id), customerId);
+				//Blocked the code, as this functionality can be solved using getAllReportList() - By Joy
+				//reportTo = getDashboardData(String.valueOf(report_seq_id), customerId);
+				
+				Map<String, Object> paramMap = new HashMap<String,Object>();
+				paramMap.put(IApplicationConstants.PURPOSE_EDIT_REPORT, IApplicationConstants.PURPOSE_EDIT_REPORT);
+				paramMap.put("reportId",String.valueOf(report_seq_id));
+				reportTo = (ReportTO)getAllReportList(paramMap).get(1);
 			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while adding dashboard details.", e);
 			return null;
 		}
 		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - addNewDashboard");
-		return reportTo;
+		return reportTo;*/
 	}
 
 	/*
