@@ -841,11 +841,11 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				Map<String,String> actionMap = new LinkedHashMap<String,String>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
+					rs = (ResultSet) cs.getObject(3);
 					while (rs.next()) {
 						actionMap.put(rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"));
 					}
-					Utils.logError(cs.getString(3));
+					Utils.logError(cs.getString(4));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
