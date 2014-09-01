@@ -20,16 +20,21 @@
 <style>
 	.label {width: 160px !important}
 </style>
+<%@ include file="../common/constant.jsp"%>
 <div class="" style="background-color: #FFF">
 		<div class="right-column">
 				<div class="content-panel" style="padding-left: 0px; border-radius: 0px 8px 8px 8px">
 					<div class="report-panel-content panel-content linen" style="height: 575px">
-						<div class="panel-control align-right">
-							<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="<spring:message code="msg.addReport" />" style="box-shadow: grey -3px 4px 13px;">
-								<span class="button-icon blue-gradient manage-btn"><span class="icon-plus-round"></span></span>
-								<spring:message code="msg.addReport" />
-							</a>
-						</div>
+						
+						<c:if test="${not empty mngRpt_addRpt}">
+							<div class="panel-control align-right">
+								<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="<spring:message code="msg.addReport" />" style="box-shadow: grey -3px 4px 13px;">
+									<span class="button-icon blue-gradient manage-btn"><span class="icon-plus-round"></span></span>
+									<spring:message code="msg.addReport" />
+								</a>
+							</div>
+						</c:if>
+						
 						<div class="panel-load-target with-padding margin10 padding-none height-mid">
 							<div class="report-container1 tabs-content height-mid manage-report-container" style="padding-bottom: 20px;">
 								<div class="panel-load-target scrollable with-padding margin10 height-mid padding-none">
@@ -91,29 +96,40 @@
                                                 <c:when test="${report.reportName=='Generic System Configuration'}">
                                                 <td class="vertical-center" nowrap>
                                                 <input type="hidden" class="scmCopyButtonHide" name="scmCopyButtonHide" value="scmCopyButtonHide" />
-													<span class="button-group compact" width="50px">
-														<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
-															class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+                                                	<span class="button-group compact" width="50px">
+                                                		<c:if test="${not empty mngRpt_configureRptMsg}">
+                                                			<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
+																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+                                                		</c:if>
 													</span>
 												</td>
     											</c:when>
     											 <c:when test="${report.reportName=='Product Specific System Configuration'}">
                                                 <td class="vertical-center" nowrap>
 													<span class="button-group compact" width="50px">
-														<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
-															class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+														<c:if test="${not empty mngRpt_configureRptMsg}">
+															<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
+																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+														</c:if>
 													</span>
 												</td>
     											</c:when>
 												<c:otherwise>
 												<td class="vertical-center" nowrap>
 													<span class="button-group compact" width="50px">
-														<a href="#"	class="button icon-pencil edit-report with-tooltip" title="Edit"
-															reportId="${report.reportId}"></a>
-														<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
-															class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
-														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
-															title="Delete"></a>
+														<c:if test="${not empty mngRpt_editRpt}">
+															<a href="#"	class="button icon-pencil edit-report with-tooltip" title="Edit"
+																reportId="${report.reportId}"></a>
+														</c:if>
+														<c:if test="${not empty mngRpt_configureRptMsg}">
+															<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
+																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+														</c:if>
+														<c:if test="${not empty mngRpt_deleteRpt}">
+															<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
+																title="Delete"></a>
+														</c:if>
+														
 													</span>
 												</td>
       											</c:otherwise>

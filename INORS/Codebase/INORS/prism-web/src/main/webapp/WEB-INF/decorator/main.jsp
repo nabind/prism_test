@@ -60,5 +60,6 @@
 			<%@ include file="../view/common/init.jsp"%>
 			<%@ include file="../view/common/keepAlive.jsp"%>
 			<%@ include file="../view/parent/claimNewInvitation.jsp"%>
+			<%@ include file="../view/common/constant.jsp"%>
 	</body>
 </html>
