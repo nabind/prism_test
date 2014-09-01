@@ -279,8 +279,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public UserTO getUserDetails(Map<String, Object> paramMap) {
 		UserTO user = null;
 		final String username = (String)paramMap.get("username");
-		//final String contractName = (String)paramMap.get("contractName");
-		final String contractName = Utils.getContractName();
+		String contractName = null;
+		if(paramMap.get("contractName") != null && !paramMap.get("contractName").equals("")) {
+			contractName = (String)paramMap.get("contractName");
+		} else {
+			contractName = Utils.getContractName();
+		}
+		final String resolvedContractName = contractName;
 		final String userType = getUserType(username, contractName);
 		
 		logger.log(IAppLogger.INFO, "getUserDetails :: username = " + username);
@@ -316,7 +321,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
 									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
-									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, contractName));
+									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
 									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
 									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
 									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
@@ -361,7 +366,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
 									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
-									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, contractName));
+									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
 									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
 									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
 									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
