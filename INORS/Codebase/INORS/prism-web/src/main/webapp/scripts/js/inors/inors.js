@@ -379,7 +379,11 @@ $(document).ready(function() {
 	});
 });
 
+/**
+ * This method removes the values of all text boxes and labels and hides the details.
+ */
 function resetUserPwdSearch() {
+	// Values removed from all text boxes and labels
 	$("#userSearchRP").attr('readonly', false);
 	$("#userIdRP").val("0");
 	$("#userSearchRP").val("");
@@ -408,11 +412,17 @@ function resetUserPwdSearch() {
 	$("#statusUsernameRP").text("");
 	$("#statusPasswordRP").text("");
 
+	// Legends are made hidden
 	$("#passwordResetStatusRP").attr("class", "wizard-fieldset fields-list hidden");
 	$("#userDetailsRP").attr("class", "wizard-fieldset fields-list hidden");
 	$("#securityQuestionsRP").attr("class", "wizard-fieldset fields-list hidden");
 }
 
+/**
+ * This method resets the user password and sends the password to the user via email.
+ * 
+ * @param username
+ */
 function resetUserPwd(username) {
 	var userId = $("#userIdRP").val();
 	var email = $("#emailRP").text();
@@ -455,6 +465,11 @@ function resetUserPwd(username) {
 	}
 }
 
+/**
+ * This method retrievs the user details from the database based on the username. It uses exact username search.
+ * 
+ * @param username
+ */
 function getUserForManagePassword(username) {
 	blockUI();
 	$.ajax({
