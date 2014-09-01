@@ -968,12 +968,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				}, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(CallableStatement cs) {
 	        			ResultSet rsReport = null;
-	        			ReportTO reportTOResult = new ReportTO();
+	        			ReportTO to = null;
 	        			try {
 							cs.execute();
 							rsReport = (ResultSet) cs.getObject(11);
-	
-							ReportTO to = null;
 							if(rsReport.next()){
 								to = new ReportTO();
 								to.setReportId(rsReport.getLong("ID"));
@@ -1007,14 +1005,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 									String[] orgLevel = strOrgLevl.split(",");
 									to.setOrgNodeLevelArr(orgLevel);
 								}
-								to.setAssessmentName(rsReport.getString("ASSESSMENT_NAME"));
 								to.setMenuId(rsReport.getString("MENUID"));
 								to.setMenuName(rsReport.getString("MENUNAME"));
 							}
 						} catch (SQLException e) {
 	        				e.printStackTrace();
 	        			}
-	        			return reportTOResult;
+	        			return to;
 					}	
 			});
 		}catch(Exception e){
