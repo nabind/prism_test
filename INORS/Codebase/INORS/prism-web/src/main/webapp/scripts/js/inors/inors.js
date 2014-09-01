@@ -337,7 +337,7 @@ $(document).ready(function() {
 	});
 
 	$(".reset-pwd-search").click(function() {
-		resetUserPwdSearch();
+		clearResetPasswordSearchResult();
 	});
 	
 	if($('#userIdRP').length > 0) {
@@ -382,7 +382,7 @@ $(document).ready(function() {
 /**
  * This method removes the values of all text boxes and labels and hides the details.
  */
-function resetUserPwdSearch() {
+function clearResetPasswordSearchResult() {
 	// Values removed from all text boxes and labels
 	$("#userSearchRP").attr('readonly', false);
 	$("#userIdRP").val("0");
