@@ -16,6 +16,8 @@
 		width: 150px !important;
 	}
 </style>
+<!-- ActionMap will hold all the action available for the logged in user, based on org level and role -->
+<c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 <!--<div class="with-padding">-->
 <div class="user-main" style="background-color: #FFF">
@@ -41,7 +43,9 @@
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					<spring:message code="title.page.addUser"/>
 				</a>
-				<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
+				<c:if test="${not empty actionMap['Manage Users Download Users']}">
+					<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
+				</c:if>							
 			</div>
 			<div
 				class="panel-load-target with-padding margin10 height-mid padding-none">
