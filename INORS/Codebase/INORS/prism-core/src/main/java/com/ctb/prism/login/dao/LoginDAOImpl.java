@@ -843,7 +843,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.execute();
 					rs = (ResultSet) cs.getObject(3);
 					while (rs.next()) {
-						actionMap.put(rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ rs.getString("ACTION_NAME"));
+						actionMap.put(rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"));
 					}
 					Utils.logError(cs.getString(4));
 				} catch (SQLException e) {
