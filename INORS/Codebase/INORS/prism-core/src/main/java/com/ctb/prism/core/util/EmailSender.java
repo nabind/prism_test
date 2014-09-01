@@ -17,10 +17,14 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IEmailConstants;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+
 
 /**
  * <p>
@@ -38,6 +42,8 @@ import com.ctb.prism.core.resourceloader.IPropertyLookup;
  */
 @Component("emailSender")
 public class EmailSender {
+	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(EmailSender.class.getName());
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -283,6 +289,47 @@ public class EmailSender {
 		}
 		msErrorStatus = "Success";
 		return msErrorStatus;
+	}
+	
+	/**
+	 * Sends a mail to the user after Reset Password.
+	 * 
+	 * @param email
+	 * @param username
+	 * @param password
+	 * @throws Exception
+	 */
+	public void sendUserPasswordEmail(String email, String username, String password) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
+		Properties prop = new Properties();
+		prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+		prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+		prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+		String subject = propertyLookup.get("mail.rp.subject");
+		String mailBody = propertyLookup.get("mail.rp.body");
+		// subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
+		// mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
+		mailBody = CustomStringUtil.replaceCharacterInString('?', password, mailBody);
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "SMTP_HOST: " + prop.getProperty(IEmailConstants.SMTP_HOST));
+		logger.log(IAppLogger.INFO, "SMTP_PORT: " + prop.getProperty(IEmailConstants.SMTP_PORT));
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Subject: " + subject);
+		logger.log(IAppLogger.INFO, "From: " + prop.getProperty("senderMail"));
+		logger.log(IAppLogger.INFO, "To: " + email);
+		logger.log(IAppLogger.INFO, "Body: " + mailBody);
+		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
+		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
+		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			sendMail(prop, email, null, null, subject, mailBody);
+		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
+			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
+		} else {
+			logger.log(IAppLogger.ERROR, "Invalid property value. " + IEmailConstants.REALTIME_EMAIL_FLAG + "=" + propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG));
+		}
+		logger.log(IAppLogger.INFO, "Email sent to: " + email);
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 
 }

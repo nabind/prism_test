@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +34,6 @@ import com.ctb.prism.core.constant.IApplicationConstants.EXTRACT_CATEGORY;
 import com.ctb.prism.core.constant.IApplicationConstants.EXTRACT_FILETYPE;
 import com.ctb.prism.core.constant.IApplicationConstants.JOB_STATUS;
 import com.ctb.prism.core.constant.IApplicationConstants.REQUEST_TYPE;
-import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -60,8 +58,7 @@ import com.ctb.prism.web.util.JsonUtil;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @Controller
 public class AdminController {
-	private static final IAppLogger logger = LogFactory
-			.getLoggerInstance(AdminController.class.getName());
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(AdminController.class.getName());
 
 	@Autowired
 	private IAdminService adminService;
@@ -75,6 +72,9 @@ public class AdminController {
 	@Autowired
 	private IPropertyLookup propertyLookup;
 	
+	@Autowired
+	private EmailSender emailSender;
+
 	boolean isTree =true;//set it to false for slide menu
 
 	/**
@@ -2015,7 +2015,8 @@ public class AdminController {
 	}
 	
 	/**
-	 * Method performs reset password operation. This method is called through AJAX
+	 * Method performs reset password operation. This method is called through AJAX.
+	 * 
 	 * @param req
 	 * @param res
 	 * @return Returns nothing, instead writes password in response as JSON
@@ -2031,7 +2032,7 @@ public class AdminController {
 				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(userName);
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
-						sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
+						emailSender.sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
 						sendEmailFlag = "1";
 					} catch (Exception e) {
 						sendEmailFlag = "0";
@@ -2070,7 +2071,6 @@ public class AdminController {
 		} 
 		logger.log(IAppLogger.INFO, "Exit: AdminController - updateAdminYear");
 		return null;
-			
 	}	
 	
 	/**
@@ -2451,7 +2451,7 @@ public class AdminController {
 				if (userTO.getPassword() != null) {
 					resetPwdFlag = "1";
 					try {
-						sendUserPasswordEmail(email, username, userTO.getPassword());
+						emailSender.sendUserPasswordEmail(email, username, userTO.getPassword());
 						sendEmailFlag = "1";
 					} catch (Exception e) {
 						sendEmailFlag = "0";
@@ -2470,49 +2470,5 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, jsonString);
 		logger.log(IAppLogger.INFO, "Exit: resetUserPasswordForm()");
 		return jsonString;
-	}
-	
-	@Autowired
-	private EmailSender emailSender;
-
-	/**
-	 * Sends a mail to the user after Reset Password.
-	 * 
-	 * @param email
-	 * @param username
-	 * @param password
-	 * @throws Exception
-	 */
-	private void sendUserPasswordEmail(String email, String username, String password) throws Exception {
-		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
-		Properties prop = new Properties();
-		prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
-		prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
-		prop.setProperty("senderMail", propertyLookup.get("senderMail"));
-		prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-		String subject = propertyLookup.get("mail.rp.subject");
-		String mailBody = propertyLookup.get("mail.rp.body");
-		// subject = CustomStringUtil.replaceCharacterInString('#', username, subject);
-		// mailBody = CustomStringUtil.replaceCharacterInString('#', username, mailBody);
-		mailBody = CustomStringUtil.replaceCharacterInString('?', password, mailBody);
-		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
-		logger.log(IAppLogger.INFO, "SMTP_HOST: " + prop.getProperty(IEmailConstants.SMTP_HOST));
-		logger.log(IAppLogger.INFO, "SMTP_PORT: " + prop.getProperty(IEmailConstants.SMTP_PORT));
-		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
-		logger.log(IAppLogger.INFO, "Subject: " + subject);
-		logger.log(IAppLogger.INFO, "From: " + prop.getProperty("senderMail"));
-		logger.log(IAppLogger.INFO, "To: " + email);
-		logger.log(IAppLogger.INFO, "Body: " + mailBody);
-		logger.log(IAppLogger.INFO, "---------------------------------------------------------------");
-		logger.log(IAppLogger.INFO, "Email triggered to: " + email);
-		if(IApplicationConstants.ACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
-			emailSender.sendMail(prop, email, null, null, subject, mailBody);
-		} else if(IApplicationConstants.INACTIVE_FLAG.equals(propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG))) {
-			logger.log(IAppLogger.WARN, "Skipping Email Sending.");
-		} else {
-			logger.log(IAppLogger.ERROR, "Invalid property value. " + IEmailConstants.REALTIME_EMAIL_FLAG + "=" + propertyLookup.get(IEmailConstants.REALTIME_EMAIL_FLAG));
-		}
-		logger.log(IAppLogger.INFO, "Email sent to: " + email);
-		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 }
