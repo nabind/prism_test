@@ -1,4 +1,5 @@
 <!-- ActionMap will hold all the action available for the logged in user, based on org level and role -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 <script type="text/javascript">

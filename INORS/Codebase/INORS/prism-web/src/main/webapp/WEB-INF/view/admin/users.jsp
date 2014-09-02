@@ -48,7 +48,7 @@
 					<spring:message code="title.page.addUser"/>
 				</a>
 				</c:if>
-				<fmt:message var="MANAGE_USERS_DOWNLOAD_USERS" key="MANAGE_USERS_DOWNLOAD_USERS" />
+				<fmt:message var="MANAGE_USERS_DOWNLOAD_USERS" key="manage.users.download"  />
 				<c:if test="${not empty actionMap[MANAGE_USERS_DOWNLOAD_USERS]}">
 					<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
 				</c:if>							
