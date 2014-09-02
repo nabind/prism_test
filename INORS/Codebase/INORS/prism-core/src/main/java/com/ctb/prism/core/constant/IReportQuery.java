@@ -51,6 +51,18 @@ public interface IReportQuery {
 	 * Add a new report
 	 * */
 	public static final String ADD_REPORT = "PKG_MANAGE_REPORT.SP_ADD_REPORT(?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+	/**
+	 * @author Joy
+	 * Edit a report
+	 * */
+	public static final String EDIT_REPORT = "PKG_MANAGE_REPORT.SP_EDIT_REPORT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+	/**
+	 * @author Joy
+	 * Delete a report
+	 * */
+	public static final String DELETE_REPORT = "PKG_MANAGE_REPORT.SP_DELETE_REPORT(?,?,?)";
 
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
@@ -59,42 +71,7 @@ public interface IReportQuery {
 	// query to group download request Details
 	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(
 	"select * from job_tracking where job_Id=?");
-	// query to update report table
-	public static final String UPDATE_REPORT = CustomStringUtil.appendString(
-			"UPDATE DASHBOARD_REPORTS SET REPORT_NAME = ?, REPORT_FOLDER_URI  = ?, " ,
-	"ACTIVATION_STATUS = ? WHERE DB_REPORTID = ?");
-
-	// query to update report table
-	public static final String UPDATE_REPORT_NEW = CustomStringUtil.appendString(
-			"UPDATE DASH_REPORTS SET REPORT_NAME = ?,REPORT_DESC = ?, REPORT_FOLDER_URI  = ?, " ,
-	"ACTIVATION_STATUS = ?, REPORT_TYPE=?,updated_date_time = SYSDATE WHERE DB_REPORTID = ?");
-
-
-	// query to delete from report and roles association table report_roles
-	public static final String DELETE_REPORT_ROLE = "DELETE FROM DASH_MENU_RPT_ACCESS WHERE DB_REPORTID = ?";
 	
-	// query to delete the report from the  DASH_MESSAGES table
-	public static final String DELETE_REPORT_MSG = "DELETE FROM DASH_MESSAGES DM WHERE DM.DB_REPORTID = ?";
-
-	// query to delete the report from the  reports table
-	public static final String DELETE_REPORT = "DELETE  FROM DASH_REPORTS WHERE DB_REPORTID = ?";
-
-	// query to insert report role relation in report_role table
-	public static final String INSERT_REPORT_ROLE =  CustomStringUtil.appendString(
-			" INSERT INTO DASH_MENU_RPT_ACCESS ",
-			" (DB_MENUID,DB_REPORTID,ROLEID,ORG_LEVEL,CUST_PROD_ID,REPORT_SEQ,",
-			" ACTIVATION_STATUS, ",
-			" CREATED_DATE_TIME, ",
-			" UPDATED_DATE_TIME) ",
-			" VALUES ",
-	" (?,?,(SELECT ROLEID FROM ROLE WHERE ROLE_NAME = ? ),?,?,?,?, SYSDATE, SYSDATE) " );
-	// query to add report
-	public static final String INSERT_REPORT =CustomStringUtil.appendString(
-			"INSERT INTO DASH_REPORTS",
-			"(db_reportid, report_name, report_desc, report_type, report_folder_uri,activation_status, created_date_time, updated_date_time)",
-			"VALUES",
-	"(?, ?, ?, ?,?, ?, SYSDATE, SYSDATE)" );
-
 	//Fix for TD 77939 - implement customerId - By Joy
 	// query to retrieve assessment details( including report details )
 	public static final String GET_ALL_ASSESSMENT_LIST = CustomStringUtil.appendString(

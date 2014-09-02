@@ -437,7 +437,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						CallableStatement cs = null;
 						cs = con.prepareCall("{call " + IQueryConstants.GET_DASHBOARD_DETAILS + "}");
 						if (IApplicationConstants.PURPOSE_EDIT_REPORT.equals((String)paramMap.get("editReport"))) {
-							cs.setLong(1, ((Long)paramMap.get("reportId")).longValue());
+							cs.setLong(1, Long.parseLong((String)paramMap.get("reportId")));
 						}else{
 							cs.setLong(1, IApplicationConstants.DEFAULT_PRISM_VALUE);
 						}
@@ -506,46 +506,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAllReportList() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return reports;
-	}
-
-	/**
-	 * Updates the particular report information in database
-	 * 
-	 * @param reportId
-	 * @param reportName
-	 * @param reportUrl
-	 * @param isEnabled
-	 *            1 if enabled, 0 otherwise
-	 * @param roles
-	 *            The user roles who can access this particular report.
-	 * 
-	 * @CacheEvict(value = "allReports", allEntries=true)
-	 */
-	//@TriggersRemove(cacheName = "allReports", removeAll = true)
-	@CacheEvict(value = "configCache", allEntries = true)
-	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
-		try {
-			// update report table
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_REPORT, reportName, reportUrl, isEnabled, reportId);
-			// delete from report_role table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_ROLE, reportId);
-
-			if (roles != null) {
-				for (String role : roles) {
-					if (Utils.isValidRoles(role)) {
-						// insert into report_role table
-						getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT_ROLE, reportId, role, IApplicationConstants.ACTIVE_FLAG);
-					}
-				}
-				// if(strRole.length() >= 3) strRole = strRole.substring(0, strRole.length() - 3);
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
-			return false;
-		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - updateReport");
-		return true;
 	}
 
 	/**
@@ -623,69 +583,57 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return assessments;
 	}
 
-	@CacheEvict(value = "configCache", allEntries=true )
-	public boolean deleteReport(String reportId) throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
-		try {
-			// delete from report_role table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_ROLE, reportId);
-			
-			// delete from report table DASH_MESSAGES table - Added by Joy
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_MSG, reportId);
-			
-			// delete from report table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT, reportId);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
-			return false;
-		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - deleteReport");
-		return true;
-	}
-
 	/**
-	 * Blocked the method, as this functionality can be solved using getAllReportList() - By Joy
-	 * Returns the reportTO on add.
-	 * @param nodeid
-	 * @return
+	 * @author Joy
+	 * Delete the report data
+	 * Moved to package and minimize multiple DB Calls - By Joy
+	 * @param reportId
+	 * @return boolean
 	 */
-	/*private ReportTO getDashboardData(String reportid, String customerid) {
-
-		ReportTO to = null;
-		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_DASHBOARD_DETAILS, customerid, reportid);
-		if (dataList != null && dataList.size() > 0) {
-			to = new ReportTO();
-			for (Map<String, Object> data : dataList) {
-
-				to.setReportId(((BigDecimal) data.get("ID")).longValue());
-				to.setReportName((String) data.get("REPORT_NAME"));
-				to.setReportDescription((String) data.get("REPORT_DESC"));
-				to.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
-				to.setReportType((String) data.get("REPORT_TYPE"));
-				to.setReportSequence(data.get("REPORT_SEQ") == null ? to.getReportId() : ((BigDecimal) data.get("REPORT_SEQ")).longValue());
-				to.setEnabled(((String) data.get("STATUS")).equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-				to.setAllOrgNode((String) data.get("ORG_NODE_LEVEL"));
-				to.setLinkName(((BigDecimal) data.get("CUST_PROD_ID")).longValue());
-				to.setProducttName((String) data.get("product_name"));
-				to.setProductId(((BigDecimal) data.get("productid")).longValue());
-				to.setMenuId(String.valueOf(data.get("MENUID")));
-				to.setMenuName((String) data.get("MENUNAME"));
-				String strRoles = (String) data.get("ROLES");
-				if (strRoles != null && strRoles.length() > 0) {
-					String[] roles = strRoles.split(",");
-					for (String role : roles) {
-						ROLE_TYPE role_type = Utils.getRoles(role);
-						if (role_type != null) {
-							to.addRole(role_type);
-						}
+	@CacheEvict(value = "configCache", allEntries=true )
+	public boolean deleteReport(final String reportId) throws SystemException {
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
+		long t1 = System.currentTimeMillis();
+		//com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		boolean status = false;
+		
+		try {
+			status =  (Boolean) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = null;
+						cs = con.prepareCall("{call " + IQueryConstants.DELETE_REPORT + "}");
+						cs.setLong(1, Long.parseLong(reportId));
+						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
 					}
-				}
-			}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						long executionStatus = 0;
+						com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+	        			try {
+							cs.execute();
+							executionStatus = cs.getLong(2);
+							statusTO.setValue(Long.toString(executionStatus));
+							statusTO.setName("");
+							if(cs.getString(3)!= null && cs.getString(3).length() > 0) {
+								logger.log(IAppLogger.ERROR, "Error while deleting report "+ cs.getString(3));
+							}
+						} catch (SQLException e) {
+	        				e.printStackTrace();
+	        			}
+	        			return (Long.parseLong(statusTO.getValue()) == 1 ? true : false);
+					}	
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - deleteReport() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-
-		return to;
-
-	}*/
+		return status;
+	}
 
 	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
 	public List<ObjectValueTO> getAllRoles() {
@@ -896,28 +844,69 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return successFlag;
 	}
 
-	// 365348
+	/**
+	 * @author Joy
+	 * Update the report data
+	 * Moved to package and minimize multiple DB Calls - By Joy
+	 * @param ReportTO
+	 * @return boolean
+	 */
 	@CacheEvict(value = "configCache", allEntries = true)
-	public boolean updateReportNew(ReportTO reportTO) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReport");
+	public boolean updateReportNew(final ReportTO reportTO) {
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReportNew");
+		long t1 = System.currentTimeMillis();
+		
+		final String userRoles = Utils.arrayToCommaString(reportTO.getUserRoles());
+		final String orgNodeLevels = Utils.arrayToCommaString(reportTO.getOrgNodeLevelArr());
+		//com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		boolean status = false;
+		
 		try {
-			int userRoleLoop = 0, orgLevelLoop = 0;
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_REPORT_NEW, reportTO.getReportName(), reportTO.getReportDescription(), reportTO.getReportOriginalUrl(), reportTO.getReportStatus(),
-					reportTO.getReportType(), reportTO.getReportId());
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_REPORT_ROLE, reportTO.getReportId());
-			for (userRoleLoop = 0; userRoleLoop < reportTO.getUserRoles().length; userRoleLoop++) {
-
-				for (orgLevelLoop = 0; orgLevelLoop < reportTO.getOrgNodeLevelArr().length - 1; orgLevelLoop++) {
-					getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT_ROLE, reportTO.getMenuId(), reportTO.getReportId(), reportTO.getUserRoles()[userRoleLoop],
-							reportTO.getOrgNodeLevelArr()[orgLevelLoop], reportTO.getCustomerLinks(), reportTO.getReportSequence(), IApplicationConstants.ACTIVE_FLAG);
-				}
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while updating report details.", e);
+			status =  (Boolean) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = null;
+						cs = con.prepareCall("{call " + IQueryConstants.EDIT_REPORT + "}");
+						cs.setLong(1, reportTO.getReportId());
+						cs.setString(2, reportTO.getReportName());
+						cs.setString(3, reportTO.getReportDescription());
+						cs.setString(4, reportTO.getReportType());
+						cs.setString(5, reportTO.getReportOriginalUrl());
+						cs.setString(6, reportTO.getReportStatus());
+						cs.setString(7, userRoles);
+						cs.setString(8, orgNodeLevels);
+						cs.setString(9, reportTO.getMenuId());
+						cs.setLong(10, Long.parseLong(reportTO.getCustomerLinks()));
+						cs.setLong(11,reportTO.getReportSequence());
+						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						long executionStatus = 0;
+						com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+	        			try {
+							cs.execute();
+							executionStatus = cs.getLong(12);
+							statusTO.setValue(Long.toString(executionStatus));
+							statusTO.setName("");
+							if(cs.getString(13)!= null && cs.getString(13).length() > 0) {
+								logger.log(IAppLogger.ERROR, "Error while editing report "+ cs.getString(13));
+							}
+						} catch (SQLException e) {
+	        				e.printStackTrace();
+	        			}
+	        			return (Long.parseLong(statusTO.getValue()) == 1 ? true : false);
+					}	
+			});
+		}catch(Exception e){
+			e.printStackTrace();
 			return false;
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - updateReportNew() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - updateReport");
-		return true;
+		return status;
 	}
 
 	/**
@@ -1021,41 +1010,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - addNewDashboard() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return report;
-		/*logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard");
-
-		ReportTO reportTo = null;
-		
-		try {
-
-			List<Map<String, Object>> reportMap = null;
-			reportMap = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_EXISTING_REPORT, reportName, reportUri);
-			if (reportMap == null || reportMap.isEmpty()) {
-				int userRoleLoop = 0, orgNodeLevelLoop = 0;
-				long report_seq_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.DB_REPORT_SEQ_ID);
-
-				getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT, report_seq_id, reportName, reportDescription, reportType, reportUri, reportStatus);
-
-				for (userRoleLoop = 0; userRoleLoop < userRoles.length; userRoleLoop++) {
-					for (orgNodeLevelLoop = 0; orgNodeLevelLoop < orgNodeLevel.length; orgNodeLevelLoop++) {
-						getJdbcTemplatePrism().update(IQueryConstants.INSERT_REPORT_ROLE, reportParameterTO.getMenuId(), report_seq_id, userRoles[userRoleLoop], orgNodeLevel[orgNodeLevelLoop],
-								customerLink, report_seq_id, IApplicationConstants.ACTIVE_FLAG);
-					}
-				}
-
-				//Blocked the code, as this functionality can be solved using getAllReportList() - By Joy
-				//reportTo = getDashboardData(String.valueOf(report_seq_id), customerId);
-				
-				Map<String, Object> paramMap = new HashMap<String,Object>();
-				paramMap.put(IApplicationConstants.PURPOSE_EDIT_REPORT, IApplicationConstants.PURPOSE_EDIT_REPORT);
-				paramMap.put("reportId",String.valueOf(report_seq_id));
-				reportTo = (ReportTO)getAllReportList(paramMap).get(1);
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while adding dashboard details.", e);
-			return null;
-		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - addNewDashboard");
-		return reportTo;*/
 	}
 
 	/*

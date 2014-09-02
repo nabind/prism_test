@@ -189,18 +189,9 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#updateReport(java.lang.String , java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
-	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
-		return reportBusiness.updateReport(reportId, reportName, reportUrl, isEnabled, roles);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.service.IReportService#updateReportNew(com.ctb.prism .report.transferobject.ReportTO)
 	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean updateReportNew(ReportTO reportTO) {
 		return reportBusiness.updateReportNew(reportTO);
 	}

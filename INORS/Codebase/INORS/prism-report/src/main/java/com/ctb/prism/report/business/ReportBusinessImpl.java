@@ -497,15 +497,6 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#updateReport(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
-	 */
-	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles) {
-		return reportDAO.updateReport(reportId, reportName, reportUrl, isEnabled, roles);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#updateReportNew(com.ctb.prism.report.transferobject.ReportTO)
 	 */
 	public boolean updateReportNew(ReportTO reportTO) {

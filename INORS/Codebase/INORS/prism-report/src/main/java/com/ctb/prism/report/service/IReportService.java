@@ -120,16 +120,6 @@ public interface IReportService {
 	public List<ReportTO> getAllReportList(Map<String, Object> paramMap);
 
 	/**
-	 * @param reportId
-	 * @param reportName
-	 * @param reportUrl
-	 * @param isEnabled
-	 * @param roles
-	 * @return
-	 */
-	public boolean updateReport(String reportId, String reportName, String reportUrl, String isEnabled, String[] roles);
-
-	/**
 	 * @param reportTO
 	 * @return
 	 */
