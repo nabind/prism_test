@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 <hgroup id="main-title" class="thin h1-title">
@@ -16,8 +17,6 @@
 		width: 150px !important;
 	}
 </style>
-<!-- ActionMap will hold all the action available for the logged in user, based on org level and role -->
-<c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 <!--<div class="with-padding">-->
 <div class="user-main" style="background-color: #FFF">
@@ -49,8 +48,8 @@
 					<spring:message code="title.page.addUser"/>
 				</a>
 				</c:if>
-				
-				<c:if test="${not empty actionMap['Manage Users Download Users']}">
+				<fmt:message var="MANAGE_USERS_DOWNLOAD_USERS" key="MANAGE_USERS_DOWNLOAD_USERS" />
+				<c:if test="${not empty actionMap[MANAGE_USERS_DOWNLOAD_USERS]}">
 					<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
 				</c:if>							
 			</div>

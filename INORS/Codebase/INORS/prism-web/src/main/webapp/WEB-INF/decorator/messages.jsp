@@ -1,3 +1,6 @@
+<!-- ActionMap will hold all the action available for the logged in user, based on org level and role -->
+<c:set var="actionMap" value="${actionMap}" scope="session"/>
+
 <script type="text/javascript">
 	var strings = new Array();
 	strings['script.common.error'] = "<spring:message code='script.common.error' javaScriptEscape='true' />";
