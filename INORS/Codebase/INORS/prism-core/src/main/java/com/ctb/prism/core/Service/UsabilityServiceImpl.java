@@ -119,8 +119,8 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * 
 	 * @see com.ctb.prism.core.Service.IUsabilityService#getSetCache(java.lang.String, java.lang.String, java.lang.Object)
 	 */
-	@CacheEvict(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )", condition = "#p2 != null", beforeInvocation = true)
-	@Cacheable(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
+	@CacheEvict(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", condition = "#p2 != null", beforeInvocation = true)
+	@Cacheable(value = "userCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )")
 	public Object getSetCache(String username, String sessionName, Object sessionParam) {
 		logger.log(IAppLogger.INFO, "********* ********** ************ putting into cache ****** " + sessionName);
 		return sessionParam;

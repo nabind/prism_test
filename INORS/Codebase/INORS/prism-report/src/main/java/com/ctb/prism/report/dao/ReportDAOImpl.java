@@ -687,7 +687,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 	}*/
 
-	@Cacheable(value = "defaultCache", key="'getAllRoles'.concat(#root.method.name)")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
 	public List<ObjectValueTO> getAllRoles() {
 		List<ObjectValueTO> roles = null;
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.ALL_ROLE);

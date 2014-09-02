@@ -40,6 +40,15 @@
 		<jms:listener destination="${aws.queueName}" ref="messageListner" method="onSQSMessage" />
 	</jms:listener-container>
 	
+	<!-- Queue for storing cache keys -->
+	<bean id="jmsInorsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestinationName" value="${aws.inors.cacheQueue}" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
+	</bean>
 	
+	<bean id="jmsTascTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestinationName" value="${aws.tasc.cacheQueue}" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
+	</bean>
 	
 </beans>

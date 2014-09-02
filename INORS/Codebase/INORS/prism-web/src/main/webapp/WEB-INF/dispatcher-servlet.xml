@@ -181,6 +181,4 @@
 	<import resource="jms-config.xml" />
 	<import resource="elasticache.xml" />
 	<import resource="s3-config.xml" />
-	<import resource="jms-config-inors.xml" />
-	<import resource="jms-config-tasc.xml" />
 </beans>

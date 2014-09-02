@@ -1,4 +1,4 @@
-package com.ctb.prism.web.jms;
+package com.ctb.prism.core.jms;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -24,6 +24,10 @@ public class JmsMessageProducer {
 
 	@Autowired
 	protected JmsTemplate jmsTemplate;
+	
+	@Autowired protected JmsTemplate jmsInorsTemplate;
+	
+	@Autowired protected JmsTemplate jmsTascTemplate;
 
 	protected int numberOfMessages = 100;
 	StringBuilder payload = null;
@@ -62,4 +66,30 @@ public class JmsMessageProducer {
 		jmsTemplate.convertAndSend("job-id:" + jobId);
 		LOG.info("Message sent to SQS");
 	}
+	
+	/**
+	 * Get cache JMS template
+	 * @return
+	 */
+	public JmsTemplate getJmsCacheTemplate(String contractName) {
+		if(contractName == null || "".equals(contractName)) contractName = Utils.getContractName();
+		if("inors".equals(contractName)) return jmsInorsTemplate;
+		if("tasc".equals(contractName)) return jmsTascTemplate;
+		else return null;
+	}
+	
+	/**
+	 * Put key into queue
+	 * @param key
+	 */
+	public void putCacheKey(String key, String contractName) {
+		try {
+			getJmsCacheTemplate(contractName).convertAndSend(key);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			LOG.error(ex.getMessage() + "----------------- Failed to store key into cache. Key:"+key);
+		}
+	}
+	
+	
 }

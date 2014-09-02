@@ -1391,7 +1391,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllAdmin()
 	 */
-	@Cacheable(value = "configCache", key="'getAllAdmin'.concat(#root.method.name)")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllAdmin'.concat(#root.method.name) )")
 	public List<ObjectValueTO> getAllAdmin() throws SystemException {
 		List<ObjectValueTO> adminYearList = new ArrayList<ObjectValueTO>();
 		List<Map<String, Object>> lstData = null;

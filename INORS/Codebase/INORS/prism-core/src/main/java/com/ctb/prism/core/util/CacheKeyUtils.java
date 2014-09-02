@@ -6,16 +6,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.jms.JmsMessageProducer;
 
+@Component
 public final class CacheKeyUtils {
-    
 	
-    private CacheKeyUtils() {
-        throw new UnsupportedOperationException();
+	private static final Logger LOG = Logger.getLogger(JmsMessageProducer.class);
+    
+	@Autowired private JmsMessageProducer autoMessageProducer;
+	
+	private static JmsMessageProducer messageProducer;
+	
+	private static String contractName;
+	
+	@PostConstruct
+    public void init() {
+		CacheKeyUtils.messageProducer = autoMessageProducer;
     }
+	
+    /*private CacheKeyUtils() {
+        throw new UnsupportedOperationException();
+    }*/
 
     public static <K extends Comparable<K>> String key(Collection<K> col) {
         if (col == null) {
@@ -54,7 +71,7 @@ public final class CacheKeyUtils {
 
     public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
         
-    	String contractName = null; 
+    	//String contractName = null; 
         
     	if (col == null) {
             return "";
@@ -85,7 +102,6 @@ public final class CacheKeyUtils {
         } else {
         	contractName = Utils.getContractName();
         }
-        storeCacheKey(b.toString(),contractName); //Key will be stored in queue. It will help later for clear cache
         
         return b.toString();
     }
@@ -100,8 +116,13 @@ public final class CacheKeyUtils {
     }
     
     public static String encryptedKey(String col) {
-    	if(col != null) return SaltedPasswordEncoder.encryptPassword(col, null, 1);
-    	return "";
+    	String hashKey = "";
+    	if(col != null) {
+    		hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
+    		// store the key into queue
+    		storeCacheKey(hashKey);
+    	}
+    	return hashKey;
     }
     
     public static String generateKey(Object... param) {
@@ -119,14 +140,9 @@ public final class CacheKeyUtils {
      * @param contractName
      * 
      */
-    private static void storeCacheKey(String key, String contractName){
-    	//TODO
-    	if(contractName.equals(IApplicationConstants.CONTRACT_NAME.inors)){
-    	//	sendKeyToINORSQueue(key);
-    	} else if(contractName.equals(IApplicationConstants.CONTRACT_NAME.tasc)){
-    	//	sendKeyToTASCQueue(key);	
-    	}    	
-    	return;
+    private static void storeCacheKey(String key){
+    	if(messageProducer != null) messageProducer.putCacheKey(key, contractName);
+    	else LOG.error("Unable to store key into Queue. MessageProducer is null.");
     }
     
     

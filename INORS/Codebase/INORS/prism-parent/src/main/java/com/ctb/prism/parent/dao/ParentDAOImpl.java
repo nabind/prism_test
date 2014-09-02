@@ -54,7 +54,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions()
 	 */
-	@Cacheable(value = "configCache", key="'getSecretQuestions'.concat(#root.method.name)")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getSecretQuestions'.concat(#root.method.name) )")
 	public List<QuestionTO> getSecretQuestions() {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SECRET_QUESTION);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();

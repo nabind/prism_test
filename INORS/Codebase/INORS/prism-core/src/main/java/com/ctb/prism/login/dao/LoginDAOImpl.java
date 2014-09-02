@@ -759,7 +759,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param testAdmin
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="(#customerId).concat(#testAdmin).concat(#root.method.name)")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#testAdmin).concat(#root.method.name) )")
 	public String getRootPath(String customerId, String testAdmin) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_ROOT_PATH, new Object[] { customerId, testAdmin }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
