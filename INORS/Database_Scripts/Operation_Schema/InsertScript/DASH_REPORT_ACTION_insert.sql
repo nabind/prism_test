@@ -40,7 +40,7 @@ values(seq_dash_rpt_action.nextval,'More','PAR','More',sysdate);
 
 --Manage Student
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
-values(seq_dash_rpt_action.nextval,'Search Parent','STD','Search Student',sysdate);
+values(seq_dash_rpt_action.nextval,'Search Student','STD','Search Student',sysdate);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
 values(seq_dash_rpt_action.nextval,'More','STD','More',sysdate);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
