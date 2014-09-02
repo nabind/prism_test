@@ -322,3 +322,190 @@ insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid
 values(seq_dash_action_access.nextval,105,1488,55,2,1,5017,4,'AC',sysdate);
 insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
 values(seq_dash_action_access.nextval,105,1488,55,7,1,5017,4,'AC',sysdate);
+
+
+
+
+
+------------------------------------------------------
+----------------------TASC----------------------------
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,1,3,1,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,1,3,2,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,1,3,3,3001,1,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,2,3,1,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,2,3,2,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,2,3,3,3001,2,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,3,3,1,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,3,3,2,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,3,3,3,3001,3,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,4,3,1,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,4,3,2,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,4,3,3,3001,4,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,5,3,1,3001,5,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,5,3,2,3001,5,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,5,3,3,3001,5,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,6,3,1,3001,6,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,6,3,2,3001,6,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,6,3,3,3001,6,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,7,3,1,3001,7,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,7,3,2,3001,7,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,7,3,3,3001,7,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,8,3,1,3001,8,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,8,3,2,3001,8,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,8,3,3,3001,8,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,9,3,1,3001,9,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,9,3,2,3001,9,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1104,9,3,3,3001,9,'IN',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,1,3,1,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,1,3,2,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,1,3,3,3001,1,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,2,3,1,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,2,3,2,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,2,3,3,3001,2,'IN',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,10,3,1,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,10,3,2,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,10,3,3,3001,3,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,11,3,1,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,11,3,2,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1105,11,3,3,3001,4,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,1,3,1,3001,1,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,1,3,2,3001,1,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,1,3,3,3001,1,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,2,3,1,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,2,3,2,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,2,3,3,3001,2,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,13,3,1,3001,3,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,13,3,2,3001,3,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,13,3,3,3001,3,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,14,3,1,3001,4,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,14,3,2,3001,4,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,14,3,3,3001,4,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,15,3,1,3001,5,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,15,3,2,3001,5,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,15,3,3,3001,5,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,16,3,1,3001,6,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,16,3,2,3001,6,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1106,16,3,3,3001,6,'IN',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,1,3,1,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,1,3,2,3001,1,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,1,3,3,3001,1,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,2,3,1,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,2,3,2,3001,2,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,2,3,3,3001,2,'IN',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,17,3,1,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,17,3,2,3001,3,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,17,3,3,3001,3,'AC',sysdate);
+
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,18,3,1,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,18,3,2,3001,4,'AC',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,18,3,3,3001,4,'AC',sysdate);
+
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,19,3,1,3001,5,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,19,3,2,3001,5,'IN',sysdate);
+insert into dash_action_access(db_act_accessid,db_menuid,db_reportid,db_actionid,roleid,org_level,cust_prod_id,action_seq,activation_status,created_date_time)
+values(seq_dash_action_access.nextval,105,1107,19,3,3,3001,5,'IN',sysdate);
+
+
