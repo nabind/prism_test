@@ -374,6 +374,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 									user.setOrgMode(rs.getString("ORG_MODE"));
 									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
 								}
+								Utils.logError(cs.getString(3));
 								
 							} catch (SQLException e) {
 								e.printStackTrace();
