@@ -120,7 +120,7 @@ public class LoginController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		paramMap.put("purpose", IApplicationConstants.PURPOSE_LANDING_PAGE);
+		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
 		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
 		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
@@ -200,7 +200,10 @@ public class LoginController {
 			message = "error.login.sessionexpired";
 		} else {
 			// this is proper login
-			messageMap = getMessage(themeResolver.resolveThemeName(request));
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("theme", themeResolver.resolveThemeName(request));
+			paramMap.put("action","login");
+			messageMap = getMessageMap(paramMap);
 		}
 		ModelAndView modelAndView = new ModelAndView("user/userlogin");
 		modelAndView.addObject("message", message);
@@ -209,74 +212,38 @@ public class LoginController {
 		return modelAndView;
 	}
 	
-	private Map<String, Object> getMessage(String theme){
-		Map<String, Object> paramMap = new HashMap<String, Object>();
+	private Map<String, Object> getMessageMap(Map<String,Object> paramMap){
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-		if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
-			paramMap.put("purpose", IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
-		}else{
-			paramMap.put("purpose", IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
+		
+		if(paramMap.get("theme") != null){
+			String theme = (String)paramMap.get("theme");
+			if("login".equals(paramMap.get("action"))){
+				paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
+				if (theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
+				}else{
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_TEACHER_LOGIN_PAGE);
+				}
+			}else if("home".equals(paramMap.get("action"))){
+				if (theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_PARENT_HOME_PAGE);
+				}else{
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_TEACHER_HOME_PAGE);
+				}
+			}else if("homeGrowth".equals(paramMap.get("action"))){
+				if (theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_GROWTH_HOME_PAGE);
+				}else{
+					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_GROWTH_HOME_PAGE);
+				}
+			}
 		}
-		paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		return messageMap;
 	}
 	
-	/**
-	 * Blocked by Joy
-	 * @deprecated - All the messages are configurable and load at the time of page load - By Joy 
-	 * @author Joy
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ServletException
-	 * @throws IOException
-	 * @throws BusinessException
-	 * Get login message for particular user(teacher/parent).
-	 */
-	/*@RequestMapping(value="/getLoginMessage", method=RequestMethod.GET)
-	public @ResponseBody 
-	String getLoginMessage(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException, IOException,BusinessException{
-		logger.log(IAppLogger.INFO, "Enter: LoginController - getLoginMessage()");
-		long t1 = System.currentTimeMillis();
-		String theme = "";
-		Map<String, Object> paramMapLoginMessage = null;
-		String loginMessage = "";
-		String jsonString = "";
-		try{
-			theme = themeResolver.resolveThemeName(request); 
-			paramMapLoginMessage = new HashMap<String, Object>();
-			paramMapLoginMessage.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
-			paramMapLoginMessage.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
-			
-			if (theme != null && theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
-				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOG_IN);
-			} else {
-				paramMapLoginMessage.put("MESSAGE_NAME", IApplicationConstants.TEACHER_LOG_IN);
-			}
-			paramMapLoginMessage.put("contractName", Utils.getContractNameNoLogin(theme));
-			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMapLoginMessage);
-			loginMessage = (String)messageMap.get("systemMessage");
-			
-			com.ctb.prism.core.transferobject.ObjectValueTO loginMessageObject = new com.ctb.prism.core.transferobject.ObjectValueTO();
-			loginMessageObject.setValue(loginMessage);
-			jsonString = new Gson().toJson(loginMessageObject);
-			
-		}catch(Exception e){
-			logger.log(IAppLogger.ERROR, "", e);
-			throw new BusinessException("Problem Occured");
-		}finally{
-			logger.log(IAppLogger.INFO, "Login Message: "+jsonString);
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: LoginController - getLoginMessage() took time: "+String.valueOf(t2 - t1)+"ms");
-		}
-		return jsonString;
-	}*/
-
-
 	/**
 	 * Opens dashboards
 	 * 
@@ -400,8 +367,10 @@ public class LoginController {
 				Map<String, String> actionMap= loginService.getActionMap(paramMap);
 				req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
 				
-				
-				Map<String, Object> messageMap = getMessage(themeResolver.resolveThemeName(req));
+				Map<String,Object> paramMapMessage = new HashMap<String, Object>();
+				paramMapMessage.put("theme", themeResolver.resolveThemeName(req));
+				paramMapMessage.put("action","home");
+				Map<String, Object> messageMap = getMessageMap(paramMapMessage);
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
 
 				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
@@ -1083,25 +1052,19 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Enter: LoginController - loadHomePageMsg()");
 		String homePage = req.getParameter("homeMessage");
 		long t1 = System.currentTimeMillis();
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
-		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		
-		if(IApplicationConstants.PARENT.contains(themeResolver.resolveThemeName(req))){
-			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_HOME_PAGE);
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("theme", themeResolver.resolveThemeName(req));
+		if("growth".equals(homePage)) {
+			paramMap.put("action","homeGrowth");
 		}else{
-			if("growth".equals(homePage)) {
-				paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
-			} else {
-				paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_HOME_PAGE);
-			}
+			paramMap.put("action","home");
 		}
-		paramMap.put("contractName", Utils.getContractName());
 		
 		String homePageInfoMessage = "";
 		String jsonString = "";
 		try {
-			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
+			Map<String, Object> messageMap = getMessageMap(paramMap);
 			homePageInfoMessage = (String)messageMap.get("systemMessage");
 			//Fixed for TD 77263 - By Joy
 			com.ctb.prism.core.transferobject.ObjectValueTO homePageMsgObj = new com.ctb.prism.core.transferobject.ObjectValueTO();

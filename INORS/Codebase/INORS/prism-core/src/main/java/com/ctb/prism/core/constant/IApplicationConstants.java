@@ -199,16 +199,23 @@ public interface IApplicationConstants {
 	public static final String COMMON_LOG_IN = "Common Log In";
 	public static final String COMMON_HEADER = "Common Header";
 	public static final String COMMON_FOOTER = "Common Footer";
-	public static final String TEACHER_FOOTER = "Teacher Footer";
-	public static final String PARENT_FOOTER = "Parent Footer";
+	public static final String TEACHER_LOGIN_FOOTER = "Teacher Login Footer";
+	public static final String PARENT_LOGIN_FOOTER = "Parent Login Footer";
 	public static final String LANDING_PAGE_CONTENT = "Landing Page Content";
+	public static final String PURPOSE_PRISM = "purpose";
 	public static final String PURPOSE_LANDING_PAGE = "landingPage";
 	public static final String PURPOSE_TEACHER_LOGIN_PAGE = "teacherLoginPage";
 	public static final String PURPOSE_PARENT_LOGIN_PAGE = "parentLoginPage";
+	public static final String PURPOSE_TEACHER_HOME_PAGE = "teacherHomePage";
+	public static final String PURPOSE_PARENT_HOME_PAGE = "parentHomePage";
+	public static final String PURPOSE_GROWTH_HOME_PAGE = "growthHomePage";
 	public static final String TEACHER_LOGIN_PAGE_CONTENT = "Teacher Login Page Content";
 	public static final String PARENT_LOGIN_PAGE_CONTENT = "Parent Login Page Content";
 	public static final String TEACHER_LOGIN_OUTAGE_CONTENT = "Teacher Login Outage Content";
 	public static final String PARENT_LOGIN_OUTAGE_CONTENT = "Parent Login Outage Content";
+	public static final String TEACHER_HOME_FOOTER = "Teacher Home Footer";
+	public static final String PARENT_HOME_FOOTER = "Parent Home Footer";
+	
 	public static final String MESSAGE_MAP_SESSION = "messageMapSession";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
 	public static final String TEACHER_HOME_PAGE = "Teacher Home Page";

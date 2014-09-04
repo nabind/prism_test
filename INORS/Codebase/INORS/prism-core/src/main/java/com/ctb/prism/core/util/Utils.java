@@ -293,22 +293,6 @@ public final class Utils {
 		return batchUpdateFlag;
 	}
 
-	public static String convertStrArrayToCommaString(final String[] paramStr) {
-		StringBuffer returnStrBuff = new StringBuffer("");
-		boolean flag = false;
-		if (paramStr != null) {
-			for (String param : paramStr) {
-				returnStrBuff.append(param);
-				returnStrBuff.append(",");
-				flag = true;
-			}
-			if (flag) {
-				returnStrBuff.deleteCharAt(returnStrBuff.length() - 1);
-			}
-		}
-		return returnStrBuff.toString();
-	}
-
 	public static String convertListToCommaString(List<String> list) {
 		String s = "";
 		if (list != null && !list.isEmpty()) {
