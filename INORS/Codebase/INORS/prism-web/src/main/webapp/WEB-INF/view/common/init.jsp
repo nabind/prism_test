@@ -1,5 +1,21 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<c:set var="actionMap" value="${actionMap}" scope="session"/>
+
+<c:if test="${not empty actionMap['Manage Users Edit User']}">
+	<input type="hidden" id="editEnabled" value="true"/>
+</c:if>
+
+<c:if test="${not empty actionMap['Manage Users Login As User']}">
+	<input type="hidden" id="loginAsEnabled" value="true"/>
+</c:if>
+
+<c:if test="${not empty actionMap['Manage Users Delete User']}">
+	<input type="hidden" id="deleteEnabled" value="true"/>
+</c:if>
+
 
 	<!--[if gt IE 8]>
     <style>
@@ -360,6 +376,11 @@
 					$("#addUser").hide();
 				}
 			</sec:authorize>
+			
+			var editEnabled = $("input#editEnabled").val();
+			var loginAsEnabled = $("input#loginAsEnabled").val();
+			var deleteEnabled = $("input#deleteEnabled").val();
+			
 			$.each(data, function (index,value) { 
 				userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
@@ -373,31 +394,45 @@
 				if(this.userName == currentUser) {
 					userContent +=  '<td class="vertical-center">'
 									+' <span class="button-group compact">' 
-										<sec:authorize ifNotGranted="ROLE_SSO">
+									 if(editEnabled =='true') {	
+									    <sec:authorize ifNotGranted="ROLE_SSO">
 											+' <span class="button icon-pencil with-tooltip disabled" title="Can not be edited"></span> '
-										</sec:authorize>										
+										</sec:authorize>	
+									 }
+									if(loginAsEnabled =='true') {	
 										+' <span class="button icon-users icon-size2 with-tooltip disabled" title="Can not be logged in"></span>'
+									}
+									if(deleteEnabled =='true') {
 										<sec:authorize ifNotGranted="ROLE_SSO">
 											+' <span class=" button icon-trash with-tooltip disabled" title="Can not be deleted"></span>'
 										</sec:authorize>
+									}
 										+' </span>'
 									+'</td>'
 				} else {
 					userContent +=  '<td class="vertical-center">'
 						+' <span class="button-group compact">'; 
-							<sec:authorize ifNotGranted="ROLE_SSO">
-								userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
-							</sec:authorize>	
-							<sec:authorize ifAnyGranted="ROLE_SSO">
-								if(isClassUser(this.availableRoleList)) userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
-							</sec:authorize>
-							userContent += ' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>';
-							<sec:authorize ifNotGranted="ROLE_SSO">
+						  if(editEnabled =='true') {
+								<sec:authorize ifNotGranted="ROLE_SSO">
+									userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
+								</sec:authorize>	
+								<sec:authorize ifAnyGranted="ROLE_SSO">
+									if(isClassUser(this.availableRoleList)) userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
+								</sec:authorize>
+							}
+						  
+						  if(loginAsEnabled =='true') {	
+							  userContent += ' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>';
+						  }
+						  
+						  if(deleteEnabled =='true') {
+							  <sec:authorize ifNotGranted="ROLE_SSO">
 								userContent += ' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>';
-							</sec:authorize>
-							<sec:authorize ifAnyGranted="ROLE_SSO">
+							  </sec:authorize>
+							  <sec:authorize ifAnyGranted="ROLE_SSO">
 								if(isClassUser(this.availableRoleList)) userContent += ' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>';
-							</sec:authorize>
+							  </sec:authorize>						  
+						  }							
 							userContent += ' </span>'
 						+'</td>'
 				}
