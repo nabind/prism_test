@@ -37,9 +37,9 @@ insert into dash_message_type
        created_date_time)
     values
       (1089,
-       'Teacher Footer',
+       'Teacher Login Footer',
        'GSCM',
-       'Message configuration for teacher footer',
+       'Footer for teacher login screen',
        5001,
        sysdate);   
 	   
@@ -52,11 +52,11 @@ insert into dash_message_type
        created_date_time)
     values
       (1090,
-       'Parent Footer',
+       'Parent Login Footer',
        'GSCM',
-       'Message configuration for parent footer',
+       'Footer for parent login screen',
        5001,
-       sysdate);	   
+       sysdate);		   
        
 insert into dash_message_type
       (msg_typeid,
@@ -173,5 +173,35 @@ insert into dash_message_type
        'Parent Home Page',
        'GSCM',
        'Content of Parent Home Page',
+       5001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1099,
+       'Teacher Home Footer',
+       'GSCM',
+       'Footer for teacher home screen',
+       5001,
+       sysdate);   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1100,
+       'Parent Home Footer',
+       'GSCM',
+       'Footer for parent home screen',
        5001,
        sysdate);		   
