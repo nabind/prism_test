@@ -96,6 +96,10 @@ DELETE FROM DASH_MESSAGES
 
 DELETE FROM DASH_MESSAGE_TYPE
  WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN');	   
+ 
+UPDATE DASH_MESSAGE_TYPE
+   SET MESSAGE_NAME = 'Teacher Home Page'
+ WHERE MESSAGE_NAME = 'Inors Home Page' 
 
 insert into dash_message_type
       (msg_typeid,
@@ -155,4 +159,19 @@ insert into dash_message_type
        'GSCM',
        'Content of outage for Parent Login page',
        5001,
-       sysdate);	  
+       sysdate);	 
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1097,
+       'Parent Home Page',
+       'GSCM',
+       'Content of Parent Home Page',
+       5001,
+       sysdate);		   

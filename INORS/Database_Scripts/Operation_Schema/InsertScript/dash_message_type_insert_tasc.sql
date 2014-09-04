@@ -155,4 +155,34 @@ insert into dash_message_type
        'GSCM',
        'Content of outage for Parent Login page',
        3001,
-       sysdate);	  
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1097,
+       'Teacher Home Page',
+       'GSCM',
+       'Content of Teacher Home Page',
+       3001,
+       sysdate);
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1098,
+       'Parent Home Page',
+       'GSCM',
+       'Content of Parent Home Page',
+       3001,
+       sysdate);	   
