@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript"/></noscript>
 
@@ -8,10 +9,14 @@
 <p class="big-message"><spring:message code="msg.groupDownloadFiles.bigMessage"/></p>
 <p class="red"><spring:message code="msg.groupDownloadFiles.note"/></p>
 <p class="red"><spring:message code="msg.groupDownloadFiles.notice"/></p>
+
+<fmt:message var="groupDownloadsRefresh" key="group.downloads.refresh"  />
+<c:if test="${not empty actionMap[groupDownloadsRefresh]}">
 <a href="javascript:location.reload();" class="button with-tooltip tooltip-right" title="Click to get the current status.">
 	<span class="button-icon"><span class="icon-refresh"></span></span>
 	<spring:message code="button.refresh"/>
 </a>
+</c:if>
 
 <hr/>
 </hgroup>
@@ -79,7 +84,8 @@
       												   </c:otherwise>	
 	                                            	</c:choose>
 	                                            </td>
-	                                            <td><a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles" title="Delete"></a></td>
+	                                            <fmt:message var="groupDownloadsDelete" key="group.downloads.delete"  />
+	                                            <td><c:if test="${not empty actionMap[groupDownloadsDelete]}"><a href="#"	jobId="${group.jobId}" class="button icon-trash with-tooltip confirm delete-GroupFiles" title="Delete"></a></c:if></td>
 											</tr>
 										</c:forEach>
 									</tbody>
