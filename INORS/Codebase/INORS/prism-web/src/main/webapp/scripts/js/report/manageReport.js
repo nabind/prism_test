@@ -471,8 +471,10 @@ $('.delete-Report').live("click", function() {
 	
 	
 	//===================================CREATES THE ROW FOR THE NEW REPORT ADDED=====================
-		function insertNewDasboardRow(jsonData)
-		{
+		function insertNewDasboardRow(jsonData){
+			var mngRpt_editRpt = $('#mngRpt_editRpt').val();
+			var mngRpt_configureRptMsg = $('#mngRpt_configureRptMsg').val();
+			var mngRpt_deleteRpt = $('#mngRpt_deleteRpt').val();
 			var reportContent="";	
 			$.each(jsonData, function () { 
 		    
@@ -494,13 +496,21 @@ $('.delete-Report').live("click", function() {
 								+'<h5>'+this.menuName+'</h5>'
 								+'</td>'
 								+'<td class="vertical-center">'
-								+'<span class="button-group compact">'
-								+'<a href="#nogo" class="button icon-pencil edit-report" reportId="'+this.reportId+'"></a>'
-								+'<a href="getReportMessageFilter.do?reportId='+this.reportId+'&reportName='+this.reportName+'&reportUrl='+this.reportUrl+'" class="button icon-chat configure-report-message with-tooltip" title="'+strings['msg.configureMassage']+'"></a>'
-								+'<a href="#nogo" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>'
-								+'</span>'
-								+'</td>'
-								+'</tr>';
+								+'<span class="button-group compact">';
+				
+								if(mngRpt_editRpt == 'true'){
+									reportContent += '<a href="#nogo" class="button icon-pencil edit-report with-tooltip" title="Edit" reportId="'+this.reportId+'"></a>';
+								}
+								if(mngRpt_configureRptMsg == 'true'){
+									reportContent += '<a href="getReportMessageFilter.do?reportId='+this.reportId+'&reportName='+this.reportName+'&reportUrl='+this.reportUrl+'" class="button icon-chat configure-report-message with-tooltip" title="'+strings['msg.configureMassage']+'"></a>';
+								}
+								if(mngRpt_deleteRpt == 'true'){
+									reportContent += '<a href="#nogo" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>';
+								}	
+								
+								reportContent +='</span>'
+												+'</td>'
+												+'</tr>';
 				});
 			$("#reportDetails").append(reportContent);
 			return true;

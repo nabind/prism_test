@@ -1,12 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
 <hgroup id="main-title" class="thin">
 	<h1><spring:message code="h1.manageReports" /></h1>
 </hgroup>
+
 <!--[if gt IE 6]>
 <style>
 	.modal-buttons {
@@ -20,13 +22,13 @@
 <style>
 	.label {width: 160px !important}
 </style>
-<%@ include file="../common/constant.jsp"%>
 <div class="" style="background-color: #FFF">
 		<div class="right-column">
 				<div class="content-panel" style="padding-left: 0px; border-radius: 0px 8px 8px 8px">
 					<div class="report-panel-content panel-content linen" style="height: 575px">
 						
-						<c:if test="${not empty mngRpt_addRpt}">
+						<fmt:message var="mngRpt_addRpt" key="manage.reports.add"/>
+						<c:if test="${not empty actionMap[mngRpt_addRpt]}">
 							<div class="panel-control align-right">
 								<a id="addDashboard" tenantName="" tenantId="" href="#" class="button glossy margin-left with-tooltip" title="<spring:message code="msg.addReport" />" style="box-shadow: grey -3px 4px 13px;">
 									<span class="button-icon blue-gradient manage-btn"><span class="icon-plus-round"></span></span>
@@ -97,37 +99,52 @@
                                                 <td class="vertical-center" nowrap>
                                                 <input type="hidden" class="scmCopyButtonHide" name="scmCopyButtonHide" value="scmCopyButtonHide" />
                                                 	<span class="button-group compact" width="50px">
-                                                		<c:if test="${not empty mngRpt_configureRptMsg}">
+                                                		
+                                                		<fmt:message var="mngRpt_configureRptMsg" key="manage.reports.configureRptMsg"/>
+														<c:if test="${not empty actionMap[mngRpt_configureRptMsg]}">
                                                 			<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
 																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
                                                 		</c:if>
+                                                		
 													</span>
 												</td>
     											</c:when>
     											 <c:when test="${report.reportName=='Product Specific System Configuration'}">
                                                 <td class="vertical-center" nowrap>
 													<span class="button-group compact" width="50px">
-														<c:if test="${not empty mngRpt_configureRptMsg}">
+														
+														<fmt:message var="mngRpt_configureRptMsg" key="manage.reports.configureRptMsg"/>
+														<c:if test="${not empty actionMap[mngRpt_configureRptMsg]}">
 															<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
 																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
 														</c:if>
+													
 													</span>
 												</td>
     											</c:when>
 												<c:otherwise>
 												<td class="vertical-center" nowrap>
 													<span class="button-group compact" width="50px">
-														<c:if test="${not empty mngRpt_editRpt}">
+														
+														<fmt:message var="mngRpt_editRpt" key="manage.reports.edit"/>
+														<c:if test="${not empty actionMap[mngRpt_editRpt]}">
 															<a href="#"	class="button icon-pencil edit-report with-tooltip" title="Edit"
 																reportId="${report.reportId}"></a>
+															<input type="hidden" id="mngRpt_editRpt" value="true"/>
 														</c:if>
-														<c:if test="${not empty mngRpt_configureRptMsg}">
+														
+														<fmt:message var="mngRpt_configureRptMsg" key="manage.reports.configureRptMsg"/>
+														<c:if test="${not empty actionMap[mngRpt_configureRptMsg]}">
 															<a href="getReportMessageFilter.do?reportId=${report.reportId}&reportName=${report.reportName}&reportUrl=${report.reportUrl}" 
 																class="button icon-chat configure-report-message with-tooltip" title="Configure Report Message"></a>
+															<input type="hidden" id="mngRpt_configureRptMsg" value="true"/>
 														</c:if>
+														
+														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
 														<c:if test="${not empty mngRpt_deleteRpt}">
 															<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
 																title="Delete"></a>
+															<input type="hidden" id="mngRpt_deleteRpt" value="true"/>
 														</c:if>
 														
 													</span>
