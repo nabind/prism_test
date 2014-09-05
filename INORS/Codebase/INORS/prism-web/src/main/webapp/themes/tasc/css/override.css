@@ -966,3 +966,26 @@ div#nav ul li a {
 .color-white,.color-white a{
 	color: white;
 }
+
+.enable {
+	display: block;
+	float: left;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -68px -94px;
+	margin-left: -12px;
+	margin-top: -9px;
+	position: relative;
+	z-index: 88;
+}
+.disable {
+	display: block;
+	float: left;
+	width: 34px;
+	height: 34px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -136px -94px;
+	margin-left: -12px;
+	margin-top: -9px;
+	position: relative;
+	z-index: 88;
+}
