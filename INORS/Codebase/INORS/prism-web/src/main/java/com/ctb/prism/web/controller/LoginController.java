@@ -195,6 +195,10 @@ public class LoginController {
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("theme", themeResolver.resolveThemeName(request));
+			paramMap.put("action","login");
+			messageMap = getMessageMap(paramMap);
 		} else if ("2".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Session Expired");
 			message = "error.login.sessionexpired";
