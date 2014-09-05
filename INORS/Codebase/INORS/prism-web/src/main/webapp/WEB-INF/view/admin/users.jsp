@@ -36,7 +36,7 @@
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameUser"><c:if test='${not empty userList}'><spring:message code="title.page.manageUser"/> ${orgName}</c:if> </span></b></div>
 				
 				<fmt:message var="MANAGE_USERS_SEARCH" key="manage.users.search"  />
-				<c:if test="${not empty actionMap['MANAGE_USERS_SEARCH']}">
+				<c:if test="${not empty actionMap[MANAGE_USERS_SEARCH]}">
 				<span class="input search-input">
 					<input type="text" name="searchUser" id="searchUser" class="input-unstyled with-tooltip" title="<spring:message code='message.search.help'/>" placeholder="Search">
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>
@@ -44,7 +44,7 @@
 				</c:if>
 				
 				<fmt:message var="MANAGE_USERS_ADD" key="manage.users.add"  />
-				<c:if test="${not empty actionMap['MANAGE_USERS_ADD']}">
+				<c:if test="${not empty actionMap[MANAGE_USERS_ADD]}">
 				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left with-tooltip" title="<spring:message code='title.page.addUser'/>">
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					<spring:message code="title.page.addUser"/>
@@ -57,7 +57,7 @@
 			</div>
 			<div class="panel-load-target with-padding margin10 height-mid padding-none">
 				<fmt:message var="MANAGE_USERS_MORE" key="manage.users.more"  />
-				<c:if test="${not empty actionMap['MANAGE_USERS_MORE']}">
+				<c:if test="${not empty actionMap[MANAGE_USERS_MORE]}">
 					<div class="pagination panel-control margin-bottom-small rounded-border">
 						<a href="#nogo" id="moreUser" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="<spring:message code='message.more.help'/>"><spring:message code="button.content.more"/></a>
 					</div>
