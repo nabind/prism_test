@@ -1,5 +1,8 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+	<c:set var="singleQuote" value="&#39;" />
+	<c:set var="escapeSingleQuote" value="" />
 	<ul class="big-menu blue-gradient collapsible">
 	
 		<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
@@ -16,7 +19,7 @@
 										<a href="${report.reportOriginalUrl}" title="${report.reportName}">${report.reportName}</a>
 									</c:when>
 									<c:otherwise>
-										<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${report.reportName}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
+										<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${fn:replace(report.reportName, singleQuote, escapeSingleQuote)}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
 									</c:otherwise>
 								</c:choose>
 							</li>
