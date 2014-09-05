@@ -4,15 +4,18 @@
 
 <c:set var="actionMap" value="${actionMap}" scope="session"/>
 
-<c:if test="${not empty actionMap['Manage Users Edit User']}">
+<fmt:message var="MANAGE_USERS_EDIT" key="manage.users.edit"  />
+<c:if test="${not empty actionMap[MANAGE_USERS_EDIT]}">
 	<input type="hidden" id="editEnabled" value="true"/>
 </c:if>
 
-<c:if test="${not empty actionMap['Manage Users Login As User']}">
+<fmt:message var="MANAGE_USERS_LOGINAS" key="manage.users.loginas"  />
+<c:if test="${not empty actionMap[MANAGE_USERS_LOGINAS]}">
 	<input type="hidden" id="loginAsEnabled" value="true"/>
 </c:if>
 
-<c:if test="${not empty actionMap['Manage Users Delete User']}">
+<fmt:message var="MANAGE_USERS_DELETE" key="manage.users.delete"  />
+<c:if test="${not empty actionMap[MANAGE_USERS_DELETE]}">
 	<input type="hidden" id="deleteEnabled" value="true"/>
 </c:if>
 
