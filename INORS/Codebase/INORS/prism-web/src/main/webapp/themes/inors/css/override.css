@@ -40,7 +40,7 @@ html {
 	margin-right: 10px;
 }
 .disabled-ie {
-	background: #B9B9B9 url(../img/old-browsers/colors/bg_button_grey-gradient_disabled.png) repeat-x !important;
+	background: #B9B9B9 url(../../acsi/img/old-browsers/colors/bg_button_grey-gradient_disabled.png) repeat-x !important;
 	cursor: not-allowed;
 }
 .field-block .label, .field-drop .label {
@@ -158,7 +158,7 @@ html {
 	text-transform: uppercase;
 	font-weight: bold;
 	font-family: Corbel, Lucida Grande, Lucida Sans Unicode, Lucida Sans, DejaVu Sans, Bitstream Vera Sans, Liberation Sans, Verdana;
-	background: #056fc9 url(../img/old-browsers/colors/bg_a_blue-gradient_glossy_hover.png) repeat-x;
+	background: #056fc9 url(../../acsi/img/old-browsers/colors/bg_a_blue-gradient_glossy_hover.png) repeat-x;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -250,7 +250,7 @@ html {
 	font-size: 14px;
 	line-height: 11px;
 	color: #5F80AB;
-	background: #5F80AB url(../img/old-browsers/style/bg_profile_new.png) repeat-x;
+	background: #5F80AB url(../../acsi/img/old-browsers/style/bg_profile_new.png) repeat-x;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -513,14 +513,14 @@ details.details > summary {style.css:1488
                zoom: 1;
 }
 #drilldown {
-	background: -moz-linear-gradient(center top , rgba(0, 0, 0, 0), transparent) repeat scroll 0 0%, url("../img/frame_background_sprite.png") repeat scroll 0 0 #5F80AB;
-	background: #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0))), #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: -webkit-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: -moz-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: -ms-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: -o-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../img/frame_background_sprite.png) !important;
-	background: linear-gradient( top, rgba(0,0,0,0.4), rgba(0,0,0,0)), #5F80AB url(../img/frame_background_sprite.png) !important;
+	background: -moz-linear-gradient(center top , rgba(0, 0, 0, 0), transparent) repeat scroll 0 0%, url("../../acsi/img/frame_background_sprite.png") repeat scroll 0 0 #5F80AB;
+	background: #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0))), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -webkit-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -moz-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -ms-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: -o-linear-gradient( top, rgba(0,0,0,0), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
+	background: linear-gradient( top, rgba(0,0,0,0.4), rgba(0,0,0,0)), #5F80AB url(../../acsi/img/frame_background_sprite.png) !important;
 }
 .boxshade {
 	-webkit-background-clip: border-box;
@@ -666,7 +666,7 @@ div#header div#slide-holder div#slide-controls {
 	height: 35px;
 	display: none;
 	position: absolute;
-	background: url(../img/slide-bg.png) 0 0;
+	background: url(../../acsi/img/slide-bg.png) 0 0;
 	border-radius: 0 5px 5px 0;
 }
 div#header div#slide-holder div#slide-controls p.text {
@@ -702,10 +702,10 @@ div#header div#slide-holder div#slide-controls p#slide-nav a.on {
 	background-position: 0 -24px;
 }
 div#header div#slide-holder div#slide-controls p#slide-nav a {
-	background-image: url(../img/silde-nav.png);
+	background-image: url(../../acsi/img/silde-nav.png);
 }
 div#nav ul li a {
-	/*background: url(../img/nav.png) no-repeat;*/
+	/*background: url(../../acsi/img/nav.png) no-repeat;*/
 }
 .slide-image-outer {
 	max-width:972px; 
@@ -730,7 +730,7 @@ div#nav ul li a {
 .navy-gradient, .navy-gradient:visited,
 .navy-gradient > .select-value, .navy-gradient > .select-arrow {
 	color: #00001F;
-	background: #5f80ab url(../img/old-browsers/colors/bg_navy-gradient.png) repeat-x;
+	background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_navy-gradient.png) repeat-x;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -747,7 +747,7 @@ div#nav ul li a {
 	:hover > .button-icon.navy-gradient,
 	.navy-gradient > a.select-value:hover, .navy-gradient > .select-arrow:hover {
 		color: #666666;
-		background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_hover.png) repeat-x;
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_hover.png) repeat-x;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -763,7 +763,7 @@ div#nav ul li a {
 	.navy-gradient.glossy,
 	.glossy > .button-icon.navy-gradient, .button-icon.glossy.navy-gradient,
 	.navy-gradient.glossy > .select-value, .navy-gradient.glossy > .select-arrow {
-		background: #5f80ab url(../img/old-browsers/colors/bg_navy-gradient_glossy.png) repeat-x;
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_navy-gradient_glossy.png) repeat-x;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -778,7 +778,7 @@ div#nav ul li a {
 		a.navy-gradient.glossy:hover, button.navy-gradient.glossy:hover,
 		.glossy:hover > .button-icon.navy-gradient, :hover > .button-icon.glossy.navy-gradient,
 		.navy-gradient.glossy > a.select-value:hover, .navy-gradient.glossy > .select-arrow:hover {
-			background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_glossy_hover.png) repeat-x;
+			background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_glossy_hover.png) repeat-x;
 			-webkit-background-size: 100% 100%;
 			-moz-background-size: 100% 100%;
 			-o-background-size: 100% 100%;
@@ -793,7 +793,7 @@ div#nav ul li a {
 	a.navy-gradient:active, button.navy-gradient:active, .button.navy-gradient:active, .navy-gradient.active,
 	:active > .button-icon.navy-gradient, .active > .button-icon.navy-gradient,
 	.switch-off {
-		background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_active.png) repeat-x !important;
+		background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_a_navy-gradient_active.png) repeat-x !important;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -813,7 +813,7 @@ div#nav ul li a {
 .disabled .navy-gradient > .select-value, .disabled .navy-gradient > .select-arrow {
 	color: #666666 !important;
 	border-color: #5f80ab !important;
-	background: #5f80ab url(../img/old-browsers/colors/bg_button_navy-gradient_disabled.png) repeat-x !important;
+	background: #5f80ab url(../../acsi/img/old-browsers/colors/bg_button_navy-gradient_disabled.png) repeat-x !important;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -841,7 +841,7 @@ div#nav ul li a {
 .cyan-gradient, .cyan-gradient:visited,
 .cyan-gradient > .select-value, .cyan-gradient > .select-arrow {
 	color: #666666;
-	background: #e7f3ff url(../img/old-browsers/colors/bg_cyan-gradient.png) repeat-x;
+	background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_cyan-gradient.png) repeat-x;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -858,7 +858,7 @@ div#nav ul li a {
 	:hover > .button-icon.cyan-gradient,
 	.cyan-gradient > a.select-value:hover, .cyan-gradient > .select-arrow:hover {
 		color: #666666;
-		background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_hover.png) repeat-x;
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_hover.png) repeat-x;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -874,7 +874,7 @@ div#nav ul li a {
 	.cyan-gradient.glossy,
 	.glossy > .button-icon.cyan-gradient, .button-icon.glossy.cyan-gradient,
 	.cyan-gradient.glossy > .select-value, .cyan-gradient.glossy > .select-arrow {
-		background: #e7f3ff url(../img/old-browsers/colors/bg_cyan-gradient_glossy.png) repeat-x;
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_cyan-gradient_glossy.png) repeat-x;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -889,7 +889,7 @@ div#nav ul li a {
 		a.cyan-gradient.glossy:hover, button.cyan-gradient.glossy:hover,
 		.glossy:hover > .button-icon.cyan-gradient, :hover > .button-icon.glossy.cyan-gradient,
 		.cyan-gradient.glossy > a.select-value:hover, .cyan-gradient.glossy > .select-arrow:hover {
-			background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_glossy_hover.png) repeat-x;
+			background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_glossy_hover.png) repeat-x;
 			-webkit-background-size: 100% 100%;
 			-moz-background-size: 100% 100%;
 			-o-background-size: 100% 100%;
@@ -904,7 +904,7 @@ div#nav ul li a {
 	a.cyan-gradient:active, button.cyan-gradient:active, .button.cyan-gradient:active, .cyan-gradient.active,
 	:active > .button-icon.cyan-gradient, .active > .button-icon.cyan-gradient,
 	.switch-off {
-		background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_active.png) repeat-x !important;
+		background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_a_cyan-gradient_active.png) repeat-x !important;
 		-webkit-background-size: 100% 100%;
 		-moz-background-size: 100% 100%;
 		-o-background-size: 100% 100%;
@@ -924,7 +924,7 @@ div#nav ul li a {
 .disabled .cyan-gradient > .select-value, .disabled .cyan-gradient > .select-arrow {
 	color: #666666 !important;
 	border-color: #5f80ab !important;
-	background: #e7f3ff url(../img/old-browsers/colors/bg_button_cyan-gradient_disabled.png) repeat-x !important;
+	background: #e7f3ff url(../../acsi/img/old-browsers/colors/bg_button_cyan-gradient_disabled.png) repeat-x !important;
 	-webkit-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-o-background-size: 100% 100%;
@@ -1016,7 +1016,7 @@ height: 16px;
 	float: left;
 	width: 34px;
 	height: 34px;
-	background: url(../img/standard/sprites.png) no-repeat -68px -94px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -68px -94px;
 	margin-left: -12px;
 	margin-top: -9px;
 	position: relative;
@@ -1027,7 +1027,7 @@ height: 16px;
 	float: left;
 	width: 34px;
 	height: 34px;
-	background: url(../img/standard/sprites.png) no-repeat -136px -94px;
+	background: url(../../acsi/img/standard/sprites.png) no-repeat -136px -94px;
 	margin-left: -12px;
 	margin-top: -9px;
 	position: relative;
