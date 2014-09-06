@@ -16,7 +16,7 @@ public interface IParentService {
 	/**
 	 * @return
 	 */
-	public List<QuestionTO> getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap);
 
 	/**
 	 * @param username

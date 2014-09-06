@@ -49,14 +49,21 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentDAOImpl.class.getName());
 
-	/*
+	/* Add paramMap and caching mechanism changed - By Joy
 	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions()
+	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions(Map<String,Object> paramMap)
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getSecretQuestions'.concat(#root.method.name) )")
-	public List<QuestionTO> getSecretQuestions() {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_SECRET_QUESTION);
+	//TODO - Need to cache
+	//@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
+	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap) {
+		
+		String contractName = (String) paramMap.get("contractName"); 
+		if(contractName == null) {
+			contractName = Utils.getContractName();
+		}
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+		
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_SECRET_QUESTION);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
 		QuestionTO quesTo = null;
 		for (Map<String, Object> questiondetails : lstData) {
@@ -110,61 +117,129 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 
 	
-	/*
+	/**
+	 * Moved to package and reduce DB call - By Joy 
 	 * (non-Javadoc)
 	 * Fix for TD 78161 - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#validateIC(java.lang.String)
 	 */
 	public ParentTO validateIC(final Map<String, Object> paramMap) {
 
-		String invitationCode = (String)paramMap.get("invitationCode");
-		
-		if(paramMap.get("loggedinUserTO") != null){
-			UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-			paramMap.put("userName", loggedinUserTO.getUserName());
-		}else{
-			paramMap.put("userName", "");
+		logger.log(IAppLogger.INFO, "Enter: validateIC()");
+		long t1 = System.currentTimeMillis();
+		final String invitationCode = (String)paramMap.get("invitationCode");
+		String contractName = (String) paramMap.get("contractName");
+		if(contractName == null) {
+			contractName = Utils.getContractName();
 		}
-		
-		long orgUserid = getParentOrgUserId(paramMap);
-		
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_INVITATION_CODE,orgUserid, invitationCode);
-		
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+
 		ParentTO parentTO = null;
-		if (lstData.size() > 0) {
-			parentTO = new ParentTO();
-			for (Map<String, Object> fieldDetails : lstData) {
-				parentTO.setTotalAttemptedCalim(((BigDecimal) fieldDetails.get("TOTAL_ATTEMPT")).longValue());
-				parentTO.setTotalAvailableCalim(((BigDecimal) fieldDetails.get("TOTAL_AVAILABLE")).longValue());
-				parentTO.setIcExpirationStatus((String) (fieldDetails.get("EXPIRATION_STATUS")));
-				parentTO.setIcActivationStatus((String) (fieldDetails.get("ACTIVATION_STATUS")));
-				parentTO.setIsAlreadyClaimed(((BigDecimal) fieldDetails.get("ALREADY_CLAIMED")).longValue());
-			}
+		try{
+			parentTO = (ParentTO) getJdbcTemplatePrism(contractName).execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_INVITATION_CODE + "}");
+				            if(paramMap.get("loggedinUserTO") != null){
+				    			UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+				    			cs.setString(1, loggedinUserTO.getUserName());
+				    		}else{
+				    			cs.setString(1, "");
+				    		}
+				            cs.setString(2, invitationCode);
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsIc = null;
+			        			ParentTO parentTOResult = null;
+			        			try {
+									cs.execute();
+									rsIc = (ResultSet) cs.getObject(3);
+									if(rsIc.next()){
+										parentTOResult = new ParentTO();
+										parentTOResult.setTotalAttemptedCalim(rsIc.getLong("TOTAL_ATTEMPT"));
+										parentTOResult.setTotalAvailableCalim(rsIc.getLong("TOTAL_AVAILABLE"));
+										parentTOResult.setIcExpirationStatus(rsIc.getString("EXPIRATION_STATUS"));
+										parentTOResult.setIcActivationStatus(rsIc.getString("ACTIVATION_STATUS"));
+										parentTOResult.setIsAlreadyClaimed(rsIc.getLong("ALREADY_CLAIMED"));
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return parentTOResult;
+				        }
+				    });
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: validateIC() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return parentTO;
 	}
 
-	/*
+	/**
+	 * Moved to package - By Joy 
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentForIC(java.lang.String)
 	 */
-	public ParentTO getStudentForIC(String invitationCode) {
+	@SuppressWarnings("unchecked")
+	public ParentTO getStudentForIC(final Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getStudentForIC()");
+		long t1 = System.currentTimeMillis();
+		String contractName = (String) paramMap.get("contractName");
+		if(contractName == null) {
+			contractName = Utils.getContractName();
+		}
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 
-		StudentTO studentTO = null;
 		ParentTO parentTO = new ParentTO();
 		List<StudentTO> studentToList = new ArrayList<StudentTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_STUDENT_FOR_INVITATION_CODE, invitationCode);
-		for (Map<String, Object> fieldDetails : lstData) {
-			studentTO = new StudentTO();
-			studentTO.setStudentName((String) (fieldDetails.get("STUDENT_NAME")));
-			studentTO.setGrade((String) (fieldDetails.get("GRADE")));
-			studentTO.setAdministration((String) (fieldDetails.get("ADMINISTRATION")));
-			studentTO.setSchoolName((String) (fieldDetails.get("ORG_NODE_NAME")));
-			studentToList.add(studentTO);
+		try{
+			studentToList = (List<StudentTO>) getJdbcTemplatePrism(contractName).execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_FOR_INVITATION_CODE + "}");
+				            cs.setString(1, (String)paramMap.get("invitationCode"));
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsStudent = null;
+			        			List<StudentTO> studentToResult = new ArrayList<StudentTO>();
+			        			try {
+									cs.execute();
+									rsStudent = (ResultSet) cs.getObject(2);
+									StudentTO studentTO = null;
+									while(rsStudent.next()){
+										studentTO = new StudentTO();
+										studentTO.setStudentName(rsStudent.getString("STUDENT_NAME"));
+										studentTO.setGrade(rsStudent.getString("GRADE"));
+										studentTO.setAdministration(rsStudent.getString("ADMINISTRATION"));
+										studentTO.setSchoolName(rsStudent.getString("ORG_NODE_NAME"));
+										studentToResult.add(studentTO);
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return studentToResult;
+				        }
+				    });
+			parentTO.setStudentToList(studentToList);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: getStudentForIC() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		parentTO.setStudentToList(studentToList);
-
 		return parentTO;
 	}
 
@@ -1545,6 +1620,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 	
 	
+	//TODO - Need to delete
 	/**
 	 * Get OrgUserId depending upon student's school and parent userid. 
 	 * @param paramMap

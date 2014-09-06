@@ -500,12 +500,13 @@ public class LoginController {
 	@RequestMapping(value = "/changePassword", method = RequestMethod.GET)
 	public ModelAndView changePassword(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-		String username = (String) req.getParameter("username");
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", contractName);
 		// fetch security questions
-		List<QuestionTO> questionList = parentService.getSecretQuestions();
-		// logger.log(IAppLogger.DEBUG, questionList.size());
-		// logger.log(IAppLogger.DEBUG, "into changePassword......................");
-		// logger.log(IAppLogger.DEBUG, "username in  changePassword......................"+username);
+		List<QuestionTO> questionList = parentService.getSecretQuestions(paramMap);
+				
+		String username = (String) req.getParameter("username");
 		ParentTO parentDetails = parentService.manageParentAccountDetails(username);
 		List<QuestionTO> secretQuestionList = parentDetails.getQuestionToList();
 		ModelAndView modelAndView = new ModelAndView("user/firstTimeUser");
@@ -608,9 +609,12 @@ public class LoginController {
 			req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 			return validateUser(req, res);
 		} else {
+			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("contractName", contractName);
 			// fetch security questions
-			List<QuestionTO> questionList = parentService.getSecretQuestions();
-			// logger.log(IAppLogger.DEBUG, questionList.size());
+			List<QuestionTO> questionList = parentService.getSecretQuestions(paramMap);
+			
 			ModelAndView modelAndView = new ModelAndView("user/firstTimeUser");
 			modelAndView.addObject("secretQuestionList", questionList);
 			modelAndView.addObject("parentTO", parentTO);

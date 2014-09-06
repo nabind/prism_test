@@ -10,35 +10,17 @@ import com.ctb.prism.core.util.CustomStringUtil;
  */
 public interface IParentQuery {
 
-	//Fix for TD 78161 - By Joy
-	public static final String VALIDATE_INVITATION_CODE = CustomStringUtil.appendString(
-			" SELECT INV.ICID,",
-			" INV.TOTAL_AVAILABLE,",
-			" INV.TOTAL_ATTEMPT,",
-			" DECODE(SIGN(TRUNC(INV.EXPIRATION_DATE) - TRUNC(SYSDATE)), -1, 'IN', 'AC') AS EXPIRATION_STATUS,",
-			" INV.ACTIVATION_STATUS AS ACTIVATION_STATUS,",
-			" NVL((SELECT ICC.ORG_USER_ID",
-			" FROM INVITATION_CODE_CLAIM ICC",
-			" WHERE ICC.ICID = INV.ICID",
-			" AND ICC.ORG_USER_ID = ?),0) ALREADY_CLAIMED",
-			" FROM INVITATION_CODE INV",
-			" WHERE INV.INVITATION_CODE = ?",
-			" AND INV.ACTIVATION_STATUS = 'AC'");
+	/**
+	 * Moved to package and reduce DB call - By Joy
+	 * Fix for TD 78161 - By Joy
+	 */
+	public static final String VALIDATE_INVITATION_CODE = "PKG_PARENT_NETWORK.SP_VALIDATE_IC(?,?,?,?)";
 
-	public static final String GET_STUDENT_FOR_INVITATION_CODE = CustomStringUtil.appendString(
-			" SELECT IC.STUDENT_FULL_NAME  AS STUDENT_NAME, ",
-			" P.PRODUCT_NAME AS ADMINISTRATION, ",
-			" GRD.GRADE_NAME AS GRADE , OND.ORG_NODE_NAME",
-			" FROM INVITATION_CODE IC, ",
-			" CUST_PRODUCT_LINK CPL, ",
-			" PRODUCT       P, ",
-			" GRADE_DIM       GRD , ORG_NODE_DIM OND",
-			" WHERE IC.CUST_PROD_ID = CPL.CUST_PROD_ID ",
-			" AND CPL.PRODUCTID =  P.PRODUCTID ", 
-			" AND IC.GRADE_ID = GRD.GRADEID ",
-			" AND IC.ORG_NODEID = OND.ORG_NODEID",
-			" AND IC.ACTIVATION_STATUS = 'AC' ",
-			" AND IC.INVITATION_CODE = ?");
+	/**
+	 * Moved to package - By Joy
+	 * Fix for TD 78161 - By Joy
+	 */
+	public static final String GET_STUDENT_FOR_INVITATION_CODE = "PKG_PARENT_NETWORK.SP_GET_STUDENT_FOR_IC(?,?,?)";
 
 	/**
 	 * Query to insert newly registered user
@@ -78,6 +60,7 @@ public interface IParentQuery {
 			" WHERE M.ORG_NODEID = N.ORG_NODEID",
 			" AND M.INVITATION_CODE = ?)");*/
 	
+	//TODO - Need to delete
 	//As INVITATION_CODE keeps school org_nodeid instead of class - By Joy
 	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" SELECT OU.ORG_USER_ID",
@@ -87,6 +70,7 @@ public interface IParentQuery {
 			" AND IC.INVITATION_CODE = ?");
 	
 	
+	//TODO  - Need to delete
 	public static final String GET_USERID_PARENT = CustomStringUtil.appendString(
 			" SELECT USERID FROM USERS U WHERE UPPER(U.USERNAME) = UPPER(?)");
 	

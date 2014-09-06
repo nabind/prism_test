@@ -22,7 +22,7 @@ public interface IParentDAO {
 	 * 
 	 * @return
 	 */
-	public List<QuestionTO> getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap);
 
 	/**
 	 * Check provided user availability.
@@ -55,7 +55,7 @@ public interface IParentDAO {
 	 * @param invitationCode
 	 * @return
 	 */
-	public ParentTO getStudentForIC(String invitationCode);
+	public ParentTO getStudentForIC(final Map<String, Object> paramMap);
 
 	/**
 	 * Check provided invitation code availability.

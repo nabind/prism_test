@@ -28,8 +28,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#getSecretQuestions()
 	 */
-	public List<QuestionTO> getSecretQuestions() {
-		return parentBusiness.getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap) {
+		return parentBusiness.getSecretQuestions(paramMap);
 	}
 
 	/*

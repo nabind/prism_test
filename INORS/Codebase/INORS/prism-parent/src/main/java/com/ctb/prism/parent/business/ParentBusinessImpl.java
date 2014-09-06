@@ -40,8 +40,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#getSecretQuestions()
 	 */
-	public List<QuestionTO> getSecretQuestions() {
-		return parentDAO.getSecretQuestions();
+	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap) {
+		return parentDAO.getSecretQuestions(paramMap);
 	}
 
 	/*
@@ -71,17 +71,15 @@ public class ParentBusinessImpl implements IParentBusiness {
 		return parentDAO.isRoleAlreadyTagged(roleId, userName);
 	}
 
-	/*
+	/**
+	 * Modified by Joy
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#validateIC(java.lang.String)
 	 */
 	public ParentTO validateIC(final Map<String, Object> paramMap) {
-		
-		String invitationCode = (String)paramMap.get("invitationCode");
-		
-		ParentTO parentTO = parentDAO.validateIC(paramMap);
-
+		ParentTO parentTO = null;
+		parentTO = parentDAO.validateIC(paramMap);
 		if (parentTO == null) {
 			parentTO = new ParentTO();
 			parentTO.setErrorMsg("IC_INVALID");
@@ -95,9 +93,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 		} else if(parentTO.getIsAlreadyClaimed() > 0){
 			parentTO.setErrorMsg("IC_ALREADY_CLAIMED");
 		} else {
-			parentTO = new ParentTO();
-			parentTO = parentDAO.getStudentForIC(invitationCode);
-			parentTO.setInvitationCode(invitationCode);
+			parentTO = parentDAO.getStudentForIC(paramMap);
+			parentTO.setInvitationCode((String)paramMap.get("invitationCode"));
 			parentTO.setErrorMsg("NA");
 		}
 		return parentTO;

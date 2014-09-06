@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -55,6 +56,8 @@ public class ParentController {
 	private IAdminService adminService;
 	@Autowired
 	private ILoginService loginService;
+	
+	@Autowired private CookieThemeResolver themeResolver;
 
 	
 	/**
@@ -68,8 +71,12 @@ public class ParentController {
 	public ModelAndView parentRegistration(HttpServletRequest req,
 			HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Open user registration screen");
+		
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", contractName);
 		//fetch security questions
-		List<QuestionTO> questionList = parentService.getSecretQuestions();
+		List<QuestionTO> questionList = parentService.getSecretQuestions(paramMap);
 		logger.log(IAppLogger.DEBUG, ""+questionList.size());
 		ModelAndView mv = new ModelAndView("parent/registration");
 		mv.addObject("secretQuestionList", null);
@@ -223,8 +230,13 @@ public class ParentController {
 			HttpServletResponse response) throws ServletException, IOException {
 		ParentTO parentTO = new ParentTO();
 		String loggedinUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		parentTO = parentService.manageParentAccountDetails(loggedinUser);		
-		List<QuestionTO> questionList = parentService.getSecretQuestions();
+		parentTO = parentService.manageParentAccountDetails(loggedinUser);	
+		
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", contractName);
+		List<QuestionTO> questionList = parentService.getSecretQuestions(paramMap);
+		
 		ModelAndView modelAndView = null;
 		modelAndView = new ModelAndView("user/profile");
 		modelAndView.addObject("parentAccountDetail", parentTO);
@@ -377,6 +389,7 @@ public class ParentController {
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("loggedinUserTO", loggedinUserTO);
 			paramMap.put("invitationCode", invitationCode);
+			paramMap.put("contractName",Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 			
 			// validate ic
 			ParentTO parentTO = parentService.validateIC(paramMap);
