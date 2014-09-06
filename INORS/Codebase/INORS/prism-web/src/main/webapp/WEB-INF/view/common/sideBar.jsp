@@ -83,8 +83,8 @@
 			</div>
 			</sec:authorize>
 			<div style="background-color:#FFF">
-				<div id="productImage" class="with-small-padding align-center" style="border-bottom:1px solid #5f80ab;">
-					<img id="productImage101" width="250px" class="productImage" src="<spring:theme code="contract.logo.single" />" />
+				<div id="productImage" class="with-small-padding align-center custom-p" style="border-bottom:1px solid #5f80ab;">
+					${messageMapSession.menuMessage} 
 				</div>
 			</div>
 

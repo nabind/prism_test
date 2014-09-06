@@ -121,6 +121,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
 			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("menuMessage", systemMessage);
+			
 		}else if(IApplicationConstants.PURPOSE_PARENT_HOME_PAGE
 				.equals((String)paramMap.get(IApplicationConstants.PURPOSE_PRISM))){
 			
@@ -136,6 +140,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
 			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("menuMessage", systemMessage);
+			
 		}else if(IApplicationConstants.PURPOSE_GROWTH_HOME_PAGE
 				.equals((String)paramMap.get(IApplicationConstants.PURPOSE_PRISM))){
 			
@@ -150,6 +158,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("menuMessage", systemMessage);
 			
 		}else{
 			
