@@ -1,18 +1,27 @@
 CREATE OR REPLACE PACKAGE PKG_PARENT_NETWORK IS
 
   TYPE GET_REFCURSOR IS REF CURSOR;
+  PROCEDURE SP_VALIDATE_IC(P_IN_USERNAME           IN USERS.USERNAME%TYPE,
+                           P_IN_INVITATION_CODE    IN INVITATION_CODE.INVITATION_CODE%TYPE,
+                           P_OUT_CUR_CLAIM_DETAILS OUT GET_REFCURSOR,
+                           P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2);
+
+  PROCEDURE SP_GET_STUDENT_FOR_IC(P_IN_INVITATION_CODE      IN INVITATION_CODE.INVITATION_CODE%TYPE,
+                                  P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
+                                  P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
+
   PROCEDURE SP_GET_STUDENT_DETAILS(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
                                    P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
-  
-  PROCEDURE SP_GET_STUDENT_DETAILS_ADMIN(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
-                                   P_IN_ORG_NODE_ID          IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                   P_IN_ORG_MODE             IN ORG_NODE_DIM.ORG_MODE%TYPE,
-                                   P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                                   P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
-                                   P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);                                  
 
-  PROCEDURE SP_GET_SUBTEST_DETAILS(P_IN_TESTELEMENTID            IN STUDENT_BIO_DIM.TEST_ELEMENT_ID%TYPE,
+  PROCEDURE SP_GET_STUDENT_DETAILS_ADMIN(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
+                                         P_IN_ORG_NODE_ID          IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_IN_ORG_MODE             IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                         P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                         P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
+                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
+
+  PROCEDURE SP_GET_SUBTEST_DETAILS(P_IN_TESTELEMENTID        IN STUDENT_BIO_DIM.TEST_ELEMENT_ID%TYPE,
                                    P_OUT_CUR_SUBTEST_DETAILS OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
 
@@ -41,6 +50,86 @@ END PKG_PARENT_NETWORK;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
 
+  PROCEDURE SP_VALIDATE_IC(P_IN_USERNAME           IN USERS.USERNAME%TYPE,
+                           P_IN_INVITATION_CODE    IN INVITATION_CODE.INVITATION_CODE%TYPE,
+                           P_OUT_CUR_CLAIM_DETAILS OUT GET_REFCURSOR,
+                           P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2) IS
+  
+    V_ORG_USER_ID ORG_USERS.ORG_USER_ID%TYPE := 0;
+  
+    CURSOR ORG_USER_ID_CUR(P_IN_USERNAME VARCHAR2, P_IN_INVITATION_CODE VARCHAR2) IS
+      SELECT OU.ORG_USER_ID
+        FROM ORG_USERS OU, USERS U, INVITATION_CODE IC
+       WHERE OU.ORG_NODEID = IC.ORG_NODEID
+         AND OU.USERID = U.USERID
+         AND UPPER(U.USERNAME) = UPPER(P_IN_USERNAME)
+         AND IC.INVITATION_CODE = P_IN_INVITATION_CODE;
+  
+    V_ORG_USER_ID_CUR ORG_USER_ID_CUR%ROWTYPE;
+  
+  BEGIN
+  
+    OPEN ORG_USER_ID_CUR(P_IN_USERNAME, P_IN_INVITATION_CODE);
+    LOOP
+      FETCH ORG_USER_ID_CUR
+        INTO V_ORG_USER_ID_CUR;
+      EXIT WHEN ORG_USER_ID_CUR%NOTFOUND;
+      V_ORG_USER_ID := V_ORG_USER_ID_CUR.ORG_USER_ID;
+    END LOOP;
+    CLOSE ORG_USER_ID_CUR;
+  
+    OPEN P_OUT_CUR_CLAIM_DETAILS FOR
+      SELECT INV.ICID,
+             INV.TOTAL_AVAILABLE,
+             INV.TOTAL_ATTEMPT,
+             DECODE(SIGN(TRUNC(INV.EXPIRATION_DATE) - TRUNC(SYSDATE)),
+                    -1,
+                    'IN',
+                    'AC') AS EXPIRATION_STATUS,
+             INV.ACTIVATION_STATUS AS ACTIVATION_STATUS,
+             NVL((SELECT ICC.ORG_USER_ID
+                   FROM INVITATION_CODE_CLAIM ICC
+                  WHERE ICC.ICID = INV.ICID
+                    AND ICC.ORG_USER_ID = V_ORG_USER_ID),
+                 0) ALREADY_CLAIMED
+        FROM INVITATION_CODE INV
+       WHERE INV.INVITATION_CODE = P_IN_INVITATION_CODE
+         AND INV.ACTIVATION_STATUS = 'AC';
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+    
+  END SP_VALIDATE_IC;
+
+  PROCEDURE SP_GET_STUDENT_FOR_IC(P_IN_INVITATION_CODE      IN INVITATION_CODE.INVITATION_CODE%TYPE,
+                                  P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
+                                  P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
+  
+  BEGIN
+  
+    OPEN P_OUT_CUR_STUDENT_DETAILS FOR
+      SELECT IC.STUDENT_FULL_NAME AS STUDENT_NAME,
+             P.PRODUCT_NAME AS ADMINISTRATION,
+             GRD.GRADE_NAME AS GRADE,
+             OND.ORG_NODE_NAME
+        FROM INVITATION_CODE   IC,
+             CUST_PRODUCT_LINK CPL,
+             PRODUCT           P,
+             GRADE_DIM         GRD,
+             ORG_NODE_DIM      OND
+       WHERE IC.CUST_PROD_ID = CPL.CUST_PROD_ID
+         AND CPL.PRODUCTID = P.PRODUCTID
+         AND IC.GRADE_ID = GRD.GRADEID
+         AND IC.ORG_NODEID = OND.ORG_NODEID
+         AND IC.ACTIVATION_STATUS = 'AC'
+         AND IC.INVITATION_CODE = P_IN_INVITATION_CODE;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+  END SP_GET_STUDENT_FOR_IC;
+
   -------------------------
   PROCEDURE SP_GET_STUDENT_DETAILS(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
                                    P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
@@ -52,56 +141,56 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
   
     OPEN P_OUT_CUR_STUDENT_DETAILS FOR
     
-    SELECT DISTINCT IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID,
-                    IC.STUDENT_FULL_NAME AS STUDENT_NAME,
-                    GRD.GRADEID AS STUDENT_GRADEID,
-                    GRD.GRADE_CODE AS STUDENT_GRADE,
-                    LINK.CUST_PROD_ID ADMINID,
-                    --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
-                    prod.product_name AS ADMIN_SEASON_YEAR,
-                    --AD.ADMIN_SEQ,
-                    prod.product_seq,
-                    NVL((SELECT 1
-                          FROM STUDENT_BIO_DIM
-                         WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
-                        0) BIO_EXISTS,
-                NVL(IC.STUDENT_BIO_ID, 0) STUDENT_BIO_ID
-      FROM USERS                 U,
-           ORG_USERS             OU,
-           INVITATION_CODE_CLAIM ICC,
-           INVITATION_CODE       IC,
-           CUST_PRODUCT_LINK     LINK,
-           --ADMIN_DIM             AD,
-           product               prod,
-           GRADE_DIM             GRD
-     WHERE UPPER(U.USERNAME) = UPPER(P_IN_PARENT_NAME)
-       AND OU.USERID = U.USERID
-       AND OU.ORG_NODE_LEVEL = 3
-       AND OU.ORG_USER_ID = ICC.ORG_USER_ID
-       AND ICC.ACTIVATION_STATUS = 'AC'
-       AND IC.ACTIVATION_STATUS = 'AC'
-       AND IC.ICID = ICC.ICID
-       AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
-       -- AND LINK.ADMINID = AD.ADMINID
-       and link.productid = prod.productid 
-       AND IC.GRADE_ID = GRD.GRADEID
---     ORDER BY AD.ADMIN_SEQ;
-     ORDER BY prod.product_seq;
+      SELECT DISTINCT IC.TEST_ELEMENT_ID   AS TEST_ELEMENT_ID,
+                      IC.STUDENT_FULL_NAME AS STUDENT_NAME,
+                      GRD.GRADEID          AS STUDENT_GRADEID,
+                      GRD.GRADE_CODE       AS STUDENT_GRADE,
+                      LINK.CUST_PROD_ID    ADMINID,
+                      --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
+                      PROD.PRODUCT_NAME AS ADMIN_SEASON_YEAR,
+                      --AD.ADMIN_SEQ,
+                      PROD.PRODUCT_SEQ,
+                      NVL((SELECT 1
+                            FROM STUDENT_BIO_DIM
+                           WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
+                          0) BIO_EXISTS,
+                      NVL(IC.STUDENT_BIO_ID, 0) STUDENT_BIO_ID
+        FROM USERS                 U,
+             ORG_USERS             OU,
+             INVITATION_CODE_CLAIM ICC,
+             INVITATION_CODE       IC,
+             CUST_PRODUCT_LINK     LINK,
+             --ADMIN_DIM             AD,
+             PRODUCT   PROD,
+             GRADE_DIM GRD
+       WHERE UPPER(U.USERNAME) = UPPER(P_IN_PARENT_NAME)
+         AND OU.USERID = U.USERID
+         AND OU.ORG_NODE_LEVEL = 3
+         AND OU.ORG_USER_ID = ICC.ORG_USER_ID
+         AND ICC.ACTIVATION_STATUS = 'AC'
+         AND IC.ACTIVATION_STATUS = 'AC'
+         AND IC.ICID = ICC.ICID
+         AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
+            -- AND LINK.ADMINID = AD.ADMINID
+         AND LINK.PRODUCTID = PROD.PRODUCTID
+         AND IC.GRADE_ID = GRD.GRADEID
+      --     ORDER BY AD.ADMIN_SEQ;
+       ORDER BY PROD.PRODUCT_SEQ;
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_STUDENT_DETAILS;
 
- -------------------------------------
- 
- PROCEDURE SP_GET_STUDENT_DETAILS_ADMIN(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
-                                   P_IN_ORG_NODE_ID          IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                   P_IN_ORG_MODE             IN ORG_NODE_DIM.ORG_MODE%TYPE,
-                                   P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                                   P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
-                                   P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
+  -------------------------------------
+
+  PROCEDURE SP_GET_STUDENT_DETAILS_ADMIN(P_IN_PARENT_NAME          IN USERS.USERNAME%TYPE,
+                                         P_IN_ORG_NODE_ID          IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_IN_ORG_MODE             IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                         P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                         P_OUT_CUR_STUDENT_DETAILS OUT GET_REFCURSOR,
+                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
   
   BEGIN
   
@@ -109,63 +198,65 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
   
     OPEN P_OUT_CUR_STUDENT_DETAILS FOR
     
-    SELECT DISTINCT IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID,
-                    IC.STUDENT_FULL_NAME AS STUDENT_NAME,
-                    GRD.GRADEID AS STUDENT_GRADEID,
-                    GRD.GRADE_NAME AS STUDENT_GRADE,
-                    LINK.CUST_PROD_ID ADMINID,
-                    --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
-                    prod.product_name AS ADMIN_SEASON_YEAR,
-                    --AD.ADMIN_SEQ,
-                    prod.product_seq,
-                    NVL((SELECT 1
-                          FROM STUDENT_BIO_DIM
-                         WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
-                        0) BIO_EXISTS,
-                NVL(IC.STUDENT_BIO_ID, 0) STUDENT_BIO_ID
-      FROM USERS                 U,
-           ORG_USERS             OU,
-          -- INVITATION_CODE_CLAIM ICC,
-           INVITATION_CODE       IC,
-           CUST_PRODUCT_LINK     LINK,
-           --ADMIN_DIM             AD,
-           product               prod,
-           GRADE_DIM             GRD,
-           (SELECT *
-                  FROM ORG_NODE_DIM D
-                 WHERE D.ORG_MODE = P_IN_ORG_MODE
-                 AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK O 
-                              WHERE O.ORG_NODEID = D.ORG_NODEID 
-                                AND O.CUST_PROD_ID = P_IN_CUST_PROD_ID )    
-             START WITH ORG_NODEID = P_IN_ORG_NODE_ID
-                CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID
-                ) HIER
-     WHERE UPPER(U.USERNAME) = UPPER(P_IN_PARENT_NAME)
-       AND OU.USERID = U.USERID
-       AND OU.ORG_NODE_LEVEL = 3
-       --AND OU.ORG_USER_ID = ICC.ORG_USER_ID
-       AND IC.ORG_NODEID = HIER.ORG_NODEID   
-      -- AND ICC.ACTIVATION_STATUS = 'AC'
-       AND IC.ACTIVATION_STATUS = 'AC'
-       AND EXISTS (SELECT 1 FROM  INVITATION_CODE_CLAIM ICC WHERE IC.ICID = ICC.ICID 
-                                   AND    OU.ORG_USER_ID = ICC.ORG_USER_ID 
-                                   )
-      -- AND IC.ICID = ICC.ICID
-       AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
-       --AND LINK.ADMINID = AD.ADMINID
-       and link.productid = prod.productid 
-       AND IC.GRADE_ID = GRD.GRADEID
---     ORDER BY AD.ADMIN_SEQ;
-     ORDER BY prod.product_seq;
+      SELECT DISTINCT IC.TEST_ELEMENT_ID   AS TEST_ELEMENT_ID,
+                      IC.STUDENT_FULL_NAME AS STUDENT_NAME,
+                      GRD.GRADEID          AS STUDENT_GRADEID,
+                      GRD.GRADE_NAME       AS STUDENT_GRADE,
+                      LINK.CUST_PROD_ID    ADMINID,
+                      --AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,
+                      PROD.PRODUCT_NAME AS ADMIN_SEASON_YEAR,
+                      --AD.ADMIN_SEQ,
+                      PROD.PRODUCT_SEQ,
+                      NVL((SELECT 1
+                            FROM STUDENT_BIO_DIM
+                           WHERE TEST_ELEMENT_ID = IC.TEST_ELEMENT_ID),
+                          0) BIO_EXISTS,
+                      NVL(IC.STUDENT_BIO_ID, 0) STUDENT_BIO_ID
+        FROM USERS     U,
+             ORG_USERS OU,
+             -- INVITATION_CODE_CLAIM ICC,
+             INVITATION_CODE   IC,
+             CUST_PRODUCT_LINK LINK,
+             --ADMIN_DIM             AD,
+             PRODUCT PROD,
+             GRADE_DIM GRD,
+             (SELECT *
+                FROM ORG_NODE_DIM D
+               WHERE D.ORG_MODE = P_IN_ORG_MODE
+                 AND EXISTS
+               (SELECT 1
+                        FROM ORG_PRODUCT_LINK O
+                       WHERE O.ORG_NODEID = D.ORG_NODEID
+                         AND O.CUST_PROD_ID = P_IN_CUST_PROD_ID)
+               START WITH ORG_NODEID = P_IN_ORG_NODE_ID
+              CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER
+       WHERE UPPER(U.USERNAME) = UPPER(P_IN_PARENT_NAME)
+         AND OU.USERID = U.USERID
+         AND OU.ORG_NODE_LEVEL = 3
+            --AND OU.ORG_USER_ID = ICC.ORG_USER_ID
+         AND IC.ORG_NODEID = HIER.ORG_NODEID
+            -- AND ICC.ACTIVATION_STATUS = 'AC'
+         AND IC.ACTIVATION_STATUS = 'AC'
+         AND EXISTS (SELECT 1
+                FROM INVITATION_CODE_CLAIM ICC
+               WHERE IC.ICID = ICC.ICID
+                 AND OU.ORG_USER_ID = ICC.ORG_USER_ID)
+            -- AND IC.ICID = ICC.ICID
+         AND IC.CUST_PROD_ID = LINK.CUST_PROD_ID
+            --AND LINK.ADMINID = AD.ADMINID
+         AND LINK.PRODUCTID = PROD.PRODUCTID
+         AND IC.GRADE_ID = GRD.GRADEID
+      --     ORDER BY AD.ADMIN_SEQ;
+       ORDER BY PROD.PRODUCT_SEQ;
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_STUDENT_DETAILS_ADMIN;
 
   ----------------------------------
-  PROCEDURE SP_GET_SUBTEST_DETAILS(P_IN_TESTELEMENTID            IN STUDENT_BIO_DIM.TEST_ELEMENT_ID%TYPE,
+  PROCEDURE SP_GET_SUBTEST_DETAILS(P_IN_TESTELEMENTID        IN STUDENT_BIO_DIM.TEST_ELEMENT_ID%TYPE,
                                    P_OUT_CUR_SUBTEST_DETAILS OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
   
@@ -188,7 +279,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_SUBTEST_DETAILS;
 
@@ -220,7 +311,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                AND CUST_PROD_ID = META.CUST_PROD_ID
                                AND CATEGORY_TYPE = 'STD'),
                             -1) STD_ARTICLEID,
-                        META.CUST_PROD_ID CUST_PROD_ID, meta.category_seq
+                        META.CUST_PROD_ID CUST_PROD_ID,
+                        META.CATEGORY_SEQ
           FROM SUBTEST_OBJECTIVE_MAP MAP1,
                SUBTEST_DIM           SUB,
                OBJECTIVE_DIM         OBJ,
@@ -235,7 +327,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            AND MAP1.OBJECTIVEID = OBJ.OBJECTIVEID
            AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
            AND META.CUST_PROD_ID = P_IN_CUST_PROD_ID
-         ORDER BY OBJ.OBJECTIVEID, meta.category_seq/*META.ARTICLE_NAME*/;
+         ORDER BY OBJ.OBJECTIVEID, META.CATEGORY_SEQ /*META.ARTICLE_NAME*/
+        ;
     
     ELSE
     
@@ -252,7 +345,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
                                AND CUST_PROD_ID = META.CUST_PROD_ID
                                AND CATEGORY_TYPE = 'STD'),
                             -1) STD_ARTICLEID,
-                        META.CUST_PROD_ID CUST_PROD_ID, meta.category_seq
+                        META.CUST_PROD_ID CUST_PROD_ID,
+                        META.CATEGORY_SEQ
           FROM STUDENT_BIO_DIM       SBD,
                OBJECTIVE_SCORE_FACT  OBJ_FACT,
                SUBTEST_OBJECTIVE_MAP MAP1,
@@ -270,13 +364,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
            AND MAP1.OBJECTIVEID = OBJ.OBJECTIVEID
            AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
            AND OBJ_FACT.CUST_PROD_ID = META.CUST_PROD_ID
-         ORDER BY OBJ.OBJECTIVEID, meta.category_seq/*META.ARTICLE_NAME*/;
+         ORDER BY OBJ.OBJECTIVEID, META.CATEGORY_SEQ /*META.ARTICLE_NAME*/
+        ;
     
     END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
   END SP_GET_ARTICLE_TYPE_DETAILS;
 
   ------------------------------------------
@@ -401,7 +496,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_ARTICLE_DESCRIPTION;
 
@@ -461,7 +556,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_GRADE_SUBTEST_DETAILS;
 
