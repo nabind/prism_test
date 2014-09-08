@@ -60,7 +60,10 @@
 		    												<span class="button icon-forbidden icon-size2 orange with-tooltip" title="No files available for the selected criteria"></span>
 		    											</c:when>
 		    											<c:when test="${group.jobStatus=='CO'}">
+		    												<fmt:message var="groupDownloadsDownload" key="group.downloads.download" />
+		    												<c:if test="${not empty actionMap[groupDownloadsDownload]}">
 		                                                	<a jobId="${group.jobId}" fileName="${group.requestFilename}" filePath="${group.filePath}" class="blue-gradient button icon-download icon-size2 with-tooltip confirm download-GroupFiles" title="Download File" style="cursor: pointer;"></a>
+		                                                	</c:if>
 		    											</c:when>
 														<c:otherwise>
 															 <span class="loader working" title="In Progress"></span>
@@ -71,10 +74,13 @@
 	                                            <td>
 	                                           		 <c:choose>
 	                                           		 	<c:when test="${group.jobStatus=='CO'}">
+	                                           		 		<fmt:message var="groupDownloadsFileSize" key="group.downloads.fileSize" />
+	                                           		 		<c:if test="${not empty actionMap[groupDownloadsFileSize]}">
 				                                            <span class="button-group compact"><a jobId="${group.jobId}" id="count_${group.jobId}" 
 				                                            	fileName="${group.requestFilename}" filePath="${group.filePath}" href="#nogo" 
 				                                            	class="button green-gradient with-tooltip view-FileSize" title="View file size" 
 				                                            	style="cursor: pointer;">Size</a></span>
+				                                            </c:if>
 			                                            </c:when>
 			                                            <c:when test="${group.jobStatus=='ER'}">
 			                                            	<span class="icon-cross-round icon-size2 red" title="Error"></span>
