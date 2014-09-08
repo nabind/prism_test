@@ -466,7 +466,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @return message
 	 */
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
-	public String getSystemConfigurationMessage(Map<String,Object> paramMap){
+	public String getSystemConfigurationMessage(final Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
 		
@@ -474,6 +474,10 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String messageType = (String) paramMap.get("MESSAGE_TYPE");
 		final String messageName = (String) paramMap.get("MESSAGE_NAME");
 		String contractName = (String) paramMap.get("contractName");
+		String userId = "";
+		if(paramMap.get("userId") != null){
+			userId = (String)paramMap.get("userId");
+		}
 		
 		if(contractName == null) {
 			contractName = Utils.getContractName();
@@ -489,8 +493,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(1, reportName);
 					cs.setString(2, messageType);
 					cs.setString(3, messageName);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					if(paramMap.get("userId") != null){
+						cs.setLong(4, Long.parseLong((String)paramMap.get("userId")));
+					}else{
+						cs.setLong(4, 0);
+					}
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -499,7 +508,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					String systemMessageResult = "";
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(4);
+						rs = (ResultSet) cs.getObject(5);
 						if (rs.next()) {
 							systemMessageResult = rs.getString("REPORT_MSG");
 						}

@@ -14,7 +14,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 													" WHERE USR.USER_EMAIL = ?";
 	
 	//To retrieve prelogin message dynamically
-	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE = "PKG_MANAGE_REPORT.SP_GET_SYSTEM_MESSAGE(?,?,?,?,?)";
+	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE = "PKG_MANAGE_REPORT.SP_GET_SYSTEM_MESSAGE(?,?,?,?,?,?)";
 	
 	// query to retrieve more info message dynamically
 	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC =  CustomStringUtil.appendString(

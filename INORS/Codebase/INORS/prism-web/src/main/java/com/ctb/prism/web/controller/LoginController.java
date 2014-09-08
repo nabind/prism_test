@@ -374,6 +374,7 @@ public class LoginController {
 				Map<String,Object> paramMapMessage = new HashMap<String, Object>();
 				paramMapMessage.put("theme", themeResolver.resolveThemeName(req));
 				paramMapMessage.put("action","home");
+				paramMapMessage.put("userId",user.getUserId());
 				Map<String, Object> messageMap = getMessageMap(paramMapMessage);
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
 
@@ -1063,6 +1064,7 @@ public class LoginController {
 		
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("theme", themeResolver.resolveThemeName(req));
+		paramMap.put("userId", req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
 		if("growth".equals(homePage)) {
 			paramMap.put("action","homeGrowth");
 		}else{

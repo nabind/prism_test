@@ -18,7 +18,48 @@ BEGIN
     (V_DB_REPORTID,
      'Generic System Configuration',
      'Generic System Configuration',
+     'GSCM',
      'API_CUSTOM',
+     'IN',
+     SYSDATE,
+     SYSDATE);
+
+  INSERT INTO DASH_MENU_RPT_ACCESS
+    (DB_MENUID,
+     DB_REPORTID,
+     ROLEID,
+     ORG_LEVEL,
+     CUST_PROD_ID,
+     REPORT_SEQ,
+     ACTIVATION_STATUS,
+     CREATED_DATE_TIME,
+     UPDATED_DATE_TIME)
+  VALUES
+    ((SELECT DB_MENUID FROM DASH_MENUS WHERE UPPER(MENU_NAME) = 'REPORTS'),
+     V_DB_REPORTID,
+     (SELECT ROLEID FROM ROLE WHERE ROLE_NAME = 'ROLE_CTB'),
+     1,
+     3001,
+     V_DB_REPORTID,
+     'AC',
+     SYSDATE,
+     SYSDATE);
+     
+  SELECT DB_REPORT_ID_SEQ.NEXTVAL INTO V_DB_REPORTID FROM DUAL;
+
+  INSERT INTO DASH_REPORTS
+    (DB_REPORTID,
+     REPORT_NAME,
+     REPORT_DESC,
+     REPORT_TYPE,
+     ACTIVATION_STATUS,
+     CREATED_DATE_TIME,
+     UPDATED_DATE_TIME)
+  VALUES
+    (V_DB_REPORTID,
+     'Product Specific System Configuration',
+     'Product Specific System Configuration',
+     'PSCM',
      'IN',
      SYSDATE,
      SYSDATE);

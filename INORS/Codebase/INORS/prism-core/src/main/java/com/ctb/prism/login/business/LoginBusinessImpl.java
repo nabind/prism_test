@@ -121,6 +121,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
 			
+			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("menuMessage", systemMessage);
@@ -140,6 +142,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
 			
+			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("menuMessage", systemMessage);
@@ -159,6 +163,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("systemMessage", systemMessage);
 			
+			paramMap.put("REPORT_NAME", IApplicationConstants.PRODUCT_SPECIFIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.PRODUCT_SPECIFIC_MESSAGE_TYPE);
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.MENU_MESSAGE);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("menuMessage", systemMessage);
