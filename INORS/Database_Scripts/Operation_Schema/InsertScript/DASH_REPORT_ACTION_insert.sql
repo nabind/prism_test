@@ -85,3 +85,26 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'User Details','RPW','User Details',sysdate);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
 values(seq_dash_rpt_action.nextval,'Security Questions','RPW','Security Questions',sysdate);
+
+--Group Download Filess
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Refresh','GDF','Refresh Button in Group Download Files',sysdate);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Delete','GDF','Delete Button in Group Download Files',sysdate);
+
+--GRT/IC File Download
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'GRT Button','GDF','GRT Button in GRT/IC File Download',sysdate);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'IC Button','GDF','IC Button in GRT/IC File Download',sysdate);
+
+--Group Downloads
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Combined Pdf','GDF','Combined Pdf Button in Group Downloads',sysdate);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Separate Pdf','GDF','Separate Pdf Button in Group Downloads',sysdate);
+
+--Student Data File
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Student Data File','GDF','Student Data File',sysdate);
+commit;
