@@ -68,7 +68,7 @@ insert into dash_message_type
     values
       (1091,
        'Menu Message',
-       'GSCM',
+       'PSCM',
        'Message configuration for right sided menu',
        3001,
        sysdate); 

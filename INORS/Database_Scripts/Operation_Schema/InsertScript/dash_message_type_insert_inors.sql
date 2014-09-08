@@ -68,7 +68,7 @@ insert into dash_message_type
     values
       (1091,
        'Menu Message',
-       'GSCM',
+       'PSCM',
        'Message configuration for right sided menu',
        5001,
        sysdate); 
@@ -205,3 +205,19 @@ insert into dash_message_type
        'Footer for parent home screen',
        5001,
        sysdate);		   
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1101,
+       'Menu Message',
+       'PSCM',
+       'Message configuration for right sided menu',
+       5017,
+       sysdate); 
+	   
