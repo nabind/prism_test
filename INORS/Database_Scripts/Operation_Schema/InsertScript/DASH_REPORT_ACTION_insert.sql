@@ -91,6 +91,10 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'Refresh','GDF','Refresh Button in Group Download Files',sysdate);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
 values(seq_dash_rpt_action.nextval,'Delete','GDF','Delete Button in Group Download Files',sysdate);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'Download','GDF','Download Button in Group Download Files',sysdate);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
+values(seq_dash_rpt_action.nextval,'File Size','GDF','File Size Button in Group Download Files',sysdate);
 
 --GRT/IC File Download
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time)
