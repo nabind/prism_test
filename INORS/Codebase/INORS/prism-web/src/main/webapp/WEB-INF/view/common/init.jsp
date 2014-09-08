@@ -396,18 +396,18 @@
 				
 				if(this.userName == currentUser) {
 					userContent +=  '<td class="vertical-center">'
-									+' <span class="button-group compact">' 
+									+' <span class="button-group compact">'; 
 									 if(editEnabled =='true') {	
 									    <sec:authorize ifNotGranted="ROLE_SSO">
-											+' <span class="button icon-pencil with-tooltip disabled" title="Can not be edited"></span> '
+									        userContent +=' <span class="button icon-pencil with-tooltip disabled" title="Can not be edited"></span>';
 										</sec:authorize>	
 									 }
 									if(loginAsEnabled =='true') {	
-										+' <span class="button icon-users icon-size2 with-tooltip disabled" title="Can not be logged in"></span>'
+										 userContent +=' <span class="button icon-users icon-size2 with-tooltip disabled" title="Can not be logged in"></span>';
 									}
 									if(deleteEnabled =='true') {
 										<sec:authorize ifNotGranted="ROLE_SSO">
-											+' <span class=" button icon-trash with-tooltip disabled" title="Can not be deleted"></span>'
+										   userContent +=' <span class=" button icon-trash with-tooltip disabled" title="Can not be deleted"></span>';
 										</sec:authorize>
 									}
 										+' </span>'
