@@ -1,3 +1,6 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:message var="combinedPdf" key="group.downloads.combined" />
+<fmt:message var="separatePdf" key="group.downloads.separate" />
 		<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
 			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on dataTable" id="studentTableGD">
 				<thead>
@@ -58,14 +61,18 @@
 			</p>
 		</div>
 		<div class="columns accordion with-padding" style="margin-bottom:0">
+			<c:if test="${not empty actionMap[separatePdf]}">
 			<a href="#" class="downloadBulkPdf button" id="downloadSeparatePdfsGD" style="margin-left: 0px; float: left;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="msg.label.groupDownload.downloadSeparatePdfsGD" />
 			</a>
+			</c:if>
+			<c:if test="${not empty actionMap[combinedPdf]}">
 			<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsGD" style="margin-left: 10px; float: right;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="msg.label.groupDownload.downloadCombinedPdfsGD" />
 			</a>
+			</c:if>
 			<input type="hidden" name="buttonGD" id="buttonGD" />
 			<input type="hidden" name="startIndex" id="startIndex" />
 			<input type="hidden" name="endIndex" id="endIndex" />

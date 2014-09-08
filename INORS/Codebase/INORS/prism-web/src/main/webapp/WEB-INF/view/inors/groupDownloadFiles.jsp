@@ -10,7 +10,7 @@
 <p class="red"><spring:message code="msg.groupDownloadFiles.note"/></p>
 <p class="red"><spring:message code="msg.groupDownloadFiles.notice"/></p>
 
-<fmt:message var="groupDownloadsRefresh" key="group.downloads.refresh"  />
+<fmt:message var="groupDownloadsRefresh" key="group.downloads.refresh" />
 <c:if test="${not empty actionMap[groupDownloadsRefresh]}">
 <a href="javascript:location.reload();" class="button with-tooltip tooltip-right" title="Click to get the current status.">
 	<span class="button-icon"><span class="icon-refresh"></span></span>

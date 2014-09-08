@@ -1,7 +1,8 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:message var="studentFileDownload" key="student.file.download.button" />
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="downloadStudentFile" modelAttribute="downloadStudentFile">
 		<p class="success-message message small-margin-bottom green-gradient" style="display:none"><spring:message code="msg.success.fileDownload" /></p>
@@ -37,6 +38,7 @@
 			<br/><br/>
 			<span class="tag"><spring:message code="label.note" />:</span> <spring:message code="p.studentFileDownload.2" />
 		</p>
+		<c:if test="${not empty actionMap[studentFileDownload]}">
 		<div class="columns accordion with-padding" style="margin-bottom: 0">
 			<a class="tag with-small-padding grey-gradient icon-down-round" id="downloadStudentFileLayout" 
 				style="cursor: pointer; top: 6px;position: relative;" target="_blank"
@@ -47,5 +49,6 @@
 				<span class="button-icon icon-download blue-gradient report-btn">DAT</span> <spring:message code="label.generateDownloadFile" />
 			</a>
 		</div>
+		</c:if>
 	</form:form>
 </div>
