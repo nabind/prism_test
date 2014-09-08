@@ -52,7 +52,6 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_STUDENT AS
 END PKG_MANAGE_STUDENT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
-
   PROCEDURE SP_SEARCH_STUDENT_REDIRECT(P_IN_CUST_PROD_ID    IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                        P_IN_TEST_ELEMENT_ID IN STUDENT_BIO_DIM.TEST_ELEMENT_ID%TYPE,
                                        P_OUT_CUR            OUT GET_REFCURSOR,
@@ -185,6 +184,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                                STD.TEST_ELEMENT_ID AS TESTELEMENTID,
                                STD.INT_STUDENT_ID AS INTSTUDENTID,
                                STD.EXT_STUDENT_ID AS EXTSTUDENTID,
+							   STD.STUDENT_MODE AS STUDENT_MODE,
                                STD.GRADEID,
                                STD.ORG_NODEID,
                                STD.CUSTOMERID
@@ -242,6 +242,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                                STD.TEST_ELEMENT_ID AS TESTELEMENTID,
                                STD.INT_STUDENT_ID AS INTSTUDENTID,
                                STD.EXT_STUDENT_ID AS EXTSTUDENTID,
+							   STD.STUDENT_MODE AS STUDENT_MODE,
                                STD.GRADEID,
                                STD.ORG_NODEID,
                                STD.CUSTOMERID
