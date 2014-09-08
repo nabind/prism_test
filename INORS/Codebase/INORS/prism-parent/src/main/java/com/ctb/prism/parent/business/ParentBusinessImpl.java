@@ -56,10 +56,10 @@ public class ParentBusinessImpl implements IParentBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.business.IParentBusiness#checkActiveUserAvailability(java.lang.String)
+	 * @see com.ctb.prism.parent.business.IParentBusiness#checkActiveUserAvailability(Map<String, Object>)
 	 */
-	public boolean checkActiveUserAvailability(String username) {
-		return parentDAO.checkActiveUserAvailability(username);
+	public boolean checkActiveUserAvailability(Map<String, Object> paramMap)  {
+		return parentDAO.checkActiveUserAvailability(paramMap);
 	}
 
 	/*
@@ -252,28 +252,28 @@ public class ParentBusinessImpl implements IParentBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.business.IParentBusiness#getSecurityQuestionForUser(java.lang.String)
+	 * @see com.ctb.prism.parent.business.IParentBusiness#getSecurityQuestionForUser(Map<String, Object>)
 	 */
-	public ArrayList<QuestionTO> getSecurityQuestionForUser(String username) {
-		return parentDAO.getSecurityQuestionForUser(username);
+	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap) {
+		return parentDAO.getSecurityQuestionForUser(paramMap);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.business.IParentBusiness#validateAnswers(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.ctb.prism.parent.business.IParentBusiness#validateAnswers(Map<String, Object>)
 	 */
-	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3) {
-		return parentDAO.validateAnswers(userName, ans1, ans2, ans3, questionId1, questionId2, questionId3);
+	public boolean validateAnswers(Map<String, Object> paramMap) {
+		return parentDAO.validateAnswers(paramMap);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.business.IParentBusiness#getUserNamesByEmail(java.lang.String)
+	 * @see com.ctb.prism.parent.business.IParentBusiness#getUserNamesByEmail(Map<String, Object>)
 	 */
-	public List<UserTO> getUserNamesByEmail(String emailId) {
-		return parentDAO.getUserNamesByEmail(emailId);
+	public List<UserTO> getUserNamesByEmail(Map<String, Object> paramMap) {
+		return parentDAO.getUserNamesByEmail(paramMap);
 	}
 
 	/*

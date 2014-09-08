@@ -229,11 +229,11 @@ public interface IAdminService {
 	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception;
 
 	/**
-	 * @param userName
+	 * @param paramMap
 	 * @return
 	 * @throws Exception
 	 */
-	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception;
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @return

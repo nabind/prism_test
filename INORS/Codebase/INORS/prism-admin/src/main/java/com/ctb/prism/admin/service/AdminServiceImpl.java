@@ -273,11 +273,11 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#resetPassword(java.lang.String)
+	 * @see com.ctb.prism.admin.service.IAdminService#resetPassword(Map<String, Object>)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception {
-		return adminBusiness.resetPassword(userName);
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception {
+		return adminBusiness.resetPassword(paramMap);
 	}
 
 	/*

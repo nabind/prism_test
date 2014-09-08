@@ -2025,11 +2025,13 @@ public class AdminController {
 	public String resetPassword(HttpServletRequest req, HttpServletResponse res ) {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - resetPassword");
 		String sendEmailFlag = "0";
+		Map<String, Object> paramMap = new HashMap<String, Object>();		
 		try {
 			String userName= (String) req.getParameter("userName");
 			if ( userName != null ) {
 			//	String newPassword = adminService.resetPassword(userName);
-				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(userName);
+				paramMap.put("username", userName);
+				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
 						emailSender.sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());

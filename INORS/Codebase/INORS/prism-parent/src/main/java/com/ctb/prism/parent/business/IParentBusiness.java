@@ -28,7 +28,7 @@ public interface IParentBusiness {
 	 * @param username
 	 * @return
 	 */
-	public boolean checkActiveUserAvailability(String username);
+	public boolean checkActiveUserAvailability(Map<String, Object> paramMap); 
 
 	/**
 	 * @param roleId
@@ -170,28 +170,22 @@ public interface IParentBusiness {
 	public String getSchoolOrgId(String studentBioId);
 
 	/**
-	 * @param username
+	 * @param paramMap
 	 * @return
 	 */
-	public ArrayList<QuestionTO> getSecurityQuestionForUser(String username);
+	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap);
 
 	/**
-	 * @param userName
-	 * @param ans1
-	 * @param ans2
-	 * @param ans3
-	 * @param questionId1
-	 * @param questionId2
-	 * @param questionId3
+	 * @param paramMap
 	 * @return
 	 */
-	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3);
+	public boolean validateAnswers(Map<String, Object> paramMap);
 
 	/**
-	 * @param emailId
+	 * @param Map<String, Object>
 	 * @return
 	 */
-	public List<UserTO> getUserNamesByEmail(String emailId);
+	public List<UserTO> getUserNamesByEmail(Map<String, Object> paramMap);
 
 	/**
 	 * @param student

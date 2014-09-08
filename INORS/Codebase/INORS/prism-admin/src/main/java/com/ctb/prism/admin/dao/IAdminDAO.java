@@ -245,11 +245,11 @@ public interface IAdminDAO {
 	/**
 	 * Reset the user password into ldap/dao.
 	 * 
-	 * @param userName
+	 * @param paramMap
 	 * @return
 	 * @throws Exception
 	 */
-	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception;
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * Get user list for selected role.

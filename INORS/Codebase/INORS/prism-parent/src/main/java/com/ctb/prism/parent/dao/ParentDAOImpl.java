@@ -95,8 +95,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#checkActiveUserAvailability(java.lang.String)
 	 */
-	public boolean checkActiveUserAvailability(String username) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_ACTIVE_USER_NAME, username);
+	public boolean checkActiveUserAvailability(Map<String, Object> paramMap) {
+		String contractName = (String) paramMap.get("contractName"); 
+		String username = (String) paramMap.get("username"); 
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.VALIDATE_ACTIVE_USER_NAME, username);
 		if (lstData == null || lstData.isEmpty()) {
 			return Boolean.TRUE;
 		}
@@ -1414,16 +1416,19 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecurityQuestionForUser(java.lang.String)
+	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecurityQuestionForUser(Map<String, Object>)
 	 */
 
-	public ArrayList<QuestionTO> getSecurityQuestionForUser(String username) {
+	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap) {
 
+		String contractName = (String) paramMap.get("contractName"); 
+		String username = (String) paramMap.get("username"); 
+		
 		List<Map<String, Object>> lstData = null;
 		ArrayList<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
 
 		// populate parent security question and answer detail
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_SECURITY_QUESTION, username);
+		lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_PARENT_SECURITY_QUESTION, username);
 		if (lstData.size() > 0) {
 
 			for (Map<String, Object> fieldDetails : lstData) {
@@ -1445,10 +1450,24 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#validateAnswers(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3) {
+	@SuppressWarnings("unchecked")
+	public boolean validateAnswers(Map<String, Object> paramMap) {
 		long validUser = 0;
+		String contractName = (String) paramMap.get("contractName"); 
+		String username = (String)paramMap.get("username");
+		List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
+		questionToList = (List<QuestionTO>)paramMap.get("questionToList");
+		
+		/*for(QuestionTO questionTOs: questionToList){
+			questionTOs.getQuestionId();
+		}*/
 		try {
-			validUser = getJdbcTemplatePrism().queryForLong(IQueryConstants.VALIDATE_SECURITY_ANSWERS, userName, questionId1, ans1, userName, questionId2, ans2, questionId3, ans3);
+			validUser = getJdbcTemplatePrism(contractName).queryForLong(
+					IQueryConstants.VALIDATE_SECURITY_ANSWERS, 
+					username, questionToList.get(0).getQuestionId(), questionToList.get(0).getAnswer(),
+					username, questionToList.get(1).getQuestionId(), questionToList.get(1).getAnswer(), 
+					questionToList.get(2).getQuestionId(), questionToList.get(2).getAnswer());
+			
 			if (validUser != 0 && validUser != -1 && validUser == 1) {
 				return true;
 			}
@@ -1464,10 +1483,14 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getUserNamesByEmail(java.lang.String)
 	 */
-	public List<UserTO> getUserNamesByEmail(String emailId) {
+	public List<UserTO> getUserNamesByEmail(Map<String, Object> paramMap) {
+		
+		String contractName = (String) paramMap.get("contractName"); 
+		String emailId = (String) paramMap.get("emailId"); 
+		
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		List<Map<String, Object>> userslist = null;
-		userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_USERS_BY_EMAIL, emailId);
+		userslist = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_ALL_USERS_BY_EMAIL, emailId);
 		if (userslist.size() > 0) {
 
 			for (Map<String, Object> fieldDetails : userslist) {

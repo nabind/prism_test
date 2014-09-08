@@ -276,10 +276,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#resetPassword(java.lang.String)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#resetPassword(Map<String, Object>)
 	 */
-	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception {
-		return adminDAO.resetPassword(userName);
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception {
+		return adminDAO.resetPassword(paramMap);
 	}
 
 	/*

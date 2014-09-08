@@ -1357,9 +1357,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#resetPassword(java.lang.String)
 	 */
-	public com.ctb.prism.login.transferobject.UserTO resetPassword(String userName) throws Exception {
+	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception {
 		com.ctb.prism.login.transferobject.UserTO userTO = new com.ctb.prism.login.transferobject.UserTO();
-		String email =  getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_USER_DETAILS, new Object[] { userName }, new RowMapper<String>() {
+		String contractName = (String) paramMap.get("contractName"); 
+		String userName = (String)paramMap.get("username");
+		
+		if(contractName == null) {
+			contractName =Utils.getContractName();
+		}
+		
+		String email =  getJdbcTemplatePrism(contractName).queryForObject(IQueryConstants.GET_USER_DETAILS, new Object[] { userName }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
 				return rs.getString("EMAIL");
 			}
@@ -1369,14 +1376,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 			boolean isUpdated = ldapManager.updateUser(userName, userName, userName, password);
 			if (isUpdated) {
-				getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FIRSTTIMEUSERFLAG_DATA, IApplicationConstants.FLAG_Y, userName);
+				getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_FIRSTTIMEUSERFLAG_DATA, IApplicationConstants.FLAG_Y, userName);
 			//	return password;
 			} else {
 			//	return null;
 			}
 		} else {
 			String salt = PasswordGenerator.getNextSalt();
-			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
+			getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
 					salt, userName);
 			//return password;
 		}

@@ -44,10 +44,10 @@ public class ParentServiceImpl implements IParentService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.service.IParentService#checkActiveUserAvailability(java.lang.String)
+	 * @see com.ctb.prism.parent.service.IParentService#checkActiveUserAvailability(Map<String, Object>)
 	 */
-	public boolean checkActiveUserAvailability(String username) {
-		return parentBusiness.checkActiveUserAvailability(username);
+	public boolean checkActiveUserAvailability(Map<String, Object> paramMap) {
+		return parentBusiness.checkActiveUserAvailability(paramMap);
 	}
 
 	/*
@@ -217,28 +217,28 @@ public class ParentServiceImpl implements IParentService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.service.IParentService#getSecurityQuestionForUser(java.lang.String)
+	 * @see com.ctb.prism.parent.service.IParentService#getSecurityQuestionForUser(Map<String, Object>)
 	 */
-	public ArrayList<QuestionTO> getSecurityQuestionForUser(String username) {
-		return parentBusiness.getSecurityQuestionForUser(username);
+	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap){
+		return parentBusiness.getSecurityQuestionForUser(paramMap);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.service.IParentService#validateAnswers(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.ctb.prism.parent.service.IParentService#validateAnswers(Map<String, Object>)
 	 */
-	public boolean validateAnswers(String userName, String ans1, String ans2, String ans3, String questionId1, String questionId2, String questionId3) {
-		return parentBusiness.validateAnswers(userName, ans1, ans2, ans3, questionId1, questionId2, questionId3);
+	public boolean validateAnswers(Map<String, Object> paramMap) {
+		return parentBusiness.validateAnswers(paramMap);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.parent.service.IParentService#getUserNamesByEmail(java.lang.String)
+	 * @see com.ctb.prism.parent.service.IParentService#getUserNamesByEmail(Map<String, Object>)
 	 */
-	public List<UserTO> getUserNamesByEmail(String emailId) {
-		return parentBusiness.getUserNamesByEmail(emailId);
+	public List<UserTO> getUserNamesByEmail(Map<String, Object> paramMap) {
+		return parentBusiness.getUserNamesByEmail(paramMap);
 	}
 
 	/*

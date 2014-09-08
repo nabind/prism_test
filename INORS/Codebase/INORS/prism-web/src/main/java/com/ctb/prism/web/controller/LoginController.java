@@ -835,8 +835,12 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Fectching the User Security Questions");
 		try {
 			List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
-			String username = req.getParameter("username");
-			questionToList = parentService.getSecurityQuestionForUser(username);
+			//String username = req.getParameter("username");
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("username",req.getParameter("username"));
+			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			
+			questionToList = parentService.getSecurityQuestionForUser(paramMap);
 			if (questionToList != null) {
 				String jsonString = JsonUtil.convertToJsonAdmin(questionToList);
 				res.setContentType("application/json");
@@ -865,15 +869,36 @@ public class LoginController {
 	public ModelAndView checkAnswers(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
 			logger.log(IAppLogger.INFO, "Enter: checkAnswers()");
-			String userName = (String) req.getParameter("username");
+			/*String userName = (String) req.getParameter("username");
 			String ans1 = (String) req.getParameter("ans1");
 			String ans2 = (String) req.getParameter("ans2");
 			String ans3 = (String) req.getParameter("ans3");
 			String questionId1 = (String) req.getParameter("questionId1");
 			String questionId2 = (String) req.getParameter("questionId2");
-			String questionId3 = (String) req.getParameter("questionId3");
+			String questionId3 = (String) req.getParameter("questionId3");*/
+			
+			List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
+			QuestionTO questionTo = new QuestionTO();
+			questionTo.setQuestionId(Long.valueOf(req.getParameter("questionId1")));
+			questionTo.setAnswer((String) req.getParameter("ans1"));
+			questionToList.add(questionTo);
+			
+			questionTo = new QuestionTO();
+			questionTo.setQuestionId(Long.valueOf(req.getParameter("questionId2")));
+			questionTo.setAnswer((String) req.getParameter("ans2"));
+			questionToList.add(questionTo);
+			
+			questionTo = new QuestionTO();
+			questionTo.setQuestionId(Long.valueOf(req.getParameter("questionId3")));
+			questionTo.setAnswer((String) req.getParameter("ans3"));
+			questionToList.add(questionTo);
+			
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("username", req.getParameter("username"));
+			paramMap.put("questionToList", questionToList);
+			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 
-			boolean isValid = parentService.validateAnswers(userName, ans1, ans2, ans3, questionId1, questionId2, questionId3);
+			boolean isValid = parentService.validateAnswers(paramMap);
 			res.setContentType("text/plain");
 			String status = "Fail";
 			if (isValid) {
@@ -902,8 +927,11 @@ public class LoginController {
 		String sendEmailFlag = "0";
 		try {
 			String userName = (String) req.getParameter("username");
+			Map<String, Object> paramMap = new HashMap<String, Object>();			
 			if (userName != null) {
-				UserTO userTO = adminService.resetPassword(userName);
+				paramMap.put("username", userName);
+				paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+				UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
 						sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
@@ -942,7 +970,11 @@ public class LoginController {
 		try {
 			List<UserTO> userToList = new ArrayList<UserTO>();
 			String emailId = req.getParameter("emailId");
-			userToList = parentService.getUserNamesByEmail(emailId);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("emailId",emailId);
+			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			
+			userToList = parentService.getUserNamesByEmail(paramMap);
 			if (userToList != null && userToList.size()> 0) {
 				/*String jsonString = JsonUtil.convertToJsonAdmin(userToList);
 				res.setContentType("application/json");
@@ -991,9 +1023,12 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Validating Username");
 
 		try {
-			String username = req.getParameter("username");
+			//String username = req.getParameter("username");
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("username",req.getParameter("username"));
+			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 			// check username is available and the user is enabled
-			if (parentService.checkActiveUserAvailability(username)) {
+			if (parentService.checkActiveUserAvailability(paramMap)) {
 				res.setContentType("application/json");
 				res.getWriter().write("{\"status\":\"Success\", \"available\":\"" + "true" + "\"}");
 			} else {
