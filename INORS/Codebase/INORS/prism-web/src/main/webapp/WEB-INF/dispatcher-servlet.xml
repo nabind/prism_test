@@ -168,6 +168,7 @@
 			<list>
 				<value>classpath:messages</value>
 				<value>classpath:mapkeys</value>
+				<value>classpath:Bundle</value>
 			</list>
 		</property>
 	</bean>
