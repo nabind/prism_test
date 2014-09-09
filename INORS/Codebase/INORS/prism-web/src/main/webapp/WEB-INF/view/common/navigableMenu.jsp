@@ -6,14 +6,15 @@
 	<ul class="big-menu blue-gradient collapsible">
 	
 		<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
-		<li class="with-right-arrow" id="menu_${assessments.assessmentName}">
 			<c:choose>
 				<c:when test="${assessments.assessmentName == 'Manage'}">
 					<sec:authorize ifAnyGranted="ROLE_ADMIN">
+						<li class="with-right-arrow" id="menu_${assessments.assessmentName}">
 						<span>${assessments.assessmentName}</span>
 					</sec:authorize>
 				</c:when>
 				<c:otherwise>
+					<li class="with-right-arrow" id="menu_${assessments.assessmentName}">
 					<span>${assessments.assessmentName}</span>
 				</c:otherwise>
 			</c:choose>
