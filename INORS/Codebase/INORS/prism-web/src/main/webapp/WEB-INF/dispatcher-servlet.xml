@@ -163,7 +163,13 @@
 	<!-- Resource bundles | locale resolver -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="classpath:messages" />
+		<!-- <property name="basename" value="classpath:messages" /> -->
+		<property name="basenames">
+			<list>
+				<value>classpath:messages</value>
+				<value>classpath:mapkeys</value>
+			</list>
+		</property>
 	</bean>
 	<bean id="localeResolver"
 		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
