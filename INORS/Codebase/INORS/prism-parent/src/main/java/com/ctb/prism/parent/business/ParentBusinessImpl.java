@@ -49,8 +49,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#checkUserAvailability(java.lang.String)
 	 */
-	public boolean checkUserAvailability(String username) {
-		return parentDAO.checkUserAvailability(username);
+	public boolean checkUserAvailability(Map<String,Object> paramMap) {
+		return parentDAO.checkUserAvailability(paramMap);
 	}
 
 	/*

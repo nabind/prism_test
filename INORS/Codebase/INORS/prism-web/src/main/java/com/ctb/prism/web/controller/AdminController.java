@@ -1198,8 +1198,9 @@ public class AdminController {
 			paramMap.put("roleId", roleId);
 			paramMap.put("currentOrg", currentOrg);
 			paramMap.put("customer", customer);
+			paramMap.put("username", userName);
 			
-			if(!parentService.checkUserAvailability(userName)) {
+			if(!parentService.checkUserAvailability(paramMap)) {
 				logger.log(IAppLogger.INFO, "****Username matched with database****");	
 				if (!parentService.isRoleAlreadyTagged(roleId, userName)){
 					logger.log(IAppLogger.INFO, "****Role Already Tagged****");

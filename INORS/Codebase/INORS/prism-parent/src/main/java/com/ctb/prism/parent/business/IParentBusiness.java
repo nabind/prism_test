@@ -19,10 +19,10 @@ public interface IParentBusiness {
 	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap);
 
 	/**
-	 * @param username
+	 * @param paramMap
 	 * @return
 	 */
-	public boolean checkUserAvailability(String username);
+	public boolean checkUserAvailability(Map<String,Object> paramMap);
 
 	/**
 	 * @param username

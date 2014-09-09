@@ -135,19 +135,6 @@ public class ParentController {
 		// save user details
 		String userName = (String)req.getParameter("username");
 		String password = (String)req.getParameter("password"); 
-		/*if (password != null) {
-			if (password.equals(userName)) {
-				mv = new ModelAndView("parent/registration");
-				mv.addObject("errorMesage", "Password should not match with Username");
-				return mv;
-			}
-			if(!Utils.validatePassword(password)) {
-				mv = new ModelAndView("parent/registration");
-				mv.addObject("errorMesage", "Please provide some valid password");
-				return mv;
-			}
-		}*/
-		
 		String firstName = (String)req.getParameter("firstName");
 		String lastName = (String)req.getParameter("lastName");
 		String mailId = (String)req.getParameter("mail");
@@ -174,6 +161,7 @@ public class ParentController {
 		parentTO.setCountry(country);
 		parentTO.setInvitationCode(invitationCode);		
 		parentTO.setDisplayName(displayName);
+		parentTO.setContractName(Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 		
 		String qsn1 = (String)req.getParameter("qsn1");
 		String ans1 = (String)req.getParameter("ans1");
@@ -425,8 +413,13 @@ public class ParentController {
 
 		try {
 			String username = req.getParameter("username");
+			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("contractName", contractName);
+			paramMap.put("username", username);
+			
 			// check username availability
-			if(parentService.checkUserAvailability(username)) {
+			if(parentService.checkUserAvailability(paramMap)) {
 				res.setContentType("application/json");
 				res.getWriter().write( "{\"status\":\"Success\", \"available\":\""+"true"+"\"}" );				
 			}

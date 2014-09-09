@@ -49,31 +49,6 @@ public interface IParentQuery {
 			" (SELECT DISTINCT CPL.CUSTOMERID FROM CUST_PRODUCT_LINK CPL, INVITATION_CODE INV WHERE CPL.CUST_PROD_ID = INV.CUST_PROD_ID  AND INV.ACTIVATION_STATUS = 'AC' AND INV.INVITATION_CODE = ?),?,'N',",
 			" 'AC', SYSDATE, ?, ?)");
 	
-	//As INVITATION_CODE keeps school org_nodeid instead of class - See nex object - By Joy
-	/*public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
-			" SELECT ORG_USER_ID",
-			" FROM ORG_USERS OU",
-			" WHERE OU.USERID = ?",
-			" AND OU.ORG_NODEID =",
-			" (SELECT N.PARENT_ORG_NODEID",
-			" FROM INVITATION_CODE M, ORG_NODE_DIM N",
-			" WHERE M.ORG_NODEID = N.ORG_NODEID",
-			" AND M.INVITATION_CODE = ?)");*/
-	
-	//TODO - Need to delete
-	//As INVITATION_CODE keeps school org_nodeid instead of class - By Joy
-	public static final String CHECK_ORG_USER_PARENT = CustomStringUtil.appendString(
-			" SELECT OU.ORG_USER_ID",
-			" FROM ORG_USERS OU, INVITATION_CODE IC",
-			" WHERE OU.ORG_NODEID = IC.ORG_NODEID",
-			" AND OU.USERID = ?",
-			" AND IC.INVITATION_CODE = ?");
-	
-	
-	//TODO  - Need to delete
-	public static final String GET_USERID_PARENT = CustomStringUtil.appendString(
-			" SELECT USERID FROM USERS U WHERE UPPER(U.USERNAME) = UPPER(?)");
-	
 	public static final String INSERT_ORG_USER_PARENT = CustomStringUtil.appendString(
 			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID,ORG_NODEID,ORG_NODE_LEVEL,ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
 			" (?, ?,(SELECT M.ORG_NODEID FROM INVITATION_CODE M  WHERE M.INVITATION_CODE = ?),'3', ",

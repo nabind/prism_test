@@ -27,10 +27,10 @@ public interface IParentDAO {
 	/**
 	 * Check provided user availability.
 	 * 
-	 * @param username
+	 * @param paramMap
 	 * @return
 	 */
-	public boolean checkUserAvailability(String username);
+	public boolean checkUserAvailability(Map<String,Object> paramMap);
 
 	/**
 	 * Check provided user and activation status for forgot password.

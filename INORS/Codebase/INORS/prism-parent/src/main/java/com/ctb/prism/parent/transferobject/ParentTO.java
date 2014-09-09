@@ -39,6 +39,7 @@ public class ParentTO extends BaseTO {
 	private String icActivationStatus;
 	private long isAlreadyClaimed = 0;
 	private String fullName = "";
+	private String contractName = "";
 	
 	
 	public String getOrgName() {
@@ -208,6 +209,12 @@ public class ParentTO extends BaseTO {
 	}
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	public String getContractName() {
+		return contractName;
+	}
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 }
 

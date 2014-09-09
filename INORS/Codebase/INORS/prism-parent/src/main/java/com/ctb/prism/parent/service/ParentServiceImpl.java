@@ -37,8 +37,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#checkUserAvailability(java.lang.String)
 	 */
-	public boolean checkUserAvailability(String username) {
-		return parentBusiness.checkUserAvailability(username);
+	public boolean checkUserAvailability(Map<String,Object> paramMap) {
+		return parentBusiness.checkUserAvailability(paramMap);
 	}
 
 	/*

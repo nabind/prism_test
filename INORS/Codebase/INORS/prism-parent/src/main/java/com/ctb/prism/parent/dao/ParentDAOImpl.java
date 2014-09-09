@@ -82,10 +82,52 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#checkUserAvailability(java.lang.String)
 	 */
-	public boolean checkUserAvailability(String username) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
-		if (lstData == null || lstData.isEmpty()) {
-			return Boolean.TRUE;
+	public boolean checkUserAvailability(final Map<String,Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: checkUserAvailability()");
+		long t1 = System.currentTimeMillis();
+		final String username = (String)paramMap.get("username");
+		String contractName = (String) paramMap.get("contractName");
+		if(contractName == null) {
+			contractName = Utils.getContractName();
+		}
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+
+		String tempUsername = "";
+		try{
+			tempUsername = (String) getJdbcTemplatePrism(contractName).execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
+				            cs.setString(1, username);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsUsername = null;
+			        			String usernameResult = "";
+			        			try {
+									cs.execute();
+									rsUsername = (ResultSet) cs.getObject(2);
+									if(rsUsername.next()){
+										usernameResult = rsUsername.getString("USERNAME");
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return usernameResult;
+				        }
+				    });
+			if("".equals(tempUsername)){
+				return Boolean.TRUE;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: checkUserAvailability() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
 		return Boolean.FALSE;
 	}
@@ -252,90 +294,98 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
 	public boolean registerUser(ParentTO parentTO) throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: registerUser()");
+		long t1 = System.currentTimeMillis();
+		final String userName = parentTO.getUserName();
+		final String userDisplayName =  parentTO.getDisplayName();
+		final String emailId =  parentTO.getMail();
+		final String isFirstTimeLogin =  parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N;
+		String salt = PasswordGenerator.getNextSalt();
+		final String password = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt));
+		final String invitaionCode = parentTO.getInvitationCode();
+		final String mobileNo = parentTO.getMobile();
+		final String country = parentTO.getCountry();
+		final String zip = parentTO.getZipCode();
+		final String street = parentTO.getStreet();
+		final String city = parentTO.getCity();
+		final String state = parentTO.getState();
+		final String lastName = parentTO.getLastName();
+		final String firstName = parentTO.getFirstName();
 		
+		String contractName = parentTO.getContractName();
+		if(contractName == "") {
+			contractName = Utils.getContractName();
+		}
+		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+		
+		String userId = "";
+		try{
 			
-	
-				// insert user with password into DAO
-				final String userName = parentTO.getUserName();
-				final String userDisplayName =  parentTO.getDisplayName();
-				final String emailId =  parentTO.getMail();
-				final String isFirstTimeLogin =  parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N;
+			userId = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+				int count =1;
 				String salt = PasswordGenerator.getNextSalt();
-				final String password = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt));
-				final String invitaionCode = parentTO.getInvitationCode();
-				
-				final String mobileNo = parentTO.getMobile();
-				final String country = parentTO.getCountry();
-				final String zip = parentTO.getZipCode();
-				final String street = parentTO.getStreet();
-				final String city = parentTO.getCity();
-				final String state = parentTO.getState();
-				
-				final String lastName = parentTO.getLastName();
-				final String firstName = parentTO.getFirstName();
-				
-				
-				logger.log(IAppLogger.INFO, "Add User");
-				
-				String userId = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-					int count =1;
-					String salt = PasswordGenerator.getNextSalt();
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall("{call " +IQueryConstants.CREATE_PARENT + "}");
-						cs.setString(count++, userName);
-						cs.setString(count++, userDisplayName);
-						cs.setString(count++, emailId);
-						cs.setString(count++, IApplicationConstants.ACTIVE_FLAG);
-						cs.setString(count++, isFirstTimeLogin);
-						cs.setString(count++, password);
-						cs.setString(count++, salt);
-						cs.setString(count++, IApplicationConstants.FLAG_N);
-						cs.setString(count++, invitaionCode);
-						cs.setString(count++, mobileNo);
-						cs.setString(count++, country);
-						cs.setString(count++, zip);
-						cs.setString(count++, street);
-						cs.setString(count++, city);
-						cs.setString(count++, state);
-						cs.setString(count++, lastName);
-						cs.setString(count++, firstName);
-						cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-						cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						String strUserId = null; 
-						try {
-							cs.execute();
-							strUserId =  cs.getString(18);
-							if( cs.getString(19) != null &&  cs.getString(19).trim().length() > 0) {
-								logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(19));
-								return null;
-							} else if(strUserId!=null && strUserId.equals("0")){ 
-								logger.log(IAppLogger.DEBUG, "User already exists");
-						    } else {
-								logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
-								logger.log(IAppLogger.INFO, "User added : " + strUserId);
-							}
-							
-						} catch (SQLException e) {
-							e.printStackTrace();
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " +IQueryConstants.CREATE_PARENT + "}");
+					cs.setString(count++, userName);
+					cs.setString(count++, userDisplayName);
+					cs.setString(count++, emailId);
+					cs.setString(count++, IApplicationConstants.ACTIVE_FLAG);
+					cs.setString(count++, isFirstTimeLogin);
+					cs.setString(count++, password);
+					cs.setString(count++, salt);
+					cs.setString(count++, IApplicationConstants.FLAG_N);
+					cs.setString(count++, invitaionCode);
+					cs.setString(count++, mobileNo);
+					cs.setString(count++, country);
+					cs.setString(count++, zip);
+					cs.setString(count++, street);
+					cs.setString(count++, city);
+					cs.setString(count++, state);
+					cs.setString(count++, lastName);
+					cs.setString(count++, firstName);
+					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					String strUserId = null; 
+					try {
+						cs.execute();
+						strUserId =  cs.getString(18);
+						if( cs.getString(19) != null &&  cs.getString(19).trim().length() > 0) {
+							logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(19));
+							return null;
+						} else if(strUserId!=null && strUserId.equals("0")){ 
+							logger.log(IAppLogger.DEBUG, "User already exists");
+					    } else {
+							logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
+							logger.log(IAppLogger.INFO, "User added with userid: " + strUserId);
 						}
-						return strUserId;
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
-				});
-				
-				
+					return strUserId;
+				}
+			});
+					
+					
 			if (userId != null && userId.trim().length() > 0 && !userId.equals("0")) {
 				boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(Long.valueOf(userId), parentTO.getQuestionToList());
-	
+
 				if (isSavedPasswordHistAnswer) {
 					return Boolean.TRUE;
 				}
 			}
 			
-			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: registerUser() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
 		return Boolean.FALSE;
 	}
 
@@ -379,13 +429,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	/**
 	 * Save Password hint answer.
-	 * 
 	 * @param userid
 	 * @param questionToList
 	 * @return
 	 */
-	public boolean savePasswordHistAnswer(long userid, List<QuestionTO> questionToList) {
-		// TODO : Code Review : Not an Interface method but has public method access
+	private boolean savePasswordHistAnswer(long userid, List<QuestionTO> questionToList) {
+		//TODO - Need batch update
 		int count = 0;
 		long answerCount = getJdbcTemplatePrism().queryForLong(IQueryConstants.CHECK_FOR_EXISTING_ANSWER, userid);
 		logger.log(IAppLogger.DEBUG, "answerCount................" + answerCount);
@@ -1159,11 +1208,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setRowIndentifier(rs.getString("ROWIDENTIFIER"));
 							studentTO.setGrade(rs.getString("STUDENTGRADE"));
 							studentTO.setClikedOrgId(Long.parseLong(tenantId));
-							
-							//TODO Need to omit two lins after testing
-							//studentTO.setInvitationcode(rs.getString("INVITATIONCODE"));
-							//studentTO.setActivationStatus(rs.getString("ACTIVATIONSTATUS"));
-							
 							studentTOResult.add(studentTO);
 						}
 						
@@ -1607,6 +1651,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 
 	/**
+	 * TODO
 	 * Get OrgUserId depending upon student's school and parent userid. Add a record if the data does not exists.
 	 * Fix for TD 78161
 	 * @author Joy
@@ -1622,8 +1667,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		long orgUserid = 0;
 		
 		try{
-			long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
+			//long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
+			long userid = 0;
+			//List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.ADMIN_YEAR_LIST, userid, invitationCode);
 			if (lstData.size() > 0) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
@@ -1643,38 +1690,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 	
 	
-	//TODO - Need to delete
-	/**
-	 * Get OrgUserId depending upon student's school and parent userid. 
-	 * @param paramMap
-	 * @return
-	 */
-	private long getParentOrgUserId(final Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getOrgUserId()");
-		long t1 = System.currentTimeMillis();
-		
-		String userName = (String) paramMap.get("userName");
-		String invitationCode = (String) paramMap.get("invitationCode");
-		long orgUserid = 0;
-		
-		try{
-			long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
-			if (lstData.size() > 0) {
-				for (Map<String, Object> fieldDetails : lstData) {
-					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
-				}
-			} 
-		}catch(Exception e){
-			logger.log(IAppLogger.INFO, "Exception: userName is blank "+e.getMessage());
-		}finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getOrgUserId() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return orgUserid;
-	}
-
-
 	/*
 	 * (non-Javadoc)
 	 * 
