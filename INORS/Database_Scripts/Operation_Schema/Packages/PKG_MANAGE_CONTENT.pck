@@ -50,6 +50,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_CONTENT AS
                                    P_IN_SUBTESTID             IN SUBTEST_DIM.SUBTESTID%TYPE,
                                    P_IN_OBJECTIVEID           IN OBJECTIVE_DIM.OBJECTIVEID%TYPE,
                                    P_IN_CATEGORY_TYPE         IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+								   P_IN_MORE_COUNT            IN NUMBER,
                                    P_OUT_CUR_METADATA_DETAILS OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2);
 
@@ -58,6 +59,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_CONTENT AS
                                         P_IN_OBJECTIVEID           IN OBJECTIVE_DIM.OBJECTIVEID%TYPE,
                                         P_IN_LASTID                IN ARTICLE_METADATA.ARTICLEID%TYPE,
                                         P_IN_CATEGORY_TYPE         IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+										P_IN_MORE_COUNT            IN NUMBER,
                                         P_OUT_CUR_METADATA_DETAILS OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2);
 
@@ -774,6 +776,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                                    P_IN_SUBTESTID             IN SUBTEST_DIM.SUBTESTID%TYPE,
                                    P_IN_OBJECTIVEID           IN OBJECTIVE_DIM.OBJECTIVEID%TYPE,
                                    P_IN_CATEGORY_TYPE         IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+								   P_IN_MORE_COUNT            IN NUMBER,
                                    P_OUT_CUR_METADATA_DETAILS OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2) IS
 
@@ -804,7 +807,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                  AND META.GRADEID = DIM.GRADEID
                  AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
                ORDER BY META.ARTICLEID)
-       WHERE ROWNUM <= 15;
+       WHERE ROWNUM <= P_IN_MORE_COUNT;
 
   EXCEPTION
     WHEN OTHERS THEN
@@ -817,6 +820,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                                         P_IN_OBJECTIVEID           IN OBJECTIVE_DIM.OBJECTIVEID%TYPE,
                                         P_IN_LASTID                IN ARTICLE_METADATA.ARTICLEID%TYPE,
                                         P_IN_CATEGORY_TYPE         IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+										P_IN_MORE_COUNT            IN NUMBER,
                                         P_OUT_CUR_METADATA_DETAILS OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG        OUT VARCHAR2) IS
 
@@ -848,7 +852,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                  AND META.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
                  AND META.ARTICLEID > P_IN_LASTID
                ORDER BY META.ARTICLEID)
-       WHERE ROWNUM <= 15;
+       WHERE ROWNUM <= P_IN_MORE_COUNT;
 
   EXCEPTION
     WHEN OTHERS THEN

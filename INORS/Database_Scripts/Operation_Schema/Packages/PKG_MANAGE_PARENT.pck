@@ -12,6 +12,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_PARENT AS
                                   P_IN_USERNAME       IN VARCHAR,
                                   P_IN_SEARCH_PARAM   IN VARCHAR,
                                   P_IN_ROLEID         IN USER_ROLE.ROLEID%TYPE,
+								  P_IN_MORE_COUNT     IN NUMBER,
                                   P_OUT_CUR           OUT GET_REFCURSOR,
                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
@@ -35,6 +36,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_PARENT AS
                                   P_IN_USERNAME       IN VARCHAR,
                                   P_IN_SEARCH_PARAM   IN VARCHAR,
                                   P_IN_ROLEID         IN USER_ROLE.ROLEID%TYPE,
+								  P_IN_MORE_COUNT     IN NUMBER,
                                   P_OUT_CUR           OUT GET_REFCURSOR,
                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
@@ -78,7 +80,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_PARENT AS
                        UPPER(USR.LAST_NAME) LIKE UPPER(P_IN_SEARCH_PARAM) OR
                        UPPER(USR.FIRST_NAME) LIKE UPPER(P_IN_SEARCH_PARAM))
                  ORDER BY UPPER(USR.USERNAME)) ABC
-         WHERE ROWNUM <= 15
+         WHERE ROWNUM <= P_IN_MORE_COUNT
          ORDER BY UPPER(ABC.USERNAME);
     
     ELSIF P_IN_USERNAME <> '-99' AND P_IN_SEARCH_PARAM = '-99' THEN
@@ -117,7 +119,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_PARENT AS
                            AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
                    AND UPPER(USR.USERNAME) > UPPER(P_IN_USERNAME)
                  ORDER BY UPPER(USR.USERNAME)) ABC
-         WHERE ROWNUM <= 15
+         WHERE ROWNUM <= P_IN_MORE_COUNT
          ORDER BY UPPER(ABC.USERNAME);
     
     ELSIF P_IN_USERNAME = '-99' AND P_IN_SEARCH_PARAM = '-99' THEN
@@ -155,7 +157,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_PARENT AS
                          WHERE OPL.ORG_NODEID = HIER.ORG_NODEID
                            AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
                  ORDER BY UPPER(USR.USERNAME)) ABC
-         WHERE ROWNUM <= 15
+         WHERE ROWNUM <= P_IN_MORE_COUNT
          ORDER BY UPPER(ABC.USERNAME);
     
     END IF;
