@@ -22,6 +22,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_STUDENT AS
                                    P_IN_ORG_NODE_ID    IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                    P_IN_STUDENTNAME_ID IN VARCHAR,
                                    P_IN_SEARCH_PARAM   IN VARCHAR,
+								   P_IN_MORE_COUNT     IN NUMBER,
                                    P_OUT_CUR           OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
@@ -152,6 +153,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                                    P_IN_ORG_NODE_ID    IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                    P_IN_STUDENTNAME_ID IN VARCHAR,
                                    P_IN_SEARCH_PARAM   IN VARCHAR,
+                                   P_IN_MORE_COUNT     IN NUMBER,
                                    P_OUT_CUR           OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
@@ -164,6 +166,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                STU.TESTELEMENTID  AS TESTELEMENTID,
                STU.INTSTUDENTID   AS INTSTUDENTID,
                STU.EXTSTUDENTID   AS EXTSTUDENTID,
+               STU.STUDENT_MODE   AS STUDENT_MODE,
                STU.STUDENTGRADE   AS STUDENTGRADE,
                STU.SCHOOL         AS SCHOOL,
                P_IN_ORG_NODE_ID   AS TENANTID
@@ -173,6 +176,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                        ST.TESTELEMENTID,
                        ST.INTSTUDENTID,
                        ST.EXTSTUDENTID,
+                       ST.STUDENT_MODE,
                        GRD.GRADE_NAME AS STUDENTGRADE,
                        ORG.ORG_NODE_NAME AS SCHOOL
                   FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||
@@ -213,7 +217,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                          WHERE OPL.ORG_NODEID = ORG.ORG_NODEID
                            AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
                  ORDER BY ST.ROWIDENTIFIER) STU
-         WHERE ROWNUM <= 15;
+         WHERE ROWNUM <= P_IN_MORE_COUNT;
     ELSIF P_IN_STUDENTNAME_ID <> '-99' AND P_IN_SEARCH_PARAM = '-99' THEN
       OPEN P_OUT_CUR FOR
         SELECT STU.ROWIDENTIFIER  AS ROWIDENTIFIER,
@@ -222,6 +226,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                STU.TESTELEMENTID  AS TESTELEMENTID,
                STU.INTSTUDENTID   AS INTSTUDENTID,
                STU.EXTSTUDENTID   AS EXTSTUDENTID,
+               STU.STUDENT_MODE   AS STUDENT_MODE,
                STU.STUDENTGRADE   AS STUDENTGRADE,
                STU.SCHOOL         AS SCHOOL,
                P_IN_ORG_NODE_ID   AS TENANTID
@@ -231,6 +236,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                        ST.TESTELEMENTID,
                        ST.INTSTUDENTID,
                        ST.EXTSTUDENTID,
+                       ST.STUDENT_MODE,
                        GRD.GRADE_NAME AS STUDENTGRADE,
                        ORG.ORG_NODE_NAME AS SCHOOL
                   FROM (SELECT STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||
@@ -271,7 +277,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                          WHERE OPL.ORG_NODEID = ORG.ORG_NODEID
                            AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
                  ORDER BY ST.ROWIDENTIFIER) STU
-         WHERE ROWNUM <= 15;
+         WHERE ROWNUM <= P_IN_MORE_COUNT;
     ELSIF P_IN_STUDENTNAME_ID = '-99' AND P_IN_SEARCH_PARAM = '-99' THEN
       OPEN P_OUT_CUR FOR
         SELECT *
@@ -308,7 +314,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                          WHERE OPL.ORG_NODEID = ORG.ORG_NODEID
                            AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
                  ORDER BY ROWIDENTIFIER)
-         WHERE ROWNUM <= 15;
+         WHERE ROWNUM <= P_IN_MORE_COUNT;
     END IF;
   
   EXCEPTION
