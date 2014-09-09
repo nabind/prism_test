@@ -613,7 +613,7 @@ $(document).ready(function() {
 			dataType : "json",
 			cache:false,
 			success : function(data){
-				if (data != null && data.length > 14){
+				if (data != null && data.length >= moreCount){
 					$(".pagination").show(200);
 					$("#moreStudent").removeClass("disabled");
 					if($.browser.msie) $("#moreStudent").removeClass("disabled-ie");

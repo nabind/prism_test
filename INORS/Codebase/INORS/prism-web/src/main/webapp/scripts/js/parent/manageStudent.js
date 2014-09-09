@@ -52,7 +52,7 @@ $(document).ready(function() {
 								//$("#moreStudent").attr("disabled");
 								unblockUI();
 							}
-							if (data != null && data.length < 14) {
+							if (data != null && data.length < moreCount) {
 								// check if this is the last set of result
 								$("#moreStudent").addClass("disabled");
 								if($.browser.msie) $("#moreStudent").addClass("disabled-ie");
@@ -401,7 +401,7 @@ function confirmRecreationAC(rowcounter)
 						if(data.length >= 1){
 							showHideDataTable('show');
 						}
-						if (data != null && data.length > 14){
+						if (data != null && data.length >= moreCount){
 							$(".pagination").show(200);
 							$("#moreStudent").removeClass("disabled");
 							if($.browser.msie) $("#moreStudent").removeClass("disabled-ie");
@@ -418,7 +418,7 @@ function confirmRecreationAC(rowcounter)
 						enableSorting(true);
 						$("#isRedirectedTree").val("No");
 						$("tbody#student_details").removeClass("loader big");				
-						if (data != null && data.length > 14){
+						if (data != null && data.length >= moreCount){
 							$("#moreParent").removeClass("disabled");
 							if($.browser.msie) $("#moreParent").removeClass("disabled-ie");
 						} else {

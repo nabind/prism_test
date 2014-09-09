@@ -66,7 +66,7 @@ $(document).ready(function() {
 						retainUniqueValue();
 						unblockUI();
 					}
-					if (data != null && data.length < 14) {
+					if (data != null && data.length < moreCount) {
 						//$("#moreRole").addClass("disabled");
 						if($.browser.msie) $("#moreRole").addClass("disabled-ie");
 					}

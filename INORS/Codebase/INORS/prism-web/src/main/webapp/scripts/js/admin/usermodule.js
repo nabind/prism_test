@@ -62,7 +62,7 @@
 								retainUniqueValue();
 								unblockUI();
 							}
-							if (data != null && data.length < 14) {
+							if (data != null && data.length < moreCount) {
 								// check if this is the last set of result
 								$("#moreUser").addClass("disabled");
 								if($.browser.msie) $("#moreUser").addClass("disabled-ie");
@@ -550,7 +550,7 @@
 					if(data != null && data.length >= 1){
 						showHideDataTable('show');
 					}
-					if (data != null && data.length > 14){
+					if (data != null && data.length >= moreCount){
 						$(".pagination").show(200);
 					} else {
 						$(".pagination").hide(200);
@@ -558,7 +558,7 @@
 					getUserDetails(true, data);
 					enableSorting(true);
 					$("tbody#user_details").removeClass("loader big");				
-					if (data != null && data.length > 14){
+					if (data != null && data.length >= moreCount){
 						$("#moreUser").removeClass("disabled");
 						if($.browser.msie) $("#moreUser").removeClass("disabled-ie");
 					} else {
@@ -892,7 +892,7 @@
 					updateOrgNameHeading("-1");
 					unblockUI();
 				}
-				if (data != null && data.length < 14) {
+				if (data != null && data.length < moreCount) {
 					// check if this is the last set of result
 					$("#moreUser").addClass("disabled");
 					if($.browser.msie) $("#moreUser").addClass("disabled-ie");

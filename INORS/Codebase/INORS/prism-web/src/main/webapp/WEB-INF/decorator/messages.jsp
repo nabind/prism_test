@@ -3,6 +3,7 @@
 <c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 <script type="text/javascript">
+	var moreCount = "<spring:message code='count.results.button.more' javaScriptEscape='true' />";
 	var strings = new Array();
 	strings['script.common.error'] = "<spring:message code='script.common.error' javaScriptEscape='true' />";
 	strings['script.common.error1'] = "<spring:message code='script.common.error1' javaScriptEscape='true' />";

@@ -158,7 +158,7 @@ $(document).ready(function() {
 						retainUniqueValue();
 						unblockUI();
 					}
-					if (data != null && data.length < 14) {
+					if (data != null && data.length < moreCount) {
 						// check if this is the last set of result
 						$("#moreContents").addClass("disabled");
 						if($.browser.msie) $("#moreContents").addClass("disabled-ie");
@@ -943,7 +943,7 @@ function loadManageContentList() {
 			cache:false,
 			success : function(data) {
 				$('#contentTableDiv').show();
-				if (data != null && data != "" && data.length > 14){
+				if (data != null && data != "" && data.length >= moreCount){
 					$("#moreDiv").show(ANIMATION_TIME);
 					$("#moreContents").removeClass("disabled");
 					if($.browser.msie) $("#moreContents").removeClass("disabled-ie");

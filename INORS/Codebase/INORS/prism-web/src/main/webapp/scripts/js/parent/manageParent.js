@@ -36,7 +36,7 @@
 					sortList: [[0,1]]*/
 				});
 			}
-			if(parents != null && parents.length < 15) {
+			if(parents != null && parents.length < moreCount) {
 				// hide more button if the parent list is less than 15
 				$(".pagination").hide(200);
 			}
@@ -74,7 +74,7 @@
 								if($.browser.msie) $("#moreParent").addClass("disabled-ie");
 								unblockUI();
 							}
-							if (data != null && data.length < 14) {
+							if (data != null && data.length < moreCount) {
 								// check if this is the last set of result
 								$("#moreParent").addClass("disabled");
 								if($.browser.msie) $("#moreParent").addClass("disabled-ie");
@@ -211,7 +211,7 @@
 				if(data.length >= 1){
 					showHideDataTable('show');
 				}
-				if (data != null && data.length > 14){
+				if (data != null && data.length >= moreCount){
 					$(".pagination").show(200);
 					$("#moreParent").removeClass("disabled");
 					if($.browser.msie) $("#moreParent").removeClass("disabled-ie");
@@ -489,7 +489,7 @@
 			success : function(data){
 				unblockUI();
 				if ( data != null || data != "") {
-					if(data.length < 15) {
+					if(data.length < moreCount) {
 						// hide more button if the parent list is less than 15
 						$(".pagination").hide(200);
 					} else {
@@ -590,7 +590,7 @@
 			success : function(data){
 				unblockUI();
 				if ( data != null || data != "") {
-					if(data.length < 15) {
+					if(data.length < moreCount) {
 						// hide more button if the parent list is less than 15
 						$(".pagination").hide(200);
 					} else {

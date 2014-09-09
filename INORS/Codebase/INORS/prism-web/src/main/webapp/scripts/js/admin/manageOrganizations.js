@@ -22,7 +22,7 @@ $(document).ready(function() {
 		$("ul#shortcuts li").removeClass("current");
 		$(".shortcut-settings").parent().addClass("current");
 		var orgCount = $("tbody#org_details").find("tr");
-		if(orgCount != null && orgCount.length > 14) {
+		if(orgCount != null && orgCount.length >= moreCount) {
 			$(".pagination").show(200);
 			$("#moreOrg").removeClass("disabled");
 			if($.browser.msie) $("#moreOrg").removeClass("disabled-ie");
@@ -59,7 +59,7 @@ $(document).ready(function() {
 							$("#moreOrg").addClass("disabled");
 							if($.browser.msie) $("#moreOrg").addClass("disabled-ie");
 						}
-						if (data != null && data.length < 14) {
+						if (data != null && data.length < moreCount) {
 							// check if this is the last set of result
 							$("#moreOrg").addClass("disabled");
 							if($.browser.msie) $("#moreOrg").addClass("disabled-ie");
@@ -175,7 +175,7 @@ $(document).ready(function() {
 					if(data.length >= 1){
 						showHideDataTable('show');
 					}
-					if (data != null && data.length > 14){
+					if (data != null && data.length >= moreCount){
 						$(".pagination").show(200);
 						$("#moreOrg").removeClass("disabled");
 						if($.browser.msie) $("#moreOrg").removeClass("disabled-ie");
@@ -199,7 +199,7 @@ $(document).ready(function() {
 		// create child hierarchy DOM and update the sliding tree
 		function updateOrgTree(id, data) {
 			var content = '';
-			if(data.length > 14) {
+			if(data.length >= moreCount) {
 				$("#moreOrg").removeClass("disabled");
 				if($.browser.msie) $("#moreOrg").removeClass("disabled-ie");
 			} else {
@@ -307,7 +307,7 @@ $(document).ready(function() {
 				success : function(data){
 					unblockUI();
 					//$(".pagination").hide(200);
-					if (data != null && data.length > 14){
+					if (data != null && data.length >= moreCount){
 						$(".pagination").show(200);
 						$("#moreStudent").removeClass("disabled");
 						if($.browser.msie) $("#moreStudent").removeClass("disabled-ie");
