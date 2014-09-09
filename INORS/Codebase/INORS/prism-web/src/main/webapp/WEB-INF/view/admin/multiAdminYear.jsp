@@ -18,7 +18,7 @@ String currentOrg = (String) request.getSession().getAttribute(IApplicationConst
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
 	<input type="hidden" value="<%=currentOrg %>" name="CurrentOrg" id="CurrentOrg">
-	<div class="float-left">
+	<div class="float-right">
 		<fmt:message var="MANAGE_ORG_SELECT_ADMIN" key="manage.orgs.admin"  />
 		<c:if test="${not empty actionMap[MANAGE_ORG_SELECT_ADMIN]}">
 			<select style="width: 100px;" name="AdminYear" id="AdminYear" 
