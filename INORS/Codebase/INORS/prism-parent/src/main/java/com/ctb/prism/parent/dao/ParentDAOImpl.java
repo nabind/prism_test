@@ -569,15 +569,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return studentList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * Moved to PKG_MANAGE_PARENT by Joy
-	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String)
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<ParentTO> getParentList(final String orgId, final String adminYear, final String searchParam, final String orgMode) {
+	public ArrayList<ParentTO> getParentList(final String orgId, final String adminYear, final String searchParam, final String orgMode, final String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
@@ -585,7 +582,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			parentTOs = (ArrayList<ParentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = null;
-					cs = con.prepareCall("{call " + IQueryConstants.GET_PARENT_DETAILS_MANAGE_PARENT + "}");
+					cs = con.prepareCall(IQueryConstants.GET_PARENT_DETAILS_MANAGE_PARENT);
 					if (orgId.indexOf("_") > 0) {
 						String userName = orgId.substring((orgId.indexOf("_") + 1), orgId.length());
 						String tenantId = orgId.substring(0, orgId.indexOf("_"));
@@ -601,8 +598,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(4, userName);
 							cs.setString(5, searchParamNew);
 							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
-							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(7, Long.parseLong(moreCount));
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 						} else {
 							logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
 							logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
@@ -613,8 +611,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(4, userName);
 							cs.setString(5, "-99");
 							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
-							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(7, Long.parseLong(moreCount));
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					} else {
@@ -627,8 +626,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(4, "-99");
 						cs.setString(5, "-99");
 						cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(7, Long.parseLong(moreCount));
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 					}
 					return cs;
 				}
@@ -638,7 +638,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ArrayList<ParentTO> parentTOResult = new ArrayList<ParentTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(7);
+						rs = (ResultSet) cs.getObject(8);
 						ParentTO parentTO = null;
 						while (rs.next()){
 							parentTO = new ParentTO();
@@ -652,10 +652,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							parentTO.setLastLoginAttempt(rs.getString("LAST_LOGIN_ATTEMPT"));
 							parentTOResult.add(parentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(8));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getParentList() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(9));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -683,7 +680,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public ArrayList<ParentTO> searchParent(final String parentName, final String tenantId, final String adminYear, final String isExactSeacrh, final String orgMode) {
 
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchParent()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 
 		ArrayList<ParentTO> parentTOs = new ArrayList<ParentTO>();
@@ -743,10 +739,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							parentTO.setLastLoginAttempt(rs.getString("LAST_LOGIN_ATTEMPT"));
 							parentTOResult.add(parentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(9));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchParent() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(9));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -773,7 +766,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public String searchParentAutoComplete(final String parentName,final String tenantId,final String adminYear,final String orgMode) {
 
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchParentAutoComplete()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		String parentListJsonString = null;
@@ -810,10 +802,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							parentTO.setFullName(rs.getString("FULLNAME"));
 							parentTOResult.add(parentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(9));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchParentAutoComplete() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(9));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -849,7 +838,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Cacheable(value="adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		final String orgId = (String) paramMap.get("scrollId");
@@ -857,6 +845,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final String searchParam = (String) paramMap.get("searchParam");
 		final long customerId = (Long) paramMap.get("currCustomer");
 		final String orgMode = (String) paramMap.get("orgMode");
+		final String moreCount = (String) paramMap.get("moreCount");
 
 		ArrayList<StudentTO> studentTOs = null;
 		try {
@@ -868,39 +857,42 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						String studentNameAndId = orgId.substring(0, orgId.lastIndexOf("|"));
 						if (searchParam != null && searchParam.trim().length() > 0) {
 							String searchParamNew = CustomStringUtil.appendString("%", searchParam, "%");
-							cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+							cs = con.prepareCall(IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT);
 							cs.setString(1, adminYear);
 							cs.setLong(2,customerId);
 							cs.setString(3, orgMode);
 							cs.setLong(4, Long.parseLong(tenantId));
 							cs.setString(5, studentNameAndId);
 							cs.setString(6, searchParamNew);
-							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(7, Long.valueOf(moreCount));
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						} else {
-							cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+							cs = con.prepareCall(IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT);
 							cs.setString(1, adminYear);
 							cs.setLong(2,customerId);
 							cs.setString(3, orgMode);
 							cs.setLong(4, Long.parseLong(tenantId));
 							cs.setString(5, studentNameAndId);
 							cs.setString(6, "-99");
-							cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.setLong(7, Long.valueOf(moreCount));
+							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					} else {
 						String tenantId = orgId;
-						cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT + "}");
+						cs = con.prepareCall(IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT);
 						cs.setString(1, adminYear);
 						cs.setLong(2,customerId);
 						cs.setString(3, orgMode);
 						cs.setLong(4, Long.parseLong(tenantId));
 						cs.setString(5, "-99");
 						cs.setString(6, "-99");
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);							
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(7, Long.valueOf(moreCount));
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}
@@ -910,7 +902,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ArrayList<StudentTO> studentTOResult = new ArrayList<StudentTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(7);
+						rs = (ResultSet) cs.getObject(8);
 						StudentTO studentTO = null;
 						while (rs.next()){
 							studentTO = new StudentTO();
@@ -926,10 +918,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
 							studentTOResult.add(studentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(8));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getStudentList() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(9));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -952,7 +941,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@SuppressWarnings("unchecked")
 	private ArrayList<ParentTO> getParentAccountDetailsByTestElementId(final String testElementId,final long customerId) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getParentAccountDetailsByTestElementId()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		//If no parent found for associated student the the method will return empty object of ArrayList
@@ -983,10 +971,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 								parentTO.setStatus(rs.getString("STATUS"));
 								parentTOResult.add(parentTO);
 							}
-							
-							statusTO.setErrorMsg(cs.getString(4));
-							logger.log(IAppLogger.ERROR, "ParentDAOImpl - getParentAccountDetailsByTestElementId() with error: " + statusTO.getErrorMsg());
-							
+							Utils.logError(cs.getString(4));
 						} catch (SQLException e) {
 							e.printStackTrace();
 						} catch (Exception e) {
@@ -1014,7 +999,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@SuppressWarnings("unchecked")
 	public String searchStudentAutoComplete(final String studentName,final String tenantId, final String adminyear, final long customerId, final String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudentAutoComplete()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		String studentListJsonString = null;
@@ -1057,10 +1041,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
 							studentTOResult.add(studentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(8));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudentAutoComplete() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(8));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -1095,7 +1076,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@SuppressWarnings("unchecked")
 	public ArrayList<StudentTO> searchStudent(final String studentName,final String tenantId,final String adminyear,final long customerId,final String orgMode) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudent()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 
 		ArrayList<StudentTO> studentTOs = new ArrayList<StudentTO>();
@@ -1137,10 +1117,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setClikedOrgId(rs.getLong("TENANTID"));
 							studentTOResult.add(studentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(8));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudent() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(8));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -1167,7 +1144,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public ArrayList<StudentTO> searchStudentOnRedirect(Map<String, Object> paramMap) {
 		
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - searchStudentOnRedirect()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 		
 		final String tesElementId = (String) paramMap.get("studentBioId");
@@ -1210,9 +1186,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setClikedOrgId(Long.parseLong(tenantId));
 							studentTOResult.add(studentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(4));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - searchStudentOnRedirect() with error: " + statusTO.getErrorMsg());
+						Utils.logError(cs.getString(4));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -1239,7 +1213,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public List<StudentTO> getAssessmentList(final String testElementId) {
 
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getAssessmentList()");
-		final com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 		long t1 = System.currentTimeMillis();
 
 		ArrayList<StudentTO> studentAssessmentList = null;
@@ -1272,10 +1245,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setTotalAvailableClaim(rs.getLong("TOTAL_AVAILABLE"));
 							studentTOResult.add(studentTO);
 						}
-						
-						statusTO.setErrorMsg(cs.getString(3));
-						logger.log(IAppLogger.ERROR, "ParentDAOImpl - getAssessmentList() with error: " + statusTO.getErrorMsg());
-						
+						Utils.logError(cs.getString(3));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -1326,6 +1296,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(5));
+						Utils.logError(cs.getString(5));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1733,6 +1704,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(3);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(4));
+						Utils.logError(cs.getString(4));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1949,9 +1921,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(12);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
-						if(cs.getString(13)!= null && cs.getString(13).length() > 0) {
-							logger.log(IAppLogger.ERROR, "Error while adding Content "+ cs.getString(13));
-						}
+						Utils.logError(cs.getString(13));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1982,29 +1952,32 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final long objectiveId = Long.parseLong((String) paramMap.get("objectiveId"));
 		final String contentTypeId = (String) paramMap.get("contentTypeId");
 		final String checkFirstLoad = (String) paramMap.get("checkFirstLoad");
+		final String moreCount = (String) paramMap.get("moreCount");
 
 		try {
 			manageContentList = (List<ManageContentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					if (checkFirstLoad.equals("true")) {
-						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST + "}");
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_MANAGE_CONTENT_LIST);
 						cs.setLong(1, custProdId);
 						cs.setLong(2, subtestId);
 						cs.setLong(3, objectiveId);
 						cs.setString(4, contentTypeId);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(5, Long.valueOf(moreCount));
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					} else {
 						final long lastid = Long.parseLong((String) paramMap.get("lastid"));
-						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_LIST_MORE + "}");
+						CallableStatement cs = con.prepareCall(IQueryConstants.GET_MANAGE_CONTENT_LIST_MORE);
 						cs.setLong(1, custProdId);
 						cs.setLong(2, subtestId);
 						cs.setLong(3, objectiveId);
 						cs.setLong(4, lastid);
 						cs.setString(5, contentTypeId);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(6, Long.valueOf(moreCount));
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}
@@ -2015,9 +1988,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					try {
 						cs.execute();
 						if (checkFirstLoad.equals("true")) {
-							rs = (ResultSet) cs.getObject(5);
-						} else {
 							rs = (ResultSet) cs.getObject(6);
+							Utils.logError(cs.getString(7));
+						} else {
+							rs = (ResultSet) cs.getObject(7);
+							Utils.logError(cs.getString(8));
 						}
 
 						while (rs.next()) {
@@ -2129,6 +2104,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(6);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
+						Utils.logError(cs.getString(7));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -2173,6 +2149,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						executionStatus = cs.getLong(2);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
+						Utils.logError(cs.getString(3));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

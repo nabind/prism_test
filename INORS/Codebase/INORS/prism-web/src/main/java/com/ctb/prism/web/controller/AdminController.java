@@ -510,6 +510,8 @@ public class AdminController {
 		Map<String,Object> paramUserMap = new HashMap<String,Object>(); ; 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+		String moreCount = propertyLookup.get("count.results.button.more");
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 		
 		//List<ObjectValueTO> adminList = null;
 		try {
@@ -550,6 +552,7 @@ public class AdminController {
 				paramUserMap.put("SEARCHPARAM", searchParam);
 				paramUserMap.put("CUSTOMERID", customerid);
 				paramUserMap.put("ORGMODE", orgMode);
+				paramUserMap.put("moreCount", moreCount);
 								
 				UserTOs = adminService.getUserDetailsOnClick(paramUserMap);
 				
@@ -1577,9 +1580,10 @@ public class AdminController {
 				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			}
 			
-			
+			String moreCount = propertyLookup.get("count.results.button.more");
+			logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 			if (tenantId != null ) {
-				parentTOs = parentService.getParentList(tenantId, adminYear, searchParam, orgMode);
+				parentTOs = parentService.getParentList(tenantId, adminYear, searchParam, orgMode, moreCount);
 			}
 			
 
@@ -1615,6 +1619,8 @@ public class AdminController {
 		List<StudentTO> studentTOs = new ArrayList<StudentTO>();
 		try {
 			logger.log(IAppLogger.INFO, "Enter: getStudentDetailsOnScroll");
+			String moreCount = propertyLookup.get("count.results.button.more");
+			logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 			String adminYear = (String) request.getParameter("AdminYear");
 			String scrollId = (String) request.getParameter("scrollId");
 			String studentBioId = (String) request.getParameter("studentBioId");
@@ -1637,6 +1643,7 @@ public class AdminController {
 					paramMap.put("customer", customer);
 					paramMap.put("orgMode", orgMode);
 					paramMap.put("adminYear", adminYear);
+					paramMap.put("moreCount", moreCount);
 					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.valueOf(customer).longValue());
 					logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMap + ")");
 					studentTOs = parentService.searchStudentOnRedirect(paramMap);
@@ -1648,12 +1655,13 @@ public class AdminController {
 					paramMap.put("searchParam", searchParam);
 					paramMap.put("currCustomer", currCustomer);
 					paramMap.put("orgMode", orgMode);
+					paramMap.put("moreCount", moreCount);
 					// studentTOs = parentService.getStudentList(scrollId, adminYear, searchParam, currCustomer);
 					studentTOs = parentService.getStudentList(paramMap);
 				}
 			}
 			String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
-			logger.log(IAppLogger.INFO, "LOADING STUDENT DETAILS ..................");
+			logger.log(IAppLogger.INFO, "studentTOs.size() = " + studentTOs != null ? "" + studentTOs.size() : "0");
 			logger.log(IAppLogger.INFO, studentJsonString);
 			response.setContentType("application/json");
 			response.getWriter().write(studentJsonString);

@@ -163,7 +163,7 @@ public interface IParentQuery {
 	/*
 	 * Moved to PKG_MANAGE_PARENT by Joy
 	 */
-	public static final String GET_PARENT_DETAILS_MANAGE_PARENT = "PKG_MANAGE_PARENT.SP_GET_PARENT_DETAILS(?,?,?,?,?,?,?,?)";
+	public static final String GET_PARENT_DETAILS_MANAGE_PARENT = "{ CALL PKG_MANAGE_PARENT.SP_GET_PARENT_DETAILS(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 	
 	/*
 	 * Moved to PKG_MANAGE_PARENT by Joy
@@ -174,7 +174,7 @@ public interface IParentQuery {
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 */
-	public static final String GET_STUDENT_DETAILS_MANAGE_STUDENT = "PKG_MANAGE_STUDENT.SP_GET_STUDENT_DETAILS(?,?,?,?,?,?,?,?)";
+	public static final String GET_STUDENT_DETAILS_MANAGE_STUDENT = "{ CALL PKG_MANAGE_STUDENT.SP_GET_STUDENT_DETAILS(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 	
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
@@ -245,9 +245,9 @@ public interface IParentQuery {
 
 	public static final String ADD_NEW_CONTENT = "PKG_MANAGE_CONTENT.SP_ADD_NEW_CONTENT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	public static final String GET_MANAGE_CONTENT_LIST = "PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS(?,?,?,?,?,?)";
+	public static final String GET_MANAGE_CONTENT_LIST = "{CALL PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS(?, ?, ?, ?, ?, ?, ?)}";
 
-	public static final String GET_MANAGE_CONTENT_LIST_MORE = "PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS_MORE(?,?,?,?,?,?,?)";
+	public static final String GET_MANAGE_CONTENT_LIST_MORE = "{ CALL PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS_MORE(?, ?, ?, ?, ?, ?, ?, ?)}";
 
 	public static final String GET_MANAGE_CONTENT_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS_EDIT(?,?,?)";
 

@@ -62,9 +62,11 @@ public interface IParentService {
 	 * @param orgId
 	 * @param adminYear
 	 * @param searchParam
+	 * @param orgMode
+	 * @param moreCount
 	 * @return
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode);
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode, String moreCount);
 
 	/**
 	 * @param paramMap

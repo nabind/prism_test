@@ -1150,9 +1150,9 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		
 		public static final String SP_GET_USER_ROLE = "{CALL PKG_MANAGE_USERS.SP_GET_USER_ROLE(?, ?, ?)}";
 
-		public static final String SP_GET_USERS_ONSCROLL_WITH_SP = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL_WITH_SP(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_USERS_ONSCROLL = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL(?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_USERS_ON_FIRST_LOAD = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ON_FIRST_LOAD(?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ONSCROLL_WITH_SP = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL_WITH_SP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ONSCROLL = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ON_FIRST_LOAD = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ON_FIRST_LOAD(?, ?, ?, ?, ?, ?, ?, ?)}";
 
 		public static final String SP_GET_USER_RESET_PASSWORD = "{CALL PKG_MANAGE_USERS.SP_GET_USER_RESET_PASSWORD(?, ?, ?, ?, ?)}";
 		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL PKG_MANAGE_USERS.SP_GET_USER_PWD_HINT_LIST(?, ?, ?)}";

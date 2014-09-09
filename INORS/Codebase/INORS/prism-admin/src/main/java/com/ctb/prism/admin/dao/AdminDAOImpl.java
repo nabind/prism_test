@@ -286,6 +286,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String searchParam = (String)paramUserMap.get("SEARCHPARAM");
 		String customerId = (String)paramUserMap.get("CUSTOMERID");
 		String orgMode = (String)paramUserMap.get("ORGMODE");
+		String moreCount = (String)paramUserMap.get("moreCount");
 				
 		logger.log(IAppLogger.INFO, "Enter: getUserDetailsOnClick()");
 		logger.log(IAppLogger.INFO, "nodeId=" + nodeId );
@@ -308,16 +309,16 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam);
+				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, moreCount);
 			} else {
 				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName);
+				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, moreCount);
 			}
 		} else {
 			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
 			tenantId = nodeId;
 			if(!"undefined".equals(tenantId)) {
-				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
+				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
 			}
 		}
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
@@ -388,7 +389,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return userList;
 	}
 	
-	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam) {
+	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam, final String moreCount) {
 		return (List<UserTO>) getJdbcTemplatePrism().execute(
 				new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -400,6 +401,42 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						cs.setLong(5, Long.parseLong(custProdId));
 						cs.setString(6, userName);
 						cs.setString(7, searchParam);
+						cs.setLong(8, Long.parseLong(moreCount));
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<UserTO> userList = new ArrayList<UserTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(9);
+							userList = getUserListFromResultSet(currorg, rs);
+							Utils.logError(cs.getString(10));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						logger.log(IAppLogger.INFO, "getUserDetailsOnScrollWithSrchParam().userList.size()=" + userList.size());
+						return userList;
+					}
+				}
+			);
+	}
+	
+	private List<UserTO> getUserDetailsOnScroll(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String moreCount) {
+		return (List<UserTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL);
+						cs.setLong(1, Long.parseLong(customerId));
+						cs.setString(2, orgMode);
+						cs.setLong(3, Long.parseLong(tenantId));
+						cs.setLong(4, roleId);
+						cs.setLong(5, Long.parseLong(custProdId));
+						cs.setString(6, userName);
+						cs.setLong(7, Long.parseLong(moreCount));
 						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
 						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
@@ -412,39 +449,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							cs.execute();
 							rs = (ResultSet) cs.getObject(8);
 							userList = getUserListFromResultSet(currorg, rs);
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						logger.log(IAppLogger.INFO, "getUserDetailsOnScrollWithSrchParam().userList.size()=" + userList.size());
-						return userList;
-					}
-				}
-			);
-	}
-	
-	private List<UserTO> getUserDetailsOnScroll(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName) {
-		return (List<UserTO>) getJdbcTemplatePrism().execute(
-				new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ONSCROLL);
-						cs.setLong(1, Long.parseLong(customerId));
-						cs.setString(2, orgMode);
-						cs.setLong(3, Long.parseLong(tenantId));
-						cs.setLong(4, roleId);
-						cs.setLong(5, Long.parseLong(custProdId));
-						cs.setString(6, userName);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						ResultSet rs = null;
-						List<UserTO> userList = new ArrayList<UserTO>();
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(7);
-							userList = getUserListFromResultSet(currorg, rs);
+							Utils.logError(cs.getString(9));
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -455,7 +460,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			);
 	}
 	
-	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId) {
+	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String moreCount) {
+		logger.log(IAppLogger.INFO, "getUserDetailsOnFirstLoad().moreCount = " + moreCount);
 		return (List<UserTO>) getJdbcTemplatePrism().execute(
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -465,8 +471,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					cs.setLong(3, Long.parseLong(tenantId));
 					cs.setLong(4, roleId);
 					cs.setLong(5, Long.parseLong(custProdId));
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setLong(6, Long.parseLong(moreCount));
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -475,8 +482,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					List<UserTO> userList = new ArrayList<UserTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(6);
+						rs = (ResultSet) cs.getObject(7);
 						userList = getUserListFromResultSet(currorg, rs);
+						Utils.logError(cs.getString(8));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

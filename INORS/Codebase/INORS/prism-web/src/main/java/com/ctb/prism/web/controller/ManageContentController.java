@@ -195,20 +195,21 @@ public class ManageContentController {
 	 */
 	@RequestMapping(value = "/loadManageContent", method = RequestMethod.GET)
 	public @ResponseBody 
-	String  loadManageContent(HttpServletRequest req,
-			HttpServletResponse res) throws ServletException, IOException,BusinessException {
-		
+	String  loadManageContent(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException,BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: ManageContentController - loadManageContent");
 		long t1 = System.currentTimeMillis();
+		String moreCount = propertyLookup.get("count.results.button.more");
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 		UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("loggedinUserTO", loggedinUserTO);
-		paramMap.put("custProdId",req.getParameter("custProdId"));
-		paramMap.put("subtestId",req.getParameter("subtestId"));
-		paramMap.put("objectiveId",req.getParameter("objectiveId"));
-		paramMap.put("contentTypeId",req.getParameter("contentTypeId"));
-		paramMap.put("lastid",req.getParameter("lastid"));
-		paramMap.put("checkFirstLoad",req.getParameter("checkFirstLoad"));
+		paramMap.put("custProdId", req.getParameter("custProdId"));
+		paramMap.put("subtestId", req.getParameter("subtestId"));
+		paramMap.put("objectiveId", req.getParameter("objectiveId"));
+		paramMap.put("contentTypeId", req.getParameter("contentTypeId"));
+		paramMap.put("lastid", req.getParameter("lastid"));
+		paramMap.put("checkFirstLoad", req.getParameter("checkFirstLoad"));
+		paramMap.put("moreCount", moreCount);
 		
 		List<ManageContentTO> loadManageContentList = null;
 		String loadManageContentJson = "";

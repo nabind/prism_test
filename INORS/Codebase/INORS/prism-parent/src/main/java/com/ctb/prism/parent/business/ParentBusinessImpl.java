@@ -118,13 +118,11 @@ public class ParentBusinessImpl implements IParentBusiness {
 		return parentDAO.getChildrenList(paramMap);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.parent.business.IParentBusiness#getParentList(java.lang.String, java.lang.String, java.lang.String)
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.parent.business.IParentBusiness#getParentList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode) {
-		return parentDAO.getParentList(orgId, adminYear, searchParam, orgMode);
+	public ArrayList<ParentTO> getParentList(String orgId, String adminYear, String searchParam, String orgMode, String moreCount) {
+		return parentDAO.getParentList(orgId, adminYear, searchParam, orgMode, moreCount);
 
 	}
 
