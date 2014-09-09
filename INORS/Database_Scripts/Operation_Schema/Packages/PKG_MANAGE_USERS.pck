@@ -32,7 +32,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_USERS IS
                                        P_IN_TENANT_ID      IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                        P_IN_ROLE_ID        IN ROLE.ROLEID%TYPE,
                                        P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-									   P_IN_MORE_COUNT IN NUMBER,
+									                     P_IN_MORE_COUNT     IN NUMBER,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
@@ -220,7 +220,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
                                        P_IN_TENANT_ID      IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                        P_IN_ROLE_ID        IN ROLE.ROLEID%TYPE,
                                        P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-									   P_IN_MORE_COUNT IN NUMBER,
+									                     P_IN_MORE_COUNT     IN NUMBER,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
