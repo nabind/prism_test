@@ -2446,10 +2446,12 @@ public class AdminController {
 	//	String password = "";
 		String resetPwdFlag = "0";
 		String sendEmailFlag = "0";
+		Map<String, Object> paramMap = new HashMap<String, Object>();		
 		try {
 			if (username != null) {
 				//password = adminService.resetPassword(username);
-				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(username);
+				paramMap.put("username", username);
+				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getPassword() != null) {
 					resetPwdFlag = "1";
 					try {
