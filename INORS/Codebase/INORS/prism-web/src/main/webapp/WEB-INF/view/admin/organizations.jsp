@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 
@@ -23,15 +24,21 @@
 			<div class="panel-control align-right">
 				<div class = "align-left" style="float:left"><b>
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip"  style="display:none" title="Show Hierarchy"></a><span id="showOrgName"> </span></b></div>
-				<span class="input search-input">
-					<input type="text" name="searchOrg" id="searchOrg" class="input-unstyled with-tooltip" title="Search Organizations by Name" placeholder="Search">
-					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_org"></a>
-				</span>
+				<fmt:message var="MANAGE_ORGS_SEARCH" key="manage.orgs.search"  />
+				<c:if test="${not empty actionMap[MANAGE_ORGS_SEARCH]}">
+					<span class="input search-input">
+						<input type="text" name="searchOrg" id="searchOrg" class="input-unstyled with-tooltip" title="Search Organizations by Name" placeholder="Search">
+						<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_org"></a>
+					</span>
+				</c:if>				
 			</div>
 			<div class="panel-load-target with-padding margin10 height-mid padding-none">
-				<div class="pagination panel-control margin-bottom-small rounded-border">
-					<a href="#nogo" id="moreOrg" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more organizations"><spring:message code="button.more" /></a>
-				</div>
+				<fmt:message var="MANAGE_ORGS_MORE" key="manage.orgs.more"  />
+				<c:if test="${not empty actionMap[MANAGE_ORGS_MORE]}">
+					<div class="pagination panel-control margin-bottom-small rounded-border">
+						<a href="#nogo" id="moreOrg" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more organizations"><spring:message code="button.more" /></a>
+					</div>
+				</c:if>
 				<div id="orgTable" class="report-container tabs-content padding-small" style="height: 450px">
 				<div id="last_msg_loader" height="140" style="position:relative;left:0px;z-index:1"></div>
 					<input type="text"  style="display:none"  name="last_org_tenant" id="last_org_tenant" value="">

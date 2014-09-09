@@ -7,7 +7,17 @@
 	
 		<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
 		<li class="with-right-arrow" id="menu_${assessments.assessmentName}">
-			<span>${assessments.assessmentName}</span>
+			<c:choose>
+				<c:when test="${assessments.assessmentName == 'Manage'}">
+					<sec:authorize ifAnyGranted="ROLE_ADMIN">
+						<span>${assessments.assessmentName}</span>
+					</sec:authorize>
+				</c:when>
+				<c:otherwise>
+					<span>${assessments.assessmentName}</span>
+				</c:otherwise>
+			</c:choose>
+			
 			<ul class="big-menu white-gradient">
 				<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
 					<sec:authorize ifAnyGranted="${report.allRoles}">
