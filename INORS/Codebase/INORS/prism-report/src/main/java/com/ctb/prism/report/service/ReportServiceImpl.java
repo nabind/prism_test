@@ -109,14 +109,21 @@ public class ReportServiceImpl implements IReportService {
 		reportBusiness.removeCache();
 	}
 	
-	
+	/*
+	 * Remove cache based on contract
+	 * @see com.ctb.prism.report.service.IReportService#removeCache(java.lang.String)
+	 */
 	public void removeCache(String contractName) throws IOException {
 		String s3loc = null;
 		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");
 		if("tasc".equals(contractName))  s3loc = propertyLookup.get("aws.tasc.cacheS3");
 		
 		InputStream inputStream = repositoryService.getAssetInputStream(s3loc+IApplicationConstants.CACHE_KEY_FILE);
-		reportBusiness.removeCache(inputStream);
+		
+		if(reportBusiness.removeCache(inputStream)){
+			//Delete cache key file from from s3 after successful clear cache 
+			repositoryService.removeAsset(s3loc+IApplicationConstants.CACHE_KEY_FILE);
+		}		
 	}
 
 	/*

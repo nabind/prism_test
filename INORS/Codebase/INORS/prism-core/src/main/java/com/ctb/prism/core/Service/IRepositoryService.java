@@ -25,5 +25,7 @@ public interface IRepositoryService {
 	 */
 	public void uploadAsset(String key, File file);
 	
+	public void removeAsset(String key);
+	
 	public InputStream getAssetInputStream(String assetPath) throws IOException; 
 }

@@ -505,7 +505,7 @@ public final class Utils {
 			if (!file.exists()) {
 				file.createNewFile();
 			} 
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 			bw = new BufferedWriter(fw);
 			bw.write(content+"\n");					
  

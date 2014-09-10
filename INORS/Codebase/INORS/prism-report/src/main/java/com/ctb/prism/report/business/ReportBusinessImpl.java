@@ -93,13 +93,23 @@ public class ReportBusinessImpl implements IReportBusiness {
 		reportDAO.removeCache();
 	}
 	
-	public void removeCache(InputStream input) throws IOException{
+	public boolean removeCache(InputStream input){
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        while (true) {
-            String cacheKey = reader.readLine();
-            if (cacheKey == null) break;
-            reportDAO.removeCache(cacheKey);
-        }
+		try {
+			while (true) {
+	            String cacheKey;
+				
+					cacheKey = reader.readLine();
+				
+	            if (cacheKey == null) break;
+	            reportDAO.removeCache(cacheKey);
+	        }  
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	

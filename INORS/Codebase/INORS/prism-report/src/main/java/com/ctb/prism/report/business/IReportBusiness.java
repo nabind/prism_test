@@ -33,7 +33,7 @@ public interface IReportBusiness {
 	 */
 	public void removeCache();
 	
-	public void removeCache(InputStream inputStream) throws IOException;
+	public boolean removeCache(InputStream input);
 	
 	public void removeConfigurationCache();
 
