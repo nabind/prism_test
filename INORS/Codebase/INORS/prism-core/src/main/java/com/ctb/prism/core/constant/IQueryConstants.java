@@ -294,7 +294,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String PARENT_USER_SEQ_ID = "SELECT USER_ID_SEQ.NEXTVAL AS PARENT_SEQ_ID FROM DUAL";
 	
 	
-	
+	//TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
 	public static final String INSERT_ANSWER_DATA = CustomStringUtil.appendString(
 			" INSERT INTO PWD_HINT_ANSWERS  " ,
 			" (PH_ANSWERID,   USERID,   " ,
@@ -304,7 +304,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" ?,   ?,  " ,
 			" SYSDATE)");
 	
+	//TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
     public static final String CHECK_FOR_EXISTING_ANSWER = CustomStringUtil.appendString("SELECT COUNT(*) AS NO_OF_ANSWERS FROM  PWD_HINT_ANSWERS P WHERE P.USERID=?");
+    
+    //TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
     public static final String UPDATE_ANSWER_DATA = CustomStringUtil.appendString("UPDATE PWD_HINT_ANSWERS PANS SET PANS.PH_QUESTIONID  =?,PANS.ANSWER_VALUE =?,",
 																		    	  " PANS.UPDATED_DATE_TIME=SYSDATE",
 																		          " WHERE PANS.USERID =?",

@@ -318,6 +318,15 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		
+		final String[] questionIdArr = new String[parentTO.getQuestionToList().size()];
+		final String[] ansValArr = new String[parentTO.getQuestionToList().size()];
+		int index = 0;
+		for (QuestionTO questionTo : parentTO.getQuestionToList()) {
+			questionIdArr[index] = String.valueOf(questionTo.getQuestionId());
+			ansValArr[index] = String.valueOf(questionTo.getAnswer());
+			index++;
+		}
+		
 		String userId = "";
 		try{
 			
@@ -343,6 +352,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, state);
 					cs.setString(count++, lastName);
 					cs.setString(count++, firstName);
+					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
+					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
@@ -352,15 +363,15 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					String strUserId = null; 
 					try {
 						cs.execute();
-						strUserId =  cs.getString(18);
-						if( cs.getString(19) != null &&  cs.getString(19).trim().length() > 0) {
-							logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(19));
+						strUserId =  cs.getString(20);
+						if( cs.getString(21) != null &&  cs.getString(21).trim().length() > 0) {
+							logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(21));
 							return null;
 						} else if(strUserId!=null && strUserId.equals("0")){ 
 							logger.log(IAppLogger.DEBUG, "User already exists");
 					    } else {
 							logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA DONE");
-							logger.log(IAppLogger.INFO, "User added with userid: " + strUserId);
+							logger.log(IAppLogger.INFO, "User created with userid: " + strUserId);
 						}
 						
 					} catch (SQLException e) {
@@ -372,11 +383,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					
 					
 			if (userId != null && userId.trim().length() > 0 && !userId.equals("0")) {
-				boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(Long.valueOf(userId), parentTO.getQuestionToList());
-
-				if (isSavedPasswordHistAnswer) {
-					return Boolean.TRUE;
-				}
+				return Boolean.TRUE;
 			}
 			
 		}catch(Exception e){
@@ -428,13 +435,15 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 
 	/**
+	 * @deprecated - By Joy
+	 * Don't use this method to save Password Hint Answer use PKG_ADMIN_MODULE.SP_SAVE_PH_ANSWER() from create/edit proc or call separately.
+	 * Need to remove this method after removing all the dependencies.
 	 * Save Password hint answer.
 	 * @param userid
 	 * @param questionToList
 	 * @return
 	 */
 	private boolean savePasswordHistAnswer(long userid, List<QuestionTO> questionToList) {
-		//TODO - Need batch update
 		int count = 0;
 		long answerCount = getJdbcTemplatePrism().queryForLong(IQueryConstants.CHECK_FOR_EXISTING_ANSWER, userid);
 		logger.log(IAppLogger.DEBUG, "answerCount................" + answerCount);

@@ -474,15 +474,14 @@ public final class Utils {
 	/**
 	 * @author Joy
 	 * @param String array
-	 * @return Comma separated string
+	 * @param char separator
+	 * @return Dynamic character separated string
 	 * */
-	public static String arrayToCommaString(String[] strArr){
+	public static String arrayToSeparatedString(String[] strArr,char separator){
 		if (strArr.length > 0) {
 		    StringBuilder strBuilder = new StringBuilder();
 		    for (String n : strArr) {
-		    	strBuilder.append(n).append(",");
-		    	//strBuilder.append("'").append(n.replaceAll("'", "\\\\'")).append("',");
-		        // strBuilder.append("'").append(n.replaceAll("'", "''")).append("',");
+		    	strBuilder.append(n).append(separator);
 		    }
 		    strBuilder.deleteCharAt(strBuilder.length() - 1);
 		    return strBuilder.toString();

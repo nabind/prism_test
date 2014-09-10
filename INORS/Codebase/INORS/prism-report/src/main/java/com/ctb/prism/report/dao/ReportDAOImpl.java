@@ -856,8 +856,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReportNew");
 		long t1 = System.currentTimeMillis();
 		
-		final String userRoles = Utils.arrayToCommaString(reportTO.getUserRoles());
-		final String orgNodeLevels = Utils.arrayToCommaString(reportTO.getOrgNodeLevelArr());
+		final String userRoles = Utils.arrayToSeparatedString(reportTO.getUserRoles(),',');
+		final String orgNodeLevels = Utils.arrayToSeparatedString(reportTO.getOrgNodeLevelArr(),',');
 		//com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		boolean status = false;
 		
@@ -929,8 +929,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String assessmentType = reportParameterTO.getAssessmentName();
 		final String reportStatus = reportParameterTO.getReportStatus();
 		final long customerLink = reportParameterTO.getLinkName().longValue();
-		final String userRoles = Utils.arrayToCommaString(reportParameterTO.getUserRoles());
-		final String orgNodeLevels = Utils.arrayToCommaString(reportParameterTO.getOrgNodeLevel());
+		final String userRoles = Utils.arrayToSeparatedString(reportParameterTO.getUserRoles(),',');
+		final String orgNodeLevels = Utils.arrayToSeparatedString(reportParameterTO.getOrgNodeLevel(),',');
 		final String dbMenuId = reportParameterTO.getMenuId();
 		final String customerId = reportParameterTO.getCustomerId();
 		ReportTO report = null;
