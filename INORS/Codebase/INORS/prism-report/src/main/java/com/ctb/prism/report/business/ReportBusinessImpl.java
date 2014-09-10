@@ -1,5 +1,9 @@
 package com.ctb.prism.report.business;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,10 +93,14 @@ public class ReportBusinessImpl implements IReportBusiness {
 		reportDAO.removeCache();
 	}
 	
-	public void removeCache(String contractName) {
-		reportDAO.removeCache(contractName);
+	public void removeCache(InputStream input) throws IOException{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        while (true) {
+            String cacheKey = reader.readLine();
+            if (cacheKey == null) break;
+            reportDAO.removeCache(cacheKey);
+        }
 	}
-	
 	
 	
 	public void removeConfigurationCache() {

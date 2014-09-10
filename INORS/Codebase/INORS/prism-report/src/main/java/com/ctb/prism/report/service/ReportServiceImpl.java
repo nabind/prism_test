@@ -1,5 +1,7 @@
 package com.ctb.prism.report.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,11 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
@@ -51,6 +55,13 @@ public class ReportServiceImpl implements IReportService {
 	
 	@Autowired
 	IUsabilityService usabilityService;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
+	
+	@Autowired
+	private IPropertyLookup propertyLookup;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -99,8 +110,13 @@ public class ReportServiceImpl implements IReportService {
 	}
 	
 	
-	public void removeCache(String contractName) {
-		reportBusiness.removeCache(contractName);
+	public void removeCache(String contractName) throws IOException {
+		String s3loc = null;
+		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");
+		if("tasc".equals(contractName))  s3loc = propertyLookup.get("aws.tasc.cacheS3");
+		
+		InputStream inputStream = repositoryService.getAssetInputStream(s3loc+IApplicationConstants.CACHE_KEY_FILE);
+		reportBusiness.removeCache(inputStream);
 	}
 
 	/*

@@ -211,8 +211,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 	
 	@Caching(evict = { @CacheEvict(value = { "defaultCache", "adminCache" }, key = "#p0") })
-	public void removeCache(String contractName) {
-		logger.log(IAppLogger.INFO, "Removed all cache for " +contractName );
+	public void removeCache(String cacheKey) {
+		logger.log(IAppLogger.INFO, "Removed all cache for " +cacheKey );
 	}
 	
 	@CacheEvict(value = {"configCache"}, allEntries = true)

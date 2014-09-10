@@ -43,6 +43,10 @@ public class PropertyLookupImpl implements IPropertyLookup {
 			propConfig = new PropertiesConfiguration("Bundle.properties");
 			propConfig.setReloadingStrategy(new FileChangedReloadingStrategy());			
 			compositeConfiguration.addConfiguration(propConfig);
+			
+			propConfig = new PropertiesConfiguration("mapkeys.properties");
+			propConfig.setReloadingStrategy(new FileChangedReloadingStrategy());			
+			compositeConfiguration.addConfiguration(propConfig);
 
 			PropertiesConfiguration constConfig = new PropertiesConfiguration("jasperreports.properties");
 			constConfig.setReloadingStrategy(new FileChangedReloadingStrategy());

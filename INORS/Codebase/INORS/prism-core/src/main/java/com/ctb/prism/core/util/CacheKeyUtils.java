@@ -1,5 +1,6 @@
 package com.ctb.prism.core.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,22 +13,37 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ctb.prism.core.Service.IRepositoryService;
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.jms.JmsMessageProducer;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 
 @Component
 public final class CacheKeyUtils {
 	
 	private static final Logger LOG = Logger.getLogger(JmsMessageProducer.class);
     
-	@Autowired private JmsMessageProducer autoMessageProducer;
+	//@Autowired private JmsMessageProducer autoMessageProducer;
+	//private static JmsMessageProducer messageProducer;
+
+	@Autowired 
+	private IPropertyLookup autoPropertyLookup;
 	
-	private static JmsMessageProducer messageProducer;
+	private static IPropertyLookup propertyLookup;
+	
+	@Autowired
+	private IRepositoryService autorepositoryService;
+	
+	private static IRepositoryService repositoryService;
+	
 	
 	private static String contractName;
 	
 	@PostConstruct
     public void init() {
-		CacheKeyUtils.messageProducer = autoMessageProducer;
+		//CacheKeyUtils.messageProducer = autoMessageProducer;
+		CacheKeyUtils.propertyLookup = autoPropertyLookup;
+		CacheKeyUtils.repositoryService = autorepositoryService;
     }
 	
     /*private CacheKeyUtils() {
@@ -103,7 +119,7 @@ public final class CacheKeyUtils {
         	contractName = Utils.getContractName();
         }
         
-        return b.toString();
+        return encryptedKey(b.toString());
     }
     
     public static String string(String col) {
@@ -141,8 +157,14 @@ public final class CacheKeyUtils {
      * 
      */
     private static void storeCacheKey(String key){
-    	if(messageProducer != null) messageProducer.putCacheKey(key, contractName);
-    	else LOG.error("Unable to store key into Queue. MessageProducer is null.");
+    	/*if(messageProducer != null) messageProducer.putCacheKey(key, contractName);
+    	else LOG.error("Unable to store key into Queue. MessageProducer is null.");*/
+    	String s3loc = null;
+		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");
+		if("tasc".equals(contractName))  s3loc = propertyLookup.get("aws.tasc.cacheS3");
+		File cacheKeyFile = Utils.writeToFile(IApplicationConstants.CACHE_KEY_FILE,key);
+		repositoryService.uploadAsset(s3loc, cacheKeyFile);
+		LOG.info("Key inserted into " +IApplicationConstants.CACHE_KEY_FILE+ " for contractName");
     }
     
     

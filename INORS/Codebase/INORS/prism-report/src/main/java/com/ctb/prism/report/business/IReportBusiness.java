@@ -1,5 +1,7 @@
 package com.ctb.prism.report.business;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ public interface IReportBusiness {
 	 */
 	public void removeCache();
 	
-	public void removeCache(String contractName);
+	public void removeCache(InputStream inputStream) throws IOException;
 	
 	public void removeConfigurationCache();
 

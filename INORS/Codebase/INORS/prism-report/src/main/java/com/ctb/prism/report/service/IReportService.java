@@ -1,5 +1,7 @@
 package com.ctb.prism.report.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public interface IReportService {
 	 */
 	public void removeCache();
 	
-	public void removeCache(String contractName);
+	public void removeCache(String contractName) throws IOException;
 	
 	public void removeConfigurationCache();
 
@@ -283,5 +285,5 @@ public interface IReportService {
 	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception;
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
-
+	
 }

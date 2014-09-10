@@ -31,7 +31,7 @@ public interface IReportDAO {
 	public void removeCache();
 	
 	
-	public void removeCache(String contractName);
+	public void removeCache(String cacheKey);
 	
 	public void removeConfigurationCache();
 

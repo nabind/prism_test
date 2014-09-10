@@ -2,6 +2,7 @@ package com.ctb.prism.core.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,5 +112,20 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		key = key + file.getName();
 		logger.log(IAppLogger.INFO, "key = " + key);
 		s3client.putObject(bucket, key, file);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.core.Service.IRepositoryService#removeAsset(java.io.File)
+	 */
+	public void removeAsset(String key){
+		logger.log(IAppLogger.INFO, "key = " + key);
+		s3client.deleteObject(bucket, key);
+	}
+	
+	
+	public InputStream getAssetInputStream(String assetPath) throws IOException {
+		logger.log(IAppLogger.INFO, "downloading object into input strem");
+		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
+		return  object.getObjectContent();		
 	}
 }

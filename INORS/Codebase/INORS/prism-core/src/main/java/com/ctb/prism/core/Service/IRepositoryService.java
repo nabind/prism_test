@@ -2,6 +2,7 @@ package com.ctb.prism.core.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface IRepositoryService {
@@ -23,4 +24,6 @@ public interface IRepositoryService {
 	 * @param file
 	 */
 	public void uploadAsset(String key, File file);
+	
+	public InputStream getAssetInputStream(String assetPath) throws IOException; 
 }

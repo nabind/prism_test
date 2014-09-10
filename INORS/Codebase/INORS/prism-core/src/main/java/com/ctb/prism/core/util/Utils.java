@@ -1,10 +1,12 @@
 package com.ctb.prism.core.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -489,4 +491,34 @@ public final class Utils {
 		    return "";
 		}
 	}
+	
+	/**
+	 * @author Abir
+	 * @param String 
+	 * @return file
+	 * */
+	public static File writeToFile(String fileName,String content) {
+		File file = new File(fileName);
+		BufferedWriter bw = null;
+		try { 
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			} 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			bw.write(content+"\n");					
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	finally {
+			try {
+				if (bw!=null) bw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}
+		return file;
+	}
+	
 }

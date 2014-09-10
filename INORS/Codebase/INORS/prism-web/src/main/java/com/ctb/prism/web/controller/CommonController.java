@@ -488,6 +488,27 @@ public class CommonController extends BaseDAO {
 		return mv;
 	}
 	
+	@RequestMapping(value="/clearContractCache", method=RequestMethod.GET)
+	public ModelAndView clearContractCache(HttpServletRequest req, HttpServletResponse res) 
+		throws ServletException, IOException {
+		ModelAndView mv = new ModelAndView("common/success");
+		System.out.println("Inside clearAllCache");
+		
+		String theme = themeResolver.resolveThemeName(req);
+		
+		try {
+			reportService.removeCache(Utils.getContractNameNoLogin(theme));
+			logger.log(IAppLogger.INFO, "All Cache cleared ....");
+			
+			mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractNameNoLogin(theme));
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			mv.addObject("message", e.getMessage());
+		} 
+		return mv;
+	}
+	
+	
 	/**
 	 * @param request
 	 * @param response

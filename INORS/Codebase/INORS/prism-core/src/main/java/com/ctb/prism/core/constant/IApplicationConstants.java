@@ -255,4 +255,7 @@ public interface IApplicationConstants {
 	public static final String PURPOSE_EDIT_REPORT = "editReport";
 	public static final String DEFAULT_CUST_PROD_ID= "defaultCustProdId"; 
 	public static final String ACTION_MAP_SESSION = "actionMap";
+	
+	public static final String CACHE_KEY_FILE ="cacheKey.txt";
+	
 }
