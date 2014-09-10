@@ -300,7 +300,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final String userDisplayName =  parentTO.getDisplayName();
 		final String emailId =  parentTO.getMail();
 		final String isFirstTimeLogin =  parentTO.isFirstTimeUser() ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N;
-		String salt = PasswordGenerator.getNextSalt();
+		final String salt = PasswordGenerator.getNextSalt();
 		final String password = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt));
 		final String invitaionCode = parentTO.getInvitationCode();
 		final String mobileNo = parentTO.getMobile();
@@ -332,7 +332,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			
 			userId = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				int count =1;
-				String salt = PasswordGenerator.getNextSalt();
+				//String salt = PasswordGenerator.getNextSalt();
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " +IQueryConstants.CREATE_PARENT + "}");
 					cs.setString(count++, userName);
