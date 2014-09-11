@@ -781,6 +781,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.login.dao.ILoginDAO#getMenuMap(java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getMenuMap') )")
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
@@ -864,7 +865,4 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			}
 		});
 	}
-	
-	
-	
 }

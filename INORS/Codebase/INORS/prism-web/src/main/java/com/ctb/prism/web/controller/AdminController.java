@@ -1517,17 +1517,11 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, orgJsonString);
 				}
 				
-				if (IApplicationConstants.TASC_PRODUCT.equals(product)){
+				if(IApplicationConstants.CONTRACT_NAME_TASC.equals(Utils.getContractName())){
 					modelAndView.addObject("schoolOrgLevel",IApplicationConstants.TESTING_SITE);
-					modelAndView.addObject("isAdultEducation","Yes");
-				} else {
+				}else{
 					modelAndView.addObject("schoolOrgLevel",IApplicationConstants.SCHOOL);
-					modelAndView.addObject("isAdultEducation","No");
 				}
-				/*studentTOs = parentService.getStudentList(currentOrg, adminYear, null);
-				String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
-				logger.log(IAppLogger.INFO, "STUDENT DETAILS ON FIRST LOAD..................");
-				logger.log(IAppLogger.INFO, studentJsonString);*/
 			}
 			//modelAndView.addObject("studentList", studentTOs);
 		} catch (Exception exception) {

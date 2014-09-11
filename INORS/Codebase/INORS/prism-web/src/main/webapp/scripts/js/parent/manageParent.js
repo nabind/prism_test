@@ -153,6 +153,7 @@
 	
 	//======================================== CREATE STUDENT ROW DOM======================================
 	function getStudentDetails(checkFirstLoad,data) {
+		var manageStudents_assessment = $('#manageStudents_assessment').val();
 		var studentContent = '';
 		if (checkFirstLoad){
 			$("tbody#student_details").find("tr").remove();
@@ -170,13 +171,17 @@
 				+'<th scope="row">' + this.studentName +'</th>'
 				+'<td>' + this.grade +'</td>'
 				+ createParentTag(this.parentAccount)
-				+'<td>'+checkForNull(this.orgName)+'</td>'
-				+'<td class="vertical-center">'
+				+'<td>'+checkForNull(this.orgName)+'</td>';
+				
+				if(manageStudents_assessment == 'true'){
+					studentContent += '<td class="vertical-center">'
 					+' <span class="button-group compact">' 
-						+' <a id="'+ this.studentBioId + '" testelementid="'+this.testElementId+'" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages"></span> Assessment</a>'  
+					+' <a id="'+ this.studentBioId + '" testelementid="'+this.testElementId+'" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages"></span> Assessment</a>'  
 					+' </span>'
-				+'</td>'
-			+'</tr>' ;
+					+'</td>';
+				}
+				
+				studentContent += '</tr>' ;
 			}			
 						 
 		});
@@ -189,7 +194,6 @@
 		$(".headerSortUp").removeClass("headerSortUp");
 		//var sorting = [[0, 1]];
 		//$("#report-list").trigger("sorton", [sorting]);
-		
 	}
 	//====================================AJAX CALL TO FETCH ALL THE PARENTS FOR THE SELECTED ORG====================
 	function fetchAllParentUsers(id,url)

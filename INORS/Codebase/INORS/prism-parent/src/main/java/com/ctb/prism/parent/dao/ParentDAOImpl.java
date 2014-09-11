@@ -884,7 +884,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(3, orgMode);
 							cs.setLong(4, Long.parseLong(tenantId));
 							cs.setString(5, studentNameAndId);
-							cs.setString(6, "-99");
+							cs.setString(6, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 							cs.setLong(7, Long.valueOf(moreCount));
 							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
 							cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
@@ -897,8 +897,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setLong(2,customerId);
 						cs.setString(3, orgMode);
 						cs.setLong(4, Long.parseLong(tenantId));
-						cs.setString(5, "-99");
-						cs.setString(6, "-99");
+						cs.setString(5, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
+						cs.setString(6, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 						cs.setLong(7, Long.valueOf(moreCount));
 						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
 						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
@@ -918,7 +918,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							studentTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
 							//Fix for TD 78028 - By Joy
 							studentTO.setTestElementId(rs.getString("TESTELEMENTID"));
-							studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							if(!IApplicationConstants.CONTRACT_NAME_TASC.equals(Utils.getContractName())){
+								studentTO.setParentAccount(getParentAccountDetailsByTestElementId(studentTO.getTestElementId(), customerId));
+							}
 							studentTO.setStudentName(rs.getString("STUDENTNAME"));
 							studentTO.setGrade(rs.getString("STUDENTGRADE"));
 							studentTO.setStudentMode(rs.getString("STUDENT_MODE"));

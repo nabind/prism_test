@@ -59,42 +59,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_STUDENT AS
                                        P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
   
   BEGIN
-    /*
-    OPEN P_OUT_CUR FOR
-      SELECT DISTINCT (ABC.TEST_ELEMENT_ID) AS TEST_ELEMENT_ID,
-                      ABC.STUDENTNAME,
-                      ABC.ROWIDENTIFIER,
-                      ABC.STUDENTGRADE,
-                      NVL(ABC.INVITATIONCODE, 0) AS INVITATIONCODE,
-                      ABC.ORG_NODE_NAME AS ORG_NODE_NAME,
-                      NVL(ABC.ORG_NODEID, 0) AS ORG_NODEID,
-                      ABC.ACTIVATIONSTATUS ACTIVATIONSTATUS
-        FROM (SELECT IC.TEST_ELEMENT_ID AS TEST_ELEMENT_ID,
-                     REPLACE(REPLACE(IC.STUDENT_FULL_NAME || '_' ||
-                                     TO_CHAR(IC.STUDENT_BIO_ID),
-                                     ','),
-                             ' ') AS ROWIDENTIFIER,
-                     IC.STUDENT_FULL_NAME AS STUDENTNAME,
-                     GRD.GRADE_NAME AS STUDENTGRADE,
-                     IC.ICID AS INVITATIONCODE,
-                     IC.ACTIVATION_STATUS AS ACTIVATIONSTATUS,
-                     (SELECT ORG_NODE_NAME
-                        FROM ORG_NODE_DIM OND
-                       WHERE OND.ORG_NODEID = ORG_USR.ORG_NODEID) AS ORG_NODE_NAME,
-                     ORG_USR.ORG_NODEID AS ORG_NODEID
-                FROM ORG_USERS             ORG_USR,
-                     GRADE_DIM             GRD,
-                     INVITATION_CODE       IC,
-                     INVITATION_CODE_CLAIM ICC
-               WHERE ORG_USR.ORG_USER_ID = ICC.ORG_USER_ID
-                 AND IC.ACTIVATION_STATUS = 'AC'
-                 AND ICC.ICID = IC.ICID
-                 AND IC.CUST_PROD_ID = P_IN_CUST_PROD_ID
-                 AND IC.TEST_ELEMENT_ID = P_IN_TEST_ELEMENT_ID
-                 AND IC.GRADE_ID = GRD.GRADEID) ABC
-       ORDER BY UPPER(ABC.STUDENTNAME);*/
-  
-  /* Fix for INORS-425 by Joy*/
     OPEN P_OUT_CUR FOR
       SELECT STD.TEST_ELEMENT_ID,
              STD.LAST_NAME || ', ' || STD.FIRST_NAME || ' ' ||
