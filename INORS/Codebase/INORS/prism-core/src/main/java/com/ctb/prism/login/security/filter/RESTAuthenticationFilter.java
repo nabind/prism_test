@@ -56,7 +56,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private static final String USER_ROLE_PARAM = "user_role";
     private static final String USER_NAME_PARAM = "user_name";
     
-    private static final String THEME_PARAM = "theme";
+    private static final String THEME_PARAM = "contract";
     
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "j_password";
