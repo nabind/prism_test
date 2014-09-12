@@ -34,4 +34,5 @@ public interface ILoginDAO {
 	public String getRootPath(String customerId, String testAdmin);
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
+	public String getContractProerty (Map<String, Object> paramMap);
 }

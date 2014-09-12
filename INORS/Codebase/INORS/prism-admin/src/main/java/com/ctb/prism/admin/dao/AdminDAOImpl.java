@@ -50,6 +50,8 @@ import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.dao.ILoginDAO;
+
 import org.springframework.jdbc.core.RowMapper;
 
 @Repository("adminDAO")
@@ -61,6 +63,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	@Autowired
 	private IPropertyLookup propertyLookup;
+	
+	@Autowired
+	private ILoginDAO loginDAO; 
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(AdminDAOImpl.class.getName());
 
@@ -584,7 +589,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		Map<String, Object> paramMap = new HashMap<String, Object>(); 
 		paramMap.put("property", IApplicationConstants.ROLE_NOT_ADDED);
 		paramMap.put("source",null);
-		final String roleNotAdded = getContractProerty(paramMap);
+		final String roleNotAdded = loginDAO.getContractProerty(paramMap);
 
 			
 		if("add".equals(purpose)){					
@@ -666,7 +671,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			masterRoleTO.setRoleId(roles.getRoleId());
 			masterRoleTO.setRoleDescription(roles.getRoleDescription());
 			
-			if (user_org_level != Long.valueOf(getContractProerty(paramMap))) {
+			if (user_org_level != Long.valueOf(loginDAO.getContractProerty(paramMap))) {
 				if (IApplicationConstants.ROLE_TYPE.ROLE_USER.toString().equals(roleName)) {
 					masterRoleTO.setDefaultSelection("selected");
 				} else if (IApplicationConstants.ROLE_TYPE.ROLE_ADMIN.toString().equals(roleName) && "user".equals(argType)) {
@@ -1832,42 +1837,6 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					return pwdHintList;
 				}
 			});
-	}
-	
-	
-	/*
-	 * Making it public as from other module it will be get called
-	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
-	public String getContractProerty (Map<String, Object> paramMap) {
-		final String property = (String)paramMap.get("property");
-		final String source = (String)paramMap.get("source");
-		logger.log(IAppLogger.INFO, "getContractProerty for  property= " + property);
-		return (String) getJdbcTemplatePrism().execute(
-			new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
-					cs.setString(1, property);
-					cs.setString(2, source);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					String propertyValue = null;
-					try {
-						cs.execute();
-						propertyValue = cs.getString(3);
-						Utils.logError(cs.getString(4));
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					logger.log(IAppLogger.INFO, "getContractProerty().propertyValue =" + propertyValue);
-					return propertyValue;
-				}
-			}
-		);
-	}
+	}	
 	
 }
