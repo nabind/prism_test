@@ -71,6 +71,15 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_USERS IS
   PROCEDURE SP_VALIDATE_USERNAME(P_IN_USERNAME       IN USERS.USERNAME%TYPE,
                                  P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                  P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+                                 
+  PROCEDURE SP_GET_ROLE_ADD(P_IN_ROLE            IN VARCHAR2,
+                            P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+                            
+  PROCEDURE SP_GET_ROLE_USER(P_IN_ROLE            IN VARCHAR2,
+                             P_IN_USERID          IN USERS.USERID%TYPE,
+                             P_OUT_REF_CURSOR     OUT GET_REF_CURSOR,
+                             P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);                            
 
 END PKG_MANAGE_USERS;
 /
@@ -526,6 +535,72 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_VALIDATE_USERNAME;
+  
+ 
+ PROCEDURE SP_GET_ROLE_ADD( P_IN_ROLE            IN VARCHAR2,
+                            P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+                            
+  BEGIN
+  
+    OPEN P_OUT_REF_CURSOR FOR
+     SELECT RE.ROLEID      AS ROLEID,
+            RE.ROLE_NAME   AS ROLE_NAME,
+            RE.DESCRIPTION DESCRIPTION           
+       FROM ROLE RE
+      WHERE RE.ROLE_NAME NOT in (WITH T AS (SELECT P_IN_ROLE AS TXT FROM DUAL)
+       SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
+         FROM T
+       CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1);
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));  
+      
+  END SP_GET_ROLE_ADD;  
+  
+  
+PROCEDURE SP_GET_ROLE_USER(  P_IN_ROLE            IN VARCHAR2,
+                             P_IN_USERID          IN USERS.USERID%TYPE,
+                             P_OUT_REF_CURSOR     OUT GET_REF_CURSOR,
+                             P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
+                            
+  BEGIN
+      
+    OPEN P_OUT_REF_CURSOR FOR                      
+       SELECT RE.ROLEID AS ROLEID,
+              RE.ROLE_NAME AS ROLE_NAME,
+              OTS.ORG_LABEL || ' ' || RE.DESCRIPTION AS DESCRIPTION
+         FROM ROLE RE,
+              USER_ROLE UR,
+              USERS U,
+              ORG_USERS OU,
+              (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+                GROUP(
+                ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                 FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                         FROM ORG_TP_STRUCTURE
+                        ORDER BY ORG_LEVEL) TEMP
+                GROUP BY TEMP.ORG_LEVEL) OTS
+        WHERE UR.USERID = P_IN_USERID
+          AND U.USERID = P_IN_USERID
+          AND OU.USERID = P_IN_USERID
+          AND UR.ROLEID = RE.ROLEID
+          AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
+          AND RE.ROLE_NAME NOT IN (WITH T AS (SELECT P_IN_ROLE AS TXT
+                                                FROM DUAL)
+         SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
+           FROM T
+         CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+          ORDER BY RE.ROLEID;
+
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));  
+      
+  END SP_GET_ROLE_USER;
+                          
 
 END PKG_MANAGE_USERS;
 /
