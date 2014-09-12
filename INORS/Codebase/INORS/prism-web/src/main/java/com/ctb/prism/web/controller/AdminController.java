@@ -45,6 +45,7 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.filter.RESTAuthenticationFilter;
 import com.ctb.prism.parent.service.IParentService;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -68,6 +69,9 @@ public class AdminController {
 	
 	@Autowired
 	private IUsabilityService usabilityService;
+	
+	@Autowired 
+	private ILoginService loginService;
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -2071,6 +2075,17 @@ public class AdminController {
 			String orgMode= req.getParameter("orgMode");
 			req.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			req.getSession().setAttribute(IApplicationConstants.ORG_MODE, orgMode);
+			
+			//To retrieve the actions for a particular user and a cust_prod_id - By Joy
+			//If no. of parameters are changed, please update validateUser() of LoginController
+			String userId = (String)req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			Map<String,Object> actionParamMap = new HashMap<String,Object>();
+			actionParamMap.put("userId", userId);
+			actionParamMap.put("custProdId", adminYear);
+			
+			Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
+			req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
+			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 

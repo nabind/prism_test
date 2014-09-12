@@ -363,12 +363,14 @@ public class LoginController {
 				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));
 				req.getSession().setAttribute(IApplicationConstants.MENU_SET, menuSet);
 				
-			//	Map<String,String> actionParamMap = new HashMap<String,String>();
-				paramMap.put("userId", user.getUserId());
-				paramMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
+				//Only two parameters are being sent for proper caching - By Joy
+				//If no. of parameters are changed, please update updateAdminYear() of AdminController
+				Map<String,Object> actionParamMap = new HashMap<String,Object>();
+				actionParamMap.put("userId", user.getUserId());
+				actionParamMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
 				
 				//this Map is now need to add in Modelview
-				Map<String, String> actionMap= loginService.getActionMap(paramMap);
+				Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
 				req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
 				
 				Map<String,Object> paramMapMessage = new HashMap<String, Object>();
