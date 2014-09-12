@@ -10,9 +10,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -387,7 +389,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			userList.add(to);
 		}
 		return userList;
-	}
+	} 
 	
 	private List<UserTO> getUserDetailsOnScrollWithSrchParam(final String currorg, final String customerId, final String orgMode, final String tenantId, final Long roleId, final String custProdId, final String userName, final String searchParam, final String moreCount) {
 		return (List<UserTO>) getJdbcTemplatePrism().execute(
@@ -559,13 +561,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )")
-	private List<RoleTO> getMasterRoleList(String argType, String userid, String customerId,String purpose) {
+	private List<RoleTO> getMasterRoleList(String argType, final String userid, String customerId,String purpose) {
 		logger.log(IAppLogger.INFO, "argType=" + argType);
 		logger.log(IAppLogger.INFO, "userid=" + userid);
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 		RoleTO masterRoleTO = null;
 		List<RoleTO> masterRoleList = new ArrayList<RoleTO>();
-		List<Map<String, Object>> lstMasterRoleData = null;
+		List<RoleTO> lstMasterRoleData = null;
 		long user_org_level = -1;
 		ResourceBundle b = ResourceBundle.getBundle("messages");
 		if ("user".equals(argType)) {
@@ -578,64 +580,93 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		} else if ("org".equals(argType)) {
 			user_org_level = Long.valueOf(userid);
 		}
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>(); 
+		paramMap.put("property", IApplicationConstants.ROLE_NOT_ADDED);
+		paramMap.put("source",null);
+		final String roleNotAdded = getContractProerty(paramMap);
 
-		if("add".equals(purpose)){
-			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_ADD, 
-					IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
-					IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
-					IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
+			
+		if("add".equals(purpose)){					
+			lstMasterRoleData = (List<RoleTO>) getJdbcTemplatePrism().execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_ADD);
+							cs.setString(1, roleNotAdded);
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<RoleTO> roleList = new ArrayList<RoleTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(2);
+								while(rs.next()){
+									RoleTO to = new RoleTO();
+									to.setRoleId(Long.parseLong(rs.getString("ROLEID")));
+									to.setRoleName(rs.getString("ROLE_NAME"));
+									to.setRoleDescription(rs.getString("DESCRIPTION"));
+									roleList.add(to);
+								}
+								Utils.logError(cs.getString(3));
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							logger.log(IAppLogger.INFO, "getMasterRoleList().roleList.size()=" + roleList.size());
+							return roleList;
+						}
+					}
+				);
+			
 		}else{
-			lstMasterRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE, userid, userid, userid, 
-					IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
-					IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
-					IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
+			lstMasterRoleData = (List<RoleTO>) getJdbcTemplatePrism().execute(
+					new CallableStatementCreator() {
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_USER);
+							cs.setString(1, roleNotAdded);
+							cs.setLong(2, Long.valueOf(userid));
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							return cs;
+						}
+					}, new CallableStatementCallback<Object>() {
+						public Object doInCallableStatement(CallableStatement cs) {
+							ResultSet rs = null;
+							List<RoleTO> roleList = new ArrayList<RoleTO>();
+							try {
+								cs.execute();
+								rs = (ResultSet) cs.getObject(3);
+								while(rs.next()){
+									RoleTO to = new RoleTO();
+									to.setRoleId(Long.parseLong(rs.getString("ROLEID")));
+									to.setRoleName(rs.getString("ROLE_NAME"));
+									to.setRoleDescription(rs.getString("DESCRIPTION"));
+									roleList.add(to);
+								}
+								Utils.logError(cs.getString(4));
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							logger.log(IAppLogger.INFO, "getMasterRoleList().roleList.size()=" + roleList.size());
+							return roleList;
+						}
+					}
+				);			
 		}
 		
-
-		/*
-		 * if (user_org_level == 1) { lstMasterRoleData =
-		 * getJdbcTemplatePrism().queryForList( IQueryConstants.GET_ROLE_ACSI);
-		 * } else if (user_org_level == 3) { lstMasterRoleData =
-		 * getJdbcTemplatePrism().queryForList(
-		 * IQueryConstants.GET_ROLE_SCHOOL); } else if (user_org_level == 4) {
-		 * lstMasterRoleData = getJdbcTemplatePrism().queryForList(
-		 * IQueryConstants.GET_ROLE_TEACHER); } else { lstMasterRoleData =
-		 * getJdbcTemplatePrism().queryForList(
-		 * IQueryConstants.GET_ROLE_DEFAULT); }
-		 */
-		for (Map<String, Object> fieldDetails : lstMasterRoleData) {
+		paramMap.put("property", IApplicationConstants.ORGLVL_USER_NOT_ADDED);
+		
+		for (RoleTO roles : lstMasterRoleData) {
 			masterRoleTO = new RoleTO();
-			String roleName = (String) (fieldDetails.get("ROLE_NAME"));
-			masterRoleTO.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
-			masterRoleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
-			masterRoleTO.setRoleDescription(fieldDetails.get("DESCRIPTION").toString());
-
-			/*
-			 * if (user_org_level == 1) { if
-			 * (IApplicationConstants.ROLE_TYPE.ROLE_ACSI
-			 * .toString().equals(roleName)) {
-			 * masterRoleTO.setDefaultSelection("selected"); } else if
-			 * (IApplicationConstants
-			 * .ROLE_TYPE.ROLE_USER.toString().equals(roleName)) {
-			 * masterRoleTO.setDefaultSelection("selected"); } else {
-			 * masterRoleTO.setDefaultSelection(""); } } else if (user_org_level
-			 * == 3) { if
-			 * (IApplicationConstants.ROLE_TYPE.ROLE_SCHOOL.toString()
-			 * .equals(roleName)) {
-			 * masterRoleTO.setDefaultSelection("selected"); } else if
-			 * (IApplicationConstants
-			 * .ROLE_TYPE.ROLE_USER.toString().equals(roleName)) {
-			 * masterRoleTO.setDefaultSelection("selected"); } else {
-			 * masterRoleTO.setDefaultSelection(""); } } else if (user_org_level
-			 * == 4) { if
-			 * (IApplicationConstants.ROLE_TYPE.ROLE_CLASS.toString().
-			 * equals(roleName)) { masterRoleTO.setDefaultSelection("selected");
-			 * } else if
-			 * (IApplicationConstants.ROLE_TYPE.ROLE_USER.toString().equals
-			 * (roleName)) { masterRoleTO.setDefaultSelection("selected"); }
-			 * else { masterRoleTO.setDefaultSelection(""); } }
-			 */
-			if (user_org_level != Long.valueOf(b.getString("user.not.added"))) {
+			String roleName = roles.getRoleName();
+			masterRoleTO.setRoleName(roles.getRoleName());
+			masterRoleTO.setRoleId(roles.getRoleId());
+			masterRoleTO.setRoleDescription(roles.getRoleDescription());
+			
+			if (user_org_level != Long.valueOf(getContractProerty(paramMap))) {
 				if (IApplicationConstants.ROLE_TYPE.ROLE_USER.toString().equals(roleName)) {
 					masterRoleTO.setDefaultSelection("selected");
 				} else if (IApplicationConstants.ROLE_TYPE.ROLE_ADMIN.toString().equals(roleName) && "user".equals(argType)) {
@@ -1802,4 +1833,41 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				}
 			});
 	}
+	
+	
+	/*
+	 * Making it public as from other module it will be get called
+	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
+	public String getContractProerty (Map<String, Object> paramMap) {
+		final String property = (String)paramMap.get("property");
+		final String source = (String)paramMap.get("source");
+		logger.log(IAppLogger.INFO, "getContractProerty for  property= " + property);
+		return (String) getJdbcTemplatePrism().execute(
+			new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
+					cs.setString(1, property);
+					cs.setString(2, source);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					String propertyValue = null;
+					try {
+						cs.execute();
+						propertyValue = cs.getString(3);
+						Utils.logError(cs.getString(4));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					logger.log(IAppLogger.INFO, "getContractProerty().propertyValue =" + propertyValue);
+					return propertyValue;
+				}
+			}
+		);
+	}
+	
 }
