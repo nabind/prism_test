@@ -113,6 +113,8 @@
 	
 	//======================================== Create parent row DOM======================================
 	function getParentDetails(checkFirstLoad,data) {
+		var manageParents_resetPwd = $('#manageParents_resetPwd').val();
+		var manageParents_viewChildren = $('#manageParents_viewChildren').val();
 		var parentContent = '';	
 		if (checkFirstLoad) {
 			$("tbody#parent_details").find("tr").remove();
@@ -123,18 +125,24 @@
 			parentContent += '<tr id ='+ this.userName +' class="abc" scrollid='+this.clikedOrgId+'_'+this.userName+'>'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
 								+'<td>' + this.displayName +'</td>'
-								//+ createStatusTag(this.status)
-								+'<td>'+this.orgName+'</td>'
-								+'<td class="vertical-center">'
-									+' <span class="button-group compact">' 
-										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName
-										+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a> '
-										
-										+' <a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId 
-										+'" orgId="'+  this.orgId +'" isPN="N" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>' 
-									+' </span>'
-								+'</td>'
-							+'</tr>' ;
+								+'<td>'+this.orgName+'</td>';
+								
+			if(manageParents_resetPwd == 'true' || manageParents_viewChildren == 'true'){
+				parentContent += '<td class="vertical-center">'
+									+' <span class="button-group compact">';
+				if(manageParents_resetPwd == 'true'){
+					parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName
+										+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a>';
+				}
+				if(manageParents_viewChildren == 'true'){
+					parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId 
+										+'" orgId="'+  this.orgId +'" isPN="N" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>';
+				}
+				parentContent += 		'</span>'
+								+'</td>';
+			}
+								
+			parentContent +='</tr>' ;
 						
 						 
 		});

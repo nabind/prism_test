@@ -21,15 +21,36 @@
 			<div class="panel-control align-right">
 			<div class = "align-left" style="float:left"><b>
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameParent"></span></b></div>
-				<span class="input search-input">
-					<input type="text" name="searchParent" id="searchParent" class="input-unstyled with-tooltip" title="Search Parent by User ID OR <br/>Full Name (Last Name OR First Name)" placeholder="Search">
-					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_parent"></a>
-				</span>
+					
+				<fmt:message var="manageParents_search" key="manage.parents.search"  />
+				<c:if test="${not empty actionMap[manageParents_search]}">
+					<span class="input search-input">
+						<input type="text" name="searchParent" id="searchParent" class="input-unstyled with-tooltip" title="Search Parent by User ID OR <br/>Full Name (Last Name OR First Name)" placeholder="Search">
+						<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_parent"></a>
+					</span>
+				</c:if>					
+				
 			</div>
 			<div class="panel-load-target with-padding margin10 height-mid padding-none">
-				<div class="pagination panel-control margin-bottom-small rounded-border">
-					<a href="#nogo" id="moreParent" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more users"><spring:message code="button.more" /></a>
-				</div>
+			
+				<fmt:message var="manageParents_more" key="manage.parents.more"  />
+				<c:if test="${not empty actionMap[manageParents_more]}">
+					<div class="pagination panel-control margin-bottom-small rounded-border">
+						<a href="#nogo" id="moreParent" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="Display more users"><spring:message code="button.more" /></a>
+					</div>
+				</c:if>
+				
+				<fmt:message var="manageParents_resetPwd" key="manage.parents.resetPwd"  />
+				<c:if test="${not empty actionMap[manageParents_resetPwd]}">
+					<input type="hidden" id="manageParents_resetPwd" value="true"/>
+				</c:if>
+				
+				<fmt:message var="manageParents_viewChildren" key="manage.parents.viewChildren"  />
+				<c:if test="${not empty actionMap[manageParents_viewChildren]}">
+					<input type="hidden" id="manageParents_viewChildren" value="true"/>
+				</c:if>
+				
+				
 				<div id="parentTable"
 					class="report-container tabs-content padding-small"
 					style="height: 450px">
@@ -41,7 +62,11 @@
 								<th scope="col" width="20%"><span style="margin-left:24px"><spring:message code="thead.userID" /></span></th>
 								<th scope="col" width="25%"><spring:message code="table.label.fullName" /></th>
 								<th scope="col" width="30%"><spring:message code="thead.schoolName" /></th>
-								<th scope="col" width="15%" class=""><spring:message code="table.label.actions" /></th>
+								
+								<c:if test="${not empty actionMap[manageParents_resetPwd] || not empty actionMap[manageParents_viewChildren]}">
+									<th scope="col" width="15%" class=""><spring:message code="table.label.actions" /></th>
+								</c:if>
+								
 							</tr>
 						</thead>
 						<tbody id="parent_details">
@@ -49,7 +74,11 @@
 								<th scope="col" width="20%"></th>
 								<th scope="col" width="25%"></th>
 								<th scope="col" width="30%"></th>
-								<th scope="col" width="15%" class=""></th>
+								
+								<c:if test="${not empty actionMap[manageParents_resetPwd] || not empty actionMap[manageParents_viewChildren]}">
+									<th scope="col" width="15%" class=""></th>
+								</c:if>
+								
 							</tr>
 						</tbody>
 					</table>
