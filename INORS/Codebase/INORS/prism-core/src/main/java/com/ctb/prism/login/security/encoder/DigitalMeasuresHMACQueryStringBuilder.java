@@ -5,10 +5,11 @@ import groovy.util.logging.Slf4j;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.crypto.Mac;
@@ -16,7 +17,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.safehaus.uuid.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.login.Service.ILoginService;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @Slf4j
@@ -40,8 +44,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
     private static final String SIGNATURE_PARAM = "&signature=";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     
-    private static final String THEME_PARAM = "&theme=";
-	
+    @Autowired ILoginService loginService;
+    
 	public DigitalMeasuresHMACQueryStringBuilder() {
 	}
 
@@ -105,8 +109,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 			String orgLevel, String applicationName, String role, String userName, String theme) throws Exception
 	{
 		String validUntilDate = getISO8601UTCDate();
-		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNode, orgLevel, applicationName, role, userName, validUntilDate, theme);
-		String signature = getAuthenticationCode(queryString.toString());
+		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNode, orgLevel, applicationName, role, userName, validUntilDate);
+		String signature = getAuthenticationCode(queryString.toString(), applicationName, theme);
 
 		appendAuthenticationCode(queryString, signature);
 
@@ -146,9 +150,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					URLDecoder.decode(applicationName, URL_ENCODING), 
 					URLDecoder.decode(role, URL_ENCODING), 
 					URLDecoder.decode(userName, URL_ENCODING),
-					URLDecoder.decode(validUntilDate, URL_ENCODING),
-					URLDecoder.decode(theme, URL_ENCODING));
-			String signature = urlEncode(getAuthenticationCode(queryString.toString()));
+					URLDecoder.decode(validUntilDate, URL_ENCODING));
+			String signature = urlEncode(getAuthenticationCode(queryString.toString(), applicationName, theme));
 			
 			if(secretValue != null && secretValue.equals(URLDecoder.decode(signature, URL_ENCODING))) {
 				// encoding needed before comparing
@@ -213,7 +216,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	 */
 	private Appendable buildUnauthenticatedQueryString(String customerId, String orgNode, 
 			String orgLevel, String applicationName, String role, String userName,
-			String validUntilDate, String theme) throws Exception
+			String validUntilDate) throws Exception
 	{
 		StringBuilder builder = new StringBuilder();
 		
@@ -224,7 +227,6 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 		builder.append(EXPIRY_DATE_PARAM).append(urlEncode(validUntilDate));
 		builder.append(USER_ROLE_PARAM).append(urlEncode(role));
 		builder.append(USER_NAME_PARAM).append(urlEncode(userName));
-		builder.append(THEME_PARAM).append(theme);
 		
 		/*builder.append(API_KEY_PARAMETER_NAME).append(urlEncode(username));
 		builder.append(EXPIRY_DATE_PARAMETER_NAME).append(urlEncode(validUntilDate));
@@ -251,10 +253,21 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	 * @param message	message to hash
 	 * @return hashed message
 	 */
-	private String getAuthenticationCode(String message) throws Exception
+	private String getAuthenticationCode(String message, String applicationName, String theme) throws Exception
 	{
 		Mac messageAuthenticationCode = Mac.getInstance(ENCODING_ALGORITHM);
 
+		// get encryption key from configuration DB
+		if(theme != null) {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("property", "hmac.secret.key");
+			paramMap.put("source", CustomStringUtil.appendString(applicationName, "|", theme));
+			paramMap.put("contractName", theme);
+			String encryptionKey = loginService.getContractProerty(paramMap);
+			secretKey = new SecretKeySpec((encryptionKey == null)? "".getBytes() : encryptionKey.getBytes(), ENCODING_ALGORITHM);
+		}
+		// end: 
+		
 		messageAuthenticationCode.init(secretKey);
 		messageAuthenticationCode.update(message.getBytes());
 
@@ -328,8 +341,8 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					);
 			System.out.println(queryString.toString());
 			*/
-			String param = "customer_id=14829&org_node_code=IN~0670~0581&hierarchy_level=3&application_name=CTB.COM&time_stamp=2014-11-19T18%3A33%3A44Z&user_role=Regular&user_name=istep_prisam";
-			String signature = hmc.getAuthenticationCode(param.toString());
+			String param = "customer_id=457598&org_node_code=D1%7E8130%7E8793&hierarchy_level=3&application_name=CTB.com&time_stamp=2014-10-12T22%3A54%3A42Z&user_role=Admin&user_name=aredmon5023";
+			String signature = hmc.getAuthenticationCode(param.toString(), "CTB.COM", null);
 			System.out.println( URLEncoder.encode(signature, "UTF-8"));
 			
 		} catch (Exception e) {

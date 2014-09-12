@@ -874,8 +874,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public String getContractProerty (Map<String, Object> paramMap) {
 		final String property = (String)paramMap.get("property");
 		final String source = (String)paramMap.get("source");
+		String contractName = (String) paramMap.get("contractName");
 		logger.log(IAppLogger.INFO, "getContractProerty for  property= " + property);
-		return (String) getJdbcTemplatePrism().execute(
+		return (String) getJdbcTemplatePrism(contractName).execute(
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
