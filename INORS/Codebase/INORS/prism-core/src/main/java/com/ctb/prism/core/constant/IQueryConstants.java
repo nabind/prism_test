@@ -1166,6 +1166,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 		public static final String GET_FILE_SIZE = CustomStringUtil.appendString(" SELECT JOB_ID,REQUEST_FILENAME,FILE_SIZE FROM JOB_TRACKING WHERE JOB_ID = ?");
 		public static final String UPDATE_FILE_SIZE = CustomStringUtil.appendString("UPDATE JOB_TRACKING SET FILE_SIZE = ? WHERE JOB_ID = ?");
+		
+		public static final String SP_GET_PROPERTY = "{CALL PKG_CONTRACT_PROPERTY.SP_GET_PROPERTY(?, ?, ?, ?)}";
 
 }
 

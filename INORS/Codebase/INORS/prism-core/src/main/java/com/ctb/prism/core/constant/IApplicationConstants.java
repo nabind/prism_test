@@ -261,4 +261,10 @@ public interface IApplicationConstants {
 	public static final String CONTRACT_NAME_TASC = "tasc";
 	public static final String CONTRACT_NAME_INORS = "inors";
 	
+	
+	
+	/************************ Contract based Configuration property ****************/
+	public static final String ROLE_NOT_ADDED = "role.not.added";
+	public static final String ORGLVL_USER_NOT_ADDED = "orglvl.user.not.added";
+	
 }

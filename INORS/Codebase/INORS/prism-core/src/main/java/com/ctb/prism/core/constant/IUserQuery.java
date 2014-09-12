@@ -207,19 +207,21 @@ public interface IUserQuery {
 		
 	public static final String GET_ROLE_DEFAULT = " SELECT ROLEID AS ROLE_ID, ROLE_NAME FROM ROLE WHERE ROLE_NAME IN ( 'ROLE_USER') ";
 	
-	public static final String GET_ROLE = CustomStringUtil.appendString(
+/*	public static final String GET_ROLE = CustomStringUtil.appendString(
 			" SELECT RE.ROLEID AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME, OTS.ORG_LABEL || ' ' || RE.DESCRIPTION AS DESCRIPTION",
 			" FROM ROLE RE, USER_ROLE UR, USERS U, ORG_USERS OU,(SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/')",
 			" WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL FROM (SELECT  DISTINCT ORG_LEVEL,ORG_LABEL",
 			" FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP GROUP BY TEMP.ORG_LEVEL) OTS",
 			" WHERE UR.USERID = ? AND U.USERID = ? AND OU.USERID = ?",
 			" AND UR.ROLEID=RE.ROLEID AND OU.ORG_NODE_LEVEL=OTS.ORG_LEVEL",
-			" AND RE.ROLE_NAME NOT IN (? ,? ,?) ORDER BY RE.ROLEID");
+			" AND RE.ROLE_NAME NOT IN (? ,? ,?) ORDER BY RE.ROLEID");*/
 	
-	public static final String GET_ROLE_ADD = CustomStringUtil.appendString(
+	public static final String SP_GET_ROLE_USER = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_USER(?, ?, ?, ?)}";
+	
+/*	public static final String GET_ROLE_ADD = CustomStringUtil.appendString(
 			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME, RE.DESCRIPTION DESCRIPTION ",
-			" FROM ROLE RE WHERE RE.ROLE_NAME NOT IN (? ,? ,?)");
-	
+			" FROM ROLE RE WHERE RE.ROLE_NAME NOT IN (? ,? ,?)");*/
+	public static final String SP_GET_ROLE_ADD = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_ADD(?, ?, ?)}";
 	
 	public static final String GET_USER_DETAILS_ON_EDIT = CustomStringUtil
 	.appendString(" SELECT USR.USERID AS ID, ",
