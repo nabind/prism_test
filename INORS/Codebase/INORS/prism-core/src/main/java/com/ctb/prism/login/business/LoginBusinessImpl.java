@@ -234,7 +234,7 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.getActionMap(paramMap);
 	}
 	
-	public String getContractProerty (Map<String, Object> paramMap) {
+	public Map<String, Object>  getContractProerty (Map<String, Object> paramMap) {
 		return loginDAO.getContractProerty(paramMap);
 	}
 	

@@ -159,7 +159,7 @@ public class LoginServiceImpl implements ILoginService {
 		return loginBusiness.getActionMap(paramMap);
 	}
 	
-	public String getContractProerty (Map<String, Object> paramMap) {
+	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		return loginBusiness.getContractProerty(paramMap);
 	}
 }

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -870,34 +871,38 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	/*
 	 * Making it public as from other module it will be get called
 	 */
+	@SuppressWarnings("unchecked")
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
-	public String getContractProerty (Map<String, Object> paramMap) {
-		final String property = (String)paramMap.get("property");
-		final String source = (String)paramMap.get("source");
+	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		String contractName = (String) paramMap.get("contractName");
-		logger.log(IAppLogger.INFO, "getContractProerty for  property= " + property);
-		return (String) getJdbcTemplatePrism(contractName).execute(
+		if(contractName == null) {
+			contractName = Utils.getContractName();
+		}
+		logger.log(IAppLogger.INFO, "getContractProerty for contract= " + contractName);
+		return (Map<String, Object>) getJdbcTemplatePrism(contractName).execute(
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
-					cs.setString(1, property);
-					cs.setString(2, source);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(CallableStatement cs) {
-					String propertyValue = null;
+					Map<String, Object> propertyMap = new HashMap<String, Object>();
+					ResultSet rs = null;
 					try {
 						cs.execute();
-						propertyValue = cs.getString(3);
-						Utils.logError(cs.getString(4));
+						rs = (ResultSet) cs.getObject(1);
+						while (rs.next()) {
+							propertyMap.put(rs.getString("PROPERY_NAME"), rs.getString("PROPERY_VALUE"));
+						}
+						Utils.logError(cs.getString(2));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-					logger.log(IAppLogger.INFO, "getContractProerty().propertyValue =" + propertyValue);
-					return propertyValue;
+					logger.log(IAppLogger.INFO, "getContractProerty().propertyMap size =" + propertyMap.size());
+					return propertyMap;
 				}
 			}
 		);

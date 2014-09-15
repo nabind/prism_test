@@ -587,10 +587,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		}
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>(); 
-		paramMap.put("property", IApplicationConstants.ROLE_NOT_ADDED);
-		paramMap.put("source",null);
-		final String roleNotAdded = loginDAO.getContractProerty(paramMap);
-
+		paramMap.put("contractName", Utils.getContractName());
+		Map<String, Object> propertyMap = loginDAO.getContractProerty(paramMap);
+		
+		final String roleNotAdded = (String)propertyMap.get(IApplicationConstants.ROLE_NOT_ADDED);
 			
 		if("add".equals(purpose)){					
 			lstMasterRoleData = (List<RoleTO>) getJdbcTemplatePrism().execute(
@@ -660,9 +660,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						}
 					}
 				);			
-		}
-		
-		paramMap.put("property", IApplicationConstants.ORGLVL_USER_NOT_ADDED);
+		}		
 		
 		for (RoleTO roles : lstMasterRoleData) {
 			masterRoleTO = new RoleTO();
@@ -671,7 +669,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			masterRoleTO.setRoleId(roles.getRoleId());
 			masterRoleTO.setRoleDescription(roles.getRoleDescription());
 			
-			if (user_org_level != Long.valueOf(loginDAO.getContractProerty(paramMap))) {
+			if (propertyMap.get(IApplicationConstants.ORGLVL_USER_NOT_ADDED) != null && 
+					user_org_level != Long.valueOf((String)propertyMap.get(IApplicationConstants.ORGLVL_USER_NOT_ADDED))) {
+				
 				if (IApplicationConstants.ROLE_TYPE.ROLE_USER.toString().equals(roleName)) {
 					masterRoleTO.setDefaultSelection("selected");
 				} else if (IApplicationConstants.ROLE_TYPE.ROLE_ADMIN.toString().equals(roleName) && "user".equals(argType)) {

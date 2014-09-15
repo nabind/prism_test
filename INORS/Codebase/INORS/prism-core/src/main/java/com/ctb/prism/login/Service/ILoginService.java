@@ -106,5 +106,5 @@ public interface ILoginService {
 	 */
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 	
-	public String getContractProerty (Map<String, Object> paramMap);
+	public Map<String, Object>  getContractProerty (Map<String, Object> paramMap);
 }

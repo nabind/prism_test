@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.safehaus.uuid.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.Service.ILoginService;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -260,10 +261,11 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 		// get encryption key from configuration DB
 		if(theme != null) {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("property", "hmac.secret.key");
-			paramMap.put("source", CustomStringUtil.appendString(applicationName, "|", theme));
+			//paramMap.put("property", "hmac.secret.key");
+			//paramMap.put("source", CustomStringUtil.appendString(applicationName, "|", theme));
 			paramMap.put("contractName", theme);
-			String encryptionKey = loginService.getContractProerty(paramMap);
+			Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+			encryptionKey = (String)propertyMap.get(IApplicationConstants.HMAC_SECRET_KEY+"~"+CustomStringUtil.appendString(applicationName, "|", theme));
 			secretKey = new SecretKeySpec((encryptionKey == null)? "".getBytes() : encryptionKey.getBytes(), ENCODING_ALGORITHM);
 		}
 		// end: 
