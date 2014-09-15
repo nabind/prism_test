@@ -21,7 +21,7 @@
 						    <td class="vertical-center">${student.name}</td>
 						    <td class="vertical-center">${student.klass}</td>
 						    <td class="vertical-center">${student.grade}</td>
-						    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
+						    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center; cursor: default;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
 						    	<span class="button-group compact">
 						    	<c:choose>
 							    	<c:when test="${(not empty student.ic) && (student.ic != ' ') && (student.icFlag == 'AC')}"><a class="button compact icon-page-list blue glossy with-tooltip" target="_blank" title="Invitation Code Letter" href="downloadZippedPdf.do?fileName=${student.ic}&fileType=Invitation_Code_Letter"></a></c:when>
