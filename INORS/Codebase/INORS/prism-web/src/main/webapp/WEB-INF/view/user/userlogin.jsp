@@ -206,7 +206,7 @@
 									</a>
 								</li><br>
 								<li>
-									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide_For_Parents.pdf?theme=parent&parent=true#nogo',800,600)">
+									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide_For_Parents.pdf',800,600)">
 										For information about the <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
 									</a>
 								</li>
