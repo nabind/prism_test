@@ -31,10 +31,10 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#getOrganizationDetailsOnFirstLoad(java.lang.String)
+	 * @see com.ctb.prism.admin.service.IAdminService#getOrganizationDetailsOnFirstLoad(Map<String, Object>)
 	 */
-	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid) throws Exception {
-		return adminBusiness.getOrganizationDetailsOnFirstLoad(nodeid);
+	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(Map<String, Object> paramMap) throws Exception {
+		return adminBusiness.getOrganizationDetailsOnFirstLoad(paramMap);
 	}
 
 	/*

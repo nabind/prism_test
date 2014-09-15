@@ -402,8 +402,9 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, orgJsonString);
 				}
 				else
-				{
-					OrgTOs = adminService.getOrganizationDetailsOnFirstLoad(currentOrg);
+				{	paramMap.put("nodeid", currentOrg);
+					paramMap.put("customerId", currCustomer);
+					OrgTOs = adminService.getOrganizationDetailsOnFirstLoad(paramMap);
 					modelAndView.addObject("organizationList", OrgTOs);
 					modelAndView.addObject("treeSturcture", "No");
 					modelAndView.addObject("orgName", OrgTOs.get(0).getTenantName());
@@ -1358,7 +1359,7 @@ public class AdminController {
 				}
 				else
 				{
-					orgTOs = adminService.getOrganizationDetailsOnFirstLoad(currentOrg);
+					orgTOs = adminService.getOrganizationDetailsOnFirstLoad(paramMap);
 					modelAndView.addObject("organizationList", orgTOs);
 					modelAndView.addObject("treeSturcture", "No");
 					modelAndView.addObject("orgName", orgTOs.get(0).getTenantName());

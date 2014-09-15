@@ -42,10 +42,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationDetailsOnFirstLoad(java.lang.String)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationDetailsOnFirstLoad(Map<String, Object>)
 	 */
-	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid) throws Exception {
-		return adminDAO.getOrganizationDetailsOnFirstLoad(nodeid);
+	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(Map<String, Object> paramMap) throws Exception {
+		return adminDAO.getOrganizationDetailsOnFirstLoad(paramMap);
 	}
 
 	/*

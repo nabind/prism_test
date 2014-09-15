@@ -23,7 +23,7 @@ public interface IAdminBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(String nodeid) throws Exception;
+	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap

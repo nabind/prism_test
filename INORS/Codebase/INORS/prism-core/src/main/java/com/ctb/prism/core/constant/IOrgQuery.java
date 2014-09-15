@@ -10,11 +10,13 @@ import com.ctb.prism.core.util.CustomStringUtil;
  */
 public interface IOrgQuery {
 	
-	public static final String GET_CURR_TENANT_DETAILS = CustomStringUtil
+/*	public static final String GET_CURR_TENANT_DETAILS = CustomStringUtil
 	.appendString(" SELECT ORG_NODEID, ORG_NODE_NAME, PARENT_ORG_NODEID, ORG_NODE_LEVEL, ORG_MODE",
 			" FROM ORG_NODE_DIM",
 			" WHERE ORG_NODEID = ? AND CUSTOMERID = ?",
-			" ORDER BY ORG_NODE_NAME");
+			" ORDER BY ORG_NODE_NAME");*/
+	
+	public static final String SP_GET_CURR_TENANT_DETAILS = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_CURR_TENANT_DETAILS(?, ?, ?, ?)}";
 	
 	public static final String GET_CURR_EDUCATION_DETAILS = CustomStringUtil
 	.appendString(" select ecd.EDU_CENTER_CODE,ecd.EDU_CENTERID from EDU_CENTER_DETAILS ecd " +
@@ -35,18 +37,21 @@ public interface IOrgQuery {
 					" WHERE OPL.ORG_NODEID = OND.ORG_NODEID AND OPL.CUST_PROD_ID = ? " +
 					" AND OND.ORG_MODE = ? AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");
 	
-	public static final String GET_TENANT_DETAILS = CustomStringUtil
+/*	public static final String GET_TENANT_DETAILS = CustomStringUtil
 	.appendString("SELECT OND.ORG_NODEID,OND.ORG_NODE_NAME ,OND.PARENT_ORG_NODEID,OND.ORG_NODE_LEVEL, OND.ORG_MODE " +
 			" FROM ORG_NODE_DIM OND, ORG_PRODUCT_LINK OPL " +
 			" WHERE OPL.ORG_NODEID = OND.ORG_NODEID AND OPL.CUST_PROD_ID = ? " +
-			" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");
+			" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");*/
 	
+	public static final String SP_GET_TENANT_DETAILS = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS(?, ?, ?, ?, ?)}";
+		
 	public static final String GET_TENANT_DETAILS_NON_ROOT = CustomStringUtil
 			.appendString("SELECT OND.ORG_NODEID,OND.ORG_NODE_NAME ,OND.PARENT_ORG_NODEID,OND.ORG_NODE_LEVEL, OND.ORG_MODE " +
 					" FROM ORG_NODE_DIM OND, ORG_PRODUCT_LINK OPL " +
 					" WHERE OPL.ORG_NODEID = OND.ORG_NODEID AND OPL.CUST_PROD_ID = ? " +
 					" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ? AND OND.ORG_MODE = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");
 	
+	public static final String SP_GET_TENANT_DETAILS_NON_ROOT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS_NON_ROOT(?, ?, ?, ?, ?, ?)}";
 	
 	/*public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
 	.appendString(" SELECT ORG_NODEID,",
@@ -69,7 +74,7 @@ public interface IOrgQuery {
 							" AND OND.ORG_NODE_LEVEL > ?",
 							" ORDER BY ORG_NODE_NAME ");*/
 	
-	public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
+	/*public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
 			.appendString(" SELECT OND.ORG_NODEID,",
 							" OND.ORG_NODE_NAME,",
 							" OND.PARENT_ORG_NODEID,",
@@ -90,7 +95,9 @@ public interface IOrgQuery {
 							" FROM ORG_NODE_DIM OND",
 							" WHERE OND.ORG_NODEID = ?",
 							" AND OND.ORG_NODE_LEVEL = 1",
-							" ORDER BY ORG_NODE_NAME ");
+							" ORDER BY ORG_NODE_NAME ");*/
+	
+	public static final String SP_GET_TENANT_DETAILS_NON_ACSI = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS_NON_ACSI(?, ?, ?, ?, ?, ?, ?)}";
 	
 	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
 	.appendString("SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,O.ORG_NODE_NAME,O.PARENT_ORG_NODEID,O.ORG_NODE_LEVEL",
