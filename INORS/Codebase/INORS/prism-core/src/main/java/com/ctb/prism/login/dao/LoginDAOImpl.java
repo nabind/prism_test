@@ -715,8 +715,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setLong(12, Long.valueOf(adminYear));
 					cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 					cs.setString(14, roles.toString());
-					cs.registerOutParameter(15, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setString(15, IApplicationConstants.FLAG_N);
+					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -724,8 +725,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					String strNodeId = null; 
 					try {
 						cs.execute();
-						strNodeId =  cs.getString(15);
-						
+						strNodeId =  cs.getString(16);
+						Utils.logError(cs.getString(17));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
