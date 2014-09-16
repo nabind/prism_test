@@ -161,19 +161,19 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#searchOrganization(java.lang.String, java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.service.IAdminService#searchOrganization(paramMap)
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		return adminBusiness.searchOrganization(orgName, tenantId, adminYear, customerId, orgMode);
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) {
+		return adminBusiness.searchOrganization(paramMap);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#searchOrgAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.service.IAdminService#searchOrgAutoComplete(Map<String, Object>)
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		return adminBusiness.searchOrgAutoComplete(orgName, tenantId, adminYear, customerId, orgMode);
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) {
+		return adminBusiness.searchOrgAutoComplete(paramMap);
 	}
 
 	/*

@@ -1264,23 +1264,49 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantID of the logged in user
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		orgName = CustomStringUtil.appendString("%", orgName, "%");
-		List<OrgTO> orgList = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORGANNIZATION, customerId, adminYear, orgName, orgMode, adminYear, tenantId, tenantId);
-		if (list != null && list.size() > 0) {
-			orgList = new ArrayList<OrgTO>();
-			for (Map<String, Object> data : list) {
-				OrgTO orgTO = new OrgTO();
-				orgTO.setTenantId(Long.valueOf(data.get("ORG_NODEID").toString()));
-				orgTO.setTenantName((String) data.get("ORG_NODE_NAME"));
-				orgTO.setNoOfChildOrgs(Long.valueOf(data.get("CHILD_ORG_NO").toString()));
-				// orgTO.setNoOfUsers(((BigDecimal)
-				// data.get("USER_NO")).longValue());
-				orgList.add(orgTO);
-			}
-		}
-		return orgList;
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) {
+		
+		logger.log(IAppLogger.INFO, "Enter: searchOrganization()");
+		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
+		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
+		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		final long customerId = (Long)paramMap.get("customerId");
+		final String orgMode = (String)paramMap.get("orgMode");
+		
+		return (List<OrgTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_SEARCH_ORGANNIZATION);
+						cs.setLong(1, customerId);
+						cs.setLong(2, custProdId);
+						cs.setString(3, orgName);
+						cs.setString(4, orgMode);
+						cs.setLong(5, tenantId);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<OrgTO> orgList = new ArrayList<OrgTO>();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(6);
+							while (rs.next()) {
+								OrgTO orgTO = new OrgTO();
+								orgTO.setTenantId(rs.getLong("ORG_NODEID"));
+								orgTO.setTenantName(rs.getString("ORG_NODE_NAME"));
+								orgTO.setNoOfChildOrgs(rs.getLong("CHILD_ORG_NO"));
+								orgList.add(orgTO);
+							}
+							Utils.logError(cs.getString(7));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return orgList;
+					}
+				});
 	}
 
 	/**
@@ -1291,20 +1317,48 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param tenantId
 	 *            tenantID of the logged in user
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		orgName = CustomStringUtil.appendString("%", orgName, "%");
-		// List<OrgTO> orgList = null;
-		String orgListJsonString = null;
-		List<Map<String, Object>> list = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_ORG_AUTO_COMPLETE, customerId, orgMode, adminYear, tenantId, orgName);
-		if (list != null && list.size() > 0) {
-			orgListJsonString = "[";
-			for (Map<String, Object> data : list) {
-				String orgNameStr = (String) data.get("ORG_NODE_NAME");
-				orgListJsonString = CustomStringUtil.appendString(orgListJsonString, "\"", orgNameStr, "\",");
-			}
-			orgListJsonString = CustomStringUtil.appendString(orgListJsonString.substring(0, orgListJsonString.length() - 1), "]");
-		}
-		return orgListJsonString;
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) {
+		
+		logger.log(IAppLogger.INFO, "Enter: searchOrgAutoComplete()");
+		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
+		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
+		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		final long customerId = (Long)paramMap.get("customerId");
+		final String orgMode = (String)paramMap.get("orgMode");
+		
+		return (String) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_SEARCH_ORG_AUTO_COMPLETE);
+						cs.setLong(1, customerId);
+						cs.setLong(2, custProdId);
+						cs.setString(3, orgName);
+						cs.setString(4, orgMode);
+						cs.setLong(5, tenantId);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						String orgListJsonString = null;
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(6);
+							orgListJsonString = "[";
+							while (rs.next()) {
+								String orgNameStr = rs.getString("ORG_NODE_NAME");
+								orgListJsonString = CustomStringUtil.appendString(orgListJsonString, "\"", orgNameStr, "\",");
+							}
+							orgListJsonString = CustomStringUtil.appendString(orgListJsonString.substring(0, orgListJsonString.length() - 1), "]");
+							Utils.logError(cs.getString(7));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return orgListJsonString;
+					}
+				});
 	}
 
 	/**

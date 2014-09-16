@@ -31,7 +31,23 @@ create or replace package PKG_MANAGE_ORGANIZATIONS is
                                            P_IN_CUST_PROD_ID        IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                            P_IN_ORG_MODE            IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                            P_OUT_REF_CURSOR         OUT GET_REF_CURSOR,
-                                           P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);                                                                                                                   
+                                           P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
+
+  PROCEDURE SP_SEARCH_ORGANNIZATION( P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                     P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                     P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
+                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                     P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                     P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                     P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);  
+  
+  PROCEDURE SP_SEARCH_ORG_AUTO_COMPLETE( P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                         P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                         P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
+                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                         P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);                                                                                                                                                                                                 
 
 end PKG_MANAGE_ORGANIZATIONS;
 /
@@ -134,6 +150,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
                                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
+      
       SELECT OND.ORG_NODEID,
              OND.ORG_NODE_NAME,
              OND.PARENT_ORG_NODEID,
@@ -152,6 +169,81 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
   END SP_GET_TENANT_DETAILS_NON_ROOT;
+  
+   PROCEDURE SP_SEARCH_ORGANNIZATION(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                     P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                     P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
+                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                     P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                     P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                     P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
+
+   BEGIN
+    OPEN P_OUT_REF_CURSOR FOR
+    
+      SELECT O.ORG_NODEID,
+             O.ORG_NODE_NAME,
+             (SELECT NVL(COUNT(1), 0)
+                FROM ORG_NODE_DIM M
+               WHERE M.PARENT_ORG_NODEID = O.ORG_NODEID
+                 AND M.CUSTOMERID = P_IN_CUSTOMERID
+                 AND EXISTS
+               (SELECT 1
+                        FROM ORG_PRODUCT_LINK OPL
+                       WHERE M.ORG_NODEID = OPL.ORG_NODEID
+                         AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)) CHILD_ORG_NO
+        FROM ORG_NODE_DIM O
+       WHERE UPPER(O.ORG_NODE_NAME) LIKE UPPER(P_IN_ORG_NODE_NAME)
+         AND ORG_MODE = P_IN_ORG_MODE
+         AND EXISTS (SELECT 1
+                FROM ORG_PRODUCT_LINK OPL
+               WHERE O.ORG_NODEID = OPL.ORG_NODEID
+                 AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
+         AND O.ORG_NODE_LEVEL > =
+             (SELECT ORG_NODE_LEVEL
+                FROM ORG_NODE_DIM
+               WHERE ORG_NODEID = P_IN_ORG_NODEID)
+      CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID
+       START WITH ORG_NODEID = P_IN_ORG_NODEID;
+
+    
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+   END SP_SEARCH_ORGANNIZATION;
+   
+   
+   PROCEDURE SP_SEARCH_ORG_AUTO_COMPLETE(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                         P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                         P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
+                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                         P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
+
+   BEGIN
+    OPEN P_OUT_REF_CURSOR FOR
+    
+      SELECT ABC.ORG_NODE_NAME
+        FROM (SELECT O.ORG_NODE_NAME, O.ORG_NODE_LEVEL
+                FROM ORG_NODE_DIM O
+               WHERE O.CUSTOMERID = P_IN_CUSTOMERID
+                 AND O.ORG_MODE = P_IN_ORG_MODE
+                 AND EXISTS
+               (SELECT 1
+                        FROM ORG_PRODUCT_LINK OPL
+                       WHERE O.ORG_NODEID = OPL.ORG_NODEID
+                         AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
+               START WITH O.ORG_NODEID = P_IN_ORG_NODEID
+              CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID
+               ORDER BY O.ORG_NODE_NAME) ABC
+       WHERE UPPER(ABC.ORG_NODE_NAME) LIKE UPPER(P_IN_ORG_NODE_NAME)
+         AND ROWNUM <= 100;
+    
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+   END SP_SEARCH_ORG_AUTO_COMPLETE;                                            
 
 END PKG_MANAGE_ORGANIZATIONS;
 /

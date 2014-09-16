@@ -159,10 +159,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrganization(java.lang.String, java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrganization(Map<String, Object>)
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		return adminDAO.searchOrganization(orgName, tenantId, adminYear, customerId, orgMode);
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) {
+		return adminDAO.searchOrganization(paramMap);
 	}
 
 	/*
@@ -177,10 +177,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrgAutoComplete(java.lang.String, java.lang.String, java.lang.String, long)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrgAutoComplete(Map<String, Object>)
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode) {
-		return adminDAO.searchOrgAutoComplete(orgName, tenantId, adminYear, customerId, orgMode);
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) {
+		return adminDAO.searchOrgAutoComplete(paramMap);
 	}
 
 	/*

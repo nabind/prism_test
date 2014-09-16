@@ -132,24 +132,16 @@ public interface IAdminService {
 	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode);
 
 	/**
-	 * @param orgName
-	 * @param tenantId
-	 * @param adminYear
-	 * @param customerId
-	 * @param orgMode
+	 * @param paramMap
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap); 
 
 	/**
-	 * @param orgName
-	 * @param tenantId
-	 * @param adminYear
-	 * @param customerId
-	 * @param orgMode
+	 * @param paramMap
 	 * @return
 	 */
-	public String searchOrgAutoComplete(String orgName, String tenantId, String adminYear, long customerId, String orgMode);
+	public String searchOrgAutoComplete(Map<String, Object> paramMap);
 
 	/**
 	 * @param roleId

@@ -113,7 +113,7 @@ public interface IOrgQuery {
 	
 	
 
-	public static final String SEARCH_ORGANNIZATION = CustomStringUtil.appendString("SELECT O.ORG_NODEID,",
+/*	public static final String SEARCH_ORGANNIZATION = CustomStringUtil.appendString("SELECT O.ORG_NODEID,",
 			" O.ORG_NODE_NAME,",
 			" (SELECT NVL(COUNT(1), 0) FROM ORG_NODE_DIM m WHERE m.PARENT_ORG_NODEID  = O.ORG_NODEID ",
 			" AND m.CUSTOMERID = ? ",
@@ -129,9 +129,13 @@ public interface IOrgQuery {
             "       WHERE   O.ORG_NODEID = OPL.ORG_NODEID ",
             " 		AND OPL.CUST_PROD_ID = ?)",
 			" AND O.ORG_NODE_LEVEL  > = (SELECT ORG_NODE_LEVEL  FROM ORG_NODE_DIM WHERE ORG_NODEID  = ?) ",
-			" CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID START WITH ORG_NODEID = ? ");
+			" CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID START WITH ORG_NODEID = ? ");*/
+	
+	public static final String SP_SEARCH_ORGANNIZATION = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_SEARCH_ORGANNIZATION(?, ?, ?, ?, ?, ?, ?)}";
+	
+	
 	// search organization auto complete
-	public static final String SEARCH_ORG_AUTO_COMPLETE = CustomStringUtil.appendString("SELECT ABC.ORG_NODE_NAME ",
+/*	public static final String SEARCH_ORG_AUTO_COMPLETE = CustomStringUtil.appendString("SELECT ABC.ORG_NODE_NAME ",
 			" FROM (SELECT O.ORG_NODE_NAME, O.ORG_NODE_LEVEL ",
 			" FROM ORG_NODE_DIM O  ",
 			" WHERE O.CUSTOMERID = ? ",
@@ -143,7 +147,9 @@ public interface IOrgQuery {
 			" CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID ",
 			" ORDER BY O.ORG_NODE_NAME) ABC ",
 			" WHERE UPPER(ABC.ORG_NODE_NAME) LIKE UPPER(?) ",
-			" AND ROWNUM <= 100");
+			" AND ROWNUM <= 100");*/
+			
+	public static final String SP_SEARCH_ORG_AUTO_COMPLETE = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_SEARCH_ORG_AUTO_COMPLETE(?, ?, ?, ?, ?, ?, ?)}";			
 	
 	public static final String INSERT_STG_ORG_NODE = CustomStringUtil.appendString(
 			"INSERT INTO STG_ORG_NODE_DIM ",
