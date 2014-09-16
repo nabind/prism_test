@@ -20,6 +20,7 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
                            P_IN_CUST_PROD_ID    IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                            P_IN_ACTIVE_FLAG     IN VARCHAR2,
                            P_IN_ROLES           IN VARCHAR2,
+                           P_IN_IS_EDU          IN VARCHAR2,
                            P_OUT_NODE_ID        OUT NUMBER,
                            P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
 
@@ -79,6 +80,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                            P_IN_CUST_PROD_ID    IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                            P_IN_ACTIVE_FLAG     IN VARCHAR2,
                            P_IN_ROLES           IN VARCHAR2,
+                           P_IN_IS_EDU          IN VARCHAR2,
                            P_OUT_NODE_ID        OUT NUMBER,
                            P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
   
@@ -117,6 +119,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
          P_IN_NEW_USER,
          P_IN_CUSTOMERID);
     
+    IF P_IN_IS_EDU = 'N' THEN
       INSERT INTO ORG_USERS
         (ORG_USER_ID,
          USERID,
@@ -135,6 +138,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            WHERE CUST_PROD_ID = P_IN_CUST_PROD_ID),
          P_IN_ACTIVE_FLAG,
          SYSDATE);
+    ELSIF P_IN_IS_EDU = 'Y' THEN
+		INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (P_IN_ORGNODEID, USERSEQID);
+    END IF;
     
       FOR I IN (SELECT ROLEID
                   FROM ROLE
