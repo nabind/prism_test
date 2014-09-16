@@ -713,12 +713,14 @@ public class AdminController {
 			if(IApplicationConstants.PURPOSE.equals(purpose)){
 				RoleTO masterRoleTO = new RoleTO();
 				masterRoleTO.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_USER.toString());
+				masterRoleTO.setRoleDescription("User");
 				masterRoleTO.setRoleId(IApplicationConstants.ROLE_USER_ID);
 				masterRoleTO.setDefaultSelection("selected");
 				RoleTOs.add(masterRoleTO);
 				
 				masterRoleTO = new RoleTO();
 				masterRoleTO.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_ADMIN.toString());
+				masterRoleTO.setRoleDescription("Admin User");
 				masterRoleTO.setRoleId(IApplicationConstants.ROLE_ADMIN_ID);
 				RoleTOs.add(masterRoleTO);
 			}else{
@@ -954,16 +956,17 @@ public class AdminController {
 		return null;
 			
 	}	
-	
+
 	/**
 	 * Performs search user operation for auto complete feature in the search box.
-	 * This method is called through AJAX
+	 * This method is called through AJAX.
+	 * 
 	 * @param req
 	 * @param res
 	 * @return Returns nothing, instead writes search data in response as a JSON string
 	 */
-	@RequestMapping(value="/searchUserAutoComplete", method=RequestMethod.GET)
-	public String searchUserAutoComplete( HttpServletRequest req, HttpServletResponse res) {
+	@RequestMapping(value = "/searchUserAutoComplete", method = RequestMethod.GET)
+	public String searchUserAutoComplete(HttpServletRequest req, HttpServletResponse res) {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - searchUserAutoComplete");
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
@@ -971,26 +974,29 @@ public class AdminController {
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			String purpose = (String) req.getParameter("purpose");
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-
-			
-			if(IApplicationConstants.PURPOSE.equals(purpose)){
+			String moreCount = propertyLookup.get("count.results.button.more");
+			logger.log(IAppLogger.INFO, "adminYear = " + adminYear);
+			logger.log(IAppLogger.INFO, "term = " + term);
+			logger.log(IAppLogger.INFO, "selectedOrg = " + selectedOrg);
+			logger.log(IAppLogger.INFO, "purpose = " + purpose);
+			logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
+			logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
+			if (IApplicationConstants.PURPOSE.equals(purpose)) {
 				selectedOrg = (String) req.getParameter("eduCenterId");
 			}
-			
-			if(selectedOrg == null) 
+			if (selectedOrg == null) {
 				return null;
-			
-			Map<String,Object> paramMap = new HashMap<String,Object>();
-			paramMap.put("adminYear",adminYear);
-			paramMap.put("term",term);
-			paramMap.put("selectedOrg",selectedOrg);
-			paramMap.put("purpose",purpose);
-			paramMap.put("orgMode",orgMode);
-			
+			}
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("adminYear", adminYear);
+			paramMap.put("term", term);
+			paramMap.put("selectedOrg", selectedOrg);
+			paramMap.put("purpose", purpose);
+			paramMap.put("orgMode", orgMode);
+			paramMap.put("moreCount", moreCount);
 			String users = adminService.searchUserAutoComplete(paramMap);
-			logger.log(IAppLogger.INFO, "CURRUSER.............");
-			logger.log(IAppLogger.INFO, (String)req.getSession().getAttribute(IApplicationConstants.CURRORG));
-			if ( users != null ) {
+			logger.log(IAppLogger.INFO, "CURRORG = " + (String) req.getSession().getAttribute(IApplicationConstants.CURRORG));
+			if (users != null) {
 				res.setContentType("application/json");
 				res.getWriter().write(users);
 			}
@@ -2298,73 +2304,57 @@ public class AdminController {
 		return modelAndView;
 
 	}
-	
+
 	/**
-	 * Show list of all education center users
+	 * Show list of all education center users.
+	 * 
 	 * @param request
 	 * @param response
 	 * @param session
-	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/loadEduCenterUsers", method = RequestMethod.GET)
-	public @ResponseBody 
-	void loadEduCenterUsers(HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-
+	public @ResponseBody void loadEduCenterUsers(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - loadEduCenterUsers()");
+		String moreCount = propertyLookup.get("count.results.button.more");
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 		String userJsonString = "";
 		long eduCenterId = Long.parseLong(request.getParameter("eduCenterId"));
-		String eduCenterName = request.getParameter("eduCenterName");
 		String searchParam = (String) request.getParameter("searchParam");
-		if("Search".equals(searchParam)){
+		if ("Search".equals(searchParam)) {
 			searchParam = "";
 		}
 		String lastEduCenterId_username = (String) request.getParameter("lastEduCenterId_username");
-		
-		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request
-				.getSession().getAttribute(
-						IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		
-		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(
+				IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		paramMap.put("eduCenterId", eduCenterId);
 		paramMap.put("searchParam", searchParam);
 		paramMap.put("lastEduCenterId_username", lastEduCenterId_username);
-		
+		paramMap.put("moreCount", moreCount);
 		List<EduCenterTO> eduCenterTOList = null;
-		try{
+		try {
 			eduCenterTOList = adminService.loadEduCenterUsers(paramMap);
 			List<UserTO> userTOList = convertEduToUserList(eduCenterTOList);
 			userJsonString = JsonUtil.convertToJsonAdmin(userTOList);
-			
-			logger.log(IAppLogger.INFO,"userJsonString:"+userJsonString);
+			logger.log(IAppLogger.INFO, "loadEduCenterUsers():" + userJsonString);
 			response.setContentType("application/json");
 			response.getWriter().write(userJsonString);
-
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			throw new BusinessException("Problem Occured");
 		}
 		logger.log(IAppLogger.INFO, "Exit: AdminController - loadEduCenterUsers()");
 	}
-	
-	private List<UserTO> convertEduToUserList(List<EduCenterTO> eduCenterTOList){
+
+	private List<UserTO> convertEduToUserList(List<EduCenterTO> eduCenterTOList) {
 		List<UserTO> userTOList = new ArrayList<UserTO>();
 		UserTO userTO = null;
 		for (EduCenterTO eduCenterTO : eduCenterTOList) {
 			userTO = new UserTO();
 			userTO.setUserId(eduCenterTO.getUserId());
-			
-			RoleTO roleTO = null;
-			List<RoleTO> roleTOList = new ArrayList<RoleTO>();
-			for (com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO : eduCenterTO.getRoleList()) {
-				roleTO = new RoleTO();
-				roleTO.setRoleId(Long.parseLong(objectValueTO.getValue()));
-				roleTO.setRoleName(objectValueTO.getName());
-				roleTOList.add(roleTO);
-			}
-			userTO.setAvailableRoleList(roleTOList);
+			userTO.setAvailableRoleList(eduCenterTO.getRoleList());
 			userTO.setUserName(eduCenterTO.getUserName());
 			userTO.setUserDisplayName(eduCenterTO.getFullName());
 			userTO.setStatus(eduCenterTO.getStatus());

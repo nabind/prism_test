@@ -138,42 +138,46 @@ $(document).ready(function() {
 	//===================================Education Center User Details Screen=====================
 	function loadEduCenterUsers(){
 		var eduCenterId = $('#eduCenterId').val();
-		var eduCenterName = $("#eduCenterId :selected").text();
-		$('#addUser').attr('tenantId',eduCenterId);
-		$('#addUser').attr('tenantName',eduCenterName);
-		var dataUrl = 'eduCenterId='+eduCenterId+'&eduCenterName='+eduCenterName+'&searchParam=""&lastEduCenterId_username=""';
-		blockUI();
-		
-		$.ajax({
-			type : "GET",
-			url : 'loadEduCenterUsers.do',
-			data : dataUrl,
-			dataType: 'json',
-			cache:false,
-			success : function(data) {
-				if (data != null && data.length >= moreCount){
-					$(".pagination").show(200);
-				} else {
-					$(".pagination").hide(200);
+		$("#addUser").hide(100);
+		if(eduCenterId != null) {
+			$("#addUser").show(100);
+			var eduCenterName = $("#eduCenterId :selected").text();
+			$('#addUser').attr('tenantId',eduCenterId);
+			$('#addUser').attr('tenantName',eduCenterName);
+			var dataUrl = 'eduCenterId='+eduCenterId+'&eduCenterName='+eduCenterName+'&searchParam=""&lastEduCenterId_username=""';
+			blockUI();
+			
+			$.ajax({
+				type : "GET",
+				url : 'loadEduCenterUsers.do',
+				data : dataUrl,
+				dataType: 'json',
+				cache:false,
+				success : function(data) {
+					if (data != null && data.length >= moreCount){
+						$(".pagination").show(200);
+					} else {
+						$(".pagination").hide(200);
+					}
+					getUserDetails(true, data);
+					enableSorting(true);
+					$("tbody#user_details").removeClass("loader big");				
+					if (data != null && data.length >= moreCount){
+						$("#moreUser").removeClass("disabled");
+						if($.browser.msie) $("#moreUser").removeClass("disabled-ie");
+					} else {
+						$("#moreUser").addClass("disabled");
+						if($.browser.msie) $("#moreUser").addClass("disabled-ie");
+					}
+					unblockUI();
+				},
+				error : function(data) {
+					$.modal.alert(strings['script.common.error']);
+					unblockUI();
 				}
-				getUserDetails(true, data);
-				enableSorting(true);
-				$("tbody#user_details").removeClass("loader big");				
-				if (data != null && data.length >= moreCount){
-					$("#moreUser").removeClass("disabled");
-					if($.browser.msie) $("#moreUser").removeClass("disabled-ie");
-				} else {
-					$("#moreUser").addClass("disabled");
-					if($.browser.msie) $("#moreUser").addClass("disabled-ie");
-				}
-				unblockUI();
-			},
-			error : function(data) {
-				$.modal.alert(strings['script.common.error']);
-				unblockUI();
-			}
-		});
-		enableSorting(true)
+			});
+			enableSorting(true);
+		}
 	}
 	
 	function openUserModaltoAdd(tenantId,orgLevel) {	

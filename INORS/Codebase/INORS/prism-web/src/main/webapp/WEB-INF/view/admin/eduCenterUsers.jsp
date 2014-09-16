@@ -43,7 +43,7 @@
 											<select id="eduCenterId"
 												name="eduCenterId"
 												class="select multiple-as-single easy-multiple-selection navy-gradient check-list expandable-list"
-												style="width: 150px;">
+												style="width: 180px;">
 												<c:forEach var="eduCenterTO"
 													items="${serviceMapEduCentreFilter.eduCentreList}">
 													<option value="${eduCenterTO.value}">${eduCenterTO.name}</option>
@@ -60,7 +60,7 @@
 		</div>
 		<!-- <div id="eduCenterUsersDetails"></div> -->
 					<div class="panel-content linen">
-						<div class="panel-control align-right">
+						<div class="panel-control align-right report-layout rounded-border">
 							<span class="input search-input"> 
 							<input type="text"
 								name="searchUser" id="searchUser"
@@ -106,9 +106,9 @@
 										<tr class="abc">
 											<th scope="col" width="16%"><spring:message code="thead.userID" /></th>
 											<th scope="col" width="25%"><spring:message code="table.label.fullName" /></th>
-											<th scope="col" width="11%" class="hide-on-tablet"><spring:message code="table.label.status" /></th>
+											<%-- <th scope="col" width="5%" class="hide-on-tablet"><spring:message code="table.label.status" /></th> --%>
 											<th scope="col" width="16%" class="hide-on-tablet-portrait"><spring:message code="thead.educationCenterName" /></th>
-											<th scope="col" width="16%"><spring:message code="table.label.userRoles" /></th>
+											<th scope="col" width="22%"><spring:message code="table.label.userRoles" /></th>
 											<th scope="col" width="16%"><spring:message code="table.label.actions" /></th>
 										</tr>
 									</thead>
@@ -147,7 +147,7 @@
 									<p class="button-height inline-label">
 										<label class="label" for="validation-email"><spring:message code="table.label.email" /></label> <input
 											type="text" id="validation-email" name="emailId"
-											style="width: 200px"  maxlength="100"
+											style="width: 200px"
 											class="input full-width  validate[custom[email]]" />
 									</p>
 									<p class="button-height inline-label">
@@ -159,17 +159,17 @@
 									<p class="button-height inline-label">
 										<label class="label" for="confPassword"><spring:message code="table.label.verifyPassword" /></label> <input type="password" rel="editConfPwd"
 											name="confPassword" id="confPassword" style="width: 200px"
-											class="input full-width newReportName validate[equalsPassword[password]]" />
+											class="input full-width newReportName" />
 									</p>
 									<p class="button-height inline-label">
-										<label class="label" for="userStatus"><spring:message code="table.label.status" /></label> <input
-											type="checkbox" name="userStatus" id="userStatus"
-											class="switch medium wide mid-margin-right"
-											data-text-on="ENABLED" data-text-off="DISABLED">
+										<label class="label" for="userStatus"><spring:message code="table.label.status" /></label>
+											<input type="checkbox" name="userStatus" id="userStatus" 
+											rel="userStatus" class="switch medium wide mid-margin-right" 
+											checked="" data-text-on="ENABLED" data-text-off="DISABLED" tabindex="-1">
 									</p>
 									<p class="button-height inline-label">
 										<label class="label" for="input-3"><spring:message code="table.label.roles" /></label> <select
-											id="userRole" name="userRole" style="width: 150px"
+											id="userRole" name="userRole" style="width: 180px"
 											class="select multiple-as-single easy-multiple-selection check-list "
 											multiple>
 										</select>
@@ -211,7 +211,7 @@
 									<p class="button-height inline-label">
 										<label class="label" for="validation-email"><spring:message code="table.label.email" /></label> <input
 											type="text" id="validation-email" name="emailId"
-											style="width: 200px"  maxlength="100"
+											style="width: 200px"
 											class="input full-width validate[custom[email]]" />
 										<!-- validate[required,custom[email]] -->
 
@@ -230,15 +230,12 @@
 											class="input full-width newReportName validate[required,equalsPassword[password1]]" />
 									</p>
 									<p class="button-height inline-label">
-										<label class="label" for="userStatus"><spring:message code="table.label.status" /></label> <input
-											type="checkbox" name="userStatusCheck" id="userStatusCheck"
-											rel="userStatusCheck"
-											class="switch medium wide mid-margin-right"
-											data-text-on="ENABLED" data-text-off="DISABLED">
+										<label class="label" for="userStatus"><spring:message code="table.label.status" /></label>
+										<input type="checkbox" name="userStatusCheck" id="userStatusCheck" rel="userStatusCheck" class="switch medium wide mid-margin-right" checked="" data-text-on="ENABLED" data-text-off="DISABLED" tabindex="-1">
 									</p>
 									<p class="button-height inline-label">
 										<label class="label" for="input-3"><spring:message code="table.label.roles" /></label> <select
-											id="addUserRole" name="userRole" style="width: 150px"
+											id="addUserRole" name="userRole" style="width: 180px"
 											class="select multiple-as-single easy-multiple-selection check-list "
 											multiple>
 										</select>

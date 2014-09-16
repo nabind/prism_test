@@ -397,7 +397,7 @@ public interface IUserQuery {
 			"INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (?, ?)");
 		
 	
-	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
 }
 

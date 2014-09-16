@@ -919,7 +919,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: addNewUser()");
+		logger.log(IAppLogger.INFO, "Enter: addNewUser(): " + paramMap);
 		UserTO to = null;
 		final String userName = (String) paramMap.get("userName");
 		final String password = (String) paramMap.get("password");
@@ -930,6 +930,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String tenantId = (String) paramMap.get("tenantId");
 		final String orgLevel = (String) paramMap.get("orgLevel");
 		final String adminYear = (String) paramMap.get("adminYear");
+		final String purpose = (String) paramMap.get("purpose");
+		final String eduCenterId = (String) paramMap.get("eduCenterId");
 		String[] userRoles = (String[]) paramMap.get("userRoles");
 		final StringBuilder roles = new StringBuilder();
 		if (userRoles != null) {
@@ -964,13 +966,24 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.setString(7, salt);
 				cs.setString(8, IApplicationConstants.FLAG_N);
 				cs.setLong(9, Long.valueOf(customerId));
-				cs.setLong(10, Long.valueOf(tenantId));
+				//10
 				cs.setLong(11, Long.valueOf(orgLevel));
-				cs.setLong(12, Long.valueOf(adminYear));
+				//12
 				cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 				cs.setString(14, roles.toString());
-				cs.registerOutParameter(15, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.VARCHAR);
+				//15
+				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
+				cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
+				if (IApplicationConstants.PURPOSE.equals(purpose)) {
+					cs.setLong(10, Long.valueOf(eduCenterId));
+					cs.setLong(12, 0L);
+					cs.setString(15, IApplicationConstants.FLAG_Y);
+				} else {
+					cs.setLong(10, Long.valueOf(tenantId));
+					cs.setLong(12, Long.valueOf(adminYear));
+					cs.setString(15, IApplicationConstants.FLAG_N);
+					
+				}
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -978,8 +991,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				String strNodeId = null; 
 				try {
 					cs.execute();
-					strNodeId =  cs.getString(15);
-					
+					strNodeId =  cs.getString(16);
+					Utils.logError(cs.getString(17));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -1109,16 +1122,29 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            parentId of the logged in user
 	 */
 	public String searchUserAutoComplete(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: searchUserAutoComplete()");
 		String userName = (String) paramMap.get("term");
 		String tenantId = (String) paramMap.get("selectedOrg");
 		String adminYear = (String) paramMap.get("adminYear");
 		String orgMode = (String) paramMap.get("orgMode");
-		
+		String moreCount = (String) paramMap.get("moreCount");
+		String purpose = (String)paramMap.get("purpose");
+		logger.log(IAppLogger.INFO, "userName = " + userName);
+		logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
+		logger.log(IAppLogger.INFO, "adminYear = " + adminYear);
+		logger.log(IAppLogger.INFO, "orgMode = " + orgMode);
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
+		logger.log(IAppLogger.INFO, "purpose = " + purpose);
 		userName = CustomStringUtil.appendString("%", userName, "%");
 		String userListJsonString = null;
 		List<Map<String, Object>> listOfUser = null;
 		if (tenantId != null) {
-			listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "100");
+			if (IApplicationConstants.PURPOSE.equals(purpose)) {
+				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, moreCount);
+			} else {
+				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName,
+						IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
+			}
 		}
 		if (listOfUser != null && listOfUser.size() > 0) {
 			userListJsonString = "[";
@@ -1128,6 +1154,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			userListJsonString = CustomStringUtil.appendString(userListJsonString.substring(0, userListJsonString.length() - 1), "]");
 		}
 		logger.log(IAppLogger.DEBUG, userListJsonString);
+		logger.log(IAppLogger.INFO, "Exit: searchUserAutoComplete()");
 		return userListJsonString;
 	}
 
@@ -1778,27 +1805,25 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return objectValueTOList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#loadEduCenterUsers(java.util.Map)
 	 */
-	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {
+	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: loadEduCenterUsers()");
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
 		long eduCenterId = ((Long) paramMap.get("eduCenterId")).longValue();
 		String searchParam = (String) paramMap.get("searchParam");
 		String lastEduCenterId_username = (String) paramMap.get("lastEduCenterId_username");
+		String moreCount = (String) paramMap.get("moreCount");
+		logger.log(IAppLogger.INFO, "moreCount = "+ moreCount);
 		String userName = "";
-
-		@SuppressWarnings("rawtypes")
-		List placeHolderValueList = new ArrayList();
+		List<Object> placeHolderValueList = new ArrayList<Object>();
 		List<EduCenterTO> eduCenterTOList = null;
-		try {
+		try{
 			if (lastEduCenterId_username.indexOf("_") > 0) {
 				userName = lastEduCenterId_username.substring((lastEduCenterId_username.indexOf("_") + 1), lastEduCenterId_username.length());
-				logger.log(IAppLogger.DEBUG, "userName=" + userName);
-				if (searchParam != null && searchParam.trim().length() > 0) {
+				logger.log(IAppLogger.INFO, "userName = "+ userName);
+				if(searchParam != null && searchParam.trim().length() > 0) {
 					searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 					placeHolderValueList.add(loggedinUserTO.getCustomerId());
 					placeHolderValueList.add(eduCenterId);
@@ -1806,26 +1831,25 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					placeHolderValueList.add(userName);
 					placeHolderValueList.add(userName);
 					placeHolderValueList.add(searchParam);
-					placeHolderValueList.add(IApplicationConstants.RECORD_PER_PAGE);
-					eduCenterTOList = getJdbcTemplatePrism()
-							.query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL_SEARCH, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+					placeHolderValueList.add(moreCount);
+					eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL_SEARCH, placeHolderValueList.toArray(),new EduCenterTOMapper(getJdbcTemplatePrism()));
 				} else {
 					placeHolderValueList.add(loggedinUserTO.getCustomerId());
 					placeHolderValueList.add(eduCenterId);
 					placeHolderValueList.add(userName);
-					placeHolderValueList.add(IApplicationConstants.RECORD_PER_PAGE);
-					eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+					placeHolderValueList.add(moreCount);
+					eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_ON_SCROLL, placeHolderValueList.toArray(),new EduCenterTOMapper(getJdbcTemplatePrism()));
 				}
 			} else {
 				placeHolderValueList.add(loggedinUserTO.getCustomerId());
 				placeHolderValueList.add(eduCenterId);
-				placeHolderValueList.add(IApplicationConstants.RECORD_PER_PAGE);
-				eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_FIRST_LOAD, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+				placeHolderValueList.add(moreCount);
+				eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDU_CENTER_USERS_FIRST_LOAD, placeHolderValueList.toArray(),new EduCenterTOMapper(getJdbcTemplatePrism()));
 			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred in loadEduCenterUsers():", e);
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "Error occurred in loadEduCenterUsers():",e);
 			throw new SystemException(e);
-		} finally {
+		}finally{
 			logger.log(IAppLogger.INFO, "Exit: loadEduCenterUsers()");
 		}
 		return eduCenterTOList;
@@ -1843,12 +1867,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String orgNodeId = (String) paramMap.get("tenantId");
 		String adminYear = (String) paramMap.get("adminYear");
 		String orgMode = (String) paramMap.get("orgMode");
-
 		logger.log(IAppLogger.INFO, "userId=" + userId);
 		logger.log(IAppLogger.INFO, "orgNodeId=" + orgNodeId);
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
-
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgMode, userId, orgNodeId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 		if ((lstData != null) && (!lstData.isEmpty())) {
