@@ -261,20 +261,23 @@ public class AdminController {
 		logger.log(IAppLogger.INFO,
 				"Enter: AdminController - searchOrganization");
 		try {
-			String adminYear = (String) req.getParameter("AdminYear");
+			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
-			/*List<OrgTO> orgs = adminService.searchOrganization(req
-					.getParameter("searchString"), (String) req.getSession()
-					.getAttribute(IApplicationConstants.CURRORG));*/
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			
 			List<OrgTO> orgs = null;
 			
 			if (selectedOrg != null && !selectedOrg.equals("unspecified")) {
-				orgs = adminService.searchOrganization(req.getParameter("searchString")
-						, selectedOrg, adminYear,currCustomer,orgMode);
+				paramMap.put("orgName", req.getParameter("searchString"));
+				paramMap.put("tenantId",selectedOrg);
+				paramMap.put("custProdId",custProdId);
+				paramMap.put("customerId",currCustomer);
+				paramMap.put("orgMode",orgMode);
+				
+				orgs = adminService.searchOrganization(paramMap);
 			} else {
 				logger.log(IAppLogger.INFO, "No Org selected");
 			}
@@ -308,18 +311,21 @@ public class AdminController {
 		logger.log(IAppLogger.INFO,
 				"Enter: AdminController - searchOrgAutoComplete");
 		try {
-			String adminYear = (String) req.getParameter("AdminYear");
+			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			String orgs = null;
-			/*String orgs = adminService.searchOrgAutoComplete(req
-					.getParameter("term"), (String) req.getSession()
-					.getAttribute(IApplicationConstants.CURRORG));*/
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			
 			if (selectedOrg !=null && !selectedOrg.equals("unspecified")) {
-				orgs = adminService.searchOrgAutoComplete(req.getParameter("term")
-					,selectedOrg, adminYear, currCustomer,orgMode);
+				paramMap.put("orgName", req.getParameter("term"));
+				paramMap.put("tenantId",selectedOrg);
+				paramMap.put("custProdId",custProdId);
+				paramMap.put("customerId",currCustomer);
+				paramMap.put("orgMode",orgMode);
+				orgs = adminService.searchOrgAutoComplete(paramMap);
 			} else {
 				logger.log(IAppLogger.INFO, "No Org selected");
 			}
