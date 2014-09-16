@@ -163,8 +163,14 @@ public final class CacheKeyUtils {
 		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");
 		if("tasc".equals(contractName))  s3loc = propertyLookup.get("aws.tasc.cacheS3");
 		File cacheKeyFile = Utils.writeToFile(IApplicationConstants.CACHE_KEY_FILE,key);
-		repositoryService.uploadAsset(s3loc, cacheKeyFile);
-		LOG.info("Key inserted into " +IApplicationConstants.CACHE_KEY_FILE+ " for contractName");
+		
+		//Configurable to make offshore code running without s3
+		if(propertyLookup.get("store.cache.key.s3").equals("true")) {
+			repositoryService.uploadAsset(s3loc, cacheKeyFile);
+			LOG.info("Key inserted into " +IApplicationConstants.CACHE_KEY_FILE+ " for contractName");
+		} else {
+			LOG.info("Key insertion skipped " +IApplicationConstants.CACHE_KEY_FILE+ " for contractName");
+		}
     }
     
     
