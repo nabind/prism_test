@@ -267,10 +267,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationTreeOnRedirect(java.lang.String, java.lang.String, java.lang.String, long, boolean)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationTreeOnRedirect(Map<String, Object>)
 	 */
-	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception {
-		return adminDAO.getOrganizationTreeOnRedirect(selectedOrgId, parentOrgId, userId, customerId, isRedirected);
+	public String getOrganizationTreeOnRedirect(Map<String, Object> paramMap) throws Exception {
+		return adminDAO.getOrganizationTreeOnRedirect(paramMap);
 	}
 
 	/*

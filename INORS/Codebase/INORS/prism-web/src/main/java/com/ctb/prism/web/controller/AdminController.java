@@ -1393,7 +1393,10 @@ public class AdminController {
 					paramMap.put("orgMode", orgMode);
 					orgTreeTOs = adminService.getOrganizationTree(paramMap);
 					/*orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true, adminYear,currCustomer, "");*/
-					hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(nodeId,currentOrg,userId,currCustomer,true);
+					paramMap.put("nodeid", nodeId);
+					paramMap.put("userId", userId);
+					paramMap.put("isRedirected", true);
+					hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(paramMap);
 					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 					//modelAndView.addObject("organizationTreeList", orgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
@@ -1988,7 +1991,10 @@ public class AdminController {
 					paramMap.put("customerId", currCustomer+"");
 					paramMap.put("orgMode", orgMode);
 					orgTreeTOs = adminService.getOrganizationTree(paramMap);
-					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(nodeId, currentOrg, userId, currCustomer, true);
+					paramMap.put("nodeid", nodeId);
+					paramMap.put("userId", userId);
+					paramMap.put("isRedirected", true);
+					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(paramMap);
 					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 					logger.log(IAppLogger.DEBUG, "hierarchialOrgIds................" + hierarchialOrgIds);
 					// modelAndView.addObject("organizationTreeList", orgTreeTOs);

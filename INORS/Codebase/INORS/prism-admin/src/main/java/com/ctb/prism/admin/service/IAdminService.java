@@ -210,15 +210,11 @@ public interface IAdminService {
 	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception;
 
 	/**
-	 * @param selectedOrgId
-	 * @param parentOrgId
-	 * @param userId
-	 * @param customerId
-	 * @param isRedirected
+	 * @param paramMap
 	 * @return
 	 * @throws Exception
 	 */
-	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception;
+	public String getOrganizationTreeOnRedirect(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap

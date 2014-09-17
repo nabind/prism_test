@@ -96,7 +96,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				List<OrgTO> OrgTOList = new ArrayList<OrgTO>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
+					rs = (ResultSet) cs.getObject(3);
+					Utils.logError(cs.getString(4));
 					while(rs.next()){
 						OrgTO to = new OrgTO();
 						to.setTenantId(rs.getLong("ORG_NODEID"));
@@ -137,8 +138,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.setLong(1, nodeid);
 				cs.setLong(2, customerId);
 				cs.setLong(3, custProdId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -147,7 +148,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				List<OrgTO> OrgTOList = new ArrayList<OrgTO>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
+					rs = (ResultSet) cs.getObject(4);
+					Utils.logError(cs.getString(5));
 					while(rs.next()){
 						OrgTO to = new OrgTO();
 						to.setTenantId(rs.getLong("ORG_NODEID"));
@@ -156,6 +158,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						to.setOrgLevel(rs.getLong("ORG_NODE_LEVEL"));
 						OrgTOList.add(to);
 					}
+					
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -330,26 +333,63 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
-	public String getOrganizationTreeOnRedirect(String selectedOrgId, String parentOrgId, String userId, long customerId, boolean isRedirected) throws Exception {
+	
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTreeOnRedirect') )")
+	public String getOrganizationTreeOnRedirect(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTreeOnRedirect()");
-		StringBuffer hierarcialOrgIds = new StringBuffer();
-		String cummsSeperatedId = "";
-		List<Map<String, Object>> hierarcialOrgIdList = null;
+		final long selectedOrgId = Long.valueOf( paramMap.get("nodeid").toString());
+		final long parentOrgId = Long.valueOf( paramMap.get("currOrg").toString());
+		final long userId = Long.valueOf( paramMap.get("userId").toString());
+		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
+		final boolean isRedirected = (Boolean) paramMap.get("isRedirected");
+
+		logger.log(IAppLogger.INFO, "selectedOrgId=" + selectedOrgId);
+		logger.log(IAppLogger.INFO, "parentOrgId=" + parentOrgId);
+		logger.log(IAppLogger.INFO, "userId=" + userId);
+		logger.log(IAppLogger.INFO, "customerId=" + customerId);
+		logger.log(IAppLogger.INFO, "isRedirected=" + isRedirected);
+		
 		if (isRedirected) {
-			hierarcialOrgIdList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_HIERARCHY_ON_REDIRECT, customerId, selectedOrgId, parentOrgId, userId);
+			return (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ORG_HIER_ON_REDIRECT);
+					cs.setLong(1, customerId);
+					cs.setLong(2, selectedOrgId);
+					cs.setLong(3, parentOrgId);
+					cs.setLong(4, userId);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					StringBuilder hierarcialOrgIds = new StringBuilder();
+					String cummsSeperatedId = "";
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(5);
+						Utils.logError(cs.getString(6));
+						while(rs.next()){
+							long hierarcialOrgId = rs.getLong("ORG_ID");
+							hierarcialOrgIds.append(hierarcialOrgId).append(",");
+						}
+						cummsSeperatedId = hierarcialOrgIds.toString();
+						cummsSeperatedId = cummsSeperatedId.substring(0, hierarcialOrgIds.length() - 1);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+					logger.log(IAppLogger.INFO, "Exit: getOrganizationTreeOnRedirect()");
+					return cummsSeperatedId;
+				}
+			});
+		} else {
+			return null;
 		}
 
-		if ((hierarcialOrgIdList != null) && (hierarcialOrgIdList.size() > 0)) {
-			for (Map<String, Object> orgId : hierarcialOrgIdList) {
-				String hierarcialOrgId = (String) orgId.get("ORG_ID");
-				hierarcialOrgIds.append(hierarcialOrgId).append(",");
-			}
-			cummsSeperatedId = hierarcialOrgIds.toString();
-			cummsSeperatedId = cummsSeperatedId.substring(0, hierarcialOrgIds.length() - 1);
-		}
-		logger.log(IAppLogger.INFO, "Exit: getOrganizationTreeOnRedirect()");
-		return cummsSeperatedId;
+		
+		
 	}
 
 	/*

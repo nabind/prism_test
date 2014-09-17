@@ -99,7 +99,7 @@ public interface IOrgQuery {
 	
 	public static final String SP_GET_TENANT_DETAILS_NON_ACSI = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS_NON_ACSI(?, ?, ?, ?, ?, ?, ?)}";
 	
-	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
+/*	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
 	.appendString("SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,O.ORG_NODE_NAME,O.PARENT_ORG_NODEID,O.ORG_NODE_LEVEL",
       			  " FROM ORG_NODE_DIM O",
                   " WHERE O.CUSTOMERID = ?",
@@ -109,7 +109,9 @@ public interface IOrgQuery {
                                         " FROM ORG_USERS U ",
                                         " WHERE U.ORG_NODEID = ?", 
                                         " AND U.USERID = ?)",
-                  " ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME");
+                  " ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME");*/
+	
+    public static final String SP_GET_ORG_HIER_ON_REDIRECT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_HIER_ON_REDIRECT(?, ?, ?, ?, ?, ?)}";
 	
 	
 
