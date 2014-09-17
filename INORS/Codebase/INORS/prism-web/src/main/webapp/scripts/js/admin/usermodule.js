@@ -613,14 +613,23 @@
 	function hasAdmin(availableRoles){
 		var isAdmin = false;
 		for (var j=0; j<availableRoles.length; j++){
-			var tokens = availableRoles[j].roleName.split("_");
-			//alert(tokens);
-			//for (var i=0; i<tokens.length; i++){
-				if (tokens[1] == "ADMIN"){
-					return true;
-				}
-			//}
-		};
+			if (isAdminRole(availableRoles[j].roleName)){
+				isAdmin = true;
+				break;
+			}
+		}
+		return isAdmin;
+	}
+	function isAdminRole(role){
+		var isAdmin = false;
+		var tokens = role.split("_");
+		//alert(tokens);
+		for (var i=0; i<tokens.length; i++){
+			if (tokens[i] == "ADMIN"){
+				isAdmin = true;
+				break;
+			}
+		}
 		return isAdmin;
 	}
 	function createUserRolesTag(availableRoles){
@@ -656,6 +665,9 @@
 			$.each(availableRoles, function (){
 				if(this.roleName== 'ROLE_ADMIN'){
 					roleTag +='<small class="tag orange-bg role '+ this.roleName+'">'+this.label + ' ' +this.roleDescription+'</small><br/>';
+				}
+				if(this.roleName== 'ROLE_EDU_ADMIN'){
+					roleTag +='<small class="tag orange-bg role '+ this.roleName+'">'+this.roleDescription+'</small><br/>';
 				}
 			});
 		}

@@ -103,8 +103,8 @@
             	<!-- NAME|URL|Name|report_id|assessment_id -->
               	<value>${home.growth.home}</value>
                	<value>${home.acsi.state}</value>
-               <!--   <value>${home.acsi.school}</value>
-                <value>${home.acsi.class}</value>-->
+               <!--   <value>${home.acsi.school}</value>-->
+                <value>${home.tasc.class}</value>
                 <value>${home.istep.state}</value>
                 <value>ROLE_PARENT|parent/parentWelcome</value>
                 <value>ROLE_CTB|admin/users</value>

@@ -63,17 +63,14 @@ $(document).ready(function() {
 		
 	});
 	
-	//Changed for TD 77443 - By Joy
-	if($('#educationTab').val()!= "" && $('#educationTab').val()=="educationUserTab" ){
-		$(".login-as").live("click", function(e) {
-			loginAs(e,$(this));
-		});	
-	}
-	else
-		{
-		$(".login-as").live("click", function(e) {
-			loginAs(e,$(this));
-		});	
+	if ($('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
+		$(".login-as").live("click", function() {
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param');
+		});
+	} else {
+		$(".login-as").live("click", function() {
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param');
+		});
 	}
 	
 	
@@ -630,8 +627,11 @@ $(document).ready(function() {
 		$("#editUser #userRole option").each(function() {
 			if($(this).attr('selected') == true ||$(this).attr('selected')=="selected") {
 				var tokens = $(this).val().split("_");
-				if (tokens[1] == "ADMIN") {
-					hasAdminRole = true;
+				for (var i = 0; i < tokens.length; i++) {
+					if (tokens[i] == "ADMIN") {
+						hasAdminRole = true;
+						break;
+					}
 				}
 			}
 		});
@@ -655,6 +655,8 @@ $(document).ready(function() {
 					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
 				else if ($(this).val()=="ROLE_ADMIN")
 					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
+				else if ($(this).val()=="ROLE_EDU_ADMIN")
+					roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
 				else if ($(this).val()=="ROLE_USER")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "black-bg");
 				
@@ -665,7 +667,7 @@ $(document).ready(function() {
 		} else {
 			$("#editUser #userRole option").each(function() {
 				if($(this).attr('selected') == true ||$(this).attr('selected')=="selected") {
-					if ($(this).val()=="ROLE_ADMIN") {
+					if ($(this).val()=="ROLE_ADMIN" || $(this).val()=="ROLE_EDU_ADMIN") {
 						var roleClass = 'role' + ' ' + $(this).val();
 						var roleTagTemp = roletag +'<br/>';
 						roleTagTemp = roleTagTemp.replace(/_CLASS_/g, roleClass);

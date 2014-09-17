@@ -598,8 +598,8 @@ public class AdminController {
 	String editUserData(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		UserTO userTo = new UserTO();
-		List<UserTO> UserTOs = new ArrayList<UserTO>();
+		UserTO user = new UserTO();
+		List<UserTO> userList = new ArrayList<UserTO>();
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - getEditUserData");
@@ -612,11 +612,15 @@ public class AdminController {
 			paramMap.put("purpose", purpose);
 			
 			if (nodeId != null) {
-				userTo = adminService.getEditUserData(paramMap);
+				user = adminService.getEditUserData(paramMap);
 			}
-			UserTOs.add(userTo);
+			if (IApplicationConstants.PURPOSE.equals(purpose)) {
+				user.setAvailableRoleList(getEducationCenterAvailableRoleList());
+				user.setMasterRoleList(getEducationCenterMasterRoleList(nodeId)); // nodeId having value of userId
+			}
+			userList.add(user);
 
-			String userJsonString = JsonUtil.convertToJsonAdmin(UserTOs);
+			String userJsonString = JsonUtil.convertToJsonAdmin(userList);
 			logger.log(IAppLogger.INFO, userJsonString);
 			response.setContentType("application/json");
 
@@ -697,6 +701,33 @@ public class AdminController {
 	}
 	
 	/**
+	 * @return
+	 */
+	private List<RoleTO> getEducationCenterAvailableRoleList() {
+		List<RoleTO> roleList = new ArrayList<RoleTO>();
+		RoleTO to = new RoleTO();
+		to.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_USER.toString());
+		to.setRoleDescription("User");
+		to.setRoleId(IApplicationConstants.ROLE_USER_ID);
+		to.setDefaultSelection("selected");
+		roleList.add(to);
+		to = new RoleTO();
+		to.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_EDU_ADMIN.toString());
+		to.setRoleDescription("Education Center Admin User");
+		to.setRoleId(IApplicationConstants.ROLE_EDU_ADMIN_ID);
+		roleList.add(to);
+		return roleList;
+	}
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	private List<RoleTO> getEducationCenterMasterRoleList(String userId) {
+		return adminService.getRoleList(userId);
+	}
+	
+	/**
 	 * Get role based on org_level
 	 * @param request
 	 * @param response
@@ -708,7 +739,7 @@ public class AdminController {
 	String getRoleOnAddUser(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		List<RoleTO> RoleTOs = new ArrayList<RoleTO>();
+		List<RoleTO> roleList = new ArrayList<RoleTO>();
 		try {
 			logger.log(IAppLogger.INFO,
 					"Enter: AdminController - getRoleOnAddUser");
@@ -717,7 +748,7 @@ public class AdminController {
 			String purpose = (String) request.getParameter("purpose");
 			
 			if(IApplicationConstants.PURPOSE.equals(purpose)){
-				RoleTO masterRoleTO = new RoleTO();
+				/*RoleTO masterRoleTO = new RoleTO();
 				masterRoleTO.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_USER.toString());
 				masterRoleTO.setRoleDescription("User");
 				masterRoleTO.setRoleId(IApplicationConstants.ROLE_USER_ID);
@@ -726,17 +757,18 @@ public class AdminController {
 				
 				masterRoleTO = new RoleTO();
 				masterRoleTO.setRoleName(IApplicationConstants.ROLE_TYPE.ROLE_ADMIN.toString());
-				masterRoleTO.setRoleDescription("Admin User");
-				masterRoleTO.setRoleId(IApplicationConstants.ROLE_ADMIN_ID);
-				RoleTOs.add(masterRoleTO);
+				masterRoleTO.setRoleDescription("Education Center Admin User");
+				masterRoleTO.setRoleId(IApplicationConstants.ROLE_EDU_ADMIN);
+				RoleTOs.add(masterRoleTO);*/
+				roleList = getEducationCenterAvailableRoleList();
 			}else{
 				if (orgLevel != null) {
 					String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-					RoleTOs = adminService.getRoleOnAddUser(orgLevel, customer);
+					roleList = adminService.getRoleOnAddUser(orgLevel, customer);
 				}
 			}
 			
-			String userJsonString = JsonUtil.convertToJsonAdmin(RoleTOs);
+			String userJsonString = JsonUtil.convertToJsonAdmin(roleList);
 			logger.log(IAppLogger.INFO, userJsonString);
 			response.setContentType("application/json");
 

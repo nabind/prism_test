@@ -184,7 +184,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if (!lstData.isEmpty()) {
 			return IApplicationConstants.PARENT_USER_FLAG;
 		} else {
-			return IApplicationConstants.ORG_USER_FLAG;
+			lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_EDU_USER_TYPE, username);
+			if (!lstData.isEmpty()) {
+				return IApplicationConstants.EDU_USER_FLAG;
+			} else {
+				return IApplicationConstants.ORG_USER_FLAG;
+			}
 		}
 	}
 	
