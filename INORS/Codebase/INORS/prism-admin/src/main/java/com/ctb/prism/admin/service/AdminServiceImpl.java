@@ -367,4 +367,8 @@ public class AdminServiceImpl implements IAdminService {
 	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
 		return adminBusiness.getUserForResetPassword(paramMap);
 	}
+
+	public List<RoleTO> getRoleList(String userId) {
+		return adminBusiness.getRoleList(userId);
+	}
 }

@@ -373,4 +373,11 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
 		return adminDAO.getUserForResetPassword(paramMap);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getRoleList(java.lang.String)
+	 */
+	public List<RoleTO> getRoleList(String userId) {
+		return adminDAO.getRoleList(userId);
+	}
 }

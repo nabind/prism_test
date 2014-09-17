@@ -298,4 +298,12 @@ public interface IAdminService {
 	 * @return
 	 */
 	public UserTO getUserForResetPassword(Map<String, String> paramMap);
+
+	/**
+	 * Gets the role list for the user.
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<RoleTO> getRoleList(String userId);
 }

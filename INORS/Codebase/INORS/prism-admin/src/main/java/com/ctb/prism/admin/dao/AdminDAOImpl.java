@@ -2068,6 +2068,26 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					return pwdHintList;
 				}
 			});
-	}	
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getRoleList(java.lang.String)
+	 */
+	public List<RoleTO> getRoleList(String userId) {
+		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_LIST, userId);
+		if (lstData.size() > 0) {
+			RoleTOs = new ArrayList<RoleTO>();
+			for (Map<String, Object> fieldDetails : lstData) {
+				RoleTO to = new RoleTO();
+				to.setRoleId(((BigDecimal) fieldDetails.get("ROLEID")).longValue());
+				to.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
+				to.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
+				RoleTOs.add(to);
+			}
+		}
+		return RoleTOs;
+	}
 	
 }
