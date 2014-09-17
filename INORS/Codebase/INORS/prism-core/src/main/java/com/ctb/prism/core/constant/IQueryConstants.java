@@ -229,6 +229,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	// START---- Queries related to Role Management
 	public static final String GET_ROLE_DETAILS = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION FROM ROLE ORDER BY ROLE_NAME";
+	public static final String GET_ROLE_LIST = "SELECT R.ROLEID, R.ROLE_NAME, R.DESCRIPTION FROM USER_ROLE UR, ROLE R WHERE UR.ROLEID = R.ROLEID AND UR.USERID = ?";
 	
 	public static final String GET_ROLE_DETAILS_BY_ID = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION  FROM ROLE WHERE ROLEID = ?";
 	
@@ -867,6 +868,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 	//public static final String GET_USER_TYPE = "SELECT DECODE(COUNT(1), 0, 'O', 'P') AS USER_TYPE FROM USERS U, ORG_USERS OU WHERE U.USERID=OU.USERID AND UPPER(U.USERNAME) = UPPER(?) AND OU.ORG_NODE_LEVEL=0";
 	public static final String GET_USER_TYPE = "select u.userid from users u, user_role ur, role r where u.userid = ur.userid and ur.roleid = r.roleid and r.role_name = 'ROLE_PARENT' and UPPER(U.USERNAME) = UPPER(?)";
+	public static final String GET_EDU_USER_TYPE = "SELECT USERID FROM EDU_CENTER_USER_LINK WHERE USERID IN (SELECT USERID FROM USERS WHERE UPPER(USERNAME) = UPPER(?))"; 
 
 	public static final String GET_TEST_ADMINISTRATIONS_GD = "SELECT ADMINID VALUE, ADMIN_NAME NAME, ADMIN_SEQ OTHER FROM ADMIN_DIM ORDER BY ADMIN_SEQ";
 	public static final String GET_DISTRICTS_GD = "SELECT DISTINCT ORG_NODEID VALUE, ORG_NODE_NAME NAME, ORG_NODE_LEVEL OTHER FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL = 2 AND ORG_MODE = ? ORDER BY ORG_NODE_NAME";
