@@ -58,7 +58,7 @@ public interface IAdminBusiness {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception;
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception;
 
 	/**
 	 * @param paramMap

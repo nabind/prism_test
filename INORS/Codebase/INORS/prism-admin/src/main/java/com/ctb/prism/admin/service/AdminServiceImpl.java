@@ -70,8 +70,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * @see com.ctb.prism.admin.service.IAdminService#updateUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
-		return adminBusiness.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles);
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
+		return adminBusiness.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles, salt);
 	}
 
 	/*

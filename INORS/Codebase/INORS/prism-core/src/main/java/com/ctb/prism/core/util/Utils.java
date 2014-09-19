@@ -57,6 +57,12 @@ public final class Utils {
 		}
 		return "";
 	}
+	
+	public static String getContractName(String themeName) {
+		String contractName = getContractName();
+		if(contractName != null && contractName.length() > 0) return contractName;
+		else return getContractNameNoLogin(themeName);
+	}
 
 	/**
 	 * Get contract name before login - from theme name

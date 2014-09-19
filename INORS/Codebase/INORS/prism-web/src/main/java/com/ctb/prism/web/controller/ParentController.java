@@ -27,6 +27,8 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.LdapManager;
+import com.ctb.prism.core.util.PasswordGenerator;
+import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -275,6 +277,7 @@ public class ParentController {
 		req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 		
 		String status = "Fail";
+		parentTO.setSalt(PasswordGenerator.getNextSalt());
 		
 	//checking for valid password
 		if(password!=null && password.trim().length() > 0)
@@ -289,6 +292,16 @@ public class ParentController {
 				status="invalidPwd";
 				res.getWriter().write("{\"status\":\"" + status + "\"}");
 				return null;
+			} else {
+				// check password history
+				List<String> pwdList = loginService.getPasswordHistory(userName, Utils.getContractName());
+				String encPass = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), parentTO.getSalt()));
+				if(pwdList != null && pwdList.contains(encPass)) {
+					res.setContentType("text/plain");
+					status="invalidPwdHistory";
+					res.getWriter().write("{\"status\":\"" + status + "\"}");
+					return null;
+				}
 			}
 		}
 		
@@ -547,6 +560,23 @@ public class ParentController {
 					res.getWriter().write("{\"status\":\"" + status + "\"}");
 					return null;
 				} else {
+					// check password history
+					List<String> pwdList = loginService.getPasswordHistory(username, 
+							Utils.getContractName(themeResolver.resolveThemeName(req)));
+					String salt = "";
+					if(pwdList != null && !pwdList.isEmpty()) {
+						salt = pwdList.get(0);
+						
+						String encPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(username, salt));
+						if(pwdList.contains(encPass)) {
+							res.setContentType("text/plain");
+							status="invalidPwdHistory";
+							res.getWriter().write("{\"status\":\"" + status + "\"}");
+							return null;
+						}
+					}
+					
+					
 					Random randomGenerator = new Random();
 					int randomInt = randomGenerator.nextInt(100);
 					String tempUsername = username + randomInt;

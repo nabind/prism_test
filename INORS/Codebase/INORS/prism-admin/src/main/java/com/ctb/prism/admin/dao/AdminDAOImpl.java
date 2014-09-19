@@ -853,7 +853,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: updateUser()");
 		try {
 			boolean ldapFlag = true;
@@ -867,9 +867,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 					ldapFlag = ldapManager.updateUser(userId, userId, userId, password);
 				} else {
-					String salt = PasswordGenerator.getNextSalt();
+					if(salt == null) salt = PasswordGenerator.getNextSalt();
 					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
 							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userId, salt)), salt, userId);
+					
+					// add to password history
+					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
+							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), userName);
+					
 					ldapFlag = true;
 				}
 			}
@@ -1670,6 +1675,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			String salt = PasswordGenerator.getNextSalt();
 			getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
 					salt, userName);
+			
+			// add to password history
+			getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
+					SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), userName);
+			
 			//return password;
 		}
 		

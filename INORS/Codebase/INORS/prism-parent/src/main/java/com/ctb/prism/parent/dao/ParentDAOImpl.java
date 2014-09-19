@@ -1550,9 +1550,14 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 					ldapFlag = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), password);
 				} else {
-					String salt = PasswordGenerator.getNextSalt();
+					if(parentTO.getSalt() == null) parentTO.setSalt(PasswordGenerator.getNextSalt());
+					String salt = parentTO.getSalt(); //PasswordGenerator.getNextSalt();
 					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_N,
 							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt, parentTO.getUserName());
+					// add to password history
+					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
+							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(parentTO.getUserName(), salt)), parentTO.getUserName());
+					
 					ldapFlag = true;
 				}
 			}

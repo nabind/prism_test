@@ -80,8 +80,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#updateUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
 	 */
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles) throws BusinessException, Exception {
-		return adminDAO.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles);
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
+		return adminDAO.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles, salt);
 	}
 
 	/*

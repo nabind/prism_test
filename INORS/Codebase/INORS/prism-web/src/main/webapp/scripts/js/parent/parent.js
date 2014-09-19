@@ -396,6 +396,9 @@ $(document).ready(function() {
 				else if(obj.status == 'invalidPwd') {
 					$.modal.alert(strings['script.user.passwordPolicy']);
 				}
+				else if(obj.status == 'invalidPwdHistory') {
+					$.modal.alert(strings['script.user.passwordPolicyHistory']);
+				}
 				else if(obj.status == 'LDAP_ERROR') {
 					$.modal.alert(obj.message);
 				}
@@ -558,6 +561,12 @@ $(document).ready(function() {
 						}
 						else if(obj.status == 'invalidPwd'){
 							$.modal.alert(strings['script.user.passwordPolicy']);
+							stepBack(2);
+							if(pwdPage != null) stepBack(2);
+							unblockUI();
+						}
+						else if(obj.status == 'invalidPwdHistory') {
+							$.modal.alert(strings['script.user.passwordPolicyHistory']);
 							stepBack(2);
 							if(pwdPage != null) stepBack(2);
 							unblockUI();

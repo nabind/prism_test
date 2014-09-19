@@ -19,6 +19,7 @@
 	strings['script.user.passwordLikeUsername'] = "<spring:message code='script.user.passwordLikeUsername' javaScriptEscape='true' />";
 	strings['script.user.passwordPartUsername'] = "<spring:message code='script.user.passwordPartUsername' javaScriptEscape='true' />";
 	strings['script.user.passwordPolicy'] = "<spring:message code='script.user.passwordPolicy' javaScriptEscape='true' />";
+	strings['script.user.passwordPolicyHistory'] = "<spring:message code='script.user.passwordPolicyHistory' javaScriptEscape='true' />";
 	strings['script.user.updateSuccess'] = "<spring:message code='script.user.updateSuccess' javaScriptEscape='true' />";
 	strings['script.user.saveError'] = "<spring:message code='script.user.saveError' javaScriptEscape='true' />";
 	strings['script.user.deleteSuccess'] = "<spring:message code='script.user.deleteSuccess' javaScriptEscape='true' />";

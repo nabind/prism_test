@@ -40,8 +40,14 @@ public class ParentTO extends BaseTO {
 	private long isAlreadyClaimed = 0;
 	private String fullName = "";
 	private String contractName = "";
+	private String salt;
 	
-	
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 	public String getOrgName() {
 		return orgName;
 	}

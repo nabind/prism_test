@@ -42,6 +42,8 @@ import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
+import com.ctb.prism.core.util.PasswordGenerator;
+import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
@@ -664,6 +666,7 @@ public class AdminController {
 			}
 			String[] userRoles = req.getParameterValues("userRole");
 			String status = "Fail";
+			String salt = PasswordGenerator.getNextSalt();
 			
 			if(password!=null && password.trim().length() > 0) {
 				if (password.equals(userId)) {
@@ -676,17 +679,27 @@ public class AdminController {
 					status="invalidPwd";
 					res.getWriter().write("{\"status\":\"" + status + "\"}");
 					return null;
+				} else {
+					// check password history
+					List<String> pwdList = loginService.getPasswordHistory(userName, Utils.getContractName());
+					String encPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt));
+					if(pwdList != null && pwdList.contains(encPass)) {
+						res.setContentType("text/plain");
+						status="invalidPwdHistory";
+						res.getWriter().write("{\"status\":\"" + status + "\"}");
+						return null;
+					}
 				}
 			}	
 	
-					boolean isSaved = adminService.updateUser(Id, userId, userName,
-							emailId, password, userStatus, userRoles);
-					res.setContentType("text/plain");
-					
-					if (isSaved) {
-						status = "Success";
-					}
-					res.getWriter().write("{\"status\":\"" + status + "\"}");
+			boolean isSaved = adminService.updateUser(Id, userId, userName,
+					emailId, password, userStatus, userRoles, salt);
+			res.setContentType("text/plain");
+			
+			if (isSaved) {
+				status = "Success";
+			}
+			res.getWriter().write("{\"status\":\"" + status + "\"}");
 
 			logger.log(IAppLogger.INFO, "Exit: AdminController - updateUser");
 

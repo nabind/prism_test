@@ -226,6 +226,10 @@ public interface IParentQuery {
 	 */
 	public static final String UPDATE_FIRSTTIMEUSERFLAG_DATA = " UPDATE USERS SET IS_FIRSTTIME_LOGIN = ? WHERE upper(USERNAME) =upper(?)";
 	public static final String UPDATE_PASSWORD_DATA = " UPDATE USERS SET IS_FIRSTTIME_LOGIN = ?, password = ? , salt = ? WHERE upper(USERNAME) =upper(?)";
+	public static final String UPDATE_PASSWORD_HISTORY = CustomStringUtil.appendString(
+			" insert into PASSWORD_HISTORY (PWD_HISTORYID, PASSWORD, USERID, CREATED_DATE_TIME, ",
+			" UPDATED_DATE_TIME) values (ACTIVITYID_SEQ.Nextval, ?, (select userid from users ",
+			" where upper(USERNAME) =upper(?)), sysdate, sysdate) ");
 
 	public static final String FETCH_SCHOOLID_FOR_STUDENT = CustomStringUtil.appendString(
 			" select ORG.level3_jasper_orgid from student_bio_dim std, ORG_NODE_DIM org ",

@@ -162,4 +162,8 @@ public class LoginServiceImpl implements ILoginService {
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		return loginBusiness.getContractProerty(paramMap);
 	}
+	
+	public List<String> getPasswordHistory(String username, String theme) {
+		return loginBusiness.getPasswordHistory(username, theme);
+	}
 }

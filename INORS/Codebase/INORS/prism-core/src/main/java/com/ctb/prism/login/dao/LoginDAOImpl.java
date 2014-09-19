@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -914,13 +915,27 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * get all passwords from history
+	 * @param username
+	 * @return
+	 */
+	public List<String> getPasswordHistory(String username) {
+		List<String> pwsString = new LinkedList<String>();
+		List<Map<String, Object>> lstData = null;
+		lstData = getJdbcTemplatePrism().queryForList( IQueryConstants.GET_PASSWORD_HISTORY, username );
+		int count = 0;
+		if (lstData.size() > 0) {
+			for (Map<String, Object> fieldDetails : lstData) {
+				count++;
+				if(count == 1) {
+					pwsString.add((String) (fieldDetails.get("SALT")));
+				}
+				pwsString.add((String) (fieldDetails.get("PASSWORD")));
+			}
+		}
+		return pwsString;
+	}
 	
 	
 }
