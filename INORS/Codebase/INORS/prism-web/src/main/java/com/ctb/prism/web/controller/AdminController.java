@@ -666,7 +666,7 @@ public class AdminController {
 			}
 			String[] userRoles = req.getParameterValues("userRole");
 			String status = "Fail";
-			String salt = PasswordGenerator.getNextSalt();
+			String salt = null;//PasswordGenerator.getNextSalt();
 			
 			if(password!=null && password.trim().length() > 0) {
 				if (password.equals(userId)) {
@@ -685,12 +685,15 @@ public class AdminController {
 					paramMap.put("contractName", Utils.getContractName());
 					paramMap.put("userName", userName);
 					List<String> pwdList = loginService.getPasswordHistory(paramMap);
-					String encPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt));
-					if(pwdList != null && pwdList.contains(encPass)) {
-						res.setContentType("text/plain");
-						status="invalidPwdHistory";
-						res.getWriter().write("{\"status\":\"" + status + "\"}");
-						return null;
+					if(pwdList != null && !pwdList.isEmpty()) {
+						salt = pwdList.get(0);					
+						String encPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt));
+						if(pwdList.contains(encPass)) {
+							res.setContentType("text/plain");
+							status="invalidPwdHistory";
+							res.getWriter().write("{\"status\":\"" + status + "\"}");
+							return null;
+						}
 					}
 				}
 			}	
