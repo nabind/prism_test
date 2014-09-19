@@ -294,7 +294,10 @@ public class ParentController {
 				return null;
 			} else {
 				// check password history
-				List<String> pwdList = loginService.getPasswordHistory(userName, Utils.getContractName());
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("contractName", Utils.getContractName());
+				paramMap.put("userName", userName);				
+				List<String> pwdList = loginService.getPasswordHistory(paramMap);
 				String encPass = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), parentTO.getSalt()));
 				if(pwdList != null && pwdList.contains(encPass)) {
 					res.setContentType("text/plain");
@@ -561,8 +564,11 @@ public class ParentController {
 					return null;
 				} else {
 					// check password history
-					List<String> pwdList = loginService.getPasswordHistory(username, 
-							Utils.getContractName(themeResolver.resolveThemeName(req)));
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("contractName", Utils.getContractName(themeResolver.resolveThemeName(req)));
+					paramMap.put("userName", username);
+					
+					List<String> pwdList = loginService.getPasswordHistory(paramMap);
 					String salt = "";
 					if(pwdList != null && !pwdList.isEmpty()) {
 						salt = pwdList.get(0);

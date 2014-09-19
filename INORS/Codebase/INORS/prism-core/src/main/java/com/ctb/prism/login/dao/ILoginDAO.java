@@ -35,5 +35,5 @@ public interface ILoginDAO {
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap);
-	public List<String> getPasswordHistory(String username);
+	public List<String> getPasswordHistory(Map<String, Object> paramMap);
 }

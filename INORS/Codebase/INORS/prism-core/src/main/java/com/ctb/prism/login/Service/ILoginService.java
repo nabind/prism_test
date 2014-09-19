@@ -108,5 +108,5 @@ public interface ILoginService {
 	
 	public Map<String, Object>  getContractProerty (Map<String, Object> paramMap);
 	
-	public List<String> getPasswordHistory(String username, String theme);
+	public List<String> getPasswordHistory(Map<String, Object> paramMap);
 }

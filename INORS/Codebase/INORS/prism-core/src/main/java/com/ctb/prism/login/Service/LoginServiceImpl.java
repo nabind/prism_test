@@ -163,7 +163,7 @@ public class LoginServiceImpl implements ILoginService {
 		return loginBusiness.getContractProerty(paramMap);
 	}
 	
-	public List<String> getPasswordHistory(String username, String theme) {
-		return loginBusiness.getPasswordHistory(username, theme);
+	public List<String> getPasswordHistory(Map<String, Object> paramMap) {
+		return loginBusiness.getPasswordHistory(paramMap);
 	}
 }

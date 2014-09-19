@@ -245,23 +245,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	 * @param theme
 	 * @return
 	 */
-	public List<String> getPasswordHistory(String username, String theme) {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", theme);
-		Map<String, Object> propertyMap = loginDAO.getContractProerty(paramMap);
-		String pwdHistoryDay = (String)propertyMap.get("password.history.day");
-		int historyDay = 0;
-		if(pwdHistoryDay != null && pwdHistoryDay.length() > 0) {
-			try {
-				historyDay = Integer.parseInt(pwdHistoryDay);
-			} catch (Exception ex) {}
-		}
-		List<String> pwdList = loginDAO.getPasswordHistory(username);
-		List<String> croppedHistory = new LinkedList<String>();
-		for(int i=0; i<historyDay+1 || i<pwdList.size(); i++) {
-			croppedHistory.add(pwdList.get(i));
-		}
-		return croppedHistory;
+	public List<String> getPasswordHistory(Map<String, Object> paramMap) {
+		return loginDAO.getPasswordHistory(paramMap);
 	}
 	
 }

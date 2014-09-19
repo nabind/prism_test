@@ -38,5 +38,5 @@ public interface ILoginBusiness {
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap);
-	public List<String> getPasswordHistory(String username, String theme);
+	public List<String> getPasswordHistory(Map<String, Object> paramMap);
 }

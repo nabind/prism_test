@@ -920,22 +920,53 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return
 	 */
-	public List<String> getPasswordHistory(String username) {
-		List<String> pwsString = new LinkedList<String>();
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList( IQueryConstants.GET_PASSWORD_HISTORY, username );
-		int count = 0;
-		if (lstData.size() > 0) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				count++;
-				if(count == 1) {
-					pwsString.add((String) (fieldDetails.get("SALT")));
-				}
-				pwsString.add((String) (fieldDetails.get("PASSWORD")));
-			}
+	@SuppressWarnings("unchecked")
+	public List<String> getPasswordHistory(Map<String, Object> paramMap) {		
+		
+		final String username = (String)paramMap.get("userName");
+		
+		String contractName = (String) paramMap.get("contractName");
+		if(contractName == null) {
+			contractName = Utils.getContractName();
 		}
-		return pwsString;
+		
+		paramMap.remove("userName"); //This is required so that cache will get data based on single parameter (contract) only  
+		Map<String, Object> propertyMap = getContractProerty(paramMap);
+		final int pwdHistoryDay = Integer.parseInt((String)propertyMap.get("password.history.day"));
+		
+		return (List<String>) getJdbcTemplatePrism(contractName).execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PASSWORD_HISTORY);
+						cs.setString(1, username);
+						cs.setInt(2 ,pwdHistoryDay);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						List<String> pwsString = new LinkedList<String>();
+						int count = 0;
+						ResultSet rs = null;
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(3);
+							while (rs.next()) {
+								count++;
+								if(count == 1) {
+									pwsString.add(rs.getString("SALT"));
+								}
+								pwsString.add(rs.getString("PASSWORD"));
+							}
+							Utils.logError(cs.getString(4));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						logger.log(IAppLogger.INFO, "getPasswordHistory().pwsString size =" + pwsString.size());
+						return pwsString;
+					}
+				}
+			);
 	}
-	
-	
 }

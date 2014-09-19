@@ -681,7 +681,10 @@ public class AdminController {
 					return null;
 				} else {
 					// check password history
-					List<String> pwdList = loginService.getPasswordHistory(userName, Utils.getContractName());
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("contractName", Utils.getContractName());
+					paramMap.put("userName", userName);
+					List<String> pwdList = loginService.getPasswordHistory(paramMap);
 					String encPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt));
 					if(pwdList != null && pwdList.contains(encPass)) {
 						res.setContentType("text/plain");
