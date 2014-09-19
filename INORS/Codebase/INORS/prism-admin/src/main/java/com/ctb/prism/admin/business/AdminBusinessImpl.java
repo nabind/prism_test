@@ -375,9 +375,9 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#getRoleList(java.lang.String)
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getEduUserRoleList(java.util.Map)
 	 */
-	public List<RoleTO> getRoleList(String userId) {
-		return adminDAO.getRoleList(userId);
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) {
+		return adminDAO.getEduUserRoleList(paramMap);
 	}
 }

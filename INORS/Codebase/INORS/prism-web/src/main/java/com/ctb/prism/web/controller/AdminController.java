@@ -731,15 +731,17 @@ public class AdminController {
 		roleList.add(to);
 		return roleList;
 	}
-	
+
 	/**
 	 * @param userId
 	 * @return
 	 */
 	private List<RoleTO> getEducationCenterMasterRoleList(String userId) {
-		return adminService.getRoleList(userId);
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("userId", userId);
+		return adminService.getEduUserRoleList(paramMap);
 	}
-	
+
 	/**
 	 * Get role based on org_level
 	 * @param request

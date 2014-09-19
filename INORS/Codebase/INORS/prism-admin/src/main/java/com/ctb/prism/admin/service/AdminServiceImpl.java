@@ -368,7 +368,10 @@ public class AdminServiceImpl implements IAdminService {
 		return adminBusiness.getUserForResetPassword(paramMap);
 	}
 
-	public List<RoleTO> getRoleList(String userId) {
-		return adminBusiness.getRoleList(userId);
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.admin.service.IAdminService#getEduUserRoleList(java.util.Map)
+	 */
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) {
+		return adminBusiness.getEduUserRoleList(paramMap);
 	}
 }

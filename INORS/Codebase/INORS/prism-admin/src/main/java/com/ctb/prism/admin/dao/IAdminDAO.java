@@ -315,8 +315,8 @@ public interface IAdminDAO {
 	/**
 	 * Gets the role list for the user.
 	 * 
-	 * @param userId
+	 * @param paramMap
 	 * @return
 	 */
-	public List<RoleTO> getRoleList(String userId);
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap);
 }

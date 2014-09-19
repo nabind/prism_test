@@ -2121,23 +2121,40 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.admin.dao.IAdminDAO#getRoleList(java.lang.String)
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEduUserRoleList(java.util.Map)
 	 */
-	public List<RoleTO> getRoleList(String userId) {
-		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_LIST, userId);
-		if (lstData.size() > 0) {
-			RoleTOs = new ArrayList<RoleTO>();
-			for (Map<String, Object> fieldDetails : lstData) {
-				RoleTO to = new RoleTO();
-				to.setRoleId(((BigDecimal) fieldDetails.get("ROLEID")).longValue());
-				to.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
-				to.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
-				RoleTOs.add(to);
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) {
+		final Long userId = Long.valueOf(paramMap.get("userId"));
+		return (List<RoleTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_EDU_USER_ROLE);
+				cs.setLong(1, userId);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
 			}
-		}
-		return RoleTOs;
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				List<RoleTO> roleList = new ArrayList<RoleTO>();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					while(rs.next()){
+						RoleTO to = new RoleTO();
+						to.setRoleId(Long.parseLong(rs.getString("ROLEID")));
+						to.setRoleName(rs.getString("ROLE_NAME"));
+						to.setRoleDescription(rs.getString("DESCRIPTION"));
+						roleList.add(to);
+					}
+					Utils.logError(cs.getString(3));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "getEduUserRoleList().roleList.size()=" + roleList.size());
+				return roleList;
+			}
+		});
 	}
 	
 }
