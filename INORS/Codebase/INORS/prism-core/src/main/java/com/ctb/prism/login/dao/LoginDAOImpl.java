@@ -932,7 +932,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		
 		paramMap.remove("userName"); //This is required so that cache will get data based on single parameter (contract) only  
 		Map<String, Object> propertyMap = getContractProerty(paramMap);
-		final int pwdHistoryDay = Integer.parseInt((String)propertyMap.get("password.history.day"));
+		final int pwdHistoryDay =
+			propertyMap.get("password.history.day")!= null ? Integer.parseInt((String)propertyMap.get("password.history.day")): 0;
 		
 		return (List<String>) getJdbcTemplatePrism(contractName).execute(
 				new CallableStatementCreator() {
