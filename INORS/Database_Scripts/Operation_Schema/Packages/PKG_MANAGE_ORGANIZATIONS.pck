@@ -47,7 +47,15 @@ create or replace package PKG_MANAGE_ORGANIZATIONS is
                                          P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
                                          P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);                                                                                                                                                                                                 
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);  
+                                         
+   PROCEDURE SP_GET_ORG_HIER_ON_REDIRECT(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                         P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.PARENT_ORG_NODEID%TYPE,
+                                         P_IN_USERID            IN USERS.USERID%TYPE,
+                                         P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
+                                                                                                                                                                                               
 
 end PKG_MANAGE_ORGANIZATIONS;
 /
@@ -245,5 +253,37 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
    END SP_SEARCH_ORG_AUTO_COMPLETE;                                            
 
+   
+   PROCEDURE SP_GET_ORG_HIER_ON_REDIRECT(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
+                                         P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                         P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.PARENT_ORG_NODEID%TYPE,
+                                         P_IN_USERID            IN USERS.USERID%TYPE,
+                                         P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is
+   BEGIN
+      OPEN P_OUT_REF_CURSOR For
+      
+      SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,
+             O.ORG_NODE_NAME,
+             O.PARENT_ORG_NODEID,
+             O.ORG_NODE_LEVEL
+        FROM ORG_NODE_DIM O
+       WHERE O.CUSTOMERID = P_IN_CUSTOMERID
+       START WITH ORG_NODEID = P_IN_ORG_NODEID
+      CONNECT BY PRIOR PARENT_ORG_NODEID = ORG_NODEID
+             AND O.ORG_NODE_LEVEL >=
+                 (SELECT DISTINCT U.ORG_NODE_LEVEL
+                    FROM ORG_USERS U
+                   WHERE U.ORG_NODEID = P_IN_PARENT_ORG_NODEID
+                     AND U.USERID = P_IN_USERID)
+        ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME;
+        
+   
+   
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+   END SP_GET_ORG_HIER_ON_REDIRECT;                                           
+   
 END PKG_MANAGE_ORGANIZATIONS;
 /
