@@ -465,11 +465,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
                                        P_IN_ORG_NODE_LEVEL IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
-  
   BEGIN
-  
+	
     OPEN P_OUT_REF_CURSOR FOR
-      SELECT U.USERID,
+		SELECT U.USERID,
              U.USERNAME,
              U.DISPLAY_USERNAME,
              U.FIRST_NAME,
@@ -485,7 +484,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
              U.ACTIVATION_STATUS,
              HIER.ORG_NODE_NAME,
              HIER.ORG_NODEID,
-             HIER.PARENT_ORG_NODEID
+             to_char(HIER.PARENT_ORG_NODEID)
         FROM USERS U,
              ORG_USERS OU,
              (SELECT *
@@ -504,7 +503,29 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
                  AND USER_ROLE.USERID = U.USERID)
          AND OU.ORG_NODEID = HIER.ORG_NODEID
          AND OU.USERID = U.USERID
-         AND OU.ORG_NODE_LEVEL <> 0;
+         AND OU.ORG_NODE_LEVEL <> 0
+         union
+         SELECT U.USERID,
+             U.USERNAME,
+             U.DISPLAY_USERNAME,
+             U.FIRST_NAME,
+             U.MIDDLE_NAME,
+             U.LAST_NAME,
+             U.EMAIL_ADDRESS,
+             U.PHONE_NO,
+             U.STREET,
+             U.COUNTRY,
+             U.CITY,
+             U.ZIPCODE,
+             U.STATE,
+             U.ACTIVATION_STATUS,
+             E.EDU_CENTER_NAME,
+             E.EDU_CENTERID,
+             '0'
+			FROM USERS U, EDU_CENTER_USER_LINK L, EDU_CENTER_DETAILS E
+			WHERE U.USERID = L.USERID
+			AND L.EDU_CENTERID = E.EDU_CENTERID
+			AND USERNAME = P_IN_USER_NAME;
   
   EXCEPTION
     WHEN OTHERS THEN
