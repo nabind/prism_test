@@ -939,6 +939,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			//delete from user activity
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ACTIVITY, Id);
 
+			getJdbcTemplatePrism().update(IQueryConstants.DELETE_PASSWORD_HISTORY, Id);
 			
 			// delete the user from users table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);
@@ -1642,8 +1643,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	private String getUserEmail(final String userName) {
-		return (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+	private String getUserEmail(final String userName,String contractName) {
+		return (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
 				cs.setString(1, userName);
@@ -1685,7 +1686,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			contractName =Utils.getContractName();
 		}
 		
-		String email =  getUserEmail(userName);
+		String email =  getUserEmail(userName,contractName);
 		
 		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {

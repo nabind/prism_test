@@ -262,6 +262,9 @@ public interface IUserQuery {
 	public static final String DELETE_USER_ACTIVITY = CustomStringUtil
 	.appendString(" DELETE FROM USER_ACTIVITY_HISTORY WHERE USERID = ? ");
 	
+	public static final String DELETE_PASSWORD_HISTORY = CustomStringUtil
+	.appendString(" DELETE FROM PASSWORD_HISTORY WHERE USERID = ? ");
+	
 	public static final String INSERT_USER_ROLE = CustomStringUtil
 			.appendString("INSERT INTO USER_ROLE (ROLEID, USERID, CREATED_DATE_TIME) ",
 						  " VALUES ((SELECT ROLEID FROM ROLE " +
