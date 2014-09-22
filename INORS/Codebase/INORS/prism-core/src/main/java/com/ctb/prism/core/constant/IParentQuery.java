@@ -228,7 +228,7 @@ public interface IParentQuery {
 	public static final String UPDATE_PASSWORD_DATA = " UPDATE USERS SET IS_FIRSTTIME_LOGIN = ?, password = ? , salt = ? WHERE upper(USERNAME) =upper(?)";
 	public static final String UPDATE_PASSWORD_HISTORY = CustomStringUtil.appendString(
 			" insert into PASSWORD_HISTORY (PWD_HISTORYID, PASSWORD, USERID, CREATED_DATE_TIME, ",
-			" UPDATED_DATE_TIME) values (ACTIVITYID_SEQ.Nextval, ?, (select userid from users ",
+			" UPDATED_DATE_TIME) values (SEQ_PASSWORD_HISTORY.Nextval, ?, (select userid from users ",
 			" where upper(USERNAME) =upper(?)), sysdate, sysdate) ");
 
 	public static final String FETCH_SCHOOLID_FOR_STUDENT = CustomStringUtil.appendString(
