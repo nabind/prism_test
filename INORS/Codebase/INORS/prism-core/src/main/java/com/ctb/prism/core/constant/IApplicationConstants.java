@@ -250,7 +250,7 @@ public interface IApplicationConstants {
 	//To implement back functionality - By Joy
 	public static final String URL_STACK = "URL_STACK";
 
-	public static final String[] ASSET_LOCATIONS = { "Static_Files/" };
+	public static final String[] ASSET_LOCATIONS = { "Static_Files/", "Static_Files/INORS/", "Static_Files/TASC/" };
 	public static final long DEFAULT_PRISM_VALUE = -99;
 	public static final String PURPOSE_EDIT_REPORT = "editReport";
 	public static final String DEFAULT_CUST_PROD_ID= "defaultCustProdId"; 
