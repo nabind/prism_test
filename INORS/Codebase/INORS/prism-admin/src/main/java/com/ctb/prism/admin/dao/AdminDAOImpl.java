@@ -1642,6 +1642,35 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
+	private String getUserEmail(final String userName) {
+		return (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
+				cs.setString(1, userName);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				String email = null;
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					while (rs.next()) {
+						email = rs.getString("EMAIL");
+					}
+					Utils.logError(cs.getString(3));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "getUserEmail().email = " + email);
+				return email;
+			}
+		});
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1656,11 +1685,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			contractName =Utils.getContractName();
 		}
 		
-		String email =  getJdbcTemplatePrism(contractName).queryForObject(IQueryConstants.GET_USER_DETAILS, new Object[] { userName }, new RowMapper<String>() {
-			public String mapRow(ResultSet rs, int col) throws SQLException {
-				return rs.getString("EMAIL");
-			}
-		});
+		String email =  getUserEmail(userName);
 		
 		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
