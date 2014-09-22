@@ -1643,8 +1643,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return true;
 	}
 
-	private String getUserEmail(final String userName,String contractName) {
-		return (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+	private com.ctb.prism.login.transferobject.UserTO getUserEmail(final String userName,String contractName) {
+		return (com.ctb.prism.login.transferobject.UserTO) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
 				cs.setString(1, userName);
@@ -1655,19 +1655,20 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		}, new CallableStatementCallback<Object>() {
 			public Object doInCallableStatement(CallableStatement cs) {
 				ResultSet rs = null;
-				String email = null;
+				com.ctb.prism.login.transferobject.UserTO userDetails = new com.ctb.prism.login.transferobject.UserTO();
 				try {
 					cs.execute();
 					rs = (ResultSet) cs.getObject(2);
-					while (rs.next()) {
-						email = rs.getString("EMAIL");
+					if (rs.next()) {
+						userDetails.setUserEmail(rs.getString("EMAIL"));
+						userDetails.setSalt(rs.getString("SALT"));
 					}
 					Utils.logError(cs.getString(3));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				logger.log(IAppLogger.INFO, "getUserEmail().email = " + email);
-				return email;
+				logger.log(IAppLogger.INFO, "getUserEmail().email = " + userDetails.getUserEmail());
+				return userDetails;
 			}
 		});
 	}
@@ -1686,7 +1687,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			contractName =Utils.getContractName();
 		}
 		
-		String email =  getUserEmail(userName,contractName);
+		userTO =  getUserEmail(userName,contractName);
 		
 		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
@@ -1698,7 +1699,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			//	return null;
 			}
 		} else {
-			String salt = PasswordGenerator.getNextSalt();
+			String salt = userTO.getSalt() != null ? userTO.getSalt() : PasswordGenerator.getNextSalt();
 			getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
 					salt, userName);
 			
@@ -1708,8 +1709,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			
 			//return password;
 		}
-		
-		userTO.setUserEmail(email);
+
 		userTO.setPassword(password);
 		return userTO;
 	}
