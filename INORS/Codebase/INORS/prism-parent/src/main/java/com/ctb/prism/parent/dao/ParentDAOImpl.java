@@ -1400,6 +1400,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					parentTO.setCity((String) (fieldDetails.get("CITY")));
 					parentTO.setState((String) (fieldDetails.get("STATE")));
 					parentTO.setStreet((String) (fieldDetails.get("STREET")));
+					parentTO.setSalt((String)(fieldDetails.get("SALT")));
 				}
 			}
 			// setting secret question list by calling method getParentSecretQuestionDetails()

@@ -271,13 +271,16 @@ public class ParentController {
 		String city = req.getParameter("city");
 		String state = req.getParameter("state");
 		String displayName = req.getParameter("displayName");
-		
+		String salt = req.getParameter("salt");
 		// update session with new display name
 		req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, displayName);
 		req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 		
 		String status = "Fail";
-		parentTO.setSalt(PasswordGenerator.getNextSalt());
+		
+		parentTO.setUserName(userName);
+		parentTO.setPassword(password);
+		parentTO.setSalt(salt);
 		
 	//checking for valid password
 		if(password!=null && password.trim().length() > 0)
@@ -309,8 +312,6 @@ public class ParentController {
 		}
 		
 		parentTO.setUserId(Long.valueOf(userId));
-		parentTO.setUserName(userName);
-		parentTO.setPassword(password);
 		parentTO.setFirstName(firstName);
 		parentTO.setLastName(lastName);
 		parentTO.setMail(mailId);

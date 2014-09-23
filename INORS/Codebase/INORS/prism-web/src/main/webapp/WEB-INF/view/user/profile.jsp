@@ -4,6 +4,7 @@
 
 <form:form id="manageProfile" name="manageProfile" class="manage-Profile-form">
 	<input type="hidden" name="userId" id="userId" value="${parentAccountDetail.userId}" />
+	<input type="hidden" name="salt" id="salt" value="${parentAccountDetail.salt}" />
 	<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 	<hgroup id="main-title" class="thin" style="padding: 0 0 22px">
 		<h1>My Account</h1>
