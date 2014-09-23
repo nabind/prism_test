@@ -972,7 +972,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	}
 	
 
-	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramUserMap)).concat('getUserEmail'))")
+//	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramUserMap)).concat('getUserEmail'))")
 	public UserTO getUserEmail(Map<String,Object> paramUserMap) {
 		final String userName = (String)paramUserMap.get("userName"); 
 		String contractName  = (String)paramUserMap.get("contractName"); 
