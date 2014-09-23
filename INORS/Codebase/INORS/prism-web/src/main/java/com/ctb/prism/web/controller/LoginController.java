@@ -462,7 +462,6 @@ public class LoginController {
 					if ((null != req.getSession().getAttribute("PARENT_LOGIN")) 
 							&& (IApplicationConstants.PARENT.equals(req.getSession().getAttribute("PARENT_LOGIN")))) {
 						modelAndView = new ModelAndView("parent/parentWelcome");
-						themeResolver.setThemeName(req, res, IApplicationConstants.PARENT);
 					} else {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");

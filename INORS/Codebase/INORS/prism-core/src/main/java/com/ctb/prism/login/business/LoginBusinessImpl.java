@@ -158,7 +158,7 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.TEACHER_HOME_FOOTER);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
-			messageMap.put("parentFooterMessage", systemMessage);
+			messageMap.put("teacherFooterMessage", systemMessage);
 			
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.GROWTH_HOME_PAGE);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
