@@ -1642,36 +1642,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "Exit: updateRole()");
 		return true;
 	}
-
-	private com.ctb.prism.login.transferobject.UserTO getUserEmail(final String userName,String contractName) {
-		return (com.ctb.prism.login.transferobject.UserTO) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
-				cs.setString(1, userName);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet rs = null;
-				com.ctb.prism.login.transferobject.UserTO userDetails = new com.ctb.prism.login.transferobject.UserTO();
-				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
-					if (rs.next()) {
-						userDetails.setUserEmail(rs.getString("EMAIL"));
-						userDetails.setSalt(rs.getString("SALT"));
-					}
-					Utils.logError(cs.getString(3));
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				logger.log(IAppLogger.INFO, "getUserEmail().email = " + userDetails.getUserEmail());
-				return userDetails;
-			}
-		});
-	}
+    
+	
 
 	/*
 	 * (non-Javadoc)
@@ -1679,19 +1651,24 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#resetPassword(java.lang.String)
 	 */
 	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception {
-		com.ctb.prism.login.transferobject.UserTO userTO = new com.ctb.prism.login.transferobject.UserTO();
-		String contractName = (String) paramMap.get("contractName"); 
-		String userName = (String)paramMap.get("username");
 		
+		com.ctb.prism.login.transferobject.UserTO userTO = new com.ctb.prism.login.transferobject.UserTO();
+		userTO =  loginDAO.getUserEmail(paramMap);
+		
+		String contractName = (String) paramMap.get("contractName"); 
 		if(contractName == null) {
 			contractName =Utils.getContractName();
 		}
+		final String userName = (String)paramMap.get("username");
+				
+		String password = PasswordGenerator.getNext();		
+		final String salt = userTO.getSalt() != null ? userTO.getSalt() : PasswordGenerator.getNextSalt();
+		final String encryptedPass = SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt));
 		
-		userTO =  getUserEmail(userName,contractName);
+		boolean isUpdated = false;
 		
-		String password = PasswordGenerator.getNext();
 		if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-			boolean isUpdated = ldapManager.updateUser(userName, userName, userName, password);
+			isUpdated = ldapManager.updateUser(userName, userName, userName, password);
 			if (isUpdated) {
 				getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_FIRSTTIMEUSERFLAG_DATA, IApplicationConstants.FLAG_Y, userName);
 			//	return password;
@@ -1699,17 +1676,33 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			//	return null;
 			}
 		} else {
-			String salt = userTO.getSalt() != null ? userTO.getSalt() : PasswordGenerator.getNextSalt();
-			getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)),
-					salt, userName);
-			
-			// add to password history
-			getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
-					SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), userName);
-			
-			//return password;
+			isUpdated = (Boolean)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_RESET_PASSWORD);
+					cs.setString(1, userName);
+					cs.setString(2, encryptedPass);
+					cs.setString(3, salt);
+					cs.setString(4, IApplicationConstants.FLAG_Y);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					try {
+						cs.execute();
+						if(cs.getString(5) == null) {
+							return true;
+						}
+						Utils.logError(cs.getString(5));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					logger.log(IAppLogger.INFO, "resetPassword()");
+					return false;
+				}
+			});
 		}
-
+		
 		userTO.setPassword(password);
 		return userTO;
 	}

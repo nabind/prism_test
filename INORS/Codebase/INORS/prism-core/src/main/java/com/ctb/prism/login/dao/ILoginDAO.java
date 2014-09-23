@@ -36,4 +36,13 @@ public interface ILoginDAO {
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap);
 	public List<String> getPasswordHistory(Map<String, Object> paramMap);
+	
+	/**
+	 * fetch user email and salt
+	 * 
+	 * @param paramUserMap
+	 * @return
+	 */  
+	public UserTO getUserEmail(Map<String,Object> paramUserMap);
+
 }

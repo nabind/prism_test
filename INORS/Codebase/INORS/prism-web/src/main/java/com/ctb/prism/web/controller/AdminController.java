@@ -2110,6 +2110,7 @@ public class AdminController {
 			if ( userName != null ) {
 			//	String newPassword = adminService.resetPassword(userName);
 				paramMap.put("username", userName);
+				paramMap.put("contractName", Utils.getContractName());
 				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
@@ -2525,6 +2526,7 @@ public class AdminController {
 			if (username != null) {
 				//password = adminService.resetPassword(username);
 				paramMap.put("username", username);
+				paramMap.put("contractName", Utils.getContractName());
 				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getPassword() != null) {
 					resetPwdFlag = "1";

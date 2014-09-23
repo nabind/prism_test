@@ -32,6 +32,7 @@ import com.ctb.prism.core.util.LdapManager;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -46,6 +47,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	private LdapManager ldapManager;
 	@Autowired
 	private IPropertyLookup propertyLookup;
+	@Autowired
+	private ILoginDAO loginDAO; 
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentDAOImpl.class.getName());
 
@@ -1342,10 +1345,43 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapStatus = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
 			} else {
-				String salt = PasswordGenerator.getNextSalt();
-				getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
+				final String userName = parentTO.getUserName();
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("username", userName);
+				paramMap.put("contractName", Utils.getContractName());
+				UserTO userTO = loginDAO.getUserEmail(paramMap);
+				
+				final String salt =  userTO.getSalt() != null ? userTO.getSalt() : PasswordGenerator.getNextSalt();				
+				final String encryptedPass = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(userName, salt));
+				
+				/*getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
 						SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt, parentTO.getUserName());
-				ldapStatus = true;
+				 */				
+				ldapStatus  = (Boolean)getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_RESET_PASSWORD);
+						cs.setString(1, userName);
+						cs.setString(2, encryptedPass);
+						cs.setString(3, salt);
+						cs.setString(4, IApplicationConstants.FLAG_Y);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						try {
+							cs.execute();
+							if(cs.getString(5) == null) {
+								return true;
+							}
+							Utils.logError(cs.getString(5));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						logger.log(IAppLogger.INFO, "resetPassword()");
+						return false;
+					}
+				});
 			}
 			if (ldapStatus) {
 				int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FIRSTTIMEUSERLOGIN_DATA, parentTO.getLastName(), parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(),

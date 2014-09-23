@@ -970,4 +970,39 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				}
 			);
 	}
+	
+
+	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramUserMap)).concat('getUserEmail'))")
+	public UserTO getUserEmail(Map<String,Object> paramUserMap) {
+		final String userName = (String)paramUserMap.get("userName"); 
+		String contractName  = (String)paramUserMap.get("contractName"); 
+		return (UserTO) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
+				cs.setString(1, userName);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet rs = null;
+				com.ctb.prism.login.transferobject.UserTO userDetails = new com.ctb.prism.login.transferobject.UserTO();
+				try {
+					cs.execute();
+					rs = (ResultSet) cs.getObject(2);
+					if (rs.next()) {
+						userDetails.setUserEmail(rs.getString("EMAIL"));
+						userDetails.setSalt(rs.getString("SALT"));
+					}
+					Utils.logError(cs.getString(3));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "getUserEmail().email = " + userDetails.getUserEmail());
+				return userDetails;
+			}
+		});
+	}
+	
 }

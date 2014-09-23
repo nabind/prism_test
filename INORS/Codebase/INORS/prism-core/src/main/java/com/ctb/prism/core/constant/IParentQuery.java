@@ -230,6 +230,8 @@ public interface IParentQuery {
 			" insert into PASSWORD_HISTORY (PWD_HISTORYID, PASSWORD, USERID, CREATED_DATE_TIME, ",
 			" UPDATED_DATE_TIME) values (SEQ_PASSWORD_HISTORY.Nextval, ?, (select userid from users ",
 			" where upper(USERNAME) =upper(?)), sysdate, sysdate) ");
+	
+	public static final String SP_RESET_PASSWORD ="{CALL PKG_MANAGE_USERS.SP_RESET_PASSWORD(?, ?, ?, ?, ?)}";
 
 	public static final String FETCH_SCHOOLID_FOR_STUDENT = CustomStringUtil.appendString(
 			" select ORG.level3_jasper_orgid from student_bio_dim std, ORG_NODE_DIM org ",

@@ -89,6 +89,12 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_USERS IS
                              P_OUT_REF_CURSOR     OUT GET_REF_CURSOR,
                              P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
 
+  PROCEDURE SP_RESET_PASSWORD(P_IN_USERNAME                    IN USERS.USERNAME%TYPE,
+                             P_IN_PASSWORD                    IN USERS.PASSWORD%TYPE,
+                             P_IN_SALT                        IN USERS.SALT%TYPE,
+                             P_IN_IS_FIRSTTIME_LOGIN          IN USERS.IS_FIRSTTIME_LOGIN%TYPE,          
+                             P_OUT_EXCEP_ERR_MSG              OUT VARCHAR2);                             
+
 END PKG_MANAGE_USERS;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
@@ -662,6 +668,41 @@ PROCEDURE SP_GET_ROLE_USER(  P_IN_ROLE            IN VARCHAR2,
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
     
   END SP_GET_USER_EMAIL;
+  
+  
+   PROCEDURE SP_RESET_PASSWORD(P_IN_USERNAME                    IN USERS.USERNAME%TYPE,
+                               P_IN_PASSWORD                    IN USERS.PASSWORD%TYPE,
+                               P_IN_SALT                        IN USERS.SALT%TYPE,
+                               P_IN_IS_FIRSTTIME_LOGIN          IN USERS.IS_FIRSTTIME_LOGIN%TYPE,          
+                               P_OUT_EXCEP_ERR_MSG              OUT VARCHAR2) IS
+   BEGIN
+   
+      UPDATE USERS
+         SET IS_FIRSTTIME_LOGIN = P_IN_IS_FIRSTTIME_LOGIN,
+             PASSWORD           = P_IN_PASSWORD,
+             SALT               = P_IN_SALT
+       WHERE UPPER(USERNAME) = UPPER(P_IN_USERNAME);
+       
+      INSERT INTO PASSWORD_HISTORY
+        (PWD_HISTORYID,
+         PASSWORD,
+         USERID,
+         CREATED_DATE_TIME,
+         UPDATED_DATE_TIME)
+      VALUES
+        (SEQ_PASSWORD_HISTORY.NEXTVAL,
+         P_IN_PASSWORD,
+         (SELECT USERID
+            FROM USERS
+           WHERE UPPER(USERNAME) = UPPER(P_IN_USERNAME)),
+         SYSDATE,
+         SYSDATE);
+   
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+   
+   END SP_RESET_PASSWORD;                              
 
 END PKG_MANAGE_USERS;
 /
