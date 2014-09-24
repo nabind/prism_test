@@ -71,7 +71,7 @@ $(document).ready(function() {
 						});
 						}else{
 							$("#invalidUsernameMsg").show(500);
-							$("#invalidUsernameMsg").text("Please enter an username to proceed.");											
+							$("#invalidUsernameMsg").text("Please enter a username to proceed.");											
 						}
 					}
 				},
