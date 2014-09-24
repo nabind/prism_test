@@ -11,17 +11,17 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 %>
 
-<div class="panel-control">
+<div class="panel-control" style="height:60px">
 	<div class="float-left">
-		<a href="#nogo" id="hideHierarchy" class="button icon-backward icon-size1 with-tooltip" title="Hide Hierarchy"></a>
+		<a href="#nogo" id="hideHierarchy" class="button blue-gradient icon-backward icon-size1 with-tooltip" title="Hide Hierarchy" style="height: 58px;"></a>
 	</div>
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
 	<input type="hidden" value="<%=currentOrg %>" name="CurrentOrg" id="CurrentOrg">
-	<div class="float-right">
+	<div class="" style="margin-left:32px">
 		<fmt:message var="MANAGE_ORG_SELECT_ADMIN" key="manage.orgs.admin"  />
 		<c:if test="${not empty actionMap[MANAGE_ORG_SELECT_ADMIN]}">
-			<select style="width: 100px;" name="AdminYear" id="AdminYear" 
+			<select style="width: 190px;" name="AdminYear" id="AdminYear" 
 				title='Select administration to refresh the hierarchy.'
 				class="select silver-gradient glossy with-tooltip expandable-list" 
 				onchange="reloadOrgTree($(this))"
@@ -38,7 +38,7 @@ String currentOrg = (String) request.getSession().getAttribute(IApplicationConst
 		</c:if>
 		<fmt:message var="MANAGE_ORG_SELECT_MODE" key="manage.orgs.mode"  />
 		<c:if test="${not empty actionMap[MANAGE_ORG_SELECT_MODE]}">
-			<select style="width: 100px;" name="orgMode" id="orgMode" 
+			<select style="width: 190px;" name="orgMode" id="orgMode" 
 				title='Select organization mode to refresh the hierarchy.'
 				class="select silver-gradient glossy with-tooltip expandable-list" 
 				onchange="reloadOrgTree($(this))">

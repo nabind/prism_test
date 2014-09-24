@@ -14,7 +14,7 @@
 		</ul>
 </c:if>	
 <c:if test="${treeSturcture == 'Yes'}">
-		<div id="treeViewForOrg" style="height: 510px;" class="jstree jstree-0 jstree-focused jstree-apple" rootid="${rootOrgId}_${rootOrgLevel}" >
+		<div id="treeViewForOrg" style="height: 490px;" class="jstree jstree-0 jstree-focused jstree-apple" rootid="${rootOrgId}_${rootOrgLevel}" >
 		</div>
 </c:if>
 		

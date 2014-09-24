@@ -91,7 +91,11 @@ html {
 	right: -48px;
 }
 .report-inputs {
-	min-width: 163px;
+	min-width: 170px;
+}
+.report-inputs > .select {
+	min-width: 160px;
+	max-width: 160px;	
 }
 .label-ie {
 	float: left;

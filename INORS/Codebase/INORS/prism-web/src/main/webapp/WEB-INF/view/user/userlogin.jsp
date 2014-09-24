@@ -199,18 +199,17 @@
 					</div>
 					<div class="margin-bottom-medium margin-top">
 						<div class="boxshade" style="height: auto">
-							<ul style="" class="margin-bottom-medium bullet-list">
-								<li>
-									<a class=""  href="registration.do">
-										<small class="tag orange-bg"><spring:message code="label.newUser" />:</small> <spring:message code="msg.clickHereNewInvitationCode" />
-									</a>
-								</li><br>
-								<li>
-									<a class="" href="#nogo" onClick="javascript:window.open('<%=request.getContextPath()%>/displayAssest.do?assetPath=Static_Files/Quick_Start_Guide_For_Parents.pdf',800,600)">
-										For information about the <spring:message code="pnlogin.page.welcome"/>, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
-									</a>
-								</li>
-							</ul>
+							
+							<p class="big-message orange-gradient small-margin-bottom">
+								<a class="white" href="registration.do"> <spring:message code="msg.clickHereNewInvitationCode" /> </a>
+							</p>
+							<br> <a class="" href="#nogo"
+								onclick="javascript:window.open('/onlineresults/scripts/Quick_Start_Guide_For_Parents.pdf?theme=parent&amp;parent=true#nogo',800,600)">
+								For information about the Indiana Parent Network, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
+							</a> <span class="ribbon "><span
+								class="ribbon-inner green-gradient">New User</span>
+							</span>
+							
 						</div>
 					</div>
 				</div>

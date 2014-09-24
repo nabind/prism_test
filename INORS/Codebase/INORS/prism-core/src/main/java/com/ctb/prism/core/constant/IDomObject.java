@@ -8,12 +8,12 @@ package com.ctb.prism.core.constant;
  */
 public interface IDomObject {
 	
-	public static final String SELECT_SINGLE = "<select style='width:150px' name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact' onChange='getCascading($(this))'>";
-	public static final String SELECT_SINGLE_EXPANDABLE = "<select style='width:150px' name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list' onChange='getCascading($(this))'>";
+	public static final String SELECT_SINGLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact' onChange='getCascading($(this))'>";
+	public static final String SELECT_SINGLE_EXPANDABLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list' onChange='getCascading($(this))'>";
 	public static final String SELECT_OPTION = "<option value='%s' %s>%s</option>";
 	public static final String SELECT_END = "</select>";
-	public static final String SELECT_MULTIPLE = "<select style='width:150px' name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
-	public static final String SELECT_MULTIPLE_EXPANDABLE = "<select style='width:150px' name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
+	public static final String SELECT_MULTIPLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
+	public static final String SELECT_MULTIPLE_EXPANDABLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
 	
 	public static final String IC_TITLE = "<h6 class='margin-bottom-small'>%s</h6>";
 	
