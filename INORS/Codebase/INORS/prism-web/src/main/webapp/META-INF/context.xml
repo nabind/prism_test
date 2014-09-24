@@ -30,7 +30,25 @@
             url="jdbc:oracle:thin:@//oracle-db:1521/ehs2clqa"
             maxActive="10"
             maxIdle="4"/>
-	<Resource name="jdbc/inors"
+    <Resource name="jdbc/inors"
+            auth="Container"
+            type="javax.sql.DataSource"
+            username="ISTEP_POC"
+            password="ISTEP_POC"
+            driverClassName="oracle.jdbc.driver.OracleDriver"
+            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
+            maxActive="10"
+            maxIdle="4"/> 
+    <Resource name="jdbc/tasc"
+            auth="Container"
+            type="javax.sql.DataSource"
+            username="TASC_POC"
+            password="TASC_POC"
+            driverClassName="oracle.jdbc.driver.OracleDriver"
+            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
+            maxActive="10"
+            maxIdle="4"/>         
+	<!-- <Resource name="jdbc/inors"
             auth="Container"
             type="javax.sql.DataSource"
             username="migrations"
@@ -47,5 +65,5 @@
             driverClassName="oracle.jdbc.driver.OracleDriver"
             url="jdbc:oracle:thin:@//oracle-db:1521/ehs2clqa"
             maxActive="10"
-            maxIdle="4"/> 
+            maxIdle="4"/>  -->
 </Context>
