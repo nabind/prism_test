@@ -528,7 +528,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				}
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, "getSystemConfigurationMessage(): " + e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getSystemConfigurationMessage() took time: "+String.valueOf(t2 - t1)+"ms");

@@ -369,9 +369,13 @@ public class LoginController {
 				actionParamMap.put("userId", user.getUserId());
 				actionParamMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
 				
-				//this Map is now need to add in Modelview
-				Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
-				req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
+				try {
+					//this Map is now need to add in Modelview
+					Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
+					req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);					
+				} catch (Exception e) {
+					logger.log(IAppLogger.ERROR, "actionMap : " + e.getMessage());
+				}
 				
 				Map<String,Object> paramMapMessage = new HashMap<String, Object>();
 				paramMapMessage.put("theme", themeResolver.resolveThemeName(req));
@@ -481,7 +485,7 @@ public class LoginController {
 				req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
 			}
 		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage());
+			logger.log(IAppLogger.ERROR, "validateUser(): " + exception.getMessage());
 			return modelAndView.addObject("app_error", exception.getMessage());
 		} finally {
 			logger.log(IAppLogger.INFO, "Exit: validateUser()");
