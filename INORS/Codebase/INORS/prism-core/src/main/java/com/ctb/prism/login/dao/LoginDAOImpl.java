@@ -524,7 +524,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					return systemMessageResult.trim();
+					return systemMessageResult == null ? "" : systemMessageResult.trim();
 				}
 			});
 		} catch (Exception e) {
