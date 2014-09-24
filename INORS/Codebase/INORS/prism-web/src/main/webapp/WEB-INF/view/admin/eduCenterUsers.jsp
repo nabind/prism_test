@@ -169,7 +169,7 @@
 									</p>
 									<p class="button-height inline-label">
 										<label class="label" for="input-3"><spring:message code="table.label.roles" /></label> <select
-											id="userRole" name="userRole" style="width: 180px"
+											id="userRole" name="userRole" style="width: 225px"
 											class="select multiple-as-single easy-multiple-selection check-list "
 											multiple>
 										</select>
@@ -235,7 +235,7 @@
 									</p>
 									<p class="button-height inline-label">
 										<label class="label" for="input-3"><spring:message code="table.label.roles" /></label> <select
-											id="addUserRole" name="userRole" style="width: 180px"
+											id="addUserRole" name="userRole" style="width: 225px"
 											class="select multiple-as-single easy-multiple-selection check-list "
 											multiple>
 										</select>
