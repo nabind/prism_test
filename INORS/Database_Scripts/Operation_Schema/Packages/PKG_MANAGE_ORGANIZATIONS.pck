@@ -55,7 +55,18 @@ create or replace package PKG_MANAGE_ORGANIZATIONS is
                                          P_IN_USERID            IN USERS.USERID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
-                                                                                                                                                                                               
+   
+   PROCEDURE SP_GET_ORGANIZATION_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                       P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);      
+
+   PROCEDURE SP_GET_ORG_CHILDREN_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                       P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);                                                                                                                                                                                                                             
 
 end PKG_MANAGE_ORGANIZATIONS;
 /
@@ -283,7 +294,78 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
    EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-   END SP_GET_ORG_HIER_ON_REDIRECT;                                           
+   END SP_GET_ORG_HIER_ON_REDIRECT;
    
+   
+   PROCEDURE SP_GET_ORGANIZATION_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                       P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is
+                                      
+   BEGIN
+    OPEN P_OUT_REF_CURSOR For
+       SELECT ORG_NODEID,
+              ORG_NODE_NAME,
+              PARENT_ORG_NODEID,
+              TO_CHAR(P_IN_ORG_NODEID) AS SELECTED_ORG_ID,
+              ORG_NODE_LEVEL,
+              (SELECT NVL(COUNT(1), 0)
+                 FROM ORG_NODE_DIM
+                WHERE PARENT_ORG_NODEID = P_IN_ORG_NODEID
+                  AND CUSTOMERID = P_IN_CUSTOMERID
+                  AND ORG_MODE = P_IN_ORG_MODE) CHILD_ORG_NO,
+              (SELECT NVL(SUM(COUNT(1)), 0)
+                 FROM USERS U, ORG_USERS O
+                WHERE U.USERID = O.USERID
+                  AND U.ACTIVATION_STATUS IN ('AC', 'SS')
+                  AND O.ORG_NODEID = D.ORG_NODEID
+                GROUP BY O.ORG_NODEID) USER_NO
+         FROM ORG_NODE_DIM D
+        WHERE D.ORG_NODEID = P_IN_ORG_NODEID
+          AND CUSTOMERID = P_IN_CUSTOMERID
+        ORDER BY ORG_NODE_NAME;
+   
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+   END SP_GET_ORGANIZATION_LIST;    
+   
+   
+  PROCEDURE SP_GET_ORG_CHILDREN_LIST ( P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
+                                       P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is 
+   
+   BEGIN
+    OPEN P_OUT_REF_CURSOR For
+   
+    SELECT ORG_NODEID,
+           ORG_NODE_NAME,
+           PARENT_ORG_NODEID,
+           TO_CHAR(P_IN_ORG_NODEID) AS SELECTED_ORG_ID,
+           ORG_NODE_LEVEL,
+           (SELECT NVL(COUNT(1), 0)
+              FROM ORG_NODE_DIM
+             WHERE PARENT_ORG_NODEID = ORG_NODEID
+               AND CUSTOMERID = P_IN_CUSTOMERID
+               AND ORG_MODE = P_IN_ORG_MODE) CHILD_ORG_NO,
+           (SELECT NVL(SUM(COUNT(1)), 0)
+              FROM USERS U, ORG_USERS O
+             WHERE U.USERID = O.USERID
+               AND U.ACTIVATION_STATUS IN ('AC', 'SS')
+               AND O.ORG_NODEID = D.ORG_NODEID
+             GROUP BY O.ORG_NODEID) USER_NO
+      FROM ORG_NODE_DIM D
+     WHERE D.PARENT_ORG_NODEID = P_IN_ORG_NODEID
+       AND CUSTOMERID = P_IN_CUSTOMERID
+     ORDER BY ORG_NODE_NAME;
+    
+   EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));    
+  END SP_GET_ORG_CHILDREN_LIST;                            
+  
 END PKG_MANAGE_ORGANIZATIONS;
 /
