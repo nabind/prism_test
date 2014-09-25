@@ -192,9 +192,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
 	
-		ArrayList<OrgTreeTO> lstData = new ArrayList<OrgTreeTO>();
+	//	ArrayList<OrgTreeTO> lstData = new ArrayList<OrgTreeTO>();
 			
-		return	lstData = (ArrayList<OrgTreeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		return (ArrayList<OrgTreeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					if (isFirstLoad) {
 						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_CURR_TENANT_DETAILS);
@@ -399,44 +399,70 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrgTree()");
-		ArrayList<OrgTreeTO> OrgTreeTOs = new ArrayList<OrgTreeTO>();
+		
+		final long nodeId = Long.valueOf(paramMap.get("nodeid").toString());
+		final boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
+		final long custProdId =  Long.valueOf(paramMap.get("adminYear").toString());
+		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
+		final String orgMode = (String) paramMap.get("orgMode");
 
-		String nodeId = (String) paramMap.get("nodeid");
-		// String currOrg = (String) paramMap.get("currOrg");
-		boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
-		String adminYear = (String) paramMap.get("adminYear");
-		long customerId = Long.valueOf(paramMap.get("customerId").toString());
-		String orgMode = (String) paramMap.get("orgMode");
-
-		List<Map<String, Object>> lstData;
-		if (isFirstLoad) {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_LIST, nodeId, nodeId, customerId, orgMode, nodeId, customerId);
-		} else {
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORG_CHILDREN_LIST, nodeId, adminYear, orgMode, customerId, nodeId, adminYear, customerId);
-		}
-
-		if (lstData.size() > 0) {
-
-			for (Map<String, Object> fieldDetails : lstData) {
-				OrgTO to = new OrgTO();
-				OrgTreeTO treeTo = new OrgTreeTO();
-
-				to.setId(Long.valueOf(fieldDetails.get("SELECTED_ORG_ID").toString()));
-
-				to.setParentTenantId(Long.valueOf(fieldDetails.get("Parent_Org_Nodeid").toString()));
-
-				to.setOrgLevel(Long.valueOf(fieldDetails.get("Org_Node_Level").toString()));
-
-				treeTo.setState("closed");
-				treeTo.setOrgTreeId(Long.valueOf(fieldDetails.get("SELECTED_ORG_ID").toString()));
-				treeTo.setData((fieldDetails.get("Org_Node_Name").toString()));
-				treeTo.setMetadata(to);
-				treeTo.setAttr(to);
-				OrgTreeTOs.add(treeTo);
-			}
-		}
-		logger.log(IAppLogger.INFO, "Exit: getOrgTree()");
-		return OrgTreeTOs;
+		
+			return (ArrayList<OrgTreeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					if (isFirstLoad) {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ORGANIZATION_LIST);
+						cs.setLong(1, nodeId);
+						cs.setLong(2, customerId);
+						cs.setString(3, orgMode);
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					} else {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ORG_CHILDREN_LIST);
+						cs.setLong(1, nodeId);
+						cs.setLong(2, customerId);
+						cs.setString(3, orgMode);
+						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					OrgTO to = new OrgTO();
+					OrgTreeTO treeTo = new OrgTreeTO();
+					List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
+					
+					try {
+						cs.execute();
+						if (isFirstLoad){
+							rs = (ResultSet) cs.getObject(4);
+							Utils.logError(cs.getString(5));
+						} else {
+							rs = (ResultSet) cs.getObject(5);
+							Utils.logError(cs.getString(6));
+						}
+						
+						while(rs.next()){
+							to.setId(rs.getLong("SELECTED_ORG_ID"));
+							to.setParentTenantId(rs.getLong("PARENT_ORG_NODEID"));
+							to.setOrgLevel(rs.getLong("ORG_NODE_LEVEL"));
+							treeTo.setState("closed");
+							treeTo.setOrgTreeId(rs.getLong("SELECTED_ORG_ID"));
+							treeTo.setData(rs.getString("ORG_NODE_NAME"));
+							treeTo.setMetadata(to);
+							treeTo.setAttr(to);
+							orgTreeTOs.add(treeTo);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+	
+					logger.log(IAppLogger.INFO, "Exit: getOrgTree()");
+					return orgTreeTOs;
+				}
+			});
 	}
 
 	/*

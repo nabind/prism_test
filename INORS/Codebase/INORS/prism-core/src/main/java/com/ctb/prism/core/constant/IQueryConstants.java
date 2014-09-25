@@ -103,7 +103,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		       " WHERE O.ORG_ID = ?");*/
 	
 	// retrieves the organization list children for the org tree based on the org parent id
-	public static final String GET_ORG_CHILDREN_LIST = CustomStringUtil.appendString(
+	/*public static final String GET_ORG_CHILDREN_LIST = CustomStringUtil.appendString(
 			" Select Org_Nodeid,",
 			" Org_Node_Name,",
 			" Parent_Org_Nodeid ,",
@@ -115,7 +115,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" From Org_Node_Dim d",
 			" Where d.parent_org_nodeid = ?",
 			" And Customerid = ? ",
-			" Order By Org_Node_Name");
+			" Order By Org_Node_Name");*/
 	/*("SELECT ORG_ID,ORG_NAME,O.ORG_PARENT_ID,O.ORG_LEVEL,",
 		       " (SELECT NVL(COUNT(1),0) FROM ORG_HIERARCHY WHERE ORG_PARENT_ID = O.ORG_ID AND (o.adminid = 0 OR o.adminid = ?) ) CHILD_ORG_NO,",
 		       " (SELECT NVL(SUM(COUNT(1)),0 ) FROM USERS U WHERE ORG_ID IN (SELECT ORG_ID",

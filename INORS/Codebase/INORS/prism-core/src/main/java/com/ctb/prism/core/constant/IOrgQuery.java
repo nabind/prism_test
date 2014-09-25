@@ -44,6 +44,11 @@ public interface IOrgQuery {
 			" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");*/
 	
 	public static final String SP_GET_TENANT_DETAILS = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS(?, ?, ?, ?, ?)}";
+	
+	// get all organization list based on tenantId
+	public static final String SP_GET_ORGANIZATION_LIST = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORGANIZATION_LIST(?, ?, ?, ?, ?)}";
+	// retrieves the organization list children for the org tree based on the org parent id
+	public static final String SP_GET_ORG_CHILDREN_LIST = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_CHILDREN_LIST(?, ?, ?, ?, ?)}";
 		
 	public static final String GET_TENANT_DETAILS_NON_ROOT = CustomStringUtil
 			.appendString("SELECT OND.ORG_NODEID,OND.ORG_NODE_NAME ,OND.PARENT_ORG_NODEID,OND.ORG_NODE_LEVEL, OND.ORG_MODE " +
