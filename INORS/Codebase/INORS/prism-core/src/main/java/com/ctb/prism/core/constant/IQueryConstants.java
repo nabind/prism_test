@@ -229,6 +229,9 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	// START---- Queries related to Role Management
 	public static final String GET_ROLE_DETAILS = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION FROM ROLE ORDER BY ROLE_NAME";
+	
+	public static final String SP_GET_ROLE_DETAILS = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_DETAILS(?, ?)}";
+	
 	public static final String SP_GET_EDU_USER_ROLE = "{CALL PKG_MANAGE_USERS.SP_GET_EDU_USER_ROLE(?, ?, ?)}";
 	
 	public static final String GET_ROLE_DETAILS_BY_ID = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION  FROM ROLE WHERE ROLEID = ?";

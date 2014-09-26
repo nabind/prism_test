@@ -1440,20 +1440,36 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return list of role
 	 */
 	public ArrayList<RoleTO> getRoleDetails() {
-		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_DETAILS);
-		if (lstData.size() > 0) {
-			RoleTOs = new ArrayList<RoleTO>();
-			for (Map<String, Object> fieldDetails : lstData) {
-				RoleTO to = new RoleTO();
-				to.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
-				to.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
-				to.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
-				RoleTOs.add(to);
-			}
-		}
-		return RoleTOs;
+		
+		return (ArrayList<RoleTO>) getJdbcTemplatePrism().execute(
+				new CallableStatementCreator() {
+					public CallableStatement createCallableStatement(Connection con) throws SQLException {
+						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_DETAILS);
+						cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+						return cs;
+					}
+				}, new CallableStatementCallback<Object>() {
+					public Object doInCallableStatement(CallableStatement cs) {
+						ResultSet rs = null;
+						List<RoleTO> roleTOs = new ArrayList<RoleTO>();
+						RoleTO to = new RoleTO();
+						try {
+							cs.execute();
+							rs = (ResultSet) cs.getObject(1);
+							while (rs.next()) {
+								to.setRoleId(rs.getLong("ROLE_ID"));	
+								to.setRoleName(rs.getString("ROLE_NAME"));
+								to.setRoleDescription(rs.getString("DESCRIPTION"));
+								roleTOs.add(to);
+							}
+							Utils.logError(cs.getString(2));
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						return roleTOs;
+					}
+				});
 	}
 
 	/**
@@ -1462,6 +1478,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param role
 	 * @return RoleTO
 	 */
+	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getRoleDetailsById'))")
 	public RoleTO getRoleDetailsById(Map<String,Object> paramMap) {
 		
 		String roleid=(String) paramMap.get("roleId");
