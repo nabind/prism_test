@@ -89,14 +89,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         INTO V_CUST_PRODID
         FROM (SELECT CPL.CUST_PROD_ID DEFAULT_CUST_PROD_ID,
                      DENSE_RANK() OVER(PARTITION BY ORG.USERID ORDER BY P.PRODUCT_SEQ DESC) AS MAX_VAL
-                FROM ORG_USERS         ORG,
-                     ORG_PRODUCT_LINK  OPL,
+                FROM ORG_USERS ORG,
+                     ORG_PRODUCT_LINK OPL,
                      CUST_PRODUCT_LINK CPL,
-                     PRODUCT           P
+                     PRODUCT P,
+                     (SELECT ADMINID, ADMIN_YEAR
+                        FROM ADMIN_DIM
+                       WHERE ADMIN_YEAR <=
+                             (SELECT ADMIN_YEAR
+                                FROM ADMIN_DIM
+                               WHERE IS_CURRENT_ADMIN = 'Y')) ADMIN
                WHERE ORG.USERID = P_IN_USERID
                  AND ORG.ORG_NODEID = OPL.ORG_NODEID
                  AND OPL.CUST_PROD_ID = CPL.CUST_PROD_ID
-                 AND CPL.PRODUCTID = P.PRODUCTID) A
+                 AND CPL.PRODUCTID = P.PRODUCTID
+                 AND ADMIN.ADMINID = CPL.ADMINID) A
        WHERE A.MAX_VAL = 1;
     
       OPEN P_OUT_CUR_MESSAGE FOR
@@ -207,17 +214,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   BEGIN
     IF P_IN_REPORT_ID = '-99' THEN
       OPEN P_OUT_CUR_REPORT FOR
-        SELECT ID,
-               REPORT_DESC,
-               REPORT_TYPE,
-               CUST_PROD_ID,
-               REPORT_NAME,
-               REPORT_FOLDER_URI,
-               PRODUCT_NAME,
-               PRODUCTID,
-               STATUS,
-               ROLES,
-               LISTAGG(ORG_LABEL, ',') WITHIN
+        SELECT DISTINCT ID,
+                        REPORT_DESC,
+                        REPORT_TYPE,
+                        0 AS CUST_PROD_ID,
+                        REPORT_NAME,
+                        REPORT_FOLDER_URI,
+                        0 AS PRODUCT_NAME,
+                        0 AS PRODUCTID,
+                        STATUS,
+                        ROLES,
+                        LISTAGG(ORG_LABEL, ',') WITHIN
          GROUP(
          ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
           FROM (SELECT ID,
@@ -289,17 +296,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                   REPORT_SEQ;
     ELSE
       OPEN P_OUT_CUR_REPORT FOR
-        SELECT ID,
-               REPORT_DESC,
-               REPORT_TYPE,
-               CUST_PROD_ID,
-               REPORT_NAME,
-               REPORT_FOLDER_URI,
-               PRODUCT_NAME,
-               PRODUCTID,
-               STATUS,
-               ROLES,
-               LISTAGG(ORG_LABEL, ',') WITHIN
+        SELECT DISTINCT ID,
+                        REPORT_DESC,
+                        REPORT_TYPE,
+                        0,
+                        0 AS CUST_PROD_ID,
+                        REPORT_NAME,
+                        REPORT_FOLDER_URI,
+                        0 AS PRODUCT_NAME,
+                        0 AS PRODUCTID,
+                        STATUS,
+                        ROLES,
+                        LISTAGG(ORG_LABEL, ',') WITHIN
          GROUP(
          ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
           FROM (SELECT ID,
