@@ -93,7 +93,10 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_USERS IS
                              P_IN_PASSWORD                    IN USERS.PASSWORD%TYPE,
                              P_IN_SALT                        IN USERS.SALT%TYPE,
                              P_IN_IS_FIRSTTIME_LOGIN          IN USERS.IS_FIRSTTIME_LOGIN%TYPE,          
-                             P_OUT_EXCEP_ERR_MSG              OUT VARCHAR2);                             
+                             P_OUT_EXCEP_ERR_MSG              OUT VARCHAR2);     
+  
+   PROCEDURE SP_GET_ROLE_DETAILS(P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
+                                 P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);                                                     
 
 END PKG_MANAGE_USERS;
 /
@@ -702,7 +705,23 @@ PROCEDURE SP_GET_ROLE_USER(  P_IN_ROLE            IN VARCHAR2,
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
    
-   END SP_RESET_PASSWORD;                              
+   END SP_RESET_PASSWORD;  
+   
+  PROCEDURE SP_GET_ROLE_DETAILS(P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
+                                 P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  
+  BEGIN
+  
+    OPEN P_OUT_REF_CURSOR FOR
+      SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION
+        FROM ROLE
+       ORDER BY ROLE_NAME;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+    
+  END SP_GET_ROLE_DETAILS;                            
 
 END PKG_MANAGE_USERS;
 /
