@@ -396,22 +396,28 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                      USERS.CUSTOMERID CUSTID,
                      USERS.EMAIL_ADDRESS EMAIL,
                      OND.ORG_MODE,
-                     -- P.PRODUCT_SEQ,
                      CPL.CUST_PROD_ID DEFAULT_CUST_PROD_ID,
                      DENSE_RANK() OVER(PARTITION BY USERS.USERID ORDER BY P.PRODUCT_SEQ DESC) AS MAX_VAL
-                FROM USERS             USERS,
-                     ORG_USERS         ORG,
-                     ORG_NODE_DIM      OND,
-                     ORG_PRODUCT_LINK  OPL,
+                FROM USERS USERS,
+                     ORG_USERS ORG,
+                     ORG_NODE_DIM OND,
+                     ORG_PRODUCT_LINK OPL,
                      CUST_PRODUCT_LINK CPL,
-                     PRODUCT           P
+                     PRODUCT P,
+                     (SELECT ADMINID, ADMIN_YEAR
+                        FROM ADMIN_DIM
+                       WHERE ADMIN_YEAR <=
+                             (SELECT ADMIN_YEAR
+                                FROM ADMIN_DIM
+                               WHERE IS_CURRENT_ADMIN = 'Y')) ADMIN
                WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
                  AND USERS.USERID = ORG.USERID
                  AND ORG.ORG_NODEID = OND.ORG_NODEID
                  AND OND.ORG_NODEID = OPL.ORG_NODEID
                  AND OPL.CUST_PROD_ID = CPL.CUST_PROD_ID
                  AND CPL.CUSTOMERID = USERS.CUSTOMERID
-                 AND CPL.PRODUCTID = P.PRODUCTID) A
+                 AND CPL.PRODUCTID = P.PRODUCTID
+                 AND ADMIN.ADMINID = CPL.ADMINID) A 
        WHERE A.MAX_VAL = 1;
     /*SELECT USERS.IS_FIRSTTIME_LOGIN,
           USERS.USERID,
