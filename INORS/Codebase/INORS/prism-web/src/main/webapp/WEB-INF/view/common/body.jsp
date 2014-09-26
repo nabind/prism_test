@@ -1,3 +1,4 @@
+	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 	<!-- Main content -->
 	<section role="main" id="main" style="margin-top:69px" >
 		<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>

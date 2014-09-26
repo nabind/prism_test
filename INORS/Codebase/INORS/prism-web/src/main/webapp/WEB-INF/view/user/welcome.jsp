@@ -1,3 +1,4 @@
+		<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 		<noscript class="message black-gradient simpler"><spring:message code="error.noscript" /></noscript>
 		<div class="right-column">
 				<div class="standard-tabs margin-bottom reportTabContainer" id="add-tabs">
