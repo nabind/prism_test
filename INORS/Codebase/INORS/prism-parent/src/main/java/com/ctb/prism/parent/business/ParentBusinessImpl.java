@@ -231,11 +231,8 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
-	public boolean addInvitationToAccount(String userName, String invitationCode) {
-		if (!parentDAO.checkInvitationCodeClaim(userName, invitationCode)) {
-			return parentDAO.addInvitationToAccount(userName, invitationCode);
-		}
-		return Boolean.FALSE;
+	public boolean addInvitationToAccount(Map<String,Object> paramMap) {
+		return parentDAO.addInvitationToAccount(paramMap);
 	}
 
 	/*

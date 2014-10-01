@@ -162,7 +162,7 @@ public interface IParentBusiness {
 	 * @param invitationCode
 	 * @return
 	 */
-	public boolean addInvitationToAccount(String userName, String invitationCode);
+	public boolean addInvitationToAccount(Map<String,Object> paramMap);
 
 	/**
 	 * @param studentBioId

@@ -206,22 +206,13 @@ public interface IParentDAO {
 	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException;
 
 	/**
-	 * Check invitation code claim to existing parent account.
-	 * 
-	 * @param userName
-	 * @param invitationCode
-	 * @return
-	 */
-	public boolean checkInvitationCodeClaim(String userName, String invitationCode);
-
-	/**
 	 * Add invitation code to existing parent account Need to store org_user_id instead of userid Modified By Joy.
 	 * 
 	 * @param userName
 	 * @param invitationCode
 	 * @return
 	 */
-	public boolean addInvitationToAccount(String userName, String invitationCode);
+	public boolean addInvitationToAccount(Map<String,Object> paramMap);
 
 	/**
 	 * Retrieves and returns school id (leve3_jasper_orgid) for given student bio id.

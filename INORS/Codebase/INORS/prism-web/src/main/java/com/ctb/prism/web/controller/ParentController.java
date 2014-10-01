@@ -100,10 +100,13 @@ public class ParentController {
 			HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: Add new invitation code with existing parent account");
 		String status = "Fail";
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		String curruser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		paramMap.put("curruser",curruser);
 		if(IApplicationConstants.PARENT_LOGIN.equals(req.getSession().getAttribute("PARENT_LOGIN"))) {
 			String invitationCode = (String)req.getParameter("invitationCode");
-			boolean success= parentService.addInvitationToAccount(curruser,invitationCode);
+			paramMap.put("invitationCode",invitationCode);
+			boolean success= parentService.addInvitationToAccount(paramMap);
 			res.setContentType("text/plain");
 			if(success) {
 				status = "Success";

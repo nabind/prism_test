@@ -400,44 +400,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	}
 
 	/**
-	 * Save Invitation code claim.
-	 * 
-	 * @param orgUserSeqId
-	 * @param parentTO
-	 * @return
-	 */
-	public boolean saveInvitationCodeClaim(long orgUserSeqId, ParentTO parentTO) {
-		// TODO : Code Review : Not an Interface method but has public method access
-		int count = getJdbcTemplatePrism().update(IQueryConstants.INSERT_INVITATION_CODE_CLAIM_DATA, parentTO.getInvitationCode(), orgUserSeqId);
-		logger.log(IAppLogger.DEBUG, "INSERT_INVITATION_CODE_CLAIM_DATA Done");
-		if (count > 0) {
-			return Boolean.TRUE;
-		}
-		return Boolean.FALSE;
-	}
-
-	/**
-	 * Update Invitation code claim count.
-	 * 
-	 * @param invitationCode
-	 * @return
-	 */
-	public boolean updateInvitationCodeClaimCount(String invitationCode) {
-		// TODO : Code Review : Not an Interface method but has public method access
-		int availableCliamCount = getJdbcTemplatePrism().queryForInt(IQueryConstants.CHECK_AVAILABLE_INVITATION_CODE_CLAIM_COUNT, invitationCode);
-		if (availableCliamCount > 0) {
-			int count1 = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_INVITATION_CODE_CLAIM_COUNT, invitationCode, invitationCode);
-			int count2 = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_AVAILABLE_INVITATION_CODE_CLAIM_COUNT, invitationCode, invitationCode);
-			logger.log(IAppLogger.DEBUG, "UPDATE_INVITATION_CODE_CLAIM_COUNT Done");
-			if ((count1 > 0) && (count2 > 0)) {
-				return Boolean.TRUE;
-			}
-		}
-
-		return Boolean.FALSE;
-	}
-
-	/**
 	 * @deprecated - By Joy
 	 * Don't use this method to save Password Hint Answer use PKG_ADMIN_MODULE.SP_SAVE_PH_ANSWER() from create/edit proc or call separately.
 	 * Need to remove this method after removing all the dependencies.
@@ -1619,101 +1581,61 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return Boolean.TRUE;
 	}
 
-	/**
-	 * Delete Password hint answers for a userid.
-	 * 
-	 * @param userid
-	 * @return
-	 */
-	public boolean deletePasswordHistAnswer(long userid) {
-		// TODO : Code Review : Not an Interface method but has public method access
-		getJdbcTemplatePrism().update(IQueryConstants.DELETE_ANSWER_DATA, userid);
-		return Boolean.TRUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.parent.dao.IParentDAO#checkInvitationCodeClaim(java.lang.String, java.lang.String)
-	 */
-	public boolean checkInvitationCodeClaim(String userName, String invitationCode) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_INVITATION_CODE_CLAIM, userName, invitationCode);
-		if (lstData == null || lstData.isEmpty()) {
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-	}
-
-	/*
+	
+	/** @author Joy
+	 * Modified the method to reduce multiple query hit from DAO, implement store proc
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean addInvitationToAccount(String userName, String invitationCode) {
+	public boolean addInvitationToAccount(final Map<String,Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
 		long t1 = System.currentTimeMillis();
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userName", userName);
-		paramMap.put("invitationCode", invitationCode);
-
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		boolean returnFlag = Boolean.FALSE;
+		
 		try {
-			long orgUserid = getOrgUserId(paramMap);
-			int count = getJdbcTemplatePrism().update(IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT, orgUserid, invitationCode);
-			if (count > 0) {
-				boolean isUpdatedInvitationCodeClaimCount = updateInvitationCodeClaimCount(invitationCode);
-				return isUpdatedInvitationCodeClaimCount;
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT + "}");
+					cs.setString(1, (String)paramMap.get("curruser"));
+					cs.setString(2, (String)paramMap.get("invitationCode"));
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(3);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setErrorMsg(cs.getString(4));
+						Utils.logError(cs.getString(4));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+			
+			if(Long.parseLong(objectValueTO.getValue()) > 0){
+				returnFlag = Boolean.TRUE;
 			}
 		} catch (Exception e) {
-			return Boolean.FALSE;
+			e.printStackTrace();
+			returnFlag = Boolean.FALSE;
 		} finally {
 			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.ERROR, "ParentDAOImpl - addInvitationToAccount() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addInvitationToAccount() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return Boolean.FALSE;
+		return returnFlag;
 	}
 
-	/**
-	 * TODO
-	 * Get OrgUserId depending upon student's school and parent userid. Add a record if the data does not exists.
-	 * Fix for TD 78161
-	 * @author Joy
-	 * @param paramMap
-	 * @return
-	 */
-	private long getOrgUserId(final Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getOrgUserId()");
-		long t1 = System.currentTimeMillis();
-		
-		String userName = (String) paramMap.get("userName");
-		String invitationCode = (String) paramMap.get("invitationCode");
-		long orgUserid = 0;
-		
-		try{
-			//long userid = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USERID_PARENT, userName);
-			long userid = 0;
-			//List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.CHECK_ORG_USER_PARENT, userid, invitationCode);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.ADMIN_YEAR_LIST, userid, invitationCode);
-			if (lstData.size() > 0) {
-				for (Map<String, Object> fieldDetails : lstData) {
-					orgUserid = ((BigDecimal) fieldDetails.get("ORG_USER_ID")).longValue();
-				}
-			} else {
-				orgUserid = getJdbcTemplatePrism().queryForLong(IQueryConstants.ORGUSER_SEQ_ID);
-				// Insert data in ORG_USERS
-				getJdbcTemplatePrism().update(IQueryConstants.INSERT_ORG_USER_PARENT, orgUserid, userid, invitationCode, invitationCode, IApplicationConstants.ACTIVE_FLAG);
-			}
-		}catch(Exception e){
-			logger.log(IAppLogger.INFO, "Exception: userName is blank "+e.getMessage());
-		}finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getOrgUserId() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return orgUserid;
-	}
-	
-	
 	/*
 	 * (non-Javadoc)
 	 * 

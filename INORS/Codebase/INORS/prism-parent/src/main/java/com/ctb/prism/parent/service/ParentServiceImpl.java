@@ -199,8 +199,8 @@ public class ParentServiceImpl implements IParentService {
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
-	public boolean addInvitationToAccount(String userName, String invitationCode) {
-		return parentBusiness.addInvitationToAccount(userName, invitationCode);
+	public boolean addInvitationToAccount(Map<String,Object> paramMap) {
+		return parentBusiness.addInvitationToAccount(paramMap);
 	}
 
 	/*
