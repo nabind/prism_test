@@ -82,7 +82,7 @@
 		</dependency>
   </dependencies>
   <build>
-		<finalName>onlineresults</finalName>
+		<finalName>prism</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -91,7 +91,7 @@
 				<configuration>
 					<url>http://localhost:8080/manager/html</url>
 					<server>TomcatServer</server>
-					<path>/onlineresults</path>
+					<path>/prism</path>
 				</configuration>
 			</plugin>
 			
@@ -250,7 +250,7 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${basedir}/target/onlineresults</outputDirectory>
+							<outputDirectory>${basedir}/target/prism</outputDirectory>
 							<excludes>
 					            <exclude>**/*.js</exclude>
 					           	<exclude>**/*.css</exclude>
@@ -282,7 +282,7 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${basedir}/target/onlineresults/WEB-INF/classes</outputDirectory>
+							<outputDirectory>${basedir}/target/prism/WEB-INF/classes</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${asset}/properties</directory>
