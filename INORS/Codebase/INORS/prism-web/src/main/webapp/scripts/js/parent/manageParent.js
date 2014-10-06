@@ -715,7 +715,7 @@
 						+'<strong>'+strings['msg.userName']+'</strong>&nbsp;&nbsp;&nbsp;'
 						+parentName
 						+'<br/>'
-						+'<strong>'+string['msg.fullName']+'</strong>&nbsp;&nbsp;&nbsp;'
+						+'<strong>'+strings['msg.fullName']+'</strong>&nbsp;&nbsp;&nbsp;'
 						+ parentDisplayName
 						+'</div>'
 		$("#"+modalId+ " > "+"#"+modalContainerDivId ).append(content);					
