@@ -135,8 +135,7 @@
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-ladybug"></span>
 				<strong>
-					<c:if test="${contractName == 'inors'}"><spring:message code="title.tab.application.inors" /></c:if>
-  					<c:if test="${contractName == 'tasc'}"><spring:message code="title.tab.application.tasc" /></c:if>
+					${contractTitle}
 				</strong><br>
 				<spring:message code="label.teachersClickHere" />
 			</p>
