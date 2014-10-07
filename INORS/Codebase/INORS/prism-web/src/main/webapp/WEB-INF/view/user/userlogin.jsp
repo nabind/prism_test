@@ -10,10 +10,7 @@
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta charset="utf-8">
-  <title>
-  <c:if test="${contractName == 'inors'}"><spring:message code="title.tab.application.inors" /></c:if>
-  <c:if test="${contractName == 'tasc'}"><spring:message code="title.tab.application.tasc" /></c:if>
-  </title>
+  <title>${contractTitle}</title>
   <link rel="shortcut icon" href="themes/acsi/img/favicons/favicon.ico">
   <%@ include file="../common/commonStyle.jsp"%>
   <spring:theme code="theme.name" var="themeName"/>

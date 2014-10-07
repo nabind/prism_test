@@ -124,9 +124,13 @@ public class LoginController {
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
 		paramMap.put("contractName", contractName);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
+		
+		Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+		String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
+		
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
-		modelAndView.addObject("contractName", contractName);
+		modelAndView.addObject("contractTitle", contractTitle);
 		logger.log(IAppLogger.INFO, "Exit: loadLandingPage()");
 		return modelAndView;
 	}
@@ -193,10 +197,16 @@ public class LoginController {
 		String mess_login_error = (String) request.getParameter("login_error");
 		String message = null;
 		Map<String, Object> messageMap = new HashMap<String, Object>();
+		
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
+		Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+		String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
+
 		if ("1".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Invalid Login");
 			message = "error.login.invalidlogin";
-			Map<String,Object> paramMap = new HashMap<String, Object>();
+			
 			paramMap.put("theme", themeResolver.resolveThemeName(request));
 			paramMap.put("action","login");
 			messageMap = getMessageMap(paramMap);
@@ -205,16 +215,15 @@ public class LoginController {
 			message = "error.login.sessionexpired";
 		} else {
 			// this is proper login
-			Map<String,Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("theme", themeResolver.resolveThemeName(request));
 			paramMap.put("action","login");
 			messageMap = getMessageMap(paramMap);
 		}
+				
 		ModelAndView modelAndView = new ModelAndView("user/userlogin");
+		modelAndView.addObject("contractTitle", contractTitle);
 		modelAndView.addObject("message", message);
 		modelAndView.addObject("messageMap", messageMap);
-		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
-		modelAndView.addObject("contractName", contractName);
 		logger.log(IAppLogger.INFO, "Exit: userlogin()");
 		return modelAndView;
 	}
@@ -282,7 +291,7 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "Enter: validateUser()");
 		ModelAndView modelAndView = null;
 		String orgLvl = null;
-		Map<String,Object> paramMap = new HashMap<String, Object>();; 
+		Map<String,Object> paramMap = new HashMap<String, Object>();
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -486,7 +495,14 @@ public class LoginController {
 					modelAndView.addObject("homeReport", homeReport);
 				}
 				req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
-				req.getSession().setAttribute(IApplicationConstants.CONTRACT_NAME, user.getContractName());
+				
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", user.getContractName());
+				Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+				
+				String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
+				req.getSession().setAttribute("contractTitle", contractTitle);
+			
 			}
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, "validateUser(): " + exception.getMessage());

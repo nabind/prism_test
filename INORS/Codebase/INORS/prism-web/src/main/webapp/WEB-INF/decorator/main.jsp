@@ -6,13 +6,9 @@
 <!DOCTYPE html>
 
 	<html lang="en">
-	<c:set var='contractName' value='<%=session.getAttribute("CONTRACT_NAME") %>' />
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title> 
-			<c:if test="${contractName == 'inors'}"><spring:message code="title.tab.application.inors" /></c:if>
-			<c:if test="${contractName == 'tasc'}"><spring:message code="title.tab.application.tasc" /></c:if>
-		</title>
+		<title>${contractTitle}</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 	
