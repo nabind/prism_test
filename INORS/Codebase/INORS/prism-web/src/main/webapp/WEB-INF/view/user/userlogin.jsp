@@ -204,7 +204,7 @@
 								<a class="white" href="registration.do"> <spring:message code="msg.clickHereNewInvitationCode" /> </a>
 							</p>
 							<br> <a class="" href="#nogo"
-								onclick="javascript:window.open('/onlineresults/scripts/Quick_Start_Guide_For_Parents.pdf?theme=parent&amp;parent=true#nogo',800,600)">
+								onclick="javascript:window.open('/prism/scripts/Quick_Start_Guide_For_Parents.pdf?theme=parent&amp;parent=true#nogo',800,600)">
 								For information about the Indiana Parent Network, access the <small class="tag blue-bg">QUICK START GUIDE FOR PARENTS</small> here.
 							</a> <span class="ribbon "><span
 								class="ribbon-inner green-gradient">New User</span>

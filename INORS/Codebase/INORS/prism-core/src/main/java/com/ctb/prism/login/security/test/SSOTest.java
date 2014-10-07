@@ -21,11 +21,11 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class SSOTest {
 	
-	//private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults";
+	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism";
 	//private static String REQUEST_PATH = "/reports.do?";  
 	
-	//private static String REQUEST_URL = "http://10.160.23.51:8080/onlineresults/userlogin.do?theme=inors";
-	private static String REQUEST_URL = "http://localhost:8080/onlineresults/reports.do";
+	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism/userlogin.do?theme=inors";
+	private static String REQUEST_URL = "http://localhost:8080/prism/reports.do";
 	
 	private static String IP = "127.0.0.1";
 	private static String SECRET_KEY =  "BTCguSF49hYaPmAfe9Q29LtsQ2X";

@@ -33,7 +33,7 @@
     <p><spring:message code="p.accessDenied.1" /></p>
     <p><spring:message code="p.accessDenied.2" /></p>
     <br>
-    <p>Click <a href="/onlineresults/landing.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
+    <p>Click <a href="/prism/landing.do">here</a> to go to login page OR <a href="#" onClick="javascript:history.back();">back</a> to previous screen.</p>
     
   </div>
 
