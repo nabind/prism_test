@@ -465,14 +465,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return userTO;
 	}
 	
-
-	/**
+   /**
 	 * Convert to stored procedure and implement all static message as configurable - By Joy
 	 * Retrieves and returns message corresponding configured in database
 	 * @param reportName, messageType, messageName, contractName
 	 * @return message
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
+	//TODO - Need to cache
+	//@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
 	public String getSystemConfigurationMessage(final Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
