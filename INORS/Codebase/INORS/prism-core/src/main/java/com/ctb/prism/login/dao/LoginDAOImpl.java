@@ -974,7 +974,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 //	@Cacheable(value = "adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramUserMap)).concat('getUserEmail'))")
 	public UserTO getUserEmail(Map<String,Object> paramUserMap) {
-		final String userName = (String)paramUserMap.get("userName"); 
+		final String userName = (String)paramUserMap.get("username"); 
 		String contractName  = (String)paramUserMap.get("contractName"); 
 		return (UserTO) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
