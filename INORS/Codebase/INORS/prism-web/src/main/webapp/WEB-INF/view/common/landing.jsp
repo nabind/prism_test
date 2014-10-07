@@ -2,13 +2,18 @@
 <%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
 
 <!doctype html>
 <html lang="en">
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta charset="utf-8">
-  <title><spring:message code="title.tab.application" /></title>
+  <c:set var="contractName" value="${contractName}" />
+  <title>
+    <c:if test="${contractName == 'inors'}"><spring:message code="title.tab.application.inors" /></c:if>
+    <c:if test="${contractName == 'tasc'}"><spring:message code="title.tab.application.tasc" /></c:if>
+  </title>
   <link rel="shortcut icon" href="themes/acsi/img/favicons/favicon.ico">
   <%@ include file="../common/commonStyle.jsp"%>
   <spring:theme code="theme.name" var="themeName" />
@@ -133,7 +138,10 @@
 			<p class="big-message white-gradient" style="height:50px">
 				<span class="block-arrow"><span></span></span>
 				<span class="big-message-icon icon-ladybug"></span>
-				<strong><spring:message code="title.tab.application" /></strong><br>
+				<strong>
+					<c:if test="${contractName == 'inors'}"><spring:message code="title.tab.application.inors" /></c:if>
+  					<c:if test="${contractName == 'tasc'}"><spring:message code="title.tab.application.tasc" /></c:if>
+				</strong><br>
 				<spring:message code="label.teachersClickHere" />
 			</p>
 			<a href="userlogin.do?theme=inors&parent=false" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>

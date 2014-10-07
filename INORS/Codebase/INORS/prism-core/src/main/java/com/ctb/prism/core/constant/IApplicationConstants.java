@@ -258,6 +258,7 @@ public interface IApplicationConstants {
 	
 	public static final String CACHE_KEY_FILE ="cacheKey.txt";
 	
+	public static final String CONTRACT_NAME = "CONTRACT_NAME";
 	public static final String CONTRACT_NAME_TASC = "tasc";
 	public static final String CONTRACT_NAME_INORS = "inors";
 	

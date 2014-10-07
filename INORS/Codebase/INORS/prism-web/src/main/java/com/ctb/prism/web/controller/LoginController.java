@@ -121,11 +121,12 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
-		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
-		
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		paramMap.put("contractName", contractName);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
+		modelAndView.addObject("contractName", contractName);
 		logger.log(IAppLogger.INFO, "Exit: loadLandingPage()");
 		return modelAndView;
 	}
@@ -212,6 +213,8 @@ public class LoginController {
 		ModelAndView modelAndView = new ModelAndView("user/userlogin");
 		modelAndView.addObject("message", message);
 		modelAndView.addObject("messageMap", messageMap);
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		modelAndView.addObject("contractName", contractName);
 		logger.log(IAppLogger.INFO, "Exit: userlogin()");
 		return modelAndView;
 	}
@@ -483,6 +486,7 @@ public class LoginController {
 					modelAndView.addObject("homeReport", homeReport);
 				}
 				req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
+				req.getSession().setAttribute(IApplicationConstants.CONTRACT_NAME, user.getContractName());
 			}
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, "validateUser(): " + exception.getMessage());
