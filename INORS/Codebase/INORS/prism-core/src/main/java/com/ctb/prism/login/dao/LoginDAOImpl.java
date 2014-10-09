@@ -471,8 +471,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param reportName, messageType, messageName, contractName
 	 * @return message
 	 */
-	//TODO - Need to cache
-	//@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
 	public String getSystemConfigurationMessage(final Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();

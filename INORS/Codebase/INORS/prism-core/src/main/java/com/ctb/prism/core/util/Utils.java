@@ -50,9 +50,15 @@ public final class Utils {
 	public static String getContractName() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 		if (currentAuth != null) {
-			AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
-			if (authenticatedUser.getContractName() != null) {
-				return authenticatedUser.getContractName();
+			try{
+				AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
+				if (authenticatedUser.getContractName() != null) {
+					return authenticatedUser.getContractName();
+				}
+			}catch(Exception e){
+				if("anonymousUser".equals((String)currentAuth.getPrincipal())){
+					return "";
+				}
 			}
 		}
 		return "";

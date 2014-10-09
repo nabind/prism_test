@@ -76,7 +76,6 @@ public class ParentController {
 		
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
 		Map<String,Object> paramMap = new HashMap<String, Object>();
-		
 		//Using two extra parameters(action,theme) to access data from cache.
 		paramMap.put("action", "login");
 		paramMap.put("theme", themeResolver.resolveThemeName(req));
@@ -209,7 +208,18 @@ public class ParentController {
 			res.getWriter().write("{\"status\":\"LDAP_ERROR\", \"message\":\""+e.getCustomExceptionMessage()+"\"}");
 		}
 		if(success) {
+			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+			Map<String,Object> paramMap = new HashMap<String, Object>();
+			//Using two extra parameters(action,theme) to access data from cache.
+			paramMap.put("action", "login");
+			paramMap.put("theme", themeResolver.resolveThemeName(req));
+			paramMap.put("contractName", contractName);
+			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
+			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
+			paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
+			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 			mv = new ModelAndView("parent/regSuccess");
+			mv.addObject(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
 		} else {
 			mv = new ModelAndView("parent/reqError");
 			mv.addObject("errorMesage", "message");

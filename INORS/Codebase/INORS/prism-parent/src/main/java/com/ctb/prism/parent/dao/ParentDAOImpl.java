@@ -57,7 +57,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions(Map<String,Object> paramMap)
 	 */
 	//TODO - Need to cache
-	//@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
 	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap) {
 		
 		String contractName = (String) paramMap.get("contractName"); 
