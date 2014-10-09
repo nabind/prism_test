@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.OrgTreeTO;
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.exception.SystemException;
@@ -81,6 +82,8 @@ public class InorsController {
 	@Autowired	private JmsMessageProducer messageProducer;
 	
 	@Autowired	private ILoginService loginService;
+	
+	@Autowired private IRepositoryService repositoryService;
 
 	/**
 	 * For Group Download Listing.
@@ -916,8 +919,8 @@ public class InorsController {
 				logger.log(IAppLogger.INFO, "Can Read File");
 			}
 			// Now read the pdf file from disk
-			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
-
+			//byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
+			byte[] data =repositoryService.getAssetBytes(fileName);
 			// Zip the pdf file
 			byte[] zipData = FileUtil.zipBytes(fileName, data);
 
@@ -954,8 +957,8 @@ public class InorsController {
 				logger.log(IAppLogger.INFO, "Can Read File");
 			}
 			// Now read the pdf file from disk
-			byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
-
+		//	byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
+			byte[] data =repositoryService.getAssetBytes(fileName);	
 			// Download the file
 			FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(fileName));
 		} catch (Exception e) {
