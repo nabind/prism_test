@@ -22,7 +22,10 @@ $(document).ready(function() {
 	if ($(".children-list").size()>0){
 		refreshChildrenList();
 		$("ul#shortcuts li").removeClass("current");
-		$(".shortcut-dashboard").parent().addClass("current");
+		
+		//Fix for PRISM-78 - By Joy
+		//$(".shortcut-dashboard").parent().addClass("current");
+		$(".shortcut-messages").parent().addClass("current");
 	}
 	
 	$("#myaccount").live("click", function() {
