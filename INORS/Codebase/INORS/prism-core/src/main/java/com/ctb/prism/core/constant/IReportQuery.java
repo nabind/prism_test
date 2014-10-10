@@ -44,13 +44,13 @@ public interface IReportQuery {
 	 * It returns all report details for manage reports screen and
 	 * retrieve a report based on the report id
 	 * */ 
-	public static final String GET_DASHBOARD_DETAILS = "PKG_MANAGE_REPORT.SP_GET_REPORT_LIST(?,?,?)";
+	public static final String GET_DASHBOARD_DETAILS = "PKG_MANAGE_REPORT.SP_GET_REPORT_LIST(?,?,?,?)";
 	
 	/**
 	 * @author Joy
 	 * Add a new report
 	 * */
-	public static final String ADD_REPORT = "PKG_MANAGE_REPORT.SP_ADD_REPORT(?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String ADD_REPORT = "PKG_MANAGE_REPORT.SP_ADD_REPORT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	/**
 	 * @author Joy

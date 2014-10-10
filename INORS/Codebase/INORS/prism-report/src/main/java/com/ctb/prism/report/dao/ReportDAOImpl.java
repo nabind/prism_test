@@ -430,19 +430,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList()");
 		long t1 = System.currentTimeMillis();
 		
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<ReportTO> reports = null;
 		try {
 			reports = (List<ReportTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = null;
 						cs = con.prepareCall("{call " + IQueryConstants.GET_DASHBOARD_DETAILS + "}");
+						cs.setLong(1, Long.parseLong(loggedinUserTO.getCustomerId()));
 						if (IApplicationConstants.PURPOSE_EDIT_REPORT.equals((String)paramMap.get("editReport"))) {
-							cs.setLong(1, Long.parseLong((String)paramMap.get("reportId")));
+							cs.setLong(2, Long.parseLong((String)paramMap.get("reportId")));
 						}else{
-							cs.setLong(1, IApplicationConstants.DEFAULT_PRISM_VALUE);
+							cs.setLong(2, IApplicationConstants.DEFAULT_PRISM_VALUE);
 						}
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -452,7 +454,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	        							= new ArrayList<ReportTO>();
 	        			try {
 							cs.execute();
-							rsReport = (ResultSet) cs.getObject(2);
+							rsReport = (ResultSet) cs.getObject(3);
 	
 							ReportTO to = null;
 							while(rsReport.next()){
@@ -699,16 +701,54 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return objectValueTOList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgNodeLevel') )")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String, Object> paramMap) throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getOrgNodeLevel()");
+
+		logger.log(IAppLogger.INFO, "Enter: getOrgNodeLevel()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		try {
-			objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.ALL_ORG_NODE_LEVEL, new ObjectValueTOMapper());
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred in getOrgNodeLevel():", e);
-			throw new SystemException(e);
+		long t1 = System.currentTimeMillis();
+		
+		try{
+			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ORG_NODE_LEVEL + "}");
+				            cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsOrgNodeLevel = null;
+			        			List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOResult 
+			        							= new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			        			try {
+									cs.execute();
+									rsOrgNodeLevel = (ResultSet) cs.getObject(1);
+
+									com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+									while(rsOrgNodeLevel.next()){
+										objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+										objectValueTO.setValue(rsOrgNodeLevel.getString("VALUE"));
+										objectValueTO.setName(rsOrgNodeLevel.getString("NAME"));
+										objectValueTOResult.add(objectValueTO);
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return objectValueTOResult;
+				        }
+				    });
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new SystemException(e.getMessage());
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: getOrgNodeLevel() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getOrgNodeLevel()");
 		return objectValueTOList;
 	}
 
@@ -932,7 +972,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String userRoles = Utils.arrayToSeparatedString(reportParameterTO.getUserRoles(),',');
 		final String orgNodeLevels = Utils.arrayToSeparatedString(reportParameterTO.getOrgNodeLevel(),',');
 		final String dbMenuId = reportParameterTO.getMenuId();
-		final String customerId = reportParameterTO.getCustomerId();
+		final long customerId = Long.parseLong(reportParameterTO.getCustomerId());
 		ReportTO report = null;
 		
 		try {
@@ -949,9 +989,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs.setString(7, orgNodeLevels);
 						cs.setString(8, dbMenuId);
 						cs.setLong(9, customerLink);
-						cs.registerOutParameter(10, oracle.jdbc.OracleTypes.NUMBER);
-						cs.registerOutParameter(11, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(10, customerId);
+						cs.registerOutParameter(11, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -960,7 +1001,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	        			ReportTO to = null;
 	        			try {
 							cs.execute();
-							rsReport = (ResultSet) cs.getObject(11);
+							rsReport = (ResultSet) cs.getObject(12);
 							if(rsReport.next()){
 								to = new ReportTO();
 								to.setReportId(rsReport.getLong("ID"));

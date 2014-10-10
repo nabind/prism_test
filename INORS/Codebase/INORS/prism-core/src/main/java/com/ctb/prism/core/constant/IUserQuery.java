@@ -386,16 +386,12 @@ public interface IUserQuery {
 			" FROM ORG_TP_STRUCTURE",
 			" ORDER BY VALUE ");*/
 	
+	/**
+	 * Moved to Package - By Joy
+	 * This is for TASC and INORS 
+	 * */
 	//Modify query because Corporation/Diocese are same - By Joy
-	public static final String ALL_ORG_NODE_LEVEL = CustomStringUtil.appendString(
-			" SELECT TAB.VALUE VALUE, LISTAGG(TAB.NAME, '/') WITHIN",
-			" GROUP(",
-			" ORDER BY NAME) AS NAME",
-			" FROM (SELECT DISTINCT ORG_LEVEL VALUE, ORG_LABEL NAME",
-			" FROM ORG_TP_STRUCTURE",
-			" ORDER BY ORG_LEVEL) TAB",
-			" GROUP BY TAB.VALUE",
-			" ORDER BY TAB.VALUE");
+	public static final String GET_ORG_NODE_LEVEL = "PKG_ADMIN_MODULE.SP_GET_ORG_NODE_LEVEL(?,?)";
 	
 	public static final String INSERT_EDU_CENTER_USER = CustomStringUtil.appendString(
 			"INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (?, ?)");
