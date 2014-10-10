@@ -37,7 +37,7 @@ public interface IAdminService {
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<UserTO> getUserDetailsOnClick(Map<String,Object> paramUserMap) throws Exception;
+	public ArrayList<UserTO> getUserDetailsOnClick(Map<String, Object> paramUserMap) throws Exception;
 
 	/**
 	 * @param paramMap
@@ -58,14 +58,15 @@ public interface IAdminService {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception;
+	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt)
+			throws BusinessException, Exception;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/;
+	public boolean deleteUser(Map<String, Object> paramMap) /* throws Exception */;
 
 	/**
 	 * @param orgLevel
@@ -80,7 +81,7 @@ public interface IAdminService {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) ;
+	public UserTO addNewUser(Map<String, Object> paramMap);
 
 	/**
 	 * @param userName
@@ -135,7 +136,7 @@ public interface IAdminService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(Map<String, Object> paramMap); 
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap
@@ -257,13 +258,6 @@ public interface IAdminService {
 	 * @throws SystemException
 	 */
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException;
-
-	/**
-	 * @param paramMap
-	 * @return
-	 * @throws SystemException
-	 */
-	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
 
 	/**
 	 * @param paramMap

@@ -1,72 +1,50 @@
 package com.ctb.prism.report.dao;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.SqlLobValue;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
-import org.springframework.jdbc.support.lob.LobHandler;
-import org.springframework.jdbc.support.lob.OracleLobHandler;
 import org.springframework.stereotype.Repository;
 
-import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
-import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.BusinessException;
-import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
-import com.ctb.prism.core.transferobject.ObjectValueTO;
-import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
-import com.ctb.prism.core.util.CustomStringUtil;
-import com.ctb.prism.core.util.FileUtil;
-import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.RescoreRequestTO;
 
 @Repository("rescoreRequestDAO")
+@SuppressWarnings("unchecked")
 public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO {
-	
+
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(RescoreRequestDAOImpl.class.getName());
 
-	@SuppressWarnings("unchecked")
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#getDnpStudentList(java.util
+	 * .Map)
+	 */
 	public List<RescoreRequestTO> getDnpStudentList(Map<String, Object> paramMap) throws BusinessException {
-		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getDnpStudentList()");
 		long t1 = System.currentTimeMillis();
-		
 		List<RescoreRequestTO> dnpStudentList = null;
 		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
-		final String testProgram = (String) paramMap.get("testProgram");
-		final String corpDiocese = (String) paramMap.get("corpDiocese");
 		final String school = (String) paramMap.get("school");
 		final String grade = (String) paramMap.get("grade");
 		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		
+		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "school = " + school);
+		logger.log(IAppLogger.INFO, "grade = " + grade);
+		logger.log(IAppLogger.INFO, "loggedinUserTO.getCustomerId() = " + loggedinUserTO.getCustomerId());
 		try {
 			dnpStudentList = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -121,22 +99,33 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		return dnpStudentList;
 	}
 
-	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap)
-			throws BusinessException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#submitRescoreRequest(java
+	 * .util.Map)
+	 */
+	public com.ctb.prism.core.transferobject.ObjectValueTO submitRescoreRequest(final Map<String, Object> paramMap) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - submitRescoreRequest()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
-		
 		final long itemNumber = ((Long) paramMap.get("itemNumber")).longValue();
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
 		final long sessionId = ((Long) paramMap.get("sessionId")).longValue();
-		final String moduleId = (String)paramMap.get("moduleId");
+		final String moduleId = (String) paramMap.get("moduleId");
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
-		final String requestedStatus = (String)paramMap.get("requestedStatus");
-		final String requestedDate = (String)paramMap.get("requestedDate");
+		final String requestedStatus = (String) paramMap.get("requestedStatus");
+		final String requestedDate = (String) paramMap.get("requestedDate");
 		final long userId = ((Long) paramMap.get("userId")).longValue();
-		
-
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
+		logger.log(IAppLogger.INFO, "subtestId = " + subtestId);
+		logger.log(IAppLogger.INFO, "sessionId = " + sessionId);
+		logger.log(IAppLogger.INFO, "moduleId = " + moduleId);
+		logger.log(IAppLogger.INFO, "itemNumber = " + itemNumber);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "requestedStatus = " + requestedStatus);
+		logger.log(IAppLogger.INFO, "requestedDate = " + requestedDate);
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -176,17 +165,25 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return objectValueTO;
 	}
-	
-	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap)
-			throws BusinessException {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#resetItemState(java.util.Map)
+	 */
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemState(final Map<String, Object> paramMap) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - resetItemState()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
 		final long subtestId = ((Long) paramMap.get("subtestId")).longValue();
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
 		final long userId = ((Long) paramMap.get("userId")).longValue();
-		final String requestedStatus = (String)paramMap.get("requestedStatus");
-		
+		final String requestedStatus = (String) paramMap.get("requestedStatus");
+		logger.log(IAppLogger.INFO, "subtestId = " + subtestId);
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "requestedStatus = " + requestedStatus);
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -222,17 +219,23 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return objectValueTO;
 	}
-	
-	
-	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemDate(final Map<String, Object> paramMap)
-			throws BusinessException {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#resetItemDate(java.util.Map)
+	 */
+	public com.ctb.prism.core.transferobject.ObjectValueTO resetItemDate(final Map<String, Object> paramMap) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - resetItemDate()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
 		final long userId = ((Long) paramMap.get("userId")).longValue();
 		final String requestedDate = (String) paramMap.get("requestedDate");
-		
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "requestedDate = " + requestedDate);
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -266,23 +269,27 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - resetItemDate() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return objectValueTO;
-		}
-	
-	
-	@SuppressWarnings("unchecked")
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#getNotDnpStudents(java.util
+	 * .Map)
+	 */
 	public List<RescoreRequestTO> getNotDnpStudents(Map<String, Object> paramMap) throws BusinessException {
-		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudent()");
 		long t1 = System.currentTimeMillis();
-		
 		List<RescoreRequestTO> notDnpStudents = null;
 		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
-		final String testProgram = (String) paramMap.get("testProgram");
-		final String corpDiocese = (String) paramMap.get("corpDiocese");
 		final String school = (String) paramMap.get("school");
 		final String grade = (String) paramMap.get("grade");
 		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		
+		logger.log(IAppLogger.INFO, "loggedinUserTO.getCustomerId() = " + loggedinUserTO.getCustomerId());
+		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "school = " + school);
+		logger.log(IAppLogger.INFO, "grade = " + grade);
 		try {
 			notDnpStudents = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -327,17 +334,20 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return notDnpStudents;
 	}
-	
-	
-	@SuppressWarnings("unchecked")
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#getNotDnpStudentDetails(java
+	 * .util.Map)
+	 */
 	public List<RescoreRequestTO> getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException {
-		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudentDetails()");
 		long t1 = System.currentTimeMillis();
-		
 		List<RescoreRequestTO> notDnpStudentDetails = null;
 		final long studentBioId = ((Long) paramMap.get("studentBioId")).longValue();
-		
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
 		try {
 			notDnpStudentDetails = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -392,22 +402,26 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return notDnpStudentDetails;
 	}
-	
-	
-	@SuppressWarnings("unchecked")
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#getNotDnpStudentList(java
+	 * .util.Map)
+	 */
 	public List<RescoreRequestTO> getNotDnpStudentList(Map<String, Object> paramMap) throws BusinessException {
-		
 		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getNotDnpStudentList()");
 		long t1 = System.currentTimeMillis();
-		
 		List<RescoreRequestTO> notDnpStudentList = null;
 		final String testAdministrationVal = (String) paramMap.get("testAdministrationVal");
-		final String testProgram = (String) paramMap.get("testProgram");
-		final String corpDiocese = (String) paramMap.get("corpDiocese");
 		final String school = (String) paramMap.get("school");
 		final String grade = (String) paramMap.get("grade");
 		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		
+		logger.log(IAppLogger.INFO, "loggedinUserTO.getCustomerId() = " + loggedinUserTO.getCustomerId());
+		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "school = " + school);
+		logger.log(IAppLogger.INFO, "grade = " + grade);
 		try {
 			notDnpStudentList = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -462,5 +476,5 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return notDnpStudentList;
 	}
-	
+
 }

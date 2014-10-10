@@ -1,6 +1,5 @@
 package com.ctb.prism.report.business;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import com.ctb.prism.report.transferobject.ManageMessageTO;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
-//import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 
 public interface IReportBusiness {
@@ -32,9 +30,9 @@ public interface IReportBusiness {
 	 * 
 	 */
 	public void removeCache();
-	
+
 	public boolean removeCache(InputStream input);
-	
+
 	public void removeConfigurationCache();
 
 	/**
@@ -86,8 +84,8 @@ public interface IReportBusiness {
 	 * @param userId
 	 * @return
 	 */
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
-			Map<String, Object> sessionParams, String userId, String tenantId);
+	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId,
+			String reportUrl, Map<String, Object> sessionParams, String userId, String tenantId);
 
 	/**
 	 * @param query
@@ -107,8 +105,8 @@ public interface IReportBusiness {
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
-			throws SystemException;
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue,
+			Map<String, String> replacableParams, Object clazz, String userId) throws SystemException;
 
 	/**
 	 * @param paramMap
@@ -267,4 +265,12 @@ public interface IReportBusiness {
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
+	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
+
 }

@@ -800,4 +800,15 @@ public class ReportServiceImpl implements IReportService {
 	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		return reportBusiness.getStudentFileName(type, studentBioId, custProdId);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.service.IReportService#getEducationCenter(java.util
+	 * .Map)
+	 */
+	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		return reportBusiness.getEducationCenter(paramMap);
+	}
 }

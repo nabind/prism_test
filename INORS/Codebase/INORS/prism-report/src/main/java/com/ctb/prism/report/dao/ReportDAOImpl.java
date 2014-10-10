@@ -40,8 +40,6 @@ import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -49,7 +47,6 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -64,7 +61,6 @@ import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
-import com.ctb.prism.report.transferobject.ManageMessageTOMapper;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.QuerySheetTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
@@ -510,78 +506,96 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return reports;
 	}
 
-	/**
-	 * Retrieves assessments details from database.
-	 * 
-	 * @return List of all available assessments {@link AssessmentTO} along with corresponding report details {@link ReportTO}
-	 */
-	//Fix for TD 77939 - implement customerId, caching param change - By Joy
-	//@Cacheable(value = "defaultCache", key="(T(com.ctb.prism.core.util.CacheKeyUtils).string(#p0)).concat(#root.method.name)")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p1, #p2, #p3,'getAssessments' )")
-	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap, String customerId, boolean isGrowthUser,  boolean isSuperUser) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAssessments");
-
-	//	UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
-		
-		
-		
-		List<AssessmentTO> assessments = null;
-		List<Map<String, Object>> dataList = null;		
-		
-
-		
-		if (parentReports) {
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%");
-		} else if(isSuperUser){ /* For super user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%");
-		} else if(isGrowthUser){/* For growth user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%",IApplicationConstants.ROLE_GROWTH_ID);	    
-		} else { /* For All users other than growth user*/
-			dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%",IApplicationConstants.ROLE_GROWTH_ID);
-		}
-		
-		
-		if (dataList != null && dataList.size() > 0) {
-			assessments = new ArrayList<AssessmentTO>();
-			long oldAssessmentId = -1;
-			AssessmentTO assessmentTO = null;
-
-			for (Map<String, Object> data : dataList) {
-				long assessmentId = ((BigDecimal) data.get("MENU_ID")).longValue();
-				if (oldAssessmentId != assessmentId) {
-					oldAssessmentId = assessmentId;
-					assessmentTO = new AssessmentTO();
-					assessmentTO.setAssessmentId(assessmentId);
-					assessmentTO.setAssessmentName((String) data.get("MENU_NAME"));
-					assessments.add(assessmentTO);
-				}
-
-				ReportTO reportTO = new ReportTO();
-				reportTO.setReportId(((BigDecimal) data.get("REPORT_ID")).longValue());
-				reportTO.setReportName((String) data.get("REPORT_NAME"));
-				reportTO.setReportUrl((String) data.get("REPORT_FOLDER_URI"));
-				reportTO.setEnabled(data.get("STATUS").equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-				//Changed to get this from cache
-				//String strRoles = (String) data.get("ROLES");
-				String strRoles = getListOfRoles(reportTO.getReportId());
-				reportTO.setAllRoles(strRoles);
-				if (strRoles != null && strRoles.length() > 0) {
-					String[] roles = strRoles.split(",");
-					for (String role : roles) {
-						ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
-						if (user_TYPE != null) {
-							reportTO.addRole(user_TYPE);
-						}
-					}
-				}
-				reportTO.setReportType((String) data.get("TYPE"));
-				reportTO.setOrgLevel((((BigDecimal) data.get("ORGLEVEL")) != null) ? ((BigDecimal) data.get("ORGLEVEL")).toString() : "");
-				assessmentTO.addReport(reportTO);
+	@SuppressWarnings("unchecked")
+	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final Long roleId, final Long orgNodeLevel) {
+		return (List<AssessmentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(query);
+				cs.setString(1, reportTypeLike);
+				cs.setLong(2, roleId);
+				cs.setLong(3, orgNodeLevel);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
 			}
-		}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet data = null;
+				List<AssessmentTO> assessmentList = new ArrayList<AssessmentTO>();
+				try {
+					cs.execute();
+					data = (ResultSet) cs.getObject(4);
+					Utils.logError(cs.getString(5));
+					long oldAssessmentId = -1;
+					AssessmentTO assessmentTO = null;
+					while (data.next()) {
+						long assessmentId = Long.valueOf(data.getString("MENU_ID"));
+						if (oldAssessmentId != assessmentId) {
+							oldAssessmentId = assessmentId;
+							assessmentTO = new AssessmentTO();
+							assessmentTO.setAssessmentId(assessmentId);
+							assessmentTO.setAssessmentName(data.getString("MENU_NAME"));
+							assessmentList.add(assessmentTO);
+						}
+						ReportTO reportTO = new ReportTO();
+						reportTO.setReportId(Long.valueOf(data.getString("REPORT_ID")));
+						reportTO.setReportName(data.getString("REPORT_NAME"));
+						reportTO.setReportUrl(data.getString("REPORT_FOLDER_URI"));
+						reportTO.setEnabled(data.getString("STATUS").equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
+						String strRoles = getListOfRoles(reportTO.getReportId());
+						reportTO.setAllRoles(strRoles);
+						if (strRoles != null && strRoles.length() > 0) {
+							String[] roles = strRoles.split(",");
+							for (String role : roles) {
+								ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
+								if (user_TYPE != null) {
+									reportTO.addRole(user_TYPE);
+								}
+							}
+						}
+						reportTO.setReportType(data.getString("TYPE"));
+						reportTO.setOrgLevel(data.getString("ORGLEVEL") != null ? data.getString("ORGLEVEL") : "");
+						assessmentTO.addReport(reportTO);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return assessmentList;
+			}
+		});
+	}
 
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getAssessments");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.report.dao.IReportDAO#getAssessments(java.util.Map)
+	 */
+	//@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getAssessments()");
+		boolean isSuperUser = ((Boolean) paramMap.get("isSuperUser")).booleanValue();
+		boolean isGrowthUser = ((Boolean) paramMap.get("isGrowthUser")).booleanValue();
+		boolean isEduUser = ((Boolean) paramMap.get("isEduUser")).booleanValue();
+		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
+		logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
+		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
+		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);
+		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);
+		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
+		List<AssessmentTO> assessments = null;
+		if (parentReports) {
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", -1L, orgNodeLevel);
+		} else if (isSuperUser) { /* For super user */
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", -1L, orgNodeLevel);
+		} else if (isGrowthUser) {/* For growth user */
+			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
+		} else if (isEduUser) {/* For education center user */
+			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_EDU_ADMIN_ID, orgNodeLevel);
+		} else { /* For All users other than growth user */
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;
 	}
 
@@ -2302,5 +2316,36 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return msgTypeId;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEducationCenter(java.util.Map)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		logger.log(IAppLogger.INFO, "Enter: getEducationCenter()");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
+		List<String> placeHolderValueList = new ArrayList<String>();
+		try {
+			if (IApplicationConstants.SS_FLAG.equals(loggedinUserTO.getUserStatus())) {
+				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
+				placeHolderValueList.add(loggedinUserTO.getCustomerId());
+				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER_ALL, placeHolderValueList.toArray(), new ObjectValueTOMapper());
+			} else {
+				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
+				logger.log(IAppLogger.INFO, "Fetch Education Center for User ID: " + loggedinUserTO.getUserId());
+				placeHolderValueList.add(loggedinUserTO.getCustomerId());
+				placeHolderValueList.add(loggedinUserTO.getUserId());
+				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER, placeHolderValueList.toArray(), new ObjectValueTOMapper());
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error occurred in getEducationCenter():", e);
+			throw new SystemException(e);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getEducationCenter()");
+		return objectValueTOList;
+	}
+
 	
 }

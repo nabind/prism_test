@@ -263,13 +263,6 @@ public interface IAdminBusiness {
 	 * @return
 	 * @throws SystemException
 	 */
-	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
-
-	/**
-	 * @param paramMap
-	 * @return
-	 * @throws SystemException
-	 */
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException;
 
 	/**

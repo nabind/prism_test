@@ -530,29 +530,38 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
+	 * @see
+	 * com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
 	 */
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
-		
 		boolean isSuperUser = false;
 		boolean isGrowthUser = false;
+		boolean isEduUser = false;
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		authList = loggedinUserTO.getRoles();	
-		
-		for(int i=0;i<authList.size();i++){
-			if(authList.get(i).getAuthority().equals("ROLE_GRW")) {
+		authList = loggedinUserTO.getRoles();
+		for (int i = 0; i < authList.size(); i++) {
+			if (authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
 				break;
 			}
-			if(authList.get(i).getAuthority().equals("ROLE_SUPER")){ // This is needed if a super user is having growth role as well 
+			if (authList.get(i).getAuthority().equals("ROLE_SUPER")) {// This is needed if a super user is having growth role as well
 				isSuperUser = true;
 				break;
 			}
 		}
-		
-		return reportDAO.getAssessments(paramMap, loggedinUserTO.getCustomerId(), isGrowthUser, isSuperUser);
+		if ("".equals(loggedinUserTO.getUserType())) {
+			isEduUser = true;
+		}
+		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
+		paramMap.clear();
+		paramMap.put("parentReports", parentReports);
+		paramMap.put("isEduUser", isEduUser);
+		paramMap.put("isGrowthUser", isGrowthUser);
+		paramMap.put("isSuperUser", isSuperUser);
+		paramMap.put("orgNodeLevel", orgNodeLevel);
+		return reportDAO.getAssessments(paramMap);
 	}
 
 	/*
@@ -758,4 +767,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
 		return reportDAO.updateJobTrackingStatus(jobId, jobStatus, jobLog);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getEducationCenter(java.util.Map)
+	 */
+	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> eduCentreList = reportDAO.getEducationCenter(paramMap);
+		returnMap.put("eduCentreList", eduCentreList);
+		returnMap.put("state", eduCentreList.get(0).getOther());
+		return returnMap;
+	}
+
 }
