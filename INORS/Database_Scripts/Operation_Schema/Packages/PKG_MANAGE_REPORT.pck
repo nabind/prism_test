@@ -19,19 +19,21 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
                                        P_OUT_CUR_MESSAGE   OUT GET_REFCURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
-  PROCEDURE SP_GET_REPORT_LIST(P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
+  PROCEDURE SP_GET_REPORT_LIST(P_IN_CUSTOMERID     IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                               P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
                                P_OUT_CUR_REPORT    OUT GET_REFCURSOR,
                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
-  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       DASH_REPORTS.REPORT_NAME%TYPE,
-                          P_IN_REPORT_DESC       DASH_REPORTS.REPORT_DESC%TYPE,
-                          P_IN_REPORT_TYPE       DASH_REPORTS.REPORT_TYPE%TYPE,
-                          P_IN_REPORT_FOLDER_URI DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
-                          P_IN_ACTIVATION_STATUS DASH_REPORTS.ACTIVATION_STATUS%TYPE,
-                          P_IN_USER_ROLES        VARCHAR2,
-                          P_IN_ORG_NODE_LEVELS   VARCHAR2,
-                          P_IN_DB_MENUID         DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
-                          P_IN_CUST_PROD_ID      CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       IN DASH_REPORTS.REPORT_NAME%TYPE,
+                          P_IN_REPORT_DESC       IN DASH_REPORTS.REPORT_DESC%TYPE,
+                          P_IN_REPORT_TYPE       IN DASH_REPORTS.REPORT_TYPE%TYPE,
+                          P_IN_REPORT_FOLDER_URI IN DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
+                          P_IN_ACTIVATION_STATUS IN DASH_REPORTS.ACTIVATION_STATUS%TYPE,
+                          P_IN_USER_ROLES        IN VARCHAR2,
+                          P_IN_ORG_NODE_LEVELS   IN VARCHAR2,
+                          P_IN_DB_MENUID         IN DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
+                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                           P_OUT_STATUS_NUMBER    OUT NUMBER,
                           P_OUT_CUR_REPORT_NEW   OUT GET_REFCURSOR,
                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
@@ -207,7 +209,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   THIS PROCEDURE RETURNS THE REPORTS IN MANAGE REPORT SCREEN 
   OR RETURN A PARTICULAR REPORT DETAILS BASED ON REPORT ID(FOR EDIT).
   */
-  PROCEDURE SP_GET_REPORT_LIST(P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
+  PROCEDURE SP_GET_REPORT_LIST(P_IN_CUSTOMERID     IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                               P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
                                P_OUT_CUR_REPORT    OUT GET_REFCURSOR,
                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
@@ -238,21 +241,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        LISTAGG(ROLE_NAME, ',') WITHIN
                  GROUP(
                  ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-                  FROM (SELECT DISTINCT RE.DB_REPORTID ID,
-                                        RE.REPORT_DESC,
-                                        RE.REPORT_TYPE,
-                                        DMRA.CUST_PROD_ID,
-                                        RE.REPORT_NAME,
-                                        RE.REPORT_FOLDER_URI,
-                                        RE.ACTIVATION_STATUS STATUS,
-                                        ROLE_NAME,
-                                        ORG_LABEL,
-                                        P.PRODUCT_NAME,
-                                        P.PRODUCTID,
-                                        DMRA.DB_MENUID MENUID,
-                                        DMENU.MENU_SEQ,
-                                        DMRA.REPORT_SEQ,
-                                        DMENU.MENU_NAME MENUNAME
+                  FROM (SELECT RE.DB_REPORTID ID,
+                               RE.REPORT_DESC,
+                               RE.REPORT_TYPE,
+                               DMRA.CUST_PROD_ID,
+                               RE.REPORT_NAME,
+                               RE.REPORT_FOLDER_URI,
+                               RE.ACTIVATION_STATUS STATUS,
+                               ROLE_NAME,
+                               ORG_LABEL,
+                               P.PRODUCT_NAME,
+                               P.PRODUCTID,
+                               DMRA.DB_MENUID MENUID,
+                               DMENU.MENU_SEQ,
+                               DMRA.REPORT_SEQ,
+                               DMENU.MENU_NAME MENUNAME,
+                               CPL.CUSTOMERID
                           FROM DASH_REPORTS         RE,
                                DASH_MENU_RPT_ACCESS DMRA,
                                DASH_MENUS           DMENU,
@@ -265,7 +269,40 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                            AND R.ROLEID = DMRA.ROLEID
                            AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
-                           AND P.PRODUCTID = CPL.PRODUCTID)
+                           AND P.PRODUCTID = CPL.PRODUCTID
+                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                        UNION
+                        SELECT RE.DB_REPORTID ID,
+                               RE.REPORT_DESC,
+                               RE.REPORT_TYPE,
+                               DMRA.CUST_PROD_ID,
+                               RE.REPORT_NAME,
+                               RE.REPORT_FOLDER_URI,
+                               RE.ACTIVATION_STATUS STATUS,
+                               ROLE_NAME,
+                               'Education Center' ORG_LABEL,
+                               P.PRODUCT_NAME,
+                               P.PRODUCTID,
+                               DMRA.DB_MENUID MENUID,
+                               DMENU.MENU_SEQ,
+                               DMRA.REPORT_SEQ,
+                               DMENU.menu_name MENUNAME,
+                               CPL.CUSTOMERID
+                          FROM DASH_REPORTS         RE,
+                               DASH_MENU_RPT_ACCESS DMRA,
+                               DASH_MENUS           DMENU,
+                               ROLE                 R,
+                               ORG_TP_STRUCTURE     OTS,
+                               CUST_PRODUCT_LINK    CPL,
+                               PRODUCT              P
+                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                           AND R.ROLEID = DMRA.ROLEID
+                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                           AND P.PRODUCTID = CPL.PRODUCTID
+                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                           AND DMRA.ORG_LEVEL = -99)
                  GROUP BY ID,
                           REPORT_DESC,
                           REPORT_TYPE,
@@ -299,7 +336,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         SELECT DISTINCT ID,
                         REPORT_DESC,
                         REPORT_TYPE,
-                        0,
                         0 AS CUST_PROD_ID,
                         REPORT_NAME,
                         REPORT_FOLDER_URI,
@@ -321,21 +357,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        LISTAGG(ROLE_NAME, ',') WITHIN
                  GROUP(
                  ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-                  FROM (SELECT DISTINCT RE.DB_REPORTID ID,
-                                        RE.REPORT_DESC,
-                                        RE.REPORT_TYPE,
-                                        DMRA.CUST_PROD_ID,
-                                        RE.REPORT_NAME,
-                                        RE.REPORT_FOLDER_URI,
-                                        RE.ACTIVATION_STATUS STATUS,
-                                        ROLE_NAME,
-                                        ORG_LABEL,
-                                        P.PRODUCT_NAME,
-                                        P.PRODUCTID,
-                                        DMRA.DB_MENUID MENUID,
-                                        DMENU.MENU_SEQ,
-                                        DMRA.REPORT_SEQ,
-                                        DMENU.MENU_NAME MENUNAME
+                  FROM (SELECT RE.DB_REPORTID ID,
+                               RE.REPORT_DESC,
+                               RE.REPORT_TYPE,
+                               DMRA.CUST_PROD_ID,
+                               RE.REPORT_NAME,
+                               RE.REPORT_FOLDER_URI,
+                               RE.ACTIVATION_STATUS STATUS,
+                               ROLE_NAME,
+                               ORG_LABEL,
+                               P.PRODUCT_NAME,
+                               P.PRODUCTID,
+                               DMRA.DB_MENUID MENUID,
+                               DMENU.MENU_SEQ,
+                               DMRA.REPORT_SEQ,
+                               DMENU.MENU_NAME MENUNAME,
+                               CPL.CUSTOMERID
                           FROM DASH_REPORTS         RE,
                                DASH_MENU_RPT_ACCESS DMRA,
                                DASH_MENUS           DMENU,
@@ -349,6 +386,40 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                            AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
                            AND P.PRODUCTID = CPL.PRODUCTID
+                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                           AND RE.DB_REPORTID = P_IN_REPORT_ID
+                        UNION
+                        SELECT RE.DB_REPORTID ID,
+                               RE.REPORT_DESC,
+                               RE.REPORT_TYPE,
+                               DMRA.CUST_PROD_ID,
+                               RE.REPORT_NAME,
+                               RE.REPORT_FOLDER_URI,
+                               RE.ACTIVATION_STATUS STATUS,
+                               ROLE_NAME,
+                               'Education Center' ORG_LABEL,
+                               P.PRODUCT_NAME,
+                               P.PRODUCTID,
+                               DMRA.DB_MENUID MENUID,
+                               DMENU.MENU_SEQ,
+                               DMRA.REPORT_SEQ,
+                               DMENU.menu_name MENUNAME,
+                               CPL.CUSTOMERID
+                          FROM DASH_REPORTS         RE,
+                               DASH_MENU_RPT_ACCESS DMRA,
+                               DASH_MENUS           DMENU,
+                               ROLE                 R,
+                               ORG_TP_STRUCTURE     OTS,
+                               CUST_PRODUCT_LINK    CPL,
+                               PRODUCT              P
+                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                           AND R.ROLEID = DMRA.ROLEID
+                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                           AND P.PRODUCTID = CPL.PRODUCTID
+                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                           AND DMRA.ORG_LEVEL = -99
                            AND RE.DB_REPORTID = P_IN_REPORT_ID)
                  GROUP BY ID,
                           REPORT_DESC,
@@ -378,7 +449,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                   MENUNAME,
                   MENU_SEQ,
                   REPORT_SEQ;
-    
     END IF;
   
   EXCEPTION
@@ -389,15 +459,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   /*
   THIS PROCEDURE ADD A NEW REPORT AND RETURS THE NEW REPORT DATA
   */
-  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       DASH_REPORTS.REPORT_NAME%TYPE,
-                          P_IN_REPORT_DESC       DASH_REPORTS.REPORT_DESC%TYPE,
-                          P_IN_REPORT_TYPE       DASH_REPORTS.REPORT_TYPE%TYPE,
-                          P_IN_REPORT_FOLDER_URI DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
-                          P_IN_ACTIVATION_STATUS DASH_REPORTS.ACTIVATION_STATUS%TYPE,
-                          P_IN_USER_ROLES        VARCHAR2,
-                          P_IN_ORG_NODE_LEVELS   VARCHAR2,
-                          P_IN_DB_MENUID         DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
-                          P_IN_CUST_PROD_ID      CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+  PROCEDURE SP_ADD_REPORT(P_IN_REPORT_NAME       IN DASH_REPORTS.REPORT_NAME%TYPE,
+                          P_IN_REPORT_DESC       IN DASH_REPORTS.REPORT_DESC%TYPE,
+                          P_IN_REPORT_TYPE       IN DASH_REPORTS.REPORT_TYPE%TYPE,
+                          P_IN_REPORT_FOLDER_URI IN DASH_REPORTS.REPORT_FOLDER_URI%TYPE,
+                          P_IN_ACTIVATION_STATUS IN DASH_REPORTS.ACTIVATION_STATUS%TYPE,
+                          P_IN_USER_ROLES        IN VARCHAR2,
+                          P_IN_ORG_NODE_LEVELS   IN VARCHAR2,
+                          P_IN_DB_MENUID         IN DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
+                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                           P_OUT_STATUS_NUMBER    OUT NUMBER,
                           P_OUT_CUR_REPORT_NEW   OUT GET_REFCURSOR,
                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
@@ -489,7 +560,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         END LOOP;
       END LOOP;
     
-      SP_GET_REPORT_LIST(V_DB_REPORTID,
+      SP_GET_REPORT_LIST(P_IN_CUSTOMERID,
+                         V_DB_REPORTID,
                          P_OUT_CUR_REPORT_NEW,
                          P_OUT_EXCEP_ERR_MSG1);
       P_OUT_STATUS_NUMBER := 1;
