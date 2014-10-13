@@ -298,7 +298,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                          WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
                            AND DMENU.DB_MENUID = DMRA.DB_MENUID
                            AND R.ROLEID = DMRA.ROLEID
-                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           --AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
                            AND P.PRODUCTID = CPL.PRODUCTID
                            AND CPL.CUSTOMERID = P_IN_CUSTOMERID
@@ -415,7 +415,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                          WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
                            AND DMENU.DB_MENUID = DMRA.DB_MENUID
                            AND R.ROLEID = DMRA.ROLEID
-                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                           --AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
                            AND P.PRODUCTID = CPL.PRODUCTID
                            AND CPL.CUSTOMERID = P_IN_CUSTOMERID
@@ -620,12 +620,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                                            '[^,]+',
                                                            1,
                                                            LEVEL),
-                                             -99) AS ORG_NODE_LEVEL
+                                             -999) AS ORG_NODE_LEVEL
                                    FROM T
                                  CONNECT BY LEVEL <=
                                             LENGTH(REGEXP_REPLACE(TXT,
                                                                   '[^,]*')) + 1) LOOP
-        IF REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL <> -99 THEN
+        IF REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL <> -999 THEN
           INSERT INTO DASH_MENU_RPT_ACCESS
             (DB_MENUID,
              DB_REPORTID,
