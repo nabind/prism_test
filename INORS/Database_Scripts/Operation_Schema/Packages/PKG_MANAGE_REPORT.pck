@@ -292,13 +292,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                DASH_MENU_RPT_ACCESS DMRA,
                                DASH_MENUS           DMENU,
                                ROLE                 R,
-                               ORG_TP_STRUCTURE     OTS,
                                CUST_PRODUCT_LINK    CPL,
                                PRODUCT              P
                          WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
                            AND DMENU.DB_MENUID = DMRA.DB_MENUID
                            AND R.ROLEID = DMRA.ROLEID
-                           --AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
                            AND P.PRODUCTID = CPL.PRODUCTID
                            AND CPL.CUSTOMERID = P_IN_CUSTOMERID
@@ -409,13 +407,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                DASH_MENU_RPT_ACCESS DMRA,
                                DASH_MENUS           DMENU,
                                ROLE                 R,
-                               ORG_TP_STRUCTURE     OTS,
                                CUST_PRODUCT_LINK    CPL,
                                PRODUCT              P
                          WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
                            AND DMENU.DB_MENUID = DMRA.DB_MENUID
                            AND R.ROLEID = DMRA.ROLEID
-                           --AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
                            AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
                            AND P.PRODUCTID = CPL.PRODUCTID
                            AND CPL.CUSTOMERID = P_IN_CUSTOMERID
