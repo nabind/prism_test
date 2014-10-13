@@ -57,7 +57,7 @@ import com.ctb.prism.web.util.JsonUtil;
  * @author TCS
  * 
  */
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+// @PreAuthorize("hasAuthority('ROLE_ADMIN', ROLE_EDU_ADMIN)")
 @Controller
 public class AdminController {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(AdminController.class.getName());
@@ -2334,50 +2334,6 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Exit: getFileSize()");
 	}
 
-	
-
-	/**
-	 * Show list of all education center users.
-	 * 
-	 * @param request
-	 * @param response
-	 * @param session
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/loadEduCenterUsers", method = RequestMethod.GET)
-	public @ResponseBody void loadEduCenterUsers(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-		logger.log(IAppLogger.INFO, "Enter: AdminController - loadEduCenterUsers()");
-		String moreCount = propertyLookup.get("count.results.button.more");
-		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
-		String userJsonString = "";
-		long eduCenterId = Long.parseLong(request.getParameter("eduCenterId"));
-		String searchParam = (String) request.getParameter("searchParam");
-		if ("Search".equals(searchParam)) {
-			searchParam = "";
-		}
-		String lastEduCenterId_username = (String) request.getParameter("lastEduCenterId_username");
-		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", loggedinUserTO);
-		paramMap.put("eduCenterId", eduCenterId);
-		paramMap.put("searchParam", searchParam);
-		paramMap.put("lastEduCenterId_username", lastEduCenterId_username);
-		paramMap.put("moreCount", moreCount);
-		List<EduCenterTO> eduCenterTOList = null;
-		try {
-			eduCenterTOList = adminService.loadEduCenterUsers(paramMap);
-			List<UserTO> userTOList = convertEduToUserList(eduCenterTOList);
-			userJsonString = JsonUtil.convertToJsonAdmin(userTOList);
-			logger.log(IAppLogger.INFO, "loadEduCenterUsers():" + userJsonString);
-			response.setContentType("application/json");
-			response.getWriter().write(userJsonString);
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "", e);
-			throw new BusinessException("Problem Occured");
-		}
-		logger.log(IAppLogger.INFO, "Exit: AdminController - loadEduCenterUsers()");
-	}
-
 	/**
 	 * @param eduCenterTOList
 	 * @return
@@ -2520,5 +2476,77 @@ public class AdminController {
 		return jsonString;
 	}
 	
-	
+	/**
+	 * Show list of all education center
+	 * 
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/manageEducationCenter", method = RequestMethod.GET)
+	public ModelAndView manageEducationCenter(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		request.getSession().setAttribute(IApplicationConstants.LOGIN_AS, IApplicationConstants.ACTIVE_FLAG);
+		logger.log(IAppLogger.INFO, "Entre: AdminController - manageEducationCenter()");
+		ModelAndView modelAndView = new ModelAndView("admin/eduCenterUsers");
+		Map<String, Object> serviceMapEduCentreFilter = null;
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(
+				IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		try {
+			serviceMapEduCentreFilter = adminService.getEducationCenter(paramMap);
+			modelAndView.addObject("serviceMapEduCentreFilter", serviceMapEduCentreFilter);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} finally {
+			logger.log(IAppLogger.INFO, "Exit: AdminController - manageEducationCenter()");
+		}
+		modelAndView.addObject("PDCT_NAME", propertyLookup.get("PDCT_NAME"));
+		return modelAndView;
+	}
+
+	/**
+	 * Show list of all education center users.
+	 * 
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/loadEduCenterUsers", method = RequestMethod.GET)
+	public @ResponseBody void loadEduCenterUsers(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: AdminController - loadEduCenterUsers()");
+		String moreCount = propertyLookup.get("count.results.button.more");
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
+		String userJsonString = "";
+		long eduCenterId = Long.parseLong(request.getParameter("eduCenterId"));
+		String searchParam = (String) request.getParameter("searchParam");
+		if ("Search".equals(searchParam)) {
+			searchParam = "";
+		}
+		String lastEduCenterId_username = (String) request.getParameter("lastEduCenterId_username");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(
+				IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("eduCenterId", eduCenterId);
+		paramMap.put("searchParam", searchParam);
+		paramMap.put("lastEduCenterId_username", lastEduCenterId_username);
+		paramMap.put("moreCount", moreCount);
+		List<EduCenterTO> eduCenterTOList = null;
+		try {
+			eduCenterTOList = adminService.loadEduCenterUsers(paramMap);
+			List<UserTO> userTOList = convertEduToUserList(eduCenterTOList);
+			userJsonString = JsonUtil.convertToJsonAdmin(userTOList);
+			logger.log(IAppLogger.INFO, "loadEduCenterUsers():" + userJsonString);
+			response.setContentType("application/json");
+			response.getWriter().write(userJsonString);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}
+		logger.log(IAppLogger.INFO, "Exit: AdminController - loadEduCenterUsers()");
+	}
 }

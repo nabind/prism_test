@@ -290,6 +290,13 @@ public interface IAdminDAO {
 	 * @return
 	 * @throws SystemException
 	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException;
+
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws SystemException
+	 */
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException;
 
 	/**

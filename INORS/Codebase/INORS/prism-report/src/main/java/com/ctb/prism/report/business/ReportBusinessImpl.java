@@ -767,16 +767,4 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
 		return reportDAO.updateJobTrackingStatus(jobId, jobStatus, jobLog);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getEducationCenter(java.util.Map)
-	 */
-	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
-		Map<String, Object> returnMap = new HashMap<String, Object>();
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> eduCentreList = reportDAO.getEducationCenter(paramMap);
-		returnMap.put("eduCentreList", eduCentreList);
-		returnMap.put("state", eduCentreList.get(0).getOther());
-		return returnMap;
-	}
-
 }

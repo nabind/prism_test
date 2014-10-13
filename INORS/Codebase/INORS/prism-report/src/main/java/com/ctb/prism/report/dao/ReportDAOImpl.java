@@ -40,6 +40,8 @@ import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -47,6 +49,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -61,6 +64,7 @@ import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
+import com.ctb.prism.report.transferobject.ManageMessageTOMapper;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.QuerySheetTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
@@ -2316,36 +2320,5 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		return msgTypeId;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEducationCenter(java.util.Map)
-	 */
-	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
-		logger.log(IAppLogger.INFO, "Enter: getEducationCenter()");
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
-		List<String> placeHolderValueList = new ArrayList<String>();
-		try {
-			if (IApplicationConstants.SS_FLAG.equals(loggedinUserTO.getUserStatus())) {
-				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
-				placeHolderValueList.add(loggedinUserTO.getCustomerId());
-				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER_ALL, placeHolderValueList.toArray(), new ObjectValueTOMapper());
-			} else {
-				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
-				logger.log(IAppLogger.INFO, "Fetch Education Center for User ID: " + loggedinUserTO.getUserId());
-				placeHolderValueList.add(loggedinUserTO.getCustomerId());
-				placeHolderValueList.add(loggedinUserTO.getUserId());
-				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER, placeHolderValueList.toArray(), new ObjectValueTOMapper());
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred in getEducationCenter():", e);
-			throw new SystemException(e);
-		}
-		logger.log(IAppLogger.INFO, "Exit: getEducationCenter()");
-		return objectValueTOList;
-	}
-
 	
 }

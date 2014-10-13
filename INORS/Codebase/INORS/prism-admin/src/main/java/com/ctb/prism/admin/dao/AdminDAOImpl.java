@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -50,6 +51,8 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
+
+import org.springframework.jdbc.core.RowMapper;
 
 @Repository("adminDAO")
 @SuppressWarnings("unchecked")
@@ -1936,6 +1939,36 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<StudentDataTO> downloadStudentFile(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: downloadStudentFile()");
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.admin.dao.IAdminDAO#getEducationCenter(java.util.Map)
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		logger.log(IAppLogger.INFO, "Enter: getEducationCenter()");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
+		List<String> placeHolderValueList = new ArrayList<String>();
+		try {
+			if (IApplicationConstants.SS_FLAG.equals(loggedinUserTO.getUserStatus())) {
+				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
+				placeHolderValueList.add(loggedinUserTO.getCustomerId());
+				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER_ALL, placeHolderValueList.toArray(), new ObjectValueTOMapper());
+			} else {
+				logger.log(IAppLogger.INFO, "Fetch Education Center for Customer ID: " + loggedinUserTO.getCustomerId());
+				logger.log(IAppLogger.INFO, "Fetch Education Center for User ID: " + loggedinUserTO.getUserId());
+				placeHolderValueList.add(loggedinUserTO.getCustomerId());
+				placeHolderValueList.add(loggedinUserTO.getUserId());
+				objectValueTOList = getJdbcTemplatePrism().query(IQueryConstants.GET_EDUCATION_CENTER, placeHolderValueList.toArray(), new ObjectValueTOMapper());
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error occurred in getEducationCenter():", e);
+			throw new SystemException(e);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getEducationCenter()");
+		return objectValueTOList;
 	}
 
 	/* (non-Javadoc)

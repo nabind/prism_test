@@ -330,6 +330,19 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#getEducationCenter(java.util.Map)
+	 */
+	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> eduCentreList = adminDAO.getEducationCenter(paramMap);
+		returnMap.put("eduCentreList", eduCentreList);
+		returnMap.put("state", eduCentreList.get(0).getOther());
+		return returnMap;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#loadEduCenterUsers(java.util.Map)
 	 */
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {

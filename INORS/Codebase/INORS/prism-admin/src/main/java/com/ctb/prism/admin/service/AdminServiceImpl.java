@@ -328,6 +328,15 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ctb.prism.admin.service.IAdminService#getEducationCenter(java.util.Map)
+	 */
+	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
+		return adminBusiness.getEducationCenter(paramMap);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#loadEduCenterUsers(java.util.Map)
 	 */
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String, Object> paramMap) throws SystemException {
