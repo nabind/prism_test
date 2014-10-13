@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.management.InvalidApplicationException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -125,8 +124,14 @@ public class LoginController {
 		paramMap.put("contractName", contractName);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		
-		Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+		//to optimally use cache need to create new paramMap
+		Map<String, Object> tileParamMap = new HashMap<String, Object>();
+		tileParamMap.put("contractName", contractName);
+		
+		Map<String, Object> propertyMap = loginService.getContractProerty(tileParamMap);
 		String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
+		
+		request.getSession().setAttribute("propertyMap", propertyMap);
 		
 		ModelAndView modelAndView = new ModelAndView("common/landing");
 		modelAndView.addObject("messageMap", messageMap);
@@ -196,11 +201,14 @@ public class LoginController {
 		logger.log(IAppLogger.INFO, "theme -------------> "+themeResolver.resolveThemeName(request));
 		String mess_login_error = (String) request.getParameter("login_error");
 		String message = null;
-		Map<String, Object> messageMap = new HashMap<String, Object>();
-		
+		Map<String, Object> messageMap = new HashMap<String, Object>();		
+		Map<String, Object> propertyMap = new HashMap<String, Object>();		
 		Map<String,Object> paramMap = new HashMap<String, Object>();
+		
 		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
-		Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+		propertyMap = loginService.getContractProerty(paramMap);
+		request.getSession().setAttribute("propertyMap", propertyMap);
+	
 		String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
 
 		if ("1".equalsIgnoreCase(mess_login_error)) {
@@ -286,6 +294,7 @@ public class LoginController {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/validateUser", method = RequestMethod.GET)
 	public ModelAndView validateUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: validateUser()");
@@ -298,7 +307,7 @@ public class LoginController {
 				ReportTO homeReport = null;
 				String username = null;
 				Collection<GrantedAuthority> authorities = null;
-				String userDisplay = (String) req.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY);
+				//String userDisplay = (String) req.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY);
 				UserTO user = null;
 				if (auth.getPrincipal() instanceof LdapUserDetailsImpl) {
 					LdapUserDetailsImpl userDetails = (LdapUserDetailsImpl) auth.getPrincipal();
@@ -496,13 +505,16 @@ public class LoginController {
 				}
 				req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
 				
-				Map<String, Object> tileParamMap = new HashMap<String, Object>();
-				tileParamMap.put("contractName", user.getContractName());
-				Map<String, Object> propertyMap = loginService.getContractProerty(paramMap);
+				Map<String, Object> propertyMap = new HashMap<String, Object>();
 				
-				String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_TITLE): "Prism";
-				req.getSession().setAttribute("contractTitle", contractTitle);
-			
+				propertyMap=(Map<String,Object>)req.getSession().getAttribute("propertyMap");
+				if(propertyMap == null) {
+					Map<String, Object> tileParamMap = new HashMap<String, Object>();
+					tileParamMap.put("contractName", user.getContractName());
+					propertyMap = loginService.getContractProerty(tileParamMap);
+				}				
+				String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_HOME_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_HOME_TITLE): "Prism";
+				req.getSession().setAttribute("contractTitle", contractTitle);			
 			}
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, "validateUser(): " + exception.getMessage());
@@ -628,7 +640,7 @@ public class LoginController {
 		} catch (Exception ex) {
 			success = false;
 		}
-		ModelAndView mv = null;
+
 		if (success) {
 			// setting this attribute so that application reloads user data during login
 			req.setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);

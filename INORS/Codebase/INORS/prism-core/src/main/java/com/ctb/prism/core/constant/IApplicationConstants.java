@@ -268,5 +268,6 @@ public interface IApplicationConstants {
 	public static final String ORGLVL_USER_NOT_ADDED = "orglvl.user.not.added";
 	public static final String HMAC_SECRET_KEY ="hmac.secret.key";
 	public static final String CONTRACT_TITLE ="title.tab.application";
+	public static final String CONTRACT_HOME_TITLE ="title.tab.home.application";
 	
 }
