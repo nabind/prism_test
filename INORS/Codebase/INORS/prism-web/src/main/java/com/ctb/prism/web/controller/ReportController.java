@@ -2067,36 +2067,6 @@ public class ReportController{
 	}
 	
 	/**
-	 * Show list of all education center
-	 * 
-	 * @param request
-	 * @param response
-	 * @param session
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/manageEducationCenter", method = RequestMethod.GET)
-	public ModelAndView manageEducationCenter(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		request.getSession().setAttribute(IApplicationConstants.LOGIN_AS, IApplicationConstants.ACTIVE_FLAG);
-		logger.log(IAppLogger.INFO, "Entre: AdminController - manageEducationCenter()");
-		ModelAndView modelAndView = new ModelAndView("admin/eduCenterUsers");
-		Map<String, Object> serviceMapEduCentreFilter = null;
-		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", loggedinUserTO);
-		try {
-			serviceMapEduCentreFilter = reportService.getEducationCenter(paramMap);
-			modelAndView.addObject("serviceMapEduCentreFilter", serviceMapEduCentreFilter);
-		} catch (Exception exception) {
-			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
-		} finally {
-			logger.log(IAppLogger.INFO, "Exit: AdminController - manageEducationCenter()");
-		}
-		modelAndView.addObject("PDCT_NAME", propertyLookup.get("PDCT_NAME"));
-		return modelAndView;
-	}
-	
-	/**
 	 * Check volunarablity in report request
 	 * @param request
 	 * @return
