@@ -28,10 +28,6 @@ $(document).ready(function() {
 		$(".shortcut-messages").parent().addClass("current");
 	}
 	
-	$("#myaccount").live("click", function() {
-		location = "myAccount.do";
-	});
-	
 	// select manage shortcut in menu for my account
 	if ($(".manageAccount").size()>0){
 		if($.browser.msie) {
