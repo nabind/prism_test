@@ -288,12 +288,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String VALIDATE_ACTIVE_USER_NAME = "SELECT USR.USERNAME AS USERNAME FROM USERS USR WHERE upper(USR.USERNAME) = upper(?) AND USR.ACTIVATION_STATUS IN ('AC','SS')";
 	
-	public static final String GET_SECRET_QUESTION = CustomStringUtil.appendString(
-			" SELECT PH_QUESTIONID  AS QUESTION_ID, ",
-			" QUESTION_VALUE  AS QUESTION, ",
-			" QUESTION_SEQ  AS SNO ",
-			" FROM PWD_HINT_QUESTIONS ",
-			" WHERE ACTIVATION_STATUS IN ('AC','SS')");
+	public static final String GET_SECRET_QUESTION = "PKG_MY_ACCOUNT.SP_GET_SECURITY_QUESTIONS(?,?,?)";
 	
 	public static final String PARENT_USER_SEQ_ID = "SELECT USER_ID_SEQ.NEXTVAL AS PARENT_SEQ_ID FROM DUAL";
 	

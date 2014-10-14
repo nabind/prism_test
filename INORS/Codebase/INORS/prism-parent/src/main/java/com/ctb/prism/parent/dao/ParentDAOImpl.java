@@ -50,31 +50,60 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentDAOImpl.class.getName());
 
-	/* Add paramMap and caching mechanism changed - By Joy
+	/**Moved to store proc - By Joy
+	 *  Add paramMap and caching mechanism changed - By Joy
 	 * (non-Javadoc)
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions(Map<String,Object> paramMap)
 	 */
-	//TODO - Need to cache
+	@SuppressWarnings("unchecked")
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
-	public List<QuestionTO> getSecretQuestions(Map<String,Object> paramMap) {
+	public List<QuestionTO> getSecretQuestions(final Map<String,Object> paramMap) {
+		
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getSecretQuestions()");
+		long t1 = System.currentTimeMillis();
 		
 		String contractName = (String) paramMap.get("contractName"); 
 		if(contractName == null) {
 			contractName = Utils.getContractName();
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
-		
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_SECRET_QUESTION);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
-		QuestionTO quesTo = null;
-		for (Map<String, Object> questiondetails : lstData) {
-			quesTo = new QuestionTO();
-			quesTo.setQuestionId(((BigDecimal) questiondetails.get("QUESTION_ID")).longValue());
-			quesTo.setQuestion((String) (questiondetails.get("QUESTION")));
-			quesTo.setSno(((BigDecimal) questiondetails.get("SNO")).longValue());
-			questionList.add(quesTo);
+		try {
+			questionList = (List<QuestionTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SECRET_QUESTION + "}");
+					cs.setString(1, "0");
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rsQuestion = null;
+					List<QuestionTO> questionList = new ArrayList<QuestionTO>();
+					try {
+						cs.execute();
+						rsQuestion = (ResultSet) cs.getObject(2);
+						QuestionTO questionTO = new QuestionTO();
+						while(rsQuestion.next()){
+							questionTO.setQuestionId(rsQuestion.getLong("QUESTION_ID"));
+							questionTO.setQuestion(rsQuestion.getString("QUESTION"));
+							questionTO.setSno(rsQuestion.getLong("SNO"));
+							questionList.add(questionTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return questionList;
+				}
+			});
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getSecretQuestions() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-
 		return questionList;
 	}
 
@@ -1368,72 +1397,89 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return status;
 	}
 
-	/*
+	/**
+	 * Moved to store proc and reduce redundant DB call - By Joy
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#manageParentAccountDetails(java.lang.String)
 	 */
-	public ParentTO manageParentAccountDetails(String username) {
-
-		ParentTO parentTO = new ParentTO();
-		List<Map<String, Object>> lstData = null;
+	@SuppressWarnings("unchecked")
+	public ParentTO manageParentAccountDetails(final String username) {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - manageParentAccountDetails()");
+		long t1 = System.currentTimeMillis();
+		ParentTO parentTO = null;
+		Map<String,Object> resultMap = null;
 		try {
-			// populate parent account details
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_DETAILS_BY_USERNAME, username);
-
-			if (lstData.size() > 0) {
-				for (Map<String, Object> fieldDetails : lstData) {
-					parentTO.setUserId(((BigDecimal) fieldDetails.get("USERID")).longValue());
-					parentTO.setUserName((String) (fieldDetails.get("USERNAME")));
-					parentTO.setDisplayName((String) (fieldDetails.get("DISPLAY_USERNAME")));
-					parentTO.setLastName((String) (fieldDetails.get("LAST_NAME")));
-					parentTO.setFirstName((String) (fieldDetails.get("FIRST_NAME")));
-					// parentTO.setMiddleName((String) (fieldDetails.get("MIDDLE_NAME")));
-					parentTO.setMail((String) (fieldDetails.get("EMAIL_ADDRESS")));
-					parentTO.setMobile((String) (fieldDetails.get("PHONE_NO")));
-					parentTO.setCountry((String) (fieldDetails.get("COUNTRY")));
-					parentTO.setZipCode((String) (fieldDetails.get("ZIPCODE")));
-					parentTO.setCity((String) (fieldDetails.get("CITY")));
-					parentTO.setState((String) (fieldDetails.get("STATE")));
-					parentTO.setStreet((String) (fieldDetails.get("STREET")));
-					parentTO.setSalt((String)(fieldDetails.get("SALT")));
+			resultMap = (HashMap<String,Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ACCOUNT_DETAILS + "}");
+					cs.setString(1, username);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
 				}
-			}
-			// setting secret question list by calling method getParentSecretQuestionDetails()
-			parentTO.setQuestionToList(getParentSecretQuestionDetails(username));
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					Map<String,Object> resultMap = null;
+					ResultSet rsUser = null;
+					ResultSet rsQuestion = null;
+					try {
+						cs.execute();
+						rsUser = (ResultSet) cs.getObject(2);
+						rsQuestion = (ResultSet) cs.getObject(3);
+						
+						ParentTO parentTO = null;
+						while (rsUser.next()) {
+							parentTO = new ParentTO();
+							parentTO.setUserId(rsUser.getLong("USERID"));
+							parentTO.setUserName(rsUser.getString("USERNAME"));
+							parentTO.setDisplayName(rsUser.getString("DISPLAY_USERNAME"));
+							parentTO.setLastName(rsUser.getString("LAST_NAME"));
+							parentTO.setFirstName(rsUser.getString("FIRST_NAME"));
+							parentTO.setMail(rsUser.getString("EMAIL_ADDRESS"));
+							parentTO.setMobile(rsUser.getString("PHONE_NO"));
+							parentTO.setCountry(rsUser.getString("COUNTRY"));
+							parentTO.setZipCode(rsUser.getString("ZIPCODE"));
+							parentTO.setCity(rsUser.getString("CITY"));
+							parentTO.setState(rsUser.getString("STATE"));
+							parentTO.setStreet(rsUser.getString("STREET"));
+							parentTO.setSalt(rsUser.getString("SALT"));
+						}
+						
+						List<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
+						QuestionTO questionTo = null;
+						while (rsQuestion.next()) {
+							questionTo = new QuestionTO();
+							questionTo.setSno(rsQuestion.getLong("SNO"));
+							questionTo.setQuestionId(rsQuestion.getLong("QUESTION_ID"));
+							questionTo.setQuestion(rsQuestion.getString("QUESTION"));
+							questionTo.setAnswerId(rsQuestion.getLong("ANSWER_ID"));
+							questionTo.setAnswer(rsQuestion.getString("ANSWER"));
+							questionTOs.add(questionTo);
+						}
+						
+						resultMap = new HashMap<String,Object>();
+						resultMap.put("parentTO", parentTO);
+						resultMap.put("questionTOs", questionTOs);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						logger.log(IAppLogger.ERROR, "Error occurred while retrieving user details for manage.", e);
+					}
+					return resultMap;
+				}
+			});
+			
+			parentTO = (ParentTO)resultMap.get("parentTO");
+			parentTO.setQuestionToList((List<QuestionTO>)resultMap.get("questionTOs"));
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while retrieving parent details for manage.", e);
+			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, "Error occurred while retrieving user details for manage.", e);
+		}finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - manageParentAccountDetails() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return parentTO;
-	}
-
-	/**
-	 * Get parent secret questions details for manage.
-	 * 
-	 * @param username
-	 * @return
-	 */
-	public ArrayList<QuestionTO> getParentSecretQuestionDetails(String username) {
-		// TODO : Code Review : Not an Interface method but has public method access
-		List<Map<String, Object>> lstData = null;
-		ArrayList<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
-
-		// populate parent security question and answer detail
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PARENT_SECURITY_QUESTION, username);
-		if (lstData.size() > 0) {
-
-			for (Map<String, Object> fieldDetails : lstData) {
-				QuestionTO questionTo = new QuestionTO();
-				questionTo.setSno(((BigDecimal) fieldDetails.get("SNO")).longValue());
-				questionTo.setQuestionId(((BigDecimal) fieldDetails.get("QUESTION_ID")).longValue());
-				questionTo.setQuestion((String) fieldDetails.get("QUESTION"));
-				questionTo.setAnswerId(((BigDecimal) fieldDetails.get("ANSWER_ID")).longValue());
-				questionTo.setAnswer((String) fieldDetails.get("ANSWER"));
-
-				questionTOs.add(questionTo);
-			}
-		}
-		return questionTOs;
 	}
 
 	/*
@@ -1441,7 +1487,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecurityQuestionForUser(Map<String, Object>)
 	 */
-
+	//TODO - Need to move in store proc. Use PKG_MY_ACCOUNT.SP_GET_SECURITY_QUESTIONS() then delete GET_PARENT_SECURITY_QUESTION
 	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap) {
 
 		String contractName = (String) paramMap.get("contractName"); 
