@@ -33,7 +33,12 @@ $(document).ready(function() {
 		if($.browser.msie) {
 			$('.label').css('width', '200px');
 		}
-		refreshChildrenList();
+		
+		//As refreshChildrenList() has been used for PN only so reduce unnecessary call for Admin/Teacher login - By Joy
+		if($("#parentMenu").length){
+			refreshChildrenList();
+		}
+		
 		$("ul#shortcuts li").removeClass("current");
 		$(".shortcut-stats").parent().addClass("current");
 	}
