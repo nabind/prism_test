@@ -81,7 +81,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		;
 		// if(allNodes == null) return bulkDownloadTO;
 		List<ObjectValueTO> students = null;
-		long studentCount = 0, schoolCount = 0, classCount = 0;
+		long studentCount = 0;
 		StringBuilder studentIds = new StringBuilder();
 		Set<String> school = new HashSet<String>();
 		Set<String> orgClass = new HashSet<String>();
@@ -663,7 +663,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
 				throw new Exception();
 			} else {
-				BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+				// BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 				IOUtils.copy(is, fos);
 			}
 
