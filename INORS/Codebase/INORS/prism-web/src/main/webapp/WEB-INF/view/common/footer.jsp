@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <spring:theme code="theme.name" var="themeName"/>
-<footer class="margin-top main-footer">
+<footer class="margin-top">
 	<div class="align-center custom-p color-white" style="font-size: 11px;">
 		<c:choose>
 			<c:when test="${fn:contains(themeName, 'parent')}" >
