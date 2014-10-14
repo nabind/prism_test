@@ -245,7 +245,7 @@ public class ParentController {
 		String loggedinUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		parentTO = parentService.manageParentAccountDetails(loggedinUser);	
 		
-		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		String contractName = Utils.getContractName();
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("contractName", contractName);
 		List<QuestionTO> questionList = parentService.getSecretQuestions(paramMap);
