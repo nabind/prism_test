@@ -103,7 +103,7 @@ public class AdminController {
 		String currentOrg =(String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String orgJsonString;
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -183,7 +183,7 @@ public class AdminController {
 		if("Search".equals(searchParam)) searchParam = "";
 		
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		try {
 			if (nodeid != null)	{
 				String adminYear = (String) request.getParameter("AdminYear");
@@ -229,7 +229,7 @@ public class AdminController {
 		String tenantId = request.getParameter("tenantId");
 		String adminYear = request.getParameter("adminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		try {
 			if (tenantId != null && adminYear != null) {
@@ -265,7 +265,7 @@ public class AdminController {
 		try {
 			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+			long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -315,7 +315,7 @@ public class AdminController {
 		try {
 			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+			long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			String orgs = null;
@@ -364,7 +364,7 @@ public class AdminController {
 		String orgJsonString;
 		ModelAndView modelAndView = new ModelAndView("admin/users");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -450,7 +450,7 @@ public class AdminController {
 		String currentOrg = (String) request.getSession().getAttribute(
 				IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		
 		try {
@@ -1382,7 +1382,7 @@ public class AdminController {
 			String userId=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			String userName=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+			long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 			String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -1470,7 +1470,7 @@ public class AdminController {
 		String adminYear = (String) request.getParameter("AdminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("loggedinUserTO", loggedinUserTO);
@@ -1545,7 +1545,7 @@ public class AdminController {
 		String adminYear = (String) request.getParameter("AdminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String product = (String) request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -1694,7 +1694,7 @@ public class AdminController {
 			String isRedirectedTree = (String) request.getParameter("isRedirectedTree");
 			String searchParam = request.getParameter("searchParam");
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+			long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 
 			if ("Search".equals(searchParam))
 				searchParam = "";
@@ -1711,7 +1711,7 @@ public class AdminController {
 					paramMap.put("orgMode", orgMode);
 					paramMap.put("adminYear", adminYear);
 					paramMap.put("moreCount", moreCount);
-					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.valueOf(customer).longValue());
+					// studentTOs =  parentService.searchStudentOnRedirect(request.getParameter("studentBioId"), scrollId, Long.parseLong(customer));
 					logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMap + ")");
 					studentTOs = parentService.searchStudentOnRedirect(paramMap);
 					// (String)request.getSession().getAttribute(IApplicationConstants.CURRORG)
@@ -1871,7 +1871,7 @@ public class AdminController {
 	public String searchStudentAutoComplete( HttpServletRequest req, HttpServletResponse res) {
 		logger.log(IAppLogger.INFO, "Enter: searchStudentAutoComplete");
 		String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		
 		try {
 			String adminYear = (String) req.getParameter("AdminYear");
@@ -1911,7 +1911,7 @@ public class AdminController {
 	public String searchStudent(HttpServletRequest req, HttpServletResponse res ) {
 		logger.log(IAppLogger.INFO, "Enter: searchStudent");
 		String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		
 		try {
 			ArrayList<StudentTO> studentsList = null;
@@ -1974,7 +1974,7 @@ public class AdminController {
 		String adminYear = (String) request.getParameter("AdminYear");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = null;
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 
 		try {
@@ -2184,7 +2184,7 @@ public class AdminController {
 			String testElementId = request.getParameter("testElementId");
 		
 			StudentTO student = new StudentTO();
-			student.setStudentBioId((studentBioId==null) ? 0 : Long.valueOf(studentBioId));
+			student.setStudentBioId((studentBioId==null) ? 0 : Long.parseLong(studentBioId));
 			student.setAdminid(adminYear);
 			student.setInvitationcode(invitationCode);
 			student.setTestElementId(testElementId);
@@ -2315,7 +2315,7 @@ public class AdminController {
 					DecimalFormat df = new DecimalFormat("0.000");
 					df.setMaximumFractionDigits(3);
 					jobTrackingTO.setFileSize(df.format(megabytes) + "M");
-					jobTrackingTO.setJobId(Long.valueOf(jobId));
+					jobTrackingTO.setJobId(Long.parseLong(jobId));
 					jobTrackingTO.setFilePath(filePath);
 					jobTrackingTO.setRequestFilename(fileName);
 					fileDetails.add(jobTrackingTO);

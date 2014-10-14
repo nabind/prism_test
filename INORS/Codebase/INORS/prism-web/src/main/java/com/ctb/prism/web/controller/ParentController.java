@@ -180,19 +180,19 @@ public class ParentController {
 		String qsn1 = (String)req.getParameter("qsn1");
 		String ans1 = (String)req.getParameter("ans1");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn1));
+		questionTO.setQuestionId(Long.parseLong(qsn1));
 		questionTO.setAnswer(ans1);
 		questionToList.add(questionTO);
 		String qsn2 = (String)req.getParameter("qsn2");
 		String ans2 = (String)req.getParameter("ans2");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn2));
+		questionTO.setQuestionId(Long.parseLong(qsn2));
 		questionTO.setAnswer(ans2);	
 		questionToList.add(questionTO);		
 		String qsn3 = (String)req.getParameter("qsn3");
 		String ans3 = (String)req.getParameter("ans3");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn3));
+		questionTO.setQuestionId(Long.parseLong(qsn3));
 		questionTO.setAnswer(ans3);		
 		questionToList.add(questionTO);
 		parentTO.setQuestionToList(questionToList);
@@ -334,7 +334,7 @@ public class ParentController {
 			}
 		}
 		
-		parentTO.setUserId(Long.valueOf(userId));
+		parentTO.setUserId(Long.parseLong(userId));
 		parentTO.setFirstName(firstName);
 		parentTO.setLastName(lastName);
 		parentTO.setMail(mailId);
@@ -351,25 +351,25 @@ public class ParentController {
 		String ans1 = (String)req.getParameter("ans1");
 		String ansId1 = (String)req.getParameter("ansId1");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn1));
+		questionTO.setQuestionId(Long.parseLong(qsn1));
 		questionTO.setAnswer(ans1);
-		questionTO.setAnswerId(Long.valueOf(ansId1));
+		questionTO.setAnswerId(Long.parseLong(ansId1));
 		questionToList.add(questionTO);
 		String qsn2 = (String)req.getParameter("qsn2");
 		String ans2 = (String)req.getParameter("ans2");
 		String ansId2 = (String)req.getParameter("ansId2");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn2));
+		questionTO.setQuestionId(Long.parseLong(qsn2));
 		questionTO.setAnswer(ans2);
-		questionTO.setAnswerId(Long.valueOf(ansId2));
+		questionTO.setAnswerId(Long.parseLong(ansId2));
 		questionToList.add(questionTO);		
 		String qsn3 = (String)req.getParameter("qsn3");
 		String ans3 = (String)req.getParameter("ans3");
 		String ansId3 = (String)req.getParameter("ansId3");
 		questionTO = new QuestionTO();
-		questionTO.setQuestionId(Long.valueOf(qsn3));
+		questionTO.setQuestionId(Long.parseLong(qsn3));
 		questionTO.setAnswer(ans3);		
-		questionTO.setAnswerId(Long.valueOf(ansId3));	
+		questionTO.setAnswerId(Long.parseLong(ansId3));	
 		questionToList.add(questionTO);
 		parentTO.setQuestionToList(questionToList);	
 

@@ -268,7 +268,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 		if (strCustomerId == null) {
 			customerId = 0;
 		} else {
-			customerId = Long.valueOf(strCustomerId).longValue();
+			customerId = Long.parseLong(strCustomerId);
 		}
 		try{
 			orgList = (ArrayList<OrgTO>) adminService.getOrganizationList(tenantId, adminYear, customerId);

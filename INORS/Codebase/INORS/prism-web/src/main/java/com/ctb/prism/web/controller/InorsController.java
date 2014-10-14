@@ -391,7 +391,7 @@ public class InorsController {
 
 			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
 			bulkDownloadTO.setQuerysheetFile(docName);
-			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.valueOf(currentUserId));
+			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
 			bulkDownloadTO.setUsername(currentUser);
 
 			bulkDownloadTO.setCustomerId(customer);
@@ -657,8 +657,8 @@ public class InorsController {
 	private String getHideContentFlagGroupDownloadForm(String groupFile, String productName, List<ReportMessageTO> reportMessages) {
 		String hideContentFlag = IApplicationConstants.FLAG_N;
 		String currentAdminYear = inorsService.getCurrentAdminYear();
-		Integer lastAdmYr = (new Integer(currentAdminYear)) - 1;
-		String lastAdminYear = lastAdmYr.toString();
+		int lastAdmYr = Integer.parseInt(currentAdminYear) - 1;
+		String lastAdminYear = String.valueOf(lastAdmYr);
 		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
 		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
 		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
@@ -1016,7 +1016,7 @@ public class InorsController {
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		try {
 			String nodeid = (String) request.getParameter("tenantId");
 			String nodeLevel = (String) request.getParameter("nodeLevel");
@@ -1046,13 +1046,13 @@ public class InorsController {
 						OrgTO to = new OrgTO();
 						OrgTreeTO treeTo = new OrgTreeTO();
 
-						to.setId((obj.getValue() == null) ? 0 : Long.valueOf(obj.getValue()));
-						to.setParentTenantId(Long.valueOf(nodeid));
+						to.setId((obj.getValue() == null) ? 0 : Long.parseLong(obj.getValue()));
+						to.setParentTenantId(Long.parseLong(nodeid));
 						to.setOrgLevel(-1);
 						to.setClassName("jstree-leaf");
 
 						treeTo.setState("leaf");
-						treeTo.setOrgTreeId(Long.valueOf(nodeid));
+						treeTo.setOrgTreeId(Long.parseLong(nodeid));
 						treeTo.setData(obj.getName());
 						treeTo.setMetadata(to);
 						treeTo.setAttr(to);
@@ -1090,7 +1090,7 @@ public class InorsController {
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null) ? 0 : Long.valueOf(customer);
+		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		String status = "Error";
 		try {
 			// remove retain bulk value
@@ -1119,7 +1119,7 @@ public class InorsController {
 				testProgram = (String) parameters.get("p_testProgram");
 			}
 			bulkDownloadTO.setQuerysheetFile(docName);
-			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.valueOf(currentUserId));
+			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
 			bulkDownloadTO.setUsername(currentUser);
 			bulkDownloadTO.setTestAdministration(adminYear);
 			bulkDownloadTO.setSchool(school);
@@ -1211,7 +1211,7 @@ public class InorsController {
 		String productName = null;
 		try {
 			if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
-				productName = inorsService.getProductNameById(Long.parseLong(testAdministrationVal));
+				productName = inorsService.getProductNameById(Long.valueOf(testAdministrationVal));
 			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.WARN, e.getMessage());
@@ -1291,8 +1291,8 @@ public class InorsController {
 		modelAndView.addObject("dataloadMessage", dataloadMessage);
 
 		String currentAdminYear = inorsService.getCurrentAdminYear();
-		Integer lastAdmYr = (new Integer(currentAdminYear)) - 1;
-		String lastAdminYear = lastAdmYr.toString();
+		int lastAdmYr = Integer.parseInt(currentAdminYear) - 1;
+		String lastAdminYear = String.valueOf(lastAdmYr);
 		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
 		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
 

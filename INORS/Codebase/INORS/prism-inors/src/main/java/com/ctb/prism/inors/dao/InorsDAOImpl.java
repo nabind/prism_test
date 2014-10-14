@@ -951,8 +951,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				try {
-					Integer i = new Integer(fieldDetails.get("ADMIN_YEAR").toString());
-					currentAdminYear = i.toString();
+					int i = Integer.parseInt(fieldDetails.get("ADMIN_YEAR").toString());
+					currentAdminYear = String.valueOf(i);
 				} catch (Exception e) {
 					logger.log(IAppLogger.WARN, "Check the Current Admin Query. Returning System Year.");
 				}

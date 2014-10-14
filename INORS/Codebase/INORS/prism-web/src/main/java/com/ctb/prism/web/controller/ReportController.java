@@ -1740,13 +1740,13 @@ public class ReportController{
 			 * if("1".equals(isEnabled)) { isEnabled = IApplicationConstants.ACTIVE_FLAG; } else { isEnabled = IApplicationConstants.INACTIVE_FLAG; }
 			 */
 			ReportTO reportTO = new ReportTO();
-			reportTO.setReportId(Long.valueOf(reportId));
+			reportTO.setReportId(Long.parseLong(reportId));
 			reportTO.setReportName(reportName);
 			reportTO.setReportUrl(reportUrl);
 			reportTO.setEnabled((isEnabled != null && "1".equals(isEnabled)) ? true : false);
 			reportTO.setReportDescription(reportDescription);
 			reportTO.setReportType(reportType);
-			reportTO.setReportSequence(Long.valueOf(reportSequence == null ? reportId : reportSequence));
+			reportTO.setReportSequence(Long.parseLong(reportSequence == null ? reportId : reportSequence));
 			reportTO.setReportStatus(reportStatus);
 			reportTO.setUserRoles(roles);
 			reportTO.setCustomerLinks(customerLinks);
