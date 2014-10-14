@@ -151,7 +151,7 @@
 											class="input full-width  validate[custom[email]]" />
 									</p>
 									<p class="button-height inline-label">
-										<label class="label" for="password"><spring:message code="label.createPassword" /></label> <input
+										<label class="label"><spring:message code="label.createPassword" /></label> <input
 											type="password" rel="editPwd" name="password" id="password"
 											style="width: 200px"
 											class="input full-width newReportName validate[maxSize[15],minSize[8]]" />
