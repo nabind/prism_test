@@ -206,13 +206,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                              P_OUT_USERID          OUT NUMBER,
                              P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
   
-    INCOUNT              NUMBER := 0;
-    USERSEQID            USERS.USERID%TYPE := 0;
-    ORGUSERSEQID         ORG_USERS.ORG_USER_ID%TYPE := 0;
-    CLAIMAVAILABILITY    NUMBER := 0;
-    P_NODE_ID            NUMBER := 0;
-    P_OUT_STATUS_NUMBER  NUMBER := 0;
-    P_OUT_EXCEP_ERR_MSG1 VARCHAR2(1000);
+    INCOUNT                  NUMBER := 0;
+    USERSEQID                USERS.USERID%TYPE := 0;
+    ORGUSERSEQID             ORG_USERS.ORG_USER_ID%TYPE := 0;
+    CLAIMAVAILABILITY        NUMBER := 0;
+    P_NODE_ID                NUMBER := 0;
+    P_OUT_STATUS_PH_ANSWER   NUMBER := 0;
+    P_OUT_STATUS_PWD_HISTORY NUMBER := 0;
+    P_OUT_EXCEP_ERR_MSG1     VARCHAR2(1000);
   
   BEGIN
   
@@ -354,32 +355,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                          P_IN_PH_QUESTIONIDS,
                                          '',
                                          P_IN_PH_ANSWER_VALUES,
-                                         P_OUT_STATUS_NUMBER,
+                                         P_OUT_STATUS_PH_ANSWER,
                                          P_OUT_EXCEP_ERR_MSG1);
       
-        IF P_OUT_STATUS_NUMBER <> 1 THEN
+        IF P_OUT_STATUS_PH_ANSWER = 1 THEN
+        
+          SP_SAVE_PASSWORD_HISTORY(USERSEQID,
+                                   P_IN_PASSWORD,
+                                   P_OUT_STATUS_PWD_HISTORY,
+                                   P_OUT_EXCEP_ERR_MSG1);
+        
+          IF P_OUT_STATUS_PWD_HISTORY = 1 THEN
+            P_OUT_USERID := USERSEQID;
+          ELSE
+            ROLLBACK;
+            P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
+          END IF;
+        ELSE
           ROLLBACK;
           P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
         END IF;
       
       END IF;
     
-      P_OUT_USERID := USERSEQID;
-    
-      SP_SAVE_PASSWORD_HISTORY(P_OUT_USERID,
-                               P_IN_PASSWORD,
-                               P_OUT_STATUS_NUMBER,
-                               P_OUT_EXCEP_ERR_MSG1);
-    
-      IF P_OUT_STATUS_NUMBER <> 1 THEN
-        ROLLBACK;
-        P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
-      END IF;
-    
     END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
+      P_OUT_USERID        := 0;
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
       ROLLBACK;
   END SP_CREATE_PARENT;
