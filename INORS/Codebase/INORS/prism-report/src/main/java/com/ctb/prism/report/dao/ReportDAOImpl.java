@@ -581,17 +581,19 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		boolean isGrowthUser = ((Boolean) paramMap.get("isGrowthUser")).booleanValue();
 		boolean isEduUser = ((Boolean) paramMap.get("isEduUser")).booleanValue();
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		String userId = (String) paramMap.get("userId");
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);
 		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
+		logger.log(IAppLogger.INFO, "userId = " + userId);
 		List<AssessmentTO> assessments = null;
 		if (parentReports) {
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", -1L, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", Long.valueOf(userId), orgNodeLevel);
 		} else if (isSuperUser) { /* For super user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", -1L, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", Long.valueOf(userId), orgNodeLevel);
 		} else if (isGrowthUser) {/* For growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
 		} else if (isEduUser) {/* For education center user */

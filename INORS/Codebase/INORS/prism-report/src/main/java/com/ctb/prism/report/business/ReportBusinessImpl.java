@@ -550,7 +550,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 				break;
 			}
 		}
-		if ("".equals(loggedinUserTO.getUserType())) {
+		if ("E".equals(loggedinUserTO.getUserType())) {
 			isEduUser = true;
 		}
 		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
@@ -561,6 +561,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 		paramMap.put("isGrowthUser", isGrowthUser);
 		paramMap.put("isSuperUser", isSuperUser);
 		paramMap.put("orgNodeLevel", orgNodeLevel);
+		String userId = loggedinUserTO.getUserId();
+		logger.log(IAppLogger.INFO, "userId = " + userId);
+		paramMap.put("userId", userId);
 		return reportDAO.getAssessments(paramMap);
 	}
 
