@@ -1327,7 +1327,7 @@ function groupDownloadSubmit(button) {
 		var status = false;
 		var json = getGroupDownloadTO();
 		if ((button == "SP") || (button == "CP") || (button == "SS")) {
-			var errMsg = "";
+			var errMsg = validateGroupDownloadForm(button, json);
 			if (errMsg == "") {
 				$.modal.confirm(strings['msg.duplexPrintConfirm'],
 					function() {
@@ -1507,7 +1507,7 @@ function validateGroupDownloadForm(button, json) {
 		return errMsg;
 	}
 	// Email
-	var email = $("#email").val();
+	/*var email = $("#email").val();
 	var isValidEmail = validateEmail(email);
 	if (isValidEmail == false) {
 		errMsg = strings['msg.validEmail'];
@@ -1517,7 +1517,7 @@ function validateGroupDownloadForm(button, json) {
 			errMsg = strings['msg.validEmail'];
 			return errMsg;
 		}
-	}
+	}*/
 
 	// Student
 	var students = json.students;
