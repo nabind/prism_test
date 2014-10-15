@@ -40,7 +40,8 @@ public class ParentTO extends BaseTO {
 	private long isAlreadyClaimed = 0;
 	private String fullName = "";
 	private String contractName = "";
-	private String salt;
+	private String salt = "";
+	private boolean ldapFlag;
 	
 	public String getSalt() {
 		return salt;
@@ -221,6 +222,12 @@ public class ParentTO extends BaseTO {
 	}
 	public void setContractName(String contractName) {
 		this.contractName = contractName;
+	}
+	public boolean isLdapFlag() {
+		return ldapFlag;
+	}
+	public void setLdapFlag(boolean ldapFlag) {
+		this.ldapFlag = ldapFlag;
 	}
 }
 

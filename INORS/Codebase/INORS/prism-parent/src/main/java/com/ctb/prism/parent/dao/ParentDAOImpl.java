@@ -323,7 +323,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean registerUser(ParentTO parentTO) throws BusinessException {
+	public boolean registerUser(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: registerUser()");
 		long t1 = System.currentTimeMillis();
 		final String userName = parentTO.getUserName();
@@ -1576,53 +1576,100 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		return UserTOs;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * Remove multiple DB call to single DB call and moved to store proc - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
 	@CacheEvict(value = "adminCache", allEntries = true)
-	public boolean updateUserProfile(ParentTO parentTO) throws BusinessException {
-
-		long user_id = parentTO.getUserId();
-		String password = parentTO.getPassword();
+	public boolean updateUserProfile(final ParentTO parentTO) throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUserProfile()");
+		long t1 = System.currentTimeMillis();
+		
+		boolean ldapFlag = Boolean.TRUE;
+		parentTO.setLdapFlag(ldapFlag);
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		boolean returnFlag = Boolean.FALSE;
+		
 		try {
-			boolean ldapFlag = true;
-			// calling ldapManager for updating password for a username in LDAP
-			if (password != null && !"".equals(password)) {
+			if (parentTO.getPassword() != null && !"".equals(parentTO.getPassword())) {
+				// calling ldapManager for updating password for a username in LDAP
 				if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-					ldapFlag = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), password);
-				} else {
-					if(parentTO.getSalt() == null) parentTO.setSalt(PasswordGenerator.getNextSalt());
-					String salt = parentTO.getSalt(); //PasswordGenerator.getNextSalt();
-					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_N,
-							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt, parentTO.getUserName());
-					// add to password history
-					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
-							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(parentTO.getUserName(), salt)), parentTO.getUserName());
-					
-					ldapFlag = true;
+					ldapFlag = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
+					parentTO.setLdapFlag(ldapFlag);
+				}else{
+					if(parentTO.getSalt() == null){
+						parentTO.setSalt(PasswordGenerator.getNextSalt());
+					}
+					parentTO.setPassword(SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), parentTO.getSalt())));
 				}
+			}else{
+				parentTO.setPassword(String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 			}
-			if (ldapFlag) {
-				// updating user details in users table
-				int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_USER_DATA, parentTO.getLastName(), parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(),
-						parentTO.getCountry(), parentTO.getZipCode(), parentTO.getState(), parentTO.getStreet(), parentTO.getCity(), parentTO.getDisplayName(), user_id);
-				if (count > 0) {
-					// delete security answers for that user and then insert as fresh
-					// boolean isDeleted= deletePasswordHistAnswer(user_id);
-					// if(isDeleted){
-					savePasswordHistAnswer(user_id, parentTO.getQuestionToList());
-					// }
+			final String[] questionIdArr = new String[parentTO.getQuestionToList().size()];
+			final String[] ansValArr = new String[parentTO.getQuestionToList().size()];
+			int index = 0;
+			for (QuestionTO questionTo : parentTO.getQuestionToList()) {
+				questionIdArr[index] = String.valueOf(questionTo.getQuestionId());
+				ansValArr[index] = String.valueOf(questionTo.getAnswer());
+				index++;
+			}
+			
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					int count =1;
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.UPDATE_USER_DATA + "}");
+					cs.setLong(count++, parentTO.getUserId());
+					cs.setString(count++, parentTO.getPassword());
+					cs.setString(count++, parentTO.getSalt());
+					cs.setString(count++, parentTO.getFirstName());
+					cs.setString(count++, parentTO.getLastName());
+					cs.setString(count++, parentTO.getMail());
+					cs.setString(count++, parentTO.getMobile());
+					cs.setString(count++, parentTO.getCountry());
+					cs.setString(count++, parentTO.getZipCode());
+					cs.setString(count++, parentTO.getState());
+					cs.setString(count++, parentTO.getStreet());
+					cs.setString(count++, parentTO.getCity());
+					cs.setString(count++, parentTO.getDisplayName());
+					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
+					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
+					cs.setBoolean(count++, parentTO.isLdapFlag());
+					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
 				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(17);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setErrorMsg(cs.getString(18));
+						Utils.logError(statusTO.getErrorMsg());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+			
+			if(Long.parseLong(objectValueTO.getValue()) > 0){
+				returnFlag = Boolean.TRUE;
 			}
+			
 		} catch (BusinessException bex) {
 			throw new BusinessException(bex.getCustomExceptionMessage());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating user profile details.", e);
 			return Boolean.FALSE;
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.ERROR, "ParentDAOImpl - updateUserProfile() with error: " + objectValueTO.getErrorMsg());
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return Boolean.TRUE;
+		return returnFlag;
 	}
 
 	

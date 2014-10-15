@@ -52,8 +52,7 @@ public interface IParentQuery {
 	public static final String DELETE_ANSWER_DATA = CustomStringUtil.appendString(
 			"DELETE FROM PWD_HINT_ANSWERS WHERE USERID = ?");
 	// Added by Ravi for Manage Profile
-	public static final String UPDATE_USER_DATA = CustomStringUtil.appendString(
-			"UPDATE USERS SET LAST_NAME = ?, FIRST_NAME = ?, EMAIL_ADDRESS = ?, PHONE_NO = ?, COUNTRY = ?, ZIPCODE = ?, STATE=? , STREET=?, CITY=?, DISPLAY_USERNAME=?,UPDATED_DATE_TIME = sysdate WHERE USERID = ?");
+	public static final String UPDATE_USER_DATA = "PKG_MY_ACCOUNT.SP_UPDATE_USER_ACCOUNT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	// Query to retrieve list of children of the logged in parent.
 	public static final String SEARCH_CHILDREN = CustomStringUtil.appendString(
