@@ -308,6 +308,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							cs.setString(1, username);
 							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -334,8 +336,11 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
 									user.setUserType(userType);
 									user.setOrgMode(rs.getString("ORG_MODE"));
-									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));									
 								}
+								user.setIsPasswordExpired(cs.getString(3));
+								user.setIsPasswordWarning(cs.getString(4));
+								Utils.logError(cs.getString(5));
 								
 							} catch (SQLException e) {
 								e.printStackTrace();
@@ -353,6 +358,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							cs.setString(1, username);
 							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -381,7 +388,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 									user.setOrgMode(rs.getString("ORG_MODE"));
 									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
 								}
-								Utils.logError(cs.getString(3));
+								user.setIsPasswordExpired(cs.getString(3));
+								user.setIsPasswordWarning(cs.getString(4));
+								Utils.logError(cs.getString(5));
 								
 							} catch (SQLException e) {
 								e.printStackTrace();

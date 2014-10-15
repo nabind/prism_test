@@ -35,6 +35,8 @@ public class UserTO extends BaseTO{
 	private String orgMode;
 	private String contractName;
 	private long defultCustProdId;
+	private String isPasswordExpired;
+	private String isPasswordWarning;
 	
 	public long getDefultCustProdId() {
 		return defultCustProdId;
@@ -192,5 +194,16 @@ public class UserTO extends BaseTO{
 	public void setOrgMode(String orgMode) {
 		this.orgMode = orgMode;
 	}
-	
+	public String getIsPasswordExpired() {
+		return isPasswordExpired;
+	}
+	public void setIsPasswordExpired(String isPasswordExpired) {
+		this.isPasswordExpired = isPasswordExpired;
+	}
+	public String getIsPasswordWarning() {
+		return isPasswordWarning;
+	}
+	public void setIsPasswordWarning(String isPasswordWarning) {
+		this.isPasswordWarning = isPasswordWarning;
+	}
 }

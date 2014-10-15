@@ -378,6 +378,29 @@ public class LoginController {
 					}
 					username = user.getUserName();
 				}
+				
+				String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+				
+				boolean isSwitchUser = false;
+				// check if user logs-in first time
+				if (switchUser != null && switchUser.trim().length() > 0) {
+					isSwitchUser = true;
+				} else if (IApplicationConstants.INACTIVE_FLAG.equals(user.getUserStatus())) {
+					if (req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null) {
+						// user is disabled - redirect to access denied page
+						req.getSession().invalidate();
+						return new ModelAndView("redirect:denied.jsp");
+					} else {
+						// user is disabled - but the Admin is using Login As feature
+						logger.log(IAppLogger.INFO, "Login As feature is used Admin");
+					}
+				}
+				
+				if (!isSwitchUser && user.getIsPasswordExpired().equals("TRUE")) {
+					// logger.log(IAppLogger.DEBUG, "calling  changePassword.do...............................");
+					return new ModelAndView("redirect:changePassword.do?username=" + username);
+				}
+				
 				paramMap.put("userId", user.getUserId());
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
@@ -410,7 +433,7 @@ public class LoginController {
 				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
 				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
 				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
-				String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+				
 				
 				if (switchUser != null && switchUser.trim().length() > 0) {
 					req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
@@ -427,20 +450,7 @@ public class LoginController {
 					req.getSession().removeAttribute("PARENT_LOGIN");
 				}
 
-				boolean isSwitchUser = false;
-				// check if user logs-in first time
-				if (switchUser != null && switchUser.trim().length() > 0) {
-					isSwitchUser = true;
-				} else if (IApplicationConstants.INACTIVE_FLAG.equals(user.getUserStatus())) {
-					if (req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null) {
-						// user is disabled - redirect to access denied page
-						req.getSession().invalidate();
-						return new ModelAndView("redirect:denied.jsp");
-					} else {
-						// user is disabled - but the Admin is using Login As feature
-						logger.log(IAppLogger.INFO, "Login As feature is used Admin");
-					}
-				}
+				
 				String loginAs = (String) req.getSession().getAttribute(IApplicationConstants.LOGIN_AS);
 				if (loginAs != null && IApplicationConstants.ACTIVE_FLAG.equals(loginAs)) {
 					isSwitchUser = true;

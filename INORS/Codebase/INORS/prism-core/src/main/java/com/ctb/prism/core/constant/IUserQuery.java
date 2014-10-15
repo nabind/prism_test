@@ -19,7 +19,7 @@ public interface IUserQuery {
 			" WHERE UPPER(USERS.USERNAME) = UPPER(?)",
 			" AND USERS.USERID = ORG.USERID AND ORG.ORG_NODEID = OND.ORG_NODEID");
 	
-	public static final String SP_GET_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_USER_DETAILS(?, ?, ?)}";
+	public static final String SP_GET_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_USER_DETAILS(?, ?, ?, ?, ?)}";
 
 	public static final String SP_GET_USER_EMAIL = "{CALL PKG_MANAGE_USERS.SP_GET_USER_EMAIL(?, ?, ?)}";
 	
@@ -33,7 +33,7 @@ public interface IUserQuery {
 			" AND EC.EDU_CENTERID = EL.EDU_CENTERID",
 			" AND EL.USERID = USERS.USERID");
 	*/
-	public static final String SP_GET_EDU_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_EDUUSER_DETAILS(?, ?, ?)}";
+	public static final String SP_GET_EDU_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_EDUUSER_DETAILS(?, ?, ?, ?, ?)}";
 	
 	// queru to fetch user roles for logged-in user
 	/*public static final String SELECT_USER_AUTHORITIES = CustomStringUtil.appendString(
