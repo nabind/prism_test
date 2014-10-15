@@ -1327,8 +1327,9 @@ function groupDownloadSubmit(button) {
 		var status = false;
 		var json = getGroupDownloadTO();
 		if ((button == "SP") || (button == "CP") || (button == "SS")) {
-			var errMsg = validateGroupDownloadForm(button, json);
+			var errMsg = "";
 			if (errMsg == "") {
+				if($('#groupDownload').validationEngine('validate')) {
 				$.modal.confirm(strings['msg.duplexPrintConfirm'],
 					function() {
 						// Ajax Call
@@ -1372,6 +1373,7 @@ function groupDownloadSubmit(button) {
 						// cancel button
 					}
 				);
+			}
 			} else {
 				if (errMsg == strings['msg.selectStudent']) {
 					// clearGDCache();
