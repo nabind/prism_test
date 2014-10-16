@@ -379,6 +379,12 @@ public class LoginController {
 					username = user.getUserName();
 				}
 				
+				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
+				req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
+				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
+				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
+				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
+				
 				String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
 				
 				boolean isSwitchUser = false;
@@ -401,6 +407,7 @@ public class LoginController {
 					return new ModelAndView("redirect:changePassword.do?username=" + username);
 				}
 				
+				req.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING, user.getIsPasswordWarning());
 				paramMap.put("userId", user.getUserId());
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
@@ -427,12 +434,6 @@ public class LoginController {
 				paramMapMessage.put("userId",user.getUserId());
 				Map<String, Object> messageMap = getMessageMap(paramMapMessage);
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
-
-				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
-				req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
-				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
-				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
-				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
 				
 				
 				if (switchUser != null && switchUser.trim().length() > 0) {

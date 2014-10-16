@@ -261,7 +261,7 @@ public interface IApplicationConstants {
 	public static final String CONTRACT_NAME_TASC = "tasc";
 	public static final String CONTRACT_NAME_INORS = "inors";
 	
-	
+	public static final String PASSWORD_WARNING="passwordWarning";
 	
 	/************************ Contract based Configuration property ****************/
 	public static final String ROLE_NOT_ADDED = "role.not.added";

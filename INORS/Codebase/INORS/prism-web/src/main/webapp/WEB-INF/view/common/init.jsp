@@ -69,6 +69,21 @@
 				   .on('enter-query-desktop',			function() { element.css('overflow-x', 'hidden'); });
 		
 		$(document).ready(function() {
+			
+			if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val == 'TRUE') {
+				notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>).', {
+					system:				true,
+					vPos:				'top',
+					hPos:				'center',
+					autoClose:			false,
+					icon:				'themes/acsi/img/fineFiles/128/log.png',
+					iconOutside:		true,
+					closeButton:		true,
+					showCloseOnHover:	true,
+					groupSimilar:		true
+				});
+			}
+			
 			if($.template.iOs || $.template.android) {
 				$(".iframeWrapper").draggable({ 
 					axis: "x",
@@ -464,3 +479,6 @@
 <%String currentUser = (String)request.getSession().getAttribute(IApplicationConstants.CURRUSER);%>
 <input type="hidden" value="<%=currentUser%>" id="currentUser">
 <input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
+<input type="hidden" name="pwdWarning" id="pwdWarning" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.PASSWORD_WARNING)%>">
+<% request.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING,"FALSE");%>
+
