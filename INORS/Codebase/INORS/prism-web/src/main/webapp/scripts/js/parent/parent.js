@@ -46,10 +46,8 @@ $(document).ready(function() {
 	//==================== Format Phone number =================
 	$('#formatPh').live("click", function() {
 		var separator = '-';
-		var mobileNo= document.getElementById("mobile").value;
-		//document.getElementById("mobile").value =  mobileNo.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-		document.getElementById("mobile").value =  mobileNo.replace( /[^\d]/g, '' )
-        												   .replace( /(\d{3})(\d{3})(\d{4})/, '$1' + separator + '$2' + separator + '$3' );
+		var mobileNo= $('#mobile').val();
+		$('#mobile').val(mobileNo.replace( /[^\d]/g, '' ).replace( /(\d{3})(\d{3})(\d{4})/, '$1' + separator + '$2' + separator + '$3' ));
 	});
 	
 	//=================== SAVE MY PROFILE =======================
