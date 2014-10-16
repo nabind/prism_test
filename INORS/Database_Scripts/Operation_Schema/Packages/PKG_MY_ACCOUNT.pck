@@ -22,6 +22,24 @@ CREATE OR REPLACE PACKAGE PKG_MY_ACCOUNT IS
                               P_OUT_STATUS_NUMBER   OUT NUMBER,
                               P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
+  PROCEDURE SP_UPDATE_USER_ACCOUNT(P_IN_USERID           IN USERS.USERID%TYPE,
+                                   P_IN_PASSWORD         IN USERS.PASSWORD%TYPE,
+                                   P_IN_SALT             IN USERS.SALT%TYPE,
+                                   P_IN_FIRST_NAME       IN USERS.FIRST_NAME%TYPE,
+                                   P_IN_LAST_NAME        IN USERS.LAST_NAME%TYPE,
+                                   P_IN_EMAIL_ADDRESS    IN USERS.EMAIL_ADDRESS%TYPE,
+                                   P_IN_PHONE_NO         IN USERS.PHONE_NO%TYPE,
+                                   P_IN_COUNTRY          IN USERS.COUNTRY%TYPE,
+                                   P_IN_ZIPCODE          IN USERS.ZIPCODE%TYPE,
+                                   P_IN_STATE            IN USERS.STATE%TYPE,
+                                   P_IN_STREET           IN USERS.STREET%TYPE,
+                                   P_IN_CITY             IN USERS.CITY%TYPE,
+                                   P_IN_DISPLAY_USERNAME IN USERS.DISPLAY_USERNAME%TYPE,
+                                   P_IN_PH_QUESTIONIDS   IN VARCHAR2,
+                                   P_IN_PH_ANSWER_VALUES IN VARCHAR2,
+                                   P_OUT_STATUS_NUMBER   OUT NUMBER,
+                                   P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
+
 END PKG_MY_ACCOUNT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
@@ -193,6 +211,87 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
       ROLLBACK;
   END SP_SAVE_PH_ANSWER;
+
+  PROCEDURE SP_UPDATE_USER_ACCOUNT(P_IN_USERID           IN USERS.USERID%TYPE,
+                                   P_IN_PASSWORD         IN USERS.PASSWORD%TYPE,
+                                   P_IN_SALT             IN USERS.SALT%TYPE,
+                                   P_IN_FIRST_NAME       IN USERS.FIRST_NAME%TYPE,
+                                   P_IN_LAST_NAME        IN USERS.LAST_NAME%TYPE,
+                                   P_IN_EMAIL_ADDRESS    IN USERS.EMAIL_ADDRESS%TYPE,
+                                   P_IN_PHONE_NO         IN USERS.PHONE_NO%TYPE,
+                                   P_IN_COUNTRY          IN USERS.COUNTRY%TYPE,
+                                   P_IN_ZIPCODE          IN USERS.ZIPCODE%TYPE,
+                                   P_IN_STATE            IN USERS.STATE%TYPE,
+                                   P_IN_STREET           IN USERS.STREET%TYPE,
+                                   P_IN_CITY             IN USERS.CITY%TYPE,
+                                   P_IN_DISPLAY_USERNAME IN USERS.DISPLAY_USERNAME%TYPE,
+                                   P_IN_PH_QUESTIONIDS   IN VARCHAR2,
+                                   P_IN_PH_ANSWER_VALUES IN VARCHAR2,
+                                   P_OUT_STATUS_NUMBER   OUT NUMBER,
+                                   P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
+  
+    P_OUT_STATUS_PWD_HISTORY NUMBER := 0;
+    P_OUT_STATUS_PH_ANSWER   NUMBER := 0;
+    P_OUT_EXCEP_ERR_MSG1     VARCHAR2(1000);
+  BEGIN
+  
+    P_OUT_STATUS_NUMBER := 0;
+  
+    IF P_IN_PASSWORD <> '-99' THEN
+    
+      --INSERTING PASSWORD DATA IN USERS TABLE  
+      UPDATE USERS
+         SET IS_FIRSTTIME_LOGIN = 'N',
+             PASSWORD           = P_IN_PASSWORD,
+             SALT               = P_IN_SALT
+       WHERE USERID = P_IN_USERID;
+    
+      PKG_ADMIN_MODULE.SP_SAVE_PASSWORD_HISTORY(P_IN_USERID,
+                                                P_IN_PASSWORD,
+                                                P_OUT_STATUS_PWD_HISTORY,
+                                                P_OUT_EXCEP_ERR_MSG1);
+    
+      IF P_OUT_STATUS_PWD_HISTORY <> 1 THEN
+        ROLLBACK;
+        P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
+      END IF;
+    END IF;
+  
+    UPDATE USERS
+       SET LAST_NAME         = P_IN_LAST_NAME,
+           FIRST_NAME        = P_IN_FIRST_NAME,
+           EMAIL_ADDRESS     = P_IN_EMAIL_ADDRESS,
+           PHONE_NO          = P_IN_PHONE_NO,
+           COUNTRY           = P_IN_COUNTRY,
+           ZIPCODE           = P_IN_ZIPCODE,
+           STATE             = P_IN_STATE,
+           STREET            = P_IN_STREET,
+           CITY              = P_IN_CITY,
+           DISPLAY_USERNAME  = P_IN_DISPLAY_USERNAME,
+           UPDATED_DATE_TIME = SYSDATE
+     WHERE USERID = P_IN_USERID;
+  
+    SP_SAVE_PH_ANSWER(P_IN_USERID,
+                      P_IN_PH_QUESTIONIDS,
+                      '',
+                      P_IN_PH_ANSWER_VALUES,
+                      P_OUT_STATUS_PH_ANSWER,
+                      P_OUT_EXCEP_ERR_MSG1);
+  
+    IF P_OUT_STATUS_PH_ANSWER <> 1 THEN
+      ROLLBACK;
+      P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
+    END IF;
+  
+    P_OUT_STATUS_NUMBER := 1;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_STATUS_NUMBER := 0;
+      P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1 ||
+                             UPPER(SUBSTR(SQLERRM, 0, 255));
+      ROLLBACK;
+  END SP_UPDATE_USER_ACCOUNT;
 
 END PKG_MY_ACCOUNT;
 /

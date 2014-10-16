@@ -84,8 +84,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					try {
 						cs.execute();
 						rsQuestion = (ResultSet) cs.getObject(2);
-						QuestionTO questionTO = new QuestionTO();
+						QuestionTO questionTO = null;
 						while(rsQuestion.next()){
+							questionTO = new QuestionTO();
 							questionTO.setQuestionId(rsQuestion.getLong("QUESTION_ID"));
 							questionTO.setQuestion(rsQuestion.getString("QUESTION"));
 							questionTO.setSno(rsQuestion.getLong("SNO"));
@@ -1580,7 +1581,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Remove multiple DB call to single DB call and moved to store proc - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = "adminCache", allEntries = true)
+	@CacheEvict(value = { "configCache", "adminCache" }, allEntries = true)
 	public boolean updateUserProfile(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUserProfile()");
 		long t1 = System.currentTimeMillis();
@@ -1633,7 +1634,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, parentTO.getDisplayName());
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.setBoolean(count++, parentTO.isLdapFlag());
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
@@ -1644,9 +1644,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(17);
+						executionStatus = cs.getLong(16);
 						statusTO.setValue(Long.toString(executionStatus));
-						statusTO.setErrorMsg(cs.getString(18));
+						statusTO.setErrorMsg(cs.getString(17));
 						Utils.logError(statusTO.getErrorMsg());
 					} catch (SQLException e) {
 						e.printStackTrace();
