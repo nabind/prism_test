@@ -70,8 +70,8 @@
 		
 		$(document).ready(function() {
 			
-			if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val == 'TRUE') {
-				notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>).', {
+			if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val() == 'TRUE') {
+				notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>.', {
 					system:				true,
 					vPos:				'top',
 					hPos:				'center',
@@ -82,7 +82,7 @@
 					showCloseOnHover:	true,
 					groupSimilar:		true
 				});
-			}
+			} 
 			
 			if($.template.iOs || $.template.android) {
 				$(".iframeWrapper").draggable({ 
