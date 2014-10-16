@@ -142,6 +142,13 @@
 														
 														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
 														<c:if test="${not empty mngRpt_deleteRpt}">
+														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
+																title="Edit Actions"></a>
+															<input type="hidden" id="mngRpt_editActions" value="true"/>
+														</c:if>
+														
+														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
+														<c:if test="${not empty mngRpt_deleteRpt}">
 															<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
 																title="Delete"></a>
 															<input type="hidden" id="mngRpt_deleteRpt" value="true"/>
@@ -315,6 +322,33 @@
 							<div id ="imgHolder"></div>	
 						</form:form>
 						<%@ include file="../common/required.jsp" %>
+					</div>
+				</div>
+				<div id="editActions" class="display-none">
+					<div class="">
+						<form:form id="editActionsForm" name="editActionsForm" class="edit-action-form small-margin-top">
+							<input type="hidden" name="reportIdForAction" id="reportIdForAction"/>
+							<p class="button-height inline-label">
+								<label class="label" for="reportNameForAction"><spring:message code="label.reportName" /></label>
+								<input type="text" name="reportNameForAction" id="reportNameForAction" style="width:200px; border: none; background: none;" class="full-width newReportName" value="Student Roster" disabled="disabled" />
+							</p>
+							<p class="button-height inline-label">
+								<label class="label" for="productForAction"><spring:message code="label.customerProductLink" /></label>
+								<select id="productForAction" name="productForAction" class="select multiple-as-single easy-multiple-selection check-list "></select>
+							</p>
+							<p class="button-height inline-label">
+								<label class="label" for="roleForAction"><spring:message code="table.label.roles" /></label>
+								<select id="roleForAction" name="roleForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple ></select>
+							</p>
+							<p class="button-height inline-label">
+								<label class="label" for="levelForAction"><spring:message code="label.level" /></label>
+								<select id="levelForAction" name="levelForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple></select>
+							</p>
+							<p class="button-height inline-label">
+								<label class="label" for="newAction">Actions</label>
+								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple ></select>
+							</p>
+						</form:form>
 					</div>
 				</div>
 			</div>

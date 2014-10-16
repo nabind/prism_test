@@ -42,10 +42,127 @@ $(document).ready(function() {
 		openAddReportModal($("#addNewReport"));
 		});
 	}
+	
+	if($('.edit-actions').length > 0) {
+		$('.edit-actions').live("click", function() {
+			openModalForEditActions($(this).attr('reportid'));
+		});
+		$('#addDashboard').live("click", function() {
+			resetAddReportModal($("#addNewReport"),"addNewReport","reportStatusCheck");
+			openAddReportModal($("#addNewReport"));
+		});
+	}
 
 });
 // *********** END DOCUMENT.READY ************
 
+function populateAllSelectedOptionsFromArray(dropdownId, array) {
+	var innerHtml = "";
+	if(typeof array != "undefined") {
+		$.each(array, function(index, value) {
+			innerHtml = innerHtml + '<option value="' + value.name + '" selected="true">' + value.value + '</option>';
+		});
+	}
+	$("#"+dropdownId).html(innerHtml);
+	$("#"+dropdownId+" option").change();
+	$("#"+dropdownId+" option").trigger('update-select-list');
+}
+
+function openModalForEditActions(reportId) {
+	var row = $("#"+reportId + '_' +reportId);
+    manageIconIE('icon-star');
+    var param = "reportId=" + reportId;	
+    blockUI();
+    $.ajax({
+		type : "GET",
+		url : "getEditDataForActions.do",
+		data : param,
+		dataType : 'json',
+		cache:false,
+		success : function(data) {
+			unblockUI();
+			$("input#reportIdForAction").val(data.reportId);
+			$("input#reportNameForAction").val(data.reportName);
+
+			var products = data.custProdLinkList;
+			populateAllSelectedOptionsFromArray("productForAction", products);
+			
+			var roles = data.roleList;
+			populateAllSelectedOptionsFromArray("roleForAction", roles);
+			
+			var levels = data.levelList;
+			populateAllSelectedOptionsFromArray("levelForAction", levels);
+			
+			var actions = data.actionList;
+			populateAllSelectedOptionsFromArray("newAction", actions);
+			
+			drawModalForEditActions();	
+				
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error1']);
+		}
+	})	
+}
+
+function drawModalForEditActions() {
+	$("#editActionsForm").modal({
+		title: 'Edit Actions',
+		height: 250,
+		width: 400,
+		resizable: false,
+		draggable: false,
+		buttons: {
+			'Cancel': {
+				classes: 'glossy mid-margin-left',
+				click: function(win,e) {
+					clickMe(e);
+					win.closeModal(); 
+				}
+			},
+			'Save': {
+				classes: 'blue-gradient glossy mid-margin-left',
+				click: function(win,e) {
+					clickMe(e);
+					if ($("#editActionsForm").validationEngine('validate')){
+						$("#editActionsForm").validationEngine('hide');
+						updateActionsDetails($(".edit-report-form"), win);
+					}
+				}
+			}
+		},
+		onOpen: function(){
+			$("input#userRole").change();
+			$("input#userRole").trigger('update-select-list');		
+		}
+	});
+}
+
+function updateActionsDetails(form, win) {
+	//alert($(form).serialize());
+	blockUI();
+	$.ajax({
+		type : "POST",
+		url : 'updateActions.do',
+		data : form.serialize(),
+		dataType: 'html',
+		cache:false,
+		success : function(data) {
+			var obj = jQuery.parseJSON(data);
+			win.closeModal(); 
+			if(obj.status == 'Success') {
+				$.modal.alert('Actions Saved');
+			} else {
+				$.modal.alert(strings['script.user.saveError']);
+			}
+			unblockUI();
+		},
+		error : function(data) {
+			unblockUI();
+			$.modal.alert(strings['script.user.saveError']);
+		}
+	});
+}
 
 //===================== Manage Report screen ===========================
 //----------------------Edit Report-------------------------------

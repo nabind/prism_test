@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -267,4 +268,10 @@ public interface IReportBusiness {
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public ActionTO getEditDataForActions(Map<String, Object> paramMap);
 }

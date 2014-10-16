@@ -29,6 +29,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.dao.IReportDAO;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -769,5 +770,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
 		return reportDAO.updateJobTrackingStatus(jobId, jobStatus, jobLog);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getEditDataForActions(java.util.Map)
+	 */
+	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+		return reportDAO.getEditDataForActions(paramMap);
 	}
 }

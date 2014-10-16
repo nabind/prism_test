@@ -1,20 +1,20 @@
 package com.ctb.prism.report.service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.dao.DataAccessException;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.springframework.dao.DataAccessException;
+
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -36,9 +36,9 @@ public interface IReportService {
 	 * 
 	 */
 	public void removeCache();
-	
+
 	public void removeCache(String contractName) throws IOException;
-	
+
 	public void removeConfigurationCache();
 
 	/**
@@ -48,7 +48,7 @@ public interface IReportService {
 	 * @throws Exception
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
-	
+
 	public void getFilledReportForPDF(JasperReport jasperReport, Map<String, Object> parameters, boolean isPrinterFriendly, 
 			String user, String sessionParam) throws Exception;
 
@@ -273,17 +273,24 @@ public interface IReportService {
 	 * @return
 	 */
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap);
-	
+
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, 
 			Object reportFilterTO, JasperReport jasperReport, boolean getFullList, HttpServletRequest req, 
 			String reportUrl, String currentOrg, Map<String, String[]> param) ;
 	
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException;
-	
+
 	public List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception;
+
 	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception;
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
-	
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public ActionTO getEditDataForActions(Map<String, Object> paramMap);
+
 }

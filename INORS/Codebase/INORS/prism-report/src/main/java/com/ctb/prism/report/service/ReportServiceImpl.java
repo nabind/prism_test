@@ -35,6 +35,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.business.IReportBusiness;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -799,5 +800,12 @@ public class ReportServiceImpl implements IReportService {
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId) {
 		return reportBusiness.getStudentFileName(type, studentBioId, custProdId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getEditDataForActions(java.util.Map)
+	 */
+	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+		return reportBusiness.getEditDataForActions(paramMap);
 	}
 }

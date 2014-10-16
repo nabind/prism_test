@@ -58,6 +58,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -2321,6 +2322,45 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		return msgTypeId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.ctb.prism.report.dao.IReportDAO#getEditDataForActions(java.util.Map)
+	 */
+	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getEditDataForActions()");
+		String reportId = (String) paramMap.get("reportId");
+
+		// TODO : Weite Actual Code by DB Hit
+		List<ObjectValueTO> custProdLinkList = new ArrayList<ObjectValueTO>();
+		custProdLinkList.add(new ObjectValueTO("1", "TASC"));
+
+		List<ObjectValueTO> roleList = new ArrayList<ObjectValueTO>();
+		roleList.add(new ObjectValueTO("1", "ROLE_USER"));
+		roleList.add(new ObjectValueTO("3", "ROLE_ADMIN"));
+
+		List<ObjectValueTO> levelList = new ArrayList<ObjectValueTO>();
+		levelList.add(new ObjectValueTO("1", "State"));
+		levelList.add(new ObjectValueTO("4", "School"));
+
+		List<ObjectValueTO> actionList = new ArrayList<ObjectValueTO>();
+		actionList.add(new ObjectValueTO("1", "Add"));
+		actionList.add(new ObjectValueTO("2", "Delete"));
+		actionList.add(new ObjectValueTO("3", "Refresh"));
+
+		ActionTO to = new ActionTO();
+		to.setReportId(reportId);
+		to.setReportName("Hello World");
+		to.setCustProdLinkList(custProdLinkList);
+		to.setRoleList(roleList);
+		to.setLevelList(levelList);
+		to.setActionList(actionList);
+		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+		logger.log(IAppLogger.INFO, "Exit: getEditDataForActions()");
+		return to;
 	}
 	
 }

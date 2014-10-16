@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,20 +36,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
-import com.ctb.prism.report.api.FillManagerImpl;
-import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
-//import com.ctb.prism.report.service.JRXhtmlExporter;
+import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
@@ -2064,6 +2061,37 @@ public class ReportController{
 			logger.log(IAppLogger.INFO, "Exit: ReportController - reportMoreInfo");
 		}
 		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/getEditDataForActions", method = RequestMethod.GET)
+	@ResponseBody
+	public String getEditDataForActions(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getEditDataForActions()");
+		String actionsString = "";
+		try {
+			String reportId = (String) req.getParameter("reportId");
+			logger.log(IAppLogger.INFO, "reportId = " + reportId);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("reportId", reportId);
+			ActionTO actions = reportService.getEditDataForActions(paramMap);
+			actionsString = Utils.objectToJson(actions);
+			logger.log(IAppLogger.INFO, "actionsString = " + actionsString);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getEditDataForActions()");
+		return actionsString;
+	}
+	
+	@RequestMapping(value = "/updateActions", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateActions(HttpServletRequest req) {
+		String status = "success";
+		logger.log(IAppLogger.INFO, "Enter: updateReport()");
+		String reportId = req.getParameter("reportId");
+		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+		logger.log(IAppLogger.INFO, "Exit: updateReport()");
+		return status;
 	}
 	
 	/**
