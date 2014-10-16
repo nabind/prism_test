@@ -5,21 +5,7 @@ $(document).ready(function() {
 	 * Every content of login page is configurable and DB driven
 	 * */
 	//getLoginMessage();
-	
-	if($('#new-tab0_new-tab0').length > 0) {
-		notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>).', {
-			system:				true,
-			vPos:				'top',
-			hPos:				'center',
-			autoClose:			false,
-			icon:				'themes/acsi/img/demo/icon.png',
-			iconOutside:		true,
-			closeButton:		true,
-			showCloseOnHover:	true,
-			groupSimilar:		true
-		});
-	}
-	
+
 	$(".login-password-help").keypress(function(evt){
 			if (evt.keyCode  == 13) { 
 				return false;
