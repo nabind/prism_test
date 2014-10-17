@@ -1726,7 +1726,6 @@ public class ReportController{
 			String reportType = req.getParameter("reportType");
 			String reportSequence = req.getParameter("reportSequence");
 			String reportStatus = req.getParameter("reportStatus");
-			String customerLinks = req.getParameter("customerType");
 			String[] orgNodeLevel = req.getParameterValues("allOrgNode");
 			if ("1".equals(reportStatus)) {
 				reportStatus = IApplicationConstants.ACTIVE_FLAG;
@@ -1746,7 +1745,7 @@ public class ReportController{
 			reportTO.setReportSequence(Long.parseLong(reportSequence == null ? reportId : reportSequence));
 			reportTO.setReportStatus(reportStatus);
 			reportTO.setUserRoles(roles);
-			reportTO.setCustomerLinks(customerLinks);
+			reportTO.setCustomerProductArr(req.getParameterValues("customerType"));
 			reportTO.setOrgNodeLevelArr(orgNodeLevel);
 			reportTO.setMenuId(menuId);
 			boolean isSaved = reportService.updateReportNew(reportTO);
@@ -1965,7 +1964,6 @@ public class ReportController{
 			reportParameterTO.setReportType((String) req.getParameter("reportType"));
 			reportParameterTO.setReportUrl((String) req.getParameter("reportUri"));
 			reportParameterTO.setAssessmentName((String) req.getParameter("assessmentType"));
-			//reportParameterTO.setLinkName(Long.valueOf(req.getParameter("customerType")));
 			reportParameterTO.setCustomerProductArr(req.getParameterValues("customerType"));
 			reportParameterTO.setMenuId(req.getParameter("menuType"));
 			reportParameterTO.setCustomerId(loggedinUserTO.getCustomerId());

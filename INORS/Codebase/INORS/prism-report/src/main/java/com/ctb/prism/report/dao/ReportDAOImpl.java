@@ -924,7 +924,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		
 		final String userRoles = Utils.arrayToSeparatedString(reportTO.getUserRoles(),',');
 		final String orgNodeLevels = Utils.arrayToSeparatedString(reportTO.getOrgNodeLevelArr(),',');
-		//com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		final String customerProducts = Utils.arrayToSeparatedString(reportTO.getCustomerProductArr(),',');
 		boolean status = false;
 		
 		try {
@@ -941,7 +941,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs.setString(7, userRoles);
 						cs.setString(8, orgNodeLevels);
 						cs.setString(9, reportTO.getMenuId());
-						cs.setLong(10, Long.parseLong(reportTO.getCustomerLinks()));
+						cs.setString(10, customerProducts);
 						cs.setLong(11,reportTO.getReportSequence());
 						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.NUMBER);
 						cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
@@ -994,7 +994,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String reportUri = reportParameterTO.getReportUrl();
 		final String assessmentType = reportParameterTO.getAssessmentName();
 		final String reportStatus = reportParameterTO.getReportStatus();
-		//final long customerLink = reportParameterTO.getLinkName().longValue();
 		final String customerProducts = Utils.arrayToSeparatedString(reportParameterTO.getCustomerProductArr(),',');
 		final String userRoles = Utils.arrayToSeparatedString(reportParameterTO.getUserRoles(),',');
 		final String orgNodeLevels = Utils.arrayToSeparatedString(reportParameterTO.getOrgNodeLevel(),',');
