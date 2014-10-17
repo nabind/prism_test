@@ -32,7 +32,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
                           P_IN_USER_ROLES        IN VARCHAR2,
                           P_IN_ORG_NODE_LEVELS   IN VARCHAR2,
                           P_IN_DB_MENUID         IN DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
-                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_IN_CUST_PROD_IDS     IN VARCHAR2,
                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                           P_OUT_STATUS_NUMBER    OUT NUMBER,
                           P_OUT_CUR_REPORT_NEW   OUT GET_REFCURSOR,
@@ -55,13 +55,11 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
   PROCEDURE SP_DELETE_REPORT(P_IN_DB_REPORTID    DASH_REPORTS.DB_REPORTID%TYPE,
                              P_OUT_STATUS_NUMBER OUT NUMBER,
                              P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
-							 
-  PROCEDURE SP_EDIT_ACTION_DATA(
-	P_IN_REPORTID IN DASH_REPORTS.DB_REPORTID%TYPE,
-	P_OUT_REPORT_CURSOR OUT GET_REFCURSOR,
-	P_OUT_ACTION_CURSOR OUT GET_REFCURSOR,
-	P_OUT_EXCEP_ERR_MSG OUT VARCHAR2
-);
+
+  PROCEDURE SP_EDIT_ACTION_DATA(P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
+                                P_OUT_REPORT_CURSOR OUT GET_REFCURSOR,
+                                P_OUT_ACTION_CURSOR OUT GET_REFCURSOR,
+                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
 END PKG_MANAGE_REPORT;
 /
@@ -481,7 +479,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                           P_IN_USER_ROLES        IN VARCHAR2,
                           P_IN_ORG_NODE_LEVELS   IN VARCHAR2,
                           P_IN_DB_MENUID         IN DASH_MENU_RPT_ACCESS.DB_MENUID%TYPE,
-                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                          P_IN_CUST_PROD_IDS     IN VARCHAR2,
                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                           P_OUT_STATUS_NUMBER    OUT NUMBER,
                           P_OUT_CUR_REPORT_NEW   OUT GET_REFCURSOR,
@@ -533,44 +531,55 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
          P_IN_ACTIVATION_STATUS,
          SYSDATE);
     
-      FOR REC_ROLE IN (WITH T AS (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
-                                             '[^,]+',
-                                             1,
-                                             LEVEL) AS ROLE_NAME
-                         FROM T
-                       CONNECT BY LEVEL <=
-                                  LENGTH(REGEXP_REPLACE(TXT,
-                                                        '[^,]*')) + 1) LOOP
+      FOR REC_CUST_PROD_ID IN (WITH T AS (SELECT P_IN_CUST_PROD_IDS AS TXT
+                                             FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                     '[^,]+',
+                                                     1,
+                                                     LEVEL) AS CUST_PROD_ID
+                                 FROM T
+                               CONNECT BY LEVEL <=
+                                          LENGTH(REGEXP_REPLACE(TXT,
+                                                                '[^,]*')) + 1) LOOP
       
-        FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_NODE_LEVELS AS TXT
-                                                 FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
-                                                         '[^,]+',
-                                                         1,
-                                                         LEVEL) AS ORG_NODE_LEVEL
-                                     FROM T
-                                   CONNECT BY LEVEL <=
-                                              LENGTH(REGEXP_REPLACE(TXT,
-                                                                    '[^,]*')) + 1) LOOP
+        FOR REC_ROLE IN (WITH T AS (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                               '[^,]+',
+                                               1,
+                                               LEVEL) AS ROLE_NAME
+                           FROM T
+                         CONNECT BY LEVEL <=
+                                    LENGTH(REGEXP_REPLACE(TXT,
+                                                          '[^,]*')) + 1) LOOP
         
-          INSERT INTO DASH_MENU_RPT_ACCESS
-            (DB_MENUID,
-             DB_REPORTID,
-             ROLEID,
-             ORG_LEVEL,
-             CUST_PROD_ID,
-             REPORT_SEQ,
-             ACTIVATION_STATUS,
-             CREATED_DATE_TIME)
-          VALUES
-            (P_IN_DB_MENUID,
-             V_DB_REPORTID,
-             (SELECT ROLEID FROM ROLE WHERE ROLE_NAME = REC_ROLE.ROLE_NAME),
-             REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
-             P_IN_CUST_PROD_ID,
-             V_DB_REPORTID,
-             'AC',
-             SYSDATE);
-        
+          FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_NODE_LEVELS AS TXT
+                                                   FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                           '[^,]+',
+                                                           1,
+                                                           LEVEL) AS ORG_NODE_LEVEL
+                                       FROM T
+                                     CONNECT BY LEVEL <=
+                                                LENGTH(REGEXP_REPLACE(TXT,
+                                                                      '[^,]*')) + 1) LOOP
+          
+            INSERT INTO DASH_MENU_RPT_ACCESS
+              (DB_MENUID,
+               DB_REPORTID,
+               ROLEID,
+               ORG_LEVEL,
+               CUST_PROD_ID,
+               REPORT_SEQ,
+               ACTIVATION_STATUS,
+               CREATED_DATE_TIME)
+            VALUES
+              (P_IN_DB_MENUID,
+               V_DB_REPORTID,
+               (SELECT ROLEID FROM ROLE WHERE ROLE_NAME = REC_ROLE.ROLE_NAME),
+               REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
+               REC_CUST_PROD_ID.CUST_PROD_ID,
+               V_DB_REPORTID,
+               'AC',
+               SYSDATE);
+          
+          END LOOP;
         END LOOP;
       END LOOP;
     
@@ -696,49 +705,80 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
       ROLLBACK;
   END SP_DELETE_REPORT;
 
-PROCEDURE SP_EDIT_ACTION_DATA(
-	P_IN_REPORTID IN DASH_REPORTS.DB_REPORTID%TYPE,
-	P_OUT_REPORT_CURSOR OUT GET_REFCURSOR,
-	P_OUT_ACTION_CURSOR OUT GET_REFCURSOR,
-	P_OUT_EXCEP_ERR_MSG OUT VARCHAR2
-) IS
-BEGIN
-	OPEN P_OUT_REPORT_CURSOR FOR
-		SELECT DMRA.DB_REPORTID, DR.REPORT_NAME,
-		DMRA.CUST_PROD_ID, P.PRODUCT_NAME,
-		DMRA.ROLEID, R.ROLE_NAME,
-		DMRA.ORG_LEVEL, OTS.ORG_LABEL
-		FROM DASH_MENU_RPT_ACCESS DMRA, DASH_REPORTS DR, PRODUCT P, CUST_PRODUCT_LINK CPL, ROLE R,
-		(SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
-		FROM (SELECT DISTINCT ORG_LEVEL,ORG_LABEL FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP GROUP BY TEMP.ORG_LEVEL
-		UNION SELECT -99, 'EDUCATION CENTER' FROM DUAL) OTS
-		WHERE DMRA.DB_REPORTID = P_IN_REPORTID
-		AND DMRA.DB_REPORTID = DR.DB_REPORTID
-		AND DMRA.CUST_PROD_ID = CPL.CUST_PROD_ID
-		AND CPL.PRODUCTID = P.PRODUCTID
-		AND DMRA.ROLEID = R.ROLEID
-		AND DMRA.ORG_LEVEL = OTS.ORG_LEVEL
-		ORDER BY DMRA.DB_REPORTID, DMRA.CUST_PROD_ID, DMRA.ROLEID, DMRA.ORG_LEVEL;
-		
-	OPEN P_OUT_ACTION_CURSOR FOR
-		SELECT DISTINCT DB_ACTIONID, ACTION_NAME, ACTIVATION_STATUS FROM
-		(SELECT DAA.DB_ACTIONID, DRA.ACTION_NAME, DAA.ACTIVATION_STATUS
-		FROM DASH_ACTION_ACCESS DAA, DASH_REPORTS DR, DASH_RPT_ACTION DRA, PRODUCT P, CUST_PRODUCT_LINK CPL, ROLE R,
-		(SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
-		FROM (SELECT DISTINCT ORG_LEVEL,ORG_LABEL FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP GROUP BY TEMP.ORG_LEVEL
-		UNION SELECT -99, 'EDUCATION CENTER' FROM DUAL) OTS
-		WHERE DAA.DB_REPORTID = P_IN_REPORTID
-		AND DAA.DB_REPORTID = DR.DB_REPORTID
-		AND DAA.DB_ACTIONID = DRA.DB_ACTIONID
-		AND DAA.CUST_PROD_ID = CPL.CUST_PROD_ID
-		AND DAA.ROLEID = R.ROLEID
-		AND DAA.ORG_LEVEL = OTS.ORG_LEVEL
-		AND CPL.PRODUCTID = P.PRODUCTID
-		ORDER BY DAA.DB_REPORTID, DAA.DB_ACTIONID, DAA.CUST_PROD_ID, DAA.ROLEID, DAA.ORG_LEVEL);
-EXCEPTION
-	WHEN OTHERS THEN
-		P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM,12,255));
-END SP_EDIT_ACTION_DATA;
+  PROCEDURE SP_EDIT_ACTION_DATA(P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
+                                P_OUT_REPORT_CURSOR OUT GET_REFCURSOR,
+                                P_OUT_ACTION_CURSOR OUT GET_REFCURSOR,
+                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  BEGIN
+    OPEN P_OUT_REPORT_CURSOR FOR
+      SELECT DMRA.DB_REPORTID,
+             DR.REPORT_NAME,
+             DMRA.CUST_PROD_ID,
+             P.PRODUCT_NAME,
+             DMRA.ROLEID,
+             R.ROLE_NAME,
+             DMRA.ORG_LEVEL,
+             OTS.ORG_LABEL
+        FROM DASH_MENU_RPT_ACCESS DMRA,
+             DASH_REPORTS DR,
+             PRODUCT P,
+             CUST_PRODUCT_LINK CPL,
+             ROLE R,
+             (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+               GROUP(
+               ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                        FROM ORG_TP_STRUCTURE
+                       ORDER BY ORG_LEVEL) TEMP
+               GROUP BY TEMP.ORG_LEVEL
+              UNION
+              SELECT -99, 'EDUCATION CENTER' FROM DUAL) OTS
+       WHERE DMRA.DB_REPORTID = P_IN_REPORTID
+         AND DMRA.DB_REPORTID = DR.DB_REPORTID
+         AND DMRA.CUST_PROD_ID = CPL.CUST_PROD_ID
+         AND CPL.PRODUCTID = P.PRODUCTID
+         AND DMRA.ROLEID = R.ROLEID
+         AND DMRA.ORG_LEVEL = OTS.ORG_LEVEL
+       ORDER BY DMRA.DB_REPORTID,
+                DMRA.CUST_PROD_ID,
+                DMRA.ROLEID,
+                DMRA.ORG_LEVEL;
+  
+    OPEN P_OUT_ACTION_CURSOR FOR
+      SELECT DISTINCT DB_ACTIONID, ACTION_NAME, ACTIVATION_STATUS
+        FROM (SELECT DAA.DB_ACTIONID, DRA.ACTION_NAME, DAA.ACTIVATION_STATUS
+                FROM DASH_ACTION_ACCESS DAA,
+                     DASH_REPORTS DR,
+                     DASH_RPT_ACTION DRA,
+                     PRODUCT P,
+                     CUST_PRODUCT_LINK CPL,
+                     ROLE R,
+                     (SELECT TEMP.ORG_LEVEL,
+                             LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+                       GROUP(
+                       ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                        FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                                FROM ORG_TP_STRUCTURE
+                               ORDER BY ORG_LEVEL) TEMP
+                       GROUP BY TEMP.ORG_LEVEL
+                      UNION
+                      SELECT -99, 'EDUCATION CENTER' FROM DUAL) OTS
+               WHERE DAA.DB_REPORTID = P_IN_REPORTID
+                 AND DAA.DB_REPORTID = DR.DB_REPORTID
+                 AND DAA.DB_ACTIONID = DRA.DB_ACTIONID
+                 AND DAA.CUST_PROD_ID = CPL.CUST_PROD_ID
+                 AND DAA.ROLEID = R.ROLEID
+                 AND DAA.ORG_LEVEL = OTS.ORG_LEVEL
+                 AND CPL.PRODUCTID = P.PRODUCTID
+               ORDER BY DAA.DB_REPORTID,
+                        DAA.DB_ACTIONID,
+                        DAA.CUST_PROD_ID,
+                        DAA.ROLEID,
+                        DAA.ORG_LEVEL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_EDIT_ACTION_DATA;
 
 END PKG_MANAGE_REPORT; --END OF PACKAGE
 /
