@@ -66,6 +66,7 @@ public class ReportTO extends BaseTO {
 	private String[] userRoles;
 	private String customerLinks;
 	private String[] orgNodeLevelArr;
+	private String[] customerProductArr;
 	
 	public String[] getOrgNodeLevelArr() {
 		return orgNodeLevelArr;
@@ -342,6 +343,12 @@ public class ReportTO extends BaseTO {
 	}
 	public void setReportOriginalUrl(String reportOriginalUrl) {
 		this.reportOriginalUrl = reportOriginalUrl;
+	}
+	public String[] getCustomerProductArr() {
+		return customerProductArr;
+	}
+	public void setCustomerProductArr(String[] customerProductArr) {
+		this.customerProductArr = customerProductArr;
 	}
 	
 }

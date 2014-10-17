@@ -1965,7 +1965,8 @@ public class ReportController{
 			reportParameterTO.setReportType((String) req.getParameter("reportType"));
 			reportParameterTO.setReportUrl((String) req.getParameter("reportUri"));
 			reportParameterTO.setAssessmentName((String) req.getParameter("assessmentType"));
-			reportParameterTO.setLinkName(Long.valueOf(req.getParameter("customerType")));
+			//reportParameterTO.setLinkName(Long.valueOf(req.getParameter("customerType")));
+			reportParameterTO.setCustomerProductArr(req.getParameterValues("customerType"));
 			reportParameterTO.setMenuId(req.getParameter("menuType"));
 			reportParameterTO.setCustomerId(loggedinUserTO.getCustomerId());
 			if ("1".equals((String) req.getParameter("reportStatus"))) {
@@ -2020,7 +2021,6 @@ public class ReportController{
 				modelAndView.addObject("allCustomer", reportEditList.get(0).getCustomerProductList());
 				modelAndView.addObject("allOrgNode", reportEditList.get(0).getOrgNodeLevelList());
 			}
-			String replist = JsonUtil.convertToJsonAdmin(reportEditList);
 			modelAndView.addObject("reportEditList", reportEditList);
 			String editReportJsonString = JsonUtil.convertToJsonAdmin(reportEditList);
 			logger.log(IAppLogger.INFO, editReportJsonString);

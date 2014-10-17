@@ -218,7 +218,7 @@
 							</p>
 							<p class="button-height inline-label">
 									<label class="label" for="editCustomerType"><spring:message code="label.customerProductLink" /></label>
-									<select id="editCustomerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list ">
+									<select id="editCustomerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list" multiple>
 										<c:forEach var="allCustomer" items="${allCustomer}">
 											<option value="${allCustomer.value}">${allCustomer.name}</option>
 										</c:forEach>
@@ -292,7 +292,7 @@
 							</p>
 							<p class="button-height inline-label">
 									<label class="label" for="customerType"><spring:message code="label.customerProductLink" /></label>
-									<select id="customerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list ">
+									<select id="customerType" name="customerType" class="select multiple-as-single easy-multiple-selection check-list" multiple>
 										<c:forEach var="allCustomer" items="${allCustomer}">
 											<option value="${allCustomer.value}">${allCustomer.name}</option>
 										</c:forEach>

@@ -491,6 +491,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 									String[] orgLevel = strOrgLevl.split(",");
 									to.setOrgNodeLevelArr(orgLevel);
 								}
+								String custProdLinks = rsReport.getString("CUST_PROD_ID");
+								if (custProdLinks != null && custProdLinks.length() > 0) {
+									String[] customerProductArr = strOrgLevl.split(",");
+									to.setCustomerProductArr(customerProductArr);
+								}
 								to.setMenuId(rsReport.getString("MENUID"));
 								to.setMenuName(rsReport.getString("MENUNAME"));
 								reportTOResult.add(to);
@@ -989,7 +994,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String reportUri = reportParameterTO.getReportUrl();
 		final String assessmentType = reportParameterTO.getAssessmentName();
 		final String reportStatus = reportParameterTO.getReportStatus();
-		final long customerLink = reportParameterTO.getLinkName().longValue();
+		//final long customerLink = reportParameterTO.getLinkName().longValue();
+		final String customerProducts = Utils.arrayToSeparatedString(reportParameterTO.getCustomerProductArr(),',');
 		final String userRoles = Utils.arrayToSeparatedString(reportParameterTO.getUserRoles(),',');
 		final String orgNodeLevels = Utils.arrayToSeparatedString(reportParameterTO.getOrgNodeLevel(),',');
 		final String dbMenuId = reportParameterTO.getMenuId();
@@ -1009,7 +1015,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs.setString(6, userRoles);
 						cs.setString(7, orgNodeLevels);
 						cs.setString(8, dbMenuId);
-						cs.setLong(9, customerLink);
+						cs.setString(9, customerProducts);
 						cs.setLong(10, customerId);
 						cs.registerOutParameter(11, oracle.jdbc.OracleTypes.NUMBER);
 						cs.registerOutParameter(12, oracle.jdbc.OracleTypes.CURSOR);

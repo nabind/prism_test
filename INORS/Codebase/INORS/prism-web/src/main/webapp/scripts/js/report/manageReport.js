@@ -220,19 +220,17 @@ var row = $("#"+reportId + '_' +reportId);
 					});
 				});
 			}
-			var customerType = data[0].linkName;
-			if(typeof customerType != "undefined") {
-				//$.each(customerType, function(index, value) {
+			var customerTypes = data[0].linkName;
+			if(typeof customerTypes != "undefined") {
+				$.each(customerTypes, function(index, value) {
 					$("#editCustomerType option").each(function() {				
-						if($(this).val() == customerType) {
+						if($(this).val() == customerTypes[index]) {
 							$(this).attr('selected', 'true');
-						} /*else {
-							alert($(this).val());
-						} */
+						}
 						$(this).change();
 						$(this).trigger('update-select-list');
 					});
-				//});
+				});
 			}
 			var roles = data[0].roles;
 			if(typeof roles != "undefined") {

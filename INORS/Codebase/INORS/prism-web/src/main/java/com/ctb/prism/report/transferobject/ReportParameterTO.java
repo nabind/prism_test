@@ -47,6 +47,8 @@ public class ReportParameterTO extends BaseTO {
 	private List<ObjectValueTO> orgNodeLevelList;
 	private List<ObjectValueTO> adminYear;
 	private String customerId;
+	private String[] customerProductArr;
+	
 	
 	public String getCustomerId() {
 		return customerId;
@@ -287,5 +289,12 @@ public class ReportParameterTO extends BaseTO {
 	public void setMenuId(String menuId) {
 		this.menuId = menuId;
 	}
+	public String[] getCustomerProductArr() {
+		return customerProductArr;
+	}
+	public void setCustomerProductArr(String[] customerProductArr) {
+		this.customerProductArr = customerProductArr;
+	}
+	
 	
 }
