@@ -47,7 +47,6 @@ import com.ctb.prism.report.ipcontrol.InputControlFactory;
 import com.ctb.prism.report.ipcontrol.InputControlFactoryImpl;
 import com.ctb.prism.report.service.DownloadService;
 import com.ctb.prism.report.service.IReportService;
-import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.IReportFilterTOFactory;
 import com.ctb.prism.report.transferobject.InputControlTO;
@@ -55,6 +54,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
+import com.ctb.prism.webservice.transferobject.ReportActionTO;
 
 @Controller
 public class ReportController{
@@ -2071,8 +2071,8 @@ public class ReportController{
 			logger.log(IAppLogger.INFO, "reportId = " + reportId);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
-			ActionTO actions = reportService.getEditDataForActions(paramMap);
-			actionsString = Utils.objectToJson(actions);
+			List<Object> objectList = reportService.getEditDataForActions(paramMap);
+			actionsString = Utils.objectToJson(objectList);
 			logger.log(IAppLogger.INFO, "actionsString = " + actionsString);
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
@@ -2084,12 +2084,33 @@ public class ReportController{
 	@RequestMapping(value = "/updateActions", method = RequestMethod.GET)
 	@ResponseBody
 	public String updateActions(HttpServletRequest req) {
-		String status = "success";
+		String status = null;
 		logger.log(IAppLogger.INFO, "Enter: updateReport()");
-		String reportId = req.getParameter("reportId");
+		String reportId = req.getParameter("reportIdForAction");
+		String custProdId = req.getParameter("productForAction");
+		String[] roles = req.getParameterValues("roleForAction");
+		String[] orgLevels = req.getParameterValues("levelForAction");
+		String[] actions = req.getParameterValues("newAction");
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+		for(String s: roles) logger.log(IAppLogger.INFO, "role = " + s);
+		for(String s: orgLevels) logger.log(IAppLogger.INFO, "orgLevel = " + s);
+		for(String s: actions) logger.log(IAppLogger.INFO, "action = " + s);
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("reportId", reportId);
+			paramMap.put("custProdId", custProdId);
+			paramMap.put("roles", roles);
+			paramMap.put("orgLevels", orgLevels);
+			paramMap.put("actions", actions);
+			reportService.updateDataForActions(paramMap);
+			status = "Success";
+		} catch (Exception e) {
+			status = "Error";
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+		}
 		logger.log(IAppLogger.INFO, "Exit: updateReport()");
-		return status;
+		return "{\"status\":\"" + status + "\"}";
 	}
 	
 	/**

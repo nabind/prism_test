@@ -35,7 +35,6 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.business.IReportBusiness;
-import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -47,6 +46,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.webservice.transferobject.ReportActionTO;
 
 @Service("reportService")
 public class ReportServiceImpl implements IReportService {
@@ -805,7 +805,11 @@ public class ReportServiceImpl implements IReportService {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.service.IReportService#getEditDataForActions(java.util.Map)
 	 */
-	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+	public List<Object> getEditDataForActions(Map<String, Object> paramMap) {
 		return reportBusiness.getEditDataForActions(paramMap);
+	}
+
+	public void updateDataForActions(Map<String, Object> paramMap) {
+		reportBusiness.updateDataForActions(paramMap);
 	}
 }

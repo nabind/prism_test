@@ -29,7 +29,6 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.dao.IReportDAO;
-import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -41,6 +40,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.webservice.transferobject.ReportActionTO;
 
 @Component("reportBusiness")
 public class ReportBusinessImpl implements IReportBusiness {
@@ -775,7 +775,14 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.business.IReportBusiness#getEditDataForActions(java.util.Map)
 	 */
-	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+	public List<Object> getEditDataForActions(Map<String, Object> paramMap) {
 		return reportDAO.getEditDataForActions(paramMap);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateDataForActions(java.util.Map)
+	 */
+	public void updateDataForActions(Map<String, Object> paramMap) {
+		reportDAO.updateDataForActions(paramMap);
 	}
 }

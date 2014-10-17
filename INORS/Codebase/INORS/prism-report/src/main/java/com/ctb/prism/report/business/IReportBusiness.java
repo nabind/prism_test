@@ -1,6 +1,5 @@
 package com.ctb.prism.report.business;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import com.ctb.prism.core.exception.SystemException;
-import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
@@ -22,6 +20,7 @@ import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 //import com.ctb.prism.report.transferobject.ReportFilterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.webservice.transferobject.ReportActionTO;
 
 public interface IReportBusiness {
 	/**
@@ -273,5 +272,11 @@ public interface IReportBusiness {
 	 * @param paramMap
 	 * @return
 	 */
-	public ActionTO getEditDataForActions(Map<String, Object> paramMap);
+	public List<Object> getEditDataForActions(Map<String, Object> paramMap);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public void updateDataForActions(Map<String, Object> paramMap);
 }

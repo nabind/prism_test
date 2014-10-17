@@ -326,7 +326,7 @@
 				</div>
 				<div id="editActions" class="display-none">
 					<div class="">
-						<form:form id="editActionsForm" name="editActionsForm" class="edit-action-form small-margin-top">
+						<form:form id="editActionsForm" name="editActionsForm" class="edit-actions-form small-margin-top">
 							<input type="hidden" name="reportIdForAction" id="reportIdForAction"/>
 							<p class="button-height inline-label">
 								<label class="label" for="reportNameForAction"><spring:message code="label.reportName" /></label>
@@ -334,19 +334,19 @@
 							</p>
 							<p class="button-height inline-label">
 								<label class="label" for="productForAction"><spring:message code="label.customerProductLink" /></label>
-								<select id="productForAction" name="productForAction" class="select multiple-as-single easy-multiple-selection check-list "></select>
+								<select id="productForAction" name="productForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list "></select>
 							</p>
 							<p class="button-height inline-label">
 								<label class="label" for="roleForAction"><spring:message code="table.label.roles" /></label>
-								<select id="roleForAction" name="roleForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple ></select>
+								<select id="roleForAction" name="roleForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple ></select>
 							</p>
 							<p class="button-height inline-label">
 								<label class="label" for="levelForAction"><spring:message code="label.level" /></label>
-								<select id="levelForAction" name="levelForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple></select>
+								<select id="levelForAction" name="levelForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple></select>
 							</p>
 							<p class="button-height inline-label">
 								<label class="label" for="newAction">Actions</label>
-								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" multiple ></select>
+								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple ></select>
 							</p>
 						</form:form>
 					</div>

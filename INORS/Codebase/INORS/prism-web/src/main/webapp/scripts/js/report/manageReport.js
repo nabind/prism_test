@@ -56,11 +56,25 @@ $(document).ready(function() {
 });
 // *********** END DOCUMENT.READY ************
 
-function populateAllSelectedOptionsFromArray(dropdownId, array) {
+function populateAllSelectedOptionsFromObjectValueTO(dropdownId, list) {
 	var innerHtml = "";
-	if(typeof array != "undefined") {
-		$.each(array, function(index, value) {
+	if(typeof list != "undefined") {
+		$.each(list, function(index, value) {
 			innerHtml = innerHtml + '<option value="' + value.name + '" selected="true">' + value.value + '</option>';
+		});
+	}
+	$("#"+dropdownId).html(innerHtml);
+	$("#"+dropdownId+" option").change();
+	$("#"+dropdownId+" option").trigger('update-select-list');
+}
+
+function populateActionsFromObjectValueList(dropdownId, actionList) {
+	var innerHtml = "";
+	if(typeof actionList != "undefined") {
+		$.each(actionList, function(index, value) {
+			innerHtml = innerHtml + '<option value="' + value.id + '"';
+			if(value.status == "AC") innerHtml = innerHtml + '" selected="true"';
+			innerHtml = innerHtml + ">" + value.name + '</option>';
 		});
 	}
 	$("#"+dropdownId).html(innerHtml);
@@ -81,20 +95,20 @@ function openModalForEditActions(reportId) {
 		cache:false,
 		success : function(data) {
 			unblockUI();
-			$("input#reportIdForAction").val(data.reportId);
-			$("input#reportNameForAction").val(data.reportName);
+			$("input#reportIdForAction").val(data[0].id);
+			$("input#reportNameForAction").val(data[0].name);
 
-			var products = data.custProdLinkList;
-			populateAllSelectedOptionsFromArray("productForAction", products);
+			var products = data[0].productList;
+			populateAllSelectedOptionsFromObjectValueTO("productForAction", products);
 			
-			var roles = data.roleList;
-			populateAllSelectedOptionsFromArray("roleForAction", roles);
+			var roles = data[0].roleList;
+			populateAllSelectedOptionsFromObjectValueTO("roleForAction", roles);
 			
-			var levels = data.levelList;
-			populateAllSelectedOptionsFromArray("levelForAction", levels);
+			var levels = data[0].orgLevelList;
+			populateAllSelectedOptionsFromObjectValueTO("levelForAction", levels);
 			
-			var actions = data.actionList;
-			populateAllSelectedOptionsFromArray("newAction", actions);
+			var actions = data[1];
+			populateActionsFromObjectValueList("newAction", actions);
 			
 			drawModalForEditActions();	
 				
@@ -104,7 +118,7 @@ function openModalForEditActions(reportId) {
 		}
 	})	
 }
-
+//TODO : Move hardcoded texts to properties file
 function drawModalForEditActions() {
 	$("#editActionsForm").modal({
 		title: 'Edit Actions',
@@ -124,10 +138,7 @@ function drawModalForEditActions() {
 				classes: 'blue-gradient glossy mid-margin-left',
 				click: function(win,e) {
 					clickMe(e);
-					if ($("#editActionsForm").validationEngine('validate')){
-						$("#editActionsForm").validationEngine('hide');
-						updateActionsDetails($(".edit-report-form"), win);
-					}
+					updateActionsDetails($(".edit-actions-form"), win);
 				}
 			}
 		},
@@ -142,20 +153,19 @@ function updateActionsDetails(form, win) {
 	//alert($(form).serialize());
 	blockUI();
 	$.ajax({
-		type : "POST",
+		type : "GET",
 		url : 'updateActions.do',
 		data : form.serialize(),
-		dataType: 'html',
+		dataType: 'json',
 		cache:false,
 		success : function(data) {
-			var obj = jQuery.parseJSON(data);
+			unblockUI();
 			win.closeModal(); 
-			if(obj.status == 'Success') {
+			if(data.status == 'Success') {
 				$.modal.alert('Actions Saved');
 			} else {
 				$.modal.alert(strings['script.user.saveError']);
 			}
-			unblockUI();
 		},
 		error : function(data) {
 			unblockUI();

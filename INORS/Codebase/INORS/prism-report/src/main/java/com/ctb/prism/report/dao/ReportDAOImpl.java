@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -40,8 +42,6 @@ import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -49,7 +49,6 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -58,19 +57,18 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.UserTO;
-import com.ctb.prism.report.transferobject.ActionTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.InputControlTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.ctb.prism.report.transferobject.ManageMessageTO;
-import com.ctb.prism.report.transferobject.ManageMessageTOMapper;
 import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.QuerySheetTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
+import com.ctb.prism.webservice.transferobject.ReportActionTO;
 //import com.googlecode.ehcache.annotations.Cacheable;
 //import com.googlecode.ehcache.annotations.TriggersRemove;
 
@@ -2335,37 +2333,157 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see
 	 * com.ctb.prism.report.dao.IReportDAO#getEditDataForActions(java.util.Map)
 	 */
-	public ActionTO getEditDataForActions(Map<String, Object> paramMap) {
+	@SuppressWarnings("unchecked")
+	public List<Object> getEditDataForActions(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getEditDataForActions()");
-		String reportId = (String) paramMap.get("reportId");
-
-		// TODO : Weite Actual Code by DB Hit
-		List<ObjectValueTO> custProdLinkList = new ArrayList<ObjectValueTO>();
-		custProdLinkList.add(new ObjectValueTO("1", "TASC"));
-
-		List<ObjectValueTO> roleList = new ArrayList<ObjectValueTO>();
-		roleList.add(new ObjectValueTO("1", "ROLE_USER"));
-		roleList.add(new ObjectValueTO("3", "ROLE_ADMIN"));
-
-		List<ObjectValueTO> levelList = new ArrayList<ObjectValueTO>();
-		levelList.add(new ObjectValueTO("1", "State"));
-		levelList.add(new ObjectValueTO("4", "School"));
-
-		List<ObjectValueTO> actionList = new ArrayList<ObjectValueTO>();
-		actionList.add(new ObjectValueTO("1", "Add"));
-		actionList.add(new ObjectValueTO("2", "Delete"));
-		actionList.add(new ObjectValueTO("3", "Refresh"));
-
-		ActionTO to = new ActionTO();
-		to.setReportId(reportId);
-		to.setReportName("Hello World");
-		to.setCustProdLinkList(custProdLinkList);
-		to.setRoleList(roleList);
-		to.setLevelList(levelList);
-		to.setActionList(actionList);
+		final String reportId = (String) paramMap.get("reportId");
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+
+		List<Object> editDataList = (List<Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = null;
+				cs = con.prepareCall(IQueryConstants.SP_EDIT_ACTION_DATA);
+				cs.setLong(1, Long.parseLong(reportId));
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet reportResultSet = null;
+				ResultSet actionResultSet = null;
+				List<Object> objectList = new ArrayList<Object>();
+				try {
+					cs.execute();
+					reportResultSet = (ResultSet) cs.getObject(2);
+					actionResultSet = (ResultSet) cs.getObject(3);
+					Utils.logError(cs.getString(4));
+					ReportActionTO reportResult = getReportDataForEditAction(reportResultSet);
+					objectList.add(reportResult);
+					List<ReportActionTO> actionResult = getActionDataForEditAction(actionResultSet);
+					objectList.add(actionResult);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "objectList.size() = " + objectList.size());
+				return objectList;
+			}
+
+			/**
+			 * Action Data. It is a Collection of TO.
+			 * 
+			 * @param reportResultSet
+			 * @return
+			 * @throws SQLException 
+			 */
+			private List<ReportActionTO> getActionDataForEditAction(ResultSet actionResultSet) throws SQLException {
+				List<ReportActionTO> actionList = new ArrayList<ReportActionTO>();
+				while(actionResultSet.next()){
+					ReportActionTO to = new ReportActionTO();
+					to.setId(actionResultSet.getString("DB_ACTIONID"));
+					to.setName(actionResultSet.getString("ACTION_NAME"));
+					to.setStatus(actionResultSet.getString("ACTIVATION_STATUS"));
+					actionList.add(to);
+				}
+				logger.log(IAppLogger.INFO, "actionList.size() = " + actionList.size());
+				return actionList;
+			}
+
+			/**
+			 * Report Data. It is a Single TO.
+			 * 
+			 * @param reportResultSet
+			 * @return
+			 * @throws SQLException 
+			 */
+			private ReportActionTO getReportDataForEditAction(ResultSet reportResultSet) throws SQLException {
+				ReportActionTO reportData = new ReportActionTO();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				reportData.setProductList(productList);
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				reportData.setRoleList(roleList);
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				reportData.setOrgLevelList(orgLevelList);
+				while(reportResultSet.next()){
+					reportData.setId(reportResultSet.getString("DB_REPORTID"));
+					reportData.setName(reportResultSet.getString("REPORT_NAME"));
+					productList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("CUST_PROD_ID"), reportResultSet.getString("PRODUCT_NAME")));
+					roleList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ROLEID"), reportResultSet.getString("ROLE_NAME")));
+					orgLevelList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ORG_LEVEL"), reportResultSet.getString("ORG_LABEL")));
+				}
+				return reportData;
+			}
+		});
+		logger.log(IAppLogger.INFO, "editDataList.size() = " + editDataList.size());
 		logger.log(IAppLogger.INFO, "Exit: getEditDataForActions()");
-		return to;
+		return editDataList;
+	}
+
+	/**
+	 * TODO : Complete the method
+	 * 
+	 * @param paramMap
+	 */
+	public void updateDataForActions(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: updateDataForActions()");
+		final String reportId = (String) paramMap.get("reportId");
+		final String custProdId = (String) paramMap.get("custProdId");
+		final String[] roles = (String[]) paramMap.get("roles");
+		final String[] orgLevels = (String[]) paramMap.get("orgLevels");
+		final String[] actions = (String[]) paramMap.get("actions");
+		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+		for(String s: roles) logger.log(IAppLogger.INFO, "role = " + s);
+		for(String s: orgLevels) logger.log(IAppLogger.INFO, "orgLevel = " + s);
+		for(String s: actions) logger.log(IAppLogger.INFO, "action = " + s);
+		final String roleArray = Utils.arrayToSeparatedString(roles, ',');
+		final String orgLevelArray = Utils.arrayToSeparatedString(orgLevels, ',');
+		final String actionArray = Utils.arrayToSeparatedString(actions, ',');
+		/*String dbQuery = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = null;
+				cs = con.prepareCall("{call PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?)}");
+				cs.setString(1, reportId);
+				cs.setString(2, custProdId);
+				cs.setString(3, roleArray);
+				cs.setString(4, orgLevelArray);
+				cs.setString(5, actionArray);
+				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				String query = null;
+				try {
+					cs.execute();
+					query = cs.getString(6);
+					Utils.logError(cs.getString(7));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return query;
+			}
+		});
+		logger.log(IAppLogger.INFO, "dbQuery = " + dbQuery);*/
+		
+		String sql = "UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'IN' WHERE DB_REPORTID = " + reportId + " AND CUST_PROD_ID = " + custProdId;
+		int updateCount = getJdbcTemplate().update(sql);
+		logger.log(IAppLogger.INFO, "updateCount = " + updateCount);
+		sql = "UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'AC' WHERE DB_REPORTID = " + reportId + " AND CUST_PROD_ID = " + custProdId + " AND ROLEID = ? AND ORG_LEVEL = ? AND DB_ACTIONID = ?";
+		getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setLong(1, 1L);
+				ps.setString(2, "");
+				ps.setInt(3, 3);
+			}
+			public int getBatchSize() {
+				return 1;
+			}
+		});
+		
+		logger.log(IAppLogger.INFO, "Exit: updateDataForActions()");
 	}
 	
 }
