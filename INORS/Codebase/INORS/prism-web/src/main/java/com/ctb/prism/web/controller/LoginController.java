@@ -278,6 +278,7 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/dashboards", method = RequestMethod.GET)
 	public ModelAndView dashboards(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		req.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING,"FALSE");
 		return validateUser(req, res);
 	}
 
@@ -406,8 +407,8 @@ public class LoginController {
 					// logger.log(IAppLogger.DEBUG, "calling  changePassword.do...............................");
 					return new ModelAndView("redirect:changePassword.do?username=" + username);
 				}
-				
-				req.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING, user.getIsPasswordWarning());
+				if(req.getSession().getAttribute(IApplicationConstants.PASSWORD_WARNING) == null)
+					req.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING, user.getIsPasswordWarning());
 				paramMap.put("userId", user.getUserId());
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
@@ -564,6 +565,7 @@ public class LoginController {
 		modelAndView.addObject("masterQuestionList", questionList);
 		return modelAndView;
 	}
+
 
 	/**
 	 * Opens home page after saving user profile for firsttime loggedin user

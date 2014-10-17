@@ -69,8 +69,8 @@
 				   .on('enter-query-desktop',			function() { element.css('overflow-x', 'hidden'); });
 		
 		$(document).ready(function() {
-			
-			if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val() == 'TRUE') {
+		//=====================PASSWORD Expiration Warning================= 				
+		 	if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val() == 'TRUE') {
 				notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>.', {
 					system:				true,
 					vPos:				'top',
@@ -81,8 +81,24 @@
 					closeButton:		true,
 					showCloseOnHover:	true,
 					groupSimilar:		true
-				});
-			} 
+				}); 
+			}
+			
+		 	//$('#shortcut-messages').live("click", function(e) {alert("hi");
+			 	/* $.ajax({
+					type : "GET",
+					url : 'updateNotification.do',
+					data: '',
+					cache:false,
+					success : function(){
+						$('#top-notifications').css('display', 'none');
+					},
+					error : function(){
+						
+					}
+				}); */
+		 	//});
+		 
 			
 			if($.template.iOs || $.template.android) {
 				$(".iframeWrapper").draggable({ 
@@ -480,5 +496,3 @@
 <input type="hidden" value="<%=currentUser%>" id="currentUser">
 <input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
 <input type="hidden" name="pwdWarning" id="pwdWarning" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.PASSWORD_WARNING)%>">
-<% request.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING,"FALSE");%>
-
