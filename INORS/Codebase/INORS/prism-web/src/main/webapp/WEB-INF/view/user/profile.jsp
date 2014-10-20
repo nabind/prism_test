@@ -83,7 +83,7 @@
 							<div class="field-block button-height">
 								<label for="mobile" class="label"><spring:message code="label.contactNumber" /></label>
 								<input type="text" name="mobile" id="mobile" value="${parentAccountDetail.mobile}" class="input validate[maxSize[15],custom[phone]]">
-								<label for="pseudo-input-2" class="button orange-gradient with-tooltip" title="Click to format phone number" id="formatPh"><span class="icon-phone small-margin-right"></span>
+								<label for="pseudo-input-2" class="button orange-gradient with-tooltip" title="Click to format phone number(xxx-xxx-xxxx)" id="formatPh"><span class="icon-phone small-margin-right"></span>
 							</label>
 							</div>
 							<div class="field-block button-height addressContainer" style="min-height:213px">

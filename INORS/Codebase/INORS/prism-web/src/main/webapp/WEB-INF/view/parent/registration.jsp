@@ -126,6 +126,9 @@
 			<div class="field-block button-height">
 				<label for="mobile" class="label">Contact Number</label>
 				<input type="text" name="mobile" id="mobile" value="" class="input validate[maxSize[15],custom[phone]]">
+				<label for="pseudo-input-2" class="button orange-gradient with-tooltip" title="Click to format phone number(xxx-xxx-xxxx)" id="formatPh">
+					<span class="icon-phone small-margin-right"></span>
+				</label>
 			</div>
 
 			<div class="field-block button-height addressContainer">
