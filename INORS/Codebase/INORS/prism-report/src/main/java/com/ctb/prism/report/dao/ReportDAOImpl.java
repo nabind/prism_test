@@ -2440,12 +2440,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String roleArray = Utils.arrayToSeparatedString(roles, ',');
 		final String orgLevelArray = Utils.arrayToSeparatedString(orgLevels, ',');
 		final String actionArray = Utils.arrayToSeparatedString(actions, ',');
-		/*String dbQuery = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		String dbQuery = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = null;
-				cs = con.prepareCall("{call PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?)}");
-				cs.setString(1, reportId);
-				cs.setString(2, custProdId);
+				cs = con.prepareCall(IQueryConstants.SP_UPDATE_ACTION_DATA);
+				cs.setLong(1, Long.parseLong(reportId));
+				cs.setLong(2, Long.parseLong(custProdId));
 				cs.setString(3, roleArray);
 				cs.setString(4, orgLevelArray);
 				cs.setString(5, actionArray);
@@ -2466,22 +2466,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				return query;
 			}
 		});
-		logger.log(IAppLogger.INFO, "dbQuery = " + dbQuery);*/
-		
-		String sql = "UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'IN' WHERE DB_REPORTID = " + reportId + " AND CUST_PROD_ID = " + custProdId;
-		int updateCount = getJdbcTemplate().update(sql);
-		logger.log(IAppLogger.INFO, "updateCount = " + updateCount);
-		sql = "UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'AC' WHERE DB_REPORTID = " + reportId + " AND CUST_PROD_ID = " + custProdId + " AND ROLEID = ? AND ORG_LEVEL = ? AND DB_ACTIONID = ?";
-		getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				ps.setLong(1, 1L);
-				ps.setString(2, "");
-				ps.setInt(3, 3);
-			}
-			public int getBatchSize() {
-				return 1;
-			}
-		});
+		logger.log(IAppLogger.INFO, "dbQuery = " + dbQuery);
 		
 		logger.log(IAppLogger.INFO, "Exit: updateDataForActions()");
 	}

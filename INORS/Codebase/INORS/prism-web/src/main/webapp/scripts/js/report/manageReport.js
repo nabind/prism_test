@@ -77,13 +77,17 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 			innerHtml = innerHtml + ">" + value.name + '</option>';
 		});
 	}
+	if(innerHtml == "") {
+		$(".error-message").html(strings['script.report.noActionFound']);
+	} else {
+		$(".error-message").addClass('hidden');
+	}
 	$("#"+dropdownId).html(innerHtml);
 	$("#"+dropdownId+" option").change();
 	$("#"+dropdownId+" option").trigger('update-select-list');
 }
 
 function openModalForEditActions(reportId) {
-	var row = $("#"+reportId + '_' +reportId);
     manageIconIE('icon-star');
     var param = "reportId=" + reportId;	
     blockUI();
@@ -118,11 +122,11 @@ function openModalForEditActions(reportId) {
 		}
 	})	
 }
-//TODO : Move hardcoded texts to properties file
+
 function drawModalForEditActions() {
 	$("#editActionsForm").modal({
 		title: 'Edit Actions',
-		height: 250,
+		height: 265,
 		width: 400,
 		resizable: false,
 		draggable: false,
@@ -150,7 +154,6 @@ function drawModalForEditActions() {
 }
 
 function updateActionsDetails(form, win) {
-	//alert($(form).serialize());
 	blockUI();
 	$.ajax({
 		type : "GET",
@@ -162,7 +165,7 @@ function updateActionsDetails(form, win) {
 			unblockUI();
 			win.closeModal(); 
 			if(data.status == 'Success') {
-				$.modal.alert('Actions Saved');
+				$.modal.alert(strings['script.report.actionsSavedSuccessfully']);
 			} else {
 				$.modal.alert(strings['script.user.saveError']);
 			}

@@ -1170,6 +1170,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_GET_PROPERTY = "{CALL PKG_CONTRACT_PROPERTY.SP_GET_PROPERTY(?, ?)}";
 
 		public static final String SP_EDIT_ACTION_DATA = "{CALL PKG_MANAGE_REPORT.SP_EDIT_ACTION_DATA(?, ?, ?, ?)}";
+		public static final String SP_UPDATE_ACTION_DATA = "{CALL PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?, ?, ?, ?, ?, ?)}";
 
 }
 
