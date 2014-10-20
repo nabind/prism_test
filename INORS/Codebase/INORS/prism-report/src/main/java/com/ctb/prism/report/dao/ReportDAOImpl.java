@@ -469,10 +469,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								String orgLevels = rsReport.getString("ORG_NODE_LEVEL");
 								orgLevels = orgLevels.replace("Corporation,Diocese", "Corporation/Diocese");
 								to.setAllOrgNode(orgLevels);
-								to.setLinkName(rsReport.getLong("CUST_PROD_ID"));
-								to.setProducttName(rsReport.getString("PRODUCT_NAME"));
-								to.setProductId(rsReport.getLong("PRODUCTID"));
-	
+								
 								String strRoles = rsReport.getString("ROLES");
 								if (strRoles != null && strRoles.length() > 0) {
 									String[] roles = strRoles.split(",");
@@ -491,7 +488,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								}
 								String custProdLinks = rsReport.getString("CUST_PROD_ID");
 								if (custProdLinks != null && custProdLinks.length() > 0) {
-									String[] customerProductArr = strOrgLevl.split(",");
+									String[] customerProductArr = custProdLinks.split(",");
 									to.setCustomerProductArr(customerProductArr);
 								}
 								to.setMenuId(rsReport.getString("MENUID"));

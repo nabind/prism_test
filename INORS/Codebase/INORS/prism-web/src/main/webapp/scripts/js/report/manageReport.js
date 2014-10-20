@@ -233,11 +233,11 @@ var row = $("#"+reportId + '_' +reportId);
 					});
 				});
 			}
-			var customerTypes = data[0].linkName;
-			if(typeof customerTypes != "undefined") {
-				$.each(customerTypes, function(index, value) {
+			var customerProductArr = data[0].customerProductArr;
+			if(typeof customerProductArr != "undefined") {
+				$.each(customerProductArr, function(index, value) {
 					$("#editCustomerType option").each(function() {				
-						if($(this).val() == customerTypes[index]) {
+						if($(this).val() == customerProductArr[index]) {
 							$(this).attr('selected', 'true');
 						}
 						$(this).change();
