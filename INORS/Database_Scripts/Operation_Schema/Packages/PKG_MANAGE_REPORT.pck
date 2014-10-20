@@ -61,15 +61,13 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
                                 P_OUT_ACTION_CURSOR OUT GET_REFCURSOR,
                                 P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
-PROCEDURE SP_UPDATE_ACTION_DATA(
-	P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
-	P_IN_CUST_PROD_ID IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-	P_IN_ROLE_ID_LIST IN VARCHAR2,
-	P_IN_ORG_LEVEL_LIST IN VARCHAR2,
-	P_IN_ACTION_ID_LIST IN VARCHAR2,
-	P_OUT_QUERY_STRING OUT VARCHAR2,
-	P_OUT_EXCEP_ERR_MSG OUT VARCHAR2
-);
+  PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
+                                  P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                  P_IN_ROLE_ID_LIST   IN VARCHAR2,
+                                  P_IN_ORG_LEVEL_LIST IN VARCHAR2,
+                                  P_IN_ACTION_ID_LIST IN VARCHAR2,
+                                  P_OUT_QUERY_STRING  OUT VARCHAR2,
+                                  P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
 END PKG_MANAGE_REPORT;
 /
@@ -246,15 +244,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         SELECT ID,
                REPORT_DESC,
                REPORT_TYPE,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ', ')
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ',')
                                     WITHIN GROUP(ORDER BY CUST_PROD_ID),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS CUST_PROD_ID,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ', ') WITHIN
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ',') WITHIN
                                     GROUP(ORDER BY ROLE_NAME),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS ROLES,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ', ') WITHIN
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ',') WITHIN
                                     GROUP(ORDER BY ORG_LABEL),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS ORG_NODE_LEVEL,
@@ -332,15 +330,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         SELECT ID,
                REPORT_DESC,
                REPORT_TYPE,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ', ')
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ',')
                                     WITHIN GROUP(ORDER BY CUST_PROD_ID),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS CUST_PROD_ID,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ', ') WITHIN
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ',') WITHIN
                                     GROUP(ORDER BY ROLE_NAME),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS ROLES,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ', ') WITHIN
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ',') WITHIN
                                     GROUP(ORDER BY ORG_LABEL),
                                     '([^,]*)(,\1)+($|,)',
                                     '\1\3')) AS ORG_NODE_LEVEL,
@@ -745,32 +743,59 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_EDIT_ACTION_DATA;
 
-PROCEDURE SP_UPDATE_ACTION_DATA(
-	P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
-	P_IN_CUST_PROD_ID IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-	P_IN_ROLE_ID_LIST IN VARCHAR2,
-	P_IN_ORG_LEVEL_LIST IN VARCHAR2,
-	P_IN_ACTION_ID_LIST IN VARCHAR2,
-	P_OUT_QUERY_STRING OUT VARCHAR2,
-	P_OUT_EXCEP_ERR_MSG OUT VARCHAR2
-) IS
-BEGIN
-	UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'IN' WHERE DB_REPORTID = P_IN_REPORTID AND CUST_PROD_ID = P_IN_CUST_PROD_ID;
-	FOR REC_ROLE_ID IN (WITH T AS (SELECT P_IN_ROLE_ID_LIST AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID FROM T CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
-	LOOP
-		FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_LEVEL_LIST AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ORG_NODE_LEVEL FROM T CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
-		LOOP
-			FOR REC_ACTION_ID IN (WITH T AS (SELECT P_IN_ACTION_ID_LIST AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ACTION_ID FROM T CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
-			LOOP
-				UPDATE DASH_ACTION_ACCESS SET ACTIVATION_STATUS = 'AC' WHERE DB_REPORTID = P_IN_REPORTID AND CUST_PROD_ID = P_IN_CUST_PROD_ID AND ROLEID = REC_ROLE_ID.ROLE_ID AND ORG_LEVEL = REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL AND DB_ACTIONID = REC_ACTION_ID.ACTION_ID;
-			END LOOP;
-		END LOOP;
-	END LOOP;
-	P_OUT_QUERY_STRING := "Success";
-EXCEPTION
-	WHEN OTHERS THEN
-		P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM,12,255));
-END SP_UPDATE_ACTION_DATA;
+  PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_REPORTS.DB_REPORTID%TYPE,
+                                  P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                  P_IN_ROLE_ID_LIST   IN VARCHAR2,
+                                  P_IN_ORG_LEVEL_LIST IN VARCHAR2,
+                                  P_IN_ACTION_ID_LIST IN VARCHAR2,
+                                  P_OUT_QUERY_STRING  OUT VARCHAR2,
+                                  P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  BEGIN
+    UPDATE DASH_ACTION_ACCESS
+       SET ACTIVATION_STATUS = 'IN'
+     WHERE DB_REPORTID = P_IN_REPORTID
+       AND CUST_PROD_ID = P_IN_CUST_PROD_ID;
+    FOR REC_ROLE_ID IN (WITH T AS (SELECT P_IN_ROLE_ID_LIST AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                              '[^,]+',
+                                              1,
+                                              LEVEL) AS ROLE_ID
+                          FROM T
+                        CONNECT BY LEVEL <=
+                                   LENGTH(REGEXP_REPLACE(TXT,
+                                                         '[^,]*')) + 1) LOOP
+      FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_LEVEL_LIST AS TXT
+                                               FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                       '[^,]+',
+                                                       1,
+                                                       LEVEL) AS ORG_NODE_LEVEL
+                                   FROM T
+                                 CONNECT BY LEVEL <=
+                                            LENGTH(REGEXP_REPLACE(TXT,
+                                                                  '[^,]*')) + 1) LOOP
+        FOR REC_ACTION_ID IN (WITH T AS (SELECT P_IN_ACTION_ID_LIST AS TXT
+                                            FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                    '[^,]+',
+                                                    1,
+                                                    LEVEL) AS ACTION_ID
+                                FROM T
+                              CONNECT BY LEVEL <=
+                                         LENGTH(REGEXP_REPLACE(TXT,
+                                                               '[^,]*')) + 1) LOOP
+          UPDATE DASH_ACTION_ACCESS
+             SET ACTIVATION_STATUS = 'AC'
+           WHERE DB_REPORTID = P_IN_REPORTID
+             AND CUST_PROD_ID = P_IN_CUST_PROD_ID
+             AND ROLEID = REC_ROLE_ID.ROLE_ID
+             AND ORG_LEVEL = REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL
+             AND DB_ACTIONID = REC_ACTION_ID.ACTION_ID;
+        END LOOP;
+      END LOOP;
+    END LOOP;
+    P_OUT_QUERY_STRING := 'Success';
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_UPDATE_ACTION_DATA;
 
 END PKG_MANAGE_REPORT; --END OF PACKAGE
 /
