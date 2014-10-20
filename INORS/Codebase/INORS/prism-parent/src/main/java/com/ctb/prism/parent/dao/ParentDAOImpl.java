@@ -69,7 +69,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
 		try {
-			questionList = (List<QuestionTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			questionList = (List<QuestionTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SECRET_QUESTION + "}");
 					cs.setString(1, "0");

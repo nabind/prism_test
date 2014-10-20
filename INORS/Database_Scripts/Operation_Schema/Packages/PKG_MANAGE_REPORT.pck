@@ -247,18 +247,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         SELECT ID,
                REPORT_DESC,
                REPORT_TYPE,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ',')
-                                    WITHIN GROUP(ORDER BY CUST_PROD_ID),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS CUST_PROD_ID,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ',') WITHIN
-                                    GROUP(ORDER BY ROLE_NAME),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS ROLES,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ',') WITHIN
-                                    GROUP(ORDER BY ORG_LABEL),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS ORG_NODE_LEVEL,
+               REGEXP_REPLACE(LISTAGG(CUST_PROD_ID, ',') WITHIN
+                              GROUP(ORDER BY CUST_PROD_ID),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS CUST_PROD_ID,
+               REGEXP_REPLACE(LISTAGG(ROLE_NAME, ',') WITHIN
+                              GROUP(ORDER BY ROLE_NAME),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS ROLES,
+               REGEXP_REPLACE(LISTAGG(ORG_LABEL, ',') WITHIN
+                              GROUP(ORDER BY ORG_LABEL),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS ORG_NODE_LEVEL,
                REPORT_NAME,
                REPORT_FOLDER_URI,
                STATUS,
@@ -333,18 +333,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
         SELECT ID,
                REPORT_DESC,
                REPORT_TYPE,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ',')
-                                    WITHIN GROUP(ORDER BY CUST_PROD_ID),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS CUST_PROD_ID,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ',') WITHIN
-                                    GROUP(ORDER BY ROLE_NAME),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS ROLES,
-               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ',') WITHIN
-                                    GROUP(ORDER BY ORG_LABEL),
-                                    '([^,]*)(,\1)+($|,)',
-                                    '\1\3')) AS ORG_NODE_LEVEL,
+               REGEXP_REPLACE(LISTAGG(CUST_PROD_ID, ',') WITHIN
+                              GROUP(ORDER BY CUST_PROD_ID),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS CUST_PROD_ID,
+               REGEXP_REPLACE(LISTAGG(ROLE_NAME, ',') WITHIN
+                              GROUP(ORDER BY ROLE_NAME),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS ROLES,
+               REGEXP_REPLACE(LISTAGG(ORG_LABEL, ',') WITHIN
+                              GROUP(ORDER BY ORG_LABEL),
+                              '([^,]*)(,\1)+($|,)',
+                              '\1\3') AS ORG_NODE_LEVEL,
                REPORT_NAME,
                REPORT_FOLDER_URI,
                STATUS,
@@ -689,8 +689,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
              PRODUCT P,
              CUST_PRODUCT_LINK CPL,
              ROLE R,
-             (SELECT TEMP.ORG_LEVEL,
-                     LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+             (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+               GROUP(
+               ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
                 FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
                         FROM ORG_TP_STRUCTURE
                        ORDER BY ORG_LEVEL) TEMP
@@ -727,7 +728,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                      CUST_PRODUCT_LINK CPL,
                      ROLE R,
                      (SELECT TEMP.ORG_LEVEL,
-                             LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                             LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+                       GROUP(
+                       ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
                         FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
                                 FROM ORG_TP_STRUCTURE
                                ORDER BY ORG_LEVEL) TEMP
@@ -763,30 +766,32 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
        SET ACTIVATION_STATUS = 'IN'
      WHERE DB_REPORTID = P_IN_REPORTID
        AND CUST_PROD_ID = P_IN_CUST_PROD_ID;
-    FOR REC_ROLE_ID IN (WITH T AS
-                           (SELECT P_IN_ROLE_ID_LIST AS TXT FROM DUAL)
-                          SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID
-                            FROM T
-                          CONNECT BY LEVEL <=
-                                     LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-      FOR REC_ORG_NODE_LEVEL IN (WITH T AS
-                                    (SELECT P_IN_ORG_LEVEL_LIST AS TXT
-                                      FROM DUAL)
-                                   SELECT REGEXP_SUBSTR(TXT,
-                                                        '[^,]+',
-                                                        1,
-                                                        LEVEL) AS ORG_NODE_LEVEL
-                                     FROM T
-                                   CONNECT BY LEVEL <=
-                                              LENGTH(REGEXP_REPLACE(TXT,
-                                                                    '[^,]*')) + 1) LOOP
-        FOR REC_ACTION_ID IN (WITH T AS
-                                 (SELECT P_IN_ACTION_ID_LIST AS TXT FROM DUAL)
-                                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ACTION_ID
-                                  FROM T
-                                CONNECT BY LEVEL <=
-                                           LENGTH(REGEXP_REPLACE(TXT,
-                                                                 '[^,]*')) + 1) LOOP
+    FOR REC_ROLE_ID IN (WITH T AS (SELECT P_IN_ROLE_ID_LIST AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                              '[^,]+',
+                                              1,
+                                              LEVEL) AS ROLE_ID
+                          FROM T
+                        CONNECT BY LEVEL <=
+                                   LENGTH(REGEXP_REPLACE(TXT,
+                                                         '[^,]*')) + 1) LOOP
+      FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_LEVEL_LIST AS TXT
+                                               FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                       '[^,]+',
+                                                       1,
+                                                       LEVEL) AS ORG_NODE_LEVEL
+                                   FROM T
+                                 CONNECT BY LEVEL <=
+                                            LENGTH(REGEXP_REPLACE(TXT,
+                                                                  '[^,]*')) + 1) LOOP
+        FOR REC_ACTION_ID IN (WITH T AS (SELECT P_IN_ACTION_ID_LIST AS TXT
+                                            FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                    '[^,]+',
+                                                    1,
+                                                    LEVEL) AS ACTION_ID
+                                FROM T
+                              CONNECT BY LEVEL <=
+                                         LENGTH(REGEXP_REPLACE(TXT,
+                                                               '[^,]*')) + 1) LOOP
           UPDATE DASH_ACTION_ACCESS
              SET ACTIVATION_STATUS = 'AC'
            WHERE DB_REPORTID = P_IN_REPORTID
