@@ -42,6 +42,8 @@
 	strings['script.report.menu'] = "<spring:message code='script.report.menu' javaScriptEscape='true' />";
 	strings['script.report.maxTab'] = "<spring:message code='script.report.maxTab' javaScriptEscape='true' />";
 	strings['script.report.pagination'] = "<spring:message code='script.report.pagination' javaScriptEscape='true' />";
+	strings['script.report.noActionFound'] = "<spring:message code='script.report.noActionFound' javaScriptEscape='true' />";
+	strings['script.report.actionsSavedSuccessfully'] = "<spring:message code='script.report.actionsSavedSuccessfully' javaScriptEscape='true' />";
 	
 	strings['script.manageReport.update'] = "<spring:message code='script.manageReport.update' javaScriptEscape='true' />";
 	strings['script.manageReport.exists'] = "<spring:message code='script.manageReport.exists' javaScriptEscape='true' />";
