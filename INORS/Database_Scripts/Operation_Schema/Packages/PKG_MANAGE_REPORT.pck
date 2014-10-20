@@ -233,234 +233,178 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   BEGIN
     IF P_IN_REPORT_ID = '-99' THEN
       OPEN P_OUT_CUR_REPORT FOR
-        SELECT DISTINCT ID,
-                        REPORT_DESC,
-                        REPORT_TYPE,
-                        0 AS CUST_PROD_ID,
-                        REPORT_NAME,
-                        REPORT_FOLDER_URI,
-                        0 AS PRODUCT_NAME,
-                        0 AS PRODUCTID,
-                        STATUS,
-                        ROLES,
-                        LISTAGG(ORG_LABEL, ',') WITHIN
-         GROUP(
-         ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-          FROM (SELECT ID,
-                       REPORT_DESC,
-                       REPORT_TYPE,
-                       CUST_PROD_ID,
-                       REPORT_NAME,
-                       REPORT_FOLDER_URI,
-                       STATUS,
+        SELECT ID,
+               REPORT_DESC,
+               REPORT_TYPE,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ', ')
+                                    WITHIN GROUP(ORDER BY CUST_PROD_ID),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS CUST_PROD_ID,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ', ') WITHIN
+                                    GROUP(ORDER BY ROLE_NAME),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS ROLES,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ', ') WITHIN
+                                    GROUP(ORDER BY ORG_LABEL),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS ORG_NODE_LEVEL,
+               REPORT_NAME,
+               REPORT_FOLDER_URI,
+               STATUS,
+               MENUID,
+               MENU_SEQ,
+               REPORT_SEQ,
+               MENUNAME
+          FROM (SELECT RE.DB_REPORTID ID,
+                       RE.REPORT_DESC,
+                       RE.REPORT_TYPE,
+                       DMRA.CUST_PROD_ID,
+                       RE.REPORT_NAME,
+                       RE.REPORT_FOLDER_URI,
+                       RE.ACTIVATION_STATUS STATUS,
+                       ROLE_NAME,
                        ORG_LABEL,
-                       LISTAGG(ROLE_NAME, ',') WITHIN
-                 GROUP(
-                 ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-                  FROM (SELECT RE.DB_REPORTID ID,
-                               RE.REPORT_DESC,
-                               RE.REPORT_TYPE,
-                               DMRA.CUST_PROD_ID,
-                               RE.REPORT_NAME,
-                               RE.REPORT_FOLDER_URI,
-                               RE.ACTIVATION_STATUS STATUS,
-                               ROLE_NAME,
-                               ORG_LABEL,
-                               P.PRODUCT_NAME,
-                               P.PRODUCTID,
-                               DMRA.DB_MENUID MENUID,
-                               DMENU.MENU_SEQ,
-                               DMRA.REPORT_SEQ,
-                               DMENU.MENU_NAME MENUNAME,
-                               CPL.CUSTOMERID
-                          FROM DASH_REPORTS         RE,
-                               DASH_MENU_RPT_ACCESS DMRA,
-                               DASH_MENUS           DMENU,
-                               ROLE                 R,
-                               ORG_TP_STRUCTURE     OTS,
-                               CUST_PRODUCT_LINK    CPL,
-                               PRODUCT              P
-                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
-                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
-                           AND R.ROLEID = DMRA.ROLEID
-                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
-                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
-                           AND P.PRODUCTID = CPL.PRODUCTID
-                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
-                        UNION
-                        SELECT RE.DB_REPORTID ID,
-                               RE.REPORT_DESC,
-                               RE.REPORT_TYPE,
-                               DMRA.CUST_PROD_ID,
-                               RE.REPORT_NAME,
-                               RE.REPORT_FOLDER_URI,
-                               RE.ACTIVATION_STATUS STATUS,
-                               ROLE_NAME,
-                               'Education Center' ORG_LABEL,
-                               P.PRODUCT_NAME,
-                               P.PRODUCTID,
-                               DMRA.DB_MENUID MENUID,
-                               DMENU.MENU_SEQ,
-                               DMRA.REPORT_SEQ,
-                               DMENU.menu_name MENUNAME,
-                               CPL.CUSTOMERID
-                          FROM DASH_REPORTS         RE,
-                               DASH_MENU_RPT_ACCESS DMRA,
-                               DASH_MENUS           DMENU,
-                               ROLE                 R,
-                               CUST_PRODUCT_LINK    CPL,
-                               PRODUCT              P
-                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
-                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
-                           AND R.ROLEID = DMRA.ROLEID
-                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
-                           AND P.PRODUCTID = CPL.PRODUCTID
-                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
-                           AND DMRA.ORG_LEVEL = -99)
-                 GROUP BY ID,
-                          REPORT_DESC,
-                          REPORT_TYPE,
-                          CUST_PROD_ID,
-                          REPORT_NAME,
-                          REPORT_FOLDER_URI,
-                          STATUS,
-                          PRODUCT_NAME,
-                          PRODUCTID,
-                          ORG_LABEL,
-                          MENUID,
-                          MENUNAME,
-                          MENU_SEQ,
-                          REPORT_SEQ)
+                       DMRA.DB_MENUID MENUID,
+                       DMENU.MENU_SEQ,
+                       DMRA.REPORT_SEQ,
+                       DMENU.MENU_NAME MENUNAME
+                  FROM DASH_REPORTS         RE,
+                       DASH_MENU_RPT_ACCESS DMRA,
+                       DASH_MENUS           DMENU,
+                       ROLE                 R,
+                       ORG_TP_STRUCTURE     OTS,
+                       CUST_PRODUCT_LINK    CPL
+                 WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                   AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                   AND R.ROLEID = DMRA.ROLEID
+                   AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                   AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                   AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                UNION
+                SELECT RE.DB_REPORTID ID,
+                       RE.REPORT_DESC,
+                       RE.REPORT_TYPE,
+                       DMRA.CUST_PROD_ID,
+                       RE.REPORT_NAME,
+                       RE.REPORT_FOLDER_URI,
+                       RE.ACTIVATION_STATUS STATUS,
+                       ROLE_NAME,
+                       'Education Center' ORG_LABEL,
+                       DMRA.DB_MENUID MENUID,
+                       DMENU.MENU_SEQ,
+                       DMRA.REPORT_SEQ,
+                       DMENU.MENU_NAME MENUNAME
+                  FROM DASH_REPORTS         RE,
+                       DASH_MENU_RPT_ACCESS DMRA,
+                       DASH_MENUS           DMENU,
+                       ROLE                 R,
+                       CUST_PRODUCT_LINK    CPL,
+                       PRODUCT              P
+                 WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                   AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                   AND R.ROLEID = DMRA.ROLEID
+                   AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                   AND P.PRODUCTID = CPL.PRODUCTID
+                   AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                   AND DMRA.ORG_LEVEL = -99)
          GROUP BY ID,
                   REPORT_DESC,
                   REPORT_TYPE,
-                  CUST_PROD_ID,
                   REPORT_NAME,
                   REPORT_FOLDER_URI,
-                  PRODUCT_NAME,
-                  PRODUCTID,
                   STATUS,
-                  ROLES,
                   MENUID,
-                  MENUNAME,
                   MENU_SEQ,
-                  REPORT_SEQ;
+                  REPORT_SEQ,
+                  MENUNAME;
     ELSE
       OPEN P_OUT_CUR_REPORT FOR
-        SELECT DISTINCT ID,
-                        REPORT_DESC,
-                        REPORT_TYPE,
-                        0 AS CUST_PROD_ID,
-                        REPORT_NAME,
-                        REPORT_FOLDER_URI,
-                        0 AS PRODUCT_NAME,
-                        0 AS PRODUCTID,
-                        STATUS,
-                        ROLES,
-                        LISTAGG(ORG_LABEL, ',') WITHIN
-         GROUP(
-         ORDER BY ORG_LABEL) AS ORG_NODE_LEVEL, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-          FROM (SELECT ID,
-                       REPORT_DESC,
-                       REPORT_TYPE,
-                       CUST_PROD_ID,
-                       REPORT_NAME,
-                       REPORT_FOLDER_URI,
-                       STATUS,
+        SELECT ID,
+               REPORT_DESC,
+               REPORT_TYPE,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(CUST_PROD_ID, ', ')
+                                    WITHIN GROUP(ORDER BY CUST_PROD_ID),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS CUST_PROD_ID,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ROLE_NAME, ', ') WITHIN
+                                    GROUP(ORDER BY ROLE_NAME),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS ROLES,
+               LTRIM(REGEXP_REPLACE(' ' || LISTAGG(ORG_LABEL, ', ') WITHIN
+                                    GROUP(ORDER BY ORG_LABEL),
+                                    '([^,]*)(,\1)+($|,)',
+                                    '\1\3')) AS ORG_NODE_LEVEL,
+               REPORT_NAME,
+               REPORT_FOLDER_URI,
+               STATUS,
+               MENUID,
+               MENU_SEQ,
+               REPORT_SEQ,
+               MENUNAME
+          FROM (SELECT RE.DB_REPORTID ID,
+                       RE.REPORT_DESC,
+                       RE.REPORT_TYPE,
+                       DMRA.CUST_PROD_ID,
+                       RE.REPORT_NAME,
+                       RE.REPORT_FOLDER_URI,
+                       RE.ACTIVATION_STATUS STATUS,
+                       ROLE_NAME,
                        ORG_LABEL,
-                       LISTAGG(ROLE_NAME, ',') WITHIN
-                 GROUP(
-                 ORDER BY ROLE_NAME) AS ROLES, PRODUCT_NAME, PRODUCTID, MENUID, MENUNAME, MENU_SEQ, REPORT_SEQ
-                  FROM (SELECT RE.DB_REPORTID ID,
-                               RE.REPORT_DESC,
-                               RE.REPORT_TYPE,
-                               DMRA.CUST_PROD_ID,
-                               RE.REPORT_NAME,
-                               RE.REPORT_FOLDER_URI,
-                               RE.ACTIVATION_STATUS STATUS,
-                               ROLE_NAME,
-                               ORG_LABEL,
-                               P.PRODUCT_NAME,
-                               P.PRODUCTID,
-                               DMRA.DB_MENUID MENUID,
-                               DMENU.MENU_SEQ,
-                               DMRA.REPORT_SEQ,
-                               DMENU.MENU_NAME MENUNAME,
-                               CPL.CUSTOMERID
-                          FROM DASH_REPORTS         RE,
-                               DASH_MENU_RPT_ACCESS DMRA,
-                               DASH_MENUS           DMENU,
-                               ROLE                 R,
-                               ORG_TP_STRUCTURE     OTS,
-                               CUST_PRODUCT_LINK    CPL,
-                               PRODUCT              P
-                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
-                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
-                           AND R.ROLEID = DMRA.ROLEID
-                           AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
-                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
-                           AND P.PRODUCTID = CPL.PRODUCTID
-                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
-                           AND RE.DB_REPORTID = P_IN_REPORT_ID
-                        UNION
-                        SELECT RE.DB_REPORTID ID,
-                               RE.REPORT_DESC,
-                               RE.REPORT_TYPE,
-                               DMRA.CUST_PROD_ID,
-                               RE.REPORT_NAME,
-                               RE.REPORT_FOLDER_URI,
-                               RE.ACTIVATION_STATUS STATUS,
-                               ROLE_NAME,
-                               'Education Center' ORG_LABEL,
-                               P.PRODUCT_NAME,
-                               P.PRODUCTID,
-                               DMRA.DB_MENUID MENUID,
-                               DMENU.MENU_SEQ,
-                               DMRA.REPORT_SEQ,
-                               DMENU.menu_name MENUNAME,
-                               CPL.CUSTOMERID
-                          FROM DASH_REPORTS         RE,
-                               DASH_MENU_RPT_ACCESS DMRA,
-                               DASH_MENUS           DMENU,
-                               ROLE                 R,
-                               CUST_PRODUCT_LINK    CPL,
-                               PRODUCT              P
-                         WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
-                           AND DMENU.DB_MENUID = DMRA.DB_MENUID
-                           AND R.ROLEID = DMRA.ROLEID
-                           AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
-                           AND P.PRODUCTID = CPL.PRODUCTID
-                           AND CPL.CUSTOMERID = P_IN_CUSTOMERID
-                           AND DMRA.ORG_LEVEL = -99
-                           AND RE.DB_REPORTID = P_IN_REPORT_ID)
-                 GROUP BY ID,
-                          REPORT_DESC,
-                          REPORT_TYPE,
-                          CUST_PROD_ID,
-                          REPORT_NAME,
-                          REPORT_FOLDER_URI,
-                          STATUS,
-                          PRODUCT_NAME,
-                          PRODUCTID,
-                          ORG_LABEL,
-                          MENUID,
-                          MENUNAME,
-                          MENU_SEQ,
-                          REPORT_SEQ)
+                       DMRA.DB_MENUID MENUID,
+                       DMENU.MENU_SEQ,
+                       DMRA.REPORT_SEQ,
+                       DMENU.MENU_NAME MENUNAME
+                  FROM DASH_REPORTS         RE,
+                       DASH_MENU_RPT_ACCESS DMRA,
+                       DASH_MENUS           DMENU,
+                       ROLE                 R,
+                       ORG_TP_STRUCTURE     OTS,
+                       CUST_PRODUCT_LINK    CPL
+                 WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                   AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                   AND R.ROLEID = DMRA.ROLEID
+                   AND OTS.ORG_LEVEL = DMRA.ORG_LEVEL
+                   AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                   AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                   AND RE.DB_REPORTID = P_IN_REPORT_ID
+                UNION
+                SELECT RE.DB_REPORTID ID,
+                       RE.REPORT_DESC,
+                       RE.REPORT_TYPE,
+                       DMRA.CUST_PROD_ID,
+                       RE.REPORT_NAME,
+                       RE.REPORT_FOLDER_URI,
+                       RE.ACTIVATION_STATUS STATUS,
+                       ROLE_NAME,
+                       'Education Center' ORG_LABEL,
+                       DMRA.DB_MENUID MENUID,
+                       DMENU.MENU_SEQ,
+                       DMRA.REPORT_SEQ,
+                       DMENU.MENU_NAME MENUNAME
+                  FROM DASH_REPORTS         RE,
+                       DASH_MENU_RPT_ACCESS DMRA,
+                       DASH_MENUS           DMENU,
+                       ROLE                 R,
+                       CUST_PRODUCT_LINK    CPL,
+                       PRODUCT              P
+                 WHERE RE.DB_REPORTID = DMRA.DB_REPORTID
+                   AND DMENU.DB_MENUID = DMRA.DB_MENUID
+                   AND R.ROLEID = DMRA.ROLEID
+                   AND CPL.CUST_PROD_ID = DMRA.CUST_PROD_ID
+                   AND P.PRODUCTID = CPL.PRODUCTID
+                   AND CPL.CUSTOMERID = P_IN_CUSTOMERID
+                   AND DMRA.ORG_LEVEL = -99
+                   AND RE.DB_REPORTID = P_IN_REPORT_ID)
          GROUP BY ID,
                   REPORT_DESC,
                   REPORT_TYPE,
-                  CUST_PROD_ID,
                   REPORT_NAME,
                   REPORT_FOLDER_URI,
-                  PRODUCT_NAME,
-                  PRODUCTID,
                   STATUS,
-                  ROLES,
                   MENUID,
-                  MENUNAME,
                   MENU_SEQ,
-                  REPORT_SEQ;
+                  REPORT_SEQ,
+                  MENUNAME;
     END IF;
   
   EXCEPTION
