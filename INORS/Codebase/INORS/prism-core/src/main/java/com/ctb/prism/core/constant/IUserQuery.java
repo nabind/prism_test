@@ -224,15 +224,9 @@ public interface IUserQuery {
 			" FROM ROLE RE WHERE RE.ROLE_NAME NOT IN (? ,? ,?)");*/
 	public static final String SP_GET_ROLE_ADD = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_ADD(?, ?, ?)}";
 	
-	public static final String GET_USER_DETAILS_ON_EDIT = CustomStringUtil
-	.appendString(" SELECT USR.USERID AS ID, ",
-			" USR.DISPLAY_USERNAME AS USERNAME, ",
-			" USR.USERNAME AS USERID,  ",
-			" NVL(USR.EMAIL_ADDRESS,'') AS EMAIL, ",
-			" USR.ACTIVATION_STATUS AS STATUS  ", " FROM USERS USR  ",
-			" WHERE USR.USERID = ?");
+	public static final String GET_USER_DETAILS_ON_EDIT = "{CALL PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(?, ?, ?, ?)}";
 	
-	public static final String GET_USER_ROLE_ON_EDIT = CustomStringUtil.appendString(
+/*	public static final String GET_USER_ROLE_ON_EDIT = CustomStringUtil.appendString(
 			"SELECT DISTINCT RLE.ROLEID AS ROLE_ID, RLE.ROLE_NAME AS ROLENAME, OTS.ORG_LABEL || ' ' || RLE.DESCRIPTION AS DESCRIPTION",
 			" FROM ROLE RLE, USER_ROLE URLE, USERS USR, ORG_USERS OU, (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/')",
 			" WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL FROM (SELECT  DISTINCT ORG_LEVEL,ORG_LABEL",
@@ -241,7 +235,7 @@ public interface IUserQuery {
 			" AND OU.ORG_NODE_LEVEL= (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = ?)",
 			" AND OTS.ORG_LEVEL=(SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = ?)",
 			" AND RLE.ROLE_NAME NOT IN (? ,? ,?)",
-			" ORDER BY RLE.ROLEID");
+			" ORDER BY RLE.ROLEID");*/
 	
 	public static final String GET_USER_ORG_LEVEL = " SELECT ORG_NODE_LEVEL FROM USERS USR, ORG_USERS ORG WHERE ORG.USERID = USR.USERID AND USR.USERID = ? AND rownum = 1 ";
 		
@@ -397,7 +391,7 @@ public interface IUserQuery {
 			"INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (?, ?)");
 		
 	
-	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 	
 	/*public static final String GET_PASSWORD_HISTORY = CustomStringUtil.appendString(
 			" select salt, ph.password ",
@@ -405,6 +399,7 @@ public interface IUserQuery {
 			" where upper(USERNAME) = upper('ctbadmin') order by ph.created_date_time desc ");*/
 	
 	public static final String SP_GET_PASSWORD_HISTORY = "{CALL PKG_ADMIN_MODULE.SP_GET_PASSWORD_HISTORY(?, ?, ?, ?)}";
-
+	
+	
 }
 

@@ -605,21 +605,23 @@ public class AdminController {
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - getEditUserData");
-			String nodeId = (String) request.getParameter("tenantId");
+			String userId = (String) request.getParameter("userId");
 			String purpose = (String) request.getParameter("purpose");
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			
-			paramMap.put("nodeId", nodeId);
+			paramMap.put("userId", userId);
 			paramMap.put("customer", customer);
 			paramMap.put("purpose", purpose);
 			
-			if (nodeId != null) {
-				user = adminService.getEditUserData(paramMap);
+			if (userId != null) {
+				user = adminService.getEditUserData(paramMap);			
+				
+				if (IApplicationConstants.PURPOSE.equals(purpose)) {
+					user.setAvailableRoleList(getEducationCenterAvailableRoleList());
+					user.setMasterRoleList(getEducationCenterMasterRoleList(userId)); // nodeId having value of userId
+				}
 			}
-			if (IApplicationConstants.PURPOSE.equals(purpose)) {
-				user.setAvailableRoleList(getEducationCenterAvailableRoleList());
-				user.setMasterRoleList(getEducationCenterMasterRoleList(nodeId)); // nodeId having value of userId
-			}
+			
 			userList.add(user);
 
 			String userJsonString = JsonUtil.convertToJsonAdmin(userList);

@@ -312,7 +312,7 @@ $(document).ready(function() {
 	//======================OPEN EDIT USER SCREEN==========================================
 	function openUserModaltoEdit(userId,tenantId) {
 	var row = $("#"+tenantId + '_' +userId);
-	var nodeid = "tenantId=" + userId+'&purpose='+ $("#purpose").val();	
+	var userId = "userId=" + userId+'&purpose='+ $("#purpose").val();	
 	if($("#purpose").val()=="eduCenterUsers"){
 		$("#editUser").validationEngine({promptPosition : "centerRight", scroll: false});
 	}
@@ -321,7 +321,7 @@ $(document).ready(function() {
 	$.ajax({
 			type : "GET",
 			url : "getEditUserData.do",
-			data : nodeid,
+			data : userId,
 			dataType : 'json',
 			cache:false,
 			success : function(data) {

@@ -214,13 +214,13 @@ $(document).ready(function() {
 	//======================OPEN EDIT USER SCREEN==========================================
 	function openUserModaltoEdit(userId,tenantId) {
 	var row = $("#"+tenantId + '_' +userId);
-	var nodeid = "tenantId=" + userId;	
+	var userId = "userId=" + userId;	
 	manageIconIE('icon-star');
 	blockUI();
 	$.ajax({
 			type : "GET",
 			url : "getEditUserData.do",
-			data : nodeid,
+			data : userId,
 			dataType : 'json',
 			cache:false,
 			success : function(data) {

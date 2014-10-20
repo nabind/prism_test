@@ -691,46 +691,61 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	/**
 	 * Returns the userTO on Edit.
 	 * 
-	 * @param nodeid
+	 * @param userId
 	 * @return
 	 */
 	public UserTO getEditUserData(Map<String, Object> paramMap) {
-		UserTO to = new UserTO();
-		List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
-		RoleTO roleTO = null;
-		String nodeId = (String) paramMap.get("nodeId");
-		String customerId = (String) paramMap.get("customer");
-
-		List<RoleTO> masterRoleList = null;
-		String purpose = "edit";
-		masterRoleList = getMasterRoleList("user", nodeId, customerId,purpose);
-
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DETAILS_ON_EDIT, nodeId);
-		List<Map<String, Object>> lstRoleData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE_ON_EDIT, nodeId, nodeId,
-				IApplicationConstants.ROLE_TYPE.ROLE_CTB.toString(),
-				IApplicationConstants.ROLE_TYPE.ROLE_PARENT.toString(),
-				IApplicationConstants.ROLE_TYPE.ROLE_SUPER.toString());
-		
-		for (Map<String, Object> fieldDetails : lstRoleData) {
-			roleTO = new RoleTO();
-			String roleName = ((String) (fieldDetails.get("ROLENAME")));
-			String roleDescription = ((String) (fieldDetails.get("DESCRIPTION")));
-			// if (!(IApplicationConstants.DEFAULT_USER_ROLE.equals(roleName))){
-			roleTO.setRoleName(roleName);
-			roleTO.setRoleDescription(roleDescription);
-			availableRoleList.add(roleTO);
-			// }
-		}
-		to.setAvailableRoleList(availableRoleList);
-		to.setMasterRoleList(masterRoleList);
-		for (Map<String, Object> fieldDetails : lstData) {
-			to.setUserId(((BigDecimal) fieldDetails.get("ID")).longValue());
-			to.setUserName((String) (fieldDetails.get("USERID")));
-			to.setUserDisplayName((String) (fieldDetails.get("USERNAME")));
-			to.setEmailId((String) (fieldDetails.get("EMAIL")));
-			to.setStatus((String) (fieldDetails.get("STATUS")));
-		}
-		return to;
+		final long userId = Long.valueOf((String)paramMap.get("userId"));
+		final String customerId = (String) paramMap.get("customer");		
+		final String purpose = "edit";
+				
+		return (UserTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DETAILS_ON_EDIT);
+				cs.setLong(1, userId);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet userRs = null;
+				ResultSet roleRs = null;
+				UserTO to = new UserTO();
+				List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
+				List<RoleTO> masterRoleList = new ArrayList<RoleTO>();;
+				RoleTO roleTO = null;
+				try {
+					cs.execute();
+					userRs = (ResultSet) cs.getObject(2);
+					while(userRs.next()){
+						to.setUserId(userRs.getLong("ID"));
+						to.setUserName(userRs.getString("USERID"));
+						to.setUserDisplayName(userRs.getString("USERNAME"));
+						to.setEmailId(userRs.getString("EMAIL"));
+						to.setStatus(userRs.getString("STATUS"));
+					}
+					
+					roleRs= (ResultSet) cs.getObject(3);
+					while(roleRs.next()){
+						roleTO = new RoleTO();
+						roleTO.setRoleName(roleRs.getString("ROLENAME"));
+						roleTO.setRoleDescription(roleRs.getString("DESCRIPTION"));
+						availableRoleList.add(roleTO);
+					}
+					
+					to.setAvailableRoleList(availableRoleList);
+					masterRoleList = getMasterRoleList("user", String.valueOf(to.getUserId()), customerId,purpose);
+					to.setMasterRoleList(masterRoleList);
+					
+					Utils.logError(cs.getString(4));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return to;
+			}
+		});	
 	}
 
 	/**
@@ -992,7 +1007,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	@CacheEvict(value = "adminCache", allEntries = true)
 	public UserTO addNewUser(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: addNewUser(): " + paramMap);
-		UserTO to = null;
+		UserTO userTo = null;
 		final String userName = (String) paramMap.get("userName");
 		final String password = (String) paramMap.get("password");
 		final String userDisplayName = (String) paramMap.get("userDisplayName");
@@ -1025,7 +1040,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		try {
 		logger.log(IAppLogger.INFO, "Add User");
 		
-		String nodeId = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		userTo = (UserTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			String salt = PasswordGenerator.getNextSalt();
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.CREATE_USER);
@@ -1044,8 +1059,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 				cs.setString(14, roles.toString());
 				//15
-				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(18, oracle.jdbc.OracleTypes.VARCHAR);
 				if (IApplicationConstants.PURPOSE.equals(purpose)) {
 					cs.setLong(10, Long.valueOf(eduCenterId));
 					cs.setLong(12, 0L);
@@ -1060,28 +1076,49 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			}
 		}, new CallableStatementCallback<Object>() {
 			public Object doInCallableStatement(CallableStatement cs) {
-				String strNodeId = null; 
+				ResultSet userRs = null;
+				ResultSet roleRs = null;
+				UserTO to = new UserTO();
+				List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
+				List<RoleTO> masterRoleList = new ArrayList<RoleTO>();;
+				RoleTO roleTO = null;
 				try {
 					cs.execute();
-					strNodeId =  cs.getString(16);
-					Utils.logError(cs.getString(17));
+					userRs = (ResultSet) cs.getObject(16);
+					while(userRs.next()){
+						to.setUserId(userRs.getLong("ID"));
+						to.setUserName(userRs.getString("USERID"));
+						to.setUserDisplayName(userRs.getString("USERNAME"));
+						to.setEmailId(userRs.getString("EMAIL"));
+						to.setStatus(userRs.getString("STATUS"));
+					}
+					
+					roleRs= (ResultSet) cs.getObject(17);
+					while(roleRs.next()){
+						roleTO = new RoleTO();
+						roleTO.setRoleName(roleRs.getString("ROLENAME"));
+						roleTO.setRoleDescription(roleRs.getString("DESCRIPTION"));
+						availableRoleList.add(roleTO);
+					}
+					
+					to.setAvailableRoleList(availableRoleList);
+					masterRoleList = getMasterRoleList("user", String.valueOf(to.getUserId()), customerId,purpose);
+					to.setMasterRoleList(masterRoleList);
+					
+					Utils.logError(cs.getString(18));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				return strNodeId;
+				return to;
 			}
 		});
-		logger.log(IAppLogger.INFO, "User added in org : " + nodeId);
 		
-		if (nodeId != null) {
-			paramMap.put("nodeId", nodeId);
-			to = getEditUserData(paramMap);
-		}
+		logger.log(IAppLogger.INFO, "User added : " + userTo.getUserName());
 		
 		}finally {
 			logger.log(IAppLogger.INFO, "Exit: addNewUser()");
 		}		
-		return to;
+		return userTo;
 	}
 
 	/**

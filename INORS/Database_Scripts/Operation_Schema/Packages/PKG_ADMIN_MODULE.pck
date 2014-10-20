@@ -6,23 +6,24 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
 
   TYPE REF_CURSOR IS REF CURSOR;
 
-  PROCEDURE SP_CREATE_USER(P_IN_USERNAME        IN USERS.USERNAME%TYPE,
-                           P_IN_DISPNAME        IN USERS.DISPLAY_USERNAME%TYPE,
-                           P_IN_EMAILID         IN USERS.EMAIL_ADDRESS%TYPE,
-                           P_IN_USERSTATUS      IN USERS.ACTIVATION_STATUS%TYPE,
-                           P_IN_FIRSTTIME_LOGIN IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
-                           P_IN_PASSWORD        IN USERS.PASSWORD%TYPE,
-                           P_IN_SALT            IN USERS.SALT%TYPE,
-                           P_IN_NEW_USER        IN USERS.IS_NEW_USER%TYPE,
-                           P_IN_CUSTOMERID      IN CUSTOMER_INFO.CUSTOMERID%TYPE,
-                           P_IN_ORGNODEID       IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                           P_IN_ORG_LVL         IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
-                           P_IN_CUST_PROD_ID    IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                           P_IN_ACTIVE_FLAG     IN VARCHAR2,
-                           P_IN_ROLES           IN VARCHAR2,
-                           P_IN_IS_EDU          IN VARCHAR2,
-                           P_OUT_NODE_ID        OUT NUMBER,
-                           P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
+  PROCEDURE SP_CREATE_USER(P_IN_USERNAME             IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME             IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID              IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS           IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN      IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD             IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT                 IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER             IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID            IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL              IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                           P_IN_ACTIVE_FLAG          IN VARCHAR2,
+                           P_IN_ROLES                IN VARCHAR2,
+                           P_IN_IS_EDU               IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR     OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR    OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
 
   PROCEDURE SP_CREATE_PARENT(P_IN_USERNAME         IN USERS.USERNAME%TYPE,
                              P_IN_DISPNAME         IN USERS.DISPLAY_USERNAME%TYPE,
@@ -75,23 +76,24 @@ END PKG_ADMIN_MODULE;
 CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
   ---- ADD ADMIN AND SSO USERS.
-  PROCEDURE SP_CREATE_USER(P_IN_USERNAME        IN USERS.USERNAME%TYPE,
-                           P_IN_DISPNAME        IN USERS.DISPLAY_USERNAME%TYPE,
-                           P_IN_EMAILID         IN USERS.EMAIL_ADDRESS%TYPE,
-                           P_IN_USERSTATUS      IN USERS.ACTIVATION_STATUS%TYPE,
-                           P_IN_FIRSTTIME_LOGIN IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
-                           P_IN_PASSWORD        IN USERS.PASSWORD%TYPE,
-                           P_IN_SALT            IN USERS.SALT%TYPE,
-                           P_IN_NEW_USER        IN USERS.IS_NEW_USER%TYPE,
-                           P_IN_CUSTOMERID      IN CUSTOMER_INFO.CUSTOMERID%TYPE,
-                           P_IN_ORGNODEID       IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                           P_IN_ORG_LVL         IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
-                           P_IN_CUST_PROD_ID    IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                           P_IN_ACTIVE_FLAG     IN VARCHAR2,
-                           P_IN_ROLES           IN VARCHAR2,
-                           P_IN_IS_EDU          IN VARCHAR2,
-                           P_OUT_NODE_ID        OUT NUMBER,
-                           P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
+  PROCEDURE SP_CREATE_USER(P_IN_USERNAME             IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME             IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID              IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS           IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN      IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD             IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT                 IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER             IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID            IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL              IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                           P_IN_ACTIVE_FLAG          IN VARCHAR2,
+                           P_IN_ROLES                IN VARCHAR2,
+                           P_IN_IS_EDU               IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR     OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR    OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
   
     INCOUNT   NUMBER := 0;
     USERSEQID USERS.USERID%TYPE := 0;
@@ -172,12 +174,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
       
       END LOOP;
     
-      P_OUT_NODE_ID := P_IN_ORGNODEID;
-    
       INSERT INTO PASSWORD_HISTORY
         (PWD_HISTORYID, USERID, PASSWORD, CREATED_DATE_TIME)
       VALUES
         (SEQ_PASSWORD_HISTORY.NEXTVAL, USERSEQID, P_IN_PASSWORD, SYSDATE);
+        
+      PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(
+                USERSEQID, P_OUT_USER_REF_CURSOR,P_OUT_ROLES_REF_CURSOR,P_OUT_EXCEP_ERR_MSG);
     
     END IF;
   
