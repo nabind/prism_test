@@ -773,10 +773,17 @@ public class ReportBusinessImpl implements IReportBusiness {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getEditDataForActions(java.util.Map)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getReportDataForEditActions(java.util.Map)
 	 */
-	public List<Object> getEditDataForActions(Map<String, Object> paramMap) {
-		return reportDAO.getEditDataForActions(paramMap);
+	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap) {
+		return reportDAO.getReportDataForEditActions(paramMap);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getActionDataForEditActions(java.util.Map)
+	 */
+	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap) {
+		return reportDAO.getActionDataForEditActions(paramMap);
 	}
 
 	/* (non-Javadoc)

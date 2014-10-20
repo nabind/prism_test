@@ -52,6 +52,11 @@ $(document).ready(function() {
 			openAddReportModal($("#addNewReport"));
 		});
 	}
+	
+	$("#productForAction").on("change", function(event) {
+		var reportId = $("#reportIdForAction").val();
+		drawActionDropdownForEditActions(reportId)
+	});
 
 });
 // *********** END DOCUMENT.READY ************
@@ -77,10 +82,16 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 			innerHtml = innerHtml + ">" + value.name + '</option>';
 		});
 	}
+	//alert("innerHtml=." + innerHtml+".");
 	if(innerHtml == "") {
-		$(".error-message").html(strings['script.report.noActionFound']);
+		//alert("Error");
+		// $(".error-message").html(strings['script.report.noActionFound']);
+		//$(".error-message").removeClass('hidden');
+		$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient');
 	} else {
-		$(".error-message").addClass('hidden');
+		//alert("Ok");
+		//$(".error-message").addClass('hidden');
+		$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient hidden');
 	}
 	$("#"+dropdownId).html(innerHtml);
 	$("#"+dropdownId+" option").change();
@@ -88,34 +99,60 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 }
 
 function openModalForEditActions(reportId) {
+	$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient');
     manageIconIE('icon-star');
     var param = "reportId=" + reportId;	
     blockUI();
     $.ajax({
 		type : "GET",
-		url : "getEditDataForActions.do",
+		url : "getReportDataForEditActions.do",
 		data : param,
 		dataType : 'json',
 		cache:false,
 		success : function(data) {
 			unblockUI();
-			$("input#reportIdForAction").val(data[0].id);
-			$("input#reportNameForAction").val(data[0].name);
+			$("input#reportIdForAction").val(data.id);
+			$("input#reportNameForAction").val(data.name);
 
-			var products = data[0].productList;
+			var products = data.productList;
 			populateAllSelectedOptionsFromObjectValueTO("productForAction", products);
 			
-			var roles = data[0].roleList;
+			var roles = data.roleList;
 			populateAllSelectedOptionsFromObjectValueTO("roleForAction", roles);
 			
-			var levels = data[0].orgLevelList;
+			var levels = data.orgLevelList;
 			populateAllSelectedOptionsFromObjectValueTO("levelForAction", levels);
 			
-			var actions = data[1];
-			populateActionsFromObjectValueList("newAction", actions);
+			/*var actions = data[1];
+			populateActionsFromObjectValueList("newAction", actions);*/
+			$("#newAction").html('');
+			
+			drawActionDropdownForEditActions(reportId);
 			
 			drawModalForEditActions();	
 				
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error1']);
+		}
+	})	
+}
+
+function drawActionDropdownForEditActions(reportId) {
+	var productForAction = $("#productForAction").val();
+	// alert("productForAction=" + productForAction);
+    var param = "reportId=" + reportId + "&custProdId=" + productForAction;	
+    blockUI();
+    $.ajax({
+		type : "GET",
+		url : "getActionDataForEditActions.do",
+		data : param,
+		dataType : 'json',
+		cache:false,
+		success : function(data) {
+			unblockUI();
+			var actions = data;
+			populateActionsFromObjectValueList("newAction", actions);
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error1']);

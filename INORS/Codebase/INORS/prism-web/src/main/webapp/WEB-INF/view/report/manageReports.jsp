@@ -348,7 +348,7 @@
 								<label class="label" for="newAction">Actions</label>
 								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple ></select>
 							</p>
-							<p class="error-message message small-margin-bottom red-gradient"></p>
+							<p class="error-message message small-margin-bottom red-gradient hidden" style="width: 300px"><spring:message code="script.report.noActionFound" /></p>
 						</form:form>
 					</div>
 				</div>

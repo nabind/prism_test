@@ -2061,24 +2061,46 @@ public class ReportController{
 		return modelAndView;
 	}
 	
-	@RequestMapping(value = "/getEditDataForActions", method = RequestMethod.GET)
+	@RequestMapping(value = "/getReportDataForEditActions", method = RequestMethod.GET)
 	@ResponseBody
-	public String getEditDataForActions(HttpServletRequest req) {
-		logger.log(IAppLogger.INFO, "Enter: getEditDataForActions()");
-		String actionsString = "";
+	public String getReportDataForEditActions(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getReportDataForEditActions()");
+		String reportDataString = "";
 		try {
 			String reportId = (String) req.getParameter("reportId");
 			logger.log(IAppLogger.INFO, "reportId = " + reportId);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
-			List<Object> objectList = reportService.getEditDataForActions(paramMap);
-			actionsString = Utils.objectToJson(objectList);
-			logger.log(IAppLogger.INFO, "actionsString = " + actionsString);
+			ReportActionTO reportData = reportService.getReportDataForEditActions(paramMap);
+			reportDataString = Utils.objectToJson(reportData);
+			logger.log(IAppLogger.INFO, "reportDataString = " + reportDataString);
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		}
-		logger.log(IAppLogger.INFO, "Exit: getEditDataForActions()");
-		return actionsString;
+		logger.log(IAppLogger.INFO, "Exit: getReportDataForEditActions()");
+		return reportDataString;
+	}
+	
+	@RequestMapping(value = "/getActionDataForEditActions", method = RequestMethod.GET)
+	@ResponseBody
+	public String getActionDataForEditActions(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getActionDataForEditActions()");
+		String actionDataString = "";
+		try {
+			String reportId = (String) req.getParameter("reportId");
+			String custProdId = (String) req.getParameter("custProdId");
+			logger.log(IAppLogger.INFO, "reportId = " + reportId);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("reportId", reportId);
+			paramMap.put("custProdId", custProdId);
+			List<ReportActionTO> actionDataList = reportService.getActionDataForEditActions(paramMap);
+			actionDataString = Utils.objectToJson(actionDataList);
+			logger.log(IAppLogger.INFO, "actionDataString = " + actionDataString);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getActionDataForEditActions()");
+		return actionDataString;
 	}
 	
 	@RequestMapping(value = "/updateActions", method = RequestMethod.GET)

@@ -288,18 +288,27 @@ public interface IReportService {
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
 	/**
-	 * Contains two Objects. First one is a single ReportActionTO object for
-	 * Report Data. Second one is a collection of ReportActionTO objects for
-	 * Actions data.
+	 * Returns ReportActionTO object for Report Data.
+	 * 
 	 * 
 	 * @param paramMap
 	 * @return
 	 */
-	public List<Object> getEditDataForActions(Map<String, Object> paramMap);
+	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap);
+
+	/**
+	 * Returns a collection of ReportActionTO objects for Actions data.
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap
 	 */
 	public void updateDataForActions(Map<String, Object> paramMap);
+
+	
 
 }

@@ -269,10 +269,21 @@ public interface IReportBusiness {
 	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog);
 
 	/**
+	 * Returns ReportActionTO object for Report Data.
+	 * 
+	 * 
 	 * @param paramMap
 	 * @return
 	 */
-	public List<Object> getEditDataForActions(Map<String, Object> paramMap);
+	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap);
+
+	/**
+	 * Returns a collection of ReportActionTO objects for Actions data.
+	 * 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap

@@ -802,13 +802,24 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.getStudentFileName(type, studentBioId, custProdId);
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.service.IReportService#getEditDataForActions(java.util.Map)
+	 * @see com.ctb.prism.report.service.IReportService#getReportDataForEditActions(java.util.Map)
 	 */
-	public List<Object> getEditDataForActions(Map<String, Object> paramMap) {
-		return reportBusiness.getEditDataForActions(paramMap);
+	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap) {
+		return reportBusiness.getReportDataForEditActions(paramMap);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getActionDataForEditActions(java.util.Map)
+	 */
+	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap) {
+		return reportBusiness.getActionDataForEditActions(paramMap);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#updateDataForActions(java.util.Map)
+	 */
 	public void updateDataForActions(Map<String, Object> paramMap) {
 		reportBusiness.updateDataForActions(paramMap);
 	}
