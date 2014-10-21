@@ -789,7 +789,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.business.IReportBusiness#updateDataForActions(java.util.Map)
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap) {
-		reportDAO.updateDataForActions(paramMap);
+	public String updateDataForActions(Map<String, Object> paramMap) {
+		return reportDAO.updateDataForActions(paramMap);
 	}
 }

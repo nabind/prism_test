@@ -307,7 +307,7 @@ public interface IReportService {
 	/**
 	 * @param paramMap
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap);
+	public String updateDataForActions(Map<String, Object> paramMap);
 
 	
 

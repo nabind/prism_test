@@ -322,5 +322,5 @@ public interface IReportDAO {
 	/**
 	 * @param paramMap
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap);
+	public String updateDataForActions(Map<String, Object> paramMap);
 }

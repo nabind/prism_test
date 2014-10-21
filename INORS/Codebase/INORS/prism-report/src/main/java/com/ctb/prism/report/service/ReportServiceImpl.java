@@ -820,7 +820,7 @@ public class ReportServiceImpl implements IReportService {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.service.IReportService#updateDataForActions(java.util.Map)
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap) {
-		reportBusiness.updateDataForActions(paramMap);
+	public String updateDataForActions(Map<String, Object> paramMap) {
+		return reportBusiness.updateDataForActions(paramMap);
 	}
 }

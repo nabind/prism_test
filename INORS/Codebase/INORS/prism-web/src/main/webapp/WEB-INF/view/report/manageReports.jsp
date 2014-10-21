@@ -344,11 +344,11 @@
 								<label class="label" for="levelForAction"><spring:message code="label.level" /></label>
 								<select id="levelForAction" name="levelForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple></select>
 							</p>
-							<p class="button-height inline-label">
+							<p class="button-height inline-label" id="newActionPara">
 								<label class="label" for="newAction">Actions</label>
 								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple ></select>
 							</p>
-							<p class="error-message message small-margin-bottom red-gradient hidden" style="width: 300px"><spring:message code="script.report.noActionFound" /></p>
+							<p class="error-message message small-margin-bottom red-gradient" style="width: 342px; display: none;"><spring:message code="script.report.noActionFound" /></p>
 						</form:form>
 					</div>
 				</div>

@@ -78,16 +78,12 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 			innerHtml = innerHtml + ">" + value.name + '</option>';
 		});
 	}
-	//alert("innerHtml=." + innerHtml+".");
 	if(innerHtml == "") {
-		//alert("Error");
-		// $(".error-message").html(strings['script.report.noActionFound']);
-		//$(".error-message").removeClass('hidden');
-		$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient');
+		$(".error-message").attr('style', 'width: 342px; display: block;');
+		$("#newActionPara").attr('style', 'display: none;');
 	} else {
-		//alert("Ok");
-		//$(".error-message").addClass('hidden');
-		$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient hidden');
+		$(".error-message").attr('style', 'width: 342px; display: none;');
+		$("#newActionPara").attr('style', 'display: block;');
 	}
 	$("#"+dropdownId).html(innerHtml);
 	$("#"+dropdownId+" option").change();
@@ -95,7 +91,7 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 }
 
 function openModalForEditActions(reportId) {
-	$(".error-message").attr('class', 'error-message message small-margin-bottom red-gradient');
+	$(".error-message").attr('style', 'width: 342px; display: none;');
     manageIconIE('icon-star');
     var param = "reportId=" + reportId;	
     blockUI();
@@ -119,8 +115,6 @@ function openModalForEditActions(reportId) {
 			var levels = data.orgLevelList;
 			populateAllSelectedOptionsFromObjectValueTO("levelForAction", levels);
 			
-			/*var actions = data[1];
-			populateActionsFromObjectValueList("newAction", actions);*/
 			$("#newAction").html('');
 			
 			drawActionDropdownForEditActions(reportId);
@@ -136,7 +130,6 @@ function openModalForEditActions(reportId) {
 
 function drawActionDropdownForEditActions(reportId) {
 	var productForAction = $("#productForAction").val();
-	// alert("productForAction=" + productForAction);
     var param = "reportId=" + reportId + "&custProdId=" + productForAction;	
     blockUI();
     $.ajax({
@@ -159,7 +152,7 @@ function drawActionDropdownForEditActions(reportId) {
 function drawModalForEditActions() {
 	$("#editActionsForm").modal({
 		title: 'Edit Actions',
-		height: 265,
+		height: 235,
 		width: 400,
 		resizable: false,
 		draggable: false,

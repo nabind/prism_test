@@ -575,7 +575,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getAssessments(java.util.Map)
 	 */
-	//@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getAssessments()");
 		boolean isSuperUser = ((Boolean) paramMap.get("isSuperUser")).booleanValue();
@@ -2452,7 +2452,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @param paramMap
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap) {
+	public String updateDataForActions(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: updateDataForActions()");
 		final String reportId = (String) paramMap.get("reportId");
 		final String custProdId = (String) paramMap.get("custProdId");
@@ -2467,7 +2467,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String roleArray = Utils.arrayToSeparatedString(roles, ',');
 		final String orgLevelArray = Utils.arrayToSeparatedString(orgLevels, ',');
 		final String actionArray = Utils.arrayToSeparatedString(actions, ',');
-		String dbQuery = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		String dbException = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = null;
 				cs = con.prepareCall(IQueryConstants.SP_UPDATE_ACTION_DATA);
@@ -2492,8 +2492,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				return query;
 			}
 		});
-		logger.log(IAppLogger.INFO, "dbQuery = " + dbQuery);
+		logger.log(IAppLogger.INFO, "dbException = " + dbException);
 		logger.log(IAppLogger.INFO, "Exit: updateDataForActions()");
+		return dbException;
 	}
 	
 }

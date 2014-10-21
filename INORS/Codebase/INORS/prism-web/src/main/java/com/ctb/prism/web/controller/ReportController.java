@@ -2061,6 +2061,12 @@ public class ReportController{
 		return modelAndView;
 	}
 	
+	/**
+	 * This method fetches the Report based on reportId.
+	 * 
+	 * @param req
+	 * @return
+	 */
 	@RequestMapping(value = "/getReportDataForEditActions", method = RequestMethod.GET)
 	@ResponseBody
 	public String getReportDataForEditActions(HttpServletRequest req) {
@@ -2081,6 +2087,12 @@ public class ReportController{
 		return reportDataString;
 	}
 	
+	/**
+	 * This method fetches the Actions based on reportId and custProdId.
+	 * 
+	 * @param req
+	 * @return
+	 */
 	@RequestMapping(value = "/getActionDataForEditActions", method = RequestMethod.GET)
 	@ResponseBody
 	public String getActionDataForEditActions(HttpServletRequest req) {
@@ -2103,6 +2115,12 @@ public class ReportController{
 		return actionDataString;
 	}
 	
+	/**
+	 * This method is called to toggle ACTIVATION_STATUS of the Actions.
+	 * 
+	 * @param req
+	 * @return
+	 */
 	@RequestMapping(value = "/updateActions", method = RequestMethod.GET)
 	@ResponseBody
 	public String updateActions(HttpServletRequest req) {
@@ -2125,8 +2143,10 @@ public class ReportController{
 			paramMap.put("roles", roles);
 			paramMap.put("orgLevels", orgLevels);
 			paramMap.put("actions", actions);
-			reportService.updateDataForActions(paramMap);
-			status = "Success";
+			String dbException = reportService.updateDataForActions(paramMap);
+			if (dbException != null && !dbException.isEmpty()) {
+				status = "Success";
+			}
 		} catch (Exception e) {
 			status = "Error";
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
@@ -2136,7 +2156,8 @@ public class ReportController{
 	}
 	
 	/**
-	 * Check volunarablity in report request
+	 * Check volunarablity in report request.
+	 * 
 	 * @param request
 	 * @return
 	 */

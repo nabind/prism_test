@@ -289,5 +289,5 @@ public interface IReportBusiness {
 	 * @param paramMap
 	 * @return
 	 */
-	public void updateDataForActions(Map<String, Object> paramMap);
+	public String updateDataForActions(Map<String, Object> paramMap);
 }
