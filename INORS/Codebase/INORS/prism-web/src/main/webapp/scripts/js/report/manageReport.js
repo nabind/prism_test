@@ -639,7 +639,6 @@ $('.delete-Report').live("click", function() {
 								+'<td class="vertical-center">'
 								+'<input type="hidden" class="reportDescription" name="reportDescription" value="'+this.reportDescription+'">'
 								+'<input type="hidden" class="reportType" name="reportType" id="reportType" value="'+this.reportType+'"> '
-								+'<input type="hidden" class="linkName" name="linkName" id="linkName" value="'+this.linkName+'"> '
 								+'<input type="hidden" class="allOrgNode" name="allOrgNode" id="allOrgNode" value="'+this.allOrgNode+'"> '
 								+makeStatusDom(this.enabled)
 								+'</td>'
