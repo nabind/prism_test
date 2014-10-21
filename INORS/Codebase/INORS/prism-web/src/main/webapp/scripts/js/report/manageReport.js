@@ -50,8 +50,7 @@ $(document).ready(function() {
 	}
 	
 	$("#productForAction").on("change", function(event) {
-		var reportId = $("#reportIdForAction").val();
-		drawActionDropdownForEditActions(reportId)
+		$("#newActionPara").attr('style', 'display: none;');
 	});
 
 });
@@ -117,7 +116,8 @@ function openModalForEditActions(reportId) {
 			
 			$("#newAction").html('');
 			
-			drawActionDropdownForEditActions(reportId);
+			// drawActionDropdownForEditActions(reportId);
+			$("#newActionPara").attr('style', 'display: none;');
 			
 			drawModalForEditActions();	
 				
@@ -129,6 +129,7 @@ function openModalForEditActions(reportId) {
 }
 
 function drawActionDropdownForEditActions(reportId) {
+	$("#newActionPara").attr('style', 'display: block;');
 	var productForAction = $("#productForAction").val();
     var param = "reportId=" + reportId + "&custProdId=" + productForAction;	
     blockUI();
@@ -164,8 +165,16 @@ function drawModalForEditActions() {
 					win.closeModal(); 
 				}
 			},
+			'Get Actions': {
+				classes: 'green-gradient glossy mid-margin-left',
+				click: function(win,e) {
+					clickMe(e);
+					var reportId = $("#reportIdForAction").val();
+					drawActionDropdownForEditActions(reportId);
+				}
+			},
 			'Save': {
-				classes: 'blue-gradient glossy mid-margin-left',
+				classes: 'blue-gradient glossy mid-margin-left large-margin-right',
 				click: function(win,e) {
 					clickMe(e);
 					updateActionsDetails($(".edit-actions-form"), win);

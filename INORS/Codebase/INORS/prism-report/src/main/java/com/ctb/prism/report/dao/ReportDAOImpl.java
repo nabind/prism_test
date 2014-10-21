@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2370,11 +2371,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			 */
 			private ReportActionTO parseReportDataForEditAction(ResultSet reportResultSet) throws SQLException {
 				ReportActionTO reportData = new ReportActionTO();
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setProductList(productList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setRoleList(roleList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setOrgLevelList(orgLevelList);
 				while(reportResultSet.next()){
 					reportData.setId(reportResultSet.getString("DB_REPORTID"));

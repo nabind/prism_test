@@ -344,7 +344,7 @@
 								<label class="label" for="levelForAction"><spring:message code="label.level" /></label>
 								<select id="levelForAction" name="levelForAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple></select>
 							</p>
-							<p class="button-height inline-label" id="newActionPara">
+							<p class="button-height inline-label" id="newActionPara" style="display: none;">
 								<label class="label" for="newAction">Actions</label>
 								<select id="newAction" name="newAction" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list" multiple ></select>
 							</p>
