@@ -2144,7 +2144,7 @@ public class ReportController{
 			paramMap.put("orgLevels", orgLevels);
 			paramMap.put("actions", actions);
 			String dbException = reportService.updateDataForActions(paramMap);
-			if (dbException != null && !dbException.isEmpty()) {
+			if (dbException == null || dbException.isEmpty() || "null".equalsIgnoreCase(dbException)) {
 				status = "Success";
 			}
 		} catch (Exception e) {
