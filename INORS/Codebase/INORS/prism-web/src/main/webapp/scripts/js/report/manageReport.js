@@ -47,10 +47,6 @@ $(document).ready(function() {
 		$('.edit-actions').live("click", function() {
 			openModalForEditActions($(this).attr('reportid'));
 		});
-		$('#addDashboard').live("click", function() {
-			resetAddReportModal($("#addNewReport"),"addNewReport","reportStatusCheck");
-			openAddReportModal($("#addNewReport"));
-		});
 	}
 	
 	$("#productForAction").on("change", function(event) {
