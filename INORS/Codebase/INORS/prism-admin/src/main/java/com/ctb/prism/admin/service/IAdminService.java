@@ -72,7 +72,7 @@ public interface IAdminService {
 	 * @param customerId
 	 * @return
 	 */
-	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId);
+	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) throws Exception;
 
 	/**
 	 * @param paramMap
@@ -80,7 +80,7 @@ public interface IAdminService {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) ;
+	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param userName
@@ -135,13 +135,13 @@ public interface IAdminService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(Map<String, Object> paramMap); 
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap)throws Exception; 
 
 	/**
 	 * @param paramMap
 	 * @return
 	 */
-	public String searchOrgAutoComplete(Map<String, Object> paramMap);
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param roleId
@@ -293,7 +293,7 @@ public interface IAdminService {
 	 * @param paramMap
 	 * @return
 	 */
-	public UserTO getUserForResetPassword(Map<String, String> paramMap);
+	public UserTO getUserForResetPassword(Map<String, String> paramMap) throws Exception;
 
 	/**
 	 * Gets the role list for the user.
@@ -301,5 +301,5 @@ public interface IAdminService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap);
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) throws Exception;
 }

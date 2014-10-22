@@ -90,7 +90,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * @see com.ctb.prism.admin.service.IAdminService#getRoleOnAddUser(java.lang.String, java.lang.String)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) {
+	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) throws Exception {
 		return adminBusiness.getRoleOnAddUser(orgLevel, customerId);
 	}
 
@@ -100,7 +100,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * @see com.ctb.prism.admin.service.IAdminService#addNewUser(java.util.Map)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public UserTO addNewUser(Map<String, Object> paramMap) {
+	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception{
 		return adminBusiness.addNewUser(paramMap);
 	}
 
@@ -163,7 +163,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchOrganization(paramMap)
 	 */
-	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) {
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) throws Exception {
 		return adminBusiness.searchOrganization(paramMap);
 	}
 
@@ -172,7 +172,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchOrgAutoComplete(Map<String, Object>)
 	 */
-	public String searchOrgAutoComplete(Map<String, Object> paramMap) {
+	public String searchOrgAutoComplete(Map<String, Object> paramMap)throws Exception {
 		return adminBusiness.searchOrgAutoComplete(paramMap);
 	}
 
@@ -364,14 +364,14 @@ public class AdminServiceImpl implements IAdminService {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.service.IAdminService#getUserForResetPassword(java.util.Map)
 	 */
-	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
+	public UserTO getUserForResetPassword(Map<String, String> paramMap) throws Exception{
 		return adminBusiness.getUserForResetPassword(paramMap);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.service.IAdminService#getEduUserRoleList(java.util.Map)
 	 */
-	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) {
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) throws Exception{
 		return adminBusiness.getEduUserRoleList(paramMap);
 	}
 }

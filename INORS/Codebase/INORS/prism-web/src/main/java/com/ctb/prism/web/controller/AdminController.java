@@ -743,8 +743,9 @@ public class AdminController {
 	/**
 	 * @param userId
 	 * @return
+	 * @throws Exception 
 	 */
-	private List<RoleTO> getEducationCenterMasterRoleList(String userId) {
+	private List<RoleTO> getEducationCenterMasterRoleList(String userId) throws Exception {
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("userId", userId);
 		return adminService.getEduUserRoleList(paramMap);
@@ -2506,7 +2507,13 @@ public class AdminController {
 		paramMap.put("username", username);
 		paramMap.put("currentOrg", currentOrg);
 		paramMap.put("currentOrgLvl", currentOrgLvl);
-		UserTO user = adminService.getUserForResetPassword(paramMap);
+		UserTO user = new UserTO();
+		try {
+			user = adminService.getUserForResetPassword(paramMap);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String jsonString = Utils.objectToJson(user);
 		logger.log(IAppLogger.INFO, jsonString);
 		logger.log(IAppLogger.INFO, "Exit: getUserForResetPassword()");

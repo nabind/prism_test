@@ -78,7 +78,7 @@ public interface IAdminDAO {
 	 * @param customerId
 	 * @return
 	 */
-	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId);
+	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) throws Exception;
 
 	/**
 	 * add new user
@@ -88,7 +88,7 @@ public interface IAdminDAO {
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap);
+	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param userName
@@ -141,13 +141,13 @@ public interface IAdminDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<OrgTO> searchOrganization(Map<String, Object> paramMap);
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap
 	 * @return
 	 */
-	public String searchOrgAutoComplete(Map<String, Object> paramMap);
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @return
@@ -311,7 +311,7 @@ public interface IAdminDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public UserTO getUserForResetPassword(Map<String, String> paramMap);
+	public UserTO getUserForResetPassword(Map<String, String> paramMap)throws SystemException;
 
 	/**
 	 * Gets the role list for the user.
@@ -319,5 +319,5 @@ public interface IAdminDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap);
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap)throws Exception;
 }

@@ -98,7 +98,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getRoleOnAddUser(java.lang.String, java.lang.String)
 	 */
-	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) {
+	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) throws Exception{
 		return adminDAO.getRoleOnAddUser(orgLevel, customerId);
 	}
 
@@ -107,7 +107,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#addNewUser(java.util.Map)
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) {
+	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception{
 		return adminDAO.addNewUser(paramMap);
 	}
 
@@ -161,7 +161,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrganization(Map<String, Object>)
 	 */
-	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) {
+	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) throws Exception{
 		return adminDAO.searchOrganization(paramMap);
 	}
 
@@ -179,7 +179,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchOrgAutoComplete(Map<String, Object>)
 	 */
-	public String searchOrgAutoComplete(Map<String, Object> paramMap) {
+	public String searchOrgAutoComplete(Map<String, Object> paramMap) throws Exception{
 		return adminDAO.searchOrgAutoComplete(paramMap);
 	}
 
@@ -370,14 +370,14 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getUserForResetPassword(java.util.Map)
 	 */
-	public UserTO getUserForResetPassword(Map<String, String> paramMap) {
+	public UserTO getUserForResetPassword(Map<String, String> paramMap) throws Exception{
 		return adminDAO.getUserForResetPassword(paramMap);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getEduUserRoleList(java.util.Map)
 	 */
-	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) {
+	public List<RoleTO> getEduUserRoleList(Map<String, String> paramMap) throws Exception{
 		return adminDAO.getEduUserRoleList(paramMap);
 	}
 }
