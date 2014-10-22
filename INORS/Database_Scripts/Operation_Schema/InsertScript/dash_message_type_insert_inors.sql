@@ -99,7 +99,7 @@ DELETE FROM DASH_MESSAGE_TYPE
  
 UPDATE DASH_MESSAGE_TYPE
    SET MESSAGE_NAME = 'Teacher Home Page'
- WHERE MESSAGE_NAME = 'Inors Home Page' 
+ WHERE MESSAGE_NAME = 'Inors Home Page';
 
 insert into dash_message_type
       (msg_typeid,
