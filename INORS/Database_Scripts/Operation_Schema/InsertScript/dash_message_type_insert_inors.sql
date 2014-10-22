@@ -57,21 +57,31 @@ insert into dash_message_type
        'Footer for parent login screen',
        5001,
        sysdate);		   
-       
-insert into dash_message_type
-      (msg_typeid,
-       message_name,
-       message_type,
-       description,
-       cust_prod_id,
-       created_date_time)
-    values
+     
+BEGIN
+  FOR REC_CUST_PROD_ID IN (SELECT CPL.CUST_PROD_ID
+                             FROM CUST_PRODUCT_LINK CPL, CUSTOMER_INFO CI
+                            WHERE CPL.CUSTOMERID = CI.CUSTOMERID
+                              AND CPL.ACTIVATION_STATUS = 'AC') LOOP
+  
+    INSERT INTO DASH_MESSAGE_TYPE
+      (MSG_TYPEID,
+       MESSAGE_NAME,
+       MESSAGE_TYPE,
+       DESCRIPTION,
+       CUST_PROD_ID,
+       CREATED_DATE_TIME)
+    VALUES
       (1091,
        'Menu Message',
        'PSCM',
        'Message configuration for right sided menu',
-       5001,
-       sysdate); 
+       REC_CUST_PROD_ID.CUST_PROD_ID,
+       SYSDATE);
+  
+  END LOOP;
+
+END;
 
 insert into dash_message_type
       (msg_typeid,
