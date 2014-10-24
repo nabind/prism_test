@@ -1,5 +1,5 @@
 <%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
-
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
@@ -35,7 +35,7 @@
 				</span>
 			</div>
 			<div id ="verify_password"  class="field-block button-height">
-				<label for="password_again" class="label"><b><spring:message code="label.verifyPassword" /></b><span class="icon-star icon-size1 red"></span></label>
+				<label for="password_again" class="label"><b><spring:message code="table.label.verifyPassword" /></b><span class="icon-star icon-size1 red"></span></label>
 				<input type="password" name="password_again" id="password_again" value="" class="input validate[required ,equalsPassword[password] ]"> 
 			</div>
 		</fieldset>
