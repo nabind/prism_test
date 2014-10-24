@@ -471,7 +471,7 @@ public class CommonController extends BaseDAO {
 	public ModelAndView clearAllCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView("common/success");
-		System.out.println("Inside clearAllCache");
+		logger.log(IAppLogger.INFO, "Inside clearAllCache");
 		
 		String theme = themeResolver.resolveThemeName(req);
 		
@@ -492,7 +492,7 @@ public class CommonController extends BaseDAO {
 	public ModelAndView clearContractCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView("common/success");
-		System.out.println("Inside clearAllCache");
+		logger.log(IAppLogger.INFO, "Inside clearContractCache");
 		
 		String theme = themeResolver.resolveThemeName(req);
 		

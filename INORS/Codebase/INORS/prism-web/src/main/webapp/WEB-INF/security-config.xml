@@ -22,6 +22,7 @@
 	<http pattern="/validatePwd*" security="none" />   
 	<http pattern="/showError.do" security="none" />
 	<http pattern="/clearAllCache.do" security="none" />
+	<http pattern="/clearContractCache" security="none" />
 	<http pattern="/clearConfigCache.do" security="none" />
 	<http pattern="/icDownload.do" security="none" />
 	<http pattern="/landing*" security="none" />

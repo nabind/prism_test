@@ -205,12 +205,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#removeCache()
 	 */
-	@CacheEvict(value = { "defaultCache", "adminCache" }, allEntries = true)
+	@CacheEvict(value = { "defaultCache", "adminCache", "configCache" }, allEntries = true)
 	public void removeCache() {
 		logger.log(IAppLogger.INFO, "Removed all cache");
 	}
 	
-	@Caching(evict = { @CacheEvict(value = { "defaultCache", "adminCache" }, key = "#p0") })
+	@Caching(evict = { @CacheEvict(value = { "defaultCache", "adminCache", "configCache" }, key = "#p0") })
 	public void removeCache(String cacheKey) {
 		logger.log(IAppLogger.INFO, "Removed all cache for " +cacheKey );
 	}
