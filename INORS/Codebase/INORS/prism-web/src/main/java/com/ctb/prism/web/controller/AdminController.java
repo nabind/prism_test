@@ -2346,7 +2346,7 @@ public class AdminController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured({"ROLE_EDU_ADMIN"})
+	@Secured({"ROLE_EDU_ADMIN","ROLE_SUPER", "ROLE_CTB"})
 	@RequestMapping(value = "/manageEducationCenter", method = RequestMethod.GET)
 	public ModelAndView manageEducationCenter(HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
@@ -2383,7 +2383,7 @@ public class AdminController {
 	 * @param session
 	 * @throws Exception
 	 */
-	@Secured({"ROLE_EDU_ADMIN"})
+	//@Secured({"ROLE_EDU_ADMIN","ROLE_SUPER", "ROLE_CTB"}) - Not Required
 	@RequestMapping(value = "/loadEduCenterUsers", method = RequestMethod.GET)
 	public @ResponseBody void loadEduCenterUsers(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - loadEduCenterUsers()");
