@@ -675,7 +675,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
       SELECT DMRA.DB_REPORTID,
              DR.REPORT_NAME,
              DMRA.CUST_PROD_ID,
-             P.PRODUCT_NAME,
+             DMRA.CUST_PROD_ID || ' - ' || P.PRODUCT_NAME PRODUCT_NAME,
              DMRA.ROLEID,
              R.ROLE_NAME,
              DMRA.ORG_LEVEL,
