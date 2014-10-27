@@ -377,7 +377,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND DM.CUST_PROD_ID = ?");
 	
 	public static final String INSERT_DASH_MESSAGES = CustomStringUtil.appendString(
-			" INSERT INTO DASH_MESSAGES",
+			" INSERT INTO prismglobal.DASH_MESSAGES",
 			" (DB_REPORTID,",
 			" MSG_TYPEID,",
 			" REPORT_MSG,",
