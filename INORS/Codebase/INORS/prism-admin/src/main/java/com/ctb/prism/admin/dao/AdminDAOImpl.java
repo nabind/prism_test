@@ -2267,20 +2267,20 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	public UserTO getUserForResetPassword(Map<String, String> paramMap) throws SystemException{
 		final String username = paramMap.get("username");
-		final Long currentOrg = Long.parseLong(paramMap.get("currentOrg"));
-		final Long currentOrgLvl = Long.parseLong(paramMap.get("currentOrgLvl"));
+	//	final Long currentOrg = Long.parseLong(paramMap.get("currentOrg"));
+	//	final Long currentOrgLvl = Long.parseLong(paramMap.get("currentOrgLvl"));
 		logger.log(IAppLogger.INFO, "username = " + username);
-		logger.log(IAppLogger.INFO, "currentOrg = " + currentOrg);
-		logger.log(IAppLogger.INFO, "currentOrgLvl = " + currentOrgLvl);
+	//	logger.log(IAppLogger.INFO, "currentOrg = " + currentOrg);
+	//	logger.log(IAppLogger.INFO, "currentOrgLvl = " + currentOrgLvl);
 		return (UserTO) getJdbcTemplatePrism().execute(
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_RESET_PASSWORD);
 					cs.setString(1, username);
-					cs.setLong(2, currentOrg);
-					cs.setLong(3, currentOrgLvl);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				//	cs.setLong(2, currentOrg);
+				//	cs.setLong(3, currentOrgLvl);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2289,11 +2289,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					UserTO user = new UserTO();
 					try {
 						cs.execute();
-						Utils.logError(cs.getString(5));
-						if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
+						Utils.logError(cs.getString(3));
+						if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
 						}
-						rs = (ResultSet) cs.getObject(4);
+						rs = (ResultSet) cs.getObject(2);
 						while(rs.next()){
 							user.setUserId(Long.parseLong(rs.getString("USERID")));
 							user.setUserName(rs.getString("USERNAME"));

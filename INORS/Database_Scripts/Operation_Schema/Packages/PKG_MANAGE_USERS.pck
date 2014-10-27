@@ -63,8 +63,6 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_USERS IS
                                       P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
   PROCEDURE SP_GET_USER_RESET_PASSWORD(P_IN_USER_NAME      IN USERS.USERNAME%TYPE,
-                                       P_IN_ORG_NODEID     IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_ORG_NODE_LEVEL IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
@@ -480,14 +478,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
 
   -- SP_GET_USER_RESET_PASSWORD
   PROCEDURE SP_GET_USER_RESET_PASSWORD(P_IN_USER_NAME      IN USERS.USERNAME%TYPE,
-                                       P_IN_ORG_NODEID     IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_ORG_NODE_LEVEL IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   BEGIN
 	
     OPEN P_OUT_REF_CURSOR FOR
-		SELECT U.USERID,
+		    SELECT U.USERID,
              U.USERNAME,
              U.DISPLAY_USERNAME,
              U.FIRST_NAME,
@@ -500,51 +496,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
              U.CITY,
              U.ZIPCODE,
              U.STATE,
-             U.ACTIVATION_STATUS,
-             HIER.ORG_NODE_NAME,
-             HIER.ORG_NODEID,
-             to_char(HIER.PARENT_ORG_NODEID)
-        FROM USERS U,
-             ORG_USERS OU,
-             (SELECT *
-                FROM ORG_NODE_DIM
-               START WITH ORG_NODEID = P_IN_ORG_NODEID
-              CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID
-              UNION
-              SELECT *
-                FROM ORG_NODE_DIM
-               WHERE ORG_NODEID = P_IN_ORG_NODEID
-                 AND ORG_NODE_LEVEL = P_IN_ORG_NODE_LEVEL) HIER
+             U.ACTIVATION_STATUS 
+        FROM USERS U 
        WHERE UPPER(U.USERNAME) = UPPER(P_IN_USER_NAME)
          AND NOT EXISTS (SELECT 1
                 FROM USER_ROLE
                WHERE USER_ROLE.ROLEID IN (6, 7)
                  AND USER_ROLE.USERID = U.USERID)
-         AND OU.ORG_NODEID = HIER.ORG_NODEID
-         AND OU.USERID = U.USERID
-         AND OU.ORG_NODE_LEVEL <> 0
-         union
-         SELECT U.USERID,
-             U.USERNAME,
-             U.DISPLAY_USERNAME,
-             U.FIRST_NAME,
-             U.MIDDLE_NAME,
-             U.LAST_NAME,
-             U.EMAIL_ADDRESS,
-             U.PHONE_NO,
-             U.STREET,
-             U.COUNTRY,
-             U.CITY,
-             U.ZIPCODE,
-             U.STATE,
-             U.ACTIVATION_STATUS,
-             E.EDU_CENTER_NAME,
-             E.EDU_CENTERID,
-             '0'
-			FROM USERS U, EDU_CENTER_USER_LINK L, EDU_CENTER_DETAILS E
-			WHERE U.USERID = L.USERID
-			AND L.EDU_CENTERID = E.EDU_CENTERID
-			AND UPPER(U.USERNAME) = UPPER(P_IN_USER_NAME);
+         AND (U.User_Type  in ('GRW_P','GRW') OR U.ACTIVATION_STATUS <> 'SS'); 
   
   EXCEPTION
     WHEN OTHERS THEN
