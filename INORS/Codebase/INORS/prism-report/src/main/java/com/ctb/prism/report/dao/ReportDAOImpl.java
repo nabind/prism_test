@@ -18,12 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -2371,11 +2370,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			 */
 			private ReportActionTO parseReportDataForEditAction(ResultSet reportResultSet) throws SQLException {
 				ReportActionTO reportData = new ReportActionTO();
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setProductList(productList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setRoleList(roleList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new LinkedHashSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
+				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
 				reportData.setOrgLevelList(orgLevelList);
 				while(reportResultSet.next()){
 					reportData.setId(reportResultSet.getString("DB_REPORTID"));
@@ -2383,6 +2382,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					productList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("CUST_PROD_ID"), reportResultSet.getString("PRODUCT_NAME")));
 					roleList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ROLEID"), reportResultSet.getString("ROLE_NAME")));
 					orgLevelList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ORG_LEVEL"), reportResultSet.getString("ORG_LABEL")));
+				}
+				for(com.ctb.prism.core.transferobject.ObjectValueTO to : productList){
+					logger.log(IAppLogger.INFO, to.getName() +" - " + to.getValue());
 				}
 				return reportData;
 			}

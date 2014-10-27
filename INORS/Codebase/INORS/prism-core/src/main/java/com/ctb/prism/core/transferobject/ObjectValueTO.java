@@ -7,7 +7,7 @@ package com.ctb.prism.core.transferobject;
  * @author TATA CONSULTANCY SERVICES
  * @version 1.0
  */
-public class ObjectValueTO extends BaseTO {
+public class ObjectValueTO extends BaseTO implements Comparable<ObjectValueTO> {
 	private static final long serialVersionUID = 1L;
 
 	private String name = "";
@@ -75,6 +75,16 @@ public class ObjectValueTO extends BaseTO {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(ObjectValueTO o) {
+		if (this.name == null)
+			return -1;
+		else
+			return this.name.compareTo(o.name);
 	}
 
 }
