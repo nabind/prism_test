@@ -27,7 +27,7 @@ html {
 	top: -12px;
 	width: 64px;
 	height: 80px;
-	background: url(../img/slide/butterflyicon64x64.gif) no-repeat;
+	background: url(../../acsi/img/slide/butterflyicon64x64.gif) no-repeat;
 	margin-right: 10px;
 }
 .icon-ladybug {
@@ -36,7 +36,7 @@ html {
 	top: -12px;
 	width: 64px;
 	height: 80px;
-	background: url(../img/slide/ladybugicon64x64.gif) no-repeat;
+	background: url(../../acsi/img/slide/ladybugicon64x64.gif) no-repeat;
 	margin-right: 10px;
 }
 .disabled-ie {
@@ -1065,5 +1065,3 @@ height: 16px;
 .color-white,.color-white a{
 	color: white;
 }
-		
-		

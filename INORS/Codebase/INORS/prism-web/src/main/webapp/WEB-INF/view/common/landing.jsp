@@ -139,7 +139,7 @@
 				</strong><br>
 				<spring:message code="label.teachersClickHere" />
 			</p>
-			<a href="userlogin.do?theme=inors&parent=false" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
+			<a href="userlogin.do?theme=inors" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
 		</div>
 		
 		<div class="four-columns" style="min-width:317px">
@@ -149,7 +149,7 @@
 				<strong><spring:message code="pnlogin.page.welcome" /></strong><br>
 				<spring:message code="label.parentsClickHere" />
 			</p>
-			<a href="userlogin.do?theme=inorsparent&parent=true" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
+			<a href="userlogin.do?theme=inorsparent" class="button blue-gradient full-width"><spring:message code="login.from.head" /></a>
 		</div>
 		<div class="two-columns"></div>
 		<div class="twelve-columns align-center custom-p">

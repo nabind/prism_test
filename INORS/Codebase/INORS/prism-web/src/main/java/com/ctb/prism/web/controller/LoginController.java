@@ -121,6 +121,10 @@ public class LoginController {
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		
+		//As the landing page is applicable only for inors
+		contractName = IApplicationConstants.CONTRACT_NAME_INORS;
+		
 		paramMap.put("contractName", contractName);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		

@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.HtmlUtils;
@@ -49,15 +50,11 @@ public final class Utils {
 	 */
 	public static String getContractName() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-		if (currentAuth != null) {
-			try{
+		if(currentAuth != null){
+			if (!(currentAuth instanceof AnonymousAuthenticationToken)) {
 				AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
 				if (authenticatedUser.getContractName() != null) {
 					return authenticatedUser.getContractName();
-				}
-			}catch(Exception e){
-				if("anonymousUser".equals((String)currentAuth.getPrincipal())){
-					return "";
 				}
 			}
 		}
