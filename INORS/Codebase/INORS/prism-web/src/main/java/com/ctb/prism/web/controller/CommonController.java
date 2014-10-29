@@ -546,11 +546,14 @@ public class CommonController extends BaseDAO {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/displayAssest" , method=RequestMethod.GET)
+	@RequestMapping(value = "/displayAssest", method = RequestMethod.GET)
 	public void displayAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String assetPath = request.getParameter("assetPath");
 		byte[] data = repositoryService.getAssetBytes(assetPath);
 		logger.log(IAppLogger.INFO, "data.length = " + data.length);
+		if (assetPath.endsWith(".pdf") || assetPath.endsWith(".PDF")) {
+			response.setContentType("application/pdf");
+		}
 		FileUtil.browserDisplay(response, data);
 	}
 	
