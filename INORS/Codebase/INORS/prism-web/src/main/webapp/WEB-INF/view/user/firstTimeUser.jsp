@@ -1,5 +1,5 @@
 <%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
@@ -68,6 +68,8 @@
 			<div class="field-block button-height">
 				<label for="mobile" class="label"><spring:message code="label.contactNumber" /></label>
 				<input type="text" name="mobile" id="mobile" value="${parentDetails.mobile}" class="input validate[maxSize[15],custom[phone]]">
+				<label for="pseudo-input-2" class="button orange-gradient with-tooltip" title="Click to format phone number(xxx-xxx-xxxx)" id="formatPh"><span class="icon-phone small-margin-right"></span>
+				</label>
 			</div>
 			<div class="field-block button-height addressContainer">
 				<span class="label"><spring:message code="label.address" /></span>
