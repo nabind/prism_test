@@ -343,10 +343,13 @@ function hideLoading() {
 }
 
 function resetPrismActions() {
+	var adminYear = $('#AdminYear').val();
+	var queryData = "AdminYear="+adminYear;
 	blockUI();
 	$.ajax({
 		type : "GET",
 		url : "resetPrismActions.do",
+		data : queryData,
 		dataType : 'json',
 		cache : false,
 		async : false,
