@@ -77,6 +77,7 @@ $(document).ready(function() {
 			tempScrollTop = currentScrollTop;
 		});
 	}
+	resetPrismActions();
 });	
 
 	 
@@ -341,7 +342,40 @@ function hideLoading() {
 	//$("#org_list").stop(true)['animate']({ right: -((allUL.length-1)*100+10)+'%' });
 }
 
+function resetPrismActions() {
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "resetPrismActions.do",
+		dataType : 'json',
+		cache : false,
+		async : false,
+		success : function(data) {
+			resetJspElements(data);
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.org.error']);
+		}
+	});
+	unblockUI();
+}
 
+function resetJspElements(data){
+	if(strings['manage.orgs.usercount'] == data['Manage Organizations User Count']){
+		$("#MANAGE_ORGS_USER_COUNT").val(data['Manage Organizations User Count']);
+	}else{
+		$("#MANAGE_ORGS_USER_COUNT").val("");
+	}
+	showHideJspElements();
+}
+
+function showHideJspElements(){
+	if($("#MANAGE_ORGS_USER_COUNT").val() == strings['manage.orgs.usercount']) {
+		$("#th_MANAGE_ORGS_USER_COUNT").show();
+	} else {
+		$("#th_MANAGE_ORGS_USER_COUNT").hide();
+	}
+}
 
 //Create organization DOM table
 function buildOrgDOM(checkFirstLoad, data) {
@@ -351,19 +385,18 @@ function buildOrgDOM(checkFirstLoad, data) {
 		$("#org-list").trigger("update");
 	}
 	
-	$.each(data, function () { 
+	$.each(data, function () {
 	    
 		orgContent += '<tr id ='+ this.parentTenantId+'_'+this.tenantId+' scrollid ='+ this.selectedOrgId+'_'+this.tenantId +' class="abc" >'
 						+'<th scope="row">' + this.tenantId +'</th>'
 						+'<td>' + this.tenantName +'</td>'
 						+'<td>'+this.noOfChildOrgs+'</td>'
 						//+ buildRedirectToUserLink(this.tenantId,this.parentTenantId,this.noOfUsers)
-						+'<td><span class="button-group compact"><a tenantId="'+this.tenantId+'" id="count_'+this.tenantId+'" orgname="'+this.tenantName+'" parentTenantId="'+this.parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">'
-							+strings['label.userCount']+'</a></span></td>'
-						+'</tr>'				
-										
-										
-					 
+		if($("#MANAGE_ORGS_USER_COUNT").val() == strings['manage.orgs.usercount']) {
+			orgContent += '<td><span class="button-group compact"><a tenantId="'+this.tenantId+'" id="count_'+this.tenantId+'" orgname="'+this.tenantName+'" parentTenantId="'+this.parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">' +strings['label.userCount']+'</a></span></td>';
+		}
+		showHideJspElements();
+		orgContent += '</tr>';
 	});
 	$("tbody#org_details").append(orgContent);
 	$("#org-list").trigger("update");

@@ -42,13 +42,15 @@
 				<div id="orgTable" class="report-container tabs-content padding-small" style="height: 450px">
 				<div id="last_msg_loader" height="140" style="position:relative;left:0px;z-index:1"></div>
 					<input type="text"  style="display:none"  name="last_org_tenant" id="last_org_tenant" value="">
+					<fmt:message var="MANAGE_ORGS_USER_COUNT" key="manage.orgs.usercount"  />
+					<input type="hidden" id="MANAGE_ORGS_USER_COUNT" value="${actionMap[MANAGE_ORGS_USER_COUNT]}" />
 					<table class="simple-table responsive-table" id="org-list">
 						<thead>
 							<tr class="abc">
 								<th scope="col" width="20%"><spring:message code="thead.orgID" /></th>
 								<th scope="col" width="30%"><spring:message code="thead.orgName" /></th>
 								<th scope="col" width="25%"><spring:message code="thead.HOfOrganizations" /></th>
-								<th scope="col" width="25%"><spring:message code="thead.HOfUsers" /></th>
+								<th id="th_MANAGE_ORGS_USER_COUNT" style="display:none" scope="col" width="25%"><spring:message code="thead.HOfUsers" /></th>
 							</tr>
 						</thead>
 						<tbody id="org_details">

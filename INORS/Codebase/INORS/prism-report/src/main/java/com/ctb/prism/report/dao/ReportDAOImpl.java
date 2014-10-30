@@ -2452,11 +2452,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return editDataList;
 	}
 
-	/**
-	 * TODO : Complete the method
-	 * 
-	 * @param paramMap
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#updateDataForActions(java.util.Map)
 	 */
+	@CacheEvict(value = { "configCache" }, allEntries = true)
 	public String updateDataForActions(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: updateDataForActions()");
 		final String reportId = (String) paramMap.get("reportId");
@@ -2466,9 +2465,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String[] actions = (String[]) paramMap.get("actions");
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-		for(String s: roles) logger.log(IAppLogger.INFO, "role = " + s);
-		for(String s: orgLevels) logger.log(IAppLogger.INFO, "orgLevel = " + s);
-		for(String s: actions) logger.log(IAppLogger.INFO, "action = " + s);
+		for (String s : roles) {
+			logger.log(IAppLogger.INFO, "role = " + s);
+		}
+		for (String s : orgLevels) {
+			logger.log(IAppLogger.INFO, "orgLevel = " + s);
+		}
+		for (String s : actions) {
+			logger.log(IAppLogger.INFO, "action = " + s);
+		}
 		final String roleArray = Utils.arrayToSeparatedString(roles, ',');
 		final String orgLevelArray = Utils.arrayToSeparatedString(orgLevels, ',');
 		final String actionArray = Utils.arrayToSeparatedString(actions, ',');
@@ -2497,7 +2502,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				return query;
 			}
 		});
-		logger.log(IAppLogger.INFO, "dbException = " + dbException);
+		if (dbException != null) {
+			logger.log(IAppLogger.INFO, "dbException = " + dbException);
+		}
 		logger.log(IAppLogger.INFO, "Exit: updateDataForActions()");
 		return dbException;
 	}

@@ -875,6 +875,7 @@
 				unblockUI();
 				isFirstTime = true;
 				treeContainerObj.jstree("refresh");
+				resetPrismActions();
 			},
 			error : function(data) {
 				unblockUI();

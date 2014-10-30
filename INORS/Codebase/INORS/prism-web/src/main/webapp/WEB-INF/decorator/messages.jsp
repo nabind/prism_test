@@ -151,4 +151,6 @@
 	
 	strings['msg.keepAlive'] = "<spring:message code='msg.keepAlive' javaScriptEscape='true' />";
 	
+	strings['manage.orgs.usercount'] = "<spring:message code='manage.orgs.usercount' javaScriptEscape='true' />";
+	
 </script>

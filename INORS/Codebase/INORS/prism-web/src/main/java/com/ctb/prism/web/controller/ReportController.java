@@ -2131,6 +2131,15 @@ public class ReportController{
 		String[] roles = req.getParameterValues("roleForAction");
 		String[] orgLevels = req.getParameterValues("levelForAction");
 		String[] actions = req.getParameterValues("newAction");
+		if (roles == null) {
+			roles = new String[] {};
+		}
+		if (orgLevels == null) {
+			orgLevels = new String[] {};
+		}
+		if (actions == null) {
+			actions = new String[] {};
+		}
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		for(String s: roles) logger.log(IAppLogger.INFO, "role = " + s);

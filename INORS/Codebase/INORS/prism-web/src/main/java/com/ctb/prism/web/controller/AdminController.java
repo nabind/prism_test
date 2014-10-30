@@ -2158,16 +2158,34 @@ public class AdminController {
 			Map<String,Object> actionParamMap = new HashMap<String,Object>();
 			actionParamMap.put("userId", userId);
 			actionParamMap.put("custProdId", adminYear);
-			
-			Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
-			req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
-			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		} 
 		logger.log(IAppLogger.INFO, "Exit: AdminController - updateAdminYear");
 		return null;
 	}	
+	
+	@RequestMapping(value="/resetPrismActions", method=RequestMethod.GET)
+	@ResponseBody
+	public String resetPrismActions(HttpServletRequest req, HttpServletResponse res ) {
+		String actionJson = "";
+		logger.log(IAppLogger.INFO, "Enter: resetPrismActions()");
+		try {
+			String userId = (String)req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			String adminYear= req.getParameter("AdminYear");
+			Map<String,Object> actionParamMap = new HashMap<String,Object>();
+			actionParamMap.put("userId", userId);
+			actionParamMap.put("custProdId", adminYear);
+			Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
+			req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
+			actionJson = Utils.objectToJson(actionMap);
+			logger.log(IAppLogger.INFO, "actionJson = " + actionJson);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+		} 
+		logger.log(IAppLogger.INFO, "Exit: AdminController - resetPrismActions()");
+		return actionJson;
+	}
 	
 	/**
 	 * Method retrieves the organization children when clicked on a organization
