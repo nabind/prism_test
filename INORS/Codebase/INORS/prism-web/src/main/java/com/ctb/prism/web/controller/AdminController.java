@@ -2172,7 +2172,7 @@ public class AdminController {
 		logger.log(IAppLogger.INFO, "Enter: resetPrismActions()");
 		try {
 			String userId = (String)req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-			String adminYear= req.getParameter("AdminYear");
+			String adminYear = req.getParameter("AdminYear");
 			Map<String,Object> actionParamMap = new HashMap<String,Object>();
 			actionParamMap.put("userId", userId);
 			actionParamMap.put("custProdId", adminYear);

@@ -343,7 +343,7 @@ function hideLoading() {
 }
 
 function resetPrismActions() {
-	var adminYear = $('#AdminYear').val();
+	var adminYear = (typeof $('#AdminYear').val() !== 'undefined') ? $('#AdminYear').val() : 0;
 	var queryData = "AdminYear="+adminYear;
 	blockUI();
 	$.ajax({

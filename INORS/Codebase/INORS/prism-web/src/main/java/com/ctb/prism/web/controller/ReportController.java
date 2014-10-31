@@ -2074,9 +2074,12 @@ public class ReportController{
 		String reportDataString = "";
 		try {
 			String reportId = (String) req.getParameter("reportId");
+			String customerId = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			logger.log(IAppLogger.INFO, "reportId = " + reportId);
+			logger.log(IAppLogger.INFO, "customerId = " + customerId);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
+			paramMap.put("customerId", customerId);
 			ReportActionTO reportData = reportService.getReportDataForEditActions(paramMap);
 			reportDataString = Utils.objectToJson(reportData);
 			logger.log(IAppLogger.INFO, "reportDataString = " + reportDataString);
@@ -2101,10 +2104,17 @@ public class ReportController{
 		try {
 			String reportId = (String) req.getParameter("reportId");
 			String custProdId = (String) req.getParameter("custProdId");
+			String roleId = (String) req.getParameter("roleId");
+			String orgLevel = (String) req.getParameter("orgLevel");
 			logger.log(IAppLogger.INFO, "reportId = " + reportId);
+			logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+			logger.log(IAppLogger.INFO, "roleId = " + roleId);
+			logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
 			paramMap.put("custProdId", custProdId);
+			paramMap.put("roleId", roleId);
+			paramMap.put("orgLevel", orgLevel);
 			List<ReportActionTO> actionDataList = reportService.getActionDataForEditActions(paramMap);
 			actionDataString = Utils.objectToJson(actionDataList);
 			logger.log(IAppLogger.INFO, "actionDataString = " + actionDataString);
@@ -2128,29 +2138,25 @@ public class ReportController{
 		logger.log(IAppLogger.INFO, "Enter: updateReport()");
 		String reportId = req.getParameter("reportIdForAction");
 		String custProdId = req.getParameter("productForAction");
-		String[] roles = req.getParameterValues("roleForAction");
-		String[] orgLevels = req.getParameterValues("levelForAction");
+		String roleId = req.getParameter("roleForAction");
+		String orgLevel = req.getParameter("levelForAction");
 		String[] actions = req.getParameterValues("newAction");
-		if (roles == null) {
-			roles = new String[] {};
-		}
-		if (orgLevels == null) {
-			orgLevels = new String[] {};
-		}
 		if (actions == null) {
 			actions = new String[] {};
 		}
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-		for(String s: roles) logger.log(IAppLogger.INFO, "role = " + s);
-		for(String s: orgLevels) logger.log(IAppLogger.INFO, "orgLevel = " + s);
-		for(String s: actions) logger.log(IAppLogger.INFO, "action = " + s);
+		logger.log(IAppLogger.INFO, "roleId = " + roleId);
+		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
+		for(String s: actions) {
+			logger.log(IAppLogger.INFO, "action = " + s);
+		}
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
 			paramMap.put("custProdId", custProdId);
-			paramMap.put("roles", roles);
-			paramMap.put("orgLevels", orgLevels);
+			paramMap.put("roleId", roleId);
+			paramMap.put("orgLevel", orgLevel);
 			paramMap.put("actions", actions);
 			String dbException = reportService.updateDataForActions(paramMap);
 			if (dbException == null || dbException.isEmpty() || "null".equalsIgnoreCase(dbException)) {

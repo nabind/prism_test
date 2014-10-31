@@ -56,11 +56,17 @@ $(document).ready(function() {
 });
 // *********** END DOCUMENT.READY ************
 
-function populateAllSelectedOptionsFromObjectValueTO(dropdownId, list) {
+function populateSingleSelectedOptionsFromObjectValueTO(dropdownId, list) {
 	var innerHtml = "";
+	var selectCount = 0;
 	if(typeof list != "undefined") {
 		$.each(list, function(index, value) {
-			innerHtml = innerHtml + '<option value="' + value.name + '" selected="true">' + value.value + '</option>';
+			innerHtml = innerHtml + '<option value="' + value.name + '"';
+			if(selectCount < 1) {
+				innerHtml = innerHtml + ' selected="true"';
+			}
+			innerHtml = innerHtml + '>' + value.value + '</option>';
+			selectCount = selectCount + 1;
 		});
 	}
 	$("#"+dropdownId).html(innerHtml);
@@ -74,7 +80,7 @@ function populateActionsFromObjectValueList(dropdownId, actionList) {
 		$.each(actionList, function(index, value) {
 			innerHtml = innerHtml + '<option value="' + value.id + '"';
 			if(value.status == "AC") innerHtml = innerHtml + '" selected="true"';
-			innerHtml = innerHtml + ">" + value.name + '</option>';
+			innerHtml = innerHtml + '>' + value.name + '</option>';
 		});
 	}
 	if(innerHtml == "") {
@@ -106,13 +112,13 @@ function openModalForEditActions(reportId) {
 			$("input#reportNameForAction").val(data.name);
 
 			var products = data.productList;
-			populateAllSelectedOptionsFromObjectValueTO("productForAction", products);
+			populateSingleSelectedOptionsFromObjectValueTO("productForAction", products);
 			
 			var roles = data.roleList;
-			populateAllSelectedOptionsFromObjectValueTO("roleForAction", roles);
+			populateSingleSelectedOptionsFromObjectValueTO("roleForAction", roles);
 			
 			var levels = data.orgLevelList;
-			populateAllSelectedOptionsFromObjectValueTO("levelForAction", levels);
+			populateSingleSelectedOptionsFromObjectValueTO("levelForAction", levels);
 			
 			$("#newAction").html('');
 			
@@ -130,15 +136,17 @@ function openModalForEditActions(reportId) {
 
 function drawActionDropdownForEditActions(reportId) {
 	$("#newActionPara").attr('style', 'display: block;');
-	var productForAction = $("#productForAction").val();
-    var param = "reportId=" + reportId + "&custProdId=" + productForAction;	
-    blockUI();
-    $.ajax({
+	var custProdId = $("#productForAction").val();
+	var roleId = $("#roleForAction").val();
+	var orgLevel = $("#levelForAction").val();
+	var param = "reportId=" + reportId + "&custProdId=" + custProdId + "&roleId=" + roleId + "&orgLevel=" + orgLevel;
+	blockUI();
+	$.ajax({
 		type : "GET",
 		url : "getActionDataForEditActions.do",
 		data : param,
 		dataType : 'json',
-		cache:false,
+		cache : false,
 		success : function(data) {
 			unblockUI();
 			var actions = data;
@@ -147,7 +155,7 @@ function drawActionDropdownForEditActions(reportId) {
 		error : function(data) {
 			$.modal.alert(strings['script.common.error1']);
 		}
-	})	
+	})
 }
 
 function drawModalForEditActions() {
