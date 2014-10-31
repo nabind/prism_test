@@ -18,7 +18,7 @@ BEGIN
     (V_DB_REPORTID,
      'Generic System Configuration',
      'Generic System Configuration',
-     'API_CUSTOM',
+     'API',
      'IN',
      SYSDATE,
      1);
@@ -68,7 +68,7 @@ BEGIN
     (V_DB_REPORTID,
      'Product Specific System Configuration',
      'Product Specific System Configuration',
-     'API_CUSTOM',
+     'API',
      'IN',
      SYSDATE,
      1);
