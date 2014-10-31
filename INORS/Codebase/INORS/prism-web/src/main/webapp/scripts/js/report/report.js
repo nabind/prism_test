@@ -36,6 +36,65 @@ $(document).ready(function() {
 	// hide menu while opening report page
 	//$('.clearfix').addClass('menu-hidden');
 	
+	// ============================= DOWNLOAD BULK CANDIDATE REPORT =============================
+	$('#BulkCandidateReport').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadBulkCandidate(this,'REGULAR',event); //Fixed QC 76658
+	});
+	$('#BulkCandidateReportEdu').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadBulkCandidate(this,'EDUCENTER',event); //Fixed QC 76658
+	});
+	
+	// for only bulk candidate report button
+	$(".jqdatepicker").live('blur', function() {
+		try {
+			$(this).parents('.icholder').siblings('.reportFilterCriteria').find('.download-button').hide(100);
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
+			if($('#BulkCandidateReport').is(':visible')) $('#BulkCandidateReport').hide(100);
+			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
+		} catch (e) {}
+	});
+	$("#p_Last_Name1").live('keydown', function() {
+		try {
+			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_First_Name1").live('keydown', function() {
+		try {
+			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_StudentId1").live('keydown', function() {
+		try {
+			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_Last_Name1").live('blur', function() {
+		try {
+			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_First_Name1").live('blur', function() {
+		try {
+			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_StudentId1").live('blur', function() {
+		try {
+			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
+		} catch (e) {}
+	});
+	$("#p_StudentId1").live('click', function() {
+		try {
+			$(this).attr("maxlength", "9"); // QC #79620 - Fixed
+		} catch (e) {}
+	});
+	
 	// ============================= Hide validation error messages on tab switch =============================
 	$('.tabs-content > div').live('hidetab', function() {
 		try {
@@ -148,6 +207,11 @@ $(document).ready(function() {
 		$(this).toggleClass("rounded-border");
 		var count = $(this).attr("count");
 		var tabCount = $(this).attr("tabCount");
+		// hide error messages
+		try {
+			//$(".report-form").validationEngine('hide');
+			$(".formError").trigger("click");
+		} catch (e) {}
 		
 		var dnBtn = $('.download-button-'+count);
 		//var dnBtnObj = dnBtn.get(tabCount);
@@ -522,6 +586,84 @@ $(document).ready(function() {
 });
 // *********** END DOCUMENT.READY ************
 
+function resetValidationInputControls(tabCount) {
+	resetClasses($("#p_Last_Name1"));
+	resetClasses($("#p_First_Name1"));
+	resetClasses($("#p_StudentId1"));
+	$(".report-form-" + tabCount).validationEngine("hide");
+}
+
+function setValidationInputControls(tabCount) {
+	var p_Last_Name1 = $("#p_Last_Name1").val();
+	var p_First_Name1 = $("#p_First_Name1").val();
+	var p_StudentId1 = $("#p_StudentId1").val();
+	if (p_Last_Name1.length > 0 || p_First_Name1.length > 0) { // lastname or firstname entered
+		$("#p_Last_Name1").addClass("validate[required, minSize[2]]");
+		$("#p_First_Name1").addClass("validate[required, minSize[2]]");
+		if (p_StudentId1.length > 0) { // p_StudentId1 is entered
+			$("#p_StudentId1").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]");
+		} else { // p_StudentId1 is blank
+			// ok
+		}
+	} else if (p_StudentId1.length > 0) { // lastname and firstname are blank but p_StudentId1 entered
+		$("#p_StudentId1").addClass("validate[custom[nineDigitNumber]]");
+	} else { // All 3 are blank
+		setDefaultValidationsToStudentsSearch();
+	}
+}
+
+function setDefaultValidationsToStudentsSearch() {
+	resetClasses($("#p_Last_Name1"));
+	resetClasses($("#p_First_Name1"));
+	resetClasses($("#p_StudentId1"));
+	$("#p_Last_Name1").addClass("validate[required, minSize[2]]"); // default validation
+	$("#p_First_Name1").addClass("validate[required, minSize[2]]"); // default validation
+	$("#p_StudentId1").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]"); // default validation
+}
+
+function resetClasses(e) {
+	e.removeAttr("class");
+	e.attr('class', "input input-compact navy-gradient");
+}
+
+// *********** END DOCUMENT.READY ************
+//============================= BULK CANDIDATE REPORT =============================
+function downloadBulkCandidate(obj, eduUser, event) { //Fixed QC 76658
+	event.stopImmediatePropagation();
+	$(document).click();
+	var reportUrl = $(obj).attr("param");
+	var count = $(obj).attr("count");
+	var tabCount = $(obj).attr("tabCount");
+	var formObj = $('.report-form-'+count);
+	blockUI('new-tab'+tabCount+'');
+	$.ajax({
+		type : "GET",
+		url : "downloadCandicateReport.do",
+		data : $(formObj).serialize()+"&reportUrl="+reportUrl+"&userType="+eduUser,
+		dataType: 'json',
+		cache:false,
+		success : function(data) {
+			if (data.status == 'Success')	{
+				notify('The bulk Candidate Report download request has been processed. Check the status of the same from Downloads -> Group Download Files', {
+					autoClose: false,
+					showCloseOnHover: false,
+					classes: ['green-gradient']
+				});
+			} else {
+				notify('The Bulk candidate Report download request is failed. Please try later.', {
+					autoClose: false,
+					showCloseOnHover: false,
+					classes: ['red-gradient']
+				});
+			}
+			unblockUI('new-tab'+tabCount+'');
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error']);
+			unblockUI('new-tab'+tabCount+'');
+		}
+	});
+}
 //============================= USER KEEP ALIVE =============================
 /*function keepAliveACSI() {
 	$.modal.confirm('Your ACSI Data Online session is about to expire. Confirm to remain in the session.', function()
@@ -796,6 +938,23 @@ function checkpagination(reportUrl, tabCount) {
 				if(obj != null && !(obj.paginate == "true")) {
 					$(currentObj).css('display', 'none');
 				}
+				//For TASC
+				if(obj.reportUrl == '/public/TASC/Reports/TASC_Org_Hier/Student_Roster_files' 
+										|| obj.reportUrl == '/public/TASC/Reports/TASC_Edu_Center/Student_Roster_files'){
+
+					// code for enable/disable download button
+					if (obj.page > 0) {
+						$("#BulkCandidateReportEdu").removeClass('disabled');
+						$("#BulkCandidateReport").removeClass('disabled');
+						$("#BulkCandidateReportEdu").removeClass('disable_a_href');
+						$("#BulkCandidateReport").removeClass('disable_a_href');
+					} else {
+						$("#BulkCandidateReportEdu").addClass('disabled');
+						$("#BulkCandidateReport").addClass('disabled');
+						$("#BulkCandidateReportEdu").addClass('disable_a_href');
+						$("#BulkCandidateReport").addClass('disable_a_href');
+					}					
+				}
 				$('html, body').scrollTop(0);
 			},
 			error : function(data) {
@@ -922,6 +1081,12 @@ function closeProgress(reportUrl, id, firstCall) {
 		if( 'none' == $(".icholder-0").css("display") )
 			$(".report-filter-0").click();
 	}
+	if(reportUrl == '/public/TASC/Reports/TASC_Org_Hier/Student_Roster_files' 
+		|| reportUrl == '/public/TASC/Reports/TASC_Edu_Center/Student_Roster_files') {
+		// code for bulk download button
+		$("#BulkCandidateReportEdu").show(100);
+		$("#BulkCandidateReport").show(100);
+	}
 	
 	unblockUI();
 	unblockUI('new-tab'+id+'');
@@ -980,6 +1145,10 @@ function getCascading(selectedObj) {
 			|| 'p_Bible_Roster_Score_Type'  == inputId ) { /* Class BIBLE Roster*/
 		$(document).click(); // this code is to close multiselect dropdown
 	}
+	// code for bulk download button
+	$("#BulkCandidateReportEdu").hide(100);
+	$("#BulkCandidateReport").hide(100);
+	
 	var reportUrl = $(selectedObj).attr('param');
 	var tabCount = $(selectedObj).attr('count');
 	blockUI('filterHolder-'+tabCount+'');

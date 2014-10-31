@@ -106,6 +106,18 @@
 						<span id="filter-icon" class="icon-leaf icon-size2"></span> <b>${name} Filter Options</b>
 						<c:if test="${homeReport.refreshButtonClass != 'customRefresh'}">
 						<div class="download-button download-button-${homeReport.tabCount}">
+							<c:if test="${homeReport.reportUrl == '/public/TASC/Reports/TASC_Org_Hier/Student_Roster_files'}">
+								<a href="javascript:void(0)" class="button compact with-tooltip glossy disabled disable_a_href" title="Download Candidate Report <br>for all students as selected <br>in the filter criteria" id="BulkCandidateReport" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">
+									<span class="button-icon green-gradient report-btn"><span class="icon-download"></span></span>
+									Bulk Download
+								</a>
+							</c:if>
+							<c:if test="${homeReport.reportUrl == '/public/TASC/Reports/TASC_Edu_Center/Student_Roster_files'}">
+								<a href="javascript:void(0)" class="button compact with-tooltip glossy disabled disable_a_href" title="Download Candidate Report <br>for all students as selected <br>in the filter criteria" id="BulkCandidateReportEdu" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">
+									<span class="button-icon green-gradient report-btn"><span class="icon-download"></span></span>
+									Bulk Download
+								</a>
+							</c:if>
 							<c:choose>
 								<c:when test ="${homeReport.reportUrl == '/public/INORS/Report/Proficiency_Roster_files' }">
 									<a href="#nogo" class="button download-button-pdf margin-left glossy compact with-tooltip" 
