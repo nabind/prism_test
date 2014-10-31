@@ -19,9 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
+
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -640,6 +646,40 @@ public class FileUtil {
 	public static String getFileSize(String filePath) throws FileNotFoundException, IOException {
 		byte[] bytes = getBytes(filePath);
 		return humanReadableByteCount(bytes.length);
+	}
+	
+	/**
+	 * Arunava
+	 * This method creates a password protected zip file in disk.
+	 * 
+	 * @return
+	 */
+	public static ZipFile createPasswordProtectedZipFile(String filePath,String newFilePath,String pwd) {
+		logger.log(IAppLogger.INFO, "Creating passwordprotected file");
+		ZipFile zipFile = null;
+		try {
+			
+			File file = new File(filePath);
+			FileCopyUtils.copyToByteArray(file);
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+			parameters.setEncryptFiles(true);
+			parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_STANDARD);
+			parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+			parameters.setPassword(pwd);
+			zipFile = new ZipFile(newFilePath);
+			zipFile.addFile(file,parameters);
+			
+			logger.log(IAppLogger.INFO, "SDF Zip file created");
+		} catch (IOException e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			e.printStackTrace();
+		} catch (net.lingala.zip4j.exception.ZipException e) {
+			logger.log(IAppLogger.ERROR, "", e);
+			e.printStackTrace();
+		}
+		return zipFile;
 	}
 
 }

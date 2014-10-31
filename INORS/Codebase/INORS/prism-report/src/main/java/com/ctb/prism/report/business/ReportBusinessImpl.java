@@ -797,4 +797,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public String updateDataForActions(Map<String, Object> paramMap) {
 		return reportDAO.updateDataForActions(paramMap);
 	}
+	
+	public void updateJobTrackingTable(String jobId,String filePath)
+	{
+		reportDAO.updateJobTrackingTable(jobId,filePath);	
+	}
 }

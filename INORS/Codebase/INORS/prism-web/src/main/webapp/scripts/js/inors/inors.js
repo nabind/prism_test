@@ -961,14 +961,30 @@ function downloadBulkPdf(type, mode) {
 			var jobId = row.attr("jobId");
 			var filePath = row.attr("filePath");
 			var fileName = row.attr("fileName");
+			var requestType = row.attr("requestType");
+			var orgLevel = row.attr("orgLevel");
 			var availability = downloadGroupFilesDetails(row,jobId,filePath,fileName);
 			if(availability == true) {
-				var href = "downloadGroupDownloadFiles.do?"+'jobId='+jobId+'&fileName='+fileName+'&filePath='+filePath;
+				var href = "downloadGroupDownloadFiles.do?"+'jobId='+jobId+'&fileName='+fileName + '&requestType=' + requestType + '&orgLevel=' + orgLevel +'&filePath='+filePath;
 				$(".download-GroupFiles").attr("href", href);
 			} else {
-				$(".download-GroupFiles").attr("href", "#");
-				$.modal.alert(strings['msg.fnf']);
-			}
+				if ((requestType == "SDF") && (orgLevel == "1")) {
+					if ((fileName.match(".DAT$")) || (fileName.match(".dat$"))) {
+						filePath = filePath.replace(".DAT",".zip"); 
+						filePath = filePath.replace(".dat",".zip");
+						fileName = fileName.replace(".DAT",".zip"); 
+						fileName = fileName.replace(".dat",".zip");
+						var href = "downloadGroupDownloadFiles.do?" + 'jobId=' + jobId + '&fileName=' + fileName + '&requestType=' + requestType + '&orgLevel=' + orgLevel + '&filePath=' + filePath;
+						$(".download-GroupFiles").attr("href", href);
+					} else {
+						var href = "downloadGroupDownloadFiles.do?" + 'jobId=' + jobId + '&fileName=' + fileName + '&requestType=' + requestType + '&orgLevel=' + orgLevel + '&filePath=' + filePath;
+						$(".download-GroupFiles").attr("href", href);
+					}
+				} else {
+					$(".download-GroupFiles").attr("href", "#");
+					$.modal.alert(strings['msg.fnf']);
+				}
+			} 
 		});
 		
 		function downloadGroupFilesDetails(row,jobId,filePath,fileName) {

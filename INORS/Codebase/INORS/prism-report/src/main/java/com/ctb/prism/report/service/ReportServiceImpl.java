@@ -823,4 +823,10 @@ public class ReportServiceImpl implements IReportService {
 	public String updateDataForActions(Map<String, Object> paramMap) {
 		return reportBusiness.updateDataForActions(paramMap);
 	}
+	
+	public void updateJobTrackingTable(String jobId,String filePath)
+	{
+		reportBusiness.updateJobTrackingTable(jobId,filePath);	
+	}
+	
 }

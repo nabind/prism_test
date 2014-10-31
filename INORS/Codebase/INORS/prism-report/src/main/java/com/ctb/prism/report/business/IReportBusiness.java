@@ -290,4 +290,6 @@ public interface IReportBusiness {
 	 * @return
 	 */
 	public String updateDataForActions(Map<String, Object> paramMap);
+	
+	public void updateJobTrackingTable(String jobId,String filePath);
 }

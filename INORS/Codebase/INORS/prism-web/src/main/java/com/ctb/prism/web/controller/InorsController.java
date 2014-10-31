@@ -173,29 +173,28 @@ public class InorsController {
 	@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
 	public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
-		// String Id = (String) request.getParameter("jobId");
+		String Id = (String) request.getParameter("jobId");
 		String filePath = (String) request.getParameter("filePath");
-		// String fileName = (String) request.getParameter("fileName");
-		/*String extensionType = "";
-		if (-1 == fileName.lastIndexOf(".")) {
-			extensionType = ".pdf";
-		} else {
-			extensionType = fileName.substring(fileName.lastIndexOf(".") + 1);
-		}
-		File file = new File(filePath);*/
+		String fileName = (String) request.getParameter("fileName");
+		String orgLevel = (String) request.getParameter("orgLevel");
+		String requestType = (String) request.getParameter("requestType");
+		
 		try {
-			// byte[] data = FileCopyUtils.copyToByteArray(file);
-			// response.setContentType("application/" + extensionType);
-			// response.setContentLength(data.length);
-			// response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-			// FileCopyUtils.copy(data, response.getOutputStream());
-			FileUtil.browserDownload(response, filePath);
+			if(Utils.getContractName().equals(IApplicationConstants.CONTRACT_NAME.inors)) {
+				FileUtil.browserDownload(response, filePath);
+			} else if(Utils.getContractName().equals(IApplicationConstants.CONTRACT_NAME.tasc)){
+				updateFileExt(Id,filePath,fileName,orgLevel,requestType,response);
+			} else {
+				//For new project
+			}
+			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
 	}
+	
 
 	/**
 	 * For Group Download file validation.
@@ -1500,5 +1499,54 @@ public class InorsController {
 		reportService.deleteScheduledGroupFiles(gdfExpiryTime);
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 	}
+	
+	private void updateFileExt(String Id,String filePath,String fileName,String orgLevel,String requestType,HttpServletResponse response) throws Exception {
+		String extensionType = "";
+		String password = propertyLookup.get("gdfpassword");
+
+		try {			
+			if(orgLevel.equals("1") && requestType.equals("SDF")&& !fileName.endsWith(".zip"))
+			{
+				File oldFile = new File(filePath);
+				String newFilePath=filePath.replaceAll(fileName,"");
+				String newFileName=fileName.replace(fileName.substring(fileName.lastIndexOf(".") + 1),"zip");
+				newFilePath=newFilePath.concat(newFileName);
+
+				FileUtil.createPasswordProtectedZipFile(filePath,newFilePath,password);
+
+				File Newfile = new File(newFilePath);
+				byte[] data = FileCopyUtils.copyToByteArray(Newfile);
+				//response.setContentType("application/" + "zip");
+				response.setContentType("binary/data");
+				response.setContentLength(data.length);
+				response.setHeader("Content-Disposition", "attachment; filename=" + newFileName);
+				FileCopyUtils.copy(data, response.getOutputStream());
+				oldFile.delete();
+				reportService.updateJobTrackingTable(Id,newFilePath);
+			} else	{
+				File oldFile = new File(filePath);
+				if (-1 == fileName.lastIndexOf(".")) {
+					extensionType = "force-download";
+				} else {
+					extensionType = fileName.substring(fileName.lastIndexOf(".") + 1);
+				}
+				if(extensionType != null && extensionType.equalsIgnoreCase("zip")) {
+					response.setContentType("binary/data");
+				} else {
+					response.setContentType("application/" + extensionType);
+				}
+				byte[] data = FileCopyUtils.copyToByteArray(oldFile);
+				//response.setContentType("application/" + extensionType);
+				response.setContentLength(data.length);
+				response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+				FileCopyUtils.copy(data, response.getOutputStream());
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "updateFileExt - ", e);
+			e.printStackTrace();
+		}
+		logger.log(IAppLogger.INFO, "Exit: Controller - updateFileExt");
+	}
+	
 
 }

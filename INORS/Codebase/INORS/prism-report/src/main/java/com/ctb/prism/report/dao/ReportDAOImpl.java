@@ -2514,4 +2514,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return dbException;
 	}
 	
+	public void updateJobTrackingTable(String jobId,String filePath)
+	{
+		getJdbcTemplatePrism().update(IReportQuery.UPDATE_FILENAME_JOB_TRACKING,filePath,jobId);
+	}
+	
 }

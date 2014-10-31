@@ -309,6 +309,6 @@ public interface IReportService {
 	 */
 	public String updateDataForActions(Map<String, Object> paramMap);
 
-	
+	public void updateJobTrackingTable(String jobId,String filePath);
 
 }
