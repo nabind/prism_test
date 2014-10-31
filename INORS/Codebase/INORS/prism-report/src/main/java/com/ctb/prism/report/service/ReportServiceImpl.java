@@ -271,7 +271,7 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#saveManageMessage(java.util .List)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor=SystemException.class)
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException {
 		return reportBusiness.saveManageMessage(manageMessageTOList);
 	}
