@@ -425,7 +425,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 						@SuppressWarnings("rawtypes")
 						Map.Entry pairs = (Map.Entry) it.next();
 						if (pairs.getValue() != null && pairs.getValue() instanceof String) {
-							query = query.replace((String) pairs.getKey(), CustomStringUtil.appendString("'", (String) pairs.getValue(), "'"));
+							if("$P!{p_Start_Test_Date}".equals(pairs.getKey()) || "$P!{p_End_Test_Date}".equals(pairs.getKey())) {
+								query = query.replace((String) pairs.getKey(), (String) pairs.getValue());
+							} else {
+								query = query.replace((String) pairs.getKey(), 
+										CustomStringUtil.appendString("'", (String) pairs.getValue(), "'"));
+							}
 							if (query.indexOf(IApplicationConstants.JASPER_PARAM_INITIAL) == -1) {
 								break;
 							}
