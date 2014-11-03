@@ -24,8 +24,8 @@ public interface IDomObject {
 	
 	public static final String OPTION_SELECTED = "selected";
 	
-	public static final String TEXT_BOX = "<input type='text' name='%s' id='%s' value='%s' style='width:128px' class='input input-compact navy-gradient'>";
-	public static final String TEXT_BOX_UPDATED = "<input type='text' name='%s' id='%s' value='%s' style='width:128px' class='input input-compact navy-gradient %s'>";
+	public static final String TEXT_BOX = "<input type='text' name='%s' id='%s' value='%s' style='width:164px' class='input input-compact navy-gradient'>";
+	public static final String TEXT_BOX_UPDATED = "<input type='text' name='%s' id='%s' value='%s' style='width:164px' class='input input-compact navy-gradient %s'>";
 	
 	public static final String IC_BOX_ONE = "<div class='six-columns input-control-box'>";
 	public static final String IC_BOX_TWO = "<div class='six-columns input-control-box-2'>";
