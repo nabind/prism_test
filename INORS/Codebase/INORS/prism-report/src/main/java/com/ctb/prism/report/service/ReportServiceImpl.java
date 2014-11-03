@@ -691,17 +691,16 @@ public class ReportServiceImpl implements IReportService {
 								parameters.put(inputControlTO.getLabelId(), value);
 							}
 							/***NEW***/
-							
-							// patch for TASC - start date and end date
-							if("p_Start_Test_Date".equals(label)) {
-								// sysdate minus 30 days
-								parameters.put(label, Utils.getPreviusDateTime("MM/dd/yyyy", 30));
-							}
-							if("p_End_Test_Date".equals(label)) {
-								// sysdate
-								parameters.put(label, Utils.getDateTime("MM/dd/yyyy"));
-							}
 						}
+					}
+					// patch for TASC - start date and end date
+					if("p_Start_Test_Date".equals(label)) {
+						// sysdate minus 30 days
+						parameters.put(label, Utils.getPreviusDateTime("MM/dd/yyyy", 30));
+					}
+					if("p_End_Test_Date".equals(label)) {
+						// sysdate
+						parameters.put(label, Utils.getDateTime("MM/dd/yyyy"));
 					}
 					//long end2 = System.currentTimeMillis();
 					//System.out.println(CustomStringUtil.getHMSTimeFormat(end2 - start2)+" <<<< Time Taken: no cache getReportParameter:get-list "+getFullList+" - report filter >>>> ");
