@@ -32,6 +32,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.report.api.FillManagerImpl;
 import com.ctb.prism.report.api.IFillManager;
 import com.ctb.prism.report.business.IReportBusiness;
@@ -459,12 +460,12 @@ public class ReportServiceImpl implements IReportService {
 					/** PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 					// get default list for multiselect subtest
 					// this code is a path for subtest to meet business requirement to show default subtest list
-					/** COMMENTING AS this is not needed for inors */
-					/*String[] defaultValues = null;
+					/**  */
+					String[] defaultValues = null;
 					boolean checkDefault = false;
 					List<String> defaultInputNames = new ArrayList<String>();
-					Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();*/
-					/*
+					Map<String, String[]> defaultInputValues = new HashMap<String, String[]>();
+					
 					try {
 						for (IApplicationConstants.PATCH_FOR_SUBTEST subtest : IApplicationConstants.PATCH_FOR_SUBTEST.values()) {
 							if (subtest.name().equals(inputControlTO.getLabelId())) {
@@ -486,14 +487,14 @@ public class ReportServiceImpl implements IReportService {
 						}
 					} catch (Exception e) {
 						logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Some error occured for subtest multiselect : ", e.getMessage()));
-					}*/
+					}
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
 					/***NEW***/
 					String[] valueFromSession = getFromSession(req, label);
 					/***NEW***/
 					
-					/*Map<String, Object> sessionParameters = null;
+					Map<String, Object> sessionParameters = null;
 					if (req != null)
 						sessionParameters = (Map<String, Object>) req.getSession().getAttribute("inputControls");
 					if (sessionParameters == null) {
@@ -503,7 +504,7 @@ public class ReportServiceImpl implements IReportService {
 					boolean sessionArray = false;
 					if (sessionParameters.get(label) instanceof List<?>) {
 						sessionArray = true;
-					}*/
+					}
 
 					// patch for input control blank for text type i/p controls
 					boolean customReport = false;
@@ -553,15 +554,15 @@ public class ReportServiceImpl implements IReportService {
 												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
 											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
 										}
-										parameters.put(label, value);
-										//parameters.put(label, (sessionParameters.get(label) != null) ? sessionParameters.get(label) : value);
+										//parameters.put(label, value);
+										parameters.put(label, (sessionParameters.get(label) != null) ? sessionParameters.get(label) : value);
 										break;
 									}
 								}
 							}
 						} else {
 							parameters.put(inputControlTO.getLabelId(), listOfValues);
-							/*if (sessionParameters.get(label) != null) {
+							if (sessionParameters.get(label) != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
 								List<String> selectInputNames = new ArrayList<String>();
 								if (sessionParameters.get(label) instanceof String) {
@@ -572,7 +573,7 @@ public class ReportServiceImpl implements IReportService {
 								selectInputNames.add(label);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
-							}*/
+							}
 							/***NEW***/
 							if(valueFromSession != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
@@ -583,12 +584,12 @@ public class ReportServiceImpl implements IReportService {
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
 							}
 							/***NEW***/
-							/*if (!checkDefault) {
+							if (!checkDefault) {
 								parameters.put(inputControlTO.getLabelId(), listOfValues);
-							} else {*/
+							} else {
 								parameters.put(inputControlTO.getLabelId(), listOfValues);
-								//parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
-								//parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
+								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
 
 								/*
 								 * // list need to be modified based on default value List<ObjectValueTO> inputCollection = new ArrayList<ObjectValueTO>(); for(ObjectValueTO objectValue :
@@ -597,7 +598,7 @@ public class ReportServiceImpl implements IReportService {
 								 * parameters.put(IApplicationConstants.CHECK_DEFAULT, defaultValues); parameters.put(IApplicationConstants.CHECK_DEFAULT_NAME, defaultInputNames); }
 								 * parameters.put(inputControlTO.getLabelId(), inputCollection);
 								 */
-							/*}*/
+							}
 						}
 					} else {
 						// fetch i/p for default values
@@ -605,14 +606,14 @@ public class ReportServiceImpl implements IReportService {
 							// passing array
 							List<String> inputCollection = new ArrayList<String>();
 							for (ObjectValueTO objectValue : listOfValues) {
-								/*if (!checkDefault) {
+								if (!checkDefault) {
 									inputCollection.add(objectValue.getValue());
 									if (IApplicationConstants.EXTENDED_YEAR.equals(inputControlTO.getLabelId())) {
 										break;
 									}
-								} else {*/
+								} else {
 									// this field has default values - need to pass values that belongs to this default list
-									/*if (defaultValues != null) {
+									if (defaultValues != null) {
 										for (String currentVal : defaultValues) {
 											if (objectValue.getValue().equals(currentVal)) {
 												inputCollection.add(objectValue.getValue());
@@ -620,15 +621,15 @@ public class ReportServiceImpl implements IReportService {
 										}
 										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT, label), defaultInputValues);
 										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
-									} else {*/
+									} else {
 										inputCollection.add(objectValue.getValue());
-									/*}*/
-								/*}*/
+									}
+								}
 							}
-							 parameters.put(label, inputCollection);
-							/*parameters.put(label,
+							 //parameters.put(label, inputCollection);
+							parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
-											: inputCollection);*/
+											: inputCollection);
 							/***NEW***/
 							if(valueFromSession != null) {
 								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
@@ -646,16 +647,16 @@ public class ReportServiceImpl implements IReportService {
 												&& !"\"\"".equals(jasperReport.getParameters()[i].getDefaultValueExpression().getText())) {
 											value = jasperReport.getParameters()[i].getDefaultValueExpression().getText();
 										}
-										 parameters.put(label, value);
-										/*parameters.put(label, (sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0])
-												: sessionParameters.get(label)) : value);*/
+										 //parameters.put(label, value);
+										parameters.put(label, (sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0])
+												: sessionParameters.get(label)) : value);
 										break;
 									}
 								}
 							}
 						} else {
 							String value = "";
-							/*if (listOfValues != null && listOfValues.size() > 0) {
+							if (listOfValues != null && listOfValues.size() > 0) {
 								if ("Form/Level".equals(inputControlTO.getLabel()) || "Level".equals(inputControlTO.getLabel()) || "Days".equals(inputControlTO.getLabel())) {
 									for (ObjectValueTO objectValue : listOfValues) {
 										if (objectValue.getName() != null && objectValue.getName().indexOf("Default") != -1) {
@@ -666,15 +667,15 @@ public class ReportServiceImpl implements IReportService {
 								} else {
 									value = listOfValues.get(0).getValue();
 								}
-							}*/
+							}
 							// fallback code
 							if ((value == null || value.length() == 0) && listOfValues != null && listOfValues.size() > 0) {
 								value = listOfValues.get(0).getValue();
 							}
-							parameters.put(label, value);
-							/*parameters.put(label,
+							//parameters.put(label, value);
+							parameters.put(label,
 									(sessionParameters.get(label) != null) ? ((sessionArray) ? ((List<String>) sessionParameters.get(label)).toArray(new String[0]) : sessionParameters.get(label))
-											: value);*/
+											: value);
 							/***NEW***/
 							if(valueFromSession != null && valueFromSession.length > 0) {
 								boolean objExists = false;
@@ -690,6 +691,16 @@ public class ReportServiceImpl implements IReportService {
 								parameters.put(inputControlTO.getLabelId(), value);
 							}
 							/***NEW***/
+							
+							// patch for TASC - start date and end date
+							if("p_Start_Test_Date".equals(label)) {
+								// sysdate minus 30 days
+								parameters.put(label, Utils.getPreviusDateTime("MM/dd/yyyy", 30));
+							}
+							if("p_End_Test_Date".equals(label)) {
+								// sysdate
+								parameters.put(label, Utils.getDateTime("MM/dd/yyyy"));
+							}
 						}
 					}
 					//long end2 = System.currentTimeMillis();

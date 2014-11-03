@@ -272,6 +272,13 @@ public final class Utils {
 		SimpleDateFormat dateformatter = new SimpleDateFormat(dateFormat);
 		return dateformatter.format(cal.getTime());
 	}
+	
+	public static String getPreviusDateTime(String dateFormat, int minusDay) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -minusDay);
+		SimpleDateFormat dateformatter = new SimpleDateFormat(dateFormat);
+		return dateformatter.format(cal.getTime());
+	}
 
 	/**
 	 * To convert Oracle CLOB to String
