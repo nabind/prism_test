@@ -598,7 +598,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		} else if (isGrowthUser) {/* For growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
 		} else if (isEduUser) {/* For education center user */
-			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_EDU_ADMIN_ID, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", Long.valueOf(userId), orgNodeLevel);
 		} else { /* For All users other than growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
 		}
