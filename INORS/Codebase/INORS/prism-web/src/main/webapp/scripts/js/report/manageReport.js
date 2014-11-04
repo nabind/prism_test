@@ -50,135 +50,104 @@ $(document).ready(function() {
 	}
 	
 	$("#productForAction").on("change", function(event) {
-		$("#newActionPara").attr('style', 'display: none;');
+		//alert("productForAction");
+		populateActionsForEditAction();
+	});
+	
+	$("#newAction").on("change", function(event) {
+		//alert("newAction");
+		drawActionAccessMatrix();
 	});
 
 });
 // *********** END DOCUMENT.READY ************
 
-function populateSingleSelectedOptionsFromObjectValueTO(dropdownId, list) {
+function populateActionsForEditAction() {
+	$("#newAction").html('');
+	var reportId = $("#reportIdForAction").val();
+	var custProdId = $("#productForAction").val();
+	var param = "reportId=" + reportId + "&custProdId=" + custProdId;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "getActionsForEditActions.do",
+		data : param,
+		dataType : 'json',
+		cache : false,
+		async: false,
+		success : function(data) {
+			unblockUI();
+			populateSingleSelectedOptionsFromObjectValueTO("newAction", data, "actionId", "actionName");
+			//$("#newAction option").change();
+			//$("#newAction option").trigger('update-select-list');
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error1']);
+		}
+	});
+}
+
+function populateSingleSelectedOptionsFromObjectValueTO(dropdownId, list, key, value) {
 	var innerHtml = "";
 	var selectCount = 0;
 	if(typeof list != "undefined") {
-		$.each(list, function(index, value) {
-			innerHtml = innerHtml + '<option value="' + value.name + '"';
+		$.each(list, function(index, item) {
+			innerHtml = innerHtml + '<option value="' + item[key] + '"';
 			if(selectCount < 1) {
 				innerHtml = innerHtml + ' selected="true"';
 			}
-			innerHtml = innerHtml + '>' + value.value + '</option>';
+			innerHtml = innerHtml + '>' + item[value] + '</option>';
 			selectCount = selectCount + 1;
 		});
 	}
+	//alert(innerHtml);
 	$("#"+dropdownId).html(innerHtml);
-	$("#"+dropdownId+" option").change();
-	$("#"+dropdownId+" option").trigger('update-select-list');
-}
-
-function populateActionsFromObjectValueList(dropdownId, actionList) {
-	var innerHtml = "";
-	if(typeof actionList != "undefined") {
-		$.each(actionList, function(index, value) {
-			innerHtml = innerHtml + '<option value="' + value.id + '"';
-			if(value.status == "AC") innerHtml = innerHtml + '" selected="true"';
-			innerHtml = innerHtml + '>' + value.name + '</option>';
-		});
-	}
-	if(innerHtml == "") {
-		$(".error-message").attr('style', 'width: 342px; display: block;');
-		$("#newActionPara").attr('style', 'display: none;');
-	} else {
-		$(".error-message").attr('style', 'width: 342px; display: none;');
-		$("#newActionPara").attr('style', 'display: block;');
-	}
-	$("#"+dropdownId).html(innerHtml);
-	$("#"+dropdownId+" option").change();
-	$("#"+dropdownId+" option").trigger('update-select-list');
 }
 
 function openModalForEditActions(reportId) {
 	$(".error-message").attr('style', 'width: 342px; display: none;');
-    manageIconIE('icon-star');
-    var param = "reportId=" + reportId;	
+    populateProductsForEditActions(reportId);
+	populateActionsForEditAction();
+	drawActionAccessMatrix();
+	drawModalForEditActions();
+}
+
+function populateProductsForEditActions(reportId) {
+	var param = "reportId=" + reportId;	
     blockUI();
     $.ajax({
 		type : "GET",
-		url : "getReportDataForEditActions.do",
+		url : "getProductsForEditActions.do",
 		data : param,
 		dataType : 'json',
 		cache:false,
+		async:false,
 		success : function(data) {
 			unblockUI();
-			$("input#reportIdForAction").val(data.id);
-			$("input#reportNameForAction").val(data.name);
-
-			var products = data.productList;
-			populateSingleSelectedOptionsFromObjectValueTO("productForAction", products);
-			
-			var roles = data.roleList;
-			populateSingleSelectedOptionsFromObjectValueTO("roleForAction", roles);
-			
-			var levels = data.orgLevelList;
-			populateSingleSelectedOptionsFromObjectValueTO("levelForAction", levels);
-			
-			$("#newAction").html('');
-			
-			// drawActionDropdownForEditActions(reportId);
-			$("#newActionPara").attr('style', 'display: none;');
-			
-			drawModalForEditActions();	
-				
+			$("input#reportIdForAction").val(data[0].reportId);
+			$("input#reportNameForAction").val(data[0].reportName);
+			populateSingleSelectedOptionsFromObjectValueTO("productForAction", data, "custProdId", "productName");
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error1']);
 		}
-	})	
-}
-
-function drawActionDropdownForEditActions(reportId) {
-	$("#newActionPara").attr('style', 'display: block;');
-	var custProdId = $("#productForAction").val();
-	var roleId = $("#roleForAction").val();
-	var orgLevel = $("#levelForAction").val();
-	var param = "reportId=" + reportId + "&custProdId=" + custProdId + "&roleId=" + roleId + "&orgLevel=" + orgLevel;
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : "getActionDataForEditActions.do",
-		data : param,
-		dataType : 'json',
-		cache : false,
-		success : function(data) {
-			unblockUI();
-			var actions = data;
-			populateActionsFromObjectValueList("newAction", actions);
-		},
-		error : function(data) {
-			$.modal.alert(strings['script.common.error1']);
-		}
-	})
+	});
 }
 
 function drawModalForEditActions() {
+	$("#actionAccessTable").html('');
 	$("#editActionsForm").modal({
 		title: 'Edit Actions',
-		height: 235,
-		width: 400,
-		resizable: false,
-		draggable: false,
+		//height: 235,
+		//width: 400,
+		resizable: true,
+		draggable: true,
 		buttons: {
 			'Cancel': {
 				classes: 'glossy mid-margin-left',
 				click: function(win,e) {
 					clickMe(e);
 					win.closeModal(); 
-				}
-			},
-			'Get Actions': {
-				classes: 'green-gradient glossy mid-margin-left',
-				click: function(win,e) {
-					clickMe(e);
-					var reportId = $("#reportIdForAction").val();
-					drawActionDropdownForEditActions(reportId);
 				}
 			},
 			'Save': {
@@ -196,12 +165,90 @@ function drawModalForEditActions() {
 	});
 }
 
+function drawActionAccessMatrix() {
+	var reportId = $("#reportIdForAction").val();
+	var custProdId = $("#productForAction").val();
+	var actionId = $("#newAction").val();
+	var param = "reportId=" + reportId + "&custProdId=" + custProdId + "&actionId=" + actionId;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "getActionAccess.do",
+		data : param,
+		dataType : 'json',
+		cache : false,
+		success : function(data) {
+			unblockUI();
+			drawActionAccessMatrixTable(data);
+		},
+		error : function(data) {
+			$.modal.alert(strings['script.common.error1']);
+		}
+	});
+}
+
+function drawActionAccessMatrixTable(data) {
+	var roleMap = makeMapFromData(data, "roleId", "roleName");
+	var levelMap = makeMapFromData(data, "levelId", "levelName");
+	//alert(JSON.stringify(roleMap));
+	//alert(JSON.stringify(levelMap));
+	var tableHtml = "";
+	var headerHtml = "";
+	$.each(roleMap, function(keyR, valueR) {
+		headerHtml += '<th>' + valueR + '</th>';
+	});
+	if(headerHtml.length > 0) {
+		headerHtml = '<tr><th>&nbsp;</th>' + headerHtml + '</tr>';
+		tableHtml += headerHtml;
+	}
+	//alert(headerHtml);
+	var bodyHtml = "";
+	$.each(levelMap, function(keyL, valueL) {
+		bodyHtml += '<tr><td>'+valueL+'</td>';
+		$.each(roleMap, function(keyR, valueR) {
+			bodyHtml += '<td>' + getActionAccessStatusCheckBox(data, keyR, keyL) + '</td>';
+		});
+		bodyHtml += '</tr>';
+	});
+	//alert(bodyHtml);
+	if(bodyHtml.length > 0) {
+		tableHtml += bodyHtml;
+	}
+	$("#actionAccessTable").html(tableHtml);
+}
+
+function getActionAccessStatusCheckBox(data, keyR, keyL) {
+	var checkBox = '<input type="checkbox" name="actionAccess" id="actionAccess" value="'+keyR + '-' + keyL+'">';
+	$.each(data, function(index, item) {
+		if(item["roleId"] == keyR && item["levelId"] == keyL && item["activationStatus"] == "AC") {
+			checkBox = '<input type="checkbox" name="actionAccess" id="actionAccess" value="'+keyR + '-' + keyL+'" checked>';
+		}
+	});
+	return checkBox;
+}
+
+function makeMapFromData(data, key, value) {
+	var map = new Object();
+	$.each(data, function(index, item) {
+		map[item[key]] = item[value];
+	});
+	return map;
+}
+
 function updateActionsDetails(form, win) {
+	var formData = form.serialize();
+	//alert(JSON.stringify(formData));
+	var reportId = $("#reportIdForAction").val();
+	var custProdId = $("#productForAction").val();
+	var actionId = $("#newAction").val();
+	var roleIdLevelId = $("input[name=actionAccess]:checked").map(function () {return this.value;}).get().join(",");
+	var param = "reportIdForAction=" + reportId + "&productForAction=" + custProdId + "&newAction=" + actionId + "&roleIdLevelId=" + roleIdLevelId;
+	//alert(param);
 	blockUI();
 	$.ajax({
 		type : "GET",
 		url : 'updateActions.do',
-		data : form.serialize(),
+		data : param,
 		dataType: 'json',
 		cache:false,
 		success : function(data) {

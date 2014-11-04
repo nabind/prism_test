@@ -30,10 +30,9 @@ public interface IReportDAO {
 	 * 
 	 */
 	public void removeCache();
-	
-	
+
 	public void removeCache(String cacheKey);
-	
+
 	public void removeConfigurationCache();
 
 	/**
@@ -55,11 +54,12 @@ public interface IReportDAO {
 	 * @throws Exception
 	 */
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
-	
+
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
 
 	/**
-	 * Returns {@link JasperReport} object of a particular report by compiling the JRXML file retrieved from database.
+	 * Returns {@link JasperReport} object of a particular report by compiling
+	 * the JRXML file retrieved from database.
 	 * 
 	 * @param reportPath
 	 * @return
@@ -104,7 +104,8 @@ public interface IReportDAO {
 	public List<ObjectValueTO> getValuesOfSingleInput(String query);
 
 	/**
-	 * Returns the information( report id, report name, report url, the user roles who can access the report etc) of all reports.
+	 * Returns the information( report id, report name, report url, the user
+	 * roles who can access the report etc) of all reports.
 	 * 
 	 * @param paramMap
 	 * @return
@@ -309,7 +310,7 @@ public interface IReportDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap);
+	public List<ReportActionTO> getProductsForEditActions(Map<String, Object> paramMap);
 
 	/**
 	 * Returns a collection of ReportActionTO objects for Actions data.
@@ -317,7 +318,13 @@ public interface IReportDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap);
+	public List<ReportActionTO> getActionsForEditActions(Map<String, Object> paramMap);
+
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportActionTO> getActionAccess(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap

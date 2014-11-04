@@ -598,7 +598,7 @@ public class ReportServiceImpl implements IReportService {
 								 * parameters.put(IApplicationConstants.CHECK_DEFAULT, defaultValues); parameters.put(IApplicationConstants.CHECK_DEFAULT_NAME, defaultInputNames); }
 								 * parameters.put(inputControlTO.getLabelId(), inputCollection);
 								 */
-							}
+						}
 						}
 					} else {
 						// fetch i/p for default values
@@ -623,7 +623,7 @@ public class ReportServiceImpl implements IReportService {
 										parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_DEFAULT_NAME, label), defaultInputNames);
 									} else {
 										inputCollection.add(objectValue.getValue());
-									}
+							}
 								}
 							}
 							 //parameters.put(label, inputCollection);
@@ -814,17 +814,24 @@ public class ReportServiceImpl implements IReportService {
 
 	
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.service.IReportService#getReportDataForEditActions(java.util.Map)
+	 * @see com.ctb.prism.report.service.IReportService#getProductsForEditActions(java.util.Map)
 	 */
-	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap) {
-		return reportBusiness.getReportDataForEditActions(paramMap);
+	public List<ReportActionTO> getProductsForEditActions(Map<String, Object> paramMap) {
+		return reportBusiness.getProductsForEditActions(paramMap);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.service.IReportService#getActionDataForEditActions(java.util.Map)
+	 * @see com.ctb.prism.report.service.IReportService#getActionsForEditActions(java.util.Map)
 	 */
-	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap) {
-		return reportBusiness.getActionDataForEditActions(paramMap);
+	public List<ReportActionTO> getActionsForEditActions(Map<String, Object> paramMap) {
+		return reportBusiness.getActionsForEditActions(paramMap);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.service.IReportService#getActionAccess(java.util.Map)
+	 */
+	public List<ReportActionTO> getActionAccess(Map<String, Object> paramMap) {
+		return reportBusiness.getActionAccess(paramMap);
 	}
 
 	/* (non-Javadoc)
@@ -838,5 +845,5 @@ public class ReportServiceImpl implements IReportService {
 	{
 		reportBusiness.updateJobTrackingTable(jobId,filePath);	
 	}
-	
+
 }

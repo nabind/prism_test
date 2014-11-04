@@ -778,17 +778,24 @@ public class ReportBusinessImpl implements IReportBusiness {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getReportDataForEditActions(java.util.Map)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getProductsForEditActions(java.util.Map)
 	 */
-	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap) {
-		return reportDAO.getReportDataForEditActions(paramMap);
+	public List<ReportActionTO> getProductsForEditActions(Map<String, Object> paramMap) {
+		return reportDAO.getProductsForEditActions(paramMap);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.business.IReportBusiness#getActionDataForEditActions(java.util.Map)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getActionsForEditActions(java.util.Map)
 	 */
-	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap) {
-		return reportDAO.getActionDataForEditActions(paramMap);
+	public List<ReportActionTO> getActionsForEditActions(Map<String, Object> paramMap) {
+		return reportDAO.getActionsForEditActions(paramMap);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getActionAccess(java.util.Map)
+	 */
+	public List<ReportActionTO> getActionAccess(Map<String, Object> paramMap) {
+		return reportDAO.getActionAccess(paramMap);
 	}
 
 	/* (non-Javadoc)
@@ -802,4 +809,5 @@ public class ReportBusinessImpl implements IReportBusiness {
 	{
 		reportDAO.updateJobTrackingTable(jobId,filePath);	
 	}
+
 }

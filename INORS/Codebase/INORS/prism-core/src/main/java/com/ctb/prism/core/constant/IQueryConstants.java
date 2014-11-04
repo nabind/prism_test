@@ -1169,9 +1169,10 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		
 		public static final String SP_GET_PROPERTY = "{CALL PKG_CONTRACT_PROPERTY.SP_GET_PROPERTY(?, ?)}";
 
-		public static final String GET_REPORT_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_REPORT_EDIT_ACTIONS(?, ?, ?, ?)}";
-		public static final String GET_ACTIONS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_ACTIONS_EDIT_ACTIONS(?, ?, ?, ?, ?, ?)}";
-		public static final String SP_UPDATE_ACTION_DATA = "{CALL PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?, ?, ?, ?, ?)}";
+		public static final String GET_PRODUCTS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_PRODUCTS_EDIT_ACTIONS(?, ?, ?, ?)}";
+		public static final String GET_ACTIONS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_ACTIONS_EDIT_ACTIONS(?, ?, ?, ?)}";
+		public static final String GET_ACTION_ACCESS = "{CALL PKG_MANAGE_REPORT.GET_ACTION_ACCESS(?, ?, ?, ?, ?)}";
+		public static final String SP_UPDATE_ACTION_DATA = "{CALL PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?, ?, ?, ?)}";
 
 }
 

@@ -2067,11 +2067,11 @@ public class ReportController{
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "/getReportDataForEditActions", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductsForEditActions", method = RequestMethod.GET)
 	@ResponseBody
-	public String getReportDataForEditActions(HttpServletRequest req) {
-		logger.log(IAppLogger.INFO, "Enter: getReportDataForEditActions()");
-		String reportDataString = "";
+	public String getProductsForEditActions(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getProductsForEditActions()");
+		String productJson = "";
 		try {
 			String reportId = (String) req.getParameter("reportId");
 			String customerId = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
@@ -2080,49 +2080,63 @@ public class ReportController{
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
 			paramMap.put("customerId", customerId);
-			ReportActionTO reportData = reportService.getReportDataForEditActions(paramMap);
-			reportDataString = Utils.objectToJson(reportData);
-			logger.log(IAppLogger.INFO, "reportDataString = " + reportDataString);
+			List<ReportActionTO> productList = reportService.getProductsForEditActions(paramMap);
+			productJson = Utils.objectToJson(productList);
+			logger.log(IAppLogger.INFO, "productJson = " + productJson);
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		}
-		logger.log(IAppLogger.INFO, "Exit: getReportDataForEditActions()");
-		return reportDataString;
+		logger.log(IAppLogger.INFO, "Exit: getProductsForEditActions()");
+		return productJson;
 	}
 	
-	/**
-	 * This method fetches the Actions based on reportId and custProdId.
-	 * 
-	 * @param req
-	 * @return
-	 */
-	@RequestMapping(value = "/getActionDataForEditActions", method = RequestMethod.GET)
+	@RequestMapping(value = "/getActionsForEditActions", method = RequestMethod.GET)
 	@ResponseBody
-	public String getActionDataForEditActions(HttpServletRequest req) {
-		logger.log(IAppLogger.INFO, "Enter: getActionDataForEditActions()");
-		String actionDataString = "";
+	public String getActionsForEditActions(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getActionsForEditActions()");
+		String actionJson = "";
 		try {
 			String reportId = (String) req.getParameter("reportId");
 			String custProdId = (String) req.getParameter("custProdId");
-			String roleId = (String) req.getParameter("roleId");
-			String orgLevel = (String) req.getParameter("orgLevel");
 			logger.log(IAppLogger.INFO, "reportId = " + reportId);
 			logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-			logger.log(IAppLogger.INFO, "roleId = " + roleId);
-			logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
 			paramMap.put("custProdId", custProdId);
-			paramMap.put("roleId", roleId);
-			paramMap.put("orgLevel", orgLevel);
-			List<ReportActionTO> actionDataList = reportService.getActionDataForEditActions(paramMap);
-			actionDataString = Utils.objectToJson(actionDataList);
-			logger.log(IAppLogger.INFO, "actionDataString = " + actionDataString);
+			List<ReportActionTO> actionList = reportService.getActionsForEditActions(paramMap);
+			actionJson = Utils.objectToJson(actionList);
+			logger.log(IAppLogger.INFO, "actionJson = " + actionJson);
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		}
-		logger.log(IAppLogger.INFO, "Exit: getActionDataForEditActions()");
-		return actionDataString;
+		logger.log(IAppLogger.INFO, "Exit: getActionsForEditActions()");
+		return actionJson;
+	}
+	
+	@RequestMapping(value = "/getActionAccess", method = RequestMethod.GET)
+	@ResponseBody
+	public String getActionAccess(HttpServletRequest req) {
+		logger.log(IAppLogger.INFO, "Enter: getActionAccess()");
+		String actionAccessJson = "";
+		try {
+			String reportId = (String) req.getParameter("reportId");
+			String custProdId = (String) req.getParameter("custProdId");
+			String actionId = (String) req.getParameter("actionId");
+			logger.log(IAppLogger.INFO, "reportId = " + reportId);
+			logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+			logger.log(IAppLogger.INFO, "actionId = " + actionId);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("reportId", reportId);
+			paramMap.put("custProdId", custProdId);
+			paramMap.put("actionId", actionId);
+			List<ReportActionTO> actionAccessList = reportService.getActionAccess(paramMap);
+			actionAccessJson = Utils.objectToJson(actionAccessList);
+			logger.log(IAppLogger.INFO, "actionAccessJson = " + actionAccessJson);
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		}
+		logger.log(IAppLogger.INFO, "Exit: getActionAccess()");
+		return actionAccessJson;
 	}
 	
 	/**
@@ -2138,26 +2152,20 @@ public class ReportController{
 		logger.log(IAppLogger.INFO, "Enter: updateReport()");
 		String reportId = req.getParameter("reportIdForAction");
 		String custProdId = req.getParameter("productForAction");
-		String roleId = req.getParameter("roleForAction");
-		String orgLevel = req.getParameter("levelForAction");
-		String[] actions = req.getParameterValues("newAction");
-		if (actions == null) {
-			actions = new String[] {};
-		}
+		String actionId = req.getParameter("newAction");
+		String roleIdLevelId = req.getParameter("roleIdLevelId");
+		
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-		logger.log(IAppLogger.INFO, "roleId = " + roleId);
-		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
-		for(String s: actions) {
-			logger.log(IAppLogger.INFO, "action = " + s);
-		}
+		logger.log(IAppLogger.INFO, "actionId = " + actionId);
+		logger.log(IAppLogger.INFO, "roleIdLevelId = " + roleIdLevelId);
+		
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("reportId", reportId);
 			paramMap.put("custProdId", custProdId);
-			paramMap.put("roleId", roleId);
-			paramMap.put("orgLevel", orgLevel);
-			paramMap.put("actions", actions);
+			paramMap.put("actionId", actionId);
+			paramMap.put("roleIdLevelId", roleIdLevelId);
 			String dbException = reportService.updateDataForActions(paramMap);
 			if (dbException == null || dbException.isEmpty() || "null".equalsIgnoreCase(dbException)) {
 				status = "Success";

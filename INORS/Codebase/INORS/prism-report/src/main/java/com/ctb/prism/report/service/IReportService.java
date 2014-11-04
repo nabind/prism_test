@@ -294,7 +294,7 @@ public interface IReportService {
 	 * @param paramMap
 	 * @return
 	 */
-	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap);
+	public List<ReportActionTO> getProductsForEditActions(Map<String, Object> paramMap);
 
 	/**
 	 * Returns a collection of ReportActionTO objects for Actions data.
@@ -302,7 +302,13 @@ public interface IReportService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap);
+	public List<ReportActionTO> getActionsForEditActions(Map<String, Object> paramMap);
+	
+	/**
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ReportActionTO> getActionAccess(Map<String, Object> paramMap);
 
 	/**
 	 * @param paramMap
@@ -310,5 +316,6 @@ public interface IReportService {
 	public String updateDataForActions(Map<String, Object> paramMap);
 
 	public void updateJobTrackingTable(String jobId,String filePath);
+	
 
 }

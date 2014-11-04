@@ -2330,17 +2330,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param paramMap
 	 * @return
 	 */
-	public ReportActionTO getReportDataForEditActions(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: getReportDataForEditActions()");
+	public List<ReportActionTO> getProductsForEditActions(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getProductsForEditActions()");
 		final String reportId = (String) paramMap.get("reportId");
 		final String customerId = (String) paramMap.get("customerId");
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "customerId = " + customerId);
 
-		ReportActionTO reportData = (ReportActionTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		List<ReportActionTO> reportData = (List<ReportActionTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = null;
-				cs = con.prepareCall(IQueryConstants.GET_REPORT_EDIT_ACTIONS);
+				cs = con.prepareCall(IQueryConstants.GET_PRODUCTS_EDIT_ACTIONS);
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(customerId));
 				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
@@ -2349,17 +2349,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}, new CallableStatementCallback<Object>() {
 			public Object doInCallableStatement(CallableStatement cs) {
-				ReportActionTO reportResult = null;
+				List<ReportActionTO> reportResult = new ArrayList<ReportActionTO>();
 				ResultSet reportResultSet = null;
 				try {
 					cs.execute();
 					reportResultSet = (ResultSet) cs.getObject(3);
 					Utils.logError(cs.getString(4));
-					reportResult = parseReportDataForEditAction(reportResultSet);
+					reportResult = parseProductsForEditAction(reportResultSet);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				logger.log(IAppLogger.INFO, "reportResult.getName() = " + reportResult.getName());
+				logger.log(IAppLogger.INFO, "reportResult.size() = " + reportResult.size());
 				return reportResult;
 			}
 
@@ -2370,44 +2370,33 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			 * @return
 			 * @throws SQLException 
 			 */
-			private ReportActionTO parseReportDataForEditAction(ResultSet reportResultSet) throws SQLException {
-				ReportActionTO reportData = new ReportActionTO();
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> productList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
-				reportData.setProductList(productList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> roleList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
-				reportData.setRoleList(roleList);
-				Set<com.ctb.prism.core.transferobject.ObjectValueTO> orgLevelList = new TreeSet<com.ctb.prism.core.transferobject.ObjectValueTO>();
-				reportData.setOrgLevelList(orgLevelList);
+			private List<ReportActionTO> parseProductsForEditAction(ResultSet reportResultSet) throws SQLException {
+				List<ReportActionTO> productList = new ArrayList<ReportActionTO>();
 				while(reportResultSet.next()){
-					reportData.setId(reportResultSet.getString("DB_REPORTID"));
-					reportData.setName(reportResultSet.getString("REPORT_NAME"));
-					productList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("CUST_PROD_ID"), reportResultSet.getString("PRODUCT_NAME")));
-					roleList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ROLEID"), reportResultSet.getString("ROLE_NAME")));
-					orgLevelList.add(new com.ctb.prism.core.transferobject.ObjectValueTO(reportResultSet.getString("ORG_LEVEL"), reportResultSet.getString("ORG_LABEL")));
+					ReportActionTO to = new ReportActionTO();
+					to.setReportId(reportResultSet.getString("DB_REPORTID"));
+					to.setReportName(reportResultSet.getString("REPORT_NAME"));
+					to.setCustProdId(reportResultSet.getString("CUST_PROD_ID"));
+					to.setProductName(reportResultSet.getString("PRODUCT_NAME"));
+					productList.add(to);
 				}
-				for(com.ctb.prism.core.transferobject.ObjectValueTO to : productList){
-					logger.log(IAppLogger.INFO, to.getName() +" - " + to.getValue());
-				}
-				return reportData;
+				logger.log(IAppLogger.INFO, "productList.size() = " + productList.size());
+				return productList;
 			}
 		});
-		logger.log(IAppLogger.INFO, "Exit: getReportDataForEditActions()");
+		logger.log(IAppLogger.INFO, "Exit: getProductsForEditActions()");
 		return reportData;
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.ctb.prism.report.dao.IReportDAO#getActionDataForEditActions(java.util.Map)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getActionsForEditActions(java.util.Map)
 	 */
-	public List<ReportActionTO> getActionDataForEditActions(Map<String, Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: getActionDataForEditActions()");
+	public List<ReportActionTO> getActionsForEditActions(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getActionsForEditActions()");
 		final String reportId = (String) paramMap.get("reportId");
 		final String custProdId = (String) paramMap.get("custProdId");
-		final String roleId = (String) paramMap.get("roleId");
-		final String orgLevel = (String) paramMap.get("orgLevel");
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-		logger.log(IAppLogger.INFO, "roleId = " + roleId);
-		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
 
 		@SuppressWarnings("unchecked")
 		List<ReportActionTO> editDataList = (List<ReportActionTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -2416,10 +2405,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs = con.prepareCall(IQueryConstants.GET_ACTIONS_EDIT_ACTIONS);
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(custProdId));
-				cs.setLong(3, Long.parseLong(roleId));
-				cs.setLong(4, Long.parseLong(orgLevel));
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2428,8 +2415,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				List<ReportActionTO> actionResult = null;
 				try {
 					cs.execute();
-					actionResultSet = (ResultSet) cs.getObject(5);
-					Utils.logError(cs.getString(6));
+					actionResultSet = (ResultSet) cs.getObject(3);
+					Utils.logError(cs.getString(4));
 					actionResult = parseActionDataForEditAction(actionResultSet);
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -2449,9 +2436,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				List<ReportActionTO> actionList = new ArrayList<ReportActionTO>();
 				while(actionResultSet.next()){
 					ReportActionTO to = new ReportActionTO();
-					to.setId(actionResultSet.getString("DB_ACTIONID"));
-					to.setName(actionResultSet.getString("ACTION_NAME"));
-					to.setStatus(actionResultSet.getString("ACTIVATION_STATUS"));
+					to.setActionId(actionResultSet.getString("DB_ACTIONID"));
+					to.setActionName(actionResultSet.getString("ACTION_NAME"));
 					actionList.add(to);
 				}
 				logger.log(IAppLogger.INFO, "actionList.size() = " + actionList.size());
@@ -2459,7 +2445,74 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		});
 		logger.log(IAppLogger.INFO, "editDataList.size() = " + editDataList.size());
-		logger.log(IAppLogger.INFO, "Exit: getActionDataForEditActions()");
+		logger.log(IAppLogger.INFO, "Exit: getActionsForEditActions()");
+		return editDataList;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getActionAccess(java.util.Map)
+	 */
+	public List<ReportActionTO> getActionAccess(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getActionAccess()");
+		final String reportId = (String) paramMap.get("reportId");
+		final String custProdId = (String) paramMap.get("custProdId");
+		final String actionId = (String) paramMap.get("actionId");
+		logger.log(IAppLogger.INFO, "reportId = " + reportId);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+		logger.log(IAppLogger.INFO, "actionId = " + actionId);
+
+		@SuppressWarnings("unchecked")
+		List<ReportActionTO> editDataList = (List<ReportActionTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = null;
+				cs = con.prepareCall(IQueryConstants.GET_ACTION_ACCESS);
+				cs.setLong(1, Long.parseLong(reportId));
+				cs.setLong(2, Long.parseLong(custProdId));
+				cs.setLong(3, Long.parseLong(actionId));
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				ResultSet actionResultSet = null;
+				List<ReportActionTO> actionAccessResult = null;
+				try {
+					cs.execute();
+					actionResultSet = (ResultSet) cs.getObject(4);
+					Utils.logError(cs.getString(5));
+					actionAccessResult = parseActionAccessDataForEditAction(actionResultSet);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "actionAccessResult.size() = " + actionAccessResult.size());
+				return actionAccessResult;
+			}
+
+			/**
+			 * Action Data. It is a Collection of TO.
+			 * 
+			 * @param reportResultSet
+			 * @return
+			 * @throws SQLException 
+			 */
+			private List<ReportActionTO> parseActionAccessDataForEditAction(ResultSet actionResultSet) throws SQLException {
+				List<ReportActionTO> actionAccessList = new ArrayList<ReportActionTO>();
+				while(actionResultSet.next()){
+					ReportActionTO to = new ReportActionTO();
+					to.setRoleId(actionResultSet.getString("ROLEID"));
+					to.setRoleName(actionResultSet.getString("ROLE_NAME"));
+					to.setLevelId(actionResultSet.getString("ORG_LEVEL"));
+					to.setLevelName(actionResultSet.getString("ORG_LABEL"));
+					to.setActivationStatus(actionResultSet.getString("ACTIVATION_STATUS"));
+					actionAccessList.add(to);
+				}
+				logger.log(IAppLogger.INFO, "actionAccessList.size() = " + actionAccessList.size());
+				return actionAccessList;
+			}
+		});
+		logger.log(IAppLogger.INFO, "editDataList.size() = " + editDataList.size());
+		logger.log(IAppLogger.INFO, "Exit: getActionAccess()");
 		return editDataList;
 	}
 
@@ -2471,27 +2524,23 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: updateDataForActions()");
 		final String reportId = (String) paramMap.get("reportId");
 		final String custProdId = (String) paramMap.get("custProdId");
-		final String roleId = (String) paramMap.get("roleId");
-		final String orgLevel = (String) paramMap.get("orgLevel");
-		String[] actions = (String[]) paramMap.get("actions");
+		final String actionId = (String) paramMap.get("actionId");
+		final String roleIdLevelId = (String) paramMap.get("roleIdLevelId");
+		
 		logger.log(IAppLogger.INFO, "reportId = " + reportId);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
-		logger.log(IAppLogger.INFO, "roleId = " + roleId);
-		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
-		for (String s : actions) {
-			logger.log(IAppLogger.INFO, "action = " + s);
-		}
-		final String actionArray = Utils.arrayToSeparatedString(actions, ',');
+		logger.log(IAppLogger.INFO, "actionId = " + actionId);
+		logger.log(IAppLogger.INFO, "roleIdLevelId = " + roleIdLevelId);
+
 		String dbException = (String) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = null;
 				cs = con.prepareCall(IQueryConstants.SP_UPDATE_ACTION_DATA);
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(custProdId));
-				cs.setLong(3, Long.parseLong(roleId));
-				cs.setLong(4, Long.parseLong(orgLevel));
-				cs.setString(5, actionArray);
-				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.setLong(3, Long.parseLong(actionId));
+				cs.setString(4, roleIdLevelId);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2499,8 +2548,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				String query = null;
 				try {
 					cs.execute();
-					query = cs.getString(6);
-					Utils.logError(cs.getString(6));
+					query = cs.getString(5);
+					Utils.logError(cs.getString(5));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

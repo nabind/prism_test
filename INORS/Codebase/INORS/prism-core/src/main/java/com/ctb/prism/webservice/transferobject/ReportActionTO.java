@@ -1,9 +1,6 @@
 package com.ctb.prism.webservice.transferobject;
 
-import java.util.Set;
-
 import com.ctb.prism.core.transferobject.BaseTO;
-import com.ctb.prism.core.transferobject.ObjectValueTO;
 
 /**
  * 
@@ -13,59 +10,109 @@ import com.ctb.prism.core.transferobject.ObjectValueTO;
 public class ReportActionTO extends BaseTO {
 	private static final long serialVersionUID = 1L;
 
-	private String id;
-	private String name;
-	private String status;
-	private Set<ObjectValueTO> productList;
-	private Set<ObjectValueTO> roleList;
-	private Set<ObjectValueTO> orgLevelList;
+	private String reportId;
+	private String reportName;
 
-	public String getId() {
-		return id;
+	private String custProdId;
+	private String productName;
+
+	private String roleId;
+	private String roleName;
+
+	private String levelId;
+	private String levelName;
+
+	private String actionId;
+	private String actionName;
+
+	private String activationStatus;
+
+	public String getReportId() {
+		return reportId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setReportId(String reportId) {
+		this.reportId = reportId;
 	}
 
-	public String getName() {
-		return name;
+	public String getReportName() {
+		return reportName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setReportName(String reportName) {
+		this.reportName = reportName;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getCustProdId() {
+		return custProdId;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setCustProdId(String custProdId) {
+		this.custProdId = custProdId;
 	}
 
-	public Set<ObjectValueTO> getProductList() {
-		return productList;
+	public String getProductName() {
+		return productName;
 	}
 
-	public void setProductList(Set<ObjectValueTO> productList) {
-		this.productList = productList;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
-	public Set<ObjectValueTO> getRoleList() {
-		return roleList;
+	public String getRoleId() {
+		return roleId;
 	}
 
-	public void setRoleList(Set<ObjectValueTO> roleList) {
-		this.roleList = roleList;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
-	public Set<ObjectValueTO> getOrgLevelList() {
-		return orgLevelList;
+	public String getRoleName() {
+		return roleName;
 	}
 
-	public void setOrgLevelList(Set<ObjectValueTO> orgLevelList) {
-		this.orgLevelList = orgLevelList;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(String levelId) {
+		this.levelId = levelId;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
+	}
+
+	public String getActionName() {
+		return actionName;
+	}
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
+	public String getActivationStatus() {
+		return activationStatus;
+	}
+
+	public void setActivationStatus(String activationStatus) {
+		this.activationStatus = activationStatus;
 	}
 
 }
