@@ -74,7 +74,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_REPORT AS
 
   PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_ACTION_ACCESS.DB_REPORTID%TYPE,
                                   P_IN_CUST_PROD_ID   IN DASH_ACTION_ACCESS.CUST_PROD_ID%TYPE,
-                                  P_IN_ACTIONID         IN DASH_ACTION_ACCESS.DB_ACTIONID%TYPE,
+                                  P_IN_ACTIONID       IN DASH_ACTION_ACCESS.DB_ACTIONID%TYPE,
                                   P_IN_ROLE_LEVEL_IDS IN VARCHAR2,
                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
@@ -265,7 +265,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                MENU_SEQ,
                REPORT_SEQ,
                MENUNAME
-          FROM (SELECT RE.DB_REPORTID       ID,
+          FROM (SELECT RE.DB_REPORTID ID,
                        RE.REPORT_DESC,
                        RE.REPORT_TYPE,
                        DMRA.CUST_PROD_ID,
@@ -274,10 +274,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        RE.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        ORG_LABEL,
-                       DMRA.DB_MENUID       MENUID,
+                       DMRA.DB_MENUID MENUID,
                        DMENU.MENU_SEQ,
                        DMRA.REPORT_SEQ,
-                       DMENU.MENU_NAME      MENUNAME
+                       DMENU.MENU_NAME MENUNAME
                   FROM DASH_REPORTS         RE,
                        DASH_MENU_RPT_ACCESS DMRA,
                        DASH_MENUS           DMENU,
@@ -351,7 +351,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                MENU_SEQ,
                REPORT_SEQ,
                MENUNAME
-          FROM (SELECT RE.DB_REPORTID       ID,
+          FROM (SELECT RE.DB_REPORTID ID,
                        RE.REPORT_DESC,
                        RE.REPORT_TYPE,
                        DMRA.CUST_PROD_ID,
@@ -360,10 +360,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        RE.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        ORG_LABEL,
-                       DMRA.DB_MENUID       MENUID,
+                       DMRA.DB_MENUID MENUID,
                        DMENU.MENU_SEQ,
                        DMRA.REPORT_SEQ,
-                       DMENU.MENU_NAME      MENUNAME
+                       DMENU.MENU_NAME MENUNAME
                   FROM DASH_REPORTS         RE,
                        DASH_MENU_RPT_ACCESS DMRA,
                        DASH_MENUS           DMENU,
@@ -441,8 +441,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   
     V_DB_REPORTID DASH_REPORTS.DB_REPORTID%TYPE := 0;
   
-    CURSOR DB_REPORTID_CUR(P_IN_REPORT_NAME       VARCHAR2,
-                           P_IN_REPORT_FOLDER_URI VARCHAR2) IS
+    CURSOR DB_REPORTID_CUR(P_IN_REPORT_NAME VARCHAR2, P_IN_REPORT_FOLDER_URI VARCHAR2) IS
       SELECT DB_REPORTID
         FROM DASH_REPORTS
        WHERE REPORT_NAME = P_IN_REPORT_NAME
@@ -486,32 +485,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
          P_IN_ACTIVATION_STATUS,
          SYSDATE);
     
-      FOR REC_CUST_PROD_ID IN (WITH T AS
-                                  (SELECT P_IN_CUST_PROD_IDS AS TXT FROM DUAL)
-                                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS CUST_PROD_ID
-                                   FROM T
-                                 CONNECT BY LEVEL <=
-                                            LENGTH(REGEXP_REPLACE(TXT,
-                                                                  '[^,]*')) + 1) LOOP
+      FOR REC_CUST_PROD_ID IN (WITH T AS (SELECT P_IN_CUST_PROD_IDS AS TXT
+                                             FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                     '[^,]+',
+                                                     1,
+                                                     LEVEL) AS CUST_PROD_ID
+                                 FROM T
+                               CONNECT BY LEVEL <=
+                                          LENGTH(REGEXP_REPLACE(TXT,
+                                                                '[^,]*')) + 1) LOOP
       
-        FOR REC_ROLE IN (WITH T AS
-                            (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)
-                           SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
-                             FROM T
-                           CONNECT BY LEVEL <=
-                                      LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
+        FOR REC_ROLE IN (WITH T AS (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                               '[^,]+',
+                                               1,
+                                               LEVEL) AS ROLE_NAME
+                           FROM T
+                         CONNECT BY LEVEL <=
+                                    LENGTH(REGEXP_REPLACE(TXT,
+                                                          '[^,]*')) + 1) LOOP
         
-          FOR REC_ORG_NODE_LEVEL IN (WITH T AS
-                                        (SELECT P_IN_ORG_NODE_LEVELS AS TXT
-                                          FROM DUAL)
-                                       SELECT REGEXP_SUBSTR(TXT,
-                                                            '[^,]+',
-                                                            1,
-                                                            LEVEL) AS ORG_NODE_LEVEL
-                                         FROM T
-                                       CONNECT BY LEVEL <=
-                                                  LENGTH(REGEXP_REPLACE(TXT,
-                                                                        '[^,]*')) + 1) LOOP
+          FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_NODE_LEVELS AS TXT
+                                                   FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                           '[^,]+',
+                                                           1,
+                                                           LEVEL) AS ORG_NODE_LEVEL
+                                       FROM T
+                                     CONNECT BY LEVEL <=
+                                                LENGTH(REGEXP_REPLACE(TXT,
+                                                                      '[^,]*')) + 1) LOOP
           
             INSERT INTO DASH_MENU_RPT_ACCESS
               (DB_MENUID,
@@ -567,9 +568,37 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                            P_OUT_STATUS_NUMBER    OUT NUMBER,
                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   
+    V_ACTION_TYPE DASH_RPT_ACTION.ACTION_TYPE%TYPE := '';
+    V_ROLEID      ROLE.ROLEID%TYPE;
   BEGIN
   
     P_OUT_STATUS_NUMBER := 0;
+  
+    IF UPPER(P_IN_REPORT_NAME) = 'MANAGE USERS' THEN
+      V_ACTION_TYPE := 'USR';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE ORGANIZATIONS' THEN
+      V_ACTION_TYPE := 'ORG';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE STUDENTS' THEN
+      V_ACTION_TYPE := 'STD';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE EDUCATION CENTER USERS' THEN
+      V_ACTION_TYPE := 'USR';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE PARENTS' THEN
+      V_ACTION_TYPE := 'PAR';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE REPORTS' THEN
+      V_ACTION_TYPE := 'RPT';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE CONTENT' THEN
+      V_ACTION_TYPE := 'CON';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'RESET PASSWORD' THEN
+      V_ACTION_TYPE := 'RPW';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'GROUP DOWNLOADS' THEN
+      V_ACTION_TYPE := 'GDF';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'GROUP DOWNLOAD FILES' THEN
+      V_ACTION_TYPE := 'GDF';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'GRT/IC FILE DOWNLOAD' THEN
+      V_ACTION_TYPE := 'GDF';
+    ELSIF UPPER(P_IN_REPORT_NAME) = 'STUDENT DATA FILE' THEN
+      V_ACTION_TYPE := 'GDF';
+    END IF;
   
     UPDATE DASH_REPORTS
        SET REPORT_NAME       = P_IN_REPORT_NAME,
@@ -580,35 +609,50 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            UPDATED_DATE_TIME = SYSDATE
      WHERE DB_REPORTID = P_IN_DB_REPORTID;
   
-    DELETE FROM DASH_MENU_RPT_ACCESS WHERE DB_REPORTID = P_IN_DB_REPORTID;
-  
-    FOR REC_CUST_PROD_ID IN (WITH T AS
-                                (SELECT P_IN_CUST_PROD_IDS AS TXT FROM DUAL)
-                               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS CUST_PROD_ID
-                                 FROM T
-                               CONNECT BY LEVEL <=
-                                          LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
+    FOR REC_CUST_PROD_ID IN (WITH T AS (SELECT P_IN_CUST_PROD_IDS AS TXT
+                                           FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                   '[^,]+',
+                                                   1,
+                                                   LEVEL) AS CUST_PROD_ID
+                               FROM T
+                             CONNECT BY LEVEL <=
+                                        LENGTH(REGEXP_REPLACE(TXT,
+                                                              '[^,]*')) + 1) LOOP
     
-      FOR REC_ROLE IN (WITH T AS
-                          (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)
-                         SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
-                           FROM T
-                         CONNECT BY LEVEL <=
-                                    LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
+      DELETE FROM DASH_MENU_RPT_ACCESS
+       WHERE DB_REPORTID = P_IN_DB_REPORTID
+         AND CUST_PROD_ID = REC_CUST_PROD_ID.CUST_PROD_ID;
+    
+      DELETE FROM DASH_ACTION_ACCESS
+       WHERE DB_REPORTID = P_IN_DB_REPORTID
+         AND CUST_PROD_ID = REC_CUST_PROD_ID.CUST_PROD_ID;
+    
+      FOR REC_ROLE IN (WITH T AS (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                             '[^,]+',
+                                             1,
+                                             LEVEL) AS ROLE_NAME
+                         FROM T
+                       CONNECT BY LEVEL <=
+                                  LENGTH(REGEXP_REPLACE(TXT,
+                                                        '[^,]*')) + 1) LOOP
       
-        FOR REC_ORG_NODE_LEVEL IN (WITH T AS
-                                      (SELECT P_IN_ORG_NODE_LEVELS AS TXT
-                                        FROM DUAL)
-                                     SELECT NVL(REGEXP_SUBSTR(TXT,
-                                                              '[^,]+',
-                                                              1,
-                                                              LEVEL),
-                                                -999) AS ORG_NODE_LEVEL
-                                       FROM T
-                                     CONNECT BY LEVEL <=
-                                                LENGTH(REGEXP_REPLACE(TXT,
-                                                                      '[^,]*')) + 1) LOOP
+        FOR REC_ORG_NODE_LEVEL IN (WITH T AS (SELECT P_IN_ORG_NODE_LEVELS AS TXT
+                                                 FROM DUAL)SELECT NVL(REGEXP_SUBSTR(TXT,
+                                                             '[^,]+',
+                                                             1,
+                                                             LEVEL),
+                                               -999) AS ORG_NODE_LEVEL
+                                     FROM T
+                                   CONNECT BY LEVEL <=
+                                              LENGTH(REGEXP_REPLACE(TXT,
+                                                                    '[^,]*')) + 1) LOOP
           IF REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL <> -999 THEN
+          
+            SELECT ROLEID
+              INTO V_ROLEID
+              FROM ROLE
+             WHERE ROLE_NAME = REC_ROLE.ROLE_NAME;
+          
             INSERT INTO DASH_MENU_RPT_ACCESS
               (DB_MENUID,
                DB_REPORTID,
@@ -621,12 +665,43 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
             VALUES
               (P_IN_DB_MENUID,
                P_IN_DB_REPORTID,
-               (SELECT ROLEID FROM ROLE WHERE ROLE_NAME = REC_ROLE.ROLE_NAME),
+               V_ROLEID,
                REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
                REC_CUST_PROD_ID.CUST_PROD_ID,
                P_IN_REPORT_SEQ,
-               'AC',
+               P_IN_ACTIVATION_STATUS,
                SYSDATE);
+          
+            FOR REC_DASH_RPT_ACTION IN (SELECT *
+                                          FROM DASH_RPT_ACTION
+                                         WHERE ACTION_TYPE = V_ACTION_TYPE
+                                            OR ACTION_TYPE = 'GEN'
+                                         ORDER BY ACTION_NAME) LOOP
+              INSERT INTO DASH_ACTION_ACCESS
+                (DB_ACT_ACCESSID,
+                 DB_MENUID,
+                 DB_REPORTID,
+                 DB_ACTIONID,
+                 ROLEID,
+                 ORG_LEVEL,
+                 CUST_PROD_ID,
+                 ACTION_SEQ,
+                 ACTIVATION_STATUS,
+                 CREATED_DATE_TIME)
+              VALUES
+                (SEQ_DASH_ACTION_ACCESS.NEXTVAL,
+                 P_IN_DB_MENUID,
+                 P_IN_DB_REPORTID,
+                 REC_DASH_RPT_ACTION.DB_ACTIONID,
+                 V_ROLEID,
+                 REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
+                 REC_CUST_PROD_ID.CUST_PROD_ID,
+                 REC_DASH_RPT_ACTION.DB_ACTIONID,
+                 P_IN_ACTIVATION_STATUS,
+                 SYSDATE);
+            
+            END LOOP;
+          
           END IF;
         END LOOP;
       END LOOP;
@@ -656,6 +731,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
     DELETE FROM DASH_MESSAGES DM WHERE DM.DB_REPORTID = P_IN_DB_REPORTID;
   
     DELETE FROM DASH_REPORTS WHERE DB_REPORTID = P_IN_DB_REPORTID;
+  
+    DELETE FROM DASH_ACTION_ACCESS WHERE DB_REPORTID = P_IN_DB_REPORTID;
   
     P_OUT_STATUS_NUMBER := 1;
   
@@ -723,8 +800,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
              DAA.ACTIVATION_STATUS
         FROM DASH_ACTION_ACCESS DAA,
              ROLE R,
-             (SELECT TEMP.ORG_LEVEL,
-                     LISTAGG(TEMP.ORG_LABEL, '/') WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+             (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+               GROUP(
+               ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
                 FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
                         FROM ORG_TP_STRUCTURE
                        ORDER BY ORG_LEVEL) TEMP
@@ -742,9 +820,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
   END GET_ACTION_ACCESS;
 
-PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_ACTION_ACCESS.DB_REPORTID%TYPE,
+  PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_ACTION_ACCESS.DB_REPORTID%TYPE,
                                   P_IN_CUST_PROD_ID   IN DASH_ACTION_ACCESS.CUST_PROD_ID%TYPE,
-                                  P_IN_ACTIONID         IN DASH_ACTION_ACCESS.DB_ACTIONID%TYPE,
+                                  P_IN_ACTIONID       IN DASH_ACTION_ACCESS.DB_ACTIONID%TYPE,
                                   P_IN_ROLE_LEVEL_IDS IN VARCHAR2,
                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   BEGIN
@@ -754,19 +832,27 @@ PROCEDURE SP_UPDATE_ACTION_DATA(P_IN_REPORTID       IN DASH_ACTION_ACCESS.DB_REP
        AND CUST_PROD_ID = P_IN_CUST_PROD_ID
        AND DB_ACTIONID = P_IN_ACTIONID;
   
-    FOR REC_ROLE_LEVEL_ID IN (WITH T AS
-                             (SELECT P_IN_ROLE_LEVEL_IDS AS TXT FROM DUAL)
-                            SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
-                              FROM T
-                            CONNECT BY LEVEL <=
-                                       LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
+    FOR REC_ROLE_LEVEL_ID IN (WITH T AS (SELECT P_IN_ROLE_LEVEL_IDS AS TXT
+                                            FROM DUAL)SELECT REGEXP_SUBSTR(TXT,
+                                                    '[^,]+',
+                                                    1,
+                                                    LEVEL) AS ROLE_ID_LEVEL_ID
+                                FROM T
+                              CONNECT BY LEVEL <=
+                                         LENGTH(REGEXP_REPLACE(TXT,
+                                                               '[^,]*')) + 1) LOOP
       UPDATE DASH_ACTION_ACCESS
          SET ACTIVATION_STATUS = 'AC', UPDATED_DATE_TIME = SYSDATE
        WHERE DB_REPORTID = P_IN_REPORTID
          AND CUST_PROD_ID = P_IN_CUST_PROD_ID
-		 AND DB_ACTIONID = P_IN_ACTIONID
-         AND ROLEID = SUBSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, 0, INSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, '-') - 1)
-         AND ORG_LEVEL = SUBSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, INSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, '-') + 1);
+         AND DB_ACTIONID = P_IN_ACTIONID
+         AND ROLEID =
+             SUBSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID,
+                    0,
+                    INSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, '-') - 1)
+         AND ORG_LEVEL =
+             SUBSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID,
+                    INSTR(REC_ROLE_LEVEL_ID.ROLE_ID_LEVEL_ID, '-') + 1);
     END LOOP;
   EXCEPTION
     WHEN OTHERS THEN
