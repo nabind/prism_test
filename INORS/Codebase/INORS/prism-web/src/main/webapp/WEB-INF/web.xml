@@ -9,6 +9,12 @@
 	    <param-name>webAppRootKey</param-name>
 	    <param-value>prism.inors.v.2</param-value>
 	</context-param>
+	
+	<mime-mapping>
+        <extension>pdf</extension>
+        <mime-type>application/pdf</mime-type>
+    </mime-mapping>
+	
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

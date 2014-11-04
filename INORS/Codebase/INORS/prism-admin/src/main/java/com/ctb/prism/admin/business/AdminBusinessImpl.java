@@ -23,6 +23,8 @@ import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.login.dao.ILoginDAO;
 
 /**
@@ -38,6 +40,8 @@ public class AdminBusinessImpl implements IAdminBusiness {
 
 	@Autowired
 	private ILoginDAO loginDAO;
+	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(AdminBusinessImpl.class.getName());
 
 	/*
 	 * (non-Javadoc)
@@ -335,8 +339,12 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	public Map<String, Object> getEducationCenter(final Map<String, Object> paramMap) throws SystemException {
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> eduCentreList = adminDAO.getEducationCenter(paramMap);
-		returnMap.put("eduCentreList", eduCentreList);
-		returnMap.put("state", eduCentreList.get(0).getOther());
+		if(eduCentreList.size() > 0) {
+			returnMap.put("eduCentreList", eduCentreList);
+			returnMap.put("state", eduCentreList.get(0).getOther());
+		} else {
+			logger.log(IAppLogger.INFO, "No Education center available for customer "+ paramMap.get("customerId"));
+		}
 		return returnMap;
 	}
 
