@@ -50,12 +50,12 @@ $(document).ready(function() {
 	}
 	
 	$("#productForAction").on("change", function(event) {
-		//alert("productForAction");
 		populateActionsForEditAction();
+		$("#newAction").change();
 	});
 	
 	$("#newAction").on("change", function(event) {
-		//alert("newAction");
+		$("#actionAccessTable").html('');
 		drawActionAccessMatrix();
 	});
 
@@ -78,8 +78,6 @@ function populateActionsForEditAction() {
 		success : function(data) {
 			unblockUI();
 			populateSingleSelectedOptionsFromObjectValueTO("newAction", data, "actionId", "actionName");
-			//$("#newAction option").change();
-			//$("#newAction option").trigger('update-select-list');
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error1']);
@@ -100,7 +98,6 @@ function populateSingleSelectedOptionsFromObjectValueTO(dropdownId, list, key, v
 			selectCount = selectCount + 1;
 		});
 	}
-	//alert(innerHtml);
 	$("#"+dropdownId).html(innerHtml);
 }
 
@@ -140,6 +137,7 @@ function drawModalForEditActions() {
 		title: 'Edit Actions',
 		//height: 235,
 		//width: 400,
+		minWidth: 360,
 		resizable: true,
 		draggable: true,
 		buttons: {
@@ -159,8 +157,8 @@ function drawModalForEditActions() {
 			}
 		},
 		onOpen: function(){
-			$("input#userRole").change();
-			$("input#userRole").trigger('update-select-list');		
+			// $("input#newAction").change();
+			// $("input#newAction").trigger('update-select-list');		
 		}
 	});
 }
@@ -190,8 +188,6 @@ function drawActionAccessMatrix() {
 function drawActionAccessMatrixTable(data) {
 	var roleMap = makeMapFromData(data, "roleId", "roleName");
 	var levelMap = makeMapFromData(data, "levelId", "levelName");
-	//alert(JSON.stringify(roleMap));
-	//alert(JSON.stringify(levelMap));
 	var tableHtml = "";
 	var headerHtml = "";
 	$.each(roleMap, function(keyR, valueR) {
@@ -201,7 +197,6 @@ function drawActionAccessMatrixTable(data) {
 		headerHtml = '<tr><th>&nbsp;</th>' + headerHtml + '</tr>';
 		tableHtml += headerHtml;
 	}
-	//alert(headerHtml);
 	var bodyHtml = "";
 	$.each(levelMap, function(keyL, valueL) {
 		bodyHtml += '<tr><td>'+valueL+'</td>';
@@ -210,7 +205,6 @@ function drawActionAccessMatrixTable(data) {
 		});
 		bodyHtml += '</tr>';
 	});
-	//alert(bodyHtml);
 	if(bodyHtml.length > 0) {
 		tableHtml += bodyHtml;
 	}
@@ -237,13 +231,11 @@ function makeMapFromData(data, key, value) {
 
 function updateActionsDetails(form, win) {
 	var formData = form.serialize();
-	//alert(JSON.stringify(formData));
 	var reportId = $("#reportIdForAction").val();
 	var custProdId = $("#productForAction").val();
 	var actionId = $("#newAction").val();
 	var roleIdLevelId = $("input[name=actionAccess]:checked").map(function () {return this.value;}).get().join(",");
 	var param = "reportIdForAction=" + reportId + "&productForAction=" + custProdId + "&newAction=" + actionId + "&roleIdLevelId=" + roleIdLevelId;
-	//alert(param);
 	blockUI();
 	$.ajax({
 		type : "GET",
