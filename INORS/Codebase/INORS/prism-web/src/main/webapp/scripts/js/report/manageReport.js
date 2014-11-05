@@ -402,7 +402,19 @@ var row = $("#"+reportId + '_' +reportId);
 					$("input#userRole").trigger('update-select-list');		
 				}
 			});		
-				
+			if(reportType == 'API_LINK' || reportType == 'API_CUSTOM') {
+				$("#editReportType").parent().removeClass("disabled");
+				$("input#reportName").removeClass("disabled");
+				$("input#reportName").live("click",function(e) {
+					$("input#reportName").focus();
+				});
+			} else {
+				$("#editReportType").parent().addClass("disabled");
+				$("input#reportName").addClass("disabled");
+				$("input#reportName").live("click",function(e) {
+					$("input#reportName").blur();
+				});
+			}
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error1']);

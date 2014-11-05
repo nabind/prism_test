@@ -129,7 +129,7 @@
 														<fmt:message var="mngRpt_editRpt" key="manage.reports.edit"/>
 														<c:if test="${not empty actionMap[mngRpt_editRpt]}">
 															<a href="#"	class="button icon-pencil edit-report with-tooltip" title="Edit"
-																reportId="${report.reportId}"></a>
+																reportId="${report.reportId}" reportType="${report.reportType}"></a>
 															<input type="hidden" id="mngRpt_editRpt" value="true"/>
 														</c:if>
 														
@@ -142,16 +142,20 @@
 														
 														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
 														<c:if test="${not empty mngRpt_deleteRpt}">
+														<c:if test="${report.reportType == 'API_LINK' || report.reportType == 'API_CUSTOM'}">
 														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
 																title="Edit Actions"></a>
 															<input type="hidden" id="mngRpt_editActions" value="true"/>
 														</c:if>
+														</c:if>
 														
 														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
 														<c:if test="${not empty mngRpt_deleteRpt}">
+														<c:if test="${report.reportType != 'API_LINK' && report.reportType != 'API_CUSTOM'}">
 															<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
 																title="Delete"></a>
 															<input type="hidden" id="mngRpt_deleteRpt" value="true"/>
+														</c:if>
 														</c:if>
 														
 													</span>
