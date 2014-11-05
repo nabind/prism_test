@@ -614,10 +614,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return boolean
 	 */
 	@CacheEvict(value = "configCache", allEntries=true )
-	public boolean deleteReport(final String reportId) throws SystemException {
+	public boolean deleteReport(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
 		long t1 = System.currentTimeMillis();
-		//com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		boolean status = false;
 		
 		try {
@@ -625,9 +625,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = null;
 						cs = con.prepareCall("{call " + IQueryConstants.DELETE_REPORT + "}");
-						cs.setLong(1, Long.parseLong(reportId));
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.NUMBER);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.setLong(1, Long.parseLong((String)paramMap.get("reportId")));
+						cs.setLong(2, Long.parseLong(loggedinUserTO.getCustomerId()));
+						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
+						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -636,11 +637,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 	        			try {
 							cs.execute();
-							executionStatus = cs.getLong(2);
+							executionStatus = cs.getLong(3);
 							statusTO.setValue(Long.toString(executionStatus));
 							statusTO.setName("");
-							if(cs.getString(3)!= null && cs.getString(3).length() > 0) {
-								logger.log(IAppLogger.ERROR, "Error while deleting report "+ cs.getString(3));
+							if(cs.getString(4)!= null && cs.getString(4).length() > 0) {
+								logger.log(IAppLogger.ERROR, "Error while deleting report "+ cs.getString(4));
 							}
 						} catch (SQLException e) {
 	        				e.printStackTrace();
@@ -1022,6 +1023,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	        			ReportTO to = null;
 	        			try {
 							cs.execute();
+							if(cs.getString(13)!= null && cs.getString(13).length() > 0) {
+								logger.log(IAppLogger.ERROR, "Error while adding a report "+ cs.getString(13));
+							}
 							rsReport = (ResultSet) cs.getObject(12);
 							if(rsReport.next()){
 								to = new ReportTO();

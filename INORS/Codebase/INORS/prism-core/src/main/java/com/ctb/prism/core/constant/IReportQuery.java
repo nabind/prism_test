@@ -62,7 +62,7 @@ public interface IReportQuery {
 	 * @author Joy
 	 * Delete a report
 	 * */
-	public static final String DELETE_REPORT = "PKG_MANAGE_REPORT.SP_DELETE_REPORT(?,?,?)";
+	public static final String DELETE_REPORT = "PKG_MANAGE_REPORT.SP_DELETE_REPORT(?,?,?,?)";
 
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(

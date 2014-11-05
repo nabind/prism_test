@@ -1920,22 +1920,21 @@ public class ReportController{
 	@Secured({ "ROLE_CTB" })
 	@RequestMapping(value = "/deleteReport", method = RequestMethod.GET)
 	public ModelAndView deleteReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView modelAndView = null;
+		logger.log(IAppLogger.INFO, "Enter: ReportController - deleteReport");
+		String status = "Fail";
+		boolean isDeleted = false;
+		
 		String reportId = request.getParameter("reportId");
-		// List<BaseTO> OrgTOs = new ArrayList<BaseTO>();
+		final UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		final Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("reportId", reportId);
 		try {
-			logger.log(IAppLogger.INFO, "Enter: ReportController - deleteReport");
-			String status = "Fail";
-			boolean isDeleted = false;
-			if (reportId != null) {
-				isDeleted = reportService.deleteReport(reportId);
-			}
+			isDeleted = reportService.deleteReport(paramMap);
 			if (isDeleted) {
-				// roleList = adminService.getRoleDetails();
 				status = "Success";
 			}
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
-
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
 		} finally {

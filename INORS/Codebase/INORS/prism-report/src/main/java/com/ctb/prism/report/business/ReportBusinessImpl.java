@@ -578,8 +578,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#deleteReport(java.lang.String)
 	 */
-	public boolean deleteReport(String reportId) throws SystemException {
-		return reportDAO.deleteReport(reportId);
+	public boolean deleteReport(Map<String, Object> paramMap) throws SystemException {
+		return reportDAO.deleteReport(paramMap);
 	}
 
 	/*

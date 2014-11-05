@@ -224,11 +224,11 @@ public class ReportServiceImpl implements IReportService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.report.service.IReportService#deleteReport(java.lang.String )
+	 * @see com.ctb.prism.report.service.IReportService#deleteReport(java.util .Map)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean deleteReport(String reportId) throws SystemException {
-		return reportBusiness.deleteReport(reportId);
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor=SystemException.class)
+	public boolean deleteReport(Map<String, Object> paramMap) throws SystemException {
+		return reportBusiness.deleteReport(paramMap);
 	}
 
 	/*

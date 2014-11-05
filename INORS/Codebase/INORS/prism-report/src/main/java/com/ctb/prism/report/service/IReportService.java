@@ -132,7 +132,7 @@ public interface IReportService {
 	 * @return
 	 * @throws SystemException
 	 */
-	public boolean deleteReport(String reportId) throws SystemException;
+	public boolean deleteReport(Map<String, Object> paramMap) throws SystemException;
 
 	/**
 	 * @param parentReports
