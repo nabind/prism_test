@@ -153,4 +153,6 @@
 	
 	strings['manage.orgs.usercount'] = "<spring:message code='manage.orgs.usercount' javaScriptEscape='true' />";
 	
+	strings['msg.editActions'] = "<spring:message code='msg.editActions' javaScriptEscape='true' />";
+	
 </script>
