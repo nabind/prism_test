@@ -140,8 +140,8 @@
 															<input type="hidden" id="mngRpt_configureRptMsg" value="true"/>
 														</c:if>
 														
-														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
-														<c:if test="${not empty mngRpt_deleteRpt}">
+														<fmt:message var="mngRpt_editActions" key="manage.reports.edit.actions"/>
+														<c:if test="${not empty mngRpt_editActions}">
 														<c:if test="${report.reportType == 'API_LINK' || report.reportType == 'API_CUSTOM'}">
 														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
 																title="Edit Actions"></a>
