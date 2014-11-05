@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 
 import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -134,7 +135,8 @@ public final class CacheKeyUtils {
     public static String encryptedKey(String col) {
     	String hashKey = "";
     	if(col != null) {
-    		hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
+    		//hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
+    		hashKey = DigestUtils.md5DigestAsHex((col + Utils.getContractName()).getBytes());
     		// store the key into queue
     		storeCacheKey(hashKey);
     	}
