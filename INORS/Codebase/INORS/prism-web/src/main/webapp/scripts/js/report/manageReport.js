@@ -385,6 +385,16 @@ var row = $("#"+reportId + '_' +reportId);
 							if ($("#editReportForm").validationEngine('validate')){
 									$("#editReportForm").validationEngine('hide');
 							  updateReportDetails($(".edit-report-form"), win, row);
+							  var editActionsButton = '<a href="#" reportId="'+data[0].reportId+'" reportName="'+data[0].reportName+'" class="button icon-swap with-tooltip confirm edit-actions" title="'+strings['msg.editActions']+'"></a>';
+							  var deleteReportButton = '<a href="#" reportId="'+data[0].reportId+'" reportName="'+data[0].reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>';
+							  if(reportType == 'API_LINK' || reportType == 'API_CUSTOM') {
+								row.find('.delete-Report').remove();
+								row.find('.button-group').append(editActionsButton);
+							  }
+							  if(this.reportType != 'API_LINK' && this.reportType != 'API_CUSTOM') {
+								row.find('.edit-actions').remove();
+								row.find('.button-group').append(deleteReportButton);
+							  }
 							}
 						}
 					}
@@ -696,6 +706,7 @@ $('.delete-Report').live("click", function() {
 		function insertNewDasboardRow(jsonData){
 			var mngRpt_editRpt = $('#mngRpt_editRpt').val();
 			var mngRpt_configureRptMsg = $('#mngRpt_configureRptMsg').val();
+			var mngRpt_editActions = $('#mngRpt_editActions').val();
 			var mngRpt_deleteRpt = $('#mngRpt_deleteRpt').val();
 			var reportContent="";	
 			$.each(jsonData, function () { 
@@ -725,8 +736,13 @@ $('.delete-Report').live("click", function() {
 								if(mngRpt_configureRptMsg == 'true'){
 									reportContent += '<a href="getReportMessageFilter.do?reportId='+this.reportId+'&reportName='+this.reportName+'&reportUrl='+this.reportUrl+'" class="button icon-chat configure-report-message with-tooltip" title="'+strings['msg.configureMassage']+'"></a>';
 								}
+								if(mngRpt_editActions == 'true'){
+									if(this.reportType == 'API_LINK' || this.reportType == 'API_CUSTOM')
+									reportContent += '<a href="#" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-swap with-tooltip confirm edit-actions" title="'+strings['msg.editActions']+'"></a>';
+								}
 								if(mngRpt_deleteRpt == 'true'){
-									reportContent += '<a href="#nogo" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>';
+									if(this.reportType != 'API_LINK' && this.reportType != 'API_CUSTOM')
+									reportContent += '<a href="#" reportId="'+this.reportId+'" reportName="'+this.reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>';
 								}	
 								
 								reportContent +='</span>'
@@ -768,10 +784,15 @@ $('.delete-Report').live("click", function() {
 			return reportRoleDom;
 		}
 		
-		function resetAddReportModal(modalFormIdObj,modalFormId,checkboxId)
-		{
-			modalFormIdObj.find(".reset").val("");
-			enableStaus(modalFormId,checkboxId);
-			
-		}
-		
+
+
+function resetAddReportModal(modalFormIdObj, modalFormId, checkboxId) {
+	$("input#reportName").removeClass("disabled");
+	$("input#reportName").live("click", function(e) {
+		$("input#reportName").focus();
+	});
+	$("#editReportType").removeClass("disabled");
+	$("#editReportType").parent().removeClass("disabled");
+	modalFormIdObj.find(".reset").val("");
+	enableStaus(modalFormId, checkboxId);
+}

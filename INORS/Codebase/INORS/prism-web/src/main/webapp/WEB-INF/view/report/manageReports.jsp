@@ -144,7 +144,7 @@
 														<c:if test="${not empty mngRpt_editActions}">
 														<c:if test="${report.reportType == 'API_LINK' || report.reportType == 'API_CUSTOM'}">
 														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
-																title="Edit Actions"></a>
+																title="<spring:message code="msg.editActions" />"></a>
 															<input type="hidden" id="mngRpt_editActions" value="true"/>
 														</c:if>
 														</c:if>
