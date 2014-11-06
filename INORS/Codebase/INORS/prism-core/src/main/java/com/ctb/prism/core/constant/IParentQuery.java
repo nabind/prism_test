@@ -52,7 +52,7 @@ public interface IParentQuery {
 	public static final String DELETE_ANSWER_DATA = CustomStringUtil.appendString(
 			"DELETE FROM PWD_HINT_ANSWERS WHERE USERID = ?");
 	// Added by Ravi for Manage Profile
-	public static final String UPDATE_USER_DATA = "PKG_MY_ACCOUNT.SP_UPDATE_USER_ACCOUNT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String UPDATE_USER_DATA = "PKG_MY_ACCOUNT.SP_UPDATE_USER_ACCOUNT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	// Query to retrieve list of children of the logged in parent.
 	public static final String SEARCH_CHILDREN = CustomStringUtil.appendString(

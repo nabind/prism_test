@@ -1607,10 +1607,12 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				parentTO.setPassword(String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 			}
 			final String[] questionIdArr = new String[parentTO.getQuestionToList().size()];
+			final String[] answerIdArr = new String[parentTO.getQuestionToList().size()];
 			final String[] ansValArr = new String[parentTO.getQuestionToList().size()];
 			int index = 0;
 			for (QuestionTO questionTo : parentTO.getQuestionToList()) {
 				questionIdArr[index] = String.valueOf(questionTo.getQuestionId());
+				answerIdArr[index] = String.valueOf(questionTo.getAnswerId());
 				ansValArr[index] = String.valueOf(questionTo.getAnswer());
 				index++;
 			}
@@ -1633,6 +1635,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, parentTO.getCity());
 					cs.setString(count++, parentTO.getDisplayName());
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
+					cs.setString(count++, Utils.arrayToSeparatedString(answerIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
 					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
@@ -1644,9 +1647,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(16);
+						executionStatus = cs.getLong(17);
 						statusTO.setValue(Long.toString(executionStatus));
-						statusTO.setErrorMsg(cs.getString(17));
+						statusTO.setErrorMsg(cs.getString(18));
 						Utils.logError(statusTO.getErrorMsg());
 					} catch (SQLException e) {
 						e.printStackTrace();

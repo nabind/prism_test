@@ -36,6 +36,7 @@ CREATE OR REPLACE PACKAGE PKG_MY_ACCOUNT IS
                                    P_IN_CITY             IN USERS.CITY%TYPE,
                                    P_IN_DISPLAY_USERNAME IN USERS.DISPLAY_USERNAME%TYPE,
                                    P_IN_PH_QUESTIONIDS   IN VARCHAR2,
+                                   P_IN_PH_ANSWERIDS     IN VARCHAR2,
                                    P_IN_PH_ANSWER_VALUES IN VARCHAR2,
                                    P_OUT_STATUS_NUMBER   OUT NUMBER,
                                    P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
@@ -226,6 +227,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                                    P_IN_CITY             IN USERS.CITY%TYPE,
                                    P_IN_DISPLAY_USERNAME IN USERS.DISPLAY_USERNAME%TYPE,
                                    P_IN_PH_QUESTIONIDS   IN VARCHAR2,
+                                   P_IN_PH_ANSWERIDS     IN VARCHAR2,
                                    P_IN_PH_ANSWER_VALUES IN VARCHAR2,
                                    P_OUT_STATUS_NUMBER   OUT NUMBER,
                                    P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
@@ -275,7 +277,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
   
     SP_SAVE_PH_ANSWER(P_IN_USERID,
                       P_IN_PH_QUESTIONIDS,
-                      '',
+                      P_IN_PH_ANSWERIDS,
                       P_IN_PH_ANSWER_VALUES,
                       P_OUT_STATUS_PH_ANSWER,
                       P_OUT_EXCEP_ERR_MSG1);
