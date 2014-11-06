@@ -167,6 +167,9 @@ function drawActionAccessMatrix() {
 	var reportId = $("#reportIdForAction").val();
 	var custProdId = $("#productForAction").val();
 	var actionId = $("#newAction").val();
+	if(actionId == null || actionId == "null"){
+		actionId = "0";
+	}
 	var param = "reportId=" + reportId + "&custProdId=" + custProdId + "&actionId=" + actionId;
 	blockUI();
 	$.ajax({
