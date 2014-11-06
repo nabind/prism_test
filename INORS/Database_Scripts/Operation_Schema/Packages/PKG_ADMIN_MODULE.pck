@@ -6,24 +6,24 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
 
   TYPE REF_CURSOR IS REF CURSOR;
 
-  PROCEDURE SP_CREATE_USER(P_IN_USERNAME             IN USERS.USERNAME%TYPE,
-                           P_IN_DISPNAME             IN USERS.DISPLAY_USERNAME%TYPE,
-                           P_IN_EMAILID              IN USERS.EMAIL_ADDRESS%TYPE,
-                           P_IN_USERSTATUS           IN USERS.ACTIVATION_STATUS%TYPE,
-                           P_IN_FIRSTTIME_LOGIN      IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
-                           P_IN_PASSWORD             IN USERS.PASSWORD%TYPE,
-                           P_IN_SALT                 IN USERS.SALT%TYPE,
-                           P_IN_NEW_USER             IN USERS.IS_NEW_USER%TYPE,
-                           P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
-                           P_IN_ORGNODEID            IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                           P_IN_ORG_LVL              IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
-                           P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                           P_IN_ACTIVE_FLAG          IN VARCHAR2,
-                           P_IN_ROLES                IN VARCHAR2,
-                           P_IN_IS_EDU               IN VARCHAR2,
-                           P_OUT_USER_REF_CURSOR     OUT REF_CURSOR,
-                           P_OUT_ROLES_REF_CURSOR    OUT REF_CURSOR,
-                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
+  PROCEDURE SP_CREATE_USER(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME          IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID           IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS        IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN   IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD          IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT              IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER          IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID         IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL           IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                           P_IN_ACTIVE_FLAG       IN VARCHAR2,
+                           P_IN_ROLES             IN VARCHAR2,
+                           P_IN_IS_EDU            IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
   PROCEDURE SP_CREATE_PARENT(P_IN_USERNAME         IN USERS.USERNAME%TYPE,
                              P_IN_DISPNAME         IN USERS.DISPLAY_USERNAME%TYPE,
@@ -47,17 +47,17 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
                              P_OUT_USERID          OUT NUMBER,
                              P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
-  PROCEDURE SP_GET_USER_DETAILS(P_IN_USERNAME           IN USERS.USERNAME%TYPE,
-                                P_OUT_REF_CURSOR        OUT REF_CURSOR,
-                                V_OUT_PASSWORD_EXPIRED  OUT VARCHAR2,
-                                V_OUT_PASSWORD_WARNING  OUT VARCHAR2,
-                                P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2);
+  PROCEDURE SP_GET_USER_DETAILS(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                                P_OUT_REF_CURSOR       OUT REF_CURSOR,
+                                V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
+                                V_OUT_PASSWORD_WARNING OUT VARCHAR2,
+                                P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
-  PROCEDURE SP_GET_EDUUSER_DETAILS(P_IN_USERNAME       IN USERS.USERNAME%TYPE,
-                                   P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                                   V_OUT_PASSWORD_EXPIRED  OUT VARCHAR2,
-                                   V_OUT_PASSWORD_WARNING  OUT VARCHAR2,
-                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+  PROCEDURE SP_GET_EDUUSER_DETAILS(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                                   P_OUT_REF_CURSOR       OUT REF_CURSOR,
+                                   V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
+                                   V_OUT_PASSWORD_WARNING OUT VARCHAR2,
+                                   P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
   PROCEDURE SP_GET_ORG_NODE_LEVEL(P_OUT_CUR_ORG_NODE_LEVEL OUT REF_CURSOR,
                                   P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
@@ -66,7 +66,7 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
                                      P_IN_PASSWORD       IN USERS.PASSWORD%TYPE,
                                      P_OUT_STATUS_NUMBER OUT NUMBER,
                                      P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
-    
+
   PROCEDURE SP_GET_PASSWORD_HISTORY(P_IN_USERNAME       IN USERS.USERNAME%TYPE,
                                     P_IN_LIMIT          IN NUMBER,
                                     P_OUT_REF_CURSOR    OUT REF_CURSOR,
@@ -76,24 +76,24 @@ END PKG_ADMIN_MODULE;
 CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
   ---- ADD ADMIN AND SSO USERS.
-  PROCEDURE SP_CREATE_USER(P_IN_USERNAME             IN USERS.USERNAME%TYPE,
-                           P_IN_DISPNAME             IN USERS.DISPLAY_USERNAME%TYPE,
-                           P_IN_EMAILID              IN USERS.EMAIL_ADDRESS%TYPE,
-                           P_IN_USERSTATUS           IN USERS.ACTIVATION_STATUS%TYPE,
-                           P_IN_FIRSTTIME_LOGIN      IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
-                           P_IN_PASSWORD             IN USERS.PASSWORD%TYPE,
-                           P_IN_SALT                 IN USERS.SALT%TYPE,
-                           P_IN_NEW_USER             IN USERS.IS_NEW_USER%TYPE,
-                           P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
-                           P_IN_ORGNODEID            IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                           P_IN_ORG_LVL              IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
-                           P_IN_CUST_PROD_ID         IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                           P_IN_ACTIVE_FLAG          IN VARCHAR2,
-                           P_IN_ROLES                IN VARCHAR2,
-                           P_IN_IS_EDU               IN VARCHAR2,
-                           P_OUT_USER_REF_CURSOR     OUT REF_CURSOR,
-                           P_OUT_ROLES_REF_CURSOR    OUT REF_CURSOR,
-                           P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
+  PROCEDURE SP_CREATE_USER(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME          IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID           IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS        IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN   IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD          IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT              IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER          IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID         IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL           IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                           P_IN_ACTIVE_FLAG       IN VARCHAR2,
+                           P_IN_ROLES             IN VARCHAR2,
+                           P_IN_IS_EDU            IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   
     INCOUNT   NUMBER := 0;
     USERSEQID USERS.USERID%TYPE := 0;
@@ -151,9 +151,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            SYSDATE);
       ELSIF P_IN_IS_EDU = 'Y' THEN
         INSERT INTO EDU_CENTER_USER_LINK
-          (EDU_CENTERID, USERID)
+          (EDU_CENTERID, USERID, CUST_PROD_ID)
         VALUES
-          (P_IN_ORGNODEID, USERSEQID);
+          (P_IN_ORGNODEID, USERSEQID, P_IN_CUST_PROD_ID);
       END IF;
     
       FOR I IN (SELECT ROLEID
@@ -178,9 +178,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
         (PWD_HISTORYID, USERID, PASSWORD, CREATED_DATE_TIME)
       VALUES
         (SEQ_PASSWORD_HISTORY.NEXTVAL, USERSEQID, P_IN_PASSWORD, SYSDATE);
-        
-      PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(
-                USERSEQID, P_OUT_USER_REF_CURSOR,P_OUT_ROLES_REF_CURSOR,P_OUT_EXCEP_ERR_MSG);
+    
+      PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(USERSEQID,
+                                                   P_OUT_USER_REF_CURSOR,
+                                                   P_OUT_ROLES_REF_CURSOR,
+                                                   P_OUT_EXCEP_ERR_MSG);
     
     END IF;
   
@@ -395,18 +397,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
   -- SP_GET_USER_DETAILS
   -- THIS REQURIED DURING LOGIN AND FETCH DEFAULT CUST PROD ID
-  PROCEDURE SP_GET_USER_DETAILS(P_IN_USERNAME           IN USERS.USERNAME%TYPE,
-                                P_OUT_REF_CURSOR        OUT REF_CURSOR,
-                                V_OUT_PASSWORD_EXPIRED  OUT VARCHAR2,
-                                V_OUT_PASSWORD_WARNING  OUT VARCHAR2,
-                                P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2) IS
- 
-    V_PASSWORD_EXPIRY NUMBER:=0;
-    V_PASSWORD_WARNING NUMBER:=0;
+  PROCEDURE SP_GET_USER_DETAILS(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                                P_OUT_REF_CURSOR       OUT REF_CURSOR,
+                                V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
+                                V_OUT_PASSWORD_WARNING OUT VARCHAR2,
+                                P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
+  
+    V_PASSWORD_EXPIRY    NUMBER := 0;
+    V_PASSWORD_WARNING   NUMBER := 0;
     V_LAST_PASSWORD_DATE PASSWORD_HISTORY.CREATED_DATE_TIME%TYPE;
-    
- BEGIN    
-        
+  
+  BEGIN
+  
     OPEN P_OUT_REF_CURSOR FOR
     
       SELECT A.*
@@ -422,7 +424,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                      USERS.EMAIL_ADDRESS EMAIL,
                      OND.ORG_MODE,
                      CPL.CUST_PROD_ID DEFAULT_CUST_PROD_ID,
-                     DENSE_RANK() OVER(PARTITION BY USERS.USERID ORDER BY P.PRODUCT_SEQ DESC) AS MAX_VAL                    
+                     DENSE_RANK() OVER(PARTITION BY USERS.USERID ORDER BY P.PRODUCT_SEQ DESC) AS MAX_VAL
                 FROM USERS USERS,
                      ORG_USERS ORG,
                      ORG_NODE_DIM OND,
@@ -444,38 +446,37 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                  AND CPL.PRODUCTID = P.PRODUCTID
                  AND ADMIN.ADMINID = CPL.ADMINID) A
        WHERE A.MAX_VAL = 1;
+  
+    SELECT DB_PROPERY_VALUE
+      INTO V_PASSWORD_EXPIRY
+      FROM DASH_CONTRACT_PROP
+     WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
+  
+    SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)), TRUNC(sysdate))
+      INTO V_LAST_PASSWORD_DATE
+      FROM PASSWORD_HISTORY PH, USERS
+     WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
+       AND USERS.USERID = PH.USERID;
+  
+    SELECT CASE
+             WHEN trunc(sysdate) >= V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
+              'TRUE'
+             ELSE
+              'FALSE'
+           END
+      INTO V_OUT_PASSWORD_EXPIRED
+      FROM DUAL;
+  
+    IF V_OUT_PASSWORD_EXPIRED = 'FALSE' THEN
     
       SELECT DB_PROPERY_VALUE
-        INTO V_PASSWORD_EXPIRY
+        INTO V_PASSWORD_WARNING
         FROM DASH_CONTRACT_PROP
-       WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
-       
-      SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)),TRUNC(sysdate))
-        INTO V_LAST_PASSWORD_DATE
-        FROM PASSWORD_HISTORY PH, USERS
-       WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
-         AND USERS.USERID = PH.USERID;   
-
+       WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
+    
       SELECT CASE
-               WHEN trunc(sysdate) >=
-                    V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
-                'TRUE'
-               ELSE
-                'FALSE'
-             END
-        INTO V_OUT_PASSWORD_EXPIRED
-        FROM DUAL;
-         
-     
-    IF V_OUT_PASSWORD_EXPIRED = 'FALSE' THEN
-       
-       SELECT DB_PROPERY_VALUE
-         INTO V_PASSWORD_WARNING
-         FROM DASH_CONTRACT_PROP
-        WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
-        
-        SELECT CASE
-               WHEN (trunc(sysdate) > (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING )) THEN
+               WHEN (trunc(sysdate) >
+                    (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING)) THEN
                 'TRUE'
                ELSE
                 'FALSE'
@@ -484,8 +485,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
         FROM DUAL;
     ELSE
       V_OUT_PASSWORD_WARNING := 'TRUE';
-    END IF;   
-        
+    END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
@@ -494,15 +494,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
   -- SP_GET_EDUUSER_DETAILS
   -- THIS REQURIED DURING LOGIN FOR EDU CENTER USER AND FETCH DEFAULT CUST PROD ID
-  PROCEDURE SP_GET_EDUUSER_DETAILS(P_IN_USERNAME       IN USERS.USERNAME%TYPE,
-                                   P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                                   V_OUT_PASSWORD_EXPIRED  OUT VARCHAR2,
-                                   V_OUT_PASSWORD_WARNING  OUT VARCHAR2,
-                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  PROCEDURE SP_GET_EDUUSER_DETAILS(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                                   P_OUT_REF_CURSOR       OUT REF_CURSOR,
+                                   V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
+                                   V_OUT_PASSWORD_WARNING OUT VARCHAR2,
+                                   P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   
-   V_PASSWORD_EXPIRY NUMBER:=0;
-   V_PASSWORD_WARNING NUMBER:=0;
-   V_LAST_PASSWORD_DATE PASSWORD_HISTORY.CREATED_DATE_TIME%TYPE;
+    V_PASSWORD_EXPIRY    NUMBER := 0;
+    V_PASSWORD_WARNING   NUMBER := 0;
+    V_LAST_PASSWORD_DATE PASSWORD_HISTORY.CREATED_DATE_TIME%TYPE;
   
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
@@ -524,60 +524,55 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
          AND USERS.CUSTOMERID = EC.CUSTOMERID
          AND EC.EDU_CENTERID = EL.EDU_CENTERID
          AND EL.USERID = USERS.USERID;
-         
-         
-         SELECT DB_PROPERY_VALUE
-        INTO V_PASSWORD_EXPIRY
-        FROM DASH_CONTRACT_PROP
-       WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
-
-       
-      SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)),TRUNC(SYSDATE))
-        INTO V_LAST_PASSWORD_DATE
-        FROM PASSWORD_HISTORY PH, USERS
-       WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
-         AND USERS.USERID = PH.USERID;   
-
-      SELECT CASE
-               WHEN trunc(sysdate) >=
-                    V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
-                'TRUE'
-               ELSE
-                'FALSE'
-             END
-        INTO V_OUT_PASSWORD_EXPIRED
-        FROM DUAL;
-
-         
-     
+  
+    SELECT DB_PROPERY_VALUE
+      INTO V_PASSWORD_EXPIRY
+      FROM DASH_CONTRACT_PROP
+     WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
+  
+    SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)), TRUNC(SYSDATE))
+      INTO V_LAST_PASSWORD_DATE
+      FROM PASSWORD_HISTORY PH, USERS
+     WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
+       AND USERS.USERID = PH.USERID;
+  
+    SELECT CASE
+             WHEN trunc(sysdate) >= V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
+              'TRUE'
+             ELSE
+              'FALSE'
+           END
+      INTO V_OUT_PASSWORD_EXPIRED
+      FROM DUAL;
+  
     IF V_OUT_PASSWORD_EXPIRED = 'FALSE' THEN
-       
-       SELECT DB_PROPERY_VALUE
-         INTO V_PASSWORD_WARNING
-         FROM DASH_CONTRACT_PROP
-        WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
-
-        
-        SELECT CASE
-               WHEN (trunc(sysdate) > (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING )) THEN
+    
+      SELECT DB_PROPERY_VALUE
+        INTO V_PASSWORD_WARNING
+        FROM DASH_CONTRACT_PROP
+       WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
+    
+      SELECT CASE
+               WHEN (trunc(sysdate) >
+                    (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING)) THEN
                 'TRUE'
                ELSE
                 'FALSE'
              END
         INTO V_OUT_PASSWORD_WARNING
         FROM DUAL;
-
+    
     ELSE
       V_OUT_PASSWORD_WARNING := 'TRUE';
-
-    END IF;   
+    
+    END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
       ROLLBACK;
   END SP_GET_EDUUSER_DETAILS;
-  
+
   PROCEDURE SP_SAVE_PASSWORD_HISTORY(P_IN_USERID         IN USERS.USERID%TYPE,
                                      P_IN_PASSWORD       IN USERS.PASSWORD%TYPE,
                                      P_OUT_STATUS_NUMBER OUT NUMBER,
