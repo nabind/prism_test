@@ -533,7 +533,12 @@ $(document).ready(function() {
 			unblockUI();
 			$.modal.alert(strings['script.user.useridStartNumber']);
 		}*/ else {
-		var dataUrl = form.serialize()+'&AdminYear='+$("#AdminYear").val()+'&purpose='+ $("#purpose").val()+'&eduCenterId='+ $("#eduCenterId").val();
+			var custProdId = $('#AdminYear').val();
+			if(custProdId == null || custProdId == "null"){
+				custProdId = "0";
+			}
+			var dataUrl = form.serialize()+'&AdminYear='+custProdId+'&purpose='+ $("#purpose").val()+'&eduCenterId='+ $("#eduCenterId").val();
+			//alert(dataUrl);
 		$.ajax({
 			type : "POST",
 			url : 'addNewUser.do',

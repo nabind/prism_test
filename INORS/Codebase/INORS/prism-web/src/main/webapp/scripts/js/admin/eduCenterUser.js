@@ -94,6 +94,7 @@ $(document).ready(function() {
 			$(".addressContainer #userCountry").val($(this).siblings(".select-value").text());	
           //alert($(".addressContainer #userCountry").val());			
 	});
+	showHideJspElements();
 });
 
 	function openUserModaltoAdd(tenantId,orgLevel) {	

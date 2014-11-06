@@ -155,4 +155,8 @@
 	
 	strings['msg.editActions'] = "<spring:message code='msg.editActions' javaScriptEscape='true' />";
 	
+	strings['manage.edu.center.users.edit.user'] = "<spring:message code='manage.edu.center.users.edit.user' javaScriptEscape='true' />";
+	strings['manage.edu.center.users.login.as.user'] = "<spring:message code='manage.edu.center.users.login.as.user' javaScriptEscape='true' />";
+	strings['manage.edu.center.users.delete.user'] = "<spring:message code='manage.edu.center.users.delete.user' javaScriptEscape='true' />";
+	
 </script>

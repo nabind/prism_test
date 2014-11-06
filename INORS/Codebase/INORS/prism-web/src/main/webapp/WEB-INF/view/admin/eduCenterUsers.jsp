@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
@@ -12,6 +13,7 @@
 					<div class="report-panel-content panel-content linen">
 	<input type="hidden" name="educationTab" id="educationTab" value="educationUserTab">	
 	<input type="hidden" name="purpose" id="purpose" value="eduCenterUsers" />				
+	<input type="hidden" name="AdminYear" id="AdminYear" value="<%=request.getSession().getAttribute("defaultCustProdId")%>" />				
 	<div class="scrollable manage-message" style="min-height: 585px; color: #666">
 		<div
 			class="panel-control panel-control-report align-right padding-right"></div>
@@ -61,6 +63,8 @@
 		<!-- <div id="eduCenterUsersDetails"></div> -->
 					<div class="panel-content linen">
 						<div class="panel-control align-right report-layout rounded-border">
+							<fmt:message var="EDU_SEARCH_USER" key="manage.edu.center.users.search.user"  />
+							<c:if test="${not empty actionMap[EDU_SEARCH_USER]}">
 							<span class="input search-input"> 
 							<input type="text"
 								name="searchUser" id="searchUser"
@@ -71,8 +75,11 @@
 								class="button icon-search compact" id="search_icon"
 								param="search_icon_user"></a>
 							</span>
+							</c:if>
 
 							<sec:authorize ifNotGranted="ROLE_SSO">
+							<fmt:message var="EDU_ADD_USER" key="manage.edu.center.users.add.user"  />
+							<c:if test="${not empty actionMap[EDU_ADD_USER]}">
 								<a id="addUser"
 									tenantName=""
 									tenantId=""
@@ -81,6 +88,7 @@
 										class="icon-add-user"></span>
 								</span> <spring:message code="label.addEducationCenterUser" />
 								</a>
+							</c:if>
 							</sec:authorize>
 
 						</div>
@@ -96,10 +104,16 @@
 							<div id="userTable"
 								class="report-container tabs-content padding-small"
 								style="height: 450px">
-								<div id="last_msg_loader" height="140"
-									style="position: relative; left: 0px; z-index: 1"></div>
-								<input type="hidden" name="last_user_tenant"
-									id="last_user_tenant" value="">
+								<div id="last_msg_loader" height="140" style="position: relative; left: 0px; z-index: 1"></div>
+								<input type="hidden" name="last_user_tenant" id="last_user_tenant" value="">
+
+								<fmt:message var="EDU_EDIT_USER" key="manage.edu.center.users.edit.user"  />
+								<input type="hidden" id="EDU_EDIT_USER" value="${actionMap[EDU_EDIT_USER]}" />
+								<fmt:message var="EDU_LOGIN_AS" key="manage.edu.center.users.login.as.user"  />
+								<input type="hidden" id="EDU_LOGIN_AS" value="${actionMap[EDU_LOGIN_AS]}" />
+								<fmt:message var="EDU_DELETE_USER" key="manage.edu.center.users.delete.user"  />
+								<input type="hidden" id="EDU_DELETE_USER" value="${actionMap[EDU_DELETE_USER]}" />
+
 								<table class="simple-table responsive-table" id="report-list">
 
 									<thead>

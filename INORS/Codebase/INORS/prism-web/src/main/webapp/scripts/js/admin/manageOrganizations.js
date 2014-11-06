@@ -369,6 +369,21 @@ function resetJspElements(data){
 	}else{
 		$("#MANAGE_ORGS_USER_COUNT").val("");
 	}
+	if(strings['manage.edu.center.users.edit.user'] == data['Manage Education Center Users Edit User']){
+		$("#EDU_EDIT_USER").val(data['Manage Education Center Users Edit User']);
+	}else{
+		$("#EDU_EDIT_USER").val("");
+	}
+	if(strings['manage.edu.center.users.login.as.user'] == data['Manage Education Center Users Login As User']){
+		$("#EDU_LOGIN_AS").val(data['Manage Education Center Users Login As User']);
+	}else{
+		$("#EDU_LOGIN_AS").val("");
+	}
+	if(strings['manage.edu.center.users.delete.user'] == data['Manage Education Center Users Delete User']){
+		$("#EDU_DELETE_USER").val(data['Manage Education Center Users Delete User']);
+	}else{
+		$("#EDU_DELETE_USER").val("");
+	}
 	showHideJspElements();
 }
 
@@ -377,6 +392,21 @@ function showHideJspElements(){
 		$("#th_MANAGE_ORGS_USER_COUNT").show();
 	} else {
 		$("#th_MANAGE_ORGS_USER_COUNT").hide();
+	}
+	if ($("#EDU_EDIT_USER").val() != strings['manage.edu.center.users.edit.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
+		$('.icon-pencil').hide();
+	} else {
+		$('.icon-pencil').show();
+	}
+	if ($("#EDU_LOGIN_AS").val() != strings['manage.edu.center.users.login.as.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
+		$('.icon-users').hide();
+	} else {
+		$('.icon-users').show();
+	}
+	if ($("#EDU_DELETE_USER").val() != strings['manage.edu.center.users.delete.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
+		$('.icon-trash').hide();
+	} else {
+		$('.icon-trash').show();
 	}
 }
 

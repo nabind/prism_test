@@ -1155,7 +1155,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.setLong(9, Long.valueOf(customerId));
 				//10
 				cs.setLong(11, Long.valueOf(orgLevel));
-				//12
+				cs.setLong(12, Long.valueOf(adminYear));
 				cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 				cs.setString(14, roles.toString());
 				//15
@@ -1164,11 +1164,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.registerOutParameter(18, oracle.jdbc.OracleTypes.VARCHAR);
 				if (IApplicationConstants.PURPOSE.equals(purpose)) {
 					cs.setLong(10, Long.valueOf(eduCenterId));
-					cs.setLong(12, 0L);
 					cs.setString(15, IApplicationConstants.FLAG_Y);
 				} else {
 					cs.setLong(10, Long.valueOf(tenantId));
-					cs.setLong(12, Long.valueOf(adminYear));
 					cs.setString(15, IApplicationConstants.FLAG_N);
 					
 				}

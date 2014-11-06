@@ -483,6 +483,7 @@
 			$(".headerSortDown").removeClass("headerSortDown");
 			$(".headerSortUp").removeClass("headerSortUp");
 			setLastRowId ($("#last_user_tenant"));
+			showHideJspElements();
 		}
 		
 		// ======================== CLOSE ALL OPEN MENUS - WHILE OPENING NEW =====================
