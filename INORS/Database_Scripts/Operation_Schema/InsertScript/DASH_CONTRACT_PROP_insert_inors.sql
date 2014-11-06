@@ -10,3 +10,5 @@ insert into DASH_CONTRACT_PROP(DB_PROPERTYID,DB_PROPERTY_NAME,DB_PROPERY_VALUE,S
 values(SEQ_DASH_CONTRACT_PROP.NEXTVAL,'aws.inors.cacheS3','Cache_Keys/INORS/',null);
 insert into DASH_CONTRACT_PROP(DB_PROPERTYID,DB_PROPERTY_NAME,DB_PROPERY_VALUE,SSO_SOURCE)
 values(SEQ_DASH_CONTRACT_PROP.NEXTVAL,'password.history.day','3',null);
+insert into dash_contract_prop(db_propertyid,db_property_name,db_propery_value,SSO_SOURCE)
+values (seq_dash_contract_prop.nextval,'static.pdf.location','ISTEPREPORTS/qa',null);
