@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -157,12 +159,16 @@ public class CommonController extends BaseDAO {
 	 * @return
 	 * @throws ServletException
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/acsipdf", method=RequestMethod.GET)
 	public ModelAndView acsiPdf(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException {
 		OutputStream os = null;
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
 		try {
-			String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
+			propertyMap=(Map<String,Object>)req.getSession().getAttribute("propertyMap");
+			//String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
+			String fileName = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + req.getParameter("pdfFileName");
 			String userType = req.getParameter("userType");
 			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading pdf, user type: "
 					, userType, "file name : ", fileName));
@@ -172,7 +178,7 @@ public class CommonController extends BaseDAO {
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			
 			if(userType != null && userType.equals(currentOrg)) {
-				File file = null;
+				/*File file = null;
 				file = new File(fileName);
 		
 				byte[] pdf = null;
@@ -187,14 +193,18 @@ public class CommonController extends BaseDAO {
 			
 					os = res.getOutputStream();
 					os.write(pdf);
-					/*for (int i = 0; i < pdf.length; i++) {
+					for (int i = 0; i < pdf.length; i++) {
 						os.write(pdf[i]);
-					}*/
+					}
 					os.flush();
 				} else {
 					logger.log(IAppLogger.DEBUG, "PDF file not present is the specified location");
 					return new ModelAndView("error/error");
-				}
+				}*/
+				logger.log(IAppLogger.DEBUG, "PDF file "+ fileName + " is getting downloaded from S3");
+				byte[] data =repositoryService.getAssetBytes(fileName);	
+				// Download the file
+				FileUtil.browserDownload(res, data, FileUtil.getFileNameFromFilePath(fileName));
 			} else {
 				logger.log(IAppLogger.DEBUG, "User does not have acces to view this PDF");
 				return new ModelAndView("error/error");
@@ -204,6 +214,7 @@ public class CommonController extends BaseDAO {
 			return new ModelAndView("error/error");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
+			logger.log(IAppLogger.DEBUG, "PDF file not present is the specified location");
 			return new ModelAndView("error/error");
 		} finally {
 			IOUtils.closeQuietly(os);
