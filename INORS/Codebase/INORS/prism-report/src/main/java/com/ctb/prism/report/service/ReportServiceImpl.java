@@ -108,7 +108,14 @@ public class ReportServiceImpl implements IReportService {
 	 * @see com.ctb.prism.report.service.IReportService#removeCache()
 	 */
 	public void removeCache() {
-		reportBusiness.removeCache();
+		//reportBusiness.removeCache();
+		try {
+			removeCache("inors");
+			removeCache("tasc");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	
 	/*

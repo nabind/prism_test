@@ -24,7 +24,7 @@
 	<http pattern="/clearAllCache.do" security="none" />
 	<http pattern="/clearContractCache.do" security="none" />
 	<http pattern="/clearConfigCache.do" security="none" />
-	<http pattern="/icDownload.do" security="none" />
+	<!-- <http pattern="/icDownload.do" security="none" /> -->
 	<http pattern="/landing*" security="none" />
 	<http pattern="/getLoginMessage.do" security="none" />
 	<http pattern="/displayAssest.do" security="none" />
