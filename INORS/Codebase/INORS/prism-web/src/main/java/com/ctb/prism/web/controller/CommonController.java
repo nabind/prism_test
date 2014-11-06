@@ -211,6 +211,7 @@ public class CommonController extends BaseDAO {
 			}
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "", e);
+			logger.log(IAppLogger.DEBUG, "PDF file not present is the specified location");
 			return new ModelAndView("error/error");
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
