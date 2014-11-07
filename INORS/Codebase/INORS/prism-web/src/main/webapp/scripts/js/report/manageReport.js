@@ -237,29 +237,33 @@ function updateActionsDetails(form, win) {
 	var reportId = $("#reportIdForAction").val();
 	var custProdId = $("#productForAction").val();
 	var actionId = $("#newAction").val();
-	var roleIdLevelId = $("input[name=actionAccess]:checked").map(function () {return this.value;}).get().join(",");
-	var param = "reportIdForAction=" + reportId + "&productForAction=" + custProdId + "&newAction=" + actionId + "&roleIdLevelId=" + roleIdLevelId;
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : 'updateActions.do',
-		data : param,
-		dataType: 'json',
-		cache:false,
-		success : function(data) {
-			unblockUI();
-			win.closeModal(); 
-			if(data.status == 'Success') {
-				$.modal.alert(strings['script.report.actionsSavedSuccessfully']);
-			} else {
+	if(actionId == null || actionId == "null") {
+		$.modal.alert(strings['script.report.noActionFound']);
+	} else {
+		var roleIdLevelId = $("input[name=actionAccess]:checked").map(function () {return this.value;}).get().join(",");
+		var param = "reportIdForAction=" + reportId + "&productForAction=" + custProdId + "&newAction=" + actionId + "&roleIdLevelId=" + roleIdLevelId;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : 'updateActions.do',
+			data : param,
+			dataType: 'json',
+			cache:false,
+			success : function(data) {
+				unblockUI();
+				win.closeModal(); 
+				if(data.status == 'Success') {
+					$.modal.alert(strings['script.report.actionsSavedSuccessfully']);
+				} else {
+					$.modal.alert(strings['script.user.saveError']);
+				}
+			},
+			error : function(data) {
+				unblockUI();
 				$.modal.alert(strings['script.user.saveError']);
 			}
-		},
-		error : function(data) {
-			unblockUI();
-			$.modal.alert(strings['script.user.saveError']);
-		}
-	});
+		});
+	}
 }
 
 //===================== Manage Report screen ===========================
