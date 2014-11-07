@@ -1,13 +1,11 @@
 package com.ctb.prism.inors.business;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.ctb.prism.admin.dao.IAdminDAO;
 import com.ctb.prism.admin.transferobject.ObjectValueTO;
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -64,6 +63,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 	@Autowired
 	private IReportBusiness reportBusiness;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
 
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -363,11 +365,29 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				jobLog = "No File to download";
 				logger.log(IAppLogger.INFO, jobLog);
 			}
+			// Upload File to S3
+			try {
+				String envString = to.getEnvString().toUpperCase();
+				logger.log(IAppLogger.INFO, "envString = " + envString);
+				String keyWithFileName = "/" + envString + "/" + zipFileName;
+				logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
+				String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
+				logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
+				File file = new File(zipFileName);
+				repositoryService.uploadAsset(keyWithoutFileName, file);
+				logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
+				// TODO : Delete File from Mount Location
+			} catch (Exception e) {
+				jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+				jobLog = "Invalid Contract Name or S3 Upload issue";
+				logger.log(IAppLogger.WARN, jobLog);
+			}
 		} else {
 			jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 			jobLog = "Invalid REQUEST_DETAILS Field";
 			logger.log(IAppLogger.WARN, jobLog);
 		}
+		
 		to.setJobLog(jobLog);
 		to.setJobStatus(jobStatus);
 		if (fileSize == null) {

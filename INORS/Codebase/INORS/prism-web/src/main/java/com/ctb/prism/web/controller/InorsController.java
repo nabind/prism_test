@@ -799,48 +799,8 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String json = (String) request.getParameter("json");
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
-		/*GroupDownloadTO to = new GroupDownloadTO();
-		String button = (String) request.getParameter("button");
-		String testAdministrationVal = (String) request.getParameter("testAdministrationVal");
-		String testAdministrationText = (String) request.getParameter("testAdministrationText");
-		String testProgram = (String) request.getParameter("testProgram");
-		String district = (String) request.getParameter("district");
-		String school = (String) request.getParameter("school");
-		String klass = (String) request.getParameter("klass");
-		String grade = (String) request.getParameter("grade");
-		String students = (String) request.getParameter("students");
-		String groupFile = (String) request.getParameter("groupFile");
-		String collationHierarchy = (String) request.getParameter("collationHierarchy");
-		String fileName = (String) request.getParameter("fileName");
-		String email = (String) request.getParameter("email");
-
-		logger.log(IAppLogger.INFO, "button=" + button);
-		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
-		logger.log(IAppLogger.INFO, "testAdministrationText=" + testAdministrationText);
-		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
-		logger.log(IAppLogger.INFO, "district=" + district);
-		logger.log(IAppLogger.INFO, "school=" + school);
-		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + grade);
-		logger.log(IAppLogger.INFO, "students=" + students);
-		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
-		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
-		logger.log(IAppLogger.INFO, "fileName=" + fileName);
-		logger.log(IAppLogger.INFO, "email=" + email);
-		
-		to.setButton(button);
-		to.setTestAdministrationVal(testAdministrationVal);
-		to.setTestAdministrationText(testAdministrationText);
-		to.setTestProgram(testProgram);
-		to.setDistrict(district);
-		to.setSchool(school);
-		to.setKlass(klass);
-		to.setGrade(grade);
-		to.setStudents(students);
-		to.setGroupFile(groupFile);
-		to.setCollationHierarchy(collationHierarchy);
-		to.setFileName(fileName);
-		to.setEmail(email);*/
+		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
+		to.setEnvString((String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION));
 
 		String handler = "";
 		String type = "";
@@ -873,16 +833,14 @@ public class InorsController {
 			messageProducer.sendJobForProcessing(jobTrackingId);
 			// inorsService.batchPDFDownload(jobTrackingId);
 			
-			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
-					jobTrackingId, "\"}");
+			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
 			logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
 			logger.log(IAppLogger.INFO, "Exit: groupDownloadFunction()");
 			return jsonString;
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage());
 			handler = "error";
-			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"",
-					jobTrackingId, "\"}");
+			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
 			return jsonString;
 		}
 	}

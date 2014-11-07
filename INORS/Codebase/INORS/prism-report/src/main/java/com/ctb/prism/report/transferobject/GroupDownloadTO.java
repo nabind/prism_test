@@ -38,6 +38,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String jobStatus;
 	private String fileSize;
 	private String jobId;
+	private String envString;
 
 	/**
 	 * @return the button
@@ -412,7 +413,15 @@ public class GroupDownloadTO extends BaseTO {
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
-	
+
+	public String getEnvString() {
+		return envString;
+	}
+
+	public void setEnvString(String envString) {
+		this.envString = envString;
+	}
+
 	private String string;
 	public String getString() {
 		this.string = CustomStringUtil.appendString(school, klass, grade, testProgram, 

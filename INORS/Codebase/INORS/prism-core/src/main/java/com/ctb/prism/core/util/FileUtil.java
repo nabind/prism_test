@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
-
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
@@ -453,6 +452,23 @@ public class FileUtil {
 			fileName = filePath.substring(index + 1);
 		}
 		return fileName;
+	}
+	
+	/**
+	 * @param keyWithFileName
+	 * @return
+	 */
+	public static String getDirFromFilePath(String filePath) {
+		String dir = filePath;
+		int index = filePath.lastIndexOf('\\');
+		if (index != -1) {
+			dir = filePath.substring(0, index + 1);
+		}
+		index = filePath.lastIndexOf('/');
+		if (index != -1) {
+			dir = filePath.substring(0, index + 1);
+		}
+		return dir.replace('\\', '/');
 	}
 
 	/**
