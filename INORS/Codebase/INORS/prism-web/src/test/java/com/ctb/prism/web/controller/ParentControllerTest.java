@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,9 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Before
 	public void setUp() throws Exception {
-
 		request = new MockHttpServletRequest();
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER, username);
 		response = new MockHttpServletResponse();
-
 		String password = "Passwd12";
 		String contractName = "inors";
 		UserTO user = new UserTO();
@@ -61,10 +61,9 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
+	@Ignore
 	public void testMyAccount() throws Exception {
-		request.getSession().setAttribute(IApplicationConstants.CURRUSER, username);
 		ModelAndView mv = controller.myAccount(request, response);
-		System.out.println("testMyAccount = " + mv.getViewName());
 		assertNotNull(mv);
 		assertEquals(mv.getViewName(), "user/profile");
 	}
