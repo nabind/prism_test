@@ -324,7 +324,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						// fileSize = FileUtil.fileSize(input);
 						fileSize = FileUtil.getFileSize(zipFileName);
 						logger.log(IAppLogger.INFO, "fileSize=" + fileSize);
-						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+						//jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
 					} else if ("SP".equals(button)) {
 						// TODO : convention implementation
@@ -338,7 +338,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 							// fileSize = FileUtil.fileSize(zipFileName);
 							fileSize = FileUtil.getFileSize(zipFileName);
 							logger.log(IAppLogger.INFO, "fileSize=" + fileSize);
-							jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+							//jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 							jobLog = "Asynchoronous Separate Pdfs";
 						} catch (Exception e) {
 							jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
@@ -347,6 +347,25 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						}
 					}
 					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
+					// Upload File to S3
+					try {
+						String envString = to.getEnvString().toUpperCase();
+						logger.log(IAppLogger.INFO, "envString = " + envString);
+						String keyWithFileName = "/" + envString + "/" + zipFileName;
+						logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
+						String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
+						logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
+						File file = new File(zipFileName);
+						repositoryService.uploadAsset(keyWithoutFileName, file);
+						logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
+						// TODO : Delete File from Mount Location
+						jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
+					} catch (Exception e) {
+						jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
+						jobLog = "Invalid Contract Name or S3 Upload issue";
+						logger.log(IAppLogger.WARN, jobLog);
+						e.printStackTrace();
+					}
 				} catch (FileNotFoundException e) {
 					jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
 					jobLog = e.getMessage();
@@ -364,23 +383,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				jobStatus = IApplicationConstants.JOB_STATUS.NA.toString();
 				jobLog = "No File to download";
 				logger.log(IAppLogger.INFO, jobLog);
-			}
-			// Upload File to S3
-			try {
-				String envString = to.getEnvString().toUpperCase();
-				logger.log(IAppLogger.INFO, "envString = " + envString);
-				String keyWithFileName = "/" + envString + "/" + zipFileName;
-				logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
-				String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
-				logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
-				File file = new File(zipFileName);
-				repositoryService.uploadAsset(keyWithoutFileName, file);
-				logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
-				// TODO : Delete File from Mount Location
-			} catch (Exception e) {
-				jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
-				jobLog = "Invalid Contract Name or S3 Upload issue";
-				logger.log(IAppLogger.WARN, jobLog);
 			}
 		} else {
 			jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
