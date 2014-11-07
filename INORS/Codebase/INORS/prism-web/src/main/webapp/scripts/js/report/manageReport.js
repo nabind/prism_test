@@ -385,23 +385,23 @@ var row = $("#"+reportId + '_' +reportId);
 							win.closeModal(); 
 						}
 					},
-					'Save': {
-						classes: 'blue-gradient glossy mid-margin-left',
-						click: function(win,e) {
+					'Save' : {
+						classes : 'blue-gradient glossy mid-margin-left',
+						click : function(win, e) {
 							clickMe(e);
-							if ($("#editReportForm").validationEngine('validate')){
-									$("#editReportForm").validationEngine('hide');
-							  updateReportDetails($(".edit-report-form"), win, row);
-							  var editActionsButton = '<a href="#" reportId="'+data[0].reportId+'" reportName="'+data[0].reportName+'" class="button icon-swap with-tooltip confirm edit-actions" title="'+strings['msg.editActions']+'"></a>';
-							  var deleteReportButton = '<a href="#" reportId="'+data[0].reportId+'" reportName="'+data[0].reportName+'" class="button icon-trash with-tooltip confirm delete-Report" title="'+strings['label.delete']+'"></a>';
-							  if(reportType == 'API_LINK' || reportType == 'API_CUSTOM') {
-								row.find('.delete-Report').remove();
-								row.find('.button-group').append(editActionsButton);
-							  }
-							  if(this.reportType != 'API_LINK' && this.reportType != 'API_CUSTOM') {
+							if ($("#editReportForm").validationEngine('validate')) {
+								$("#editReportForm").validationEngine('hide');
+								updateReportDetails($(".edit-report-form"), win, row);
+								var editActionsButton = '<a href="#" reportId="' + data[0].reportId + '" reportName="' + data[0].reportName + '" class="button icon-swap with-tooltip confirm edit-actions" title="' + strings['msg.editActions'] + '"></a>';
+								var deleteReportButton = '<a href="#" reportId="' + data[0].reportId + '" reportName="' + data[0].reportName + '" class="button icon-trash with-tooltip confirm delete-Report" title="' + strings['label.delete'] + '"></a>';
 								row.find('.edit-actions').remove();
-								row.find('.button-group').append(deleteReportButton);
-							  }
+								row.find('.delete-Report').remove();
+								var reportTypeSelected = $("#editReportType").val();
+								if (reportTypeSelected == 'API_LINK' || reportTypeSelected == 'API_CUSTOM') {
+									row.find('.button-group').append(editActionsButton);
+								} else {
+									row.find('.button-group').append(deleteReportButton);
+								}
 							}
 						}
 					}
