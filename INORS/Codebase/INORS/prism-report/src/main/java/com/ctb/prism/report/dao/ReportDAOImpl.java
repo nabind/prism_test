@@ -575,7 +575,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getAssessments(java.util.Map)
 	 */
-	@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	@Cacheable(value = "configCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getAssessments()");
 		boolean isSuperUser = ((Boolean) paramMap.get("isSuperUser")).booleanValue();
