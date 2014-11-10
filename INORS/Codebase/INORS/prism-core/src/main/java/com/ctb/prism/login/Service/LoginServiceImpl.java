@@ -142,8 +142,8 @@ public class LoginServiceImpl implements ILoginService {
 		loginBusiness.addNewUser(paramMap);
 	}
 	
-	public String getRootPath(String customerId, String testAdmin) {
-		return loginBusiness.getRootPath(customerId, testAdmin);
+	public String getRootPath(String customerId, String testAdmin, String contractName) {
+		return loginBusiness.getRootPath(customerId, testAdmin, contractName);
 	}
 
 	/*

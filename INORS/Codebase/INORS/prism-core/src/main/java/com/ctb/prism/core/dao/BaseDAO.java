@@ -64,6 +64,7 @@ public abstract class BaseDAO {
 	}
 	
 	public JdbcTemplate getJdbcTemplatePrism(String contractName) {
+		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
 		if("inors".equals(contractName)) return jdbcTemplateInors;
 		if("tasc".equals(contractName)) return jdbcTemplateTasc;
 		else return null;

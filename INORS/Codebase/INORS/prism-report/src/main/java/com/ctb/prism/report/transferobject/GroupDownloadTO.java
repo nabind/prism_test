@@ -39,6 +39,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String fileSize;
 	private String jobId;
 	private String envString;
+	private String contractName;
 
 	/**
 	 * @return the button
@@ -420,6 +421,14 @@ public class GroupDownloadTO extends BaseTO {
 
 	public void setEnvString(String envString) {
 		this.envString = envString;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
 	private String string;

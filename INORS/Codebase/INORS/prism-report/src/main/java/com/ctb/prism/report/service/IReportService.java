@@ -240,7 +240,7 @@ public interface IReportService {
 	 * @param processId
 	 * @return
 	 */
-	public JobTrackingTO getProcessDataGD(String processId);
+	public JobTrackingTO getProcessDataGD(String processId, String contractName);
 
 	/**
 	 * @param orgNodeId
@@ -266,7 +266,7 @@ public interface IReportService {
 	 * @param requestDetails
 	 * @return
 	 */
-	public String getRequestSummary(String requestDetails);
+	public String getRequestSummary(String requestDetails, String contractName);
 
 	/**
 	 * @param paramMap

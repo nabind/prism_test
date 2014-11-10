@@ -271,7 +271,7 @@ public interface IReportDAO {
 	 * @param processId
 	 * @return
 	 */
-	public JobTrackingTO getProcessDataGD(String processId);
+	public JobTrackingTO getProcessDataGD(String processId, String contractName);
 
 	/**
 	 * @param orgNodeId
@@ -291,7 +291,7 @@ public interface IReportDAO {
 	 * @param requestDetails
 	 * @return
 	 */
-	public String getRequestSummary(String requestDetails);
+	public String getRequestSummary(String requestDetails, String contractName);
 
 	/**
 	 * @param paramMap
@@ -301,7 +301,7 @@ public interface IReportDAO {
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
-	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog);
+	public int updateJobTrackingStatus(String contractName, String jobId, String jobStatus, String jobLog);
 
 	/**
 	 * Returns ReportActionTO object for Report Data.
@@ -331,5 +331,5 @@ public interface IReportDAO {
 	 */
 	public String updateDataForActions(Map<String, Object> paramMap);
 	
-	public void updateJobTrackingTable(String jobId,String filePath);
+	public void updateJobTrackingTable(String jobId, String filePathcontractName);
 }

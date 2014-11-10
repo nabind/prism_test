@@ -1211,7 +1211,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param requestDetails
 	 * @return
 	 */
-	public String getRequestSummary(String requestDetails) {
+	public String getRequestSummary(String requestDetails, String contractName) {
 		QuerySheetTO querySheetTO = getQuerySheetTO(IApplicationConstants.REQUEST_TYPE.GDF.toString(), requestDetails);
 		String jobId = querySheetTO.getJobId();
 		String productId = querySheetTO.getTestAdministration();
@@ -1222,7 +1222,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String orgNodeIds = getOrgNodeIds(corpDiocese, schools, klass);
 		String selectedStudents = querySheetTO.getSelectedStudents();
 		String customerId = querySheetTO.getCustomerId();
-		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId, gradeId);
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism(contractName).queryForList(CustomStringUtil.replaceCharacterInString('~', orgNodeIds, IReportQuery.GET_REQUEST_SUMMARY), jobId, productId, gradeId);
 		Map<String, String> valueMap = new HashMap<String, String>();
 		if ((dataList != null) && (!dataList.isEmpty())) {
 			for (Map<String, Object> data : dataList) {
@@ -1235,7 +1235,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		querySheetTO.setSchoolNames(valueMap.get(querySheetTO.getSchoolNames()));
 		querySheetTO.setGradeNames(valueMap.get("GRADE_NAME"));
 		
-		List<Map<String, Object>> selectionDataList = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', selectedStudents, IReportQuery.GET_STUDENT_SELECTION_STATISTICS));
+		List<Map<String, Object>> selectionDataList = getJdbcTemplatePrism(contractName).queryForList(CustomStringUtil.replaceCharacterInString('~', selectedStudents, IReportQuery.GET_STUDENT_SELECTION_STATISTICS));
 		String schoolCount = "";
 		String classCount = "";
 		if ((selectionDataList != null) && (!selectionDataList.isEmpty())) {
@@ -1806,6 +1806,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			String file_size = to.getFileSize();
 			String job_id = to.getJobId();
 			String request_details = to.getRequestDetails();
+			String contractName = to.getContractName();
 
 			logger.log(IAppLogger.INFO, "request_filename: " + request_filename);
 			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
@@ -1814,11 +1815,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			logger.log(IAppLogger.INFO, "file_size: " + file_size);
 			logger.log(IAppLogger.INFO, "job_id: " + job_id);
 			logger.log(IAppLogger.INFO, "request_details: " + request_details);
+			logger.log(IAppLogger.INFO, "contractName: " + contractName);
 
-			String request_summary = getRequestSummary(Utils.objectToJson(to));
+			String request_summary = getRequestSummary(Utils.objectToJson(to), contractName);
 			logger.log(IAppLogger.INFO, "request_summary: " + request_summary);
 
-			updateCount = getJdbcTemplatePrism().update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
+			updateCount = getJdbcTemplatePrism(contractName).update(CustomStringUtil.replaceCharacterInString('#', gdfExpiryTime, IQueryConstants.UPDATE_JOB_TRACKING), request_filename, request_summary, job_log, job_status, file_size, job_id);
 			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 
 			logger.log(IAppLogger.INFO, "Exit: updateJobTracking()");
@@ -1829,15 +1831,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return updateCount;
 	}
 	
-	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
+	public int updateJobTrackingStatus(String contractName, String jobId, String jobStatus, String jobLog) {
 		logger.log(IAppLogger.INFO, "Enter: updateJobTrackingStatus()");
 		int updateCount = 0;
 		try {
+			if (jobLog == null || "null".equalsIgnoreCase(jobLog)) {
+				jobLog = "Unknown Exception";
+			}
+			if(contractName == null || "null".equalsIgnoreCase(contractName)){
+				contractName = "inors";
+			}
 			logger.log(IAppLogger.INFO, "jobId: " + jobId);
 			logger.log(IAppLogger.INFO, "jobStatus: " + jobStatus);
 			logger.log(IAppLogger.INFO, "jobLog: " + jobLog);
-
-			updateCount = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB_TRACKING_STATUS, jobStatus, jobLog, jobId);
+			logger.log(IAppLogger.INFO, "contractName: " + contractName);
+			updateCount = getJdbcTemplatePrism(contractName).update(IQueryConstants.UPDATE_JOB_TRACKING_STATUS, jobStatus, jobLog, jobId);
 			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
 
 			logger.log(IAppLogger.INFO, "Exit: updateJobTrackingStatus()");
@@ -1847,10 +1855,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return updateCount;
 	}
 	
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameFromId' )")
-	private String getProductNameFromId(Long productId) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getProductNameFromId' )")
+	private String getProductNameFromId(Long productId, String contractName) {
 		String productName = "";
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				productName = fieldDetails.get("PRODUCT_NAME").toString();
@@ -1866,6 +1874,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	public Map<String, String> getGDFilePaths(GroupDownloadTO to) {
 		logger.log(IAppLogger.INFO, "Enter: getGDFilePaths()");
+		String contractName = to.getContractName();
+		logger.log(IAppLogger.INFO, "contractName: " + contractName);
 		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		String students = to.getStudents();
 		String groupFile = to.getGroupFile();
@@ -1876,7 +1886,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		try {
 			Long productId = Long.parseLong(to.getTestAdministrationVal());
 			logger.log(IAppLogger.INFO, "productId: " + productId);
-			String productName = getProductNameFromId(productId);
+			String productName = getProductNameFromId(productId, contractName);
 			if (productName.length() > 4) {
 				productStr = productName.substring(0, 5);
 			}
@@ -1887,16 +1897,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
 			// Invitation Code Letter
-			filePaths = getICLetterPaths(students, productStr);
+			filePaths = getICLetterPaths(students, productStr, contractName);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString().equals(groupFile)) {
 			// Both (IP and ISR)
-			filePaths = getBothPaths(students, productStr);
+			filePaths = getBothPaths(students, productStr, contractName);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.IPR.toString().equals(groupFile)) {
 			// Image Prints
-			filePaths = getIPPaths(students, productStr);
+			filePaths = getIPPaths(students, productStr, contractName);
 		} else if (IApplicationConstants.EXTRACT_FILETYPE.ISR.toString().equals(groupFile)) {
 			// Individual Student Report
-			filePaths = getISRPaths(students, productStr);
+			filePaths = getISRPaths(students, productStr, contractName);
 		}
 		logger.log(IAppLogger.INFO, "filePaths.size(): " + filePaths.size());
 		logger.log(IAppLogger.INFO, "Exit: getGDFilePaths()");
@@ -1910,8 +1920,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getICLetterPaths' )")
-	private Map<String, String> getICLetterPaths(String students, String productStr) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getICLetterPaths' )")
+	private Map<String, String> getICLetterPaths(String students, String productStr, String contractName) {
 		Map<String, String> icPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
@@ -1921,7 +1931,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
 			logger.log(IAppLogger.INFO, "query: " + query);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					String key = (String) fieldDetails.get("IC_FILE_LOC"); // Actual File Location
@@ -1943,8 +1953,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getISRPaths' )")
-	private Map<String, String> getISRPaths(String students, String productStr) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getISRPaths' )")
+	private Map<String, String> getISRPaths(String students, String productStr, String contractName) {
 		Map<String, String> isrPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
@@ -1954,7 +1964,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
 			logger.log(IAppLogger.INFO, "query: " + query);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
@@ -1976,8 +1986,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getIPPaths' )")
-	private Map<String, String> getIPPaths(String students, String productStr) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getIPPaths' )")
+	private Map<String, String> getIPPaths(String students, String productStr, String contractName) {
 		Map<String, String> iprPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
@@ -1987,7 +1997,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
 			logger.log(IAppLogger.INFO, "query: " + query);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
@@ -2008,8 +2018,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param students
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getBothPaths' )")
-	private Map<String, String> getBothPaths(String students, String productStr) {
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getBothPaths' )")
+	private Map<String, String> getBothPaths(String students, String productStr, String contractName) {
 		Map<String, String> bothPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
 		// Loop used to ensure collation hierarchy
@@ -2020,7 +2030,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			query = CustomStringUtil.replaceAll(query, "*", productStr);
 			query = CustomStringUtil.replaceAll(query, "?", studentId);
 			logger.log(IAppLogger.INFO, "query: " + query);
-			List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+			List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(query);
 			if ((lstData != null) && (!lstData.isEmpty())) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					String key = (String) fieldDetails.get("FILENAME"); // Actual File Location
@@ -2165,10 +2175,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#getProcessDataGD(java.lang.String)
 	 */
 	//@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProcessDataGD' )")
-	public JobTrackingTO getProcessDataGD(String processId) {
+	public JobTrackingTO getProcessDataGD(String processId, String contractName) {
 		logger.log(IAppLogger.INFO, "Enter: getProcessDataGD()");
 		JobTrackingTO to = new JobTrackingTO();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList("SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?", processId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> data : lstData) {
 				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss aa");
@@ -2566,10 +2576,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Exit: updateDataForActions()");
 		return dbException;
 	}
-	
-	public void updateJobTrackingTable(String jobId,String filePath)
-	{
-		getJdbcTemplatePrism().update(IReportQuery.UPDATE_FILENAME_JOB_TRACKING,filePath,jobId);
+
+	public void updateJobTrackingTable(String jobId, String filePath) {
+		getJdbcTemplatePrism().update(IReportQuery.UPDATE_FILENAME_JOB_TRACKING, filePath, jobId);
 	}
-	
+
 }

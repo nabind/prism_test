@@ -408,7 +408,7 @@ public class InorsController {
 			String querysheetFile = PdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId());
+			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId(), Utils.getContractName());
 
 			if (bulkDownloadTO.getJobId() != 0)
 				status = "Success";
@@ -830,7 +830,7 @@ public class InorsController {
 			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId);
+			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
 			// inorsService.batchPDFDownload(jobTrackingId);
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
@@ -867,7 +867,7 @@ public class InorsController {
 			String testAdmin = (String) request.getSession().getAttribute("GDF_testadmin");
 			logger.log(IAppLogger.INFO, "testAdmin=" + testAdmin);
 			logger.log(IAppLogger.INFO, "customerId=" + customerId);
-			String rootPath = loginService.getRootPath(customerId, testAdmin);
+			String rootPath = loginService.getRootPath(customerId, testAdmin, Utils.getContractName());
 			fileName = CustomStringUtil.appendString(rootPath, fileName);
 			File pdfFile = new File(fileName);
 			if (!pdfFile.canRead()) {
@@ -1094,7 +1094,7 @@ public class InorsController {
 			String querysheetFile = PdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId());
+			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId(), Utils.getContractName());
 
 			if (bulkDownloadTO.getJobId() != 0)
 				status = "Success";

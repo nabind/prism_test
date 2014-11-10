@@ -220,8 +220,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		loginDAO.addNewUser(paramMap);
 	}
 	
-	public String getRootPath(String customerId, String testAdmin) {
-		return loginDAO.getRootPath(customerId, testAdmin);
+	public String getRootPath(String customerId, String testAdmin, String contractName) {
+		return loginDAO.getRootPath(customerId, testAdmin, contractName);
 	}
 
 	/* (non-Javadoc)

@@ -230,7 +230,7 @@ public interface IReportBusiness {
 	 * @param processId
 	 * @return
 	 */
-	public JobTrackingTO getProcessDataGD(String processId);
+	public JobTrackingTO getProcessDataGD(String processId, String contractName);
 
 	/**
 	 * @param orgNodeId
@@ -256,7 +256,7 @@ public interface IReportBusiness {
 	 * @param requestDetails
 	 * @return
 	 */
-	public String getRequestSummary(String requestDetails);
+	public String getRequestSummary(String requestDetails, String contractName);
 
 	/**
 	 * @param paramMap
@@ -266,7 +266,7 @@ public interface IReportBusiness {
 
 	public String getStudentFileName(String type, String studentBioId, String custProdId);
 
-	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog);
+	public int updateJobTrackingStatus(String contractName, String jobId, String jobStatus, String jobLog);
 
 	/**
 	 * Returns ReportActionTO object for Report Data.

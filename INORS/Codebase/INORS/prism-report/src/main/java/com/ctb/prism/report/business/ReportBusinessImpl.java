@@ -726,8 +726,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getProcessDataGD(java.lang.String)
 	 */
-	public JobTrackingTO getProcessDataGD(String processId) {
-		return reportDAO.getProcessDataGD(processId);
+	public JobTrackingTO getProcessDataGD(String processId, String contractName) {
+		return reportDAO.getProcessDataGD(processId, contractName);
 	}
 
 	/*
@@ -762,8 +762,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * 
 	 * @see com.ctb.prism.report.business.IReportBusiness#getRequestSummary(java.lang.String)
 	 */
-	public String getRequestSummary(String requestDetails) {
-		return reportDAO.getRequestSummary(requestDetails);
+	public String getRequestSummary(String requestDetails, String contractName) {
+		return reportDAO.getRequestSummary(requestDetails, contractName);
 	}
 
 	/*
@@ -779,8 +779,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return reportDAO.getStudentFileName(type, studentBioId, custProdId);
 	}
 
-	public int updateJobTrackingStatus(String jobId, String jobStatus, String jobLog) {
-		return reportDAO.updateJobTrackingStatus(jobId, jobStatus, jobLog);
+	public int updateJobTrackingStatus(String contractName, String jobId, String jobStatus, String jobLog) {
+		return reportDAO.updateJobTrackingStatus(contractName, jobId, jobStatus, jobLog);
 	}
 
 	/* (non-Javadoc)

@@ -33,7 +33,7 @@ public interface IInorsBusiness {
 	 * 
 	 * @param jobId
 	 */
-	public void batchPDFDownload(String jobId);
+	public void batchPDFDownload(String jobId, String contractName);
 
 	/**
 	 * @param bulkDownloadTO

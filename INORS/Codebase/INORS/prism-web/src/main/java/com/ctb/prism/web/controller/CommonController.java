@@ -228,7 +228,7 @@ public class CommonController extends BaseDAO {
 			throws ServletException {
 		OutputStream os = null;
 		try {
-			String rootPath = loginService.getRootPath(req.getParameter("customerId"), req.getParameter("testAdmin"));
+			String rootPath = loginService.getRootPath(req.getParameter("customerId"), req.getParameter("testAdmin"), Utils.getContractName());
 			String fileName = rootPath + req.getParameter("pdfFileName");
 			String userType = req.getParameter("userType");
 			logger.log(IAppLogger.INFO, CustomStringUtil.appendString("Downloading pdf, user type: "

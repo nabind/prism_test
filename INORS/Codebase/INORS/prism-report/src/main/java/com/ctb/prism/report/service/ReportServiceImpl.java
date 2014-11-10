@@ -386,8 +386,8 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getProcessDataGD(java.lang.String)
 	 */
-	public JobTrackingTO getProcessDataGD(String processId) {
-		return reportBusiness.getProcessDataGD(processId);
+	public JobTrackingTO getProcessDataGD(String processId, String contractName) {
+		return reportBusiness.getProcessDataGD(processId, contractName);
 	}
 
 	/*
@@ -422,8 +422,8 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getRequestSummary(java.lang.String)
 	 */
-	public String getRequestSummary(String requestDetails) {
-		return reportBusiness.getRequestSummary(requestDetails);
+	public String getRequestSummary(String requestDetails, String contractName) {
+		return reportBusiness.getRequestSummary(requestDetails, contractName);
 	}
 
 	/*

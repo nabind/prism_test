@@ -31,7 +31,7 @@ public interface ILoginDAO {
 	public String getUserOrgNode(String username, String contractName);
 	public void updateUserOrg(String username, String OrgNodeId, String oldOrgNodeid, String contractName);
 	public void addNewUser(Map<String,Object> paramMap) throws Exception;
-	public String getRootPath(String customerId, String testAdmin);
+	public String getRootPath(String customerId, String testAdmin, String contractName);
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap);
 	public Map<String,String> getActionMap(Map<String, Object> paramMap);
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap);

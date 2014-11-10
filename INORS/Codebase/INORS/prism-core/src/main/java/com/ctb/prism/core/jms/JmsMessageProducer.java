@@ -54,7 +54,7 @@ public class JmsMessageProducer {
 	 * @param jobId
 	 * @throws JMSException
 	 */
-	public void sendJobForProcessing(final String jobId) throws JMSException {
+	public void sendJobForProcessing(final String jobId, String contractName) throws JMSException {
 		LOG.info("Sending message to SQS for job : " + jobId);
 		/*jmsTemplate.send(new MessageCreator() {
 			public Message createMessage(Session session) throws JMSException {
@@ -62,8 +62,9 @@ public class JmsMessageProducer {
 			}
 		});
 		*/
-		
-		jmsTemplate.convertAndSend("job-id:" + jobId);
+		String msgJson = "{\"jobId\" : " + jobId + ", \"contractName\" : " + contractName + "}";
+		LOG.info("JmsMessageProducer.sendJobForProcessing(), msgJson = " + msgJson);
+		jmsTemplate.convertAndSend(msgJson);
 		LOG.info("Message sent to SQS");
 	}
 	

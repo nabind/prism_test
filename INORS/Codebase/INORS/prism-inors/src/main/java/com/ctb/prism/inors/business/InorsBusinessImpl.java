@@ -231,10 +231,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * 
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#batchPDFDownload(java.lang.String)
 	 */
-	public void batchPDFDownload(String jobId) {
+	public void batchPDFDownload(String jobId, String contractName) {
 		logger.log(IAppLogger.INFO, "START ================== f r o m  async method --------------- ");
 		try {
-			batchPDFDownload(jobId, null);
+			batchPDFDownload(jobId, null, contractName);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Bulk Download Failed for Job Id: " + jobId);
 			e.printStackTrace();
@@ -248,19 +248,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param jobId
 	 * @param jobTO
 	 */
-	private void batchPDFDownload(String jobId, BulkDownloadTO jobTO) {
-		logger.log(IAppLogger.INFO, "Enter: processGroupDownload()");
+	private void batchPDFDownload(String jobId, BulkDownloadTO jobTO, String contractName) {
+		logger.log(IAppLogger.INFO, "Enter: batchPDFDownload()");
+		logger.log(IAppLogger.INFO, "contractName: " + contractName);
 		try{
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String fileSize = null;
-		JobTrackingTO jobTrackingTO = reportBusiness.getProcessDataGD(jobId);
+		JobTrackingTO jobTrackingTO = reportBusiness.getProcessDataGD(jobId, contractName);
 		String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
-		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal());
+		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal(), Utils.getContractName());
 		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		if (to != null) {
+			to.setContractName(contractName);
 			String button = to.getButton();
 			String fileName = to.getFileName();
 			String groupFile = to.getGroupFile();
@@ -297,7 +299,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			if (!filePathsGD.isEmpty()) {
 				try {
-					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to));
+					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), Utils.getContractName());
 					FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath, "/GDF/", querySheetFileName), querySheetAsString);
 					filePaths.put(CustomStringUtil.appendString("/GDF/", querySheetFileName), querySheetFileName);
 					filePaths.putAll(filePathsGD);
@@ -407,10 +409,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 		}
 		}catch(Exception e){
-			int updateCount = reportBusiness.updateJobTrackingStatus(jobId, IApplicationConstants.JOB_STATUS.ER.toString(), e.getMessage());
-			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);	
+			int updateCount = reportBusiness.updateJobTrackingStatus(contractName, jobId, IApplicationConstants.JOB_STATUS.ER.toString(), ("Exception in batchPDFDownload: " + e.getMessage() == null ? "" : e.getMessage()));
+			logger.log(IAppLogger.INFO, "updateCount: " + updateCount);
+			e.printStackTrace();
 		}
-		logger.log(IAppLogger.INFO, "Exit: processGroupDownload()");
+		logger.log(IAppLogger.INFO, "Exit: batchPDFDownload()");
 	}
 
 	@Autowired

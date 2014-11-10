@@ -28,8 +28,8 @@ public class InorsServiceImpl implements IInorsService {
 	 * @see com.ctb.prism.inors.service.IInorsService#batchPDFDownload(java.lang.String)
 	 */
 	@Async
-	public void batchPDFDownload(String jobId) {
-		inorsBusiness.batchPDFDownload(jobId);
+	public void batchPDFDownload(String jobId, String contractName) {
+		inorsBusiness.batchPDFDownload(jobId, contractName);
 	}
 
 	/*
