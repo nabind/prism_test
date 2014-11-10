@@ -41,7 +41,7 @@ public class CustomStringUtil {
 	 * @return
 	 */
 	public static String appendString(String... strings) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (String n : strings) {
 			buf.append(n);
 		}
