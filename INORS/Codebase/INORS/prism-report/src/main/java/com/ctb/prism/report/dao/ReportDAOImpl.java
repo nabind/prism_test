@@ -512,12 +512,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final Long roleId, final Long orgNodeLevel) {
+	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final String roles, final Long orgNodeLevel) {
 		return (List<AssessmentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(query);
 				cs.setString(1, reportTypeLike);
-				cs.setLong(2, roleId);
+				cs.setString(2, roles);
 				cs.setLong(3, orgNodeLevel);
 				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
 				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
@@ -582,23 +582,23 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		boolean isGrowthUser = ((Boolean) paramMap.get("isGrowthUser")).booleanValue();
 		boolean isEduUser = ((Boolean) paramMap.get("isEduUser")).booleanValue();
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
-		String userId = (String) paramMap.get("userId");
+		String roles = (String) paramMap.get("roles");
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);
 		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
-		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "roles = " + roles);
 		List<AssessmentTO> assessments = null;
 		if (parentReports) {
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", Long.valueOf(userId), orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel);
 		} else if (isSuperUser) { /* For super user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", Long.valueOf(userId), orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
 		} else if (isGrowthUser) {/* For growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
 		} else if (isEduUser) {/* For education center user */
-			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", Long.valueOf(userId), orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
 		} else { /* For All users other than growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
 		}

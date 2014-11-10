@@ -543,6 +543,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		boolean isSuperUser = false;
 		boolean isGrowthUser = false;
 		boolean isEduUser = false;
+		StringBuilder roles =new StringBuilder();
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 		authList = loggedinUserTO.getRoles();
@@ -567,9 +568,14 @@ public class ReportBusinessImpl implements IReportBusiness {
 		paramMap.put("isGrowthUser", isGrowthUser);
 		paramMap.put("isSuperUser", isSuperUser);
 		paramMap.put("orgNodeLevel", orgNodeLevel);
-		String userId = loggedinUserTO.getUserId();
-		logger.log(IAppLogger.INFO, "userId = " + userId);
-		paramMap.put("userId", userId);
+		//String userId = loggedinUserTO.getUserId();
+		//logger.log(IAppLogger.INFO, "userId = " + userId);
+		for (int i = 0; i < authList.size(); i++) {
+			roles.append(authList.get(i).getAuthority()).append(",");
+		}
+		roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
+		logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
+		paramMap.put("roles", roles.toString());
 		return reportDAO.getAssessments(paramMap);
 	}
 
