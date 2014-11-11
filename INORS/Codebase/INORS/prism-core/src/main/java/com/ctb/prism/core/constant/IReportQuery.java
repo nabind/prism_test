@@ -66,7 +66,14 @@ public interface IReportQuery {
 
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
-	"select * from job_tracking where job_status != 'DL' and userid=? order by created_date_time desc");
+		"SELECT JT.JOB_ID, JT.REQUEST_TYPE, JT.REQUEST_DETAILS, JT.REQUEST_SUMMARY, JT.EXTRACT_CATEGORY,",
+		" JT.JOB_NAME, DCP.DB_PROPERY_VALUE || JT.REQUEST_FILENAME REQUEST_FILENAME, JT.UPDATED_DATE_TIME,",
+		" JT.CREATED_DATE_TIME, JT.FILE_SIZE",
+		" FROM JOB_TRACKING JT, DASH_CONTRACT_PROP DCP",
+		" WHERE JT.JOB_STATUS != 'DL' AND JT.USERID = ?",
+		" AND DCP.DB_PROPERTY_NAME = 'static.pdf.location'",
+		" ORDER BY CREATED_DATE_TIME DESC"
+	);
 
 	// query to group download request Details
 	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(

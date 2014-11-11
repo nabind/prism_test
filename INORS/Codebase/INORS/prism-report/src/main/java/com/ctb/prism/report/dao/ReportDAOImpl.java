@@ -1095,11 +1095,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			allGroupFiles = new ArrayList<JobTrackingTO>();
 			for (Map<String, Object> data : dataList) {
 				JobTrackingTO to = new JobTrackingTO();
-				String createdDate = getFormattedDate((Timestamp) data.get("created_date_time"), "MM/dd/yyyy HH:mm:ss");
-				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
-				Timestamp ts = (Timestamp) data.get("updated_date_time");
+				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss");
+				to.setJobId(((BigDecimal) data.get("JOB_ID")).longValue());
+				Timestamp ts = (Timestamp) data.get("UPDATED_DATE_TIME");
 				if (ts == null) {
-					ts = (Timestamp) data.get("created_date_time");
+					ts = (Timestamp) data.get("CREATED_DATE_TIME");
 				}
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(ts);
@@ -1107,12 +1107,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				ts.setTime(cal.getTime().getTime());
 				ts = new Timestamp(cal.getTime().getTime());
 				String updatedDate = getFormattedDate(ts, "MM/dd/yyyy HH:mm:ss");
-				if (null != ((String) data.get("file_size")) || ((String) data.get("file_size")) != "") {
-					to.setFileSize((String) data.get("file_size"));
+				if (null != ((String) data.get("FILE_SIZE")) || ((String) data.get("FILE_SIZE")) != "") {
+					to.setFileSize((String) data.get("FILE_SIZE"));
 				} else {
 					to.setFileSize(" ");
 				}
-				String filePath = (String) data.get("request_filename");
+				String filePath = (String) data.get("REQUEST_FILENAME");
 				String fileName = "";
 				if (filePath == null || "null".equalsIgnoreCase(filePath)) {
 					filePath = "";
@@ -1251,21 +1251,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String stateOrgNodeId = null;
 		if (("-1".equals(klass)) || ("-1".equals(gradeId))) {
 			gdTo = Utils.jsonToObject(requestDetails, GroupDownloadTO.class);
-			stateOrgNodeId = getAncestorOrgNodeId(gdTo.getSchool(), 1);
+			stateOrgNodeId = getAncestorOrgNodeId(gdTo.getSchool(), 1, contractName);
 		}
 
 		List<String> classNameList = new ArrayList<String>();
 		if ("-1".equals(klass)) {
-			classNameList = getSelectedClassNames(stateOrgNodeId, selectedStudents, customerId);
+			classNameList = getSelectedClassNames(stateOrgNodeId, selectedStudents, customerId, contractName);
 		} else {
 			classNameList.add(valueMap.get(querySheetTO.getClassNames()));
 		}
 
 		List<String> gradeNameList = new ArrayList<String>();
 		if ("-1".equals(gradeId)) {
-			gradeNameList = getAllGradeNames(stateOrgNodeId, gdTo.getTestAdministrationVal(), corpDiocese, schools, gdTo.getGroupFile(), gdTo.getTestProgram(),customerId);
+			gradeNameList = getAllGradeNames(stateOrgNodeId, gdTo.getTestAdministrationVal(), corpDiocese, schools, gdTo.getGroupFile(), gdTo.getTestProgram(),customerId, contractName);
 		} else {
-			gradeNameList.add(getResult(CustomStringUtil.replaceCharacterInString('?', gradeId, IQueryConstants.GET_GRADE_NAME_BY_ID)));
+			gradeNameList.add(getResult(CustomStringUtil.replaceCharacterInString('?', gradeId, IQueryConstants.GET_GRADE_NAME_BY_ID), contractName));
 		}
 		
 		String fileTypeDescription = querySheetTO.getFileType();
@@ -1337,7 +1337,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			allGroupFiles = new ArrayList<JobTrackingTO>();
 			for (Map<String, Object> data : dataList) {
 				JobTrackingTO to = new JobTrackingTO();
-				String filePath = (String) data.get("request_filename");
+				String filePath = (String) data.get("REQUEST_FILENAME");
 				// String extractStartdate = getFormattedDate((Timestamp) data.get("extract_startdate"),"MM/dd/yyyy HH:mm:ss");
 				// String extractEnddate = getFormattedDate((Timestamp) data.get("extract_enddate"),"MM/dd/yyyy HH:mm:ss");
 				String fileName = "";
@@ -1688,10 +1688,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return classes;
 	}
 
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGradeNames' )")
-	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, #p7, 'getAllGradeNames' )")
+	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId, String contractName) {
 		List<String> grades = new ArrayList<String>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
 				.queryForList(IQueryConstants.GET_ALL_GRADE_NAMES, stateOrgNodeId, testAdministrationVal, corpDiocese, school, groupFile, testProgram, customerId, "SCHOOL_OTH");
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
@@ -1703,11 +1703,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getSelectedClassNames' )")
-	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds, String customerId) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getSelectedClassNames' )")
+	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds, String customerId, String contractName) {
 		List<String> classes = new ArrayList<String>();
 		// List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), stateOrgNodeId, customerId);
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES));
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES));
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				classes.add((String) fieldDetails.get("ORG_NODE_NAME"));
@@ -2057,12 +2057,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param query
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getResult' )")
-	private String getResult(String query) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getResult' )")
+	private String getResult(String query, String contractName) {
 		logger.log(IAppLogger.DEBUG, "Enter: getResult()");
 		logger.log(IAppLogger.DEBUG, query);
 		String result = null;
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(query);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(query);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				result = (String) fieldDetails.get("RESULT");
@@ -2224,13 +2224,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param ancestorLevel
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getAncestorOrgNodeId' )")
-	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getAncestorOrgNodeId' )")
+	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel, String contractName) {
 		String ancestorOrgNodeId = "-1";
 		if (orgNodeId == null) {
 			return ancestorOrgNodeId;
 		}
-		String orgNodeIdPath = getOrgNodeIdPath(orgNodeId);
+		String orgNodeIdPath = getOrgNodeIdPath(orgNodeId, contractName);
 		logger.log(IAppLogger.INFO, "orgNodeIdPath = " + orgNodeIdPath);
 		String[] ancestorIds = orgNodeIdPath.split("~");
 		if (ancestorIds.length >= ancestorLevel) {
@@ -2245,18 +2245,18 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getOrgNodeIdPath' )")
-	public String getOrgNodeIdPath(String orgNodeId) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getOrgNodeIdPath' )")
+	public String getOrgNodeIdPath(String orgNodeId, String contractName) {
 		if (orgNodeId == null) {
 			return "0";
 		}
 		StringBuilder orgNodeIdPath = new StringBuilder();
 		orgNodeIdPath.insert(0, orgNodeId);
-		String parentOrgNodeId = getParentOrgNodeId(orgNodeId);
+		String parentOrgNodeId = getParentOrgNodeId(orgNodeId, contractName);
 		while ((parentOrgNodeId != null) && (!"0".equals(parentOrgNodeId))) {
 			orgNodeIdPath.insert(0, "~");
 			orgNodeIdPath.insert(0, parentOrgNodeId);
-			parentOrgNodeId = getParentOrgNodeId(parentOrgNodeId);
+			parentOrgNodeId = getParentOrgNodeId(parentOrgNodeId, contractName);
 		}
 		orgNodeIdPath.insert(0, "0~");
 		return orgNodeIdPath.toString();
@@ -2268,10 +2268,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getParentOrgNodeId' )")
-	public String getParentOrgNodeId(String orgNodeId) {
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #01, 'getParentOrgNodeId' )")
+	public String getParentOrgNodeId(String orgNodeId, String contractName) {
 		String parentOrgNodeId = null;
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				parentOrgNodeId = fieldDetails.get("PARENT_ORG_NODEID").toString();

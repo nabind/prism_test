@@ -3,7 +3,8 @@ package com.ctb.prism.report.transferobject;
 import com.ctb.prism.core.transferobject.BaseTO;
 
 /**
- * Transfer object holds details of a report. Report name, report URL, the roles who can access the report etc.
+ * Transfer object holds details of a report. Report name, report URL, the roles
+ * who can access the report etc.
  */
 
 public class JobTrackingTO extends BaseTO {
@@ -35,6 +36,7 @@ public class JobTrackingTO extends BaseTO {
 	private String userName;
 	private String filePath;
 	private QuerySheetTO querySheetTO;
+	private long orgLevel;
 
 	public String getUserName() {
 		return userName;
@@ -165,7 +167,7 @@ public class JobTrackingTO extends BaseTO {
 	public void setRequestFilename(String requestFilename) {
 		this.requestFilename = requestFilename;
 	}
-	
+
 	public String getDisplayFilename() {
 		return displayFilename;
 	}
@@ -251,6 +253,14 @@ public class JobTrackingTO extends BaseTO {
 	 */
 	public void setQuerySheetTO(QuerySheetTO querySheetTO) {
 		this.querySheetTO = querySheetTO;
+	}
+
+	public long getOrgLevel() {
+		return orgLevel;
+	}
+
+	public void setOrgLevel(long orgLevel) {
+		this.orgLevel = orgLevel;
 	}
 
 }

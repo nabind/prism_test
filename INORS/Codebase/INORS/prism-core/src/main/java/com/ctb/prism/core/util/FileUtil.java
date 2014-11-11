@@ -468,7 +468,7 @@ public class FileUtil {
 		if (index != -1) {
 			dir = filePath.substring(0, index + 1);
 		}
-		return dir.replace('\\', '/');
+		return dir.replace('\\', '/').replace("//", "/");
 	}
 
 	/**

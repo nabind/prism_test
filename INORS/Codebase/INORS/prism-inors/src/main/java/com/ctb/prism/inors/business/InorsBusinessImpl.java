@@ -259,7 +259,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
 		logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
 		GroupDownloadTO to = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
-		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal(), Utils.getContractName());
+		String rootPath = loginDAO.getRootPath(to.getCustomerId(), to.getTestAdministrationVal(), contractName);
 		Map<String, String> filePaths = new LinkedHashMap<String, String>();
 		if (to != null) {
 			to.setContractName(contractName);
@@ -299,7 +299,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			if (!filePathsGD.isEmpty()) {
 				try {
-					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), Utils.getContractName());
+					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), contractName);
 					FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath, "/GDF/", querySheetFileName), querySheetAsString);
 					filePaths.put(CustomStringUtil.appendString("/GDF/", querySheetFileName), querySheetFileName);
 					filePaths.putAll(filePathsGD);
@@ -354,6 +354,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						String envString = to.getEnvString().toUpperCase();
 						logger.log(IAppLogger.INFO, "envString = " + envString);
 						String keyWithFileName = "/" + envString + "/" + zipFileName;
+						keyWithFileName = keyWithFileName.replace("//", "/");
 						logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
 						String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
 						logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
