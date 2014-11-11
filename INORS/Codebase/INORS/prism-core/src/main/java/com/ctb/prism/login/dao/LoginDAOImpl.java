@@ -803,14 +803,21 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	@SuppressWarnings("unchecked")
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getMenuMap') )")
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
-		final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
-		logger.log(IAppLogger.INFO, "userId = " + userId);
+		//final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
+		//logger.log(IAppLogger.INFO, "userId = " + userId);
+		paramMap.get("orgNodeLevel");
+		final String roles = (String) paramMap.get("roles");
+		final long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
+		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		
 		return (Set<MenuTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
-				cs.setLong(1, userId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.setString(1, roles);
+				cs.setLong(2, orgNodeLevel);
+				cs.setLong(3, custProdId);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -819,7 +826,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
+					rs = (ResultSet) cs.getObject(4);
 					while (rs.next()) {
 						MenuTO to = new MenuTO();
 						String menuName = rs.getString("MENU_NAME");
@@ -834,7 +841,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 						to.setReportSequence(reportSeq);
 						menuSet.add(to);
 					}
-					Utils.logError(cs.getString(3));
+					Utils.logError(cs.getString(5));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

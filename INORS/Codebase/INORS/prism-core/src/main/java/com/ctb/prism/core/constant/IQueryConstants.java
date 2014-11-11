@@ -1160,7 +1160,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_GET_USER_RESET_PASSWORD = "{CALL PKG_MANAGE_USERS.SP_GET_USER_RESET_PASSWORD(?, ?, ?)}";
 		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL PKG_MANAGE_USERS.SP_GET_USER_PWD_HINT_LIST(?, ?, ?)}";
 
-		public static final String SP_GET_MENU_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_MENU_MAP(?, ?, ?)}";
+		public static final String SP_GET_MENU_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_MENU_MAP(?, ?, ?, ?, ?)}";
 		
 		public static final String SP_GET_ACTION_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_ACTION_MAP(?, ?, ?, ?)}";
 

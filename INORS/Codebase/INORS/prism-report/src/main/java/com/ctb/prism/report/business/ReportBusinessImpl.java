@@ -540,14 +540,14 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * com.ctb.prism.report.business.IReportBusiness#getAssessments(paramMap)
 	 */
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
-		boolean isSuperUser = false;
+		/*boolean isSuperUser = false;
 		boolean isGrowthUser = false;
-		boolean isEduUser = false;
+		boolean isEduUser = false;*/
 		StringBuilder roles =new StringBuilder();
 		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 		authList = loggedinUserTO.getRoles();
-		for (int i = 0; i < authList.size(); i++) {
+/*		for (int i = 0; i < authList.size(); i++) {
 			if (authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
 				break;
@@ -560,16 +560,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 		if ("E".equals(loggedinUserTO.getUserType())) {
 			isEduUser = true;
 		}
-		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		paramMap.clear();
-		paramMap.put("parentReports", parentReports);
+		paramMap.put("orgNodeLevel", orgNodeLevel);
+	/*	paramMap.put("parentReports", parentReports);
 		paramMap.put("isEduUser", isEduUser);
 		paramMap.put("isGrowthUser", isGrowthUser);
 		paramMap.put("isSuperUser", isSuperUser);
-		paramMap.put("orgNodeLevel", orgNodeLevel);
-		//String userId = loggedinUserTO.getUserId();
-		//logger.log(IAppLogger.INFO, "userId = " + userId);
+		String userId = loggedinUserTO.getUserId();
+		logger.log(IAppLogger.INFO, "userId = " + userId);*/
 		for (int i = 0; i < authList.size(); i++) {
 			roles.append(authList.get(i).getAuthority()).append(",");
 		}

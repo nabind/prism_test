@@ -6,9 +6,11 @@ CREATE OR REPLACE PACKAGE PKG_MENU_ACCESS IS
 
   TYPE REF_CURSOR IS REF CURSOR;
 
-  PROCEDURE SP_GET_MENU_MAP(P_IN_USERID         IN USERS.USERID%TYPE,
-                            P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+  PROCEDURE SP_GET_MENU_MAP(P_IN_ROLES            IN VARCHAR2,
+                            P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                            P_IN_CUST_PROD_ID     IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                            P_OUT_REF_CURSOR      OUT REF_CURSOR,
+                            P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
   PROCEDURE SP_GET_ACTION_MAP(P_IN_USERID         IN USERS.USERID%TYPE,
                               P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
@@ -16,7 +18,7 @@ CREATE OR REPLACE PACKAGE PKG_MENU_ACCESS IS
                               P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
   PROCEDURE GET_ALL_ASSESSMENT_LIST(P_IN_REPORT_TYPE_LIKE IN VARCHAR2,
-                                    P_IN_USERID           IN USERS.USERID%TYPE,
+                                    P_IN_ROLES            IN VARCHAR2,
                                     P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                     P_OUT_REF_CURSOR      OUT REF_CURSOR,
                                     P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
@@ -28,7 +30,7 @@ CREATE OR REPLACE PACKAGE PKG_MENU_ACCESS IS
                                        P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
   PROCEDURE GET_EDU_ASSESSMENT_LIST(P_IN_REPORT_TYPE_LIKE IN VARCHAR2,
-                                    P_IN_USERID           IN USERS.USERID%TYPE,
+                                    P_IN_ROLES            IN VARCHAR2,
                                     P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                     P_OUT_REF_CURSOR      OUT REF_CURSOR,
                                     P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
@@ -44,27 +46,14 @@ END PKG_MENU_ACCESS;
 CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
 
   -- SP_GET_MENU_MAP
-  PROCEDURE SP_GET_MENU_MAP(P_IN_USERID         IN USERS.USERID%TYPE,
-                            P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  PROCEDURE SP_GET_MENU_MAP(P_IN_ROLES            IN VARCHAR2,
+                            P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                            P_IN_CUST_PROD_ID     IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                            P_OUT_REF_CURSOR      OUT REF_CURSOR,
+                            P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
-    /*SELECT DISTINCT DM.MENU_NAME,
-                     DR.REPORT_NAME KEY,
-                     DR.REPORT_FOLDER_URI VALUE,
-                     DM.MENU_SEQ,
-                     DMRA.REPORT_SEQ
-       FROM DASH_MENU_RPT_ACCESS DMRA, DASH_REPORTS DR, DASH_MENUS DM
-      WHERE DMRA.DB_MENUID = DM.DB_MENUID
-        AND DMRA.DB_REPORTID = DR.DB_REPORTID
-        AND DMRA.ROLEID IN (SELECT ROLEID FROM USER_ROLE WHERE USERID = P_IN_USERID)
-        AND DMRA.ORG_LEVEL IN
-            (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = P_IN_USERID)
-        AND DR.ACTIVATION_STATUS = 'AC'
-      ORDER BY DM.MENU_SEQ, DMRA.REPORT_SEQ;*/
-    
-      SELECT DISTINCT DM.MENU_NAME,
+     /*SELECT DISTINCT DM.MENU_NAME,
                       DR.REPORT_NAME KEY,
                       DR.REPORT_FOLDER_URI VALUE,
                       DM.MENU_SEQ,
@@ -90,12 +79,49 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
                                WHERE A.USERID = P_IN_USERID)))
          AND DR.ACTIVATION_STATUS = 'AC'
          AND DMRA.ACTIVATION_STATUS = 'AC'
-       ORDER BY DM.MENU_SEQ, DMRA.REPORT_SEQ;
-  
+       ORDER BY DM.MENU_SEQ, DMRA.REPORT_SEQ;*/
+       
+       SELECT DISTINCT DM.MENU_NAME,
+                       DR.REPORT_NAME KEY,
+                       DR.REPORT_FOLDER_URI VALUE,
+                       DM.MENU_SEQ,
+                       DMRA.REPORT_SEQ
+         FROM DASH_MENU_RPT_ACCESS DMRA, DASH_REPORTS DR, DASH_MENUS DM
+        WHERE DMRA.DB_MENUID = DM.DB_MENUID
+          AND DMRA.DB_REPORTID = DR.DB_REPORTID
+          AND NOT EXISTS
+        (SELECT 1
+                 FROM (SELECT ROLEID
+                         FROM ROLE
+                        WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                                   FROM DUAL)
+                         SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                           FROM T
+                         CONNECT BY LEVEL <=
+                                    LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+                       )
+                WHERE ROLEID = 6)
+             
+          AND DMRA.ROLEID IN
+              (SELECT ROLEID
+                 FROM ROLE
+                WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                           FROM DUAL)
+                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                   FROM T
+                 CONNECT BY LEVEL <=
+                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+               )
+          AND ((DMRA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) OR (DMRA.ORG_LEVEL = -99))
+          AND DR.ACTIVATION_STATUS = 'AC'
+          AND DMRA.ACTIVATION_STATUS = 'AC'
+          AND DMRA.CUST_PROD_ID = P_IN_CUST_PROD_ID
+        ORDER BY DM.MENU_SEQ, DMRA.REPORT_SEQ;
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
-    
+
   END SP_GET_MENU_MAP;
 
   -- SP_GET_ACTION_MAP
@@ -103,13 +129,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
                               P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                               P_OUT_REF_CURSOR    OUT REF_CURSOR,
                               P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
-  
+
     V_CUST_PRODID NUMBER := 0;
-  
+
   BEGIN
-  
+
     IF P_IN_CUST_PROD_ID = 0 THEN
-    
+
       SELECT A.DEFAULT_CUST_PROD_ID
         INTO V_CUST_PRODID
         FROM (SELECT CPL.CUST_PROD_ID DEFAULT_CUST_PROD_ID,
@@ -127,13 +153,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
       SELECT CUST_PROD_ID
         FROM EDU_CENTER_USER_LINK
        WHERE USERID = P_IN_USERID;
-    
+
     ELSE
       V_CUST_PRODID := P_IN_CUST_PROD_ID;
     END IF;
-  
+
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT DR.REPORT_NAME, DRA.ACTION_NAME
         FROM DASH_ACTION_ACCESS DAA, DASH_REPORTS DR, DASH_RPT_ACTION DRA
        WHERE DAA.DB_REPORTID = DR.DB_REPORTID
@@ -155,15 +181,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
          AND DAA.CUST_PROD_ID = V_CUST_PRODID
        GROUP BY DR.REPORT_NAME, DRA.ACTION_NAME
        ORDER BY DR.REPORT_NAME;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
-    
+
   END SP_GET_ACTION_MAP;
 
   PROCEDURE GET_ALL_ASSESSMENT_LIST(P_IN_REPORT_TYPE_LIKE IN VARCHAR2,
-                                    P_IN_USERID           IN USERS.USERID%TYPE,
+                                    P_IN_ROLES            IN VARCHAR2,
                                     P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                     P_OUT_REF_CURSOR      OUT REF_CURSOR,
                                     P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
@@ -185,7 +211,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
          AND ACC.DB_REPORTID = RE.DB_REPORTID
          AND RE.ACTIVATION_STATUS = 'AC'
          AND ACC.ROLEID IN
-             (SELECT ROLEID FROM USER_ROLE WHERE USERID = P_IN_USERID)
+             (SELECT ROLEID
+                FROM ROLE
+               WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                          FROM DUAL)
+                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                  FROM T
+                CONNECT BY LEVEL <=
+                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+              )
          AND ACC.ORG_LEVEL = P_IN_ORG_NODE_LEVEL
        ORDER BY ASS.MENU_SEQ, ACC.REPORT_SEQ, RE.REPORT_NAME DESC;
   EXCEPTION
@@ -224,7 +258,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
   END GET_GROWTH_ASSESSMENT_LIST;
 
   PROCEDURE GET_EDU_ASSESSMENT_LIST(P_IN_REPORT_TYPE_LIKE IN VARCHAR2,
-                                    P_IN_USERID           IN USERS.USERID%TYPE,
+                                    P_IN_ROLES            IN VARCHAR2,
                                     P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
                                     P_OUT_REF_CURSOR      OUT REF_CURSOR,
                                     P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
@@ -246,7 +280,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
          AND ACC.DB_REPORTID = RE.DB_REPORTID
          AND RE.ACTIVATION_STATUS = 'AC'
          AND ACC.ROLEID IN
-             (SELECT ROLEID FROM USER_ROLE WHERE USERID = P_IN_USERID)
+             (SELECT ROLEID
+                FROM ROLE
+               WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                          FROM DUAL)
+                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                  FROM T
+                CONNECT BY LEVEL <=
+                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+              )
          AND ACC.ORG_LEVEL = P_IN_ORG_NODE_LEVEL
        ORDER BY ASS.MENU_SEQ, ACC.REPORT_SEQ, RE.REPORT_NAME DESC;
   EXCEPTION

@@ -306,6 +306,7 @@ public class LoginController {
 		ModelAndView modelAndView = null;
 		String orgLvl = null;
 		Map<String,Object> paramMap = new HashMap<String, Object>();
+		StringBuilder roles =new StringBuilder();
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -413,7 +414,27 @@ public class LoginController {
 				}
 				if(req.getSession().getAttribute(IApplicationConstants.PASSWORD_WARNING) == null)
 					req.getSession().setAttribute(IApplicationConstants.PASSWORD_WARNING, user.getIsPasswordWarning());
-				paramMap.put("userId", user.getUserId());
+				
+				paramMap.clear();
+				if (IApplicationConstants.EDU_USER_FLAG.equals(user.getUserType())) {
+					//orgLvl = String.valueOf(IApplicationConstants.DEFAULT_LEVELID_VALUE);
+					paramMap.put("orgNodeLevel", IApplicationConstants.DEFAULT_LEVELID_VALUE);
+				} else {
+					paramMap.put("orgNodeLevel", user.getOrgNodeLevel());
+				}
+				paramMap.put("custProdId", user.getDefultCustProdId());
+				
+				List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+				authList = user.getRoles();
+					
+				for (int i = 0; i < authList.size(); i++) {
+					roles.append(authList.get(i).getAuthority()).append(",");
+				}
+				roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
+				logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
+				paramMap.put("roles", roles.toString());
+				
+				
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
 				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));

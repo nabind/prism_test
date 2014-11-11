@@ -578,26 +578,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	@Cacheable(value = "configCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getAssessments()");
-		boolean isSuperUser = ((Boolean) paramMap.get("isSuperUser")).booleanValue();
+		
+		/*boolean isSuperUser = ((Boolean) paramMap.get("isSuperUser")).booleanValue();
 		boolean isGrowthUser = ((Boolean) paramMap.get("isGrowthUser")).booleanValue();
 		boolean isEduUser = ((Boolean) paramMap.get("isEduUser")).booleanValue();
-		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();
+		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
 		String roles = (String) paramMap.get("roles");
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
-		logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
+		/*logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);
-		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);
+		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);*/
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "roles = " + roles);
 		List<AssessmentTO> assessments = null;
-		if (parentReports) {
+		if (roles.indexOf("ROLE_PARENT") != -1) {
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel);
-		} else if (isSuperUser) { /* For super user */
+		} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
-		} else if (isGrowthUser) {/* For growth user */
+		} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
-		} else if (isEduUser) {/* For education center user */
+		} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
 			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
 		} else { /* For All users other than growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
