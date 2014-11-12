@@ -805,10 +805,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		//final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
 		//logger.log(IAppLogger.INFO, "userId = " + userId);
-		paramMap.get("orgNodeLevel");
 		final String roles = (String) paramMap.get("roles");
 		final long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
 		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		logger.log(IAppLogger.INFO, "roles = " + roles);
+		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
 		return (Set<MenuTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -857,19 +859,24 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getActionMap') )")
 	public Map<String,String> getActionMap(Map<String, Object> paramMap) {
 		
-		final Long userId = paramMap.get("userId") == null ? 0 : Long.parseLong((String)paramMap.get("userId"));
-		final Long custProdId = paramMap.get("custProdId") == null ? 0: Long.parseLong((String)paramMap.get("custProdId"));
+		/*final Long userId = paramMap.get("userId") == null ? 0 : Long.parseLong((String)paramMap.get("userId"));
+		final Long custProdId = paramMap.get("custProdId") == null ? 0: Long.parseLong((String)paramMap.get("custProdId"));*/
+		final String roles = (String) paramMap.get("roles");
+		final long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
+		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
 		
-		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "roles = " + roles);
+		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
 		return (Map<String,String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ACTION_MAP);
-				cs.setLong(1, userId);
-				cs.setLong(2, custProdId);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.setString(1, roles);
+				cs.setLong(2, orgNodeLevel);
+				cs.setLong(3, custProdId);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -878,11 +885,11 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				Map<String,String> actionMap = new LinkedHashMap<String,String>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(3);
+					rs = (ResultSet) cs.getObject(4);
 					while (rs.next()) {
 						actionMap.put(rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"));
 					}
-					Utils.logError(cs.getString(4));
+					Utils.logError(cs.getString(5));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

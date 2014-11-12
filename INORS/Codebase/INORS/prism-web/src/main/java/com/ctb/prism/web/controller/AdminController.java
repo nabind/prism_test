@@ -2171,11 +2171,24 @@ public class AdminController {
 		String actionJson = "";
 		logger.log(IAppLogger.INFO, "Enter: resetPrismActions()");
 		try {
-			String userId = (String)req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-			String adminYear = req.getParameter("AdminYear");
+			//String userId = (String)req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			String roles = (String)req.getSession().getAttribute(IApplicationConstants.CURR_USER_ROLES);
+			String orgNodeLevel = String.valueOf((Long)req.getSession().getAttribute(IApplicationConstants.CURRORGLVL));
+			String custProdId = req.getParameter("AdminYear").equals("0")
+					?String.valueOf((Long)req.getSession().getAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID))
+					:req.getParameter("AdminYear");
+					
 			Map<String,Object> actionParamMap = new HashMap<String,Object>();
-			actionParamMap.put("userId", userId);
-			actionParamMap.put("custProdId", adminYear);
+			actionParamMap.put("roles", roles.toString());
+			/*if (IApplicationConstants.EDU_USER_FLAG.equals(user.getUserType())) {
+				actionParamMap.put("orgNodeLevel", IApplicationConstants.DEFAULT_LEVELID_VALUE);
+			} else {
+				actionParamMap.put("orgNodeLevel", orgNodeLevel);
+			}*/
+			actionParamMap.put("orgNodeLevel", orgNodeLevel);
+			actionParamMap.put("custProdId", custProdId);
+			
+			
 			Map<String, String> actionMap= loginService.getActionMap(actionParamMap);
 			req.getSession().setAttribute(IApplicationConstants.ACTION_MAP_SESSION, actionMap);
 			actionJson = Utils.objectToJson(actionMap);

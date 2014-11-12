@@ -433,7 +433,7 @@ public class LoginController {
 				roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
 				logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
 				paramMap.put("roles", roles.toString());
-				
+				req.getSession().setAttribute(IApplicationConstants.CURR_USER_ROLES, roles.toString());
 				
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
@@ -443,7 +443,14 @@ public class LoginController {
 				//Only two parameters are being sent for proper caching - By Joy
 				//If no. of parameters are changed, please update updateAdminYear() of AdminController
 				Map<String,Object> actionParamMap = new HashMap<String,Object>();
-				actionParamMap.put("userId", user.getUserId());
+				//actionParamMap.put("userId", user.getUserId());
+				actionParamMap.put("roles", roles.toString());
+				if (IApplicationConstants.EDU_USER_FLAG.equals(user.getUserType())) {
+					//orgLvl = String.valueOf(IApplicationConstants.DEFAULT_LEVELID_VALUE);
+					actionParamMap.put("orgNodeLevel", IApplicationConstants.DEFAULT_LEVELID_VALUE);
+				} else {
+					actionParamMap.put("orgNodeLevel", user.getOrgNodeLevel());
+				}
 				actionParamMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
 				
 				try {

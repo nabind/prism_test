@@ -263,6 +263,8 @@ public interface IApplicationConstants {
 	
 	public static final String PASSWORD_WARNING="passwordWarning";
 	
+	public static final String CURR_USER_ROLES ="currUserRoles"; 
+	
 	/************************ Contract based Configuration property ****************/
 	public static final String ROLE_NOT_ADDED = "role.not.added";
 	public static final String ORGLVL_USER_NOT_ADDED = "orglvl.user.not.added";
