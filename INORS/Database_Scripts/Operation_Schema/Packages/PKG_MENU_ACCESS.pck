@@ -12,10 +12,11 @@ CREATE OR REPLACE PACKAGE PKG_MENU_ACCESS IS
                             P_OUT_REF_CURSOR      OUT REF_CURSOR,
                             P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
-  PROCEDURE SP_GET_ACTION_MAP(P_IN_USERID         IN USERS.USERID%TYPE,
-                              P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                              P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                              P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+ PROCEDURE SP_GET_ACTION_MAP(P_IN_ROLES            IN VARCHAR2,
+                             P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                             P_IN_CUST_PROD_ID     IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                             P_OUT_REF_CURSOR      OUT REF_CURSOR,
+                             P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
 
   PROCEDURE GET_ALL_ASSESSMENT_LIST(P_IN_REPORT_TYPE_LIKE IN VARCHAR2,
                                     P_IN_ROLES            IN VARCHAR2,
@@ -125,16 +126,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
   END SP_GET_MENU_MAP;
 
   -- SP_GET_ACTION_MAP
-  PROCEDURE SP_GET_ACTION_MAP(P_IN_USERID         IN USERS.USERID%TYPE,
-                              P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                              P_OUT_REF_CURSOR    OUT REF_CURSOR,
-                              P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  PROCEDURE SP_GET_ACTION_MAP(P_IN_ROLES            IN VARCHAR2,
+                              P_IN_ORG_NODE_LEVEL   IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                              P_IN_CUST_PROD_ID     IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                              P_OUT_REF_CURSOR      OUT REF_CURSOR,
+                              P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
 
-    V_CUST_PRODID NUMBER := 0;
+   -- V_CUST_PRODID NUMBER := 0;
 
   BEGIN
 
-    IF P_IN_CUST_PROD_ID = 0 THEN
+   /* IF P_IN_CUST_PROD_ID = 0 THEN
 
       SELECT A.DEFAULT_CUST_PROD_ID
         INTO V_CUST_PRODID
@@ -156,11 +158,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
 
     ELSE
       V_CUST_PRODID := P_IN_CUST_PROD_ID;
-    END IF;
+    END IF;*/
 
     OPEN P_OUT_REF_CURSOR FOR
 
-      SELECT DR.REPORT_NAME, DRA.ACTION_NAME
+     /* SELECT DR.REPORT_NAME, DRA.ACTION_NAME
         FROM DASH_ACTION_ACCESS DAA, DASH_REPORTS DR, DASH_RPT_ACTION DRA
        WHERE DAA.DB_REPORTID = DR.DB_REPORTID
          AND DAA.DB_ACTIONID = DRA.DB_ACTIONID
@@ -180,7 +182,42 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
          AND DAA.ACTIVATION_STATUS = 'AC'
          AND DAA.CUST_PROD_ID = V_CUST_PRODID
        GROUP BY DR.REPORT_NAME, DRA.ACTION_NAME
-       ORDER BY DR.REPORT_NAME;
+       ORDER BY DR.REPORT_NAME;*/
+       
+          SELECT DR.REPORT_NAME, DRA.ACTION_NAME
+            FROM DASH_ACTION_ACCESS DAA, DASH_REPORTS DR, DASH_RPT_ACTION DRA
+           WHERE DAA.DB_REPORTID = DR.DB_REPORTID
+             AND DAA.DB_ACTIONID = DRA.DB_ACTIONID
+             AND NOT EXISTS
+           (SELECT 1
+                    FROM (SELECT ROLEID
+                            FROM ROLE
+                           WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                                      FROM DUAL)
+                            SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                              FROM T
+                            CONNECT BY LEVEL <=
+                                       LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+                          )
+                   WHERE ROLEID = 6)
+                
+             AND DAA.ROLEID IN
+                 (SELECT ROLEID
+                    FROM ROLE
+                   WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                              FROM DUAL)
+                    SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                      FROM T
+                    CONNECT BY LEVEL <=
+                               LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+                  )
+             AND ((DAA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) OR (DAA.ORG_LEVEL = -99))
+             AND DR.ACTIVATION_STATUS = 'AC'
+             AND DAA.ACTIVATION_STATUS = 'AC'
+             AND DAA.CUST_PROD_ID = P_IN_CUST_PROD_ID
+           GROUP BY DR.REPORT_NAME, DRA.ACTION_NAME
+           ORDER BY DR.REPORT_NAME;
+
 
   EXCEPTION
     WHEN OTHERS THEN
