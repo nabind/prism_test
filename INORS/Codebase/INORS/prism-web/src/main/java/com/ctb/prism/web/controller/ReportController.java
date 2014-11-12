@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -74,6 +75,9 @@ public class ReportController{
 	
 	@Autowired
 	IUsabilityService usabilityService;
+	
+	@Autowired 
+	private CookieThemeResolver themeResolver;
 
 	@RequestMapping(value = "/openDrilldownReport", method = RequestMethod.GET)
 	public ModelAndView openDrilldownReport(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -559,6 +563,10 @@ public class ReportController{
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			
+			//Added by Joy
+			String contractName = req.getParameter("contractName") != null 
+					? req.getParameter("contractName") : Utils.getContractName();
 
 			// get compiled jasper report
 			JasperReport jasperReport = null;
@@ -608,6 +616,8 @@ public class ReportController{
 				// parameters = getReportParameter(allInputControls, reportFilterTO);
 				parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, req, reportUrl);
 			}
+			parameters.put("contractName", contractName);
+			
 			if (isPrinterFriendly) {
 				parameters.put("p_Is3D", IApplicationConstants.FLAG_N);
 			}

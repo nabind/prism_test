@@ -2201,37 +2201,57 @@ public class AdminController {
 	}
 	
 	/**
-	 * Method retrieves the organization children when clicked on a organization
-	 * node. This method is called through AJAX
+	 * Method regenerate the invitation code for a student. 
+	 * This method is called through AJAX
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/regenerateActivationCode", method = RequestMethod.GET)
 	public String regenerateActivationCode(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws IOException {
+		boolean success = Boolean.FALSE;
+		String status = "";
 		try {
 			String studentBioId = request.getParameter("studentBioId");
 			String adminYear = request.getParameter("adminYear");
 			String invitationCode = request.getParameter("invitationCode");
 			String testElementId = request.getParameter("testElementId");
+			
+			// URI to generate modified IC Letter
+			StringBuffer uriBuff = new StringBuffer();
+			uriBuff.append(request.getScheme());
+			uriBuff.append("://");
+			uriBuff.append(request.getServerName());
+			uriBuff.append(":");
+			uriBuff.append(request.getServerPort());
+			uriBuff.append(request.getContextPath());
+			uriBuff.append("/icDownload.do");
+			uriBuff.append("?reportUrl=/public/PN/Report/Invitation_pdf_files");
+			uriBuff.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=-1");
+			uriBuff.append("&drillDown=true&assessmentId=105_InvLetter&p_AdminYear=-1");
+			uriBuff.append("&p_Student_Bio_Id=").append(testElementId);
+			uriBuff.append("&contractName=").append(Utils.getContractName());
+			logger.log(IAppLogger.INFO, uriBuff.toString());
 		
 			StudentTO student = new StudentTO();
 			student.setStudentBioId((studentBioId==null) ? 0 : Long.parseLong(studentBioId));
 			student.setAdminid(adminYear);
 			student.setInvitationcode(invitationCode);
 			student.setTestElementId(testElementId);
+			student.setIcLetterUri(uriBuff.toString());
 			
-			boolean success = parentService.regenerateActivationCode(student);
-			String status = (success)? "Success" : "Failed";
+			success = parentService.regenerateActivationCode(student);
+		} catch (Exception e) {
+			success = Boolean.FALSE;
+			logger.log(IAppLogger.ERROR, e.getMessage(), e);
+		}finally{
+			status = (success)? "Success" : "Failed";
 			response.setContentType("text/plain");
 			response.getWriter().write("{\"status\":\"" + status + "\"}");
-
-			
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, e.getMessage(), e);
-		} 
+		}
 
 		return null;
 	}

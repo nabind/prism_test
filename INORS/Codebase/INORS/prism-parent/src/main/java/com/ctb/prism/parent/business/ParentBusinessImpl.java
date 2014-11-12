@@ -3,19 +3,31 @@
  */
 package com.ctb.prism.parent.business;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.BusinessException;
+import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.dao.IParentDAO;
+import com.ctb.prism.parent.dao.ParentDAOImpl;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
@@ -34,6 +46,11 @@ public class ParentBusinessImpl implements IParentBusiness {
 
 	@Autowired
 	private ILoginDAO loginDAO;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
+	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentBusinessImpl.class.getName());
 
 	/*
 	 * (non-Javadoc)
@@ -272,12 +289,50 @@ public class ParentBusinessImpl implements IParentBusiness {
 	}
 
 	/*
+	 * Method modified for modified IC upload - By Joy
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.business.IParentBusiness#regenerateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
-	public boolean regenerateActivationCode(StudentTO student) throws Exception {
-		return parentDAO.regenerateActivationCode(student);
+	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
+		boolean returnFlag = parentDAO.regenerateActivationCode(student);
+
+		FileOutputStream fos = new FileOutputStream(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+		InputStream is = null;
+		try{
+			URL url = new URL(student.getIcLetterUri());
+			URLConnection urlConn = url.openConnection();
+			//logger.log(IAppLogger.INFO, "urlConn.getContentType(): "+urlConn.getContentType());
+			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+				fos.close();
+				throw new BusinessException("FAILED.[This is not a PDF.]");
+			} else {
+				is = urlConn.getInputStream();
+				IOUtils.copy(is, fos);
+				is.close();
+			}
+			logger.log(IAppLogger.INFO, "IC PDF Created: " + FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+			
+			File file = new File(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+			logger.log(IAppLogger.INFO, "Temporary IC PDF Created at: " + file.getAbsolutePath());
+			//repositoryService.uploadAsset(student.getIcLetterPath(), is);
+			repositoryService.uploadAsset(FileUtil.getDirFromFilePath(student.getIcLetterPath()), file);
+			logger.log(IAppLogger.INFO, "IC PDF Uploaded at: " + student.getIcLetterPath());
+			
+			fos.close();
+			if(file.delete()){
+				logger.log(IAppLogger.INFO, "Temporary IC PDF Deleted");
+			}else{
+				throw new BusinessException("FAILED.[Sorry. This is not a PDF.]");
+			}
+		}catch(Exception e){
+			returnFlag = false;
+			throw new BusinessException(e.getMessage());
+		}finally{
+			fos.close();
+			is.close();
+		}
+		return returnFlag;
 	}
 
 	/*

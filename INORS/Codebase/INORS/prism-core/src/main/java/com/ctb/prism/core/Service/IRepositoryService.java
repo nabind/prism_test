@@ -25,6 +25,13 @@ public interface IRepositoryService {
 	 */
 	public void uploadAsset(String key, File file);
 	
+	/**
+	 * @author Joy
+	 * "key" is full qualified file path
+	 * "is" is an InputStream object
+	 */
+	public void uploadAsset(String key, InputStream is);
+	
 	public void removeAsset(String key);
 	
 	public InputStream getAssetInputStream(String assetPath) throws IOException; 

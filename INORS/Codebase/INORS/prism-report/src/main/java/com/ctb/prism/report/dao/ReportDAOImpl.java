@@ -128,8 +128,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------IC PDF-----------------------------", jasperReport.getName()));
+		String contractName = (String)parameters.get("contractName");
 		try {
-			conn = getPrismConnection();
+			try{
+				conn = getPrismConnection();
+			}catch(Exception e){
+				conn = getPrismConnection(contractName);
+			}
+			
 			return JasperFillManager.fillReport(jasperReport, parameters, conn);
 		} catch (SQLException e) {
 			throw new Exception(e.getMessage());

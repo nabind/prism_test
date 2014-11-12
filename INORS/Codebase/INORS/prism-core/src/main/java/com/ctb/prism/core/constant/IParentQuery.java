@@ -130,7 +130,7 @@ public interface IParentQuery {
 	 *  Fix for 78188 - By Joy
 	 *  Query modified for Reset Activation Code issue - By Joy
 	 */
-	public static final String REGENERATE_ACTIVATION_CODE = "PKG_MANAGE_STUDENT.SP_REGENERATE_ACTIVATION_CODE(?,?,?,?)";
+	public static final String REGENERATE_ACTIVATION_CODE = "PKG_MANAGE_STUDENT.SP_REGENERATE_ACTIVATION_CODE(?,?,?,?,?)";
 
 	/**
 	 * update user profile when they login for the first time

@@ -28,6 +28,8 @@ public class StudentTO extends BaseTO{
 	private String testElementId ="";
 	private long bioExists = 0;
 	private String schoolName ="";
+	private String icLetterUri ="";
+	private String icLetterPath ="";
 	
 	
 	public String getTestElementId() {
@@ -158,5 +160,17 @@ public class StudentTO extends BaseTO{
 	}
 	public void setSchoolName(String schoolName) {
 		this.schoolName = schoolName;
+	}
+	public String getIcLetterUri() {
+		return icLetterUri;
+	}
+	public void setIcLetterUri(String icLetterUri) {
+		this.icLetterUri = icLetterUri;
+	}
+	public String getIcLetterPath() {
+		return icLetterPath;
+	}
+	public void setIcLetterPath(String icLetterPath) {
+		this.icLetterPath = icLetterPath;
 	}
 }

@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -14,6 +15,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -112,6 +115,26 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		key = key + file.getName();
 		logger.log(IAppLogger.INFO, "key = " + key);
 		s3client.putObject(bucket, key, file);
+	}
+	
+	/**
+	 * @author Joy
+	 * "key" is full qualified file path
+	 * "is" is an InputStream object
+	 */
+	public void uploadAsset(String key, InputStream is) {
+		logger.log(IAppLogger.INFO, "key = " + key);
+		byte[] contentBytes = null;
+		try {
+			contentBytes = IOUtils.toByteArray(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Long contentLength = Long.valueOf(contentBytes.length);
+	    ObjectMetadata metadata = new ObjectMetadata();
+	    metadata.setContentLength(contentLength);
+		//s3client.putObject(bucket, key, is, metadata);
+	    s3client.putObject(new PutObjectRequest(bucket, key, is, metadata));
 	}
 	
 	/* (non-Javadoc)

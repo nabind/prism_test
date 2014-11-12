@@ -64,7 +64,7 @@ public abstract class BaseDAO {
 	}
 	
 	public JdbcTemplate getJdbcTemplatePrism(String contractName) {
-		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
+		//logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
 		if("inors".equals(contractName)) return jdbcTemplateInors;
 		if("tasc".equals(contractName)) return jdbcTemplateTasc;
 		else return null;
@@ -91,6 +91,15 @@ public abstract class BaseDAO {
 	 */
 	public Connection getPrismConnection() throws SQLException {
 		return getJdbcTemplatePrism().getDataSource().getConnection();
+	}
+	
+	/**
+	 * @author Joy
+	 * @return the connection object for prism DB
+	 * @throws SQLException
+	 */
+	public Connection getPrismConnection(String contractName) throws SQLException {
+		return getJdbcTemplatePrism(contractName).getDataSource().getConnection();
 	}
 	
 	/**

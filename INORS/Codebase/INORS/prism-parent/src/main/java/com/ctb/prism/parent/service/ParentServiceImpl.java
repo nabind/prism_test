@@ -240,11 +240,12 @@ public class ParentServiceImpl implements IParentService {
 	}
 
 	/*
+	 * Method modified for modified IC upload, add transaction - By Joy
 	 * (non-Javadoc)
 	 * 
 	 * @see com.ctb.prism.parent.service.IParentService#regenerateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor=Exception.class)
 	public boolean regenerateActivationCode(StudentTO student) throws Exception {
 		return parentBusiness.regenerateActivationCode(student);
 	}

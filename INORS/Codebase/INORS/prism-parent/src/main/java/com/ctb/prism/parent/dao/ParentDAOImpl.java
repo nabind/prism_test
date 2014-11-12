@@ -1752,7 +1752,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - regenerateActivationCode()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
-		boolean returnFlag = false;
+		boolean returnFlag = Boolean.FALSE;
 		
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1760,8 +1760,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.REGENERATE_ACTIVATION_CODE + "}");
 					cs.setString(1, student.getInvitationcode());
 					cs.setString(2, student.getTestElementId());
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1770,10 +1771,11 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(3);
+						statusTO.setOther(cs.getString(3));
+						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
-						statusTO.setErrorMsg(cs.getString(4));
-						Utils.logError(cs.getString(4));
+						statusTO.setErrorMsg(cs.getString(5));
+						Utils.logError(cs.getString(5));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1781,18 +1783,18 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				}
 			});
 			
-			if(Long.parseLong(objectValueTO.getValue()) > 0){
-				returnFlag = true;
-			}
+			student.setIcLetterPath(objectValueTO.getOther());
 		} catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		} finally {
+			if(Long.parseLong(objectValueTO.getValue()) > 0){
+				returnFlag = Boolean.TRUE;
+			}
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.ERROR, "ParentDAOImpl - regenerateActivationCode() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - regenerateActivationCode() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;
-	
 	}
 	
 
