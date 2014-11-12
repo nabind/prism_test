@@ -357,7 +357,8 @@ function resetPrismActions() {
 			resetJspElements(data);
 		},
 		error : function(data) {
-			$.modal.alert(strings['script.org.error']);
+			//Temporary fix for TD 81027 - By Joy
+			//$.modal.alert(strings['script.org.error']);
 		}
 	});
 	unblockUI();
