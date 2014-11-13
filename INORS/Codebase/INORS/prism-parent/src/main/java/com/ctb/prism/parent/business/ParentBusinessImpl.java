@@ -299,38 +299,34 @@ public class ParentBusinessImpl implements IParentBusiness {
 
 		FileOutputStream fos = new FileOutputStream(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
 		InputStream is = null;
+		File file = null;
 		try{
 			URL url = new URL(student.getIcLetterUri());
 			URLConnection urlConn = url.openConnection();
-			//logger.log(IAppLogger.INFO, "urlConn.getContentType(): "+urlConn.getContentType());
 			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-				fos.close();
 				throw new BusinessException("FAILED.[This is not a PDF.]");
 			} else {
 				is = urlConn.getInputStream();
 				IOUtils.copy(is, fos);
-				is.close();
 			}
 			logger.log(IAppLogger.INFO, "IC PDF Created: " + FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
 			
-			File file = new File(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+			file = new File(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
 			logger.log(IAppLogger.INFO, "Temporary IC PDF Created at: " + file.getAbsolutePath());
 			//repositoryService.uploadAsset(student.getIcLetterPath(), is);
 			repositoryService.uploadAsset(FileUtil.getDirFromFilePath(student.getIcLetterPath()), file);
 			logger.log(IAppLogger.INFO, "IC PDF Uploaded at: " + student.getIcLetterPath());
-			
-			fos.close();
-			if(file.delete()){
-				logger.log(IAppLogger.INFO, "Temporary IC PDF Deleted");
-			}else{
-				throw new BusinessException("FAILED.[Sorry. This is not a PDF.]");
-			}
 		}catch(Exception e){
 			returnFlag = false;
 			throw new BusinessException(e.getMessage());
 		}finally{
-			fos.close();
-			is.close();
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(fos);
+			if(file.delete()){
+				logger.log(IAppLogger.INFO, "Temporary IC PDF Deleted");
+			}else{
+				throw new BusinessException("FAILED.[Temporary IC PDF can't be deleted]");
+			}
 		}
 		return returnFlag;
 	}
