@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.prism</groupId>
+  <artifactId>PrismPdfUtility</artifactId>
+  <name>PrismPdfUtility</name>
+  <version>0.0.1</version>
+  <url>http://maven.apache.org</url>
+  <build />
+  <properties>
+    <version-spring-security>3.1.0.RELEASE</version-spring-security>
+    <version-log4j>1.2.17</version-log4j>
+    <version-spring-framework>4.0.0.RELEASE</version-spring-framework>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version-itext>2.1.7</version-itext>
+  </properties>
+</project>
+
