@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.business.IInorsBusiness;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
@@ -25,17 +26,21 @@ public class InorsServiceImpl implements IInorsService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#batchPDFDownload(java.lang.String)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#batchPDFDownload(java.lang.
+	 * String)
 	 */
 	@Async
-	public void batchPDFDownload(String jobId, String contractName) {
-		inorsBusiness.batchPDFDownload(jobId, contractName);
+	public void asyncPDFDownload(String jobId, String contractName) {
+		inorsBusiness.asyncPDFDownload(jobId, contractName);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#createJob(com.ctb.prism.inors.transferobject.BulkDownloadTO)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#createJob(com.ctb.prism.inors
+	 * .transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO) {
 		return inorsBusiness.createJob(bulkDownloadTO);
@@ -46,14 +51,15 @@ public class InorsServiceImpl implements IInorsService {
 	 * 
 	 * @see com.ctb.prism.inors.service.IInorsService#getJob(java.lang.String)
 	 */
-	public BulkDownloadTO getJob(String jobId) {
+	public JobTrackingTO getJob(String jobId) {
 		return inorsBusiness.getJob(jobId);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#getDownloadData(java.util.Map)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#getDownloadData(java.util.Map)
 	 */
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		return inorsBusiness.getDownloadData(paramMap);
@@ -62,7 +68,9 @@ public class InorsServiceImpl implements IInorsService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#populateDistrictGrt(java.util.Map)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#populateDistrictGrt(java.util
+	 * .Map)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap) {
 		return inorsBusiness.populateDistrictGrt(paramMap);
@@ -71,7 +79,9 @@ public class InorsServiceImpl implements IInorsService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#populateSchoolGrt(java.util.Map)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#populateSchoolGrt(java.util
+	 * .Map)
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap) {
 		return inorsBusiness.populateSchoolGrt(paramMap);
@@ -80,7 +90,9 @@ public class InorsServiceImpl implements IInorsService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#getProductNameById(java.lang.Long)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#getProductNameById(java.lang
+	 * .Long)
 	 */
 	public String getProductNameById(Long productId) {
 		return inorsBusiness.getProductNameById(productId);
@@ -89,7 +101,9 @@ public class InorsServiceImpl implements IInorsService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.inors.service.IInorsService#getTableData(java.util.Map, java.util.ArrayList)
+	 * @see
+	 * com.ctb.prism.inors.service.IInorsService#getTableData(java.util.Map,
+	 * java.util.ArrayList)
 	 */
 	public ArrayList<ArrayList<String>> getTabulerData(Map<String, String> paramMap, ArrayList<String> aliasList, ArrayList<String> headerList) {
 		return inorsBusiness.getTabulerData(paramMap, aliasList, headerList);

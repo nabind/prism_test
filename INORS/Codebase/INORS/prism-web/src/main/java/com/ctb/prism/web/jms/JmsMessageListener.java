@@ -47,7 +47,7 @@ public class JmsMessageListener /* implements MessageListener */{
 					String contractName = to.getContractName();
 					LOG.info("jobId = " + jobId);
 					LOG.info("contractName = " + contractName);
-					inorsService.batchPDFDownload(jobId, contractName);
+					inorsService.asyncPDFDownload(jobId, contractName);
 				} catch (JsonSyntaxException e) {
 					e.printStackTrace();
 				}
@@ -85,7 +85,7 @@ public class JmsMessageListener /* implements MessageListener */{
 					String contractName = to.getContractName();
 					LOG.info("jobId = " + jobId);
 					LOG.info("contractName = " + contractName);
-					inorsService.batchPDFDownload(jobId, contractName);
+					inorsService.asyncPDFDownload(jobId, contractName);
 				} catch (JsonSyntaxException e) {
 					e.printStackTrace();
 				}

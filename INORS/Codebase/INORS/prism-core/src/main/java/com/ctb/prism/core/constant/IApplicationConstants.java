@@ -42,6 +42,8 @@ public interface IApplicationConstants {
 	public static enum JOB_STATUS {
 		SU, IP, CO, ER, DE, AR, FT, NA
 	};
+	
+	public static enum CANDIDATE_RPT_USER_TYPE { REGULAR, EDUCENTER };
 
 	public static enum DASH_MESSAGE_TYPE {
 		PSCM, FN, RN, GSCM, EN, RP, RPN, DM, RM, RL, MI, RSCM

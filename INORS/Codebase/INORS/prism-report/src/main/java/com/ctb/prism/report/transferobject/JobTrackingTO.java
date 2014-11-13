@@ -37,6 +37,8 @@ public class JobTrackingTO extends BaseTO {
 	private String filePath;
 	private QuerySheetTO querySheetTO;
 	private long orgLevel;
+	private String s3Key;
+	private String contractName;
 
 	public String getUserName() {
 		return userName;
@@ -261,6 +263,22 @@ public class JobTrackingTO extends BaseTO {
 
 	public void setOrgLevel(long orgLevel) {
 		this.orgLevel = orgLevel;
+	}
+
+	public String getS3Key() {
+		return s3Key;
+	}
+
+	public void setS3Key(String s3Key) {
+		this.s3Key = s3Key;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
 }

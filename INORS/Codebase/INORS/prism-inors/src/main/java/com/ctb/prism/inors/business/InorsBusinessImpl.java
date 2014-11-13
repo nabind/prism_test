@@ -9,8 +9,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -20,6 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +30,8 @@ import com.ctb.prism.admin.dao.IAdminDAO;
 import com.ctb.prism.admin.transferobject.ObjectValueTO;
 import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IApplicationConstants.CANDIDATE_RPT_USER_TYPE;
+import com.ctb.prism.core.constant.IApplicationConstants.JOB_STATUS;
 import com.ctb.prism.core.constant.IEmailConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -38,14 +43,12 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.dao.IInorsDAO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-import com.ctb.prism.inors.util.ConcatPdf;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.business.IReportBusiness;
 import com.ctb.prism.report.transferobject.GroupDownloadTO;
 import com.ctb.prism.report.transferobject.JobTrackingTO;
 import com.lowagie.text.DocumentException;
-
 /**
  * @author TCS
  * 
@@ -80,7 +83,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO) {
 		String[] allNodes = (bulkDownloadTO.getSelectedNodes() != null) ? bulkDownloadTO.getSelectedNodes().split(",") : null;
-		;
 		// if(allNodes == null) return bulkDownloadTO;
 		List<ObjectValueTO> students = null;
 		long studentCount = 0;
@@ -217,13 +219,23 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		return studentIds.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#getJob(java.lang.String)
 	 */
-	public BulkDownloadTO getJob(String jobId) {
+	public com.ctb.prism.core.transferobject.JobTrackingTO getJob(String jobId) {
 		return inorsDAO.getJob(jobId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.inors.business.IInorsBusiness#updateJob(com.ctb.prism.core.transferobject.JobTrackingTO)
+	 */
+	public com.ctb.prism.core.transferobject.JobTrackingTO updateJob(com.ctb.prism.core.transferobject.JobTrackingTO bulkDownloadTO) {
+		return inorsDAO.updateJob(bulkDownloadTO);
+	}
+	
+	public com.ctb.prism.core.transferobject.JobTrackingTO updateJobStatusAndLog(com.ctb.prism.core.transferobject.JobTrackingTO bulkDownloadTO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*
@@ -231,16 +243,165 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * 
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#batchPDFDownload(java.lang.String)
 	 */
-	public void batchPDFDownload(String jobId, String contractName) {
-		logger.log(IAppLogger.INFO, "START ================== f r o m  async method --------------- ");
+	public void asyncPDFDownload(String jobId, String contractName) {
 		try {
-			batchPDFDownload(jobId, null, contractName);
+			logger.log(IAppLogger.INFO, "START ================== f r o m  async method --------------- ");
+			if (IApplicationConstants.CONTRACT_NAME_TASC.equalsIgnoreCase(contractName)) {
+				logger.log(IAppLogger.INFO, "=START================ DOWNLOADING CANDIDATE REPORTS ================== JOB ID : " + jobId);
+				batchCRPDFDownload(jobId, contractName);
+				logger.log(IAppLogger.INFO, "=END================== DOWNLOADING CANDIDATE REPORTS ================== JOB ID : " + jobId);
+			} else if (IApplicationConstants.CONTRACT_NAME_INORS.equalsIgnoreCase(contractName)) {
+				batchPDFDownload(jobId, contractName);
+			} else {
+				logger.log(IAppLogger.ERROR, "Invalid Contract Name: " + contractName);
+			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Bulk Download Failed for Job Id: " + jobId);
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "END   ================== f r o m  async method --------------- ");
 	}
+	
+	/**
+	 * Process candidate report download
+	 * @param jobId
+	 * @param jobTO
+	 */
+	private void batchCRPDFDownload(String jobId, String contractName) {
+		com.ctb.prism.core.transferobject.JobTrackingTO jobTO = getJob(jobId); // TODO : Initialize from database
+		OutputStream fos = null;
+		InputStream is = null;
+		StringBuffer log = new StringBuffer();
+		
+		// set status to inprogress
+		try {
+			jobTO.setJobStatus(JOB_STATUS.IP.toString());
+			updateJob(jobTO);
+			
+			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPath"), File.separator);
+			String[] otherParams = jobTO.getOtherRequestparams().split(",");
+			String userType = (otherParams != null && otherParams.length > 1) ? 
+					otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
+			String[] studentBioIds = (jobTO.getRequestDetails() != null) ? jobTO.getRequestDetails().split(",") : null;
+			
+			// split into pieces with a max. size of as defined - jasperreports.properties : CRConcurrentStudSize
+			List<String[]> list = splitArray(studentBioIds, 
+					(propertyLookup.get("CRConcurrentStudSize") != null)? 
+							Integer.parseInt(propertyLookup.get("CRConcurrentStudSize")) : 50);
+			
+			List<String> studentfiles = new LinkedList<String>();
+			List<String> archieveFileNames = new LinkedList<String>();
+			int count = 0;
+			for(String[] arrStudentIds : list) {
+				//String[] StudAndFormId = studentBioId.split("\\|");
+				logger.log(IAppLogger.INFO, "\nDownloading Candidate Report for " + StringUtils.join(arrStudentIds,','));
+				String tempFileName = (CustomStringUtil.appendString(
+						jobTO.getRequestFilename(), "_", ""+count++, "_", Utils.getDateTime(), ".pdf"));
+				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
+				StringBuffer URLStringBuf = new StringBuffer();
+				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
+				URLStringBuf.append("icDownload.do?reportUrl=").append(otherParams[0]);
+				URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
+				URLStringBuf.append("&LoggedInUserName=").append(jobTO.getUserName());
+				URLStringBuf.append("&LoggedInUserId=").append(jobTO.getUserId());
+				URLStringBuf.append("&p_Student_Bio_Id=").append(StringUtils.join(arrStudentIds,','));
+				URLStringBuf.append("&p_Form_Id=").append("-1");
+				URLStringBuf.append("&p_Is_Bulk=1&p_Admin_Name=").append(jobTO.getCustomerId()).append("&p_User_Type=").append(userType);
+				
+				URL url1 = new URL(URLStringBuf.toString());
+				fos = new FileOutputStream(fileName);
+				
+				// Contacting the URL
+				logger.log(IAppLogger.INFO, "\nConnecting to: " + url1.toString());
+				URLConnection urlConn = url1.openConnection();
+	
+				// Checking whether the URL contains a PDF
+				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
+					log.append(CustomStringUtil.appendString(
+							"Error getting candidate report for Student Bio Id # ", arrStudentIds.toString()));
+				} else {
+					// Read the PDF from the URL and save to a local file
+					is = url1.openStream();
+					IOUtils.copy(is, fos);
+					logger.log(IAppLogger.INFO, "\n------------CR PDF Created: " + fileName);
+				}
+				studentfiles.add(fileName);
+				archieveFileNames.add(tempFileName);
+				
+				// release resources
+				IOUtils.closeQuietly(is);
+				IOUtils.closeQuietly(fos);
+			}
+			
+			// create archive 
+			String archiveFileName = CustomStringUtil.appendString(
+					folderLoc, jobTO.getRequestFilename(), ".zip");
+			PdfGenerator.zipit(studentfiles, archieveFileNames, archiveFileName);
+			
+			// calculating file size
+			File file = new File(archiveFileName);
+			double size = 0;
+			DecimalFormat f = new DecimalFormat("##.00");
+			if(file.exists()) {
+				size = file.length()/1024/1024;
+				if(size == 0) {
+					size = file.length() / 1024;
+					jobTO.setFileSize(f.format(size) + "K");
+				} else {
+					jobTO.setFileSize(f.format(size) + "M");
+				}
+			}
+			
+			// set status to completed
+			jobTO.setRequestFilename(archiveFileName);
+			jobTO.setJobStatus(JOB_STATUS.CO.toString());
+			jobTO.setJobLog(log.toString());
+			updateJob(jobTO);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, " : FAILED.\n[" + e.getMessage() + "]\n");
+			log.append("Error Creating CR files : " + e.getMessage());
+			// set status to error
+			jobTO.setJobStatus(JOB_STATUS.ER.toString());
+			jobTO.setJobLog(log.toString());
+			updateJobStatusAndLog(jobTO);
+			System.exit(0);
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(fos);
+	    }
+	}
+	
+	/**
+	 * Split array into multiple schemas
+	 * @param <T>
+	 * @param array
+	 * @param max
+	 * @return
+	 */
+	public static <T extends Object> List<T[]> splitArray(T[] array, int max){
+        int x = array.length / max;
+	    int lower = 0;
+	    int upper = 0;
+	    List<T[]> list = new ArrayList<T[]>();
+        if(array.length == 1) {
+            list.add(Arrays.copyOfRange(array, 0, 1));
+        } else {
+    	    for(int i=0; i<x; i++){
+    	      upper+=max;
+    	      list.add(Arrays.copyOfRange(array, lower, upper));
+    	      lower = upper;
+    	    }
+    	    if(upper < array.length-1){
+    	      lower = upper;
+    	      upper = array.length;
+    	      list.add(Arrays.copyOfRange(array, lower, upper));
+    	    }
+        }
+	    return list;
+	  }
 
 	/**
 	 * Process inors file download
@@ -248,7 +409,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param jobId
 	 * @param jobTO
 	 */
-	private void batchPDFDownload(String jobId, BulkDownloadTO jobTO, String contractName) {
+	private void batchPDFDownload(String jobId, String contractName) {
 		logger.log(IAppLogger.INFO, "Enter: batchPDFDownload()");
 		logger.log(IAppLogger.INFO, "contractName: " + contractName);
 		try{
@@ -353,7 +514,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					try {
 						String envString = to.getEnvString().toUpperCase();
 						logger.log(IAppLogger.INFO, "envString = " + envString);
-						String keyWithFileName = "/" + envString + "/" + zipFileName;
+						String keyWithFileName = envString + "/" + zipFileName;
 						keyWithFileName = keyWithFileName.replace("//", "/");
 						logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
 						String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
@@ -453,172 +614,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
 
-	/**
-	 * Process ic files
-	 * 
-	 * @param jobTO
-	 * @param folderLoc
-	 * @param students
-	 * @param isrFileMap
-	 * @param log
-	 */
-	private void procesICFiles(BulkDownloadTO jobTO, String folderLoc, String[] students, Map<String, String> isrFileMap, StringBuffer log) {
-		OutputStream fos = null;
-		InputStream is = null;
-		try {
-			List<String> isrFiles = new ArrayList<String>();
-			List<String> studentfiles = new LinkedList<String>();
-			List<String> archieveFileNames = new LinkedList<String>();
-			if (IApplicationConstants.DOWNLOAD_TYPE_MERGED.equals(jobTO.getRequestType())) {
-				// add querysheet file
-				isrFiles.add(CustomStringUtil.appendString(folderLoc, jobTO.getQuerysheetFile()));
-				// add student IC files
-				for (String studentId : students) {
-					isrFiles.add(isrFileMap.get(studentId));
-				}
-				String fileName = CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), "merged.pdf");
-				fos = new FileOutputStream(fileName);
-				ConcatPdf.concatPDFs(isrFiles, fos, false, folderLoc);
-				studentfiles.add(fileName);
-				archieveFileNames.add(jobTO.getFileName() + "merged.pdf");
-			} else {
-				// add querysheet file
-				studentfiles.add(CustomStringUtil.appendString(folderLoc, jobTO.getQuerysheetFile()));
-				archieveFileNames.add(CustomStringUtil.appendString("0-", jobTO.getQuerysheetFile()));
-				for (String studentId : students) {
-					// add student IC files
-					String isrFile = isrFileMap.get(studentId);
-					studentfiles.add(isrFile);
-					archieveFileNames.add(CustomStringUtil.appendString("1-", isrFile.substring(isrFile.lastIndexOf(File.separator) + 1)));
-				}
-			}
-
-			// create archive
-			String archiveFileName = CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), Utils.getDateTime(), "IC.zip");
-			PdfGenerator.zipit(studentfiles, archieveFileNames, archiveFileName);
-
-			File file = new File(archiveFileName);
-			double size = 0;
-			DecimalFormat f = new DecimalFormat("##.00");
-			if (file.exists()) {
-				size = file.length() / 1024 / 1024;
-				if (size == 0) {
-					size = file.length() / 1024;
-					jobTO.setFileSize(f.format(size) + "K");
-				} else {
-					jobTO.setFileSize(f.format(size) + "M");
-				}
-			}
-
-			// set status to completed
-			jobTO.setStatus(IApplicationConstants.COMPLETED_FLAG);
-			jobTO.setLog(log.toString());
-			updateJob(jobTO);
-
-		} catch (Exception npe) {
-			logger.log(IAppLogger.ERROR, " : FAILED.\n[" + npe.getMessage() + "]\n");
-			log.append("Error merging/archiving files : " + npe.getMessage());
-			// set status to error
-			jobTO.setStatus(IApplicationConstants.ERROR_FLAG);
-			jobTO.setLog(log.toString());
-			updateStatus(jobTO);
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(fos);
-		}
-	}
-
-	/**
-	 * Process Group File Download
-	 * 
-	 * @param jobTO
-	 * @param folderLoc
-	 * @param students
-	 * @param isrFileMap
-	 * @param log
-	 */
-	private void procesFiles(BulkDownloadTO jobTO, String folderLoc, String[] students, Map<String, String> isrFileMap, StringBuffer log) {
-		OutputStream fos = null;
-		InputStream is = null;
-		try {
-			List<String> isrFiles = new ArrayList<String>();
-			List<String> studentfiles = new LinkedList<String>();
-			List<String> archieveFileNames = new LinkedList<String>();
-			if (IApplicationConstants.DOWNLOAD_TYPE_MERGED.equals(jobTO.getRequestType())) {
-				// add querysheet file
-				isrFiles.add(CustomStringUtil.appendString(folderLoc, jobTO.getQuerysheetFile()));
-				// add student ISR files
-				for (String studentId : students) {
-					isrFiles.add(isrFileMap.get(studentId));
-					// add image print files
-					if ("3".equals(jobTO.getGroupFile())) {
-						// TODO
-						/** GET CODE for IMAGE PRINT */
-					}
-				}
-				// merge querysheet file + isr + image print
-				String fileName = CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), "merged.pdf");
-				fos = new FileOutputStream(fileName);
-				ConcatPdf.concatPDFs(isrFiles, fos, false, folderLoc);
-				studentfiles.add(fileName);
-				archieveFileNames.add(jobTO.getFileName() + "merged.pdf");
-			} else {
-				// add querysheet file
-				studentfiles.add(CustomStringUtil.appendString(folderLoc, jobTO.getQuerysheetFile()));
-				archieveFileNames.add(CustomStringUtil.appendString("0-", jobTO.getQuerysheetFile()));
-				for (String studentId : students) {
-					// add student ISR files
-					String isrFile = isrFileMap.get(studentId);
-					studentfiles.add(isrFile);
-					// add image print files
-					if ("3".equals(jobTO.getGroupFile())) {
-						archieveFileNames.add(CustomStringUtil.appendString("1a-", isrFile.substring(isrFile.lastIndexOf(File.separator) + 1)));
-						// TODO
-						/** GET CODE for IMAGE PRINT */
-						// studentfiles.add( "imageprint file name with loc" );
-						// archieveFileNames.add(CustomStringUtil.appendString("1b-", "image print file name"));
-					} else {
-						archieveFileNames.add(CustomStringUtil.appendString("1-", isrFile.substring(isrFile.lastIndexOf(File.separator) + 1)));
-					}
-
-				}
-			}
-
-			// create archive
-			String archiveFileName = CustomStringUtil.appendString(folderLoc, jobTO.getFileName(), Utils.getDateTime(), ".zip");
-			PdfGenerator.zipit(studentfiles, archieveFileNames, archiveFileName);
-
-			File file = new File(archiveFileName);
-			double size = 0;
-			DecimalFormat f = new DecimalFormat("##.00");
-			if (file.exists()) {
-				size = file.length() / 1024 / 1024;
-				if (size == 0) {
-					size = file.length() / 1024;
-					jobTO.setFileSize(f.format(size) + "K");
-				} else {
-					jobTO.setFileSize(f.format(size) + "M");
-				}
-			}
-
-			// set status to completed
-			jobTO.setStatus(IApplicationConstants.COMPLETED_FLAG);
-			jobTO.setLog(log.toString());
-			updateJob(jobTO);
-
-		} catch (Exception npe) {
-			logger.log(IAppLogger.ERROR, " : FAILED.\n[" + npe.getMessage() + "]\n");
-			log.append("Error merging/archiving files : " + npe.getMessage());
-			// set status to error
-			jobTO.setStatus(IApplicationConstants.ERROR_FLAG);
-			jobTO.setLog(log.toString());
-			updateStatus(jobTO);
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(fos);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -635,24 +630,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	public BulkDownloadTO updateJobLog(BulkDownloadTO bulkDownloadTO) {
 		return inorsDAO.updateJobLog(bulkDownloadTO);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.inors.business.IInorsBusiness#updateJob(com.ctb.prism.inors.transferobject.BulkDownloadTO)
-	 */
-	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO) {
-		return inorsDAO.updateJob(bulkDownloadTO);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.inors.business.IInorsBusiness#updateJobStatusAnsLog(com.ctb.prism.inors.transferobject.BulkDownloadTO)
-	 */
-	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO) {
-		return inorsDAO.updateJobStatusAnsLog(bulkDownloadTO);
 	}
 
 	/**
@@ -755,4 +732,5 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	public String getCurrentAdminYear() {
 		return inorsDAO.getCurrentAdminYear();
 	}
+
 }

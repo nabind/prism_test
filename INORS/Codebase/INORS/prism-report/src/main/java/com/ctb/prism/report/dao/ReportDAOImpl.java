@@ -1365,6 +1365,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				// to.setExtractStartdate(extractStartdate);
 				// to.setExtractEnddate(extractEnddate);
 				to.setJobName((String) data.get("JOB_NAME"));
+				to.setS3Key((String) data.get("S3_KEY"));
 				allGroupFiles.add(to);
 			}
 		}

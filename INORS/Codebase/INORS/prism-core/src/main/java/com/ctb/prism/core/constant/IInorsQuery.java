@@ -32,11 +32,11 @@ public interface IInorsQuery {
 	
 	public static final String UPDATE_LOG = "UPDATE GROUP_DOWNLOAD_STATUS SET LOG = ? WHERE JOBID = ?";
 	
-	public static final String UPDATE_STATUS_AND_LOG = "UPDATE GROUP_DOWNLOAD_STATUS SET STATUS = ? , SET LOG = ? WHERE JOBID = ?";
+	public static final String UPDATE_STATUS_AND_LOG = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATE WHERE JOB_ID = ?";
 	
 	public static final String UPDATE_JOB = CustomStringUtil.appendString(
-			" Update GROUP_DOWNLOAD_STATUS set status = ?, file_location = ?, file_size = ?, log = ?,",
-			" completion_date = sysdate where jobid = ? ");
+			" UPDATE JOB_TRACKING SET JOB_STATUS = ?, REQUEST_FILENAME = ?, JOB_LOG = ?, FILE_SIZE = ?, ",
+			" EXTRACT_ENDDATE = SYSDATE, UPDATED_DATE_TIME = SYSDATE WHERE JOB_ID = ? ");
 	
 	public static final String GET_SCHOOL_CLASS_FOR_STUDENT = CustomStringUtil.appendString(
 			" select org_nodeid CLS, org_node_name CLS_NAME, node.parent_org_nodeid SCH, (select org_node_name from org_node_dim where org_nodeid = node.parent_org_nodeid) SCH_NAME ", 

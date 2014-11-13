@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
 /**
@@ -27,7 +28,7 @@ public interface IInorsDAO {
 	 * @param jobId
 	 * @return
 	 */
-	public BulkDownloadTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId);
 
 	/**
 	 * update job status
@@ -51,7 +52,7 @@ public interface IInorsDAO {
 	 * @param bulkDownloadTO
 	 * @return
 	 */
-	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO);
+	public JobTrackingTO updateJobStatusAndLog(JobTrackingTO bulkDownloadTO);
 
 	/**
 	 * update job after completion
@@ -59,7 +60,7 @@ public interface IInorsDAO {
 	 * @param bulkDownloadTO
 	 * @return
 	 */
-	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO);
+	public JobTrackingTO updateJob(JobTrackingTO bulkDownloadTO);
 
 	/**
 	 * Get class and school for the student

@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.stereotype.Repository;
@@ -21,13 +22,13 @@ import com.ctb.prism.core.dao.BaseDAO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
-import org.springframework.cache.annotation.Cacheable;
 
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
@@ -77,63 +78,75 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return bulkDownloadTO;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * update job after completion
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJobStatusAnsLog(com.ctb.prism.inors.transferobject.BulkDownloadTO)
+	 * @param JobTrackingTO
+	 * @return boolean
 	 */
-	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS_AND_LOG, bulkDownloadTO.getStatus(), bulkDownloadTO.getLog(), bulkDownloadTO.getJobId());
-		bulkDownloadTO.setDbStatus(true);
-		return bulkDownloadTO;
+	public JobTrackingTO updateJob(JobTrackingTO jobTrackingTO) {
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, 
+				jobTrackingTO.getJobStatus(),
+				jobTrackingTO.getRequestFilename(),
+				jobTrackingTO.getJobLog(),
+				jobTrackingTO.getFileSize(),
+				jobTrackingTO.getJobId());
+		jobTrackingTO.setSuccess(true);
+		return jobTrackingTO;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * update job status and log
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#updateJob(com.ctb.prism.inors. transferobject.BulkDownloadTO)
+	 * @param jobTrackingTO
+	 * @return boolean
 	 */
-	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, bulkDownloadTO.getStatus(), bulkDownloadTO.getFileLocation(), bulkDownloadTO.getFileSize(), bulkDownloadTO.getLog(),
-				bulkDownloadTO.getJobId());
-		bulkDownloadTO.setDbStatus(true);
-		return bulkDownloadTO;
+	public JobTrackingTO updateJobStatusAndLog(JobTrackingTO jobTrackingTO) {
+		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_STATUS_AND_LOG, jobTrackingTO.getJobStatus(), jobTrackingTO.getJobLog(), jobTrackingTO.getJobId());
+		jobTrackingTO.setSuccess(true);
+		return jobTrackingTO;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * get job details
 	 * 
-	 * @see com.ctb.prism.inors.dao.IInorsDAO#getJob(java.lang.String)
+	 * @param jobId
+	 * @return
 	 */
-	public BulkDownloadTO getJob(String jobId) {
-		BulkDownloadTO bulkDownloadTO = null;
-		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.JOB_DETAILS, jobId);
-		if (lstData.size() > 0) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				bulkDownloadTO = new BulkDownloadTO();
-				bulkDownloadTO.setJobId(((BigDecimal) (fieldDetails.get("ID"))).longValue());
-				bulkDownloadTO.setFileName((String) (fieldDetails.get("FILE_NAME")));
-				bulkDownloadTO.setFileLocation((String) (fieldDetails.get("LOC")));
-				bulkDownloadTO.setQuerysheetFile((String) (fieldDetails.get("QSHEET")));
-				bulkDownloadTO.setUdatedBy(((BigDecimal) (fieldDetails.get("userid"))).longValue());
-				bulkDownloadTO.setSelectedNodes((String) (fieldDetails.get("DETAILS")));
-				bulkDownloadTO.setStatus((String) (fieldDetails.get("status")));
-				bulkDownloadTO.setPercentageDone(((BigDecimal) (fieldDetails.get("PERCT"))).toString());
-				bulkDownloadTO.setRequestedDate(((java.sql.Timestamp) (fieldDetails.get("REQ_DT"))).toString());
-				bulkDownloadTO.setCompletedDate((fieldDetails.get("COMP_DT") != null) ? ((java.sql.Timestamp) (fieldDetails.get("COMP_DT"))).toString() : null);
-				bulkDownloadTO.setFileSize((String) (fieldDetails.get("SIZ")));
-				bulkDownloadTO.setEmail((String) (fieldDetails.get("email")));
-				bulkDownloadTO.setCustomerId(((BigDecimal) (fieldDetails.get("customerid"))).toString());
-				bulkDownloadTO.setGrade((fieldDetails.get("gradeid") != null) ? ((BigDecimal) (fieldDetails.get("gradeid"))).toString() : "");
-				bulkDownloadTO.setTestAdministration((fieldDetails.get("adminid") != null) ? ((BigDecimal) (fieldDetails.get("adminid"))).toString() : "");
-				bulkDownloadTO.setReportUrl((String) (fieldDetails.get("URL")));
-				bulkDownloadTO.setRequestType((String) (fieldDetails.get("TYPE")));
-				bulkDownloadTO.setLog((String) (fieldDetails.get("log")));
-				bulkDownloadTO.setDownloadMode((String) (fieldDetails.get("D_TYPE")));
+	public JobTrackingTO getJob(String jobId) {
+		JobTrackingTO jobTrackingTO = null;
+		try {
+			List<Map<String, Object>> lstData = null;
+			logger.log(IAppLogger.INFO, "Get job");
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.JOB_DETAILS, jobId);
+			if (lstData.size() > 0) {
+				for (Map<String, Object> fieldDetails : lstData) {
+					jobTrackingTO = new JobTrackingTO();
+					jobTrackingTO.setJobId(((BigDecimal) (fieldDetails.get("JOB_ID"))).longValue());
+					jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("userid"))).toString());
+					jobTrackingTO.setUserName((String) (fieldDetails.get("username")));
+					jobTrackingTO.setJobName((String) (fieldDetails.get("JOB_NAME")));
+					jobTrackingTO.setExtractCategory((String) (fieldDetails.get("EXTRACT_CATEGORY")));
+					jobTrackingTO.setExtractFiletype((String) (fieldDetails.get("EXTRACT_FILETYPE")));
+					jobTrackingTO.setRequestType((String) (fieldDetails.get("REQUEST_TYPE")));
+					jobTrackingTO.setRequestSummary((String) (fieldDetails.get("REQUEST_SUMMARY")));
+					jobTrackingTO.setRequestDetails((String) (fieldDetails.get("REQUEST_DETAILS")));
+					jobTrackingTO.setRequestFilename((String) (fieldDetails.get("REQUEST_FILENAME")));
+					jobTrackingTO.setRequestEmail((String) (fieldDetails.get("REQUEST_EMAIL")));
+					jobTrackingTO.setJobLog((String) (fieldDetails.get("JOB_LOG")));
+					jobTrackingTO.setJobStatus((String) (fieldDetails.get("JOB_STATUS")));
+					jobTrackingTO.setAdminId((((BigDecimal) fieldDetails.get("ADMINID")) != null) ? ((BigDecimal) fieldDetails.get("ADMINID")).toString() : null);
+					jobTrackingTO.setCustomerId((((BigDecimal) fieldDetails.get("CUSTOMERID")) != null) ? ((BigDecimal) fieldDetails.get("CUSTOMERID")).toString() : null);
+					jobTrackingTO.setOtherRequestparams((String) (fieldDetails.get("OTHER_REQUEST_PARAMS")));
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "No job found !!");
 			}
+		} catch (Exception ex) {
+			logger.log(IAppLogger.ERROR, "Error getting job details" + ex.getMessage());
+			ex.printStackTrace();
 		}
-		return bulkDownloadTO;
+		return jobTrackingTO;
 	}
 
 	/*

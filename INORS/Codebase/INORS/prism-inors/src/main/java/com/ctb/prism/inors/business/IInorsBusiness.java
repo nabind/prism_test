@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
-
 /**
  * @author TCS
  * 
@@ -26,14 +26,14 @@ public interface IInorsBusiness {
 	 * @param jobId
 	 * @return
 	 */
-	public BulkDownloadTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId);
 
 	/**
 	 * Method to download batch PDF in asynchronous mode.
 	 * 
 	 * @param jobId
 	 */
-	public void batchPDFDownload(String jobId, String contractName);
+	public void asyncPDFDownload(String jobId, String contractName);
 
 	/**
 	 * @param bulkDownloadTO
@@ -47,17 +47,14 @@ public interface IInorsBusiness {
 	 */
 	public BulkDownloadTO updateJobLog(BulkDownloadTO bulkDownloadTO);
 
-	/**
-	 * @param bulkDownloadTO
-	 * @return
-	 */
-	public BulkDownloadTO updateJobStatusAnsLog(BulkDownloadTO bulkDownloadTO);
+
+	public JobTrackingTO updateJobStatusAndLog(JobTrackingTO bulkDownloadTO);
 
 	/**
 	 * @param bulkDownloadTO
 	 * @return
 	 */
-	public BulkDownloadTO updateJob(BulkDownloadTO bulkDownloadTO);
+	public JobTrackingTO updateJob(JobTrackingTO bulkDownloadTO);
 
 	/**
 	 * Method to download GRT/Invitation Code Files
@@ -100,4 +97,5 @@ public interface IInorsBusiness {
 	 * @return
 	 */
 	public String getCurrentAdminYear();
+	
 }

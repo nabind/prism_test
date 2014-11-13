@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.prism.core.transferobject.BaseTO;
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 
 /**
@@ -15,7 +16,7 @@ public interface IInorsService {
 	/**
 	 * @param jobId
 	 */
-	public void batchPDFDownload(String jobId, String contractName);
+	public void asyncPDFDownload(String jobId, String contractName);
 
 	/**
 	 * @param bulkDownloadTO
@@ -27,7 +28,7 @@ public interface IInorsService {
 	 * @param jobId
 	 * @return
 	 */
-	public BulkDownloadTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId);
 
 	/**
 	 * Method to download GRT/Invitation Code Files
