@@ -12,7 +12,7 @@ import com.prism.util.CustomStringUtil;
 /**
  * It is the entry point of the process flow. It contains the main() method.
  * 
- * @author 796763
+ * @author TCS
  *
  */
 public class PrismPdfRunner {
