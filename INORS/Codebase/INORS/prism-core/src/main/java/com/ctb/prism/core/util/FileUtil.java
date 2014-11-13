@@ -521,6 +521,7 @@ public class FileUtil {
 	}
 
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String rootPath) throws IOException {
+		logger.log(IAppLogger.INFO, "Enter: createDuplexZipFile()");
 		// test start
 		// zipFileName = TEST_DIR + getFileNameFromFilePath(zipFileName);
 		// test end
@@ -564,6 +565,7 @@ public class FileUtil {
 				logger.log(IAppLogger.WARN, "Not able to close stream.");
 			}
 		}
+		logger.log(IAppLogger.INFO, "Exit: createDuplexZipFile()");
 	}
 
 	/**
@@ -574,6 +576,8 @@ public class FileUtil {
 	 * @return
 	 */
 	private static byte[] getDuplexPdfBytes(String filePath) {
+		logger.log(IAppLogger.INFO, "Enter: getDuplexPdfBytes()");
+		logger.log(IAppLogger.INFO, "filePath = " + filePath);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			Document document = new Document();
@@ -585,17 +589,18 @@ public class FileUtil {
 				copy.addPage(copy.getImportedPage(reader, ++page));
 			}
 			if (Utils.isOdd(n)) {
-				copy.addPage(new Rectangle(PageSize.A4), 0); // TODO: This page intentionally left blank.
+				copy.addPage(new Rectangle(PageSize.A4), 0);
 				copy.add(new Paragraph("This page intentionally left blank."));
 			}
 			copy.freeReader(reader);
 			reader.close();
 			document.close();
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, "getDuplexPdfBytes(" + filePath + ") DocumentException: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(IAppLogger.ERROR, "getDuplexPdfBytes(" + filePath + ") IOException: " + e.getMessage());
 		}
+		logger.log(IAppLogger.INFO, "Exit: getDuplexPdfBytes()");
 		return baos.toByteArray();
 	}
 

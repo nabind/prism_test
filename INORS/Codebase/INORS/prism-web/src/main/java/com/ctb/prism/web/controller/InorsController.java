@@ -127,7 +127,7 @@ public class InorsController {
 			grpList = JsonUtil.convertToJsonAdmin(groupList);
 		}
 
-		logger.log(IAppLogger.DEBUG, grpList);
+		logger.log(IAppLogger.INFO, grpList);
 		logger.log(IAppLogger.INFO, "Exit: groupDownloadFiles()");
 		return modelAndView;
 	}

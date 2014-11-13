@@ -1140,6 +1140,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setRequestType((String) data.get("REQUEST_TYPE"));
 				to.setJobStatus((String) data.get("JOB_STATUS"));
 				to.setQuerySheetTO(getQuerySheetTO((String) data.get("REQUEST_TYPE"), (String) data.get("REQUEST_DETAILS")));
+				to.setS3Key((String) data.get("S3_KEY"));
 				allGroupFiles.add(to);
 			}
 		}
