@@ -600,7 +600,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates a Pdf file with even number of page.
+	 * Creates a Pdf file with even number of page. If the directory doesn't exist then it will be created.
 	 * 
 	 * @param pdfFileName
 	 * @param pdfContent
@@ -608,10 +608,21 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void createDuplexPdf(String pdfFileName, String pdfContent) throws DocumentException, IOException {
+		logger.log(IAppLogger.INFO, "Enter: createDuplexPdf(" + pdfFileName + ")");
 		try {
 			// test start
 			// pdfFileName = TEST_DIR + getFileNameFromFilePath(pdfFileName);
 			// test end
+			String dir = getDirFromFilePath(pdfFileName);
+			logger.log(IAppLogger.INFO, "dir: " + dir);
+			File dirLocation = new File(dir);
+			if (!dirLocation.exists()) {
+				if (dirLocation.mkdirs()) {
+					logger.log(IAppLogger.INFO, "Directories created: " + dirLocation);
+				} else {
+					logger.log(IAppLogger.ERROR, "Failed to create directories: " + dirLocation);
+				}
+			}
 			OutputStream file = new FileOutputStream(new File(pdfFileName));
 			Document document = new Document();
 			PdfWriter.getInstance(document, file);
