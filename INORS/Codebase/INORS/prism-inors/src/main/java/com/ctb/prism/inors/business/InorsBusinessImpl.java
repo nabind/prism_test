@@ -428,10 +428,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
 
 			// Delete File from Mount Location
-			String dir = FileUtil.getDirFromFilePath(zipFileName);
+			/*String dir = FileUtil.getDirFromFilePath(zipFileName);
 			logger.log(IAppLogger.INFO, "Deleting all files from: " + dir); // TODO : check
 			File dirLocation = new File(dir);
-			FileUtils.cleanDirectory(dirLocation);
+			FileUtils.cleanDirectory(dirLocation);*/
 
 			// Set Job Status and Log
 			jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
