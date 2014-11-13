@@ -2222,13 +2222,14 @@ public class AdminController {
 			
 			// URI to generate modified IC Letter
 			StringBuffer uriBuff = new StringBuffer();
-			uriBuff.append(request.getScheme());
+			/*uriBuff.append(request.getScheme());
 			uriBuff.append("://");
 			uriBuff.append(request.getServerName());
 			uriBuff.append(":");
 			uriBuff.append(request.getServerPort());
-			uriBuff.append(request.getContextPath());
-			uriBuff.append("/icDownload.do");
+			uriBuff.append(request.getContextPath());*/
+			uriBuff.append(propertyLookup.get("icDownloadUrl"));
+			uriBuff.append("icDownload.do");
 			uriBuff.append("?reportUrl=/public/PN/Report/Invitation_pdf_files");
 			uriBuff.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=-1");
 			uriBuff.append("&drillDown=true&assessmentId=105_InvLetter&p_AdminYear=-1");

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,7 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -49,6 +52,9 @@ public class ParentBusinessImpl implements IParentBusiness {
 	
 	@Autowired
 	private IRepositoryService repositoryService;
+	
+	@Autowired
+	private IPropertyLookup propertyLookup;
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentBusinessImpl.class.getName());
 
@@ -295,23 +301,66 @@ public class ParentBusinessImpl implements IParentBusiness {
 	 * @see com.ctb.prism.parent.business.IParentBusiness#regenerateActivationCode(com.ctb.prism.parent.transferobject.StudentTO)
 	 */
 	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
+		
 		boolean returnFlag = parentDAO.regenerateActivationCode(student);
-
-		FileOutputStream fos = new FileOutputStream(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+		logger.log(IAppLogger.INFO, "student.getIcLetterUri(): " + student.getIcLetterUri());
+		logger.log(IAppLogger.INFO, "student.getIcLetterPath(): " + student.getIcLetterPath());
+		
+		FileOutputStream fos = null;
 		InputStream is = null;
 		File file = null;
+		String tempPath = propertyLookup.get("pdfGenPathIC");
 		try{
-			URL url = new URL(student.getIcLetterUri());
-			URLConnection urlConn = url.openConnection();
-			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-				throw new BusinessException("FAILED.[This is not a PDF.]");
-			} else {
-				is = urlConn.getInputStream();
-				IOUtils.copy(is, fos);
-			}
-			logger.log(IAppLogger.INFO, "IC PDF Created: " + FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+			tempPath = tempPath + FileUtil.getFileNameFromFilePath(student.getIcLetterPath());
+			logger.log(IAppLogger.INFO, "Temporary IC PDF Path: " + tempPath);
 			
-			file = new File(FileUtil.getFileNameFromFilePath(student.getIcLetterPath()));
+			fos = new FileOutputStream(tempPath);
+			URL url = new URL(student.getIcLetterUri());
+			
+			if(student.getIcLetterUri().startsWith("http://")){
+				
+				HttpURLConnection httpUrlConn = (HttpURLConnection)url.openConnection();
+				logger.log(IAppLogger.INFO, "http connection created successfully");
+				
+				logger.log(IAppLogger.INFO, "URL about to hit");
+				String contentType = httpUrlConn.getContentType();
+				logger.log(IAppLogger.INFO, "URL fired");
+				
+				if(contentType == null){
+					throw new BusinessException("FAILED.[Problem with fired URL]");
+				}
+				
+				if (!"application/pdf".equals(contentType)) {
+					throw new BusinessException("FAILED.[This is not a PDF.]");
+				} else {
+					is = httpUrlConn.getInputStream();
+					IOUtils.copy(is, fos);
+					IOUtils.closeQuietly(fos);
+				}
+				
+			}else if(student.getIcLetterUri().startsWith("https://")){
+				HttpsURLConnection httpsUrlConn = (HttpsURLConnection)url.openConnection();
+				logger.log(IAppLogger.INFO, "https connection created successfully");
+				
+				logger.log(IAppLogger.INFO, "URL about to hit");
+				String contentType = httpsUrlConn.getContentType();
+				logger.log(IAppLogger.INFO, "URL fired");
+				
+				if(contentType == null){
+					throw new BusinessException("FAILED.[Problem with fired URL]");
+				}
+				
+				if (!"application/pdf".equals(contentType)) {
+					throw new BusinessException("FAILED.[This is not a PDF.]");
+				} else {
+					is = httpsUrlConn.getInputStream();
+					IOUtils.copy(is, fos);
+					IOUtils.closeQuietly(fos);
+				}
+			}
+			logger.log(IAppLogger.INFO, "IC PDF created at: " + tempPath);
+			
+			file = new File(tempPath);
 			logger.log(IAppLogger.INFO, "Temporary IC PDF Created at: " + file.getAbsolutePath());
 			//repositoryService.uploadAsset(student.getIcLetterPath(), is);
 			repositoryService.uploadAsset(FileUtil.getDirFromFilePath(student.getIcLetterPath()), file);
