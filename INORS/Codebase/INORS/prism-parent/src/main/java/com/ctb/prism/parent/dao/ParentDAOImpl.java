@@ -1753,7 +1753,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		long t1 = System.currentTimeMillis();
 		boolean returnFlag = Boolean.FALSE;
-		String envPostFix = propertyLookup.get("environment.postfix").toUpperCase() + "/";
+		String envPostFix = propertyLookup.get("environment.postfix").toUpperCase();
 		
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
