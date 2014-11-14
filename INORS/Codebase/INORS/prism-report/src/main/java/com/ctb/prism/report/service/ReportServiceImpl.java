@@ -862,4 +862,13 @@ public class ReportServiceImpl implements IReportService {
 		reportBusiness.updateJobTrackingTable(jobId,filePath);	
 	}
 
+	public Object getDefaultFilterTasc(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl) {
+		return reportBusiness.getDefaultFilterTasc(tos, userName, assessmentId, combAssessmentId, reportUrl );
+	}
+
+	public List<ObjectValueTO> getValuesOfSingleInputTasc(String query, String userName, String changedObject, String changedValue,
+			Map<String, String> replacableParams, Object clazz, boolean bulkDownload) throws SystemException {
+		return reportBusiness.getValuesOfSingleInputTasc(query, userName, changedObject, changedValue, replacableParams, clazz, bulkDownload);
+	}
+
 }

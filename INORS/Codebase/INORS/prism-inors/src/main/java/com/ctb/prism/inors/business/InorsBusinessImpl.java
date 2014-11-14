@@ -446,6 +446,27 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	}
 
 	/**
+	 * @param fileMap
+	 *            The Key of this Map is the Actual File Location and the Value
+	 *            is the system generated Pdf name to be used for that file.
+	 */
+	private void saveFilesFromS3ToMountLocation(String tempDirectory, Map<String, String> fileMap) {
+		for (String s3Key : fileMap.keySet()) {
+			try {
+				byte[] assetBytes = repositoryService.getAssetBytes(s3Key);
+				logger.log(IAppLogger.INFO, "File read successfully from S3: " + s3Key);
+				String fileName = FileUtil.getFileNameFromFilePath(s3Key);
+				fileName = tempDirectory + "/" + fileName;
+				FileUtil.createFile(fileName, assetBytes);
+				logger.log(IAppLogger.INFO, "File saved successfully from S3: " + fileName);
+			} catch (IOException e) {
+				logger.log(IAppLogger.WARN, e.getMessage());
+				logger.log(IAppLogger.WARN, "Not able to save file from S3: " + s3Key);
+			}
+		}
+	}
+	
+	/**
 	 * Process inors file download
 	 * 
 	 * @param jobId
@@ -455,6 +476,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		logger.log(IAppLogger.INFO, "Enter: batchPDFDownload()");
 		logger.log(IAppLogger.INFO, "contractName: " + contractName);
 		try{
+		String tempDirectory = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), "/", jobId);
+		File tempJobDirectory = new File(tempDirectory);
+		if (!tempJobDirectory.exists()) {
+			logger.log(IAppLogger.INFO,  "Creating directory ... " + tempJobDirectory);
+			boolean status = tempJobDirectory.mkdir();
+			logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
+		}
 		String jobLog = null;
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String fileSize = null;
@@ -480,7 +508,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
 			String zipFileName = fileName + "_" + System.currentTimeMillis() +".zip";
-			zipFileName = CustomStringUtil.appendString(rootPath, "/GDF/", zipFileName);
+			zipFileName = CustomStringUtil.appendString(tempDirectory, "/", zipFileName);
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
 				querySheetFileName = "000" + querySheetFileName;
@@ -503,17 +531,22 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			if (!filePathsGD.isEmpty()) {
 				try {
 					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), contractName);
-					FileUtil.createDuplexPdf(CustomStringUtil.appendString(rootPath, "/GDF/", querySheetFileName), querySheetAsString);
-					filePaths.put(CustomStringUtil.appendString("/GDF/", querySheetFileName), querySheetFileName);
+					String querySheetFile = CustomStringUtil.appendString(tempDirectory, "/", querySheetFileName);
+					FileUtil.createDuplexPdf(querySheetFile, querySheetAsString);
+					filePaths.put(querySheetFileName, querySheetFileName);
 					filePaths.putAll(filePathsGD);
 					if ("CP".equals(button)) {
 						/**
 						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
 						 */
 						String pdfFileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
-						pdfFileName = CustomStringUtil.appendString(rootPath, "/GDF/", pdfFileName);
+						pdfFileName = CustomStringUtil.appendString(tempDirectory, "/", pdfFileName);
+
+						// Save files from s3 to mount path
+						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD);
+
 						// Merge Pdf files
-						byte[] input = FileUtil.getMergedPdfBytes(new ArrayList<String>(filePaths.keySet()), rootPath);
+						byte[] input = FileUtil.getMergedPdfBytesFromTempDir(new ArrayList<String>(filePaths.keySet()), tempDirectory);
 
 						// Create Pdf file in disk
 						FileUtil.createFile(pdfFileName, input);

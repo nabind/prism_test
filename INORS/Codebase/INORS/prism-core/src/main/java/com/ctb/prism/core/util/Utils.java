@@ -536,5 +536,22 @@ public final class Utils {
 		}
 		return file;
 	}
-	
+
+	public static byte[] objectByteArrayToPrimitiveByteArray(Byte[] oBytes) {
+		byte[] bytes = new byte[oBytes.length];
+		for (int i = 0; i < oBytes.length; i++) {
+			bytes[i] = oBytes[i];
+		}
+		return bytes;
+	}
+
+	public static Byte[] primitiveByteArrayToObjectByteArray(byte[] bytesPrim) {
+		Byte[] bytes = new Byte[bytesPrim.length];
+		int i = 0;
+		for (byte b : bytesPrim) {
+			bytes[i++] = b;
+		}
+		return bytes;
+	}
+
 }

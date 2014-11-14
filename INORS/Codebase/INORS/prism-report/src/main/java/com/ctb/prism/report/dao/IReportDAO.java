@@ -332,4 +332,6 @@ public interface IReportDAO {
 	public String updateDataForActions(Map<String, Object> paramMap);
 	
 	public void updateJobTrackingTable(String jobId, String filePathcontractName);
+
+	public List<ObjectValueTO> getStudentList(String query);
 }

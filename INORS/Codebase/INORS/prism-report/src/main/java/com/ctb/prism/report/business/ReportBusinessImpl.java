@@ -46,6 +46,7 @@ import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.webservice.transferobject.ReportActionTO;
 import com.ctb.prism.core.Service.ISimpleDBService;
 
+import java.beans.Introspector;
 @Component("reportBusiness")
 public class ReportBusinessImpl implements IReportBusiness {
 
@@ -862,4 +863,218 @@ public class ReportBusinessImpl implements IReportBusiness {
 		reportDAO.updateJobTrackingTable(jobId,filePath);	
 	}
 
+	/**
+	 * Returns the default filter values for a report
+	 * @param tos List of input control details
+	 * @param userName logged in user name
+	 * @param assessmentId 
+	 * @param combAssessmentId
+	 * @param reportUrl
+	 */
+	//@Cacheable(cacheName = "tascdefaultInputControls")
+	public Object getDefaultFilterTasc(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl )
+	{
+		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
+		Class<?> clazz = null;
+		Object obj = null;
+		String tenantId = null;
+		//ReportFilterTO to = new ReportFilterTO();
+		tenantId = reportDAO.getTenantId(userName);
+		try {
+			clazz = reportFilterFactory.getReportFilterTO();
+			obj = clazz.newInstance();
+			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
+			clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		for (InputControlTO ito : tos)
+		{
+			String labelId = ito.getLabelId();
+			String query = ito.getQuery();
+			if ( query != null )
+			{
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'",userName,"'"));
+				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
+				// handle special i/p controls
+				query = replaceSpecial(query, clazz, obj);
+				logger.log(IAppLogger.DEBUG, query);
+				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
+				/*if(list != null && list.size() == 0) {
+					// patch for form level
+					if(IApplicationConstants.IC_FORM_LEVEL.equals(ito.getLabel())) {
+						ObjectValueTO formObj = new ObjectValueTO();
+						formObj.setName("");
+						formObj.setValue("0_0-0");
+						list.add(formObj);
+					}
+				}*/
+				String methodName = null;
+				try {
+					methodName = CustomStringUtil.appendString("set",labelId.substring(0, 1).toUpperCase(),labelId.substring(1));
+					Method setterMethod = clazz.getMethod(methodName, new Class[]{List.class});
+					setterMethod.invoke(obj, list);
+				} catch (Exception e) {
+					logger.log(IAppLogger.WARN, 
+							CustomStringUtil.appendString("Could not invoke method ", methodName, "on ReportFilterTO"), e);
+				}
+			}
+		}
+		
+		logger.log(IAppLogger.INFO, "Exit: ReportBusinessImpl - getDefaultFilter");
+		return obj;
+	}
+
+	/**
+	 * Fetch all values of a input after replacing all required parameters
+	 * @param query
+	 * @param userName
+	 * @return
+	 * @throws SystemException 
+	 * @throws IllegalArgumentException 
+	 */
+	public List<ObjectValueTO> getValuesOfSingleInputTasc(String query, String userName, String changedObject, 
+			String changedValue, Map<String, String> replacableParams, Object obj, boolean bulkDownload) throws SystemException {
+		if(query == null) return null;
+		
+		try {
+			Class<?> c = reportFilterFactory.getReportFilterTO();
+			// replace all params
+			String tenantId = reportDAO.getTenantId(userName);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
+			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'",userName,"'"));
+			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), 
+					CustomStringUtil.appendString("'", changedValue, "'"));
+			
+			// replace all required params
+			if(query != null && query.indexOf(IApplicationConstants.JASPER_PARAM_INITIAL) != -1) {
+				@SuppressWarnings("rawtypes")
+				Iterator it = replacableParams.entrySet().iterator();
+				while (it.hasNext()) {
+				    try {
+						@SuppressWarnings("rawtypes")
+						Map.Entry pairs = (Map.Entry)it.next();
+						if(pairs.getValue() != null && pairs.getValue() instanceof String) {
+							if("$P!{p_Start_Test_Date}".equals(pairs.getKey()) || "$P!{p_End_Test_Date}".equals(pairs.getKey())) {
+								query = query.replace((String) pairs.getKey(), (String) pairs.getValue());
+							} else {
+								query = query.replace((String) pairs.getKey(), 
+										CustomStringUtil.appendString("'", (String) pairs.getValue(), "'"));
+							}
+							if(query.indexOf(IApplicationConstants.JASPER_PARAM_INITIAL) == -1) {
+								break;
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			// handle special i/p controls
+			if(changedValue != null) {
+				if(bulkDownload) {
+					String[] changedObjectArr = changedObject.split(",");
+					for(int i=0; i<changedObjectArr.length; i++) {
+						String[] chengedValueArr = (replacableParams.get(CustomStringUtil.getJasperParameterString(changedObjectArr[i])) != null)? 
+								replacableParams.get(CustomStringUtil.getJasperParameterString(changedObjectArr[i])).split(",") : null;
+						if(chengedValueArr != null && chengedValueArr.length > 0) {
+							ArrayList<ObjectValueTO> listOfValues = new ArrayList<ObjectValueTO>();
+							for(String val : chengedValueArr) {
+								ObjectValueTO objectValueTo = new ObjectValueTO();
+								objectValueTo.setValue(val.trim());
+								listOfValues.add(objectValueTo);
+							}
+							String coll = CustomStringUtil.capitalizeFirstCharacter(changedObjectArr[i]);
+							String methodName = CustomStringUtil.appendString("set", coll);
+							Method m = c.getMethod(methodName, new Class[]{List.class});
+							m.invoke(obj, listOfValues);
+							query = replaceSpecial(query, c, obj, coll);
+						}
+					}
+				} else {
+					String[] chengedValueArr = changedValue.split(",");
+					if(chengedValueArr != null && chengedValueArr.length > 0) {
+						ArrayList<ObjectValueTO> listOfValues = new ArrayList<ObjectValueTO>();
+						for(String val : chengedValueArr) {
+							ObjectValueTO objectValueTo = new ObjectValueTO();
+							objectValueTo.setValue(val);
+							listOfValues.add(objectValueTo);
+						}
+						String coll = CustomStringUtil.capitalizeFirstCharacter(changedObject);
+						String methodName = CustomStringUtil.appendString("set", coll);
+						Method m = c.getMethod(methodName, new Class[]{List.class});
+						m.invoke(obj, listOfValues);
+						query = replaceSpecial(query, c, obj);
+					}
+				}
+			}
+			
+			// replace others with null - not required --
+			if(query != null && query.indexOf(IApplicationConstants.JASPER_PARAM_INITIAL) != -1) {
+				query = query.replaceAll("\\$[P][{]\\w+[}]", "null");
+			}
+			
+			logger.log(IAppLogger.INFO, "query: " + query);
+			
+			// fetch data
+			if(bulkDownload) return reportDAO.getStudentList(query);
+			else return reportDAO.getValuesOfSingleInput(query);
+		} catch (Exception e) {
+			throw new SystemException(e);
+		}
+	}
+	
+	private static String replaceSpecial(String inQuery, Class<?> clazz, Object obj, String colm) {
+		String tempQuery = inQuery;
+		String trimPart = "";
+		String replacedQuery = "";
+		try {
+			if(tempQuery.indexOf("$X{IN") != -1) {
+				String partQ = "";
+				if(tempQuery.indexOf(Introspector.decapitalize(colm)) != -1) {
+					partQ = tempQuery.substring(tempQuery.indexOf(Introspector.decapitalize(colm)) - 33);
+				} else {
+					partQ = tempQuery.substring(tempQuery.indexOf(Introspector.decapitalize(colm)));
+				}
+				trimPart = partQ.substring(partQ.indexOf("$X{IN"), partQ.indexOf("}")+1);
+				String part = partQ.substring(partQ.indexOf("$X{IN")+3, partQ.indexOf("}"));
+				String[] parts = part.split(",");
+				if(parts.length == 3) {
+					String coll = CustomStringUtil.capitalizeFirstCharacter(parts[2].trim());
+					if(coll.equals(colm) ) {
+						Method m = clazz.getMethod( CustomStringUtil.appendString("get", coll) );
+						ArrayList<ObjectValueTO> listOfValues = (ArrayList<ObjectValueTO>) m.invoke(obj);
+						StringBuilder builder = new StringBuilder();
+						builder.append(parts[1]).append(" ").append(parts[0]).append(" ");
+						boolean isFirst = true;
+						builder.append(" (");
+						if(listOfValues != null && listOfValues.size() == 0) {
+							builder.append("-99");
+						} else {
+							for(ObjectValueTO objectValue : listOfValues) {
+								if(!isFirst) builder.append(",");
+								isFirst = false;
+								builder.append("'").append(objectValue.getValue()).append("'");
+							}
+						}
+						builder.append(") ");
+						
+						replacedQuery = tempQuery.replace(trimPart, builder.toString());
+						
+						if(tempQuery.indexOf(Introspector.decapitalize(colm)) != -1) {
+							replacedQuery = replaceSpecial(replacedQuery, clazz, obj, colm);
+						}
+					}
+						
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return inQuery;
+		} 
+		return replacedQuery.length() == 0? inQuery : replacedQuery;
+	}
 }

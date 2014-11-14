@@ -2589,5 +2589,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public void updateJobTrackingTable(String jobId, String filePath) {
 		getJdbcTemplatePrism().update(IReportQuery.UPDATE_FILENAME_JOB_TRACKING, filePath, jobId);
 	}
+	
+	/**
+	 * Get list of students and formid
+	 * This method is for bulk candidate report download
+	 */
+	public List<ObjectValueTO> getStudentList(String query) {
+		if(query == null) return null;
+		logger.log(IAppLogger.INFO, query);
+		List<ObjectValueTO> list = getJdbcTemplatePrism().query(query, new RowMapper<ObjectValueTO>() {
+			public ObjectValueTO mapRow(ResultSet rs, int col) throws SQLException {
+				ObjectValueTO to = new ObjectValueTO();
+				to.setName(rs.getString(2));
+				to.setValue(rs.getString(3));
+				to.setClikedOrgId(rs.getLong(10)); // form id
+				return to;
+			}
+		});
+		return list;
+	}
 
 }

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -712,6 +713,48 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 		return zipFile;
+	}
+
+	public static byte[] getMergedPdfBytesFromTempDir(ArrayList<String> files, String tempDirectory) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		if (files != null && !files.isEmpty()) {
+			try {
+				Document document = new Document();
+				PdfCopy copy = new PdfCopy(document, baos);
+				document.open();
+				PdfReader reader;
+				int n;
+				// loop over the documents you want to concatenate
+				for (String file : files) {
+					file = CustomStringUtil.appendString(tempDirectory, "/", file);
+					try {
+						reader = new PdfReader(file);
+						// loop over the pages in that document
+						n = reader.getNumberOfPages();
+						for (int page = 0; page < n;) {
+							copy.addPage(copy.getImportedPage(reader, ++page));
+						}
+						if (Utils.isOdd(n)) {
+							copy.addPage(new Rectangle(PageSize.A4), 0); // TODO: This page intentionally left blank.
+							copy.add(new Paragraph("This page intentionally left blank."));
+						}
+						copy.freeReader(reader);
+						reader.close();
+					} catch (IOException e) {
+						logger.log(IAppLogger.INFO, "Skipping " + file);
+						logger.log(IAppLogger.WARN, file + ": " + e.getMessage());
+					} catch (BadPdfFormatException e) {
+						logger.log(IAppLogger.INFO, "Skipping " + file);
+						logger.log(IAppLogger.ERROR, file + ": " + e.getMessage());
+					}
+				}
+				document.close();
+			} catch (DocumentException e) {
+				logger.log(IAppLogger.ERROR, e.getMessage());
+			}
+			logger.log(IAppLogger.INFO, "merged pdf bytes [" + baos.size() + "] created");
+		}
+		return baos.toByteArray();
 	}
 
 }
