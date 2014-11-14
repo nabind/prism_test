@@ -11,7 +11,9 @@
 		<script src="scripts/js/highchart/item.hyperlink.service.js"></script>
 		
 		<div id="logo" class="newStyle drilldown-logo" style="margin:0 50px !important">
-			<h1><span class="logo-title"> <img alt="" src="<spring:theme code="contract.logo.header" />"> 	
+			<h1>
+				<span class="logo-title custom-p"> 
+					${messageMapSession.commonHeaderMessage} 
 				</span>
 			<br>
 			<span class="description"> </span></h1>
