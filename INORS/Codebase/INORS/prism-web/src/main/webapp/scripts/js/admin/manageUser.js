@@ -228,8 +228,7 @@ $(document).ready(function() {
 							classes: 'blue-gradient glossy mid-margin-left',
 							click: function(win,e) {
 								clickMe(e);	
-									 if($("#addNewUser").validationEngine('validate') 
-											 || ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
+									 if($("#addNewUser").validationEngine('validate') && ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
 										$('#addNewUser').validationEngine('hide');
 										$('#imgHolder').empty();
 										if($("input[rel^='userStatusCheck']").closest("span").hasClass("checked")){
