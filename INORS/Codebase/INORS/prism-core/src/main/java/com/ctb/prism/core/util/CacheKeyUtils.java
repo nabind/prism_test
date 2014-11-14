@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import com.ctb.prism.core.Service.IRepositoryService;
+import com.ctb.prism.core.Service.ISimpleDBService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.jms.JmsMessageProducer;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
@@ -32,11 +33,15 @@ public final class CacheKeyUtils {
 	
 	private static IPropertyLookup propertyLookup;
 	
+//	@Autowired
+//	private IRepositoryService autorepositoryService;
+	
+//	private static IRepositoryService repositoryService;
+	
 	@Autowired
-	private IRepositoryService autorepositoryService;
+	private ISimpleDBService autoSimpleDBService;
 	
-	private static IRepositoryService repositoryService;
-	
+	private static ISimpleDBService simpleDBService;
 	
 	private static String contractName;
 	
@@ -44,7 +49,8 @@ public final class CacheKeyUtils {
     public void init() {
 		//CacheKeyUtils.messageProducer = autoMessageProducer;
 		CacheKeyUtils.propertyLookup = autoPropertyLookup;
-		CacheKeyUtils.repositoryService = autorepositoryService;
+	//	CacheKeyUtils.repositoryService = autorepositoryService;
+		CacheKeyUtils.simpleDBService = autoSimpleDBService;
     }
 	
     /*private CacheKeyUtils() {
@@ -158,9 +164,9 @@ public final class CacheKeyUtils {
      * @param contractName
      * 
      */
-    private static void storeCacheKey(String key){
-    	/*if(messageProducer != null) messageProducer.putCacheKey(key, contractName);
-    	else LOG.error("Unable to store key into Queue. MessageProducer is null.");*/
+ /*   private static void storeCacheKey(String key){
+    	if(messageProducer != null) messageProducer.putCacheKey(key, contractName);
+    	else LOG.error("Unable to store key into Queue. MessageProducer is null.");
     	String s3loc = null;
 		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");
 		if("tasc".equals(contractName))  s3loc = propertyLookup.get("aws.tasc.cacheS3");
@@ -173,7 +179,18 @@ public final class CacheKeyUtils {
 		} else {
 			LOG.info("Key insertion skipped " +IApplicationConstants.CACHE_KEY_FILE+ " for contractName");
 		}
+    }*/
+    
+    private static void storeCacheKey(String caheKey){
+		//Configurable to make offshore code running without simpleDB
+		if(propertyLookup.get("store.cache.key.simpledb").equals("true")) {
+			simpleDBService.addItem(contractName, caheKey);
+			LOG.info("Key inserted into simple db for " +contractName);
+		} else {
+			LOG.info("Key insertion skipped for " + contractName);
+		}
     }
+    
     
     
     public static void main(String[] args) {

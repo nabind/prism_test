@@ -40,6 +40,8 @@ public interface IReportService {
 	public void removeCache(String contractName) throws IOException;
 
 	public void removeConfigurationCache();
+	
+	public void removeCacheSimpleDB(String contractName);
 
 	/**
 	 * @param jasperReport

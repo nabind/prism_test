@@ -188,4 +188,5 @@
 	<import resource="jms-config.xml" />
 	<import resource="elasticache.xml" />
 	<import resource="s3-config.xml" />
+	<import resource="simpledb-config.xml" />
 </beans>

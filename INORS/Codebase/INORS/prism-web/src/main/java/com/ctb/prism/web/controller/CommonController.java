@@ -509,10 +509,11 @@ public class CommonController extends BaseDAO {
 		String theme = themeResolver.resolveThemeName(req);
 		
 		try {
-			reportService.removeCache(Utils.getContractNameNoLogin(theme));
+			//reportService.removeCache(Utils.getContractName(theme));
+			reportService.removeCacheSimpleDB(Utils.getContractName(theme));
 			logger.log(IAppLogger.INFO, "All Cache cleared ....");
 			
-			mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractNameNoLogin(theme));
+			mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			mv.addObject("message", e.getMessage());

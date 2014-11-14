@@ -110,18 +110,27 @@ public class ReportServiceImpl implements IReportService {
 	public void removeCache() {
 		//reportBusiness.removeCache();
 		try {
-			removeCache("inors");
-			removeCache("tasc");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			//removeCache("inors");
+			//removeCache("tasc");
+			removeCacheSimpleDB("inors");
+			removeCacheSimpleDB("tasc");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}		
 	}
 	
+	/**
+	 * Clear cache and remove keys from AWS Simple DB
+	 * @param contractName
+	 */
+	public void removeCacheSimpleDB(String contractName) {
+		reportBusiness.removeCache(contractName);
+	}
 	/*
 	 * Remove cache based on contract
 	 * @see com.ctb.prism.report.service.IReportService#removeCache(java.lang.String)
 	 */
+	@Deprecated
 	public void removeCache(String contractName) throws IOException {
 		String s3loc = null;
 		if("inors".equals(contractName)) s3loc = propertyLookup.get("aws.inors.cacheS3");

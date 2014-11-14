@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -22,6 +23,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.ObjectValueTO;
 
 @Service("repositoryService")
@@ -42,6 +44,8 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		this.bucket = bucket;
 	}
 	
+	@Autowired
+	private IPropertyLookup propertyLookup;
 	
 	/*public RepositoryServiceImpl() {
 	}
@@ -93,14 +97,15 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		if (path.startsWith(FOLDER_SUFFIX)) {
 			path = path.substring(1);
 		}
-		return path + FOLDER_SUFFIX;
+		return propertyLookup.get("environment.postfix").toUpperCase() + FOLDER_SUFFIX + path + FOLDER_SUFFIX;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.core.Service.IRepositoryService#getAssetBytes(java.lang.String)
 	 */
 	public byte[] getAssetBytes(String assetPath) throws IOException {
-		System.out.println("Downloading an object");
+		assetPath = propertyLookup.get("environment.postfix").toUpperCase() + FOLDER_SUFFIX + assetPath;
+		System.out.println("Downloading an object from "+assetPath);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		S3ObjectInputStream inputStream = object.getObjectContent();
 		byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);

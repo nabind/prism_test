@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import com.amazonaws.services.simpledb.model.Item;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -34,6 +35,10 @@ public interface IReportBusiness {
 	public void removeCache();
 	
 	public boolean removeCache(InputStream input);
+	
+	public boolean removeCache(List<Item> cacheKeyList, String contractName);
+	
+	public boolean removeCache(String contractName);
 	
 	public void removeConfigurationCache();
 

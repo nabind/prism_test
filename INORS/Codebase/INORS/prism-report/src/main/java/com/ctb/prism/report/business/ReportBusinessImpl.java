@@ -20,12 +20,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.services.simpledb.model.Attribute;
+import com.amazonaws.services.simpledb.model.Item;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.dao.IReportDAO;
@@ -41,6 +44,7 @@ import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.webservice.transferobject.ReportActionTO;
+import com.ctb.prism.core.Service.ISimpleDBService;
 
 @Component("reportBusiness")
 public class ReportBusinessImpl implements IReportBusiness {
@@ -58,6 +62,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 
 	@Autowired
 	private IReportFilterTOFactory reportFilterFactory;
+	
+	@Autowired 
+	private ISimpleDBService simpleDBService;
 
 	/*
 	 * (non-Javadoc)
@@ -93,7 +100,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	public void removeCache() {
 		reportDAO.removeCache();
 	}
-	
+	@Deprecated
 	public boolean removeCache(InputStream input){
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 		try {
@@ -117,6 +124,45 @@ public class ReportBusinessImpl implements IReportBusiness {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Retrieves all keys from AWS Simple DB for given contract
+	 * @param contractName
+	 * @return
+	 */
+	public boolean removeCache(String contractName) {
+		if(propertyLookup.get("store.cache.key.simpledb").equals("true")) {
+			List<Item> cacheKeyList = simpleDBService.getAllItems(Utils.getContractName(contractName));
+			return removeCache(cacheKeyList, contractName);
+		} else {
+			removeCache();
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * Remove cache from ElastiCache and then delete keys from AWS Simple DB
+	 * @param contractName
+	 * @return
+	 */
+	public boolean removeCache(List<Item> cacheKeyList, String contractName) {
+		/** clear from ElastiCache **/
+		for(Item item : cacheKeyList){
+			//reportDAO.removeCache(item.getName());
+			for(Attribute attr : item.getAttributes()) {
+				System.out.println("Removing cache for key : "+ attr.getValue());
+				reportDAO.removeCache(attr.getValue());
+			}
+		}
+		/** delete keys from simple-db **/
+		for(Item item : cacheKeyList){
+			for(Attribute attr : item.getAttributes()) {
+				simpleDBService.deleteItem(contractName, attr.getValue());
+			}
+		}
+		return true;
 	}
 	
 	
