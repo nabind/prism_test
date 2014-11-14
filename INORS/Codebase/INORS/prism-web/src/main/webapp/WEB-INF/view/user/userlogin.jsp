@@ -175,13 +175,13 @@
 									<li><span class="icon-user mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-											<a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
+											<a href="#" class="icon-play login-username-help" style="margin-left: -20px"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 									<li><span class="icon-lock mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
+											<a href="#" class="icon-play login-password-help" style="margin-left: -20px"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 								</ul>
@@ -233,13 +233,13 @@
 									<li><span class="icon-user mid-margin-right"></span>
 										<span class="input-unstyled no-padding">
 											<input type="text" name="j_username" id="j_username" value="" class="input-unstyled" placeholder="Username" autocomplete="off">
-											 <a href="#" class="icon-play login-username-help"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
+											 <a href="#" class="icon-play login-username-help" style="margin-left: -20px"><spring:message code="login.from.forget.username"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 									<li><span class="icon-lock mid-margin-right"></span>
 										<span class="input-unstyled  no-padding">
 											<input type="password" name="j_password" id="j_password" value="" class="input-unstyled" placeholder="Password" autocomplete="off">
-											<a href="#" class="icon-play login-password-help"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
+											<a href="#" class="icon-play login-password-help" style="margin-left: -20px"><spring:message code="login.from.forget.password"/> <span class="icon-question"></span></a>
 										</span>
 									</li>
 								</ul>
