@@ -567,6 +567,10 @@ public class ReportController{
 			//Added by Joy
 			String contractName = req.getParameter("contractName") != null 
 					? req.getParameter("contractName") : Utils.getContractName();
+					
+			if(contractName != null && contractName.trim().length() == 0 && themeResolver != null) {
+				contractName = Utils.getContractName(themeResolver.resolveThemeName(req));
+			}
 
 			// get compiled jasper report
 			JasperReport jasperReport = null;
