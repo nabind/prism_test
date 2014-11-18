@@ -59,23 +59,25 @@ values(seq_dash_rpt_action.nextval,'Configure Report Message','RPT','Configure R
 
 --Manage Content
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Grade','CON','Select Grade',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Subtest','CON','Select Subtest',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Standard','CON','Select Standard',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Standard','CON','Select Standard',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Article Type','CON','Select Article Type',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Add Content','CON','Add Content',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Edit Content','CON','Edit Content',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Delete Content','CON','Delete Content',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Search Content','CON','Search Content',sysdate,1);
+values(seq_dash_rpt_action.nextval,'More','CON','More',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Standard Description','CON','Standard Description',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Resource Description','CON','Resource Description',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Everyday Activity Description','CON','Everyday Activity Description',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'About the Test Description','CON','About the Test Description',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Result by Standard Description','CON','Result by Standard Description',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Overall Results Description','CON','Overall Results Description',sysdate,1);
 
 --Reset Password
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -174,23 +176,25 @@ values(seq_dash_rpt_action.nextval,'Configure Report Message','RPT','Configure R
 
 --Manage Content
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Grade','CON','Select Grade',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Subtest','CON','Select Subtest',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Standard','CON','Select Standard',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Standard','CON','Select Standard',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Article Type','CON','Select Article Type',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Add Content','CON','Add Content',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Edit Content','CON','Edit Content',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Delete Content','CON','Delete Content',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Search Content','CON','Search Content',sysdate,2);
+values(seq_dash_rpt_action.nextval,'More','CON','More',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Standard Description','CON','Standard Description',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Resource Description','CON','Resource Description',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Everyday Activity Description','CON','Everyday Activity Description',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'About the Test Description','CON','About the Test Description',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Result by Standard Description','CON','Result by Standard Description',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Overall Results Description','CON','Overall Results Description',sysdate,2);
 
 --Reset Password
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
