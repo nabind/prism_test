@@ -7,7 +7,7 @@ $(window).load(function() {
 	if($('#educationTab').val()!= "" && $('#educationTab').val()=="educationUserTab" ){
 		$('.clearfix').addClass('menu-hidden');
    	    $("ul#shortcuts li").removeClass("current");
-	    $(".shortcut-medias").parent().addClass("current");
+	    $(".shortcut-notes").parent().addClass("current");
 		loadEduCenterUsers();
 	}
 });
@@ -16,7 +16,7 @@ $(document).ready(function() {
 	if($('input#educationTab').val()!= null && $('input#educationTab').val()=="educationUserTab" ){
 		$('.clearfix').addClass('menu-hidden');
    	    $("ul#shortcuts li").removeClass("current");
-	    $(".shortcut-medias").parent().addClass("current");
+	    $(".shortcut-notes").parent().addClass("current");
 	}
 	
 	$("#addNewUser").validationEngine({promptPosition : "centerRight", scroll: false});
