@@ -385,6 +385,16 @@ public class LoginController {
 					username = user.getUserName();
 				}
 				
+				/*
+				 * Block parent to login in teacher login page
+				 *  */
+				if(themeResolver.resolveThemeName(req).indexOf(IApplicationConstants.PARENT_LOGIN) == -1 
+						&& user.getUserType().equals(IApplicationConstants.PARENT_USER_FLAG)){
+					modelAndView = new ModelAndView("user/userlogin");
+					modelAndView.addObject("message", "error.login.invalidlogin");
+					return modelAndView;
+				}
+				
 				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
 				req.getSession().setAttribute(IApplicationConstants.CURR_USER_DISPLAY, user.getDisplayName());
 				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
