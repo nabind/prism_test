@@ -5,38 +5,47 @@
 
 <div class="panel-content linen">
 	<div class="panel-control align-right">
-		<span class="input search-input"> <input type="text"
-			name="searchUser" id="searchUser" class="input-unstyled with-tooltip"
-			title="Search Users by User ID OR <br/>Full Name (Last Name OR First Name)"
-			placeholder="Search"> <a href="javascript:void(0)"
-			class="button icon-search compact" id="search_icon"
-			param="search_icon_user"></a>
-		</span> 
+		<fmt:message var="MANAGE_EDU_USERS_SEARCH" key="manage.edu.center.users.search.user"  />
+			<c:if test="${not empty actionMap[MANAGE_EDU_USERS_SEARCH]}">
+				<span class="input search-input"> <input type="text"
+					name="searchUser" id="searchUser" class="input-unstyled with-tooltip"
+					title="Search Users by User ID OR <br/>Full Name (Last Name OR First Name)"
+					placeholder="Search"> <a href="javascript:void(0)"
+					class="button icon-search compact" id="search_icon"
+					param="search_icon_user"></a>
+				</span>
+			</c:if>
+		 
 		
 		<sec:authorize ifNotGranted="ROLE_SSO">
-			<a id="addUser" 
-				tenantName="${serviceMapEduCenterDetails.eduCenterName}" 
-				tenantId="${serviceMapEduCenterDetails.eduCenterId}" 
-				orgLevel="-99" 
-				href="#"
-				class="button glossy margin-left"> 
-			<span class="button-icon blue-gradient manage-btn">
-				<span class="icon-add-user"></span>
-			</span> 
-				<spring:message code="label.addEducationCenterUser" />
-			</a>
+			<fmt:message var="MANAGE_EDU_USERS_ADD" key="manage.edu.center.users.add.user"  />
+			<c:if test="${not empty actionMap[MANAGE_EDU_USERS_ADD]}">
+				<a id="addUser" 
+					tenantName="${serviceMapEduCenterDetails.eduCenterName}" 
+					tenantId="${serviceMapEduCenterDetails.eduCenterId}" 
+					orgLevel="-99" 
+					href="#"
+					class="button glossy margin-left"> 
+				<span class="button-icon blue-gradient manage-btn">
+					<span class="icon-add-user"></span>
+				</span> 
+					<spring:message code="label.addEducationCenterUser" />
+				</a>
+			</c:if>
 		</sec:authorize>
 
 	</div>
 
-	<div
-		class="panel-load-target with-padding margin10 height-mid padding-none">
-		<div
-			class="pagination panel-control margin-bottom-small rounded-border">
-			<a href="#nogo" id="moreUser"
-				class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
-				title="Display more users">More</a>
-		</div>
+	<div class="panel-load-target with-padding margin10 height-mid padding-none">
+		<fmt:message var="MANAGE_EDU_USERS_MORE" key="manage.edu.center.users.more"  />
+		<c:if test="${not empty actionMap[MANAGE_EDU_USERS_MORE]}">
+			<div class="pagination panel-control margin-bottom-small rounded-border">
+				<a href="#nogo" id="moreUser"
+					class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
+					title="<spring:message code='message.more.help'/>"><spring:message code="button.content.more"/></a>
+			</div>
+		</c:if>
+		
 		<div id="userTable"
 			class="report-container tabs-content padding-small"
 			style="height: 450px">

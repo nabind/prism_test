@@ -113,8 +113,8 @@
 	
 	//======================================== Create parent row DOM======================================
 	function getParentDetails(checkFirstLoad,data) {
-		var manageParents_resetPwd = $('#manageParents_resetPwd').val();
-		var manageParents_viewChildren = $('#manageParents_viewChildren').val();
+		var manageParents_resetPwd = $('#MANAGE_PARENTS_RESET_PWD').val();
+		var manageParents_viewChildren = $('#MANAGE_PARENTS_VIEW_CHILDREN').val();
 		var parentContent = '';	
 		if (checkFirstLoad) {
 			$("tbody#parent_details").find("tr").remove();
@@ -127,17 +127,13 @@
 								+'<td>' + this.displayName +'</td>'
 								+'<td>'+this.orgName+'</td>';
 								
-			if(manageParents_resetPwd == 'true' || manageParents_viewChildren == 'true'){
+			if(manageParents_resetPwd == strings['manage.parents.resetPwd'] || manageParents_viewChildren == strings['manage.parents.viewChildren']){
 				parentContent += '<td class="vertical-center">'
 									+' <span class="button-group compact">';
-				if(manageParents_resetPwd == 'true'){
-					parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName
+				parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" parentDisplayName="'+this.displayName
 										+'" href="#" class="button icon-lock with-tooltip reset-Password" title="Reset Password"></a>';
-				}
-				if(manageParents_viewChildren == 'true'){
-					parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId 
+				parentContent += '<a id="'+ this.userId + '" parentName="'+ this.userName +'" clickedTreeNode="'+  this.clikedOrgId 
 										+'" orgId="'+  this.orgId +'" isPN="N" href="#" class="button icon-users icon with-tooltip view-Children" title="View Children"></a>';
-				}
 				parentContent += 		'</span>'
 								+'</td>';
 			}
@@ -147,7 +143,7 @@
 						 
 		});
 		$("#parent_details").append(parentContent);
-		 setLastRowId ($("#lastParentName"));
+		setLastRowId ($("#lastParentName"));
 		 
 		// update table sorting 
 		//$("#report-list").trigger("update");
@@ -155,13 +151,13 @@
 		//$(".headerSortUp").removeClass("headerSortUp");
 		//var sorting = [[0, 1]];
 		//$("#report-list").trigger("sorton", [sorting]);
-		
+		showHideJspElements();
 		return true;
 	}
 	
 	//======================================== CREATE STUDENT ROW DOM======================================
 	function getStudentDetails(checkFirstLoad,data) {
-		var manageStudents_assessment = $('#manageStudents_assessment').val();
+		var MANAGE_STUDENTS_ASSESSMENT = $('#MANAGE_STUDENTS_ASSESSMENT').val();
 		var studentContent = '';
 		if (checkFirstLoad){
 			$("tbody#student_details").find("tr").remove();
@@ -181,7 +177,7 @@
 				+ createParentTag(this.parentAccount)
 				+'<td>'+checkForNull(this.orgName)+'</td>';
 				
-				if(manageStudents_assessment == 'true'){
+				if(MANAGE_STUDENTS_ASSESSMENT == strings['manage.students.assessment']){
 					studentContent += '<td class="vertical-center">'
 					+' <span class="button-group compact">' 
 					+' <a id="'+ this.studentBioId + '" testelementid="'+this.testElementId+'" parentName="'+ this.studentName + '" href="#" class="button with-tooltip view-Assessment" title="View Assessment"><span class="icon-pages"></span> Assessment</a>'  
@@ -202,6 +198,7 @@
 		$(".headerSortUp").removeClass("headerSortUp");
 		//var sorting = [[0, 1]];
 		//$("#report-list").trigger("sorton", [sorting]);
+		showHideJspElements();
 	}
 	//====================================AJAX CALL TO FETCH ALL THE PARENTS FOR THE SELECTED ORG====================
 	function fetchAllParentUsers(id,url)

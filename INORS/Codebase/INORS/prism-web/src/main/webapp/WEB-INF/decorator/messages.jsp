@@ -159,4 +159,24 @@
 	strings['manage.edu.center.users.login.as.user'] = "<spring:message code='manage.edu.center.users.login.as.user' javaScriptEscape='true' />";
 	strings['manage.edu.center.users.delete.user'] = "<spring:message code='manage.edu.center.users.delete.user' javaScriptEscape='true' />";
 	
+	strings['manage.users.edit'] = "<spring:message code='manage.users.edit' javaScriptEscape='true' />";
+	strings['manage.users.loginas'] = "<spring:message code='manage.users.loginas' javaScriptEscape='true' />";
+	strings['manage.users.delete'] = "<spring:message code='manage.users.delete' javaScriptEscape='true' />";
+	
+	strings['manage.content.add'] = "<spring:message code='manage.content.add' javaScriptEscape='true' />";
+	strings['manage.content.edit'] = "<spring:message code='manage.content.edit' javaScriptEscape='true' />";
+	strings['manage.content.delete'] = "<spring:message code='manage.content.delete' javaScriptEscape='true' />";
+	strings['manage.content.more'] = "<spring:message code='manage.content.more' javaScriptEscape='true' />";
+	strings['manage.content.standard'] = "<spring:message code='manage.content.standard' javaScriptEscape='true' />";
+	strings['manage.content.rsc'] = "<spring:message code='manage.content.rsc' javaScriptEscape='true' />";
+	strings['manage.content.eda'] = "<spring:message code='manage.content.eda' javaScriptEscape='true' />";
+	strings['manage.content.att'] = "<spring:message code='manage.content.att' javaScriptEscape='true' />";
+	strings['manage.content.rbs'] = "<spring:message code='manage.content.rbs' javaScriptEscape='true' />";
+	strings['manage.content.oar'] = "<spring:message code='manage.content.oar' javaScriptEscape='true' />";
+	
+	strings['manage.parents.resetPwd'] = "<spring:message code='manage.parents.resetPwd' javaScriptEscape='true' />";
+	strings['manage.parents.viewChildren'] = "<spring:message code='manage.parents.viewChildren' javaScriptEscape='true' />";
+	
+	strings['manage.students.assessment'] = "<spring:message code='manage.students.assessment' javaScriptEscape='true' />";
+	
 </script>

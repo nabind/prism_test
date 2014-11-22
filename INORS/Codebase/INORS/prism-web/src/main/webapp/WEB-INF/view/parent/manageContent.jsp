@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
@@ -156,67 +157,97 @@
 										<%@ include file="../common/required.jsp" %>
 									</div>
 								</div>
+								</div>
 							</form:form>
 						</div>
 						<div class="panel-content linen">
 							<div class="panel-control align-right">
 								<sec:authorize ifNotGranted="ROLE_SSO">
-									<div id="addContentDiv" style="display: none;" >
-										<a id="addContent" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.content.add"/>
-										</a>
-									</div>
-									<div id="modifyStandardDiv" style="display: none;" >
-										<a id="modifyStandardButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.standard"/>
-										</a>
-									</div>
-									<div id="modifyRscDiv" style="display: none;" >
-										<a id="modifyRscButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.rsc"/>
-										</a>
-									</div>
-									<div id="modifyEdaDiv" style="display: none;" >
-										<a id="modifyEdaButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.eda"/>
-										</a>
-									</div>
-									<div id="modifyAttDiv" style="display: none;" >
-										<a id="modifyAttButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.att"/>
-										</a>
-									</div>
-									<div id="modifyRbsDiv" style="display: none;" >
-										<a id="modifyRbsButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.rbs"/>
-										</a>
-									</div>
-									<div id="modifyOarDiv" style="display: none;" >
-										<a id="modifyOarButton" href="#" class="button glossy margin-left">
-											<span class="button-icon blue-gradient manage-btn"> 
-												<span class="icon-page-list"></span>
-											</span> 
-											<spring:message code="button.modify.oar"/>
-										</a>
-									</div>
+									
+									<fmt:message var="MANAGE_CONTENT_ADD" key="manage.content.add"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_ADD]}">
+										<div id="addContentDiv" style="display: none;" >
+											<a id="addContent" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.content.add"/>
+											</a>
+										</div>
+									</c:if>
+									
+									<fmt:message var="MANAGE_CONTENT_STANDARD" key="manage.content.standard"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_STANDARD]}">
+										<div id="modifyStandardDiv" style="display: none;" >
+											<a id="modifyStandardButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.standard"/>
+											</a>
+										</div>
+									</c:if>
+									
+									<fmt:message var="MANAGE_CONTENT_RSC" key="manage.content.rsc"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_RSC]}">
+										<div id="modifyRscDiv" style="display: none;" >
+											<a id="modifyRscButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.rsc"/>
+											</a>
+										</div>
+									</c:if>
+									
+									<fmt:message var="MANAGE_CONTENT_EDA" key="manage.content.eda"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_EDA]}">
+										<div id="modifyEdaDiv" style="display: none;" >
+											<a id="modifyEdaButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.eda"/>
+											</a>
+										</div>
+									</c:if>
+										
+									<fmt:message var="MANAGE_CONTENT_ATT" key="manage.content.att"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_ATT]}">
+										<div id="modifyAttDiv" style="display: none;" >
+											<a id="modifyAttButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.att"/>
+											</a>
+										</div>
+									</c:if>										
+									
+									<fmt:message var="MANAGE_CONTENT_RBS" key="manage.content.rbs"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_RBS]}">
+										<div id="modifyRbsDiv" style="display: none;" >
+											<a id="modifyRbsButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.rbs"/>
+											</a>
+										</div>
+									</c:if>
+										
+									<fmt:message var="MANAGE_CONTENT_OAR" key="manage.content.oar"  />
+									<c:if test="${not empty actionMap[MANAGE_CONTENT_OAR]}">
+										<div id="modifyOarDiv" style="display: none;" >
+											<a id="modifyOarButton" href="#" class="button glossy margin-left">
+												<span class="button-icon blue-gradient manage-btn"> 
+													<span class="icon-page-list"></span>
+												</span> 
+												<spring:message code="button.modify.oar"/>
+											</a>
+										</div>
+									</c:if>
+								
 								</sec:authorize>
 							</div>
 							<!-- Manage Content table Start -->
@@ -229,7 +260,38 @@
 								<div id="contentTable" class="report-container tabs-content padding-small" style="height: 450px">
 									<div id="last_msg_loader" height="140" style="position: relative; left: 0px; z-index: 1"></div>
 									<input type="hidden" name="lastid" id="lastid" value="">
-									<!-- As per requirement, proficiency level does not depend upon content -->
+									
+									<fmt:message var="MANAGE_CONTENT_ADD" key="manage.content.add"  />
+									<input type="hidden" id="MANAGE_CONTENT_ADD" value="${actionMap[MANAGE_CONTENT_ADD]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_EDIT" key="manage.content.edit"  />
+									<input type="hidden" id="MANAGE_CONTENT_EDIT" value="${actionMap[MANAGE_CONTENT_EDIT]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_DELETE" key="manage.content.delete"  />
+									<input type="hidden" id="MANAGE_CONTENT_DELETE" value="${actionMap[MANAGE_CONTENT_DELETE]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_MORE" key="manage.content.more"  />
+									<input type="hidden" id="MANAGE_CONTENT_MORE" value="${actionMap[MANAGE_CONTENT_MORE]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_STANDARD" key="manage.content.standard"  />
+									<input type="hidden" id="MANAGE_CONTENT_STANDARD" value="${actionMap[MANAGE_CONTENT_STANDARD]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_RSC" key="manage.content.rsc"  />
+									<input type="hidden" id="MANAGE_CONTENT_RSC" value="${actionMap[MANAGE_CONTENT_RSC]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_EDA" key="manage.content.eda"  />
+									<input type="hidden" id="MANAGE_CONTENT_EDA" value="${actionMap[MANAGE_CONTENT_EDA]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_ATT" key="manage.content.att"  />
+									<input type="hidden" id="MANAGE_CONTENT_ATT" value="${actionMap[MANAGE_CONTENT_ATT]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_RBS" key="manage.content.rbs"  />
+									<input type="hidden" id="MANAGE_CONTENT_RBS" value="${actionMap[MANAGE_CONTENT_RBS]}" />
+									
+									<fmt:message var="MANAGE_CONTENT_OAR" key="manage.content.oar"  />
+									<input type="hidden" id="MANAGE_CONTENT_OAR" value="${actionMap[MANAGE_CONTENT_OAR]}" />
+									
+									
 									<table class="simple-table responsive-table" id="report-list">
 										<thead>
 											<tr class="abc">

@@ -344,6 +344,34 @@ function hideLoading() {
 
 function resetPrismActions() {
 	var adminYear = (typeof $('#AdminYear').val() !== 'undefined') ? $('#AdminYear').val() : 0;
+	if(adminYear == 0){
+		adminYear = (typeof $('#custProdIdManageContent').val() !== 'undefined') ? $('#custProdIdManageContent').val() : 0;
+	}
+	var queryData = "AdminYear="+adminYear;
+	blockUI();
+	$.ajax({
+		type : "GET",
+		url : "resetPrismActions.do",
+		data : queryData,
+		dataType : 'json',
+		cache : false,
+		async : false,
+		success : function(data) {
+			resetJspElements(data);
+		},
+		error : function(data) {
+			//Temporary fix for TD 81027 - By Joy
+			//$.modal.alert(strings['script.org.error']);
+		}
+	});
+	unblockUI();
+}
+
+function resetPrismActions() {
+	var adminYear = (typeof $('#AdminYear').val() !== 'undefined') ? $('#AdminYear').val() : 0;
+	if(adminYear == 0){
+		adminYear = (typeof $('#custProdIdManageContent').val() !== 'undefined') ? $('#custProdIdManageContent').val() : 0;
+	}
 	var queryData = "AdminYear="+adminYear;
 	blockUI();
 	$.ajax({
@@ -370,6 +398,8 @@ function resetJspElements(data){
 	}else{
 		$("#MANAGE_ORGS_USER_COUNT").val("");
 	}
+	
+	//Manage Education Center Users
 	if(strings['manage.edu.center.users.edit.user'] == data['Manage Education Center Users Edit User']){
 		$("#EDU_EDIT_USER").val(data['Manage Education Center Users Edit User']);
 	}else{
@@ -385,6 +415,95 @@ function resetJspElements(data){
 	}else{
 		$("#EDU_DELETE_USER").val("");
 	}
+	
+	//Manage Users
+	if(strings['manage.users.edit'] == data['Manage Users Edit User']){
+		$("#MANAGE_USERS_EDIT").val(data['Manage Users Edit User']);
+	}else{
+		$("#MANAGE_USERS_EDIT").val("");
+	}
+	if(strings['manage.users.loginas'] == data['Manage Users Login As User']){
+		$("#MANAGE_USERS_LOGIN_AS").val(data['Manage Users Login As User']);
+	}else{
+		$("#MANAGE_USERS_LOGIN_AS").val("");
+	}
+	if(strings['manage.users.delete'] == data['Manage Users Delete User']){
+		$("#MANAGE_USERS_DELETE").val(data['Manage Users Delete User']);
+	}else{
+		$("#MANAGE_USERS_DELETE").val("");
+	}
+	
+	//Manage Content
+	if(strings['manage.content.add'] == data['Manage Content Add Content']){
+		$("#MANAGE_CONTENT_ADD").val(data['Manage Content Add Content']);
+	}else{
+		$("#MANAGE_CONTENT_ADD").val("");
+	}
+	if(strings['manage.content.edit'] == data['Manage Content Edit Content']){
+		$("#MANAGE_CONTENT_EDIT").val(data['Manage Content Edit Content']);
+	}else{
+		$("#MANAGE_CONTENT_EDIT").val("");
+	}
+	if(strings['manage.content.delete'] == data['Manage Content Delete Content']){
+		$("#MANAGE_CONTENT_DELETE").val(data['Manage Content Delete Content']);
+	}else{
+		$("#MANAGE_CONTENT_DELETE").val("");
+	}
+	if(strings['manage.content.more'] == data['Manage Content More']){
+		$("#MANAGE_CONTENT_MORE").val(data['Manage Content More']);
+	}else{
+		$("#MANAGE_CONTENT_MORE").val("");
+	}
+	if(strings['manage.content.standard'] == data['Manage Content Standard Description']){
+		$("#MANAGE_CONTENT_STANDARD").val(data['Manage Content Standard Description']);
+	}else{
+		$("#MANAGE_CONTENT_STANDARD").val("");
+	}
+	if(strings['manage.content.rsc'] == data['Manage Content Resource Description']){
+		$("#MANAGE_CONTENT_RSC").val(data['Manage Content Resource Description']);
+	}else{
+		$("#MANAGE_CONTENT_RSC").val("");
+	}
+	if(strings['manage.content.eda'] == data['Manage Content Everyday Activity Description']){
+		$("#MANAGE_CONTENT_EDA").val(data['Manage Content Everyday Activity Description']);
+	}else{
+		$("#MANAGE_CONTENT_EDA").val("");
+	}
+	if(strings['manage.content.att'] == data['Manage Content About the Test Description']){
+		$("#MANAGE_CONTENT_ATT").val(data['Manage Content About the Test Description']);
+	}else{
+		$("#MANAGE_CONTENT_ATT").val("");
+	}
+	if(strings['manage.content.rbs'] == data['Manage Content Result by Standard Description']){
+		$("#MANAGE_CONTENT_RBS").val(data['Manage Content Result by Standard Description']);
+	}else{
+		$("#MANAGE_CONTENT_RBS").val("");
+	}
+	if(strings['manage.content.oar'] == data['Manage Content Overall Results Description']){
+		$("#MANAGE_CONTENT_OAR").val(data['Manage Content Overall Results Description']);
+	}else{
+		$("#MANAGE_CONTENT_OAR").val("");
+	}
+	
+	//Manage Parents
+	if(strings['manage.parents.resetPwd'] == data['Manage Parents Reset Password']){
+		$("#MANAGE_PARENTS_RESET_PWD").val(data['Manage Parents Reset Password']);
+	}else{
+		$("#MANAGE_PARENTS_RESET_PWD").val("");
+	}
+	if(strings['manage.parents.viewChildren'] == data['Manage Parents View Children']){
+		$("#MANAGE_PARENTS_VIEW_CHILDREN").val(data['Manage Parents View Children']);
+	}else{
+		$("#MANAGE_PARENTS_VIEW_CHILDREN").val("");
+	}
+	
+	//Manage Students
+	if(strings['manage.students.assessment'] == data['Manage Students Assessment']){
+		$("#MANAGE_STUDENTS_ASSESSMENT").val(data['Manage Students Assessment']);
+	}else{
+		$("#MANAGE_STUDENTS_ASSESSMENT").val("");
+	}
+	
 	showHideJspElements();
 }
 
@@ -394,20 +513,75 @@ function showHideJspElements(){
 	} else {
 		$("#th_MANAGE_ORGS_USER_COUNT").hide();
 	}
+	
+	//Manage Education Center Users
 	if ($("#EDU_EDIT_USER").val() != strings['manage.edu.center.users.edit.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
-		$('.icon-pencil').hide();
+		$('#manageEduCenterUsersDiv .icon-pencil').hide();
 	} else {
-		$('.icon-pencil').show();
+		$('#manageEduCenterUsersDiv .icon-pencil').show();
 	}
 	if ($("#EDU_LOGIN_AS").val() != strings['manage.edu.center.users.login.as.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
-		$('.icon-users').hide();
+		$('#manageEduCenterUsersDiv .icon-users').hide();
 	} else {
-		$('.icon-users').show();
+		$('#manageEduCenterUsersDiv .icon-users').show();
 	}
 	if ($("#EDU_DELETE_USER").val() != strings['manage.edu.center.users.delete.user'] && $('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
-		$('.icon-trash').hide();
+		$('#manageEduCenterUsersDiv .icon-trash').hide();
 	} else {
-		$('.icon-trash').show();
+		$('#manageEduCenterUsersDiv .icon-trash').show();
+	}
+	
+	//Manage Users
+	if ($("#MANAGE_USERS_EDIT").val() == strings['manage.users.edit']) {
+		$('#manageUsersDiv .icon-pencil').show();
+	} else {
+		$('#manageUsersDiv .icon-pencil').hide();
+	}
+	if ($("#MANAGE_USERS_LOGIN_AS").val() == strings['manage.users.loginas']) {
+		$('#manageUsersDiv .icon-users').show();
+	} else {
+		$('#manageUsersDiv .icon-users').hide();
+	}
+	if ($("#MANAGE_USERS_DELETE").val() == strings['manage.users.delete']) {
+		$('#manageUsersDiv .icon-trash').show();
+	} else {
+		$('#manageUsersDiv .icon-trash').hide();
+	}
+	
+	//Manage Content
+	if ($("#MANAGE_CONTENT_EDIT").val() == strings['manage.content.edit']) {
+		$('.edit-content').show();
+	} else {
+		$('.edit-content').hide();
+	}
+	if ($("#MANAGE_CONTENT_DELETE").val() == strings['manage.content.delete']) {
+		$('.delete-content').show();
+	} else {
+		$('.delete-content').hide();
+	}
+	if ($("#MANAGE_CONTENT_MORE").val() == strings['manage.content.more']) {
+		$('#moreDiv').show();
+	} else {
+		$('#moreDiv').hide();
+	}
+	
+	//Manage Parents
+	if ($("#MANAGE_PARENTS_RESET_PWD").val() == strings['manage.parents.resetPwd']) {
+		$('.reset-Password').show();
+	} else {
+		$('.reset-Password').hide();
+	}
+	if ($("#MANAGE_PARENTS_VIEW_CHILDREN").val() == strings['manage.parents.viewChildren']) {
+		$('.view-Children').show();
+	} else {
+		$('.view-Children').hide();
+	}
+	
+	//Manage Students
+	if ($("#MANAGE_STUDENTS_ASSESSMENT").val() == strings['manage.students.assessment']) {
+		$('.view-Assessment').show();
+	} else {
+		$('.view-Assessment').hide();
 	}
 }
 

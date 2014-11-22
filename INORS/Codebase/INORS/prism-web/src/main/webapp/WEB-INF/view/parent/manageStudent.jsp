@@ -43,8 +43,7 @@
 				</c:if>
 			</div>
 		
-			<div
-				class="panel-load-target with-padding margin10 height-mid padding-none">
+			<div class="panel-load-target with-padding margin10 height-mid padding-none">
 				
 				<fmt:message var="manageStudents_more" key="manage.students.more"  />
 				<c:if test="${not empty actionMap[manageStudents_more]}">
@@ -85,9 +84,10 @@
 										<th scope="col" width="20%">Parent User ID</th>													
 										<th scope="col" width="22%">Class Name</th>
 										
-										<fmt:message var="manageStudents_assessment" key="manage.students.assessment"  />
-										<c:if test="${not empty actionMap[manageStudents_assessment]}">
-											<input type="hidden" id="manageStudents_assessment" value="true"/>
+										<fmt:message var="MANAGE_STUDENTS_ASSESSMENT" key="manage.students.assessment"  />
+										<input type="hidden" id="MANAGE_STUDENTS_ASSESSMENT" value="${actionMap[MANAGE_STUDENTS_ASSESSMENT]}" />
+										
+										<c:if test="${not empty actionMap[MANAGE_STUDENTS_ASSESSMENT]}">
 											<th scope="col" width="20%" class="">Actions</th>
 										</c:if>
 										
@@ -100,8 +100,7 @@
 										<th scope="col" width="20%"></th>
 										<th scope="col" width="22%"></th>
 										
-										<fmt:message var="manageStudents_assessment" key="manage.students.assessment"  />
-										<c:if test="${not empty actionMap[manageStudents_assessment]}">
+										<c:if test="${not empty actionMap[MANAGE_STUDENTS_ASSESSMENT]}">
 											<th scope="col" width="20%" class=""></th>
 										</c:if>
 										

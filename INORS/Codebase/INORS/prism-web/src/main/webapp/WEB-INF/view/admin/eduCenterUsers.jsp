@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<div class="content-panel" style="padding-left: 0px; border: 0px">
+<div id="manageEduCenterUsersDiv" class="content-panel" style="padding-left: 0px; border: 0px">
 	<hgroup id="main-title" class="thin">
 		<h1><spring:message code="h1.eduCenterUsers" /></h1>
 	</hgroup>
@@ -99,7 +99,7 @@
 								class="pagination panel-control margin-bottom-small rounded-border">
 								<a href="#nogo" id="moreUser"
 									class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip"
-									title="Display more users">More</a>
+									title="<spring:message code='message.more.help'/>"><spring:message code="button.content.more"/></a>
 							</div>
 							<div id="userTable"
 								class="report-container tabs-content padding-small"

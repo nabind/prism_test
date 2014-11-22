@@ -29,6 +29,7 @@ $(document).ready(function() {
 		populateDropdownByJson($('#subtestIdManageContent'),null,1,'clear');
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateGrade();
+		resetPrismActions();
 	}); 
 	
 	$('#gradeIdManageContent').live('change',function(){
@@ -71,7 +72,6 @@ $(document).ready(function() {
 		resetModalForm("editContent");
 		resetModalForm("modifyStandardForm");
 		resetModalForm("modifyGenericForm");
-		//openModifyStandardModalToEdit();
 		openModifyGenericModalToEdit('STD');
 	});
 	
@@ -1007,6 +1007,7 @@ function getContentDetails(checkFirstLoad,data) {
 	$("#report-list").trigger("update");
 	$(".headerSortDown").removeClass("headerSortDown");
 	$(".headerSortUp").removeClass("headerSortUp");
+	showHideJspElements();
 }
 
 function enableContentSorting(flag) {
@@ -1035,7 +1036,7 @@ function hideContentElements(){
 	$('#contentTableDiv').hide();
 }
 
-//==To show add,search, *description buttons==========
+//==To show add,search,description buttons==========
 function showContentElements(){
 	var objectiveId = $('#objectiveIdManageContent').val();
 	var gradeId = $('#gradeIdManageContent').val();
@@ -1043,29 +1044,29 @@ function showContentElements(){
 	var contentTypeId = $('#contentTypeIdManageContent').val();
 	
 	if(gradeId != -1){
-		if(contentTypeId == 'EDA'){
+		if((contentTypeId == 'EDA') && ($("#MANAGE_CONTENT_EDA").val() == strings['manage.content.eda'])){
 			$('#modifyEdaDiv').show();
-		}else if(contentTypeId == 'ATT'){
+		}else if((contentTypeId == 'ATT') && ($("#MANAGE_CONTENT_ATT").val() == strings['manage.content.att'])){
 			$('#modifyAttDiv').show();
 		}
 		
 		if(subtestId != -1){
-			if(contentTypeId == 'RSC'){
+			if((contentTypeId == 'RSC') && ($("#MANAGE_CONTENT_RSC").val() == strings['manage.content.rsc'])){
 				$('#modifyRscDiv').show();
-			}else if(contentTypeId == 'RBS'){
+			}else if((contentTypeId == 'RBS') && ($("#MANAGE_CONTENT_RBS").val() == strings['manage.content.rbs'])){
 				$('#div_performanceLevel').show();
 				$('#div_statusCode').show();
 				$('#modifyRbsDiv').show();
-			}else if(contentTypeId == 'OAR'){
+			}else if((contentTypeId == 'OAR') && ($("#MANAGE_CONTENT_OAR").val() == strings['manage.content.oar'])){
 				$('#div_performanceLevel').show();
 				$('#div_statusCode').show();
 				$('#modifyOarDiv').show();
 			}
 			
 			if(objectiveId != -1){
-				if(contentTypeId == 'STD'){
+				if((contentTypeId == 'STD') && ($("#MANAGE_CONTENT_STANDARD").val() == strings['manage.content.standard'])){
 					$('#modifyStandardDiv').show();
-				}else if(contentTypeId == 'ACT' || contentTypeId == 'IND'){
+				}else if((contentTypeId == 'ACT' || contentTypeId == 'IND') && ($("#MANAGE_CONTENT_ADD").val() == strings['manage.content.add'])){
 					$('#refresh-content').show();
 					$('#addContentDiv').show();
 				}

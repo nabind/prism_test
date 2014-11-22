@@ -19,7 +19,7 @@
 </style>
 
 <!--<div class="with-padding">-->
-<div class="user-main" style="background-color: #FFF">
+<div id="manageUsersDiv" class="user-main" style="background-color: #FFF">
 	<input type="hidden" value="<c:if test='${not empty hierarchialOrgIds}'>${hierarchialOrgIds}</c:if><c:if test='${empty hierarchialOrgIds}'></c:if>" id="tempTree" name="tempTree">
 	<div class="content-panel margin-bottom" style="min-width: 764px;">
 		<div class="panel-navigation silver-gradient">
@@ -67,6 +67,14 @@
 					style="height: 450px">
 						<div id="last_msg_loader" height="140" style="position:relative;left:0px;z-index:1"></div>
 					<input type="text"  style="display:none"  name="last_user_tenant" id="last_user_tenant" value="">
+					
+					<fmt:message var="MANAGE_USERS_EDIT" key="manage.users.edit"  />
+					<input type="hidden" id="MANAGE_USERS_EDIT" value="${actionMap[MANAGE_USERS_EDIT]}" />
+					<fmt:message var="MANAGE_USERS_LOGIN_AS" key="manage.users.loginas"  />
+					<input type="hidden" id="MANAGE_USERS_LOGIN_AS" value="${actionMap[MANAGE_USERS_LOGIN_AS]}" />
+					<fmt:message var="MANAGE_USERS_DELETE" key="manage.users.delete"  />
+					<input type="hidden" id="MANAGE_USERS_DELETE" value="${actionMap[MANAGE_USERS_DELETE]}" />
+					
 					<table class="simple-table responsive-table" id="report-list">
 						<thead>
 							<tr class="abc">

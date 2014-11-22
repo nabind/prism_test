@@ -40,16 +40,11 @@
 					</div>
 				</c:if>
 				
-				<fmt:message var="manageParents_resetPwd" key="manage.parents.resetPwd"  />
-				<c:if test="${not empty actionMap[manageParents_resetPwd]}">
-					<input type="hidden" id="manageParents_resetPwd" value="true"/>
-				</c:if>
+				<fmt:message var="MANAGE_PARENTS_RESET_PWD" key="manage.parents.resetPwd"  />
+				<input type="hidden" id="MANAGE_PARENTS_RESET_PWD" value="${actionMap[MANAGE_PARENTS_RESET_PWD]}" />
 				
-				<fmt:message var="manageParents_viewChildren" key="manage.parents.viewChildren"  />
-				<c:if test="${not empty actionMap[manageParents_viewChildren]}">
-					<input type="hidden" id="manageParents_viewChildren" value="true"/>
-				</c:if>
-				
+				<fmt:message var="MANAGE_PARENTS_VIEW_CHILDREN" key="manage.parents.viewChildren"  />
+				<input type="hidden" id="MANAGE_PARENTS_VIEW_CHILDREN" value="${actionMap[MANAGE_PARENTS_VIEW_CHILDREN]}" />
 				
 				<div id="parentTable"
 					class="report-container tabs-content padding-small"
@@ -63,7 +58,7 @@
 								<th scope="col" width="25%"><spring:message code="table.label.fullName" /></th>
 								<th scope="col" width="30%"><spring:message code="thead.schoolName" /></th>
 								
-								<c:if test="${not empty actionMap[manageParents_resetPwd] || not empty actionMap[manageParents_viewChildren]}">
+								<c:if test="${not empty actionMap[MANAGE_PARENTS_RESET_PWD] || not empty actionMap[MANAGE_PARENTS_VIEW_CHILDREN]}">
 									<th scope="col" width="15%" class=""><spring:message code="table.label.actions" /></th>
 								</c:if>
 								
@@ -75,7 +70,7 @@
 								<th scope="col" width="25%"></th>
 								<th scope="col" width="30%"></th>
 								
-								<c:if test="${not empty actionMap[manageParents_resetPwd] || not empty actionMap[manageParents_viewChildren]}">
+								<c:if test="${not empty actionMap[MANAGE_PARENTS_RESET_PWD] || not empty actionMap[MANAGE_PARENTS_VIEW_CHILDREN]}">
 									<th scope="col" width="15%" class=""></th>
 								</c:if>
 								
