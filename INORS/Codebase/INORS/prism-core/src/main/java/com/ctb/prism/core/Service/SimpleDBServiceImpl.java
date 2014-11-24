@@ -45,7 +45,8 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 			
 			List<ReplaceableItem> data = new ArrayList<ReplaceableItem>();
 
-			data.add(new ReplaceableItem().withName("contract"+contract).withAttributes(
+			//data.add(new ReplaceableItem().withName("contract"+contract).withAttributes(
+			data.add(new ReplaceableItem().withName(item).withAttributes(		
 			   new ReplaceableAttribute().withName("contractName").withValue(contract),
 			   new ReplaceableAttribute().withName("cacheKey").withValue(item)));
 			
@@ -87,7 +88,8 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 	
 	public boolean deleteItem(String contract, String key){
 		String domain = contract + propertyLookup.get(POSTFIX_ENV);//"cachelookup";
-		sdb.deleteAttributes(new DeleteAttributesRequest(domain, "contract"+contract));
+		//sdb.deleteAttributes(new DeleteAttributesRequest(domain, "contract"+contract));
+		sdb.deleteAttributes(new DeleteAttributesRequest(domain, key));
 		return true;
 	}
 	
