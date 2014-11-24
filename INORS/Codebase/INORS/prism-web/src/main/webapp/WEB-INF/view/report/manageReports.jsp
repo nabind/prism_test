@@ -141,17 +141,21 @@
 														</c:if>
 														
 														<fmt:message var="mngRpt_editActions" key="manage.reports.edit.actions"/>
-														<c:if test="${not empty mngRpt_editActions}">
-														<c:if test="${report.reportType == 'API_LINK' || report.reportType == 'API_CUSTOM'}">
-														<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
-																title="<spring:message code="msg.editActions" />"></a>
-															<input type="hidden" id="mngRpt_editActions" value="true"/>
-														</c:if>
+														<c:if test="${not empty actionMap[mngRpt_editActions]}">														
+															<c:if test="${report.reportType == 'API_LINK' || report.reportType == 'API_CUSTOM'
+																			|| report.reportName=='Group Download Files' 
+																			|| report.reportName=='Student Data File'}">
+																<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-swap with-tooltip confirm edit-actions"
+																	title="<spring:message code="msg.editActions" />"></a>
+																<input type="hidden" id="mngRpt_editActions" value="true"/>
+															</c:if>																											
 														</c:if>
 														
 														<fmt:message var="mngRpt_deleteRpt" key="manage.reports.delete"/>
-														<c:if test="${not empty mngRpt_deleteRpt}">
-														<c:if test="${report.reportType != 'API_LINK' && report.reportType != 'API_CUSTOM'}">
+														<c:if test="${not empty actionMap[mngRpt_deleteRpt]}">
+														<c:if test="${report.reportType != 'API_LINK' && report.reportType != 'API_CUSTOM'
+														              && report.reportName != 'Group Download Files'
+														              && report.reportName !='Student Data File'}">
 															<a href="#"	reportId="${report.reportId}" reportName="${report.reportName}" class="button icon-trash with-tooltip confirm delete-Report"
 																title="Delete"></a>
 															<input type="hidden" id="mngRpt_deleteRpt" value="true"/>
