@@ -72,7 +72,7 @@ public class IstepService implements PrismPdfService {
 					dao = new IstepDao(configProperties);
 				}
 				logger.info("Fetching school details from database. Please wait... ");
-				OrgTO school = dao.getSchoolDetails(orgId, false);
+				OrgTO school = dao.getSchoolDetails(orgId, false, istepProperties);
 				if (manupulateTenants(school, configProperties, istepProperties, null, false, false)) {
 					userExists = true;
 				}
@@ -131,7 +131,7 @@ public class IstepService implements PrismPdfService {
 				dao = new IstepDao(configProperties);
 			}
 			logger.info("Fetching district details from database. Please wait... ");
-			OrgTO district = dao.getDistrictDetails(level2OrgId, state);
+			OrgTO district = dao.getDistrictDetails(level2OrgId, state, istepProperties);
 			if (district != null && district.getUsers() != null && district.getUsers().size() > 0) {
 				districtUserPresent = true;
 				DDMMYY = district.getDateStrWtYear();

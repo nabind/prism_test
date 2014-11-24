@@ -76,7 +76,7 @@ public class IstepDao extends CommonDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public OrgTO getSchoolDetails(String jasperOrgId, boolean state) throws Exception {
+	public OrgTO getSchoolDetails(String jasperOrgId, boolean state, Properties prop) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -117,7 +117,7 @@ public class IstepDao extends CommonDao {
 			releaseResources(conn, pstmt, rs);
 		}
 		if (school != null) {
-			List<UserTO> users = getUsers(school.getJasperOrgId());
+			List<UserTO> users = getUsers(school.getJasperOrgId(), prop);
 			school.setUsers(users);
 		}
 		return school;
@@ -130,7 +130,7 @@ public class IstepDao extends CommonDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<UserTO> getUsers(String jasperOrgId) throws Exception {
+	public List<UserTO> getUsers(String jasperOrgId, Properties prop) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -157,7 +157,7 @@ public class IstepDao extends CommonDao {
 				user.setUserName(rs.getString("USERNAME"));
 				user.setFullName(rs.getString("DISPLAY_USERNAME"));
 				user.setOrgNodeId(rs.getString("ORG_NODEID"));
-				user.setUserType(rs.getString("USER_TYPE"));
+				user.setUserType(rs.getString("USER_TYPE"), prop);
 				user.setOrgLevel(rs.getString("ORG_NODE_LEVEL"));
 				allUsers.add(user);
 			}
@@ -355,9 +355,9 @@ public class IstepDao extends CommonDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<OrgTO> getTeacherUsers(List<OrgTO> teachers) throws Exception {
+	public List<OrgTO> getTeacherUsers(List<OrgTO> teachers, Properties prop) throws Exception {
 		for (OrgTO t : teachers) {
-			List<UserTO> users = getUsers(t.getJasperOrgId());
+			List<UserTO> users = getUsers(t.getJasperOrgId(), prop);
 			t.setUsers(users);
 		}
 		return teachers;
@@ -916,7 +916,7 @@ public class IstepDao extends CommonDao {
 	 * @return
 	 * @throws Exception
 	 */
-	public OrgTO getDistrictDetails(String jasperOrgId, boolean state) throws Exception {
+	public OrgTO getDistrictDetails(String jasperOrgId, boolean state, Properties prop) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -953,7 +953,7 @@ public class IstepDao extends CommonDao {
 			releaseResources(conn, pstmt, rs);
 		}
 		if (district != null) {
-			List<UserTO> users = getUsers(district.getJasperOrgId());
+			List<UserTO> users = getUsers(district.getJasperOrgId(), prop);
 			district.setUsers(users);
 		}
 		return district;

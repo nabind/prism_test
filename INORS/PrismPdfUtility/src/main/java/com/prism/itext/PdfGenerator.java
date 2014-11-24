@@ -112,12 +112,12 @@ public class PdfGenerator {
 
 			boolean pageBreakRequired = false;
 			if (migration) {
-				addLoginInstructionInors(document, prop, school, false, migration, state);
+				addLoginInstruction(document, prop, school, false, migration, state);
 				addUserLoginsInors(document, school, state, orgLabelMap);
 				document.add(new Paragraph(prop.getProperty("HELP"), font));
 				pageBreakRequired = true;
 			} else if (schoolUserPresent) {
-				addLoginInstructionInors(document, prop, school, false, false, false);
+				addLoginInstruction(document, prop, school, false, false, false);
 				addUserLoginsInors(document, school, false, orgLabelMap);
 				document.add(new Paragraph(prop.getProperty("HELP"), font));
 				// next page
@@ -126,7 +126,7 @@ public class PdfGenerator {
 				pageBreakRequired = true;
 			} else if (isInitialLoad) {
 				// page for returning schools
-				addLoginInstructionInors(document, prop, school, true, false, false);
+				addLoginInstruction(document, prop, school, true, false, false);
 				addTeacherLoginsInors(document, teachers, true);
 				pageBreakRequired = true;
 			}
@@ -173,21 +173,23 @@ public class PdfGenerator {
 	 * @param state
 	 * @throws DocumentException
 	 */
-	private void addLoginInstructionInors(Document document, Properties prop, OrgTO school, boolean returningSchool, boolean migration, boolean state)
+	private void addLoginInstruction(Document document, Properties prop, OrgTO school, boolean returningSchool, boolean migration, boolean state)
 			throws DocumentException {
 		document.add(new Paragraph(prop.getProperty("title") + school.getElementName()));
 		List list = null;
 		ListItem listItem;
 
-		if (state)
+		if (state) {
 			document.add(new Paragraph(prop.getProperty("welcome_state"), fontBold));
-		else
+		} else {
 			document.add(new Paragraph(prop.getProperty("welcome"), fontBold));
+		}
 		if (migration) {
-			if (state)
+			if (state) {
 				document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR_STATE"), font));
-			else
+			} else {
 				document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR"), font));
+			}
 		} else if (returningSchool) {
 			document.add(new Paragraph(prop.getProperty("TXT_ONE_RET"), font));
 			document.add(new Paragraph(prop.getProperty("TXT_TWO_RET"), font));
@@ -619,7 +621,7 @@ public class PdfGenerator {
 				addUserLoginsAcsiInors(document, school, state);
 				pageBreakRequired = true;
 			} else if (schoolUserPresent) {
-				addLoginInstructionInors(document, prop, school, false, false, false);
+				addLoginInstruction(document, prop, school, false, false, false);
 				addUserLoginsAcsiInors(document, school, false);
 				// next page
 				addTeacherLoginsAcsiInors(document, teachers, false);
@@ -1501,12 +1503,12 @@ public class PdfGenerator {
 
 			boolean pageBreakRequired = false;
 			if (migration) {
-				addLoginInstructionTasc(document, prop, school, false, migration, state);
+				addLoginInstruction(document, prop, school, false, migration, state);
 				addUserLoginsTasc(document, school, state, orgLabelMap);
 				document.add(new Paragraph(prop.getProperty("HELP"), font));
 				pageBreakRequired = true;
 			} else if (schoolUserPresent) {
-				addLoginInstructionTasc(document, prop, school, false, false, false);
+				addLoginInstruction(document, prop, school, false, false, false);
 				addUserLoginsTasc(document, school, false, orgLabelMap);
 				document.add(new Paragraph(prop.getProperty("HELP"), font));
 				// next page
@@ -1515,7 +1517,7 @@ public class PdfGenerator {
 				pageBreakRequired = true;
 			} else if (isInitialLoad) {
 				// page for returning schools
-				addLoginInstructionTasc(document, prop, school, true, false, false);
+				addLoginInstruction(document, prop, school, true, false, false);
 				addTeacherLoginsTasc(document, teachers, true);
 				pageBreakRequired = true;
 			}
@@ -1549,82 +1551,6 @@ public class PdfGenerator {
 		document.addAuthor("ISTEP");
 		document.addCreator("ISTEP-CTB");
 		document.addSubject("Login credential details");
-	}
-
-	/**
-	 * Add login information and title in the first screen
-	 * 
-	 * @param document
-	 * @param prop
-	 * @param school
-	 * @param returningSchool
-	 * @param migration
-	 * @param state
-	 * @throws DocumentException
-	 */
-	private void addLoginInstructionTasc(Document document, Properties prop, OrgTO school, boolean returningSchool, boolean migration, boolean state)
-			throws DocumentException {
-		document.add(new Paragraph(prop.getProperty("title") + school.getElementName()));
-		List list = null;
-		ListItem listItem;
-
-		if (state)
-			document.add(new Paragraph(prop.getProperty("welcome_state"), fontBold));
-		else
-			document.add(new Paragraph(prop.getProperty("welcome"), fontBold));
-		if (migration) {
-			if (state)
-				document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR_STATE"), font));
-			else
-				document.add(new Paragraph(prop.getProperty("TXT_ONE_MGR"), font));
-		} else if (returningSchool) {
-			document.add(new Paragraph(prop.getProperty("TXT_ONE_RET"), font));
-			document.add(new Paragraph(prop.getProperty("TXT_TWO_RET"), font));
-			document.add(new Paragraph(prop.getProperty("TXT_THR_RET"), font));
-		} else {
-			document.add(new Paragraph(prop.getProperty("TXT_ONE"), font));
-			document.add(new Paragraph(prop.getProperty("TXT_TWO_HD"), fontBold));
-			document.add(new Paragraph(prop.getProperty("TXT_TWO"), font));
-			document.add(new Paragraph(prop.getProperty("TXT_THREE_HD"), fontBold));
-			document.add(new Paragraph(prop.getProperty("TXT_THREE"), font));
-			document.add(new Paragraph(prop.getProperty("TXT_FOUR"), font));
-		}
-
-		// document.add(new Paragraph("\nUser Logins", fontBold));
-		document.add(new Paragraph("\nInstructions to Log-in:", fontBold));
-		list = new List(false, 20);
-		// list.setListSymbol(new Chunk("\u2022",
-		// FontFactory.getFont(FontFactory.HELVETICA, 20, Font.BOLD)));
-		listItem = new ListItem(prop.getProperty("URL"), font);
-		list.add(listItem);
-
-		if (migration) {
-			listItem = new ListItem(prop.getProperty("BLT1_MGR"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT2_MGR"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT3_MGR"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT3A_MGR"), fontBold);
-			list.add(listItem);
-		} else {
-			listItem = new ListItem(prop.getProperty("BLT1"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT2"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT3"), font);
-			list.add(listItem);
-
-			listItem = new ListItem(prop.getProperty("BLT3A"), font);
-			list.add(listItem);
-		}
-		document.add(list);
-		document.add(new Paragraph("\nUser Accounts", fontBold));
 	}
 
 	/**
