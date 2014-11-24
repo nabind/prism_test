@@ -390,9 +390,12 @@ public class LoginController {
 				 *  */
 				if(themeResolver.resolveThemeName(req).indexOf(IApplicationConstants.PARENT_LOGIN) == -1 
 						&& user.getUserType().equals(IApplicationConstants.PARENT_USER_FLAG)){
-					modelAndView = new ModelAndView("user/userlogin");
-					modelAndView.addObject("message", "error.login.invalidlogin");
-					return modelAndView;
+					// parent is login through teacher page
+					res.sendRedirect("userlogin.do?login_error=1");
+				} else if (themeResolver.resolveThemeName(req).indexOf(IApplicationConstants.PARENT_LOGIN) != -1 
+						&& !user.getUserType().equals(IApplicationConstants.PARENT_USER_FLAG)){
+					// teacher is login through parent page
+					res.sendRedirect("userlogin.do?login_error=1");
 				}
 				
 				req.getSession().setAttribute(IApplicationConstants.CURRUSERID, user.getUserId());
