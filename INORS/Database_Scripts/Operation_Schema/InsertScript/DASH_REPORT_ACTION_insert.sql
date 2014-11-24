@@ -56,6 +56,8 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'Delete Report','RPT','Delete Report',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Configure Report Message','RPT','Configure Report Message',sysdate,1);
+insert into dash_rpt_action(DB_ACTIONID,ACTION_NAME,ACTION_TYPE,DESCRIPTION,projectid,CREATED_DATE_TIME)
+values(seq_dash_rpt_action.nextval,'Edit Actions','RPT','Edit Actions',1,sysdate);
 
 --Manage Content
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -173,6 +175,8 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'Delete Report','RPT','Delete Report',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Configure Report Message','RPT','Configure Report Message',sysdate,2);
+insert into dash_rpt_action(DB_ACTIONID,ACTION_NAME,ACTION_TYPE,DESCRIPTION,projectid,CREATED_DATE_TIME)
+values(seq_dash_rpt_action.nextval,'Edit Actions','RPT','Edit Actions',2,sysdate);
 
 --Manage Content
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
