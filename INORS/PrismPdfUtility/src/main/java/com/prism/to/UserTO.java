@@ -1,6 +1,7 @@
 package com.prism.to;
 
 import java.util.List;
+import java.util.Properties;
 
 public class UserTO {
 
@@ -250,17 +251,14 @@ public class UserTO {
 		return userType;
 	}
 
-	public void setUserType(String userType) {
-		// Istep
-		// if (istepProperties.getProperty("userTypeGrwP").equals(userType)) {
-		// this.userType = istepProperties.getProperty("userTypeP");
-		// } else if
-		// (istepProperties.getProperty("userTypeGrw").equals(userType)) {
-		// this.userType = istepProperties.getProperty("userTypeT");
-		// } else {
-		// this.userType = userType;
-		// }
+	public void setUserType(String userType, Properties prop) {
 		this.userType = userType;
+		// Istep
+		if (prop.getProperty("userTypeGrwP").equals(userType)) {
+			this.userType = prop.getProperty("userTypeP");
+		} else if (prop.getProperty("userTypeGrw").equals(userType)) {
+			this.userType = prop.getProperty("userTypeT");
+		}
 	}
 
 }

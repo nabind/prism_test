@@ -47,7 +47,7 @@ public class IstepService implements PrismPdfService {
 	 */
 	public void mainMethod(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
-		args = new String[] { "603833", "603834", "605138" };
+		// args = new String[] { "603833", "603834", "605138" };
 		logger.info("Starting File Generation. Please wait...");
 		Properties configProperties = PropertyFile.loadProperties(Constants.ISTEP_JDBC_PROPERTIES_FILE);
 		Properties istepProperties = PropertyFile.loadProperties(Constants.ISTEP_PROPERTIES_FILE);
