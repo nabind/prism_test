@@ -24,7 +24,7 @@ BEGIN
           'PRODUCT SPECIFIC SYSTEM CONFIGURATION');
 
   UPDATE DASH_REPORTS
-     SET REPORT_TYPE = 'API_CUSTOM'
+     SET REPORT_TYPE = 'API_NFCUSTOM'
    WHERE UPPER(REPORT_NAME) IN
          ('STUDENT DATA FILE', 'GROUP DOWNLOAD FILES');
 
@@ -314,7 +314,8 @@ BEGIN
     FOR REC_DASH_REPORTS IN (SELECT *
                                FROM DASH_REPORTS
                               WHERE REPORT_TYPE = 'API_LINK'
-                                 OR REPORT_TYPE = 'API_CUSTOM') LOOP
+                                 OR REPORT_TYPE = 'API_CUSTOM'
+                                 OR report_name in ('Group Download Files','Student Data File') ) LOOP
     
       IF UPPER(REC_DASH_REPORTS.REPORT_NAME) = 'MANAGE USERS' THEN
         V_ACTION_TYPE := 'USR';
