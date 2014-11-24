@@ -53,7 +53,16 @@ public class EmailSender {
 		if (host == null || port == null) {
 			throw new Exception("Make sure smtp parametres are correctly defined");
 		}
-		sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, null, null);
+
+		/*********************IMPORTANT*************************
+		 * This checking is introduced in order to prevent mail send to customer during QA time
+		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
+		 *******************************************************/
+		if(prop.getProperty("mailToCustomer").equals("true")) {
+			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, null, null);
+		} else {
+			sendHTMLMail(false, host, port, sender, prop.getProperty("supportEmail"), "", supportEmail, subject, mailBody, null, null, null);
+		}	
 	}
 
 	public static void sendMailIstep(final Properties prop, String recipientEmail, String attachment, String attachmentTwo, String subject, String mailBody)
@@ -70,7 +79,16 @@ public class EmailSender {
 		if (host == null || port == null) {
 			throw new Exception("Make sure smtp parametres are correctly defined");
 		}
-		sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, null, null);
+		
+		/*********************IMPORTANT*************************
+		 * This checking is introduced in order to prevent mail send to customer during QA time
+		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
+		 *******************************************************/
+		if(prop.getProperty("mailToCustomer").equals("true")) {
+			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, null, null);
+		} else {
+			sendHTMLMail(false, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, attach, null, null);
+		}
 	}
 
 	public static void sendMailTasc(final Properties prop, String recipientEmail, String attachment, String attachmentTwo, String subject, String mailBody,
@@ -88,7 +106,16 @@ public class EmailSender {
 		if (host == null || port == null) {
 			throw new Exception("Make sure smtp parametres are correctly defined");
 		}
-		sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
+		
+		/*********************IMPORTANT*************************
+		 * This checking is introduced in order to prevent mail send to customer during QA time
+		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
+		 *******************************************************/
+		if(prop.getProperty("mailToCustomer").equals("true")) {
+			sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
+		} else {
+			sendHTMLMail(true, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
+		}
 	}
 
 	/**
@@ -112,7 +139,16 @@ public class EmailSender {
 		if (host == null || port == null) {
 			throw new Exception("Make sure smtp parametres are correctly defined");
 		}
-		sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
+				
+		/*********************IMPORTANT*************************
+		 * This checking is introduced in order to prevent mail send to customer during QA time
+		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
+		 *******************************************************/
+		if(prop.getProperty("mailToCustomer").equals("true")) {
+			sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
+		} else {
+			sendHTMLMail(true, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
+		}
 	}
 
 	public static String sendHTMLMail(boolean authRequired, String asSmtpServer, String port, String asSender, String asRecipient, String asCcRecipient,
