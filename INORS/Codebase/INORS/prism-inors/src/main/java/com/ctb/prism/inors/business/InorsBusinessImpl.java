@@ -420,7 +420,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String keyWithFileName = envString + "/" + zipFileName;
 			keyWithFileName = keyWithFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
-			String keyWithoutFileName = envString + "/GDF/";
+			String keyWithoutFileName = envString + IApplicationConstants.GDF_S3_LOCATION;
 			keyWithoutFileName = keyWithoutFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
 			File file = new File(zipFileName);
@@ -460,7 +460,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				fileName = tempDirectory + "/" + fileName;
 				FileUtil.createFile(fileName, assetBytes);
 				logger.log(IAppLogger.INFO, "File saved successfully from S3: " + fileName);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.log(IAppLogger.WARN, e.getMessage());
 				logger.log(IAppLogger.WARN, "Not able to save file from S3: " + s3Key);
 			}
@@ -522,7 +522,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			String envString = to.getEnvString().toUpperCase();
 			logger.log(IAppLogger.INFO, "envString = " + envString);
-			String s3Key = envString + "/GDF/" + FileUtil.getFileNameFromFilePath(zipFileName);
+			String s3Key = IApplicationConstants.GDF_S3_LOCATION + FileUtil.getFileNameFromFilePath(zipFileName); // JOB_TRACKING.REQUEST_FILENAME
 			s3Key = s3Key.replace("//", "/");
 			to.setFileName(s3Key);
 			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());

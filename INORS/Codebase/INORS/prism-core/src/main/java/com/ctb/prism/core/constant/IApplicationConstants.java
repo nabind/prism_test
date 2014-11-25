@@ -56,6 +56,8 @@ public interface IApplicationConstants {
 	public static String DEFAULT_PRODUCT_ID = "3001";
 	public static String MENU_SET = "menuSet";
 
+	public static String GDF_S3_LOCATION = "/GDF/";
+
 	// input control default value ALL
 	public static final String VALUE_ALL = "ALL";
 
