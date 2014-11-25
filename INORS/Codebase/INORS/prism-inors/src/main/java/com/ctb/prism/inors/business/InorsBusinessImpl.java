@@ -420,7 +420,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String keyWithFileName = envString + "/" + zipFileName;
 			keyWithFileName = keyWithFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
-			String keyWithoutFileName = FileUtil.getDirFromFilePath(keyWithFileName);
+			String keyWithoutFileName = envString + "/GDF/";
+			keyWithoutFileName = keyWithoutFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
 			File file = new File(zipFileName);
 			// Upload File to S3
@@ -428,10 +429,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
 
 			// Delete File from Mount Location
-			/*String dir = FileUtil.getDirFromFilePath(zipFileName);
+			String dir = FileUtil.getDirFromFilePath(zipFileName);
 			logger.log(IAppLogger.INFO, "Deleting all files from: " + dir); // TODO : check
 			File dirLocation = new File(dir);
-			FileUtils.cleanDirectory(dirLocation);*/
+			FileUtils.deleteDirectory(dirLocation);
 
 			// Set Job Status and Log
 			jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
@@ -509,6 +510,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			String zipFileName = fileName + "_" + System.currentTimeMillis() +".zip";
 			zipFileName = CustomStringUtil.appendString(tempDirectory, "/", zipFileName);
+			zipFileName = zipFileName.replace("//", "/");
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
 				querySheetFileName = "000" + querySheetFileName;
@@ -518,7 +520,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "zipFileName(CP): " + zipFileName);
 			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
 
-			to.setFileName(zipFileName);
+			String envString = to.getEnvString().toUpperCase();
+			logger.log(IAppLogger.INFO, "envString = " + envString);
+			String s3Key = envString + "/GDF/" + FileUtil.getFileNameFromFilePath(zipFileName);
+			s3Key = s3Key.replace("//", "/");
+			to.setFileName(s3Key);
 			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
 			to.setGdfExpiryTime(gdfExpiryTime);
 			to.setRequestDetails(clobStr);
@@ -532,6 +538,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				try {
 					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), contractName);
 					String querySheetFile = CustomStringUtil.appendString(tempDirectory, "/", querySheetFileName);
+					querySheetFile = querySheetFile.replace("//", "/");
 					FileUtil.createDuplexPdf(querySheetFile, querySheetAsString);
 					filePaths.put(querySheetFileName, querySheetFileName);
 					filePaths.putAll(filePathsGD);
@@ -541,7 +548,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						 */
 						String pdfFileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
 						pdfFileName = CustomStringUtil.appendString(tempDirectory, "/", pdfFileName);
-
+						pdfFileName = pdfFileName.replace("//", "/");
 						// Save files from s3 to mount path
 						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD);
 

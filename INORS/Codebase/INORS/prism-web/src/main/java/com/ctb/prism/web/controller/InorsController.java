@@ -835,7 +835,7 @@ public class InorsController {
 		String json = (String) request.getParameter("json");
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
-		to.setEnvString((String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION));
+		to.setEnvString(((String) propertyLookup.get("environment.postfix")).toUpperCase());
 
 		String handler = "";
 		String type = "";
