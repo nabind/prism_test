@@ -105,6 +105,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	 */
 	public byte[] getAssetBytes(String assetPath) throws IOException {
 		assetPath = propertyLookup.get("environment.postfix").toUpperCase() + FOLDER_SUFFIX + assetPath;
+		assetPath = assetPath.replace("//", "/");
 		System.out.println("Downloading an object from "+assetPath);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		S3ObjectInputStream inputStream = object.getObjectContent();
