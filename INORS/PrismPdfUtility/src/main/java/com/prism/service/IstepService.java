@@ -47,8 +47,7 @@ public class IstepService implements PrismPdfService {
 	 */
 	public void mainMethod(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
-		// args = new String[] { "603833", "603834", "605138" };
-		logger.info("Starting File Generation. Please wait...");
+		logger.info("Starting File Generation with IstepService. Please wait...");
 		Properties configProperties = PropertyFile.loadProperties(Constants.ISTEP_JDBC_PROPERTIES_FILE);
 		Properties istepProperties = PropertyFile.loadProperties(Constants.ISTEP_PROPERTIES_FILE);
 		if (args == null || args.length == 0) {
@@ -71,12 +70,12 @@ public class IstepService implements PrismPdfService {
 				if (dao == null) {
 					dao = new IstepDao(configProperties);
 				}
-				logger.info("Fetching school details from database. Please wait... ");
+				logger.info("Fetching school details from Istep database. Please wait... ");
 				OrgTO school = dao.getSchoolDetails(orgId, false, istepProperties);
 				if (manupulateTenants(school, configProperties, istepProperties, null, false, false)) {
 					userExists = true;
 				}
-				if (school.getParentJasperOrgId() != null) {
+				if (school != null && school.getParentJasperOrgId() != null) {
 					districtSet.add(school.getParentJasperOrgId());
 				}
 			}

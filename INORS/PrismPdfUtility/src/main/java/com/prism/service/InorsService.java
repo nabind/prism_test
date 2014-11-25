@@ -46,8 +46,7 @@ public class InorsService implements PrismPdfService {
 	}
 
 	public void mainMethod(String[] args) throws Exception {
-		logger.info("Program Starts...");
-		// args = new String[] { "I", "604861"};
+		logger.info("InorsService Starts...");
 		boolean validArgs = validateCommandLineArgsInors(args);
 		if (validArgs) {
 			String flag = args[0];
@@ -76,8 +75,10 @@ public class InorsService implements PrismPdfService {
 				for (String id : ids) {
 					CUSOMERID = dao.getCustomerId(id);
 					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
+						logger.info("Creating Login PDF");
 						encDocLocation = manupulateTenantsInors(id, prop, null, false, false);
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+						logger.info("Creating IC Letter PDF");
 						logger.info("Checking if new student present for school # " + id);
 						boolean newStudentPresent = dao.getNewStudents(id);
 						if (newStudentPresent) {
@@ -90,7 +91,7 @@ public class InorsService implements PrismPdfService {
 						ARCHIVE_NEEDED = false;
 						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ----------------------------------------");
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
-						logger.info("All/Both Login Pdf and IC Letter...");
+						logger.info("Creating Both Login Pdf and IC Letter Pdf...");
 						String letterLocation = "";
 						boolean newStudentPresent = dao.getNewStudents(id);
 						if (newStudentPresent) {
@@ -103,6 +104,7 @@ public class InorsService implements PrismPdfService {
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 
 					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
+						logger.info("Creating Separate IC Letter PDFs");
 						processIndividualIcLetterPdfInors(prop, dao, id);
 						identifier = "IC_";
 					}
@@ -248,34 +250,38 @@ public class InorsService implements PrismPdfService {
 		try {
 			// Users not required
 			OrgTO school = dao.getSchoolDetails(schoolId, false);
-			CUSOMERID = school.getCustomerCode();
 			if (school != null) {
-				String adminId = "-1";
-				// Actually test element id list
-				List<String> studentIdList = dao.getStudentIdList(schoolId);
-				logger.info(studentIdList.size() + " students found for school id " + schoolId);
-				Map<String, String> pdfPathList = new HashMap<String, String>();
-				List<String> tempFileList = new ArrayList<String>();
+				CUSOMERID = school.getCustomerCode();
+				if (school != null) {
+					String adminId = "-1";
+					// Actually test element id list
+					List<String> studentIdList = dao.getStudentIdList(schoolId);
+					logger.info(studentIdList.size() + " students found for school id " + schoolId);
+					Map<String, String> pdfPathList = new HashMap<String, String>();
+					List<String> tempFileList = new ArrayList<String>();
 
-				int count = 0;
-				for (String studentBioId : studentIdList) {
-					logger.info("Processing " + ++count + " of " + studentIdList.size() + " students");
-					String pdfPath = getIndividualIcPdfPathInors(prop, school.getDistrictCode(), school.getSchoolCode(), school.getCustomerCode(), studentBioId);
-					String urlString = getIndividualIcURLStringInors(prop, schoolId, adminId, studentBioId, false);
-					URL url = new URL(urlString);
-					letterLoc = ReportPDF.savePdfFromPrismWeb(pdfPath, url);
-					if ((letterLoc != null) && (!letterLoc.isEmpty())) {
-						pdfPathList.put(studentBioId, letterLoc);
-						tempFileList.add(letterLoc);
+					int count = 0;
+					for (String studentBioId : studentIdList) {
+						logger.info("Processing " + ++count + " of " + studentIdList.size() + " students");
+						String pdfPath = getIndividualIcPdfPathInors(prop, school.getDistrictCode(), school.getSchoolCode(), school.getCustomerCode(), studentBioId);
+						String urlString = getIndividualIcURLStringInors(prop, schoolId, adminId, studentBioId, false);
+						URL url = new URL(urlString);
+						letterLoc = ReportPDF.savePdfFromPrismWeb(pdfPath, url);
+						if ((letterLoc != null) && (!letterLoc.isEmpty())) {
+							pdfPathList.put(studentBioId, letterLoc);
+							tempFileList.add(letterLoc);
+						}
+					}
+
+					if (!pdfPathList.isEmpty()) {
+						dao.updateStudentsPDFloc(schoolId, pdfPathList);
+						logger.debug("IC letter created");
+					} else {
+						logger.warn("No pdf found");
 					}
 				}
-
-				if (!pdfPathList.isEmpty()) {
-					dao.updateStudentsPDFloc(schoolId, pdfPathList);
-					logger.debug("IC letter created");
-				} else {
-					logger.warn("No pdf found");
-				}
+			} else {
+				logger.warn("School NOT found: " + schoolId);
 			}
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());
@@ -708,16 +714,14 @@ public class InorsService implements PrismPdfService {
 			if (school != null && school.getUsers() != null && school.getUsers().size() > 0) {
 				/** we don't need to generate school users even if that present **/
 				schoolUserPresent = false;
-				logger.info("New school user found. count .. " + school.getUsers().size());
+				logger.info("New school user found. count = " + school.getUsers().size());
 			} else {
-				logger.warn("No new school user found. Incremental PDF will be generated.");
+				logger.warn("No new school user found for school = " + level3JasperOrgId);
 			}
 			if (school != null) {
 				processId = 1; // stageDao.getProcessId(school.getStructureElement());
 			}
 			if (processId > 0 || migration) {
-				logger.debug("Processing PDF for processId : " + processId);
-				logger.info("Processing PDF for processId : " + processId);
 				if (true) {
 					String adminid = dao.getCurrentAdminYearAcsi();
 					boolean isInitialLoad = true;
@@ -821,10 +825,10 @@ public class InorsService implements PrismPdfService {
 					logger.info("Failed to update email status : (jasperorgId) : " + level3JasperOrgId);
 				}
 			} else {
-				logger.debug("ProcessId not found");
 				logger.info("ProcessId not found " + level3JasperOrgId);
-				if (school != null)
+				if (school != null) {
 					logger.info("  ... for ... structure element " + school.getStructureElement());
+				}
 			}
 		} catch (Exception e) {
 			logger.error("Error processing : Java exception : " + e.getMessage());

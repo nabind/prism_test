@@ -232,8 +232,8 @@ public class TascDao extends CommonDao {
 					"   ECD.EDU_CENTERID,", // 4
 					"   '-99' AS ORG_NODE_LEVEL,", // 5
 					"   ECD.EDU_CENTER_NAME", // 6
-					" FROM EDU_CENTER_DETAILS ECD,", "   EDU_CENTER_USER_LINK ECUL,", "   USERS U", " WHERE ECD.EDU_CENTERID = ?",
-					" AND ECD.EDU_CENTERID   = ECUL.EDU_CENTERID", " AND ECUL.USERID        = U.USERID", " AND U.USERNAME NOT    IN ('ctbadmin')");
+					" FROM EDU_CENTER_DETAILS ECD, EDU_CENTER_USER_LINK ECUL, USERS U WHERE ECD.EDU_CENTERID = ?",
+					" AND ECD.EDU_CENTERID = ECUL.EDU_CENTERID", " AND ECUL.USERID = U.USERID AND U.USERNAME NOT IN ('ctbadmin')");
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
 			rs = pstmt.executeQuery();
@@ -272,7 +272,7 @@ public class TascDao extends CommonDao {
 		int updateCount[];
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = "UPDATE users SET is_new_user = 'N', password = ?, salt = ?, updated_date_time=sysdate WHERE is_new_user = 'Y' AND USERNAME = ? ";
+			String query = "UPDATE USERS SET IS_NEW_USER = 'N', PASSWORD = ?, SALT = ?, UPDATED_DATE_TIME = SYSDATE WHERE IS_NEW_USER = 'Y' AND USERNAME = ? ";
 			pstmt = conn.prepareStatement(query);
 			for (UserTO user : userList) {
 				pstmt.setString(1, user.getEncPassword());
@@ -316,9 +316,10 @@ public class TascDao extends CommonDao {
 			}
 			conn = driver.connect(DATA_SOURCE, null);
 			String nodes = allNodes.toString();
-			if (nodes != null && nodes.trim().length() == 0)
+			if (nodes != null && nodes.trim().length() == 0) {
 				nodes = "0";
-			String query = "UPDATE users SET new_user = 'N', updated_date_time=sysdate " + "WHERE new_user = 'Y' AND org_id in ( " + nodes + " ) ";
+			}
+			String query = "UPDATE USERS SET NEW_USER = 'N', UPDATED_DATE_TIME = SYSDATE WHERE NEW_USER = 'Y' AND ORG_ID IN ( " + nodes + " ) ";
 			pstmt = conn.prepareCall(query);
 			updateCount = pstmt.executeUpdate();
 			logger.debug("Returning update count");

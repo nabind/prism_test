@@ -58,11 +58,12 @@ public class TascService implements PrismPdfService {
 		// args = new String[2];
 		// args[0] = "o";
 		// args[1] = "500167102";
-		logger.info("Starting..");
+		logger.info("Starting TascService..");
 		boolean isEducationCenter;
 		int length = (args.length > 0) ? args.length - 1 : 0;
 		String Ids[] = new String[length];
-		Properties prop = PropertyFile.loadProperties("tasc.properties");
+		Properties configProperties = PropertyFile.loadProperties(Constants.TASC_JDBC_PROPERTIES_FILE);
+		Properties tascProperties = PropertyFile.loadProperties(Constants.TASC_PROPERTIES_FILE);
 		if ((args == null) || (args.length == 0)) {
 			logger.error("Please provide O/E (O = Org Node Id, E = Education Center Id) ");
 		} else if (args.length == 1) {
@@ -81,30 +82,29 @@ public class TascService implements PrismPdfService {
 			}
 			// Creates a new array with args[1] to args[last element]
 			System.arraycopy(args, 1, Ids, 0, length);
-			if (prop == null) {
+			if (configProperties == null || tascProperties == null) {
 				logger.error("Error getting property file.");
 				System.exit(1);
 			} else {
-				if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
+				if ("true".equals(tascProperties.getProperty("pdfEncryptionRequired"))) {
 					encryptionNeeded = true;
 				}
-				if ("true".equals(prop.getProperty("archiveNeeded"))) {
+				if ("true".equals(tascProperties.getProperty("archiveNeeded"))) {
 					archiveNeeded = true;
 				}
 			}
 			for (String orgId : Ids) {
 				processLog = new StringBuffer();
 				// generate only login PDF
-				manupulateTenants(orgId, prop, null, false, false, isEducationCenter);
+				manupulateTenants(orgId, configProperties, tascProperties, null, false, false, isEducationCenter);
 			}
 			if (archiveNeeded) {
-				File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
+				File arc = new File(CustomStringUtil.appendString(tascProperties.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
 				if (!arc.exists()) {
 					arc.mkdir();
 				}
-				String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"),
-						prop.getProperty("schoolaArc"), DDMMYY, ".ZIP");
-				archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
+				String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, tascProperties.getProperty("tempPdfLocation"), tascProperties.getProperty("schoolaArc"), DDMMYY, ".ZIP");
+				archiveFiles(tascProperties.getProperty("pdfGenPath"), arcFilePath);
 			}
 		}
 		logger.debug("Completed!! ");
@@ -264,16 +264,14 @@ public class TascService implements PrismPdfService {
 	 * @param isEducationCenter
 	 * @return
 	 */
-	private boolean manupulateTenants(String level3OrgId, Properties prop, String acLetterLocation, boolean migration, boolean state, boolean isEducationCenter) {
+	private boolean manupulateTenants(String level3OrgId, Properties configProperties, Properties tascProperties, String acLetterLocation, boolean migration, boolean state, boolean isEducationCenter) {
 		long processId = 0;
 		boolean schoolUserPresent = false;
 		String encDocLocation = "";
 		try {
-			logger.debug("Using the following schema ... ");
-			logger.debug("        Load schema       : " + prop.getProperty("dbUserName"));
 			updateLog("Processing school (jasperorgId) : ", level3OrgId);
 			if (dao == null) {
-				dao = new TascDao(prop);
+				dao = new TascDao(configProperties);
 			}
 			logger.debug("getting schools ... ");
 			updateLog("getting schools ... ");
@@ -337,7 +335,7 @@ public class TascService implements PrismPdfService {
 					}
 					lEndTime = new Date().getTime();
 					logElapsedTime("setHierarchy : ");
-					encDocLocation = createPdf(school, teachers, prop, encryptionNeeded, schoolUserPresent, false, migration, state);
+					encDocLocation = createPdf(school, teachers, tascProperties, encryptionNeeded, schoolUserPresent, false, migration, state);
 					logger.debug("Created PDF with name : " + encDocLocation);
 					if (pdfGenerator.isIssueFound() && !migration) {
 						logger.warn("Some issues identified during generation of pdf.");
@@ -359,7 +357,7 @@ public class TascService implements PrismPdfService {
 									" TASC Online Reporting System - User Accounts");
 							logger.info(mailSubject);
 							if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-								if (sendMail(level3OrgId, false, migration, prop, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
+								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
 										schoolUserPresent, false, supportEmail)) {
 									logger.debug("	mail sent successfully ... for process id : " + processId);
 									updateLog("Mail sent successfully to ", school.getEmail());
@@ -375,7 +373,7 @@ public class TascService implements PrismPdfService {
 								}
 							} else {
 								logger.debug("Sending mail to Support group only .. no school mail id is defined.");
-								if (sendMail(level3OrgId, false, migration, prop, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
+								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
 										schoolUserPresent, false, null)) {
 									updateLog("Mail sent successfully to ", supportEmail);
 								} else {
@@ -386,7 +384,7 @@ public class TascService implements PrismPdfService {
 							// Sending password email for PDF opening
 							updateLog("Sending password email for PDF opening");
 							logger.debug("Sending password email for PDF opening");
-							sendPasswordToMailId(level3OrgId, prop, mailSubject, null, false, isEducationCenter, supportEmail);
+							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
 						} else {
 							updateLog("Error generating PDF");
 						}
@@ -502,8 +500,7 @@ public class TascService implements PrismPdfService {
 		logElapsedTime("Create PDF : ");
 		if (encrypt) {
 			lStartTime = new Date().getTime();
-			String encLocation = PdfUtil.encryptPdf(prop, docLocation, school.getOrgNodeId(), school.getCustomerCode(), school.getElementName(), state,
-					school.getOrgNodeLevel());
+			String encLocation = PdfUtil.encryptPdf(prop, docLocation, school.getOrgNodeId(), school.getCustomerCode(), school.getElementName(), state, school.getOrgNodeLevel());
 			FileUtil.removeFile(docLocation);
 			lEndTime = new Date().getTime();
 			logElapsedTime("Encrypt PDF : ");

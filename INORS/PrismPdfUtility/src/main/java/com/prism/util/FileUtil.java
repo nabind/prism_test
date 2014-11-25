@@ -219,10 +219,12 @@ public class FileUtil {
 	public static void removeFile(String file) {
 		try {
 			File pdf = new File(file);
-			if (pdf.exists())
+			if (pdf.exists()) {
 				pdf.delete();
+			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.warn("Not able to delete file: " + file);
+			logger.warn(ex.getMessage());
 		}
 	}
 
@@ -240,7 +242,8 @@ public class FileUtil {
 						pdf.delete();
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				logger.warn("Not able to delete file: " + file);
+				logger.warn(ex.getMessage());
 			}
 		}
 	}
@@ -405,21 +408,25 @@ public class FileUtil {
 		FileOutputStream fos = null;
 		FileInputStream in = null;
 		try {
-			fos = new FileOutputStream(arcFilePath);
-			zos = new ZipOutputStream(fos);
 			File folder = new File(docLocation);
 			File[] listOfFiles = folder.listFiles();
-			logger.info("Adding Pdf files into the zip file: " + arcFilePath);
-			for (File f : listOfFiles) {
-				if (f.isFile()) {
-					addToZipFile(f, zos);
+			if (listOfFiles != null && listOfFiles.length > 0) {
+				fos = new FileOutputStream(arcFilePath);
+				zos = new ZipOutputStream(fos);
+				logger.info("Adding Pdf files into the zip file: " + arcFilePath);
+				for (File f : listOfFiles) {
+					if (f.isFile()) {
+						addToZipFile(f, zos);
+					}
 				}
-			}
-			for (File f : listOfFiles) {
-				if (f.isFile()) {
-					logger.debug(CustomStringUtil.appendString("Deleting temp file : ", f.getAbsolutePath()));
-					removeFile(f.getAbsolutePath());
+				for (File f : listOfFiles) {
+					if (f.isFile()) {
+						logger.debug(CustomStringUtil.appendString("Deleting temp file : ", f.getAbsolutePath()));
+						removeFile(f.getAbsolutePath());
+					}
 				}
+			} else {
+				logger.warn("There is no Pdf in: " + docLocation + ". Zip file will NOT be created.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

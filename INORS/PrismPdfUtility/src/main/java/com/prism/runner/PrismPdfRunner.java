@@ -25,23 +25,51 @@ public class PrismPdfRunner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length < 3) {
-			logger.error("Arguments are Invalid. Please provide all command line arguments.");
+		boolean isValidArgs = false;
+		if (args.length < 2) {
+			logger.error("Please provide all command line arguments.");
 		} else {
 			String arg0 = args[0];
 			if (arg0 != null) {
-				logger.info("Creating Service...");
-				PrismPdfService prismPdfService = getService(arg0);
-				try {
-					prismPdfService.mainMethod(CustomStringUtil.getAllButFirstArg(args));
-					logger.info("Service execution completed.");
-					logger.info("It may take some time to release all resources. Please wait...");
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (Constants.ARG_0_INORS.equalsIgnoreCase(arg0)) {
+					String arg1 = args[1];
+					if (arg1 != null) {
+						isValidArgs = true;
+					} else {
+						logger.error("Second argument for INORS is Invalid. Please provide:");
+						logger.error("L = Login Pdf");
+						logger.error("I = IC Letter Pdf");
+						logger.error("A = Both Login Pdf and IC Letter Pdf");
+						logger.error("S = Individual IC Letter Pdf");
+					}
+				} else if (Constants.ARG_0_ISTEP.equalsIgnoreCase(arg0)) {
+					isValidArgs = true;
+				} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
+					String arg1 = args[1];
+					if (arg1 != null) {
+						isValidArgs = true;
+					} else {
+						logger.error("Second argument for TASC is Invalid. Please provide:");
+						logger.error("O = Org Node Id");
+						logger.error("E = Education Center Id");
+					}
 				}
 			} else {
 				logger.error("First argument is Invalid. Please provide: I = Inors / S = Istep / T = Tasc");
 			}
+		}
+		if (isValidArgs) {
+			logger.info("Arguments are valid. Creating Service...");
+			PrismPdfService prismPdfService = getService(args[0]);
+			try {
+				prismPdfService.mainMethod(CustomStringUtil.getAllButFirstArg(args));
+				logger.info("Service execution completed.");
+				logger.info("It may take some time to release all resources. Please wait...");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			logger.error("Arguments are Invalid. Please provide all command line arguments.");
 		}
 	}
 

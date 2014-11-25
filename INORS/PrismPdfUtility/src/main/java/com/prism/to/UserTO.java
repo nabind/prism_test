@@ -261,4 +261,9 @@ public class UserTO {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "UserTO [userId=" + userId + ", userName=" + userName + "]";
+	}
+
 }

@@ -809,7 +809,7 @@ public class InorsDao extends CommonDao {
 		} finally {
 			releaseResources(conn, pstmt, rs);
 		}
-		logger.info("Returning " + allTeachers.size() + " Teachers");
+		logger.info("Returning " + allTeachers.size() + " Teachers for:" + jasperOrgId);
 		return getGradeForTeacherUsersAcsi(allTeachers);
 	}
 
