@@ -888,14 +888,15 @@ public class InorsController {
 	public void downloadZippedPdf(HttpServletRequest request, HttpServletResponse response) {
 		long t1 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Enter: downloadZippedPdf()");
-
 		String fileName = request.getParameter("fileName");
-		// IMPORTANT : fileName should be with forward slash ('/') format in database : C:/Temp/GroupDownload/1111.pdf
+		// IMPORTANT : fileName should be with forward slash ('/') format in database
 		String fileType = request.getParameter("fileType");
 		String email = request.getParameter("email");
-		logger.log(IAppLogger.INFO, "fileName=" + fileName);
-		logger.log(IAppLogger.INFO, "email=" + email);
 		String zipFileName = fileType + ".zip";
+		logger.log(IAppLogger.INFO, "fileName=" + fileName);
+		logger.log(IAppLogger.INFO, "fileType=" + fileType);
+		logger.log(IAppLogger.INFO, "email=" + email);
+		logger.log(IAppLogger.INFO, "zipFileName=" + zipFileName);
 		try {
 			// fileName = CustomStringUtil.replaceAll(fileName, "/", "\\\\");
 			String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
@@ -904,12 +905,12 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "customerId=" + customerId);
 			String rootPath = loginService.getRootPath(customerId, testAdmin, Utils.getContractName());
 			fileName = CustomStringUtil.appendString(rootPath, fileName);
-			File pdfFile = new File(fileName);
+			/*File pdfFile = new File(fileName);
 			if (!pdfFile.canRead()) {
 				logger.log(IAppLogger.WARN, "No Read Permission");
 			} else {
 				logger.log(IAppLogger.INFO, "Can Read File");
-			}
+			}*/
 			// Now read the pdf file from disk
 			//byte[] data = FileCopyUtils.copyToByteArray(new FileInputStream(fileName));
 			byte[] data =repositoryService.getAssetBytes(fileName);
