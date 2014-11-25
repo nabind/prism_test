@@ -315,7 +315,9 @@ BEGIN
                                FROM DASH_REPORTS
                               WHERE REPORT_TYPE = 'API_LINK'
                                  OR REPORT_TYPE = 'API_CUSTOM'
-                                 OR report_name in ('Group Download Files','Student Data File') ) LOOP
+                                 OR UPPER(REPORT_NAME) IN
+                                    ('STUDENT DATA FILE',
+                                     'GROUP DOWNLOAD FILES')) LOOP
     
       IF UPPER(REC_DASH_REPORTS.REPORT_NAME) = 'MANAGE USERS' THEN
         V_ACTION_TYPE := 'USR';
