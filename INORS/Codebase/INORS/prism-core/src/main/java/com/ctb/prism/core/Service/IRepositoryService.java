@@ -18,12 +18,26 @@ public interface IRepositoryService {
 	 * @throws IOException
 	 */
 	public byte[] getAssetBytes(String assetPath) throws IOException;
+	
+	/**
+	 * @param assetPath
+	 * @return
+	 * @throws Exception
+	 */
+	public byte[] getAssetBytesByS3Key(String assetPath) throws Exception;
 
 	/**
 	 * @param key 
 	 * @param file
 	 */
 	public void uploadAsset(String key, File file);
+	
+	/**
+	 * @param fullyQualifiedS3KeyPrefix
+	 * @param file
+	 * @throws Exception
+	 */
+	public void uploadAssetByS3Key(String fullyQualifiedS3KeyPrefix, File file) throws Exception;
 	
 	/**
 	 * @author Joy

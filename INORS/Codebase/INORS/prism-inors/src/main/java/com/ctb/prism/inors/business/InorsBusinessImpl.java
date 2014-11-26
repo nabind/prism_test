@@ -426,7 +426,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			File file = new File(zipFileName);
 			// Upload File to S3
 			repositoryService.uploadAsset(keyWithoutFileName, file);
-			logger.log(IAppLogger.INFO, "Asset(" + keyWithFileName + ") uploaded successfully");
+			logger.log(IAppLogger.INFO, "File(" + zipFileName + ") uploaded to S3");
 
 			// Delete File from Mount Location
 			String dir = FileUtil.getDirFromFilePath(zipFileName);
@@ -451,13 +451,15 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 *            The Key of this Map is the Actual File Location and the Value
 	 *            is the system generated Pdf name to be used for that file.
 	 */
-	private void saveFilesFromS3ToMountLocation(String tempDirectory, Map<String, String> fileMap) {
-		for (String s3Key : fileMap.keySet()) {
+	private void saveFilesFromS3ToMountLocation(String tempDirectory, Map<String, String> fileMap, String rootPath) {
+		for (String key : fileMap.keySet()) {
+			String s3Key = rootPath + key;
 			try {
 				byte[] assetBytes = repositoryService.getAssetBytes(s3Key);
 				logger.log(IAppLogger.INFO, "File read successfully from S3: " + s3Key);
 				String fileName = FileUtil.getFileNameFromFilePath(s3Key);
 				fileName = tempDirectory + "/" + fileName;
+				fileName = fileName.replace("//", "/");
 				FileUtil.createFile(fileName, assetBytes);
 				logger.log(IAppLogger.INFO, "File saved successfully from S3: " + fileName);
 			} catch (Exception e) {
@@ -550,7 +552,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						pdfFileName = CustomStringUtil.appendString(tempDirectory, "/", pdfFileName);
 						pdfFileName = pdfFileName.replace("//", "/");
 						// Save files from s3 to mount path
-						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD);
+						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD, rootPath);
 
 						// Merge Pdf files
 						byte[] input = FileUtil.getMergedPdfBytesFromTempDir(new ArrayList<String>(filePaths.keySet()), tempDirectory);

@@ -58,6 +58,10 @@ public interface IApplicationConstants {
 
 	public static String GDF_S3_LOCATION = "/GDF/";
 
+	public static String S3KEY_GRT_IC_STATIC_FILES = "S3KEY_GRT_IC_STATIC_FILES";
+
+	public static String TASC_STUDENT_DATA_FILE_LAYOUT = "TASC_STUDENT_DATA_FILE_LAYOUT";
+
 	// input control default value ALL
 	public static final String VALUE_ALL = "ALL";
 

@@ -586,6 +586,14 @@ public class CommonController extends BaseDAO {
 		FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(assetPath));
 	}
 	
+	@RequestMapping(value="/downloadAssestByS3Key" , method=RequestMethod.GET)
+	public void downloadAssestByS3Key(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String s3Key = request.getParameter("s3Key");
+		byte[] data = repositoryService.getAssetBytesByS3Key(s3Key);
+		logger.log(IAppLogger.INFO, "data.length = " + data.length);
+		FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(s3Key));
+	}
+	
 	/**
 	 * @param request
 	 * @param response
@@ -606,8 +614,7 @@ public class CommonController extends BaseDAO {
 	/**
 	 * @param request
 	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @throws Exception
 	 */
 	@RequestMapping(value="/uploadAssest" , method=RequestMethod.GET)
 	public void uploadAssest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -617,6 +624,45 @@ public class CommonController extends BaseDAO {
 		String key = IApplicationConstants.ASSET_LOCATIONS[index];
 		repositoryService.uploadAsset(key, new File(assetPath));
 		logger.log(IAppLogger.INFO, "Asset(" + assetPath + ") uploaded successfully");
+	}
+	
+	private void uploadAssestToS3(String fullyQualifiedS3Key, File file) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: uploadAssestToS3()");
+		repositoryService.uploadAssetByS3Key(fullyQualifiedS3Key, file);
+		logger.log(IAppLogger.INFO, "Exit: uploadAssestToS3()");
+	}
+
+	/**
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/uploadAllAssestsByS3Keys", method = RequestMethod.GET)
+	public void uploadAllAssestsByS3Keys(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: uploadAllAssestsByS3Keys()");
+		try {
+			String s3Key = request.getParameter("s3Key");
+			String dir = request.getParameter("dir");
+			logger.log(IAppLogger.INFO, "s3Key = " + s3Key);
+			logger.log(IAppLogger.INFO, "dir = " + dir);
+			File folder = new File(dir);
+			File[] listOfFiles = folder.listFiles();
+			for (File f : listOfFiles) {
+				if (f.isFile()) {
+					try {
+						String fullyQualifiedS3Key = s3Key + f.getName();
+						uploadAssestToS3(fullyQualifiedS3Key, f);
+						logger.log(IAppLogger.WARN, "S3 Upload OK for: " + fullyQualifiedS3Key);
+					} catch (Exception e) {
+						logger.log(IAppLogger.WARN, "S3 Upload Failed for: " + f.getAbsolutePath());
+						logger.log(IAppLogger.WARN, "S3 Upload Issue: " + e.getMessage());
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "S3 Upload Error: " + e.getMessage());
+		}
+		logger.log(IAppLogger.INFO, "Exit: uploadAllAssestsByS3Keys()");
 	}
 
 }

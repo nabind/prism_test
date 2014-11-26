@@ -25,6 +25,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.ObjectValueTO;
+import com.ctb.prism.core.util.FileUtil;
 
 @Service("repositoryService")
 public class RepositoryServiceImpl implements IRepositoryService {
@@ -114,6 +115,17 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		return bytes;
 	}
 	
+	public byte[] getAssetBytesByS3Key(String s3Key) throws Exception {
+		s3Key = s3Key.replace("//", "/");
+		System.out.println("Downloading an object from: "+ s3Key);
+		S3Object object = s3client.getObject(new GetObjectRequest(bucket, s3Key));
+		S3ObjectInputStream inputStream = object.getObjectContent();
+		byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+		inputStream.close(); // Must be closed as it is directly opened from Amazon
+		System.out.println("Object downloaded successfully: " + s3Key);
+		return bytes;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.core.Service.IRepositoryService#uploadAsset(java.io.File)
 	 */
@@ -121,6 +133,14 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		key = key + file.getName();
 		logger.log(IAppLogger.INFO, "key = " + key);
 		s3client.putObject(bucket, key, file);
+		logger.log(IAppLogger.INFO, "Asset(" + key + ") uploaded successfully");
+	}
+	
+	public void uploadAssetByS3Key(String fullyQualifiedS3Key, File file) throws Exception {
+		fullyQualifiedS3Key = fullyQualifiedS3Key.replace("//", "/");
+		logger.log(IAppLogger.INFO, "Uploading asset to S3: " + fullyQualifiedS3Key);
+		s3client.putObject(bucket, fullyQualifiedS3Key, file);
+		logger.log(IAppLogger.INFO, "Asset(" + fullyQualifiedS3Key + ") uploaded successfully");
 	}
 	
 	/**

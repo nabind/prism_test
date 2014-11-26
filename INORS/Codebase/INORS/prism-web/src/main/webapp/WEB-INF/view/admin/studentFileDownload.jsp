@@ -41,8 +41,8 @@
 		<c:if test="${not empty actionMap[studentFileDownload]}">
 		<div class="columns accordion with-padding" style="margin-bottom: 0">
 			<a class="tag with-small-padding grey-gradient icon-down-round" id="downloadStudentFileLayout" 
-				style="cursor: pointer; top: 6px;position: relative;" target="_blank"
-				href="downloadAssest.do?assetPath=Static_Files/Shelf_TASC_Student_Data_File_Layout.xlsx">
+				style="cursor: pointer; top: 6px;position: relative;" 
+				href="downloadAssest.do?assetPath=${tascStudentDataFileLayoutHref}">
 				<spring:message code="button.downloadFileLayout" /> (XLSX)
 			</a>
 			<a class="button float-right" id="downloadStudentFileDAT" style="cursor: pointer;">

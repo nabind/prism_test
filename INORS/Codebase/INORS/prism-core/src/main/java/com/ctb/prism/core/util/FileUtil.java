@@ -335,6 +335,7 @@ public class FileUtil {
 			fos = new FileOutputStream(fileName);
 			fos.write(input);
 			FileCopyUtils.copy(input, new FileOutputStream(fileName));
+			logger.log(IAppLogger.INFO, "File Created successfully: " + fileName);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -726,7 +727,8 @@ public class FileUtil {
 				int n;
 				// loop over the documents you want to concatenate
 				for (String file : files) {
-					file = CustomStringUtil.appendString(tempDirectory, "/", file);
+					file = CustomStringUtil.appendString(tempDirectory, "/", getFileNameFromFilePath(file));
+					file = file.replace("//", "/");
 					try {
 						reader = new PdfReader(file);
 						// loop over the pages in that document

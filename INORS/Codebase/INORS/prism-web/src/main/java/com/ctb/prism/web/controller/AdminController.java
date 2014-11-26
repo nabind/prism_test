@@ -2260,6 +2260,9 @@ public class AdminController {
 	@RequestMapping(value = "/studentFileDownload", method = RequestMethod.GET)
 	public ModelAndView studentFileDownload() {
 		ModelAndView modelAndView = new ModelAndView("admin/studentFileDownload");
+		String tascStudentDataFileLayoutHref = propertyLookup.get(IApplicationConstants.S3KEY_GRT_IC_STATIC_FILES).toUpperCase() + propertyLookup.get(IApplicationConstants.TASC_STUDENT_DATA_FILE_LAYOUT);
+		logger.log(IAppLogger.INFO, "tascStudentDataFileLayoutHref = " + tascStudentDataFileLayoutHref);
+		modelAndView.addObject("tascStudentDataFileLayoutHref", tascStudentDataFileLayoutHref);
 		return modelAndView;
 	}
 	
