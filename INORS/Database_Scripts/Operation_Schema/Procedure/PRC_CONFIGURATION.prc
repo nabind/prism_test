@@ -68,8 +68,7 @@ BEGIN
                                     ('MANAGE USERS',
                                      'MANAGE ORGANIZATIONS',
                                      'MANAGE STUDENTS',
-                                     'MANAGE PARENTS',
-                                     'MANAGE EDUCATION CENTER USERS')) LOOP
+                                     'MANAGE PARENTS')) LOOP
     
       V_DMRA_ACTIVATION_STATUS := REC_DASH_REPORTS.ACTIVATION_STATUS;
     
