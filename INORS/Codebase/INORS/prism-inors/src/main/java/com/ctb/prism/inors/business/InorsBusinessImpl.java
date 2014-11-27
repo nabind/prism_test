@@ -257,14 +257,15 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.ERROR, "Invalid Contract Name: " + contractName);
 			}
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Bulk Download Failed for Job Id: " + jobId);
+			logger.log(IAppLogger.ERROR, "asyncPDFDownload() Failed for Job Id: " + jobId);
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "END   ================== f r o m  async method --------------- ");
 	}
-	
+
 	/**
 	 * Process candidate report download
+	 * 
 	 * @param jobId
 	 * @param jobTO
 	 */
@@ -273,31 +274,28 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		OutputStream fos = null;
 		InputStream is = null;
 		StringBuffer log = new StringBuffer();
-		
+
 		// set status to inprogress
 		try {
 			jobTO.setJobStatus(JOB_STATUS.IP.toString());
 			updateJob(jobTO);
-			
-			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPath"), File.separator);
+
+			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator);
 			String[] otherParams = jobTO.getOtherRequestparams().split(",");
-			String userType = (otherParams != null && otherParams.length > 1) ? 
-					otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
+			String userType = (otherParams != null && otherParams.length > 1) ? otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
 			String[] studentBioIds = (jobTO.getRequestDetails() != null) ? jobTO.getRequestDetails().split(",") : null;
-			
-			// split into pieces with a max. size of as defined - jasperreports.properties : CRConcurrentStudSize
-			List<String[]> list = splitArray(studentBioIds, 
-					(propertyLookup.get("CRConcurrentStudSize") != null)? 
-							Integer.parseInt(propertyLookup.get("CRConcurrentStudSize")) : 50);
-			
+
+			// split into pieces with a max. size of as defined -
+			// jasperreports.properties : CRConcurrentStudSize
+			List<String[]> list = splitArray(studentBioIds, (propertyLookup.get("CRConcurrentStudSize") != null) ? Integer.parseInt(propertyLookup.get("CRConcurrentStudSize")) : 50);
+
 			List<String> studentfiles = new LinkedList<String>();
 			List<String> archieveFileNames = new LinkedList<String>();
 			int count = 0;
-			for(String[] arrStudentIds : list) {
-				//String[] StudAndFormId = studentBioId.split("\\|");
-				logger.log(IAppLogger.INFO, "\nDownloading Candidate Report for " + StringUtils.join(arrStudentIds,','));
-				String tempFileName = (CustomStringUtil.appendString(
-						jobTO.getRequestFilename(), "_", ""+count++, "_", Utils.getDateTime(), ".pdf"));
+			for (String[] arrStudentIds : list) {
+				// String[] StudAndFormId = studentBioId.split("\\|");
+				logger.log(IAppLogger.INFO, "\nDownloading Candidate Report for " + StringUtils.join(arrStudentIds, ','));
+				String tempFileName = (CustomStringUtil.appendString(jobTO.getRequestFilename(), "_", "" + count++, "_", Utils.getDateTime(), ".pdf"));
 				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 				StringBuffer URLStringBuf = new StringBuffer();
 				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
@@ -305,22 +303,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
 				URLStringBuf.append("&LoggedInUserName=").append(jobTO.getUserName());
 				URLStringBuf.append("&LoggedInUserId=").append(jobTO.getUserId());
-				URLStringBuf.append("&p_Student_Bio_Id=").append(StringUtils.join(arrStudentIds,','));
+				URLStringBuf.append("&p_Student_Bio_Id=").append(StringUtils.join(arrStudentIds, ','));
 				URLStringBuf.append("&p_Form_Id=").append("-1");
 				URLStringBuf.append("&p_Is_Bulk=1&p_Admin_Name=").append(jobTO.getCustomerId()).append("&p_User_Type=").append(userType);
-				
+
 				URL url1 = new URL(URLStringBuf.toString());
 				fos = new FileOutputStream(fileName);
-				
+
 				// Contacting the URL
 				logger.log(IAppLogger.INFO, "\nConnecting to: " + url1.toString());
 				URLConnection urlConn = url1.openConnection();
-	
+
 				// Checking whether the URL contains a PDF
 				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
 					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
-					log.append(CustomStringUtil.appendString(
-							"Error getting candidate report for Student Bio Id # ", arrStudentIds.toString()));
+					log.append(CustomStringUtil.appendString("Error getting candidate report for Student Bio Id # ", arrStudentIds.toString()));
 				} else {
 					// Read the PDF from the URL and save to a local file
 					is = url1.openStream();
@@ -329,24 +326,23 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				studentfiles.add(fileName);
 				archieveFileNames.add(tempFileName);
-				
+
 				// release resources
 				IOUtils.closeQuietly(is);
 				IOUtils.closeQuietly(fos);
 			}
-			
-			// create archive 
-			String archiveFileName = CustomStringUtil.appendString(
-					folderLoc, jobTO.getRequestFilename(), ".zip");
+
+			// create archive
+			String archiveFileName = CustomStringUtil.appendString(folderLoc, jobTO.getRequestFilename(), ".zip");
 			PdfGenerator.zipit(studentfiles, archieveFileNames, archiveFileName);
-			
+
 			// calculating file size
 			File file = new File(archiveFileName);
 			double size = 0;
 			DecimalFormat f = new DecimalFormat("##.00");
-			if(file.exists()) {
-				size = file.length()/1024/1024;
-				if(size == 0) {
+			if (file.exists()) {
+				size = file.length() / 1024 / 1024;
+				if (size == 0) {
 					size = file.length() / 1024;
 					jobTO.setFileSize(f.format(size) + "K");
 				} else {
@@ -354,12 +350,17 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 			}
 			
+			// Upload File to S3
+			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(archiveFileName, ((String) propertyLookup.get("environment.postfix")).toUpperCase(), IApplicationConstants.CR_BULK_S3_LOCATION);
+			String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
+			String jobLog = jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1);
+
 			// set status to completed
-			jobTO.setRequestFilename(archiveFileName);
-			jobTO.setJobStatus(JOB_STATUS.CO.toString());
+			jobTO.setRequestFilename(CustomStringUtil.appendString(IApplicationConstants.CR_BULK_S3_LOCATION, FileUtil.getFileNameFromFilePath(archiveFileName)));
+			jobTO.setJobStatus(jobStatus);
+			log.append(jobLog);
 			jobTO.setJobLog(log.toString());
 			updateJob(jobTO);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.log(IAppLogger.ERROR, " : FAILED.\n[" + e.getMessage() + "]\n");
@@ -372,37 +373,38 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(fos);
-	    }
+		}
 	}
-	
+
 	/**
 	 * Split array into multiple schemas
+	 * 
 	 * @param <T>
 	 * @param array
 	 * @param max
 	 * @return
 	 */
-	public static <T extends Object> List<T[]> splitArray(T[] array, int max){
-        int x = array.length / max;
-	    int lower = 0;
-	    int upper = 0;
-	    List<T[]> list = new ArrayList<T[]>();
-        if(array.length == 1) {
-            list.add(Arrays.copyOfRange(array, 0, 1));
-        } else {
-    	    for(int i=0; i<x; i++){
-    	      upper+=max;
-    	      list.add(Arrays.copyOfRange(array, lower, upper));
-    	      lower = upper;
-    	    }
-    	    if(upper < array.length-1){
-    	      lower = upper;
-    	      upper = array.length;
-    	      list.add(Arrays.copyOfRange(array, lower, upper));
-    	    }
-        }
-	    return list;
-	  }
+	public static <T extends Object> List<T[]> splitArray(T[] array, int max) {
+		int x = array.length / max;
+		int lower = 0;
+		int upper = 0;
+		List<T[]> list = new ArrayList<T[]>();
+		if (array.length == 1) {
+			list.add(Arrays.copyOfRange(array, 0, 1));
+		} else {
+			for (int i = 0; i < x; i++) {
+				upper += max;
+				list.add(Arrays.copyOfRange(array, lower, upper));
+				lower = upper;
+			}
+			if (upper < array.length - 1) {
+				lower = upper;
+				upper = array.length;
+				list.add(Arrays.copyOfRange(array, lower, upper));
+			}
+		}
+		return list;
+	}
 	
 	/**
 	 * Uploads the file to S3 and then deletes all files from the directory where the file is.
@@ -411,16 +413,15 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param to
 	 * @return
 	 */
-	private String moveFileToS3AndCleanDirectory(String zipFileName, GroupDownloadTO to) {
+	private String moveFileToS3AndCleanDirectory(String zipFileName, String envString, String s3Location) {
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String jobLog = "S3 Upload in progress";
 		try {
-			String envString = to.getEnvString().toUpperCase();
 			logger.log(IAppLogger.INFO, "envString = " + envString);
-			String keyWithFileName = envString + "/" + zipFileName;
+			String keyWithFileName = envString + File.separator + zipFileName;
 			keyWithFileName = keyWithFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
-			String keyWithoutFileName = envString + IApplicationConstants.GDF_S3_LOCATION;
+			String keyWithoutFileName = envString + s3Location;
 			keyWithoutFileName = keyWithoutFileName.replace("//", "/");
 			logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
 			File file = new File(zipFileName);
@@ -458,7 +459,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				byte[] assetBytes = repositoryService.getAssetBytes(s3Key);
 				logger.log(IAppLogger.INFO, "File read successfully from S3: " + s3Key);
 				String fileName = FileUtil.getFileNameFromFilePath(s3Key);
-				fileName = tempDirectory + "/" + fileName;
+				fileName = tempDirectory + File.separator + fileName;
 				fileName = fileName.replace("//", "/");
 				FileUtil.createFile(fileName, assetBytes);
 				logger.log(IAppLogger.INFO, "File saved successfully from S3: " + fileName);
@@ -479,7 +480,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		logger.log(IAppLogger.INFO, "Enter: batchPDFDownload()");
 		logger.log(IAppLogger.INFO, "contractName: " + contractName);
 		try{
-		String tempDirectory = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), "/", jobId);
+		String tempDirectory = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId);
 		File tempJobDirectory = new File(tempDirectory);
 		if (!tempJobDirectory.exists()) {
 			logger.log(IAppLogger.INFO,  "Creating directory ... " + tempJobDirectory);
@@ -511,7 +512,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "currentUser: " + currentUser);
 
 			String zipFileName = fileName + "_" + System.currentTimeMillis() +".zip";
-			zipFileName = CustomStringUtil.appendString(tempDirectory, "/", zipFileName);
+			zipFileName = CustomStringUtil.appendString(tempDirectory, File.separator, zipFileName);
 			zipFileName = zipFileName.replace("//", "/");
 			String querySheetFileName = CustomStringUtil.appendString("0-", fileName, "_Querysheet.pdf");
 			if ((groupFile != null) && (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString()))) {
@@ -539,7 +540,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			if (!filePathsGD.isEmpty()) {
 				try {
 					String querySheetAsString = reportBusiness.getRequestSummary(Utils.objectToJson(to), contractName);
-					String querySheetFile = CustomStringUtil.appendString(tempDirectory, "/", querySheetFileName);
+					String querySheetFile = CustomStringUtil.appendString(tempDirectory, File.separator, querySheetFileName);
 					querySheetFile = querySheetFile.replace("//", "/");
 					FileUtil.createDuplexPdf(querySheetFile, querySheetAsString);
 					filePaths.put(querySheetFileName, querySheetFileName);
@@ -549,7 +550,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
 						 */
 						String pdfFileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
-						pdfFileName = CustomStringUtil.appendString(tempDirectory, "/", pdfFileName);
+						pdfFileName = CustomStringUtil.appendString(tempDirectory, File.separator, pdfFileName);
 						pdfFileName = pdfFileName.replace("//", "/");
 						// Save files from s3 to mount path
 						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD, rootPath);
@@ -593,9 +594,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 							e.printStackTrace();
 						}
 					}
-					logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
+					// logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
 					// Upload File to S3
-					String jobStatus_jobLog = moveFileToS3AndCleanDirectory(zipFileName, to);
+					String jobStatus_jobLog = moveFileToS3AndCleanDirectory(zipFileName, to.getEnvString().toUpperCase(), IApplicationConstants.GDF_S3_LOCATION);
 					jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
 					jobLog = jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1);
 				} catch (FileNotFoundException e) {
