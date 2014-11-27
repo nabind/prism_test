@@ -941,7 +941,7 @@ function downloadBulkPdf(type, mode) {
 		$('.delete-GroupFiles').on("click", function() {
 		    var row = $(this);
 			var jobId = $(this).attr("jobId");
-			$.modal.confirm(strings['msg.rp.confirm'],
+			$.modal.confirm(strings['msg.confirm.delete'],
 				function () {
 				deleteGroupFilesDetails(jobId,row);
 				},function() {//this function closes the confirm modal on clicking cancel button
