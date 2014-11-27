@@ -113,12 +113,12 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @param jobId
 	 * @return
 	 */
-	public JobTrackingTO getJob(String jobId) {
+	public JobTrackingTO getJob(String jobId, String contractName) {
 		JobTrackingTO jobTrackingTO = null;
 		try {
 			List<Map<String, Object>> lstData = null;
 			logger.log(IAppLogger.INFO, "Get job");
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.JOB_DETAILS, jobId);
+			lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.JOB_DETAILS, jobId);
 			if (lstData.size() > 0) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					jobTrackingTO = new JobTrackingTO();

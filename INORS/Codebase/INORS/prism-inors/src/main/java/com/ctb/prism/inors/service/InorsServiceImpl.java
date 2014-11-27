@@ -51,8 +51,8 @@ public class InorsServiceImpl implements IInorsService {
 	 * 
 	 * @see com.ctb.prism.inors.service.IInorsService#getJob(java.lang.String)
 	 */
-	public JobTrackingTO getJob(String jobId) {
-		return inorsBusiness.getJob(jobId);
+	public JobTrackingTO getJob(String jobId, String contractName) {
+		return inorsBusiness.getJob(jobId, contractName);
 	}
 
 	/*

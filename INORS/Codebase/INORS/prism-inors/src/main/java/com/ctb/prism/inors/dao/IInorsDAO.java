@@ -28,7 +28,7 @@ public interface IInorsDAO {
 	 * @param jobId
 	 * @return
 	 */
-	public JobTrackingTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId, String contractName);
 
 	/**
 	 * update job status

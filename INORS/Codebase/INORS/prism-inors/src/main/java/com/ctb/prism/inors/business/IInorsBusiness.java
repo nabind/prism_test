@@ -26,7 +26,7 @@ public interface IInorsBusiness {
 	 * @param jobId
 	 * @return
 	 */
-	public JobTrackingTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId, String contractName);
 
 	/**
 	 * Method to download batch PDF in asynchronous mode.

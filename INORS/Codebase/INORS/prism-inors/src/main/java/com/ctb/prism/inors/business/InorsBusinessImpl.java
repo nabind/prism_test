@@ -223,8 +223,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.inors.business.IInorsBusiness#getJob(java.lang.String)
 	 */
-	public com.ctb.prism.core.transferobject.JobTrackingTO getJob(String jobId) {
-		return inorsDAO.getJob(jobId);
+	public com.ctb.prism.core.transferobject.JobTrackingTO getJob(String jobId, String contractName) {
+		return inorsDAO.getJob(jobId, contractName);
 	}
 	
 	/* (non-Javadoc)
@@ -270,7 +270,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param jobTO
 	 */
 	private void batchCRPDFDownload(String jobId, String contractName) {
-		com.ctb.prism.core.transferobject.JobTrackingTO jobTO = getJob(jobId); // TODO : Initialize from database
+		com.ctb.prism.core.transferobject.JobTrackingTO jobTO = getJob(jobId, contractName); // TODO : Initialize from database
 		OutputStream fos = null;
 		InputStream is = null;
 		StringBuffer log = new StringBuffer();

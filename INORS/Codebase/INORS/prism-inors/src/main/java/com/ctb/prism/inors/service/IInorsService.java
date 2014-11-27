@@ -28,7 +28,7 @@ public interface IInorsService {
 	 * @param jobId
 	 * @return
 	 */
-	public JobTrackingTO getJob(String jobId);
+	public JobTrackingTO getJob(String jobId, String contractName);
 
 	/**
 	 * Method to download GRT/Invitation Code Files

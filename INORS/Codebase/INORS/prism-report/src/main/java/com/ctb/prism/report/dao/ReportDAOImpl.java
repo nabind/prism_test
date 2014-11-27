@@ -1139,7 +1139,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setUpdatedDateTime(updatedDate);
 				to.setRequestType((String) data.get("REQUEST_TYPE"));
 				to.setJobStatus((String) data.get("JOB_STATUS"));
-				to.setQuerySheetTO(getQuerySheetTO((String) data.get("REQUEST_TYPE"), (String) data.get("REQUEST_DETAILS")));
+				to.setQuerySheetTO(getQuerySheetTO((String) data.get("REQUEST_TYPE"), (String) data.get("EXTRACT_CATEGORY"), (String) data.get("REQUEST_DETAILS")));
 				to.setS3Key((String) data.get("S3_KEY"));
 				allGroupFiles.add(to);
 			}
@@ -1162,9 +1162,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return fileName;
 	}
 
-	private QuerySheetTO getQuerySheetTO(String requestType, String requestDetails) {
+	private QuerySheetTO getQuerySheetTO(String requestType, String extractCategory, String requestDetails) {
+		logger.log(IAppLogger.INFO, "requestType = " + requestType);
+		logger.log(IAppLogger.INFO, "requestDetails = " + requestDetails);
 		QuerySheetTO querySheetTO = new QuerySheetTO();
-		if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(requestType)) {
+		if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(requestType) && IApplicationConstants.EXTRACT_CATEGORY.AE.toString().equals(extractCategory) && requestDetails != null) {
 			GroupDownloadTO to = Utils.jsonToObject(requestDetails, GroupDownloadTO.class);
 			String jobId = to.getJobId();
 			String fileName = to.getFileName();
@@ -1220,7 +1222,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return
 	 */
 	public String getRequestSummary(String requestDetails, String contractName) {
-		QuerySheetTO querySheetTO = getQuerySheetTO(IApplicationConstants.REQUEST_TYPE.GDF.toString(), requestDetails);
+		QuerySheetTO querySheetTO = getQuerySheetTO(IApplicationConstants.REQUEST_TYPE.GDF.toString(), IApplicationConstants.EXTRACT_CATEGORY.AE.toString(), requestDetails);
 		String jobId = querySheetTO.getJobId();
 		String productId = querySheetTO.getTestAdministration();
 		String gradeId = querySheetTO.getGradeNames();
@@ -2199,7 +2201,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setRequestType((String) data.get("request_type"));
 				to.setJobStatus((String) data.get("job_status"));
 				to.setRequestDetails((String) data.get("REQUEST_DETAILS"));
-				to.setQuerySheetTO(getQuerySheetTO((String) data.get("request_type"), (String) data.get("request_details")));
+				to.setQuerySheetTO(getQuerySheetTO((String) data.get("REQUEST_TYPE"), (String) data.get("EXTRACT_CATEGORY"), (String) data.get("REQUEST_DETAILS")));
 			}
 		}
 		logger.log(IAppLogger.INFO, "Exit: getProcessDataGD()");
