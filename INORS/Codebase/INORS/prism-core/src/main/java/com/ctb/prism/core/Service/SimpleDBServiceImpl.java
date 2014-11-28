@@ -38,6 +38,8 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 	
 	public void addItem(String contract, String item){
 		String domain = contract + propertyLookup.get(POSTFIX_ENV);//"cachelookup";
+		logger.log(IAppLogger.INFO, "Cache Key will be inserted into domain" + domain);
+		
 		try{
 			/** create domain from API (scratchpad) **/
 			//CreateDomainRequest req = new CreateDomainRequest(domain);

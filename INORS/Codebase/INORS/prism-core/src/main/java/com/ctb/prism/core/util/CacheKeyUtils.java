@@ -142,7 +142,7 @@ public final class CacheKeyUtils {
     	String hashKey = "";
     	if(col != null) {
     		//hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
-    		hashKey = DigestUtils.md5DigestAsHex((col + Utils.getContractName()).getBytes());
+    		hashKey = DigestUtils.md5DigestAsHex((col /*+ Utils.getContractName()*/).getBytes());
     		// store the key into queue
     		storeCacheKey(hashKey);
     	}

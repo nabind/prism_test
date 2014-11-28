@@ -50,11 +50,14 @@ import net.sf.jasperreports.web.util.WebUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.ApplicationContextProvider;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.report.service.IReportService;
 
 
@@ -66,6 +69,9 @@ public class Controller
 {
 	private static final Log log = LogFactory.getLog(Controller.class);
 
+	@Autowired 
+	private CookieThemeResolver themeResolver;
+	
 	/**
 	 *
 	 */
@@ -207,6 +213,16 @@ public class Controller
 		    Map.Entry pairs = (Map.Entry)it.next();
 		    webReportContext.setParameterValue((String) pairs.getKey(), pairs.getValue());
 		}
+		
+		String contractName = request.getParameter("contractName") != null 
+							? request.getParameter("contractName") : Utils.getContractName();
+		
+		if(contractName != null && contractName.trim().length() == 0 && themeResolver != null) {
+			contractName = Utils.getContractName(themeResolver.resolveThemeName(request));
+		}
+		webReportContext.setParameterValue("contractName", contractName);
+		
+		
 		/** End Custom */
 		if (async)
 		{
@@ -237,6 +253,7 @@ public class Controller
 				IReportService reportService = (IReportService) appContext.getBean("reportService");
 				jasperPrint = reportService.getFilledReport(jasperReport, webReportContext.getParameterValues());
 				
+				parameters.put("contractName", contractName);
 				// Async call for PDF
 				reportService.getFilledReportForPDF(jasperReport, parameters, true, 
 						(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER), reportUri);
