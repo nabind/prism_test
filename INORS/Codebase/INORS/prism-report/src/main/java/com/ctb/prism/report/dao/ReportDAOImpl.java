@@ -233,10 +233,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	//@Cacheable(value = "compiledJrxml", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )")
 	@com.googlecode.ehcache.annotations.Cacheable(cacheName = "compiledJrxml")
 	public List<ReportTO> getReportJasperObjectList(final String reportPath) throws JRException {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getReportJasperObject");
+		logger.log(IAppLogger.INFO, "Enter: getReportJasperObjectList()");
 
 		Object[] param = new String[] { reportPath };
-		
+
 		return getJdbcTemplate().query(IQueryConstants.GET_JASPER_REPORT_OBJECT, param, new RowMapper<ReportTO>() {
 			public ReportTO mapRow(ResultSet rs, int col) throws SQLException {
 				long start = System.currentTimeMillis();
@@ -271,10 +271,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					logger.log(IAppLogger.WARN, "Could not compile report jrxml retrieved from database for report " + reportPath, e);
 				}
 				long end = System.currentTimeMillis();
-				//System.out.println("<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
-				
 				logger.log(IAppLogger.INFO, "<<<< Time Taken: ReportDAOImpl : getReportJasperObjectList >>>>" + CustomStringUtil.getHMSTimeFormat(end - start));
-				logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getReportJasperObject");
+				logger.log(IAppLogger.INFO, "Exit: getReportJasperObjectList()");
 				return reportTo;
 			}
 		});
@@ -294,10 +292,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getInputControlDetails(java.lang.String)
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )")
+	@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )")
 	public List<InputControlTO> getInputControlDetails(String reportPath) {
-		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getInputControlDetails");
-
+		logger.log(IAppLogger.INFO, "Enter: getInputControlDetails()");
 		List<InputControlTO> inputControlTOs = null;
 		Object[] param = new String[] { reportPath };
 		int[] types = new int[] { Types.VARCHAR };
@@ -317,7 +314,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				to.setSequence(((BigDecimal) fieldDetails.get("SEQ")).intValue());
 				to.setType(((BigDecimal) fieldDetails.get("TYPE")).toString());
 				to.setVisible(((BigDecimal) fieldDetails.get("VISIBLE")).intValue() == 1 ? true : false);
-
 				String strListOfValues = (String) fieldDetails.get("LIST_OF_VALUES");
 				if (strListOfValues != null) {
 					String[] values = strListOfValues.split(",");
@@ -331,8 +327,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				inputControlTOs.add(to);
 			}
 		}
-
-		logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - getInputControlDetails");
+		logger.log(IAppLogger.INFO, "Exit: getInputControlDetails()");
 		return inputControlTOs;
 	}
 

@@ -307,29 +307,33 @@ public class InorsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/downloadCandicateReport", method = RequestMethod.GET)
-	public @ResponseBody
-	String downloadCandicateReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody String downloadCandicateReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: downloadCandicateReport()");
 		String status = "Error";
 		try {
-			String startDate = request.getParameter("p_Start_Date");
-			String endDate = request.getParameter("p_End_Date");
+			// String startDate = request.getParameter("p_Start_Date");
+			// String endDate = request.getParameter("p_End_Date");
 			String reportUrl = request.getParameter("reportUrl");
 			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-			// String currentOrgLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
-			String docName = CustomStringUtil.appendString(currentUser, "_" ,Utils.getDateTime(), "_Querysheet.pdf");
+			logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
+			logger.log(IAppLogger.INFO, "currentUser = " + currentUser);
+			logger.log(IAppLogger.INFO, "currentOrg = " + currentOrg);
+			logger.log(IAppLogger.INFO, "customer = " + customer);
+			String docName = CustomStringUtil.appendString(currentUser, "_", Utils.getDateTime(), "_Querysheet.pdf");
+			logger.log(IAppLogger.INFO, "docName = " + docName);
 
 			List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
-
+			logger.log(IAppLogger.INFO, "allInputControls retrieved successfully from ReportDAOImpl");
 			// get compiled jasper report
 			JasperReport jasperReport = null;
 			boolean mainReportPresent = false;
 
-			// fetch report list 
+			// fetch report list
 			List<ReportTO> reportList = reportController.getCompliledJrxmlList(reportUrl);
-			
+			logger.log(IAppLogger.INFO, "reportList retrieved successfully from ReportDAOImpl");
+
 			if (reportList != null && !reportList.isEmpty()) {
 				for (ReportTO reportTo : reportList) {
 					if (reportTo.isMainReport()) {
@@ -341,14 +345,16 @@ public class InorsController {
 				if (!mainReportPresent) {
 					jasperReport = reportList.get(0).getCompiledReport();
 				}
+			} else {
+				logger.log(IAppLogger.INFO, "reportList in NULL");
 			}
 			String assessmentId = request.getParameter("assessmentId");
+			logger.log(IAppLogger.INFO, "assessmentId = " + assessmentId);
 			Object reportFilterTO = reportService.getDefaultFilterTasc(allInputControls, currentUser, assessmentId, "", reportUrl);
-			Map<String, Object> parameters = reportController.getReportParametersFromRequest(
-					request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
-			// reportController.getReportParameter(allInputControls, reportFilterTO, false, request);
+			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
+			logger.log(IAppLogger.INFO, "parameters retrieved successfully from ReportController");
 
-			String mainQuery = jasperReport.getDatasets()[0].getQuery().getText(); //jasperReport.getQuery().getText();
+			String mainQuery = jasperReport.getDatasets()[0].getQuery().getText(); // jasperReport.getQuery().getText();
 
 			// replace all parameters with jasper parameter string
 			Map<String, String> replacableParams = new HashMap<String, String>();
@@ -389,74 +395,65 @@ public class InorsController {
 			replacableParams.put("$P!{p_End_Test_Date}", ((p_End_Test_Date != null) && (!p_End_Test_Date.trim().isEmpty())) ? p_End_Test_Date : "");
 			replacableParams.put("$P{p_Start_Test_Date_1}", ((p_Start_Test_Date != null) && (!p_Start_Test_Date.trim().isEmpty())) ? p_Start_Test_Date : "-1");
 			replacableParams.put("$P{p_End_Test_Date_1}", ((p_End_Test_Date != null) && (!p_End_Test_Date.trim().isEmpty())) ? p_End_Test_Date : "-1");
-			
+
 			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Grade_Id"), "112"); // TODO : Remove Hardcoding
 			replacableParams.put(CustomStringUtil.getJasperParameterString("p_Product_Id"), "1001"); // TODO : Remove Hardcoding
-			
+
 			String changedObject = "p_Ethnicities,p_Roster_Subtest_MultiSelect";
 			List<ObjectValueTO> allStudents = reportService.getValuesOfSingleInputTasc(mainQuery, currentUser, changedObject, "", replacableParams, reportFilterTO, true);
-			
+
 			StringBuilder builder = new StringBuilder();
 			int count = 0;
-			if(allStudents != null) {
-				for(ObjectValueTO obj : allStudents) {
-					if(count > 0) builder.append(",");
+			if (allStudents != null) {
+				for (ObjectValueTO obj : allStudents) {
+					if (count > 0)
+						builder.append(",");
 					// studentId | formId
-					//builder.append(obj.getValue()).append("|").append(obj.getClikedOrgId());
+					// builder.append(obj.getValue()).append("|").append(obj.getClikedOrgId());
 					builder.append(obj.getValue());
 					count++;
 				}
 			}
-			com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = new com.ctb.prism.core.transferobject.JobTrackingTO(); 
-            //Casting Required 
-             
-            jobTrackingTO.setJobName(docName);
-            jobTrackingTO.setUserId((String) request.getSession().getAttribute(
-            		IApplicationConstants.CURRUSERID));
-            String username = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-            if(username != null && username.indexOf(RESTAuthenticationFilter.RANDOM_STRING) != -1) {
-            	// remove random character for SSO users
-            	username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
-            }
-            jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(
-            		username, "_", "Candidate_PDF", "_", Utils.getDateTime())
-                    );
-            jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
-            jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.PD.toString());     
-            jobTrackingTO.setRequestType(REQUEST_TYPE.GDF.toString());  
-            jobTrackingTO.setExtractFiletype(EXTRACT_FILETYPE.CR.toString());
-            jobTrackingTO.setRequestSummary(CustomStringUtil.appendString(
-            		"Download candidate report for ", allStudents.size() +"", " student(s)." //,
-            		//"\n\n Request parameters: \n\n", 
-            		//replacableParams.toString().replace("$P{", "").replace("}","").replace("{", "").replace("$P!", "").replace("p_", "").replace(",", "\n")
-            		));   
-            jobTrackingTO.setRequestDetails(builder.toString());
-            jobTrackingTO.setJobStatus(JOB_STATUS.SU.toString()); 
-            jobTrackingTO.setNumber(allStudents.size()); 
-            jobTrackingTO.setAdminId(replacableParams.get("p_Admin_Name")); 
-            jobTrackingTO.setCustomerId(customer);
-            jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(
-            		propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"))
-            		);
-             
-			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO); 
+			com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = new com.ctb.prism.core.transferobject.JobTrackingTO();
+			// Casting Required
 
-			// String querysheetFile = PdfGenerator.generateQuerysheetCR(jobTrackingTO, propertyLookup);
-			
+			jobTrackingTO.setJobName(docName);
+			jobTrackingTO.setUserId((String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+			String username = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			if (username != null && username.indexOf(RESTAuthenticationFilter.RANDOM_STRING) != -1) {
+				// remove random character for SSO users
+				username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
+			}
+			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(username, "_", "Candidate_PDF", "_", Utils.getDateTime()));
+			jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
+			jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.PD.toString());
+			jobTrackingTO.setRequestType(REQUEST_TYPE.GDF.toString());
+			jobTrackingTO.setExtractFiletype(EXTRACT_FILETYPE.CR.toString());
+			jobTrackingTO.setRequestSummary(CustomStringUtil.appendString("Download candidate report for ", allStudents.size() + "", " student(s)."));
+			jobTrackingTO.setRequestDetails(builder.toString());
+			jobTrackingTO.setJobStatus(JOB_STATUS.SU.toString());
+			jobTrackingTO.setNumber(allStudents.size());
+			jobTrackingTO.setAdminId(replacableParams.get("p_Admin_Name"));
+			jobTrackingTO.setCustomerId(customer);
+			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType")));
+
+			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO);
+
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
-			
-			if(jobTrackingTO.getJobId() != 0) status = "Success";
-			
+
+			if (jobTrackingTO.getJobId() != 0) {
+				status = "Success";
+			}
 			response.setContentType("application/json");
 			response.getWriter().write("");
-			response.getWriter().write( "{\"status\":\""+status+"\"}" );
-			
+			response.getWriter().write("{\"status\":\"" + status + "\"}");
+
 		} catch (Exception ex) {
 			logger.log(IAppLogger.ERROR, ex.getMessage(), ex);
-			response.getWriter().write( "{\"status\":\""+status+"\"}" );
+			response.getWriter().write("{\"status\":\"" + status + "\"}");
 		}
-		
+		logger.log(IAppLogger.INFO, "Exit: downloadCandicateReport()");
 		return null;
 	}
 
