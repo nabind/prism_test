@@ -85,7 +85,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return boolean
 	 */
 	public JobTrackingTO updateJob(JobTrackingTO jobTrackingTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, 
+		getJdbcTemplatePrism(jobTrackingTO.getContractName()).update(IQueryConstants.UPDATE_JOB, 
 				jobTrackingTO.getJobStatus(),
 				jobTrackingTO.getRequestFilename(),
 				jobTrackingTO.getJobLog(),
@@ -117,14 +117,14 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		JobTrackingTO jobTrackingTO = null;
 		try {
 			List<Map<String, Object>> lstData = null;
-			logger.log(IAppLogger.INFO, "Get job");
+			logger.log(IAppLogger.INFO, "Get job = " + jobId);
 			lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.JOB_DETAILS, jobId);
 			if (lstData.size() > 0) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					jobTrackingTO = new JobTrackingTO();
 					jobTrackingTO.setJobId(((BigDecimal) (fieldDetails.get("JOB_ID"))).longValue());
-					jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("userid"))).toString());
-					jobTrackingTO.setUserName((String) (fieldDetails.get("username")));
+					jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("USERID"))).toString());
+					// jobTrackingTO.setUserName((String) (fieldDetails.get("username")));
 					jobTrackingTO.setJobName((String) (fieldDetails.get("JOB_NAME")));
 					jobTrackingTO.setExtractCategory((String) (fieldDetails.get("EXTRACT_CATEGORY")));
 					jobTrackingTO.setExtractFiletype((String) (fieldDetails.get("EXTRACT_FILETYPE")));

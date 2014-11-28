@@ -278,11 +278,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		// set status to inprogress
 		try {
 			jobTO.setJobStatus(JOB_STATUS.IP.toString());
+			jobTO.setContractName(contractName);
 			updateJob(jobTO);
 
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator);
 			String[] otherParams = jobTO.getOtherRequestparams().split(",");
 			String userType = (otherParams != null && otherParams.length > 1) ? otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
+			if (jobTO.getRequestDetails() == null) jobTO.setRequestDetails("157,158,159,160");
 			String[] studentBioIds = (jobTO.getRequestDetails() != null) ? jobTO.getRequestDetails().split(",") : null;
 
 			// split into pieces with a max. size of as defined -
@@ -297,6 +299,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, "\nDownloading Candidate Report for " + StringUtils.join(arrStudentIds, ','));
 				String tempFileName = (CustomStringUtil.appendString(jobTO.getRequestFilename(), "_", "" + count++, "_", Utils.getDateTime(), ".pdf"));
 				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
+				String folder = FileUtil.getDirFromFilePath(fileName);
+				File dir = new File(folder);
+				if (!dir.isDirectory()) {
+					dir.mkdirs();
+					logger.log(IAppLogger.INFO, "Directory created = " + folder);
+				} else {
+					logger.log(IAppLogger.INFO, "Directory exists = " + folder);
+				}
 				StringBuffer URLStringBuf = new StringBuffer();
 				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
 				URLStringBuf.append("icDownload.do?reportUrl=").append(otherParams[0]);
@@ -306,6 +316,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				URLStringBuf.append("&p_Student_Bio_Id=").append(StringUtils.join(arrStudentIds, ','));
 				URLStringBuf.append("&p_Form_Id=").append("-1");
 				URLStringBuf.append("&p_Is_Bulk=1&p_Admin_Name=").append(jobTO.getCustomerId()).append("&p_User_Type=").append(userType);
+				URLStringBuf.append("&contractName=").append(contractName);
 
 				URL url1 = new URL(URLStringBuf.toString());
 				fos = new FileOutputStream(fileName);
@@ -369,7 +380,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			jobTO.setJobStatus(JOB_STATUS.ER.toString());
 			jobTO.setJobLog(log.toString());
 			updateJobStatusAndLog(jobTO);
-			System.exit(0);
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(fos);

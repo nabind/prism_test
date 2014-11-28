@@ -441,6 +441,7 @@ public class InorsController {
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
+			// inorsService.asyncPDFDownload(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
 
 			if (jobTrackingTO.getJobId() != 0) {
 				status = "Success";
@@ -1127,7 +1128,7 @@ public class InorsController {
 			String querysheetFile = PdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(""+bulkDownloadTO.getJobId(), Utils.getContractName());
+			messageProducer.sendJobForProcessing(String.valueOf(bulkDownloadTO.getJobId()), Utils.getContractName());
 
 			if (bulkDownloadTO.getJobId() != 0)
 				status = "Success";

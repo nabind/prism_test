@@ -35,6 +35,7 @@ public class JobTrackingTO extends BaseTO {
 	private long orgLevel;
 	private String s3Key;
 	private boolean success;
+	private String contractName;
 
 	public long getJobId() {
 		return jobId;
@@ -242,6 +243,14 @@ public class JobTrackingTO extends BaseTO {
 
 	public void setSuccess(boolean success) {
 		this.success = success;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
 }

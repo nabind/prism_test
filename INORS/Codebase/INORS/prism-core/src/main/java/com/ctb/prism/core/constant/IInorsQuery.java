@@ -20,13 +20,7 @@ public interface IInorsQuery {
 	
 	public static final String JOB_SEQ_ID = "SELECT JOB_SEQ.nextval AS JOB_SEQ FROM DUAL";
 	
-	public static final String JOB_DETAILS = CustomStringUtil.appendString(
-			" select jobid ID, pdf_file_name as FILE_NAME, file_location as LOC, ",
-			" query_sheet_file as QSHEET, userid, job_details as DETAILS, status, ",
-			" percentage_done as PERCT, request_date as REQ_DT, completion_date as COMP_DT, ",
-			" file_size as SIZ, email, customerid, gradeid, adminid, reporturl URL, request_type TYPE, ",
-			" log, download_type D_TYPE ",
-			" from group_download_status where jobid = ? ");
+	public static final String JOB_DETAILS = "SELECT * FROM JOB_TRACKING WHERE JOB_ID = ?";
 	
 	public static final String UPDATE_STATUS = "UPDATE GROUP_DOWNLOAD_STATUS SET STATUS = ? WHERE JOBID = ?";
 	
