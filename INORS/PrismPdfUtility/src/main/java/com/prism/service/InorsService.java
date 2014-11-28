@@ -111,8 +111,9 @@ public class InorsService implements PrismPdfService {
 				}
 
 				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
-					if (icLetterCount > 0)
+					if (icLetterCount > 0) {
 						archiveICLetterInors(prop);
+					}
 					// send mail
 					String subject = "Merged IC Letter Generatation completed ";
 					String body = CustomStringUtil.appendString(subject, "for all the schools. Individiual IC leter has been started.\n",
@@ -1009,7 +1010,7 @@ public class InorsService implements PrismPdfService {
 		URLStringBuf.append(prop.getProperty("schoolCoverURLParams"));
 		URLStringBuf.append("&type=pdf&token=0&filter=true&p_L3_Jasper_Org_Id=").append(schoolId);
 		URLStringBuf.append("&assessmentId=105_InvLetter");
-		System.out.println("School cover >>> " + URLStringBuf.toString());
+		logger.debug("School cover >>> " + URLStringBuf.toString());
 		return URLStringBuf.toString();
 	}
 

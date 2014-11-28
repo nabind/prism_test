@@ -983,7 +983,7 @@ public class InorsDao extends CommonDao {
 		} finally {
 			releaseResources(conn, pstmt, rs);
 		}
-		logger.info("TEST_ELEMENT_ID=" + testElementId + ", Returning Root Path = " + rootPath);
+		logger.debug("TEST_ELEMENT_ID=" + testElementId + ", Returning Root Path = " + rootPath);
 		return rootPath;
 	}
 

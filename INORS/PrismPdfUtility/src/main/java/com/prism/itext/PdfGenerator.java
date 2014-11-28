@@ -1757,7 +1757,7 @@ public class PdfGenerator {
 	 * @return
 	 */
 	private String getUserListAsStringTasc(java.util.List<String> roles, String userType) {
-		System.out.println(roles);
+		logger.info(roles);
 		StringBuilder roleString = new StringBuilder();
 		for (String role : roles) {
 			roleString.insert(roleString.length(), CustomStringUtil.appendString(userType, " ", role, ", "));

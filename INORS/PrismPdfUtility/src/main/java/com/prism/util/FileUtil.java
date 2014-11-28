@@ -221,6 +221,7 @@ public class FileUtil {
 			File pdf = new File(file);
 			if (pdf.exists()) {
 				pdf.delete();
+				logger.info("File deleted = " + file);
 			}
 		} catch (Exception ex) {
 			logger.warn("Not able to delete file: " + file);
@@ -238,8 +239,10 @@ public class FileUtil {
 			try {
 				if (file != null) {
 					File pdf = new File(file);
-					if (pdf.exists())
+					if (pdf.exists()) {
 						pdf.delete();
+						logger.info("File deleted = " + file);
+					}
 				}
 			} catch (Exception ex) {
 				logger.warn("Not able to delete file: " + file);
@@ -413,7 +416,7 @@ public class FileUtil {
 			if (listOfFiles != null && listOfFiles.length > 0) {
 				fos = new FileOutputStream(arcFilePath);
 				zos = new ZipOutputStream(fos);
-				logger.info("Adding Pdf files into the zip file: " + arcFilePath);
+				logger.info("Adding all Pdf files from " + docLocation + " into the zip file: " + arcFilePath);
 				for (File f : listOfFiles) {
 					if (f.isFile()) {
 						addToZipFile(f, zos);
