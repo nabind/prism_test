@@ -441,9 +441,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 			// Delete File from Mount Location
 			String dir = FileUtil.getDirFromFilePath(zipFileName);
-			logger.log(IAppLogger.INFO, "Deleting all files from: " + dir); // TODO : check
 			File dirLocation = new File(dir);
-			// TODO : FileUtils.deleteDirectory(dirLocation);
+			FileUtils.deleteDirectory(dirLocation);
+			logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + dir);
 
 			// Set Job Status and Log
 			jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();

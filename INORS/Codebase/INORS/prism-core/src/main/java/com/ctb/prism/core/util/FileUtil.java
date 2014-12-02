@@ -530,20 +530,21 @@ public class FileUtil {
 			fos = new FileOutputStream(zipFileName);
 			zos = new ZipOutputStream(fos);
 			for (Entry<String, String> fileEntry : filePaths.entrySet()) {
-				String fileName = getFileNameFromFilePath(fileEntry.getValue());
-				if (fileName == null || "".equals(fileName)) {
-					logger.log(IAppLogger.WARN, "File name is NULL or BLANK");
+				String actualFileName = getFileNameFromFilePath(fileEntry.getKey());
+				String newFileName = getFileNameFromFilePath(fileEntry.getValue());
+				if (newFileName == null || "".equals(newFileName)) {
+					logger.log(IAppLogger.WARN, "New File name is NULL or BLANK");
 					continue;
-				} else if (fileName.endsWith(".pdf")) {
+				} else if (newFileName.endsWith(".pdf")) {
 					// No need to append .pdf
 				} else {
-					fileName = fileName + ".pdf";
+					newFileName = newFileName + ".pdf";
 				}
-				String filePath = CustomStringUtil.appendString(tempDirectory, File.separator, fileName);
+				String filePath = CustomStringUtil.appendString(tempDirectory, File.separator, actualFileName);
 				filePath = filePath.replace("//", "/");
 				logger.log(IAppLogger.INFO, "filePath = " + filePath);
 				try {
-					ZipEntry entry = new ZipEntry(fileName);
+					ZipEntry entry = new ZipEntry(newFileName);
 					byte[] input = getDuplexPdfBytes(filePath);
 					logger.log(IAppLogger.INFO, input.length + " bytes read");
 					entry.setSize(input.length);
@@ -551,7 +552,10 @@ public class FileUtil {
 					zos.write(input);
 					zos.closeEntry();
 				} catch (Exception e) {
-					logger.log(IAppLogger.WARN, "Skiping " + fileName + " in " + zipFileName);
+					logger.log(IAppLogger.WARN, "Skiping File - Not placed inside Zip");
+					logger.log(IAppLogger.WARN, "zipFileName = " + zipFileName);
+					logger.log(IAppLogger.WARN, "actualFileName = " + actualFileName);
+					logger.log(IAppLogger.WARN, "newFileName = " + newFileName);
 				}
 			}
 			zos.close();
