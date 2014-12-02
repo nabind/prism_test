@@ -7,3 +7,4 @@
 @\DASH_REPORT_insert.sql;
 @\DASH_REPORT_ACTION_insert.sql;
 @\gscm_tasc.sql;
+@\customer_info_update.sql
