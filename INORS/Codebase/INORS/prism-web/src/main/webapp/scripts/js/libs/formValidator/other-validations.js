@@ -22,6 +22,18 @@
 				"regex": /^[0-9a-zA-Z\ \_\.\-]+$/,
 			    "alertText": "* File name is not valid"
 		};
+		$.validationEngineLanguage.allRules["onlyNumber"] = {
+				"regex": /^[0-9]+$/,
+				"alertText": "* Only Numbers are allowed"
+		};
+		$.validationEngineLanguage.allRules["nineDigitNumber"] = {
+				"regex": /^[0-9]{9}$/,
+				"alertText": "* Only Numbers are allowed<br/> * 9 digits are required"
+		};
+		$.validationEngineLanguage.allRules["fourDigitNumber"] = {
+				"regex": /^[0-9]{4}$/,
+				"alertText": "* Only Numbers are allowed"
+		};
 	//	# more validations may be added after this point
 	}
 })(jQuery);
