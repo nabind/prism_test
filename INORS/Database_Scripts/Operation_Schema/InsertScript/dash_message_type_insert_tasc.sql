@@ -3,6 +3,21 @@ insert into dash_message_type
        message_name,
        message_type,
        description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1086,
+       'Growth Home Page',
+       'GSCM',
+       'Message configuration for Growth Home Page',
+     3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
 	   cust_prod_id,
        created_date_time)
     values
@@ -73,15 +88,6 @@ insert into dash_message_type
        3001,
        sysdate);
 	   
-DELETE FROM DASH_MESSAGES
- WHERE MSG_TYPEID IN
-       (SELECT MSG_TYPEID
-          FROM DASH_MESSAGE_TYPE
-         WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN'));
-
-DELETE FROM DASH_MESSAGE_TYPE
- WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN');	   
-
 insert into dash_message_type
       (msg_typeid,
        message_name,

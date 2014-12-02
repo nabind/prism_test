@@ -3,6 +3,21 @@ insert into dash_message_type
        message_name,
        message_type,
        description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1086,
+       'Growth Home Page',
+       'GSCM',
+       'Message configuration for Growth Home Page',
+     5001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
 	   cust_prod_id,
        created_date_time)
     values
@@ -77,15 +92,11 @@ DELETE FROM DASH_MESSAGES
  WHERE MSG_TYPEID IN
        (SELECT MSG_TYPEID
           FROM DASH_MESSAGE_TYPE
-         WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN'));
+         WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN','INORS HOME PAGE'));
 
 DELETE FROM DASH_MESSAGE_TYPE
- WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN');	   
+ WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN','INORS HOME PAGE');	   
  
-UPDATE DASH_MESSAGE_TYPE
-   SET MESSAGE_NAME = 'Teacher Home Page'
- WHERE MESSAGE_NAME = 'Inors Home Page';
-
 insert into dash_message_type
       (msg_typeid,
        message_name,
@@ -144,7 +155,22 @@ insert into dash_message_type
        'GSCM',
        'Content of outage for Parent Login page',
        5001,
-       sysdate);	 
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1097,
+       'Teacher Home Page',
+       'GSCM',
+       'Content of Teacher Home Page',
+       5001,
+       sysdate);	   
 
 insert into dash_message_type
       (msg_typeid,
