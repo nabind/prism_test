@@ -159,7 +159,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
                 " START WITH O.ORG_NODEID = ? ",
                 " GROUP BY O.ORG_NODEID, O.ORG_NODE_NAME, O.PARENT_ORG_NODEID, O.ORG_MODE ",
                 " ORDER BY O.ORG_NODEID) A ",
-                " WHERE ROWNUM <= 15 ");
+                " WHERE ROWNUM <= ? ");
 		       
 	 // get all organization list based on tenantId on scrolling(on "more" button click)
 	public static final String GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL = CustomStringUtil.appendString(
@@ -176,7 +176,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" Start With o.Org_Nodeid = ? ",
 			" Group By o.Org_Nodeid, o.Org_Node_Name, o.Parent_Org_Nodeid, o.ORG_MODE " ,
 			" Order By o.Org_Nodeid) a ",
-			" Where Rownum <= 15 "); 
+			" Where Rownum <= ? "); 
 	
 	public static final String GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString("SELECT a.* FROM ",
 			" (SELECT O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid ,to_char(?) AS SELECTED_ORG_ID,",
@@ -192,7 +192,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
             " 		AND OPL.CUST_PROD_ID = ?)",
 			" GROUP BY O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid, O.ORG_MODE ",
 			" ORDER BY O.org_nodeid  ) a ",
-			"  WHERE  ROWNUM <= 15"); 
+			"  WHERE  ROWNUM <= ?"); 
 	
 	public static final String GET_USER_COUNT = CustomStringUtil.appendString(
 			/*"SELECT COUNT.USER_NO, ADM.ADMIN_NAME FROM ",

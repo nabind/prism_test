@@ -145,8 +145,8 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getOrganizationChildren(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode) {
-		return adminBusiness.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode);
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
+		return adminBusiness.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
 	}
 
 	/*

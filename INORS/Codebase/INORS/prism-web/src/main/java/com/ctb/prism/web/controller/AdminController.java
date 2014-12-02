@@ -195,7 +195,8 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, jsonString);
 					}
 				else{*/
-					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode);
+				String moreCount = propertyLookup.get("count.results.button.more");
+					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode,moreCount);
 					if ( children != null )	{
 						jsonString = JsonUtil.convertToJsonAdmin(children);
 					}

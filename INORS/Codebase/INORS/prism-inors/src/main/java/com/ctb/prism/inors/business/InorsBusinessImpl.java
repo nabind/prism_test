@@ -443,7 +443,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String dir = FileUtil.getDirFromFilePath(zipFileName);
 			logger.log(IAppLogger.INFO, "Deleting all files from: " + dir); // TODO : check
 			File dirLocation = new File(dir);
-			FileUtils.deleteDirectory(dirLocation);
+			// TODO : FileUtils.deleteDirectory(dirLocation);
 
 			// Set Job Status and Log
 			jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
@@ -555,6 +555,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					FileUtil.createDuplexPdf(querySheetFile, querySheetAsString);
 					filePaths.put(querySheetFileName, querySheetFileName);
 					filePaths.putAll(filePathsGD);
+					// Save files from s3 to mount path
+					saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD, rootPath);
 					if ("CP".equals(button)) {
 						/**
 						 * For Combined Pdf the Pdf file name is the generated Default Zip File Name
@@ -562,8 +564,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						String pdfFileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile) + ".pdf";
 						pdfFileName = CustomStringUtil.appendString(tempDirectory, File.separator, pdfFileName);
 						pdfFileName = pdfFileName.replace("//", "/");
-						// Save files from s3 to mount path
-						saveFilesFromS3ToMountLocation(tempDirectory, filePathsGD, rootPath);
 
 						// Merge Pdf files
 						byte[] input = FileUtil.getMergedPdfBytesFromTempDir(new ArrayList<String>(filePaths.keySet()), tempDirectory);
@@ -592,7 +592,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 						// Create Zip file in disk from all the pdf files
 						try {
-							FileUtil.createDuplexZipFile(zipFileName, filePaths, rootPath);
+							FileUtil.createDuplexZipFile(zipFileName, filePaths, tempDirectory);
 							// fileSize = FileUtil.fileSize(zipFileName);
 							fileSize = FileUtil.getFileSize(zipFileName);
 							logger.log(IAppLogger.INFO, "fileSize=" + fileSize);

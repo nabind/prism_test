@@ -522,7 +522,7 @@ public class FileUtil {
 		createDuplexZipFile(zipFileName, filePaths, "");
 	}
 
-	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String rootPath) throws IOException {
+	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String tempDirectory) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: createDuplexZipFile()");
 		// test start
 		// zipFileName = TEST_DIR + getFileNameFromFilePath(zipFileName);
@@ -533,7 +533,8 @@ public class FileUtil {
 			fos = new FileOutputStream(zipFileName);
 			zos = new ZipOutputStream(fos);
 			for (Entry<String, String> fileEntry : filePaths.entrySet()) {
-				String filePath = CustomStringUtil.appendString(rootPath, fileEntry.getKey());
+				String filePath = CustomStringUtil.appendString(tempDirectory, File.separator, fileEntry.getKey());
+				filePath = filePath.replace("//", "/");
 				String fileName = fileEntry.getValue();
 				logger.log(IAppLogger.INFO, "filePath = " + filePath);
 				if (fileName == null) {

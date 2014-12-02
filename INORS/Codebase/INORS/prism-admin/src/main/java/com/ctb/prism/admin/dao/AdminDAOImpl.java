@@ -1393,7 +1393,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return list of orgTO
 	 */
 	// @Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
-	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode) {
+	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
 		String parentTenantId = "";
@@ -1406,14 +1406,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.DEBUG, "orgId=" + orgId);
 			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear, moreCount);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear, parentTenantId);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear, parentTenantId, moreCount);
 			}
 			orgList = getOrgList(lstData, adminYear);
 		} else {
 			parentTenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, adminYear, parentTenantId, orgMode, customerId,adminYear, parentTenantId);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, adminYear, parentTenantId, orgMode, customerId,adminYear, parentTenantId, moreCount);
 			orgList = getOrgList(lstData, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
