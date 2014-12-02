@@ -94,6 +94,24 @@ public class CommonController extends BaseDAO {
 	}
 	
 	/**
+	 * Load empty report
+	 * @param jspPath
+	 * @param reportName
+	 * @param reportMsg
+	 * @return
+	 */
+	@RequestMapping(value = "/loadEmptyReport", method = RequestMethod.GET)
+	public ModelAndView loadEmptyReport(@RequestParam("reportName") String reportName, 
+			@RequestParam("reportMsg") String reportMsg) {
+		ModelAndView modelAndView = new ModelAndView("report/emptyReport");
+		modelAndView.addObject("reportName", reportName != null ? 
+				reportName.substring(reportName.lastIndexOf(",")+1) : reportName);
+		modelAndView.addObject("reportMsg", IApplicationConstants.EMPTY_REPORT);
+		
+		return modelAndView;
+	}
+	
+	/**
 	 * Load Report jsp
 	 * @param jspPath
 	 * @return

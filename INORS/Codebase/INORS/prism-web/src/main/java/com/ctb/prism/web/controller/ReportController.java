@@ -188,6 +188,14 @@ public class ReportController{
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperReport.getPageWidth());
 			}
 			
+			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
+			int noOfPages = jasperPrint.getPages().size();				
+			if(noOfPages == 0) {
+				return CustomStringUtil.appendString("forward:/loadEmptyReport.do?reportName=",
+						jasperReport.getName(), "&reportMsg=", 
+						req.getParameter("msg") != null ? req.getParameter("msg") : null);
+			}
+			
 			/** perf issue */
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
@@ -226,11 +234,8 @@ public class ReportController{
 			}
 			// put parameters into session - will be used in controller
 			req.getSession().setAttribute("apiJasperParameters" + reportUrl, parameters);
+						
 			/** perf issue */
-			
-			
-			
-			
 			// get jasper print object
 			// JasperPrint jasperPrint = getJasperPrintObject(reportUrl, filter, assessmentId, sessionParam, req, drilldown);
 			/*JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
