@@ -524,29 +524,24 @@ public class FileUtil {
 
 	public static void createDuplexZipFile(String zipFileName, Map<String, String> filePaths, String tempDirectory) throws IOException {
 		logger.log(IAppLogger.INFO, "Enter: createDuplexZipFile()");
-		// test start
-		// zipFileName = TEST_DIR + getFileNameFromFilePath(zipFileName);
-		// test end
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 		try {
 			fos = new FileOutputStream(zipFileName);
 			zos = new ZipOutputStream(fos);
 			for (Entry<String, String> fileEntry : filePaths.entrySet()) {
-				String filePath = CustomStringUtil.appendString(tempDirectory, File.separator, fileEntry.getKey());
-				filePath = filePath.replace("//", "/");
-				String fileName = fileEntry.getValue();
-				logger.log(IAppLogger.INFO, "filePath = " + filePath);
-				if (fileName == null) {
-					logger.log(IAppLogger.WARN, "Skipping " + filePath);
+				String fileName = getFileNameFromFilePath(fileEntry.getValue());
+				if (fileName == null || "".equals(fileName)) {
+					logger.log(IAppLogger.WARN, "File name is NULL or BLANK");
 					continue;
-				} else if ("".equals(fileName)) {
-					fileName = getFileNameFromFilePath(filePath);
 				} else if (fileName.endsWith(".pdf")) {
 					// No need to append .pdf
 				} else {
 					fileName = fileName + ".pdf";
 				}
+				String filePath = CustomStringUtil.appendString(tempDirectory, File.separator, fileName);
+				filePath = filePath.replace("//", "/");
+				logger.log(IAppLogger.INFO, "filePath = " + filePath);
 				try {
 					ZipEntry entry = new ZipEntry(fileName);
 					byte[] input = getDuplexPdfBytes(filePath);
