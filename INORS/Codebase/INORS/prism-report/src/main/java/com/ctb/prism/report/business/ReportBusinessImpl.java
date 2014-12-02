@@ -623,6 +623,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
 		logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
 		paramMap.put("roles", roles.toString());
+		paramMap.put("custProdId", loggedinUserTO.getDefultCustProdId());
 		return reportDAO.getAssessments(paramMap);
 	}
 

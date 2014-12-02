@@ -519,15 +519,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final String roles, final Long orgNodeLevel) {
+	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final String roles, final Long orgNodeLevel, final long custProdId) {
 		return (List<AssessmentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(query);
 				cs.setString(1, reportTypeLike);
 				cs.setString(2, roles);
 				cs.setLong(3, orgNodeLevel);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.setLong(4, custProdId);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -536,8 +537,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				List<AssessmentTO> assessmentList = new ArrayList<AssessmentTO>();
 				try {
 					cs.execute();
-					data = (ResultSet) cs.getObject(4);
-					Utils.logError(cs.getString(5));
+					data = (ResultSet) cs.getObject(5);
+					Utils.logError(cs.getString(6));
 					long oldAssessmentId = -1;
 					AssessmentTO assessmentTO = null;
 					while (data.next()) {
@@ -592,23 +593,25 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
 		String roles = (String) paramMap.get("roles");
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
+		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		/*logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);
 		logger.log(IAppLogger.INFO, "parentReports = " + parentReports);*/
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "roles = " + roles);
+		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		List<AssessmentTO> assessments = null;
 		if (roles.indexOf("ROLE_PARENT") != -1) {
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel, custProdId);
 		} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId);
 		} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
-			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId);
 		} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
-			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId);
 		} else { /* For All users other than growth user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel);
+			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId);
 		}
 		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;

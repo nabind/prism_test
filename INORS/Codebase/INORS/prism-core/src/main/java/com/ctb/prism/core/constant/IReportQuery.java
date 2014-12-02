@@ -79,10 +79,10 @@ public interface IReportQuery {
 	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(
 	"select * from job_tracking where job_Id=?");
 	
-	public static final String GET_ALL_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_ALL_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_GROWTH_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_GROWTH_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_EDU_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_EDU_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_ALL_BUT_GROWTH_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_ALL_BUT_GRW_ASS_LIST(?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_ALL_ASSESSMENT_LIST(?, ?, ?, ?, ?, ?)}";
+	public static final String GET_GROWTH_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_GROWTH_ASSESSMENT_LIST(?, ?, ?, ?, ?, ?)}";
+	public static final String GET_EDU_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_EDU_ASSESSMENT_LIST(?, ?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_BUT_GROWTH_ASSESSMENT_LIST = "{CALL PKG_MENU_ACCESS.GET_ALL_BUT_GRW_ASS_LIST(?, ?, ?, ?, ?, ?)}";
 
 	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(
 			"SELECT SF_GET_LIST_OF_ROLES(?) ROLES from DUAL"); 
