@@ -68,6 +68,26 @@
 			
 			//$("a[rel^='prettyPhoto']").prettyPhoto();
 			
+			$("#erLogDialog").dialog({
+				bgiframe: true, 
+				autoOpen: false, 
+				modal: true, 
+				height: 500, 
+				minWidth: 450, 
+				closeOnEscape: true, 
+				resizable: true
+			});
+			
+			$("#stuLogDialog").dialog({
+				bgiframe: true, 
+				autoOpen: false, 
+				modal: true, 
+				height: 500, 
+				minWidth: 450, 
+				closeOnEscape: true, 
+				resizable: true
+			});
+			
 			$("#processLogDialog").dialog({
 				bgiframe: true, 
 				autoOpen: false, 
@@ -83,6 +103,58 @@
 		} );
 		
 		
+		
+		function testElementIdList(processId) {
+			var dataString = "processId="+processId;
+			$("#_er_log").html( '<img src="css/ajax-loader.gif"></img>' );
+			$("#ui-dialog-title-erLogDialog").html('Process Id : '+processId + '<br />ER validation failed for the following students. Click on the test element id for details.');
+			jQuery("#erLogDialog").dialog("open");
+			$.ajax({
+				type: "POST",
+				url: "testElementIdList.htm",
+				data: dataString,
+				success: function(data) {
+					// alert("data=" + data);
+					var testElementIds = data.split(',');
+					// alert("testElementIds=" + testElementIds);
+					var innerHtml = "";
+					if(testElementIds && testElementIds.length > 1) {
+						$(testElementIds).each(function() {
+							var value = (typeof this.value !== 'undefined') ? this.value : "";
+							if(value != "") {
+								innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+value+','+processId+');">'+value+'</a><br />';
+							}
+						});
+					} else {
+						innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+testElementIds+','+processId+');">'+testElementIds+'</a>';
+					}
+					$("#_er_log").html( innerHtml );
+				},
+				error: function(data) {
+					$("#_er_log").html( ' Failed to get ER Log' );
+				}
+			});
+			return false;
+		}
+		
+		function getStudentDetails(testElementId, processId) {
+			var dataString = "processId="+processId+'&testElementId='+testElementId;
+			$("#_stu_log").html( '<img src="css/ajax-loader.gif"></img>' );
+			$("#ui-dialog-title-stuLogDialog").html('Student Details for Process Id : '+processId+', testElementId : '+testElementId);
+			jQuery("#stuLogDialog").dialog("open");
+			$.ajax({
+			      type: "POST",
+			      url: "getStudentDetails.htm",
+			      data: dataString,
+			      success: function(data) {
+			    	  $("#_stu_log").html( data );
+			      },
+				  error: function(data) {
+					  $("#_stu_log").html( ' Failed to get Student Details' );
+				  }
+		    });
+		    return false;
+		}
 		
 		function getProcessLog(processId) {
 			var dataString = "processId="+processId;
@@ -129,8 +201,9 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
-						<th>Process Id</th>
+						<th style="min-width: 60px;">Process Id</th>
 						<th>Source System</th>
+						<th>ER Validation</th>
 						<th>Hier Validation</th>
 						<th>Bio Validation</th>
 						<th>Demo Validation</th>
@@ -164,6 +237,13 @@
 						</td>
 						
 						<td><%=process.getSourceSystem() %></td>
+						<td>
+							<%if("ER".equals(process.getErValidation())) { %>
+								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='testElementIdList(<%=process.getProcessId() %>);'><%=process.getErValidation() %></a>
+							<%} else {%>
+								<%=process.getErValidation() %>
+							<%} %>
+						</td>
 						<td><%=process.getHierValidation() %></td>
 						<td><%=process.getBioValidation() %></td>
 						<td><%=process.getDemoValidation() %></td>
@@ -197,6 +277,12 @@
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
+				<div id='erLogDialog' title='Loading' style='display:none; font-size:10px'>
+					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
+				</div>
+				<div id='stuLogDialog' title='Loading' style='display:none; font-size:10px'>
+					<p id="_stu_log"><img src="css/ajax-loader.gif"></img><p>
+				</div>
 				<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="_process_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>

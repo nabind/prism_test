@@ -18,6 +18,7 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
+import com.vaannila.util.Utils;
 
 @Controller
 public class TascController {
@@ -36,6 +37,7 @@ public class TascController {
 		System.out.println("process method called");
 		try {
 			String adminid = request.getParameter("adminid");
+			// System.out.println("adminid = " + adminid);
 			if(adminid == null) {
 				adminid = (String) request.getSession().getAttribute("adminid");
 			} else {
@@ -43,8 +45,9 @@ public class TascController {
 			}
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			TascDAOImpl stageDao = new TascDAOImpl();
+			// System.out.println("getting processes...");
 			List<TASCProcessTO> processes = stageDao.getProcess(null);
-			
+			// System.out.println("got processes successfully");
 			request.getSession().setAttribute("tascProcess", processes);
 			convertProcessToJson(processes);
 			
@@ -53,6 +56,42 @@ public class TascController {
 		}
 		
 		return new ModelAndView("tascProcess", "message", jsonStr);
+	}
+	
+	@RequestMapping("/process/testElementIdList.htm")
+	public @ResponseBody String testElementIdList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String processId = request.getParameter("processId");
+		System.out.println("processId=" + processId);
+		try {
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<String> testElementIdList = stageDao.getTestElementIdList(processId);
+			System.out.println(testElementIdList);
+			response.setContentType("text/plain");
+			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
+		} catch (Exception e) {
+			System.out.println("Failed to get testElementIdList, processId=" + processId);
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/process/getStudentDetails.htm")
+	public @ResponseBody String getStudentDetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String processId = request.getParameter("processId");
+		String testElementId = request.getParameter("testElementId");
+		System.out.println("processId=" + processId);
+		System.out.println("testElementId=" + testElementId);
+		try {
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<String> testElementIdList = stageDao.getTestElementIdList(processId);
+			System.out.println(testElementIdList);
+			response.setContentType("text/plain");
+			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
+		} catch (Exception e) {
+			System.out.println("Failed to get StudentDetails, processId=" + processId + ", testElementId=" + testElementId);
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@RequestMapping("/process/getTascProcessLog.htm")

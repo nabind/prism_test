@@ -1,6 +1,8 @@
 package com.vaannila.TO;
 
-public class OrgTO {
+import java.io.Serializable;
+
+public class OrgTO implements Serializable {
 	private String elementName;
 	private String regionName;
 	private String jasperOrgId;

@@ -11,6 +11,7 @@ public class TASCProcessTO implements Serializable {
 	private String processId;
 	private String fileName;
 	private String sourceSystem;
+	private String erValidation;
 	private String hierValidation;
 	private String bioValidation;
 	private String demoValidation;
@@ -80,6 +81,12 @@ public class TASCProcessTO implements Serializable {
 	}
 	public void setSourceSystem(String sourceSystem) {
 		this.sourceSystem = sourceSystem;
+	}
+	public String getErValidation() {
+		return erValidation;
+	}
+	public void setErValidation(String erValidation) {
+		this.erValidation = erValidation;
 	}
 	public String getHierValidation() {
 		if(hierValidation != null && "ER".equals(hierValidation)) return "<span style='color: red'>"+hierValidation+"</span>";

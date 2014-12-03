@@ -1,6 +1,8 @@
 package com.vaannila.TO;
 
-public class AdminTO {
+import java.io.Serializable;
+
+public class AdminTO implements Serializable {
 	private String adminId;
 	private String adminName;
 	private String currentAdmin;
