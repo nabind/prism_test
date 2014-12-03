@@ -1,6 +1,7 @@
 package com.prism.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import com.lowagie.text.pdf.PdfEncryptor;
@@ -21,6 +23,7 @@ import com.prism.itext.PdfGenerator;
 import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
+import com.prism.util.AWSStorageUtil;
 import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
 import com.prism.util.FileUtil;
@@ -48,8 +51,8 @@ public class InorsService implements PrismPdfService {
 	public void mainMethod(String[] args) throws Exception {
 		logger.info("InorsService Starts...");
 		boolean validArgs = validateCommandLineArgsInors(args);
-		if (validArgs) {
-			String flag = args[0];
+		String flag = args[0];
+		if (validArgs) {			
 			Properties prop = PropertyFile.loadProperties(Constants.INORS_PROPERTIES_FILE);
 			Properties jdbcProp = PropertyFile.loadProperties(Constants.INORS_JDBC_PROPERTIES_FILE);
 			if (prop == null) {
@@ -62,7 +65,7 @@ public class InorsService implements PrismPdfService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				;
+				
 				if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
 					ENCRYPTION_NEEDED = true;
 				}
@@ -108,6 +111,15 @@ public class InorsService implements PrismPdfService {
 						processIndividualIcLetterPdfInors(prop, dao, id);
 						identifier = "IC_";
 					}
+					
+					 String rootPath  =prop.getProperty("s3.loginpdf.path");
+					 if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString()) 
+							 || flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())){
+						 rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
+						 
+					 } 
+					 moveFilesToS3(rootPath,prop.getProperty("pdfGenPath"));
+					 moveFilesToS3(rootPath,prop.getProperty("pdfGenPathIC"));
 				}
 
 				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
@@ -150,8 +162,30 @@ public class InorsService implements PrismPdfService {
 					FileUtil.archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
 				}
 			}
+			/* Deleting files from mount location after uploading to S3 */
+			FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPath")));
+			FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathIC")));
 		}
+		
+		
+		
 		logger.info("Program Ends!");
+	}
+
+	private void moveFilesToS3(String s3Path, String dir) {
+		File locDirectory = new File(dir);
+		if(locDirectory.isDirectory()) {
+			File[] localFiles = locDirectory.listFiles();
+			AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
+			for(File file : localFiles) {
+				try {
+					aWSStorageUtil.uploadObject(s3Path, dir+"/"+file.getName());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 	private void archiveICLetterInors(Properties prop) {
@@ -230,6 +264,8 @@ public class InorsService implements PrismPdfService {
 				}
 
 				FileUtil.removeFile(tempFileList);
+				
+				//S3 code here
 			} else {
 				logger.info("No school found with org-nodeid " + schoolId);
 			}

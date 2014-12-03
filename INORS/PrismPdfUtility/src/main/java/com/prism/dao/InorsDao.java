@@ -987,6 +987,30 @@ public class InorsDao extends CommonDao {
 		return rootPath;
 	}
 
+	
+	public String getRootPathForCurAdmin(String customerId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String rootPath = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_ROOT_PATH_CURR_ADMIN);
+			pstmt.setLong(1, Long.valueOf(customerId));
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				rootPath = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		logger.debug("customerId=" + customerId + ", Returning Root Path = " + rootPath);
+		return rootPath;
+	}
+	
 	public String getCustomerId(String schoolId) {
 		String customerId = null;
 		Connection conn = null;
