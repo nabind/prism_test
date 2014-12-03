@@ -59,37 +59,37 @@ $(document).ready(function() {
 			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
 		} catch (e) {}
 	});
-	$("#p_Last_Name1").live('keydown', function() {
+	$("input[name='p_Last_Name']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_First_Name1").live('keydown', function() {
+	$("input[name='p_First_Name']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_StudentId1").live('keydown', function() {
+	$("input[name='p_StudentId']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_Last_Name1").live('blur', function() {
+	$("input[name='p_Last_Name']").live('blur', function() {
 		try {
 			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_First_Name1").live('blur', function() {
+	$("input[name='p_First_Name']").live('blur', function() {
 		try {
 			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_StudentId1").live('blur', function() {
+	$("input[name='p_StudentId']").live('blur', function() {
 		try {
 			setValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
 		} catch (e) {}
 	});
-	$("#p_StudentId1").live('click', function() {
+	$("input[name='p_StudentId']").live('click', function() {
 		try {
 			$(this).attr("maxlength", "9"); // QC #79620 - Fixed
 		} catch (e) {}
@@ -587,38 +587,38 @@ $(document).ready(function() {
 // *********** END DOCUMENT.READY ************
 
 function resetValidationInputControls(tabCount) {
-	resetClasses($("#p_Last_Name1"));
-	resetClasses($("#p_First_Name1"));
-	resetClasses($("#p_StudentId1"));
+	resetClasses($("input[name='p_Last_Name']"));
+	resetClasses($("input[name='p_First_Name']"));
+	resetClasses($("input[name='p_StudentId']"));
 	$(".report-form-" + tabCount).validationEngine("hide");
 }
 
 function setValidationInputControls(tabCount) {
-	var p_Last_Name1 = $("#p_Last_Name1").val();
-	var p_First_Name1 = $("#p_First_Name1").val();
-	var p_StudentId1 = $("#p_StudentId1").val();
+	var p_Last_Name1 = $("input[name='p_Last_Name']").val();
+	var p_First_Name1 = $("input[name='p_First_Name']").val();
+	var p_StudentId1 = $("input[name='p_StudentId']").val();
 	if (p_Last_Name1.length > 0 || p_First_Name1.length > 0) { // lastname or firstname entered
-		$("#p_Last_Name1").addClass("validate[required, minSize[2]]");
-		$("#p_First_Name1").addClass("validate[required, minSize[2]]");
+		$("input[name='p_Last_Name']").addClass("validate[required, minSize[2]]");
+		$("input[name='p_First_Name']").addClass("validate[required, minSize[2]]");
 		if (p_StudentId1.length > 0) { // p_StudentId1 is entered
-			$("#p_StudentId1").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]");
+			$("input[name='p_StudentId']").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]");
 		} else { // p_StudentId1 is blank
 			// ok
 		}
 	} else if (p_StudentId1.length > 0) { // lastname and firstname are blank but p_StudentId1 entered
-		$("#p_StudentId1").addClass("validate[custom[nineDigitNumber]]");
+		$("input[name='p_StudentId']").addClass("validate[custom[nineDigitNumber]]");
 	} else { // All 3 are blank
 		setDefaultValidationsToStudentsSearch();
 	}
 }
 
 function setDefaultValidationsToStudentsSearch() {
-	resetClasses($("#p_Last_Name1"));
-	resetClasses($("#p_First_Name1"));
-	resetClasses($("#p_StudentId1"));
-	$("#p_Last_Name1").addClass("validate[required, minSize[2]]"); // default validation
-	$("#p_First_Name1").addClass("validate[required, minSize[2]]"); // default validation
-	$("#p_StudentId1").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]"); // default validation
+	resetClasses($("input[name='p_Last_Name']"));
+	resetClasses($("input[name='p_First_Name']"));
+	resetClasses($("input[name='p_StudentId']"));
+	$("input[name='p_Last_Name']").addClass("validate[required, minSize[2]]"); // default validation
+	$("input[name='p_First_Name']").addClass("validate[required, minSize[2]]"); // default validation
+	$("input[name='p_StudentId']").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]"); // default validation
 }
 
 function resetClasses(e) {
