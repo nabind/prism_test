@@ -221,7 +221,8 @@ public class TascDAOImpl {
 							+ " CUSTOMER_INFO       CI"
 							+ " WHERE SSBD.TEST_ELEMENT_ID = ?"
 							+ " AND SSBD.STU_LSTNODE_HIER_ID = SHD.STG_HIERARCHY_DETAILS_ID"
-							+ " AND SSBD.EXT_STUDENT_ID = EED.ER_UUID"
+							//+ " AND SSBD.EXT_STUDENT_ID = EED.ER_UUID"
+							+ " AND SSBD.TEST_ELEMENT_ID = EED.TEST_ELEMENT_ID"
 							+ " AND SHD.CUSTOMER_ID = CI.CUSTOMERID";
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, testElementId);
