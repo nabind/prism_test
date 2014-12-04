@@ -2295,7 +2295,7 @@ public class AdminController {
             	username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
             }
             jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(
-            		username, "_StudentDataFile_csv_", Utils.getDateTime(), ".", fileType)
+            		username, "_", customer, "_StudentDataFile_", Utils.getDateTime("yyyyMMdd.HHmmss.SSS"), ".", fileType)
                     );
             //jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
             jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.valueOf(dateType).toString());
