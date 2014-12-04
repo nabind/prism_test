@@ -280,8 +280,46 @@
 				<div id='erLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>
-				<div id='stuLogDialog' title='Loading' style='display:none; font-size:10px'>
+				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'> 
 					<p id="_stu_log"><img src="css/ajax-loader.gif"></img><p>
+					<table class="process_details">
+						<tr>
+							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>
+						</tr>
+						<tr>
+							<td width="40%"><b>Student Name :</b></td><td width="60%"><span id="_student_name"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>DOB :</b></td><td><span id="_dob"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Gender :</b></td><td><span id="_gender"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Grade :</b></td><td><span id="_grade"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Barcode :</b></td><td><span id="_barcode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Structure Element :</b></td><td><span id="_structure_element"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Ext Student Id(UUID) :</b></td><td><span id="_uuid"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Customer Name :</b></td><td><span id="_cust_name"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>School/Testing Site Name :</b></td><td><span id="_school_name"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Exception Date :</b></td><td><span id="_err_date"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Exception Description :</b></td><td><span id="_err_details"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+					</table>
 				</div>
 				<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="_process_log"><img src="css/ajax-loader.gif"></img><p>
