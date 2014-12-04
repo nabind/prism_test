@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,10 +35,10 @@ public class TascController {
 	@RequestMapping("/process/tascProcess.htm")
 	public ModelAndView tascProcess(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		System.out.println("Enter: tascProcess()");
 		try {
 			String adminid = request.getParameter("adminid");
-			// System.out.println("adminid = " + adminid);
+			System.out.println("adminid = " + adminid);
 			if(adminid == null) {
 				adminid = (String) request.getSession().getAttribute("adminid");
 			} else {
@@ -45,21 +46,21 @@ public class TascController {
 			}
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			// System.out.println("getting processes...");
+			System.out.println("getting processes...");
 			List<TASCProcessTO> processes = stageDao.getProcess(null);
-			// System.out.println("got processes successfully");
+			System.out.println("got processes successfully");
 			request.getSession().setAttribute("tascProcess", processes);
 			convertProcessToJson(processes);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println("Exit: tascProcess()");
 		return new ModelAndView("tascProcess", "message", jsonStr);
 	}
 	
 	@RequestMapping("/process/testElementIdList.htm")
 	public @ResponseBody String testElementIdList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: testElementIdList()");
 		String processId = request.getParameter("processId");
 		System.out.println("processId=" + processId);
 		try {
@@ -70,27 +71,36 @@ public class TascController {
 			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
 		} catch (Exception e) {
 			System.out.println("Failed to get testElementIdList, processId=" + processId);
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
+		System.out.println("Exit: testElementIdList()");
 		return null;
 	}
 	
 	@RequestMapping("/process/getStudentDetails.htm")
 	public @ResponseBody String getStudentDetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: getStudentDetails()");
 		String processId = request.getParameter("processId");
 		String testElementId = request.getParameter("testElementId");
 		System.out.println("processId=" + processId);
 		System.out.println("testElementId=" + testElementId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<String> testElementIdList = stageDao.getTestElementIdList(processId);
-			System.out.println(testElementIdList);
+			Map<String, String> studentDetailsMap = stageDao.getStudentDetails(processId, testElementId);
+			System.out.println("Map = " + studentDetailsMap);
+			String studentDetailsJson = Utils.mapToJson(studentDetailsMap);
+			System.out.println("Json = " + studentDetailsJson);
 			response.setContentType("text/plain");
-			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
+			response.getWriter().write(studentDetailsJson);
 		} catch (Exception e) {
 			System.out.println("Failed to get StudentDetails, processId=" + processId + ", testElementId=" + testElementId);
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
+		System.out.println("Exit: getStudentDetails()");
 		return null;
 	}
 	

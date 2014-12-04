@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
@@ -21,7 +23,7 @@ public class TascDAOImpl {
 	 * @throws Exception
 	 */
 	public List<TASCProcessTO> getProcess(SearchProcess searchProcess) throws Exception {
-		// System.out.println("Enter: getProcess()");
+		System.out.println("Enter: getProcess()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -85,7 +87,7 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		// System.out.println("Exit: getProcess()");
+		System.out.println("Exit: getProcess()");
 		return processList;
 	}
 	
@@ -197,6 +199,55 @@ public class TascDAOImpl {
 			try {conn.close();} catch (Exception e2) {}
 		}
 		return testElementIdList;
+	}
+
+	public Map<String, String> getStudentDetails(String processId, String testElementId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Map<String, String> studentDetails = new HashMap<String, String>();
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			
+			String query = "SELECT DISTINCT TRIM(SSBD.LAST_NAME || ', ' || SSBD.FIRST_NAME || ' ' || SSBD.MIDDLE_NAME) STUDENT_NAME,"
+							+ " SSBD.BIRTHDATE DOB, SSBD.GENDER, SSBD.GRADE, SSBD.BARCODE, SSBD.STRUC_ELEMENT, SSBD.EXT_STUDENT_ID,"
+							+ " CI.CUSTOMER_NAME,"
+							+ " SHD.ORG_NAME,"
+							+ " EED.EXCEPTION_CODE, EED.DESCRIPTION"
+							+ " FROM STG_STD_BIO_DETAILS SSBD,"
+							+ " STG_HIER_DETAILS    SHD,"
+							+ " ER_EXCEPTION_DATA   EED,"
+							+ " CUSTOMER_INFO       CI"
+							+ " WHERE SSBD.TEST_ELEMENT_ID = ?"
+							+ " AND SSBD.STU_LSTNODE_HIER_ID = SHD.STG_HIERARCHY_DETAILS_ID"
+							+ " AND SSBD.EXT_STUDENT_ID = EED.ER_UUID"
+							+ " AND SHD.CUSTOMER_ID = CI.CUSTOMERID";
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, testElementId);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				studentDetails.put("STUDENT_NAME", rs.getString("STUDENT_NAME"));
+				studentDetails.put("DOB", rs.getString("DOB"));
+				studentDetails.put("GENDER", rs.getString("GENDER"));
+				studentDetails.put("GRADE", rs.getString("GRADE"));
+				studentDetails.put("BARCODE", rs.getString("BARCODE"));
+				studentDetails.put("STRUC_ELEMENT", rs.getString("STRUC_ELEMENT"));
+				studentDetails.put("EXT_STUDENT_ID", rs.getString("EXT_STUDENT_ID"));
+				studentDetails.put("CUSTOMER_NAME", rs.getString("CUSTOMER_NAME"));
+				studentDetails.put("ORG_NAME", rs.getString("ORG_NAME"));
+				studentDetails.put("EXCEPTION_CODE", rs.getString("EXCEPTION_CODE"));
+				studentDetails.put("DESCRIPTION", rs.getString("DESCRIPTION"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return studentDetails;
 	}
 	
 	

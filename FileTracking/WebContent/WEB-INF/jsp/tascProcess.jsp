@@ -72,7 +72,7 @@
 				bgiframe: true, 
 				autoOpen: false, 
 				modal: true, 
-				height: 500, 
+				minHeight: 150, 
 				minWidth: 450, 
 				closeOnEscape: true, 
 				resizable: true
@@ -82,7 +82,7 @@
 				bgiframe: true, 
 				autoOpen: false, 
 				modal: true, 
-				height: 500, 
+				height: 400, 
 				minWidth: 450, 
 				closeOnEscape: true, 
 				resizable: true
@@ -107,28 +107,32 @@
 		function testElementIdList(processId) {
 			var dataString = "processId="+processId;
 			$("#_er_log").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-erLogDialog").html('Process Id : '+processId + '<br />ER validation failed for the following students. Click on the test element id for details.');
+			$("#ui-dialog-title-erLogDialog").html('ER validation details for Process Id : ' + processId);
 			jQuery("#erLogDialog").dialog("open");
 			$.ajax({
 				type: "POST",
 				url: "testElementIdList.htm",
 				data: dataString,
 				success: function(data) {
-					// alert("data=" + data);
-					var testElementIds = data.split(',');
-					// alert("testElementIds=" + testElementIds);
-					var innerHtml = "";
-					if(testElementIds && testElementIds.length > 1) {
-						$(testElementIds).each(function() {
-							var value = (typeof this.value !== 'undefined') ? this.value : "";
-							if(value != "") {
-								innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+value+','+processId+');">'+value+'</a><br />';
-							}
-						});
+					if(data == "Error") {
+						$("#_er_log").html( ' Failed to get ER Log' );
 					} else {
-						innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+testElementIds+','+processId+');">'+testElementIds+'</a>';
+						// alert("data=" + data);
+						var testElementIds = data.split(',');
+						// alert("testElementIds=" + testElementIds);
+						var innerHtml = "";
+						if(testElementIds && testElementIds.length > 1) {
+							$(testElementIds).each(function() {
+								var value = (typeof this.value !== 'undefined') ? this.value : "";
+								if(value != "") {
+									innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+value+','+processId+');">'+value+'</a><br />';
+								}
+							});
+						} else {
+							innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+testElementIds+','+processId+');">'+testElementIds+'</a>';
+						}
+						$("#_er_log").html( innerHtml );
 					}
-					$("#_er_log").html( innerHtml );
 				},
 				error: function(data) {
 					$("#_er_log").html( ' Failed to get ER Log' );
@@ -140,14 +144,29 @@
 		function getStudentDetails(testElementId, processId) {
 			var dataString = "processId="+processId+'&testElementId='+testElementId;
 			$("#_stu_log").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-stuLogDialog").html('Student Details for Process Id : '+processId+', testElementId : '+testElementId);
+			$("#ui-dialog-title-stuLogDialog").html('Student Details for Test Element Id : '+testElementId);
 			jQuery("#stuLogDialog").dialog("open");
 			$.ajax({
 			      type: "POST",
 			      url: "getStudentDetails.htm",
 			      data: dataString,
 			      success: function(data) {
-			    	  $("#_stu_log").html( data );
+			    	  if(data == "Error") {
+			    		  $("#_stu_log").html( ' Failed to get Student Details' );
+			    	  } else {
+				    	  var obj = JSON.parse(data);
+				    	  $("#_student_name").html( obj.STUDENT_NAME );
+				    	  $("#_dob").html( obj.DOB );
+				    	  $("#_gender").html( obj.GENDER );
+				    	  $("#_grade").html( obj.GRADE );
+				    	  $("#_barcode").html( obj.BARCODE );
+				    	  $("#_structure_element").html( obj.STRUC_ELEMENT );
+				    	  $("#_uuid").html( obj.EXT_STUDENT_ID );
+				    	  $("#_cust_name").html( obj.CUSTOMER_NAME );
+				    	  $("#_school_name").html( obj.ORG_NAME );
+				    	  $("#_err_code").html( obj.EXCEPTION_CODE );
+				    	  $("#_err_details").html( obj.DESCRIPTION );
+			    	  }
 			      },
 				  error: function(data) {
 					  $("#_stu_log").html( ' Failed to get Student Details' );
@@ -277,17 +296,17 @@
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
-				<div id='erLogDialog' title='Loading' style='display:none; font-size:10px'>
+				<div id='erLogDialog' title='Loading' style='display:none; font-size:12px'>
+					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>
 				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'> 
-					<p id="_stu_log"><img src="css/ajax-loader.gif"></img><p>
 					<table class="process_details">
 						<tr>
 							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>
 						</tr>
 						<tr>
-							<td width="40%"><b>Student Name :</b></td><td width="60%"><span id="_student_name"><img src="css/ajax-loader.gif"></img></span></td>
+							<td width="44%"><b>Student Name :</b></td><td width="56%"><span id="_student_name"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
 							<td><b>DOB :</b></td><td><span id="_dob"><img src="css/ajax-loader.gif"></img></span></td>
@@ -314,7 +333,7 @@
 							<td><b>School/Testing Site Name :</b></td><td><span id="_school_name"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Exception Date :</b></td><td><span id="_err_date"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Exception Code :</b></td><td><span id="_err_code"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
 							<td><b>Exception Description :</b></td><td><span id="_err_details"><img src="css/ajax-loader.gif"></img></span></td>
