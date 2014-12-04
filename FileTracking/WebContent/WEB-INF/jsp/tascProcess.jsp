@@ -119,15 +119,17 @@
 					} else {
 						// alert("data=" + data);
 						var testElementIds = data.split(',');
-						// alert("testElementIds=" + testElementIds);
+						//alert("testElementIds=" + testElementIds);
+						//alert(testElementIds.length);
 						var innerHtml = "";
 						if(testElementIds && testElementIds.length > 1) {
-							$(testElementIds).each(function() {
-								var value = (typeof this.value !== 'undefined') ? this.value : "";
+							for(var i=0; i < testElementIds.length; i++) {
+								var value = testElementIds[i];
+								// alert(value);
 								if(value != "") {
 									innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+value+','+processId+');">'+value+'</a><br />';
 								}
-							});
+							}
 						} else {
 							innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+testElementIds+','+processId+');">'+testElementIds+'</a>';
 						}
@@ -141,7 +143,27 @@
 			return false;
 		}
 		
+		function clearStudentDetailsTableRows() {
+			$("#_student_name").html( '' );
+			$("#_dob").html( '' );
+			$("#_gender").html( '' );
+			$("#_grade").html( '' );
+			$("#_barcode").html( '' );
+			$("#_structure_element").html( '' );
+			$("#_uuid").html( '' );
+			$("#_cust_name").html( '' );
+			$("#_school_name").html( '' );
+			$("#_err_code").html( '' );
+			$("#_err_details").html( '' );
+		}
+		
+		function clearStudentDetailsTableWhenError(errMsg) {
+			$("#_stu_log").html( '<span style="color: red;">'+errMsg+'</span>' );
+			clearStudentDetailsTableRows();
+		}
+		
 		function getStudentDetails(testElementId, processId) {
+			clearStudentDetailsTableRows();
 			var dataString = "processId="+processId+'&testElementId='+testElementId;
 			$("#_stu_log").html( '<img src="css/ajax-loader.gif"></img>' );
 			$("#ui-dialog-title-stuLogDialog").html('Student Details for Test Element Id : '+testElementId);
@@ -152,8 +174,11 @@
 			      data: dataString,
 			      success: function(data) {
 			    	  if(data == "Error") {
-			    		  $("#_stu_log").html( ' Failed to get Student Details' );
-			    	  } else {
+			    		  clearStudentDetailsTableWhenError('Failed to get Student Details');
+			    	  } else if(data.length == 2) {
+			    		  clearStudentDetailsTableWhenError('Student Details Not Found');
+				      } else {
+			    		  $("#_stu_log").html( '' );
 				    	  var obj = JSON.parse(data);
 				    	  $("#_student_name").html( obj.STUDENT_NAME );
 				    	  $("#_dob").html( obj.DOB );
@@ -169,7 +194,7 @@
 			    	  }
 			      },
 				  error: function(data) {
-					  $("#_stu_log").html( ' Failed to get Student Details' );
+					  clearStudentDetailsTableWhenError('Failed to get Student Details');
 				  }
 		    });
 		    return false;
@@ -300,7 +325,8 @@
 					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>
-				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'> 
+				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'>
+					<p id="_stu_log"><p>
 					<table class="process_details">
 						<tr>
 							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>

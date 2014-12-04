@@ -66,7 +66,7 @@ public class TascController {
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			List<String> testElementIdList = stageDao.getTestElementIdList(processId);
-			System.out.println(testElementIdList);
+			System.out.println("testElementIdList=" + testElementIdList);
 			response.setContentType("text/plain");
 			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
 		} catch (Exception e) {
