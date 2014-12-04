@@ -480,7 +480,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param reportName, messageType, messageName, contractName
 	 * @return message
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage'))")
 	public String getSystemConfigurationMessage(final Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
@@ -488,16 +488,15 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String reportName = (String) paramMap.get("REPORT_NAME");
 		final String messageType = (String) paramMap.get("MESSAGE_TYPE");
 		final String messageName = (String) paramMap.get("MESSAGE_NAME");
+		final long custProdId = ((Long)paramMap.get("custProdId")).longValue();
 		String contractName = (String) paramMap.get("contractName");
-		String userId = "";
-		if(paramMap.get("userId") != null){
-			userId = (String)paramMap.get("userId");
-		}
+		
 		
 		if(contractName == null) {
 			contractName = Utils.getContractName();
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+		logger.log(IAppLogger.INFO, "custProdId: "+custProdId);
 		
 		String systemMessage = "";
 		try {
@@ -508,11 +507,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(1, reportName);
 					cs.setString(2, messageType);
 					cs.setString(3, messageName);
-					if(paramMap.get("userId") != null){
-						cs.setLong(4, Long.parseLong((String)paramMap.get("userId")));
-					}else{
-						cs.setLong(4, 0);
-					}
+					cs.setLong(4, custProdId);
 					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;

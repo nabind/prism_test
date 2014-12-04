@@ -864,6 +864,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
+	@CacheEvict(value = { "configCache" }, allEntries = true)
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - saveManageMessage()");
 		int insertDMFlag = 1;

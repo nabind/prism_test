@@ -126,6 +126,7 @@ public class LoginController {
 		contractName = IApplicationConstants.CONTRACT_NAME_INORS;
 		
 		paramMap.put("contractName", contractName);
+		paramMap.put("custProdId", 0L);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		
 		//to optimally use cache need to create new paramMap
@@ -164,7 +165,7 @@ public class LoginController {
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
 		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
-		
+		paramMap.put("custProdId", 0L);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		String logInInfoMessage = (String)messageMap.get("systemMessage");
 		if ("1".equalsIgnoreCase(mess_login_error)) {
@@ -221,6 +222,7 @@ public class LoginController {
 			
 			paramMap.put("theme", themeResolver.resolveThemeName(request));
 			paramMap.put("action","login");
+			paramMap.put("custProdId", 0L);
 			messageMap = getMessageMap(paramMap);
 		} else if ("2".equalsIgnoreCase(mess_login_error)) {
 			logger.log(IAppLogger.ERROR, "Session Expired");
@@ -229,6 +231,7 @@ public class LoginController {
 			// this is proper login
 			paramMap.put("theme", themeResolver.resolveThemeName(request));
 			paramMap.put("action","login");
+			paramMap.put("custProdId", 0L);
 			messageMap = getMessageMap(paramMap);
 		}
 				
@@ -477,7 +480,7 @@ public class LoginController {
 				Map<String,Object> paramMapMessage = new HashMap<String, Object>();
 				paramMapMessage.put("theme", themeResolver.resolveThemeName(req));
 				paramMapMessage.put("action","home");
-				paramMapMessage.put("userId",user.getUserId());
+				paramMapMessage.put("custProdId", user.getDefultCustProdId());
 				Map<String, Object> messageMap = getMessageMap(paramMapMessage);
 				req.getSession().setAttribute(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
 				
@@ -1194,7 +1197,7 @@ public class LoginController {
 		
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("theme", themeResolver.resolveThemeName(req));
-		paramMap.put("userId", req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+		paramMap.put("custProdId", req.getSession().getAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID));
 		if("growth".equals(homePage)) {
 			paramMap.put("action","homeGrowth");
 		}else{

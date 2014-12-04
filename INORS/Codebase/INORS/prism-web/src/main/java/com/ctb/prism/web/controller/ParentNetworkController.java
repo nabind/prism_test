@@ -74,7 +74,7 @@ public class ParentNetworkController {
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.CHILDREN_OVERVIEW);
 		paramMap.put("customerId", loggedinUserTO.getCustomerId());
 		paramMap.put("testElementId", testElementId);
-		paramMap.put("userId", loggedinUserTO.getUserId());
+		paramMap.put("custProdId", loggedinUserTO.getDefultCustProdId());
 		
 		try{
 			childDataMap = parentService.getChildData(paramMap);
