@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -1396,40 +1394,52 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	/**
-	 * @author Arunava
 	 * @param gdfExpiryTime
 	 * @return
 	 * @throws Exception
-	 *             For GDF deleting by scheduler
 	 */
-
-	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception {
+	public Map<Long, String> getScheduledGroupFiles(Map<String, Object> paramMap) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: in getScheduledGroupFiles("+paramMap+")");
+		String gdfExpiryTime = (String) paramMap.get("gdfExpiryTime");
+		String contractName = (String) paramMap.get("contractName");
+		Map<Long, String> jobMap = new HashMap<Long, String>();
 		try {
 			int gdfExpiryTimeRange = Integer.parseInt(gdfExpiryTime);
-			logger.log(IAppLogger.INFO, "Entering Scheduled method for GROUP DOWNLOAD FILES--------------- ");
-			List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST, gdfExpiryTimeRange);
-			String appendLog = " ... File is deleted by cron job as the file is expired : " + Utils.getDateTime();
-			if ( dataList != null && dataList.size() > 0 )
-			{
-				for (Map<String, Object> data : dataList)
-				{
+			List<Map<String, Object>> dataList = getJdbcTemplatePrism(contractName).queryForList(IReportQuery.GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST, gdfExpiryTimeRange);
+			if (dataList != null && dataList.size() > 0) {
+				for (Map<String, Object> data : dataList) {
 					String filePath = (String) data.get("request_filename");
-					if(filePath != null && filePath.length() > 0) {
-					long jobId = ((BigDecimal) data.get("job_id")).longValue();
-					logger.log(IAppLogger.INFO, "File Path/Job Id--------------" + filePath + "/" + jobId);
-					File file = new File(filePath);
-						if(file.exists())
-						{
-						file.delete();
+					Long jobId = ((BigDecimal) data.get("job_id")).longValue();
+					if (filePath != null && filePath.length() > 0) {
+						jobMap.put(jobId, filePath);
 					}
-					getJdbcTemplatePrism().update(IReportQuery.DELETE_SCHEDULED_GROUP_FILES, appendLog, jobId);
 				}
-				}
-				logger.log(IAppLogger.INFO, "Exiting Scheduled method for GROUP DOWNLOAD FILES--------------- ");
 			}
 		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Exception Message from  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
+			logger.log(IAppLogger.ERROR, "Exception in getScheduledGroupFiles("+paramMap+")");
+			e.printStackTrace();
 		}
+		logger.log(IAppLogger.INFO, "jobMap = " + jobMap);
+		logger.log(IAppLogger.INFO, "Exit: in getScheduledGroupFiles("+paramMap+")");
+		return jobMap;
+	}
+
+	/**
+	 * @param appendLog
+	 * @param jobId
+	 * @throws Exception
+	 */
+	public void updateScheduledGroupFiles(Map<String, Object> paramMap) throws Exception {
+		logger.log(IAppLogger.ERROR, "Enter: updateScheduledGroupFiles("+paramMap+")");
+		String contractName = (String) paramMap.get("contractName");
+		String appendLog = (String) paramMap.get("appendLog");
+		Long jobId = (Long) paramMap.get("jobId");
+		try {
+			getJdbcTemplatePrism(contractName).update(IReportQuery.DELETE_SCHEDULED_GROUP_FILES, appendLog, jobId);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Exception in updateScheduledGroupFiles("+paramMap+")");
+		}
+		logger.log(IAppLogger.ERROR, "Exit: updateScheduledGroupFiles("+paramMap+")");
 	}
 
 	/**

@@ -715,13 +715,18 @@ public class ReportBusinessImpl implements IReportBusiness {
 		return reportDAO.deleteGroupFiles(Id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.business.IReportBusiness#deleteScheduledGroupFiles(java.lang.String)
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#getScheduledGroupFiles(java.util.Map)
 	 */
-	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception {
-		reportDAO.deleteScheduledGroupFiles(gdfExpiryTime);
+	public Map<Long, String> getScheduledGroupFiles(Map<String, Object> paramMap) throws Exception {
+		return reportDAO.getScheduledGroupFiles(paramMap);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.business.IReportBusiness#updateScheduledGroupFiles(java.util.Map)
+	 */
+	public void updateScheduledGroupFiles(Map<String, Object> paramMap) throws Exception{
+		reportDAO.updateScheduledGroupFiles(paramMap);
 	}
 
 	/*

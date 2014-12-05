@@ -1483,17 +1483,75 @@ public class InorsController {
 	}
 
 	/**
-	 * @author Amit Dhara,Arunava Datta Scheduler every night @ 1 AM Group Download files deletion and job tracking update if exp date >= SYSDATE Scheduler
-	 * @RequestMapping(value = "/doSomething", method = RequestMethod.GET) -- > For testing enable this and hit the URL as doSomething.do
+	 * Scheduler every night @ 1 AM Group Download files deletion and job
+	 * tracking update if exp date >= SYSDATE Scheduler.
+	 * 
 	 * @throws Exception
 	 */
-
-	@Scheduled(cron="${cron.expression}")
-	public void doSomething() throws Exception {
-		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES --------------- ");
+	@Scheduled(cron = "${cron.expression}")
+	public void deleteScheduledGroupFilesInors()  {
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES --------------- ");
+		try {
+			deleteScheduledGroupFiles(IApplicationConstants.CONTRACT_NAME.inors.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES--------------- ");
+	}
+	
+	/**
+	 * Scheduler every night @ 1 AM Group Download files deletion and job
+	 * tracking update if exp date >= SYSDATE Scheduler.
+	 * 
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "${cron.expression}")
+	public void deleteScheduledGroupFilesTasc()  {
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for TASC GROUP DOWNLOAD FILES --------------- ");
+		try {
+			deleteScheduledGroupFiles(IApplicationConstants.CONTRACT_NAME.tasc.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for TASC GROUP DOWNLOAD FILES--------------- ");
+	}
+	
+	/**
+	 * @param contractName
+	 * @throws Exception
+	 */
+	private void deleteScheduledGroupFiles(String contractName) throws Exception {
 		String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
-		reportService.deleteScheduledGroupFiles(gdfExpiryTime);
-		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for GROUP DOWNLOAD FILES--------------- ");
+		String envPrefix = propertyLookup.get("environment.postfix");
+		logger.log(IAppLogger.INFO, "gdfExpiryTime = " + gdfExpiryTime);
+		logger.log(IAppLogger.INFO, "envPrefix = " + envPrefix);
+		logger.log(IAppLogger.INFO, "contractName = " + contractName);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("gdfExpiryTime", gdfExpiryTime);
+		paramMap.put("contractName", contractName);
+		Map<Long, String> jobMap = reportService.getScheduledGroupFiles(paramMap);
+		if (jobMap!=null && !jobMap.isEmpty()){
+			for (Map.Entry<Long, String> job : jobMap.entrySet()) {
+				Long jobId = job.getKey();
+				String filePath = job.getValue();
+				String s3Key = envPrefix.toUpperCase() + filePath;
+				try {
+					logger.log(IAppLogger.INFO, "Deleting Asset(" + s3Key + ") From S3");
+					repositoryService.removeAsset(s3Key);
+					logger.log(IAppLogger.INFO, "Asset(" + s3Key + ") Deleted Successfully From S3");
+					paramMap.clear();
+					paramMap.put("contractName", contractName);
+					paramMap.put("appendLog", " ... File is deleted by cron job as the file is expired : " + Utils.getDateTime());
+					paramMap.put("jobId", jobId);
+					reportService.updateScheduledGroupFiles(paramMap);
+					logger.log(IAppLogger.INFO, "Job(" + jobId + ") Updated Successfully in job_tracking table");
+				} catch (Exception e) {
+					logger.log(IAppLogger.ERROR, "ERROR With Job ID(" + jobId + "), S3 Key(" + s3Key + ")");
+				}
+			}
+		} else {
+			logger.log(IAppLogger.INFO, "NO " + contractName.toUpperCase() + " GROUP DOWNLOAD FILES FOUND");
+		}
 	}
 	
 	private void updateFileExt(String Id,String filePath,String fileName,String orgLevel,String requestType,HttpServletResponse response) throws Exception {

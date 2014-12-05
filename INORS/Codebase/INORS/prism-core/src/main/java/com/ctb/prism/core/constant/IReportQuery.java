@@ -92,7 +92,7 @@ public interface IReportQuery {
 
 	public static final String DELETE_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL',updated_date_time=SYSDATE where job_id=?");
 	public static final String DELETE_SCHEDULED_GROUP_FILES = CustomStringUtil.appendString("update job_tracking set job_status='DL',updated_date_time=SYSDATE,job_log=job_log || ? where job_id=?");
-	public static final String GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString("select request_filename,job_id from job_tracking where job_status!='DL' and SYSDATE>=created_date_time+?");
+	public static final String GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString("select request_filename,job_id from job_tracking where job_status!='DL' and SYSDATE>=created_date_time+? and request_filename is not null");
 
 	public static final String GET_PROCESS_SEQ = "SELECT SEQ_ISTEP_PROCESS_ID.NEXTVAL STAGING_SEQ FROM DUAL";
 	public static final String INSERT_JOB_TRACKING = CustomStringUtil.appendString(

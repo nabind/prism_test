@@ -192,10 +192,17 @@ public interface IReportService {
 	public boolean deleteGroupFiles(String Id) throws Exception;
 
 	/**
-	 * @param gdfExpiryTime
+	 * @param paramMap
+	 * @return
 	 * @throws Exception
 	 */
-	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception;
+	public Map<Long, String> getScheduledGroupFiles(Map<String, Object> paramMap) throws Exception;
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public void updateScheduledGroupFiles(Map<String, Object> paramMap) throws Exception;
 
 	/**
 	 * @param paramMap
