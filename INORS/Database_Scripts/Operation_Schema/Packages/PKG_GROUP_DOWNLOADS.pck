@@ -2,44 +2,44 @@ CREATE OR REPLACE PACKAGE PKG_GROUP_DOWNLOADS IS
 
   TYPE GET_REFCURSOR IS REF CURSOR;
 
-  PROCEDURE SP_GET_STUDENTS_ALL_C_ALL_G(P_IN_USERID               IN USERS.USERID%TYPE,
+  PROCEDURE SP_GET_STUDENTS_ALL_C_ALL_G(P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_GROUP_FILE           IN VARCHAR2,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
 
-  PROCEDURE SP_GET_STUDENTS_ALL_C_ONE_G(P_IN_USERID               IN USERS.USERID%TYPE,
+  PROCEDURE SP_GET_STUDENTS_ALL_C_ONE_G(P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_GRADE_ID             IN GRADE_DIM.GRADEID%TYPE,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
 
   PROCEDURE SP_GET_STUDENTS_ONE_C_ALL_G(P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
-                                        P_IN_USERID               IN USERS.USERID%TYPE,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_CLASS    IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
                                         P_IN_GROUP_FILE           IN VARCHAR2,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
 
   PROCEDURE SP_GET_STUDENTS_ONE_C_ONE_G(P_TEST_ADMINISTRATION    IN PRODUCT.PRODUCTID%TYPE,
-                                        P_IN_CUSTOMERID          CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_CUSTOMERID          IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_ORG_NODE_ID_CLASS   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM        NUMBER,
+                                        P_IN_TEST_PROGRAM        IN NUMBER,
                                         P_IN_GRADE_ID            IN GRADE_DIM.GRADEID%TYPE,
                                         P_IN_COLLATION_HIERARCHY IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS       OUT GET_REFCURSOR,
@@ -50,27 +50,20 @@ END PKG_GROUP_DOWNLOADS;
 CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
 
   -- Get Students for all classes for all grades
-  PROCEDURE SP_GET_STUDENTS_ALL_C_ALL_G(P_IN_USERID               IN USERS.USERID%TYPE,
+  PROCEDURE SP_GET_STUDENTS_ALL_C_ALL_G(P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_GROUP_FILE           IN VARCHAR2,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
                                         
-    ORG_NODE_ID_LOGGEDIN ORG_NODE_DIM.ORG_NODEID%TYPE;
     CUSTPRODID           CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE;
   
   BEGIN
-    DBMS_OUTPUT.PUT_LINE(P_IN_COLLATION_HIERARCHY);
-    SELECT ORG_NODEID
-      INTO ORG_NODE_ID_LOGGEDIN
-      FROM ORG_USERS
-     WHERE USERID = P_IN_USERID;
-    DBMS_OUTPUT.PUT_LINE(ORG_NODE_ID_LOGGEDIN);
     SELECT CUST_PROD_ID
       INTO CUSTPRODID
       FROM CUST_PRODUCT_LINK
@@ -140,7 +133,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
       -- Main WHERE, Previous lines of the query are same for all 4 queries
        WHERE SBD.ORG_NODEID IN
              (SELECT VC1 AS ORG_NODEID
-                FROM TABLE (SELECT SF_GET_CLASS(ORG_NODE_ID_LOGGEDIN,
+                FROM TABLE (SELECT SF_GET_CLASS(P_IN_ORG_NODE_ID_LOGGEDIN,
                                                 P_TEST_ADMINISTRATION,
                                                 P_IN_ORG_NODE_ID_DISTRICT,
                                                 P_IN_ORG_NODE_ID_SCHOOL,
@@ -150,7 +143,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
                                                 'ADD_ALL')
                               FROM DUAL))
          AND SBD.GRADEID IN (SELECT VC1 AS GRADEID
-                               FROM TABLE (SELECT SF_GET_GRADE_DWNLD(ORG_NODE_ID_LOGGEDIN,
+                               FROM TABLE (SELECT SF_GET_GRADE_DWNLD(P_IN_ORG_NODE_ID_LOGGEDIN,
                                                                      P_TEST_ADMINISTRATION,
                                                                      P_IN_ORG_NODE_ID_DISTRICT,
                                                                      P_IN_ORG_NODE_ID_SCHOOL,
@@ -176,26 +169,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
   END SP_GET_STUDENTS_ALL_C_ALL_G;
 
   -- Get Students for all classes for a particular grade
-  PROCEDURE SP_GET_STUDENTS_ALL_C_ONE_G(P_IN_USERID               IN USERS.USERID%TYPE,
+  PROCEDURE SP_GET_STUDENTS_ALL_C_ONE_G(P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_GRADE_ID             IN GRADE_DIM.GRADEID%TYPE,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
-    ORG_NODE_ID_LOGGEDIN ORG_NODE_DIM.ORG_NODEID%TYPE;
     CUSTPRODID           CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE;
   
   BEGIN
-    DBMS_OUTPUT.PUT_LINE(P_IN_COLLATION_HIERARCHY);
-    SELECT ORG_NODEID
-      INTO ORG_NODE_ID_LOGGEDIN
-      FROM ORG_USERS
-     WHERE USERID = P_IN_USERID;
-    DBMS_OUTPUT.PUT_LINE(ORG_NODE_ID_LOGGEDIN);
     SELECT CUST_PROD_ID
       INTO CUSTPRODID
       FROM CUST_PRODUCT_LINK
@@ -265,7 +251,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
       -- Main WHERE, Previous lines of the query are same for all 4 queries
        WHERE SBD.ORG_NODEID IN
              (SELECT VC1 AS ORG_NODEID
-                FROM TABLE (SELECT SF_GET_CLASS(ORG_NODE_ID_LOGGEDIN,
+                FROM TABLE (SELECT SF_GET_CLASS(P_IN_ORG_NODE_ID_LOGGEDIN,
                                                 P_TEST_ADMINISTRATION,
                                                 P_IN_ORG_NODE_ID_DISTRICT,
                                                 P_IN_ORG_NODE_ID_SCHOOL,
@@ -293,26 +279,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
 
   -- Get Students for a particular class for all grades
   PROCEDURE SP_GET_STUDENTS_ONE_C_ALL_G(P_TEST_ADMINISTRATION     IN PRODUCT.PRODUCTID%TYPE,
-                                        P_IN_CUSTOMERID           CUSTOMER_INFO.CUSTOMERID%TYPE,
-                                        P_IN_USERID               IN USERS.USERID%TYPE,
+                                        P_IN_CUSTOMERID           IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_ORG_NODE_ID_LOGGEDIN IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                         P_IN_ORG_NODE_ID_CLASS    IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM         NUMBER,
+                                        P_IN_TEST_PROGRAM         IN NUMBER,
                                         P_IN_GROUP_FILE           IN VARCHAR2,
                                         P_IN_COLLATION_HIERARCHY  IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS        OUT GET_REFCURSOR,
                                         P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
-    ORG_NODE_ID_LOGGEDIN ORG_NODE_DIM.ORG_NODEID%TYPE;
     CUSTPRODID           CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE;
   
   BEGIN
-    DBMS_OUTPUT.PUT_LINE(P_IN_COLLATION_HIERARCHY);
-    SELECT ORG_NODEID
-      INTO ORG_NODE_ID_LOGGEDIN
-      FROM ORG_USERS
-     WHERE USERID = P_IN_USERID;
-    DBMS_OUTPUT.PUT_LINE(ORG_NODE_ID_LOGGEDIN);
     SELECT CUST_PROD_ID
       INTO CUSTPRODID
       FROM CUST_PRODUCT_LINK
@@ -382,7 +361,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
       -- Main WHERE, Previous lines of the query are same for all 4 queries
        WHERE SBD.ORG_NODEID = P_IN_ORG_NODE_ID_CLASS
          AND SBD.GRADEID IN (SELECT VC1 AS GRADEID
-                               FROM TABLE (SELECT SF_GET_GRADE_DWNLD(ORG_NODE_ID_LOGGEDIN,
+                               FROM TABLE (SELECT SF_GET_GRADE_DWNLD(P_IN_ORG_NODE_ID_LOGGEDIN,
                                                                      P_TEST_ADMINISTRATION,
                                                                      P_IN_ORG_NODE_ID_DISTRICT,
                                                                      P_IN_ORG_NODE_ID_SCHOOL,
@@ -409,9 +388,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
 
   -- Get Students for a particular class for a particular grade
   PROCEDURE SP_GET_STUDENTS_ONE_C_ONE_G(P_TEST_ADMINISTRATION    IN PRODUCT.PRODUCTID%TYPE,
-                                        P_IN_CUSTOMERID          CUSTOMER_INFO.CUSTOMERID%TYPE,
+                                        P_IN_CUSTOMERID          IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                                         P_IN_ORG_NODE_ID_CLASS   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                        P_IN_TEST_PROGRAM        NUMBER,
+                                        P_IN_TEST_PROGRAM        IN NUMBER,
                                         P_IN_GRADE_ID            IN GRADE_DIM.GRADEID%TYPE,
                                         P_IN_COLLATION_HIERARCHY IN VARCHAR2,
                                         P_OUT_CUR_STUDENTS       OUT GET_REFCURSOR,
