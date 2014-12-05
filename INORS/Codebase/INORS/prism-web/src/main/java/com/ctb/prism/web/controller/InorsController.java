@@ -1489,7 +1489,7 @@ public class InorsController {
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.expression}")
-	public void deleteScheduledGroupFilesInors()  {
+	public void deleteScheduledGroupFilesInors() {
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES --------------- ");
 		try {
 			deleteScheduledGroupFiles(IApplicationConstants.CONTRACT_NAME.inors.toString());
