@@ -1498,7 +1498,7 @@ public class InorsController {
 		}
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES--------------- ");
 	}
-	
+
 	/**
 	 * Scheduler every night @ 1 AM Group Download files deletion and job
 	 * tracking update if exp date >= SYSDATE Scheduler.
@@ -1506,7 +1506,7 @@ public class InorsController {
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.expression}")
-	public void deleteScheduledGroupFilesTasc()  {
+	public void deleteScheduledGroupFilesTasc() {
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for TASC GROUP DOWNLOAD FILES --------------- ");
 		try {
 			deleteScheduledGroupFiles(IApplicationConstants.CONTRACT_NAME.tasc.toString());
@@ -1515,7 +1515,7 @@ public class InorsController {
 		}
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for TASC GROUP DOWNLOAD FILES--------------- ");
 	}
-	
+
 	/**
 	 * @param contractName
 	 * @throws Exception
@@ -1530,7 +1530,7 @@ public class InorsController {
 		paramMap.put("gdfExpiryTime", gdfExpiryTime);
 		paramMap.put("contractName", contractName);
 		Map<Long, String> jobMap = reportService.getScheduledGroupFiles(paramMap);
-		if (jobMap!=null && !jobMap.isEmpty()){
+		if (jobMap != null && !jobMap.isEmpty()) {
 			for (Map.Entry<Long, String> job : jobMap.entrySet()) {
 				Long jobId = job.getKey();
 				String filePath = job.getValue();

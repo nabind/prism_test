@@ -321,18 +321,21 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.deleteGroupFiles(Id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#deleteScheduledGroupFiles (java.lang.String)
+	/**
+	 * @param paramMap
+	 * @return
+	 * @throws Exception
 	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.ctb.prism.report.service.IReportService#deleteScheduledGroupFiles (java.lang.String)
+	public Map<Long, String> getScheduledGroupFiles(Map<String, Object> paramMap) throws Exception {
+		return reportBusiness.getScheduledGroupFiles(paramMap);
+	}
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
 	 */
-	public void deleteScheduledGroupFiles(String gdfExpiryTime) throws Exception {
-		reportBusiness.deleteScheduledGroupFiles(gdfExpiryTime);
+	public void updateScheduledGroupFiles(Map<String, Object> paramMap) throws Exception{
+		reportBusiness.updateScheduledGroupFiles(paramMap);
 	}
 
 	/*
