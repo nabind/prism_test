@@ -16,9 +16,9 @@ import com.prism.to.UserTO;
 import com.prism.util.BasicFormatterImpl;
 import com.prism.util.CustomStringUtil;
 
-public class IstepDao extends CommonDao {
+public class InorsGrowthDao extends CommonDao {
 
-	private final Logger logger = Logger.getLogger(IstepDao.class);
+	private final Logger logger = Logger.getLogger(InorsGrowthDao.class);
 	JDCConnectionDriver driver = null;
 	String DATA_SOURCE = "jdbc:jdc:acsi";
 	String ACSI = "ROLE_ACSI";
@@ -34,7 +34,7 @@ public class IstepDao extends CommonDao {
 	 * @param prop
 	 * @throws Exception
 	 */
-	public IstepDao(Properties prop) throws Exception {
+	public InorsGrowthDao(Properties prop) throws Exception {
 		String dbURL = prop.getProperty("dbURL");
 		String dbUserName = prop.getProperty("dbUserName");
 		String dbPassword = prop.getProperty("dbPassword");

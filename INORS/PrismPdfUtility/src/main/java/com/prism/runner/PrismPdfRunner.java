@@ -3,7 +3,7 @@ package com.prism.runner;
 import org.apache.log4j.Logger;
 
 import com.prism.service.InorsService;
-import com.prism.service.IstepService;
+import com.prism.service.InorsGrowthService;
 import com.prism.service.PrismPdfService;
 import com.prism.service.TascService;
 import com.prism.util.Constants;
@@ -42,7 +42,7 @@ public class PrismPdfRunner {
 						logger.error("A = Both Login Pdf and IC Letter Pdf");
 						logger.error("S = Individual IC Letter Pdf");
 					}
-				} else if (Constants.ARG_0_ISTEP.equalsIgnoreCase(arg0)) {
+				} else if (Constants.ARG_0_INORS_GRWOTH.equalsIgnoreCase(arg0)) {
 					isValidArgs = true;
 				} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
 					String arg1 = args[1];
@@ -55,7 +55,7 @@ public class PrismPdfRunner {
 					}
 				}
 			} else {
-				logger.error("First argument is Invalid. Please provide: I = Inors / S = Istep / T = Tasc");
+				logger.error("First argument is Invalid. Please provide: I = Inors / S = INORS Growth / T = Tasc");
 			}
 		}
 		if (isValidArgs) {
@@ -75,7 +75,7 @@ public class PrismPdfRunner {
 
 	/**
 	 * This method checks the first commandline argument and decides the
-	 * services for Inors / Istep / Tasc.
+	 * services for Inors / Inors Growth / Tasc.
 	 * 
 	 * @param arg0
 	 * @return
@@ -84,8 +84,8 @@ public class PrismPdfRunner {
 		PrismPdfService service = null;
 		if (Constants.ARG_0_INORS.equalsIgnoreCase(arg0)) {
 			service = new InorsService();
-		} else if (Constants.ARG_0_ISTEP.equalsIgnoreCase(arg0)) {
-			service = new IstepService();
+		} else if (Constants.ARG_0_INORS_GRWOTH.equalsIgnoreCase(arg0)) {
+			service = new InorsGrowthService();
 		} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
 			service = new TascService();
 		}

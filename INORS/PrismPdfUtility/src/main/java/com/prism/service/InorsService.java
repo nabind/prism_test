@@ -110,16 +110,14 @@ public class InorsService implements PrismPdfService {
 						logger.info("Creating Separate IC Letter PDFs");
 						processIndividualIcLetterPdfInors(prop, dao, id);
 						identifier = "IC_";
-					}
-					
-					 String rootPath  =prop.getProperty("s3.loginpdf.path");
-					 if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString()) 
-							 || flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())){
-						 rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
-						 
-					 } 
-					 moveFilesToS3(rootPath,prop.getProperty("pdfGenPath"));
-					 moveFilesToS3(rootPath,prop.getProperty("pdfGenPathIC"));
+						
+						//S3 code
+						String rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
+						moveFilesToS3(rootPath,prop.getProperty("pdfGenPathIC"));		
+						 /* Deleting files from mount location after uploading to S3 */
+						FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathInvIC")));
+						ARCHIVE_NEEDED = false;
+					}							
 				}
 
 				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
@@ -162,9 +160,7 @@ public class InorsService implements PrismPdfService {
 					FileUtil.archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
 				}
 			}
-			/* Deleting files from mount location after uploading to S3 */
-			FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPath")));
-			FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathIC")));
+			
 		}
 		
 		
@@ -209,11 +205,13 @@ public class InorsService implements PrismPdfService {
 				List<String> tempFileList = new ArrayList<String>();
 				List<String> pdfPathList = new ArrayList<String>();
 				List<String> pdfDistPathList = new ArrayList<String>();
-
-				File folder = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPathIC"), File.separator, school.getCustomerCode()));
-				if (!folder.exists()) {
-					folder.mkdir();
+				
+				/* directory for Group IC*/
+				File groupICFolder = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPathIC"), File.separator, school.getCustomerCode()));
+				if (!groupICFolder.exists()) {
+					groupICFolder.mkdir();
 				}
+				
 				CUSOMERID = school.getCustomerCode();
 				String schoolCoverUrl = getSchoolCoverURLStringInors(prop, schoolId);
 				String schoolCoverPath = ReportPDF.savePdfFromPrismWeb(getOrgPdfPathInors(prop, school.getSchoolCode(), school.getCustomerCode(), "SCHOOL"),
@@ -264,8 +262,7 @@ public class InorsService implements PrismPdfService {
 				}
 
 				FileUtil.removeFile(tempFileList);
-				
-				//S3 code here
+
 			} else {
 				logger.info("No school found with org-nodeid " + schoolId);
 			}
@@ -285,10 +282,19 @@ public class InorsService implements PrismPdfService {
 		logger.info("Processing for IC Letter...");
 		String letterLoc = "";
 		try {
+			
 			// Users not required
 			OrgTO school = dao.getSchoolDetails(schoolId, false);
 			if (school != null) {
 				CUSOMERID = school.getCustomerCode();
+				
+				
+				/* directory for individual IC*/
+				File invICFolder = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPathInvIC"), File.separator, CUSOMERID));
+				if (!invICFolder.exists()) {
+					invICFolder.mkdir();
+				}
+				
 				if (school != null) {
 					String adminId = "-1";
 					// Actually test element id list
@@ -1123,7 +1129,7 @@ public class InorsService implements PrismPdfService {
 
 	private String getIndividualIcPdfPathInors(Properties prop, String districtCode, String schoolCode, String customerCode, String studentBioId) {
 		StringBuffer docBuff = new StringBuffer();
-		docBuff.append(prop.getProperty("pdfGenPathIC"));
+		docBuff.append(prop.getProperty("pdfGenPathInvIC"));
 		docBuff.append(File.separator);
 		docBuff.append(prop.getProperty("ICLetterFile"));
 		docBuff.append(districtCode);

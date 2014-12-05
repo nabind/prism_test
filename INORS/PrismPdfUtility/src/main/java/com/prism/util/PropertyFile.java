@@ -110,8 +110,8 @@ public class PropertyFile {
 	public static String getPrismPropertyFileName(String arg0) {
 		if (Constants.ARG_0_INORS.equalsIgnoreCase(arg0)) {
 			return Constants.INORS_PROPERTIES_FILE;
-		} else if (Constants.ARG_0_ISTEP.equalsIgnoreCase(arg0)) {
-			return Constants.ISTEP_PROPERTIES_FILE;
+		} else if (Constants.ARG_0_INORS_GRWOTH.equalsIgnoreCase(arg0)) {
+			return Constants.INORS_GROWTH_PROPERTIES_FILE;
 		} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
 			return Constants.TASC_PROPERTIES_FILE;
 		} else {
@@ -122,8 +122,8 @@ public class PropertyFile {
 	public static String getPrismJdbcPropertyFileName(String arg0) {
 		if (Constants.ARG_0_INORS.equalsIgnoreCase(arg0)) {
 			return Constants.INORS_JDBC_PROPERTIES_FILE;
-		} else if (Constants.ARG_0_ISTEP.equalsIgnoreCase(arg0)) {
-			return Constants.ISTEP_JDBC_PROPERTIES_FILE;
+		} else if (Constants.ARG_0_INORS_GRWOTH.equalsIgnoreCase(arg0)) {
+			return Constants.INORS_GROWTH_JDBC_PROPERTIES_FILE;
 		} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
 			return Constants.TASC_JDBC_PROPERTIES_FILE;
 		} else {

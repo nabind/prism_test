@@ -14,7 +14,7 @@ import com.lowagie.text.pdf.PdfEncryptor;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import com.prism.cipher.PasswordGenerator;
-import com.prism.dao.IstepDao;
+import com.prism.dao.InorsGrowthDao;
 import com.prism.itext.PdfGenerator;
 import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
@@ -24,9 +24,9 @@ import com.prism.util.CustomStringUtil;
 import com.prism.util.FileUtil;
 import com.prism.util.PropertyFile;
 
-public class IstepService implements PrismPdfService {
-	private final Logger logger = Logger.getLogger(IstepService.class);
-	private IstepDao dao = null;
+public class InorsGrowthService implements PrismPdfService {
+	private final Logger logger = Logger.getLogger(InorsGrowthService.class);
+	private InorsGrowthDao dao = null;
 	private boolean encryptionNeeded = false;
 	private boolean archiveNeeded = false;
 	private boolean userExists = false;
@@ -35,8 +35,8 @@ public class IstepService implements PrismPdfService {
 
 	private PdfGenerator pdfGenerator;
 
-	public IstepService() {
-		pdfGenerator = new PdfGenerator(Constants.ISTEP_PROPERTIES_FILE);
+	public InorsGrowthService() {
+		pdfGenerator = new PdfGenerator(Constants.INORS_GROWTH_PROPERTIES_FILE);
 	}
 
 	/**
@@ -48,8 +48,8 @@ public class IstepService implements PrismPdfService {
 	public void mainMethod(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
 		logger.info("Starting File Generation with IstepService. Please wait...");
-		Properties configProperties = PropertyFile.loadProperties(Constants.ISTEP_JDBC_PROPERTIES_FILE);
-		Properties istepProperties = PropertyFile.loadProperties(Constants.ISTEP_PROPERTIES_FILE);
+		Properties configProperties = PropertyFile.loadProperties(Constants.INORS_GROWTH_JDBC_PROPERTIES_FILE);
+		Properties istepProperties = PropertyFile.loadProperties(Constants.INORS_GROWTH_PROPERTIES_FILE);
 		if (args == null || args.length == 0) {
 			logger.error("Please provide school org id ");
 		} else {
@@ -68,7 +68,7 @@ public class IstepService implements PrismPdfService {
 			for (String orgId : args) {
 				logger.info("Processing School Id: " + orgId);
 				if (dao == null) {
-					dao = new IstepDao(configProperties);
+					dao = new InorsGrowthDao(configProperties);
 				}
 				logger.info("Fetching school details from Istep database. Please wait... ");
 				OrgTO school = dao.getSchoolDetails(orgId, false, istepProperties);
@@ -127,7 +127,7 @@ public class IstepService implements PrismPdfService {
 			logger.debug("DB Schema: " + configProperties.getProperty("dbUserName"));
 			logger.info("Processing District Id: " + level2OrgId);
 			if (dao == null) {
-				dao = new IstepDao(configProperties);
+				dao = new InorsGrowthDao(configProperties);
 			}
 			logger.info("Fetching district details from database. Please wait... ");
 			OrgTO district = dao.getDistrictDetails(level2OrgId, state, istepProperties);

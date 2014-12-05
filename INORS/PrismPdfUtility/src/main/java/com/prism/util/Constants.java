@@ -6,14 +6,14 @@ package com.prism.util;
  */
 public interface Constants {
 	public static final String ARG_0_INORS = "I";
-	public static final String ARG_0_ISTEP = "P";
+	public static final String ARG_0_INORS_GRWOTH= "P";
 	public static final String ARG_0_TASC = "T";
 
 	public static final String INORS_PROPERTIES_FILE = "inors.properties";
 	public static final String INORS_JDBC_PROPERTIES_FILE = "inors_jdbc.properties";
 
-	public static final String ISTEP_PROPERTIES_FILE = "istep.properties";
-	public static final String ISTEP_JDBC_PROPERTIES_FILE = "istep_jdbc.properties";
+	public static final String INORS_GROWTH_PROPERTIES_FILE = "inors_grw.properties";
+	public static final String INORS_GROWTH_JDBC_PROPERTIES_FILE = "inors_grw_jdbc.properties";
 
 	public static final String TASC_PROPERTIES_FILE = "tasc.properties";
 	public static final String TASC_JDBC_PROPERTIES_FILE = "tasc_jdbc.properties";
