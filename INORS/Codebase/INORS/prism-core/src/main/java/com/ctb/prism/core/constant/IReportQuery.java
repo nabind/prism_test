@@ -102,7 +102,7 @@ public interface IReportQuery {
 					" REQUEST_DETAILS,",
 					" REQUEST_FILENAME, REQUEST_EMAIL, JOB_LOG, JOB_STATUS,",
 					" ADMINID, CUSTOMERID, CREATED_DATE_TIME) VALUES ",
-					"(?, ?, ?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID=? AND PRODUCTID=? AND ROWNUM=1), ?, SYSDATE)");
+					"(?, (SELECT USERID FROM USERS WHERE UPPER(USERNAME) = UPPER(?) ), ?, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID=? AND PRODUCTID=? AND ROWNUM=1), ?, SYSDATE)");
 	public static final String INSERT_JOB_TRACKING_DATE = CustomStringUtil.appendString(
 			" insert into JOB_TRACKING(job_id,userid,",
 			" job_name,extract_startdate,extract_enddate,extract_category,extract_filetype,request_type,",

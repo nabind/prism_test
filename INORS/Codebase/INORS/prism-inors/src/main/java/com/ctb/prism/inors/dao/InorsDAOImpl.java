@@ -200,7 +200,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getGRTList' )")
-	private List<GrtTO> getGRTList(final String userName, final String productId, final String testProgram, final String districtId, final String schoolId) {
+	private List<GrtTO> getGRTList(final Long customerId, final String productId, final String testProgram, final String districtId, final String schoolId) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
 		try {
@@ -210,7 +210,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setString(2, userName);
+						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setString(4, testProgram);
 						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
@@ -238,7 +238,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setString(2, userName);
+						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setLong(4, Long.parseLong(schoolId));
 						cs.setString(5, testProgram);
@@ -271,13 +271,13 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)) )")
 	private ArrayList<ArrayList<String>> getGRTTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
-		final String userName = paramMap.get("userName");
+		final Long customerId = Long.valueOf(paramMap.get("customerId"));
 		final String productId = paramMap.get("productId");
 		final String testProgram = paramMap.get("testProgram");
 		final String districtId = paramMap.get("parentOrgNodeId");
 		final String schoolId = paramMap.get("orgNodeId");
 
-		logger.log(IAppLogger.INFO, "userName = " + userName);
+		logger.log(IAppLogger.INFO, "customerId = " + customerId);
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
@@ -291,7 +291,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_ALL_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setString(2, userName);
+						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setString(4, testProgram);
 						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
@@ -319,7 +319,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.GET_RESULTS_GRT);
 						cs.setLong(1, Long.parseLong(productId));
-						cs.setString(2, userName);
+						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setLong(4, Long.parseLong(schoolId));
 						cs.setString(5, testProgram);
@@ -595,8 +595,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	public List<? extends BaseTO> getDownloadData(Map<String, String> paramMap) {
 		String type = paramMap.get("type");
 		logger.log(IAppLogger.INFO, "type = " + type);
-		String userName = paramMap.get("userName");
-		logger.log(IAppLogger.INFO, "userName = " + userName);
+		Long customerId = Long.valueOf((String) paramMap.get("customerId"));
+		logger.log(IAppLogger.INFO, "customerId = " + customerId);
 		String productId = paramMap.get("productId");
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 		String testProgram = paramMap.get("testProgram");
@@ -608,7 +608,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		if (InorsDownloadConstants.IC.equals(type)) {
 			return getICList(productId, testProgram, districtId, schoolId);
 		} else if (InorsDownloadConstants.GRT.equals(type)) {
-			return getGRTList(userName, productId, testProgram, districtId, schoolId);
+			return getGRTList(customerId, productId, testProgram, districtId, schoolId);
 		} else {
 			return null;
 		}
@@ -622,8 +622,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	public ArrayList<ArrayList<String>> getTabulerData(Map<String, String> paramMap, ArrayList<String> aliasList, ArrayList<String> headerList) {
 		String type = paramMap.get("type");
 		logger.log(IAppLogger.INFO, "type = " + type);
-		String userName = paramMap.get("userName");
-		logger.log(IAppLogger.INFO, "userName = " + userName);
+		String customerId = paramMap.get("customerId");
+		logger.log(IAppLogger.INFO, "customerId = " + customerId);
 		String productId = paramMap.get("productId");
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 		String testProgram = paramMap.get("testProgram");

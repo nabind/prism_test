@@ -514,8 +514,9 @@ public class InorsController {
 		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
-		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String loggedInOrgNodeId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		if ("true".equals((String) request.getAttribute("icDownload"))) {
 			modelAndView = new ModelAndView("inors/icLetterDownloads");
 		} else {
@@ -600,7 +601,7 @@ public class InorsController {
 			parameterMap.put("PRODUCT_ID", productId);
 			parameterMap.put("CUSTOMER_ID", customerId);
 			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
-			parameterMap.put("USER_ID", currentUserId);
+			// parameterMap.put("USER_ID", currentUserId);
 			reportMessages = reportService.getAllReportMessages(parameterMap);
 			Map<String, String> hiddenReportTypes = new HashMap<String, String>();
 			hiddenReportTypes.put(IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString(), IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
@@ -644,7 +645,8 @@ public class InorsController {
 					to.setCustomerId(customerId);
 					to.setOrgNodeLevel(orgNodeLevel);
 					to.setGroupFile(groupFile);
-					to.setUserId(currentUserId);
+					// to.setUserId(currentUserId);
+					to.setLoggedInOrgNodeId(loggedInOrgNodeId);
 					to.setUserName(currentUserName);
 					if ((testProgram != null) && (!"null".equalsIgnoreCase(testProgram))) {
 						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
@@ -844,15 +846,15 @@ public class InorsController {
 			// Asynchronous : Create Process Id
 			type = "async";
 			if ((to.getStudents() != null) && (!to.getStudents().isEmpty())) {
-				String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+				// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 				String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 				String adminId = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-				logger.log(IAppLogger.INFO, "currentUserId = " + currentUserId);
+				// logger.log(IAppLogger.INFO, "currentUserId = " + currentUserId);
 				logger.log(IAppLogger.INFO, "currentUser = " + currentUser);
 				logger.log(IAppLogger.INFO, "adminId = " + adminId);
 				logger.log(IAppLogger.INFO, "customerId = " + customerId);
-				to.setUserId(currentUserId);
+				// to.setUserId(currentUserId);
 				to.setUserName(currentUser);
 				to.setAdminId(adminId);
 				to.setCustomerId(customerId);
@@ -1264,7 +1266,7 @@ public class InorsController {
 		String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
-		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		logger.log(IAppLogger.INFO, "reportId=" + reportId);
 		logger.log(IAppLogger.INFO, "productId=" + productId);
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
@@ -1274,7 +1276,7 @@ public class InorsController {
 		paramMap.put("PRODUCT_ID", productId);
 		paramMap.put("CUSTOMER_ID", customerId);
 		paramMap.put("ORG_NODE_LEVEL", orgNodeLevel);
-		paramMap.put("USER_ID", currentUserId);
+		// paramMap.put("USER_ID", currentUserId);
 		List<ReportMessageTO> reportMessages = reportService.getAllReportMessages(paramMap);
 		modelAndView.addObject("reportMessages", reportMessages);
 		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
@@ -1424,8 +1426,10 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "term=" + term);
 		logger.log(IAppLogger.INFO, "year=" + year);
 
-		String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-		String userName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		// String userId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		// String userName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 
 		String productStr = product;
 		if (productStr.indexOf('+') > 0) {
@@ -1459,8 +1463,8 @@ public class InorsController {
 		paramMap.put("testProgram", testProgram);
 		paramMap.put("parentOrgNodeId", corpDiocese);
 		paramMap.put("orgNodeId", school);
-		paramMap.put("userId", userId);
-		paramMap.put("userName", userName);
+		// paramMap.put("userId", userId);
+		paramMap.put("customerId", customerId);
 
 		byte[] data = null;
 		String fileName = layoutName.toLowerCase() + ".dat";

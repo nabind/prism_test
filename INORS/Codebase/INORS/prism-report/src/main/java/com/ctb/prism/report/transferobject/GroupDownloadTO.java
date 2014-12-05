@@ -25,7 +25,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String collationHierarchy;
 	private String fileName;
 	private String email;
-	private String userId;
+	private String loggedInOrgNodeId;
 	private String userName;
 	private String adminId;
 	private String customerId;
@@ -237,18 +237,18 @@ public class GroupDownloadTO extends BaseTO {
 	}
 
 	/**
-	 * @return the userId
+	 * @return the loggedInOrgNodeId
 	 */
-	public String getUserId() {
-		return userId;
+	public String getLoggedInOrgNodeId() {
+		return loggedInOrgNodeId;
 	}
 
 	/**
-	 * @param userId
-	 *            the userId to set
+	 * @param loggedInOrgNodeId
+	 *            the loggedInOrgNodeId to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setLoggedInOrgNodeId(String loggedInOrgNodeId) {
+		this.loggedInOrgNodeId = loggedInOrgNodeId;
 	}
 
 	/**

@@ -1474,7 +1474,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String collationHierarchy = to.getCollationHierarchy();
 		final String groupFile = to.getGroupFile();
 		final String customerId = to.getCustomerId();
-		final String userId = to.getUserId();
+		final String loggedInOrgNodeId = to.getLoggedInOrgNodeId();
 		String userName = to.getUserName();
 		if (testProgram == null || testProgram.isEmpty()) {
 			logger.log(IAppLogger.ERROR, "testProgram cannot be null or empty: " + testProgram);
@@ -1488,7 +1488,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "testProgram = " + testProgram);
 		logger.log(IAppLogger.INFO, "collationHierarchy = " + collationHierarchy);
 		logger.log(IAppLogger.INFO, "customerId = " + customerId);
-		logger.log(IAppLogger.INFO, "userId = " + userId);
+		logger.log(IAppLogger.INFO, "loggedInOrgNodeId = " + loggedInOrgNodeId);
 		logger.log(IAppLogger.INFO, "userName = " + userName);
 
 		final String testAdministrationVal = to.getTestAdministrationVal();
@@ -1502,11 +1502,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				logger.log(IAppLogger.INFO, "ALL Classes");
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
-					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G("+userId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G("+loggedInOrgNodeId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
 					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ALL_C_ALL_G);
-							cs.setLong(1, Long.parseLong(userId));
+							cs.setLong(1, Long.parseLong(loggedInOrgNodeId));
 							cs.setLong(2, Long.parseLong(testAdministrationVal));
 							cs.setLong(3, Long.parseLong(districtId));
 							cs.setLong(4, Long.parseLong(schoolId));
@@ -1534,11 +1534,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					});
 				} else {
 					logger.log(IAppLogger.INFO, "One Grade");
-					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G("+userId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+gradeId+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G("+loggedInOrgNodeId+", "+testAdministrationVal+", "+districtId+", "+schoolId+", "+testProgram+", "+customerId+", "+gradeId+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
 					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ALL_C_ONE_G);
-							cs.setLong(1, Long.parseLong(userId));
+							cs.setLong(1, Long.parseLong(loggedInOrgNodeId));
 							cs.setLong(2, Long.parseLong(testAdministrationVal));
 							cs.setLong(3, Long.parseLong(districtId));
 							cs.setLong(4, Long.parseLong(schoolId));
@@ -1571,13 +1571,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			if ((classId != null) && (!"undefined".equalsIgnoreCase(classId))) {
 				if ("-1".equals(gradeId)) {
 					logger.log(IAppLogger.INFO, "ALL Grades");
-					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G("+testAdministrationVal+", "+customerId+", "+userId+", "+districtId+", "+schoolId+", "+classId+", "+testProgram+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
+					logger.log(IAppLogger.INFO, "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G("+testAdministrationVal+", "+customerId+", "+loggedInOrgNodeId+", "+districtId+", "+schoolId+", "+classId+", "+testProgram+", "+groupFile+", "+collationHierarchy+", REF_CURSOR, EXCEPTION)}");
 					studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_ONE_C_ALL_G);
 							cs.setLong(1, Long.parseLong(testAdministrationVal));
 							cs.setLong(2, Long.parseLong(customerId));
-							cs.setLong(3, Long.parseLong(userId));
+							cs.setLong(3, Long.parseLong(loggedInOrgNodeId));
 							cs.setLong(4, Long.parseLong(districtId));
 							cs.setLong(5, Long.parseLong(schoolId));
 							cs.setLong(6, Long.parseLong(classId));
@@ -1746,7 +1746,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
-		String currUserId = to.getUserId();
+		// String currUserId = to.getUserId();
 		String currUserName = to.getUserName();
 		String currAdminId = to.getAdminId();
 		String currCustomerId = to.getCustomerId();
@@ -1757,13 +1757,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "groupFile = " + groupFile);
 		logger.log(IAppLogger.INFO, "students = " + students);
 		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
-		logger.log(IAppLogger.INFO, "currUserId = " + currUserId);
+		// logger.log(IAppLogger.INFO, "currUserId = " + currUserId);
 		logger.log(IAppLogger.INFO, "currUserName = " + currUserName);
 		logger.log(IAppLogger.INFO, "currAdminId = " + currAdminId);
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 
 		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
-		Long userId = (currUserId != null) ? Long.valueOf(currUserId) : 0;
+		// Long userId = (currUserId != null) ? Long.valueOf(currUserId) : 0;
 		String job_name = groupFile;
 		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;
@@ -1781,7 +1781,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
 
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
-		logger.log(IAppLogger.INFO, "userId = " + userId);
+		// logger.log(IAppLogger.INFO, "userId = " + userId);
 		logger.log(IAppLogger.INFO, "job_name = " + job_name);
 		logger.log(IAppLogger.INFO, "extract_category = " + extract_category);
 		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
@@ -1797,7 +1797,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 		int count = getJdbcTemplatePrism().update(
 				IQueryConstants.INSERT_JOB_TRACKING,
-				new Object[] { job_id, userId, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
+				new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
 						request_filename, request_email, job_log, job_status, customerid, productId, customerid },
 				new int[] { Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
 						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC });
@@ -2168,7 +2168,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String productId = (String) paramMap.get("PRODUCT_ID");
 		String customerId = (String) paramMap.get("CUSTOMER_ID");
 		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");
-		String userId = (String) paramMap.get("USER_ID");
+		// String userId = (String) paramMap.get("USER_ID");
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_REPORT_MESSAGES, reportId, productId, customerId, orgNodeLevel);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
