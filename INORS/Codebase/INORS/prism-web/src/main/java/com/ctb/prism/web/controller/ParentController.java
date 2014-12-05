@@ -218,7 +218,7 @@ public class ParentController {
 			paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 			paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 			paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
-			paramMap.put("custProdId", 0);
+			paramMap.put("custProdId", 0L);
 			Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 			mv = new ModelAndView("parent/regSuccess");
 			mv.addObject(IApplicationConstants.MESSAGE_MAP_SESSION, messageMap);
