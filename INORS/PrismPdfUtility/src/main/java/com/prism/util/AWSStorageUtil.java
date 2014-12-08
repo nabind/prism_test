@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -15,6 +17,7 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class AWSStorageUtil {
+	private final Logger logger = Logger.getLogger(AWSStorageUtil.class);
 	private BasicAWSCredentials credentials;
 	private AmazonS3 s3;
 	private String bucketName;
@@ -41,7 +44,7 @@ public class AWSStorageUtil {
 				this.s3 = new AmazonS3Client(this.credentials);
 			}
 		} catch (Exception e) {
-			System.out.println("exception while creating awss3client : " + e);
+			logger.info("exception while creating awss3client : " + e);
 			e.printStackTrace();
 		}
 	}
@@ -68,26 +71,27 @@ public class AWSStorageUtil {
 	public void uploadObject(String key, String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
 		if (file.isFile()) {
-			System.out.println("File fould");
+			logger.debug("File fould");
 		} else {
 			throw new FileNotFoundException(fileName);
 		}
 		String s3key = key + "/" + file.getName();
-		System.out.println( "File :" + file + " Asset(" + s3key + ") is getting uploaded  ");
+		logger.debug( "File :" + file + " Asset(" + s3key + ") is getting uploaded  ");
+		logger.info("S3 Key: " + s3key);
 		s3.putObject(this.bucketName, s3key, file);
-		System.out.println( "Asset(" + key + ") uploaded successfully");
+		logger.debug( "Asset(" + key + ") uploaded successfully");
 	}
 
 	/**
 	 * List available assets on s3
 	 */
 	public void getObjectList() {
-		System.out.println("Listing objects");
+		logger.info("Listing objects");
 		ObjectListing objectListing = s3.listObjects(new ListObjectsRequest().withBucketName(bucketName));
 		for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-			System.out.println(" - " + objectSummary.getKey() + " " + "(size = " + objectSummary.getSize() + ")");
+			logger.info(" - " + objectSummary.getKey() + " " + "(size = " + objectSummary.getSize() + ")");
 		}
-		System.out.println("Exit: getObjectList()");
+		logger.info("Exit: getObjectList()");
 	}
 
 }
