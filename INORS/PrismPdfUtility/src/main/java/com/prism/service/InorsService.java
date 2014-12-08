@@ -112,15 +112,20 @@ public class InorsService implements PrismPdfService {
 						identifier = "IC_";
 
 						// S3 code
-						if ("true".equals(prop.getProperty("pdfGenPathInvIC"))) {
+						if ("true".equals(prop.getProperty("moveFilesToS3"))) {
 							String rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
+							rootPath = prop.getProperty("environment.postfix").toUpperCase() + rootPath;
 							moveFilesToS3(rootPath, prop.getProperty("pdfGenPathIC"));
 							logger.info("Files Successfully moved to S3");
+						} else {
+							logger.info("Files NOT moved to S3");
 						}
 						 /* Deleting files from mount location after uploading to S3 */
-						if ("true".equals(prop.getProperty("pdfGenPathInvIC"))) {
+						if ("true".equals(prop.getProperty("cleanDirectory.pdfGenPathInvIC"))) {
 							FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathInvIC")));
-							logger.info("TEMP files deleted from: + " + prop.getProperty("pdfGenPathInvIC"));
+							logger.info("All TEMP files deleted from: " + prop.getProperty("pdfGenPathInvIC"));
+						} else {
+							logger.info("TEMP files NOT deleted from: " + prop.getProperty("pdfGenPathInvIC"));
 						}
 						ARCHIVE_NEEDED = false;
 					}
@@ -181,17 +186,20 @@ public class InorsService implements PrismPdfService {
 			File[] localFiles = locDirectory.listFiles();
 			AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
 			for (File file : localFiles) {
-				try {
-					s3Path = s3Path.replace("//", "/");
-					logger.info("aWSStorageUtil.uploadObject(" + s3Path + ", " + dir + "/" + file.getName() + ")");
-					aWSStorageUtil.uploadObject(s3Path, dir + "/" + file.getName());
-					logger.info("File Successfully Uploaded to S3");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+				s3Path = s3Path.replace("//", "/");
+				logger.debug("Calling aWSStorageUtil.uploadObject(" + s3Path + ", " + dir + "/" + file.getName() + ")");
+				if (file != null && file.isFile()) {
+					try {
+						aWSStorageUtil.uploadObject(s3Path, dir + "/" + file.getName());
+						logger.info("File Successfully Uploaded to S3");
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				} else if (file.isDirectory()) {
+					// TODO : Do we need recursive upload?
 				}
 			}
 		}
-
 	}
 
 	private void archiveICLetterInors(Properties prop) {
