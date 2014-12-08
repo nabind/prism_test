@@ -221,10 +221,10 @@ public class FileUtil {
 			File pdf = new File(file);
 			if (pdf.exists()) {
 				pdf.delete();
-				logger.info("File deleted = " + file);
+				logger.info("TEMP File deleted = " + file);
 			}
 		} catch (Exception ex) {
-			logger.warn("Not able to delete file: " + file);
+			logger.warn("Not able to delete TEMP file: " + file);
 			logger.warn(ex.getMessage());
 		}
 	}
@@ -241,11 +241,11 @@ public class FileUtil {
 					File pdf = new File(file);
 					if (pdf.exists()) {
 						pdf.delete();
-						logger.info("File deleted = " + file);
+						logger.info("TEMP File deleted = " + file);
 					}
 				}
 			} catch (Exception ex) {
-				logger.warn("Not able to delete file: " + file);
+				logger.warn("Not able to TEMP delete file: " + file);
 				logger.warn(ex.getMessage());
 			}
 		}
@@ -424,7 +424,7 @@ public class FileUtil {
 				}
 				for (File f : listOfFiles) {
 					if (f.isFile()) {
-						logger.debug(CustomStringUtil.appendString("Deleting temp file : ", f.getAbsolutePath()));
+						logger.debug(CustomStringUtil.appendString("Deleting TEMP file : ", f.getAbsolutePath()));
 						removeFile(f.getAbsolutePath());
 					}
 				}

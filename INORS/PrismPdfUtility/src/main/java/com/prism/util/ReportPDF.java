@@ -92,7 +92,7 @@ public class ReportPDF {
 		FileOutputStream fos = new FileOutputStream(pdfPath);
 		InputStream is = null;
 		try {
-			logger.info(url);
+			logger.debug(url);
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
 			// Checking whether the URL contains a PDF
@@ -104,6 +104,7 @@ public class ReportPDF {
 					// Read the PDF from the URL and save to a local file
 					is = urlConn.getInputStream();
 					IOUtils.copy(is, fos);
+					logger.info("PDF Saved Successfully: " + pdfPath);
 				} catch (ConnectException e) {
 					logger.error("FAILED : " + e.getMessage());
 					return null;
