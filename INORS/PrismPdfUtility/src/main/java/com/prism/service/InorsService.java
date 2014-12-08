@@ -175,12 +175,14 @@ public class InorsService implements PrismPdfService {
 	}
 
 	private void moveFilesToS3(String s3Path, String dir) {
+		dir = dir.replace("//", "/");
 		File locDirectory = new File(dir);
 		if (locDirectory.isDirectory()) {
 			File[] localFiles = locDirectory.listFiles();
 			AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
 			for (File file : localFiles) {
 				try {
+					s3Path = s3Path.replace("//", "/");
 					logger.info("aWSStorageUtil.uploadObject(" + s3Path + ", " + dir + "/" + file.getName() + ")");
 					aWSStorageUtil.uploadObject(s3Path, dir + "/" + file.getName());
 					logger.info("File Successfully Uploaded to S3");

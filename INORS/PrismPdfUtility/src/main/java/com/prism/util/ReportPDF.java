@@ -89,6 +89,7 @@ public class ReportPDF {
 	}
 
 	public static String savePdfFromPrismWeb(String pdfPath, URL url) throws IOException {
+		pdfPath = pdfPath.replace("//", "/");
 		FileOutputStream fos = new FileOutputStream(pdfPath);
 		InputStream is = null;
 		try {
