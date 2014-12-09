@@ -174,21 +174,25 @@ public class TascDAOImpl {
 		return processList;
 	}
 
-	public List<String> getTestElementIdList(String processId) throws Exception {
+	public List<TASCProcessTO> getTestElementIdList(String processId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<String> testElementIdList = new ArrayList<String>();
+		List<TASCProcessTO> testElementIdList = new ArrayList<TASCProcessTO>();
 		try {
 			driver = TASCConnectionProvider.getDriver();
 			conn = driver.connect(DATA_SOURCE, null);
+			TASCProcessTO process = null;
 			
-			String query = "SELECT TEST_ELEMENT_ID FROM ER_EXCEPTION_DATA WHERE PROCESS_ID = ?";
+			String query = "SELECT TEST_ELEMENT_ID, description FROM ER_EXCEPTION_DATA WHERE PROCESS_ID = ?";
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, processId);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				testElementIdList.add(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
+				process = new TASCProcessTO();
+				process.setTestElementId((rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : ""));
+				process.setErValidationError((rs.getString("description") != null ? rs.getString("description") : ""));
+				testElementIdList.add(process);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

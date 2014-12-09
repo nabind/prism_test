@@ -27,7 +27,21 @@ public class TASCProcessTO implements Serializable {
 	private String coCount;
 	private String erCount;
 	private String overallStatus;
+	private String testElementId;
+	private String erValidationError;
 	
+	public String getTestElementId() {
+		return testElementId;
+	}
+	public void setTestElementId(String testElementId) {
+		this.testElementId = testElementId;
+	}
+	public String getErValidationError() {
+		return erValidationError;
+	}
+	public void setErValidationError(String erValidationError) {
+		this.erValidationError = erValidationError;
+	}
 	public String getCoCount() {
 		return coCount;
 	}

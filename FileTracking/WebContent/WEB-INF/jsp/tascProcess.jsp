@@ -114,27 +114,14 @@
 				url: "testElementIdList.htm",
 				data: dataString,
 				success: function(data) {
-					if(data == "Error") {
-						$("#_er_log").html( ' Failed to get ER Log' );
-					} else {
-						// alert("data=" + data);
-						var testElementIds = data.split(',');
-						//alert("testElementIds=" + testElementIds);
-						//alert(testElementIds.length);
-						var innerHtml = "";
-						if(testElementIds && testElementIds.length > 1) {
-							for(var i=0; i < testElementIds.length; i++) {
-								var value = testElementIds[i];
-								// alert(value);
-								if(value != "") {
-									innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+value+','+processId+');">'+value+'</a><br />';
-								}
-							}
-						} else {
-							innerHtml += ' - <a href="#note" class="noteLink" style="color:red;text-decoration:underline" onclick="getStudentDetails('+testElementIds+','+processId+');">'+testElementIds+'</a>';
-						}
-						$("#_er_log").html( innerHtml );
+					var innertext = "<table class='simple_table'><tr><th>Test Element ID</th><th>Error Details</th></tr> <tbody>";
+					for(i=0;i<data.length;i++) {
+						innertext += "<tr><td>"+data[i].product.testElementId+"</td><td>"+data[i].product.erValidationError+"</td></tr>";
 					}
+					innertext += "</tbody></table>";
+					
+					$("#_er_log").html( innertext );
+					
 				},
 				error: function(data) {
 					$("#_er_log").html( ' Failed to get ER Log' );
@@ -282,8 +269,8 @@
 						
 						<td><%=process.getSourceSystem() %></td>
 						<td>
-							<%if("ER".equals(process.getErValidation())) { %>
-								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='testElementIdList(<%=process.getProcessId() %>);'><%=process.getErValidation() %></a>
+							<%if( process.getErValidation() != null && "IN".equals(process.getErValidation())) { %>
+								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='testElementIdList(<%=process.getProcessId() %>);'><%=process.getErValidation().replace("IN", "ER") %></a>
 							<%} else {%>
 								<%=process.getErValidation() %>
 							<%} %>

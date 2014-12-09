@@ -65,10 +65,10 @@ public class TascController {
 		System.out.println("processId=" + processId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<String> testElementIdList = stageDao.getTestElementIdList(processId);
+			List<TASCProcessTO> testElementIdList = stageDao.getTestElementIdList(processId);
 			System.out.println("testElementIdList=" + testElementIdList);
-			response.setContentType("text/plain");
-			response.getWriter().write(Utils.convertListToCommaString(testElementIdList));
+			response.setContentType("application/json");
+			response.getWriter().write(convertToJson(testElementIdList));
 		} catch (Exception e) {
 			System.out.println("Failed to get testElementIdList, processId=" + processId);
 			response.setContentType("text/plain");
@@ -77,6 +77,21 @@ public class TascController {
 		}
 		System.out.println("Exit: testElementIdList()");
 		return null;
+	}
+	
+	public String convertToJson(List<TASCProcessTO> processes) {
+		String jsonStr = "[";
+		XStream xstream = new XStream(new JettisonMappedXmlDriver());
+		xstream.alias("product", TASCProcessTO.class);
+        xstream.setMode(XStream.NO_REFERENCES);
+        int count = 0;
+		for(Iterator<TASCProcessTO> itr = processes.iterator(); itr.hasNext();) {
+			count++;
+			jsonStr += xstream.toXML(itr.next());
+			if(count < processes.size()) jsonStr += ",";
+		}
+		jsonStr += "]";
+		return jsonStr;
 	}
 	
 	@RequestMapping("/process/getStudentDetails.htm")
