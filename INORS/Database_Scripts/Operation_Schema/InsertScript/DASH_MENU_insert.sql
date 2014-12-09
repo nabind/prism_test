@@ -11,13 +11,13 @@ prompt Loading DASH_MENUS...
 insert into DASH_MENUS (DB_MENUID, MENU_NAME, MENU_TYPE, MENU_SEQ, DESCRIPTION, CREATED_DATE_TIME, UPDATED_DATE_TIME)
 values (101, 'Reports', 'CUSTOM', 1, 'Reports', to_date('18-10-2013', 'dd-mm-yyyy'), to_date('18-10-2013', 'dd-mm-yyyy'));
 insert into DASH_MENUS (DB_MENUID, MENU_NAME, MENU_TYPE, MENU_SEQ, DESCRIPTION, CREATED_DATE_TIME, UPDATED_DATE_TIME)
-values (103, 'Resources', 'CUSTOM', 4, 'Resources', to_date('30-10-2013 17:28:30', 'dd-mm-yyyy hh24:mi:ss'), null);
+values (103, 'Resources', 'CUSTOM', 3, 'Resources', to_date('30-10-2013 17:28:30', 'dd-mm-yyyy hh24:mi:ss'), null);
 insert into DASH_MENUS (DB_MENUID, MENU_NAME, MENU_TYPE, MENU_SEQ, DESCRIPTION, CREATED_DATE_TIME, UPDATED_DATE_TIME)
-values (102, 'Downloads', 'CUSTOM', 3, 'Downloads', to_date('18-10-2013', 'dd-mm-yyyy'), to_date('18-10-2013', 'dd-mm-yyyy'));
+values (102, 'Downloads', 'CUSTOM', 2, 'Downloads', to_date('18-10-2013', 'dd-mm-yyyy'), to_date('18-10-2013', 'dd-mm-yyyy'));
 insert into DASH_MENUS (DB_MENUID, MENU_NAME, MENU_TYPE, MENU_SEQ, DESCRIPTION, CREATED_DATE_TIME, UPDATED_DATE_TIME)
-values (104, 'Useful Links', 'CUSTOM', 5, 'Useful Links', to_date('30-10-2013', 'dd-mm-yyyy'), null);
+values (104, 'Useful Links', 'CUSTOM', 4, 'Useful Links', to_date('30-10-2013', 'dd-mm-yyyy'), null);
 insert into DASH_MENUS (DB_MENUID, MENU_NAME, MENU_TYPE, MENU_SEQ, DESCRIPTION, CREATED_DATE_TIME, UPDATED_DATE_TIME)
-values (105, 'Manage', 'CUSTOM', 2, 'Manage', to_date('20-08-2014 03:56:01', 'dd-mm-yyyy hh24:mi:ss'), null);
+values (105, 'Manage', 'CUSTOM', 5, 'Manage', to_date('20-08-2014 03:56:01', 'dd-mm-yyyy hh24:mi:ss'), null);
 commit;
 prompt 5 records loaded
 prompt Enabling triggers for DASH_MENUS...
