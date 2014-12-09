@@ -1809,7 +1809,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				IQueryConstants.INSERT_JOB_TRACKING,
 				new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
 						request_filename, request_email, job_log, job_status, customerid, productId, customerid },
-				new int[] { Types.NUMERIC, Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
+				new int[] { Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
 						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC });
 		logger.log(IAppLogger.INFO, "count = " + count);
 		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
