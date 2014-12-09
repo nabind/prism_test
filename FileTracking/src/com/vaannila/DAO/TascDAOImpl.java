@@ -295,7 +295,7 @@ public class TascDAOImpl {
 			queryBuff.append("  AND SD.SUBTEST_CODE = ?");
 		}
 		if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-			queryBuff.append(" AND EED.EXCEPTION_CODE = ?"); //NUMBER field
+			queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
 		}
 		queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
 		
