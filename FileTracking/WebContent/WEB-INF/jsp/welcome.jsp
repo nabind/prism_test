@@ -22,11 +22,11 @@
 			<table width="50%" border="0" >
 				<tr>
 					<td>Username: </td>
-					<td><input type="text" name="j_username" value="TascAdmin"> </td>
+					<td><input type="text" name="j_username"> </td>
 				</tr>
 				<tr>
 					<td>Password: </td>
-					<td><input type="password" name="j_password" value="Adm!n"> </td>
+					<td><input type="password" name="j_password"> </td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>

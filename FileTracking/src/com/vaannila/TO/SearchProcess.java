@@ -17,10 +17,16 @@ public class SearchProcess implements Serializable {
 	private String sourceFileName;
 	private String createdDate;
 	private String updatedDate;
-	
 	private String elementName;
 	private String customarCode;
-	
+	private String processedDateFrom = "";
+	private String processedDateTo = "";
+	private String uuid = "";
+	private String recordId = "";
+	private String lastName = "";
+	private String exceptionCode = "";
+	private String subjectCa = "";
+	private String sourceSystem = "";
 	
 	public String getElementName() {
 		return elementName;
@@ -111,6 +117,54 @@ public class SearchProcess implements Serializable {
 	}
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	public String getProcessedDateFrom() {
+		return processedDateFrom;
+	}
+	public void setProcessedDateFrom(String processedDateFrom) {
+		this.processedDateFrom = processedDateFrom;
+	}
+	public String getProcessedDateTo() {
+		return processedDateTo;
+	}
+	public void setProcessedDateTo(String processedDateTo) {
+		this.processedDateTo = processedDateTo;
+	}
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	public String getRecordId() {
+		return recordId;
+	}
+	public void setRecordId(String recordId) {
+		this.recordId = recordId;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getExceptionCode() {
+		return exceptionCode;
+	}
+	public void setExceptionCode(String exceptionCode) {
+		this.exceptionCode = exceptionCode;
+	}
+	public String getSubjectCa() {
+		return subjectCa;
+	}
+	public void setSubjectCa(String subjectCa) {
+		this.subjectCa = subjectCa;
+	}
+	public String getSourceSystem() {
+		return sourceSystem;
+	}
+	public void setSourceSystem(String sourceSystem) {
+		this.sourceSystem = sourceSystem;
 	}
 	
 	

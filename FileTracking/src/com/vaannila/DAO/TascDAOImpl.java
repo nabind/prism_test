@@ -255,6 +255,92 @@ public class TascDAOImpl {
 		return studentDetails;
 	}
 	
-	
+	/**
+	 * @author 541841
+	 * Get Searched records
+	 * @throws Exception
+	 */
+	public List<TASCProcessTO> getProcessEr(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getProcessEr()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		TASCProcessTO processTO = null;
+		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("SELECT ESSH.LASTNAME || ',' || ESSH.FIRSTNAME STUDENTNAME,");
+		queryBuff.append(" ESSH.DATEOFBIRTH DATEOFBIRTH,");
+		queryBuff.append(" ESSH.UUID UUID,");
+		queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
+		queryBuff.append(" NVL(EED.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
+		queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
+		queryBuff.append(" NVL(EED.EXCEPTION_CODE, 0) EXCEPTION_CODE,");
+		queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID");
+		queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, SUBTEST_DIM SD, ER_EXCEPTION_DATA EED");
+		queryBuff.append(" WHERE ESSH.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
+		queryBuff.append(" AND ESSH.ER_SS_HISTID = EED.ER_SS_HISTID(+)");
+		if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+			queryBuff.append(" AND ESSH.DATETIMESTAMP >= TO_DATE(?, 'MM/DD/YYYY')");
+		}
+		if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+			queryBuff.append(" AND ESSH.DATETIMESTAMP <= TO_DATE(?, 'MM/DD/YYYY')");
+		}
+		if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+			queryBuff.append(" AND ESSH.UUID LIKE '%?%'");
+		}
+		if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+			queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER('%?%')");
+		}
+		if(searchProcess.getSubjectCa() != null && searchProcess.getSubjectCa().trim().length() > 0){
+			queryBuff.append("  AND SD.SUBTEST_CODE = ?");
+		}
+		if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+			queryBuff.append(" AND EED.EXCEPTION_CODE = ?"); //NUMBER field
+		}
+		queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
+		
+		
+		String query = queryBuff.toString();
+		// System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				pstmt.setString(++count, searchProcess.getProcessedDateFrom());
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				pstmt.setString(++count, searchProcess.getProcessedDateTo());
+			}
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				pstmt.setString(++count, searchProcess.getUuid());
+			}
+			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+				pstmt.setString(++count, searchProcess.getLastName());
+			}
+			if(searchProcess.getSubjectCa() != null && searchProcess.getSubjectCa().trim().length() > 0){
+				pstmt.setString(++count, searchProcess.getSubjectCa());
+			}
+			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+				pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new TASCProcessTO();
+				//TODO
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		System.out.println("Exit: getProcessEr()");
+		return processList;
+	}
 	
 }

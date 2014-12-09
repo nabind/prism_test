@@ -277,4 +277,58 @@ public class TascController {
 		SimpleDateFormat dateformatter = new SimpleDateFormat(dateFormat);
 		return dateformatter.format(cal.getTime());
 	}
+	
+	/**
+	 * This method is to collect search criteria
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/tascSearchEr.htm")
+	public ModelAndView tascSearchEr(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: tascSearchEr()");
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		return new ModelAndView("tascSearchEr", "message", "");
+	}
+	
+	/**
+	 * This method is to show searched records
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/searchTascEr.htm")
+	public ModelAndView searchTascEr(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchTascEr()");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			SearchProcess process = new SearchProcess();
+			process.setProcessedDateFrom(request.getParameter("processedDateFrom"));
+			process.setProcessedDateTo(request.getParameter("processedDateTo"));
+			process.setUuid(request.getParameter("uuid"));
+			process.setRecordId(request.getParameter("recordId"));
+			process.setLastName(request.getParameter("lastName"));
+			process.setExceptionCode(request.getParameter("exceptionCode"));
+			process.setSubjectCa(request.getParameter("subjectCa"));
+			process.setSourceSystem(request.getParameter("sourceSystem"));
+			
+			request.getSession().setAttribute("tascRequestTO", process);
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> processes = stageDao.getProcessEr(process);
+			
+			request.getSession().setAttribute("tascProcess", processes);
+			convertProcessToJson(processes);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("tascProcessEr", "message", jsonStr);
+	}
 }
