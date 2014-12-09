@@ -25,6 +25,7 @@ public class ReportFilterTO extends BaseTO {
 	private List<ObjectValueTO> p_YearsinChristianschools;
 	private List<ObjectValueTO> p_AdminYearMultiselect;
 	private List<ObjectValueTO> p_ExtendedAdminYear;
+	private List<ObjectValueTO> p_Other_Groups;
 	
 	
 	// CTB level fields
@@ -638,6 +639,12 @@ public class ReportFilterTO extends BaseTO {
 	}
 	public void setP_ExtendedAdminYear(List<ObjectValueTO> p_ExtendedAdminYear) {
 		this.p_ExtendedAdminYear = p_ExtendedAdminYear;
+	}
+	public List<ObjectValueTO> getP_Other_Groups() {
+		return p_Other_Groups;
+	}
+	public void setP_Other_Groups(List<ObjectValueTO> p_Other_Groups) {
+		this.p_Other_Groups = p_Other_Groups;
 	}
 	public List<ObjectValueTO> getP_Longitudinal_Roster_Score_List() {
 		return p_Longitudinal_Roster_Score_List;
