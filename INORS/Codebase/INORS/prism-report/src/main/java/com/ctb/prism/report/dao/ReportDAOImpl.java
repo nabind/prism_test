@@ -2626,4 +2626,44 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return list;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ctb.prism.report.dao.IReportDAO#getGenericSystemConfigurationMessages(java.util.Map)
+	 */
+	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getGenericSystemConfigurationMessages') )")
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: getGenericSystemConfigurationMessages()");
+		final String messageNames = (String) paramMap.get("messageNames");
+		logger.log(IAppLogger.INFO, "messageNames = " + messageNames);
+		@SuppressWarnings("unchecked")
+		Map<String, String> genericSystemConfigurationMessages = (Map<String, String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				CallableStatement cs = null;
+				cs = con.prepareCall(IQueryConstants.GET_GENERIC_SYSTEM_CONFIGURATION_MESSAGES);
+				cs.setString(1, messageNames);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				return cs;
+			}
+		}, new CallableStatementCallback<Object>() {
+			public Object doInCallableStatement(CallableStatement cs) {
+				Map<String, String> messageResult = new HashMap<String, String>();
+				ResultSet messageResultSet = null;
+				try {
+					cs.execute();
+					messageResultSet = (ResultSet) cs.getObject(2);
+					Utils.logError(cs.getString(3));
+					while (messageResultSet.next()) {
+						messageResult.put(messageResultSet.getString("MESSAGE_NAME"), messageResultSet.getString("REPORT_MSG"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				logger.log(IAppLogger.INFO, "messageResult.size() = " + messageResult.size());
+				return messageResult;
+			}
+		});
+		logger.log(IAppLogger.INFO, "Exit: getGenericSystemConfigurationMessages()");
+		return genericSystemConfigurationMessages;
+	}
+
 }

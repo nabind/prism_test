@@ -329,4 +329,6 @@ public interface IReportService {
 	Object getDefaultFilterTasc(List<InputControlTO> tos, String userName, String assessmentId, String combAssessmentId, String reportUrl);
 	
 	public List<ObjectValueTO> getValuesOfSingleInputTasc(String query, String userName, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, boolean bulkDownload) throws SystemException;
+
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap);
 }

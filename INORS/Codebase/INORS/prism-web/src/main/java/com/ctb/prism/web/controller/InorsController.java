@@ -133,8 +133,12 @@ public class InorsController {
 			modelAndView.addObject("groupList", groupList);
 			grpList = JsonUtil.convertToJsonAdmin(groupList);
 		}
-
-		logger.log(IAppLogger.INFO, grpList);
+		paramMap.clear();
+		paramMap.put("messageNames", "GDF Notice,GDF Header Message");
+		Map<String, String> gdfMessages = reportService.getGenericSystemConfigurationMessages(paramMap);
+		modelAndView.addObject("gdfMessages", gdfMessages);
+		logger.log(IAppLogger.INFO, "gdfMessages: " + gdfMessages);
+		logger.log(IAppLogger.INFO, "grpList: " + grpList);
 		logger.log(IAppLogger.INFO, "Exit: groupDownloadFiles()");
 		return modelAndView;
 	}

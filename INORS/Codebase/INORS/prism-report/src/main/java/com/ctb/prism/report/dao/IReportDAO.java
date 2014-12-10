@@ -341,4 +341,6 @@ public interface IReportDAO {
 	public void updateJobTrackingTable(String jobId, String filePathcontractName);
 
 	public List<ObjectValueTO> getStudentList(String query);
+	
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap);
 }

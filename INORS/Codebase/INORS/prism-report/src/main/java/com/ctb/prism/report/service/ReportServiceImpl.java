@@ -874,4 +874,8 @@ public class ReportServiceImpl implements IReportService {
 		return reportBusiness.getValuesOfSingleInputTasc(query, userName, changedObject, changedValue, replacableParams, clazz, bulkDownload);
 	}
 
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap) {
+		return reportBusiness.getGenericSystemConfigurationMessages(paramMap);
+	}
+
 }

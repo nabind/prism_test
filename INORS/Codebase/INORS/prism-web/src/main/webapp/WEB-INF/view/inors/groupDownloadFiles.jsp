@@ -6,9 +6,8 @@
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript"/></noscript>
 
 <hgroup id="main-title" class="thin">
-<p class="big-message"><spring:message code="msg.groupDownloadFiles.bigMessage"/></p>
-<p class="red"><spring:message code="msg.groupDownloadFiles.note"/></p>
-<p class="red"><spring:message code="msg.groupDownloadFiles.notice"/></p>
+<c:if test="${not empty gdfMessages['GDF Header Message']}">${gdfMessages['GDF Header Message']}</c:if>
+<c:if test="${not empty gdfMessages['GDF Notice']}">${gdfMessages['GDF Notice']}</c:if>
 
 <fmt:message var="groupDownloadsRefresh" key="group.downloads.refresh" />
 <c:if test="${not empty actionMap[groupDownloadsRefresh]}">

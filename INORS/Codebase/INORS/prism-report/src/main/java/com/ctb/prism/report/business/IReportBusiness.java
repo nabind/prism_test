@@ -315,4 +315,6 @@ public interface IReportBusiness {
 
 	public List<ObjectValueTO> getValuesOfSingleInputTasc(String query, String userName, String changedObject, String changedValue,
 			Map<String, String> replacableParams, Object clazz, boolean bulkDownload) throws SystemException;
+
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap);
 }

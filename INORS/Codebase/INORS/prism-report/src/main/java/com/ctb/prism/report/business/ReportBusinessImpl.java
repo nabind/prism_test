@@ -1083,4 +1083,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		} 
 		return replacedQuery.length() == 0? inQuery : replacedQuery;
 	}
+
+	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap) {
+		return reportDAO.getGenericSystemConfigurationMessages(paramMap);
+	}
 }
