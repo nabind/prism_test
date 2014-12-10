@@ -206,4 +206,34 @@ insert into dash_message_type
        'GSCM',
        'Footer for parent home screen',
        3001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1101,
+       'GDF Header Message',
+       'GSCM',
+       'GDF Header Message',
+       3001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1102,
+       'GDF Notice',
+       'GSCM',
+       'GDF Notice',
+       3001,
        sysdate);	   
