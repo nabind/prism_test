@@ -815,7 +815,7 @@ public class ReportController{
 				page = (Integer) req.getSession().getAttribute(IApplicationConstants.TOTAL_PAGES);
 			}
 			res.setContentType("application/json");
-			res.getWriter().write("{\"status\":\"Success\", \"paginate\":\"" + paginate + "\", \"page\":\"" + page + "\", \"height\":\"" + height + "\", \"width\":\"" + width + "\"}");
+			res.getWriter().write("{\"status\":\"Success\", \"paginate\":\"" + paginate + "\", \"page\":\"" +page  + "\", \"height\":\"" + height + "\", \"width\":\"" + width + "\", \"reportUrl\":\""+reportUrl+"\"}" );
 
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
