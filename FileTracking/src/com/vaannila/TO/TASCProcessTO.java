@@ -8,9 +8,9 @@ public class TASCProcessTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String processId;
+	private String processId = "";
 	private String fileName;
-	private String sourceSystem;
+	private String sourceSystem = "";
 	private String erValidation;
 	private String hierValidation;
 	private String bioValidation;
@@ -27,8 +27,17 @@ public class TASCProcessTO implements Serializable {
 	private String coCount;
 	private String erCount;
 	private String overallStatus;
-	private String testElementId;
+	private String testElementId = "";
 	private String erValidationError;
+	private String studentName = "";
+	private String uuid = "";
+	private String subtestName = "";
+	private String exceptionCode = "";
+	private String erSsHistid = "";
+	private String barcode = "";
+	private String dateScheduled = "";
+	private String stateCode = "";
+	private String form = "";
 	
 	public String getTestElementId() {
 		return testElementId;
@@ -161,6 +170,60 @@ public class TASCProcessTO implements Serializable {
 	}
 	public void setDateTimestamp(String dateTimestamp) {
 		this.dateTimestamp = dateTimestamp;
+	}
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	public String getSubtestName() {
+		return subtestName;
+	}
+	public void setSubtestName(String subtestName) {
+		this.subtestName = subtestName;
+	}
+	public String getExceptionCode() {
+		return exceptionCode;
+	}
+	public void setExceptionCode(String exceptionCode) {
+		this.exceptionCode = exceptionCode;
+	}
+	public String getErSsHistid() {
+		return erSsHistid;
+	}
+	public void setErSsHistid(String erSsHistid) {
+		this.erSsHistid = erSsHistid;
+	}
+	public String getBarcode() {
+		return barcode;
+	}
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+	public String getDateScheduled() {
+		return dateScheduled;
+	}
+	public void setDateScheduled(String dateScheduled) {
+		this.dateScheduled = dateScheduled;
+	}
+	public String getStateCode() {
+		return stateCode;
+	}
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
+	}
+	public String getForm() {
+		return form;
+	}
+	public void setForm(String form) {
+		this.form = form;
 	}
 	
 	

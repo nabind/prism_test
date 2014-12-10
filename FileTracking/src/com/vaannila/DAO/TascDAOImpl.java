@@ -268,17 +268,23 @@ public class TascDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("SELECT ESSH.LASTNAME || ',' || ESSH.FIRSTNAME STUDENTNAME,");
-		queryBuff.append(" ESSH.DATEOFBIRTH DATEOFBIRTH,");
+		queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ',' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
 		queryBuff.append(" ESSH.UUID UUID,");
 		queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 		queryBuff.append(" NVL(EED.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
 		queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
 		queryBuff.append(" NVL(EED.EXCEPTION_CODE, 0) EXCEPTION_CODE,");
-		queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID");
+		queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 0) SOURCE_SYSTEM,");
+		queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 0) EXCEPTION_STATUS,");
+		queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
+		queryBuff.append(" ESSH.BARCODE BARCODE,");
+		queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
+		queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
+		queryBuff.append(" ESSH.FORM FORM,");
+		queryBuff.append(" ESSH.DATETIMESTAMP");
 		queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, SUBTEST_DIM SD, ER_EXCEPTION_DATA EED");
 		queryBuff.append(" WHERE ESSH.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
-		queryBuff.append(" AND ESSH.ER_SS_HISTID = EED.ER_SS_HISTID(+)");
+		queryBuff.append(" AND ESSH.UUID = EED.ER_UUID");
 		if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 			queryBuff.append(" AND ESSH.DATETIMESTAMP >= TO_DATE(?, 'MM/DD/YYYY')");
 		}
@@ -286,22 +292,26 @@ public class TascDAOImpl {
 			queryBuff.append(" AND ESSH.DATETIMESTAMP <= TO_DATE(?, 'MM/DD/YYYY')");
 		}
 		if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-			queryBuff.append(" AND ESSH.UUID LIKE '%?%'");
+			queryBuff.append(" AND ESSH.UUID LIKE ?");
 		}
 		if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-			queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER('%?%')");
+			queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER(?)");
 		}
-		if(searchProcess.getSubjectCa() != null && searchProcess.getSubjectCa().trim().length() > 0){
+		if(!"ALL".equals(searchProcess.getSubjectCa())){
 			queryBuff.append("  AND SD.SUBTEST_CODE = ?");
 		}
 		if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 			queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
 		}
+		if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+			queryBuff.append(" AND ESSH.ER_SS_HISTID = ?");
+		}
+		if(!"ALL".equals(searchProcess.getSourceSystem())){
+			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
+		}
 		queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
-		
-		
 		String query = queryBuff.toString();
-		// System.out.println(query);
+		System.out.println(query);
 		try {
 			driver = TASCConnectionProvider.getDriver();
 			conn = driver.connect(DATA_SOURCE, null);
@@ -314,21 +324,39 @@ public class TascDAOImpl {
 				pstmt.setString(++count, searchProcess.getProcessedDateTo());
 			}
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				pstmt.setString(++count, searchProcess.getUuid());
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%");
 			}
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-				pstmt.setString(++count, searchProcess.getLastName());
+				pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
 			}
-			if(searchProcess.getSubjectCa() != null && searchProcess.getSubjectCa().trim().length() > 0){
+			if(!"ALL".equals(searchProcess.getSubjectCa())){
 				pstmt.setString(++count, searchProcess.getSubjectCa());
 			}
 			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 				pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
 			}
+			if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+				pstmt.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
+			}
+			if(!"ALL".equals(searchProcess.getSourceSystem())){
+				pstmt.setString(++count, searchProcess.getSourceSystem());
+			}
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new TASCProcessTO();
-				//TODO
+				processTO.setStudentName(rs.getString("STUDENTNAME"));
+				processTO.setUuid(rs.getString("UUID"));
+				processTO.setSubtestName(rs.getString("SUBTEST_NAME"));
+				processTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
+				processTO.setProcessId(rs.getString("PROCESS_ID"));
+				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE"));
+				processTO.setSourceSystem(rs.getString("SOURCE_SYSTEM"));
+				processTO.setOverallStatus(rs.getString("EXCEPTION_STATUS"));
+				processTO.setErSsHistid(rs.getString("ER_SS_HISTID"));
+				processTO.setBarcode(rs.getString("BARCODE"));
+				processTO.setDateScheduled(rs.getString("DATE_SCHEDULED"));
+				processTO.setStateCode(rs.getString("STATE_CODE"));
+				processTO.setForm(rs.getString("FORM"));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

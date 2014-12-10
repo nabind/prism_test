@@ -232,82 +232,86 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
-						<th style="min-width: 60px;">Process Id</th>
+						<th style="min-width: 60px;">Record Id</th>
+						<th>Student Name</th>
+						<th>UUID</th>
+						<th>Subject (Content Area/Subtest)</th>
+						<th>Test Element Id</th>
+						<th>Process Id</th>
+						<th>Exception Code</th>
 						<th>Source System</th>
-						<th>ER Validation</th>
-						<th>Hier Validation</th>
-						<th>Bio Validation</th>
-						<th>Demo Validation</th>
-						<th>Content Validation</th>
-						<th>Objective Validation</th>
-						<th>Item Validation</th>
-						<th>Partition Name</th>
-						<th>Processed Date</th>
-						<th>Source File Name</th>
+						<th>Bar Code</th>
+						<th>Scheduled Date</th>
+						<th>State Code</th>
+						<th>Form</th>
 					</tr>
 					</thead>
 					<tbody>
 				<% 
-				java.util.List<TASCProcessTO> allProcess = (ArrayList) request.getSession().getAttribute("tascProcess");
+				java.util.List<TASCProcessTO> allProcessEr = (ArrayList) request.getSession().getAttribute("tascProcessEr");
 				int count=0;
-				for(TASCProcessTO process : allProcess) {
+				for(TASCProcessTO processEr : allProcessEr) {
 					count++;
 				%>
 					<tr>
 						<td>&nbsp;</td>
-						
 						<td style="padding-top: 12px;" nowrap>
-							<%if("CO".equals(process.getOverallStatus())) { %>
+							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
-							<%} else if("IN".equals(process.getOverallStatus())) {%>
+							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
 								<span class="progress" title="In Progress"></span>
 							<%} else {%>
 								<span class="error" title="Error"></span>
 							<%} %>
-							<%=process.getProcessId() %>
+							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentData(<%=processEr.getErSsHistid() %>);'>
+								<%=processEr.getErSsHistid() %>
+							</a>
 						</td>
-						
-						<td><%=process.getSourceSystem() %></td>
+						<td><%=processEr.getStudentName() %></td>
+						<td><%=processEr.getUuid() %></td>
+						<td><%=processEr.getSubtestName() %></td>
 						<td>
-							<%if( process.getErValidation() != null && "IN".equals(process.getErValidation())) { %>
-								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='testElementIdList(<%=process.getProcessId() %>);'><%=process.getErValidation().replace("IN", "ER") %></a>
-							<%} else {%>
-								<%=process.getErValidation() %>
-							<%} %>
+							<% if("0".equals(processEr.getTestElementId())){%>
+							NA
+							<%}else{%>
+								<%=processEr.getTestElementId() %>
+							<%}%>
 						</td>
-						<td><%=process.getHierValidation() %></td>
-						<td><%=process.getBioValidation() %></td>
-						<td><%=process.getDemoValidation() %></td>
-						<td><%=process.getContentValidation() %></td>
-						<td><%=process.getObjValidation() %></td>
-						<td><%=process.getItemValidation() %></td>
-						<td><a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>);'>
-							<%=process.getWkfPartitionName() %></a>
+						<td>
+							<% if("0".equals(processEr.getProcessId())){%>
+							NA
+							<%}else{%>
+								<%=processEr.getProcessId() %>
+							<%}%>
 						</td>
-						<td><%=process.getDateTimestamp() %></td>
-						<%
-							String sourceFileName = process.getFileName();
-							if(sourceFileName != null && sourceFileName.length() > 16) {
-								sourceFileName = sourceFileName.substring(0, 16) + " " + sourceFileName.substring(16, sourceFileName.length());
-							} else {
-								sourceFileName = "NA";
-							}
-						%>
-						<td><%=sourceFileName %></td>
+						<td>
+							<% if("0".equals(processEr.getExceptionCode())){%>
+							NA
+							<%}else{%>
+								<%=processEr.getExceptionCode() %>
+							<%}%>
+						</td>
+						<td><%=processEr.getSourceSystem() %></td>
+						<td><%=processEr.getBarcode() %></td>
+						<td><%=processEr.getDateScheduled() %></td>
+						<td><%=processEr.getStateCode() %></td>
+						<td><%=processEr.getForm() %></td>
 					</tr>
 				
 				
 				<%} %>
 				</tbody>
 				</table>
-				
-				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active, <span style="color: red">ER = Error</span> </p>
-				<p><b>Source System:</b> PP = Paper Pencil, OL = Online (Web service)</p>
-				<p><b>Overall Status:</b><br/>
+				<p style="padding-top:20px">
+					<b>Source System:</b> PP = Paper Pencil
+				</p>
+				<p>
+					<b>Overall Status:</b><br/>
 					<span class="completed" title="Completed"></span> = Completed/Success <br/>
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
+				
 				<div id='erLogDialog' title='Loading' style='display:none; font-size:12px'>
 					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>

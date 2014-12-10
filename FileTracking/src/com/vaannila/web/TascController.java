@@ -320,10 +320,10 @@ public class TascController {
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> processes = stageDao.getProcessEr(process);
+			List<TASCProcessTO> processesEr = stageDao.getProcessEr(process);
 			
-			request.getSession().setAttribute("tascProcess", processes);
-			convertProcessToJson(processes);
+			request.getSession().setAttribute("tascProcessEr", processesEr);
+			convertProcessToJson(processesEr);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
