@@ -189,7 +189,18 @@ public class ReportController{
 			}
 			
 			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
-			int noOfPages = jasperPrint.getPages().size();				
+			int noOfPages = jasperPrint.getPages().size();	
+			
+			if (noOfPages > 1) {
+/*				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+						reportUrl, jasperPrint);*/
+				req.getSession().setAttribute(reportUrl, IApplicationConstants.TRUE);
+				req.setAttribute("totalPages", noOfPages);
+				req.getSession().setAttribute(IApplicationConstants.TOTAL_PAGES, noOfPages);
+			} else {
+				req.getSession().setAttribute(reportUrl, IApplicationConstants.FALSE);
+			}
+			
 			if(noOfPages == 0) {
 				return CustomStringUtil.appendString("forward:/loadEmptyReport.do?reportName=",
 						jasperReport.getName(), "&reportMsg=", 
