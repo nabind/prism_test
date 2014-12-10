@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.ctb.prism.core.constant.IApplicationConstants, javax.servlet.http.HttpServletRequest"%>
+<spring:theme code="theme.name" var="themeName" />
 <style>
 /* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
 
@@ -142,7 +143,7 @@
 									Excel
 								</a>
 							</sec:authorize>
-							<c:if test="${not fn:containsIgnoreCase(contractTitle, 'TASC')}">
+							<c:if test="${not fn:containsIgnoreCase(themeName, 'TASC')}">
 							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
                                <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
                             </a>
@@ -159,7 +160,7 @@
 									<span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span>
 									<spring:message code="label.review" />
 								</a>
-								<c:if test="${not fn:containsIgnoreCase(contractTitle, 'TASC')}">
+								<c:if test="${not fn:containsIgnoreCase(themeName, 'TASC')}">
 								<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
 	                               <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span><spring:message code="label.moreInfo" />
 	                            </a>
