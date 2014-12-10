@@ -2629,7 +2629,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#getGenericSystemConfigurationMessages(java.util.Map)
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getGenericSystemConfigurationMessages') )")
+	// @Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getGenericSystemConfigurationMessages') )")
 	public Map<String, String> getGenericSystemConfigurationMessages(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getGenericSystemConfigurationMessages()");
 		final String messageNames = (String) paramMap.get("messageNames");
