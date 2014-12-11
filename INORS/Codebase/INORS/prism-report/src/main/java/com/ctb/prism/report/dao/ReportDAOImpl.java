@@ -381,7 +381,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	/**
-	 * Returns E if the username is an Education Center User. Returns O if the username is an Org User Else returns null.
+	 * Returns P if the user has Parent Role or returns E if the username is an Education Center User. Else returns O.
 	 * 
 	 * @param username
 	 * @return
@@ -389,11 +389,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	private String getUserType(String username) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_TYPE, username);
 		if (!lstData.isEmpty()) {
-			for (Map<String, Object> fieldDetails : lstData) {
-				return fieldDetails.get("USER_TYPE").toString();
+			return IApplicationConstants.PARENT_USER_FLAG;
+		} else {
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_EDU_USER_TYPE, username);
+			if (!lstData.isEmpty()) {
+				return IApplicationConstants.EDU_USER_FLAG;
+			} else {
+				return IApplicationConstants.ORG_USER_FLAG;
 			}
 		}
-		return null;
 	}
 
 	/*

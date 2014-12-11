@@ -587,6 +587,7 @@ public class ReportController{
 			if(contractName != null && contractName.trim().length() == 0 && themeResolver != null) {
 				contractName = Utils.getContractName(themeResolver.resolveThemeName(req));
 			}
+			logger.log(IAppLogger.INFO, "contractName = " + contractName);
 
 			// get compiled jasper report
 			JasperReport jasperReport = null;
@@ -610,7 +611,7 @@ public class ReportController{
 				}
 			} else {
 				// report empty
-				throw new Exception("Report not found");
+				throw new Exception("Report not found for: " + reportUrl);
 			}
 
 			// get all input controls for report
@@ -1839,6 +1840,12 @@ public class ReportController{
 		String assessmentId = req.getParameter("assessmentId");
 		String filter = req.getParameter("filter");
 		String printerFriendly = req.getParameter("printerFriendly");
+		logger.log(IAppLogger.INFO, "type = " + type);
+		logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
+		logger.log(IAppLogger.INFO, "token = " + token);
+		logger.log(IAppLogger.INFO, "assessmentId = " + assessmentId);
+		logger.log(IAppLogger.INFO, "filter = " + filter);
+		logger.log(IAppLogger.INFO, "printerFriendly = " + printerFriendly);
 		boolean isPrinterFriendly = true;
 		if (IApplicationConstants.FLAG_N.equals(printerFriendly)) {
 			isPrinterFriendly = false;
