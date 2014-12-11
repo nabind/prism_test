@@ -1834,6 +1834,7 @@ public class ReportController{
 	@Secured({ "ROLE_USER" })
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	public void download(HttpServletRequest req, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: download()");
 		String type = req.getParameter("type");
 		String reportUrl = req.getParameter("reportUrl");
 		String token = req.getParameter("token");
@@ -1897,6 +1898,7 @@ public class ReportController{
 			showError(response, "Error Downloading report. Please try after some time or contact system administrator.");
 			logger.log(IAppLogger.ERROR, CustomStringUtil.appendString("Error while downloading repot : ", reportUrl), e);
 		}
+		logger.log(IAppLogger.INFO, "Exit: download()");
 	}
 
 	/**
@@ -1907,8 +1909,22 @@ public class ReportController{
 	 */
 	@RequestMapping(value = "/icDownload", method = RequestMethod.GET)
 	public void icDownload(HttpServletRequest req, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: icDownload()");
+		String type = req.getParameter("type");
+		String reportUrl = req.getParameter("reportUrl");
+		String token = req.getParameter("token");
+		String assessmentId = req.getParameter("assessmentId");
+		String filter = req.getParameter("filter");
+		String printerFriendly = req.getParameter("printerFriendly");
+		logger.log(IAppLogger.INFO, "type = " + type);
+		logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
+		logger.log(IAppLogger.INFO, "token = " + token);
+		logger.log(IAppLogger.INFO, "assessmentId = " + assessmentId);
+		logger.log(IAppLogger.INFO, "filter = " + filter);
+		logger.log(IAppLogger.INFO, "printerFriendly = " + printerFriendly);
 		req.setAttribute("icDownload", IApplicationConstants.TRUE);
 		download(req, response);
+		logger.log(IAppLogger.INFO, "Exit: icDownload()");
 	}
 
 	/**
