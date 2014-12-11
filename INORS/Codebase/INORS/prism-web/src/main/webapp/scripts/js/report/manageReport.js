@@ -548,6 +548,8 @@ function updateRowValuesForRole(row) {
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "blue-bg");
 			else if ($(this).val()=="ROLE_ADMIN")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
+			else if ($(this).val()=="ROLE_EDU_ADMIN")
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
 			else if ($(this).val()=="ROLE_GRW")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "grey-bg");
 			else ($(this).val()=="ROLE_PARENT")

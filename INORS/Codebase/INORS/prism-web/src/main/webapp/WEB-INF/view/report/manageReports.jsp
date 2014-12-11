@@ -82,6 +82,9 @@
 														<c:if test="${role == 'ROLE_ADMIN'}">
 														<small class="tag orange-bg role ${role}">${role}</small><br />
 														</c:if>
+														<c:if test="${role == 'ROLE_EDU_ADMIN'}">
+														<small class="tag orange-bg role ${role}">${role}</small><br />
+														</c:if>
 														<c:if test="${role == 'ROLE_GRW'}">
 														<small class="tag grey-bg role ${role}">${role}</small><br />
 														</c:if>

@@ -507,6 +507,8 @@ $(document).ready(function() {
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "red-bg");	
 			else if ($(this).val()=="ROLE_ADMIN")
 				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
+			else if ($(this).val()=="ROLE_EDU_ADMIN")
+				roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "orange-bg");
 			else if ($(this).val()=="ROLE_USER")
 			roleTagTemp = roleTagTemp.replace(/_BGCOLOR_/g, "black-bg");
 			
