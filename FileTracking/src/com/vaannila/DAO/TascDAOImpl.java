@@ -268,7 +268,7 @@ public class TascDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ',' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
+		queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
 		queryBuff.append(" ESSH.UUID UUID,");
 		queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 		queryBuff.append(" NVL(EED.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
@@ -281,7 +281,8 @@ public class TascDAOImpl {
 		queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
 		queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
 		queryBuff.append(" ESSH.FORM FORM,");
-		queryBuff.append(" ESSH.DATETIMESTAMP");
+		queryBuff.append(" ESSH.DATETIMESTAMP,");
+		queryBuff.append(" EED.ER_EXCDID ER_EXCDID");
 		queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, SUBTEST_DIM SD, ER_EXCEPTION_DATA EED");
 		queryBuff.append(" WHERE ESSH.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
 		queryBuff.append(" AND ESSH.UUID = EED.ER_UUID");
@@ -352,11 +353,12 @@ public class TascDAOImpl {
 				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE"));
 				processTO.setSourceSystem(rs.getString("SOURCE_SYSTEM"));
 				processTO.setOverallStatus(rs.getString("EXCEPTION_STATUS"));
-				processTO.setErSsHistid(rs.getString("ER_SS_HISTID"));
+				processTO.setErSsHistId(rs.getString("ER_SS_HISTID"));
 				processTO.setBarcode(rs.getString("BARCODE"));
 				processTO.setDateScheduled(rs.getString("DATE_SCHEDULED"));
 				processTO.setStateCode(rs.getString("STATE_CODE"));
 				processTO.setForm(rs.getString("FORM"));
+				processTO.setErExcdId(rs.getString("ER_EXCDID"));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {
@@ -369,6 +371,153 @@ public class TascDAOImpl {
 		}
 		System.out.println("Exit: getProcessEr()");
 		return processList;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param erSsHistId
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, String> getStudentHist(String erSsHistId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Map<String, String> studentDetails = new HashMap<String, String>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("SELECT CTB_CUSTOMER_ID,");
+		queryBuff.append("STATENAME,");
+		queryBuff.append("DATEOFBIRTH,");
+		queryBuff.append("GENDER,");
+		queryBuff.append("GOVERNMENTID,");
+		queryBuff.append("GOVERNMENTIDTYPE,");
+		queryBuff.append("ADDRESS1,");
+		queryBuff.append("CITY,");
+		queryBuff.append("COUNTY,");
+		queryBuff.append("STATE,");
+		queryBuff.append("ZIP,");
+		queryBuff.append("EMAIL,");
+		queryBuff.append("ALTERNATEEMAIL,");
+		queryBuff.append("PRIMARYPHONENUMBER,");
+		queryBuff.append("CELLPHONENUMBER,");
+		queryBuff.append("ALTERNATENUMBER,");
+		queryBuff.append("RESOLVED_ETHNICITY_RACE,");
+		queryBuff.append("HOMELANGUAGE,");
+		queryBuff.append("EDUCATIONLEVEL,");
+		queryBuff.append("ATTENDCOLLEGE,");
+		queryBuff.append("CONTACT,");
+		queryBuff.append("EXAMINEECOUNTYPARISHCODE,");
+		queryBuff.append("REGISTEREDON,");
+		queryBuff.append("REGISTEREDATTESTCENTER,");
+		queryBuff.append("REGISTEREDATTESTCENTERCODE,");
+		queryBuff.append("SCHEDULE_ID,");
+		queryBuff.append("TIMEOFDAY,");
+		queryBuff.append("DATECHECKEDIN,");
+		queryBuff.append("CONTENT_TEST_TYPE,");
+		queryBuff.append("CONTENT_TEST_CODE,");
+		queryBuff.append("TASCREADINESS,");
+		queryBuff.append("ECC,");
+		queryBuff.append("TESTCENTERCODE,");
+		queryBuff.append("TESTCENTERNAME,");
+		queryBuff.append("REGST_TC_COUNTYPARISHCODE,");
+		queryBuff.append("SCHED_TC_COUNTYPARISHCODE");
+		queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY");
+		queryBuff.append(" WHERE ER_SS_HISTID = ?");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1,Long.parseLong(erSsHistId));
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				studentDetails.put("CTB_CUSTOMER_ID", rs.getString("CTB_CUSTOMER_ID") != null ? rs.getString("CTB_CUSTOMER_ID") : "");
+				studentDetails.put("STATENAME", rs.getString("STATENAME") != null ? rs.getString("STATENAME") : "");
+				studentDetails.put("DATEOFBIRTH", rs.getString("DATEOFBIRTH") !=null ? rs.getString("DATEOFBIRTH") : "");
+				studentDetails.put("GENDER", rs.getString("GENDER") != null ? rs.getString("GENDER") : "");
+				studentDetails.put("GOVERNMENTID", rs.getString("GOVERNMENTID") != null ? rs.getString("GOVERNMENTID") : "");
+				studentDetails.put("GOVERNMENTIDTYPE", rs.getString("GOVERNMENTIDTYPE") != null ? rs.getString("GOVERNMENTIDTYPE") : "");
+				studentDetails.put("ADDRESS1", rs.getString("ADDRESS1") != null ? rs.getString("ADDRESS1") : "");
+				studentDetails.put("CITY", rs.getString("CITY") != null ? rs.getString("CITY") : "");
+				studentDetails.put("COUNTY", rs.getString("COUNTY") != null ? rs.getString("COUNTY") : "");
+				studentDetails.put("STATE", rs.getString("STATE") != null ? rs.getString("STATE") : "");
+				studentDetails.put("ZIP", rs.getString("ZIP") != null ? rs.getString("ZIP") : "");
+				studentDetails.put("EMAIL", rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
+				studentDetails.put("ALTERNATEEMAIL", rs.getString("ALTERNATEEMAIL") != null ? rs.getString("ALTERNATEEMAIL") : "");
+				studentDetails.put("PRIMARYPHONENUMBER", rs.getString("PRIMARYPHONENUMBER") != null ? rs.getString("PRIMARYPHONENUMBER") : "");
+				studentDetails.put("CELLPHONENUMBER", rs.getString("CELLPHONENUMBER") != null ? rs.getString("CELLPHONENUMBER") : "");
+				studentDetails.put("ALTERNATENUMBER", rs.getString("ALTERNATENUMBER") != null ? rs.getString("ALTERNATENUMBER") : "");
+				studentDetails.put("RESOLVED_ETHNICITY_RACE", rs.getString("RESOLVED_ETHNICITY_RACE") != null ? rs.getString("RESOLVED_ETHNICITY_RACE") : "");
+				studentDetails.put("HOMELANGUAGE", rs.getString("HOMELANGUAGE") != null ? rs.getString("HOMELANGUAGE") : "");
+				studentDetails.put("EDUCATIONLEVEL", rs.getString("EDUCATIONLEVEL") != null ? rs.getString("EDUCATIONLEVEL") : "");
+				studentDetails.put("ATTENDCOLLEGE", rs.getString("ATTENDCOLLEGE") != null ? rs.getString("ATTENDCOLLEGE") : "");
+				studentDetails.put("CONTACT", rs.getString("CONTACT") != null ? rs.getString("CONTACT") : "");
+				studentDetails.put("EXAMINEECOUNTYPARISHCODE", rs.getString("EXAMINEECOUNTYPARISHCODE") != null ? rs.getString("EXAMINEECOUNTYPARISHCODE") : "");
+				studentDetails.put("REGISTEREDON", rs.getString("REGISTEREDON") != null ? rs.getString("REGISTEREDON") : "");
+				studentDetails.put("REGISTEREDATTESTCENTER", rs.getString("REGISTEREDATTESTCENTER") != null ? rs.getString("REGISTEREDATTESTCENTER") : "");
+				studentDetails.put("REGISTEREDATTESTCENTERCODE", rs.getString("REGISTEREDATTESTCENTERCODE") !=null ? rs.getString("REGISTEREDATTESTCENTERCODE") : "" );
+				studentDetails.put("SCHEDULE_ID", rs.getString("SCHEDULE_ID") != null ? rs.getString("SCHEDULE_ID") : "");
+				studentDetails.put("TIMEOFDAY", rs.getString("TIMEOFDAY") != null ? rs.getString("TIMEOFDAY") : "");
+				studentDetails.put("DATECHECKEDIN", rs.getString("DATECHECKEDIN") != null ? rs.getString("DATECHECKEDIN") : "");
+				studentDetails.put("CONTENT_TEST_TYPE", rs.getString("CONTENT_TEST_TYPE") != null ? rs.getString("CONTENT_TEST_TYPE") : "");
+				studentDetails.put("CONTENT_TEST_CODE", rs.getString("CONTENT_TEST_CODE") != null ? rs.getString("CONTENT_TEST_CODE") : "");
+				studentDetails.put("TASCREADINESS", rs.getString("TASCREADINESS") != null ? rs.getString("TASCREADINESS") : "");
+				studentDetails.put("ECC", rs.getString("ECC") != null ? rs.getString("ECC") : "");
+				studentDetails.put("TESTCENTERCODE", rs.getString("TESTCENTERCODE") != null ? rs.getString("TESTCENTERCODE") : "");
+				studentDetails.put("TESTCENTERNAME", rs.getString("TESTCENTERNAME") != null ? rs.getString("TESTCENTERNAME") : "");
+				studentDetails.put("REGST_TC_COUNTYPARISHCODE", rs.getString("REGST_TC_COUNTYPARISHCODE") != null ? rs.getString("REGST_TC_COUNTYPARISHCODE") : "");
+				studentDetails.put("SCHED_TC_COUNTYPARISHCODE", rs.getString("SCHED_TC_COUNTYPARISHCODE") != null ? rs.getString("SCHED_TC_COUNTYPARISHCODE") : "");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return studentDetails;
+	}
+	
+	
+	/**
+	 * @author Joy
+	 * @param erExcdId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getErrorLog(String erExcdId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String errorLog = "";
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("SELECT 'ERROR CODE-' || EXCEPTION_CODE || ': ' || DESCRIPTION");
+		queryBuff.append(" FROM ER_EXCEPTION_DATA");
+		queryBuff.append(" WHERE ER_EXCDID = ?");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1, Long.parseLong(erExcdId));
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				errorLog = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return errorLog;
 	}
 	
 }

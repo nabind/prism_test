@@ -331,4 +331,59 @@ public class TascController {
 		
 		return new ModelAndView("tascProcessEr", "message", jsonStr);
 	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/getStudentHist.htm")
+	public @ResponseBody String getStudentHist(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: getStudentHist()");
+		String erSsHistId = request.getParameter("erSsHistId");
+		System.out.println("erSsHistId=" + erSsHistId);
+		try {
+			TascDAOImpl stageDao = new TascDAOImpl();
+			Map<String, String> studentDetailsMap = stageDao.getStudentHist(erSsHistId);
+			System.out.println("Map = " + studentDetailsMap);
+			String studentDetailsJson = Utils.mapToJson(studentDetailsMap);
+			System.out.println("Json = " + studentDetailsJson);
+			response.setContentType("text/plain");
+			response.getWriter().write(studentDetailsJson);
+		} catch (Exception e) {
+			System.out.println("Failed to get StudentDetails, erSsHistId=" + erSsHistId);
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
+			e.printStackTrace();
+		}
+		System.out.println("Exit: getStudentHist()");
+		return null;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/getErrorLog.htm")
+	public @ResponseBody String getErrorLog(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		try {
+			String erExcdId = request.getParameter("erExcdId");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			String errorLog = stageDao.getErrorLog(erExcdId);
+			if(errorLog != null) errorLog = errorLog.replaceAll("\n", "<br>");
+			else errorLog = "";
+			response.setContentType("text/plain");
+			response.getWriter().write(errorLog);
+		} catch (Exception e) {
+			System.out.println("Failed to get log");
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

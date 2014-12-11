@@ -33,11 +33,12 @@ public class TASCProcessTO implements Serializable {
 	private String uuid = "";
 	private String subtestName = "";
 	private String exceptionCode = "";
-	private String erSsHistid = "";
+	private String erSsHistId = "";
 	private String barcode = "";
 	private String dateScheduled = "";
 	private String stateCode = "";
 	private String form = "";
+	private String erExcdId = "";
 	
 	public String getTestElementId() {
 		return testElementId;
@@ -195,12 +196,6 @@ public class TASCProcessTO implements Serializable {
 	public void setExceptionCode(String exceptionCode) {
 		this.exceptionCode = exceptionCode;
 	}
-	public String getErSsHistid() {
-		return erSsHistid;
-	}
-	public void setErSsHistid(String erSsHistid) {
-		this.erSsHistid = erSsHistid;
-	}
 	public String getBarcode() {
 		return barcode;
 	}
@@ -225,6 +220,17 @@ public class TASCProcessTO implements Serializable {
 	public void setForm(String form) {
 		this.form = form;
 	}
-	
+	public String getErSsHistId() {
+		return erSsHistId;
+	}
+	public void setErSsHistId(String erSsHistId) {
+		this.erSsHistId = erSsHistId;
+	}
+	public String getErExcdId() {
+		return erExcdId;
+	}
+	public void setErExcdId(String erExcdId) {
+		this.erExcdId = erExcdId;
+	}
 	
 }

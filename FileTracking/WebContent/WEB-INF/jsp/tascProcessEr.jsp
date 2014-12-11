@@ -66,19 +66,7 @@
 								]
 			});
 			
-			//$("a[rel^='prettyPhoto']").prettyPhoto();
-			
-			$("#erLogDialog").dialog({
-				bgiframe: true, 
-				autoOpen: false, 
-				modal: true, 
-				minHeight: 150, 
-				minWidth: 450, 
-				closeOnEscape: true, 
-				resizable: true
-			});
-			
-			$("#stuLogDialog").dialog({
+			$("#stuHistDialog").dialog({
 				bgiframe: true, 
 				autoOpen: false, 
 				modal: true, 
@@ -88,7 +76,7 @@
 				resizable: true
 			});
 			
-			$("#processLogDialog").dialog({
+			$("#errorLogDialog").dialog({
 				bgiframe: true, 
 				autoOpen: false, 
 				modal: true, 
@@ -100,124 +88,133 @@
 			
 			
 			
-		} );
-		
-		
-		
-		function testElementIdList(processId) {
-			var dataString = "processId="+processId;
-			$("#_er_log").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-erLogDialog").html('ER validation details for Process Id : ' + processId);
-			jQuery("#erLogDialog").dialog("open");
-			$.ajax({
-				type: "POST",
-				url: "testElementIdList.htm",
-				data: dataString,
-				success: function(data) {
-					var innertext = "<table class='simple_table'><tr><th>Test Element ID</th><th>Error Details</th></tr> <tbody>";
-					for(i=0;i<data.length;i++) {
-						innertext += "<tr><td>"+data[i].product.testElementId+"</td><td>"+data[i].product.erValidationError+"</td></tr>";
-					}
-					innertext += "</tbody></table>";
-					
-					$("#_er_log").html( innertext );
-					
-				},
-				error: function(data) {
-					$("#_er_log").html( ' Failed to get ER Log' );
-				}
-			});
-			return false;
-		}
+		});
 		
 		function clearStudentDetailsTableRows() {
-			$("#_student_name").html( '' );
-			$("#_dob").html( '' );
-			$("#_gender").html( '' );
-			$("#_grade").html( '' );
-			$("#_barcode").html( '' );
-			$("#_structure_element").html( '' );
-			$("#_uuid").html( '' );
-			$("#_cust_name").html( '' );
-			$("#_school_name").html( '' );
-			$("#_err_code").html( '' );
-			$("#_err_details").html( '' );
+			$("#ctbCustomerId").html('');
+    	  	$("#stateName").html('');
+	    	  $("#dob").html('');
+	    	  $("#gender").html('');
+	    	  $("#govermentId").html('');
+	    	  $("#govermentIdType").html('');
+	    	  $("#address").html('');
+	    	  $("#city").html('');
+	    	  $("#county").html('');
+	    	  $("#state").html('');
+	    	  $("#zip").html('');
+	    	  $("#email").html('');
+	    	  $("#alternateEmail").html('');
+	    	  $("#primaryPhoneNumber").html('');
+	    	  $("#cellPhoneNumber").html('');
+	    	  $("#alternatePhoneNumber").html('');
+	    	  $("#resolvedEthnicityRace").html('');
+	    	  $("#homeLanguage").html('');
+	    	  $("#educationLevel").html('');
+	    	  $("#attendCollege").html('');
+	    	  $("#contact").html('');
+	    	  $("#examineeCountyParishCode").html('');
+	    	  $("#registeredOn").html('');
+	    	  $("#registeredTestCenter").html('');
+	    	  $("#registeredTestCenterCode").html('');
+	    	  $("#scheduleId").html('');
+	    	  $("#timeOfDay").html('');
+	    	  $("#checkedInDate").html('');
+	    	  $("#contentTestType").html( '');
+	    	  $("#contentTestCode").html('');
+	    	  $("#tascRadiness").html('');
+	    	  $("#ecc").html('');
+	    	  $("#testCenterCode").html('');
+	    	  $("#testCenterName").html('');
+	    	  $("#regstTcCountyParishCode").html('');
+	    	  $("#schedTcCountyParishCode").html('');
 		}
 		
 		function clearStudentDetailsTableWhenError(errMsg) {
-			$("#_stu_log").html( '<span style="color: red;">'+errMsg+'</span>' );
+			$("#stuHist").html( '<span style="color: red;">'+errMsg+'</span>' );
 			clearStudentDetailsTableRows();
 		}
 		
-		function getStudentDetails(testElementId, processId) {
+		function getStudentHist(erSsHistId) {
 			clearStudentDetailsTableRows();
-			var dataString = "processId="+processId+'&testElementId='+testElementId;
-			$("#_stu_log").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-stuLogDialog").html('Student Details for Test Element Id : '+testElementId);
-			jQuery("#stuLogDialog").dialog("open");
+			var dataString = "erSsHistId="+erSsHistId;
+			$("#stuHist").html( '<img src="css/ajax-loader.gif"></img>' );
+			$("#ui-dialog-title-stuHistDialog").html('Student Details for Record Id : '+erSsHistId);
+			jQuery("#stuHistDialog").dialog("open");
 			$.ajax({
 			      type: "POST",
-			      url: "getStudentDetails.htm",
+			      url: "getStudentHist.htm",
 			      data: dataString,
 			      success: function(data) {
 			    	  if(data == "Error") {
-			    		  clearStudentDetailsTableWhenError('Failed to get Student Details');
+			    		  clearStudentDetailsTableWhenError('Failed to get Student History');
 			    	  } else if(data.length == 2) {
-			    		  clearStudentDetailsTableWhenError('Student Details Not Found');
+			    		  clearStudentDetailsTableWhenError('Student History Not Found');
 				      } else {
-			    		  $("#_stu_log").html( '' );
+			    		  $("#stuHist").html('');
 				    	  var obj = JSON.parse(data);
-				    	  $("#_student_name").html( obj.STUDENT_NAME );
-				    	  $("#_dob").html( obj.DOB );
-				    	  $("#_gender").html( obj.GENDER );
-				    	  $("#_grade").html( obj.GRADE );
-				    	  $("#_barcode").html( obj.BARCODE );
-				    	  $("#_structure_element").html( obj.STRUC_ELEMENT );
-				    	  $("#_uuid").html( obj.EXT_STUDENT_ID );
-				    	  $("#_cust_name").html( obj.CUSTOMER_NAME );
-				    	  $("#_school_name").html( obj.ORG_NAME );
-				    	  $("#_err_code").html( obj.EXCEPTION_CODE );
-				    	  $("#_err_details").html( obj.DESCRIPTION );
+				    	  $("#ctbCustomerId").html( obj.CTB_CUSTOMER_ID );
+				    	  $("#stateName").html( obj.STATENAME );
+				    	  $("#dob").html( obj.DATEOFBIRTH );
+				    	  $("#gender").html( obj.GENDER );
+				    	  $("#govermentId").html( obj.GOVERNMENTID );
+				    	  $("#govermentIdType").html( obj.GOVERNMENTIDTYPE );
+				    	  $("#address").html( obj.ADDRESS1 );
+				    	  $("#city").html( obj.CITY );
+				    	  $("#county").html( obj.COUNTY );
+				    	  $("#state").html( obj.STATE );
+				    	  $("#zip").html( obj.ZIP );
+				    	  $("#email").html( obj.EMAIL );
+				    	  $("#alternateEmail").html( obj.ALTERNATEEMAIL );
+				    	  $("#primaryPhoneNumber").html( obj.PRIMARYPHONENUMBER );
+				    	  $("#cellPhoneNumber").html( obj.CELLPHONENUMBER );
+				    	  $("#alternatePhoneNumber").html( obj.ALTERNATENUMBER );
+				    	  $("#resolvedEthnicityRace").html( obj.RESOLVED_ETHNICITY_RACE );
+				    	  $("#homeLanguage").html( obj.HOMELANGUAGE );
+				    	  $("#educationLevel").html( obj.EDUCATIONLEVEL );
+				    	  $("#attendCollege").html( obj.ATTENDCOLLEGE );
+				    	  $("#contact").html( obj.CONTACT );
+				    	  $("#examineeCountyParishCode").html( obj.EXAMINEECOUNTYPARISHCODE );
+				    	  $("#registeredOn").html( obj.REGISTEREDON );
+				    	  $("#registeredTestCenter").html( obj.REGISTEREDATTESTCENTER );
+				    	  $("#registeredTestCenterCode").html( obj.REGISTEREDATTESTCENTERCODE );
+				    	  $("#scheduleId").html( obj.SCHEDULE_ID );
+				    	  $("#timeOfDay").html( obj.TIMEOFDAY );
+				    	  $("#checkedInDate").html( obj.DATECHECKEDIN );
+				    	  $("#contentTestType").html( obj.CONTENT_TEST_TYPE );
+				    	  $("#contentTestCode").html( obj.CONTENT_TEST_CODE );
+				    	  $("#tascRadiness").html( obj.TASCREADINESS );
+				    	  $("#ecc").html( obj.ECC );
+				    	  $("#testCenterCode").html( obj.TESTCENTERCODE );
+				    	  $("#testCenterName").html( obj.TESTCENTERNAME );
+				    	  $("#regstTcCountyParishCode").html( obj.REGST_TC_COUNTYPARISHCODE );
+				    	  $("#schedTcCountyParishCode").html( obj.SCHED_TC_COUNTYPARISHCODE );
 			    	  }
 			      },
 				  error: function(data) {
-					  clearStudentDetailsTableWhenError('Failed to get Student Details');
+					  clearStudentDetailsTableWhenError('Failed to get Student History');
 				  }
 		    });
 		    return false;
 		}
 		
-		function getProcessLog(processId) {
-			var dataString = "processId="+processId;
-			
-			$("#_process_log").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-processLogDialog").html('Log for Process Id : '+processId);
-			jQuery("#processLogDialog").dialog("open");
-			
-			
+		function getErrorLog(erExcdId) {
+			var dataString = "erExcdId="+erExcdId;
+			$("#errorLog").html( '<img src="css/ajax-loader.gif"></img>' );
+			jQuery("#errorLogDialog").dialog("open");
+			$("#ui-dialog-title-errorLogDialog").html('Error Log');
 			$.ajax({
 			      type: "POST",
-			      url: "getTascProcessLog.htm",
+			      url: "getErrorLog.htm",
 			      data: dataString,
 			      success: function(data) {
-			    	  $("#_process_log").html( data );
+			    	  $("#errorLog").html( data );
 			      },
 				  error: function(data) {
-					  $("#_process_log").html( ' Failed to get Process Log' );
+					  $("#errorLog").html( ' Failed to get Error Log' );
 				  }
 		    });
 		    return false;
 		}
-		
-		
-		
-		$(document).ready(function() {
-		var bEnabled = document.getElementById("hEnabled").value;
-		if (bEnabled == 'F'){
-			document.getElementById("theSelect").setAttribute("disabled", "disabled");
-			//$("#theSelect option:selected").attr('disabled', 'disabled');
-		}
-	    });
 		
 	</script>
 	
@@ -244,6 +241,7 @@
 						<th>Scheduled Date</th>
 						<th>State Code</th>
 						<th>Form</th>
+						<th>More Info</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -263,8 +261,8 @@
 							<%} else {%>
 								<span class="error" title="Error"></span>
 							<%} %>
-							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentData(<%=processEr.getErSsHistid() %>);'>
-								<%=processEr.getErSsHistid() %>
+							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
+							 <%=processEr.getErSsHistId() %>
 							</a>
 						</td>
 						<td><%=processEr.getStudentName() %></td>
@@ -296,6 +294,11 @@
 						<td><%=processEr.getDateScheduled() %></td>
 						<td><%=processEr.getStateCode() %></td>
 						<td><%=processEr.getForm() %></td>
+						<td>
+							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentHist(<%=processEr.getErSsHistId() %>);'>
+								More Info
+							</a>
+						</td>
 					</tr>
 				
 				
@@ -316,49 +319,124 @@
 					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>
-				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'>
-					<p id="_stu_log"><p>
+				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px'>
+					<p id="stuHist"><p>
 					<table class="process_details">
 						<tr>
 							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>
 						</tr>
 						<tr>
-							<td width="44%"><b>Student Name :</b></td><td width="56%"><span id="_student_name"><img src="css/ajax-loader.gif"></img></span></td>
+							<td width="44%"><b>CTB Customer ID :</b></td><td width="56%"><span id="ctbCustomerId"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>DOB :</b></td><td><span id="_dob"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>State Name :</b></td><td><span id="stateName"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Gender :</b></td><td><span id="_gender"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>DOB :</b></td><td><span id="dob"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Grade :</b></td><td><span id="_grade"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Gender :</b></td><td><span id="gender"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Barcode :</b></td><td><span id="_barcode"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Government ID :</b></td><td><span id="govermentId"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Structure Element :</b></td><td><span id="_structure_element"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Government ID Type :</b></td><td><span id="govermentIdType"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Ext Student Id(UUID) :</b></td><td><span id="_uuid"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Address :</b></td><td><span id="address"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Customer Name :</b></td><td><span id="_cust_name"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>City :</b></td><td><span id="city"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>School/Testing Site Name :</b></td><td><span id="_school_name"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>County :</b></td><td><span id="county"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Exception Code :</b></td><td><span id="_err_code"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>State :</b></td><td><span id="state"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 						<tr>
-							<td><b>Exception Description :</b></td><td><span id="_err_details"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Zip :</b></td><td><span id="zip"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Email :</b></td><td><span id="email"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Alternate Email :</b></td><td><span id="alternateEmail"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Primary Phone Number :</b></td><td><span id="primaryPhoneNumber"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Cell Phone Number :</b></td><td><span id="cellPhoneNumber"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Alternate Phone Number :</b></td><td><span id="alternatePhoneNumber"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Resolved Ethnicity Race :</b></td><td><span id="resolvedEthnicityRace"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Home Language :</b></td><td><span id="homeLanguage"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Education Level :</b></td><td><span id="educationLevel"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Attend College :</b></td><td><span id="attendCollege"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Contact :</b></td><td><span id="contact"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Examinee County Parish Code :</b></td><td><span id="examineeCountyParishCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Registered On :</b></td><td><span id="registeredOn"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Registered Test Center :</b></td><td><span id="registeredTestCenter"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Registered Test Center Code :</b></td><td><span id="registeredTestCenterCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Schedule ID :</b></td><td><span id="scheduleId"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Time of Day :</b></td><td><span id="timeOfDay"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Checked in Date :</b></td><td><span id="checkedInDate"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Content Test Type :</b></td><td><span id="contentTestType"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Content Test Code :</b></td><td><span id="contentTestCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>TASC Radiness :</b></td><td><span id="tascRadiness"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>ECC :</b></td><td><span id="ecc"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Test Center Code :</b></td><td><span id="testCenterCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Test Center Name :</b></td><td><span id="testCenterName"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Regst TC County Parish Code :</b></td><td><span id="regstTcCountyParishCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Sched TC County Parish Code :</b></td><td><span id="schedTcCountyParishCode"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 					</table>
 				</div>
-				<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>
-					<p id="_process_log"><img src="css/ajax-loader.gif"></img><p>
+				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
+					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
 				</div>
 				
 			</div>
