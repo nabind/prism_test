@@ -54,7 +54,7 @@ import com.google.gson.Gson;
 @Controller
 public class LoginController {
 
-	private static final IAppLogger logger = LogFactory.getLoggerInstance(LoginController.class.getName());
+	private static IAppLogger logger = LogFactory.getLoggerInstance(LoginController.class.getName());
 
 	private List<String> prismUserHomePage;
 	private List<ReportTO> homePageByRoleEntries;
@@ -115,12 +115,14 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/landing", method = RequestMethod.GET)
 	public ModelAndView loadLandingPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Enter: loadLandingPage()");
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
-		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
 		
 		//As the landing page is applicable only for inors
 		contractName = IApplicationConstants.CONTRACT_NAME_INORS;
@@ -156,6 +158,9 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView loadLoginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Enter: loadLoginPage()");
 		String parent = request.getParameter(IApplicationConstants.PARENT_LOGIN);
 		String mess_login_error = (String) request.getParameter("login_error");
@@ -164,7 +169,7 @@ public class LoginController {
 		paramMap.put("REPORT_NAME", IApplicationConstants.GENERIC_REPORT_NAME);
 		paramMap.put("MESSAGE_TYPE", IApplicationConstants.GENERIC_MESSAGE_TYPE);
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.COMMON_LOG_IN);
-		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
+		paramMap.put("contractName", contractName);
 		paramMap.put("custProdId", 0L);
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		String logInInfoMessage = (String)messageMap.get("systemMessage");
@@ -202,6 +207,10 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/userlogin", method = RequestMethod.GET)
 	public ModelAndView userlogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Enter: userlogin()");
 		logger.log(IAppLogger.INFO, "theme -------------> "+themeResolver.resolveThemeName(request));
 		String mess_login_error = (String) request.getParameter("login_error");
@@ -210,7 +219,7 @@ public class LoginController {
 		Map<String, Object> propertyMap = new HashMap<String, Object>();		
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		
-		paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request)));
+		paramMap.put("contractName", contractName);
 		propertyMap = loginService.getContractProerty(paramMap);
 		request.getSession().setAttribute("propertyMap", propertyMap);
 	
@@ -626,12 +635,10 @@ public class LoginController {
 
 	@RequestMapping(value = "/welcome", method = RequestMethod.POST)
 	public ModelAndView welcome(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		/*
-		 * by deepak for fetching the user registration response from changePassword page
-		 * 
-		 * This code is similar to parent registration code so copied from Parent-controller object
-		 */
 
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Save user change Password screen");
 		ParentTO parentTO = new ParentTO();
 		QuestionTO questionTO = null;
@@ -708,7 +715,7 @@ public class LoginController {
 			req.getSession().setAttribute(IApplicationConstants.RELOAD_USER, IApplicationConstants.TRUE);
 			return validateUser(req, res);
 		} else {
-			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+			
 			Map<String,Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("contractName", contractName);
 			// fetch security questions
@@ -930,13 +937,15 @@ public class LoginController {
 	@RequestMapping(value = "/regn/securityQuestionForUser", method = RequestMethod.GET)
 	public @ResponseBody
 	String securityQuestionForUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
 		logger.log(IAppLogger.INFO, "Fectching the User Security Questions");
 		try {
 			List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
 			//String username = req.getParameter("username");
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("username",req.getParameter("username"));
-			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			paramMap.put("contractName", contractName);
 			
 			questionToList = parentService.getSecurityQuestionForUser(paramMap);
 			if (questionToList != null) {
@@ -966,6 +975,9 @@ public class LoginController {
 	@RequestMapping(value = "/regn/checkAnswers", method = RequestMethod.GET)
 	public ModelAndView checkAnswers(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
+			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+			logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+			
 			logger.log(IAppLogger.INFO, "Enter: checkAnswers()");
 			/*String userName = (String) req.getParameter("username");
 			String ans1 = (String) req.getParameter("ans1");
@@ -994,7 +1006,7 @@ public class LoginController {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("username", req.getParameter("username"));
 			paramMap.put("questionToList", questionToList);
-			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			paramMap.put("contractName", contractName);
 
 			boolean isValid = parentService.validateAnswers(paramMap);
 			res.setContentType("text/plain");
@@ -1021,6 +1033,9 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/regn/generateTempPwd", method = RequestMethod.GET)
 	public String generateTempPwd(HttpServletRequest req, HttpServletResponse res) {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Enter: generateTempPwd()");
 		String sendEmailFlag = "0";
 		try {
@@ -1028,7 +1043,7 @@ public class LoginController {
 			Map<String, Object> paramMap = new HashMap<String, Object>();			
 			if (userName != null) {
 				paramMap.put("username", userName);
-				paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+				paramMap.put("contractName", contractName);
 				UserTO userTO = adminService.resetPassword(paramMap);
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
@@ -1062,6 +1077,9 @@ public class LoginController {
 	@RequestMapping(value = "/regn/getUserNames", method = RequestMethod.GET)
 	public @ResponseBody
 	String getUserNames(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Fectching the User Names");
 		String sendEmailFlag = "0";
 		String jsonString = null;
@@ -1070,7 +1088,7 @@ public class LoginController {
 			String emailId = req.getParameter("emailId");
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("emailId",emailId);
-			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			paramMap.put("contractName", contractName);
 			
 			userToList = parentService.getUserNamesByEmail(paramMap);
 			if (userToList != null && userToList.size()> 0) {
@@ -1118,13 +1136,16 @@ public class LoginController {
 	@RequestMapping(value = "/regn/checkActiveUser", method = RequestMethod.GET)
 	public @ResponseBody
 	String checkActiveUserAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Validating Username");
 
 		try {
 			//String username = req.getParameter("username");
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("username",req.getParameter("username"));
-			paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
+			paramMap.put("contractName", contractName);
 			// check username is available and the user is enabled
 			if (parentService.checkActiveUserAvailability(paramMap)) {
 				res.setContentType("application/json");
@@ -1191,6 +1212,9 @@ public class LoginController {
 	@RequestMapping(value = "/loadHomePageMsg", method = RequestMethod.GET)
 	@ResponseBody
 	public String loadHomePageMsg(HttpServletRequest req, HttpServletResponse res) throws IOException,BusinessException {
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
+		logger = LogFactory.getLoggerInstance(LoginController.class.getName(),contractName);
+		
 		logger.log(IAppLogger.INFO, "Enter: LoginController - loadHomePageMsg()");
 		String homePage = req.getParameter("homeMessage");
 		long t1 = System.currentTimeMillis();

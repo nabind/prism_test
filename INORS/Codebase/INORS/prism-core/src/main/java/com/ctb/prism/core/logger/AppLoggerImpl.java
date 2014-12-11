@@ -1,7 +1,12 @@
 package com.ctb.prism.core.logger;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ctb.prism.core.util.Utils;
 
 
 /**
@@ -16,6 +21,7 @@ public class AppLoggerImpl implements IAppLogger {
 	 * A Logger type variable to store the logger to be used.
 	 **/
 	private transient final Logger logger;
+	private transient String contractName;
 
 	/**
 	 * Constructor to retrieve a <i>Logger</i> object for the given class.
@@ -25,6 +31,18 @@ public class AppLoggerImpl implements IAppLogger {
 	public AppLoggerImpl(String className) {
 		// Get a logger
 		logger = LoggerFactory.getLogger(className);
+	}
+	
+	/**
+	 * Constructor to retrieve a <i>Logger</i> object for the given class.
+	 * 
+	 * @param className
+	 * @param contractName
+	 **/
+	public AppLoggerImpl(String className,String contractName) {
+		// Get a logger
+		logger = LoggerFactory.getLogger(className);
+		this.contractName = contractName;
 	}
 
 	/**
@@ -37,7 +55,17 @@ public class AppLoggerImpl implements IAppLogger {
 	 *            - This is the message to be logged in the configured log file
 	 **/
 	public void log(final int level, String message) {
-		message = logger.getName() + ": " + message;
+		if(contractName == null || contractName.trim().length() == 0)
+			contractName = Utils.getContractName();
+		
+		Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+		
+		message = currentTimestamp 
+					+ " "  + Calendar.getInstance().getTimeZone().getDisplayName() 
+					+ ": " + contractName.toUpperCase() 
+					+ ": " + logger.getName() 
+					+ ": " +  message;
+		
 		switch (level) {
 		case 1:
 			logger.trace(message);

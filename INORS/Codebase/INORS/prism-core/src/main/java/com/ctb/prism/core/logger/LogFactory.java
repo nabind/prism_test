@@ -24,4 +24,9 @@ public class LogFactory {
 		IAppLogger logger = new AppLoggerImpl(className);
 		return logger;
 	}
+	
+	public static IAppLogger getLoggerInstance(final String className, final String contractName) {
+		IAppLogger logger = new AppLoggerImpl(className);
+		return logger;
+	}
 }
