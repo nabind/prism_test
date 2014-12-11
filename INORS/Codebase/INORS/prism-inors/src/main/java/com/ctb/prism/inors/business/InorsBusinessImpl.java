@@ -282,9 +282,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			updateJob(jobTO);
 
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator);
+			folderLoc = folderLoc.replace("//", "/");
 			String[] otherParams = jobTO.getOtherRequestparams().split(",");
 			String userType = (otherParams != null && otherParams.length > 1) ? otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
-			if (jobTO.getRequestDetails() == null) jobTO.setRequestDetails("157,158,159,160");
+			// if (jobTO.getRequestDetails() == null) jobTO.setRequestDetails("157,158,159,160");
 			String[] studentBioIds = (jobTO.getRequestDetails() != null) ? jobTO.getRequestDetails().split(",") : null;
 
 			// split into pieces with a max. size of as defined -
@@ -298,6 +299,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				// String[] StudAndFormId = studentBioId.split("\\|");
 				logger.log(IAppLogger.INFO, "\nDownloading Candidate Report for " + StringUtils.join(arrStudentIds, ','));
 				String tempFileName = (CustomStringUtil.appendString(jobTO.getRequestFilename(), "_", "" + count++, "_", Utils.getDateTime(), ".pdf"));
+				logger.log(IAppLogger.INFO, "\n\n-----------------------------"+count+" of "+list.size()+"------------------------------------\n\n");
 				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 				String folder = FileUtil.getDirFromFilePath(fileName);
 				File dir = new File(folder);
