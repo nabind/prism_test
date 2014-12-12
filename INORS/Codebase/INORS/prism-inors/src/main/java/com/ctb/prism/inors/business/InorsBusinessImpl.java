@@ -364,7 +364,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			}
 			
 			// Upload File to S3
-			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(archiveFileName, ((String) propertyLookup.get("environment.postfix")).toUpperCase(), IApplicationConstants.CR_BULK_S3_LOCATION);
+			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(archiveFileName, otherParams[2]);
 			String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
 			String jobLog = jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1);
 
@@ -417,28 +417,30 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		}
 		return list;
 	}
-	
+
 	/**
-	 * Uploads the file to S3 and then deletes all files from the directory where the file is.
+	 * Uploads the file to S3 and then deletes all files from the directory
+	 * where the file is.
 	 * 
-	 * @param zipFileName Fully qualified file name
-	 * @param to
+	 * @param zipFileName
+	 *            It is the fully qualified file name in disk.
+	 * @param s3Location
+	 *            It does not contain filename but it starts with environment
+	 *            postfix.
 	 * @return
 	 */
-	private String moveFileToS3AndCleanDirectory(String zipFileName, String envString, String s3Location) {
+	private String moveFileToS3AndCleanDirectory(String zipFileName, String s3Location) {
 		String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 		String jobLog = "S3 Upload in progress";
 		try {
-			logger.log(IAppLogger.INFO, "envString = " + envString);
-			String keyWithFileName = envString + File.separator + zipFileName;
-			keyWithFileName = keyWithFileName.replace("//", "/");
-			logger.log(IAppLogger.INFO, "keyWithFileName = " + keyWithFileName);
-			String keyWithoutFileName = envString + s3Location;
-			keyWithoutFileName = keyWithoutFileName.replace("//", "/");
-			logger.log(IAppLogger.INFO, "keyWithoutFileName = " + keyWithoutFileName);
+			zipFileName = zipFileName.replace("//", "/");
+			logger.log(IAppLogger.INFO, "zipFileName = " + zipFileName);
+			s3Location = s3Location.replace("//", "/");
+			logger.log(IAppLogger.INFO, "s3Location = " + s3Location);
 			File file = new File(zipFileName);
+
 			// Upload File to S3
-			repositoryService.uploadAsset(keyWithoutFileName, file);
+			repositoryService.uploadAsset(s3Location, file);
 			logger.log(IAppLogger.INFO, "File(" + zipFileName + ") uploaded to S3");
 
 			// Delete File from Mount Location
@@ -452,7 +454,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			jobLog = "S3 Upload completed successfully";
 		} catch (Exception e) {
 			jobStatus = IApplicationConstants.JOB_STATUS.ER.toString();
-			jobLog = "Invalid Contract Name or S3 Upload issue";
+			jobLog = "S3 Upload Issue: " + e.getMessage();
 			logger.log(IAppLogger.WARN, jobLog);
 			e.printStackTrace();
 		}
@@ -608,7 +610,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					}
 					// logger.log(IAppLogger.INFO, "Temp QuerySheet file deleted = " + new File(querySheetFileName).delete());
 					// Upload File to S3
-					String jobStatus_jobLog = moveFileToS3AndCleanDirectory(zipFileName, to.getEnvString().toUpperCase(), IApplicationConstants.GDF_S3_LOCATION);
+					String s3Location = to.getEnvString().toUpperCase() + File.separator + IApplicationConstants.GDF_S3_LOCATION;
+					String jobStatus_jobLog = moveFileToS3AndCleanDirectory(zipFileName, s3Location);
 					jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
 					jobLog = jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1);
 				} catch (FileNotFoundException e) {

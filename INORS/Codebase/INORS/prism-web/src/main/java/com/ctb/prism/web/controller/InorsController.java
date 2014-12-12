@@ -439,7 +439,10 @@ public class InorsController {
 			jobTrackingTO.setNumber(allStudents.size());
 			jobTrackingTO.setAdminId(replacableParams.get("p_Admin_Name"));
 			jobTrackingTO.setCustomerId(customer);
-			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType")));
+			@SuppressWarnings("unchecked")
+			Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
+			String envString = ((String) propertyLookup.get(IApplicationConstants.ENV_POSTFIX)).toUpperCase() + File.separator + propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
+			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString));
 
 			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO);
 
@@ -838,8 +841,10 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String json = (String) request.getParameter("json");
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
+		@SuppressWarnings("unchecked")
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
-		to.setEnvString(((String) propertyLookup.get("environment.postfix")).toUpperCase());
+		String envString = ((String) propertyLookup.get(IApplicationConstants.ENV_POSTFIX)).toUpperCase() + File.separator + propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
+		to.setEnvString(envString);
 
 		String handler = "";
 		String type = "";
@@ -1529,7 +1534,7 @@ public class InorsController {
 	 */
 	private void deleteScheduledGroupFiles(String contractName) throws Exception {
 		String gdfExpiryTime = propertyLookup.get("gdfExpiryTime");
-		String envPrefix = propertyLookup.get("environment.postfix");
+		String envPrefix = propertyLookup.get(IApplicationConstants.ENV_POSTFIX);
 		logger.log(IAppLogger.INFO, "gdfExpiryTime = " + gdfExpiryTime);
 		logger.log(IAppLogger.INFO, "envPrefix = " + envPrefix);
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);

@@ -61,6 +61,8 @@ public interface IApplicationConstants {
 	public static String CR_BULK_S3_LOCATION = "/CR_BULK/";
 
 	//public static String S3KEY_GRT_IC_STATIC_FILES = "S3KEY_GRT_IC_STATIC_FILES";
+	
+	public static String ENV_POSTFIX = "environment.postfix";
 
 	public static String TASC_STUDENT_DATA_FILE_LAYOUT = "TASC_STUDENT_DATA_FILE_LAYOUT";
 
@@ -260,7 +262,6 @@ public interface IApplicationConstants {
 	//To implement back functionality - By Joy
 	public static final String URL_STACK = "URL_STACK";
 
-	public static final String[] ASSET_LOCATIONS = { "Static_Files/", "Static_Files/INORS/", "Static_Files/TASC/" };
 	public static final long DEFAULT_PRISM_VALUE = -99;
 	public static final String PURPOSE_EDIT_REPORT = "editReport";
 	public static final String DEFAULT_CUST_PROD_ID= "defaultCustProdId"; 

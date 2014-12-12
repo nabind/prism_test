@@ -15,6 +15,7 @@ import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 import com.amazonaws.services.simpledb.model.ReplaceableItem;
 import com.amazonaws.services.simpledb.model.SelectRequest;
 import com.amazonaws.services.simpledb.model.SelectResult;
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
@@ -26,8 +27,6 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 
 	private AmazonSimpleDB sdb;
 	
-	private String POSTFIX_ENV = "environment.postfix";
-	
 	@Autowired
 	public void setSdb(AmazonSimpleDB sdb) {
 	    this.sdb = sdb;
@@ -37,7 +36,7 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 	private IPropertyLookup propertyLookup;
 	
 	public void addItem(String contract, String item){
-		String domain = contract + propertyLookup.get(POSTFIX_ENV);//"cachelookup";
+		String domain = contract + propertyLookup.get(IApplicationConstants.ENV_POSTFIX);//"cachelookup";
 		logger.log(IAppLogger.INFO, "Cache Key will be inserted into domain" + domain);
 		
 		try{
@@ -60,7 +59,7 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 	}
 	
 	public List<Item> getAllItems(String contract){
-		String domain = contract + propertyLookup.get(POSTFIX_ENV);//"cachelookup";
+		String domain = contract + propertyLookup.get(IApplicationConstants.ENV_POSTFIX);//"cachelookup";
 		String query = "select * from " + domain;
 		return getItems(query);
 	}
@@ -89,7 +88,7 @@ public class SimpleDBServiceImpl implements ISimpleDBService {
 	}
 	
 	public boolean deleteItem(String contract, String key){
-		String domain = contract + propertyLookup.get(POSTFIX_ENV);//"cachelookup";
+		String domain = contract + propertyLookup.get(IApplicationConstants.ENV_POSTFIX);//"cachelookup";
 		//sdb.deleteAttributes(new DeleteAttributesRequest(domain, "contract"+contract));
 		sdb.deleteAttributes(new DeleteAttributesRequest(domain, key));
 		return true;

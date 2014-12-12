@@ -630,20 +630,10 @@ public class CommonController extends BaseDAO {
 	}
 	
 	/**
-	 * @param request
-	 * @param response
+	 * @param fullyQualifiedS3Key
+	 * @param file
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/uploadAssest" , method=RequestMethod.GET)
-	public void uploadAssest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String assetPath = request.getParameter("assetPath");
-		String assetType = request.getParameter("assetType");
-		int index = Integer.parseInt(assetType);
-		String key = IApplicationConstants.ASSET_LOCATIONS[index];
-		repositoryService.uploadAsset(key, new File(assetPath));
-		logger.log(IAppLogger.INFO, "Asset(" + assetPath + ") uploaded successfully");
-	}
-	
 	private void uploadAssestToS3(String fullyQualifiedS3Key, File file) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: uploadAssestToS3()");
 		repositoryService.uploadAssetByS3Key(fullyQualifiedS3Key, file);

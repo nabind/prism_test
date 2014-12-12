@@ -38,11 +38,12 @@ public interface IRepositoryService {
 	 * @throws Exception
 	 */
 	public void uploadAssetByS3Key(String fullyQualifiedS3KeyPrefix, File file) throws Exception;
-	
+
 	/**
-	 * @author Joy
-	 * "key" is full qualified file path
-	 * "is" is an InputStream object
+	 * @param key
+	 *            full qualified file path
+	 * @param is
+	 *            an InputStream object
 	 */
 	public void uploadAsset(String key, InputStream is);
 	
