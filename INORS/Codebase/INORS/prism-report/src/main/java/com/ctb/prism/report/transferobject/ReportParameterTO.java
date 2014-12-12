@@ -213,12 +213,12 @@ public class ReportParameterTO extends BaseTO {
 		return reportUrl;
 	}
 	public void setReportUrl(String reportUrl) {
-		if(reportUrl != null && reportUrl.indexOf("|") != -1) {
+		/*if(reportUrl != null && reportUrl.indexOf("|") != -1) {
 			setCustomUrl(reportUrl.substring(reportUrl.indexOf("|")+1, reportUrl.length()));
 			this.reportUrl = reportUrl.substring(0, reportUrl.indexOf("|"));
-		} else {
+		} else {*/
 			this.reportUrl = reportUrl;
-		}
+		/*}*/
 	}
 	public List<IApplicationConstants.ROLE_TYPE> getRoles() {
 		return roles;
