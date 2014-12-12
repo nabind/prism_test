@@ -2261,10 +2261,8 @@ public class AdminController {
 	@RequestMapping(value = "/studentFileDownload", method = RequestMethod.GET)
 	public ModelAndView studentFileDownload(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView("admin/studentFileDownload");
-		@SuppressWarnings("unchecked")
-		Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
-		
-		String tascStudentDataFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator +propertyLookup.get("S3KEY_LAYOUTS").toUpperCase() + propertyLookup.get(IApplicationConstants.TASC_STUDENT_DATA_FILE_LAYOUT);
+		Map<String, Object> propertyMap = (Map<String,Object>) request.getSession().getAttribute("propertyMap");
+		String tascStudentDataFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator +propertyLookup.get("S3KEY_LAYOUTS") + propertyLookup.get(IApplicationConstants.TASC_STUDENT_DATA_FILE_LAYOUT);
 		logger.log(IAppLogger.INFO, "tascStudentDataFileLayoutHref = " + tascStudentDataFileLayoutHref);
 		modelAndView.addObject("tascStudentDataFileLayoutHref", tascStudentDataFileLayoutHref);
 		return modelAndView;

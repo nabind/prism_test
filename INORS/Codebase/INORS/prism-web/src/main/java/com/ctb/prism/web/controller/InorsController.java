@@ -441,7 +441,7 @@ public class InorsController {
 			jobTrackingTO.setCustomerId(customer);
 			@SuppressWarnings("unchecked")
 			Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
-			String envString = ((String) propertyLookup.get(IApplicationConstants.ENV_POSTFIX)).toUpperCase() + File.separator + propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
+			String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
 			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString));
 
 			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO);
@@ -843,7 +843,7 @@ public class InorsController {
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
 		@SuppressWarnings("unchecked")
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
-		String envString = ((String) propertyLookup.get(IApplicationConstants.ENV_POSTFIX)).toUpperCase() + File.separator + propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
+		String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
 		to.setEnvString(envString);
 
 		String handler = "";
