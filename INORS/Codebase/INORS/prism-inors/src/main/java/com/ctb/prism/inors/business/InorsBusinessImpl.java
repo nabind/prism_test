@@ -538,8 +538,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			logger.log(IAppLogger.INFO, "gdfExpiryTime: " + gdfExpiryTime);
 
 			String envString = to.getEnvString().toUpperCase();
-			logger.log(IAppLogger.INFO, "envString = " + envString);
-			String s3Key = IApplicationConstants.GDF_S3_LOCATION + FileUtil.getFileNameFromFilePath(zipFileName); // JOB_TRACKING.REQUEST_FILENAME
+			if(envString.indexOf("/") > -1) {
+				envString = envString.substring(envString.indexOf("/") + 1);
+			}
+			// logger.log(IAppLogger.INFO, "envString = " + envString);
+			String s3Key = envString + File.separator + IApplicationConstants.GDF_S3_LOCATION + FileUtil.getFileNameFromFilePath(zipFileName); // JOB_TRACKING.REQUEST_FILENAME
 			s3Key = s3Key.replace("//", "/");
 			to.setFileName(s3Key);
 			to.setExtractStartDate(jobTrackingTO.getExtractStartdate());
