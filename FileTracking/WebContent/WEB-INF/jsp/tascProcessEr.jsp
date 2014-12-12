@@ -256,9 +256,9 @@
 						<td style="padding-top: 12px;" nowrap>
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
-							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
+							<%} else if("ER".equals(processEr.getOverallStatus())) {%>
 								<span class="progress" title="In Progress"></span>
-							<%} else {%>
+							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
 								<span class="error" title="Error"></span>
 							<%} %>
 							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
