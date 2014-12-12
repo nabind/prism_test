@@ -1343,9 +1343,12 @@ public class InorsController {
 					showIcDiv = "Y";
 				}
 			}
+			@SuppressWarnings("unchecked")
+			Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
+			
 			String icFileLayoutDisplayName = yearPrefix + " Invitation Code File Record Layout";
 			// String icFileLayoutHref = productSuffix.trim() + yearPrefix + " Invitation Code Layout.xls";
-			String icFileLayoutHref = propertyLookup.get("S3KEY_GRT_IC_STATIC_FILES").toUpperCase() + propertyLookup.get("IC_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
+			String icFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator + propertyLookup.get("S3KEY_LAYOUTS").toUpperCase() + propertyLookup.get("IC_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
 			if (icFileLayoutHref == null || icFileLayoutHref.isEmpty()) {
 				if (showIcDiv == "Y") {
 					logger.log(IAppLogger.ERROR, "IC Layout Filename is not configured in Properties file");
@@ -1360,7 +1363,7 @@ public class InorsController {
 			// GRT is available for all years
 			String grtFileLayoutDisplayName = yearPrefix + " GRT File Record Layout";
 			// String grtFileLayoutHref = productPrefix + productSuffix + yearPrefix + " GR 3-8 GRT Corp Version.xls";
-			String grtFileLayoutHref = propertyLookup.get("S3KEY_GRT_IC_STATIC_FILES").toUpperCase() + propertyLookup.get("GRT_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
+			String grtFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator + propertyLookup.get("S3KEY_LAYOUTS").toUpperCase() + propertyLookup.get("GRT_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
 			if (grtFileLayoutHref == null || grtFileLayoutHref.isEmpty()) {
 				if (showGrtDiv == "Y") {
 					logger.log(IAppLogger.ERROR, "GRT Layout Filename is not configured in Properties file");

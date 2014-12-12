@@ -60,7 +60,7 @@ public interface IApplicationConstants {
 	
 	public static String CR_BULK_S3_LOCATION = "/CR_BULK/";
 
-	public static String S3KEY_GRT_IC_STATIC_FILES = "S3KEY_GRT_IC_STATIC_FILES";
+	//public static String S3KEY_GRT_IC_STATIC_FILES = "S3KEY_GRT_IC_STATIC_FILES";
 
 	public static String TASC_STUDENT_DATA_FILE_LAYOUT = "TASC_STUDENT_DATA_FILE_LAYOUT";
 
