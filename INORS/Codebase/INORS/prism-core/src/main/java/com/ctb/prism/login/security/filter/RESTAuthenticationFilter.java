@@ -56,7 +56,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     private static final String USER_ROLE_PARAM = "user_role";
     private static final String USER_NAME_PARAM = "user_name";
     
-    private static final String THEME_PARAM = "contract";
+    private static final String THEME_PARAM = "project";
     
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "j_username";
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "j_password";
@@ -134,6 +134,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         logger.info("role : {}" + role);
         logger.info("userName : {}" + userName);
         logger.info("signature : {}" + signature);
+        logger.info("theme : {}" + theme);
 
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
@@ -165,7 +166,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
 						
 						String existingUserOrg = loginService.getUserOrgNode(ssoUsername,Utils.getContractNameNoLogin(theme));
-						if(existingUserOrg == null) {
+						if(existingUserOrg == null || "".equals(existingUserOrg)) {
 						//if(loginService.checkUserAvailability(ssoUsername)) {
 							// if user  not present into system
 							Map<String,Object> paramMap = new HashMap<String,Object>();

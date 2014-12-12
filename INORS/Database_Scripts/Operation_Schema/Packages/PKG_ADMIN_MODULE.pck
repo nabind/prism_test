@@ -24,6 +24,25 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
                            P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
                            P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
+													 
+	PROCEDURE SP_CREATE_SSO_USER(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME          IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID           IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS        IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN   IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD          IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT              IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER          IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID         IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL           IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_ADMINID           IN ADMIN_DIM.ADMINID%TYPE,
+                           P_IN_ACTIVE_FLAG       IN VARCHAR2,
+                           P_IN_ROLES             IN VARCHAR2,
+                           P_IN_IS_EDU            IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);												 
 
   PROCEDURE SP_CREATE_PARENT(P_IN_USERNAME         IN USERS.USERNAME%TYPE,
                              P_IN_DISPNAME         IN USERS.DISPLAY_USERNAME%TYPE,
@@ -75,7 +94,7 @@ END PKG_ADMIN_MODULE;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
-  ---- ADD ADMIN AND SSO USERS.
+  ---- ADD ADMIN USERS.
   PROCEDURE SP_CREATE_USER(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
                            P_IN_DISPNAME          IN USERS.DISPLAY_USERNAME%TYPE,
                            P_IN_EMAILID           IN USERS.EMAIL_ADDRESS%TYPE,
@@ -94,19 +113,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                            P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
                            P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
     INCOUNT   NUMBER := 0;
     USERSEQID USERS.USERID%TYPE := 0;
-  
+
   BEGIN
     SELECT COUNT(1)
       INTO INCOUNT
       FROM USERS
      WHERE UPPER(USERNAME) = UPPER(P_IN_USERNAME);
-  
+
     IF INCOUNT = 0 THEN
       SELECT USER_ID_SEQ.NEXTVAL INTO USERSEQID FROM DUAL;
-    
+
       INSERT INTO USERS
         (USERID,
          USERNAME,
@@ -129,7 +148,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
          P_IN_SALT,
          P_IN_NEW_USER,
          P_IN_CUSTOMERID);
-    
+
       IF P_IN_IS_EDU = 'N' THEN
         INSERT INTO ORG_USERS
           (ORG_USER_ID,
@@ -155,7 +174,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
         VALUES
           (P_IN_ORGNODEID, USERSEQID, P_IN_CUST_PROD_ID);
       END IF;
-    
+
       FOR I IN (SELECT ROLEID
                   FROM ROLE
                  WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES FROM DUAL)
@@ -165,32 +184,142 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                   CONNECT BY LEVEL <=
                              LENGTH(REGEXP_REPLACE(P_IN_ROLES, '[^,]*')) + 1)
                 )
-      
+
        LOOP
         INSERT INTO USER_ROLE
           (ROLEID, USERID, CREATED_DATE_TIME)
         VALUES
           (I.ROLEID, USERSEQID, SYSDATE);
-      
+
       END LOOP;
-    
+
       INSERT INTO PASSWORD_HISTORY
         (PWD_HISTORYID, USERID, PASSWORD, CREATED_DATE_TIME)
       VALUES
         (SEQ_PASSWORD_HISTORY.NEXTVAL, USERSEQID, P_IN_PASSWORD, SYSDATE);
-    
+
       PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(USERSEQID,
                                                    P_OUT_USER_REF_CURSOR,
                                                    P_OUT_ROLES_REF_CURSOR,
                                                    P_OUT_EXCEP_ERR_MSG);
-    
+
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
       ROLLBACK;
   END SP_CREATE_USER;
+	
+	-- ADD SSO users
+	PROCEDURE SP_CREATE_SSO_USER(P_IN_USERNAME          IN USERS.USERNAME%TYPE,
+                           P_IN_DISPNAME          IN USERS.DISPLAY_USERNAME%TYPE,
+                           P_IN_EMAILID           IN USERS.EMAIL_ADDRESS%TYPE,
+                           P_IN_USERSTATUS        IN USERS.ACTIVATION_STATUS%TYPE,
+                           P_IN_FIRSTTIME_LOGIN   IN USERS.IS_FIRSTTIME_LOGIN%TYPE,
+                           P_IN_PASSWORD          IN USERS.PASSWORD%TYPE,
+                           P_IN_SALT              IN USERS.SALT%TYPE,
+                           P_IN_NEW_USER          IN USERS.IS_NEW_USER%TYPE,
+                           P_IN_CUSTOMERID        IN CUSTOMER_INFO.CUSTOMERID%TYPE,
+                           P_IN_ORGNODEID         IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                           P_IN_ORG_LVL           IN ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE,
+                           P_IN_ADMINID           IN ADMIN_DIM.ADMINID%TYPE,
+                           P_IN_ACTIVE_FLAG       IN VARCHAR2,
+                           P_IN_ROLES             IN VARCHAR2,
+                           P_IN_IS_EDU            IN VARCHAR2,
+                           P_OUT_USER_REF_CURSOR  OUT REF_CURSOR,
+                           P_OUT_ROLES_REF_CURSOR OUT REF_CURSOR,
+                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
+
+    INCOUNT   NUMBER := 0;
+    USERSEQID USERS.USERID%TYPE := 0;
+
+  BEGIN
+    SELECT COUNT(1)
+      INTO INCOUNT
+      FROM USERS
+     WHERE UPPER(USERNAME) = UPPER(P_IN_USERNAME);
+
+    IF INCOUNT = 0 THEN
+      SELECT USER_ID_SEQ.NEXTVAL INTO USERSEQID FROM DUAL;
+
+      INSERT INTO USERS
+        (USERID,
+         USERNAME,
+         DISPLAY_USERNAME,
+         EMAIL_ADDRESS,
+         ACTIVATION_STATUS,
+         IS_FIRSTTIME_LOGIN,
+         PASSWORD,
+         SALT,
+         IS_NEW_USER,
+         CUSTOMERID)
+      VALUES
+        (USERSEQID,
+         P_IN_USERNAME,
+         P_IN_DISPNAME,
+         P_IN_EMAILID,
+         P_IN_USERSTATUS,
+         P_IN_FIRSTTIME_LOGIN,
+         P_IN_PASSWORD,
+         P_IN_SALT,
+         P_IN_NEW_USER,
+         P_IN_CUSTOMERID);
+
+      
+        INSERT INTO ORG_USERS
+          (ORG_USER_ID,
+           USERID,
+           ORG_NODEID,
+           ORG_NODE_LEVEL,
+           ADMINID,
+           ACTIVATION_STATUS,
+           CREATED_DATE_TIME)
+        VALUES
+          (ORG_USER_ID_SEQ.NEXTVAL,
+           USERSEQID,
+           P_IN_ORGNODEID,
+           P_IN_ORG_LVL,
+           P_IN_ADMINID,
+           P_IN_ACTIVE_FLAG,
+           SYSDATE);
+      
+
+      FOR I IN (SELECT ROLEID
+                  FROM ROLE
+                 WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES FROM DUAL)
+                -- END OF SAMPLE DATA
+                  SELECT REGEXP_SUBSTR(P_IN_ROLES, '[^,]+', 1, LEVEL)
+                    FROM T
+                  CONNECT BY LEVEL <=
+                             LENGTH(REGEXP_REPLACE(P_IN_ROLES, '[^,]*')) + 1)
+                )
+
+       LOOP
+        INSERT INTO USER_ROLE
+          (ROLEID, USERID, CREATED_DATE_TIME)
+        VALUES
+          (I.ROLEID, USERSEQID, SYSDATE);
+
+      END LOOP;
+
+      INSERT INTO PASSWORD_HISTORY
+        (PWD_HISTORYID, USERID, PASSWORD, CREATED_DATE_TIME)
+      VALUES
+        (SEQ_PASSWORD_HISTORY.NEXTVAL, USERSEQID, P_IN_PASSWORD, SYSDATE);
+
+      PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(USERSEQID,
+                                                   P_OUT_USER_REF_CURSOR,
+                                                   P_OUT_ROLES_REF_CURSOR,
+                                                   P_OUT_EXCEP_ERR_MSG);
+
+    END IF;
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+      ROLLBACK;
+  END SP_CREATE_SSO_USER;
 
   PROCEDURE SP_CREATE_PARENT(P_IN_USERNAME         IN USERS.USERNAME%TYPE,
                              P_IN_DISPNAME         IN USERS.DISPLAY_USERNAME%TYPE,
@@ -213,7 +342,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                              P_IN_PH_ANSWER_VALUES IN VARCHAR2,
                              P_OUT_USERID          OUT NUMBER,
                              P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
-  
+
     INCOUNT                  NUMBER := 0;
     USERSEQID                USERS.USERID%TYPE := 0;
     ORGUSERSEQID             ORG_USERS.ORG_USER_ID%TYPE := 0;
@@ -222,25 +351,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
     P_OUT_STATUS_PH_ANSWER   NUMBER := 0;
     P_OUT_STATUS_PWD_HISTORY NUMBER := 0;
     P_OUT_EXCEP_ERR_MSG1     VARCHAR2(1000);
-  
+
   BEGIN
-  
+
     SELECT IC.TOTAL_AVAILABLE
       INTO CLAIMAVAILABILITY
       FROM INVITATION_CODE IC
      WHERE IC.INVITATION_CODE = P_IN_INVITAIONCODE
        AND IC.ACTIVATION_STATUS = 'AC'
        AND IC.EXPIRATION_DATE >= SYSDATE;
-  
+
     IF CLAIMAVAILABILITY > 0 THEN
       SELECT COUNT(1)
         INTO INCOUNT
         FROM USERS
        WHERE UPPER(USERNAME) = UPPER(P_IN_USERNAME);
-    
+
       IF INCOUNT = 0 THEN
         SELECT USER_ID_SEQ.NEXTVAL INTO USERSEQID FROM DUAL;
-      
+
         INSERT INTO USERS
           (USERID,
            USERNAME,
@@ -287,14 +416,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            SYSDATE,
            P_IN_PASSWORD,
            P_IN_SALT);
-      
+
         SELECT M.ORG_NODEID
           INTO P_NODE_ID
           FROM INVITATION_CODE M
          WHERE M.INVITATION_CODE = P_IN_INVITAIONCODE;
-      
+
         SELECT ORG_USER_ID_SEQ.NEXTVAL INTO ORGUSERSEQID FROM DUAL;
-      
+
         INSERT INTO ORG_USERS
           (ORG_USER_ID,
            USERID,
@@ -315,7 +444,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                AND INVITATION_CODE = P_IN_INVITAIONCODE),
            'AC',
            SYSDATE);
-      
+
         FOR I IN (SELECT ROLEID
                     FROM ROLE
                    WHERE ROLE_NAME IN ('ROLE_USER', 'ROLE_PARENT')) LOOP
@@ -323,9 +452,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
             (ROLEID, USERID, CREATED_DATE_TIME)
           VALUES
             (I.ROLEID, USERSEQID, SYSDATE);
-        
+
         END LOOP;
-      
+
         INSERT INTO INVITATION_CODE_CLAIM
           (INVITATION_CODE_CLAIM_ID,
            ICID,
@@ -344,7 +473,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            'AC',
            SYSDATE,
            SYSDATE);
-      
+
         UPDATE INVITATION_CODE
            SET TOTAL_ATTEMPT     = (SELECT TOTAL_ATTEMPT
                                       FROM INVITATION_CODE
@@ -358,21 +487,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                        AND ACTIVATION_STATUS = 'AC') - 1,
                UPDATED_DATE_TIME = SYSDATE
          WHERE INVITATION_CODE = P_IN_INVITAIONCODE;
-      
+
         PKG_MY_ACCOUNT.SP_SAVE_PH_ANSWER(USERSEQID,
                                          P_IN_PH_QUESTIONIDS,
                                          '',
                                          P_IN_PH_ANSWER_VALUES,
                                          P_OUT_STATUS_PH_ANSWER,
                                          P_OUT_EXCEP_ERR_MSG1);
-      
+
         IF P_OUT_STATUS_PH_ANSWER = 1 THEN
-        
+
           SP_SAVE_PASSWORD_HISTORY(USERSEQID,
                                    P_IN_PASSWORD,
                                    P_OUT_STATUS_PWD_HISTORY,
                                    P_OUT_EXCEP_ERR_MSG1);
-        
+
           IF P_OUT_STATUS_PWD_HISTORY = 1 THEN
             P_OUT_USERID := USERSEQID;
           ELSE
@@ -383,11 +512,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
           ROLLBACK;
           P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
         END IF;
-      
+
       END IF;
-    
+
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_USERID        := 0;
@@ -402,15 +531,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                 V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
                                 V_OUT_PASSWORD_WARNING OUT VARCHAR2,
                                 P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
     V_PASSWORD_EXPIRY    NUMBER := 0;
     V_PASSWORD_WARNING   NUMBER := 0;
     V_LAST_PASSWORD_DATE PASSWORD_HISTORY.CREATED_DATE_TIME%TYPE;
-  
+
   BEGIN
-  
+
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT A.*
         FROM (SELECT USERS.IS_FIRSTTIME_LOGIN,
                      USERS.USERID,
@@ -446,18 +575,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                  AND CPL.PRODUCTID = P.PRODUCTID
                  AND ADMIN.ADMINID = CPL.ADMINID) A
        WHERE A.MAX_VAL = 1;
-  
+
     SELECT DB_PROPERY_VALUE
       INTO V_PASSWORD_EXPIRY
       FROM DASH_CONTRACT_PROP
      WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
-  
+
     SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)), TRUNC(sysdate))
       INTO V_LAST_PASSWORD_DATE
       FROM PASSWORD_HISTORY PH, USERS
      WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
        AND USERS.USERID = PH.USERID;
-  
+
     SELECT CASE
              WHEN trunc(sysdate) >= V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
               'TRUE'
@@ -466,14 +595,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            END
       INTO V_OUT_PASSWORD_EXPIRED
       FROM DUAL;
-  
+
     IF V_OUT_PASSWORD_EXPIRED = 'FALSE' THEN
-    
+
       SELECT DB_PROPERY_VALUE
         INTO V_PASSWORD_WARNING
         FROM DASH_CONTRACT_PROP
        WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
-    
+
       SELECT CASE
                WHEN (trunc(sysdate) >
                     (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING)) THEN
@@ -486,7 +615,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
     ELSE
       V_OUT_PASSWORD_WARNING := 'TRUE';
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
@@ -499,14 +628,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                    V_OUT_PASSWORD_EXPIRED OUT VARCHAR2,
                                    V_OUT_PASSWORD_WARNING OUT VARCHAR2,
                                    P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
     V_PASSWORD_EXPIRY    NUMBER := 0;
     V_PASSWORD_WARNING   NUMBER := 0;
     V_LAST_PASSWORD_DATE PASSWORD_HISTORY.CREATED_DATE_TIME%TYPE;
-  
+
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT USERS.IS_FIRSTTIME_LOGIN,
              USERS.USERID,
              EC.EDU_CENTERID ORG_NODEID,
@@ -524,18 +653,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
          AND USERS.CUSTOMERID = EC.CUSTOMERID
          AND EC.EDU_CENTERID = EL.EDU_CENTERID
          AND EL.USERID = USERS.USERID;
-  
+
     SELECT DB_PROPERY_VALUE
       INTO V_PASSWORD_EXPIRY
       FROM DASH_CONTRACT_PROP
      WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY';
-  
+
     SELECT nvl(trunc(MAX(PH.CREATED_DATE_TIME)), TRUNC(SYSDATE))
       INTO V_LAST_PASSWORD_DATE
       FROM PASSWORD_HISTORY PH, USERS
      WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
        AND USERS.USERID = PH.USERID;
-  
+
     SELECT CASE
              WHEN trunc(sysdate) >= V_LAST_PASSWORD_DATE + V_PASSWORD_EXPIRY THEN
               'TRUE'
@@ -544,14 +673,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
            END
       INTO V_OUT_PASSWORD_EXPIRED
       FROM DUAL;
-  
+
     IF V_OUT_PASSWORD_EXPIRED = 'FALSE' THEN
-    
+
       SELECT DB_PROPERY_VALUE
         INTO V_PASSWORD_WARNING
         FROM DASH_CONTRACT_PROP
        WHERE UPPER(DB_PROPERTY_NAME) = 'PASSWORD.EXPIRY.WARNING';
-    
+
       SELECT CASE
                WHEN (trunc(sysdate) >
                     (V_LAST_PASSWORD_DATE + V_PASSWORD_WARNING)) THEN
@@ -561,12 +690,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
              END
         INTO V_OUT_PASSWORD_WARNING
         FROM DUAL;
-    
+
     ELSE
       V_OUT_PASSWORD_WARNING := 'TRUE';
-    
+
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -579,7 +708,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                      P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   BEGIN
     P_OUT_STATUS_NUMBER := 0;
-  
+
     INSERT INTO PASSWORD_HISTORY
       (PWD_HISTORYID,
        PASSWORD,
@@ -592,9 +721,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
        P_IN_USERID,
        SYSDATE,
        SYSDATE);
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -608,7 +737,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                                     P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT *
         FROM (SELECT SALT, PH.PASSWORD, PH.CREATED_DATE_TIME
                 FROM PASSWORD_HISTORY PH, USERS U
@@ -616,24 +745,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                  AND PH.USERID = U.USERID
                ORDER BY PH.CREATED_DATE_TIME DESC)
        WHERE ROWNUM < P_IN_LIMIT + 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-    
+
   END SP_GET_PASSWORD_HISTORY;
 
   PROCEDURE SP_GET_ORG_NODE_LEVEL(P_OUT_CUR_ORG_NODE_LEVEL OUT REF_CURSOR,
                                   P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
-  
+
     V_ROLE_FLAG NUMBER(1) := 0;
   BEGIN
-  
+
     SELECT COUNT(1)
       INTO V_ROLE_FLAG
       FROM ROLE
      WHERE ROLE_NAME = 'ROLE_EDU_ADMIN';
-  
+
     IF V_ROLE_FLAG = 0 THEN
       OPEN P_OUT_CUR_ORG_NODE_LEVEL FOR
         SELECT TAB.VALUE VALUE, LISTAGG(TAB.NAME, '/') WITHIN
@@ -655,7 +784,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
         UNION
         SELECT -99 VALUE, 'Education Center' NAME FROM DUAL ORDER BY VALUE;
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));

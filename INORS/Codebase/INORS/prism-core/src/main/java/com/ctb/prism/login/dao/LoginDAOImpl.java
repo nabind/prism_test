@@ -622,13 +622,92 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * 
 	 * @return boolean
 	 */
-	public boolean checkUserAvailability(String username) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+	public boolean checkUserAvailability(final String username) {
+		String tempUsername = "";
+		try{
+			tempUsername = (String) getJdbcTemplatePrism().execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
+				            cs.setString(1, username);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsUsername = null;
+			        			String usernameResult = "";
+			        			try {
+									cs.execute();
+									rsUsername = (ResultSet) cs.getObject(2);
+									if(rsUsername.next()){
+										usernameResult = rsUsername.getString("USERNAME");
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return usernameResult;
+				        }
+				    });
+			if("".equals(tempUsername) || tempUsername == null){
+				return Boolean.TRUE;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return Boolean.FALSE;
+		/*List<Map<String, Object>> lstData = getJdbcTemplatePrism()
 				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
 		if (lstData == null || lstData.isEmpty()) {
 			return Boolean.TRUE;
 		}
+		return Boolean.FALSE;*/
+	}
+	
+	public boolean checkUserAvailability(final String username, String contractName) {
+		String tempUsername = "";
+		try{
+			tempUsername = (String) getJdbcTemplatePrism(contractName).execute(
+				    new CallableStatementCreator() {
+				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
+				            cs.setString(1, username);
+				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
+				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            return cs;				      			            
+				        }
+				    } ,   new CallableStatementCallback<Object>()  {
+			        		public Object doInCallableStatement(CallableStatement cs) {
+			        			ResultSet rsUsername = null;
+			        			String usernameResult = "";
+			        			try {
+									cs.execute();
+									rsUsername = (ResultSet) cs.getObject(2);
+									if(rsUsername.next()){
+										usernameResult = rsUsername.getString("USERNAME");
+									}
+									
+			        			} catch (SQLException e) {
+			        				e.printStackTrace();
+			        			}
+			        			return usernameResult;
+				        }
+				    });
+			if("".equals(tempUsername) || tempUsername == null){
+				return Boolean.TRUE;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return Boolean.FALSE;
+		/*List<Map<String, Object>> lstData = getJdbcTemplatePrism()
+				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
+		if (lstData == null || lstData.isEmpty()) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;*/
 	}
 	
 	/**
@@ -637,9 +716,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @return String
 	 */
 	public String getUserOrgNode(String username, String contractName) {
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
-				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);
-		if (lstData != null && !lstData.isEmpty()) {
+		/*List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
+				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);*/
+		if (!checkUserAvailability(username, contractName)) {
 			String orgNodeId = "";
 			List<Map<String, Object>> usrData = null;
 			usrData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_USER_ORG, username);
@@ -709,7 +788,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			String nodeId = (String) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				String salt = PasswordGenerator.getNextSalt();
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.CREATE_USER);
+					CallableStatement cs = con.prepareCall(IQueryConstants.CREATE_SSO_USER);
 					cs.setString(1, userName);
 					cs.setString(2, userDisplayName);
 					cs.setString(3, emailId);
@@ -725,21 +804,26 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 					cs.setString(14, roles.toString());
 					cs.setString(15, IApplicationConstants.FLAG_N);
-					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(18, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(CallableStatement cs) {
-					String strNodeId = null; 
 					try {
 						cs.execute();
-						strNodeId =  cs.getString(16);
-						Utils.logError(cs.getString(17));
+						Utils.logError(cs.getString(18));
+						if(cs.getString(18) != null && cs.getString(18).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(18));
+						}
 					} catch (SQLException e) {
 						e.printStackTrace();
+					} catch (BusinessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					return strNodeId;
+					return null;
 				}
 			});
 			logger.log(IAppLogger.INFO, "User added in org : " + nodeId);
