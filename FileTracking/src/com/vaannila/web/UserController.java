@@ -62,7 +62,7 @@ public class UserController extends MultiActionController {
 		String givenPassword = request.getParameter("j_password");
 		
 		String encPwd = PasswordCipherer.getEncryptedString(givenPassword);
-    	
+    	boolean tascuser = false;
 		if(givenUsername != null && givenUsername.equals(j_username_1)) {
 			password = j_password_1;
 			username = j_username_1;
@@ -70,29 +70,34 @@ public class UserController extends MultiActionController {
 		if(givenUsername != null && givenUsername.equals(j_username_0)) {
 			password = password;
 			username = j_username_0;
+			tascuser = true;
 		}
     	if(encPwd != null && encPwd.equals(password)) {
     		if(username != null && username.equals(givenUsername)) {
     			request.getSession().setAttribute("validUser", "true");
     			request.getSession().setAttribute("userName", givenUsername);
     			
-    			CommonDAOImpl commonDao = new CommonDAOImpl();
-    			List<AdminTO> adminList = commonDao.getAllAdminYear();
-    			request.getSession().setAttribute("adminList", adminList);
-    			for(AdminTO admin : adminList) {
-    				if("Y".equals(admin.getCurrentAdmin())) {
-    					request.getSession().setAttribute("adminid", admin.getAdminId());
-    					break;
-    				}
+    			if(!tascuser) {
+	    			CommonDAOImpl commonDao = new CommonDAOImpl();
+	    			List<AdminTO> adminList = commonDao.getAllAdminYear();
+	    			request.getSession().setAttribute("adminList", adminList);
+	    			for(AdminTO admin : adminList) {
+	    				if("Y".equals(admin.getCurrentAdmin())) {
+	    					request.getSession().setAttribute("adminid", admin.getAdminId());
+	    					break;
+	    				}
+	    			}
+    			} else {
+    				return new ModelAndView("tascSearch", "message", "");
     			}
     			
 //    			StageDAOImpl stageDao = new StageDAOImpl();
 //    			List<OrgProcess> processes = stageDao.getProcessDetails(
 //    					(String) request.getSession().getAttribute("adminid"));
 //    			request.getSession().setAttribute("allProcess", processes);
-    			if(prop.getProperty("j_username_0").equals(username)) {
+    			/*if(prop.getProperty("j_username_0").equals(username)) {
     				return new ModelAndView("tascSearch", "message", "");
-    			}
+    			}*/
     			return new ModelAndView("process", "message", "");
     		}
     	}
