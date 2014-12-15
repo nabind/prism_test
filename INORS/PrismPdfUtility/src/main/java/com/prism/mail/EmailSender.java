@@ -48,6 +48,8 @@ public class EmailSender {
 	public static void sendMailInors(final Properties prop, String recipientEmail, String subject, String mailBody, String supportEmail) throws Exception {
 		String host = prop.getProperty("mail.smtp.host");
 		String port = prop.getProperty("mail.smtp.port");
+		String SMTP_USERNAME = prop.getProperty("mail.smtp.user");
+		String SMTP_PASSWORD = prop.getProperty("mail.smtp.pass");
 		String sender = prop.getProperty("senderMail");
 		// String supportEmail = prop.getProperty("supportEmail");
 		if (host == null || port == null) {
@@ -59,9 +61,9 @@ public class EmailSender {
 		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
 		 *******************************************************/
 		if(prop.getProperty("mailToCustomer").equals("true")) {
-			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, null, null);
+			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		} else {
-			sendHTMLMail(false, host, port, sender, prop.getProperty("supportEmail"), "", supportEmail, subject, mailBody, null, null, null);
+			sendHTMLMail(false, host, port, sender, prop.getProperty("supportEmail"), "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		}	
 	}
 
@@ -69,6 +71,8 @@ public class EmailSender {
 			throws Exception {
 		String host = prop.getProperty("mail.smtp.host");
 		String port = prop.getProperty("mail.smtp.port");
+		String SMTP_USERNAME = prop.getProperty("mail.smtp.user");
+		String SMTP_PASSWORD = prop.getProperty("mail.smtp.pass");
 		String sender = prop.getProperty("senderMail");
 		String supportEmail = prop.getProperty("supportEmail");
 		ArrayList<String> attach = new ArrayList<String>();
@@ -85,9 +89,9 @@ public class EmailSender {
 		 * Please make sure mailToCustomer property in config.properties always set to false in QA and Development environment
 		 *******************************************************/
 		if(prop.getProperty("mailToCustomer").equals("true")) {
-			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, null, null);
+			sendHTMLMail(false, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 		} else {
-			sendHTMLMail(false, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, attach, null, null);
+			sendHTMLMail(false, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 		}
 	}
 
