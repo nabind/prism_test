@@ -47,6 +47,16 @@
 						<form name="searchTascEr" method="post" action="searchTascEr.htm" id="searchTascEr">
 						<table width="100%">
 							<tr>
+								<td>Source System:</td>
+								<td>
+									<select name="sourceSystem" id="sourceSystem">
+										<option value="OAS">Online</option>
+										<option value="PP">Paper Pencil</option>
+										<option value="ERESOURCE">eResources</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
 								<td>Processed Date From:</td>
 								<td><input type="text" name="processedDateFrom" id="processedDateFrom"></td>
 							</tr>
@@ -59,7 +69,7 @@
 								<td><input type="text" name="uuid" id="uuid"></td>
 							</tr>
 							<tr>
-								<td>Record ID:</td>
+								<td>Record ID (Only for eResources):</td>
 								<td><input type="text" name="recordId" id="recordId"></td>
 							</tr>
 							<tr>
@@ -83,18 +93,6 @@
 									</select>
 								</td>
 							</tr>
-							<tr>
-								<td>Source System:</td>
-								<td>
-									<select name="sourceSystem" id="sourceSystem">
-										<option value="ALL">All</option>
-										<option value="OAS">Online</option>
-										<option value="PP">Paper Pencil</option>
-										<option value="ERESOURCE">eResources</option>
-									</select>
-								</td>
-							</tr>
-							
 							<tr>
 								<td></td>
 								<td><input type="submit" value="Search"></td>

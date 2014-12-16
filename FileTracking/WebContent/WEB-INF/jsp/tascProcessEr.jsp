@@ -229,7 +229,7 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
-						<th style="min-width: 60px;">Record Id</th>
+						<th style="min-width: 60px;">Record Id (Only for eResources)</th>
 						<th>Student Name</th>
 						<th>UUID</th>
 						<th>Subject (Content Area/Subtest)</th>
@@ -254,16 +254,20 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td style="padding-top: 12px;" nowrap>
+							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
-							<%} else if("ER".equals(processEr.getOverallStatus())) {%>
-								<span class="progress" title="In Progress"></span>
-							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
+							<%} else if("ER".equals(processEr.getOverallStatus()) || "IN".equals(processEr.getOverallStatus())) {%>
 								<span class="error" title="Error"></span>
+							<%} else{%>
+								<span class="progress" title="In Progress"></span>		
 							<%} %>
-							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
-							 <%=processEr.getErSsHistId() %>
 							</a>
+							 <% if("0".equals(processEr.getErSsHistId())){%>
+								NA
+							<%}else{%>
+								<%=processEr.getErSsHistId() %>
+							<%}%>
 						</td>
 						<td><%=processEr.getStudentName() %></td>
 						<td><%=processEr.getUuid() %></td>
@@ -295,12 +299,15 @@
 						<td><%=processEr.getStateCode() %></td>
 						<td><%=processEr.getForm() %></td>
 						<td>
-							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentHist(<%=processEr.getErSsHistId() %>);'>
-								More Info
-							</a>
+							<% if("0".equals(processEr.getErSsHistId())){%>
+							NA
+							<%}else{%>
+								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentHist(<%=processEr.getErSsHistId() %>);'>
+									More Info
+								</a>
+							<%}%>
 						</td>
 					</tr>
-				
 				
 				<%} %>
 				</tbody>
@@ -315,10 +322,6 @@
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
-				<div id='erLogDialog' title='Loading' style='display:none; font-size:12px'>
-					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
-					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
-				</div>
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="stuHist"><p>
 					<table class="process_details">
