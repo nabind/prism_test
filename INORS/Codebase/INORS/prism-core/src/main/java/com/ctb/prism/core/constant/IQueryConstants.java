@@ -271,7 +271,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String IS_ROLE_TAGGED= CustomStringUtil.appendString("SELECT URL.USERID USER_ID FROM USER_ROLE URL",
 																			 " WHERE URL.ROLEID=? ",
-																			 " AND URL.USERID=(SELECT USER_ID FROM USERS WHERE UPPER(USERNAME)= UPPER(?) AND ROWNUM=1)");
+																			 " AND URL.USERID=(SELECT USERID FROM USERS WHERE UPPER(USERNAME)= UPPER(?) AND ROWNUM=1)");
 	
 	public static final String UPDATE_ROLE = "UPDATE ROLE SET ROLE_NAME = ?, DESCRIPTION  = ? WHERE ROLEID = ?";
 	
