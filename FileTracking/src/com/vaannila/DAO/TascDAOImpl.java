@@ -280,7 +280,8 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
 			queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
 			queryBuff.append(" ESSH.BARCODE BARCODE,");
-			queryBuff.append(" TO_CHAR(TO_DATE(ESSH.DATE_SCHEDULED,'YYYYMMDDHHMISS'),'MM/DD/YYYY') DATE_SCHEDULED,");
+			//queryBuff.append(" TO_CHAR(TO_DATE(ESSH.DATE_SCHEDULED,'YYYYMMDDHHMISS'),'MM/DD/YYYY') DATE_SCHEDULED,");
+			queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
 			queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
 			queryBuff.append(" ESSH.FORM FORM,");
 			queryBuff.append(" ESSH.DATETIMESTAMP,");

@@ -326,6 +326,7 @@ public class TascController {
 			convertProcessToJson(processesEr);
 			
 		} catch (Exception e) {
+			request.getSession().removeAttribute("tascProcessEr");
 			e.printStackTrace();
 		}
 		

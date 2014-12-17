@@ -309,7 +309,7 @@
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				<div id='erLogDialog' title='Loading' style='display:none; font-size:12px'>
-					<p id="_er_Heading"><b>ER validation failed for the following students. Click on the test element id for details.</b><p>
+					<p id="_er_Heading"><b>ER validation failed for the following students. </b><p>
 					<p id="_er_log"><img src="css/ajax-loader.gif"></img><p>
 				</div>
 				<div id="stuLogDialog" title="Loading ..." style='display:none; font-size:11px'>

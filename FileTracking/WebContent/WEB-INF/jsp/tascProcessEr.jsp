@@ -229,7 +229,7 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
-						<th style="min-width: 60px;">Record Id (Only for eResources)</th>
+						<th style="min-width: 60px;">Record Id</th>
 						<th>Student Name</th>
 						<th>UUID</th>
 						<th>Subject (Content Area/Subtest)</th>
@@ -254,7 +254,7 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td style="padding-top: 12px;" nowrap>
-							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
+							
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
 							<%} else if("ER".equals(processEr.getOverallStatus()) || "IN".equals(processEr.getOverallStatus())) {%>
@@ -262,12 +262,18 @@
 							<%} else{%>
 								<span class="progress" title="In Progress"></span>		
 							<%} %>
-							</a>
+							
+							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
 							 <% if("0".equals(processEr.getErSsHistId())){%>
+								<% if("0".equals(processEr.getProcessId())){%>
 								NA
+								<%}else{%>
+									<%=processEr.getProcessId() %>
+								<%}%>
 							<%}else{%>
 								<%=processEr.getErSsHistId() %>
 							<%}%>
+							</a>
 						</td>
 						<td><%=processEr.getStudentName() %></td>
 						<td><%=processEr.getUuid() %></td>
@@ -313,7 +319,7 @@
 				</tbody>
 				</table>
 				<p style="padding-top:20px">
-					<b>Source System:</b> PP = Paper Pencil
+					<b>Record Id:</b> = History ID for eResource, = Process ID for Online and Paper Pencil.
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
