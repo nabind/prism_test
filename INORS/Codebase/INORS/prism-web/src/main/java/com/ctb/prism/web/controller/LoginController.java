@@ -456,7 +456,8 @@ public class LoginController {
 					roles.append(authList.get(i).getAuthority()).append(",");
 				}
 				roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
-				if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
+				if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && 
+						(Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
 					roles.append(",").append("ROLE_ADMIN");
 				}
 				logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
