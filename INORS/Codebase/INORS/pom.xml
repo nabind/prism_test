@@ -967,7 +967,7 @@
 				<version>${version-javadoc}</version>
 			</plugin>
 			<!-- Cobertura -->
-			<!-- mvn cobertuar:cobertura -->
+			<!-- mvn cobertura:cobertura -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
