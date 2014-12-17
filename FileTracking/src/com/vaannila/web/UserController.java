@@ -424,14 +424,27 @@ public class UserController extends MultiActionController {
 						pdfFileLoc = orgProcess.getLetterPDFLoc();
 						message = "Invitation Letter";
 					} 
-					if(pdfFileLoc != null && pdfFileLoc.trim().length() == 0) {
+					if(pdfFileLoc == null ||(pdfFileLoc != null && pdfFileLoc.trim().length() == 0)) {
+						pdfFileLoc = orgProcess.getProcessLog();
+						if(pdfFileLoc != null && pdfFileLoc.indexOf("Created PDF with name : ") != -1) {
+							pdfFileLoc = pdfFileLoc.substring( pdfFileLoc.indexOf("Created PDF with name : ")+24,
+									pdfFileLoc.indexOf(".pdf")+4 );
+						} else {
+							pdfFileLoc = "";
+							response.setContentType("text/html");
+							response.getWriter().write("<span style='color:red;font-size:20px'> There is no "+message+" PDF exists for this process [Process Id: "+ processId + 
+							"]. Please check the \"Process Log\" for more details.</span>");
+							
+							return null;
+						}
+						/*
 						pdfFileLoc = "";
 						response.setContentType("text/html");
 						response.getWriter().write("<span style='color:red;font-size:20px'> There is no "+message+" PDF exists for this process [Process Id: "+ processId + 
 								"]. Please check the \"Process Log\" for more details.</span>");
 						
-						return null;
-					}
+						return null;*/
+					} 
 					break;
 				}
 			}
