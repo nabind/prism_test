@@ -280,7 +280,6 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
 			queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
 			queryBuff.append(" ESSH.BARCODE BARCODE,");
-			//queryBuff.append(" TO_CHAR(TO_DATE(ESSH.DATE_SCHEDULED,'YYYYMMDDHHMISS'),'MM/DD/YYYY') DATE_SCHEDULED,");
 			queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
 			queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
 			queryBuff.append(" ESSH.FORM FORM,");
@@ -310,6 +309,21 @@ public class TascDAOImpl {
 			}
 			if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 				queryBuff.append(" AND ESSH.ER_SS_HISTID = ?");
+			}
+			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+				queryBuff.append(" AND EED.PROCESS_ID = ?");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				queryBuff.append(" AND ESSH.STATE_CODE = ?");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				queryBuff.append(" AND ESSH.FORM = ?");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				queryBuff.append(" AND ESSH.BARCODE = ?");
 			}
 			queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
 		}else{
@@ -357,6 +371,21 @@ public class TascDAOImpl {
 			if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 				queryBuff.append(" AND EED.ER_SS_HISTID = ?");
 			}
+			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+				queryBuff.append(" AND EED.PROCESS_ID = ?");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				queryBuff.append(" AND ESD.STATE_CODE = ?");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				queryBuff.append(" AND ETS.FORM = ?");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				queryBuff.append(" AND ETS.BARCODE = ?");
+			}
 
 			queryBuff.append(" UNION");
 			
@@ -403,6 +432,21 @@ public class TascDAOImpl {
 			if(!"ALL".equals(searchProcess.getSubjectCa())){
 				queryBuff.append("  AND SD.SUBTEST_CODE = ?");
 			}
+			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+				queryBuff.append(" AND SPS.PROCESS_ID = ?");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				queryBuff.append(" AND SHD.ORG_CODE = ?");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				queryBuff.append(" AND SSSD.TEST_FORM = ?");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				queryBuff.append(" AND SSBD.TEST_ELEMENT_ID = ?");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				queryBuff.append(" AND SSBD.BARCODE = ?");
+			}
 			queryBuff.append(" ORDER BY DATETIMESTAMP DESC, STUDENTNAME, SUBTEST_NAME");
 		}
 			
@@ -437,6 +481,21 @@ public class TascDAOImpl {
 				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
 				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getStateCode());
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getForm());
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getTestElementId());
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getBarcode());
+				}
 			}else{
 				pstmt.setString(++count, searchProcess.getSourceSystem());
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
@@ -460,6 +519,21 @@ public class TascDAOImpl {
 				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
 				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getStateCode());
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getForm());
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getTestElementId());
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getBarcode());
+				}
 				pstmt.setString(++count, searchProcess.getSourceSystem());
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
@@ -476,25 +550,40 @@ public class TascDAOImpl {
 				if(!"ALL".equals(searchProcess.getSubjectCa())){
 					pstmt.setString(++count, searchProcess.getSubjectCa());
 				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getStateCode());
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getForm());
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getTestElementId());
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					pstmt.setString(++count, searchProcess.getBarcode());
+				}
 			}
 			
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new TASCProcessTO();
-				processTO.setStudentName(rs.getString("STUDENTNAME"));
-				processTO.setUuid(rs.getString("UUID"));
-				processTO.setSubtestName(rs.getString("SUBTEST_NAME"));
-				processTO.setTestElementId(rs.getString("TEST_ELEMENT_ID"));
-				processTO.setProcessId(rs.getString("PROCESS_ID"));
-				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE"));
-				processTO.setSourceSystem(rs.getString("SOURCE_SYSTEM"));
-				processTO.setOverallStatus(rs.getString("EXCEPTION_STATUS"));
-				processTO.setErSsHistId(rs.getString("ER_SS_HISTID"));
-				processTO.setBarcode(rs.getString("BARCODE"));
-				processTO.setDateScheduled(rs.getString("DATE_SCHEDULED"));
-				processTO.setStateCode(rs.getString("STATE_CODE"));
-				processTO.setForm(rs.getString("FORM"));
-				processTO.setErExcdId(rs.getString("ER_EXCDID"));
+				processTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
+				processTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
+				processTO.setSubtestName(rs.getString("SUBTEST_NAME") != null ? rs.getString("SUBTEST_NAME") : "");
+				processTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
+				processTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
+				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
+				processTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
+				processTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
+				processTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
+				processTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
+				processTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
+				processTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
+				processTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
+				processTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

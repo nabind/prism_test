@@ -1,4 +1,5 @@
 <%@page import="com.vaannila.TO.TASCProcessTO"%>
+<%@page import="com.vaannila.TO.SearchProcess"%>
 <%@page import="javax.servlet.http.HttpServletRequest" %>
 <%@page import="com.vaannila.TO.OrgProcess" %>
 <%@page import="com.vaannila.TO.AdminTO" %>
@@ -40,6 +41,13 @@
 		margin-top: -9px;
 		position: relative;
 		z-index: 88;
+	}
+	.search-criteria {
+		background-color: rgb(174, 208, 187);
+		padding: 10px;
+		margin-bottom: 10px;
+		text-align: justify;
+		border-radius: 5px;
 	}
 </style>
 <script src="css/jquery.validate.js"></script>
@@ -223,7 +231,59 @@
 	 
 		<div id="accordion">
 				<!-- panel -->
-				
+				<% 
+				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("tascRequestTO");
+				%>
+				<div class="search-criteria">
+				<b>Showing search results for</b> Source System: <%=searchProcess.getSourceSystem()%>
+				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
+					, Processed Date From: <%=searchProcess.getProcessedDateFrom()%>
+				<%}%>
+				<%if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){%>
+					, Processed Date To: <%=searchProcess.getProcessedDateTo()%>
+				<%}%>
+				<%if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){%>
+					, UUID: <%=searchProcess.getUuid()%>
+				<%}%>
+				<%if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){%>
+					, Record ID (Only for eResources): <%=searchProcess.getRecordId()%>
+				<%}%>
+				<%if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){%>
+					, Process ID (Except eResources): <%=searchProcess.getProcessId()%>
+				<%}%>
+				<%if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){%>
+					, Last Name: <%=searchProcess.getLastName()%>
+				<%}%>
+				<%if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){%>
+					, Exception Code: <%=searchProcess.getExceptionCode()%>
+				<%}%>
+				<%if(!"ALL".equals(searchProcess.getSubjectCa())){%>
+					, Subject (Content Area/Subtest): 
+						<%if("1".equals(searchProcess.getSubjectCa())){%>
+							Reading
+						<%} else if("2".equals(searchProcess.getSubjectCa())){%>
+							Writing
+						<%} else if("3".equals(searchProcess.getSubjectCa())){%>
+							English-Language Arts
+						<%} else if("1".equals(searchProcess.getSubjectCa())){%>
+							Mathematics
+						<%} else if("1".equals(searchProcess.getSubjectCa())){%>
+							Science
+						<%}%>
+				<%}%>
+				<%if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){%>
+					, State Code: <%=searchProcess.getStateCode()%>
+				<%}%>
+				<%if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){%>
+					, Form: <%=searchProcess.getForm()%>
+				<%}%>
+				<%if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){%>
+					, Test Element ID: <%=searchProcess.getTestElementId()%>
+				<%}%>
+				<%if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){%>
+					, Barcode: <%=searchProcess.getBarcode()%>
+				<%}%>
+				</div>
 				
 				<table id="process" width="100%">
 				<thead>
@@ -236,7 +296,7 @@
 						<th>Test Element Id</th>
 						<th>Process Id</th>
 						<th>Exception Code</th>
-						<th>Source System</th>
+						<th>Status</th>
 						<th>Bar Code</th>
 						<th>Scheduled Date</th>
 						<th>State Code</th>
@@ -299,7 +359,15 @@
 								<%=processEr.getExceptionCode() %>
 							<%}%>
 						</td>
-						<td><%=processEr.getSourceSystem() %></td>
+						<td>
+							<%if("CO".equals(processEr.getOverallStatus())) { %>
+								Completed
+							<%} else if("ER".equals(processEr.getOverallStatus()) || "IN".equals(processEr.getOverallStatus())) {%>
+								Error
+							<%} else{%>
+								In Progress		
+							<%} %>
+						</td>
 						<td><%=processEr.getBarcode() %></td>
 						<td><%=processEr.getDateScheduled() %></td>
 						<td><%=processEr.getStateCode() %></td>

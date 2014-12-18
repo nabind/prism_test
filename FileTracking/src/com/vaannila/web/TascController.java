@@ -317,6 +317,12 @@ public class TascController {
 			process.setExceptionCode(request.getParameter("exceptionCode"));
 			process.setSubjectCa(request.getParameter("subjectCa"));
 			process.setSourceSystem(request.getParameter("sourceSystem"));
+			process.setStateCode(request.getParameter("stateCode"));
+			process.setForm(request.getParameter("form"));
+			process.setTestElementId(request.getParameter("testElementId"));
+			process.setBarcode(request.getParameter("barcode"));
+			process.setProcessId(request.getParameter("processId"));
+			
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();

@@ -73,6 +73,10 @@
 								<td><input type="text" name="recordId" id="recordId"></td>
 							</tr>
 							<tr>
+								<td>Process ID (Except eResources):</td>
+								<td><input type="text" name="processId" id="processId"></td>
+							</tr>
+							<tr>
 								<td>Last Name:</td>
 								<td><input type="text" name="lastName" id="lastName"></td>
 							</tr>
@@ -81,7 +85,7 @@
 								<td><input type="text" name="exceptionCode" id="exceptionCode"></td>
 							</tr>
 							<tr>
-								<td>Subject (Content Area/Subtest) :</td>
+								<td>Subject (Content Area/Subtest):</td>
 								<td>
 									<select name="subjectCa" id="subjectCa">
 										<option value="ALL">All</option>
@@ -92,6 +96,22 @@
 										<option value="5">Science</option>
 									</select>
 								</td>
+							</tr>
+							<tr>
+								<td>State Code:</td>
+								<td><input type="text" name="stateCode" id="stateCode"></td>
+							</tr>
+							<tr>
+								<td>Form:</td>
+								<td><input type="text" name="form" id="form"></td>
+							</tr>
+							<tr>
+								<td>Test Element ID:</td>
+								<td><input type="text" name="testElementId" id="testElementId"></td>
+							</tr>
+							<tr>
+								<td>Barcode:</td>
+								<td><input type="text" name="barcode" id="barcode"></td>
 							</tr>
 							<tr>
 								<td></td>

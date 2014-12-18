@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class SearchProcess implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 262460751035212841L;
 	private long processid;
 	private String structElement;
 	private String orgLevel;
@@ -27,6 +31,12 @@ public class SearchProcess implements Serializable {
 	private String exceptionCode = "";
 	private String subjectCa = "";
 	private String sourceSystem = "";
+	private String stateCode = "";
+	private String form = "";
+	private String testElementId = "";
+	private String barcode = "";
+	private String processId = "";
+	
 	
 	public String getElementName() {
 		return elementName;
@@ -165,6 +175,36 @@ public class SearchProcess implements Serializable {
 	}
 	public void setSourceSystem(String sourceSystem) {
 		this.sourceSystem = sourceSystem;
+	}
+	public String getStateCode() {
+		return stateCode;
+	}
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
+	}
+	public String getForm() {
+		return form;
+	}
+	public void setForm(String form) {
+		this.form = form;
+	}
+	public String getTestElementId() {
+		return testElementId;
+	}
+	public void setTestElementId(String testElementId) {
+		this.testElementId = testElementId;
+	}
+	public String getBarcode() {
+		return barcode;
+	}
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+	public String getProcessId() {
+		return processId;
+	}
+	public void setProcessId(String processId) {
+		this.processId = processId;
 	}
 	
 	
