@@ -369,7 +369,7 @@ public class ParentBusinessImpl implements IParentBusiness {
 		}finally{
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(fos);
-			if(file.delete()){
+			if(file!=null && file.delete()){
 				logger.log(IAppLogger.INFO, "Temporary IC PDF Deleted");
 			}else{
 				throw new BusinessException("FAILED.[Temporary IC PDF can't be deleted]");
