@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +24,9 @@ import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
-import com.ctb.prism.test.TestUtil;
+import com.ctb.prism.test.ParentTestHelper;
 import com.ctb.prism.test.TestParams;
+import com.ctb.prism.test.TestUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
@@ -47,28 +48,32 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
+	public void testGetManageContentFilter() throws BusinessException {
+		Map<String, Object> returnMap = parentService.getManageContentFilter(ParentTestHelper.helpGetManageContentFilter(testParams));
+		assertNotNull(returnMap);
+	}
+
+	@Test
+	public void testGetChildData() throws BusinessException {
+		Map<String, Object> childDataMap = parentService.getChildData(ParentTestHelper.helpGetChildData(testParams));
+		assertNotNull(childDataMap);
+	}
+
+	@Test
 	public void testGetSecretQuestions() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", testParams.getContractName());
-		List<QuestionTO> secretQuestionList = parentService.getSecretQuestions(paramMap);
+		List<QuestionTO> secretQuestionList = parentService.getSecretQuestions(ParentTestHelper.helpGetSecretQuestions(testParams));
 		assertEquals(secretQuestionList.size(), Integer.parseInt(testParams.getNoOfSecretQuestions()));
 	}
 
 	@Test
 	public void testCheckUserAvailability() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", testParams.getUserName());
-		paramMap.put("contractName", testParams.getContractName());
-		boolean availability = parentService.checkUserAvailability(paramMap);
+		boolean availability = parentService.checkUserAvailability(ParentTestHelper.helpCheckUserAvailability(testParams));
 		assertNotNull(availability);
 	}
 
 	@Test
 	public void testCheckActiveUserAvailability() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", testParams.getUserName());
-		paramMap.put("contractName", testParams.getContractName());
-		boolean availability = parentService.checkActiveUserAvailability(paramMap);
+		boolean availability = parentService.checkActiveUserAvailability(ParentTestHelper.helpCheckActiveUserAvailability(testParams));
 		assertNotNull(availability);
 	}
 
@@ -81,35 +86,21 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testValidateIC() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("invitationCode", testParams.getInvitationCode());
-		paramMap.put("contractName", testParams.getContractName());
-		ParentTO to = parentService.validateIC(paramMap);
+		ParentTO to = parentService.validateIC(ParentTestHelper.helpValidateIC(testParams));
 		assertNotNull(to);
 	}
 
 	@Test
 	public void testRegisterUser() throws BusinessException {
 		ParentTO to = new ParentTO();
+		to.setQuestionToList(ParentTestHelper.getQuestionList());
 		boolean value = parentService.registerUser(to);
 		assertNotNull(value);
 	}
 
 	@Test
 	public void testGetChildrenList() {
-		String isPN = "";
-		String parentName = "";
-		String clickedTreeNode = "";
-		String adminYear = "";
-		String orgMode = "";
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("isPN", isPN);
-		paramMap.put("parentName", parentName);
-		paramMap.put("clickedTreeNode", clickedTreeNode);
-		paramMap.put("adminYear", adminYear);
-		paramMap.put("orgMode", orgMode);
-		List<StudentTO> studentList = parentService.getChildrenList(paramMap);
+		List<StudentTO> studentList = parentService.getChildrenList(ParentTestHelper.helpGetChildrenList(testParams));
 		assertNotNull(studentList);
 	}
 
@@ -122,27 +113,6 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 		String moreCount = "0";
 		ArrayList<ParentTO> parentList = parentService.getParentList(orgId, adminYear, searchParam, orgMode, moreCount);
 		assertNotNull(parentList);
-	}
-
-	@Test
-	public void testGetStudentList() {
-		String orgId = "0";
-		String adminYear = "";
-		String searchParam = "";
-		String currCustomer = "0";
-		String orgMode = "";
-		String moreCount = "0";
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("scrollId", orgId);
-		paramMap.put("adminYear", adminYear);
-		paramMap.put("searchParam", searchParam);
-		paramMap.put("currCustomer", currCustomer);
-		paramMap.put("orgMode", orgMode);
-		paramMap.put("moreCount", moreCount);
-
-		ArrayList<StudentTO> studentList = parentService.getStudentList(paramMap);
-		assertNull(studentList);
 	}
 
 	@Test
@@ -167,20 +137,8 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testGetAssessmentList() {
-		String testElementId = "";
-		List<StudentTO> studentList = parentService.getAssessmentList(testElementId);
-		assertNotNull(studentList);
-	}
-
-	@Test
-	public void testSearchStudent() {
-		String studentName = "";
-		String tenantId = "0";
-		String adminyear = "";
-		long customerId = 0L;
-		String orgMode = "";
-		ArrayList<StudentTO> studentList = parentService.searchStudent(studentName, tenantId, adminyear, customerId, orgMode);
+	public void testGetStudentList() {
+		ArrayList<StudentTO> studentList = parentService.getStudentList(ParentTestHelper.helpGetStudentList(testParams));
 		assertNotNull(studentList);
 	}
 
@@ -196,21 +154,26 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testSearchStudentOnRedirect() {
-		String tesElementId = "";
-		String tenantId = "";
-		String customerIdString = "0";
+	public void testSearchStudent() {
+		String studentName = "";
+		String tenantId = "0";
+		String adminyear = "";
+		long customerId = 0L;
 		String orgMode = "";
-		String adminYear = "";
+		ArrayList<StudentTO> studentList = parentService.searchStudent(studentName, tenantId, adminyear, customerId, orgMode);
+		assertNotNull(studentList);
+	}
 
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("studentBioId", tesElementId);
-		paramMap.put("scrollId", tenantId);
-		paramMap.put("customer", customerIdString);
-		paramMap.put("orgMode", orgMode);
-		paramMap.put("adminYear", adminYear);
+	@Test
+	public void testSearchStudentOnRedirect() {
+		ArrayList<StudentTO> studentList = parentService.searchStudentOnRedirect(ParentTestHelper.helpSearchStudentOnRedirect(testParams));
+		assertNotNull(studentList);
+	}
 
-		ArrayList<StudentTO> studentList = parentService.searchStudentOnRedirect(paramMap);
+	@Test
+	public void testGetAssessmentList() {
+		String testElementId = "";
+		List<StudentTO> studentList = parentService.getAssessmentList(testElementId);
 		assertNotNull(studentList);
 	}
 
@@ -231,7 +194,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
 		to.setUserName(testParams.getUserName());
-		to.setQuestionToList(getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList());
 		boolean status = parentService.firstTimeUserLogin(to);
 		assertNotNull(status);
 	}
@@ -243,19 +206,34 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
+	public void testGetSecurityQuestionForUser() {
+		ArrayList<QuestionTO> questionList = parentService.getSecurityQuestionForUser(ParentTestHelper.helpGetSecurityQuestionForUser(testParams));
+		assertNotNull(questionList);
+	}
+
+	@Test
+	public void testValidateAnswers() {
+		boolean value = parentService.validateAnswers(ParentTestHelper.helpValidateAnswers(testParams));
+		assertNotNull(value);
+	}
+
+	@Test
+	public void testGetUserNamesByEmail() {
+		List<UserTO> userList = parentService.getUserNamesByEmail(ParentTestHelper.helpGetUserNamesByEmail(testParams));
+		assertNotNull(userList);
+	}
+
+	@Test
 	public void testUpdateUserProfile() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList());
 		boolean status = parentService.updateUserProfile(to);
 		assertNotNull(status);
 	}
 
 	@Test
 	public void testAddInvitationToAccount() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("curruser", testParams.getUserName());
-		paramMap.put("invitationCode", testParams.getInvitationCode());
-		boolean status = parentService.addInvitationToAccount(paramMap);
+		boolean status = parentService.addInvitationToAccount(ParentTestHelper.helpAddInvitationToAccount(testParams));
 		assertNotNull(status);
 	}
 
@@ -267,35 +245,6 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testGetSecurityQuestionForUser() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", testParams.getContractName());
-		paramMap.put("username", testParams.getUserName());
-		ArrayList<QuestionTO> questionList = parentService.getSecurityQuestionForUser(paramMap);
-		assertNotNull(questionList);
-	}
-
-	@Test
-	public void testValidateAnswers() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", testParams.getContractName());
-		paramMap.put("username", testParams.getUserName());
-		List<QuestionTO> questionToList = getQuestionList();
-		paramMap.put("questionToList", questionToList);
-		boolean value = parentService.validateAnswers(paramMap);
-		assertNotNull(value);
-	}
-
-	@Test
-	public void testGetUserNamesByEmail() {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", testParams.getContractName());
-		paramMap.put("emailId", "a@a.a");
-		List<UserTO> userList = parentService.getUserNamesByEmail(paramMap);
-		assertNotNull(userList);
-	}
-
-	@Test
 	public void testRegenerateActivationCode() throws Exception {
 		StudentTO student = new StudentTO();
 		boolean status = parentService.regenerateActivationCode(student);
@@ -303,190 +252,79 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testGetManageContentFilter() {
-		assertNotNull("Not yet implemented");
-	}
-
-	@Test
 	public void testPopulateGrade() throws BusinessException {
-		long custProdId = 0L;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("custProdId", custProdId);
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = parentService.populateGrade(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> gradeList = parentService.populateGrade(ParentTestHelper.helpPopulateGrade(testParams));
 		assertNotNull(gradeList);
 	}
 
 	@Test
 	public void testPopulateSubtest() throws BusinessException {
-		long custProdId = 0L;
-		long gradeId = 0L;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("custProdId", custProdId);
-		paramMap.put("gradeId", gradeId);
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> subtestList = parentService.populateSubtest(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> subtestList = parentService.populateSubtest(ParentTestHelper.helpPopulateSubtest(testParams));
 		assertNotNull(subtestList);
 	}
 
 	@Test
 	public void testPopulateObjective() throws BusinessException {
-		long subtestId = 0L;
-		long gradeId = 0L;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("subtestId", subtestId);
-		paramMap.put("gradeId", gradeId);
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectiveList = parentService.populateObjective(paramMap);
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectiveList = parentService.populateObjective(ParentTestHelper
+				.helpPopulateObjective(testParams));
 		assertNotNull(objectiveList);
 	}
 
 	@Test
 	public void testAddNewContent() throws BusinessException {
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		ManageContentTO manageContentTO = new ManageContentTO();
-		paramMap.put("manageContentTO", manageContentTO);
-		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.addNewContent(paramMap);
-		assertNull(to);
+		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.addNewContent(ParentTestHelper.helpAddNewContent(testParams));
+		assertNotNull(to);
 	}
 
-	@Test
+	@Test(expected = BusinessException.class)
+	// TODO
 	public void testLoadManageContent() throws BusinessException {
-		String custProdId = "0";
-		String subtestId = "0";
-		String objectiveId = "0";
-		String contentTypeId = "0";
-		String checkFirstLoad = "";
-		String moreCount = "0";
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("custProdId", custProdId);
-		paramMap.put("subtestId", subtestId);
-		paramMap.put("objectiveId", objectiveId);
-		paramMap.put("contentTypeId", contentTypeId);
-		paramMap.put("checkFirstLoad", checkFirstLoad);
-		paramMap.put("moreCount", moreCount);
-
-		List<ManageContentTO> contentList = parentService.loadManageContent(paramMap);
+		List<ManageContentTO> contentList = parentService.loadManageContent(ParentTestHelper.helpLoadManageContent(testParams));
 		assertNotNull(contentList);
 	}
 
 	@Test
 	public void testGetContentForEdit() throws BusinessException {
-		long contentId = 0L;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contentId", contentId);
-		ManageContentTO content = parentService.getContentForEdit(paramMap);
-		assertNotNull(content);
+		ManageContentTO content = parentService.getContentForEdit(ParentTestHelper.helpGetContentForEdit(testParams));
+		assertNull(content);
 	}
 
 	@Test
 	public void testUpdateContent() throws BusinessException {
-		ManageContentTO content = new ManageContentTO();
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("manageContentTO", content);
-		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.updateContent(paramMap);
+		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.updateContent(ParentTestHelper.helpUpdateContent(testParams));
 		assertNotNull(to);
 	}
 
 	@Test
 	public void testDeleteContent() throws BusinessException {
-		long contentId = 0L;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contentId", contentId);
-		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.deleteContent(paramMap);
+		com.ctb.prism.core.transferobject.ObjectValueTO to = parentService.deleteContent(ParentTestHelper.helpDeleteContent(testParams));
 		assertNotNull(to);
 	}
 
-	@Test
+	@Test(expected = SQLException.class)
+	// TODO
 	public void testModifyGenericForEdit() throws BusinessException {
-		long custProdId = 0L;
-		long gradeId = 0L;
-		long subtestId = 0L;
-		long objectiveId = 0L;
-		String type = "";
-		String performanceLevelId = "";
-		String statusCodeId = "";
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("custProdId", custProdId);
-		paramMap.put("gradeId", gradeId);
-		paramMap.put("subtestId", subtestId);
-		paramMap.put("objectiveId", objectiveId);
-		paramMap.put("type", type);
-		paramMap.put("performanceLevelId", performanceLevelId);
-		paramMap.put("statusCodeId", statusCodeId);
-
-		ManageContentTO to = parentService.modifyGenericForEdit(paramMap);
+		ManageContentTO to = parentService.modifyGenericForEdit(ParentTestHelper.helpModifyGenericForEdit(testParams));
 		assertNotNull(to);
-	}
-
-	@Test
-	public void testGetChildData() {
-		assertNotNull("Not yet implemented");
 	}
 
 	@Test
 	public void testGetArticleTypeDetails() throws BusinessException {
-		long studentBioId = 0L;
-		long subtestId = 0L;
-		long studentGradeId = 0L;
-		String contentType = "";
-		long custProdId = 0L;
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("studentBioId", studentBioId);
-		paramMap.put("subtestId", subtestId);
-		paramMap.put("studentGradeId", studentGradeId);
-		paramMap.put("contentType", contentType);
-		paramMap.put("custProdId", custProdId);
-
-		List<ManageContentTO> contentList = parentService.getArticleTypeDetails(paramMap);
+		List<ManageContentTO> contentList = parentService.getArticleTypeDetails(ParentTestHelper.helpGetArticleTypeDetails(testParams));
 		assertNotNull(contentList);
 	}
 
-	@Test
+	@Test(expected = SQLException.class)
+	// TODO
 	public void testGetArticleDescription() throws BusinessException {
-		long custProdId = 0L;
-		long studentBioId = 0L;
-		long articleId = 0L;
-		String contentType = "";
-		long subtestId = 0L;
-		long studentGradeId = 0L;
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("custProdId", custProdId);
-		paramMap.put("studentBioId", studentBioId);
-		paramMap.put("articleId", articleId);
-		paramMap.put("contentType", contentType);
-		paramMap.put("subtestId", subtestId);
-		paramMap.put("studentGradeId", studentGradeId);
-
-		ManageContentTO content = parentService.getArticleDescription(paramMap);
+		ManageContentTO content = parentService.getArticleDescription(ParentTestHelper.helpGetArticleDescription(testParams));
 		assertNotNull(content);
 	}
 
 	@Test
 	public void testGetGradeSubtestInfo() throws BusinessException {
-		UserTO user = new UserTO();
-		user.setCustomerId("0");
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", user);
-		List<ManageContentTO> contentList = parentService.getGradeSubtestInfo(paramMap);
+		List<ManageContentTO> contentList = parentService.getGradeSubtestInfo(ParentTestHelper.helpGetGradeSubtestInfo(testParams));
 		assertNotNull(contentList);
-	}
-
-	private List<QuestionTO> getQuestionList() {
-		List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
-		QuestionTO question = new QuestionTO();
-		question.setQuestionId(1L);
-		question.setAnswer("1");
-		questionToList.add(question);
-		question = new QuestionTO();
-		question.setQuestionId(2L);
-		question.setAnswer("2");
-		questionToList.add(question);
-		question = new QuestionTO();
-		question.setQuestionId(3L);
-		question.setAnswer("3");
-		questionToList.add(question);
-		return questionToList;
 	}
 
 }
