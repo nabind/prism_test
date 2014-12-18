@@ -205,6 +205,8 @@ public class ReportController{
 				return CustomStringUtil.appendString("forward:/loadEmptyReport.do?reportName=",
 						jasperReport.getName(), "&reportMsg=", 
 						req.getParameter("msg") != null ? req.getParameter("msg") : null);
+			} else {
+				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.TRUE);
 			}
 			
 			/** perf issue */
@@ -826,8 +828,13 @@ public class ReportController{
 				paginate = IApplicationConstants.TRUE;
 				page = (Integer) req.getSession().getAttribute(IApplicationConstants.TOTAL_PAGES);
 			}
+			int totalPages = 0;
+			String hasReportPages = (String) req.getSession().getAttribute("dataPresent_"+reportUrl);
+			if(IApplicationConstants.TRUE.equals(hasReportPages)) {
+				totalPages = 1;
+			}
 			res.setContentType("application/json");
-			res.getWriter().write("{\"status\":\"Success\", \"paginate\":\"" + paginate + "\", \"page\":\"" +page  + "\", \"height\":\"" + height + "\", \"width\":\"" + width + "\", \"reportUrl\":\""+reportUrl+"\"}" );
+			res.getWriter().write("{\"status\":\"Success\", \"totalPages\":\"" +totalPages+ "\", \"paginate\":\"" + paginate + "\", \"page\":\"" +page  + "\", \"height\":\"" + height + "\", \"width\":\"" + width + "\", \"reportUrl\":\""+reportUrl+"\"}" );
 
 		} catch (Exception exception) {
 			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);

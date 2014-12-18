@@ -943,7 +943,7 @@ function checkpagination(reportUrl, tabCount) {
 										|| obj.reportUrl == '/public/TASC/Reports/TASC_Edu_Center/Student_Roster_files'){
 
 					// code for enable/disable download button
-					if (obj.page > 0) {
+					if (obj.totalPages > 0) {
 						$("#BulkCandidateReportEdu").removeClass('disabled');
 						$("#BulkCandidateReport").removeClass('disabled');
 						$("#BulkCandidateReportEdu").removeClass('disable_a_href');
