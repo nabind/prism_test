@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class XSSFilter implements Filter {
 
@@ -18,6 +19,7 @@ public class XSSFilter implements Filter {
 	private String apostrophe = "&#39;";
 	private static final String CPR = "(c) Coldbeans mailto:info@servletsuite.com";
 	private static final String VERSION = "ver. 1.3";
+	private String mode = "SAMEORIGIN";
 
 	public void init(FilterConfig paramFilterConfig) throws ServletException {
 		this.config = paramFilterConfig;
@@ -52,6 +54,8 @@ public class XSSFilter implements Filter {
 	public void doFilter(ServletRequest paramServletRequest,
 			ServletResponse paramServletResponse, FilterChain paramFilterChain)
 			throws IOException, ServletException {
+		HttpServletResponse res = (HttpServletResponse)paramServletResponse;
+        res.addHeader("X-FRAME-OPTIONS", mode );
 		paramFilterChain.doFilter(new RequestWrapper(
 				(HttpServletRequest) paramServletRequest, this.apostrophe),
 				paramServletResponse);
