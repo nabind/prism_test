@@ -48,16 +48,16 @@ $(document).ready(function() {
 						if (!(($("#f_username").val()).replace(/\s/g,"").length==0)){
 						blockUI();
 						$.ajax({
-							type : "GET",	
+							type : "POST",	
 							url : "regn/checkActiveUser.do",
-							data : "username="+userName,
+							data : "username="+userName+"&CSRFToken=" + $( "input[name='CSRFToken']" ).val(),
 							dataType : 'json',
 							cache:false,
 							success : function(data) {
 								unblockUI();
 								if (data.available == "true") {
 									$("#invalidUsernameMsg").show(500);
-									$("#invalidUsernameMsg").text("The username entered is not valid.");											
+									$("#invalidUsernameMsg").text("Could not retrieve user's security questions.");											
 								}
 								else if (data.available == "false") {
 									$("#invalidUsernameMsg").hide();
@@ -204,9 +204,9 @@ $(document).ready(function() {
 	function getSecurityQuestions(userName){
 		blockUI();
 		$.ajax({
-			type : "GET",	
+			type : "POST",	
 			url : "regn/securityQuestionForUser.do",
-			data : "username="+userName,
+			data : "username="+userName+"&CSRFToken=" + $( "input[name='CSRFToken']" ).val(),
 			dataType : 'json',
 			cache:false,
 			success : function(data) {
@@ -327,9 +327,9 @@ $(document).ready(function() {
 	function getUserNames(emailId){
 		blockUI();
 		$.ajax({
-			type : "GET",	
+			type : "POST",	
 			url : "regn/getUserNames.do",
-			data : "emailId="+emailId,
+			data : "emailId="+emailId+"&CSRFToken=" + $( "input[name='CSRFToken']" ).val(),
 			dataType : 'json',
 			cache:false,
 			success : function(data) {

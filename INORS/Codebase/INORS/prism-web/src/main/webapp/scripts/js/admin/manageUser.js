@@ -497,9 +497,9 @@ $(document).ready(function() {
 	function deleteUserDetails(userId, userName, row) {
 	
 		$.ajax({
-			type : "GET",
+			type : "POST",
 			url : 'deleteUser.do',
-			data : 'Id='+userId+'&userName='+userName+'&purpose='+ $("#purpose").val(),
+			data : 'Id='+userId+'&userName='+userName+'&purpose='+ $("#purpose").val()+"&CSRFToken=" + $( "input[name='CSRFToken']" ).val(),
 			dataType: 'html',
 			cache:false,
 			success : function(data) {

@@ -938,7 +938,7 @@ public class LoginController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/regn/securityQuestionForUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/regn/securityQuestionForUser", method = RequestMethod.POST)
 	public @ResponseBody
 	String securityQuestionForUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
@@ -1078,7 +1078,7 @@ public class LoginController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/regn/getUserNames", method = RequestMethod.GET)
+	@RequestMapping(value = "/regn/getUserNames", method = RequestMethod.POST)
 	public @ResponseBody
 	String getUserNames(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
@@ -1137,7 +1137,7 @@ public class LoginController {
 	 * @throws IOException
 	 */
 
-	@RequestMapping(value = "/regn/checkActiveUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/regn/checkActiveUser", method = RequestMethod.POST)
 	public @ResponseBody
 	String checkActiveUserAvailability(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));

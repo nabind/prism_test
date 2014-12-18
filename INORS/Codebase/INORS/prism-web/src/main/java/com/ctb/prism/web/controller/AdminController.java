@@ -915,7 +915,7 @@ public class AdminController {
 	 * @throws IOException 
 	 */
 
-	@RequestMapping(value="/deleteUser", method=RequestMethod.GET )
+	@RequestMapping(value="/deleteUser", method=RequestMethod.POST )
 	public ModelAndView deleteUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - deleteUser");
