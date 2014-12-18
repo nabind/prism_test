@@ -284,6 +284,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator);
 			folderLoc = folderLoc.replace("//", "/");
 			String[] otherParams = jobTO.getOtherRequestparams().split(",");
+			//username is required in candidate report
+			jobTO.setUserName(otherParams[3]);
 			String userType = (otherParams != null && otherParams.length > 1) ? otherParams[1] : CANDIDATE_RPT_USER_TYPE.REGULAR.toString();
 			// if (jobTO.getRequestDetails() == null) jobTO.setRequestDetails("157,158,159,160");
 			String[] studentBioIds = (jobTO.getRequestDetails() != null) ? jobTO.getRequestDetails().split(",") : null;

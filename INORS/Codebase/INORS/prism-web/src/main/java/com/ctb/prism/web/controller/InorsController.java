@@ -442,7 +442,7 @@ public class InorsController {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
 			String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + IApplicationConstants.CR_BULK_S3_LOCATION;
-			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString));
+			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString,",",username));
 
 			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO);
 
