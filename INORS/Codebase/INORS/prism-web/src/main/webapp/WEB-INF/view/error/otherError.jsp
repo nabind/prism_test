@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title><spring:message code="title.page.accessDenied"/></title>
+  <title><spring:message code="title.page.error"/></title>
   <style>
     ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
     ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -29,11 +29,10 @@
 </head>
 <body>
   <div class="container">
-    <h1><spring:message code="h1.accessDenied" /></h1>
-    <p><spring:message code="p.accessDenied.1" /></p>
-    <p><spring:message code="p.accessDenied.2" /></p>
+    <h1><%= pageContext.getErrorData().getStatusCode() %></h1>
+    <p><%= pageContext.getException() %></p>
+    
     <br>
     <p>Click <a href="/prism/userlogin.do">here</a> to go to login page OR click <a href="/prism/validateUser.do">here</a> to go to home.</p>
-    
   </div>
 
