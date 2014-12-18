@@ -369,7 +369,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String jobLog = jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1);
 
 			// set status to completed
-			jobTO.setRequestFilename(CustomStringUtil.appendString(IApplicationConstants.CR_BULK_S3_LOCATION, FileUtil.getFileNameFromFilePath(archiveFileName)));
+			jobTO.setRequestFilename(CustomStringUtil.appendString(otherParams[2], FileUtil.getFileNameFromFilePath(archiveFileName)));
 			jobTO.setJobStatus(jobStatus);
 			log.append(jobLog);
 			jobTO.setJobLog(log.toString());

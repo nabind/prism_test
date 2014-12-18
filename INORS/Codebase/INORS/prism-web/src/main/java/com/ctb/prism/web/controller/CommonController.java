@@ -598,10 +598,18 @@ public class CommonController extends BaseDAO {
 	 */
 	@RequestMapping(value="/downloadAssest" , method=RequestMethod.GET)
 	public void downloadAssest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String assetPath = request.getParameter("assetPath");
-		byte[] data = repositoryService.getAssetBytes(assetPath);
-		logger.log(IAppLogger.INFO, "data.length = " + data.length);
-		FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(assetPath));
+		String fileName = request.getParameter("assetPath");
+		//@SuppressWarnings("unchecked")
+		//Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
+		//String fileName = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + request.getParameter("assetPath"); 
+		try{
+			byte[] data = repositoryService.getAssetBytes(fileName);
+			logger.log(IAppLogger.INFO, "data.length = " + data.length);
+			FileUtil.browserDownload(response, data, FileUtil.getFileNameFromFilePath(fileName));
+		} catch(Exception e){
+			logger.log(IAppLogger.ERROR, "assets not found: " + fileName);
+		}
+				
 	}
 	
 	@RequestMapping(value="/downloadAssestByS3Key" , method=RequestMethod.GET)

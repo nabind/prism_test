@@ -56,7 +56,7 @@ public interface IApplicationConstants {
 	public static String DEFAULT_PRODUCT_ID = "3001";
 	public static String MENU_SET = "menuSet";
 
-	public static String GDF_S3_LOCATION = "/GDF/";
+	public static String GDF_S3_LOCATION = "GDF/";
 	
 	public static String CR_BULK_S3_LOCATION = "/CR_BULK/";
 

@@ -441,14 +441,14 @@ public class InorsController {
 			jobTrackingTO.setCustomerId(customer);
 			@SuppressWarnings("unchecked")
 			Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
-			String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
+			String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + IApplicationConstants.CR_BULK_S3_LOCATION;
 			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString));
 
 			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
-			// inorsService.asyncPDFDownload(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
+			//inorsService.asyncPDFDownload(String.valueOf(jobTrackingTO.getJobId()), Utils.getContractName());
 
 			if (jobTrackingTO.getJobId() != 0) {
 				status = "Success";
@@ -875,7 +875,7 @@ public class InorsController {
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
 			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
-			// inorsService.batchPDFDownload(jobTrackingId);
+			// inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
 			logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);

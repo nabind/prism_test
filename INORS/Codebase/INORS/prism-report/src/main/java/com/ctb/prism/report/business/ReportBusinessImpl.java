@@ -1043,7 +1043,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 				if(tempQuery.indexOf(Introspector.decapitalize(colm)) != -1) {
 					partQ = tempQuery.substring(tempQuery.indexOf(Introspector.decapitalize(colm)) - 33);
 				} else {
-					partQ = tempQuery.substring(tempQuery.indexOf(Introspector.decapitalize(colm)));
+					//partQ = tempQuery.substring(tempQuery.indexOf(Introspector.decapitalize(colm)));
+					partQ = tempQuery;
 				}
 				trimPart = partQ.substring(partQ.indexOf("$X{IN"), partQ.indexOf("}")+1);
 				String part = partQ.substring(partQ.indexOf("$X{IN")+3, partQ.indexOf("}"));
