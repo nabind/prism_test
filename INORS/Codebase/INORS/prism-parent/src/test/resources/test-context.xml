@@ -6,6 +6,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd">
 
+	<context:component-scan base-package="com.ctb.prism.test" />
 	<context:component-scan base-package="com.ctb.prism.core" />
 	<context:component-scan base-package="com.ctb.prism.login" />
 	<context:component-scan base-package="com.ctb.prism.admin" />
@@ -14,8 +15,7 @@
 	<context:component-scan base-package="com.ctb.prism.inors" />
 	<context:component-scan base-package="com.ctb.prism.web" />
 
-	<context:property-placeholder location="classpath:aws.properties" />
-	<context:property-placeholder location="classpath:inors.properties" />
+	<context:property-placeholder location="classpath*:aws.properties" />
 
 	<import resource="tx-service.xml" />
 	<import resource="jms-config.xml" />

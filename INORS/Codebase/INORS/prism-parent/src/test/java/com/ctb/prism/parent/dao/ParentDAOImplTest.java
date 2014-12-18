@@ -15,58 +15,35 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.ctb.prism.core.exception.BusinessException;
-import com.ctb.prism.login.security.provider.AuthenticatedUser;
-import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
+import com.ctb.prism.test.ParentTestHelper;
+import com.ctb.prism.test.TestParams;
+import com.ctb.prism.test.TestUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/META-INF/spring/test-context.xml" })
+@ContextConfiguration(locations = { "/test-context.xml" })
 @TransactionConfiguration(transactionManager = "txManager")
 public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@Autowired
 	private ParentDAOImpl parentDao;
 
-	// @Value("${test.userName}")
-	private String userName = "ctbadmin";
-
-	// @Value("${test.password}")
-	private String password = "Passwd12";
-
-	// @Value("${test.contractName}")
-	private String contractName = "inors";
-
-	// @Value("${test.noOfSecretQuestions}")
-	private int noOfSecretQuestions = 11;
-	private String invitationCode = "EZM6-7DJZ-69RS-S3ZC";
+	TestParams testParams;
 
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("------------------------------" + contractName + "-------------------------------");
-		UserTO user = new UserTO();
-		user.setUserName(userName);
-		user.setPassword(password);
-		user.setContractName(contractName);
-		UserDetails targetUser = new AuthenticatedUser(user);
-		Authentication authentication = new UsernamePasswordAuthenticationToken(targetUser, targetUser.getPassword());
-		SecurityContext context = new SecurityContextImpl();
-		context.setAuthentication(authentication);
-		SecurityContextHolder.setContext(context);
+		testParams = TestUtil.getTestParams();
+		TestUtil.byPassLogin(testParams);
 	}
 
 	@After
@@ -76,16 +53,16 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testGetSecretQuestions() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
+		paramMap.put("contractName", testParams.getContractName());
 		List<QuestionTO> secretQuestionList = parentDao.getSecretQuestions(paramMap);
-		assertEquals(secretQuestionList.size(), noOfSecretQuestions);
+		assertEquals(secretQuestionList.size(), testParams.getNoOfSecretQuestions());
 	}
 
 	@Test
 	public void testCheckUserAvailability() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", userName);
-		paramMap.put("contractName", contractName);
+		paramMap.put("username", testParams.getUserName());
+		paramMap.put("contractName", testParams.getContractName());
 		boolean availability = parentDao.checkUserAvailability(paramMap);
 		assertNotNull(availability);
 	}
@@ -93,8 +70,8 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testCheckActiveUserAvailability() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", userName);
-		paramMap.put("contractName", contractName);
+		paramMap.put("username", testParams.getUserName());
+		paramMap.put("contractName", testParams.getContractName());
 		boolean availability = parentDao.checkActiveUserAvailability(paramMap);
 		assertNotNull(availability);
 	}
@@ -102,15 +79,15 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testIsRoleAlreadyTagged() {
 		String roleId = "1";
-		boolean availability = parentDao.isRoleAlreadyTagged(roleId, userName);
+		boolean availability = parentDao.isRoleAlreadyTagged(roleId, testParams.getUserName());
 		assertNotNull(availability);
 	}
 
 	@Test
 	public void testValidateIC() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("invitationCode", invitationCode);
-		paramMap.put("contractName", contractName);
+		paramMap.put("invitationCode", testParams.getInvitationCode());
+		paramMap.put("contractName", testParams.getContractName());
 		ParentTO to = parentDao.validateIC(paramMap);
 		assertNotNull(to);
 	}
@@ -118,8 +95,8 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testGetStudentForIC() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("invitationCode", invitationCode);
-		paramMap.put("contractName", contractName);
+		paramMap.put("invitationCode", testParams.getInvitationCode());
+		paramMap.put("contractName", testParams.getContractName());
 		ParentTO to = parentDao.getStudentForIC(paramMap);
 		assertNotNull(to);
 	}
@@ -268,23 +245,23 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setUserName(userName);
-		to.setQuestionToList(getQuestionList());
+		to.setUserName(testParams.getUserName());
+		to.setQuestionToList(ParentTestHelper.getQuestionList());
 		boolean status = parentDao.firstTimeUserLogin(to);
 		assertNotNull(status);
 	}
 
 	@Test
 	public void testManageParentAccountDetails() {
-		ParentTO to = parentDao.manageParentAccountDetails(userName);
+		ParentTO to = parentDao.manageParentAccountDetails(testParams.getUserName());
 		assertNotNull(to);
 	}
 
 	@Test
 	public void testGetSecurityQuestionForUser() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
-		paramMap.put("username", userName);
+		paramMap.put("contractName", testParams.getContractName());
+		paramMap.put("username", testParams.getUserName());
 		ArrayList<QuestionTO> questionList = parentDao.getSecurityQuestionForUser(paramMap);
 		assertNotNull(questionList);
 	}
@@ -292,35 +269,18 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testValidateAnswers() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
-		paramMap.put("username", userName);
-		List<QuestionTO> questionToList = getQuestionList();
+		paramMap.put("contractName", testParams.getContractName());
+		paramMap.put("username", testParams.getUserName());
+		List<QuestionTO> questionToList = ParentTestHelper.getQuestionList();
 		paramMap.put("questionToList", questionToList);
 		boolean value = parentDao.validateAnswers(paramMap);
 		assertNotNull(value);
 	}
 
-	private List<QuestionTO> getQuestionList() {
-		List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
-		QuestionTO question = new QuestionTO();
-		question.setQuestionId(1L);
-		question.setAnswer("1");
-		questionToList.add(question);
-		question = new QuestionTO();
-		question.setQuestionId(2L);
-		question.setAnswer("2");
-		questionToList.add(question);
-		question = new QuestionTO();
-		question.setQuestionId(3L);
-		question.setAnswer("3");
-		questionToList.add(question);
-		return questionToList;
-	}
-
 	@Test
 	public void testGetUserNamesByEmail() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
+		paramMap.put("contractName", testParams.getContractName());
 		paramMap.put("emailId", "a@a.a");
 		List<UserTO> userList = parentDao.getUserNamesByEmail(paramMap);
 		assertNotNull(userList);
@@ -329,7 +289,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testUpdateUserProfile() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList());
 		boolean status = parentDao.updateUserProfile(to);
 		assertNotNull(status);
 	}
@@ -337,8 +297,8 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testAddInvitationToAccount() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("curruser", userName);
-		paramMap.put("invitationCode", invitationCode);
+		paramMap.put("curruser", testParams.getUserName());
+		paramMap.put("invitationCode", testParams.getInvitationCode());
 		boolean status = parentDao.addInvitationToAccount(paramMap);
 		assertNotNull(status);
 	}

@@ -14,55 +14,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.core.exception.BusinessException;
-import com.ctb.prism.login.security.provider.AuthenticatedUser;
-import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
+import com.ctb.prism.test.TestUtil;
+import com.ctb.prism.test.TestParams;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/META-INF/spring/test-context.xml" })
+@ContextConfiguration(locations = { "/test-context.xml" })
 public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
 	private IParentService parentService;
 
-	// @Value("${test.userName}")
-	private String userName = "ctbadmin";
-
-	// @Value("${test.password}")
-	private String password = "Passwd12";
-
-	// @Value("${test.contractName}")
-	private String contractName = "inors";
-
-	// @Value("${test.noOfSecretQuestions}")
-	private int noOfSecretQuestions = 11;
-	private String invitationCode = "EZM6-7DJZ-69RS-S3ZC";
+	TestParams testParams;
 
 	@Before
 	public void setUp() throws Exception {
-		UserTO user = new UserTO();
-		user.setUserName(userName);
-		user.setPassword(password);
-		user.setContractName(contractName);
-		UserDetails targetUser = new AuthenticatedUser(user);
-		Authentication authentication = new UsernamePasswordAuthenticationToken(targetUser, targetUser.getPassword());
-		SecurityContext context = new SecurityContextImpl();
-		context.setAuthentication(authentication);
-		SecurityContextHolder.setContext(context);
+		testParams = TestUtil.getTestParams();
+		TestUtil.byPassLogin(testParams);
 	}
 
 	@After
@@ -72,16 +49,16 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetSecretQuestions() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
+		paramMap.put("contractName", testParams.getContractName());
 		List<QuestionTO> secretQuestionList = parentService.getSecretQuestions(paramMap);
-		assertEquals(secretQuestionList.size(), noOfSecretQuestions);
+		assertEquals(secretQuestionList.size(), Integer.parseInt(testParams.getNoOfSecretQuestions()));
 	}
 
 	@Test
 	public void testCheckUserAvailability() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", userName);
-		paramMap.put("contractName", contractName);
+		paramMap.put("username", testParams.getUserName());
+		paramMap.put("contractName", testParams.getContractName());
 		boolean availability = parentService.checkUserAvailability(paramMap);
 		assertNotNull(availability);
 	}
@@ -89,8 +66,8 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testCheckActiveUserAvailability() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", userName);
-		paramMap.put("contractName", contractName);
+		paramMap.put("username", testParams.getUserName());
+		paramMap.put("contractName", testParams.getContractName());
 		boolean availability = parentService.checkActiveUserAvailability(paramMap);
 		assertNotNull(availability);
 	}
@@ -98,15 +75,15 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testIsRoleAlreadyTagged() {
 		String roleId = "1";
-		boolean availability = parentService.isRoleAlreadyTagged(roleId, userName);
+		boolean availability = parentService.isRoleAlreadyTagged(roleId, testParams.getUserName());
 		assertNotNull(availability);
 	}
 
 	@Test
 	public void testValidateIC() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("invitationCode", invitationCode);
-		paramMap.put("contractName", contractName);
+		paramMap.put("invitationCode", testParams.getInvitationCode());
+		paramMap.put("contractName", testParams.getContractName());
 		ParentTO to = parentService.validateIC(paramMap);
 		assertNotNull(to);
 	}
@@ -253,7 +230,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setUserName(userName);
+		to.setUserName(testParams.getUserName());
 		to.setQuestionToList(getQuestionList());
 		boolean status = parentService.firstTimeUserLogin(to);
 		assertNotNull(status);
@@ -261,7 +238,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testManageParentAccountDetails() {
-		ParentTO to = parentService.manageParentAccountDetails(userName);
+		ParentTO to = parentService.manageParentAccountDetails(testParams.getUserName());
 		assertNotNull(to);
 	}
 
@@ -276,8 +253,8 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testAddInvitationToAccount() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("curruser", userName);
-		paramMap.put("invitationCode", invitationCode);
+		paramMap.put("curruser", testParams.getUserName());
+		paramMap.put("invitationCode", testParams.getInvitationCode());
 		boolean status = parentService.addInvitationToAccount(paramMap);
 		assertNotNull(status);
 	}
@@ -292,8 +269,8 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetSecurityQuestionForUser() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
-		paramMap.put("username", userName);
+		paramMap.put("contractName", testParams.getContractName());
+		paramMap.put("username", testParams.getUserName());
 		ArrayList<QuestionTO> questionList = parentService.getSecurityQuestionForUser(paramMap);
 		assertNotNull(questionList);
 	}
@@ -301,8 +278,8 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testValidateAnswers() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
-		paramMap.put("username", userName);
+		paramMap.put("contractName", testParams.getContractName());
+		paramMap.put("username", testParams.getUserName());
 		List<QuestionTO> questionToList = getQuestionList();
 		paramMap.put("questionToList", questionToList);
 		boolean value = parentService.validateAnswers(paramMap);
@@ -312,7 +289,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetUserNamesByEmail() {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("contractName", contractName);
+		paramMap.put("contractName", testParams.getContractName());
 		paramMap.put("emailId", "a@a.a");
 		List<UserTO> userList = parentService.getUserNamesByEmail(paramMap);
 		assertNotNull(userList);
