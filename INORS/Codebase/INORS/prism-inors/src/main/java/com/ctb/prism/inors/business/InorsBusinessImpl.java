@@ -303,6 +303,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				String tempFileName = (CustomStringUtil.appendString(jobTO.getRequestFilename(), "_", "" + count++, "_", Utils.getDateTime(), ".pdf"));
 				logger.log(IAppLogger.INFO, "\n\n-----------------------------"+count+" of "+list.size()+"------------------------------------\n\n");
 				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
+				fileName = fileName.replaceAll("\\\\", "/");
 				String folder = FileUtil.getDirFromFilePath(fileName);
 				File dir = new File(folder);
 				if (!dir.isDirectory()) {

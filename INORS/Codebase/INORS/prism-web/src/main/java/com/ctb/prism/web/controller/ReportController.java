@@ -1930,6 +1930,12 @@ public class ReportController{
 		logger.log(IAppLogger.INFO, "filter = " + filter);
 		logger.log(IAppLogger.INFO, "printerFriendly = " + printerFriendly);
 		req.setAttribute("icDownload", IApplicationConstants.TRUE);
+		if(req.getSession().getAttribute(IApplicationConstants.CURRUSER)==null)
+			req.getSession().setAttribute(IApplicationConstants.CURRUSER, req.getParameter("LoggedInUserName"));
+		if(req.getSession().getAttribute(IApplicationConstants.CURRUSERID) == null)
+			 req.getSession().setAttribute(IApplicationConstants.CURRUSERID,req.getParameter("LoggedInUserId"));
+		if(req.getSession().getAttribute(IApplicationConstants.CUSTOMER) == null)
+			 req.getSession().setAttribute(IApplicationConstants.CUSTOMER,req.getParameter("p_Admin_Name"));
 		download(req, response);
 		logger.log(IAppLogger.INFO, "Exit: icDownload()");
 	}
