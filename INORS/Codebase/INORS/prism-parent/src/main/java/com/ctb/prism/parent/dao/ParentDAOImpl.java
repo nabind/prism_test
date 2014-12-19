@@ -344,7 +344,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		final String firstName = parentTO.getFirstName();
 		
 		String contractName = parentTO.getContractName();
-		if(contractName == "") {
+		if ("".equals(contractName)) {
 			contractName = Utils.getContractName();
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);

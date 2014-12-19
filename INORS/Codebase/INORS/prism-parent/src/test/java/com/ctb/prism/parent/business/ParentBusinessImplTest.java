@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.parent.dao.ParentDAOImpl;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
@@ -86,14 +89,63 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testValidateIC() {
-		ParentTO to = parentBusiness.validateIC(ParentTestHelper.helpValidateIC(testParams));
-		assertNotNull(to);
+		ParentTO parent = parentBusiness.validateIC(ParentTestHelper.helpValidateIC(testParams));
+		assertEquals(parent.getErrorMsg(), "NA");
+	}
+
+	@Test
+	public void testValidateICBusinessLogic() throws Exception {
+		Method method = ParentBusinessImpl.class.getDeclaredMethod("validateICBusinessLogic", ParentTO.class, Map.class);
+		method.setAccessible(true);
+
+		// if (parent == null) {
+		ParentTO parent = null;
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		parent = (ParentTO) method.invoke(parentBusiness, parent, paramMap);
+		assertEquals(parent.getErrorMsg(), "IC_INVALID");
+
+		// } else if (parent.getTotalAvailableCalim() == 0) {
+		parent = new ParentTO();
+		parent.setTotalAvailableCalim(0);
+		parent = (ParentTO) method.invoke(parentBusiness, parent, paramMap);
+		assertEquals(parent.getErrorMsg(), "IC_NOTAVAILABLE");
+
+		// } else if
+		// (IApplicationConstants.INACTIVE_FLAG.equals(parent.getIcExpirationStatus())
+		// ||
+		// IApplicationConstants.INACTIVE_FLAG.equals(parent.getIcActivationStatus()))
+		// {
+		parent = new ParentTO();
+		parent.setTotalAvailableCalim(1);
+		parent.setIcExpirationStatus("IN");
+		parent.setIcActivationStatus("IN");
+		parent = (ParentTO) method.invoke(parentBusiness, parent, paramMap);
+		assertEquals(parent.getErrorMsg(), "IC_EXPIRED");
+
+		// } else if
+		// (IApplicationConstants.DELETED_FLAG.equals(parent.getIcActivationStatus()))
+		// {
+		parent = new ParentTO();
+		parent.setTotalAvailableCalim(1);
+		parent.setIcExpirationStatus("AC");
+		parent.setIcActivationStatus("DE");
+		parent = (ParentTO) method.invoke(parentBusiness, parent, paramMap);
+		assertEquals(parent.getErrorMsg(), "IC_INVALID");
+
+		// } else if (parent.getIsAlreadyClaimed() > 0) {
+		parent = new ParentTO();
+		parent.setTotalAvailableCalim(1);
+		parent.setIcExpirationStatus("AC");
+		parent.setIcActivationStatus("AC");
+		parent.setIsAlreadyClaimed(1);
+		parent = (ParentTO) method.invoke(parentBusiness, parent, paramMap);
+		assertEquals(parent.getErrorMsg(), "IC_ALREADY_CLAIMED");
 	}
 
 	@Test
 	public void testRegisterUser() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean value = parentBusiness.registerUser(to);
 		assertNotNull(value);
 	}
@@ -194,7 +246,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
 		to.setUserName(testParams.getUserName());
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentBusiness.firstTimeUserLogin(to);
 		assertNotNull(status);
 	}
@@ -226,7 +278,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testUpdateUserProfile() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentBusiness.updateUserProfile(to);
 		assertNotNull(status);
 	}

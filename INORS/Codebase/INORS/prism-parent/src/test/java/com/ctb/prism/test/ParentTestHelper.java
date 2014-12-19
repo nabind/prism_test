@@ -1,9 +1,12 @@
 package com.ctb.prism.test;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -20,13 +23,11 @@ import com.ctb.prism.parent.transferobject.StudentTO;
  */
 public class ParentTestHelper {
 
-	public static List<QuestionTO> getQuestionList() {
+	public static List<QuestionTO> getQuestionList(TestParams testParams) {
 		List<QuestionTO> questionToList = new ArrayList<QuestionTO>();
-		QuestionTO question = new QuestionTO();
-		question.setQuestionId(1L);
-		question.setAnswerId(1L);
-		question.setAnswer("1");
+		QuestionTO question = getQuestionTO();
 		questionToList.add(question);
+
 		question = new QuestionTO();
 		question.setQuestionId(2L);
 		question.setAnswerId(2L);
@@ -98,7 +99,7 @@ public class ParentTestHelper {
 	public static Map<String, Object> helpGetStudentList(TestParams testParams) {
 		String orgId = "0";
 		String adminYear = "";
-		String searchParam = "";
+		String searchParam = "abc";
 		long currCustomer = 0L;
 		String orgMode = "";
 		String moreCount = "0";
@@ -134,7 +135,7 @@ public class ParentTestHelper {
 	public ParentTO helpFirstTimeUserLogin(TestParams testParams) throws BusinessException {
 		ParentTO to = new ParentTO();
 		to.setUserName(testParams.getUserName());
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		return to;
 	}
 
@@ -149,7 +150,7 @@ public class ParentTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("contractName", testParams.getContractName());
 		paramMap.put("username", testParams.getUserName());
-		List<QuestionTO> questionToList = ParentTestHelper.getQuestionList();
+		List<QuestionTO> questionToList = ParentTestHelper.getQuestionList(testParams);
 		paramMap.put("questionToList", questionToList);
 		return paramMap;
 	}
@@ -163,7 +164,7 @@ public class ParentTestHelper {
 
 	public ParentTO helpUpdateUserProfile(TestParams testParams) throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		return to;
 	}
 
@@ -206,7 +207,7 @@ public class ParentTestHelper {
 
 	public static Map<String, Object> helpAddNewContent(TestParams testParams) throws BusinessException {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		ManageContentTO manageContentTO = new ManageContentTO();
+		ManageContentTO manageContentTO = getManageContentTO();
 		paramMap.put("manageContentTO", manageContentTO);
 		return paramMap;
 	}
@@ -237,7 +238,7 @@ public class ParentTestHelper {
 	}
 
 	public static Map<String, Object> helpUpdateContent(TestParams testParams) throws BusinessException {
-		ManageContentTO content = new ManageContentTO();
+		ManageContentTO content = getManageContentTO();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("manageContentTO", content);
 		return paramMap;
@@ -348,5 +349,125 @@ public class ParentTestHelper {
 		paramMap.put("testElementId", testElementId);
 
 		return paramMap;
+	}
+
+	public static UserTO getUserTO() {
+		UserTO user = new UserTO();
+		user.setUserName("");
+		user.setFirstName("");
+		user.setLastName("");
+		user.setLastLoginTime(new Timestamp(0));
+		user.setPassword("");
+		user.setUserEmail("");
+		user.setIsAdminFlag("");
+		user.setUserStatus("");
+		user.setActive(true);
+		user.setOrgCode("");
+		user.setOrgId("0");
+		user.setOrgNodeLevel(1L);
+		user.setOrgNodeLevelStr("");
+		user.setFirstTimeLogin("");
+		user.setUserId("0");
+		user.setDisplayName("");
+		List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+		user.setRoles(roles);
+		user.setSalt("");
+		user.setCustomerId("0");
+		user.setProduct("");
+		user.setUserType("");
+		user.setAdminId("");
+		user.setOrgMode("");
+		user.setContractName("");
+		user.setDefultCustProdId(0L);
+		user.setIsPasswordExpired("");
+		user.setIsPasswordWarning("");
+		return user;
+	}
+
+	public static ParentTO getParentTO(TestParams testParams) {
+		ParentTO to = new ParentTO();
+		to.setUserId(0L);
+		to.setSuccessCode("");
+		to.setInvitationCode(testParams.getInvitationCode());
+		to.setUserName("");
+		to.setDisplayName("");
+		to.setFirstName("");
+		to.setLastName("");
+		to.setPassword("");
+		to.setMail("");
+		to.setMobile("");
+		to.setStreet("");
+		to.setCity("");
+		to.setState("");
+		to.setZipCode("");
+		to.setCountry("");
+		List<StudentTO> studentToList = new ArrayList<StudentTO>();
+		studentToList.add(getStudentTO(testParams));
+		to.setStudentToList(studentToList);
+		to.setQuestionToList(getQuestionList(testParams));
+		to.setUserName(testParams.getUserName());
+		return to;
+	}
+
+	public static StudentTO getStudentTO(TestParams testParams) {
+		StudentTO student = new StudentTO();
+		student.setStudentName("");
+		student.setGrade("");
+		student.setAdministration("");
+		student.setStudentTestNumber("");
+		List<ParentTO> parentAccount = new ArrayList<ParentTO>();
+		student.setParentAccount(parentAccount);
+		student.setStructureElement("");
+		student.setStudentBioId(0L);
+		student.setInvitationcode(testParams.getInvitationCode());
+		student.setActivationStatus("");
+		student.setOrgName("");
+		student.setOrgId(0L);
+		student.setIcExpirationStatus("");
+		student.setExpirationDate("");
+		student.setTotalAvailableClaim(0L);
+		student.setAdminid("0");
+		student.setStudentMode("");
+		student.setStudentGradeId(0L);
+		student.setTestElementId("");
+		student.setBioExists(0L);
+		student.setSchoolName("");
+		student.setIcLetterUri("");
+		student.setIcLetterPath("");
+		return student;
+	}
+
+	public static QuestionTO getQuestionTO() {
+		QuestionTO question = new QuestionTO();
+		question.setQuestionId(1L);
+		question.setQuestion("");
+		question.setAnswerId(1L);
+		question.setAnswer("");
+		question.setSno(0L);
+		return question;
+	}
+
+	public static ManageContentTO getManageContentTO() {
+		ManageContentTO content = new ManageContentTO();
+		content.setContentId(0L);
+		content.setContentName("");
+		content.setSubHeader("");
+		content.setGradeName("");
+		content.setPerformanceLevel("");
+		content.setStatusCode("");
+		content.setContentDescription("");
+		content.setSubObjMapId(0L);
+		content.setCustProdId(0L);
+		content.setContentTypeName("");
+		content.setContentType("");
+		content.setGradeId(0l);
+		content.setSubtestId(0L);
+		content.setObjectiveId(0L);
+		content.setObjectiveName("");
+		content.setSubtestName("");
+		content.setProficiencyLevel("");
+		content.setObjContentId(0L);
+		content.setObjectiveDesc("");
+		return content;
 	}
 }

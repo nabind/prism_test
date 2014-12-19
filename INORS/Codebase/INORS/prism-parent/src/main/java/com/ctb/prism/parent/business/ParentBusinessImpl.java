@@ -101,24 +101,35 @@ public class ParentBusinessImpl implements IParentBusiness {
 	public ParentTO validateIC(final Map<String, Object> paramMap) {
 		ParentTO parentTO = null;
 		parentTO = parentDAO.validateIC(paramMap);
-		if (parentTO == null) {
-			parentTO = new ParentTO();
-			parentTO.setErrorMsg("IC_INVALID");
-		} else if (parentTO.getTotalAvailableCalim() == 0) {
-			parentTO = new ParentTO();
-			parentTO.setErrorMsg("IC_NOTAVAILABLE");
-		} else if (IApplicationConstants.INACTIVE_FLAG.equals(parentTO.getIcExpirationStatus()) || IApplicationConstants.INACTIVE_FLAG.equals(parentTO.getIcActivationStatus())) {
-			parentTO.setErrorMsg("IC_EXPIRED");
-		} else if (IApplicationConstants.DELETED_FLAG.equals(parentTO.getIcActivationStatus())) {
-			parentTO.setErrorMsg("IC_INVALID");
-		} else if(parentTO.getIsAlreadyClaimed() > 0){
-			parentTO.setErrorMsg("IC_ALREADY_CLAIMED");
-		} else {
-			parentTO = parentDAO.getStudentForIC(paramMap);
-			parentTO.setInvitationCode((String)paramMap.get("invitationCode"));
-			parentTO.setErrorMsg("NA");
-		}
+		// Business Logic moved to another private method for JUnit code coverage
+		parentTO = validateICBusinessLogic(parentTO, paramMap);
 		return parentTO;
+	}
+
+	/**
+	 * @param parent
+	 * @return
+	 */
+	private ParentTO validateICBusinessLogic(ParentTO parent, Map<String, Object> paramMap) {
+		if (parent == null) {
+			parent = new ParentTO();
+			parent.setErrorMsg("IC_INVALID");
+		} else if (parent.getTotalAvailableCalim() == 0) {
+			parent = new ParentTO();
+			parent.setErrorMsg("IC_NOTAVAILABLE");
+		} else if (IApplicationConstants.INACTIVE_FLAG.equals(parent.getIcExpirationStatus())
+				|| IApplicationConstants.INACTIVE_FLAG.equals(parent.getIcActivationStatus())) {
+			parent.setErrorMsg("IC_EXPIRED");
+		} else if (IApplicationConstants.DELETED_FLAG.equals(parent.getIcActivationStatus())) {
+			parent.setErrorMsg("IC_INVALID");
+		} else if (parent.getIsAlreadyClaimed() > 0) {
+			parent.setErrorMsg("IC_ALREADY_CLAIMED");
+		} else {
+			parent = parentDAO.getStudentForIC(paramMap);
+			parent.setInvitationCode((String) paramMap.get("invitationCode"));
+			parent.setErrorMsg("NA");
+		}
+		return parent;
 	}
 
 	/*

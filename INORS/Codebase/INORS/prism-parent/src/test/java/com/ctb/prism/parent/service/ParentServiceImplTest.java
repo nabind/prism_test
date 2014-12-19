@@ -93,7 +93,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testRegisterUser() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean value = parentService.registerUser(to);
 		assertNotNull(value);
 	}
@@ -194,7 +194,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
 		to.setUserName(testParams.getUserName());
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentService.firstTimeUserLogin(to);
 		assertNotNull(status);
 	}
@@ -226,7 +226,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testUpdateUserProfile() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentService.updateUserProfile(to);
 		assertNotNull(status);
 	}

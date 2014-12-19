@@ -4,9 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,12 +53,18 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 
 	@Test
 	public void testGetSecretQuestions() {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("username", testParams.getUserName());
+		parentDao.getSecretQuestions(paramMap);
+
 		List<QuestionTO> secretQuestionList = parentDao.getSecretQuestions(ParentTestHelper.helpGetSecretQuestions(testParams));
 		assertEquals(secretQuestionList.size(), Integer.parseInt(testParams.getNoOfSecretQuestions()));
 	}
 
 	@Test
 	public void testCheckUserAvailability() {
+		parentDao.checkUserAvailability(new HashMap<String, Object>());
+
 		boolean availability = parentDao.checkUserAvailability(ParentTestHelper.helpCheckUserAvailability(testParams));
 		assertNotNull(availability);
 	}
@@ -75,27 +84,46 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 
 	@Test
 	public void testValidateIC() {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("invitationCode", testParams.getInvitationCode());
+		paramMap.put("loggedinUserTO", null);
+		parentDao.validateIC(paramMap);
+
 		ParentTO to = parentDao.validateIC(ParentTestHelper.helpValidateIC(testParams));
 		assertNotNull(to);
 	}
 
 	@Test
 	public void testGetStudentForIC() {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", null);
+		paramMap.put("invitationCode", testParams.getInvitationCode());
+		parentDao.getStudentForIC(paramMap);
+
 		ParentTO to = parentDao.getStudentForIC(ParentTestHelper.helpGetStudentForIC(testParams));
 		assertNotNull(to);
 	}
 
 	@Test
 	public void testRegisterUser() throws BusinessException {
-		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		ParentTO to = ParentTestHelper.getParentTO(testParams);
+		to.setContractName("");
+		to.setFirstTimeUser(false);
+		parentDao.registerUser(to);
+
+		to = ParentTestHelper.getParentTO(testParams);
 		boolean value = parentDao.registerUser(to);
 		assertNotNull(value);
 	}
 
 	@Test
 	public void testGetChildrenList() {
-		List<StudentTO> studentList = parentDao.getChildrenList(ParentTestHelper.helpGetChildrenList(testParams));
+		Map<String, Object> paramMap = ParentTestHelper.helpGetChildrenList(testParams);
+		paramMap.put("isPN", "N");
+		List<StudentTO> studentList = parentDao.getChildrenList(paramMap);
+		assertNotNull(studentList);
+
+		studentList = parentDao.getChildrenList(ParentTestHelper.helpGetChildrenList(testParams));
 		assertNotNull(studentList);
 	}
 
@@ -108,6 +136,16 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		String moreCount = "0";
 		ArrayList<ParentTO> parentList = parentDao.getParentList(orgId, adminYear, searchParam, orgMode, moreCount);
 		assertNotNull(parentList);
+
+		orgId = "0_0";
+		searchParam = "abc";
+		parentList = parentDao.getParentList(orgId, adminYear, searchParam, orgMode, moreCount);
+		assertNotNull(parentList);
+
+		orgId = "0_0";
+		searchParam = null;
+		parentList = parentDao.getParentList(orgId, adminYear, searchParam, orgMode, moreCount);
+		assertNotNull(parentList);
 	}
 
 	@Test
@@ -118,6 +156,10 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		String isExactSeacrh = "";
 		String orgMode = "";
 		ArrayList<ParentTO> parentList = parentDao.searchParent(parentName, tenantId, adminYear, isExactSeacrh, orgMode);
+		assertNotNull(parentList);
+
+		isExactSeacrh = "N";
+		parentList = parentDao.searchParent(parentName, tenantId, adminYear, isExactSeacrh, orgMode);
 		assertNotNull(parentList);
 	}
 
@@ -133,6 +175,14 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 
 	@Test
 	public void testGetStudentList() {
+		String orgId = "0|0";
+		Map<String, Object> paramMap = ParentTestHelper.helpGetStudentList(testParams);
+		paramMap.put("scrollId", orgId);
+		parentDao.getStudentList(paramMap);
+
+		paramMap.put("searchParam", null);
+		parentDao.getStudentList(paramMap);
+
 		ArrayList<StudentTO> studentList = parentDao.getStudentList(ParentTestHelper.helpGetStudentList(testParams));
 		assertNotNull(studentList);
 	}
@@ -189,7 +239,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	public void testFirstTimeUserLogin() throws BusinessException {
 		ParentTO to = new ParentTO();
 		to.setUserName(testParams.getUserName());
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentDao.firstTimeUserLogin(to);
 		assertNotNull(status);
 	}
@@ -221,7 +271,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	@Test
 	public void testUpdateUserProfile() throws BusinessException {
 		ParentTO to = new ParentTO();
-		to.setQuestionToList(ParentTestHelper.getQuestionList());
+		to.setQuestionToList(ParentTestHelper.getQuestionList(testParams));
 		boolean status = parentDao.updateUserProfile(to);
 		assertNotNull(status);
 	}
@@ -270,8 +320,13 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(to);
 	}
 
-	@Test(expected = BusinessException.class) // TODO
+	@Test(expected = BusinessException.class)
+	// TODO
 	public void testLoadManageContent() throws BusinessException {
+		Map<String, Object> paramMap = ParentTestHelper.helpLoadManageContent(testParams);
+		paramMap.put("checkFirstLoad", "true");
+		parentDao.loadManageContent(paramMap);
+
 		List<ManageContentTO> contentList = parentDao.loadManageContent(ParentTestHelper.helpLoadManageContent(testParams));
 		assertNotNull(contentList);
 	}
@@ -294,7 +349,8 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(to);
 	}
 
-	@Test(expected = SQLException.class) // TODO
+	@Test(expected = SQLException.class)
+	// TODO
 	public void testModifyGenericForEdit() throws BusinessException {
 		ManageContentTO to = parentDao.modifyGenericForEdit(ParentTestHelper.helpModifyGenericForEdit(testParams));
 		assertNotNull(to);
@@ -312,7 +368,8 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(contentList);
 	}
 
-	@Test(expected = SQLException.class) // TODO
+	@Test(expected = SQLException.class)
+	// TODO
 	public void testGetArticleDescription() throws BusinessException {
 		ManageContentTO content = parentDao.getArticleDescription(ParentTestHelper.helpGetArticleDescription(testParams));
 		assertNotNull(content);
@@ -322,5 +379,24 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 	public void testGetGradeSubtestInfo() throws BusinessException {
 		List<ManageContentTO> contentList = parentDao.getGradeSubtestInfo(ParentTestHelper.helpGetGradeSubtestInfo(testParams));
 		assertNotNull(contentList);
+	}
+
+	/**
+	 * Testing private method by reflection.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetParentAccountDetailsByTestElementId() throws Exception {
+		Method method = ParentDAOImpl.class.getDeclaredMethod("getParentAccountDetailsByTestElementId", String.class, long.class);
+		method.setAccessible(true);
+
+		String testElementId = null;
+		long customerId = 0L;
+		method.invoke(parentDao, testElementId, customerId);
+
+		testElementId = "";
+		ArrayList<ParentTO> parentList = (ArrayList<ParentTO>) method.invoke(parentDao, testElementId, customerId);
+		assertNotNull(parentList);
 	}
 }
