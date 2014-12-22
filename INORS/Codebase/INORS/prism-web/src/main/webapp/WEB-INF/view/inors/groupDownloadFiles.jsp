@@ -61,7 +61,7 @@
 		    											<c:when test="${group.jobStatus=='CO'}">
 		    												<fmt:message var="groupDownloadsDownload" key="group.downloads.download" />
 		    												<c:if test="${not empty actionMap[groupDownloadsDownload]}">
-		                                                	<a href="downloadAssest.do?assetPath=${group.filePath}" class="blue-gradient button icon-download icon-size2 with-tooltip confirm" title="Download File" style="cursor: pointer;"></a>
+		                                                	<a href="downloadGroupDownloadFiles.do?filePath=${group.filePath}&jobId=${group.jobId}&requestType=${group.requestType}&orgLevel=${group.orgLevel}" class="blue-gradient button icon-download icon-size2 with-tooltip confirm" title="Download File" style="cursor: pointer;"></a>
 		                                                	</c:if>
 		    											</c:when>
 														<c:otherwise>

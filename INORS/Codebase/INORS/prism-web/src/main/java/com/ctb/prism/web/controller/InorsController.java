@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -107,6 +108,7 @@ public class InorsController {
 		ModelAndView modelAndView = new ModelAndView("inors/groupDownloadFiles");
 		String grpList = "";
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		long orgLevel = (Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		paramMap.put("gdfExpiryTime", propertyLookup.get("gdfExpiryTime"));
@@ -129,6 +131,7 @@ public class InorsController {
 					}
 				}
 				to.setDisplayFilename(displayFilename);
+				to.setOrgLevel(orgLevel);
 			}
 			modelAndView.addObject("groupList", groupList);
 			grpList = JsonUtil.convertToJsonAdmin(groupList);
@@ -175,7 +178,6 @@ public class InorsController {
 	/**
 	 * For Group Download file downloading.
 	 * 
-	 * @author Arunava Datta
 	 * @param request
 	 * @param response
 	 * @return
@@ -184,28 +186,68 @@ public class InorsController {
 	@RequestMapping(value = "/downloadGroupDownloadFiles", method = RequestMethod.GET)
 	public void downloadGroupDownloadFiles(HttpServletRequest request, HttpServletResponse response) {
 		logger.log(IAppLogger.INFO, "Enter: Controller - downloadGroupDownloadFiles");
-		String Id = (String) request.getParameter("jobId");
+		String jobId = (String) request.getParameter("jobId");
 		String filePath = (String) request.getParameter("filePath");
-		String fileName = (String) request.getParameter("fileName");
+		String fileName = FileUtil.getFileNameFromFilePath(filePath);
 		String orgLevel = (String) request.getParameter("orgLevel");
 		String requestType = (String) request.getParameter("requestType");
 		
+		logger.log(IAppLogger.INFO, "jobId = " + jobId);
+		logger.log(IAppLogger.INFO, "filePath = " + filePath);
+		logger.log(IAppLogger.INFO, "fileName = " + fileName);
+		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
+		logger.log(IAppLogger.INFO, "requestType = " + requestType);
+
 		try {
-			if(Utils.getContractName().equals(IApplicationConstants.CONTRACT_NAME.inors)) {
-				FileUtil.browserDownload(response, filePath);
-			} else if(Utils.getContractName().equals(IApplicationConstants.CONTRACT_NAME.tasc)){
-				updateFileExt(Id,filePath,fileName,orgLevel,requestType,response);
+			// Get file bytes from Amazon S3
+			byte[] assetBytes = repositoryService.getAssetBytes(filePath);
+			logger.log(IAppLogger.INFO, "Successfully read bytes from S3: " + filePath);
+
+			// For TASC Student Data File Download - the asset bytes are
+			// converted to password protected zip bytes
+			if (orgLevel.equals("1") && requestType.equals("SDF") && !fileName.endsWith(".zip")) {
+				// Save file in temp directory
+				String fileLocation = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator, fileName);
+				fileLocation = fileLocation.replace("//", "/");
+
+				String tempDirectory = FileUtil.getDirFromFilePath(fileLocation);
+				File tempJobDirectory = new File(tempDirectory);
+				if (!tempJobDirectory.exists()) {
+					logger.log(IAppLogger.INFO, "Creating directory ... " + tempJobDirectory);
+					boolean status = tempJobDirectory.mkdir();
+					logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
+				} else {
+					logger.log(IAppLogger.INFO, "Directory exists: " + tempJobDirectory);
+				}
+
+				FileUtil.createFile(fileLocation, assetBytes);
+				logger.log(IAppLogger.INFO, "File saved successfully from S3: " + fileLocation);
+				String newFilePath = fileLocation.replace(".DAT", ".zip");
+				logger.log(IAppLogger.INFO, "newFilePath = " + newFilePath);
+				String password = propertyLookup.get("gdfpassword");
+				logger.log(IAppLogger.INFO, "password = " + password);
+
+				// create password protected zip file in disk
+				FileUtil.createPasswordProtectedZipFile(fileLocation, newFilePath, password);
+				byte[] zipBytes = FileUtil.getBytes(newFilePath);
+				
+				// Download file from browser
+				FileUtil.browserDownload(response, zipBytes, FileUtil.getFileNameFromFilePath(newFilePath));
+
+				// Delete temp Job Directory
+				// FileUtils.deleteDirectory(tempJobDirectory);
+				// logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + tempJobDirectory);
 			} else {
-				//For new project
+				logger.log(IAppLogger.INFO, "Not a district user and Student data file");
+				// Download file from browser
+				FileUtil.browserDownload(response, assetBytes, fileName);
 			}
-			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
 			e.printStackTrace();
 		}
 		logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
 	}
-	
 
 	/**
 	 * For Group Download file validation.
@@ -1563,54 +1605,5 @@ public class InorsController {
 			logger.log(IAppLogger.INFO, "NO " + contractName.toUpperCase() + " GROUP DOWNLOAD FILES FOUND");
 		}
 	}
-	
-	private void updateFileExt(String Id,String filePath,String fileName,String orgLevel,String requestType,HttpServletResponse response) throws Exception {
-		String extensionType = "";
-		String password = propertyLookup.get("gdfpassword");
-
-		try {			
-			if(orgLevel.equals("1") && requestType.equals("SDF")&& !fileName.endsWith(".zip"))
-			{
-				File oldFile = new File(filePath);
-				String newFilePath=filePath.replaceAll(fileName,"");
-				String newFileName=fileName.replace(fileName.substring(fileName.lastIndexOf(".") + 1),"zip");
-				newFilePath=newFilePath.concat(newFileName);
-
-				FileUtil.createPasswordProtectedZipFile(filePath,newFilePath,password);
-
-				File Newfile = new File(newFilePath);
-				byte[] data = FileCopyUtils.copyToByteArray(Newfile);
-				//response.setContentType("application/" + "zip");
-				response.setContentType("binary/data");
-				response.setContentLength(data.length);
-				response.setHeader("Content-Disposition", "attachment; filename=" + newFileName);
-				FileCopyUtils.copy(data, response.getOutputStream());
-				oldFile.delete();
-				reportService.updateJobTrackingTable(Id,newFilePath);
-			} else	{
-				File oldFile = new File(filePath);
-				if (-1 == fileName.lastIndexOf(".")) {
-					extensionType = "force-download";
-				} else {
-					extensionType = fileName.substring(fileName.lastIndexOf(".") + 1);
-				}
-				if(extensionType != null && extensionType.equalsIgnoreCase("zip")) {
-					response.setContentType("binary/data");
-				} else {
-					response.setContentType("application/" + extensionType);
-				}
-				byte[] data = FileCopyUtils.copyToByteArray(oldFile);
-				//response.setContentType("application/" + extensionType);
-				response.setContentLength(data.length);
-				response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-				FileCopyUtils.copy(data, response.getOutputStream());
-			}
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "updateFileExt - ", e);
-			e.printStackTrace();
-		}
-		logger.log(IAppLogger.INFO, "Exit: Controller - updateFileExt");
-	}
-	
 
 }
