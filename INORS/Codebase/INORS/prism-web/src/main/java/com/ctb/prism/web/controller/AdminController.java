@@ -28,6 +28,7 @@ import com.ctb.prism.admin.transferobject.OrgTreeTO;
 import com.ctb.prism.admin.transferobject.RoleTO;
 import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.EXTRACT_CATEGORY;
@@ -45,7 +46,6 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.login.Service.ILoginService;
@@ -77,13 +77,13 @@ public class AdminController {
 	private ILoginService loginService;
 	
 	@Autowired
-	private IRepositoryService repositoryService;
-	
-	@Autowired
 	private IPropertyLookup propertyLookup;
 	
 	@Autowired
 	private EmailSender emailSender;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
 
 	boolean isTree =true;//set it to false for slide menu
 
@@ -2266,6 +2266,12 @@ public class AdminController {
 	public ModelAndView studentFileDownload(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView("admin/studentFileDownload");
 		Map<String, Object> propertyMap = (Map<String,Object>) request.getSession().getAttribute("propertyMap");
+		if(propertyMap == null){
+			Map<String, Object> tileParamMap = new HashMap<String, Object>();
+			tileParamMap.put("contractName", Utils.getContractName());
+			propertyMap = loginService.getContractProerty(tileParamMap);
+			request.getSession().setAttribute("propertyMap", propertyMap);
+		}
 		String tascStudentDataFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator +propertyLookup.get("S3KEY_LAYOUTS") + propertyLookup.get(IApplicationConstants.TASC_STUDENT_DATA_FILE_LAYOUT);
 		logger.log(IAppLogger.INFO, "tascStudentDataFileLayoutHref = " + tascStudentDataFileLayoutHref);
 		modelAndView.addObject("tascStudentDataFileLayoutHref", tascStudentDataFileLayoutHref);
@@ -2371,10 +2377,19 @@ public class AdminController {
 			if (jobTrackingTO.getFileSize() != null) {
 				fileDetails.add(jobTrackingTO);
 			} else {
-				// File file = new File(filePath);
-				byte[] fileBytes = repositoryService.getAssetBytes(filePath);
-				if (fileBytes != null) {
-					double bytes = fileBytes.length;
+				logger.log(IAppLogger.INFO, "retrieving FileSize() of " + filePath);
+				byte[] fileBytes =repositoryService.getAssetBytes(filePath);	
+				if(fileBytes.length > 0){
+					jobTrackingTO.setFileSize(FileUtil.humanReadableByteCount(fileBytes.length));
+					jobTrackingTO.setJobId(Long.parseLong(jobId));
+					jobTrackingTO.setFilePath(filePath);
+					jobTrackingTO.setRequestFilename(fileName);
+					fileDetails.add(jobTrackingTO);
+					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
+				}				
+				/* File file = new File(filePath);
+				   if (file.exists()) {
+					double bytes = file.length();
 					double kilobytes = (bytes / 1024);
 					double megabytes = (kilobytes / 1024);
 					DecimalFormat df = new DecimalFormat("0.000");
@@ -2385,7 +2400,7 @@ public class AdminController {
 					jobTrackingTO.setRequestFilename(fileName);
 					fileDetails.add(jobTrackingTO);
 					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
-				}
+				}*/
 			}
 			if (fileDetails.size() != 0) {
 				jsonString = JsonUtil.convertToJsonAdmin(fileDetails);
