@@ -409,6 +409,12 @@ BEGIN
             V_DAA_ACTIVATION_STATUS := 'IN';
           END IF;
         
+          IF P_IN_PROJECTID = 1 AND
+             UPPER(REC_DASH_RPT_ACTION.ACTION_TYPE) = 'USR' AND
+             UPPER(REC_DASH_RPT_ACTION.ACTION_NAME) = 'DOWNLOAD USERS' THEN
+            V_DAA_ACTIVATION_STATUS := 'IN';
+          END IF;
+        
           INSERT INTO DASH_ACTION_ACCESS
             (DB_ACT_ACCESSID,
              DB_MENUID,
