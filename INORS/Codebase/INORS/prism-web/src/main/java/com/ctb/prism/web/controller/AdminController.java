@@ -45,6 +45,7 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 import com.ctb.prism.login.Service.ILoginService;
@@ -74,6 +75,9 @@ public class AdminController {
 	
 	@Autowired 
 	private ILoginService loginService;
+	
+	@Autowired
+	private IRepositoryService repositoryService;
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -2367,9 +2371,10 @@ public class AdminController {
 			if (jobTrackingTO.getFileSize() != null) {
 				fileDetails.add(jobTrackingTO);
 			} else {
-				File file = new File(filePath);
-				if (file.exists()) {
-					double bytes = file.length();
+				// File file = new File(filePath);
+				byte[] fileBytes = repositoryService.getAssetBytes(filePath);
+				if (fileBytes != null) {
+					double bytes = fileBytes.length;
 					double kilobytes = (bytes / 1024);
 					double megabytes = (kilobytes / 1024);
 					DecimalFormat df = new DecimalFormat("0.000");
