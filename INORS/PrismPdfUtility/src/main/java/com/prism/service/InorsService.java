@@ -115,7 +115,7 @@ public class InorsService implements PrismPdfService {
 						if ("true".equals(prop.getProperty("moveFilesToS3"))) {
 							String rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
 							rootPath = prop.getProperty("environment.postfix").toUpperCase() + rootPath;
-							moveFilesToS3(rootPath, prop.getProperty("pdfGenPathIC"));
+							moveFilesToS3(rootPath, prop.getProperty("pdfGenPathInvIC"));
 							logger.info("All Files Successfully Moved to S3");
 						} else {
 							logger.info("Files NOT moved to S3");
