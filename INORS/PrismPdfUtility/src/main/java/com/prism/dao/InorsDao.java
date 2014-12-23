@@ -467,6 +467,7 @@ public class InorsDao extends CommonDao {
 			conn = driver.connect(DATA_SOURCE, null);
 			pstmt = conn.prepareStatement(Constants.UPDATE_STUDENT_PDF_LOC);
 			for (Entry<String, String> entry : pdfPathList.entrySet()) {
+				int count = 0;
 				String key = entry.getKey().toString();
 				String value = entry.getValue().toString();
 				String rootPath = "/";
@@ -481,6 +482,11 @@ public class InorsDao extends CommonDao {
 				pstmt.setString(1, value); // IC_FILE_LOC
 				pstmt.setString(2, key); // TEST_ELEMENT_ID
 				pstmt.addBatch();
+				count = count++;				
+				if(count==1000){ //execute in batch of 1000
+					updateCount = pstmt.executeBatch();
+					count = 0;
+				}
 			}
 			updateCount = pstmt.executeBatch();
 			logger.debug("Records updated: " + updateCount);
