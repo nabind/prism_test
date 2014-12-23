@@ -256,7 +256,7 @@ public class TascDAOImpl {
 	}
 	
 	/**
-	 * @author 541841
+	 * @author Joy
 	 * Get Searched records
 	 * @throws Exception
 	 */
@@ -290,10 +290,10 @@ public class TascDAOImpl {
 			queryBuff.append(" AND ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND ESSH.DATETIMESTAMP >= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND ESSH.DATETIMESTAMP <= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
 				queryBuff.append(" AND ESSH.UUID LIKE ?");
@@ -351,10 +351,10 @@ public class TascDAOImpl {
 			queryBuff.append(" AND ETS.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND EED.CREATED_DATE_TIME >= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND EED.CREATED_DATE_TIME <= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
 				queryBuff.append(" AND ESD.UUID LIKE ?");
@@ -418,10 +418,10 @@ public class TascDAOImpl {
 			queryBuff.append(" AND SHD.ORG_LEVEL = 1");
 			queryBuff.append(" AND SPS.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND SPS.DATETIMESTAMP >= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(SPS.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND SPS.DATETIMESTAMP <= TO_DATE(?, 'MM/DD/YYYY')");
+				queryBuff.append(" AND TRUNC(SPS.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
 				queryBuff.append(" AND SSBD.EXT_STUDENT_ID LIKE ?");
