@@ -289,6 +289,7 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
+						<th>&nbsp;</th>
 						<th style="min-width: 60px;">Record Id</th>
 						<th>Student Name</th>
 						<th>UUID</th>
@@ -322,6 +323,9 @@
 							<%} else{%>
 								<span class="progress" title="In Progress"></span>		
 							<%} %>
+							
+						</td>
+						<td style="padding-top: 12px;" nowrap>
 							
 							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
 							 <% if("0".equals(processEr.getErSsHistId())){%>
