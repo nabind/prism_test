@@ -1,9 +1,11 @@
 package com.prism.runner;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
 
-import com.prism.service.InorsService;
 import com.prism.service.InorsGrowthService;
+import com.prism.service.InorsService;
 import com.prism.service.PrismPdfService;
 import com.prism.service.TascService;
 import com.prism.util.Constants;
@@ -25,6 +27,7 @@ public class PrismPdfRunner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		long startTime = System.currentTimeMillis();
 		boolean isValidArgs = false;
 		if (args.length < 2) {
 			logger.error("Please provide all command line arguments.");
@@ -71,6 +74,11 @@ public class PrismPdfRunner {
 		} else {
 			logger.error("Arguments are Invalid. Please provide all command line arguments.");
 		}
+		long endTime = System.currentTimeMillis();
+		long timeDiff = endTime - startTime;
+		String timeTaken = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeDiff), TimeUnit.MILLISECONDS.toSeconds(timeDiff)
+				- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
+		logger.info("Time Taken = " + timeTaken);
 	}
 
 	/**

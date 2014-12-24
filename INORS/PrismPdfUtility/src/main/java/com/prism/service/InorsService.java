@@ -62,9 +62,9 @@ public class InorsService implements PrismPdfService {
 			} else {
 				// Code Moved to separate Method processSchoolIds()
 				String[] ids = CustomStringUtil.getAllButFirstArg(args);
-				int threadCount = Integer.parseInt(prop.getProperty("threadCount"));
-				logger.info("threadCount = " + threadCount);
-				List<List<String>> listOfSchoolIdList = CustomStringUtil.splitTheList(Arrays.asList(ids), threadCount);
+				int batchCount = Integer.parseInt(prop.getProperty("batchCount"));
+				logger.info("batchCount = " + batchCount);
+				List<List<String>> listOfSchoolIdList = CustomStringUtil.splitTheList(Arrays.asList(ids), batchCount);
 				for (List<String> schoolIdList : listOfSchoolIdList) {
 					logger.info("schoolIdList = " + schoolIdList);
 				}
@@ -98,6 +98,7 @@ public class InorsService implements PrismPdfService {
 		long count = 1;
 		for (String id : ids) {
 			CUSOMERID = dao.getCustomerId(id);
+			logger.info("CUSOMERID = " + CUSOMERID);
 			if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
 				logger.info("Creating Login PDF");
 				encDocLocation = manupulateTenantsInors(id, prop, null, false, false);

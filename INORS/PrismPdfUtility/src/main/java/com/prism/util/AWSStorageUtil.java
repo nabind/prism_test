@@ -28,8 +28,7 @@ public class AWSStorageUtil {
 	 */
 	private AWSStorageUtil() {
 		try {
-			Properties properties = new Properties();
-			properties.load(new FileInputStream("aws.properties"));
+			Properties properties = PropertyFile.loadProperties("aws.properties");
 			ClientConfiguration clientConfig = new ClientConfiguration();
 			clientConfig.setProtocol(Protocol.HTTPS);
 			clientConfig.setProxyHost(properties.getProperty("ip_address"));

@@ -1034,6 +1034,6 @@ public class InorsDao extends CommonDao {
 		} finally {
 			releaseResources(conn, pstmt, rs);
 		}
-		return customerId;
+		return customerId == null ? "0" : customerId;
 	}
 }
