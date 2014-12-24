@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,131 +53,144 @@ public class InorsService implements PrismPdfService {
 		logger.info("InorsService Starts...");
 		boolean validArgs = validateCommandLineArgsInors(args);
 		String flag = args[0];
-		if (validArgs) {			
+		if (validArgs) {
 			Properties prop = PropertyFile.loadProperties(Constants.INORS_PROPERTIES_FILE);
 			Properties jdbcProp = PropertyFile.loadProperties(Constants.INORS_JDBC_PROPERTIES_FILE);
 			if (prop == null) {
 				logger.error("Not able to read property file.");
 				System.exit(1);
 			} else {
+				// Code Moved to separate Method processSchoolIds()
 				String[] ids = CustomStringUtil.getAllButFirstArg(args);
-				try {
-					dao = new InorsDao(jdbcProp);
-				} catch (Exception e) {
-					e.printStackTrace();
+				int threadCount = Integer.parseInt(prop.getProperty("threadCount"));
+				logger.info("threadCount = " + threadCount);
+				List<List<String>> listOfSchoolIdList = CustomStringUtil.splitTheList(Arrays.asList(ids), threadCount);
+				for (List<String> schoolIdList : listOfSchoolIdList) {
+					logger.info("schoolIdList = " + schoolIdList);
 				}
-				
-				if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
-					ENCRYPTION_NEEDED = true;
-				}
-				if ("true".equals(prop.getProperty("archiveNeeded"))) {
-					ARCHIVE_NEEDED = true;
-				}
-				String encDocLocation = "";
-				String identifier = "";
-				long count = 1;
-				for (String id : ids) {
-					CUSOMERID = dao.getCustomerId(id);
-					if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
-						logger.info("Creating Login PDF");
-						encDocLocation = manupulateTenantsInors(id, prop, null, false, false);
-					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
-						logger.info("Creating IC Letter PDF");
-						logger.info("Checking if new student present for school # " + id);
-						boolean newStudentPresent = dao.getNewStudents(id);
-						if (newStudentPresent) {
-							String letterLocation = processIcLetterPdfInors(prop, dao, id);
-							icLetterCount = icLetterCount + 1;
-							logger.info("IC Letter Location: " + letterLocation);
-						} else {
-							logger.info("No new student found for school # " + id);
-						}
-						ARCHIVE_NEEDED = false;
-						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ----------------------------------------");
-					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
-						logger.info("Creating Both Login Pdf and IC Letter Pdf...");
-						String letterLocation = "";
-						boolean newStudentPresent = dao.getNewStudents(id);
-						if (newStudentPresent) {
-							letterLocation = processIcLetterPdfInors(prop, dao, id);
-						} else {
-							logger.info("No new IC letter found for school # " + id);
-						}
-						encDocLocation = manupulateTenantsInors(id, prop, letterLocation, false, false);
-						logger.info("IC Letter Location: " + letterLocation);
-						logger.info("All/Both Login Pdf and IC Letter Completed.");
-
-					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
-						logger.info("Creating Separate IC Letter PDFs");
-						processIndividualIcLetterPdfInors(false, prop, dao, id);
-						identifier = "IC_";
-
-						// S3 code
-						if ("true".equals(prop.getProperty("moveFilesToS3"))) {
-							String rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
-							rootPath = prop.getProperty("environment.postfix").toUpperCase() + rootPath;
-							moveFilesToS3(rootPath, prop.getProperty("pdfGenPathInvIC"));
-							logger.info("All Files Successfully Moved to S3");
-						} else {
-							logger.info("Files NOT moved to S3");
-						}
-						 /* Deleting files from mount location after uploading to S3 */
-						if ("true".equals(prop.getProperty("cleanDirectory.pdfGenPathInvIC"))) {
-							FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathInvIC")));
-							logger.info("All TEMP files deleted from: " + prop.getProperty("pdfGenPathInvIC"));
-						} else {
-							logger.info("TEMP files NOT deleted from: " + prop.getProperty("pdfGenPathInvIC"));
-						}
-						ARCHIVE_NEEDED = false;
-					}
-				}
-
-				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
-					if (icLetterCount > 0) {
-						archiveICLetterInors(prop);
-					}
-					// send mail
-					String subject = "Merged IC Letter Generatation completed ";
-					String body = CustomStringUtil.appendString(subject, "for all the schools. Individiual IC leter has been started.\n",
-							"Different notification will go once Individiual IC leter is completed");
-					try {
-						EmailSender.sendMailInors(prop, prop.getProperty("supportEmail"), subject, body, null);
-					} catch (Exception e) {
-						logger.error("Failed to send email" + e.getMessage());
-					}
-					// individual student
-					count = 1;
-					for (String id : ids) {
-						processIndividualIcLetterPdfInors(true, prop, dao, id);
-						identifier = "IC_";
-						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE FOR INDV -------------------------------------------");
-					}
-					// send mail
-					subject = "Individiual IC Letter Generatation completed ";
-					body = CustomStringUtil.appendString(subject, "for all the schools. Individiual IC leter has been completed.\n");
-					try {
-						EmailSender.sendMailInors(prop, prop.getProperty("supportEmail"), subject, body, null);
-					} catch (Exception e) {
-						logger.error("Failed to send email" + e.getMessage());
-					}
-				}
-
-				if (ARCHIVE_NEEDED) {
-					File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
-					if (!arc.exists())
-						arc.mkdir();
-					String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"),
-							prop.getProperty("schoolaArc"), identifier, CustomStringUtil.getDateTimeInors("ddMMyyyyHHmmss"), ".ZIP");
-
-					FileUtil.archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
+				int batch = 0;
+				for (List<String> schoolIdList : listOfSchoolIdList) {
+					logger.info("--------------Batch " + (++batch) + " of " + listOfSchoolIdList.size() + "-------------");
+					logger.info("schoolIdList = " + schoolIdList);
+					processSchoolIds(schoolIdList.toArray(new String[schoolIdList.size()]), jdbcProp, prop, flag);
 				}
 			}
-			
+
+		}
+		logger.info("Program Ends!");
+	}
+
+	public void processSchoolIds(String[] ids, Properties jdbcProp, Properties prop, String flag) throws Exception {
+		try {
+			dao = new InorsDao(jdbcProp);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		
-		
-		logger.info("Program Ends!");
+		if ("true".equals(prop.getProperty("pdfEncryptionRequired"))) {
+			ENCRYPTION_NEEDED = true;
+		}
+		if ("true".equals(prop.getProperty("archiveNeeded"))) {
+			ARCHIVE_NEEDED = true;
+		}
+		String encDocLocation = "";
+		String identifier = "";
+		long count = 1;
+		for (String id : ids) {
+			CUSOMERID = dao.getCustomerId(id);
+			if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.L.toString())) {
+				logger.info("Creating Login PDF");
+				encDocLocation = manupulateTenantsInors(id, prop, null, false, false);
+			} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+				logger.info("Creating IC Letter PDF");
+				logger.info("Checking if new student present for school # " + id);
+				boolean newStudentPresent = dao.getNewStudents(id);
+				if (newStudentPresent) {
+					String letterLocation = processIcLetterPdfInors(prop, dao, id);
+					icLetterCount = icLetterCount + 1;
+					logger.info("IC Letter Location: " + letterLocation);
+				} else {
+					logger.info("No new student found for school # " + id);
+				}
+				ARCHIVE_NEEDED = false;
+				logger.info("-------------------SCHOOL " + count++ + "/" + (ids.length) + " IS DONE ---------------------");
+			} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.A.toString())) {
+				logger.info("Creating Both Login Pdf and IC Letter Pdf...");
+				String letterLocation = "";
+				boolean newStudentPresent = dao.getNewStudents(id);
+				if (newStudentPresent) {
+					letterLocation = processIcLetterPdfInors(prop, dao, id);
+				} else {
+					logger.info("No new IC letter found for school # " + id);
+				}
+				encDocLocation = manupulateTenantsInors(id, prop, letterLocation, false, false);
+				logger.info("IC Letter Location: " + letterLocation);
+				logger.info("All/Both Login Pdf and IC Letter Completed.");
+
+			} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
+				logger.info("Creating Separate IC Letter PDFs");
+				processIndividualIcLetterPdfInors(false, prop, dao, id);
+				identifier = "IC_";
+
+				// S3 code
+				if ("true".equals(prop.getProperty("moveFilesToS3"))) {
+					String rootPath = dao.getRootPathForCurAdmin(CUSOMERID);
+					rootPath = prop.getProperty("environment.postfix").toUpperCase() + rootPath;
+					moveFilesToS3(rootPath, prop.getProperty("pdfGenPathInvIC"));
+					logger.info("All Files Successfully Moved to S3");
+				} else {
+					logger.info("Files NOT moved to S3");
+				}
+				 /* Deleting files from mount location after uploading to S3 */
+				if ("true".equals(prop.getProperty("cleanDirectory.pdfGenPathInvIC"))) {
+					FileUtils.cleanDirectory(new File(prop.getProperty("pdfGenPathInvIC")));
+					logger.info("All TEMP files deleted from: " + prop.getProperty("pdfGenPathInvIC"));
+				} else {
+					logger.info("TEMP files NOT deleted from: " + prop.getProperty("pdfGenPathInvIC"));
+				}
+				ARCHIVE_NEEDED = false;
+			}
+		}
+
+		if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+			if (icLetterCount > 0) {
+				archiveICLetterInors(prop);
+			}
+			// send mail
+			String subject = "Merged IC Letter Generatation completed ";
+			String body = CustomStringUtil.appendString(subject, "for all the schools. Individiual IC leter has been started.\n",
+					"Different notification will go once Individiual IC leter is completed");
+			try {
+				EmailSender.sendMailInors(prop, prop.getProperty("supportEmail"), subject, body, null);
+			} catch (Exception e) {
+				logger.error("Failed to send email" + e.getMessage());
+			}
+			// individual student
+			count = 1;
+			for (String id : ids) {
+				processIndividualIcLetterPdfInors(true, prop, dao, id);
+				identifier = "IC_";
+				logger.info("----------------------SCHOOL " + count++ + "/" + (ids.length) + " IS DONE FOR INDV ---------------------");
+			}
+			// send mail
+			subject = "Individiual IC Letter Generatation completed ";
+			body = CustomStringUtil.appendString(subject, "for all the schools. Individiual IC leter has been completed.\n");
+			try {
+				EmailSender.sendMailInors(prop, prop.getProperty("supportEmail"), subject, body, null);
+			} catch (Exception e) {
+				logger.error("Failed to send email" + e.getMessage());
+			}
+		}
+
+		if (ARCHIVE_NEEDED) {
+			File arc = new File(CustomStringUtil.appendString(prop.getProperty("pdfGenPath"), File.separator, "archive", File.separator));
+			if (!arc.exists())
+				arc.mkdir();
+			String arcFilePath = CustomStringUtil.appendString(arc.getAbsolutePath(), File.separator, prop.getProperty("tempPdfLocation"),
+					prop.getProperty("schoolaArc"), identifier, CustomStringUtil.getDateTimeInors("ddMMyyyyHHmmss"), ".ZIP");
+
+			FileUtil.archiveFiles(prop.getProperty("pdfGenPath"), arcFilePath);
+		}
 	}
 
 	private void moveFilesToS3(String s3Path, String dir) {
