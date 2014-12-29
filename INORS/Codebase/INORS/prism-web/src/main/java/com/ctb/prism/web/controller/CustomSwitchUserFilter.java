@@ -54,6 +54,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.Service.ILoginService;
+import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.security.provider.UserDetailsManager;
 import com.ctb.prism.login.transferobject.UserTO;
 
@@ -110,7 +111,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 					"You cannot set both a switchFailureUrl and a failureHandler");
 		}
 	}
-
+	
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
@@ -125,6 +126,12 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 						request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY));*/
 				
 				Authentication targetUser = attemptSwitchUser(request);
+				/*Check if the current user has admin role to do loginAS
+				 * if not then targetUser will be null */
+				if(targetUser == null) {
+					logger.debug("Switch User failed for malicious user loginAS");
+					throw new Exception();
+				}
 				String prevAdmin = "Admin";
 				for(GrantedAuthority ga : targetUser.getAuthorities()) {
 					if(ga instanceof SwitchUserGrantedAuthority) {
@@ -155,8 +162,11 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				logger.debug("Switch User failed", e);
 				failureHandler.onAuthenticationFailure(request, response, e);
 			} catch (SystemException e) {
-				// TODO Auto-generated catch block
+				logger.debug("Switch User failed", e);
 				e.printStackTrace();
+			} catch (Exception e) {
+				logger.debug("Switch User failed", e);
+				failureHandler.onAuthenticationFailure(request, response, (AuthenticationException) e);
 			}
 
 			return;
@@ -215,6 +225,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 	 * @throws CredentialsExpiredException
 	 *             If the target user credentials are expired.
 	 */
+
 	protected Authentication attemptSwitchUser(HttpServletRequest request)
 			throws AuthenticationException {
 		UsernamePasswordAuthenticationToken targetUserRequest = null;
@@ -231,7 +242,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		}
 
 		UserDetails targetUser = userDetailsService.loadUserByUsername(username);
-
+		
 		String loginAs = (String) request.getSession().getAttribute(IApplicationConstants.LOGIN_AS);
 		if (loginAs != null && IApplicationConstants.ACTIVE_FLAG.equals(loginAs)) {
 			// no check required
@@ -335,32 +346,45 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		// which will be used to 'exit' from the current switched user.
 		Authentication currentAuth = SecurityContextHolder.getContext()
 				.getAuthentication();
-		GrantedAuthority switchAuthority = new SwitchUserGrantedAuthority(
-				ROLE_PREVIOUS_ADMINISTRATOR, currentAuth);
-
-		// get the original authorities
-		Collection<GrantedAuthority> orig = (Collection<GrantedAuthority>) targetUser
-				.getAuthorities();
-
-		// Allow subclasses to change the authorities to be granted
-		if (switchUserAuthorityChanger != null) {
-			orig = (Collection<GrantedAuthority>) switchUserAuthorityChanger
-					.modifyGrantedAuthorities(targetUser, currentAuth, orig);
+		
+		AuthenticatedUser authenticatedUser = (AuthenticatedUser) currentAuth.getPrincipal();
+		UserTO user = authenticatedUser.getUserTO();
+		List<GrantedAuthority> authorities = user.getRoles();
+		List<String> roleList = new ArrayList<String>();
+		for(GrantedAuthority auth : authorities){
+			roleList.add(auth.getAuthority());
 		}
+		/*Check if the current user has admin role to do loginAS */
+		if(roleList.contains("ROLE_ADMIN")){
+			GrantedAuthority switchAuthority = new SwitchUserGrantedAuthority(
+					ROLE_PREVIOUS_ADMINISTRATOR, currentAuth);
 
-		// add the new switch user authority
-		List<GrantedAuthority> newAuths = new ArrayList<GrantedAuthority>(orig);
-		newAuths.add(switchAuthority);
+			// get the original authorities
+			Collection<GrantedAuthority> orig = (Collection<GrantedAuthority>) targetUser
+					.getAuthorities();
 
-		// create the new authentication token
-		targetUserRequest = new UsernamePasswordAuthenticationToken(targetUser,
-				targetUser.getPassword(), newAuths);
+			// Allow subclasses to change the authorities to be granted
+			if (switchUserAuthorityChanger != null) {
+				orig = (Collection<GrantedAuthority>) switchUserAuthorityChanger
+						.modifyGrantedAuthorities(targetUser, currentAuth, orig);
+			}
 
-		// set details
-		targetUserRequest.setDetails(authenticationDetailsSource
-				.buildDetails(request));
+			// add the new switch user authority
+			List<GrantedAuthority> newAuths = new ArrayList<GrantedAuthority>(orig);
+			newAuths.add(switchAuthority);
 
-		return targetUserRequest;
+			// create the new authentication token
+			targetUserRequest = new UsernamePasswordAuthenticationToken(targetUser,
+					targetUser.getPassword(), newAuths);
+
+			// set details
+			targetUserRequest.setDetails(authenticationDetailsSource
+					.buildDetails(request));
+			return targetUserRequest;
+		} else {
+			return null;
+		}
+		
 	}
 
 	/**
