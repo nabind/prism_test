@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -166,7 +167,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				e.printStackTrace();
 			} catch (Exception e) {
 				logger.debug("Switch User failed", e);
-				failureHandler.onAuthenticationFailure(request, response, (AuthenticationException) e);
+				response.sendRedirect("error/accessDenied");				
 			}
 
 			return;
