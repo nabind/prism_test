@@ -1109,4 +1109,51 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		});
 	}
 	
+	public boolean checkOrgHierarchy(Map<String, Object> paramMap){
+		
+		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - checkOrgHierarchy()");
+		long t1 = System.currentTimeMillis();
+		
+		final String userName = (String)paramMap.get("username"); 
+		final String custProdId = (String)paramMap.get("custProdId"); 
+		final String prevOrgId = (String)paramMap.get("prevOrgId"); 
+		BigDecimal existFlag;
+		boolean returnFlag = Boolean.FALSE;
+		try{
+			existFlag = (BigDecimal)getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_ORG_HIERARCHY);
+					cs.setString(1, userName);
+					cs.setLong(2, Long.parseLong(custProdId));
+					cs.setLong(3, Long.parseLong(prevOrgId));
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					BigDecimal existFlag = null;
+					try {
+						cs.execute();
+						existFlag = (BigDecimal)cs.getObject(4);
+						Utils.logError(cs.getString(5));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return existFlag;
+				}
+			});
+			
+			if(existFlag.intValue() > 0 ){
+				returnFlag = Boolean.TRUE;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - checkOrgHierarchy() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return returnFlag;
+	}
+	
 }

@@ -166,4 +166,8 @@ public class LoginServiceImpl implements ILoginService {
 	public List<String> getPasswordHistory(Map<String, Object> paramMap) {
 		return loginBusiness.getPasswordHistory(paramMap);
 	}
+	
+	public boolean checkOrgHierarchy(Map<String, Object> paramMap){
+		return loginBusiness.checkOrgHierarchy(paramMap);
+	}
 }

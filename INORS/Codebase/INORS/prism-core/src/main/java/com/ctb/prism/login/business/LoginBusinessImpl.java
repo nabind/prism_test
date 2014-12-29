@@ -249,4 +249,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.getPasswordHistory(paramMap);
 	}
 	
+	public boolean checkOrgHierarchy(Map<String, Object> paramMap){
+		return loginDAO.checkOrgHierarchy(paramMap);
+	}
+	
 }

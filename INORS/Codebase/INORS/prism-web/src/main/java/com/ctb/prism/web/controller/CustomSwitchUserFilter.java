@@ -141,7 +141,6 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 					}
 				}
 				//Get details of prev admin user details
-				
 				paramMap.put("username", prevAdmin);
 				UserTO prevAdminuserDetails = loginService.getUserByEmail(paramMap);
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
@@ -231,8 +230,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			throws AuthenticationException {
 		UsernamePasswordAuthenticationToken targetUserRequest = null;
 
-		String username = request
-				.getParameter(SPRING_SECURITY_SWITCH_USERNAME_KEY);
+		String username = request.getParameter(SPRING_SECURITY_SWITCH_USERNAME_KEY);
 
 		if (username == null) {
 			username = "";
@@ -242,6 +240,18 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			logger.debug("Attempt to switch to user [" + username + "]");
 		}
 
+		//Org Hierarchy check - By Joy
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+		String prevOrgId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+		paramMap.put("username", username);
+		paramMap.put("custProdId", adminYear);
+		paramMap.put("prevOrgId", prevOrgId);
+		if(!loginService.checkOrgHierarchy(paramMap)){
+			return null;
+		}
+		
+		
 		UserDetails targetUser = userDetailsService.loadUserByUsername(username);
 		
 		String loginAs = (String) request.getSession().getAttribute(IApplicationConstants.LOGIN_AS);

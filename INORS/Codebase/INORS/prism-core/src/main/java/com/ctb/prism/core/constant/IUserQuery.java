@@ -22,6 +22,7 @@ public interface IUserQuery {
 	public static final String SP_GET_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_USER_DETAILS(?, ?, ?, ?, ?)}";
 
 	public static final String SP_GET_USER_EMAIL = "{CALL PKG_MANAGE_USERS.SP_GET_USER_EMAIL(?, ?, ?)}";
+	public static final String SP_CHECK_ORG_HIERARCHY = "{CALL PKG_ADMIN_MODULE.SP_CHECK_ORG_HIERARCHY(?,?,?,?,?)}";
 	
 	/*public static final String GET_EDU_USER_DETAILS = CustomStringUtil.appendString( 
 			"SELECT USERS.IS_FIRSTTIME_LOGIN,USERS.USERID,EC.EDU_CENTERID ORG_NODEID, -99 ORG_NODE_LEVEL,",
