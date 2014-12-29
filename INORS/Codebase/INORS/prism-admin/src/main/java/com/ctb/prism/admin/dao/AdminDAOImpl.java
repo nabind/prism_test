@@ -1014,7 +1014,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					
 					// add to password history
 					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
-							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)), userName);
+							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userId, salt)), userId);
 					
 					ldapFlag = true;
 				}
