@@ -166,7 +166,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				e.printStackTrace();
 			} catch (Exception e) {
 				logger.debug("Switch User failed", e);
-				response.sendRedirect("error/accessDenied");				
+				response.sendRedirect("userlogin.do?login_error=1");				
 			}
 
 			return;
