@@ -22,7 +22,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
-import com.ctb.prism.parent.dao.ParentDAOImpl;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
 import com.ctb.prism.parent.transferobject.QuestionTO;
