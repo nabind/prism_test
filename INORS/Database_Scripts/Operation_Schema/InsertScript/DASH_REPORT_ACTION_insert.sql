@@ -1,11 +1,11 @@
+DELETE FROM DASH_ACTION_ACCESS;
+DELETE FROM DASH_RPT_ACTION;
 --For TASC
---Common
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Administration','GEN','Select Administration',sysdate,1);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Organization Mode','GEN','Select Organization Mode',sysdate,1);
-
 --Manage User
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','USR','Select Administration',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','USR','Select Organization Mode',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search User','USR','Search User',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -23,6 +23,10 @@ values(seq_dash_rpt_action.nextval,'Download Users','USR','Download Users',sysda
 
 --Manage Org
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','ORG','Select Administration',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','ORG','Select Organization Mode',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Organization','ORG','Search Organization',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'User Count','ORG','User Count',sysdate,1);
@@ -30,6 +34,10 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'More','ORG','More',sysdate,1);
 
 --Manage Parent
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','PAR','Select Administration',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','PAR','Select Organization Mode',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Parent','PAR','Search Parent',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -40,6 +48,10 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'More','PAR','More',sysdate,1);
 
 --Manage Student
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','STD','Select Administration',sysdate,1);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','STD','Select Organization Mode',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Student','STD','Search Student',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -103,28 +115,26 @@ values(seq_dash_rpt_action.nextval,'File Size','GDF','File Size Button in Group 
 
 --GRT/IC File Download
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'GRT Button','GDF','GRT Button in GRT/IC File Download',sysdate,1);
+values(seq_dash_rpt_action.nextval,'GRT Button','GRTIC','GRT Button in GRT/IC File Download',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'IC Button','GDF','IC Button in GRT/IC File Download',sysdate,1);
+values(seq_dash_rpt_action.nextval,'IC Button','GRTIC','IC Button in GRT/IC File Download',sysdate,1);
 
 --Group Downloads
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Combined Pdf','GDF','Combined Pdf Button in Group Downloads',sysdate,1);
+values(seq_dash_rpt_action.nextval,'Combined Pdf','GDL','Combined Pdf Button in Group Downloads',sysdate,1);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Separate Pdf','GDF','Separate Pdf Button in Group Downloads',sysdate,1);
+values(seq_dash_rpt_action.nextval,'Separate Pdf','GDL','Separate Pdf Button in Group Downloads',sysdate,1);
 
 --Student Data File
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Student Data File','GDF','Student Data File',sysdate,1);
+values(seq_dash_rpt_action.nextval,'Student Data File','SDF','Student Data File',sysdate,1);
 
 --For INORS
---Common
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Administration','GEN','Select Administration',sysdate,2);
-insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Select Organization Mode','GEN','Select Organization Mode',sysdate,2);
-
 --Manage User
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','USR','Select Administration',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','USR','Select Organization Mode',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search User','USR','Search User',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -142,6 +152,10 @@ values(seq_dash_rpt_action.nextval,'Download Users','USR','Download Users',sysda
 
 --Manage Org
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','ORG','Select Administration',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','ORG','Select Organization Mode',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Organization','ORG','Search Organization',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'User Count','ORG','User Count',sysdate,2);
@@ -149,6 +163,10 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'More','ORG','More',sysdate,2);
 
 --Manage Parent
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','PAR','Select Administration',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','PAR','Select Organization Mode',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Parent','PAR','Search Parent',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -159,6 +177,10 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'More','PAR','More',sysdate,2);
 
 --Manage Student
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Administration','STD','Select Administration',sysdate,2);
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'Select Organization Mode','STD','Select Organization Mode',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Search Student','STD','Search Student',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -222,17 +244,17 @@ values(seq_dash_rpt_action.nextval,'File Size','GDF','File Size Button in Group 
 
 --GRT/IC File Download
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'GRT Button','GDF','GRT Button in GRT/IC File Download',sysdate,2);
+values(seq_dash_rpt_action.nextval,'GRT Button','GRTIC','GRT Button in GRT/IC File Download',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'IC Button','GDF','IC Button in GRT/IC File Download',sysdate,2);
+values(seq_dash_rpt_action.nextval,'IC Button','GRTIC','IC Button in GRT/IC File Download',sysdate,2);
 
 --Group Downloads
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Combined Pdf','GDF','Combined Pdf Button in Group Downloads',sysdate,2);
+values(seq_dash_rpt_action.nextval,'Combined Pdf','GDL','Combined Pdf Button in Group Downloads',sysdate,2);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Separate Pdf','GDF','Separate Pdf Button in Group Downloads',sysdate,2);
+values(seq_dash_rpt_action.nextval,'Separate Pdf','GDL','Separate Pdf Button in Group Downloads',sysdate,2);
 
 --Student Data File
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
-values(seq_dash_rpt_action.nextval,'Student Data File','GDF','Student Data File',sysdate,2);
+values(seq_dash_rpt_action.nextval,'Student Data File','SDF','Student Data File',sysdate,2);
 commit;
