@@ -2373,7 +2373,10 @@ public class AdminController {
 		String filePath = (String) request.getParameter("filePath");
 		String fileName = (String) request.getParameter("fileName");
 		try {
-			jobTrackingTO = usabilityService.getFileSize(jobId);
+			if(jobId!=null && jobId.trim().length() > 0 ){
+				jobTrackingTO = usabilityService.getFileSize(jobId);
+			}
+			
 			if (jobTrackingTO.getFileSize() != null) {
 				fileDetails.add(jobTrackingTO);
 			} else {

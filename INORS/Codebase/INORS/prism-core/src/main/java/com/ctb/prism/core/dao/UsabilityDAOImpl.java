@@ -1132,6 +1132,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	public JobTrackingTO getFileSize(String jobId) {
 		JobTrackingTO jobTrackingTO = null;
 		List<Map<String, Object>> lstData = null;
+		logger.log(IAppLogger.INFO, "Get File Size by JobID: " +jobId);
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_FILE_SIZE, jobId);
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
