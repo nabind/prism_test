@@ -709,7 +709,7 @@ public class FileUtil {
 		} catch (IOException e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			e.printStackTrace();
-		} catch (net.lingala.zip4j.exception.ZipException e) {
+		} catch (ZipException e) {
 			logger.log(IAppLogger.ERROR, "", e);
 			e.printStackTrace();
 		}
