@@ -2,6 +2,7 @@ package com.ctb.prism.core.logger;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class AppLoggerImpl implements IAppLogger {
 		Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 		
 		message = currentTimestamp 
-					+ " "  + Calendar.getInstance().getTimeZone().getDisplayName() 
+					+ " "  + Calendar.getInstance().getTimeZone().getDisplayName(false, TimeZone.SHORT) 
 					+ ": " + contractName.toUpperCase() 
 					+ ": " + logger.getName() 
 					+ ": " +  message;
