@@ -75,10 +75,10 @@ public class TascService implements PrismPdfService {
 		} else {
 			if (args[0].equalsIgnoreCase("E")) {
 				isEducationCenter = true;
-				logger.debug("Processing for Education Center...");
+				logger.info("Processing for Education Center...");
 			} else {
 				isEducationCenter = false;
-				logger.debug("Processing for Organization...");
+				logger.info("Processing for Organization...");
 			}
 			// Creates a new array with args[1] to args[last element]
 			System.arraycopy(args, 1, Ids, 0, length);
@@ -107,7 +107,7 @@ public class TascService implements PrismPdfService {
 				archiveFiles(tascProperties.getProperty("pdfGenPath"), arcFilePath);
 			}
 		}
-		logger.debug("Completed!! ");
+		logger.info("Completed!! ");
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class TascService implements PrismPdfService {
 			}
 			for (File f : listOfFiles) {
 				if (f.isFile()) {
-					logger.debug(CustomStringUtil.appendString("Deleting file : ", f.getAbsolutePath()));
+					logger.info(CustomStringUtil.appendString("Deleting Temp file : ", f.getAbsolutePath()));
 					FileUtil.removeFile(f.getAbsolutePath());
 				}
 			}
@@ -239,7 +239,7 @@ public class TascService implements PrismPdfService {
 					 * Changed for the new requirement where mail will be send
 					 * to support group if no school email is present
 					 */
-					logger.debug("Sending mail to Support group only .. no school mail id is defined.");
+					logger.info("Sending mail to Support group only .. no school mail id is defined.");
 					// prop.getProperty("supportEmail");
 					if (sendPasswordMail(level3OrgId, prop, mailSubject, supportEmail, school.getOrgNodeLevel(), null)) {
 						updateLog("Mail sent successfully to ", supportEmail);
@@ -273,7 +273,7 @@ public class TascService implements PrismPdfService {
 			if (dao == null) {
 				dao = new TascDao(configProperties);
 			}
-			logger.debug("getting schools ... ");
+			logger.info("getting schools ... ");
 			updateLog("getting schools ... ");
 			lStartTime = new Date().getTime();
 			OrgTO school = null;
@@ -336,12 +336,12 @@ public class TascService implements PrismPdfService {
 					lEndTime = new Date().getTime();
 					logElapsedTime("setHierarchy : ");
 					encDocLocation = createPdf(school, teachers, tascProperties, encryptionNeeded, schoolUserPresent, false, migration, state);
-					logger.debug("Created PDF with name : " + encDocLocation);
+					logger.info("Created PDF with name : " + encDocLocation);
 					if (pdfGenerator.isIssueFound() && !migration) {
 						logger.warn("Some issues identified during generation of pdf.");
 					} else {
 						// update org_user table set newuser = N
-						logger.debug("Updating USERS table with password and reseting new user flag ");
+						logger.info("Updating USERS table with password and reseting new user flag ");
 						lStartTime = new Date().getTime();
 						// for(UserTO user : school.getUsers()) {
 						dao.updateNewuserFlag(school.getUsers());
@@ -359,7 +359,7 @@ public class TascService implements PrismPdfService {
 							if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
 								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
 										schoolUserPresent, false, supportEmail)) {
-									logger.debug("	mail sent successfully ... for process id : " + processId);
+									logger.info("	mail sent successfully ... for process id : " + processId);
 									updateLog("Mail sent successfully to ", school.getEmail());
 
 									// update staging status
@@ -372,7 +372,7 @@ public class TascService implements PrismPdfService {
 									updateLog("Failed sending mail. Updating status.");
 								}
 							} else {
-								logger.debug("Sending mail to Support group only .. no school mail id is defined.");
+								logger.info("Sending mail to Support group only .. no school mail id is defined.");
 								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
 										schoolUserPresent, false, null)) {
 									updateLog("Mail sent successfully to ", supportEmail);
@@ -383,19 +383,19 @@ public class TascService implements PrismPdfService {
 
 							// Sending password email for PDF opening
 							updateLog("Sending password email for PDF opening");
-							logger.debug("Sending password email for PDF opening");
+							logger.info("Sending password email for PDF opening");
 							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
 						} else {
 							updateLog("Error generating PDF");
 						}
 					}
 				} else {
-					logger.debug("No new school user found. Exiting.");
+					logger.info("No new school user found. Exiting.");
 					updateLog("No new school user found. Exiting.");
 				}
 			} else {
 				// configured not to send login pdf
-				logger.debug("CUSTOMER_INFO.SEND_LOGIN_PDF is set to N, not creating password/pdf");
+				logger.info("CUSTOMER_INFO.SEND_LOGIN_PDF is set to N, not creating password/pdf");
 				updateLog("CUSTOMER_INFO.SEND_LOGIN_PDF is set to N, not creating password/pdf");
 			}
 		} catch (Exception e) {
@@ -412,8 +412,8 @@ public class TascService implements PrismPdfService {
 				lEndTime = new Date().getTime();
 				logElapsedTime("Update process Log : ");
 			}
-			logger.debug("Process Log ----------------------------------------- ");
-			logger.debug((processLog != null) ? processLog.toString() : "error");
+			logger.info("Process Log ----------------------------------------- ");
+			logger.info((processLog != null) ? processLog.toString() : "error");
 		}
 		return true;
 	}
@@ -471,7 +471,7 @@ public class TascService implements PrismPdfService {
 			timeDiff.append(message).append(" Elapsed : ");
 			timeDiff.append(difference).append(" milliseconds");
 		}
-		logger.debug(timeDiff.toString());
+		logger.info(timeDiff.toString());
 	}
 
 	/**
@@ -489,7 +489,7 @@ public class TascService implements PrismPdfService {
 	 */
 	private String createPdf(OrgTO school, List<OrgTO> teachers, Properties prop, boolean encrypt, boolean schoolUserPresent, boolean isInitialLoad,
 			boolean migration, boolean state) {
-		logger.debug("generating pdf... ");
+		logger.info("generating pdf... ");
 		if (prop.getProperty("pdfGenPath") == null) {
 			updateLog("PDF generation path (pdfGenPath) is not defined");
 		}
@@ -529,7 +529,7 @@ public class TascService implements PrismPdfService {
 	 */
 	private boolean sendMail(String level3OrgId, boolean isInitialLoad, boolean migration, Properties prop, String mailSubject, String toMailAddr,
 			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, boolean letterMail, String supportEmail) {
-		logger.debug("sending mail... ");
+		logger.info("sending mail... ");
 		lStartTime = new Date().getTime();
 		boolean mailSent = false;
 		// String mailSubject = "";
@@ -540,7 +540,7 @@ public class TascService implements PrismPdfService {
 			EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
-			logger.debug("Mail sending failed ..." + e.getMessage());
+			logger.info("Mail sending failed ..." + e.getMessage());
 			updateLog("Mail sending failed", e.getMessage());
 		}
 		lEndTime = new Date().getTime();
@@ -558,7 +558,7 @@ public class TascService implements PrismPdfService {
 	 * @return mail sent (true)successfully/(false)failed
 	 */
 	private boolean sendPasswordMail(String level3OrgId, Properties prop, String mailSubject, String toMailAddr, String OrgLevel, String supportEmail) {
-		logger.debug("sending password mail... ");
+		logger.info("sending password mail... ");
 		lStartTime = new Date().getTime();
 		boolean mailSent = false;
 		// String mailSubject = "";
@@ -577,7 +577,7 @@ public class TascService implements PrismPdfService {
 			EmailSender.sendMailTasc(prop, toMailAddr, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
-			logger.debug("Mail sending failed ..." + e.getMessage());
+			logger.info("Mail sending failed ..." + e.getMessage());
 			updateLog("Mail sending failed", e.getMessage());
 		}
 		lEndTime = new Date().getTime();

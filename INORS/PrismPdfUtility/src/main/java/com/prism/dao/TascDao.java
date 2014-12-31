@@ -281,7 +281,7 @@ public class TascDao extends CommonDao {
 				pstmt.addBatch();
 			}
 			updateCount = pstmt.executeBatch();
-			logger.debug("Records updated: " + updateCount);
+			logger.info("Records updated: " + updateCount);
 			conn.commit();
 			logger.debug("commit successful");
 		} catch (SQLException e) {
