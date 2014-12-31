@@ -1106,13 +1106,13 @@ public class LoginController {
 					sendUserPasswordEmail(emailId,userToList,null);
 					sendEmailFlag = "1";
 				} catch (Exception e) {
-					sendEmailFlag = "0";
+					sendEmailFlag = "1"; // changed to 1 to resolve white-hat appscan
 					logger.log(IAppLogger.ERROR, e.getMessage(), e);
 				}
 				//return jsonString;
 				
 			} else {
-				sendEmailFlag = "0";
+				sendEmailFlag = "1"; // changed to 1 to resolve white-hat appscan
 				logger.log(IAppLogger.INFO, "No user found");
 			}
 			

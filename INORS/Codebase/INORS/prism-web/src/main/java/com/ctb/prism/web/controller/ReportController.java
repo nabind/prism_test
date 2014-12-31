@@ -188,7 +188,7 @@ public class ReportController{
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperReport.getPageWidth());
 			}
 			
-			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId);
+			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId, true);
 			int noOfPages = jasperPrint.getPages().size();	
 			
 			if (noOfPages > 1) {
@@ -555,6 +555,12 @@ public class ReportController{
 	private JasperPrint getJasperPrintObject(String reportUrl, String filter, String assessmentId, String sessionParam, HttpServletRequest req, String drilldown) throws DataAccessException, Exception {
 		return getJasperPrintObject(null, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, null);
 	}
+	
+	private JasperPrint getJasperPrintObject(List<ReportTO> reportList, String reportUrl, String filter, String assessmentId, String sessionParam, HttpServletRequest req, String drilldown,
+			boolean isPrinterFriendly, String studentBioId) throws DataAccessException, Exception {
+		return getJasperPrintObject(reportList, reportUrl, filter, assessmentId, sessionParam, req, drilldown,
+				isPrinterFriendly, studentBioId, false);
+	}
 
 	/**
 	 * Get jasper print object with filled parameters.
@@ -573,7 +579,7 @@ public class ReportController{
 	 * @throws Exception
 	 */
 	private JasperPrint getJasperPrintObject(List<ReportTO> reportList, String reportUrl, String filter, String assessmentId, String sessionParam, HttpServletRequest req, String drilldown,
-			boolean isPrinterFriendly, String studentBioId) throws DataAccessException, Exception {
+			boolean isPrinterFriendly, String studentBioId, boolean isAPI) throws DataAccessException, Exception {
 		// Connection conn = null;
 		JasperPrint jasperPrint = null;
 		try {
@@ -703,8 +709,10 @@ public class ReportController{
 				jasperPrint = reportService.getFilledReport(jasperReport, parameters);
 				
 				// Async call for PDF
-				reportService.getFilledReportForPDF(jasperReport, parameters, isPrinterFriendly, 
+				if(!isAPI) {
+					reportService.getFilledReportForPDF(jasperReport, parameters, isPrinterFriendly, 
 						(String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), reportUrl);
+				}
 			}
 			req.getSession().setAttribute("apiJasperParameters" + reportUrl, parameters);
 		} catch (DataAccessException exception) {
