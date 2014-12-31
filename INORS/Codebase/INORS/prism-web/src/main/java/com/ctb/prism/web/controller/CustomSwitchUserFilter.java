@@ -240,8 +240,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			logger.debug("Attempt to switch to user [" + username + "]");
 		}
 
-		//Org Hierarchy check - By Joy
-		Map<String,Object> paramMap = new HashMap<String,Object>();
+		//Org Hierarchy check - By Joy - Block for time being for Edu Center User issue
+		/*Map<String,Object> paramMap = new HashMap<String,Object>();
 		String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 		String prevOrgId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		paramMap.put("username", username);
@@ -249,7 +249,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		paramMap.put("prevOrgId", prevOrgId);
 		if(!loginService.checkOrgHierarchy(paramMap)){
 			return null;
-		}
+		}*/
 		
 		
 		UserDetails targetUser = userDetailsService.loadUserByUsername(username);
