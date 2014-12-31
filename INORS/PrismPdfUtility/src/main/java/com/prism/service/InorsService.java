@@ -62,17 +62,24 @@ public class InorsService implements PrismPdfService {
 			} else {
 				// Code Moved to separate Method processSchoolIds()
 				String[] ids = CustomStringUtil.getAllButFirstArg(args);
-				int batchCount = Integer.parseInt(prop.getProperty("batchCount"));
-				logger.info("batchCount = " + batchCount);
-				List<List<String>> listOfSchoolIdList = CustomStringUtil.splitTheList(Arrays.asList(ids), batchCount);
-				for (List<String> schoolIdList : listOfSchoolIdList) {
-					logger.info("schoolIdList = " + schoolIdList);
-				}
-				int batch = 0;
-				for (List<String> schoolIdList : listOfSchoolIdList) {
-					logger.info("--------------Batch " + (++batch) + " of " + listOfSchoolIdList.size() + "-------------");
-					logger.info("schoolIdList = " + schoolIdList);
-					processSchoolIds(schoolIdList.toArray(new String[schoolIdList.size()]), jdbcProp, prop, flag);
+				String useBatch = prop.getProperty("useBatch");
+				logger.info("useBatch = " + useBatch);
+				if ("true".equals(useBatch)) {
+					int batchCount = Integer.parseInt(prop.getProperty("batchCount"));
+					logger.info("batchCount = " + batchCount);
+					List<List<String>> listOfSchoolIdList = CustomStringUtil.splitTheList(Arrays.asList(ids), batchCount);
+					for (List<String> schoolIdList : listOfSchoolIdList) {
+						logger.info("schoolIdList = " + schoolIdList);
+					}
+					int batch = 0;
+					for (List<String> schoolIdList : listOfSchoolIdList) {
+						logger.info("--------------Batch " + (++batch) + " of " + listOfSchoolIdList.size() + "-------------");
+						logger.info("schoolIdList = " + schoolIdList);
+						processSchoolIds(schoolIdList.toArray(new String[schoolIdList.size()]), jdbcProp, prop, flag);
+					}
+				
+				} else {
+					processSchoolIds(ids, jdbcProp, prop, flag);
 				}
 			}
 
