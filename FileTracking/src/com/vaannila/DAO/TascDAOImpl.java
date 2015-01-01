@@ -262,6 +262,7 @@ public class TascDAOImpl {
 	 */
 	public List<TASCProcessTO> getProcessEr(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getProcessEr()");
+		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -287,6 +288,7 @@ public class TascDAOImpl {
 			queryBuff.append(" EED.ER_EXCDID ER_EXCDID");
 			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, SUBTEST_DIM SD, ER_EXCEPTION_DATA EED");
 			queryBuff.append(" WHERE ESSH.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
+			queryBuff.append(" AND DECODE(EED.CONTENT_CODE, NULL, '-99', ESSH.CONTENT_AREA_CODE) = NVL(EED.CONTENT_CODE, '-99')");
 			queryBuff.append(" AND ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
@@ -327,7 +329,7 @@ public class TascDAOImpl {
 			}
 			queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
 		}else{
-			queryBuff.append(" SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
+			queryBuff.append("SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
 			queryBuff.append(" ESD.UUID UUID,");
 			queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 0)) TEST_ELEMENT_ID,");
@@ -349,6 +351,7 @@ public class TascDAOImpl {
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
 			queryBuff.append(" AND ESD.ER_STUDID = ETS.ER_STUDID");
 			queryBuff.append(" AND ETS.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
+			queryBuff.append(" AND DECODE(EED.CONTENT_CODE, NULL, '-99', ETS.CONTENT_AREA_CODE) = NVL(EED.CONTENT_CODE, '-99')");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -593,8 +596,9 @@ public class TascDAOImpl {
 			try {rs.close();} catch (Exception e2) {}
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getProcessEr() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		System.out.println("Exit: getProcessEr()");
 		return processList;
 	}
 	
