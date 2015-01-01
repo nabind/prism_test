@@ -371,6 +371,7 @@ public class LoginController {
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
 					req.getSession().setAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID, user.getDefultCustProdId());
+					req.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, String.valueOf(user.getDefultCustProdId()));
 
 					authorities = authenticatedUser.getAuthorities();
 
