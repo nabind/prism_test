@@ -65,11 +65,11 @@ $(document).ready(function() {
 	
 	if ($('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
 		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param');
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=Y';
 		});
 	} else {
 		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param');
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=N';
 		});
 	}
 	

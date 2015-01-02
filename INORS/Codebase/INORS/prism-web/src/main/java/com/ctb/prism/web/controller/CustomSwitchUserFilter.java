@@ -231,7 +231,12 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		UsernamePasswordAuthenticationToken targetUserRequest = null;
 
 		String username = request.getParameter(SPRING_SECURITY_SWITCH_USERNAME_KEY);
-
+		String isEdu = request.getParameter("isEdu");
+		
+		if (isEdu == null) {
+			isEdu = "";
+		}
+		
 		if (username == null) {
 			username = "";
 		}
@@ -240,16 +245,19 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			logger.debug("Attempt to switch to user [" + username + "]");
 		}
 
-		//Org Hierarchy check - By Joy - Block for time being for Edu Center User issue
-		/*Map<String,Object> paramMap = new HashMap<String,Object>();
-		String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-		String prevOrgId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
-		paramMap.put("username", username);
-		paramMap.put("custProdId", adminYear);
-		paramMap.put("prevOrgId", prevOrgId);
-		if(!loginService.checkOrgHierarchy(paramMap)){
-			return null;
-		}*/
+		//Org Hierarchy check,not for Edu Center User issue - By Joy 
+		if(!"Y".equals(isEdu)){
+			Map<String,Object> paramMap = new HashMap<String,Object>();
+			String adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+			String prevOrgId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+			paramMap.put("username", username);
+			paramMap.put("custProdId", adminYear);
+			paramMap.put("prevOrgId", prevOrgId);
+			if(!loginService.checkOrgHierarchy(paramMap)){
+				return null;
+			}
+		}
+		
 		
 		
 		UserDetails targetUser = userDetailsService.loadUserByUsername(username);
