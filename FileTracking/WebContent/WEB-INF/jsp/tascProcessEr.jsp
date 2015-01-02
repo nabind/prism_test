@@ -396,7 +396,7 @@
 				<p>
 					<b>Overall Status:</b><br/>
 					<span class="completed" title="Completed"></span> = Completed/Success <br/>
-					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
+					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
