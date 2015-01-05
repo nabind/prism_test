@@ -21,7 +21,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -270,7 +269,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		}
 
 		// OK, create the switch user token
-		targetUserRequest = createSwitchUserToken(request, targetUser);
+		targetUserRequest = createSwitchUserToken(request, targetUser, isEdu);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Switch User Token [" + targetUserRequest + "]");
@@ -356,7 +355,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 	 * @see SwitchUserGrantedAuthority
 	 */
 	private UsernamePasswordAuthenticationToken createSwitchUserToken(
-			HttpServletRequest request, UserDetails targetUser) {
+			HttpServletRequest request, UserDetails targetUser,String isEdu ) {
 
 		UsernamePasswordAuthenticationToken targetUserRequest;
 
@@ -373,8 +372,15 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		for(GrantedAuthority auth : authorities){
 			roleList.add(auth.getAuthority());
 		}
-		/*Check if the current user has admin role to do loginAS */
-		if(roleList.contains("ROLE_ADMIN")){
+		
+		/*Check if the current user has 
+		 * ctb or super user role to do loginAS for all
+		 * admin role to do loginAS except education center user 
+		 * edu admin role to do loginAS education center user*/
+		
+		if(roleList.contains("ROLE_CTB") || roleList.contains("ROLE_SUPER") ||
+				(roleList.contains("ROLE_ADMIN") && !"Y".equals(isEdu)) ||
+				(roleList.contains("ROLE_EDU_ADMIN") && "Y".equals(isEdu))){
 			GrantedAuthority switchAuthority = new SwitchUserGrantedAuthority(
 					ROLE_PREVIOUS_ADMINISTRATOR, currentAuth);
 
