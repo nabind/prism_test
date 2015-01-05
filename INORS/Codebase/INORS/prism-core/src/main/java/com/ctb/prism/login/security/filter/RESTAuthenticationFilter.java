@@ -202,11 +202,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						// Authenticate user
 			        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userTO.getUserName(), RANDOM_PASSWD);
 						// added to pass contract name in custom UsernamePasswordAuthenticationToken
-			        	if(request.getParameter("j_contract") != null) {
-			        		authRequest.setContractName(request.getParameter("j_contract"));
-			        	} else {
-			        		authRequest.setContractName(Utils.getContractNameNoLogin(theme));
-			        	}
+			        	authRequest.setContractName(Utils.getContractNameNoLogin(theme));
+			        	themeResolver.setThemeName(request, response, theme);
 			        	
 			        	//AbstractAuthenticationToken authRequest = createAuthenticationToken(apiKeyValue, new RESTCredentials("ctbadminJkmqbrbaccesfejrtay9","MkiG+l/qCHbbAlbvAuk6QAWkR68WZAPVNIsxBj8G6P0="));
 				
