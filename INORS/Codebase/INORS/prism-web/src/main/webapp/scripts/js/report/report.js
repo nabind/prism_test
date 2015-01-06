@@ -290,6 +290,13 @@ $(document).ready(function() {
 		var apiUrl = $(this).attr("apiUrl");
 		//var formObj = reportForm.get(tabCount);
 		
+		var lastname = formObj.find("input[name='p_Last_Name']");
+		if(lastname != null && lastname.length > 0) {
+			$("input[name='p_Last_Name']").focus();
+			$("input[name='p_First_Name']").focus();
+			$(document).click();
+		}
+		
 		$(formObj).validationEngine();
 		if(formObj.validationEngine('validate')) {
 			var passSubtest = true;
