@@ -11,9 +11,23 @@ String orgMode = (String) request.getSession().getAttribute(IApplicationConstant
 String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 %>
 
-<div class="panel-control" style="height:60px">
+<c:choose>
+<c:when test="${not empty actionMap[MANAGE_ORG_SELECT_MODE]}">
+  <div class="panel-control" style="height:60px">
+</c:when>
+<c:otherwise>
+  <div class="panel-control" style="height:30px">
+</c:otherwise>
+</c:choose>
 	<div class="float-left">
-		<a href="#nogo" id="hideHierarchy" class="button blue-gradient icon-backward icon-size1 with-tooltip" title="Hide Hierarchy" style="height: 58px;"></a>
+		<c:choose>
+		<c:when test="${not empty actionMap[MANAGE_ORG_SELECT_MODE]}">
+		  <a href="#nogo" id="hideHierarchy" class="button blue-gradient icon-backward icon-size1 with-tooltip" title="Hide Hierarchy" style="height: 58px;"></a>
+		</c:when>
+		<c:otherwise>
+		  <a href="#nogo" id="hideHierarchy" class="button blue-gradient icon-backward icon-size1 with-tooltip" title="Hide Hierarchy"></a>
+		</c:otherwise>
+		</c:choose>
 	</div>
 	<c:set var="selectedYear" value="<%=adminYear %>"></c:set>
 	<c:set var="selectedOrgMode" value="<%=orgMode %>"></c:set>
