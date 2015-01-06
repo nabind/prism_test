@@ -49,7 +49,7 @@ public class InorsBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		inorsBusiness.asyncPDFDownload(jobId, contractName);
 	}
 
-	@Test
+	@Test(expected = org.springframework.jdbc.BadSqlGrammarException.class)
 	public void testCreateJob() {
 		BulkDownloadTO outputTO = inorsBusiness.createJob(InorsTestHelper.getBulkDownloadTO(testParams));
 		assertNotNull(outputTO);

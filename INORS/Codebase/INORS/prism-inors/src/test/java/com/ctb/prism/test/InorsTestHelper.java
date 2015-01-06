@@ -39,7 +39,7 @@ public class InorsTestHelper {
 		to.setEmail("");
 		to.setGroupFile("");
 		to.setCollationHierarchy("");
-		to.setSelectedNodes("");
+		to.setSelectedNodes("0,1");
 		to.setIstepPlus(false);
 		to.setCustomerId("");
 		to.setJobId(0L);
