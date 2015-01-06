@@ -876,7 +876,13 @@ public class LoginController {
 				throw new RuntimeException("Invalid home page entry (needs | to separate role and URL:" + str);
 			}
 			String[] urls = str.split("\\|");
-			if (urls.length == 5) {
+			if (urls.length == 3) { //For Education center login
+				ReportTO entry = new ReportTO();
+				entry.setAllRoles(urls[0]);
+				entry.setOtherUrl(urls[1]);
+				entry.setOrgLevel(urls[2]);
+				entriesList.add(entry);
+			} else if (urls.length == 5) {
 				ReportTO entry = new ReportTO();
 				entry.setRegularUser(true);
 				entry.setAllRoles(urls[0]);
