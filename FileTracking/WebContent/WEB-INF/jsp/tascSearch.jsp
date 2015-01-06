@@ -57,7 +57,7 @@
 			if(updatedDateFrom=="" || updatedDateTo==""){
 				jQuery("#errorLogDialog").dialog("open");
 				$("#ui-dialog-title-errorLogDialog").html('Error');
-				$("#errorLog").html("Atleast Processed Date range is required");
+				$("#errorLog").html("Atleast Processed Date range is required.");
 			} else{
 				$('#searchTascForm').submit();
 			}
@@ -95,7 +95,10 @@
 						<table width="100%">
 							<tr>
 								<td>Processed Date From:</td>
-								<td><input type="text" name="updatedDateFrom" id="updatedDateFrom"></td>
+								<td>
+									<input type="text" name="updatedDateFrom" id="updatedDateFrom">
+									<span style="color:red;">*Date range should be 30 days.</span>
+								</td>
 							</tr>
 							<tr>
 								<td>Processed Date To:</td>

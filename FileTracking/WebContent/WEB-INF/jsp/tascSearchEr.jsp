@@ -56,7 +56,7 @@
 					&& form=="" && testElementId=="" && barcode==""){
 				jQuery("#errorLogDialog").dialog("open");
 				$("#ui-dialog-title-errorLogDialog").html('Error');
-				$("#errorLog").html("Atleast Processed Date range is required");
+				$("#errorLog").html("Atleast Processed Date range is required.");
 			} else{
 				$('#searchTascErForm').submit();
 			}
@@ -105,7 +105,10 @@
 							</tr>
 							<tr>
 								<td>Processed Date From:</td>
-								<td><input type="text" name="processedDateFrom" id="processedDateFrom"></td>
+								<td>
+									<input type="text" name="processedDateFrom" id="processedDateFrom">
+									<span style="color:red;">*Date range should be 30 days.</span>
+								</td>
 							</tr>
 							<tr>
 								<td>Processed Date To:</td>
