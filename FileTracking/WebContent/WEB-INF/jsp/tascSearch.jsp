@@ -14,7 +14,14 @@
 		<script src="css/jquery.validate.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$( "#updatedDateFrom" ).datepicker();
+			
+			$( "#updatedDateFrom" ).datepicker({maxDate: '0',onSelect: function(date) {
+				date = $(this).datepicker('getDate');
+		        var maxDate = new Date(date.getTime());
+		        maxDate.setDate(maxDate.getDate() + 30);
+		        $('#updatedDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
+		    }});
+			
 			$( "#updatedDateTo" ).datepicker();
 			
 			$("#searchTasc").validate({
@@ -27,7 +34,34 @@
 				    }
 				  }
 			});
+			
+			$('#tascSearchButton').live("click", function(){
+				validateForm();
+			});
+			
+			$("#errorLogDialog").dialog({
+				bgiframe: true, 
+				autoOpen: false, 
+				modal: true, 
+				height: 100, 
+				minWidth: 450, 
+				closeOnEscape: true, 
+				resizable: true
+			});
 		});
+		
+		function validateForm(){
+			var updatedDateFrom = $('#updatedDateFrom').val();
+			var updatedDateTo = $('#updatedDateTo').val();
+			
+			if(updatedDateFrom=="" || updatedDateTo==""){
+				jQuery("#errorLogDialog").dialog("open");
+				$("#ui-dialog-title-errorLogDialog").html('Error');
+				$("#errorLog").html("Atleast Processed Date range is required");
+			} else{
+				$('#searchTascForm').submit();
+			}
+		}
 	</script>
 	
 	<style>
@@ -57,7 +91,7 @@
 				
 				<div class="container" >
 					<div class="content">
-						<form name="searchTasc" method="post" action="searchTasc.htm" id="searchTasc">
+						<form name="searchTasc" method="post" action="searchTasc.htm" id="searchTascForm">
 						<table width="100%">
 							<tr>
 								<td>Processed Date From:</td>
@@ -78,16 +112,15 @@
 							
 							<tr>
 								<td></td>
-								<td><input type="submit" value="Search Process"></td>
+								<td><input type="button" id="tascSearchButton" value="Search Process"></td>
 							</tr>
 						</table>
 						</form>
 					</div>
-					
-				
-				
+					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
+						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
+					</div>
 			</div>
-
 	</div>
 </div>
 </div>

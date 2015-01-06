@@ -12,9 +12,56 @@
 		<script src="css/jquery.validate.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$( "#processedDateFrom" ).datepicker();
-			$( "#processedDateTo" ).datepicker();
+			
+			$('#processedDateFrom').datepicker({maxDate: '0',onSelect: function(date) {
+				date = $(this).datepicker('getDate');
+		        var maxDate = new Date(date.getTime());
+		        maxDate.setDate(maxDate.getDate() + 30);
+		        $('#processedDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
+		    }});
+			
+			$('#processedDateTo').datepicker();
+			
+			$('#tascSearchErButton').live("click", function(){
+				validateForm();
+			});
+			
+			$("#errorLogDialog").dialog({
+				bgiframe: true, 
+				autoOpen: false, 
+				modal: true, 
+				height: 100, 
+				minWidth: 450, 
+				closeOnEscape: true, 
+				resizable: true
+			});
+			
 		});
+		
+		function validateForm(){
+			var processedDateFrom = $('#processedDateFrom').val();
+			var processedDateTo = $('#processedDateTo').val();
+			var uuid = $('#uuid').val();
+			var recordId = $('#recordId').val();
+			var processId = $('#processId').val();
+			var lastName = $('#lastName').val();
+			var exceptionCode = $('#exceptionCode').val();
+			var stateCode = $('#stateCode').val();
+			var form = $('#form').val();
+			var testElementId = $('#testElementId').val();
+			var barcode = $('#barcode').val();
+			
+			if((processedDateFrom=="" || processedDateTo=="") && uuid=="" && recordId==""
+					&& processId=="" && lastName=="" && exceptionCode=="" && stateCode==""
+					&& form=="" && testElementId=="" && barcode==""){
+				jQuery("#errorLogDialog").dialog("open");
+				$("#ui-dialog-title-errorLogDialog").html('Error');
+				$("#errorLog").html("Atleast Processed Date range is required");
+			} else{
+				$('#searchTascErForm').submit();
+			}
+		}
+		
 	</script>
 	
 	<style>
@@ -44,7 +91,7 @@
 				
 				<div class="container" >
 					<div class="content">
-						<form name="searchTascEr" method="post" action="searchTascEr.htm" id="searchTascEr">
+						<form name="searchTascEr" method="post" action="searchTascEr.htm" id="searchTascErForm">
 						<table width="100%">
 							<tr>
 								<td>Source System:</td>
@@ -115,10 +162,13 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td><input type="submit" value="Search"></td>
+								<td><input type="button" value="Search" id="tascSearchErButton"></td>
 							</tr>
 						</table>
 						</form>
+					</div>
+					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
+						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
 					</div>
 				</div>
 		</div>
