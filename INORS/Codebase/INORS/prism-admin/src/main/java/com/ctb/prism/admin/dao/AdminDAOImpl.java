@@ -1395,15 +1395,21 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	// @Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
-		logger.log(IAppLogger.DEBUG, "orgMode=" + orgMode);
+		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
+		logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
+		logger.log(IAppLogger.INFO, "customerId = " + customerId);
+		logger.log(IAppLogger.INFO, "adminYear = " + adminYear);
+		logger.log(IAppLogger.INFO, "adminYear = " + adminYear);
+		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 		String parentTenantId = "";
 		String orgId = "";
 		List<OrgTO> orgList = new ArrayList<OrgTO>();
 		List<Map<String, Object>> lstData = null;
 		if (nodeId.indexOf("_") > 0) {
 			orgId = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
-			parentTenantId = nodeId.substring(0, nodeId.indexOf("_"));
-			logger.log(IAppLogger.DEBUG, "orgId=" + orgId);
+			logger.log(IAppLogger.INFO, "orgId=" + orgId);
+			parentTenantId = nodeId.substring(0, nodeId.indexOf("_"));			
+			logger.log(IAppLogger.INFO, "parentTenantId=" + parentTenantId);
 			if (searchParam != null && searchParam.trim().length() > 0) {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear, moreCount);

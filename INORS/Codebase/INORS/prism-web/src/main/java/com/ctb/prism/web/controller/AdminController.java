@@ -1736,7 +1736,11 @@ public class AdminController {
 				}
 			}
 			String studentJsonString = JsonUtil.convertToJsonAdmin(studentTOs);
-			logger.log(IAppLogger.INFO, "studentTOs.size() = " + studentTOs != null ? "" + studentTOs.size() : "0");
+			if(studentTOs != null) {
+				logger.log(IAppLogger.INFO, "studentTOs.size() = "+ " " +studentTOs.size());
+			} else {
+				logger.log(IAppLogger.INFO, "studentTOs.size() = 0");
+			}
 			logger.log(IAppLogger.INFO, studentJsonString);
 			response.setContentType("application/json");
 			response.getWriter().write(studentJsonString);
