@@ -642,9 +642,9 @@
 				case "textarea":
 				case "file":
 				default:
-					var fielId = field.attr("id");
+					var fieldName = field.attr("name");
 					if (! $.trim(field.val()) || field.val() == field.attr("data-validation-placeholder"))
-						if(fielId == "p_Last_Name1" || fielId == "p_First_Name1"){
+						if(fieldName == "p_Last_Name" || fieldName == "p_First_Name"){
 							return "* This field is required if Examinee ID # is blank";
 						} else {
 							return options.allrules[rules[i]].alertText;
