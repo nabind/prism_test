@@ -9,6 +9,9 @@
 @\gscm_tasc.sql;
 @\customer_info_update.sql;
 @\adhoc_dml.sql;
+--Need to run one time
+--UPDATE DASH_REPORTS SET REPORT_NAME = 'User Guide' WHERE REPORT_NAME = 'Users Guide';
+--UPDATE DASH_REPORTS SET REPORT_NAME = 'Admin User Guide' WHERE REPORT_NAME = 'Admin Users Guide';
 --Need to run environment wise (eg: performence = perf)
 --update dash_contract_prop set db_propery_value  = 'ISTEPREPORTS/perf' where db_property_name  = 'static.pdf.location' and projectid = 2;
 --update dash_contract_prop set db_propery_value = 'TASCREPORTS/perf' where db_property_name = 'static.pdf.location' and projectid = 1;
