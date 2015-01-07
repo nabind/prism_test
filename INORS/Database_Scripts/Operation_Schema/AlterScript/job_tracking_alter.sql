@@ -1,1 +1,2 @@
-alter table job_tracking modify REQUEST_FILENAME varchar2(500);
+--alter table job_tracking modify REQUEST_FILENAME varchar2(1000);
+ALTER TABLE JOB_TRACKING MODIFY OTHER_REQUEST_PARAMS VARCHAR2(200);
