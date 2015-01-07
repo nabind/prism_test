@@ -529,6 +529,7 @@ public class InorsController {
 	}
 
 	public Map<String, Object> getReportParameters(HttpServletRequest request, String reportUrl) {
+		logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String assessmentId = request.getParameter("assessmentId");
