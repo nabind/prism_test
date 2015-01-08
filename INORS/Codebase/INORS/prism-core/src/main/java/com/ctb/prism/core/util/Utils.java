@@ -266,6 +266,10 @@ public final class Utils {
 	public static String getDateTime() {
 		return getDateTime("dd-MM-yyyy HH-mm-ss");
 	}
+	
+	public static String getDateTime(boolean candidate) {
+		return getDateTime("yyyyMMdd.HHmmss.sss");
+	}
 
 	public static String getDateTime(String dateFormat) {
 		Calendar cal = Calendar.getInstance();

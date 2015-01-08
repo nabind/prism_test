@@ -470,7 +470,7 @@ public class InorsController {
 				// remove random character for SSO users
 				username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
 			}
-			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(username, "_", "Candidate_PDF", "_", Utils.getDateTime()));
+			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(username, "_", customer, "_", "Candidate_PDF", "_", Utils.getDateTime(true)));
 			jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
 			jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.PD.toString());
 			jobTrackingTO.setRequestType(REQUEST_TYPE.GDF.toString());
