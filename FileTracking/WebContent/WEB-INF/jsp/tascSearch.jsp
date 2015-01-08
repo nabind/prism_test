@@ -97,7 +97,7 @@
 								<td>Processed Date From:</td>
 								<td>
 									<input type="text" name="updatedDateFrom" id="updatedDateFrom">
-									<span style="color:red;">*Date range should be 30 days.</span>
+									<span style="color:red;">* Date range should be 30 days or less.</span>
 								</td>
 							</tr>
 							<tr>

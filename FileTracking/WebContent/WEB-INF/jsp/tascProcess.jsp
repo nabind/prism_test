@@ -234,13 +234,13 @@
 						<th>&nbsp;</th>
 						<th style="min-width: 60px;">Process Id</th>
 						<th>Source System</th>
-						<th>ER Validation</th>
-						<th>Hier Validation</th>
-						<th>Bio Validation</th>
-						<th>Demo Validation</th>
-						<th>Content Validation</th>
-						<th>Objective Validation</th>
-						<th>Item Validation</th>
+						<th>ER Val.</th>
+						<th>Hier Val.</th>
+						<th>Bio Val.</th>
+						<th>Demo Val.</th>
+						<th>Content Val.</th>
+						<th>Objective Val.</th>
+						<th>Item Val.</th>
 						<th>Partition Name</th>
 						<th>Processed Date</th>
 						<th>Source File Name</th>
@@ -303,6 +303,7 @@
 				
 				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active, <span style="color: red">ER = Error</span> </p>
 				<p><b>Source System:</b> PP = Paper Pencil, OL = Online (Web service)</p>
+				<p><b>Val.</b> = Validation Status</p>
 				<p><b>Overall Status:</b><br/>
 					<span class="completed" title="Completed"></span> = Completed/Success <br/>
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
