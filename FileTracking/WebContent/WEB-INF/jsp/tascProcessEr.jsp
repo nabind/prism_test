@@ -70,7 +70,8 @@
 				"sPaginationType": "full_numbers",
 				"aaSorting": [[ 1, "desc" ]],
 				"aoColumnDefs": [ 
-								  { "bVisible": false, "aTargets": [ 0 ] }
+								  { "bVisible": false, "aTargets": [ 0 ] },
+								  { 'bSortable': false, 'aTargets': [ 1 ] }
 								]
 			});
 			
