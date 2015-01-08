@@ -60,6 +60,8 @@ public class TestUtil {
 		params.setPassword(prop.getProperty("test.password"));
 		params.setNoOfSecretQuestions(prop.getProperty("test.noOfSecretQuestions"));
 		params.setInvitationCode(prop.getProperty("test.invitationCode"));
+		params.setTabulerDataHeaders(prop.getProperty("GRT_ISTEP_SPRING_2014_HEADER"));
+		params.setTabulerDataAliases(prop.getProperty("GRT_ISTEP_SPRING_2014_ALIAS"));
 
 		System.out.println("contractName: " + params.getContractName());
 		return params;

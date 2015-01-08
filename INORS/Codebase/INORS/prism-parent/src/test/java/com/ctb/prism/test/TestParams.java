@@ -7,6 +7,9 @@ public class TestParams {
 	private String noOfSecretQuestions;
 	private String invitationCode;
 
+	private String tabulerDataHeaders;
+	private String tabulerDataAliases;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -45,6 +48,22 @@ public class TestParams {
 
 	public void setInvitationCode(String invitationCode) {
 		this.invitationCode = invitationCode;
+	}
+
+	public String getTabulerDataHeaders() {
+		return tabulerDataHeaders;
+	}
+
+	public void setTabulerDataHeaders(String tabulerDataHeaders) {
+		this.tabulerDataHeaders = tabulerDataHeaders;
+	}
+
+	public String getTabulerDataAliases() {
+		return tabulerDataAliases;
+	}
+
+	public void setTabulerDataAliases(String tabulerDataAliases) {
+		this.tabulerDataAliases = tabulerDataAliases;
 	}
 
 }

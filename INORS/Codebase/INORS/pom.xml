@@ -972,6 +972,15 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.6</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<instrumentation>
+						<excludes>
+							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
+							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -981,8 +990,42 @@
 					<testFailureIgnore>true</testFailureIgnore>
 				</configuration>
 			</plugin>
+			 <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+								<include>**/*.ser</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<instrumentation>
+						<excludes>
+							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
+							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<description>Prism Enterprise Reporting Platform</description>
 </project>

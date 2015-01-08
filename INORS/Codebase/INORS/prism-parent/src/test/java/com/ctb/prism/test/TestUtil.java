@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -58,6 +60,8 @@ public class TestUtil {
 		params.setPassword(prop.getProperty("test.password"));
 		params.setNoOfSecretQuestions(prop.getProperty("test.noOfSecretQuestions"));
 		params.setInvitationCode(prop.getProperty("test.invitationCode"));
+		params.setTabulerDataHeaders(prop.getProperty("GRT_ISTEP_SPRING_2014_HEADER"));
+		params.setTabulerDataAliases(prop.getProperty("GRT_ISTEP_SPRING_2014_ALIAS"));
 
 		System.out.println("contractName: " + params.getContractName());
 		return params;
@@ -88,6 +92,16 @@ public class TestUtil {
 			}
 		}
 		return prop;
+	}
+
+	/**
+	 * All Session Attributes are set here.
+	 * 
+	 * @param request
+	 * @param testParams
+	 */
+	public static void setSessionAttributes(MockHttpServletRequest request, TestParams testParams) {
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER, testParams.getUserName());
 	}
 
 }
