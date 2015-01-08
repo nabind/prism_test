@@ -2116,6 +2116,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String MESSAGE_NAME = (String) paramMap.get("MESSAGE_NAME");
 		String REPORT_ID = (String) paramMap.get("REPORT_ID");
 		String MESSAGE_TYPE = (String) paramMap.get("MESSAGE_TYPE");
+		logger.log(IAppLogger.INFO, "paramMap="+paramMap);
 
 		List<Map<String, Object>> lstData = null;
 		String systemConfig = "";
