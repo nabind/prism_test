@@ -202,6 +202,7 @@ public class ReportController{
 			}
 			
 			if(noOfPages == 0) {
+				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.FALSE);
 				return CustomStringUtil.appendString("forward:/loadEmptyReport.do?reportName=",
 						jasperReport.getName(), "&reportMsg=", 
 						req.getParameter("msg") != null ? req.getParameter("msg") : null);
