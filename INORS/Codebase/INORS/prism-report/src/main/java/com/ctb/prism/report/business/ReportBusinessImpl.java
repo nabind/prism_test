@@ -154,15 +154,20 @@ public class ReportBusinessImpl implements IReportBusiness {
 			//reportDAO.removeCache(item.getName());
 			for(Attribute attr : item.getAttributes()) {
 				System.out.println("Removing cache for key : "+ attr.getValue());
+				logger.log(IAppLogger.INFO, "removeCache : Removing cache for key - "+ attr.getValue());
 				reportDAO.removeCache(attr.getValue());
 			}
 		}
+		logger.log(IAppLogger.INFO, "All Cache Cleared");
+		
 		/** delete keys from simple-db **/
 		for(Item item : cacheKeyList){
 			for(Attribute attr : item.getAttributes()) {
+				System.out.println("Removing simple-db key : ");
 				simpleDBService.deleteItem(contractName, attr.getValue());
 			}
 		}
+		logger.log(IAppLogger.INFO, "All simpledb deleted");
 		return true;
 	}
 	
