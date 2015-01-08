@@ -273,7 +273,6 @@ public class TascDAOImpl {
 		if("ERESOURCE".equals(searchProcess.getSourceSystem())){
 			queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
 			queryBuff.append(" ESSH.UUID UUID,");
-			queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 			queryBuff.append(" NVL(EED.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
 			queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
 			queryBuff.append(" NVL(EED.EXCEPTION_CODE, '0') EXCEPTION_CODE,");
@@ -286,10 +285,8 @@ public class TascDAOImpl {
 			queryBuff.append(" ESSH.FORM FORM,");
 			queryBuff.append(" ESSH.DATETIMESTAMP,");
 			queryBuff.append(" EED.ER_EXCDID ER_EXCDID");
-			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, SUBTEST_DIM SD, ER_EXCEPTION_DATA EED");
-			queryBuff.append(" WHERE ESSH.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
-			queryBuff.append(" AND DECODE(EED.CONTENT_CODE, NULL, '-99', ESSH.CONTENT_AREA_CODE) = NVL(EED.CONTENT_CODE, '-99')");
-			queryBuff.append(" AND ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
+			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, ER_EXCEPTION_DATA EED");
+			queryBuff.append(" WHERE ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -302,9 +299,6 @@ public class TascDAOImpl {
 			}
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 				queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER(?)");
-			}
-			if(!"ALL".equals(searchProcess.getSubjectCa())){
-				queryBuff.append("  AND SD.SUBTEST_CODE = ?");
 			}
 			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
@@ -327,11 +321,10 @@ public class TascDAOImpl {
 			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
 				queryBuff.append(" AND ESSH.BARCODE = ?");
 			}
-			queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME, SD.SUBTEST_NAME");
+			queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
 		}else{
 			queryBuff.append("SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
 			queryBuff.append(" ESD.UUID UUID,");
-			queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 0)) TEST_ELEMENT_ID,");
 			queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
 			queryBuff.append(" NVL(EED.EXCEPTION_CODE, '0') EXCEPTION_CODE,");
@@ -346,12 +339,9 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD,");
-			queryBuff.append(" ER_TEST_SCHEDULE  ETS,");
-			queryBuff.append(" SUBTEST_DIM       SD");
+			queryBuff.append(" ER_TEST_SCHEDULE  ETS");
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
 			queryBuff.append(" AND ESD.ER_STUDID = ETS.ER_STUDID");
-			queryBuff.append(" AND ETS.CONTENT_AREA_CODE = SD.SUBTEST_CODE");
-			queryBuff.append(" AND DECODE(EED.CONTENT_CODE, NULL, '-99', ETS.CONTENT_AREA_CODE) = NVL(EED.CONTENT_CODE, '-99')");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -364,9 +354,6 @@ public class TascDAOImpl {
 			}
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 				queryBuff.append(" AND UPPER(ESD.LASTNAME) LIKE UPPER(?)");
-			}
-			if(!"ALL".equals(searchProcess.getSubjectCa())){
-				queryBuff.append("  AND SD.SUBTEST_CODE = ?");
 			}
 			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
@@ -394,7 +381,6 @@ public class TascDAOImpl {
 			
 			queryBuff.append(" SELECT SSBD.LAST_NAME || ', ' || SSBD.FIRST_NAME || ' ' || SSBD.MIDDLE_NAME STUDENTNAME,");
 			queryBuff.append(" SSBD.EXT_STUDENT_ID UUID,");
-			queryBuff.append(" SD.SUBTEST_NAME SUBTEST_NAME,");
 			queryBuff.append(" NVL(SSBD.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
 			queryBuff.append(" NVL(SPS.PROCESS_ID, 0) PROCESS_ID,");
 			queryBuff.append(" '0' EXCEPTION_CODE,");
@@ -410,12 +396,10 @@ public class TascDAOImpl {
 			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
 			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
 			queryBuff.append(" STG_HIER_DETAILS        SHD,");
-			queryBuff.append(" STG_PROCESS_STATUS      SPS,");
-			queryBuff.append(" SUBTEST_DIM             SD");
+			queryBuff.append(" STG_PROCESS_STATUS      SPS");
 			queryBuff.append(" WHERE SPS.PROCESS_ID = SSBD.PROCESS_ID");
 			queryBuff.append(" AND SPS.PROCESS_ID = SHD.PROCESS_ID");
 			queryBuff.append(" AND SSBD.STUDENT_BIO_DETAILS_ID = SSSD.STUDENT_BIO_DETAILS_ID");
-			queryBuff.append(" AND SSSD.CONTENT_NAME = SD.SUBTEST_CODE");
 			queryBuff.append(" AND SSBD.WKF_PARTITION_NAME = 'BR_EXCP'");
 			queryBuff.append(" AND SSBD.WKF_PARTITION_NAME = SHD.WKF_PARTITION_NAME");
 			queryBuff.append(" AND SHD.ORG_LEVEL = 1");
@@ -432,9 +416,6 @@ public class TascDAOImpl {
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 				queryBuff.append(" AND UPPER(SSBD.LAST_NAME) LIKE UPPER(?)");
 			}
-			if(!"ALL".equals(searchProcess.getSubjectCa())){
-				queryBuff.append("  AND SD.SUBTEST_CODE = ?");
-			}
 			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 				queryBuff.append(" AND SPS.PROCESS_ID = ?");
 			}
@@ -450,7 +431,7 @@ public class TascDAOImpl {
 			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
 				queryBuff.append(" AND SSBD.BARCODE = ?");
 			}
-			queryBuff.append(" ORDER BY DATETIMESTAMP DESC, STUDENTNAME, SUBTEST_NAME");
+			queryBuff.append(" ORDER BY DATETIMESTAMP DESC, STUDENTNAME");
 		}
 			
 		String query = queryBuff.toString();
@@ -474,9 +455,6 @@ public class TascDAOImpl {
 				}
 				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}
-				if(!"ALL".equals(searchProcess.getSubjectCa())){
-					pstmt.setString(++count, searchProcess.getSubjectCa());
 				}
 				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
@@ -513,9 +491,6 @@ public class TascDAOImpl {
 				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
 				}
-				if(!"ALL".equals(searchProcess.getSubjectCa())){
-					pstmt.setString(++count, searchProcess.getSubjectCa());
-				}
 				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
 				}
@@ -550,9 +525,6 @@ public class TascDAOImpl {
 				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
 				}
-				if(!"ALL".equals(searchProcess.getSubjectCa())){
-					pstmt.setString(++count, searchProcess.getSubjectCa());
-				}
 				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
 				}
@@ -575,7 +547,6 @@ public class TascDAOImpl {
 				processTO = new TASCProcessTO();
 				processTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
 				processTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
-				processTO.setSubtestName(rs.getString("SUBTEST_NAME") != null ? rs.getString("SUBTEST_NAME") : "");
 				processTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
 				processTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
 				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");

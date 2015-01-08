@@ -258,20 +258,6 @@
 				<%if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){%>
 					, Exception Code: <%=searchProcess.getExceptionCode()%>
 				<%}%>
-				<%if(!"ALL".equals(searchProcess.getSubjectCa())){%>
-					, Subject (Content Area/Subtest): 
-						<%if("1".equals(searchProcess.getSubjectCa())){%>
-							Reading
-						<%} else if("2".equals(searchProcess.getSubjectCa())){%>
-							Writing
-						<%} else if("3".equals(searchProcess.getSubjectCa())){%>
-							English-Language Arts
-						<%} else if("1".equals(searchProcess.getSubjectCa())){%>
-							Mathematics
-						<%} else if("1".equals(searchProcess.getSubjectCa())){%>
-							Science
-						<%}%>
-				<%}%>
 				<%if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){%>
 					, State Code: <%=searchProcess.getStateCode()%>
 				<%}%>
@@ -294,7 +280,6 @@
 						<th style="min-width: 60px;">Record Id</th>
 						<th>Student Name</th>
 						<th>UUID</th>
-						<th>Subject (Content Area/Subtest)</th>
 						<th>Test Element Id</th>
 						<th>Process Id</th>
 						<th>Exception Code</th>
@@ -342,7 +327,7 @@
 						</td>
 						<td><%=processEr.getStudentName() %></td>
 						<td><%=processEr.getUuid() %></td>
-						<td><%=processEr.getSubtestName() %></td>
+						
 						<td>
 							<% if("0".equals(processEr.getTestElementId())){%>
 							NA

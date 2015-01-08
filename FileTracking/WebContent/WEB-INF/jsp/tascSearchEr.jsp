@@ -135,19 +135,6 @@
 								<td><input type="text" name="exceptionCode" id="exceptionCode"></td>
 							</tr>
 							<tr>
-								<td>Subject (Content Area/Subtest):</td>
-								<td>
-									<select name="subjectCa" id="subjectCa">
-										<option value="ALL">All</option>
-										<option value="1">Reading</option>
-										<option value="2">Writing</option>
-										<option value="3">English-Language Arts</option>
-										<option value="4">Mathematics</option>
-										<option value="5">Science</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
 								<td>State Code:</td>
 								<td><input type="text" name="stateCode" id="stateCode"></td>
 							</tr>
