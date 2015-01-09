@@ -15,7 +15,7 @@ function openGrowthHomePageTemp() {
 			data : 'homeMessage=growth',
 			dataType : 'json',
 			async : false,
-			cache: true,
+			cache: false,
 			success : function(data) {
 				$('#taContent').val(data.value);
 				$('#growthHome').html($('#taContent').val());

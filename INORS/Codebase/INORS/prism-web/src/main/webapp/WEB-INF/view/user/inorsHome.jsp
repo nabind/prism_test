@@ -15,7 +15,7 @@ function openInorsHomePageTemp() {
 			data : 'homeMessage=inors',
 			dataType : 'json',
 			async : false,
-			cache: true,
+			cache: false,
 			success : function(data) {
 				$('#taContent').val(data.value);
 				$('#inorsHome').html($('#taContent').val());
