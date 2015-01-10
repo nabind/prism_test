@@ -8,7 +8,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
  * @author TATA CONSULTANCY SERVICES
  * @version 1.0
  */
-public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IReportQuery, IInorsQuery, IEducationQuery, IWSQuery, IRescoreRequestQuery {
+public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IReportQuery, IInorsQuery, IEducationQuery, IWSQuery, IRescoreRequestQuery, IERQuery {
 	/** test */
 	public static final String GET_USER_BY_EMAIL = "SELECT * FROM DPP_USR_USER USR" +
 													" WHERE USR.USER_EMAIL = ?";

@@ -13,5 +13,8 @@
 
     <ws:service id="StudentDataloadService" bean="#StudentDataload" impl="com.ctb.prism.web.controller.SampleWebservice" />
 	<wss:binding url="/StudentDataloadService" service="#StudentDataloadService" />
+	
+	<ws:service id="ERStudentDataloadService" bean="#ERStudentDataload" impl="com.ctb.prism.web.controller.ERWebservice" />
+	<wss:binding url="/ERStudentDataloadService" service="#ERStudentDataloadService" />
 
 </beans>
