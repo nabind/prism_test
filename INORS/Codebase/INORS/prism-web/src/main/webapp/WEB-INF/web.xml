@@ -195,6 +195,35 @@
 	</listener>	
 	
 	<display-name>Prism Enterprise Reporting</display-name>
+	
+	<!-- Define the roles we want to use in the application for clearing Cache-->
+	<security-role> 
+	    <role-name>admin</role-name> 
+	</security-role>
+	<security-role> 
+	    <role-name>member</role-name> 
+	</security-role>
+	
+	<security-constraint>
+	    <display-name>Security constraint for the cache</display-name> 
+	
+	    <!-- Define the resource, cache-->
+	    <web-resource-collection> 
+	        <web-resource-name>clearAllCache</web-resource-name> 
+	        <url-pattern>/clearAllCache.do</url-pattern> 
+	    </web-resource-collection> 
+	
+	    <!-- Only administrators and members can access this resource --> 
+	    <auth-constraint> 
+	        <role-name>admin</role-name> 
+	    </auth-constraint>    
+	</security-constraint> 
+	
+	<!-- Use BASIC security -->
+	<login-config> 
+	    <auth-method>BASIC</auth-method> 
+	    <realm-name>Secure Area</realm-name> 
+	</login-config> 
 
 <!-- 	<listener>
 		<display-name>Session mutex</display-name>

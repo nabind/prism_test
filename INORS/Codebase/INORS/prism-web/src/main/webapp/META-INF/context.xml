@@ -65,5 +65,8 @@
             driverClassName="oracle.jdbc.driver.OracleDriver"
             url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
             maxActive="10"
-            maxIdle="4"/>                    
+            maxIdle="4"/> 
+    <Realm className="org.apache.catalina.realm.MemoryRealm" 
+           pathname="./WEB-INF/users.xml" />
+                           
 </Context>
