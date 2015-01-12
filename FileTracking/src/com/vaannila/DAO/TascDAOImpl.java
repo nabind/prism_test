@@ -284,7 +284,8 @@ public class TascDAOImpl {
 			queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
 			queryBuff.append(" ESSH.FORM FORM,");
 			queryBuff.append(" ESSH.DATETIMESTAMP,");
-			queryBuff.append(" EED.ER_EXCDID ER_EXCDID");
+			queryBuff.append(" EED.ER_EXCDID ER_EXCDID,");
+			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = EED.CONTENT_CODE) subtest");
 			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, ER_EXCEPTION_DATA EED");
 			queryBuff.append(" WHERE ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
@@ -336,7 +337,8 @@ public class TascDAOImpl {
 			queryBuff.append(" ESD.STATE_CODE STATE_CODE,");
 			queryBuff.append(" ETS.FORM FORM,");
 			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
-			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID");
+			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
+			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = EED.CONTENT_CODE) subtest");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD,");
 			queryBuff.append(" ER_TEST_SCHEDULE  ETS");
@@ -392,7 +394,8 @@ public class TascDAOImpl {
 			queryBuff.append(" SHD.ORG_CODE STATE_CODE,");
 			queryBuff.append(" SSSD.TEST_FORM FORM,");
 			queryBuff.append(" SPS.DATETIMESTAMP DATETIMESTAMP,");
-			queryBuff.append(" 0 ER_EXCDID");
+			queryBuff.append(" 0 ER_EXCDID,");
+			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = SSSD.CONTENT_NAME) subtest");
 			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
 			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
 			queryBuff.append(" STG_HIER_DETAILS        SHD,");
@@ -558,6 +561,7 @@ public class TascDAOImpl {
 				processTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
 				processTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
 				processTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
+				processTO.setSubtestName(rs.getString("subtest") != null ? rs.getString("subtest") : "");
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

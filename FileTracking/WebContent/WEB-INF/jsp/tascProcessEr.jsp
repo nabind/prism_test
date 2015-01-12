@@ -282,12 +282,13 @@
 						<th>UUID</th>
 						<th>Test Element Id</th>
 						<th>Process Id</th>
-						<th>Exception Code</th>
+						<th>Ex. Code</th>
 						<th>Status</th>
 						<th>Bar Code</th>
 						<th>Scheduled Date</th>
 						<th>State Code</th>
 						<th>Form</th>
+						<th>Subtest</th>
 						<th>More Info</th>
 					</tr>
 					</thead>
@@ -362,6 +363,7 @@
 						<td><%=processEr.getDateScheduled() %></td>
 						<td><%=processEr.getStateCode() %></td>
 						<td><%=processEr.getForm() %></td>
+						<td><%=processEr.getSubtestName() %></td>
 						<td>
 							<% if("0".equals(processEr.getErSsHistId())){%>
 							NA
