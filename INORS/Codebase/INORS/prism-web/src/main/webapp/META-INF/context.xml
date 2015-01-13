@@ -67,6 +67,6 @@
             maxActive="10"
             maxIdle="4"/> 
             
-    <Realm className="org.apache.catalina.realm.MemoryRealm" pathname="conf/users.xml" />
+   <Realm className="org.apache.catalina.realm.MemoryRealm" pathname="conf/tomcat-users.xml" />
                            
 </Context>

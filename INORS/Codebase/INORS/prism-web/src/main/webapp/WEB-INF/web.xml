@@ -198,10 +198,7 @@
 	
 	<!-- Define the roles we want to use in the application for clearing Cache-->
 	<security-role> 
-	    <role-name>admin</role-name> 
-	</security-role>
-	<security-role> 
-	    <role-name>member</role-name> 
+	    <role-name>admin-gui</role-name> 
 	</security-role>
 	
 	<security-constraint>
@@ -215,7 +212,7 @@
 	
 	    <!-- Only administrators and members can access this resource --> 
 	    <auth-constraint> 
-	        <role-name>admin</role-name> 
+	        <role-name>admin-gui</role-name> 
 	    </auth-constraint>    
 	</security-constraint> 
 	
