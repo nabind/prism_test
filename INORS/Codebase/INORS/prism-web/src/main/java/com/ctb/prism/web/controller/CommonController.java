@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
+import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.service.IReportService;
@@ -62,6 +64,9 @@ public class CommonController extends BaseDAO {
 	
 	
 	@Autowired private CookieThemeResolver themeResolver;
+	
+	@Autowired
+    DigitalMeasuresHMACQueryStringBuilder hmac;
 	
 	private String ASSET_PATH = "/ACSIREPORTS/Static_Files";
 
@@ -554,21 +559,44 @@ public class CommonController extends BaseDAO {
 	@RequestMapping(value="/clearContractCache", method=RequestMethod.GET)
 	public ModelAndView clearContractCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
+		
 		ModelAndView mv = new ModelAndView("common/success");
 		logger.log(IAppLogger.INFO, "Inside clearContractCache");
 		
-		String theme = themeResolver.resolveThemeName(req);
+		String expiryTime = req.getParameter("time_stamp");
+		String signature = req.getParameter("signature");
+		String theme = req.getParameter("theme");
 		
-		try {
-			//reportService.removeCache(Utils.getContractName(theme));
-			reportService.removeCacheSimpleDB(Utils.getContractName(theme));
-			logger.log(IAppLogger.INFO, "All Cache cleared ....");
-			
-			mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "", e);
-			mv.addObject("message", e.getMessage());
-		} 
+		if(theme== null) {
+			theme = themeResolver.resolveThemeName(req);
+		}
+
+		logger.log(IAppLogger.INFO,"expiryTime : {}" + expiryTime);
+		logger.log(IAppLogger.INFO,"signature : {}" + signature);
+		logger.log(IAppLogger.INFO,"theme : {}" + theme);
+		
+		if(signature != null && !signature.isEmpty()) {
+			 try{
+				 if(hmac.isValidRequest(expiryTime, signature, theme)) {
+					 logger.log(IAppLogger.INFO,"Authentication Filter : User request is valid, clearing cache for: " + theme);
+					//reportService.removeCache(Utils.getContractName(theme));
+					 reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+					 logger.log(IAppLogger.INFO, "All Cache cleared ....");
+						
+					 mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
+				 } else{
+					 logger.log(IAppLogger.ERROR,"Authentication Filter : User request is not valid. Either token is expired or request parameters are tempared.");
+					 throw new AuthenticationServiceException("User request is not valid. Either token is expired or request parameters are tempared.");
+				 }
+			 } catch(AuthenticationServiceException ae) {
+				 logger.log(IAppLogger.ERROR, "", ae);
+				 mv.addObject("message", ae.getMessage());
+		     } catch (Exception e) {
+				 logger.log(IAppLogger.ERROR, "", e);
+				 mv.addObject("message", e.getMessage());
+			 }
+		}
+		
 		return mv;
 	}
 	

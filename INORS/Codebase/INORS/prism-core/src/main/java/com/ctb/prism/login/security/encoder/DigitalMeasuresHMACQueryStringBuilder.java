@@ -167,6 +167,50 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 
 	}
 	
+	/**
+	 * Overloaded method for clearCache utility
+	 * Check if the client provided parameters is valid
+	 * @param inputParam
+	 * @param ipAddress
+	 * @param validUntilDate
+	 * @param secretValue
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isValidRequest(String validUntilDate, String secretValue, String theme) throws Exception
+	{
+		
+		TimeZone timeZone = TimeZone.getTimeZone(getTimeZone());
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+		format.setTimeZone(timeZone);
+		format.setLenient(false);
+		Calendar calendar = Calendar.getInstance(timeZone);
+		format.format(calendar.getTime());
+		
+		Date date = format.parse(URLDecoder.decode(validUntilDate, URL_ENCODING));
+		Calendar expiryTime = Calendar.getInstance(timeZone);
+		expiryTime.setTime(date);
+		
+		if(expiryTime.compareTo(calendar) > 0) {
+			Appendable queryString = buildUnauthenticatedQueryString(
+						URLDecoder.decode(validUntilDate, URL_ENCODING));
+			String signature = urlEncode(getAuthenticationCode(queryString.toString(), theme));
+			
+			if(secretValue != null && secretValue.equals(URLDecoder.decode(signature, URL_ENCODING))) {
+				// encoding needed before comparing
+				return equals(urlEncode(secretValue), signature);
+			}
+	
+			return equals(secretValue, signature);
+		} else {
+			System.out.println("Request key is expired .... ");
+			return false;
+		}
+
+	}
+	
+	
+	
 	private boolean equals(String expected, String actual) {
         byte[] expectedBytes = null;
         byte[] actualBytes = null;
@@ -237,6 +281,25 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 
 		return builder;
 	}
+	
+	
+	/**
+	 * Overloaded method for clearContractCache
+	 * Construct query string without HMAC signature
+	 * @param username	username string that has been authenticated by your systems
+	 * @param ipAddress	user's publicly accessible IP address, or Null
+	 * @param validUntilDate	iso date in the format yyyy-MM-ddThh:mm:ssZ
+	 * @return query string
+	 */
+	private Appendable buildUnauthenticatedQueryString(
+			String validUntilDate) throws Exception
+	{
+		StringBuilder builder = new StringBuilder();		
+		builder.append(EXPIRY_DATE_PARAM).append(urlEncode(validUntilDate));
+
+		return builder;
+	}
+	
 
 	/**
 	 * Append the authentication code to an unauthenticated query string
@@ -277,6 +340,33 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 
 		return Base64.encode(digest);
 	}
+	
+	
+	/**
+	 * Overloaded method for clearContractCache
+	 * Perform HMAC SHA-1 hash on the supplied message
+	 * @param message	message to hash
+	 * @return hashed message
+	 */
+	private String getAuthenticationCode(String message, String theme) throws Exception
+	{
+		Mac messageAuthenticationCode = Mac.getInstance(ENCODING_ALGORITHM);
+
+		// get encryption key from configuration DB
+		if(theme != null) {
+			encryptionKey = "BTCguSF49hYaPmAfe9Q29LtsQ2X" +"~"+ theme;
+			secretKey = new SecretKeySpec((encryptionKey == null)? "".getBytes() : encryptionKey.getBytes(), ENCODING_ALGORITHM);
+		}
+		// end: 
+		
+		messageAuthenticationCode.init(secretKey);
+		messageAuthenticationCode.update(message.getBytes());
+
+		byte[] digest = messageAuthenticationCode.doFinal();
+
+		return Base64.encode(digest);
+	}
+	
 
 	/**
 	 * Percent-escape any characters that are not valid in a URL

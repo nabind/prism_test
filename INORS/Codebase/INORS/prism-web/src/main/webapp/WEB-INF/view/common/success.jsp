@@ -1,4 +1,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -29,7 +31,14 @@
 </head>
 <body>
   <div class="container">
-    <h1><spring:message code="label.success" /></h1>
+    <c:choose>
+	    <c:when test="${fn:startsWith(message, 'All Cache cleared')}">
+	    	<h1><spring:message code="label.success" /></h1>
+	    </c:when>
+	    <c:otherwise>
+	        <h1><spring:message code="label.failure" /></h1>	 
+	    </c:otherwise> 
+    </c:choose>   
     <p>${message}</p>
   </div>
 
