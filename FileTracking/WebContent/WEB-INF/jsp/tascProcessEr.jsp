@@ -398,11 +398,7 @@
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<%if("ERESOURCE".equals(searchProcess.getSourceSystem())){ %>
-						<span class="completed" title="Completed"></span> = Only eResource Process has been completed so student may noy exists in operation <br/>
-					<%}else{ %>
-						<span class="completed" title="Completed"></span> = Completed/Success  <br/>
-					<%} %>
+					<span class="completed" title="Completed"></span> = Completed/Success <br/>
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
