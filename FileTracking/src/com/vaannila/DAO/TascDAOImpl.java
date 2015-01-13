@@ -332,18 +332,18 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
 			queryBuff.append(" NVL(EED.ER_SS_HISTID, 0) ER_SS_HISTID,");
-			queryBuff.append(" NVL(ETS.BARCODE,'NA') BARCODE,");
-			queryBuff.append(" TO_CHAR(ETS.DATE_SCHEDULED, 'MM/DD/YYYY') DATE_SCHEDULED,");
-			queryBuff.append(" ESD.STATE_CODE STATE_CODE,");
-			queryBuff.append(" ETS.FORM FORM,");
+			queryBuff.append(" NVL(EED.BARCODE,'NA') BARCODE,");
+			queryBuff.append(" TO_CHAR(EED.TEST_DATE, 'MM/DD/YYYY') DATE_SCHEDULED,");
+			queryBuff.append(" EED.STATE_CODE STATE_CODE,");
+			queryBuff.append(" EED.FORM FORM,");
 			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
 			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
 			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = EED.CONTENT_CODE) subtest");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
-			queryBuff.append(" ER_STUDENT_DEMO   ESD,");
-			queryBuff.append(" ER_TEST_SCHEDULE  ETS");
+			queryBuff.append(" ER_STUDENT_DEMO   ESD");
+			//queryBuff.append(" ,ER_TEST_SCHEDULE  ETS");
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
-			queryBuff.append(" AND ESD.ER_STUDID = ETS.ER_STUDID");
+			//queryBuff.append(" AND ESD.ER_STUDID = ETS.ER_STUDID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -367,16 +367,16 @@ public class TascDAOImpl {
 				queryBuff.append(" AND EED.PROCESS_ID = ?");
 			}
 			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-				queryBuff.append(" AND ESD.STATE_CODE = ?");
+				queryBuff.append(" AND EED.STATE_CODE = ?");
 			}
 			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-				queryBuff.append(" AND ETS.FORM = ?");
+				queryBuff.append(" AND EED.FORM = ?");
 			}
 			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
 				queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
 			}
 			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-				queryBuff.append(" AND ETS.BARCODE = ?");
+				queryBuff.append(" AND EED.BARCODE = ?");
 			}
 
 			queryBuff.append(" UNION");
