@@ -49,8 +49,8 @@ public class RescoreRequestController {
 	@Autowired	
 	private IReportService reportService;
 	
-	@Autowired
-	private Utils utils;
+	// @Autowired
+	// private Utils utils;
 	
 	@Autowired
 	private IRescoreRequestService rescoreRequestService;

@@ -39,8 +39,8 @@ public class ManageContentController {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ManageContentController.class.getName());
 	
-	@Autowired
-	private Utils utils;
+	// @Autowired
+	// private Utils utils;
 	
 	@Autowired
 	private IParentService parentService;

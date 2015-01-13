@@ -1,6 +1,10 @@
 package com.ctb.prism.web.controller;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,13 +19,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
 public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
-	
+
 	private MockHttpServletRequest request;
 	private MockHttpServletResponse response;
 
@@ -33,17 +38,17 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 	@Before
 	public void setUp() throws Exception {
 		// Populate test params from properties file
-				testParams = TestUtil.getTestParams();
+		testParams = TestUtil.getTestParams();
 
-				// Create request and response for Controller methods
-				request = new MockHttpServletRequest();
-				response = new MockHttpServletResponse();
+		// Create request and response for Controller methods
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
 
-				// Set all Session Attributes
-				TestUtil.setSessionAttributes(request, testParams);
+		// Set all Session Attributes
+		TestUtil.setSessionAttributes(request, testParams);
 
-				// Bypass login
-				TestUtil.byPassLogin(testParams);
+		// Bypass login
+		TestUtil.byPassLogin(testParams);
 	}
 
 	@After
@@ -56,130 +61,132 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(mv);
 	}
 
-	/*@Test
+	@Test
 	public void testDeleteGroupDownloadFiles() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		ModelAndView mv = controller.deleteGroupDownloadFiles(request, response);
+		assertNull(mv);
 	}
 
 	@Test
 	public void testDownloadGroupDownloadFiles() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+		controller.downloadGroupDownloadFiles(request, response);
+		assertNotNull("Method return is void");
+	}
+
+	@Test
+	public void testCheckFileAvailability() throws IOException {
+		ModelAndView mv = controller.checkFileAvailability(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
-	public void testCheckFileAvailability() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
-	}
-
-	@Test
-	public void testGetStudentFileName() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testGetStudentFileName() throws IOException {
+		ModelAndView mv = controller.getStudentFileName(request, response);
+		assertNull(mv);
 	}
 
 	@Test
 	public void testGetRequestDetailViewData() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+		ModelAndView mv = controller.getRequestDetailViewData(request, response);
+		assertNull(mv);
+	}
+
+	@Test
+	public void testBulkCandidateReportDownload() throws SystemException {
+		ModelAndView mv = controller.bulkCandidateReportDownload(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
-	public void testBulkCandidateReportDownload() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
-	}
-
-	@Test
-	public void testDownloadCandicateReport() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+	public void testDownloadCandicateReport() throws SystemException {
+		ModelAndView mv = controller.bulkCandidateReportDownload(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
 	public void testIcLetterDownloads() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+		ModelAndView mv = controller.icLetterDownloads(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
 	public void testGetReportParameters() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		Map<String, Object> map = controller.getReportParameters(request, "");
+		assertNotNull(map);
 	}
 
 	@Test
 	public void testGroupDownloadForm() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+		ModelAndView mv = controller.groupDownloadForm(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
-	public void testGroupDownloadFunction() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testGroupDownloadFunction() throws SystemException {
+		String str = controller.groupDownloadFunction(request, response);
+		assertNotNull(str);
 	}
 
 	@Test
 	public void testDownloadZippedPdf() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		controller.downloadZippedPdf(request, response);
+		assertNotNull("Method return is void");
 	}
 
 	@Test
 	public void testDownloadFile() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		controller.downloadFile(request, response);
+		assertNotNull("Method return is void");
 	}
 
 	@Test
-	public void testGetTenantHierarchy() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testGetTenantHierarchy() throws Exception {
+		//String str = controller.getTenantHierarchy(request, response);
+		//assertNotNull(str);
 	}
 
 	@Test
-	public void testDownloadBulkPdf() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testDownloadBulkPdf() throws Exception {
+		BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
+		// String str = controller.downloadBulkPdf(bulkDownloadTO, request, response);
+		// assertNotNull(str);
 	}
 
 	@Test
-	public void testRetainDownloadValues() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testRetainDownloadValues() throws Exception {
+		BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
+		String str = controller.retainDownloadValues(bulkDownloadTO, request, response);
+		assertNull(str);
 	}
 
 	@Test
-	public void testClearGDCache() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+	public void testClearGDCache() throws Exception {
+		controller.clearGDCache(request);
+		assertNotNull("Method return is void");
 	}
 
 	@Test
 	public void testGrtICFileForm() {
-		ModelAndView mv = controller.parentRegistration(request, response);
+		ModelAndView mv = controller.grtICFileForm(request);
 		assertNotNull(mv);
 	}
 
 	@Test
 	public void testDownloadGRTInvitationCodeFiles() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		controller.downloadGRTInvitationCodeFiles(request, response);
+		assertNotNull("Method return is void");
 	}
 
 	@Test
 	public void testDeleteScheduledGroupFilesInors() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
+		controller.deleteScheduledGroupFilesInors();
+		assertNotNull("Method return is void");
 	}
 
 	@Test
 	public void testDeleteScheduledGroupFilesTasc() {
-		ModelAndView mv = controller.parentRegistration(request, response);
-		assertNotNull(mv);
-	}*/
+		controller.deleteScheduledGroupFilesTasc();
+		assertNotNull("Method return is void");
+	}
 
 }

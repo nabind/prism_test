@@ -36,8 +36,8 @@ public class ParentNetworkController {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentNetworkController.class.getName());
 	
-	@Autowired
-	private Utils utils;
+	// @Autowired
+	// private Utils utils;
 	
 	@Autowired
 	private IParentService parentService;

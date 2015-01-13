@@ -46,8 +46,8 @@ public class CommonController extends BaseDAO {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(CommonController.class.getName());
 
-	@Autowired
-	private Utils utils;
+	// @Autowired
+	// private Utils utils;
 	
 	@Autowired
 	private IReportService reportService;

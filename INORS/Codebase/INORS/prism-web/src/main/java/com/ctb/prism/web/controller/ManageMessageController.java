@@ -34,8 +34,8 @@ public class ManageMessageController {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ManageMessageController.class.getName());
 	
-	@Autowired
-	private Utils utils;
+	// @Autowired
+	// private Utils utils;
 	
 	@Autowired
 	private IReportService reportService;
