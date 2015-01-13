@@ -976,8 +976,10 @@
 					<aggregate>true</aggregate>
 					<instrumentation>
 						<excludes>
+							<exclude>**/com/ctb/prism/webservice/erTransferobject/*</exclude>
 							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
 							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
+							<exclude>**/com/ctb/prism/**/constant/*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
@@ -1018,8 +1020,10 @@
 					<aggregate>true</aggregate>
 					<instrumentation>
 						<excludes>
+							<exclude>**/com/ctb/prism/admin/webservice/erTransferobject/*</exclude>
 							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
 							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
+							<exclude>**/com/ctb/prism/**/constant/*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
