@@ -107,7 +107,7 @@ public class AdminTestHelper {
 		to.setAnswerValue("");
 		return to;
 	}
-	
+
 	public static RoleTO getRoleTO(TestParams testParams) {
 		RoleTO to = new RoleTO();
 		to.setRoleId(0L);
@@ -744,71 +744,141 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpGetOrganizationDetailsOnFirstLoad(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		// paramMap.put("adminYear", "0");
+		paramMap.put("customerId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrganizationDetailsOnClick(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetUserDetailsOnClick(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("NODEID", "0");
+		paramMap.put("CURRENTORG", "0");
+		paramMap.put("ADMINYEAR", "0");
+		paramMap.put("SEARCHPARAM", null);
+		paramMap.put("CUSTOMERID", "0");
+		paramMap.put("ORGMODE", "0");
+		paramMap.put("moreCount", "15");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpEditUserData(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userId", "0");
+		paramMap.put("customer", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpDeleteUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("Id", "0");
+		paramMap.put("userName", "abc");
+		paramMap.put("purpose", "abc");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpAddNewUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userName", "0");
+		paramMap.put("password", "0");
+		paramMap.put("userDisplayName", "0");
+		paramMap.put("emailId", "0");
+		paramMap.put("userStatus", "0");
+		paramMap.put("customer", "0");
+		paramMap.put("tenantId", "0");
+		paramMap.put("orgLevel", "0");
+		paramMap.put("adminYear", "0");
+		paramMap.put("purpose", "0");
+		paramMap.put("eduCenterId", "0");
+		paramMap.put("userRoles", new String[] { "CTB_USER" });
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpSearchEduUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userName", "0");
+		paramMap.put("tenantId", "0");
+		paramMap.put("isExactSearch", "N");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpSearchUserAutoComplete(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("term", "0");
+		paramMap.put("selectedOrg", "0");
+		paramMap.put("adminYear", "0");
+		paramMap.put("orgMode", "0");
+		paramMap.put("moreCount", "15");
+		paramMap.put("purpose", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpSearchOrganization(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("orgName", "0");
+		paramMap.put("tenantId", "0");
+		paramMap.put("custProdId", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpSearchOrgAutoComplete(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("orgName", "0");
+		paramMap.put("tenantId", "0");
+		paramMap.put("custProdId", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetRoleDetailsById(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("roleId", "0");
+		paramMap.put("currentOrg", "0");
+		paramMap.put("customer", "0");
+		paramMap.put("moreRole", "true");
+		paramMap.put("lastUserId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrganizationTree(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		paramMap.put("currOrg", "0");
+		paramMap.put("isFirstLoad", true);
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrgTree(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		paramMap.put("isFirstLoad", true);
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrganizationTreeOnRedirect(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		paramMap.put("currOrg", "0");
+		paramMap.put("userId", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("isRedirected", true);
 		return paramMap;
 	}
 

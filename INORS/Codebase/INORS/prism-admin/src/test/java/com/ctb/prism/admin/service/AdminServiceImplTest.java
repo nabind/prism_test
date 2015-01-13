@@ -86,7 +86,16 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetUserDetailsOnClick() throws Exception {
-		ArrayList<UserTO> userList = adminService.getUserDetailsOnClick(AdminTestHelper.helpGetUserDetailsOnClick(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpGetUserDetailsOnClick(testParams);
+		ArrayList<UserTO> userList = adminService.getUserDetailsOnClick(paramMap);
+		assertNotNull(userList);
+
+		paramMap.put("NODEID", "0_0");
+		userList = adminService.getUserDetailsOnClick(paramMap);
+		assertNotNull(userList);
+
+		paramMap.put("SEARCHPARAM", "abc");
+		userList = adminService.getUserDetailsOnClick(paramMap);
 		assertNotNull(userList);
 	}
 
@@ -143,7 +152,12 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSearchEduUser() {
-		List<EduCenterTO> userList = adminService.searchEduUser(AdminTestHelper.helpSearchEduUser(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpSearchEduUser(testParams);
+		List<EduCenterTO> userList = adminService.searchEduUser(paramMap);
+		assertNotNull(userList);
+
+		paramMap.put("isExactSearch", "Y");
+		userList = adminService.searchEduUser(paramMap);
 		assertNotNull(userList);
 	}
 
@@ -220,7 +234,12 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetRoleDetailsById() throws Exception {
-		RoleTO role = adminService.getRoleDetailsById(AdminTestHelper.helpGetRoleDetailsById(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpGetRoleDetailsById(testParams);
+		RoleTO role = adminService.getRoleDetailsById(paramMap);
+		assertNotNull(role);
+		
+		paramMap.put("moreRole", "false");
+		role = adminService.getRoleDetailsById(paramMap);
 		assertNotNull(role);
 	}
 
@@ -251,19 +270,35 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetOrganizationTree() throws Exception {
-		ArrayList<OrgTreeTO> orgTreeList = adminService.getOrganizationTree(AdminTestHelper.helpGetOrganizationTree(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpGetOrganizationTree(testParams);
+		ArrayList<OrgTreeTO> orgTreeList = adminService.getOrganizationTree(paramMap);
+		assertNotNull(orgTreeList);
+
+		paramMap.put("nodeid", "0_0");
+		paramMap.put("isFirstLoad", false);
+		orgTreeList = adminService.getOrganizationTree(paramMap);
 		assertNotNull(orgTreeList);
 	}
 
 	@Test
 	public void testGetOrgTree() throws Exception {
-		ArrayList<OrgTreeTO> orgTreeList = adminService.getOrgTree(AdminTestHelper.helpGetOrgTree(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpGetOrgTree(testParams);
+		ArrayList<OrgTreeTO> orgTreeList = adminService.getOrgTree(paramMap);
+		assertNotNull(orgTreeList);
+
+		paramMap.put("isFirstLoad", false);
+		orgTreeList = adminService.getOrgTree(paramMap);
 		assertNotNull(orgTreeList);
 	}
 
 	@Test
 	public void testGetOrganizationTreeOnRedirect() throws Exception {
-		String org = adminService.getOrganizationTreeOnRedirect(AdminTestHelper.helpGetOrganizationTreeOnRedirect(testParams));
+		Map<String, Object> paramMap = AdminTestHelper.helpGetOrganizationTreeOnRedirect(testParams);
+		String org = adminService.getOrganizationTreeOnRedirect(paramMap);
+		assertNotNull(org);
+
+		paramMap.put("isRedirected", false);
+		org = adminService.getOrganizationTreeOnRedirect(paramMap);
 		assertNotNull(org);
 	}
 
