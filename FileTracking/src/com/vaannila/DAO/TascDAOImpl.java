@@ -276,19 +276,20 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(EED.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
 			queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
 			queryBuff.append(" NVL(EED.EXCEPTION_CODE, '0') EXCEPTION_CODE,");
-			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
-			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
+			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'ERESOURCE') SOURCE_SYSTEM,");
+			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'CO') EXCEPTION_STATUS,");
 			queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
 			queryBuff.append(" ESSH.BARCODE BARCODE,");
 			queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
 			queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
 			queryBuff.append(" ESSH.FORM FORM,");
 			queryBuff.append(" ESSH.DATETIMESTAMP,");
-			queryBuff.append(" EED.ER_EXCDID ER_EXCDID,");
-			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = EED.CONTENT_CODE) subtest");
-			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH, ER_EXCEPTION_DATA EED");
-			queryBuff.append(" WHERE ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
-			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
+			queryBuff.append(" NVL(EED.ER_EXCDID, 0) ER_EXCDID,");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST");
+			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
+			queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
+			queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
+			queryBuff.append(" WHERE 1 = 1");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
 			}
@@ -338,7 +339,7 @@ public class TascDAOImpl {
 			queryBuff.append(" EED.FORM FORM,");
 			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
 			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
-			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = EED.CONTENT_CODE) subtest");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD");
 			//queryBuff.append(" ,ER_TEST_SCHEDULE  ETS");
@@ -395,7 +396,7 @@ public class TascDAOImpl {
 			queryBuff.append(" SSSD.TEST_FORM FORM,");
 			queryBuff.append(" SPS.DATETIMESTAMP DATETIMESTAMP,");
 			queryBuff.append(" 0 ER_EXCDID,");
-			queryBuff.append(" (select subtest_name from subtest_dim where subtest_code = SSSD.CONTENT_NAME) subtest");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST");
 			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
 			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
 			queryBuff.append(" STG_HIER_DETAILS        SHD,");
@@ -446,7 +447,6 @@ public class TascDAOImpl {
 			pstmt = conn.prepareCall(query);
 			
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				pstmt.setString(++count, searchProcess.getSourceSystem());
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
 				}
@@ -561,7 +561,7 @@ public class TascDAOImpl {
 				processTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
 				processTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
 				processTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
-				processTO.setSubtestName(rs.getString("subtest") != null ? rs.getString("subtest") : "");
+				processTO.setSubtestName(rs.getString("subtest") != null ? rs.getString("SUBTEST") : "");
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

@@ -313,7 +313,9 @@
 							
 						</td>
 						<td style="padding-top: 12px;" nowrap>
-							
+							<%
+							if(!"0".equals(processEr.getErExcdId())){
+							%>
 							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
 							 <% if("0".equals(processEr.getErSsHistId())){%>
 								<% if("0".equals(processEr.getProcessId())){%>
@@ -325,6 +327,18 @@
 								<%=processEr.getErSsHistId() %>
 							<%}%>
 							</a>
+							<%	
+							}else{
+								if("0".equals(processEr.getErSsHistId())){%>
+									<% if("0".equals(processEr.getProcessId())){%>
+										NA
+									<%}else{%>
+										<%=processEr.getProcessId() %>
+									<%}
+								}else{%>
+									<%=processEr.getErSsHistId() %>
+								<%}
+							}%>
 						</td>
 						<td><%=processEr.getStudentName() %></td>
 						<td><%=processEr.getUuid() %></td>
@@ -378,12 +392,17 @@
 				<%} %>
 				</tbody>
 				</table>
+			
 				<p style="padding-top:20px">
 					<b>Record Id:</b> = History ID for eResource, = Process ID for Online and Paper Pencil.
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<span class="completed" title="Completed"></span> = Completed/Success <br/>
+					<%if("ERESOURCE".equals(searchProcess.getSourceSystem())){ %>
+						<span class="completed" title="Completed"></span> = Only eResource Process has been completed so student may noy exists in operation <br/>
+					<%}else{ %>
+						<span class="completed" title="Completed"></span> = Completed/Success  <br/>
+					<%} %>
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
