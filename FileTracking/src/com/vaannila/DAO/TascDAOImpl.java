@@ -285,7 +285,7 @@ public class TascDAOImpl {
 			queryBuff.append(" ESSH.FORM FORM,");
 			queryBuff.append(" ESSH.DATETIMESTAMP,");
 			queryBuff.append(" NVL(EED.ER_EXCDID, 0) ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST");
 			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
 			queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
 			queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
