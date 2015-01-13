@@ -3,14 +3,21 @@ package com.ctb.prism.core.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class UtilsTest {
 
+	Utils utils;
+
 	@Before
 	public void setUp() throws Exception {
+		utils = new Utils();
 	}
 
 	@After
@@ -19,22 +26,32 @@ public class UtilsTest {
 
 	@Test
 	public void testGetContractName() {
-		assertNotNull("Not yet implemented");
+		String contractName = utils.getContractName();
+		assertNotNull(contractName);
 	}
 
 	@Test
 	public void testGetContractNameString() {
-		assertNotNull("Not yet implemented");
+		String contractName = utils.getContractName("inors");
+		assertNotNull(contractName);
 	}
 
 	@Test
 	public void testGetContractNameNoLogin() {
-		assertNotNull("Not yet implemented");
+		String contractName = utils.getContractNameNoLogin("inors");
+		assertNotNull(contractName);
 	}
 
 	@Test
 	public void testGetSaltWithUser() {
-		assertNotNull("Not yet implemented");
+		String userName = null;
+		String salt = "";
+		String saltWithUse = utils.getSaltWithUser(userName, salt);
+		assertNotNull(saltWithUse);
+
+		userName = "abcd";
+		saltWithUse = utils.getSaltWithUser(userName, salt);
+		assertNotNull(saltWithUse);
 	}
 
 	@Test
@@ -115,52 +132,76 @@ public class UtilsTest {
 
 	@Test
 	public void testConvertListToCommaString() {
-		assertNotNull("Not yet implemented");
+		List<String> list = new ArrayList<String>();
+		list.add("abcd");
+		String commaString = utils.convertListToCommaString(list);
+		assertNotNull(commaString);
 	}
 
 	@Test
 	public void testObjectToJson() {
-		assertNotNull("Not yet implemented");
+		Object obj = "abcd";
+		String json = utils.objectToJson(obj);
+		assertNotNull(json);
 	}
 
 	@Test
 	public void testJsonToObject() {
-		assertNotNull("Not yet implemented");
+		String json = "{}";
+		Object obj = utils.jsonToObject(json, Object.class);
+		assertNotNull(obj);
 	}
 
 	@Test
 	public void testIsOdd() {
-		assertNotNull("Not yet implemented");
+		int n = 5;
+		boolean odd = utils.isOdd(n);
+		assertEquals(odd, true);
+
+		n = 6;
+		odd = utils.isOdd(n);
+		assertEquals(odd, false);
 	}
 
 	@Test
 	public void testSerialize() {
-		assertNotNull("Not yet implemented");
+		Object obj = "abcd";
+		byte[] bytes = utils.serialize(obj);
+		assertNotNull(bytes);
 	}
 
 	@Test
 	public void testDeserialize() {
-		assertNotNull("Not yet implemented");
+		byte[] bytes = "abcd".getBytes();
+		Object obj = utils.deserialize(bytes);
+		assertNotNull(obj);
 	}
 
 	@Test
 	public void testConvertSpecialCharToHtmlChar() {
-		assertNotNull("Not yet implemented");
+		String input = "†";
+		String output = utils.convertSpecialCharToHtmlChar(input);
+		assertEquals(output, "&dagger;");
 	}
 
 	@Test
 	public void testEncryptData() {
-		assertNotNull("Not yet implemented");
+		String input = "abcd";
+		String output = utils.encryptData(input);
+		assertNotNull(output);
 	}
 
 	@Test
 	public void testDecryptData() {
-		assertNotNull("Not yet implemented");
+		String input = "abcd";
+		String output = utils.decryptData(input);
+		assertNotNull(output);
 	}
 
 	@Test
 	public void testLogError() {
-		assertNotNull("Not yet implemented");
+		String input = "Error log test";
+		utils.logError(input);
 	}
 
 	@Test
@@ -175,12 +216,39 @@ public class UtilsTest {
 
 	@Test
 	public void testArrayToSeparatedString() {
-		assertNotNull("Not yet implemented");
+		String[] strArr = new String[] {};
+		char separator = '*';
+		String str = utils.arrayToSeparatedString(strArr, separator);
+		assertNotNull(str);
+
+		strArr = new String[] { "abcd" };
+		str = utils.arrayToSeparatedString(strArr, separator);
+		assertNotNull(str);
 	}
 
 	@Test
 	public void testWriteToFile() {
-		assertNotNull("Not yet implemented");
+		String fileName = "testWriteToFile.txt";
+		String content = "abcd";
+		File f = utils.writeToFile(fileName, content);
+		assertNotNull(f);
+	}
+
+	@Test
+	public void testObjectByteArrayToPrimitiveByteArray() {
+		Byte[] inputBytes = new Byte[3];
+		inputBytes[0] = new Byte("1");
+		inputBytes[1] = new Byte("2");
+		inputBytes[2] = new Byte("3");
+		byte[] outputBytes = utils.objectByteArrayToPrimitiveByteArray(inputBytes);
+		assertNotNull(outputBytes);
+	}
+
+	@Test
+	public void testPrimitiveByteArrayToObjectByteArray() {
+		byte[] inputBytes = "abcd".getBytes();
+		Byte[] outputBytes = utils.primitiveByteArrayToObjectByteArray(inputBytes);
+		assertNotNull(outputBytes);
 	}
 
 }
