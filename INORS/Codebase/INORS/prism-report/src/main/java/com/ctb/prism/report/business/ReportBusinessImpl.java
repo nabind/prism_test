@@ -596,9 +596,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 		boolean isGrowthUser = false;
 		boolean isEduUser = false;*/
 		StringBuilder roles =new StringBuilder();
-		UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		authList = loggedinUserTO.getRoles();
+		//UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		//List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		//authList = loggedinUserTO.getRoles();
+		@SuppressWarnings("unchecked")
+		List<GrantedAuthority> authList= (List<GrantedAuthority>)paramMap.get("roles");
+		Long defaultCustProdId = (Long) paramMap.get("defaultCustProdId");
 /*		for (int i = 0; i < authList.size(); i++) {
 			if (authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
@@ -614,8 +617,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
-		paramMap.clear();
-		paramMap.put("orgNodeLevel", orgNodeLevel);
+		//paramMap.clear();
+		Map<String, Object> menuMap = new HashMap<String, Object>();
+		
+		menuMap.put("orgNodeLevel", orgNodeLevel);
 	/*	paramMap.put("parentReports", parentReports);
 		paramMap.put("isEduUser", isEduUser);
 		paramMap.put("isGrowthUser", isGrowthUser);
@@ -627,9 +632,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 		roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
 		logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
-		paramMap.put("roles", roles.toString());
-		paramMap.put("custProdId", loggedinUserTO.getDefultCustProdId());
-		return reportDAO.getAssessments(paramMap);
+		menuMap.put("roles", roles.toString());
+		//paramMap.put("custProdId", loggedinUserTO.getDefultCustProdId());
+		menuMap.put("custProdId", defaultCustProdId);
+		return reportDAO.getAssessments(menuMap);
 	}
 
 	/*

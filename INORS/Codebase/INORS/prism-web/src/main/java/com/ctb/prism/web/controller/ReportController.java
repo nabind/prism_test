@@ -1828,9 +1828,10 @@ public class ReportController{
 			parentReports = true;
 		}
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("roles", loggedinUserTO.getRoles());
 		paramMap.put("parentReports", parentReports);
 		paramMap.put("orgNodeLevel", orgNodeLevel);
+		paramMap.put("defaultCustProdId",loggedinUserTO.getDefultCustProdId());
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {
 			List<AssessmentTO> assessmentList = reportService.getAssessments(paramMap);

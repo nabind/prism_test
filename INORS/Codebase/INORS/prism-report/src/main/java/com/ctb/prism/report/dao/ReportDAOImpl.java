@@ -521,6 +521,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAssessmentList' )")
 	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final String roles, final Long orgNodeLevel, final long custProdId) {
 		return (List<AssessmentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -2343,7 +2344,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return fileName;
 	}
 	
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getListOfRoles' )")
+	//@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getListOfRoles' )")
+	@Cacheable(value = "defaultCache", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).Long(#reportId)).concat(#root.method.name) )")
 	private String getListOfRoles(Long reportId) {
 		logger.log(IAppLogger.DEBUG, "Enter: getListOfRoles()"); 
 		String roles = null;
