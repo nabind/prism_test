@@ -23,7 +23,7 @@ public class ClearCache {
 	static ResourceBundle rb = null;
 	static {
 		ClassLoader loader= ClassLoader.getSystemClassLoader();
-		 rb = ResourceBundle.getBundle("com.ctb.prism.bundle", Locale.getDefault(), loader);
+		 rb = ResourceBundle.getBundle("bundle", Locale.getDefault(), loader);
 	}
 
 	
