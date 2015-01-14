@@ -32,7 +32,7 @@
 <body>
   <div class="container">
     <c:choose>
-	    <c:when test="${fn:startsWith(message, 'All Cache cleared')}">
+	    <c:when test="${fn:contains(message, 'cleared')}">
 	    	<h1><spring:message code="label.success" /></h1>
 	    </c:when>
 	    <c:otherwise>
