@@ -135,6 +135,11 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         logger.info("userName : {}" + userName);
         logger.info("signature : {}" + signature);
         logger.info("theme : {}" + theme);
+        if(theme != null && theme.trim().length() == 0) {
+        	// this section is to support OLD applications
+        	if("OAS".equalsIgnoreCase(applicationName)) theme = "tasc";
+        	if("CTB.COM".equalsIgnoreCase(applicationName)) theme = "inors";
+        }
 
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
@@ -233,7 +238,13 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         		// Authenticate user
 	        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(DUMMY_SSO_USERNAME, DUMMY_SSO_PASSWORD);
 				// added to pass contract name in custom UsernamePasswordAuthenticationToken
-	        	authRequest.setContractName(request.getParameter("j_contract"));
+	        	String contract = request.getParameter("j_contract");
+	        	if(contract != null && contract.trim().length() > 0) {
+	        		
+	        	} else {
+	        		contract = "inors"; // fallback
+	        	}
+	        	authRequest.setContractName(contract);
 		        // Allow subclasses to set the "details" property
 		        setDetails(request, authRequest);
 		

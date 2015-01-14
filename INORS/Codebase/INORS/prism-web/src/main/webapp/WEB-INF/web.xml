@@ -37,6 +37,7 @@
 	<servlet-mapping>
 		<servlet-name>jaxws-servlet</servlet-name>
 		<url-pattern>/StudentDataloadService</url-pattern>
+		<url-pattern>/ERStudentDataloadService</url-pattern>
 	</servlet-mapping>
 	
 	<!-- report servlet -->

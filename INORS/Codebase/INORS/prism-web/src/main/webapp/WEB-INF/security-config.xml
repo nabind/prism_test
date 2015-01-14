@@ -75,6 +75,7 @@
             <beans:list>
             	<beans:value>reports.do</beans:value>
 				<beans:value>StudentDataloadService</beans:value>
+				<beans:value>ERStudentDataloadService</beans:value>
             </beans:list>
         </beans:constructor-arg>
     </beans:bean>
