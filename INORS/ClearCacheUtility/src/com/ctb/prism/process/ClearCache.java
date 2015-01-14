@@ -3,7 +3,7 @@ package com.ctb.prism.process;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Properties;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.ctb.prism.security.DigitalMeasuresHMACQueryStringBuilder;
@@ -16,10 +16,15 @@ public class ClearCache {
 	private static String ENCODING_ALGORITHM = "HmacSHA1";
 	private static String timeZone = "GMT";
 	
-	static ResourceBundle rb = ResourceBundle.getBundle("com.ctb.prism.bundle");
+	//static ResourceBundle rb = ResourceBundle.getBundle("com.ctb.prism.bundle");
 	
 	private static String REQUEST_URL = "/prism/clearContractCache.do";
 
+	static ResourceBundle rb = null;
+	static {
+		ClassLoader loader= ClassLoader.getSystemClassLoader();
+		 rb = ResourceBundle.getBundle("com.ctb.prism.bundle", Locale.getDefault(), loader);
+	}
 
 	
 public static void main(String[] args) throws Exception {
