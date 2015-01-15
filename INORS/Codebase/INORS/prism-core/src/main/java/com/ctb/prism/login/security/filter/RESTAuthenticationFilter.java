@@ -182,7 +182,11 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 							paramMap.put("customer", userTO.getCustomerId());
 							paramMap.put("tenantId", userTO.getOrgId());
 							paramMap.put("orgLevel", orgLevel);
-							paramMap.put("userRoles", new String[]{"ROLE_USER"});
+							if(ADMIN.equalsIgnoreCase(role)){
+								paramMap.put("userRoles", new String[]{"ROLE_USER","ROLE_ADMIN"});
+							}else{
+								paramMap.put("userRoles", new String[]{"ROLE_USER"});
+							}
 							paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 							loginService.addNewUser(paramMap);
 							logger.info("SSO user is created : " + ssoUsername);
