@@ -483,6 +483,12 @@ public class InorsController {
 			jobTrackingTO.setCustomerId(customer);
 			@SuppressWarnings("unchecked")
 			Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
+			if(propertyMap == null){
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", Utils.getContractName());
+				propertyMap = loginService.getContractProerty(tileParamMap);
+				request.getSession().setAttribute("propertyMap", propertyMap);
+			}
 			String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + IApplicationConstants.CR_BULK_S3_LOCATION;
 			jobTrackingTO.setOtherRequestparams(CustomStringUtil.appendString(propertyLookup.get("CandidateReportUrl"), ",", request.getParameter("userType"), ",",envString,",",username));
 
@@ -886,6 +892,12 @@ public class InorsController {
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
 		@SuppressWarnings("unchecked")
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
+		if(propertyMap == null){
+			Map<String, Object> tileParamMap = new HashMap<String, Object>();
+			tileParamMap.put("contractName", Utils.getContractName());
+			propertyMap = loginService.getContractProerty(tileParamMap);
+			request.getSession().setAttribute("propertyMap", propertyMap);
+		}
 		String envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION);
 		to.setEnvString(envString);
 
@@ -1393,7 +1405,12 @@ public class InorsController {
 			}
 			@SuppressWarnings("unchecked")
 			Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
-			
+			if(propertyMap == null){
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", Utils.getContractName());
+				propertyMap = loginService.getContractProerty(tileParamMap);
+				request.getSession().setAttribute("propertyMap", propertyMap);
+			}
 			String icFileLayoutDisplayName = yearPrefix + " Invitation Code File Record Layout";
 			String icFileLayoutHref = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + File.separator + propertyLookup.get("S3KEY_LAYOUTS") + propertyLookup.get("IC_" + productPrefix + "_" + productSuffix + "_" + selectedYear + "_FILENAME");
 			if (icFileLayoutHref == null || icFileLayoutHref.isEmpty()) {
