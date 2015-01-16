@@ -56,7 +56,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions(Map<String,Object> paramMap)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
 	public List<QuestionTO> getSecretQuestions(final Map<String,Object> paramMap) {
 		
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getSecretQuestions()");
@@ -323,7 +323,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = "adminCache", allEntries = true)
+	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
 	public boolean registerUser(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: registerUser()");
 		long t1 = System.currentTimeMillis();
@@ -837,7 +837,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value="adminCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
+	@Cacheable(value={"inorsAdminCache", "tascAdminCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
 		long t1 = System.currentTimeMillis();
@@ -1581,7 +1581,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Remove multiple DB call to single DB call and moved to store proc - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = { "configCache", "adminCache" }, allEntries = true)
+	@CacheEvict(value = {"inorsConfigCache","tascConfigCache","inorsAdminCache","tascAdminCache"}, allEntries = true)
 	public boolean updateUserProfile(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUserProfile()");
 		long t1 = System.currentTimeMillis();
@@ -1682,7 +1682,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
-	@CacheEvict(value = "adminCache", allEntries = true)
+	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
 	public boolean addInvitationToAccount(final Map<String,Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
 		long t1 = System.currentTimeMillis();
@@ -1747,7 +1747,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * Generate a new invitation code and disable the old activation code - By Joy
 	 */
-	@CacheEvict(value = "adminCache", allEntries = true)
+	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
 	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - regenerateActivationCode()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;

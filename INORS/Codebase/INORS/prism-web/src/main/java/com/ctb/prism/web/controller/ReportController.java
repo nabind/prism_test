@@ -1306,7 +1306,8 @@ public class ReportController{
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) //req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
 			/** session to cache **/
-				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), CustomStringUtil.appendString(reportUrl, "_", assessmentId), null);
+				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
+						CustomStringUtil.appendString(reportUrl, "_", assessmentId, Utils.getContractName()), null);
 			// get parameter values for report
 			// Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, true);
 			Map<String, Object> parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, true, req, reportUrl);
@@ -1894,7 +1895,7 @@ public class ReportController{
 			if(!IApplicationConstants.TRUE.equals(req.getAttribute("icDownload"))) { // if not IC - Download
 				/** session to cache **/
 				jasperPrint = (JasperPrint) usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						reportUrl, null);
+						CustomStringUtil.appendString(reportUrl, Utils.getContractName()), null);
 			}
 			if (sessionObj != null && jasperPrint == null) {
 				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");

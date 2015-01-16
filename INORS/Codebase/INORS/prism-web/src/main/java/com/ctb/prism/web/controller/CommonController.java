@@ -507,7 +507,7 @@ public class CommonController extends BaseDAO {
 		throws ServletException, IOException {
 		ModelAndView mv = new ModelAndView("common/success");
 		try {
-			reportService.removeConfigurationCache();
+			reportService.removeConfigurationCache(Utils.getContractName(themeResolver.resolveThemeName(req)));
 			logger.log(IAppLogger.INFO, "Config cache cleared ....");
 			
 			mv.addObject("message", "Config cache cleared !!!");
@@ -574,6 +574,12 @@ public class CommonController extends BaseDAO {
 		logger.log(IAppLogger.INFO,"expiryTime : {}" + expiryTime);
 		logger.log(IAppLogger.INFO,"signature : {}" + signature);
 		logger.log(IAppLogger.INFO,"theme : {}" + theme);
+		
+		// for testing only
+		boolean debug = false;
+		if(debug) {
+			reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		}
 		
 		if(signature != null && !signature.isEmpty()) {
 			 try{

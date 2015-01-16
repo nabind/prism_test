@@ -152,7 +152,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param userName
 	 * @return tenantId
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#root.method.name) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#root.method.name) )")
 	public String getTenantId( String userName ) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_TENANT_ID, new Object[]{ userName }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
@@ -169,7 +169,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#root.method.name) )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#root.method.name) )")
 	private String getUserType(String username) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_TYPE, username);
 		if (!lstData.isEmpty()) {
@@ -179,7 +179,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		}
 	}
 	
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1).concat(#root.method.name) )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1).concat(#root.method.name) )")
 	private String getUserType(String username, String contractName) {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_USER_TYPE, username);
 		if (!lstData.isEmpty()) {
@@ -480,7 +480,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param reportName, messageType, messageName, contractName
 	 * @return message
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage'))")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage'))")
 	public String getSystemConfigurationMessage(final Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
@@ -542,7 +542,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	/*
 	 * Get custprodid along with product - By Joy
 	 * */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getCustomerProduct') )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getCustomerProduct') )")
 	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
 			throws BusinessException {
@@ -748,7 +748,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			String[] userRoles
 	 * @return UserTO
 	 */
-	@CacheEvict(value="adminCache", allEntries=true)
+	@CacheEvict(value={"inorsAdminCache","tascAdminCache"}, allEntries=true)
 	public void addNewUser(Map<String,Object> paramMap) throws Exception {
 		//UserTO to = null;
 		final String userName = (String) paramMap.get("userName");
@@ -864,7 +864,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param testAdmin
 	 * @return
 	 */
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#testAdmin).concat(#contractName).concat(#root.method.name) )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#testAdmin).concat(#contractName).concat(#root.method.name) )")
 	public String getRootPath(String customerId, String testAdmin, String contractName) {
 		logger.log(IAppLogger.INFO, "LoginDAOImpl. getRootPath(), customerId = " + customerId);
 		logger.log(IAppLogger.INFO, "LoginDAOImpl. getRootPath(), testAdmin = " + testAdmin);
@@ -880,7 +880,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @see com.ctb.prism.login.dao.ILoginDAO#getMenuMap(java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getMenuMap') )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getMenuMap') )")
 	public Set<MenuTO> getMenuMap(Map<String, Object> paramMap) {
 		//final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
 		//logger.log(IAppLogger.INFO, "userId = " + userId);
@@ -935,7 +935,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	
 	
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getActionMap') )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getActionMap') )")
 	public Map<String,String> getActionMap(Map<String, Object> paramMap) {
 		
 		/*final Long userId = paramMap.get("userId") == null ? 0 : Long.parseLong((String)paramMap.get("userId"));
@@ -983,7 +983,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * Making it public as from other module it will be get called
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "configCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
+	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		String contractName = (String) paramMap.get("contractName");
 		if(contractName == null) {

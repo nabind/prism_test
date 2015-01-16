@@ -137,8 +137,10 @@ public class ReportBusinessImpl implements IReportBusiness {
 			List<Item> cacheKeyList = simpleDBService.getAllItems(Utils.getContractName(contractName));
 			return removeCache(cacheKeyList, contractName);
 		} else {
-			removeCache();
-			return true;
+			//reportDAO.removeCache(contractName);
+			if("inors".equals(contractName)) return reportDAO.removeInorsCache(contractName);
+			if("tasc".equals(contractName)) return reportDAO.removeTascCache(contractName);
+			return false;
 		}
 		
 	}
@@ -172,8 +174,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	}
 	
 	
-	public void removeConfigurationCache() {
-		reportDAO.removeConfigurationCache();
+	public void removeConfigurationCache(String contract) {
+		reportDAO.removeConfigurationCache(contract);
 	}
 
 	/*

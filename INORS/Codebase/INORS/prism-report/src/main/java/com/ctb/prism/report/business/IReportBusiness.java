@@ -40,7 +40,7 @@ public interface IReportBusiness {
 	
 	public boolean removeCache(String contractName);
 	
-	public void removeConfigurationCache();
+	public void removeConfigurationCache(String contract);
 
 	/**
 	 * @param jasperReport

@@ -39,7 +39,7 @@ public interface IReportService {
 
 	public void removeCache(String contractName) throws IOException;
 
-	public void removeConfigurationCache();
+	public void removeConfigurationCache(String contract);
 	
 	public void removeCacheSimpleDB(String contractName);
 

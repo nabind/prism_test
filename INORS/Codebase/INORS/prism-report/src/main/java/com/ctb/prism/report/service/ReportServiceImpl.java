@@ -80,7 +80,7 @@ public class ReportServiceImpl implements IReportService {
 		parameters.put("p_Is3D", IApplicationConstants.FLAG_N);
 		JasperPrint jasperPrint = reportBusiness.getFilledReport(jasperReport, parameters);
 		/** session to cache **/
-		usabilityService.getSetCache(user, sessionParam, jasperPrint);
+		usabilityService.getSetCache(user, CustomStringUtil.appendString(sessionParam, Utils.getContractName()), jasperPrint);
 	}
 
 	/*
@@ -92,8 +92,8 @@ public class ReportServiceImpl implements IReportService {
 		reportBusiness.removeReportCache();
 	}
 	
-	public void removeConfigurationCache() {
-		reportBusiness.removeConfigurationCache();
+	public void removeConfigurationCache(String contract) {
+		reportBusiness.removeConfigurationCache(contract);
 	}
 
 	/*
@@ -112,8 +112,9 @@ public class ReportServiceImpl implements IReportService {
 		try {
 			//removeCache("inors");
 			//removeCache("tasc");
-			removeCacheSimpleDB("inors");
-			removeCacheSimpleDB("tasc");
+			//removeCacheSimpleDB("inors");
+			//removeCacheSimpleDB("tasc");
+			reportBusiness.removeCache();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -451,7 +452,7 @@ public class ReportServiceImpl implements IReportService {
 	@Autowired private IReportFilterTOFactory reportFilterFactory;
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportServiceImpl.class.getName());
 	
-	@Cacheable(value = "defaultCache", 
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, 
 			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg, Map<String, String[]> param) {
@@ -545,7 +546,7 @@ public class ReportServiceImpl implements IReportService {
 						if(jasperReport == null) {
 							jasperReport = (JasperReport) 
 								usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
-										CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId")), null);
+										CustomStringUtil.appendString(req.getParameter("reportUrl"), "_", req.getParameter("assessmentId"), Utils.getContractName()), null);
 						}
 						//long end2 = System.currentTimeMillis();
 						//System.out.println(CustomStringUtil.getHMSTimeFormat(end2 - start2)+" <<<< Time Taken: no cache getReportParameter:get report from cache >>>> " );
@@ -820,7 +821,7 @@ public class ReportServiceImpl implements IReportService {
 		return (String[]) req.getSession().getAttribute("_REMEMBER_ME_" + label);
 	}
 	
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )")
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException {
 		IFillManager fillManager = new FillManagerImpl();

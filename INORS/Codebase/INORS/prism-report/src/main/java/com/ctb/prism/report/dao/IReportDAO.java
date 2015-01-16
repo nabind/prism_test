@@ -33,7 +33,10 @@ public interface IReportDAO {
 
 	public void removeCache(String cacheKey);
 
-	public void removeConfigurationCache();
+	public void removeConfigurationCache(String contract);
+	
+	public boolean removeInorsCache(String contract);
+	public boolean removeTascCache(String contract);
 
 	/**
 	 * This method returns report print object filled with data.

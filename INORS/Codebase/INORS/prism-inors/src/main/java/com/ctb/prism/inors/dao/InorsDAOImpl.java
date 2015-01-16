@@ -154,7 +154,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getSchoolClass(java.lang.String)
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getSchoolClass' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getSchoolClass' )")
 	public BulkDownloadTO getSchoolClass(String studentBioId) {
 		BulkDownloadTO bulkDownloadTO = null;
 		List<Map<String, Object>> lstData = null;
@@ -176,7 +176,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getNodeName(java.lang.String)
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getNodeName' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getNodeName' )")
 	public BulkDownloadTO getNodeName(String orgNodeid) {
 		BulkDownloadTO bulkDownloadTO = null;
 		List<Map<String, Object>> lstData = null;
@@ -199,7 +199,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getGRTList' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getGRTList' )")
 	private List<GrtTO> getGRTList(final Long customerId, final String productId, final String testProgram, final String districtId, final String schoolId) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
 		List<GrtTO> grtList = new ArrayList<GrtTO>();
@@ -268,7 +268,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return grtList;
 	}
 	
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)) )")
 	private ArrayList<ArrayList<String>> getGRTTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
 		final Long customerId = Long.valueOf(paramMap.get("customerId"));
@@ -651,7 +651,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getICList' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getICList' )")
 	private List<InvitationCodeTO> getICList(final String productId, final String testProgram, final String districtId, final String schoolId) {
 		logger.log(IAppLogger.INFO, "Enter: getICList()");
 		List<InvitationCodeTO> icList = null;
@@ -716,7 +716,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		return icList;
 	}
 	
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)) )")
 	private ArrayList<ArrayList<String>> getICTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getICList()");
 		final String userName = paramMap.get("userName");
@@ -834,7 +834,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getDistricts()
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap) {
 		long t1 = System.currentTimeMillis();
 		final Long testProgram = Long.parseLong(paramMap.get("testProgram"));
@@ -887,7 +887,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#populateSchool(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
 		long t1 = System.currentTimeMillis();
@@ -939,7 +939,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getProductNameById(java.lang.Long)
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameById' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getProductNameById' )")
 	public String getProductNameById(Long productId) {
 		String productName = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
@@ -956,7 +956,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * 
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#getCurrentAdminYear()
 	 */
-	@Cacheable(value = "defaultCache", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getCurrentAdminYear' )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getCurrentAdminYear' )")
 	public String getCurrentAdminYear() {
 		Integer year = Calendar.getInstance().get(Calendar.YEAR);
 		String currentAdminYear = year.toString();
