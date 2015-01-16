@@ -11,21 +11,21 @@ create or replace package PKG_MANAGE_ORGANIZATIONS is
                                        P_IN_CUSTOMERID     IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                        P_OUT_REF_CURSOR    OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
-                                       
+
   PROCEDURE SP_GET_TENANT_DETAILS_NON_ACSI(P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                            P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                            P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                            P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                            P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                            P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);  
+                                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
   PROCEDURE SP_GET_TENANT_DETAILS(P_IN_PARENT_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                   P_IN_CUSTOMERID               IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                   P_IN_CUST_PROD_ID             IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                   P_OUT_REF_CURSOR              OUT GET_REF_CURSOR,
                                   P_OUT_EXCEP_ERR_MSG           OUT VARCHAR2);
-                                  
+
   PROCEDURE SP_GET_TENANT_DETAILS_NON_ROOT(P_IN_PARENT_ORG_NODEID   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                            P_IN_CUSTOMERID          IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                            P_IN_CUST_PROD_ID        IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
@@ -36,37 +36,37 @@ create or replace package PKG_MANAGE_ORGANIZATIONS is
   PROCEDURE SP_SEARCH_ORGANNIZATION( P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                      P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                      P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
-                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                      P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                      P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                     P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);  
-  
+                                     P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
+
   PROCEDURE SP_SEARCH_ORG_AUTO_COMPLETE( P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                          P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
-                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                          P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);  
-                                         
+                                         P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
+
    PROCEDURE SP_GET_ORG_HIER_ON_REDIRECT(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                          P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                          P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.PARENT_ORG_NODEID%TYPE,
-                                         P_IN_USERID            IN USERS.USERID%TYPE,
+                                         --P_IN_USERID            IN USERS.USERID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
-   
+
    PROCEDURE SP_GET_ORGANIZATION_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                        P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                        P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);      
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
    PROCEDURE SP_GET_ORG_CHILDREN_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                        P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                        P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);                                                                                                                                                                                                                             
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2);
 
 end PKG_MANAGE_ORGANIZATIONS;
 /
@@ -87,11 +87,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
        WHERE ORG_NODEID = P_IN_ORG_NODEID
          AND CUSTOMERID = P_IN_CUSTOMERID
        ORDER BY ORG_NODE_NAME;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-    
+
   END SP_GET_CURR_TENANT_DETAILS;
 
   PROCEDURE SP_GET_TENANT_DETAILS_NON_ACSI(P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
@@ -103,7 +103,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
                                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT OND.ORG_NODEID,
              OND.ORG_NODE_NAME,
              OND.PARENT_ORG_NODEID,
@@ -126,11 +126,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
        WHERE OND.ORG_NODEID = P_IN_ORG_NODEID
          AND OND.ORG_NODE_LEVEL = 1
        ORDER BY ORG_NODE_NAME;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-    
+
   END SP_GET_TENANT_DETAILS_NON_ACSI;
 
   PROCEDURE SP_GET_TENANT_DETAILS(P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.ORG_NODEID%TYPE,
@@ -138,10 +138,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
                                   P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                   P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                   P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT OND.ORG_NODEID,
              OND.ORG_NODE_NAME,
              OND.PARENT_ORG_NODEID,
@@ -154,11 +154,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
          AND CUSTOMERID = P_IN_CUSTOMERID
          AND OND.ORG_NODE_LEVEL <> 0
        ORDER BY ORG_NODE_NAME;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-    
+
   END SP_GET_TENANT_DETAILS;
 
   PROCEDURE SP_GET_TENANT_DETAILS_NON_ROOT(P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.ORG_NODEID%TYPE,
@@ -169,7 +169,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
                                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-      
+
       SELECT OND.ORG_NODEID,
              OND.ORG_NODE_NAME,
              OND.PARENT_ORG_NODEID,
@@ -183,23 +183,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
          AND OND.ORG_MODE = P_IN_ORG_MODE
          AND OND.ORG_NODE_LEVEL <> 0
        ORDER BY ORG_NODE_NAME;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
   END SP_GET_TENANT_DETAILS_NON_ROOT;
-  
+
    PROCEDURE SP_SEARCH_ORGANNIZATION(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                      P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                      P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
-                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                     P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                      P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                      P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                      P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
 
    BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT O.ORG_NODEID,
              O.ORG_NODE_NAME,
              (SELECT NVL(COUNT(1), 0)
@@ -225,24 +225,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
       CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID
        START WITH ORG_NODEID = P_IN_ORG_NODEID;
 
-    
+
    EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
    END SP_SEARCH_ORGANNIZATION;
-   
-   
+
+
    PROCEDURE SP_SEARCH_ORG_AUTO_COMPLETE(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                          P_IN_CUST_PROD_ID      IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                          P_IN_ORG_NODE_NAME     IN ORG_NODE_DIM.ORG_NODE_NAME%TYPE,
-                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,      
+                                         P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                          P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
 
    BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-    
+
       SELECT ABC.ORG_NODE_NAME
         FROM (SELECT O.ORG_NODE_NAME, O.ORG_NODE_LEVEL
                 FROM ORG_NODE_DIM O
@@ -258,22 +258,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
                ORDER BY O.ORG_NODE_NAME) ABC
        WHERE UPPER(ABC.ORG_NODE_NAME) LIKE UPPER(P_IN_ORG_NODE_NAME)
          AND ROWNUM <= 100;
-    
+
    EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-   END SP_SEARCH_ORG_AUTO_COMPLETE;                                            
+   END SP_SEARCH_ORG_AUTO_COMPLETE;
 
-   
+
    PROCEDURE SP_GET_ORG_HIER_ON_REDIRECT(P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                          P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                                          P_IN_PARENT_ORG_NODEID IN ORG_NODE_DIM.PARENT_ORG_NODEID%TYPE,
-                                         P_IN_USERID            IN USERS.USERID%TYPE,
+                                         --P_IN_USERID            IN USERS.USERID%TYPE,
                                          P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                          P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is
    BEGIN
       OPEN P_OUT_REF_CURSOR For
-      
+
       SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,
              O.ORG_NODE_NAME,
              O.PARENT_ORG_NODEID,
@@ -285,24 +285,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
              AND O.ORG_NODE_LEVEL >=
                  (SELECT DISTINCT U.ORG_NODE_LEVEL
                     FROM ORG_USERS U
-                   WHERE U.ORG_NODEID = P_IN_PARENT_ORG_NODEID
-                     AND U.USERID = P_IN_USERID)
+                   WHERE U.ORG_NODEID = P_IN_PARENT_ORG_NODEID)
+                    -- AND U.USERID = P_IN_USERID)
         ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME;
-        
-   
-   
+
+
+
    EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
    END SP_GET_ORG_HIER_ON_REDIRECT;
-   
-   
+
+
    PROCEDURE SP_GET_ORGANIZATION_LIST (P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                        P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                        P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
                                        P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is
-                                      
+
    BEGIN
     OPEN P_OUT_REF_CURSOR For
        SELECT ORG_NODEID,
@@ -325,22 +325,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
         WHERE D.ORG_NODEID = P_IN_ORG_NODEID
           AND CUSTOMERID = P_IN_CUSTOMERID
         ORDER BY ORG_NODE_NAME;
-   
+
    EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-   END SP_GET_ORGANIZATION_LIST;    
-   
-   
+   END SP_GET_ORGANIZATION_LIST;
+
+
   PROCEDURE SP_GET_ORG_CHILDREN_LIST ( P_IN_ORG_NODEID        IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,          
+                                       P_IN_CUSTOMERID        IN ORG_NODE_DIM.CUSTOMERID%TYPE,
                                        P_IN_ORG_MODE          IN ORG_NODE_DIM.ORG_MODE%TYPE,
                                        P_OUT_REF_CURSOR       OUT GET_REF_CURSOR,
-                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is 
-   
+                                       P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) Is
+
    BEGIN
     OPEN P_OUT_REF_CURSOR For
-   
+
     SELECT ORG_NODEID,
            ORG_NODE_NAME,
            PARENT_ORG_NODEID,
@@ -361,11 +361,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_ORGANIZATIONS IS
      WHERE D.PARENT_ORG_NODEID = P_IN_ORG_NODEID
        AND CUSTOMERID = P_IN_CUSTOMERID
      ORDER BY ORG_NODE_NAME;
-    
+
    EXCEPTION
     WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));    
-  END SP_GET_ORG_CHILDREN_LIST;                            
-  
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+  END SP_GET_ORG_CHILDREN_LIST;
+
 END PKG_MANAGE_ORGANIZATIONS;
 /
