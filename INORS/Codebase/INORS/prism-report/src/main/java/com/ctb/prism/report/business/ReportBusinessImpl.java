@@ -241,8 +241,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param sessionParams
 	 * @param userId
 	 */
-	@Cacheable(value = "defaultCache", 
-			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getDefaultFilter').concat(#tenantId).concat(#reportUrl).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#sessionParams)) )")
+	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getDefaultFilter').concat(#tenantId).concat(#reportUrl).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#sessionParams)) )")
 	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, 
 			String reportUrl, Map<String, Object> sessionParams, String userId, String tenantId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
