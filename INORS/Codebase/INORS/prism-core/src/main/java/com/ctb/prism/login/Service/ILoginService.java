@@ -111,4 +111,6 @@ public interface ILoginService {
 	public List<String> getPasswordHistory(Map<String, Object> paramMap);
 	
 	public boolean checkOrgHierarchy(Map<String, Object> paramMap);
+
+	public void checkUserRoleByUsername(Map<String, Object> paramMap);
 }

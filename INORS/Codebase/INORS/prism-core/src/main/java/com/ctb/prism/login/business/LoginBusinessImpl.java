@@ -252,4 +252,8 @@ public class LoginBusinessImpl implements ILoginBusiness{
 		return loginDAO.checkOrgHierarchy(paramMap);
 	}
 	
+	public void checkUserRoleByUsername(Map<String, Object> paramMap){
+		loginDAO.checkUserRoleByUsername(paramMap);
+	}
+	
 }

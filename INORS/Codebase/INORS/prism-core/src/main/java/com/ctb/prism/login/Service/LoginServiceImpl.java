@@ -170,4 +170,8 @@ public class LoginServiceImpl implements ILoginService {
 	public boolean checkOrgHierarchy(Map<String, Object> paramMap){
 		return loginBusiness.checkOrgHierarchy(paramMap);
 	}
+	
+	public void checkUserRoleByUsername(Map<String, Object> paramMap){
+		loginBusiness.checkUserRoleByUsername(paramMap);
+	}
 }

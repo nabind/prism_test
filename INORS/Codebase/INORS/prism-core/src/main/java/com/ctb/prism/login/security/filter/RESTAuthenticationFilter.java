@@ -191,8 +191,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 							loginService.addNewUser(paramMap);
 							logger.info("SSO user is created : " + ssoUsername);
 						}else {
-							/** handle user move to different school */
 							// user exists into system
+							/** handle user move to different school */
 							if(userTO.getOrgId() != null) {
 								if(!existingUserOrg.equals(userTO.getOrgId())) {
 									// user org is changed from last login - update org_nodeid
@@ -200,10 +200,23 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 									loginService.updateUserOrg(ssoUsername, userTO.getOrgId(), existingUserOrg, Utils.getContractNameNoLogin(theme));
 								}
 							}
+							
+							/**
+							 * Check for user role
+							 */
+							Map<String,Object> paramMapForUserRole = new HashMap<String,Object>();
+							paramMapForUserRole.put("username",ssoUsername);
+							paramMapForUserRole.put("contractName",Utils.getContractNameNoLogin(theme));
+							if(ADMIN.equalsIgnoreCase(role)){
+								paramMapForUserRole.put("userRole", "ROLE_ADMIN");
+							}else{
+								paramMapForUserRole.put("userRole", "ROLE_USER");
+							}
+							logger.info("Updating user role as seems it assigned to differnt role");
+							loginService.checkUserRoleByUsername(paramMapForUserRole);
 						}
 						
 						userTO.setUserName(ssoUsername);
-						
 						request.getSession().setAttribute(IApplicationConstants.SSO_ORG, userTO.getOrgId());
 						request.getSession().setAttribute(IApplicationConstants.SSO_ORG_LEVEL, userTO.getOrgNodeLevel());
 						request.getSession().setAttribute(IApplicationConstants.SSO_ADMIN, ADMIN.equalsIgnoreCase(role));

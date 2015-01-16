@@ -45,5 +45,6 @@ public interface ILoginDAO {
 	 */  
 	public UserTO getUserEmail(Map<String,Object> paramUserMap);
 	public boolean checkOrgHierarchy(Map<String, Object> paramMap);
+	public void checkUserRoleByUsername(Map<String, Object> paramMap);
 
 }

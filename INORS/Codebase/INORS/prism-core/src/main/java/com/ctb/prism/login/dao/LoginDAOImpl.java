@@ -716,8 +716,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @return String
 	 */
 	public String getUserOrgNode(String username, String contractName) {
-		/*List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
-				.queryForList(IQueryConstants.VALIDATE_USER_NAME, username);*/
 		if (!checkUserAvailability(username, contractName)) {
 			String orgNodeId = "";
 			List<Map<String, Object>> usrData = null;
@@ -1154,6 +1152,47 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - checkOrgHierarchy() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void checkUserRoleByUsername(Map<String, Object> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: LoginDAOImpl - getUserRoleByUsername()");
+		long t1 = System.currentTimeMillis();
+		
+		final String username = (String)paramMap.get("username"); 
+		final String contractName = (String)paramMap.get("contractName"); 
+		final String userRole = (String)paramMap.get("userRole"); 
+		BigDecimal statusFlag = null;
+		try{
+			statusFlag = (BigDecimal)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_USER_ROLE_BY_USERNAME);
+					cs.setString(1, username);
+					cs.setString(2, userRole);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					BigDecimal statusFlag = null;
+					try {
+						cs.execute();
+						statusFlag = (BigDecimal)cs.getObject(3);
+						Utils.logError(cs.getString(4));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusFlag;
+				}
+			});
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getUserRoleByUsername() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
 	}
 	
 }

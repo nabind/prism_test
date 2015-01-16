@@ -40,4 +40,5 @@ public interface ILoginBusiness {
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap);
 	public List<String> getPasswordHistory(Map<String, Object> paramMap);
 	public boolean checkOrgHierarchy(Map<String, Object> paramMap);
+	public void checkUserRoleByUsername(Map<String, Object> paramMap);
 }
