@@ -191,7 +191,19 @@ public final class CacheKeyUtils {
 		}
     }
     
+    public static <K extends Comparable<K>> String fetchContract(Map<K, ?> col) {
+    	String contractName = "";
+    	if(col.get("contractName")!=null && ((String)col.get("contractName")).length() > 0) {
+        	contractName = (String)col.get("contractName");
+        } else {
+        	contractName = Utils.getContractName();
+        }
+    	return contractName;
+    }
     
+    public static String fetchContract() {
+    	return Utils.getContractName();
+    }
     
     public static void main(String[] args) {
 		System.out.println( generateKey("abc", 123, true, null) );

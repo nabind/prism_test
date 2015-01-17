@@ -82,7 +82,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	} )
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -111,7 +114,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReportNoCache(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	} )
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -319,7 +325,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getInputControlDetails(java.lang.String)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportPath)).concat(#root.method.name) )")
+	} )
 	public List<InputControlTO> getInputControlDetails(String reportPath) {
 		logger.log(IAppLogger.INFO, "Enter: getInputControlDetails()");
 		List<InputControlTO> inputControlTOs = null;
@@ -387,7 +396,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getValuesOfSingleInput(java.lang.String)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#query)).concat(#root.method.name) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#query)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#query)).concat(#root.method.name) )")
+	} )
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
 		if (query == null)
 			return null;
@@ -428,7 +440,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getTenantId(java.lang.String)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#userName)).concat('getTenantId') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#userName)).concat('getTenantId') )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#userName)).concat('getTenantId') )")
+	} )
 	public String getTenantId(String userName) {
 		String userType = getUserType(userName);
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - userType = " + userType);
@@ -455,7 +470,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @Cacheable(cacheName = "allReports")
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportList') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportList') )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportList') )")
+	} )
 	public List<ReportTO> getAllReportList(final Map<String, Object> paramMap) {
 
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList()");
@@ -544,7 +562,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAssessmentList' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAssessmentList' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAssessmentList' )")
+	} )
 	private List<AssessmentTO> getAssessmentList(final String query, final String reportTypeLike, final String roles, final Long orgNodeLevel, final long custProdId) {
 		return (List<AssessmentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -609,7 +630,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getAssessments(java.util.Map)
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAssessments'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	} )
 	public List<AssessmentTO> getAssessments(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getAssessments()");
 		
@@ -696,7 +720,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return status;
 	}
 
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
+	} )
 	public List<ObjectValueTO> getAllRoles() {
 		List<ObjectValueTO> roles = null;
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.ALL_ROLE);
@@ -761,7 +788,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgNodeLevel') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgNodeLevel') )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgNodeLevel') )")
+	} )
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getOrgNodeLevel(final Map<String, Object> paramMap) throws SystemException {
 
 		logger.log(IAppLogger.INFO, "Enter: getOrgNodeLevel()");
@@ -1490,7 +1520,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getTestAdministrations()
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getTestAdministrations' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getTestAdministrations' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( 'getTestAdministrations' )")
+	} )
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getTestAdministrations() {
 		return getJdbcTemplatePrism().query(IQueryConstants.GET_TEST_ADMINISTRATIONS_GD, new ObjectValueTOMapper());
 	}
@@ -1714,7 +1747,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return studentList;
 	}
 
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGrades' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGrades' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, 'getAllGrades' )")
+	} )
 	private List<String> getAllGrades(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId) {
 		List<String> grades = new ArrayList<String>();
 		grades.add("-1");
@@ -1728,7 +1764,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 	
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAllClassesForAllGrades' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAllClassesForAllGrades' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, 'getAllClassesForAllGrades' )")
+	} )
 	private List<String> getAllClassesForAllGrades(String productId, String orgMode, String schoolId, String customerId, String orgNodeLevel) {
 		List<String> classes = new ArrayList<String>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_CLASSES_FOR_ALL_GRADES, productId, orgMode, schoolId, customerId, productId, orgNodeLevel, schoolId, orgNodeLevel, schoolId);
@@ -1741,7 +1780,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return classes;
 	}
 
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, #p7, 'getAllGradeNames' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, #p7, 'getAllGradeNames' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #p5, #p6, #p7, 'getAllGradeNames' )")
+	} )
 	private List<String> getAllGradeNames(String stateOrgNodeId, String testAdministrationVal, String corpDiocese, String school, String groupFile, String testProgram, String customerId, String contractName) {
 		List<String> grades = new ArrayList<String>();
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName)
@@ -1756,7 +1798,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return grades;
 	}
 
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getSelectedClassNames' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getSelectedClassNames' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, 'getSelectedClassNames' )")
+	} )
 	private List<String> getSelectedClassNames(String stateOrgNodeId, String studentIds, String customerId, String contractName) {
 		List<String> classes = new ArrayList<String>();
 		// List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(CustomStringUtil.replaceCharacterInString('~', studentIds, IQueryConstants.GET_SELECTED_CLASS_NAMES), stateOrgNodeId, customerId);
@@ -1909,7 +1954,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return updateCount;
 	}
 	
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getProductNameFromId' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getProductNameFromId' )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getProductNameFromId' )")
+	} )
 	private String getProductNameFromId(Long productId, String contractName) {
 		String productName = "";
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_PRODUCT_NAME_BY_ID, productId);
@@ -1974,7 +2022,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getICLetterPaths' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getICLetterPaths' )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getICLetterPaths' )")
+	} )
 	private Map<String, String> getICLetterPaths(String students, String productStr, String contractName) {
 		Map<String, String> icPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -2007,7 +2058,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getISRPaths' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getISRPaths' )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getISRPaths' )")
+	} )
 	private Map<String, String> getISRPaths(String students, String productStr, String contractName) {
 		Map<String, String> isrPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -2040,7 +2094,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 *            Comma separated STUDENT_BIO_IDs
 	 * @return
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getIPPaths' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getIPPaths' )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getIPPaths' )")
+	} )
 	private Map<String, String> getIPPaths(String students, String productStr, String contractName) {
 		Map<String, String> iprPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -2072,7 +2129,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param students
 	 * @return
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getBothPaths' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getBothPaths' )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getBothPaths' )")
+	} )
 	private Map<String, String> getBothPaths(String students, String productStr, String contractName) {
 		Map<String, String> bothPaths = new LinkedHashMap<String, String>();
 		String[] studentIds = students.split(",");
@@ -2110,7 +2170,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param query
 	 * @return
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getResult' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getResult' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getResult' )")
+	} )
 	private String getResult(String query, String contractName) {
 		logger.log(IAppLogger.DEBUG, "Enter: getResult()");
 		logger.log(IAppLogger.DEBUG, query);
@@ -2133,7 +2196,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param msgtype,reportname and infoname
 	 * @return message
 	 */
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSystemConfigurationMessage') )")
+	} )
 	public String getSystemConfigurationMessage(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getSystemConfigurationMessage()");
 		long t1 = System.currentTimeMillis();
@@ -2179,7 +2245,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getReportMessage(java.util.Map)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getReportMessage') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getReportMessage') )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getReportMessage') )")
+	} )
 	public String getReportMessage(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
 		String reportId = (String) paramMap.get("REPORT_ID");
@@ -2199,7 +2268,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return message;
 	}
 	
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportMessages') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportMessages') )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getAllReportMessages') )")
+	} )
 	public List<ReportMessageTO> getAllReportMessages(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: getReportMessage()");
 		List<ReportMessageTO> reportMessageList = new ArrayList<ReportMessageTO>();
@@ -2257,7 +2329,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getConventionalFileNameGD(java.lang.Long)
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getConventionalFileNameGD' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getConventionalFileNameGD' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getConventionalFileNameGD' )")
+	} )
 	public String getConventionalFileNameGD(Long orgNodeId) {
 		logger.log(IAppLogger.INFO, "Enter: getConventionalFileNameGD()");
 		String conventionalFileName = null;
@@ -2278,7 +2353,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param ancestorLevel
 	 * @return
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getAncestorOrgNodeId' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getAncestorOrgNodeId' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, 'getAncestorOrgNodeId' )")
+	} )
 	public String getAncestorOrgNodeId(String orgNodeId, int ancestorLevel, String contractName) {
 		String ancestorOrgNodeId = "-1";
 		if (orgNodeId == null) {
@@ -2299,7 +2377,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getOrgNodeIdPath' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getOrgNodeIdPath' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getOrgNodeIdPath' )")
+	} )
 	public String getOrgNodeIdPath(String orgNodeId, String contractName) {
 		if (orgNodeId == null) {
 			return "0";
@@ -2322,7 +2403,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param orgNodeId
 	 * @return
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #01, 'getParentOrgNodeId' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #01, 'getParentOrgNodeId' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #01, 'getParentOrgNodeId' )")
+	} )
 	public String getParentOrgNodeId(String orgNodeId, String contractName) {
 		String parentOrgNodeId = null;
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList("SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?", orgNodeId);
@@ -2334,7 +2418,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return parentOrgNodeId;
 	}
 
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getCustProdId' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getCustProdId' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, 'getCustProdId' )")
+	} )
 	public String getCustProdId(String custId, String prodId) {
 		String custProdId = "-1";
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList("SELECT CUST_PROD_ID  FROM CUST_PRODUCT_LINK WHERE CUSTOMERID = ? AND PRODUCTID = ?", custId, prodId);
@@ -2368,7 +2455,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 	
 	//@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, 'getListOfRoles' )")
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).Long(#reportId)).concat(#root.method.name) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).Long(#reportId)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).Long(#reportId)).concat(#root.method.name) )")
+	} )
 	private String getListOfRoles(Long reportId) {
 		logger.log(IAppLogger.DEBUG, "Enter: getListOfRoles()"); 
 		String roles = null;
@@ -2381,8 +2471,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return roles;
 	}
 	
-	
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0,#p1, 'getCurrentMsgType' )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0,#p1, 'getCurrentMsgType' )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0,#p1, 'getCurrentMsgType' )")
+	} )
 	private Long getCurrentMsgType (Long currentCustProdId, Long oldMsgTypeId) {
 		logger.log(IAppLogger.INFO, "Enter: getCurrentAdminMsgType()"); 
 		long msgTypeId = 0;

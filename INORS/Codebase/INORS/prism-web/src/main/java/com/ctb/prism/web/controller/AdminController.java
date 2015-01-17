@@ -885,6 +885,7 @@ public class AdminController {
 			
 			/*userTo = adminService.addNewUser(userId, tenantId, userName,
 							emailId, password, userStatus, userRoles,orgLevel, adminYear, customer);*/
+			paramMap.put("contractName", Utils.getContractName());
 			userTo = adminService.addNewUser(paramMap);
 			res.setContentType("text/plain");
 			
@@ -1149,6 +1150,7 @@ public class AdminController {
 			paramMap.put("customer", customer);
 			paramMap.put("moreRole", moreRole);
 			paramMap.put("lastUserId", lastUserId);
+			paramMap.put("contractName", Utils.getContractName());
 
 			if (roleId != null) {
 				roleTo = adminService.getRoleDetailsById(paramMap);

@@ -14,6 +14,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,7 +57,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getSecretQuestions(Map<String,Object> paramMap)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = {"inorsConfigCache","tascConfigCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )"),
+			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions') )")
+	} )
 	public List<QuestionTO> getSecretQuestions(final Map<String,Object> paramMap) {
 		
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getSecretQuestions()");
@@ -837,7 +841,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getStudentList(Map<String, Object> paramMap)
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value={"inorsAdminCache", "tascAdminCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
+	@Caching( cacheable = {
+			@Cacheable(value="inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )"),
+			@Cacheable(value="tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList') )")
+	} )
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
 		long t1 = System.currentTimeMillis();

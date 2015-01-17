@@ -18,6 +18,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -452,8 +453,12 @@ public class ReportServiceImpl implements IReportService {
 	@Autowired private IReportFilterTOFactory reportFilterFactory;
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportServiceImpl.class.getName());
 	
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, 
-			key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'",
+					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )"),
+			@Cacheable(value = "tascDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",
+					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
+	} )
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg, Map<String, String[]> param) {
 		//long start = System.currentTimeMillis();
@@ -821,7 +826,10 @@ public class ReportServiceImpl implements IReportService {
 		return (String[]) req.getSession().getAttribute("_REMEMBER_ME_" + label);
 	}
 	
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameterValues) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameterValues) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('fillReportForTableApi').concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameterValues) ) )")
+	} )
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException {
 		IFillManager fillManager = new FillManagerImpl();
