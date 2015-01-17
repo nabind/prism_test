@@ -17,6 +17,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -241,7 +242,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param sessionParams
 	 * @param userId
 	 */
-	@Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getDefaultFilter').concat(#tenantId).concat(#reportUrl).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#sessionParams)) )")
+	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter') )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter') )")
+	} )
 	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, 
 			String reportUrl, Map<String, Object> sessionParams, String userId, String tenantId) {
 		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
