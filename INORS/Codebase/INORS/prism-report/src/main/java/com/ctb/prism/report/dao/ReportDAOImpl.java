@@ -674,7 +674,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param reportId
 	 * @return boolean
 	 */
-	@CacheEvict(value = "configCache", allEntries=true )
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean deleteReport(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
 		long t1 = System.currentTimeMillis();
@@ -920,7 +923,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
-	@CacheEvict(value = { "configCache" }, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public int saveManageMessage(final List<ManageMessageTO> manageMessageTOList) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - saveManageMessage()");
 		int insertDMFlag = 1;
@@ -981,7 +987,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @param ReportTO
 	 * @return boolean
 	 */
-	@CacheEvict(value = "configCache", allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean updateReportNew(final ReportTO reportTO) {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - updateReportNew");
 		long t1 = System.currentTimeMillis();
@@ -1047,7 +1056,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @return ReportTO
 	 */
 	@SuppressWarnings("unchecked")
-	@CacheEvict(value = "configCache", allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public ReportTO addNewDashboard(final ReportParameterTO reportParameterTO) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - addNewDashboard()");
 		long t1 = System.currentTimeMillis();
@@ -2681,7 +2693,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.report.dao.IReportDAO#updateDataForActions(java.util.Map)
 	 */
-	@CacheEvict(value = { "configCache" }, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public String updateDataForActions(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: updateDataForActions()");
 		final String reportId = (String) paramMap.get("reportId");

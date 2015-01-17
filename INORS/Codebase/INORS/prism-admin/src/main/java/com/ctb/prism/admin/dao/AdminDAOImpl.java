@@ -1026,7 +1026,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            userId, userName, emailId, password, userStatus,userRoles
 	 * @return
 	 */
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: updateUser()");
 		try {
@@ -1088,7 +1091,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
 		//try {
@@ -1137,7 +1143,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#addNewUser(java.util.Map)
 	 */
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception{
 		logger.log(IAppLogger.INFO, "Enter: addNewUser(): " + paramMap);
 		UserTO userTo = null;

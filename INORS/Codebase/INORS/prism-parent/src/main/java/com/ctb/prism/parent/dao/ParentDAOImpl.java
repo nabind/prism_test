@@ -327,7 +327,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#registerUser(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean registerUser(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: registerUser()");
 		long t1 = System.currentTimeMillis();
@@ -1588,7 +1591,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Remove multiple DB call to single DB call and moved to store proc - By Joy
 	 * @see com.ctb.prism.parent.dao.IParentDAO#updateUserProfile(com.ctb.prism.parent.transferobject.ParentTO)
 	 */
-	@CacheEvict(value = {"inorsConfigCache","tascConfigCache","inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = {"inorsConfigCache","inorsAdminCache"}, condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = {"tascAdminCache","tascAdminCache"},    condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean updateUserProfile(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUserProfile()");
 		long t1 = System.currentTimeMillis();
@@ -1689,7 +1695,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * 
 	 * @see com.ctb.prism.parent.dao.IParentDAO#addInvitationToAccount(java.lang.String, java.lang.String)
 	 */
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean addInvitationToAccount(final Map<String,Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
 		long t1 = System.currentTimeMillis();
@@ -1754,7 +1763,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * Generate a new invitation code and disable the old activation code - By Joy
 	 */
-	@CacheEvict(value = {"inorsAdminCache","tascAdminCache"}, allEntries = true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - regenerateActivationCode()");
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;

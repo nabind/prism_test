@@ -762,7 +762,10 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			String[] userRoles
 	 * @return UserTO
 	 */
-	@CacheEvict(value={"inorsAdminCache","tascAdminCache"}, allEntries=true)
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
+			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true)
+	} )
 	public void addNewUser(Map<String,Object> paramMap) throws Exception {
 		//UserTO to = null;
 		final String userName = (String) paramMap.get("userName");

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -119,8 +120,13 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * 
 	 * @see com.ctb.prism.core.Service.IUsabilityService#getSetCache(java.lang.String, java.lang.String, java.lang.Object)
 	 */
-	@CacheEvict(value = {"inorsUserCache","tascUserCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", condition = "#p2 != null", beforeInvocation = true)
-	@Cacheable(value = {"inorsUserCache","tascUserCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )")
+	@Caching( evict = { 
+			@CacheEvict(value = "inorsUserCache", condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors' and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", beforeInvocation = true),
+			@CacheEvict(value = "tascUserCache",  condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'  and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", beforeInvocation = true)
+		  } , cacheable = { 
+			@Cacheable(value = "inorsUserCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )"),
+			@Cacheable(value = "tascUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )")
+	} )
 	public Object getSetCache(String username, String sessionName, Object sessionParam) {
 		logger.log(IAppLogger.INFO, "********* ********** ************ putting into cache ****** " + sessionName);
 		return sessionParam;
@@ -131,7 +137,10 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * 
 	 * @see com.ctb.prism.core.Service.IUsabilityService#removeFromCache(java.lang.String, java.lang.String)
 	 */
-	@CacheEvict(value = {"inorsUserCache","tascUserCache"}, key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
+	@Caching( evict = {
+			@CacheEvict(value = "inorsUserCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )"),
+			@CacheEvict(value = "tascUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) )")
+	} )
 	public Object removeFromCache(String username, String sessionName) {
 		return null;
 	}

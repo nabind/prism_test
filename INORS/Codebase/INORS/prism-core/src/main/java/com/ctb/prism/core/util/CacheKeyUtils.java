@@ -193,7 +193,7 @@ public final class CacheKeyUtils {
     
     public static <K extends Comparable<K>> String fetchContract(Map<K, ?> col) {
     	String contractName = "";
-    	if(col.get("contractName")!=null && ((String)col.get("contractName")).length() > 0) {
+    	if(col != null && col.get("contractName")!=null && ((String)col.get("contractName")).length() > 0) {
         	contractName = (String)col.get("contractName");
         } else {
         	contractName = Utils.getContractName();
