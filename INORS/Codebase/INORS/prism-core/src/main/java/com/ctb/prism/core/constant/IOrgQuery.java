@@ -116,7 +116,7 @@ public interface IOrgQuery {
                                         " AND U.USERID = ?)",
                   " ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME");*/
 	
-    public static final String SP_GET_ORG_HIER_ON_REDIRECT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_HIER_ON_REDIRECT(?, ?, ?, ?, ?, ?)}";
+    public static final String SP_GET_ORG_HIER_ON_REDIRECT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_HIER_ON_REDIRECT(?, ?, ?, ?, ?)}";
 	
 	
 

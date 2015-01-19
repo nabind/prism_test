@@ -111,7 +111,10 @@ public class AdminController {
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+		
 		try {
 			String adminYear = (String) request.getParameter("AdminYear");
 			if (currentOrg != null) {
@@ -373,7 +376,9 @@ public class AdminController {
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 
 		try {
 			logger.log(IAppLogger.INFO, "Enter: AdminController - manageUser");
@@ -396,14 +401,14 @@ public class AdminController {
 			
 			if (currentOrg != null) {
 				if(isTree)
-				{
-					paramMap.put("nodeid", currentOrg);
-					paramMap.put("currOrg", currentOrg);
-					paramMap.put("isFirstLoad", true);
-					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer);
-					paramMap.put("orgMode", orgMode);
-					OrgTreeTOs = adminService.getOrganizationTree(paramMap);
+				{	Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+					paramMapA.put("nodeid", currentOrg);
+					paramMapA.put("currOrg", currentOrg);
+					paramMapA.put("isFirstLoad", true);
+					paramMapA.put("adminYear", adminYear);
+					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("orgMode", orgMode);
+					OrgTreeTOs = adminService.getOrganizationTree(paramMapA);
 					/*OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");*/
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
@@ -415,9 +420,10 @@ public class AdminController {
 					logger.log(IAppLogger.DEBUG, orgJsonString);
 				}
 				else
-				{	paramMap.put("nodeid", currentOrg);
-					paramMap.put("customerId", currCustomer);
-					OrgTOs = adminService.getOrganizationDetailsOnFirstLoad(paramMap);
+				{	Map<String,Object> paramMapB = new HashMap<String,Object>(); 
+					paramMapB.put("nodeid", currentOrg);
+					paramMapB.put("customerId", currCustomer);
+					OrgTOs = adminService.getOrganizationDetailsOnFirstLoad(paramMapB);
 					modelAndView.addObject("organizationList", OrgTOs);
 					modelAndView.addObject("treeSturcture", "No");
 					modelAndView.addObject("orgName", OrgTOs.get(0).getTenantName());
@@ -526,7 +532,10 @@ public class AdminController {
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		Map<String,Object> paramUserMap = new HashMap<String,Object>(); ; 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+		
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		String moreCount = propertyLookup.get("count.results.button.more");
 		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
@@ -1396,7 +1405,10 @@ public class AdminController {
 			String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("loggedinUserTO", loggedinUserTO);
+			//paramMap.put("loggedinUserTO", loggedinUserTO);
+			paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+			paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+			
 			if (nodeId != null) {
 				modelAndView = new ModelAndView("admin/users");
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
@@ -1416,18 +1428,19 @@ public class AdminController {
 				
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree) {
-					paramMap.put("nodeid", currentOrg);
-					paramMap.put("currOrg", currentOrg);
-					paramMap.put("isFirstLoad", true);
-					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer);
-					paramMap.put("orgMode", orgMode);
-					orgTreeTOs = adminService.getOrganizationTree(paramMap);
+					Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+					paramMapA.put("nodeid", currentOrg);
+					paramMapA.put("currOrg", currentOrg);
+					paramMapA.put("isFirstLoad", true);
+					paramMapA.put("adminYear", adminYear);
+					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("orgMode", orgMode);
+					orgTreeTOs = adminService.getOrganizationTree(paramMapA);
 					/*orgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true, adminYear,currCustomer, "");*/
-					paramMap.put("nodeid", nodeId);
-					paramMap.put("userId", userId);
-					paramMap.put("isRedirected", true);
-					hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(paramMap);
+					paramMapA.put("nodeid", nodeId);
+					//paramMapA.put("userId", userId);
+					paramMapA.put("isRedirected", true);
+					hierarchialOrgIds =adminService.getOrganizationTreeOnRedirect(paramMapA);
 					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 					//modelAndView.addObject("organizationTreeList", orgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
@@ -1483,7 +1496,9 @@ public class AdminController {
 		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 
 		try {
 			logger.log(IAppLogger.INFO, "Enter: manageParent");
@@ -1507,13 +1522,14 @@ public class AdminController {
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree)
 				{	
-					paramMap.put("nodeid", currentOrg);
-					paramMap.put("currOrg", currentOrg);
-					paramMap.put("isFirstLoad", true);
-					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer);
-					paramMap.put("orgMode", orgMode);
-					OrgTreeTOs =adminService.getOrganizationTree(paramMap);
+					Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+					paramMapA.put("nodeid", currentOrg);
+					paramMapA.put("currOrg", currentOrg);
+					paramMapA.put("isFirstLoad", true);
+					paramMapA.put("adminYear", adminYear);
+					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("orgMode", orgMode);
+					OrgTreeTOs =adminService.getOrganizationTree(paramMapA);
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
 					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
@@ -1559,7 +1575,9 @@ public class AdminController {
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		
 		try {
 			logger.log(IAppLogger.INFO, "Enter: manageStudent");
@@ -1582,14 +1600,15 @@ public class AdminController {
 				
 				modelAndView.addObject("adminList", customerProductList);
 				if(isTree)
-				{
-					paramMap.put("nodeid", currentOrg);
-					paramMap.put("currOrg", currentOrg);
-					paramMap.put("isFirstLoad", true);
-					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer);
-					paramMap.put("orgMode", orgMode);
-					OrgTreeTOs =adminService.getOrganizationTree(paramMap);
+				{	
+					Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+					paramMapA.put("nodeid", currentOrg);
+					paramMapA.put("currOrg", currentOrg);
+					paramMapA.put("isFirstLoad", true);
+					paramMapA.put("adminYear", adminYear);
+					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("orgMode", orgMode);
+					OrgTreeTOs =adminService.getOrganizationTree(paramMapA);
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
 					modelAndView.addObject("treeSturcture", "Yes");
 					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
@@ -1643,7 +1662,10 @@ public class AdminController {
 			//Fix to implement cust_prod_id properly - By Joy
 			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
-			paramMap.put("loggedinUserTO", loggedinUserTO);
+			//paramMap.put("loggedinUserTO", loggedinUserTO);
+			paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+			paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+			
 			if(adminYear == null){
 				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				if(adminYear == null) {
@@ -2000,7 +2022,10 @@ public class AdminController {
 			// String userName=(String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("loggedinUserTO", loggedinUserTO);
+			//paramMap.put("loggedinUserTO", loggedinUserTO);
+			paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+			paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+			
 			if (request.getParameter("studentBioId") != null) {
 				if (nodeId != null) {
 					customerProductList = adminService.getCustomerProduct(paramMap);
@@ -2018,18 +2043,19 @@ public class AdminController {
 					}
 				}
 				modelAndView.addObject("adminList", customerProductList);
-				if (isTree) {
-					paramMap.put("nodeid", currentOrg);
-					paramMap.put("currOrg", currentOrg);
-					paramMap.put("isFirstLoad", true);
-					paramMap.put("adminYear", adminYear);
-					paramMap.put("customerId", currCustomer+"");
-					paramMap.put("orgMode", orgMode);
-					orgTreeTOs = adminService.getOrganizationTree(paramMap);
-					paramMap.put("nodeid", nodeId);
-					paramMap.put("userId", userId);
-					paramMap.put("isRedirected", true);
-					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(paramMap);
+				Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+				if (isTree) {					
+					paramMapA.put("nodeid", currentOrg);
+					paramMapA.put("currOrg", currentOrg);
+					paramMapA.put("isFirstLoad", true);
+					paramMapA.put("adminYear", adminYear);
+					paramMapA.put("customerId", currCustomer+"");
+					paramMapA.put("orgMode", orgMode);
+					orgTreeTOs = adminService.getOrganizationTree(paramMapA);
+					paramMapA.put("nodeid", nodeId);
+					//paramMapA.put("userId", userId);
+					paramMapA.put("isRedirected", true);
+					hierarchialOrgIds = adminService.getOrganizationTreeOnRedirect(paramMapA);
 					modelAndView.addObject("hierarchialOrgIds", hierarchialOrgIds);
 					logger.log(IAppLogger.DEBUG, "hierarchialOrgIds................" + hierarchialOrgIds);
 					// modelAndView.addObject("organizationTreeList", orgTreeTOs);
@@ -2047,7 +2073,7 @@ public class AdminController {
 				parameterMap.put("customer", currCustomer);
 				parameterMap.put("orgMode", orgMode);
 				parameterMap.put("adminYear", adminYear);
-				logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMap + ")");
+				logger.log(IAppLogger.INFO, "Invoking: parentService.searchStudentOnRedirect(" + paramMapA + ")");
 				studentTOs = parentService.searchStudentOnRedirect(parameterMap);
 				logger.log(IAppLogger.INFO, "LOADING STUDENT STUDENT PAGE ON CLICK..................");
 			}

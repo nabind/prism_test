@@ -565,14 +565,17 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "Enter: getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
-		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+	//	final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
+		final String loggedInOrgId = (String) paramMap.get("loggedInOrgId");
+		
 		try{
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_TEST_ADMINISTRATION + "}");
-				            cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));	
-				            cs.setString(2, loggedinUserTO.getOrgId());
+				            cs.setLong(1, loggedInCustomer);	
+				            cs.setString(2, loggedInOrgId);
 				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
 				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				            return cs;				      			            

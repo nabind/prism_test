@@ -378,13 +378,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTreeOnRedirect()");
 		final long selectedOrgId = Long.valueOf( paramMap.get("nodeid").toString());
 		final long parentOrgId = Long.valueOf( paramMap.get("currOrg").toString());
-		final long userId = Long.valueOf( paramMap.get("userId").toString());
+		//final long userId = Long.valueOf( paramMap.get("userId").toString());
 		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
 		final boolean isRedirected = (Boolean) paramMap.get("isRedirected");
 
 		logger.log(IAppLogger.INFO, "selectedOrgId=" + selectedOrgId);
 		logger.log(IAppLogger.INFO, "parentOrgId=" + parentOrgId);
-		logger.log(IAppLogger.INFO, "userId=" + userId);
+		//logger.log(IAppLogger.INFO, "userId=" + userId);
 		logger.log(IAppLogger.INFO, "customerId=" + customerId);
 		logger.log(IAppLogger.INFO, "isRedirected=" + isRedirected);
 		
@@ -395,9 +395,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					cs.setLong(1, customerId);
 					cs.setLong(2, selectedOrgId);
 					cs.setLong(3, parentOrgId);
-					cs.setLong(4, userId);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.setLong(4, userId);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -407,10 +407,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					String cummsSeperatedId = "";
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(5);
-						Utils.logError(cs.getString(6));
-						if(cs.getString(6) != null && cs.getString(6).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(6));
+						rs = (ResultSet) cs.getObject(4);
+						Utils.logError(cs.getString(5));
+						if(cs.getString(5) != null && cs.getString(5).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
 						}
 						while(rs.next()){
 							long hierarcialOrgId = rs.getLong("ORG_ID");
