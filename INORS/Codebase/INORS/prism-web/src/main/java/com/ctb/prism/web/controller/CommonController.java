@@ -544,7 +544,8 @@ public class CommonController extends BaseDAO {
 		String theme = themeResolver.resolveThemeName(req);
 		
 		try {
-			reportService.removeCache();
+			//reportService.removeCache();
+			reportService.removeCacheSimpleDB(theme);
 			//reportService.removeCache(Utils.getContractNameNoLogin(theme));
 			logger.log(IAppLogger.INFO, "All Cache cleared ....");
 			
