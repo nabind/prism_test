@@ -6,4 +6,5 @@
 @\Operation_Schema\InsertScript\EDU_USER_ROLE_UPDATE.sql;
 @\Operation_Schema\InsertScript\DASH_MENU_RPT_ACCESS_update.sql;
 @\Operation_Schema\TASC_Specific\Functions\master_tasc_specific_functions.sql;
+@\Operation_Schema\TASC_Specific\Packages\master_tasc_specific_package.sql
 @\Operation_Schema\AlterScript\job_tracking_alter.sql;
