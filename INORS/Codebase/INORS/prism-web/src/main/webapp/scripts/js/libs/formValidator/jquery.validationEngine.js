@@ -643,12 +643,20 @@
 				case "file":
 				default:
 					var fieldName = field.attr("name");
-					if (! $.trim(field.val()) || field.val() == field.attr("data-validation-placeholder"))
-						if(fieldName == "p_Last_Name" || fieldName == "p_First_Name"){
-							return "* This field is required if Examinee ID # is blank";
-						} else {
+					
+					//Mofify for TD - 81540 
+					if (! $.trim(field.val()) || field.val() == field.attr("data-validation-placeholder")){
+						if(fieldName == "p_StudentId" || fieldName == "p_Last_Name" || fieldName == "p_First_Name"){
+							var lastName = (typeof $("input[name='p_Last_Name']").val() !== 'undefined') ? $("input[name='p_Last_Name']").val() : "";
+							var firstName = (typeof $("input[name='p_First_Name']").val() !== 'undefined') ? $("input[name='p_First_Name']").val() : "";
+							var examineeId = (typeof $("input[name='p_StudentId']").val() !== 'undefined') ? $("input[name='p_StudentId']").val() : "";
+							if((lastName == "" || firstName =="") && examineeId == ""){
+								return "* This field is required if Examinee ID # is blank";
+							}
+						}else{
 							return options.allrules[rules[i]].alertText;
 						}
+					}
 					break;
 				case "radio":
 				case "checkbox":

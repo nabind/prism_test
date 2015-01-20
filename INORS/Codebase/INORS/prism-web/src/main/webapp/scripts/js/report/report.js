@@ -604,19 +604,17 @@ function setValidationInputControls(tabCount) {
 	var p_Last_Name1 = $("input[name='p_Last_Name']").val();
 	var p_First_Name1 = $("input[name='p_First_Name']").val();
 	var p_StudentId1 = $("input[name='p_StudentId']").val();
-	if (p_Last_Name1.length > 0 || p_First_Name1.length > 0) { // lastname or firstname entered
+	
+	//Mofify for TD - 81540 
+	if (p_StudentId1.length > 0) {
+		$("input[name='p_StudentId']").addClass("validate[custom[nineDigitNumber]]");
+	}else if (p_Last_Name1.length > 0 || p_First_Name1.length > 0) {
 		$("input[name='p_Last_Name']").addClass("validate[required, minSize[2]]");
 		$("input[name='p_First_Name']").addClass("validate[required, minSize[2]]");
-		if (p_StudentId1.length > 0) { // p_StudentId1 is entered
-			$("input[name='p_StudentId']").addClass("validate[custom[onlyNumber],maxSize[9],minSize[4]]");
-		} else { // p_StudentId1 is blank
-			// ok
-		}
-	} else if (p_StudentId1.length > 0) { // lastname and firstname are blank but p_StudentId1 entered
-		$("input[name='p_StudentId']").addClass("validate[custom[nineDigitNumber]]");
 	} else { // All 3 are blank
 		setDefaultValidationsToStudentsSearch();
 	}
+
 }
 
 function setDefaultValidationsToStudentsSearch() {
