@@ -198,7 +198,22 @@ public class ReportServiceImpl implements IReportService {
 	 */
 	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
 			Map<String, Object> sessionParams, String userId, String currentOrg) {
-		return reportBusiness.getDefaultFilter(tos, userName, customerId, assessmentId, combAssessmentId, reportUrl, sessionParams, userId, currentOrg);
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("contractName", Utils.getContractName());
+		paramMap.put("tos", tos);
+		paramMap.put("userName", userName);
+		paramMap.put("customerId", customerId);
+		paramMap.put("assessmentId", assessmentId);
+		paramMap.put("combAssessmentId", combAssessmentId);
+		paramMap.put("reportUrl", reportUrl);
+		paramMap.put("sessionParams", sessionParams);
+		paramMap.put("userId", userId);
+		paramMap.put("currentOrg", currentOrg);
+		
+		//return reportBusiness.getDefaultFilter(tos,userName,customerId,assessmentId,combAssessmentId,reportUrl,sessionParams,userId,currentOrg);
+		return reportBusiness.getDefaultFilter(paramMap);
+		
 	}
 	
 	/*

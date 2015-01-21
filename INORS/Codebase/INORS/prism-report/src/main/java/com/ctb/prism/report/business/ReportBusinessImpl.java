@@ -243,13 +243,27 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @param userId
 	 */
 	
-	@Caching( cacheable = {
+  @Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter') )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter') )")
 	} )
-	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, 
-			String reportUrl, Map<String, Object> sessionParams, String userId, String tenantId) {
-		logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
+	
+  public Object getDefaultFilter(Map<String, Object> paramMap) {
+		
+	logger.log(IAppLogger.INFO, "Enter: ReportBusinessImpl - getDefaultFilter");
+		
+		@SuppressWarnings("unchecked")
+		List<InputControlTO> tos = (List<InputControlTO>)paramMap.get("tos");
+		String userName = (String) paramMap.get("userName");
+		String customerId = (String)paramMap.get("customerId");	
+		String assessmentId = (String) paramMap.get("assessmentId");
+		String combAssessmentId = (String) paramMap.get("combAssessmentId");	
+		String reportUrl = (String) paramMap.get("reportUrl");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> sessionParams = (Map<String, Object>) paramMap.get("sessionParams");
+		String userId = (String) paramMap.get("userId");
+		String tenantId = (String)paramMap.get("tenantId");
+			
 		Class<?> clazz = null;
 		Object obj = null;
 		//String tenantId = null;
