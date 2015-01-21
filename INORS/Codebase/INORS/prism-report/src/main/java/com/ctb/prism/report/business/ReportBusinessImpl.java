@@ -262,7 +262,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> sessionParams = (Map<String, Object>) paramMap.get("sessionParams");
 		String userId = (String) paramMap.get("userId");
-		String tenantId = (String)paramMap.get("tenantId");
+		String tenantId = (String)paramMap.get("currentOrg");
 			
 		Class<?> clazz = null;
 		Object obj = null;
