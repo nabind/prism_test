@@ -23,6 +23,40 @@ public class StudentDetailsTO implements Serializable {
 	private String erExcdId = "";
 	private String testCenterCode = "";
 	private String testCenterName = "";
+	private String ctbCustomerId = "";
+	private String stateName = "";
+	private String dob = "";
+	private String gender = "";
+	private String govermentId = "";
+	private String govermentIdType = "";
+	private String address = "";
+	private String city = "";
+	private String county = "";
+	private String state = "";
+	private String zip = "";
+	private String email = "";
+	private String alternateEmail = "";
+	private String primaryPhoneNumber = "";
+	private String cellPhoneNumber = "";
+	private String alternatePhoneNumber = "";
+	private String resolvedEthnicityRace = "";
+	private String homeLanguage = "";
+	private String educationLevel = "";
+	private String attendCollege = "";
+	private String contact = "";
+	private String examineeCountyParishCode = "";
+	private String registeredOn = "";
+	private String registeredTestCenter = "";
+	private String registeredTestCenterCode = "";
+	private String scheduleId = "";
+	private String timeOfDay = "";
+	private String checkedInDate = "";
+	private String contentTestType = "";
+	private String contentTestCode = "";
+	private String tascRadiness = "";
+	private String ecc = "";
+	private String regstTcCountyParishCode = "";
+	private String schedTcCountyParishCode = "";
 	
 	public String getProcessId() {
 		return processId;
@@ -132,6 +166,210 @@ public class StudentDetailsTO implements Serializable {
 	public void setTestCenterName(String testCenterName) {
 		this.testCenterName = testCenterName;
 	}
+	public String getCtbCustomerId() {
+		return ctbCustomerId;
+	}
+	public void setCtbCustomerId(String ctbCustomerId) {
+		this.ctbCustomerId = ctbCustomerId;
+	}
+	public String getStateName() {
+		return stateName;
+	}
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+	public String getDob() {
+		return dob;
+	}
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getGovermentId() {
+		return govermentId;
+	}
+	public void setGovermentId(String govermentId) {
+		this.govermentId = govermentId;
+	}
+	public String getGovermentIdType() {
+		return govermentIdType;
+	}
+	public void setGovermentIdType(String govermentIdType) {
+		this.govermentIdType = govermentIdType;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCounty() {
+		return county;
+	}
+	public void setCounty(String county) {
+		this.county = county;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getZip() {
+		return zip;
+	}
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getAlternateEmail() {
+		return alternateEmail;
+	}
+	public void setAlternateEmail(String alternateEmail) {
+		this.alternateEmail = alternateEmail;
+	}
+	public String getPrimaryPhoneNumber() {
+		return primaryPhoneNumber;
+	}
+	public void setPrimaryPhoneNumber(String primaryPhoneNumber) {
+		this.primaryPhoneNumber = primaryPhoneNumber;
+	}
+	public String getCellPhoneNumber() {
+		return cellPhoneNumber;
+	}
+	public void setCellPhoneNumber(String cellPhoneNumber) {
+		this.cellPhoneNumber = cellPhoneNumber;
+	}
+	public String getAlternatePhoneNumber() {
+		return alternatePhoneNumber;
+	}
+	public void setAlternatePhoneNumber(String alternatePhoneNumber) {
+		this.alternatePhoneNumber = alternatePhoneNumber;
+	}
+	public String getResolvedEthnicityRace() {
+		return resolvedEthnicityRace;
+	}
+	public void setResolvedEthnicityRace(String resolvedEthnicityRace) {
+		this.resolvedEthnicityRace = resolvedEthnicityRace;
+	}
+	public String getHomeLanguage() {
+		return homeLanguage;
+	}
+	public void setHomeLanguage(String homeLanguage) {
+		this.homeLanguage = homeLanguage;
+	}
+	public String getEducationLevel() {
+		return educationLevel;
+	}
+	public void setEducationLevel(String educationLevel) {
+		this.educationLevel = educationLevel;
+	}
+	public String getAttendCollege() {
+		return attendCollege;
+	}
+	public void setAttendCollege(String attendCollege) {
+		this.attendCollege = attendCollege;
+	}
+	public String getContact() {
+		return contact;
+	}
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+	public String getExamineeCountyParishCode() {
+		return examineeCountyParishCode;
+	}
+	public void setExamineeCountyParishCode(String examineeCountyParishCode) {
+		this.examineeCountyParishCode = examineeCountyParishCode;
+	}
+	public String getRegisteredOn() {
+		return registeredOn;
+	}
+	public void setRegisteredOn(String registeredOn) {
+		this.registeredOn = registeredOn;
+	}
+	public String getRegisteredTestCenter() {
+		return registeredTestCenter;
+	}
+	public void setRegisteredTestCenter(String registeredTestCenter) {
+		this.registeredTestCenter = registeredTestCenter;
+	}
+	public String getRegisteredTestCenterCode() {
+		return registeredTestCenterCode;
+	}
+	public void setRegisteredTestCenterCode(String registeredTestCenterCode) {
+		this.registeredTestCenterCode = registeredTestCenterCode;
+	}
+	public String getScheduleId() {
+		return scheduleId;
+	}
+	public void setScheduleId(String scheduleId) {
+		this.scheduleId = scheduleId;
+	}
+	public String getTimeOfDay() {
+		return timeOfDay;
+	}
+	public void setTimeOfDay(String timeOfDay) {
+		this.timeOfDay = timeOfDay;
+	}
+	public String getCheckedInDate() {
+		return checkedInDate;
+	}
+	public void setCheckedInDate(String checkedInDate) {
+		this.checkedInDate = checkedInDate;
+	}
+	public String getContentTestType() {
+		return contentTestType;
+	}
+	public void setContentTestType(String contentTestType) {
+		this.contentTestType = contentTestType;
+	}
+	public String getContentTestCode() {
+		return contentTestCode;
+	}
+	public void setContentTestCode(String contentTestCode) {
+		this.contentTestCode = contentTestCode;
+	}
+	public String getTascRadiness() {
+		return tascRadiness;
+	}
+	public void setTascRadiness(String tascRadiness) {
+		this.tascRadiness = tascRadiness;
+	}
+	public String getEcc() {
+		return ecc;
+	}
+	public void setEcc(String ecc) {
+		this.ecc = ecc;
+	}
+	public String getRegstTcCountyParishCode() {
+		return regstTcCountyParishCode;
+	}
+	public void setRegstTcCountyParishCode(String regstTcCountyParishCode) {
+		this.regstTcCountyParishCode = regstTcCountyParishCode;
+	}
+	public String getSchedTcCountyParishCode() {
+		return schedTcCountyParishCode;
+	}
+	public void setSchedTcCountyParishCode(String schedTcCountyParishCode) {
+		this.schedTcCountyParishCode = schedTcCountyParishCode;
+	}
 	
 	@Override
 	public String toString() {
@@ -147,7 +385,6 @@ public class StudentDetailsTO implements Serializable {
 		.append(",").append("\"").append(testElementId).append("\"")
 		.append(",").append("\"").append(processId).append("\"")
 		.append(",").append("\"").append(exceptionCode).append("\"");
-		
 		if("CO".equals(overallStatus)) {
 			buffer.append(",").append("\"").append("Completed").append("\"");
 		}else if("ER".equals(overallStatus) || "IN".equals(overallStatus)) {
@@ -155,7 +392,6 @@ public class StudentDetailsTO implements Serializable {
 		} else{
 			buffer.append(",").append("\"").append("In Progress").append("\"");
 		}
-		
 		buffer.append(",").append("\"").append(barcode).append("\"")
 		.append(",").append("\"").append(dateScheduled).append("\"")
 		.append(",").append("\"").append(stateCode).append("\"")
@@ -163,6 +399,42 @@ public class StudentDetailsTO implements Serializable {
 		.append(",").append("\"").append(subtestName).append("\"")
 		.append(",").append("\"").append(testCenterCode).append("\"")
 		.append(",").append("\"").append(testCenterName).append("\"");
+		if("ERESOURCE".equals(sourceSystem)){
+			buffer.append(",").append("\"").append(ctbCustomerId).append("\"")
+			.append(",").append("\"").append(stateName).append("\"")
+			.append(",").append("\"").append(dob).append("\"")
+			.append(",").append("\"").append(gender).append("\"")
+			.append(",").append("\"").append(govermentId).append("\"")
+			.append(",").append("\"").append(govermentIdType).append("\"")
+			.append(",").append("\"").append(address).append("\"")
+			.append(",").append("\"").append(city).append("\"")
+			.append(",").append("\"").append(county).append("\"")
+			.append(",").append("\"").append(state).append("\"")
+			.append(",").append("\"").append(zip).append("\"")
+			.append(",").append("\"").append(email).append("\"")
+			.append(",").append("\"").append(alternateEmail).append("\"")
+			.append(",").append("\"").append(primaryPhoneNumber).append("\"")
+			.append(",").append("\"").append(cellPhoneNumber).append("\"")
+			.append(",").append("\"").append(alternatePhoneNumber).append("\"")
+			.append(",").append("\"").append(resolvedEthnicityRace).append("\"")
+			.append(",").append("\"").append(homeLanguage).append("\"")
+			.append(",").append("\"").append(educationLevel).append("\"")
+			.append(",").append("\"").append(attendCollege).append("\"")
+			.append(",").append("\"").append(contact).append("\"")
+			.append(",").append("\"").append(examineeCountyParishCode).append("\"")
+			.append(",").append("\"").append(registeredOn).append("\"")
+			.append(",").append("\"").append(registeredTestCenter).append("\"")
+			.append(",").append("\"").append(registeredTestCenterCode).append("\"")
+			.append(",").append("\"").append(scheduleId).append("\"")
+			.append(",").append("\"").append(timeOfDay).append("\"")
+			.append(",").append("\"").append(checkedInDate).append("\"")
+			.append(",").append("\"").append(contentTestType).append("\"")
+			.append(",").append("\"").append(contentTestCode).append("\"")
+			.append(",").append("\"").append(tascRadiness).append("\"")
+			.append(",").append("\"").append(ecc).append("\"")
+			.append(",").append("\"").append(regstTcCountyParishCode).append("\"")
+			.append(",").append("\"").append(schedTcCountyParishCode).append("\"");
+		}
 		
 		return buffer.toString();
 	}

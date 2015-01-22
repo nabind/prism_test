@@ -462,10 +462,43 @@ public class TascController {
 			.append(",").append("Test Center Name");
 			
 			if("ERESOURCE".equals(process.getSourceSystem())){
-				
-			}else{
-				buffer.append("\n");
+				buffer.append(",").append("CTB Customer ID")
+				.append(",").append("State Name")
+				.append(",").append("DOB")
+				.append(",").append("Gender")
+				.append(",").append("Government ID")
+				.append(",").append("Government ID Type")
+				.append(",").append("Address")
+				.append(",").append("City")
+				.append(",").append("County")
+				.append(",").append("State")
+				.append(",").append("Zip")
+				.append(",").append("Email")
+				.append(",").append("Alternate Email")
+				.append(",").append("Primary Phone Number")
+				.append(",").append("Cell Phone Number")
+				.append(",").append("Alternate Phone Number")
+				.append(",").append("Resolved Ethnicity Race")
+				.append(",").append("Home Language")
+				.append(",").append("Education Level")
+				.append(",").append("Attend College")
+				.append(",").append("Contact")
+				.append(",").append("Examinee County Parish Code")
+				.append(",").append("Registered On")
+				.append(",").append("Registered Test Center")
+				.append(",").append("Registered Test Center Code")
+				.append(",").append("Schedule ID")
+				.append(",").append("Time of Day")
+				.append(",").append("Checked in Date")
+				.append(",").append("Content Test Type")
+				.append(",").append("Content Test Code")
+				.append(",").append("TASC Radiness")
+				.append(",").append("ECC")
+				.append(",").append("Regst TC County Parish Code")
+				.append(",").append("Sched TC County Parish Code");
 			}
+			buffer.append("\n");
+			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
 			buffer.append(data);
 			System.out.println("buffer: "+buffer);
