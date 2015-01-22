@@ -56,7 +56,9 @@ public class ManageMessageController {
 		String reportUrl = request.getParameter("reportUrl");
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
 		paramMap.put("reportId", reportId);
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		try{
 			if(reportId != 0){
 				serviceMapReportMessageFilter = reportService.getReportMessageFilter(paramMap);

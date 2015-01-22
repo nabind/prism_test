@@ -1732,7 +1732,9 @@ public class ReportController{
 		logger.log(IAppLogger.INFO, "Enter: ReportController - openReportList");
 		UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 
 		ModelAndView modelAndView = new ModelAndView("report/manageReports");
 		List<ReportTO> reportList = reportService.getAllReportList(paramMap);
@@ -2004,7 +2006,10 @@ public class ReportController{
 		String reportId = request.getParameter("reportId");
 		final UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		final Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		paramMap.put("reportId", reportId);
 		try {
 			isDeleted = reportService.deleteReport(paramMap);
@@ -2083,7 +2088,9 @@ public class ReportController{
 			String reportId = (String) req.getParameter("reportId");
 			UserTO loggedinUserTO = (UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("loggedinUserTO", loggedinUserTO);
+			//paramMap.put("loggedinUserTO", loggedinUserTO);
+			paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+			paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 			paramMap.put("reportId", reportId);
 			paramMap.put("editReport", "editReport");
 			ModelAndView modelAndView = new ModelAndView("report/manageReports");

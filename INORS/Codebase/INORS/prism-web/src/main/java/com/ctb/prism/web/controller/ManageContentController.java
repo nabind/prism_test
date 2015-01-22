@@ -59,7 +59,9 @@ public class ManageContentController {
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
-		paramMap.put("loggedinUserTO", loggedinUserTO);
+		//paramMap.put("loggedinUserTO", loggedinUserTO);
+		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		try{
 			if(loggedinUserTO != null){
 				serviceMapManageContentFilter = parentService.getManageContentFilter(paramMap);

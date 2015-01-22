@@ -565,16 +565,16 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "Enter: getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
-		final long loggedInCustomer;
-		final String loggedInOrgId;
-		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-		if(paramMap.get("loggedInCustomer") != null) {
-			loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
-			loggedInOrgId = (String) paramMap.get("loggedInOrgId");
-		} else {
+		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
+		final String loggedInOrgId = (String) paramMap.get("loggedInOrgId");
+	//	final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+	//	if(paramMap.get("loggedInCustomer") != null) {
+	//	loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
+	//	loggedInOrgId = (String) paramMap.get("loggedInOrgId");
+		/*} else {
 			loggedInCustomer = Long.valueOf(loggedinUserTO.getCustomerId());
 			loggedInOrgId = loggedinUserTO.getOrgId();
-		}
+		}*/
 		
 		try{
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(

@@ -479,14 +479,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - getAllReportList()");
 		long t1 = System.currentTimeMillis();
 		
-		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		//final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
+		
 		List<ReportTO> reports = null;
 		try {
 			reports = (List<ReportTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = null;
 						cs = con.prepareCall("{call " + IQueryConstants.GET_DASHBOARD_DETAILS + "}");
-						cs.setLong(1, Long.parseLong(loggedinUserTO.getCustomerId()));
+						cs.setLong(1, loggedInCustomer);
 						if (IApplicationConstants.PURPOSE_EDIT_REPORT.equals((String)paramMap.get("editReport"))) {
 							cs.setLong(2, Long.parseLong((String)paramMap.get("reportId")));
 						}else{
@@ -681,7 +683,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public boolean deleteReport(final Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - deleteReport");
 		long t1 = System.currentTimeMillis();
-		final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		//final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
+		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
 		boolean status = false;
 		
 		try {
@@ -690,7 +693,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						CallableStatement cs = null;
 						cs = con.prepareCall("{call " + IQueryConstants.DELETE_REPORT + "}");
 						cs.setLong(1, Long.parseLong((String)paramMap.get("reportId")));
-						cs.setLong(2, Long.parseLong(loggedinUserTO.getCustomerId()));
+						cs.setLong(2, loggedInCustomer);
 						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
 						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;

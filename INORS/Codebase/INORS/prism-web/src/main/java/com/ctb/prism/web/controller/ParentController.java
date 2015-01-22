@@ -505,7 +505,9 @@ public class ParentController {
 				com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) 
 						req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 				Map<String,Object> paramMap = new HashMap<String,Object>(); 
-				paramMap.put("loggedinUserTO", loggedinUserTO);
+				//paramMap.put("loggedinUserTO", loggedinUserTO);
+				paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+				paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());				
 				
 				adminYear = (String) req.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				if(adminYear == null) {
