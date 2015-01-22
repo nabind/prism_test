@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,6 +19,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
 import com.vaannila.TO.SearchProcess;
+import com.vaannila.TO.StudentDetailsTO;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.Utils;
 
@@ -263,11 +265,11 @@ public class TascController {
 		return null;
 	}
 	
-	public void convertProcessToJson(List<TASCProcessTO> processes) {
+	private <T> void convertProcessToJson(List<T> processes) {
 		XStream xstream = new XStream(new JettisonMappedXmlDriver());
         xstream.setMode(XStream.NO_REFERENCES);
-        xstream.alias("product", TASCProcessTO.class);
-		for(Iterator<TASCProcessTO> itr = processes.iterator(); itr.hasNext();) {
+        //xstream.alias("product", T.class);
+		for(Iterator<T> itr = processes.iterator(); itr.hasNext();) {
 			jsonStr = xstream.toXML(itr.next());
 		}
 	}
@@ -326,10 +328,10 @@ public class TascController {
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> processesEr = stageDao.getProcessEr(process);
+			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessEr(process);
 			
-			request.getSession().setAttribute("tascProcessEr", processesEr);
-			convertProcessToJson(processesEr);
+			request.getSession().setAttribute("studentDetailsTOList", studentDetailsTOList);
+			convertProcessToJson(studentDetailsTOList);
 			
 		} catch (Exception e) {
 			request.getSession().removeAttribute("tascProcessEr");
@@ -376,6 +378,36 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("/process/getMoreInfo.htm")
+	public @ResponseBody String getMoreInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: getMoreInfo()");
+		String erExcdId = request.getParameter("erExcdId");
+		System.out.println("erExcdId=" + erExcdId);
+		try {
+			TascDAOImpl stageDao = new TascDAOImpl();
+			Map<String, String> moreInfoMap = stageDao.getMoreInfo(erExcdId);
+			System.out.println("Map = " + moreInfoMap);
+			String moreInfoJson = Utils.mapToJson(moreInfoMap);
+			System.out.println("Json = " + moreInfoJson);
+			response.setContentType("text/plain");
+			response.getWriter().write(moreInfoJson);
+		} catch (Exception e) {
+			System.out.println("Failed to get More Info, erExcdId=" + erExcdId);
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
+			e.printStackTrace();
+		}
+		System.out.println("Exit: getMoreInfo()");
+		return null;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/process/getErrorLog.htm")
 	public @ResponseBody String getErrorLog(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -392,5 +424,55 @@ public class TascController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/process/downloadCsv.htm")
+	public void downloadCsv(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String fileName = "data.csv";
+		String contentType = "application/octet-stream";
+		SearchProcess process = new SearchProcess();
+		List<StudentDetailsTO> studentDetailsTOList = null;
+		try {
+			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
+			studentDetailsTOList = (List<StudentDetailsTO>)request.getSession().getAttribute("studentDetailsTOList");
+			
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("Record Id")
+			.append(",").append("Student Name")
+			.append(",").append("UUID")
+			.append(",").append("Test Element Id")
+			.append(",").append("Process Id")
+			.append(",").append("Ex. Code")
+			.append(",").append("Status")
+			.append(",").append("Bar Code")
+			.append(",").append("Scheduled Date")
+			.append(",").append("State Code")
+			.append(",").append("Form")
+			.append(",").append("Subtest")
+			.append(",").append("Test Center Code")
+			.append(",").append("Test Center Name");
+			
+			if("ERESOURCE".equals(process.getSourceSystem())){
+				
+			}else{
+				buffer.append("\n");
+			}
+			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
+			buffer.append(data);
+			System.out.println("buffer: "+buffer);
+			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
+		} catch (Exception e) {
+			System.out.println("Failed to download the file");
+			e.printStackTrace();
+		}
 	}
 }

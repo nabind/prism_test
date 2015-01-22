@@ -1,4 +1,4 @@
-<%@page import="com.vaannila.TO.TASCProcessTO"%>
+<%@page import="com.vaannila.TO.StudentDetailsTO"%>
 <%@page import="com.vaannila.TO.SearchProcess"%>
 <%@page import="javax.servlet.http.HttpServletRequest" %>
 <%@page import="com.vaannila.TO.OrgProcess" %>
@@ -50,182 +50,226 @@
 		border-radius: 5px;
 	}
 </style>
-<script src="css/jquery.validate.js"></script>
-	
-	<script type="text/javascript" charset="utf-8">
-	
-
-	
-	function update_rows()
-	{
+<script src="css/jquery.validate.js"></script>	
+<script type="text/javascript" charset="utf-8">
+	function update_rows(){
 	    $(".process_details tr:even").css("background-color", "#fff");
 	    $(".process_details tr:odd").css("background-color", "#eee");
 	}
 	
-		$(document).ready(function() {
-			 update_rows();
-			 
-			oTable = $('#process').dataTable({
-				"bJQueryUI": true,
-				"sPaginationType": "full_numbers",
-				"aaSorting": [[ 1, "desc" ]],
-				"aoColumnDefs": [ 
-								  { "bVisible": false, "aTargets": [ 0 ] },
-								  { 'bSortable': false, 'aTargets': [ 1 ] }
-								]
-			});
-			
-			$("#stuHistDialog").dialog({
-				bgiframe: true, 
-				autoOpen: false, 
-				modal: true, 
-				height: 400, 
-				minWidth: 450, 
-				closeOnEscape: true, 
-				resizable: true
-			});
-			
-			$("#errorLogDialog").dialog({
-				bgiframe: true, 
-				autoOpen: false, 
-				modal: true, 
-				height: 500, 
-				minWidth: 450, 
-				closeOnEscape: true, 
-				resizable: true
-			});
-			
-			
-			
+	$(document).ready(function() {
+		 update_rows();
+		 
+		oTable = $('#process').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "full_numbers",
+			"aaSorting": [[ 1, "desc" ]],
+			"aoColumnDefs": [ 
+							  { "bVisible": false, "aTargets": [ 0 ] },
+							  { 'bSortable': false, 'aTargets': [ 1 ] }
+							]
 		});
 		
-		function clearStudentDetailsTableRows() {
-			$("#ctbCustomerId").html('');
-    	  	$("#stateName").html('');
-	    	  $("#dob").html('');
-	    	  $("#gender").html('');
-	    	  $("#govermentId").html('');
-	    	  $("#govermentIdType").html('');
-	    	  $("#address").html('');
-	    	  $("#city").html('');
-	    	  $("#county").html('');
-	    	  $("#state").html('');
-	    	  $("#zip").html('');
-	    	  $("#email").html('');
-	    	  $("#alternateEmail").html('');
-	    	  $("#primaryPhoneNumber").html('');
-	    	  $("#cellPhoneNumber").html('');
-	    	  $("#alternatePhoneNumber").html('');
-	    	  $("#resolvedEthnicityRace").html('');
-	    	  $("#homeLanguage").html('');
-	    	  $("#educationLevel").html('');
-	    	  $("#attendCollege").html('');
-	    	  $("#contact").html('');
-	    	  $("#examineeCountyParishCode").html('');
-	    	  $("#registeredOn").html('');
-	    	  $("#registeredTestCenter").html('');
-	    	  $("#registeredTestCenterCode").html('');
-	    	  $("#scheduleId").html('');
-	    	  $("#timeOfDay").html('');
-	    	  $("#checkedInDate").html('');
-	    	  $("#contentTestType").html( '');
-	    	  $("#contentTestCode").html('');
-	    	  $("#tascRadiness").html('');
-	    	  $("#ecc").html('');
-	    	  $("#testCenterCode").html('');
-	    	  $("#testCenterName").html('');
-	    	  $("#regstTcCountyParishCode").html('');
-	    	  $("#schedTcCountyParishCode").html('');
-		}
+		$("#stuHistDialog").dialog({
+			bgiframe: true, 
+			autoOpen: false, 
+			modal: true, 
+			height: 400, 
+			minWidth: 450, 
+			closeOnEscape: true, 
+			resizable: true
+		});
 		
-		function clearStudentDetailsTableWhenError(errMsg) {
-			$("#stuHist").html( '<span style="color: red;">'+errMsg+'</span>' );
-			clearStudentDetailsTableRows();
-		}
+		$("#moreInfoDialog").dialog({
+			bgiframe: true, 
+			autoOpen: false, 
+			modal: true, 
+			height: 130, 
+			minWidth: 450, 
+			closeOnEscape: true, 
+			resizable: true
+		});
 		
-		function getStudentHist(erSsHistId) {
-			clearStudentDetailsTableRows();
-			var dataString = "erSsHistId="+erSsHistId;
-			$("#stuHist").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-stuHistDialog").html('Student Details for Record Id : '+erSsHistId);
-			jQuery("#stuHistDialog").dialog("open");
-			$.ajax({
-			      type: "POST",
-			      url: "getStudentHist.htm",
-			      data: dataString,
-			      success: function(data) {
-			    	  if(data == "Error") {
-			    		  clearStudentDetailsTableWhenError('Failed to get Student History');
-			    	  } else if(data.length == 2) {
-			    		  clearStudentDetailsTableWhenError('Student History Not Found');
-				      } else {
-			    		  $("#stuHist").html('');
-				    	  var obj = JSON.parse(data);
-				    	  $("#ctbCustomerId").html( obj.CTB_CUSTOMER_ID );
-				    	  $("#stateName").html( obj.STATENAME );
-				    	  $("#dob").html( obj.DATEOFBIRTH );
-				    	  $("#gender").html( obj.GENDER );
-				    	  $("#govermentId").html( obj.GOVERNMENTID );
-				    	  $("#govermentIdType").html( obj.GOVERNMENTIDTYPE );
-				    	  $("#address").html( obj.ADDRESS1 );
-				    	  $("#city").html( obj.CITY );
-				    	  $("#county").html( obj.COUNTY );
-				    	  $("#state").html( obj.STATE );
-				    	  $("#zip").html( obj.ZIP );
-				    	  $("#email").html( obj.EMAIL );
-				    	  $("#alternateEmail").html( obj.ALTERNATEEMAIL );
-				    	  $("#primaryPhoneNumber").html( obj.PRIMARYPHONENUMBER );
-				    	  $("#cellPhoneNumber").html( obj.CELLPHONENUMBER );
-				    	  $("#alternatePhoneNumber").html( obj.ALTERNATENUMBER );
-				    	  $("#resolvedEthnicityRace").html( obj.RESOLVED_ETHNICITY_RACE );
-				    	  $("#homeLanguage").html( obj.HOMELANGUAGE );
-				    	  $("#educationLevel").html( obj.EDUCATIONLEVEL );
-				    	  $("#attendCollege").html( obj.ATTENDCOLLEGE );
-				    	  $("#contact").html( obj.CONTACT );
-				    	  $("#examineeCountyParishCode").html( obj.EXAMINEECOUNTYPARISHCODE );
-				    	  $("#registeredOn").html( obj.REGISTEREDON );
-				    	  $("#registeredTestCenter").html( obj.REGISTEREDATTESTCENTER );
-				    	  $("#registeredTestCenterCode").html( obj.REGISTEREDATTESTCENTERCODE );
-				    	  $("#scheduleId").html( obj.SCHEDULE_ID );
-				    	  $("#timeOfDay").html( obj.TIMEOFDAY );
-				    	  $("#checkedInDate").html( obj.DATECHECKEDIN );
-				    	  $("#contentTestType").html( obj.CONTENT_TEST_TYPE );
-				    	  $("#contentTestCode").html( obj.CONTENT_TEST_CODE );
-				    	  $("#tascRadiness").html( obj.TASCREADINESS );
-				    	  $("#ecc").html( obj.ECC );
-				    	  $("#testCenterCode").html( obj.TESTCENTERCODE );
-				    	  $("#testCenterName").html( obj.TESTCENTERNAME );
-				    	  $("#regstTcCountyParishCode").html( obj.REGST_TC_COUNTYPARISHCODE );
-				    	  $("#schedTcCountyParishCode").html( obj.SCHED_TC_COUNTYPARISHCODE );
-			    	  }
-			      },
-				  error: function(data) {
-					  clearStudentDetailsTableWhenError('Failed to get Student History');
-				  }
-		    });
-		    return false;
-		}
+		$("#errorLogDialog").dialog({
+			bgiframe: true, 
+			autoOpen: false, 
+			modal: true, 
+			height: 500, 
+			minWidth: 450, 
+			closeOnEscape: true, 
+			resizable: true
+		});
 		
-		function getErrorLog(erExcdId) {
-			var dataString = "erExcdId="+erExcdId;
-			$("#errorLog").html( '<img src="css/ajax-loader.gif"></img>' );
-			jQuery("#errorLogDialog").dialog("open");
-			$("#ui-dialog-title-errorLogDialog").html('Error Log');
-			$.ajax({
-			      type: "POST",
-			      url: "getErrorLog.htm",
-			      data: dataString,
-			      success: function(data) {
-			    	  $("#errorLog").html( data );
-			      },
-				  error: function(data) {
-					  $("#errorLog").html( ' Failed to get Error Log' );
-				  }
-		    });
-		    return false;
-		}
 		
-	</script>
+		
+	});
+	
+	function clearStudentDetailsTableRows() {
+		$("#ctbCustomerId").html('');
+   	  	$("#stateName").html('');
+    	  $("#dob").html('');
+    	  $("#gender").html('');
+    	  $("#govermentId").html('');
+    	  $("#govermentIdType").html('');
+    	  $("#address").html('');
+    	  $("#city").html('');
+    	  $("#county").html('');
+    	  $("#state").html('');
+    	  $("#zip").html('');
+    	  $("#email").html('');
+    	  $("#alternateEmail").html('');
+    	  $("#primaryPhoneNumber").html('');
+    	  $("#cellPhoneNumber").html('');
+    	  $("#alternatePhoneNumber").html('');
+    	  $("#resolvedEthnicityRace").html('');
+    	  $("#homeLanguage").html('');
+    	  $("#educationLevel").html('');
+    	  $("#attendCollege").html('');
+    	  $("#contact").html('');
+    	  $("#examineeCountyParishCode").html('');
+    	  $("#registeredOn").html('');
+    	  $("#registeredTestCenter").html('');
+    	  $("#registeredTestCenterCode").html('');
+    	  $("#scheduleId").html('');
+    	  $("#timeOfDay").html('');
+    	  $("#checkedInDate").html('');
+    	  $("#contentTestType").html( '');
+    	  $("#contentTestCode").html('');
+    	  $("#tascRadiness").html('');
+    	  $("#ecc").html('');
+    	  $("#testCenterCode").html('');
+    	  $("#testCenterName").html('');
+    	  $("#regstTcCountyParishCode").html('');
+    	  $("#schedTcCountyParishCode").html('');
+	}
+	
+	function clearMoreInfoTableRows() {
+		$("#testCenterCode").html('');
+		$("#testCenterName").html('');
+	}
+	
+	function clearStudentDetailsTableWhenError(errMsg) {
+		$("#stuHist").html( '<span style="color: red;">'+errMsg+'</span>' );
+		clearStudentDetailsTableRows();
+	}
+	
+	function clearMoreInfoTableWhenError(errMsg) {
+		$("#moreInfo").html( '<span style="color: red;">'+errMsg+'</span>' );
+		clearMoreInfoTableRows();
+	}
+	
+	function getStudentHist(erSsHistId) {
+		clearStudentDetailsTableRows();
+		var dataString = "erSsHistId="+erSsHistId;
+		$("#stuHist").html( '<img src="css/ajax-loader.gif"></img>' );
+		$("#ui-dialog-title-stuHistDialog").html('Student Details for Record Id : '+erSsHistId);
+		jQuery("#stuHistDialog").dialog("open");
+		$.ajax({
+		      type: "POST",
+		      url: "getStudentHist.htm",
+		      data: dataString,
+		      success: function(data) {
+		    	  if(data == "Error") {
+		    		  clearStudentDetailsTableWhenError('Failed to get Student History');
+		    	  } else if(data.length == 2) {
+		    		  clearStudentDetailsTableWhenError('Student History Not Found');
+			      } else {
+		    		  $("#stuHist").html('');
+			    	  var obj = JSON.parse(data);
+			    	  $("#ctbCustomerId").html( obj.CTB_CUSTOMER_ID );
+			    	  $("#stateName").html( obj.STATENAME );
+			    	  $("#dob").html( obj.DATEOFBIRTH );
+			    	  $("#gender").html( obj.GENDER );
+			    	  $("#govermentId").html( obj.GOVERNMENTID );
+			    	  $("#govermentIdType").html( obj.GOVERNMENTIDTYPE );
+			    	  $("#address").html( obj.ADDRESS1 );
+			    	  $("#city").html( obj.CITY );
+			    	  $("#county").html( obj.COUNTY );
+			    	  $("#state").html( obj.STATE );
+			    	  $("#zip").html( obj.ZIP );
+			    	  $("#email").html( obj.EMAIL );
+			    	  $("#alternateEmail").html( obj.ALTERNATEEMAIL );
+			    	  $("#primaryPhoneNumber").html( obj.PRIMARYPHONENUMBER );
+			    	  $("#cellPhoneNumber").html( obj.CELLPHONENUMBER );
+			    	  $("#alternatePhoneNumber").html( obj.ALTERNATENUMBER );
+			    	  $("#resolvedEthnicityRace").html( obj.RESOLVED_ETHNICITY_RACE );
+			    	  $("#homeLanguage").html( obj.HOMELANGUAGE );
+			    	  $("#educationLevel").html( obj.EDUCATIONLEVEL );
+			    	  $("#attendCollege").html( obj.ATTENDCOLLEGE );
+			    	  $("#contact").html( obj.CONTACT );
+			    	  $("#examineeCountyParishCode").html( obj.EXAMINEECOUNTYPARISHCODE );
+			    	  $("#registeredOn").html( obj.REGISTEREDON );
+			    	  $("#registeredTestCenter").html( obj.REGISTEREDATTESTCENTER );
+			    	  $("#registeredTestCenterCode").html( obj.REGISTEREDATTESTCENTERCODE );
+			    	  $("#scheduleId").html( obj.SCHEDULE_ID );
+			    	  $("#timeOfDay").html( obj.TIMEOFDAY );
+			    	  $("#checkedInDate").html( obj.DATECHECKEDIN );
+			    	  $("#contentTestType").html( obj.CONTENT_TEST_TYPE );
+			    	  $("#contentTestCode").html( obj.CONTENT_TEST_CODE );
+			    	  $("#tascRadiness").html( obj.TASCREADINESS );
+			    	  $("#ecc").html( obj.ECC );
+			    	  $("#testCenterCode").html( obj.TESTCENTERCODE );
+			    	  $("#testCenterName").html( obj.TESTCENTERNAME );
+			    	  $("#regstTcCountyParishCode").html( obj.REGST_TC_COUNTYPARISHCODE );
+			    	  $("#schedTcCountyParishCode").html( obj.SCHED_TC_COUNTYPARISHCODE );
+		    	  }
+		      },
+			  error: function(data) {
+				  clearStudentDetailsTableWhenError('Failed to get Student History');
+			  }
+	    });
+	    return false;
+	}
+	
+	function getMoreInfo(erExcdId) {
+		clearMoreInfoTableRows();
+		var dataString = "erExcdId="+erExcdId;
+		$("#moreInfo").html( '<img src="css/ajax-loader.gif"></img>' );
+		$("#ui-dialog-title-moreInfoDialog").html('More Info: ');
+		jQuery("#moreInfoDialog").dialog("open");
+		$.ajax({
+		      type: "POST",
+		      url: "getMoreInfo.htm",
+		      data: dataString,
+		      success: function(data) {
+		    	  if(data == "Error") {
+		    		  clearMoreInfoTableWhenError('Failed to get Data');
+		    	  } else if(data.length == 2) {
+		    		  clearMoreInfoTableWhenError('Data Not Found');
+			      } else {
+		    		  $("#moreInfo").html('');
+			    	  var obj = JSON.parse(data);
+			    	  $("#testCenterCode_mi").html( obj.TESTING_SITE_CODE );
+			    	  $("#testCenterName_mi").html( obj.TESTING_SITE_NAME );
+		    	  }
+		      },
+			  error: function(data) {
+				  clearMoreInfoTableWhenError('Failed to get Data');
+			  }
+	    });
+	    return false;
+	}
+	
+	function getErrorLog(erExcdId) {
+		var dataString = "erExcdId="+erExcdId;
+		$("#errorLog").html( '<img src="css/ajax-loader.gif"></img>' );
+		jQuery("#errorLogDialog").dialog("open");
+		$("#ui-dialog-title-errorLogDialog").html('Error Log');
+		$.ajax({
+		      type: "POST",
+		      url: "getErrorLog.htm",
+		      data: dataString,
+		      success: function(data) {
+		    	  $("#errorLog").html( data );
+		      },
+			  error: function(data) {
+				  $("#errorLog").html( ' Failed to get Error Log' );
+			  }
+	    });
+	    return false;
+	}
+		
+</script>
 	
 <div id="heromaskarticle">
 	<div id="articlecontent">
@@ -235,6 +279,11 @@
 				<% 
 				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("tascRequestTO");
 				%>
+				<div style="float: right">
+					<a href='downloadCsv.htm' class='noteLink' style='color:#00329B;text-decoration:underline' target="_blank">
+						Download CSV
+					</a>
+				</div>
 				<div class="search-criteria">
 				<b>Showing search results for</b> Source System: <%=searchProcess.getSourceSystem()%>
 				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
@@ -269,7 +318,7 @@
 				<%}%>
 				<%if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){%>
 					, Barcode: <%=searchProcess.getBarcode()%>
-				<%}%>
+				<%}%>					
 				</div>
 				
 				<table id="process" width="100%">
@@ -294,9 +343,9 @@
 					</thead>
 					<tbody>
 				<% 
-				java.util.List<TASCProcessTO> allProcessEr = (ArrayList) request.getSession().getAttribute("tascProcessEr");
+				java.util.List<StudentDetailsTO> studentDetailsTOList = (ArrayList) request.getSession().getAttribute("studentDetailsTOList");
 				int count=0;
-				for(TASCProcessTO processEr : allProcessEr) {
+				for(StudentDetailsTO processEr : studentDetailsTOList) {
 					count++;
 				%>
 					<tr>
@@ -318,11 +367,7 @@
 							%>
 							<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog(<%=processEr.getErExcdId()%>);'>
 							 <% if("0".equals(processEr.getErSsHistId())){%>
-								<% if("0".equals(processEr.getProcessId())){%>
-								NA
-								<%}else{%>
-									<%=processEr.getProcessId() %>
-								<%}%>
+								<%=processEr.getProcessId() %>
 							<%}else{%>
 								<%=processEr.getErSsHistId() %>
 							<%}%>
@@ -330,40 +375,17 @@
 							<%	
 							}else{
 								if("0".equals(processEr.getErSsHistId())){%>
-									<% if("0".equals(processEr.getProcessId())){%>
-										NA
-									<%}else{%>
-										<%=processEr.getProcessId() %>
-									<%}
-								}else{%>
+									<%=processEr.getProcessId() %>
+								<%}else{%>
 									<%=processEr.getErSsHistId() %>
 								<%}
 							}%>
 						</td>
 						<td><%=processEr.getStudentName() %></td>
 						<td><%=processEr.getUuid() %></td>
-						
-						<td>
-							<% if("0".equals(processEr.getTestElementId())){%>
-							NA
-							<%}else{%>
-								<%=processEr.getTestElementId() %>
-							<%}%>
-						</td>
-						<td>
-							<% if("0".equals(processEr.getProcessId())){%>
-							NA
-							<%}else{%>
-								<%=processEr.getProcessId() %>
-							<%}%>
-						</td>
-						<td>
-							<% if("0".equals(processEr.getExceptionCode())){%>
-							NA
-							<%}else{%>
-								<%=processEr.getExceptionCode() %>
-							<%}%>
-						</td>
+						<td><%=processEr.getTestElementId() %></td>
+						<td><%=processEr.getProcessId() %></td>
+						<td><%=processEr.getExceptionCode() %></td>
 						<td>
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								Completed
@@ -379,10 +401,12 @@
 						<td><%=processEr.getForm() %></td>
 						<td><%=processEr.getSubtestName() %></td>
 						<td>
-							<% if("0".equals(processEr.getErSsHistId())){%>
-							NA
-							<%}else{%>
+							<% if("ERESOURCE".equals(searchProcess.getSourceSystem())){%>
 								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentHist(<%=processEr.getErSsHistId() %>);'>
+									More Info
+								</a>
+							<%}else{%>
+								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getMoreInfo(<%=processEr.getErExcdId()%>);'>
 									More Info
 								</a>
 							<%}%>
@@ -516,6 +540,20 @@
 						</tr>
 						<tr>
 							<td><b>Sched TC County Parish Code :</b></td><td><span id="schedTcCountyParishCode"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+					</table>
+				</div>
+				<div id="moreInfoDialog" title="Loading ..." style='display:none; font-size:11px'>
+					<p id="moreInfo"><p>
+					<table width="100%" class="process_details">
+						<tr>
+							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>
+						</tr>
+						<tr>
+							<td width="44%"><b>Test Center Code :</b></td><td width="56%"><span id="testCenterCode_mi"><img src="css/ajax-loader.gif"></img></span></td>
+						</tr>
+						<tr>
+							<td><b>Test Center Name :</b></td><td><span id="testCenterName_mi"><img src="css/ajax-loader.gif"></img></span></td>
 						</tr>
 					</table>
 				</div>

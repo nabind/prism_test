@@ -12,6 +12,7 @@ import java.util.Map;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.JDCConnectionDriver;
+import com.vaannila.TO.StudentDetailsTO;
 
 
 public class TascDAOImpl {
@@ -260,14 +261,14 @@ public class TascDAOImpl {
 	 * Get Searched records
 	 * @throws Exception
 	 */
-	public List<TASCProcessTO> getProcessEr(SearchProcess searchProcess) throws Exception {
+	public List<StudentDetailsTO> getProcessEr(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getProcessEr()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		TASCProcessTO processTO = null;
-		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
+		StudentDetailsTO studentDetailsTO = null;
+		List<StudentDetailsTO> studentDetailsTOList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 		
 		if("ERESOURCE".equals(searchProcess.getSourceSystem())){
@@ -327,24 +328,24 @@ public class TascDAOImpl {
 		}else{
 			queryBuff.append("SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
 			queryBuff.append(" ESD.UUID UUID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 0)) TEST_ELEMENT_ID,");
-			queryBuff.append(" NVL(EED.PROCESS_ID, 0) PROCESS_ID,");
-			queryBuff.append(" NVL(EED.EXCEPTION_CODE, '0') EXCEPTION_CODE,");
+			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
+			queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
+			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
 			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
 			queryBuff.append(" NVL(EED.ER_SS_HISTID, 0) ER_SS_HISTID,");
-			queryBuff.append(" NVL(EED.BARCODE,'NA') BARCODE,");
+			queryBuff.append(" EED.BARCODE BARCODE,");
 			queryBuff.append(" TO_CHAR(EED.TEST_DATE, 'MM/DD/YYYY') DATE_SCHEDULED,");
 			queryBuff.append(" EED.STATE_CODE STATE_CODE,");
 			queryBuff.append(" EED.FORM FORM,");
 			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
 			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST,");
+			queryBuff.append(" EED.TESTING_SITE_CODE TESTING_SITE_CODE,");
+			queryBuff.append(" EED.TESTING_SITE_NAME TESTING_SITE_NAME");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD");
-			//queryBuff.append(" ,ER_TEST_SCHEDULE  ETS");
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
-			//queryBuff.append(" AND ESD.ER_STUDID = ETS.ER_STUDID");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -384,19 +385,21 @@ public class TascDAOImpl {
 			
 			queryBuff.append(" SELECT SSBD.LAST_NAME || ', ' || SSBD.FIRST_NAME || ' ' || SSBD.MIDDLE_NAME STUDENTNAME,");
 			queryBuff.append(" SSBD.EXT_STUDENT_ID UUID,");
-			queryBuff.append(" NVL(SSBD.TEST_ELEMENT_ID, 0) TEST_ELEMENT_ID,");
-			queryBuff.append(" NVL(SPS.PROCESS_ID, 0) PROCESS_ID,");
-			queryBuff.append(" '0' EXCEPTION_CODE,");
+			queryBuff.append(" TO_CHAR(NVL(SSBD.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
+			queryBuff.append(" NVL(TO_CHAR(SPS.PROCESS_ID), 'NA') PROCESS_ID,");
+			queryBuff.append(" 'NA' EXCEPTION_CODE,");
 			queryBuff.append(" NVL(SPS.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
 			queryBuff.append(" 'NA' EXCEPTION_STATUS,");
 			queryBuff.append(" 0 ER_SS_HISTID,");
-			queryBuff.append(" NVL(SSBD.BARCODE,'NA') BARCODE,");
+			queryBuff.append(" SSBD.BARCODE BARCODE,");
 			queryBuff.append(" TO_CHAR(SSSD.DATE_TEST_TAKEN, 'MM/DD/YYYY') DATE_SCHEDULED,");
 			queryBuff.append(" SHD.ORG_CODE STATE_CODE,");
 			queryBuff.append(" SSSD.TEST_FORM FORM,");
 			queryBuff.append(" SPS.DATETIMESTAMP DATETIMESTAMP,");
 			queryBuff.append(" 0 ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST");
+			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST,");
+			queryBuff.append(" 'NA' TESTING_SITE_CODE,");
+			queryBuff.append(" 'NA' TESTING_SITE_NAME");
 			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
 			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
 			queryBuff.append(" STG_HIER_DETAILS        SHD,");
@@ -547,22 +550,24 @@ public class TascDAOImpl {
 			
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				processTO = new TASCProcessTO();
-				processTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
-				processTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
-				processTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
-				processTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
-				processTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
-				processTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
-				processTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
-				processTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
-				processTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
-				processTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
-				processTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
-				processTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
-				processTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
-				processTO.setSubtestName(rs.getString("subtest") != null ? rs.getString("SUBTEST") : "");
-				processList.add(processTO);
+				studentDetailsTO = new StudentDetailsTO();
+				studentDetailsTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
+				studentDetailsTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
+				studentDetailsTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
+				studentDetailsTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
+				studentDetailsTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
+				studentDetailsTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
+				studentDetailsTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
+				studentDetailsTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
+				studentDetailsTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
+				studentDetailsTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
+				studentDetailsTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
+				studentDetailsTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
+				studentDetailsTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
+				studentDetailsTO.setSubtestName(rs.getString("SUBTEST") != null ? rs.getString("SUBTEST") : "");
+				studentDetailsTO.setTestCenterCode(rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
+				studentDetailsTO.setTestCenterName(rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
+				studentDetailsTOList.add(studentDetailsTO);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -574,7 +579,7 @@ public class TascDAOImpl {
 			long t2 = System.currentTimeMillis();
 			System.out.println("Exit: getProcessEr() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return processList;
+		return studentDetailsTOList;
 	}
 	
 	/**
@@ -683,6 +688,46 @@ public class TascDAOImpl {
 			try {conn.close();} catch (Exception e2) {}
 		}
 		return studentDetails;
+	}
+	
+	/**
+	 * @author Joy
+	 * @param erExcdId
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, String> getMoreInfo(String erExcdId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Map<String, String> moreInfoMap = new HashMap<String, String>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("SELECT TESTING_SITE_CODE,");
+		queryBuff.append("TESTING_SITE_NAME");
+		queryBuff.append(" FROM ER_EXCEPTION_DATA");
+		queryBuff.append(" WHERE ER_EXCDID = ?");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1,Long.parseLong(erExcdId));
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				moreInfoMap.put("TESTING_SITE_CODE", rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
+				moreInfoMap.put("TESTING_SITE_NAME", rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return moreInfoMap;
 	}
 	
 	
