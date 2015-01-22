@@ -303,22 +303,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_ER_MODULE IS
     EXCEPTION_ID ER_STUDENT_SCHED_HISTORY.ER_SS_HISTID%TYPE := 0;
   
   -- get new parameters from history
-   v_StateCode   ER_STUDENT_SCHED_HISTORY.STATE_CODE%TYPE;
-   v_LastName    ER_STUDENT_SCHED_HISTORY.LASTNAME%TYPE;
-   v_Form        ER_STUDENT_SCHED_HISTORY.FORM%TYPE;
-   v_Barcode     ER_STUDENT_SCHED_HISTORY.BARCODE%TYPE;
-   v_ContentCode ER_STUDENT_SCHED_HISTORY.CONTENT_AREA_CODE%TYPE;
+   v_StateCode          ER_STUDENT_SCHED_HISTORY.STATE_CODE%TYPE;
+   v_LastName           ER_STUDENT_SCHED_HISTORY.LASTNAME%TYPE;
+   v_Form               ER_STUDENT_SCHED_HISTORY.FORM%TYPE;
+   v_Barcode            ER_STUDENT_SCHED_HISTORY.BARCODE%TYPE;
+   v_ContentCode        ER_STUDENT_SCHED_HISTORY.CONTENT_AREA_CODE%TYPE;
+   v_TestCentreCode     ER_STUDENT_SCHED_HISTORY.Testcentercode%type;
+   v_TestCentreName     ER_STUDENT_SCHED_HISTORY.Testcentername%type;
     BEGIN
       DECLARE
         CURSOR c_history IS
-          SELECT STATE_CODE, LASTNAME, FORM, BARCODE, CONTENT_AREA_CODE
+          SELECT STATE_CODE, LASTNAME, FORM, BARCODE, CONTENT_AREA_CODE,
+          Testcentercode, Testcentername
             FROM ER_STUDENT_SCHED_HISTORY
            where er_ss_histid = P_IN_SS_HISTID;
       BEGIN
         OPEN c_history;
         LOOP
           FETCH c_history
-            INTO v_StateCode, v_LastName, v_Form, v_Barcode, v_ContentCode;
+            INTO v_StateCode, v_LastName, v_Form, v_Barcode, v_ContentCode, v_TestCentreCode, v_TestCentreName;
           EXIT WHEN c_history%NOTFOUND;
         END LOOP;
         CLOSE c_history;
@@ -339,7 +342,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ER_MODULE IS
        LAST_NAME,
        FORM,
        BARCODE,
-       CONTENT_CODE)
+       CONTENT_CODE,
+       TESTING_SITE_CODE,
+       TESTING_SITE_NAME)
     VALUES
       (EXCEPTION_ID,
        P_IN_SOURCE_SYSTEM,
@@ -353,7 +358,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_ER_MODULE IS
        v_LastName,
        v_Form,
        v_Barcode,
-       v_ContentCode);
+       v_ContentCode,
+       v_TestCentreCode,
+       v_TestCentreName);
   
     P_OUT_EXCEPTION_ID := EXCEPTION_ID;
   
@@ -840,7 +847,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ER_MODULE IS
         SELECT COUNT(1)
           INTO countt
           FROM SUBTEST_DIM
-         WHERE subtest_code = P_IN_CONTENT_AREA_CODE
+         WHERE subtest_code = to_char(P_IN_CONTENT_AREA_CODE)
            AND subtest_type = 'S';
       
         IF countt = 0 THEN
@@ -935,6 +942,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ER_MODULE IS
           P_OUT_SCHEDULE_ID := SCHEDULESEQID;
         END IF;
       ELSE
+        
         -- UPDATE SCHEDULE 
         --check if schedule is locked
         countt := 0;
