@@ -280,7 +280,8 @@
 				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("tascRequestTO");
 				%>
 				<div style="float: right">
-					<a href='downloadCsv.htm' class='noteLink' style='color:#00329B;text-decoration:underline' target="_blank">
+					<a href='downloadCsv.htm' class='noteLink ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover' 
+						style='padding:5px;top:5px;color:#00329B;text-decoration:underline' target="_blank">
 						Download CSV
 					</a>
 				</div>
