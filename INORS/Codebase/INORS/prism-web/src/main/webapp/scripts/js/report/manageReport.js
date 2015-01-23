@@ -397,7 +397,10 @@ var row = $("#"+reportId + '_' +reportId);
 								row.find('.edit-actions').remove();
 								row.find('.delete-Report').remove();
 								var reportTypeSelected = $("#editReportType").val();
-								if (reportTypeSelected == 'API_LINK' || reportTypeSelected == 'API_CUSTOM' || reportTypeSelected == 'API_NFCUSTOM') {
+								var reportName = $("#reportName").val();
+								if (reportTypeSelected == 'API_LINK' || reportTypeSelected == 'API_CUSTOM' 
+									|| reportName == 'Group Download Files'
+									|| reportName == 'Student Data File' ) {
 									row.find('.button-group').append(editActionsButton);
 								} else {
 									row.find('.button-group').append(deleteReportButton);
