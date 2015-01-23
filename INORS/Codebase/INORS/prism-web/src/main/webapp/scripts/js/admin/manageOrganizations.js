@@ -342,7 +342,7 @@ function hideLoading() {
 	//$("#org_list").stop(true)['animate']({ right: -((allUL.length-1)*100+10)+'%' });
 }
 
-function resetPrismActions() {
+/*function resetPrismActions() {
 	var adminYear = (typeof $('#AdminYear').val() !== 'undefined') ? $('#AdminYear').val() : 0;
 	if(adminYear == 0){
 		adminYear = (typeof $('#custProdIdManageContent').val() !== 'undefined') ? $('#custProdIdManageContent').val() : 0;
@@ -365,31 +365,35 @@ function resetPrismActions() {
 		}
 	});
 	unblockUI();
-}
+}*/
 
 function resetPrismActions() {
 	var adminYear = (typeof $('#AdminYear').val() !== 'undefined') ? $('#AdminYear').val() : 0;
 	if(adminYear == 0){
 		adminYear = (typeof $('#custProdIdManageContent').val() !== 'undefined') ? $('#custProdIdManageContent').val() : 0;
 	}
-	var queryData = "AdminYear="+adminYear;
-	blockUI();
-	$.ajax({
-		type : "GET",
-		url : "resetPrismActions.do",
-		data : queryData,
-		dataType : 'json',
-		cache : false,
-		async : false,
-		success : function(data) {
-			resetJspElements(data);
-		},
-		error : function(data) {
-			//Temporary fix for TD 81027 - By Joy
-			//$.modal.alert(strings['script.org.error']);
-		}
-	});
-	unblockUI();
+	if(adminYear == 0 || adminYear == -1) {
+		// no need to call reset
+	} else {
+		var queryData = "AdminYear="+adminYear;
+		blockUI();
+		$.ajax({
+			type : "GET",
+			url : "resetPrismActions.do",
+			data : queryData,
+			dataType : 'json',
+			cache : false,
+			async : false,
+			success : function(data) {
+				resetJspElements(data);
+			},
+			error : function(data) {
+				//Temporary fix for TD 81027 - By Joy
+				//$.modal.alert(strings['script.org.error']);
+			}
+		});
+		unblockUI();
+	}
 }
 
 function resetJspElements(data){
