@@ -77,13 +77,13 @@ public interface IWSQuery {
 			"     WKF_PARTITION_NAME,",// 10
 			"     DATETIMESTAMP",// 11
 			" ) VALUES (", 
-			"	  (SELECT STG_HIERARCHY_DETAILS_ID FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ?), ", // 1 & 2
+			"	  (SELECT STG_HIERARCHY_DETAILS_ID FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ? and rownum = 1), ", // 1 & 2
 			"     ?,",// 3
 			"     ?,",// 4
 			"     ?,",// 5
 			"     ?,",// 6
 			"     ?,",// 7
-			"     (SELECT ORG_NODE_CODE_PATH FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ?), ", // 8 & 9
+			"     (SELECT ORG_NODE_CODE_PATH FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ? and rownum = 1), ", // 8 & 9
 			"     ?,",// 10
 			"     SYSDATE",// 11
 			" )"
@@ -130,7 +130,7 @@ public interface IWSQuery {
 			"     ?,", //14
 			"     ?,", //15
 			"     ?,", //16
-			"     (SELECT STG_HIERARCHY_DETAILS_ID FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ?), ", // 17 & 17.1
+			"     (SELECT STG_HIERARCHY_DETAILS_ID FROM STG_HIER_DETAILS WHERE PROCESS_ID = ? AND ORG_LEVEL = ? and rownum = 1), ", // 17 & 17.1
 			"     ?,", //18
 			"     ?,", //19
 			"     ?,", //20
@@ -198,7 +198,8 @@ public interface IWSQuery {
 			" DATETIMESTAMP              =SYSDATE",
 			" WHERE STUDENT_BIO_DETAILS_ID = ?",	//3
 			" AND PROCESS_ID               =?",	//4
-			" AND WKF_PARTITION_NAME       =?"	//5
+			" AND WKF_PARTITION_NAME       =?",	//5
+			" AND content_name = ? " //6
 			);
 		
 	public static final String CREATE_STG_SUBTEST_DETAILS_SCORE = CustomStringUtil.appendString(
@@ -235,7 +236,9 @@ public interface IWSQuery {
 			" DATETIMESTAMP                =SYSDATE",
 			" WHERE STUDENT_BIO_DETAILS_ID = ?",
 			" AND PROCESS_ID               = ?",
-			" AND WKF_PARTITION_NAME       = ?"
+			" AND WKF_PARTITION_NAME       = ?",
+			" AND content_name = ?",
+			" AND OBJECTIVE_NAME = ?"
 		);
 	
 	public static final String CREATE_STG_OBJECTIVE_DETAILS_SCORE = CustomStringUtil.appendString(
@@ -275,7 +278,7 @@ public interface IWSQuery {
 			" )"
 		);
 	
-	public static final String GET_ORG_MAP = "SELECT ORG_NODEID, PARENT_ORG_NODEID FROM ORG_NODE_DIM";
+	public static final String GET_ORG_MAP = "SELECT DISTINCT m.ORG_NODEID, m.ORG_NODE_LEVEL, m.HIGHEST_ORG_NODE, m.PARENT_ORG_NODEID FROM ORGUSER_MAPPING m, org_node_dim o WHERE m.ORG_NODEID = o.ORG_NODEID and ORG_NODE_CODE IN (?)";
 	
 	public static final String CLEAN_STG_HIER_DETAILS = "DELETE FROM STG_HIER_DETAILS WHERE WKF_PARTITION_NAME = ?";
 	public static final String CLEAN_STG_LSTNODE_HIER_DETAILS = "DELETE FROM STG_LSTNODE_HIER_DETAILS WHERE WKF_PARTITION_NAME = ?";
