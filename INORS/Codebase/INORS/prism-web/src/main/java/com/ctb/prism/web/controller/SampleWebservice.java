@@ -1,6 +1,7 @@
 package com.ctb.prism.web.controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +14,9 @@ import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.transform.Source;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
@@ -29,8 +33,13 @@ import com.ctb.prism.admin.transferobject.OrgTO;
 import com.ctb.prism.admin.transferobject.StgOrgTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.Service.IUsabilityService;
+import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IApplicationConstants.JOB_STATUS;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -47,6 +56,9 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	
 	@Autowired
 	IUsabilityService usabilityService;
+	
+	@Autowired
+	private IPropertyLookup propertyLookup;
 	
 	/**
 	 * This parameter is used to get HMac secret key
@@ -73,16 +85,28 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     }
     
     @WebMethod(exclude = true)
-    public String getPartitionName() throws Exception {
-    	String partitionName = checkPartition();
-    	int retryCount = 0;
-    	while(partitionName == null && retryCount < 3) {
-    		retryCount++;
-    		System.out.println(" ... All partitions are busy ... waiting ... ");
-			Thread.sleep(5000);
-			partitionName = checkPartition();
+    public synchronized String getPartitionName() throws Exception {
+    	String partitionName = null;
+    	try{
+    		long start = System.currentTimeMillis();
+	    	partitionName = checkPartition();
+	    	long end = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "checkPartition() - " + CustomStringUtil.getHMSTimeFormat(end - start));
+	    	int retryCount = 0;
+	    	while(partitionName == null && retryCount < 3) {
+	    		retryCount++;
+	    		System.out.println(" ... All partitions are busy ... waiting ... ");
+				Thread.sleep(5000);
+				partitionName = checkPartition();
+			}
+	    	return partitionName;
+    	} finally {
+			/*try {
+				usabilityService.updatePartition(partitionName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}*/
 		}
-    	return partitionName;
     }
     
     @WebMethod(exclude = true)
@@ -96,7 +120,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
      * @return
      */
     @WebMethod
-	public StudentDataLoadTO loadStudentData(@WebParam(name = "StudentListTO") StudentListTO studentListTO) {
+	public StudentDataLoadTO loadStudentDataDev(@WebParam(name = "StudentListTO") StudentListTO studentListTO) {
     	StudentDataLoadTO studentDataLoadTO = new StudentDataLoadTO();
     	studentDataLoadTO.setStatus("SUCCESS");
 		studentDataLoadTO.setStatusCode(1);
@@ -111,28 +135,111 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
      * @return
      */
     @WebMethod
-	public StudentDataLoadTO loadStudentDataDev(@WebParam(name = "StudentListTO") StudentListTO studentListTO) {
+	public StudentDataLoadTO loadStudentData(@WebParam(name = "StudentListTO") StudentListTO studentListTO) {
     	StudentDataLoadTO studentDataLoadTO = new StudentDataLoadTO();
     	String partitionName = "";
-    	
+    	long start = System.currentTimeMillis();
+    	long processId = -99;
+    	// to print the output xml
+    	try {
+    		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
+    		Marshaller mc = jc.createMarshaller();
+    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    		mc.marshal(studentListTO, System.out);
+    		mc.marshal(studentListTO, new File("/mnt/ACSIREPORTS/Temp/"+System.currentTimeMillis()+"_oas.xml"));
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		
     	try {
     		partitionName = getPartitionName();
+    		logger.log(logger.INFO, "    >> partitionName : " + partitionName);
     		if(partitionName != null && partitionName.length() > 0) {
     			studentDataLoadTO.setPartitionName(partitionName);
+    			// create process
     			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
+    			processId = studentDataLoadTO.getProcessId();
+    			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
+    			
+    			// load student data into staging tables
 				studentDataLoadTO = usabilityService.updateStagingData(studentListTO, studentDataLoadTO);
 				if(studentDataLoadTO != null) {
 					studentDataLoadTO.setStatus("SUCCESS");
 					studentDataLoadTO.setStatusCode(1);
 					studentDataLoadTO.setSummary("Student loaded successfully");
 				}
+				logger.log(logger.INFO, "    >> Staging load is completed");
+				/* Staging load is completed */
+				
+				// Call ETL to start workflow
+				BufferedReader read = null;
+				logger.log(logger.INFO, "    >> Before Proc Call");
+				
+				File file = new File(propertyLookup.get("ETL.file.loc"));
+				String[] commands = new String[]{
+						propertyLookup.get("ETL.shell.command.1"),
+						propertyLookup.get("ETL.shell.command.2"),
+						studentDataLoadTO.getPartitionName()
+						};
+				Process proc =  Runtime.getRuntime().exec(commands,null,file);
+								
+				logger.log(logger.INFO, "    >> After Proc Call");
+				read = new BufferedReader(new InputStreamReader(
+	                    proc.getInputStream()));
+				try {
+	                proc.waitFor();
+	                logger.log(logger.INFO, "    >> After wait for");	               
+	            } catch (InterruptedException e) {
+	            	logger.log(logger.ERROR, e.getMessage());
+	                proc.getErrorStream();
+	            }    
+	            while (read.ready()) {
+	            	logger.log(logger.INFO, read.readLine());
+	            	logger.log(logger.INFO, "    >> After read ready");	                	
+	            }
+	            
+	            // Read status from org_process_status table and update studentDataLoadTO.StatusCode and return
+	            logger.log(logger.INFO, "    >> ETL data validation is completed. Checking status ... ");
+	            // Get validation status
+	            ProcessTO processTO = new ProcessTO();
+	            processTO.setProcessId(""+studentDataLoadTO.getProcessId());
+	            processTO = usabilityService.getProces(processTO);
+	            
+	            logger.log(logger.INFO, "    >> processTO : ");
+	            logger.log(logger.INFO, processTO.toString()); 
+	            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getErValidation())) {
+	            	logger.log(logger.INFO, "    >> ER VALIDATION FAILED !!! ");
+	            	studentDataLoadTO.setStatus("ER_ERROR");
+	    			studentDataLoadTO.setStatusCode(-99);
+	    			List<String> errorMessage = new ArrayList<String>();
+	    			errorMessage.add(processTO.getProcessLog());
+	    			studentDataLoadTO.setErrorMessages(errorMessage);
+	    			studentDataLoadTO.setSummary("ER data validation failed");
+	            } else {
+		            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getHierValidation())
+		            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getBioValidation())
+		            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getDemoValidation())
+		            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getContentValidation())
+		            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getObjectiveValidation())
+		            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getItemValidation())
+		            	) {
+		            	logger.log(logger.INFO, "Data validation failed");
+		            	studentDataLoadTO.setStatus("ERROR");
+		    			studentDataLoadTO.setStatusCode(0);
+		    			List<String> errorMessage = new ArrayList<String>();
+		    			errorMessage.add(processTO.getProcessLog());
+		    			studentDataLoadTO.setErrorMessages(errorMessage);
+		    			studentDataLoadTO.setSummary("Data validation failed");
+		            }
+	            }
+	            //return studentDataLoadTO; 
     		} else {
-    			if(studentDataLoadTO == null)  studentDataLoadTO = new StudentDataLoadTO();
     			studentDataLoadTO.setStatus("ERROR");
     			studentDataLoadTO.setStatusCode(0);
     			List<String> errorMessage = new ArrayList<String>();
-    			errorMessage.add("All process are busy at this time. Please try later.");
+    			errorMessage.add("All processes are busy at this time. Please try later.");
     			studentDataLoadTO.setErrorMessages(errorMessage);
+    			studentDataLoadTO.setSummary("All processes are busy");
     		}
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "SampleWebservice - loadStudentData :: " + e.getMessage());
@@ -142,8 +249,9 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 			studentDataLoadTO.setStatus("ERROR");
 			studentDataLoadTO.setStatusCode(0);
 			List<String> errorMessage = new ArrayList<String>();
-			errorMessage.add(e.getMessage());
+			errorMessage.add("Error invoking web service. Please try later.");
 			studentDataLoadTO.setErrorMessages(errorMessage);
+			studentDataLoadTO.setSummary("Student dataload failed");
 			e.printStackTrace();
 		} finally {
 			try {
@@ -152,168 +260,12 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 				e.printStackTrace();
 			}
 		}
+		long end = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "-----------------------------------x----------------------------------- "+processId);
+		logger.log(IAppLogger.INFO, "END-to-END web service call - time taken : " + CustomStringUtil.getHMSTimeFormat(end - start));
     	logger.log(IAppLogger.INFO, "Exit: SampleWebservice - loadStudentData");
 		return studentDataLoadTO; 
     }
     
-    
-    
-    //================================== S A M P L E ==================================================
-    /**
-     * All methods below are sample webservice and currently excluded from webservice
-     */
-    @WebMethod(exclude = true)
-	public String testXMLAttachment(@WebParam(name = "xml") Source xmlAtt) {
-    	javax.xml.transform.stream.StreamSource ss = (javax.xml.transform.stream.StreamSource) xmlAtt;
-    	String result = getStringFromInputStream(ss.getInputStream());
-    	System.out.println(result);
-		return result;
-    }
-    
-    @WebMethod(exclude = true)
-	public String testBean(@WebParam(name = "UserTO") UserTO userTo) {
-    	System.out.println(userTo.getFirstName());
-		return userTo.getFirstName() + " " + userTo.getLastName();
-    }
-	
-	@WebMethod(exclude = true)
-	@RequestMapping(value="/hmac", method=RequestMethod.GET)
-	public String sayHello(@WebParam(name = "UserName") String userName) {
-		MessageContext mctx = wsctx.getMessageContext();
-		//get detail from request headers
-        Map http_headers = (Map) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
-        List userList = (List) http_headers.get("Username");
-        List passList = (List) http_headers.get("Password");
-        
-        List ipAddressList = (List) http_headers.get("ipAddress");
-        List validUntilDateList = (List) http_headers.get("validUntilDate"); 
-        List signatureList = (List) http_headers.get("signature"); 
-        
-        String username = "";
-        String password = ""; 
-        
-        String ipAddress = "";
-        String validUntilDate = "";
-        String signature = ""; 
-        
-          String SECRET_KEY = hmacsecret;//"WPZguVF49hXaRuZfe9L29ItsC2I";
-    	  String ENCODING_ALGORITHM = "HmacSHA1";
-    	  String URL_ENCODING = "UTF-8";
-    	  String timeZone = "PST";
-    	  String theme ="inors";
-        
-        if(userList!=null && ipAddressList!=null && validUntilDateList!=null && signatureList!=null){
-        	//get username
-        	username = userList.get(0).toString();
-        	ipAddress =ipAddressList.get(0).toString();
-        	validUntilDate =validUntilDateList.get(0).toString();
-        	signature =signatureList.get(0).toString();
-        	DigitalMeasuresHMACQueryStringBuilder hMAcSecure = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 60, ENCODING_ALGORITHM);
-        	hMAcSecure.setTimeZone(timeZone);
-        	hMAcSecure.setENCODING_ALGORITHM(ENCODING_ALGORITHM);
-        	hMAcSecure.setURL_ENCODING(URL_ENCODING);
-        	try {
-        
-				if(hMAcSecure.isValidRequest(URLDecoder.decode(username, URL_ENCODING), 
-						URLDecoder.decode(ipAddress, URL_ENCODING), 
-						URLDecoder.decode(validUntilDate, URL_ENCODING),
-						URLDecoder.decode(signature, URL_ENCODING), null, null, null, null,theme)){
-					return "Hello " + userName;
-				 } else{
-			        	return "Unknown User!";
-			        }
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        } 
-        
-        return "Insufficient authorization";
-        
-		
-        /*if(passList!=null){
-        	//get password
-        	password = passList.get(0).toString();
-        }*/
-		
-      //Should validate username and password with database
-        /*if (username.equals("Abir") && password.equals("password")){
-        	return "Hello " + userName;
-        }else{
-        	return "Unknown User!";
-        }*/
-		
-	}
-	
-	@WebMethod(operationName="searchUser", exclude = true)
-	public ArrayList<UserTO> searchUser(@WebParam(name = "UserName") String userName,
-										@WebParam(name = "OrgId") String parentId,
-										@WebParam(name = "AdminYear") String adminYear,
-										@WebParam(name = "isExactSearch") String isExactSearch) {
-		ArrayList <UserTO> userList = null;
-		try {
-			userList = adminService.searchUser(userName, parentId, adminYear, isExactSearch,"");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return userList;
-	}
-	
-	@WebMethod(operationName="getOrganizationList", exclude = true)
-	public ArrayList<OrgTO> getOrganizationList(@WebParam(name = "TenantId")String tenantId,
-												@WebParam(name = "AdminYear") String adminYear,
-												@WebParam(name = "CustomerId") String strCustomerId){
-		ArrayList<OrgTO> orgList = null;
-		long customerId = 0 ;
-		if (strCustomerId == null) {
-			customerId = 0;
-		} else {
-			customerId = Long.parseLong(strCustomerId);
-		}
-		try{
-			orgList = (ArrayList<OrgTO>) adminService.getOrganizationList(tenantId, adminYear, customerId);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return orgList;
-	}
-	
-	@WebMethod(operationName="addOrganization", exclude = true)
-	public String addOrganization(@WebParam(name = "StgOrgTO") StgOrgTO stgOrgTO){
-		
-		String acknowledgement = adminService.addOrganization(stgOrgTO);
-		return acknowledgement;
-	}
-	
-	
-	// convert InputStream to String
-	private static String getStringFromInputStream(InputStream is) {
- 
-		BufferedReader br = null;
-		StringBuilder sb = new StringBuilder();
- 
-		String line;
-		try {
- 
-			br = new BufferedReader(new InputStreamReader(is));
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
- 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
- 
-		return sb.toString();
- 
-	}
 	
 }

@@ -191,6 +191,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 				processTO.setObjectiveValidation((String) (fieldDetails.get("objective_validation")));
 				processTO.setItemValidation((String) (fieldDetails.get("item_validation")));
 				processTO.setProcessLog((String) fieldDetails.get("process_log"));
+				processTO.setErValidation((String) fieldDetails.get("er_validation"));
 			}
 		}
 		return processTO;

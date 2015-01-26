@@ -291,7 +291,7 @@ public interface IWSQuery {
 	
 	public static final String GET_PROCESS_STATUS = CustomStringUtil.appendString(
 			" select hier_validation, bio_validation, demo_validation, ",
-			" content_validation, objective_validation, item_validation, process_log ",
+			" content_validation, objective_validation, item_validation, process_log, er_validation ",
 			" FROM stg_process_status where process_id = ? ");
 }
 
