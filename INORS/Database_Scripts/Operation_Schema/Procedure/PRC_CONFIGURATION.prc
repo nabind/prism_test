@@ -356,11 +356,12 @@ BEGIN
     -- INSERT INTO DASH_ACTION_ACCESS START
     FOR REC_DASH_REPORTS IN (SELECT *
                                FROM DASH_REPORTS
-                              WHERE REPORT_TYPE = 'API_LINK'
-                                 OR REPORT_TYPE = 'API_CUSTOM'
-                                 OR UPPER(REPORT_NAME) IN
+                              WHERE ACTIVATION_STATUS = 'AC'
+                                AND (REPORT_TYPE = 'API_LINK' OR
+                                    REPORT_TYPE = 'API_CUSTOM' OR
+                                    UPPER(REPORT_NAME) IN
                                     ('STUDENT DATA FILE',
-                                     'GROUP DOWNLOAD FILES')) LOOP
+                                     'GROUP DOWNLOAD FILES'))) LOOP
     
       IF UPPER(REC_DASH_REPORTS.REPORT_NAME) = 'MANAGE USERS' THEN
         V_ACTION_TYPE := 'USR';
