@@ -283,5 +283,7 @@ public interface IApplicationConstants {
 	public static final String CONTRACT_TITLE ="title.tab.application";
 	public static final String CONTRACT_HOME_TITLE ="title.tab.home.application";
 	public static final String STATIC_PDF_LOCATION ="static.pdf.location";
+	public static final String SSO_REDIRECT_LOGINFAIL ="sso.redirect.loginfail";
+	public static final String SSO_REDIRECT_LOGOUT ="sso.redirect.logout";
 	
 }
