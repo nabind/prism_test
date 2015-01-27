@@ -17,7 +17,14 @@ public class ProcessTO extends BaseTO {
 	private String objectiveValidation;
 	private String itemValidation;
 	private String processLog;
+	private String erValidation;
 	
+	public String getErValidation() {
+		return erValidation;
+	}
+	public void setErValidation(String erValidation) {
+		this.erValidation = erValidation;
+	}
 	public String getProcessLog() {
 		return processLog;
 	}
