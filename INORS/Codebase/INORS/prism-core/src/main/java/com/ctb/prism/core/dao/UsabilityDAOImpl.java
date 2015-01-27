@@ -530,7 +530,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		try {
             envContext = new InitialContext();
             Context initContext  = (Context)envContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource)initContext.lookup("jdbc/prism");
+            DataSource ds = (DataSource)initContext.lookup("jdbc/tasc");
             dsConnection = ds.getConnection();
             dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_DEMO_DETAILS);
             if(demoList != null) {
@@ -823,7 +823,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			if(itemResponsesDetailsTO != null) {
 	            envContext = new InitialContext();
 	            Context initContext  = (Context)envContext.lookup("java:/comp/env");
-	            DataSource ds = (DataSource)initContext.lookup("jdbc/prism");
+	            DataSource ds = (DataSource)initContext.lookup("jdbc/tasc");
 	            dsConnection = ds.getConnection();
 	
 	            dsPstmt = dsConnection.prepareStatement(IQueryConstants.CREATE_STG_ITEM_RESPONSE_DETAILS);
