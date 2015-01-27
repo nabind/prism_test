@@ -183,7 +183,7 @@ public interface IWSQuery {
 			"     ?,",	//4
 			"     ?,",	//5
 			"     ?,",	//6
-			"     TO_DATE(?, 'MMDDYYYY'),",	//7
+			"     TO_DATE(?, 'MMDDRRRR'),",	//7
 			"     ?,",	//8
 			"     ?,",	//9
 			"     ?,",	//10
@@ -222,7 +222,7 @@ public interface IWSQuery {
 			"     ?,",	//1
 			"     ?,",	//2
 			"     ?,",	//3
-			"     TO_DATE(?, 'MMDDYYYY'),",	//4
+			"     TO_DATE(?, 'MMDDRRRR'),",	//4
 			"     ?,",	//5
 			"     ?,",	//6
 			"     ?,",	//7
