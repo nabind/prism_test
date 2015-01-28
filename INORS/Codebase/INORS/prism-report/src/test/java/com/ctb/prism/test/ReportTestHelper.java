@@ -5,6 +5,9 @@ import java.util.Map;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.ctb.prism.report.transferobject.GroupDownloadTO;
+import com.ctb.prism.report.transferobject.ReportParameterTO;
+import com.ctb.prism.report.transferobject.ReportTO;
 
 /**
  * This class provides input parameters for test methods.
@@ -63,6 +66,116 @@ public class ReportTestHelper {
 	private static UserTO getUserTO() {
 		UserTO to = new UserTO();
 		return to;
+	}
+
+	public static Map<String, Object> helpGetFilledReport(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetFilledReportForPDF(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetAllReportList(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static ReportTO getReportTO(TestParams testParams) {
+		ReportTO reportTO = new ReportTO();
+		return reportTO;
+	}
+
+	public static Map<String, Object> helpDeleteReport(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetAssessments(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static ReportParameterTO getReportParameterTO(TestParams testParams) {
+		ReportParameterTO to = new ReportParameterTO();
+		return to;
+	}
+
+	public static Map<String, Object> helpLoadManageMessage(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetAllGroupDownloadFiles(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetRequestDetail(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetScheduledGroupFiles(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpUpdateScheduledGroupFiles(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetReportMessageFilter(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static GroupDownloadTO getGroupDownloadTO() {
+		GroupDownloadTO to = new GroupDownloadTO();
+		return to;
+	}
+
+	public static Map<String, Object> helpGetSystemConfigurationMessage(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetReportMessage(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetAllReportMessages(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetProductsForEditActions(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetActionsForEditActions(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetActionAccess(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpUpdateDataForActions(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
+	}
+
+	public static Map<String, Object> helpGetGenericSystemConfigurationMessages(TestParams testParams) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		return paramMap;
 	}
 
 }
