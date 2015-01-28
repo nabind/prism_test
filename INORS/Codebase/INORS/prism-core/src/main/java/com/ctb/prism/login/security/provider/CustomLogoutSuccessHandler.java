@@ -32,7 +32,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler
 		implements LogoutSuccessHandler {
 	
 	private static IAppLogger logger = LogFactory.getLoggerInstance(CustomLogoutSuccessHandler.class.getName());
-	
+	private static final String DEFAULT_LOGOUT_URL = "/userlogin.do";
 	@Autowired private ILoginService loginService;
 	@Autowired private CookieThemeResolver themeResolver;
 	
@@ -41,28 +41,29 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler
 			HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
 		logger.log(IAppLogger.INFO, "Logout Called: MyCustomLogoutSuccessHandler");
-		
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		GrantedAuthority auth = new SimpleGrantedAuthority("ROLE_SSO");
-		if(authorities.contains(auth)) {
-			String contractName = Utils.getContractName(themeResolver.resolveThemeName(request));
-			String applicationName = "";
-			Cookie[] cookies = request.getCookies();
-			for (Cookie cookie : cookies) {
-				if("SSOAPP".equals(cookie.getName())) {
-					applicationName = cookie.getValue();
-					break;
+		super.setDefaultTargetUrl(DEFAULT_LOGOUT_URL);
+		if(authentication != null) {
+			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+			GrantedAuthority auth = new SimpleGrantedAuthority("ROLE_SSO");
+			if(authorities.contains(auth)) {
+				String contractName = Utils.getContractName(themeResolver.resolveThemeName(request));
+				String applicationName = "";
+				Cookie[] cookies = request.getCookies();
+				for (Cookie cookie : cookies) {
+					if("SSOAPP".equals(cookie.getName())) {
+						applicationName = cookie.getValue();
+						break;
+					}
+				}
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", contractName);
+				Map<String, Object> propertyMap = loginService.getContractProerty(tileParamMap);
+				if(propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGOUT+"~"+CustomStringUtil.appendString(applicationName, "|", contractName)) != null) {
+					String redirectUrl = (String) propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGINFAIL+"~"+CustomStringUtil.appendString(applicationName, "|", contractName));
+					if(!StringUtils.isEmpty(redirectUrl)) super.setDefaultTargetUrl(redirectUrl);
 				}
 			}
-			Map<String, Object> tileParamMap = new HashMap<String, Object>();
-			tileParamMap.put("contractName", contractName);
-			Map<String, Object> propertyMap = loginService.getContractProerty(tileParamMap);
-			if(propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGOUT+"~"+CustomStringUtil.appendString(applicationName, "|", contractName)) != null) {
-				String redirectUrl = (String) propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGINFAIL+"~"+CustomStringUtil.appendString(applicationName, "|", contractName));
-				if(!StringUtils.isEmpty(redirectUrl)) super.setDefaultTargetUrl(redirectUrl);
-			}
 		}
-		
 		super.onLogoutSuccess(request, response, authentication);
 	}
 }

@@ -4,7 +4,7 @@
 	//============================= USER KEEP ALIVE =============================
 	// alert will appear if idle time is xx * 60 seconds. Where xx indicates minute.
 	var alertInterval = 25 * 60; // time in sec
-	var forceInterval = 5 * 60 * 1000; // time in milisec
+	var forceInterval = 4.5 * 60 * 1000; // time in milisec
 	var changeInt = '';
 	var seconds;
 	var forceLogout = '';
