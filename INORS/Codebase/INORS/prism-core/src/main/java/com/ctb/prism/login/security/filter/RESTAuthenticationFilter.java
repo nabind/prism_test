@@ -14,6 +14,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -140,6 +141,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         	if("OAS".equalsIgnoreCase(applicationName)) theme = "tasc";
         	if("CTB.COM".equalsIgnoreCase(applicationName)) theme = "inors";
         }
+        response.addCookie(new Cookie("SSOAPP", applicationName));
 
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");

@@ -40,7 +40,8 @@
 		<intercept-url pattern="/secure/**" access="ROLE_ADMIN" />	
 		<intercept-url pattern="/**" access="ROLE_ADMIN,ROLE_USER" />
 		<intercept-url pattern="/j_spring_security_switch_user" access="ROLE_ADMIN" />
-		<logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/userlogin.do"/>
+		<!-- <logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/userlogin.do"/> -->
+		<logout invalidate-session="true" delete-cookies="JSESSIONID" success-handler-ref="CustomLogoutSuccessHandler"></logout> 
 		<access-denied-handler error-page="/denied.jsp"/>		
 		<session-management invalid-session-url="/userlogin.do?sessionExpired=1">
     		<concurrency-control max-sessions="10000" error-if-maximum-exceeded="true" />
