@@ -1356,22 +1356,25 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		List<EduCenterTO> eduCenterTOList = null;
 		@SuppressWarnings("rawtypes")
 		List placeHolderValueList = new ArrayList();
-		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
-			userName = CustomStringUtil.appendString("%", userName, "%");
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(tenantId);
-			placeHolderValueList.add(15);
-			eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.SEARCH_EDU_USER, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
-		} else {
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(userName);
-			placeHolderValueList.add(tenantId);
-			placeHolderValueList.add(15);
-			eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.SEARCH_EDU_USER, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+		if (tenantId != null && !"null".equals(tenantId)) {
+			if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
+				userName = CustomStringUtil.appendString("%", userName, "%");
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(tenantId);
+				placeHolderValueList.add(15);
+				eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.SEARCH_EDU_USER, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+			} else {
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(userName);
+				placeHolderValueList.add(tenantId);
+				placeHolderValueList.add(15);
+				eduCenterTOList = getJdbcTemplatePrism().query(IQueryConstants.SEARCH_EDU_USER, placeHolderValueList.toArray(), new EduCenterTOMapper(getJdbcTemplatePrism()));
+			}
 		}
+
 		return eduCenterTOList;
 	}
 
