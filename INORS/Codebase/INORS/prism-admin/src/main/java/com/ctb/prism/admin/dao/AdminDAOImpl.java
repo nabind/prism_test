@@ -1400,7 +1400,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		userName = CustomStringUtil.appendString("%", userName, "%");
 		String userListJsonString = null;
 		List<Map<String, Object>> listOfUser = null;
-		if (tenantId != null) {
+		if (tenantId != null && !"null".equals(tenantId)) {
 			if (IApplicationConstants.PURPOSE.equals(purpose)) {
 				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, moreCount);
 			} else {
