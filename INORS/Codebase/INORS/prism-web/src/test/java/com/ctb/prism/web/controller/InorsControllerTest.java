@@ -61,7 +61,7 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 	public void testGroupDownloadFiles() throws SystemException {
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
 		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
-		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, 0L);
 		ModelAndView mv = controller.groupDownloadFiles(request, response);
 		assertNotNull(mv);
 	}
@@ -113,7 +113,7 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 	public void testIcLetterDownloads() {
 		request.setParameter("reportId", "0");
 		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
-		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, 0L);
 		request.getSession().setAttribute(IApplicationConstants.CURRUSER, testParams.getUserName());
 		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.icLetterDownloads(request, response);
@@ -130,7 +130,7 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 	public void testGroupDownloadForm() {
 		request.setParameter("reportId", "0");
 		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
-		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, 0L);
 		request.getSession().setAttribute(IApplicationConstants.CURRUSER, testParams.getUserName());
 		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.groupDownloadForm(request, response);
@@ -191,7 +191,7 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 		request.setParameter("reportUrl", "");
 		request.setParameter("reportId", "0");
 		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
-		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, 0L);
 		ModelAndView mv = controller.grtICFileForm(request);
 		assertNotNull(mv);
 	}

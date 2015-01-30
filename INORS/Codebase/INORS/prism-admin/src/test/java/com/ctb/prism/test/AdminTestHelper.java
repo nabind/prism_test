@@ -746,7 +746,7 @@ public class AdminTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("nodeid", "0");
 		// paramMap.put("adminYear", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		return paramMap;
 	}
 
@@ -754,7 +754,7 @@ public class AdminTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("nodeid", "0");
 		paramMap.put("adminYear", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		return paramMap;
 	}
 
@@ -764,6 +764,7 @@ public class AdminTestHelper {
 		paramMap.put("CURRENTORG", "0");
 		paramMap.put("ADMINYEAR", "0");
 		paramMap.put("SEARCHPARAM", null);
+		paramMap.put("customerId", "0");
 		paramMap.put("CUSTOMERID", "0");
 		paramMap.put("ORGMODE", "0");
 		paramMap.put("moreCount", "15");
@@ -824,9 +825,9 @@ public class AdminTestHelper {
 	public static Map<String, Object> helpSearchOrganization(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("orgName", "0");
-		paramMap.put("tenantId", "0");
-		paramMap.put("custProdId", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("tenantId", 0L);
+		paramMap.put("custProdId", 0L);
+		paramMap.put("customerId", 0L);
 		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
@@ -834,9 +835,9 @@ public class AdminTestHelper {
 	public static Map<String, Object> helpSearchOrgAutoComplete(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("orgName", "0");
-		paramMap.put("tenantId", "0");
-		paramMap.put("custProdId", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("tenantId", 0L);
+		paramMap.put("custProdId", 0L);
+		paramMap.put("customerId", 0L);
 		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
@@ -857,7 +858,7 @@ public class AdminTestHelper {
 		paramMap.put("currOrg", "0");
 		paramMap.put("isFirstLoad", true);
 		paramMap.put("adminYear", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
@@ -867,7 +868,7 @@ public class AdminTestHelper {
 		paramMap.put("nodeid", "0");
 		paramMap.put("isFirstLoad", true);
 		paramMap.put("adminYear", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
@@ -877,7 +878,7 @@ public class AdminTestHelper {
 		paramMap.put("nodeid", "0");
 		paramMap.put("currOrg", "0");
 		paramMap.put("userId", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		paramMap.put("isRedirected", true);
 		return paramMap;
 	}
@@ -893,7 +894,7 @@ public class AdminTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("nodeid", "0");
 		paramMap.put("adminYear", "0");
-		paramMap.put("customerId", "0");
+		paramMap.put("customerId", 0L);
 		paramMap.put("orgMode", "0");
 		paramMap.put("selectedLevelOrgId", "0");
 		return paramMap;
@@ -915,7 +916,7 @@ public class AdminTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		com.ctb.prism.login.transferobject.UserTO to = getAdminUserTO(testParams);
 		paramMap.put("loggedinUserTO", to);
-		paramMap.put("eduCenterId", "0");
+		paramMap.put("eduCenterId", 0L);
 		paramMap.put("searchParam", "0");
 		paramMap.put("lastEduCenterId_username", "0");
 		paramMap.put("moreCount", "15");

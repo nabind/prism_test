@@ -109,8 +109,8 @@ public class ReportTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		List<GrantedAuthority> authList= new ArrayList<GrantedAuthority>();
 		paramMap.put("roles", authList);
-		paramMap.put("defaultCustProdId", "0");
-		paramMap.put("orgNodeLevel", "0");
+		paramMap.put("defaultCustProdId", 0L);
+		paramMap.put("orgNodeLevel", 0L);
 		return paramMap;
 	}
 
@@ -122,8 +122,8 @@ public class ReportTestHelper {
 
 	public static Map<String, Object> helpLoadManageMessage(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("reportId", "0");
-		paramMap.put("custProdId", "0");
+		paramMap.put("reportId", 0L);
+		paramMap.put("custProdId", 0L);
 		paramMap.put("reportName", "");
 		return paramMap;
 	}

@@ -25,7 +25,7 @@ public class LoginTestHelper {
 		paramMap.put("REPORT_NAME", "");
 		paramMap.put("MESSAGE_TYPE", "");
 		paramMap.put("MESSAGE_NAME", "");
-		paramMap.put("custProdId", "0");
+		paramMap.put("custProdId", 0L);
 		paramMap.put("contractName", testParams.getContractName());
 		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
 		return paramMap;
@@ -56,7 +56,7 @@ public class LoginTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("roles", "");
 		paramMap.put("orgNodeLevel", "0");
-		paramMap.put("custProdId", "0");
+		paramMap.put("custProdId", 0L);
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
 	}
@@ -65,7 +65,7 @@ public class LoginTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("roles", "");
 		paramMap.put("orgNodeLevel", "0");
-		paramMap.put("custProdId", "0");
+		paramMap.put("custProdId", 0L);
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
 	}
