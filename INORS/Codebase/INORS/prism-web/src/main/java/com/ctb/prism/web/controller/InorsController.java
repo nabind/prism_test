@@ -108,7 +108,7 @@ public class InorsController {
 		ModelAndView modelAndView = new ModelAndView("inors/groupDownloadFiles");
 		String grpList = "";
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
-		long orgLevel = Long.parseLong((String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL));
+		long orgLevel = (Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("loggedinUserTO", loggedinUserTO);
 		paramMap.put("gdfExpiryTime", propertyLookup.get("gdfExpiryTime"));
@@ -569,7 +569,7 @@ public class InorsController {
 		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
 		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		String orgNodeLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
+		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String loggedInOrgNodeId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
@@ -1329,7 +1329,7 @@ public class InorsController {
 		String reportId = (String) request.getParameter("reportId");
 		String productId = (testAdministrationVal == null) ? IApplicationConstants.DEFAULT_PRODUCT_ID : testAdministrationVal;
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		String orgNodeLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL);
+		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
 		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		logger.log(IAppLogger.INFO, "reportId=" + reportId);
 		logger.log(IAppLogger.INFO, "productId=" + productId);

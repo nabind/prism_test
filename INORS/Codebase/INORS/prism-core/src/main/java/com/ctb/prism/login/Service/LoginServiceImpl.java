@@ -28,6 +28,15 @@ public class LoginServiceImpl implements ILoginService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see com.ctb.prism.login.Service.ILoginService#selectTest()
+	 */
+	public boolean selectTest() {
+		return loginBusiness.selectTest();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ctb.prism.login.Service.ILoginService#getUserByEmail(java.lang.String)
 	 */
 	/*	public UserTO getUserByEmail(String userEmail) throws SystemException {

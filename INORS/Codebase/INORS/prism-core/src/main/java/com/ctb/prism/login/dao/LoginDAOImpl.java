@@ -43,7 +43,7 @@ import com.ctb.prism.login.transferobject.UserTO;
 //import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository
-public class LoginDAOImpl extends BaseDAO implements ILoginDAO {
+public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 	private static final IAppLogger logger = LogFactory
 			.getLoggerInstance(LoginDAOImpl.class.getName());
@@ -412,6 +412,26 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO {
 		}	
 	
 	}
+
+	
+	public boolean selectTest(){
+		
+		String sql = "SELECT WOM_WORKFLOW_PK" +
+						", WOM_WORKFLOW_NAME" +
+						", WOM_WORKFLOW_DESC" +
+						", WOM_WORKFLOW_TYPE" +
+						" FROM WF_WORKFLOW_MASTER" +
+						" WHERE WOM_IS_VALID=?";
+		
+		Object[] params = new Object[]{'Y'};
+		int[] types = new int[]{Types.CHAR};		
+		
+		List<Map<String,Object>> rows = getJdbcTemplate().queryForList(sql, params, types);
+		for (Map row : rows) {			
+			logger.log(IAppLogger.INFO,(String)row.get("WOM_WORKFLOW_NAME"));
+		}		
+		return true;
+	}
 	
 	/*public UserTO getUserByEmail(String userEmail) throws SystemException {
 		return getUserDetails(userEmail);
@@ -481,7 +501,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO {
 		final String reportName = (String) paramMap.get("REPORT_NAME");
 		final String messageType = (String) paramMap.get("MESSAGE_TYPE");
 		final String messageName = (String) paramMap.get("MESSAGE_NAME");
-		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		final long custProdId = ((Long)paramMap.get("custProdId")).longValue();
 		String contractName = (String) paramMap.get("contractName");
 		
 		
@@ -545,7 +565,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO {
 		logger.log(IAppLogger.INFO, "Enter: getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
 		long t1 = System.currentTimeMillis();
-		final long loggedInCustomer = Long.valueOf(paramMap.get("loggedInCustomer").toString());
+		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
 		final String loggedInOrgId = (String) paramMap.get("loggedInOrgId");
 	//	final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
 	//	if(paramMap.get("loggedInCustomer") != null) {

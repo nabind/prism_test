@@ -14,6 +14,7 @@ import com.ctb.prism.login.transferobject.UserTO;
 
 public interface ILoginDAO {
 
+	public boolean selectTest();
 //	public UserTO getUserByEmail(String userEmail) throws SystemException;
 	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
 	public List<GrantedAuthority> getGrantedAuthorities(String username);

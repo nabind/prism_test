@@ -624,7 +624,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		//authList = loggedinUserTO.getRoles();
 		@SuppressWarnings("unchecked")
 		List<GrantedAuthority> authList= (List<GrantedAuthority>)paramMap.get("roles");
-		Long defaultCustProdId = Long.parseLong((String) paramMap.get("defaultCustProdId"));
+		Long defaultCustProdId = (Long) paramMap.get("defaultCustProdId");
 /*		for (int i = 0; i < authList.size(); i++) {
 			if (authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
@@ -639,7 +639,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			isEduUser = true;
 		}
 		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
-		Long orgNodeLevel = Long.parseLong((String) paramMap.get("orgNodeLevel"));
+		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		//paramMap.clear();
 		Map<String, Object> menuMap = new HashMap<String, Object>();
 		
