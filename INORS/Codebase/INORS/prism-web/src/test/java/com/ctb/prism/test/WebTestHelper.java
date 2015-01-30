@@ -12,7 +12,9 @@ import com.ctb.prism.login.transferobject.UserTO;
  * @author TCS
  *
  */
-public class LoginTestHelper {
+public class WebTestHelper {
+	
+	public static final String requestDetails = "{\"button\":\"SP\",\"testAdministrationVal\":\"3001\",\"testAdministrationText\":\"\",\"testProgram\":\"1\",\"district\":\"603454\",\"school\":\"603834\",\"klass\":\"-1\",\"grade\":\"10001\",\"students\":\"7768078,7768082,7768143,7768147\",\"groupFile\":\"ISR\",\"collationHierarchy\":\"11\",\"fileName\":\"filepath\",\"email\":\"ctbadmin@inors.com\",\"userId\":\"1\",\"userName\":\"ctbadmin\",\"customerId\":\"1000\",\"createdBy\":0,\"udatedBy\":0,\"clikedOrgId\":0}";
 
 	public static Map<String, Object> helpGetUserByEmail(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -121,5 +123,11 @@ public class LoginTestHelper {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
+	}
+
+	public static UserTO getLoggedinUserTO(TestParams testParams) {
+		UserTO to = new UserTO();
+		to.setContractName(testParams.getContractName());
+		return to;
 	}
 }

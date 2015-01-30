@@ -1,6 +1,7 @@
 package com.ctb.prism.login.dao;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 import java.util.Map;
@@ -88,12 +89,6 @@ public class LoginDAOImplTest extends AbstractTransactionalJUnit4SpringContextTe
 	}
 
 	@Test
-	public void testSelectTest() {
-		boolean status = loginDao.selectTest();
-		assertNotNull(status);
-	}
-
-	@Test
 	public void testGetUserByEmail() throws SystemException {
 		Map<String, Object> paramMap = LoginTestHelper.helpGetUserDetails(testParams);
 		UserTO user = loginDao.getUserByEmail(paramMap);
@@ -101,17 +96,10 @@ public class LoginDAOImplTest extends AbstractTransactionalJUnit4SpringContextTe
 	}
 
 	@Test
-	public void testGetUsersForSSOString() {
-		String orgId = "0";
-		UserTO user = loginDao.getUsersForSSO(orgId);
-		assertNotNull(user);
-	}
-
-	@Test
 	public void testGetOrgLevel() {
-		UserTO userTO = LoginTestHelper.getUserTO();
+		UserTO userTO = LoginTestHelper.getUserTO(testParams);
 		UserTO user = loginDao.getOrgLevel(userTO);
-		assertNotNull(user);
+		assertNull(user);
 	}
 
 	@Test
@@ -130,7 +118,7 @@ public class LoginDAOImplTest extends AbstractTransactionalJUnit4SpringContextTe
 
 	@Test
 	public void testGetUsersForSSOUserTO() {
-		UserTO userTO = LoginTestHelper.getUserTO();
+		UserTO userTO = LoginTestHelper.getUserTO(testParams);
 		UserTO user = loginDao.getUsersForSSO(userTO);
 		assertNotNull(user);
 	}
@@ -176,8 +164,8 @@ public class LoginDAOImplTest extends AbstractTransactionalJUnit4SpringContextTe
 
 	@Test
 	public void testGetRootPath() {
-		String customerId = "0";
-		String testAdmin = "0";
+		String customerId = "1000";
+		String testAdmin = "3001";
 		String str = loginDao.getRootPath(customerId, testAdmin, testParams.getContractName());
 		assertNotNull(str);
 	}

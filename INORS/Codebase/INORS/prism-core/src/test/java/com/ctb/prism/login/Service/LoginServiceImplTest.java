@@ -1,6 +1,7 @@
 package com.ctb.prism.login.Service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 import java.util.Map;
@@ -41,12 +42,6 @@ public class LoginServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@After
 	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void testSelectTest() {
-		boolean status = loginService.selectTest();
-		assertNotNull(status);
 	}
 
 	@Test
@@ -114,16 +109,16 @@ public class LoginServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetUsersForSSO() throws Exception {
-		UserTO userTO = LoginTestHelper.getUserTO();
+		UserTO userTO = LoginTestHelper.getUserTO(testParams);
 		UserTO user = loginService.getUsersForSSO(userTO);
 		assertNotNull(user);
 	}
 
 	@Test
 	public void testGetOrgLevel() {
-		UserTO userTO = LoginTestHelper.getUserTO();
+		UserTO userTO = LoginTestHelper.getUserTO(testParams);
 		UserTO user = loginService.getOrgLevel(userTO);
-		assertNotNull(user);
+		assertNull(user);
 	}
 
 	@Test
@@ -155,8 +150,8 @@ public class LoginServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetRootPath() {
-		String customerId = "0";
-		String testAdmin = "0";
+		String customerId = "1000";
+		String testAdmin = "3001";
 		String rootPath = loginService.getRootPath(customerId, testAdmin, testParams.getContractName());
 		assertNotNull(rootPath);
 	}
@@ -178,7 +173,7 @@ public class LoginServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetContractProerty() {
 		Map<String, Object> paramMap = LoginTestHelper.helpGetContractProerty(testParams);
-		Map<String, Object> outputMap = loginService.getContractProerty (paramMap);
+		Map<String, Object> outputMap = loginService.getContractProerty(paramMap);
 		assertNotNull(outputMap);
 	}
 

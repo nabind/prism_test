@@ -329,6 +329,10 @@ public class ParentTestHelper {
 		user.setOrgId("0");
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("loggedinUserTO", user);
+		
+		paramMap.put("loggedInCustomer", "0");
+		paramMap.put("loggedInOrgId", "0");
+		
 		return paramMap;
 	}
 

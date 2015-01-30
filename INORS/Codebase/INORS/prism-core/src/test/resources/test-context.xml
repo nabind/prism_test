@@ -20,4 +20,5 @@
 	<import resource="tx-service.xml" />
 	<import resource="jms-config.xml" />
 	<import resource="simpledb-config.xml" />
+	<import resource="applicationContext-theme.xml" />
 </beans>

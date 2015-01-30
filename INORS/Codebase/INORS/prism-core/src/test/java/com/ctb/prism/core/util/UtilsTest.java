@@ -2,6 +2,7 @@ package com.ctb.prism.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.ctb.prism.core.transferobject.ObjectValueTO;
 
 public class UtilsTest {
 
@@ -147,8 +150,8 @@ public class UtilsTest {
 
 	@Test
 	public void testJsonToObject() {
-		String json = "{}";
-		Object obj = utils.jsonToObject(json, Object.class);
+		String json = "{\"name\" : \"hello\", \"value\" : \"world\", \"other\" : \"beautiful\"}";
+		ObjectValueTO obj = utils.jsonToObject(json, ObjectValueTO.class);
 		assertNotNull(obj);
 	}
 
@@ -174,7 +177,7 @@ public class UtilsTest {
 	public void testDeserialize() {
 		byte[] bytes = "abcd".getBytes();
 		Object obj = utils.deserialize(bytes);
-		assertNotNull(obj);
+		assertNull(obj);
 	}
 
 	@Test

@@ -1,7 +1,11 @@
 package com.ctb.prism.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -16,6 +20,8 @@ import com.ctb.prism.report.transferobject.ReportTO;
  *
  */
 public class ReportTestHelper {
+	
+	public static final String requestDetails = "{\"button\":\"SP\",\"testAdministrationVal\":\"3001\",\"testAdministrationText\":\"\",\"testProgram\":\"1\",\"district\":\"603454\",\"school\":\"603834\",\"klass\":\"-1\",\"grade\":\"10001\",\"students\":\"7768078,7768082,7768143,7768147\",\"groupFile\":\"ISR\",\"collationHierarchy\":\"11\",\"fileName\":\"filepath\",\"email\":\"ctbadmin@inors.com\",\"userId\":\"1\",\"userName\":\"ctbadmin\",\"customerId\":\"1000\",\"createdBy\":0,\"udatedBy\":0,\"clikedOrgId\":0}";
 
 	public static Map<String, Object> helpGetRescoreRequestForm(TestParams testParams) throws BusinessException {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -60,6 +66,7 @@ public class ReportTestHelper {
 	public static Map<String, Object> helpGetNotDnpStudentDetails(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("studentBioId", 0L);
+		paramMap.put("grade", "0");
 		return paramMap;
 	}
 
@@ -80,6 +87,9 @@ public class ReportTestHelper {
 
 	public static Map<String, Object> helpGetAllReportList(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedInCustomer", "0");
+		paramMap.put("editReport", "");
+		paramMap.put("reportId", "0");
 		return paramMap;
 	}
 
@@ -90,27 +100,44 @@ public class ReportTestHelper {
 
 	public static Map<String, Object> helpDeleteReport(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedInCustomer", "0");
+		paramMap.put("reportId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetAssessments(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		List<GrantedAuthority> authList= new ArrayList<GrantedAuthority>();
+		paramMap.put("roles", authList);
+		paramMap.put("defaultCustProdId", "0");
+		paramMap.put("orgNodeLevel", "0");
 		return paramMap;
 	}
 
 	public static ReportParameterTO getReportParameterTO(TestParams testParams) {
 		ReportParameterTO to = new ReportParameterTO();
+		to.setCustomerId("0");
 		return to;
 	}
 
 	public static Map<String, Object> helpLoadManageMessage(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reportId", "0");
+		paramMap.put("custProdId", "0");
+		paramMap.put("reportName", "");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetAllGroupDownloadFiles(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		UserTO loggedinUserTO = getLoggedinUserTO();
+		paramMap.put("loggedinUserTO", loggedinUserTO);
 		return paramMap;
+	}
+
+	private static UserTO getLoggedinUserTO() {
+		UserTO loggedinUserTO = new UserTO();
+		return loggedinUserTO;
 	}
 
 	public static Map<String, Object> helpGetRequestDetail(TestParams testParams) {
@@ -130,6 +157,8 @@ public class ReportTestHelper {
 
 	public static Map<String, Object> helpGetReportMessageFilter(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedInCustomer", "0");
+		paramMap.put("loggedInOrgId", "0");
 		return paramMap;
 	}
 
@@ -155,21 +184,32 @@ public class ReportTestHelper {
 
 	public static Map<String, Object> helpGetProductsForEditActions(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reportId", "0");
+		paramMap.put("customerId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetActionsForEditActions(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reportId", "0");
+		paramMap.put("custProdId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetActionAccess(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reportId", "0");
+		paramMap.put("custProdId", "0");
+		paramMap.put("actionId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpUpdateDataForActions(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reportId", "0");
+		paramMap.put("custProdId", "0");
+		paramMap.put("actionId", "0");
+		paramMap.put("roleIdLevelId", "0");
 		return paramMap;
 	}
 

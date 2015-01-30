@@ -27,10 +27,6 @@ public class LoginBusinessImpl implements ILoginBusiness{
 	@Autowired
 	private ILoginDAO loginDAO;
 	
-	public boolean selectTest(){
-		return loginDAO.selectTest();
-	}
-	
 /*	public UserTO getUserByEmail(String userEmail) throws SystemException{
 		return loginDAO.getUserByEmail(userEmail);
 	}*/

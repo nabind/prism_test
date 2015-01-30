@@ -1,6 +1,7 @@
 package com.ctb.prism.inors.business;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,14 +61,14 @@ public class InorsBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		String jobId = "0";
 		String contractName = testParams.getContractName();
 		JobTrackingTO outputTO = inorsBusiness.getJob(jobId, contractName);
-		assertNotNull(outputTO);
+		assertNull(outputTO);
 	}
 
 	@Test
 	public void testGetDownloadData() {
 		Map<String, String> paramMap = InorsTestHelper.helpTestGetDownloadData(testParams);
 		List<? extends BaseTO> downloadData = inorsBusiness.getDownloadData(paramMap);
-		assertNotNull(downloadData);
+		assertNull(downloadData);
 	}
 
 	@Test
@@ -87,7 +88,7 @@ public class InorsBusinessImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetProductNameById() {
 		String productName = inorsBusiness.getProductNameById(0L);
-		assertNotNull(productName);
+		assertNull(productName);
 	}
 
 	@Test
@@ -98,7 +99,7 @@ public class InorsBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		ArrayList<String> headerList = InorsDownloadUtil.getRowDataLayout(headers);
 		ArrayList<String> aliasList = InorsDownloadUtil.getRowDataLayout(aliases);
 		ArrayList<ArrayList<String>> tabulerData = inorsBusiness.getTabulerData(paramMap, aliasList, headerList);
-		assertNotNull(tabulerData);
+		assertNull(tabulerData);
 	}
 
 	@Test

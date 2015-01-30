@@ -1541,7 +1541,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
 		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
 		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
-		final long customerId = (Long)paramMap.get("customerId");
+		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
 		final String orgMode = (String)paramMap.get("orgMode");
 		
 		return (List<OrgTO>) getJdbcTemplatePrism().execute(
@@ -1596,14 +1596,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantID of the logged in user
 	 */
 	public String searchOrgAutoComplete(Map<String, Object> paramMap) throws Exception{
-		
+
 		logger.log(IAppLogger.INFO, "Enter: searchOrgAutoComplete()");
-		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
+		final String orgName = CustomStringUtil.appendString("%", (String) paramMap.get("orgName"), "%");
 		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
 		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
-		final long customerId = (Long)paramMap.get("customerId");
-		final String orgMode = (String)paramMap.get("orgMode");
-		
+		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
+		final String orgMode = (String) paramMap.get("orgMode");
+
 		return (String) getJdbcTemplatePrism().execute(
 				new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -2224,7 +2224,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<EduCenterTO> loadEduCenterUsers(final Map<String,Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO, "Enter: loadEduCenterUsers()");
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) paramMap.get("loggedinUserTO");
-		long eduCenterId = ((Long) paramMap.get("eduCenterId")).longValue();
+		long eduCenterId = Long.valueOf(paramMap.get("eduCenterId").toString());
 		String searchParam = (String) paramMap.get("searchParam");
 		String lastEduCenterId_username = (String) paramMap.get("lastEduCenterId_username");
 		String moreCount = (String) paramMap.get("moreCount");

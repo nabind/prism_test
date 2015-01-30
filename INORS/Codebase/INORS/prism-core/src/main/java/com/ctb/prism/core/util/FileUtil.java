@@ -445,6 +445,9 @@ public class FileUtil {
 	 */
 	public static String getFileNameFromFilePath(String filePath) {
 		String fileName = filePath;
+		if (fileName == null) {
+			return "";
+		}
 		int index = filePath.lastIndexOf('\\');
 		if (index != -1) {
 			fileName = filePath.substring(index + 1);

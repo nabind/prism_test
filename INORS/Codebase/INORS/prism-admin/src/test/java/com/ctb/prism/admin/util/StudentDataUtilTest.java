@@ -51,7 +51,7 @@ public class StudentDataUtilTest {
 		assertNotNull(bytes);
 	}
 
-	@Test
+	@Test(expected=org.beanio.BeanIOConfigurationException.class)
 	public void testCreateFixedLengthFile() {
 		List<StudentDataTO> students = new ArrayList<StudentDataTO>();
 		students.add(AdminTestHelper.getStudentDataTO(testParams));

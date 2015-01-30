@@ -170,7 +170,7 @@ public class InorsDownloadUtil {
 		tableData.add(headerData);
 
 		// Add Rows
-		while (rs.next()) { // Rows
+		while (rs != null && rs.next()) { // Rows
 			ArrayList<String> rowData = new ArrayList<String>();
 			for (String columnAlias : aliasList) { // Columns
 				columnAlias = columnAlias.trim();

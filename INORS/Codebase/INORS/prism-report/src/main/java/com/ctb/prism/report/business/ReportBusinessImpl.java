@@ -254,6 +254,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 		
 		@SuppressWarnings("unchecked")
 		List<InputControlTO> tos = (List<InputControlTO>)paramMap.get("tos");
+		if (tos == null) {
+			tos = new ArrayList<InputControlTO>();
+		}
 		String userName = (String) paramMap.get("userName");
 		String customerId = (String)paramMap.get("customerId");	
 		String assessmentId = (String) paramMap.get("assessmentId");
@@ -621,7 +624,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		//authList = loggedinUserTO.getRoles();
 		@SuppressWarnings("unchecked")
 		List<GrantedAuthority> authList= (List<GrantedAuthority>)paramMap.get("roles");
-		Long defaultCustProdId = (Long) paramMap.get("defaultCustProdId");
+		Long defaultCustProdId = Long.parseLong((String) paramMap.get("defaultCustProdId"));
 /*		for (int i = 0; i < authList.size(); i++) {
 			if (authList.get(i).getAuthority().equals("ROLE_GRW")) {
 				isGrowthUser = true;
@@ -636,7 +639,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			isEduUser = true;
 		}
 		Boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
-		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
+		Long orgNodeLevel = Long.parseLong((String) paramMap.get("orgNodeLevel"));
 		//paramMap.clear();
 		Map<String, Object> menuMap = new HashMap<String, Object>();
 		

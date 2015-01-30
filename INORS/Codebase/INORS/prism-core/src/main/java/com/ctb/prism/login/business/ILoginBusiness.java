@@ -12,7 +12,6 @@ import com.ctb.prism.login.transferobject.UserTO;
 
 public interface ILoginBusiness {
 
-	public boolean selectTest();
 	//public UserTO getUserByEmail(String userEmail) throws SystemException;
 	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
 

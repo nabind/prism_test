@@ -3,6 +3,8 @@ package com.ctb.prism.inors.util;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +77,11 @@ public class InorsDownloadUtilTest {
 	}
 
 	@Test
-	public void testGetTableDataFromResultSet() {
-		fail("Not yet implemented");
+	public void testGetTableDataFromResultSet() throws SQLException {
+		ResultSet rs = null;
+		ArrayList<String> aliasList = new ArrayList<String>();
+		ArrayList<String> headerList = new ArrayList<String>();
+		ArrayList<ArrayList<String>> lostOfList = util.getTableDataFromResultSet(rs, aliasList, headerList);
 	}
 
 	@Test

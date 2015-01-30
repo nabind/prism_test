@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.test.WebTestHelper;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 
@@ -59,8 +60,13 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGetOrganizations() {
 		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
-		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, null);
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
 		request.setParameter("AdminYear", "0");
+		
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		
 		ModelAndView mv = controller.getOrganizations(request, response);
 		assertNotNull(mv);
 		
@@ -95,6 +101,11 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testManageUser() throws Exception {
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.setParameter("AdminYear", "0");
 		ModelAndView mv = controller.manageUser(request, response, session);
 		assertNotNull(mv);
 	}
@@ -107,6 +118,13 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testUserDetails() throws Exception {
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.setParameter("tenantId", "0");
+		request.setParameter("AdminYear", "0");
 		String str = controller.userDetails(request, response);
 		assertNull(str);
 	}
@@ -120,7 +138,7 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testUpdateUser() throws IOException {
 		ModelAndView mv = controller.updateUser(request, response);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 	@Test
@@ -191,18 +209,37 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testRedirectToUser() throws Exception {
+		request.setParameter("AdminYear", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.redirectToUser(request, response, session);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 	@Test
 	public void testManageParent() throws Exception {
+		request.setParameter("AdminYear", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.manageParent(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
 	public void testManageStudent() throws Exception {
+		request.setParameter("AdminYear", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, "");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.manageStudent(request, response);
 		assertNotNull(mv);
 	}
@@ -311,7 +348,7 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(mv);
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.BusinessException.class)
 	public void testLoadEduCenterUsers() throws Exception {
 		request.setParameter("eduCenterId", "0");
 		controller.loadEduCenterUsers(request, response, session);

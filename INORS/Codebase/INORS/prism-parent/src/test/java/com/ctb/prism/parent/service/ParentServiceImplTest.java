@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -244,7 +243,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(schoolId);
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.BusinessException.class)
 	public void testRegenerateActivationCode() throws Exception {
 		StudentTO student = new StudentTO();
 		boolean status = parentService.regenerateActivationCode(student);
@@ -277,7 +276,6 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test(expected = BusinessException.class)
-	// TODO
 	public void testLoadManageContent() throws BusinessException {
 		List<ManageContentTO> contentList = parentService.loadManageContent(ParentTestHelper.helpLoadManageContent(testParams));
 		assertNotNull(contentList);
@@ -301,8 +299,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(to);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testModifyGenericForEdit() throws BusinessException {
 		ManageContentTO to = parentService.modifyGenericForEdit(ParentTestHelper.helpModifyGenericForEdit(testParams));
 		assertNotNull(to);
@@ -314,8 +311,7 @@ public class ParentServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(contentList);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testGetArticleDescription() throws BusinessException {
 		ManageContentTO content = parentService.getArticleDescription(ParentTestHelper.helpGetArticleDescription(testParams));
 		assertNotNull(content);

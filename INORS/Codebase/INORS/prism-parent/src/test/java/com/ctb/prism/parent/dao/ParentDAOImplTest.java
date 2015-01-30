@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -320,8 +319,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(to);
 	}
 
-	@Test(expected = BusinessException.class)
-	// TODO
+	@Test(expected=com.ctb.prism.core.exception.BusinessException.class)
 	public void testLoadManageContent() throws BusinessException {
 		Map<String, Object> paramMap = ParentTestHelper.helpLoadManageContent(testParams);
 		paramMap.put("checkFirstLoad", "true");
@@ -349,8 +347,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(to);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testModifyGenericForEdit() throws BusinessException {
 		ManageContentTO to = parentDao.modifyGenericForEdit(ParentTestHelper.helpModifyGenericForEdit(testParams));
 		assertNotNull(to);
@@ -368,8 +365,7 @@ public class ParentDAOImplTest extends AbstractTransactionalJUnit4SpringContextT
 		assertNotNull(contentList);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testGetArticleDescription() throws BusinessException {
 		ManageContentTO content = parentDao.getArticleDescription(ParentTestHelper.helpGetArticleDescription(testParams));
 		assertNotNull(content);

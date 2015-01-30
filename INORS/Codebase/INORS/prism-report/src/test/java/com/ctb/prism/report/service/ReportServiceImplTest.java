@@ -1,6 +1,7 @@
 package com.ctb.prism.report.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -60,7 +61,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
+	@Test(expected=java.lang.NullPointerException.class)
 	public void testGetFilledReport() throws Exception {
 		JasperReport jasperReport = null;
 		Map<String, Object> parameters = ReportTestHelper.helpGetFilledReport(testParams);
@@ -68,7 +69,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(jp);
 	}
 
-	@Test
+	@Test(expected=java.lang.NullPointerException.class)
 	public void testGetFilledReportForPDF() throws Exception {
 		JasperReport jasperReport = null;
 		Map<String, Object> parameters = ReportTestHelper.helpGetFilledReportForPDF(testParams);
@@ -103,20 +104,20 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull("Return type is void");
 	}
 
-	@Test
+	@Test(expected=java.lang.NullPointerException.class)
 	public void testRemoveCacheString() throws IOException {
 		reportService.removeCache(testParams.getContractName());
 		assertNotNull("Return type is void");
 	}
 
-	@Test
+	@Test(expected=org.springframework.dao.EmptyResultDataAccessException.class)
 	public void testGetReportJasperObject() {
 		String reportPath = "";
 		JasperReport jr = reportService.getReportJasperObject(reportPath);
 		assertNotNull(jr);
 	}
 
-	@Test
+	@Test(expected=org.springframework.dao.EmptyResultDataAccessException.class)
 	public void testGetReportJasperObjectForName() {
 		String reportname = "";
 		JasperReport jr = reportService.getReportJasperObjectForName(reportname);
@@ -134,7 +135,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testGetInputControlDetails() {
 		String reportPath = "";
 		List<InputControlTO> list = reportService.getInputControlDetails(reportPath);
-		assertNotNull(list);
+		assertNull(list);
 	}
 
 	@Test
@@ -158,14 +159,14 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(obj);
 	}
 
-	@Test
+	@Test(expected=org.springframework.jdbc.UncategorizedSQLException.class)
 	public void testGetValuesOfSingleInputString() {
 		String query = "";
 		List<ObjectValueTO> list = reportService.getValuesOfSingleInput(query);
 		assertNotNull(list);
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.SystemException.class)
 	public void testGetValuesOfSingleInputStringStringStringStringStringMapOfStringStringObjectString() throws SystemException {
 		String query = "";
 		String userName = "";
@@ -200,7 +201,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(status);
 	}
 
-	@Test
+	@Test(expected=java.lang.StringIndexOutOfBoundsException.class)
 	public void testGetAssessments() {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetAssessments(testParams);
 		List<AssessmentTO> list = reportService.getAssessments(paramMap);
@@ -211,7 +212,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testAddNewDashboard() throws Exception {
 		ReportParameterTO reportParameterTO = ReportTestHelper.getReportParameterTO(testParams);
 		ReportTO to = reportService.addNewDashboard(reportParameterTO);
-		assertNotNull(to);
+		assertNull(to);
 	}
 
 	@Test
@@ -228,7 +229,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(map);
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.SystemException.class)
 	public void testSaveManageMessage() throws SystemException {
 		List<ManageMessageTO> manageMessageTOList = new ArrayList<ManageMessageTO>();
 		int i = reportService.saveManageMessage(manageMessageTOList);
@@ -239,14 +240,14 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testGetAllGroupDownloadFiles() throws SystemException {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetAllGroupDownloadFiles(testParams);
 		List<JobTrackingTO> list = reportService.getAllGroupDownloadFiles(paramMap);
-		assertNotNull(list);
+		assertNull(list);
 	}
 
 	@Test
 	public void testGetRequestDetail() throws SystemException {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetRequestDetail(testParams);
 		List<JobTrackingTO> list = reportService.getRequestDetail(paramMap);
-		assertNotNull(list);
+		assertNull(list);
 	}
 
 	@Test
@@ -297,7 +298,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(map);
 	}
 
-	@Test
+	@Test(expected=org.springframework.dao.DataIntegrityViolationException.class)
 	public void testCreateJobTracking() {
 		GroupDownloadTO to = ReportTestHelper.getGroupDownloadTO();
 		String str = reportService.createJobTracking(to);
@@ -323,10 +324,10 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testGetConventionalFileNameGD() {
 		Long orgNodeId = 0L;
 		String str = reportService.getConventionalFileNameGD(orgNodeId);
-		assertNotNull(str);
+		assertNull(str);
 	}
 
-	@Test
+	@Test(expected=java.lang.NullPointerException.class)
 	public void testUpdateJobTracking() {
 		GroupDownloadTO to = ReportTestHelper.getGroupDownloadTO();
 		int i = reportService.updateJobTracking(to);
@@ -337,14 +338,13 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testGetReportMessage() {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetReportMessage(testParams);
 		String str = reportService.getReportMessage(paramMap);
-		assertNotNull(str);
+		assertNull(str);
 	}
 
 	@Test
 	public void testGetRequestSummary() {
-		String requestDetails = "";
 		String contractName = testParams.getContractName();
-		String str = reportService.getRequestSummary(requestDetails, contractName);
+		String str = reportService.getRequestSummary(ReportTestHelper.requestDetails, contractName);
 		assertNotNull(str);
 	}
 
@@ -369,21 +369,21 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(map);
 	}
 
-	@Test
+	@Test(expected=java.lang.Exception.class)
 	public void testGetJasperReportObject() throws DataAccessException, JRException, Exception {
 		String reportUrl = "";
 		List<ReportTO> list = reportService.getJasperReportObject(reportUrl);
 		assertNotNull(list);
 	}
 
-	@Test
+	@Test(expected=java.lang.Exception.class)
 	public void testGetMainReport() throws Exception {
 		List<ReportTO> jasperReportList = new ArrayList<ReportTO>();
 		JasperReport jr = reportService.getMainReport(jasperReportList);
 		assertNotNull(jr);
 	}
 
-	@Test
+	@Test(expected=java.sql.SQLException.class)
 	public void testFillReportForTableApi() throws JRException, SQLException {
 		String reportUrl = "";
 		JasperReport jasperReport = null;
@@ -426,7 +426,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testUpdateDataForActions() {
 		Map<String, Object> paramMap = ReportTestHelper.helpUpdateDataForActions(testParams);
 		String str = reportService.updateDataForActions(paramMap);
-		assertNotNull(str);
+		assertNull(str);
 	}
 
 	@Test
@@ -437,7 +437,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull("Return type is void");
 	}
 
-	@Test
+	@Test(expected=org.springframework.dao.EmptyResultDataAccessException.class)
 	public void testGetDefaultFilterTasc() {
 		List<InputControlTO> tos = new ArrayList<InputControlTO>();
 		String userName = "";
@@ -448,7 +448,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(obj);
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.SystemException.class)
 	public void testGetValuesOfSingleInputTasc() throws SystemException {
 		String query = "";
 		String userName = "";

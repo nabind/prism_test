@@ -79,7 +79,7 @@ public class CustomStringUtilTest {
 		oldsub = "d";
 		newsub = "e";
 		outputString = customStringUtil.replace(text, oldsub, newsub, caseInsensitive, firstOnly);
-		assertEquals(outputString, "abcd");
+		assertEquals(outputString, "abce");
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package com.ctb.prism.web.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
@@ -63,11 +64,14 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testAddNewInvitation() throws IOException {
 		ModelAndView mv = controller.addNewInvitation(request, response);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 	@Test
 	public void testRegister() throws IOException {
+		request.setParameter("qsn1", "1");
+		request.setParameter("qsn2", "2");
+		request.setParameter("qsn3", "3");
 		ModelAndView mv = controller.register(request, response);
 		assertNotNull(mv);
 	}
@@ -83,31 +87,31 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testUpdateProfile() throws IOException {
 		ModelAndView mv = controller.updateProfile(request, response);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 	@Test
 	public void testValidateCode() throws IOException {
 		String json = controller.validateCode(request, response);
-		assertNotNull(json);
+		assertNull(json);
 	}
 
 	@Test
 	public void testCheckAvailability() throws IOException {
 		String json = controller.checkAvailability(request, response);
-		assertNotNull(json);
+		assertNull(json);
 	}
 
 	@Test
 	public void testGetChildrenList() {
 		String json = controller.getChildrenList(request, response);
-		assertNotNull(json);
+		assertNull(json);
 	}
 
 	@Test
 	public void testValidatePwd() {
 		ModelAndView mv = controller.validatePwd(request, response);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 }

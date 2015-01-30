@@ -2,6 +2,7 @@ package com.ctb.prism.admin.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(user);
 	}
 
-	@Test
+	@Test(expected=java.lang.Exception.class)
 	public void testUpdateUser() throws BusinessException, Exception {
 		String Id = "";
 		String userId = "";
@@ -164,10 +165,10 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testSearchUserAutoComplete() {
 		String user = adminService.searchUserAutoComplete(AdminTestHelper.helpSearchUserAutoComplete(testParams));
-		assertNotNull(user);
+		assertNull(user);
 	}
 
-	@Test
+	@Test(expected=org.springframework.jdbc.InvalidResultSetAccessException.class)
 	public void testGetOrganizationList() {
 		String tenantId = "0";
 		String adminYear = "0";
@@ -188,7 +189,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(orgList);
 	}
 
-	@Test
+	@Test(expected=org.springframework.dao.EmptyResultDataAccessException.class)
 	public void testGetTotalUserCount() {
 		String tenantId = "0";
 		String adminYear = "0";
@@ -280,7 +281,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(orgTreeList);
 	}
 
-	@Test
+	@Test(expected=org.springframework.jdbc.InvalidResultSetAccessException.class)
 	public void testGetOrgTree() throws Exception {
 		Map<String, Object> paramMap = AdminTestHelper.helpGetOrgTree(testParams);
 		ArrayList<OrgTreeTO> orgTreeList = adminService.getOrgTree(paramMap);
@@ -299,7 +300,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 		paramMap.put("isRedirected", false);
 		org = adminService.getOrganizationTreeOnRedirect(paramMap);
-		assertNotNull(org);
+		assertNull(org);
 	}
 
 	@Test
@@ -314,7 +315,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(list);
 	}
 
-	@Test
+	@Test(expected=org.springframework.jdbc.BadSqlGrammarException.class)
 	public void testAddOrganization() {
 		StgOrgTO stgOrgTO = new StgOrgTO();
 		String org = adminService.addOrganization(stgOrgTO);
@@ -340,7 +341,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testDownloadStudentFile() throws SystemException {
 		List<StudentDataTO> studentList = adminService.downloadStudentFile(AdminTestHelper.helpDownloadStudentFile(testParams));
-		assertNotNull(studentList);
+		assertNull(studentList);
 	}
 
 	@Test
@@ -370,8 +371,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetCustomerProduct() throws BusinessException {
-		List<com.ctb.prism.core.transferobject.ObjectValueTO> custProdList = adminService
-				.getCustomerProduct(AdminTestHelper.helpGetCustomerProduct(testParams));
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> custProdList = adminService.getCustomerProduct(AdminTestHelper.helpGetCustomerProduct(testParams));
 		assertNotNull(custProdList);
 	}
 

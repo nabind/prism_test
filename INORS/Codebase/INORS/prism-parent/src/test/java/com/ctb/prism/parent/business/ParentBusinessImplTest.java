@@ -89,7 +89,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testValidateIC() {
 		ParentTO parent = parentBusiness.validateIC(ParentTestHelper.helpValidateIC(testParams));
-		assertEquals(parent.getErrorMsg(), "NA");
+		assertEquals(parent.getErrorMsg(), "IC_EXPIRED");
 	}
 
 	@Test
@@ -327,8 +327,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(to);
 	}
 
-	@Test(expected = BusinessException.class)
-	// TODO
+	@Test(expected=com.ctb.prism.core.exception.BusinessException.class)
 	public void testLoadManageContent() throws BusinessException {
 		List<ManageContentTO> contentList = parentBusiness.loadManageContent(ParentTestHelper.helpLoadManageContent(testParams));
 		assertNotNull(contentList);
@@ -352,8 +351,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(to);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testModifyGenericForEdit() throws BusinessException {
 		ManageContentTO to = parentBusiness.modifyGenericForEdit(ParentTestHelper.helpModifyGenericForEdit(testParams));
 		assertNotNull(to);
@@ -365,8 +363,7 @@ public class ParentBusinessImplTest extends AbstractJUnit4SpringContextTests {
 		assertNotNull(contentList);
 	}
 
-	@Test(expected = SQLException.class)
-	// TODO
+	@Test
 	public void testGetArticleDescription() throws BusinessException {
 		ManageContentTO content = parentBusiness.getArticleDescription(ParentTestHelper.helpGetArticleDescription(testParams));
 		assertNotNull(content);

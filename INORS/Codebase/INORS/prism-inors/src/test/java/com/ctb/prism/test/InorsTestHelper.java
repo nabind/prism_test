@@ -3,6 +3,7 @@ package com.ctb.prism.test;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
@@ -373,5 +374,11 @@ public class InorsTestHelper {
 		paramMap.put("orgNodeId", "0");
 		paramMap.put("customerId", "0");
 		return paramMap;
+	}
+
+	public static JobTrackingTO getJobTrackingTO(TestParams testParams) {
+		JobTrackingTO to = new JobTrackingTO();
+		to.setContractName(testParams.getContractName());
+		return to;
 	}
 }

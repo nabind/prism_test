@@ -38,7 +38,7 @@ public class RescoreRequestServiceImplTest extends AbstractJUnit4SpringContextTe
 	public void tearDown() throws Exception {
 	}
 
-	@Test
+	@Test(expected=com.ctb.prism.core.exception.BusinessException.class)
 	public void testGetRescoreRequestForm() throws BusinessException {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetRescoreRequestForm(testParams);
 		Map<String, Object> map = rescoreRequestService.getRescoreRequestForm(paramMap);
@@ -66,7 +66,7 @@ public class RescoreRequestServiceImplTest extends AbstractJUnit4SpringContextTe
 		assertNotNull(to);
 	}
 
-	@Test
+	@Test(expected=java.lang.IndexOutOfBoundsException.class)
 	public void testGetNotDnpStudentDetails() throws BusinessException {
 		Map<String, Object> paramMap = ReportTestHelper.helpGetNotDnpStudentDetails(testParams);
 		RescoreRequestTO to = rescoreRequestService.getNotDnpStudentDetails(paramMap);

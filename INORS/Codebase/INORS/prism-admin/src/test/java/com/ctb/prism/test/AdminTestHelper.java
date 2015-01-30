@@ -884,11 +884,18 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpResetPassword(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("username", ""); 
+		paramMap.put("contractName", testParams.getContractName()); 
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetHierarchy(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("nodeid", "0");
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", "0");
+		paramMap.put("orgMode", "0");
+		paramMap.put("selectedLevelOrgId", "0");
 		return paramMap;
 	}
 
@@ -906,7 +913,18 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpLoadEduCenterUsers(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		com.ctb.prism.login.transferobject.UserTO to = getAdminUserTO(testParams);
+		paramMap.put("loggedinUserTO", to);
+		paramMap.put("eduCenterId", "0");
+		paramMap.put("searchParam", "0");
+		paramMap.put("lastEduCenterId_username", "0");
+		paramMap.put("moreCount", "15");
 		return paramMap;
+	}
+
+	private static com.ctb.prism.login.transferobject.UserTO getAdminUserTO(TestParams testParams) {
+		com.ctb.prism.login.transferobject.UserTO to = new com.ctb.prism.login.transferobject.UserTO();
+		return to;
 	}
 
 	public static Map<String, String> helpGetUserData(TestParams testParams) {
@@ -916,6 +934,8 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpGetCustomerProduct(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("loggedInCustomer", "0");
+		paramMap.put("loggedInOrgId", "0");
 		return paramMap;
 	}
 
@@ -926,6 +946,7 @@ public class AdminTestHelper {
 
 	public static Map<String, String> helpGetEduUserRoleList(TestParams testParams) {
 		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("userId", "0");
 		return paramMap;
 	}
 

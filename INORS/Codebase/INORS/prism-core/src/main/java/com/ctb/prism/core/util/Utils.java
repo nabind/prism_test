@@ -396,7 +396,9 @@ public final class Utils {
 			e.printStackTrace();
 		} finally {
 			try {
-				is.close();
+				if (is != null) {
+					is.close();
+				}
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -495,20 +497,21 @@ public final class Utils {
 	
 	/**
 	 * @author Joy
-	 * @param String array
+	 * @param String
+	 *            array
 	 * @param char separator
 	 * @return Dynamic character separated string
 	 * */
-	public static String arrayToSeparatedString(String[] strArr,char separator){
-		if (strArr.length > 0) {
-		    StringBuilder strBuilder = new StringBuilder();
-		    for (String n : strArr) {
-		    	strBuilder.append(n).append(separator);
-		    }
-		    strBuilder.deleteCharAt(strBuilder.length() - 1);
-		    return strBuilder.toString();
+	public static String arrayToSeparatedString(String[] strArr, char separator) {
+		if (strArr != null && strArr.length > 0) {
+			StringBuilder strBuilder = new StringBuilder();
+			for (String n : strArr) {
+				strBuilder.append(n).append(separator);
+			}
+			strBuilder.deleteCharAt(strBuilder.length() - 1);
+			return strBuilder.toString();
 		} else {
-		    return "";
+			return "";
 		}
 	}
 	

@@ -857,8 +857,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - loadManageMessage()");
 		long t1 = System.currentTimeMillis();
 		
-		final long reportId = ((Long) paramMap.get("reportId")).longValue();
-		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
+		final long reportId = Long.valueOf(paramMap.get("reportId").toString());
+		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
 		final String reportName = ((String) paramMap.get("reportName"));
 		List<ManageMessageTO> manageMessageTOList = null;
 		try{

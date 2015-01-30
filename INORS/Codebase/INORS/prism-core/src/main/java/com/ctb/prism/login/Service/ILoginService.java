@@ -17,11 +17,6 @@ import com.ctb.prism.login.transferobject.UserTO;
 public interface ILoginService {
 
 	/**
-	 * @return
-	 */
-	public boolean selectTest();
-
-	/**
 	 * @param userEmail
 	 * @return
 	 * @throws SystemException

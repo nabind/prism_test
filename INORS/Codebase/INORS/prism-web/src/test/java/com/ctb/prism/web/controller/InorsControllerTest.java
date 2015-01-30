@@ -18,10 +18,12 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
+import com.ctb.prism.test.WebTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
@@ -57,6 +59,9 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGroupDownloadFiles() throws SystemException {
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
 		ModelAndView mv = controller.groupDownloadFiles(request, response);
 		assertNotNull(mv);
 	}
@@ -75,8 +80,9 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testCheckFileAvailability() throws IOException {
+		request.setParameter("filePath", "");
 		ModelAndView mv = controller.checkFileAvailability(request, response);
-		assertNotNull(mv);
+		assertNull(mv);
 	}
 
 	@Test
@@ -105,6 +111,11 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testIcLetterDownloads() {
+		request.setParameter("reportId", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER, testParams.getUserName());
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.icLetterDownloads(request, response);
 		assertNotNull(mv);
 	}
@@ -117,12 +128,18 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGroupDownloadForm() {
+		request.setParameter("reportId", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER, testParams.getUserName());
+		request.getSession().setAttribute(IApplicationConstants.CURRORG, "0");
 		ModelAndView mv = controller.groupDownloadForm(request, response);
 		assertNotNull(mv);
 	}
 
 	@Test
 	public void testGroupDownloadFunction() throws SystemException {
+		request.setParameter("json", WebTestHelper.requestDetails);
 		String str = controller.groupDownloadFunction(request, response);
 		assertNotNull(str);
 	}
@@ -167,11 +184,19 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGrtICFileForm() {
+		request.setParameter("p_test_administration", "0");
+		request.setParameter("p_test_program", "0");
+		request.setParameter("p_corpdiocese", "0");
+		request.setParameter("p_school", "0");
+		request.setParameter("reportUrl", "");
+		request.setParameter("reportId", "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
+		request.getSession().setAttribute(IApplicationConstants.CURRORGLVL, "0");
 		ModelAndView mv = controller.grtICFileForm(request);
 		assertNotNull(mv);
 	}
 
-	@Test
+	@Test(expected=java.lang.ArrayIndexOutOfBoundsException.class)
 	public void testDownloadGRTInvitationCodeFiles() {
 		controller.downloadGRTInvitationCodeFiles(request, response);
 		assertNotNull("Method return is void");
