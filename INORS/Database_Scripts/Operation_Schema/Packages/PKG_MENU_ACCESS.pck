@@ -216,8 +216,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
                 CONNECT BY LEVEL <=
                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
               )
-         AND ((DAA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) OR
-             (DAA.ORG_LEVEL = -99))
+         AND ((DAA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) /*OR
+             (DAA.ORG_LEVEL = -99)*/)
          AND DR.ACTIVATION_STATUS = 'AC'
          AND DAA.ACTIVATION_STATUS = 'AC'
          AND DAA.CUST_PROD_ID = P_IN_CUST_PROD_ID
