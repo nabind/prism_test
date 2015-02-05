@@ -1,8 +1,16 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ObjectiveScoreDetailsTO {
+public class ObjectiveScoreDetailsTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String objectiveName;
 	private String objectiveCode;

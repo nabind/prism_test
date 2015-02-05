@@ -1,6 +1,15 @@
 package com.ctb.prism.webservice.transferobject;
 
-public class ObjectiveScoreTO {
+import java.io.Serializable;
+
+public class ObjectiveScoreTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String scoreType;
 	private String value;

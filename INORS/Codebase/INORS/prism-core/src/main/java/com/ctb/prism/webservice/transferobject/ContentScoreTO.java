@@ -1,6 +1,14 @@
 package com.ctb.prism.webservice.transferobject;
 
-public class ContentScoreTO {
+import java.io.Serializable;
+
+public class ContentScoreTO implements Serializable {
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String scoreType;
 	private String scoreValue;

@@ -1,9 +1,20 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.util.Date;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class ContentDetailsTO {
+public class ContentDetailsTO implements Serializable {
 
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
+	
 	private String contentCode;
 	private String scoringMethod;
 	private String statusCode;
@@ -32,6 +43,16 @@ public class ContentDetailsTO {
 		this.statusCode = statusCode;
 	}
 	public String getDateTestTaken() {
+		try {
+			if (dateTestTaken != null) {
+				// format date from MMDDYY --> MMDDYYYY
+				Date date = new SimpleDateFormat("MMddyy", Locale.ENGLISH).parse(dateTestTaken);
+				SimpleDateFormat dateformatter = new SimpleDateFormat("MMddyyyy");
+				dateTestTaken = dateformatter.format(date);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		return dateTestTaken;
 	}
 	public void setDateTestTaken(String dateTestTaken) {

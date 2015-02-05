@@ -143,12 +143,22 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         }
         response.addCookie(new Cookie("SSOAPP", applicationName));
 
+        System.out.println("customerId : {}" + customerId);
+        System.out.println("expiryTime : {}" + expiryTime);
+        System.out.println("orgNode : {}" + orgNode);
+        System.out.println("orgLevel : {}" + orgLevel);
+        System.out.println("applicationName : {}" + applicationName);
+        System.out.println("role : {}" + role);
+        System.out.println("userName : {}" + userName);
+        System.out.println("signature : {}" + signature);
+        System.out.println("theme : {}" + theme);
+        
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
         	try {
 				if(hmac.isValidRequest(customerId, orgNode, orgLevel, applicationName, role, userName, expiryTime, signature, theme)) {
 					logger.info("Authentication Filter : User request is valid, authenticating with dummy user.");
-					
+					System.out.println("Authentication Filter : User request is valid, authenticating with dummy user.");
 					// TODO -- here we need to change the logic based on i/p parameters
 					//UserTO userTO =loginService.getUsersForSSO(apiKeyValue);
 					/**
@@ -167,9 +177,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 					userTO = loginService.getOrgLevel(userTO);
 					if(userTO != null) {
 						// customer id org level and orgnode id is valid - which are received from request
-						
+						System.out.println("customer id org level and orgnode id is valid - which are received from request.");
 						// create sso user in prism
-						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, RANDOM_STRING);
+						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, customerId, RANDOM_STRING);
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
 						
 						String existingUserOrg = loginService.getUserOrgNode(ssoUsername,Utils.getContractNameNoLogin(theme));
@@ -192,8 +202,10 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 							paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 							loginService.addNewUser(paramMap);
 							logger.info("SSO user is created : " + ssoUsername);
+							System.out.println("SSO user is created : " + ssoUsername);
 						}else {
 							// user exists into system
+							System.out.println("SSO user exists into system " + ssoUsername);
 							/** handle user move to different school */
 							if(userTO.getOrgId() != null) {
 								if(!existingUserOrg.equals(userTO.getOrgId())) {
@@ -241,7 +253,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 					}
 				} else {
 					logger.error("Authentication Filter : User request is not valid. Either token is expired or request parameters are tempared.");
-					throw new AuthenticationServiceException("User request is not valid. Either token is expired or request parameters are tempared.");
+					throw new AuthenticationServiceException("Authentication Filter : User request is not valid. Either token is expired or request parameters are tempared.");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

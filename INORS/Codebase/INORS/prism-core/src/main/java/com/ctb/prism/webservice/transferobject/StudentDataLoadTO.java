@@ -1,8 +1,22 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class StudentDataLoadTO {
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@XmlRootElement
+@XStreamAlias("StudentDataLoadTO")
+public class StudentDataLoadTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String dataLoadId;
 	private String status;

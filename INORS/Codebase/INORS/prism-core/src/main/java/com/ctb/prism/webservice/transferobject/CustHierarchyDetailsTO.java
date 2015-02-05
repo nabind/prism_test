@@ -1,8 +1,15 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CustHierarchyDetailsTO {
+public class CustHierarchyDetailsTO implements Serializable {
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String customerId;
 	private String maxHierarchy;

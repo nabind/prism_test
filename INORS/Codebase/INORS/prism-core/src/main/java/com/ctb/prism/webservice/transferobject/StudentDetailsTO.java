@@ -1,6 +1,15 @@
 package com.ctb.prism.webservice.transferobject;
 
-public class StudentDetailsTO {
+import java.io.Serializable;
+
+public class StudentDetailsTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private StudentBioTO studentBioTO;
 	private StudentDemoTO studentDemoTO;

@@ -1,6 +1,15 @@
 package com.ctb.prism.webservice.transferobject;
 
-public class SurveyBioTO {
+import java.io.Serializable;
+
+public class SurveyBioTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String surveyName;
 	private String surveyValue;

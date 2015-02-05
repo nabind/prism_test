@@ -1,6 +1,15 @@
 package com.ctb.prism.webservice.transferobject;
 
-public class ItemResponseTO {
+import java.io.Serializable;
+
+public class ItemResponseTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String itemSetType;
 	private String scoreValue;

@@ -1,8 +1,16 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RosterDetailsTO {
+public class RosterDetailsTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private String rosterId;
 	private CustHierarchyDetailsTO custHierarchyDetailsTO;

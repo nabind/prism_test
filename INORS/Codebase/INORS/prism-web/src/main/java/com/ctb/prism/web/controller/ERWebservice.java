@@ -24,6 +24,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
@@ -69,7 +70,7 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		mc.marshal(studentList, System.out);
-    		mc.marshal(studentList, new File("/mnt/ACSIREPORTS/Temp/"+System.currentTimeMillis()+".xml"));
+    		mc.marshal(studentList, new File("/mnt/ACSIREPORTS/Temp/"+Utils.getDateTime()+".xml"));
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
@@ -93,6 +94,14 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
 				studentDataLoadTO.setSummary("Data validation failed");
     		}
     	} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	try {
+    		JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
+    		Marshaller mc = jc.createMarshaller();
+    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    		mc.marshal(studentDataLoadTO, System.out);
+		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 		return studentDataLoadTO; 

@@ -1,8 +1,16 @@
 package com.ctb.prism.webservice.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SubtestAccommodationsTO {
+public class SubtestAccommodationsTO implements Serializable {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477773094826787095L;
 
 	private List<SubtestAccommodationTO> collSubtestAccommodationTO;
 
