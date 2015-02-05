@@ -381,7 +381,8 @@ public class LoginController {
 						Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 						List<GrantedAuthority> extraAuths = new ArrayList<GrantedAuthority>(auth.getAuthorities());
 						extraAuths.addAll(authorities);
-						if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
+						if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) &&
+								req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null) {
 							extraAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 						}
 						extraAuths.add(new SimpleGrantedAuthority("ROLE_SSO"));
