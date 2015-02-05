@@ -126,7 +126,7 @@ public interface IApplicationConstants {
 	public static final String INACTIVE_FLAG = "IN";
 	public static final String DELETED_FLAG = "DE";
 	public static final String INPROGRESS_FLAG = "IP";
-	public static final String COMPLETED_FLAG = "CP";
+	public static final String COMPLETED_FLAG = "CO";
 	public static final String ERROR_FLAG = "ER";
 
 	public static final String DOWNLOAD_TYPE_MERGED = "M";
