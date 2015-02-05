@@ -976,10 +976,32 @@
 					<aggregate>true</aggregate>
 					<instrumentation>
 						<excludes>
-							<exclude>**/com/ctb/prism/webservice/erTransferobject/*</exclude>
+							<exclude>**/com/ctb/prism/admin/webservice/erTransferobject/*</exclude>
 							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
 							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
 							<exclude>**/com/ctb/prism/**/constant/*</exclude>
+							<exclude>**/com/ctb/prism/report/api/*</exclude>
+							<exclude>**/com/ctb/prism/web/form/*</exclude>
+							<exclude>**/com/ctb/prism/web/jms/*</exclude>
+							<exclude>**/com/ctb/prism/web/security/*</exclude>
+							<exclude>**/com/ctb/prism/report/ipcontrol/*</exclude>
+							<exclude>**/com/ctb/prism/report/*</exclude>
+							<exclude>**/com/ctb/prism/login/security/test/*</exclude>
+							<exclude>**/com/ctb/prism/login/security/filter/*</exclude>
+							<exclude>**/com/ctb/prism/core/exception/*</exclude>
+							<exclude>**/com/ctb/prism/core/dao/*</exclude>
+							<exclude>**/com/ctb/prism/web/manager/*</exclude>
+							<exclude>**/com/ctb/prism/webservice/erTransferobject/*</exclude>
+							<exclude>**/com/ctb/prism/core/util/*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/LoginController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ReportController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ParentNetworkController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/RescoreRequestController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/SampleWebservice*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/CustomSwitchUserFilter*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ManageContentController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ManageMessageController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ER*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
@@ -1024,6 +1046,28 @@
 							<exclude>**/com/ctb/prism/admin/transferobject/studentdata/*</exclude>
 							<exclude>**/com/ctb/prism/**/transferobject/*</exclude>
 							<exclude>**/com/ctb/prism/**/constant/*</exclude>
+							<exclude>**/com/ctb/prism/report/api/*</exclude>
+							<exclude>**/com/ctb/prism/web/form/*</exclude>
+							<exclude>**/com/ctb/prism/web/jms/*</exclude>
+							<exclude>**/com/ctb/prism/web/security/*</exclude>
+							<exclude>**/com/ctb/prism/report/ipcontrol/*</exclude>
+							<exclude>**/com/ctb/prism/report/*</exclude>
+							<exclude>**/com/ctb/prism/login/security/test/*</exclude>
+							<exclude>**/com/ctb/prism/login/security/filter/*</exclude>
+							<exclude>**/com/ctb/prism/core/exception/*</exclude>
+							<exclude>**/com/ctb/prism/core/dao/*</exclude>
+							<exclude>**/com/ctb/prism/web/manager/*</exclude>
+							<exclude>**/com/ctb/prism/webservice/erTransferobject/*</exclude>
+							<exclude>**/com/ctb/prism/core/util/*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/LoginController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ReportController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ParentNetworkController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/RescoreRequestController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/SampleWebservice*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/CustomSwitchUserFilter*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ManageContentController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ManageMessageController*</exclude>
+							<exclude>**/com/ctb/prism/web/controller/ER*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
