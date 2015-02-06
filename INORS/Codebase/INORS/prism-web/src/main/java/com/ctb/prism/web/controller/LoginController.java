@@ -458,8 +458,12 @@ public class LoginController {
 					roles.append(authList.get(i).getAuthority()).append(",");
 				}
 				roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
-				if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && 
-						(Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)) {
+				
+				//Fix for TD 81661 - By Joy
+				/*if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && 
+						(Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)){*/ 
+				if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) &&
+						req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null){
 					roles.append(",").append("ROLE_ADMIN");
 				}
 				logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
