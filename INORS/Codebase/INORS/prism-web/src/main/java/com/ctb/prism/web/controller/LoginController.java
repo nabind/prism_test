@@ -462,7 +462,8 @@ public class LoginController {
 				//Fix for TD 81661 - By Joy
 				/*if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && 
 						(Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)){*/ 
-				if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) &&
+				
+				if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)!=null &&
 						req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null){
 					roles.append(",").append("ROLE_ADMIN");
 				}
