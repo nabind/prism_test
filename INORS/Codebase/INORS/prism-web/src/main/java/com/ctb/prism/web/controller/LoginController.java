@@ -463,8 +463,8 @@ public class LoginController {
 				/*if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) != null && 
 						(Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)){*/ 
 				
-				if(req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN)!=null &&
-						req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null){
+				if((Boolean) req.getSession().getAttribute(IApplicationConstants.SSO_ADMIN) &&
+						req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null) {
 					roles.append(",").append("ROLE_ADMIN");
 				}
 				logger.log(IAppLogger.INFO, "Roles = " + roles.toString());
