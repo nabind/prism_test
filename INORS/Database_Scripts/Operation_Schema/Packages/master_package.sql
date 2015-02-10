@@ -13,3 +13,4 @@
 @\PKG_PARENT_NETWORK.pck;
 @\PKG_RESCORE_REQUEST.pck;
 --@\PKG_REPORT_CONTENT.pck;
+@\PKG_TASC_customer_creation.pck;
