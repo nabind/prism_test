@@ -5,9 +5,12 @@ package com.ctb.prism.core.Service;
 
 import java.util.Map;
 
+import org.springframework.scheduling.annotation.Async;
+
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
+import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -103,4 +106,14 @@ public interface IUsabilityService {
 	 * @return
 	 */
 	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO);
+	
+	
+	@Async
+	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj);
+
+	@Async
+	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj);
+	
+	@Async
+	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj);
 }

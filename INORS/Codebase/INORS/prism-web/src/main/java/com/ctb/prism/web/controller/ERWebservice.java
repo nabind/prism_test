@@ -20,15 +20,15 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.UserTO;
+import com.ctb.prism.core.Service.IERService;
+import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
-import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
-import com.ctb.prism.core.Service.IERService;
 
 @Component(value="ERStudentDataload")
 @MTOM
@@ -44,6 +44,9 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
 	
 	@Autowired
 	IERService erService;
+	
+	@Autowired
+	IUsabilityService usabilityService;
 	
 	@Autowired
 	private IPropertyLookup propertyLookup;
@@ -66,11 +69,13 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
     	
     	// to print the output xml
     	try {
-    		JAXBContext jc = JAXBContext.newInstance( StudentList.class );
-    		Marshaller mc = jc.createMarshaller();
-    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    		mc.marshal(studentList, System.out);
-    		mc.marshal(studentList, new File("/mnt/ACSIREPORTS/Temp/"+Utils.getDateTime()+".xml"));
+    		if("true".equals(propertyLookup.get("print.ws.log"))) {
+    			JAXBContext jc = JAXBContext.newInstance( StudentList.class );
+    			Marshaller mc = jc.createMarshaller();
+	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	    		mc.marshal(studentList, System.out);
+	    		mc.marshal(studentList, new File("/mnt/ACSIREPORTS/Temp/"+Utils.getDateTime()+".xml"));
+    		}
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
@@ -78,6 +83,7 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
     	StudentDataLoadTO studentDataLoadTO = null;
     	try {
     		studentDataLoadTO = erService.updateStagingData(studentList, studentDataLoadTO);
+    		usabilityService.storeERWSObject(studentList, studentDataLoadTO.getObjectiveDetailsId(), true);
     		if(studentDataLoadTO == null) {
     			studentDataLoadTO = new StudentDataLoadTO();
     			studentDataLoadTO.setStatus("ERROR");
@@ -97,10 +103,13 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
 			e.printStackTrace();
 		}
     	try {
-    		JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
-    		Marshaller mc = jc.createMarshaller();
-    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    		mc.marshal(studentDataLoadTO, System.out);
+    		if("true".equals(propertyLookup.get("print.ws.log"))) {
+	    		JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
+	    		Marshaller mc = jc.createMarshaller();
+	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	    		mc.marshal(studentDataLoadTO, System.out);
+    		}
+    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getObjectiveDetailsId(), false);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

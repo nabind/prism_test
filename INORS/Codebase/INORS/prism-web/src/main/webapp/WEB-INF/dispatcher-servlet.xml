@@ -189,4 +189,5 @@
 	<import resource="elasticache.xml" />
 	<import resource="s3-config.xml" />
 	<import resource="simpledb-config.xml" />
+	<import resource="dynamodb-config.xml" />
 </beans>

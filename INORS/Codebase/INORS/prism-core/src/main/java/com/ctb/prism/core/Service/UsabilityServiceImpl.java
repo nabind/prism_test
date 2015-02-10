@@ -3,21 +3,30 @@
  */
 package com.ctb.prism.core.Service;
 
+import java.io.File;
+import java.io.StringWriter;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.ctb.prism.core.business.IUsabilityBusiness;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
+import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -154,6 +163,48 @@ public class UsabilityServiceImpl implements IUsabilityService {
 
 	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO) {
 		return usabilityBuisness.updateFileSize(jobTrackingTO);
+	}
+	
+	@Autowired private IDynamoDBService dynamoDBService;
+	@Autowired private IPropertyLookup propertyLookup;
+	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj) {
+		try {
+    		JAXBContext jc = JAXBContext.newInstance( StudentList.class );
+    		Marshaller mc = jc.createMarshaller();
+    		StreamResult result=new StreamResult(new StringWriter());
+    		mc.marshal(studentList, result);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj) {
+		try {
+    		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
+    		Marshaller mc = jc.createMarshaller();
+    		StreamResult result=new StreamResult(new StringWriter());
+    		mc.marshal(studentListTO, result);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj) {
+		try {
+			JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
+    		Marshaller mc = jc.createMarshaller();
+    		StreamResult result=new StreamResult(new StringWriter());
+    		mc.marshal(studentDataLoadTO, result);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void storeWsObject(String obj, long processId, boolean requestObj) {
+		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj);
 	}
 
 }

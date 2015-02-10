@@ -2,13 +2,9 @@ package com.ctb.prism.web.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -17,31 +13,22 @@ import javax.jws.WebService;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.transform.Source;
 import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.ctb.prism.admin.service.IAdminService;
-import com.ctb.prism.admin.transferobject.OrgTO;
-import com.ctb.prism.admin.transferobject.StgOrgTO;
-import com.ctb.prism.admin.transferobject.UserTO;
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.constant.IApplicationConstants.JOB_STATUS;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -143,11 +130,13 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     	long processId = -99;
     	// to print the output xml
     	try {
-    		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
-    		Marshaller mc = jc.createMarshaller();
-    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    		mc.marshal(studentListTO, System.out);
-    		mc.marshal(studentListTO, new File("/mnt/ACSIREPORTS/Temp/"+Utils.getDateTime()+"_oas.xml"));
+    		if("true".equals(propertyLookup.get("print.ws.log"))) {
+	    		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
+	    		Marshaller mc = jc.createMarshaller();
+	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	    		mc.marshal(studentListTO, System.out);
+	    		mc.marshal(studentListTO, new File("/mnt/ACSIREPORTS/Temp/"+Utils.getDateTime()+"_oas.xml"));
+    		}
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
@@ -161,6 +150,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     			// create process
     			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
     			processId = studentDataLoadTO.getProcessId();
+    			usabilityService.storeOASWSObject(studentListTO, processId, true);
     			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
     			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
     			// load student data into staging tables
@@ -267,11 +257,14 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 		logger.log(IAppLogger.INFO, "END-to-END web service call - time taken : " + CustomStringUtil.getHMSTimeFormat(end - start));
     	logger.log(IAppLogger.INFO, "Exit: SampleWebservice - loadStudentData");
     	try {
-    		System.out.println(processId + " << Process Id | END-to-END web service call - time taken : " + CustomStringUtil.getHMSTimeFormat(end - start));
-    		JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
-    		Marshaller mc = jc.createMarshaller();
-    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-    		mc.marshal(studentDataLoadTO, System.out);
+    		if("true".equals(propertyLookup.get("print.ws.log"))) {
+	    		System.out.println(processId + " << Process Id | END-to-END web service call - time taken : " + CustomStringUtil.getHMSTimeFormat(end - start));
+	    		JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
+	    		Marshaller mc = jc.createMarshaller();
+	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	    		mc.marshal(studentDataLoadTO, System.out);
+    		}
+    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getProcessId(), false);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
