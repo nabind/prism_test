@@ -69,7 +69,7 @@ begin
  :L_PP_TPCODE 		:='TPCODE1' ;
  :L_OL_TPCODE 		:='TPCODE2' ;
  :L_DATA_LOC 		:='/Data' ;
- :L_SUPPRT_EMAILS 	:='debashis.deb@tcs.com';
+ :L_SUPPRT_EMAILS 	:='abc.def@xyz.com';
 
 -- End of Change -------------------------------------------------
 
