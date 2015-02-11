@@ -6,11 +6,26 @@ insert into dash_message_type
      cust_prod_id,
        created_date_time)
     values
+      (1085,
+       'Group Download Instruction',
+       'GSCM',
+       'Instructions message configuration for Group Download page',
+	   3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+     cust_prod_id,
+       created_date_time)
+    values
       (1086,
        'Growth Home Page',
        'GSCM',
        'Message configuration for Growth Home Page',
-     3001,
+       3001,
        sysdate);
 	   
 insert into dash_message_type

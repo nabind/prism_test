@@ -1,3 +1,24 @@
+DELETE FROM DASH_MESSAGES
+ WHERE MSG_TYPEID =1085;
+
+DELETE FROM DASH_MESSAGE_TYPE
+ WHERE MSG_TYPEID =1085;
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1085,
+       'Group Download Instruction',
+       'GSCM',
+       'Instructions message configuration for Group Download page',
+	   5001,
+       sysdate);
+	   
 insert into dash_message_type
       (msg_typeid,
        message_name,
