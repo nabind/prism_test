@@ -49,7 +49,9 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
             AuthenticationException exception) throws IOException, ServletException {
 		boolean ssoRedirect = false;
 		String redirectUrl = null;
-		if(IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))) {
+		if(IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))
+				/* ## new for eR candidate report (or section)*/
+				|| IApplicationConstants.REST.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE)) ) {
 			// Upon successful authentication, Spring will attempt to try and move you to another URL 
 	        // We have to prevent this because the request for the resource and the authentication all get done in the same request! 
 			setRedirectStrategy(new NoRedirectStrategy());

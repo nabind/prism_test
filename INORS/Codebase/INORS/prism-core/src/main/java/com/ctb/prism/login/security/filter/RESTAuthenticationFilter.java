@@ -103,6 +103,10 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         String applicationName = null;
         String role = null;
         String userName = null;
+        /* ## new for eR candidate report */
+        String studentId = null;
+        String uuid = null;
+        /* ## end new for eR candidate report */
         
         //Added for single Codebase
         String theme = null;
@@ -124,6 +128,10 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
             applicationName = getHeaderValue(request, APPLICATION_NAME_PARAM);
             role = getHeaderValue(request, USER_ROLE_PARAM);
             userName = getHeaderValue(request, USER_NAME_PARAM);
+            /* ## new for eR candidate report */
+            studentId = getHeaderValue(request, "ctbstudentid");
+            uuid = getHeaderValue(request, "uuid");
+            /* ## end new for eR candidate report */
             theme = getHeaderValue(request, THEME_PARAM);
         } catch (Exception ex) {ex.printStackTrace();}
         
@@ -156,6 +164,21 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
         	try {
+        		/* ## new for eR candidate report */
+        		if(studentId != null && studentId.length() > 0) {
+        			// request for candidate report download
+        			if(hmac.isValidRequest(applicationName, expiryTime, studentId, signature, uuid, orgNode)) {
+	        			// Authenticate user
+	    	        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(DUMMY_SSO_USERNAME, DUMMY_SSO_PASSWORD);
+	    		        // Allow subclasses to set the "details" property
+	    		        setDetails(request, authRequest);
+	    		        return this.getAuthenticationManager().authenticate(authRequest);
+        			} else {
+						logger.error("Security token is not valid or parameter tampered");
+						throw new AuthenticationServiceException("Security token is not valid or parameter tampered");
+					}
+        		} else
+        		/* ## end new for eR candidate report */
 				if(hmac.isValidRequest(customerId, orgNode, orgLevel, applicationName, role, userName, expiryTime, signature, theme)) {
 					logger.info("Authentication Filter : User request is valid, authenticating with dummy user.");
 					System.out.println("Authentication Filter : User request is valid, authenticating with dummy user.");
@@ -179,7 +202,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 						// customer id org level and orgnode id is valid - which are received from request
 						System.out.println("customer id org level and orgnode id is valid - which are received from request.");
 						// create sso user in prism
-						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, customerId, RANDOM_STRING);
+						String ssoUsername = CustomStringUtil.appendString(userName, orgLevel, userTO.getCustomerId(), RANDOM_STRING);
 						ssoUsername = (ssoUsername.length() > 30)? ssoUsername.substring(0, 30) : ssoUsername; // max length is 30 char in prism
 						
 						String existingUserOrg = loginService.getUserOrgNode(ssoUsername,Utils.getContractNameNoLogin(theme));

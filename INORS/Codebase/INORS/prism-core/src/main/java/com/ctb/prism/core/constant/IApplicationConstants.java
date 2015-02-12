@@ -169,7 +169,10 @@ public interface IApplicationConstants {
 	public static final String INPUT_REMEMBER = "sessionParam_";
 	public static final String CLIENT_TYPE = "clientType";
 	public static final String SOAP = "SOAP";
-
+	/* ## new for eR candidate report */
+	public static final String REST = "R";
+	/* ## end new for eR candidate report */
+	
 	public static final String CUSTOMER = "CUSTOMER";
 	public static final String REPORT_TYPE_API = "API";
 	public static final String REPORT_TYPE_TABLE = "TABLE";

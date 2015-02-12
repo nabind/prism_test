@@ -44,6 +44,10 @@ public class DigitalMeasuresHMACQueryStringBuilder {
     private static final String USER_NAME_PARAM = "&user_name=";
     private static final String SIGNATURE_PARAM = "&signature=";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    /* ## new for eR candidate report */
+    private static final String STUDENT_ID_PARAM = "ctbstudentid=";
+    private static final String UUID_PARAM = "&uuid=";
+    /* ## end : new for eR candidate report */
     
     @Autowired ILoginService loginService;
     
@@ -167,6 +171,45 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 
 	}
 	
+	/* ## new for eR candidate report */
+	public boolean isValidRequest(String applicationName, String validUntilDate, String studentId, String secretValue,
+			String uuid, String orgNode) throws Exception
+	{
+		
+		TimeZone timeZone = TimeZone.getTimeZone(getTimeZone());
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+		format.setTimeZone(timeZone);
+		format.setLenient(false);
+		Calendar calendar = Calendar.getInstance(timeZone);
+		format.format(calendar.getTime());
+		
+		Date date = format.parse(URLDecoder.decode(validUntilDate, URL_ENCODING));
+		Calendar expiryTime = Calendar.getInstance(timeZone);
+		expiryTime.setTime(date);
+		
+		if(expiryTime.compareTo(calendar) > 0) {
+			Appendable queryString = buildUnauthenticatedQueryString(
+					URLDecoder.decode(studentId, URL_ENCODING),
+					URLDecoder.decode(applicationName, URL_ENCODING), 
+					URLDecoder.decode(validUntilDate, URL_ENCODING),
+					URLDecoder.decode(uuid, URL_ENCODING),
+					URLDecoder.decode(orgNode, URL_ENCODING));
+			String signature = urlEncode(getAuthenticationCode(queryString.toString(), applicationName));
+			
+			if(secretValue != null && secretValue.equals(URLDecoder.decode(signature, URL_ENCODING))) {
+				// encoding needed before comparing
+				return equals(urlEncode(secretValue), signature);
+			}
+	
+			return equals(secretValue, signature);
+		} else {
+			Logger.logInfo("Request key is expired .... ");
+			return false;
+		}
+
+	}
+	/* end ## new for eR candidate report */
+	
 	/**
 	 * Overloaded method for clearCache utility
 	 * Check if the client provided parameters is valid
@@ -281,6 +324,20 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 
 		return builder;
 	}
+	
+	/* ## new for eR candidate report */
+	private Appendable buildUnauthenticatedQueryString(String studentId, String applicationName, 
+			String validUntilDate, String uuid, String orgNode) throws Exception
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append(STUDENT_ID_PARAM).append(urlEncode(studentId));
+		builder.append(APPLICATION_NAME_PARAM).append(urlEncode(applicationName));
+		builder.append(EXPIRY_DATE_PARAM).append(urlEncode(validUntilDate));
+		builder.append(UUID_PARAM).append(urlEncode(uuid));
+		builder.append(ORG_NODE_PARAM).append(urlEncode(orgNode));
+		return builder;
+	}
+	/* ## end new for eR candidate report */
 	
 	
 	/**

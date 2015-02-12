@@ -176,7 +176,9 @@ public class ReportBusinessImpl implements IReportBusiness {
 	
 	
 	public void removeConfigurationCache(String contract) {
-		reportDAO.removeConfigurationCache(contract);
+		//reportDAO.removeConfigurationCache(contract);
+		if("inors".equals(contract)) reportDAO.removeInorsConfig(contract);
+		if("tasc".equals(contract)) reportDAO.removeTascConfig(contract);
 	}
 
 	/*

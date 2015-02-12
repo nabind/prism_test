@@ -43,7 +43,9 @@ public class CustomSavedRequestAwareAuthenticationSuccessHandler extends SimpleU
             Authentication authentication) throws IOException, ServletException {
 		if( (request.getQueryString() != null 
 				&& (request.getQueryString().endsWith("wsdl") || request.getQueryString().startsWith("xsd")) ) 
-				|| IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))) {
+				|| IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))
+				/* ## new for eR candidate report (rest or section)*/
+				|| IApplicationConstants.REST.equalsIgnoreCase(request.getParameter(IApplicationConstants.CLIENT_TYPE)) ) {
 			// Upon successful authentication, Spring will attempt to try and move you to another URL 
 	        // We have to prevent this because the request for the resource and the authentication all get done in the same request! 
 			setRedirectStrategy(new NoRedirectStrategy());
