@@ -1100,10 +1100,37 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		//try {
 			// if (ldapManager.deleteUser(userName, userName, userName)) {
 			// delete the security answers from pwd_hint_answers table
-			String Id = (String) paramMap.get("Id");
-			String userName = (String) paramMap.get("userName");
-			String purpose = (String) paramMap.get("purpose");
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_ANSWER_DATA, Id);
+			final String Id = (String) paramMap.get("Id");
+			final String userName = (String) paramMap.get("userName");
+			final String purpose = (String) paramMap.get("purpose");
+			
+			return	(Boolean)getJdbcTemplatePrism().execute(	new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+									CallableStatement cs = con.prepareCall(IQueryConstants.SP_DELETE_USER);
+									cs.setLong(1, Long.valueOf(Id));
+									cs.setString(2, purpose);
+									cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+									return cs;
+									}
+								}, new CallableStatementCallback<Object>() {
+									public Object doInCallableStatement(CallableStatement cs) {
+										try {
+											cs.execute();
+											Utils.logError(cs.getString(3));
+											if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+												throw new BusinessException("Exception occured while deleting user " + cs.getString(3));
+											} 
+										} catch(Exception e){
+											e.printStackTrace();
+											return false;
+										}
+										
+										return true;
+									}
+								
+					       });
+			
+			/*getJdbcTemplatePrism().update(IQueryConstants.DELETE_ANSWER_DATA, Id);
 
 			// delete the roles assigned to the user from user_role table
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ROLE, Id);
@@ -1122,8 +1149,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			getJdbcTemplatePrism().update(IQueryConstants.DELETE_PASSWORD_HISTORY, Id);
 			
 			// delete the user from users table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);
-
+			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);*/
+			
+		
 			// delete user from LDAP
 			/*if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapManager.deleteUser(userName, userName, userName);
@@ -1135,7 +1163,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while deleting user details.", e);
 			throw new Exception(e);
 		}*/
-		return true;
+		//return true;
 	}
 
 	/*

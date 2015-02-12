@@ -396,6 +396,8 @@ public interface IUserQuery {
 	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 	public static final String CREATE_SSO_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_SSO_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 	
+	public static final String SP_DELETE_USER = "{CALL PKG_ADMIN_MODULE.SP_DELETE_USER(?, ?, ?)}";
+	
 	/*public static final String GET_PASSWORD_HISTORY = CustomStringUtil.appendString(
 			" select salt, ph.password ",
 			" from PASSWORD_HISTORY ph, users u ",

@@ -101,6 +101,10 @@ CREATE OR REPLACE PACKAGE PKG_ADMIN_MODULE IS
                                            P_IN_USER_ROLE      IN VARCHAR2,
                                            P_OUT_STATUS_NUMBER OUT NUMBER,
                                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+  
+   PROCEDURE SP_DELETE_USER(P_IN_USERID         IN USERS.USERID%TYPE,
+                            P_IN_PURPOSE        IN VARCHAR2,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);                                           
 
 END PKG_ADMIN_MODULE;
 /
@@ -880,6 +884,35 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
       P_OUT_STATUS_NUMBER := 0;
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_CHECK_USER_ROLE_BY_USERNAME;
+  
+  
+   PROCEDURE SP_DELETE_USER(P_IN_USERID         IN USERS.USERID%TYPE,
+                            P_IN_PURPOSE        IN VARCHAR2,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+                                           
+   BEGIN
+         
+     DELETE FROM PWD_HINT_ANSWERS WHERE USERID = P_IN_USERID;
+     DELETE FROM USER_ROLE WHERE USERID = P_IN_USERID;
+     
+     IF P_IN_PURPOSE = 'eduCenterUsers' THEN
+        DELETE FROM EDU_CENTER_USER_LINK WHERE USERID = P_IN_USERID;
+     ELSE
+        DELETE FROM ORG_USERS WHERE USERID =  P_IN_USERID;
+     END IF;
+     
+     DELETE FROM USER_ACTIVITY_HISTORY WHERE USERID = P_IN_USERID;
+     DELETE FROM PASSWORD_HISTORY WHERE USERID = P_IN_USERID;
+     DELETE FROM USERS WHERE USERID =P_IN_USERID;
+     
+    
+     
+  EXCEPTION
+    WHEN OTHERS THEN
+         P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));  
+                                 
+   END SP_DELETE_USER;                                        
+  
 
 END PKG_ADMIN_MODULE;
 /
