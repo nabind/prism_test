@@ -10,7 +10,6 @@
 @\DASH_REPORT_ACTION_insert.sql;
 @\DASH_CONTRACT_PROP_insert.sql;
 @\customer_info_update.sql;
-@\adhoc_dml.sql;
 /*Need to run one time
 UPDATE DASH_REPORTS SET REPORT_NAME = 'User Guide' WHERE REPORT_NAME = 'Users Guide';
 UPDATE DASH_REPORTS SET REPORT_NAME = 'Admin User Guide' WHERE REPORT_NAME = 'Admin Users Guide';
