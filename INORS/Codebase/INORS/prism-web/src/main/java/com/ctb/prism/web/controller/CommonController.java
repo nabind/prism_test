@@ -190,6 +190,12 @@ public class CommonController extends BaseDAO {
 		Map<String, Object> propertyMap = new HashMap<String, Object>();
 		try {
 			propertyMap=(Map<String,Object>)req.getSession().getAttribute("propertyMap");
+			if(propertyMap == null){
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", Utils.getContractName());
+				propertyMap = loginService.getContractProerty(tileParamMap);
+				req.getSession().setAttribute("propertyMap", propertyMap);
+			}
 			//String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
 			String fileName = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + req.getParameter("pdfFileName");
 			String userType = req.getParameter("userType");
@@ -326,6 +332,12 @@ public class CommonController extends BaseDAO {
 			//String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
 			
 			propertyMap=(Map<String,Object>)req.getSession().getAttribute("propertyMap");
+			if(propertyMap == null){
+				Map<String, Object> tileParamMap = new HashMap<String, Object>();
+				tileParamMap.put("contractName", Utils.getContractName());
+				propertyMap = loginService.getContractProerty(tileParamMap);
+				req.getSession().setAttribute("propertyMap", propertyMap);
+			}
 			//String fileName = utils.getAcsiPdfLocation() + req.getParameter("pdfFileName");
 			String fileName = propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + req.getParameter("pdfFileName"); 
 			

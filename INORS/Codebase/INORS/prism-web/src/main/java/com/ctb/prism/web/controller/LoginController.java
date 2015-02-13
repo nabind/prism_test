@@ -593,6 +593,7 @@ public class LoginController {
 					Map<String, Object> tileParamMap = new HashMap<String, Object>();
 					tileParamMap.put("contractName", user.getContractName());
 					propertyMap = loginService.getContractProerty(tileParamMap);
+					req.getSession().setAttribute("propertyMap", propertyMap);
 				}				
 				String contractTitle = propertyMap.get(IApplicationConstants.CONTRACT_HOME_TITLE)!= null ? (String)propertyMap.get(IApplicationConstants.CONTRACT_HOME_TITLE): "Prism";
 				req.getSession().setAttribute("contractTitle", contractTitle);			
