@@ -257,4 +257,3 @@ values(seq_dash_rpt_action.nextval,'Separate Pdf','GDL','Separate Pdf Button in 
 --Student Data File
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Student Data File','SDF','Student Data File',sysdate,2);
-commit;

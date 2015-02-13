@@ -8,7 +8,6 @@ prompt Disabling foreign key constraints for DASH_CONTRACT_PROP...
 alter table DASH_CONTRACT_PROP disable constraint FK_DASH_CONTRACT_PROP;
 prompt Deleting DASH_CONTRACT_PROP...
 delete from DASH_CONTRACT_PROP;
-commit;
 prompt Loading DASH_CONTRACT_PROP...
 insert into DASH_CONTRACT_PROP (DB_PROPERTYID, DB_PROPERTY_NAME, DB_PROPERY_VALUE, SSO_SOURCE, PROJECTID)
 values (190, 'static.pdf.location', 'INORSREPORTS', null, 2);
@@ -64,7 +63,6 @@ insert into DASH_CONTRACT_PROP (DB_PROPERTYID, DB_PROPERTY_NAME, DB_PROPERY_VALU
 values (183, 'password.expiry', '90', null, 1);
 insert into DASH_CONTRACT_PROP (DB_PROPERTYID, DB_PROPERTY_NAME, DB_PROPERY_VALUE, SSO_SOURCE, PROJECTID)
 values (185, 'password.expiry.warning', '85', null, 1);
-commit;
 prompt 27 records loaded
 prompt Enabling foreign key constraints for DASH_CONTRACT_PROP...
 alter table DASH_CONTRACT_PROP enable constraint FK_DASH_CONTRACT_PROP;
