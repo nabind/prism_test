@@ -355,8 +355,10 @@
 							
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
-							<%} else if("ER".equals(processEr.getOverallStatus()) || "IN".equals(processEr.getOverallStatus())) {%>
+							<%} else if("ER".equals(processEr.getOverallStatus())) {%>
 								<span class="error" title="Error"></span>
+							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
+								<span class="progress" title="Error"></span>
 							<%} else{%>
 								<span class="progress" title="In Progress"></span>		
 							<%} %>
@@ -390,8 +392,10 @@
 						<td>
 							<%if("CO".equals(processEr.getOverallStatus())) { %>
 								Completed
-							<%} else if("ER".equals(processEr.getOverallStatus()) || "IN".equals(processEr.getOverallStatus())) {%>
+							<%} else if("ER".equals(processEr.getOverallStatus())) {%>
 								Error
+							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
+								Invalidated
 							<%} else{%>
 								In Progress		
 							<%} %>
