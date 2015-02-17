@@ -106,8 +106,23 @@ public class InorsService implements PrismPdfService {
 						logger.info("IC Letter Location: " + letterLocation);
 						logger.info("All/Both Login Pdf and IC Letter Completed.");
 
-					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
-						logger.info("Creating Separate IC Letter PDFs");
+					} else if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) { // S option for both S3 upload and group IC
+						
+						logger.info("Creating Group IC Letter PDF");
+						logger.info("Checking if new student present for school # " + id);
+						boolean newStudentPresent = dao.getNewStudents(id);
+						if (newStudentPresent) {
+							String letterLocation = processIcLetterPdfInors(prop, dao, id);
+							icLetterCount = icLetterCount + 1;
+							logger.info("IC Letter Location: " + letterLocation);
+						} else {
+							logger.info("No new student found for school # " + id);
+						}
+						ARCHIVE_NEEDED = false;
+						logger.info("SCHOOL " + count++ + "/" + (ids.length) + " IS DONE for Group IC----------------------------------------");
+						
+						
+						logger.info("Creating Separate IC Letter PDFs to upload in S3");
 						processIndividualIcLetterPdfInors(false, prop, dao, id);
 						identifier = "IC_";
 
@@ -131,7 +146,9 @@ public class InorsService implements PrismPdfService {
 					}
 				}
 
-				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())) {
+				if (flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.I.toString())
+						|| flag.equalsIgnoreCase(Constants.ARGS_OPTIONS.S.toString())) {
+					
 					if (icLetterCount > 0) {
 						archiveICLetterInors(prop);
 					}
