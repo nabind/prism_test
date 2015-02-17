@@ -512,7 +512,8 @@ create or replace package body PKG_TASC_customer_creation is
                V_CUST_PROD_ID CUST_PROD_ID,
                SYSDATE
           FROM DASH_MESSAGE_TYPE
-         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID;
+         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID
+           AND MESSAGE_TYPE <> 'GSCM';
     
     END IF;
   
@@ -538,7 +539,10 @@ create or replace package body PKG_TASC_customer_creation is
                ACTIVATION_STATUS,
                SYSDATE
           FROM DASH_MESSAGES
-         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID;
+         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID
+           AND MSG_TYPEID IN (SELECT MSG_TYPEID
+                        FROM DASH_MESSAGE_TYPE
+                       WHERE MESSAGE_TYPE <> 'GSCM');
     
     END IF;
   
