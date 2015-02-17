@@ -387,9 +387,11 @@ public class StudentDetailsTO implements Serializable {
 		.append(",").append("\"").append(exceptionCode).append("\"");
 		if("CO".equals(overallStatus)) {
 			buffer.append(",").append("\"").append("Completed").append("\"");
-		}else if("ER".equals(overallStatus) || "IN".equals(overallStatus)) {
+		}else if("ER".equals(overallStatus)) {
 			buffer.append(",").append("\"").append("Error").append("\"");
-		} else{
+		}else if("IN".equals(overallStatus)) {
+			buffer.append(",").append("\"").append("Invalidated").append("\"");
+		}else{
 			buffer.append(",").append("\"").append("In Progress").append("\"");
 		}
 		buffer.append(",").append("\"").append(barcode).append("\"")

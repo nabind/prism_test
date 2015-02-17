@@ -358,7 +358,7 @@
 							<%} else if("ER".equals(processEr.getOverallStatus())) {%>
 								<span class="error" title="Error"></span>
 							<%} else if("IN".equals(processEr.getOverallStatus())) {%>
-								<span class="progress" title="Error"></span>
+								<span class="progress" title="Invalidated"></span>
 							<%} else{%>
 								<span class="progress" title="In Progress"></span>		
 							<%} %>
