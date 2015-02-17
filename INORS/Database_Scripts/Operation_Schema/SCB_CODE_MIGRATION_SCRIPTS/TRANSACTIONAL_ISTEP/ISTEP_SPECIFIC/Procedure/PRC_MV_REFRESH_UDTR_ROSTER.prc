@@ -1,0 +1,8 @@
+create or replace procedure PRC_MV_REFRESH_UDTR_ROSTER
+as
+begin
+
+ DBMS_MVIEW.REFRESH('UDTR_ROSTER_TEST_SESSION_CNT', 'C');
+
+end PRC_MV_REFRESH_UDTR_ROSTER;
+/
