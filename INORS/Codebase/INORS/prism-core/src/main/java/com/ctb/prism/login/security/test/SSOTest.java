@@ -22,10 +22,12 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 public class SSOTest {
 	
 	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism";
-	//private static String REQUEST_PATH = "/reports.do?";  
+	private static String REQUEST_PATH = "/reports.do?";  
 	
 	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism/userlogin.do?theme=inors";
-	private static String REQUEST_URL = "http://localhost:8080/prism/reports.do";
+	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism/reports.do";
+	//private static String REQUEST_URL = "http://localhost:8080/prism";
+	private static String REQUEST_URL = "https://app1.ctb.com/prism";
 	
 	private static String IP = "127.0.0.1";
 	private static String SECRET_KEY =  "BTCguSF49hYaPmAfe9Q29LtsQ2X";
@@ -33,9 +35,10 @@ public class SSOTest {
 	private static String ENCODING_ALGORITHM = "HmacSHA1";
 	private static String timeZone = "GMT";
 	
-	private static String customer_id = "M013883003"; //tp code
-	private static String org_code = "D1~9210~A470"; //org_code path
-	private static String org_level ="3";
+	//private static String customer_id = "M013883003"; //tp code 
+	private static String customer_id = "461182";
+	private static String org_code = "D1~9210"; //org_code path
+	private static String org_level ="2";
 	private static String application_name = "CTB.COM"; 
 	private static String user_role = "Admin";
 	private static String user_regular = "Regular";
@@ -50,7 +53,7 @@ public class SSOTest {
 	 * @param args
 	 * @throws Exception 
 	 */
-	/*public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		
 		Mac messageAuthenticationCode = Mac.getInstance(ENCODING_ALGORITHM);
 		secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ENCODING_ALGORITHM);
@@ -60,12 +63,14 @@ public class SSOTest {
 		FileWriter writerRegular = new FileWriter("C:\\Temp\\RegularSSO.csv");
 		
 		String message = "";
-		String sql = "SELECT 'customer_id=461182|org_node_code=' || 'org_node_code_path' || "+
+		String sql = "SELECT 'customer_id="+customer_id+"|org_node_code=' || 'org_node_code_path' || "+
 					 " '|hierarchy_level=' || org_node_level ||  "+
-					 " '|application_name=CTB.COM|time_stamp=2014-07-07T18%3A45%3A34Z|user_role=Admin' || "+
+					 " '|application_name=CTB.COM|time_stamp=2016-07-07T18%3A45%3A34Z|user_role=Admin' || "+
 					 " '|user_name=usr' || org_nodeid , org_node_code_path,ORG_NODE_NAME, ORG_NODE_LEVEL"+
 					 " FROM org_node_dim "+
-					 " WHERE org_node_level IN (1, 2, 3) order by org_node_level";
+					 " WHERE org_node_level IN (1, 2, 3) " +
+					 " and org_nodeid in (select school_org  from org_avail) " +
+					 " order by org_node_level";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pst = null;
@@ -87,8 +92,8 @@ public class SSOTest {
 			writerRegular.append('\n');
 			
 			Class.forName(JDBC_DRIVER);
-			String connectionUrl = "jdbc:oracle:thin:@10.160.23.70:1521:ehs2clqa";
-			conn = DriverManager.getConnection(connectionUrl, "istep_qa", "istep_qa");
+			String connectionUrl = "jdbc:oracle:thin:@//10.160.23.38:1521/isteps";
+			conn = DriverManager.getConnection(connectionUrl, "istepperf", "istepperf14perf");
 			pstmt = conn.prepareCall(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -100,13 +105,13 @@ public class SSOTest {
 				messageAuthenticationCode.update(message.getBytes());
 				byte[] digest = messageAuthenticationCode.doFinal();
 				String sig = Base64.encode(digest);
-				System.out.println(REQUEST_URL+REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8"));
+				System.out.println(REQUEST_URL+REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8")+"&project="+theme);
 				
 				writerAdmin.append(rs.getString(3));
 				writerAdmin.append(",");
 				writerAdmin.append(orgType(rs.getInt(4)));
 				writerAdmin.append(",");
-				writerAdmin.append(REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8"));
+				writerAdmin.append(REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8")+"&project="+theme);
 				writerAdmin.append('\n');
 				
 				// regular user
@@ -114,13 +119,13 @@ public class SSOTest {
 				messageAuthenticationCode.update(message.getBytes());
 				digest = messageAuthenticationCode.doFinal();
 				sig = Base64.encode(digest);
-				System.out.println(REQUEST_URL+REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8"));
+				System.out.println(REQUEST_URL+REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8")+"&project="+theme);
 				
 				writerRegular.append(rs.getString(3));
 				writerRegular.append(",");
 				writerRegular.append(orgType(rs.getInt(4)));
 				writerRegular.append(",");
-				writerRegular.append(REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8"));
+				writerRegular.append(REQUEST_PATH + message + "&signature=" + URLEncoder.encode(sig, "UTF-8")+"&project="+theme);
 				writerRegular.append('\n');
 			}
 			writerAdmin.flush();
@@ -145,23 +150,23 @@ public class SSOTest {
 		
 		
 		
-		DigitalMeasuresHMACQueryStringBuilder queryStringBuilder = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 60*24*60*60, ENCODING_ALGORITHM);
+		/*DigitalMeasuresHMACQueryStringBuilder queryStringBuilder = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 60*24*60*60, ENCODING_ALGORITHM);
 		queryStringBuilder.setTimeZone(timeZone);
 		queryStringBuilder.setENCODING_ALGORITHM(ENCODING_ALGORITHM);
 		queryStringBuilder.setURL_ENCODING(URL_ENCODING);
 	
-		String requestParam = queryStringBuilder.buildAuthenticatedQueryString(customer_id, org_code, org_level, application_name, user_role, user_name);
+		String requestParam = queryStringBuilder.buildAuthenticatedQueryString(customer_id, org_code, org_level, application_name, user_role, user_name, theme);
 		System.out.println(REQUEST_URL + "?" + requestParam);
 		
 		//requestWithQueryString(requestParam);
 		
 	//	invalidRequestWithQueryString(requestParam.replace("validUntil=2013", "validUntil=2012"));
+		 */	
+	}
 	
-	}*/
 	
 	
-	
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		
 		DigitalMeasuresHMACQueryStringBuilder queryStringBuilder = new DigitalMeasuresHMACQueryStringBuilder(SECRET_KEY, 3600*60, ENCODING_ALGORITHM);
 		queryStringBuilder.setTimeZone(timeZone);
@@ -175,7 +180,7 @@ public class SSOTest {
 		
 	//	invalidRequestWithQueryString(requestParam.replace("validUntil=2013", "validUntil=2012"));
 	
-	}
+	}*/
 	
 	
 	
