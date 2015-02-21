@@ -173,7 +173,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 	
 	/* ## new for eR candidate report */
 	public boolean isValidRequest(String applicationName, String validUntilDate, String studentId, String secretValue,
-			String uuid, String orgNode) throws Exception
+			String uuid, String orgNode, String theme) throws Exception
 	{
 		
 		TimeZone timeZone = TimeZone.getTimeZone(getTimeZone());
@@ -194,7 +194,7 @@ public class DigitalMeasuresHMACQueryStringBuilder {
 					URLDecoder.decode(validUntilDate, URL_ENCODING),
 					URLDecoder.decode(uuid, URL_ENCODING),
 					URLDecoder.decode(orgNode, URL_ENCODING));
-			String signature = urlEncode(getAuthenticationCode(queryString.toString(), applicationName));
+			String signature = urlEncode(getAuthenticationCode(queryString.toString(), applicationName, theme));
 			
 			if(secretValue != null && secretValue.equals(URLDecoder.decode(signature, URL_ENCODING))) {
 				// encoding needed before comparing

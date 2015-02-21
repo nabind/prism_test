@@ -167,7 +167,7 @@ public interface IApplicationConstants {
 	public static final String RELOAD_USER = "RELOAD_USER";
 
 	public static final String INPUT_REMEMBER = "sessionParam_";
-	public static final String CLIENT_TYPE = "clientType";
+	public static final String CLIENT_TYPE = "clienttype";
 	public static final String SOAP = "SOAP";
 	/* ## new for eR candidate report */
 	public static final String REST = "R";

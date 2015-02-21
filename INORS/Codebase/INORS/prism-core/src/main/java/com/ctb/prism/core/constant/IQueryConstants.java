@@ -366,7 +366,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_ORG_LEVEL = CustomStringUtil.appendString(
 			" select org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL, customerid CUSTOMERID",
 			" from org_node_dim where org_node_code_path = ? ",
-			" AND customerid = ( select customerid from test_program where tp_code = ? and rownum = 1) ",
+			//" AND customerid = ( select customerid from test_program where tp_code = ? and rownum = 1) ",
 			" AND org_node_level = ? AND ROWNUM=1");
 	
 	public static final String GET_MANAGE_MESSAGE_LIST = "PKG_MANAGE_REPORT.SP_GET_REPORT_MESSAGE_LIST(?,?,?,?,?)";

@@ -470,7 +470,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		UserTO userTO = null;
 		List<Map<String, Object>> lstData = null;
 		lstData = getJdbcTemplatePrism(argUserTO.getContractName()).queryForList(IQueryConstants.GET_ORG_LEVEL, 
-				argUserTO.getOrgCode(), argUserTO.getCustomerId(), argUserTO.getOrgNodeLevelStr());
+				argUserTO.getOrgCode(), /*argUserTO.getCustomerId(),*/ argUserTO.getOrgNodeLevelStr());
 		logger.log(IAppLogger.DEBUG, lstData.size()+"");
 
 		if (lstData.size() > 0) {

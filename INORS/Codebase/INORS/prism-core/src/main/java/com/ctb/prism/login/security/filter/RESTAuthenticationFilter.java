@@ -117,6 +117,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         
         try {
         	if(IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))) isWebServiceCall = true;
+        	else if (IApplicationConstants.REST.equalsIgnoreCase(request.getParameter(IApplicationConstants.CLIENT_TYPE))) isWebServiceCall = true;
         	else isWebServiceCall = false;
         	apiKeyValue = obtainAPIKeyValue(request);
         	expiryTime = getHeaderValue(request, EXPIRY_DATE_PARAM); //obtainExpiryValue(request);
@@ -167,10 +168,12 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         		/* ## new for eR candidate report */
         		if(studentId != null && studentId.length() > 0) {
         			// request for candidate report download
-        			if(hmac.isValidRequest(applicationName, expiryTime, studentId, signature, uuid, orgNode)) {
+        			if(hmac.isValidRequest(applicationName, expiryTime, studentId, signature, uuid, orgNode, theme)) {
 	        			// Authenticate user
 	    	        	UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(DUMMY_SSO_USERNAME, DUMMY_SSO_PASSWORD);
-	    		        // Allow subclasses to set the "details" property
+	    	        	authRequest.setContractName(Utils.getContractNameNoLogin(theme));
+			        	themeResolver.setThemeName(request, response, theme);
+	    	        	// Allow subclasses to set the "details" property
 	    		        setDetails(request, authRequest);
 	    		        return this.getAuthenticationManager().authenticate(authRequest);
         			} else {

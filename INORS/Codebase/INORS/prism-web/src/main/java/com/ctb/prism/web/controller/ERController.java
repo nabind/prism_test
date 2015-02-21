@@ -82,6 +82,7 @@ public class ERController {
 				URLStringBuf.append("&p_Form_Id=").append("-1");
 				URLStringBuf.append("&p_Is_Bulk=2&p_Admin_Name=").append(jobTrackingTO.getCustomerId());
 				URLStringBuf.append("&p_User_Type=").append(CANDIDATE_RPT_USER_TYPE.ERESOURCE.toString());
+				URLStringBuf.append("&theme=").append("tasc");
 				
 				URL url1 = new URL(URLStringBuf.toString());
 				
