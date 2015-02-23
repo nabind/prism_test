@@ -575,11 +575,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
                      CUST_PRODUCT_LINK CPL,
                      PRODUCT P,
                      (SELECT ADMINID, ADMIN_YEAR
-                        FROM ADMIN_DIM
-                       WHERE ADMIN_YEAR <=
+                        FROM ADMIN_DIM a
+                       WHERE  IS_CURRENT_ADMIN = 'Y' 
+                       OR exists 
                              (SELECT ADMIN_YEAR
-                                FROM ADMIN_DIM
-                               WHERE IS_CURRENT_ADMIN = 'Y')) ADMIN
+                                FROM ADMIN_DIM b
+                                where b.ADMIN_YEAR <= a.ADMIN_YEAR)) ADMIN
                WHERE UPPER(USERS.USERNAME) = UPPER(P_IN_USERNAME)
                  AND USERS.USERID = ORG.USERID
                  AND ORG.ORG_NODEID = OND.ORG_NODEID
@@ -901,7 +902,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
         DELETE FROM ORG_USERS WHERE USERID =  P_IN_USERID;
      END IF;
      
-     DELETE FROM USER_ACTIVITY_HISTORY WHERE USERID = P_IN_USERID;
+     --DELETE FROM USER_ACTIVITY_HISTORY WHERE USERID = P_IN_USERID;
      DELETE FROM PASSWORD_HISTORY WHERE USERID = P_IN_USERID;
      DELETE FROM USERS WHERE USERID =P_IN_USERID;
      
