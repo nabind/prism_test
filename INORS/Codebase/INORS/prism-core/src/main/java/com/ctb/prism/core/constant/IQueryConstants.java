@@ -1130,7 +1130,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 				" AND PR.CUST_PROD_ID = LIN.CUST_PROD_ID",
 				" AND LIN.CUSTOMERID = CUST.CUSTOMERID",
 				" AND LIN.PRODUCTID = PROD.PRODUCTID",
-				" AND LIN.CUST_PROD_ID = ?"
+				" AND LIN.CUST_PROD_ID = ?",
+				" AND SPF.IS_FILE_EXISTS = 'Y'"
 				);
 		
 		
