@@ -1,0 +1,1 @@
+SQLLDR userid=ISTEP_PRODNEW/istep14prod@ISTEPROD CONTROL=D:\PDocs\INORS\Growth Reports\Data Migration\load_data.ctl log=D:\PDocs\INORS\Growth Reports\Data Migration\CTL.log bad=D:\PDocs\INORS\Growth Reports\Data Migration\ctl.bad bindsize=3048576 DIRECT=TRUE READSIZE=3048576 ROWS=5000 

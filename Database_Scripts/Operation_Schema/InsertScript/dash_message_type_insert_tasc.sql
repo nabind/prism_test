@@ -1,0 +1,254 @@
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1085,
+       'Group Download Instruction',
+       'GSCM',
+       'Instructions message configuration for Group Download page',
+	   3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1086,
+       'Growth Home Page',
+       'GSCM',
+       'Message configuration for Growth Home Page',
+       3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+	   cust_prod_id,
+       created_date_time)
+    values
+      (1087,
+       'Common Header',
+       'GSCM',
+       'Message configuration for common header',
+	   3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1088,
+       'Common Footer',
+       'GSCM',
+       'Message configuration for common footer',
+       3001,
+       sysdate);	   
+       
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1089,
+       'Teacher Login Footer',
+       'GSCM',
+       'Footer for teacher login screen',
+       3001,
+       sysdate);   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1090,
+       'Parent Login Footer',
+       'GSCM',
+       'Footer for parent login screen',
+       3001,
+       sysdate);	   
+       
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1092,
+       'Landing Page Content',
+       'GSCM',
+       'Image or Content for Landing page',
+       3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1093,
+       'Teacher Login Page Content',
+       'GSCM',
+       'Image or Content for Teacher Login page',
+       3001,
+       sysdate);
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1094,
+       'Parent Login Page Content',
+       'GSCM',
+       'Image or Content for Parent Login page',
+       3001,
+       sysdate);	   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1095,
+       'Teacher Login Outage Content',
+       'GSCM',
+       'Content of outage for Teacher Login page',
+       3001,
+       sysdate);	   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1096,
+       'Parent Login Outage Content',
+       'GSCM',
+       'Content of outage for Parent Login page',
+       3001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1097,
+       'Teacher Home Page',
+       'GSCM',
+       'Content of Teacher Home Page',
+       3001,
+       sysdate);
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1098,
+       'Parent Home Page',
+       'GSCM',
+       'Content of Parent Home Page',
+       3001,
+       sysdate);	  
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1099,
+       'Teacher Home Footer',
+       'GSCM',
+       'Footer for teacher home screen',
+       3001,
+       sysdate);   
+	   
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1100,
+       'Parent Home Footer',
+       'GSCM',
+       'Footer for parent home screen',
+       3001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1101,
+       'GDF Header Message',
+       'GSCM',
+       'GDF Header Message',
+       3001,
+       sysdate);	
+
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+       cust_prod_id,
+       created_date_time)
+    values
+      (1102,
+       'GDF Notice',
+       'GSCM',
+       'GDF Notice',
+       3001,
+       sysdate);	   

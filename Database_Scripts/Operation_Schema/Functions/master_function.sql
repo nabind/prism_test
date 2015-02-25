@@ -1,0 +1,1 @@
+@\SF_GEN_INVITE_CODE.fnc;
