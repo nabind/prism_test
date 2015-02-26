@@ -156,7 +156,8 @@ BEGIN
                 END LOOP;
       END IF;
 
-      IF   t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT >=1 THEN
+      /* As 'All Schools' option is not needed for Student Roster MO - By Joy */
+      /*IF   t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT >=1 THEN
             t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
             t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := -1;
             t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := 'All Schools';
@@ -164,8 +165,9 @@ BEGIN
 
             t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
             t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
-       ELSIF t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT = 0  THEN
+       ELSIF t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT = 0  THEN*/
 
+       IF t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT = 0  THEN
             t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
             t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := -2;
             t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := 'None Available';
