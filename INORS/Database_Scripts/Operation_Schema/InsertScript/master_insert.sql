@@ -14,6 +14,7 @@
 UPDATE DASH_REPORTS SET REPORT_NAME = 'User Guide' WHERE REPORT_NAME = 'Users Guide';
 UPDATE DASH_REPORTS SET REPORT_NAME = 'Admin User Guide' WHERE REPORT_NAME = 'Admin Users Guide';
 /*
+----------------------For QA
 update DASH_CONTRACT_PROP
    set db_propery_value = 'https://renqa.ctb.com/ctb.com/control/main'
  where projectid = 2
@@ -33,4 +34,26 @@ update DASH_CONTRACT_PROP
    set db_propery_value = 'https://oastest.ctb.com/SessionWeb/login.jsp'
  where projectid = 1
    and db_property_name = 'sso.redirect.loginfail';
+   
+----------------------For PROD
+update DASH_CONTRACT_PROP
+   set db_propery_value = 'https://ctb.com/ctb.com/control/main'
+ where projectid = 2
+   and db_property_name = 'sso.redirect.logout';
+
+update DASH_CONTRACT_PROP
+   set db_propery_value = 'https://ctb.com/ctb.com/control/main'
+ where projectid = 2
+   and db_property_name = 'sso.redirect.loginfail';
+
+update DASH_CONTRACT_PROP
+   set db_propery_value = 'https://oas.ctb.com/SessionWeb/login.jsp'
+ where projectid = 1
+   and db_property_name = 'sso.redirect.logout';
+
+update DASH_CONTRACT_PROP
+   set db_propery_value = 'https://oas.ctb.com/SessionWeb/login.jsp'
+ where projectid = 1
+   and db_property_name = 'sso.redirect.loginfail';   
+   
 */

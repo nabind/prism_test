@@ -109,15 +109,6 @@ insert into dash_message_type
        5001,
        sysdate);
 	   
-DELETE FROM DASH_MESSAGES
- WHERE MSG_TYPEID IN
-       (SELECT MSG_TYPEID
-          FROM DASH_MESSAGE_TYPE
-         WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN','INORS HOME PAGE'));
-
-DELETE FROM DASH_MESSAGE_TYPE
- WHERE UPPER(MESSAGE_NAME) IN ('PARENT LOG IN', 'TEACHER LOG IN','INORS HOME PAGE');	   
- 
 insert into dash_message_type
       (msg_typeid,
        message_name,
