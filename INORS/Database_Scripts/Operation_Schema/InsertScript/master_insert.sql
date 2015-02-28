@@ -1,5 +1,18 @@
 @\dash_message_type_disable_constraint.sql;
-@\run_prc_msg_typeid_correction.sql;
+@\run_prc_msg_typeid_correction.sql; 
+/*delete the irrelevant data from dash_message_type AND DASH_MESSAGES
+SELECT * FROM DASH_MESSAGE_TYPE WHERE MESSAGE_TYPE = 'GSCM' ORDER BY MSG_TYPEID;
+SELECT MSG_TYPEID, MESSAGE_NAME
+  FROM DASH_MESSAGE_TYPE
+ WHERE MESSAGE_TYPE = 'GSCM'
+ GROUP BY MSG_TYPEID, MESSAGE_NAME
+ HAVING COUNT(MSG_TYPEID) > 1;
+
+DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1037 AND CUST_PROD_ID <> 5001;
+DELETE FROM DASH_MESSAGE_TYPE WHERE MSG_TYPEID = 1037 AND CUST_PROD_ID <> 5001;
+DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1038 AND CUST_PROD_ID <> 5001;
+DELETE FROM DASH_MESSAGE_TYPE WHERE MSG_TYPEID = 1038 AND CUST_PROD_ID <> 5001;
+*/
 @\menu_message_type_insert.sql;
 @\dash_message_type_insert_inors.sql;
 @\dash_message_type_insert_tasc.sql;

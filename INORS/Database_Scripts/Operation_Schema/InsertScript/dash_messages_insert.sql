@@ -221,7 +221,7 @@ VALUES
    'AC',
    SYSDATE);   
    
-DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1091 AND CUST_PROD_ID = 3001;   
+/*DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1091 AND CUST_PROD_ID = 3001;   
 INSERT INTO DASH_MESSAGES
   (DB_REPORTID,
    MSG_TYPEID,
@@ -238,7 +238,47 @@ VALUES
    '<p><img class="productImage" id="productImage101" src="themes/acsi/img/TASCLogo.png" /></p>',
    3001,
    'AC',
-   SYSDATE);
+   SYSDATE);*/
+   
+BEGIN
+  DELETE FROM DASH_MESSAGES
+   WHERE MSG_TYPEID = 1091
+     AND CUST_PROD_ID IN (SELECT CPL.CUST_PROD_ID
+                            FROM CUST_PRODUCT_LINK CPL, CUSTOMER_INFO CI
+                           WHERE CPL.CUSTOMERID = CI.CUSTOMERID
+                             AND CPL.ACTIVATION_STATUS = 'AC'
+                             AND PROJECTID = 1);
+
+  FOR REC_CUST_PROD_ID IN (SELECT CPL.CUST_PROD_ID
+                            FROM CUST_PRODUCT_LINK CPL, CUSTOMER_INFO CI
+                           WHERE CPL.CUSTOMERID = CI.CUSTOMERID
+                             AND CPL.ACTIVATION_STATUS = 'AC'
+                             AND PROJECTID = 1) LOOP
+  
+    INSERT INTO DASH_MESSAGES
+      (DB_REPORTID,
+       MSG_TYPEID,
+       REPORT_MSG,
+       CUST_PROD_ID,
+       ACTIVATION_STATUS,
+       CREATED_DATE_TIME)
+    VALUES
+      ((SELECT DB_REPORTID
+         FROM DASH_REPORTS
+        WHERE UPPER(REPORT_NAME) = 'PRODUCT SPECIFIC SYSTEM CONFIGURATION'
+          AND PROJECTID = 1),
+       1091,
+       '<p><img class="productImage" id="productImage101" src="themes/acsi/img/TASCLogo.png" /></p>',
+        REC_CUST_PROD_ID.CUST_PROD_ID,
+       'AC',
+       SYSDATE);
+  END LOOP;
+  
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE(UPPER(SUBSTR(SQLERRM, 0, 255)));
+END;
+/   
    
 --For INORS   
 DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1037 AND CUST_PROD_ID = 5001;
@@ -802,7 +842,7 @@ VALUES
    'AC',
    SYSDATE);   
 
-DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1091 AND CUST_PROD_ID = 5001;      
+/*DELETE FROM DASH_MESSAGES WHERE MSG_TYPEID = 1091 AND CUST_PROD_ID = 5001;      
 INSERT INTO DASH_MESSAGES
   (DB_REPORTID,
    MSG_TYPEID,
@@ -819,6 +859,47 @@ VALUES
    '<p><img class="productImage" id="productImage101" src="themes/acsi/img/SPIlogo.jpg" width="250px" /></p>',
    5001,
    'AC',
-   SYSDATE);    
+   SYSDATE);  */
+
+BEGIN
+  DELETE FROM DASH_MESSAGES
+   WHERE MSG_TYPEID = 1091
+     AND CUST_PROD_ID IN (SELECT CPL.CUST_PROD_ID
+                            FROM CUST_PRODUCT_LINK CPL, CUSTOMER_INFO CI
+                           WHERE CPL.CUSTOMERID = CI.CUSTOMERID
+                             AND CPL.ACTIVATION_STATUS = 'AC'
+                             AND PROJECTID = 2);
+
+  FOR REC_CUST_PROD_ID IN (SELECT CPL.CUST_PROD_ID
+                             FROM CUST_PRODUCT_LINK CPL, CUSTOMER_INFO CI
+                            WHERE CPL.CUSTOMERID = CI.CUSTOMERID
+                              AND CPL.ACTIVATION_STATUS = 'AC'
+                              AND PROJECTID = 2) LOOP
+  
+    INSERT INTO DASH_MESSAGES
+      (DB_REPORTID,
+       MSG_TYPEID,
+       REPORT_MSG,
+       CUST_PROD_ID,
+       ACTIVATION_STATUS,
+       CREATED_DATE_TIME)
+    VALUES
+      ((SELECT DB_REPORTID
+         FROM DASH_REPORTS
+        WHERE UPPER(REPORT_NAME) = 'PRODUCT SPECIFIC SYSTEM CONFIGURATION'
+          AND PROJECTID = 2),
+       1091,
+       '<p><img class="productImage" id="productImage101" src="themes/acsi/img/SPIlogo.jpg" width="250px" /></p>',
+       REC_CUST_PROD_ID.CUST_PROD_ID,
+       'AC',
+       SYSDATE);
+  END LOOP;
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE(UPPER(SUBSTR(SQLERRM, 0, 255)));
+END;
+/
+   
    
 SET DEFINE ON;
