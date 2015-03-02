@@ -28,3 +28,16 @@ begin
 DBMS_MVIEW.REFRESH('MV_SUB_OBJ_FORM_MAP', 'C');
 
 end;
+
+begin
+
+DBMS_MVIEW.REFRESH('MV_SUBTEST_SCORE_TYPE_MAP', 'C');
+
+end;
+
+begin
+
+DBMS_MVIEW.REFRESH('MV_ORG_TP_STRUCTURE', 'C');
+
+end;
+

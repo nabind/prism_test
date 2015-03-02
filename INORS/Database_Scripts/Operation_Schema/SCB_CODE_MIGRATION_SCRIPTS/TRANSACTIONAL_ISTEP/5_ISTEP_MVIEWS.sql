@@ -306,3 +306,17 @@ SELECT A.ASSESSMENTID,
    AND F.FORMID = LM.FORMID
    AND G.GRADEID = GM.GRADEID
    AND LM.LEVEL_MAPID = GM.LEVEL_MAPID;
+ 
+ 
+CREATE MATERIALIZED VIEW MV_ORG_TP_STRUCTURE
+REFRESH FORCE ON DEMAND
+AS
+SELECT TP_ID, ORG_LEVEL, ORG_LABEL, DATETIMESTAMP
+					/* *******************************************************
+                    * This MATERIALIZED VIEW is created as a part of performance
+                    * improvemnt for the queries of the manage modules
+                    * DATE: Mar-02-2015
+                    * AUTHOR: Partha
+                    *********************************************************/
+  FROM PRISMGLOBAL.ORG_TP_STRUCTURE
+ WHERE TP_ID IN (SELECT TP_ID FROM TEST_PROGRAM); 
