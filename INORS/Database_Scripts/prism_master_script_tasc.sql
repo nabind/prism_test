@@ -1,4 +1,4 @@
-@\Operation_Schema\Packages\master_function.sql;
+@\Operation_Schema\Functions\master_function.sql;
 @\Operation_Schema\Packages\master_package.sql;
 @\Operation_Schema\Procedure\PRC_REPORT_CONFIGURATION.prc;
 @\Operation_Schema\Procedure\PRC_CONFIGURATION.prc;
