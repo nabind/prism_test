@@ -153,8 +153,12 @@ BEGIN
                  v_school := r_Get_School.ORG_NODEID;
          END LOOP;
           -----get default grade
-         IF (v_district IS NOT NULL) AND (v_school IS NOT NULL) THEN
-          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_district)---in default case send disrtict id since school will show "All(-1)" option
+          
+          --UNCOMMENT THE BELOW IF-FOR CONDITION IF THERE IS A "ALL" OPTION IN THE SCHOOL DROP DOWN
+         /*IF (v_district IS NOT NULL) AND (v_school IS NOT NULL) THEN
+          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_district)*/---in default case send disrtict id since school will show "All(-1)" option
+          
+          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_school)
           LOOP
               t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
 
@@ -165,8 +169,9 @@ BEGIN
               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
           END LOOP;
-        END IF;  
-      ELSIF (p_district <> -99 OR p_district IS NOT NULL ) AND p_school=-1 THEN
+        --END IF; 
+        --REQUIRED IF THERE IS A "ALL" OPTIN IN SCHOOL DROP DOWN 
+      /*ELSIF (p_district <> -99 OR p_district IS NOT NULL ) AND p_school=-1 THEN
           ---condition when district has been changed but school drop drop  is showing "All(-1)" option
           FOR r_Get_Grade IN c_Get_Grade (p_test_administration,p_district)
           LOOP
@@ -178,8 +183,8 @@ BEGIN
 
               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
               t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
-          END LOOP;  
-      ELSIF (p_school<>-1) AND (p_school IS NOT NULL )  THEN
+          END LOOP; */ 
+      ELSIF /*(p_school<>-1)*/ (p_school<>-99) AND (p_school IS NOT NULL )  THEN
           ---condition when school drop drop value is changed from "All" to a specific value
           FOR r_Get_Grade IN c_Get_Grade (p_test_administration,p_school)
           LOOP

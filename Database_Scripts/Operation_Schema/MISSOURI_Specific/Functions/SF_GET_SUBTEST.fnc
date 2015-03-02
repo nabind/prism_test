@@ -177,12 +177,16 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                  v_school := r_Get_School.ORG_NODEID;
          END LOOP;
           -----get default grade
-         IF (v_district IS NOT NULL) AND (v_school IS NOT NULL) THEN
-          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_district)---in default case send disrtict id since school will show "All(-1)" option
+          
+          --UNCOMMENT THE BELOW IF-FOR CONDITION IF THERE IS A "ALL" OPTION IN THE SCHOOL DROP DOWN
+         /*IF (v_district IS NOT NULL) AND (v_school IS NOT NULL) THEN
+          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_district)*/---in default case send disrtict id since school will show "All(-1)" option
+        
+          FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_school) 
           LOOP
                v_grade := r_Get_Grade.GRADEID;
           END LOOP;
-         END IF; 
+         --END IF; 
           -----get default subtest
           FOR r_Get_Subtest IN c_Get_Subtest (v_Cust_ProductId,v_grade)
           LOOP
