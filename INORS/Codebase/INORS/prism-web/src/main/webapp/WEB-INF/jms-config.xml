@@ -28,15 +28,39 @@
 		<property name="defaultDestinationName" value="${aws.queueName}" />
 		<property name="connectionFactory" ref="cachedConnectionFactory" />
 	</bean>
-
-	<bean id="messageListner" class="com.ctb.prism.web.jms.JmsMessageListener" />
-
-	<bean id="jmsConsumerConnectionFactory" 
+	
+	
+	<bean id="simpleMessageListenerContainer" class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory"/>
+ 		<property name="messageListener" ref="listener"/>
+ 		<property name="destination" ref="prism_job_queue"/>
+ 		<!-- <property name="errorHandler" ref="amazonMessageListener"/> -->
+ 		<property name="concurrency" value="20"/>
+ 		<property name="taskExecutor" ref="listenerThreadPoolTaskExecutor"/>
+    </bean>
+    
+    <bean id="listenerThreadPoolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+ 		<property name="corePoolSize" value="70"/>
+ 		<property name="maxPoolSize" value="70"/>
+ 		<property name="daemon" value="true"/>
+ 		<property name="keepAliveSeconds" value="60"/>
+ 	</bean>
+ 	
+	<bean id="listener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+ 		<property name="delegate" ref="amazonMessageListener"/>		
+		<property name="defaultListenerMethod" value="onSQSMessage"/>
+		<property name="defaultResponseDestination" ref="prism_job_queue"/>
+	</bean>
+	
+	<bean id="amazonMessageListener" class="com.ctb.prism.web.jms.JmsMessageListener" />
+			  
+<!-- 
+    	<bean id="jmsConsumerConnectionFactory" 
           class="org.springframework.jms.connection.CachingConnectionFactory"
           p:targetConnectionFactory-ref="connectionFactory"
 		  p:sessionCacheSize="10" />
         
 	<jms:listener-container container-type="default" connection-factory="jmsConsumerConnectionFactory" acknowledge="auto">
 		<jms:listener destination="${aws.queueName}" ref="messageListner" method="onSQSMessage"  />
-	</jms:listener-container>
+	</jms:listener-container> -->
 </beans>
