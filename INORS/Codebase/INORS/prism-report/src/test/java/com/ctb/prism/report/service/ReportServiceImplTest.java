@@ -168,6 +168,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test(expected=com.ctb.prism.core.exception.SystemException.class)
 	public void testGetValuesOfSingleInputStringStringStringStringStringMapOfStringStringObjectString() throws SystemException {
+		String reportUrl= "";
 		String query = "";
 		String userName = "";
 		String customerId = "0";
@@ -176,7 +177,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		Map<String, String> replacableParams = new HashMap<String, String>();
 		Object clazz = null;
 		String userId = "0";
-		List<ObjectValueTO> list = reportService.getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, clazz, userId);
+		List<ObjectValueTO> list = reportService.getValuesOfSingleInput(reportUrl , query, userName, customerId, changedObject, changedValue, replacableParams, clazz, userId);
 		assertNotNull(list);
 	}
 
@@ -364,8 +365,8 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		HttpServletRequest req = null;
 		String reportUrl = "";
 		String currentOrg = "0";
-		Map<String, String[]> param = new HashMap<String, String[]>();
-		Map<String, Object> map = reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg, param);
+	//	Map<String, String[]> param = new HashMap<String, String[]>();
+		Map<String, Object> map = reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg);
 		assertNotNull(map);
 	}
 

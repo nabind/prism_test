@@ -1,5 +1,6 @@
 package com.ctb.prism.web.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -19,9 +20,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.test.WebTestHelper;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
+import com.ctb.prism.test.WebTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
@@ -365,6 +366,7 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 	public void testResetUserPasswordForm() {
 		ModelAndView mv = controller.resetUserPasswordForm();
 		assertNotNull(mv);
+		assertEquals(mv.getViewName(), "admin/resetUserPasswordForm");
 	}
 
 	@Test
