@@ -114,7 +114,7 @@ public interface IReportService {
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
+	public List<ObjectValueTO> getValuesOfSingleInput(String reportUrl, String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
 			throws SystemException;
 
 	/**
@@ -285,7 +285,7 @@ public interface IReportService {
 
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, 
 			Object reportFilterTO, JasperReport jasperReport, boolean getFullList, HttpServletRequest req, 
-			String reportUrl, String currentOrg, Map<String, String[]> param) ;
+			String reportUrl, String currentOrg) ;
 	
 	public JasperPrint fillReportForTableApi(String reportUrl, JasperReport jasperReport, Map<String, Object> parameterValues) 
 		throws JRException, SQLException;

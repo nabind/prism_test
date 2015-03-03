@@ -111,7 +111,7 @@ public interface IReportBusiness {
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
+	public List<ObjectValueTO> getValuesOfSingleInput(Map<String, Object> paramMap)
 			throws SystemException;
 
 	/**

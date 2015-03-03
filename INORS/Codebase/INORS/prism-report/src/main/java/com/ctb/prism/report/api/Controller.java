@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.data.cache.ColumnDataCacheHandler;
 import net.sf.jasperreports.data.cache.DataCacheHandler;
@@ -57,6 +58,7 @@ import org.springframework.web.servlet.theme.CookieThemeResolver;
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.util.ApplicationContextProvider;
+import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.report.service.IReportService;
 
@@ -93,7 +95,7 @@ public class Controller
 	 */
 	public void runReport(
 		WebReportContext webReportContext,
-		Action action, HttpServletRequest request
+		Action action, HttpServletRequest request, HttpServletResponse response
 		) throws JRException, JRInteractiveException
 	{
 		/** PRISM **/
@@ -142,7 +144,7 @@ public class Controller
 		webReportContext.setParameterValue(asyncParamName, async);
 		
 		try {
-			runReport(webReportContext, jasperReport, async.booleanValue(), request, reportUri);
+			runReport(webReportContext, jasperReport, async.booleanValue(), request, response, reportUri);
 		} catch (JRException e) {
 			undoAction(webReportContext, initialStackSize);
 			throw e;
@@ -201,7 +203,7 @@ public class Controller
 	protected void runReport(
 		WebReportContext webReportContext,
 		JasperReport jasperReport,
-		boolean async, HttpServletRequest request, String reportUri
+		boolean async, HttpServletRequest request, HttpServletResponse response, String reportUri
 		) throws JRException
 	{
 		JasperPrintAccessor accessor;
@@ -271,6 +273,27 @@ public class Controller
 				/** session to cache **/
 				/*usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER),
 						reportUri, jasperPrint);*/
+				// moving the following section from reportController (API_TABLE report) to here
+				int noOfPages = jasperPrint.getPages().size();	
+				
+				if (noOfPages > 1) {
+	/*				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
+							reportUrl, jasperPrint);*/
+					request.getSession().setAttribute(reportUri, IApplicationConstants.TRUE);
+					request.setAttribute("totalPages", noOfPages);
+					request.getSession().setAttribute(IApplicationConstants.TOTAL_PAGES, noOfPages);
+				} else {
+					request.getSession().setAttribute(reportUri, IApplicationConstants.FALSE);
+				}
+				
+				if(noOfPages == 0) {
+					request.getSession().setAttribute("dataPresent_"+reportUri, IApplicationConstants.FALSE);
+					response.sendRedirect(CustomStringUtil.appendString("loadEmptyReport.do?reportName=",
+							jasperReport.getName(), "&reportMsg=", 
+							request.getParameter("msg") != null ? request.getParameter("msg") : null));
+				} else {
+					request.getSession().setAttribute("dataPresent_"+reportUri, IApplicationConstants.TRUE);
+				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();

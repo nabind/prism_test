@@ -76,6 +76,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationDetailsOnFirstLoad') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationDetailsOnFirstLoad') )")
+	} )
 	public ArrayList<OrgTO> getOrganizationDetailsOnFirstLoad(Map<String, Object> paramMap) throws Exception{
 		
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationDetailsOnFirstLoad()");
@@ -128,6 +132,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @param nodeid
 	 * @return
 	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationDetailsOnClick') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationDetailsOnClick') )")
+	} )
 	public ArrayList<OrgTO> getOrganizationDetailsOnClick(Map<String, Object> paramMap) throws Exception{
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationDetailsOnClick()");
 		final long nodeid = Long.valueOf(paramMap.get("nodeid").toString());
@@ -188,8 +196,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )")
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTree') )")
 	} )
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTree()");
@@ -371,8 +379,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 */
 	
 	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTreeOnRedirect') )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTreeOnRedirect') )")
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTreeOnRedirect') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrganizationTreeOnRedirect') )")
 	} )
 	public String getOrganizationTreeOnRedirect(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationTreeOnRedirect()");
@@ -442,6 +450,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * 
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getOrgTree(java.util.Map)
 	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgTree') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getOrgTree') )")
+	} )
 	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrgTree()");
 		
@@ -1311,6 +1323,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            parentId of the logged in user
 	 * @return
 	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
+	} )
 	public ArrayList<UserTO> searchUser(String userName, String tenantId, String adminYear, String isExactSearch, String orgMode) {
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
@@ -1472,7 +1488,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            tenantId
 	 * @return list of orgTO
 	 */
-	// @Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
+	// @Cacheable(value = {"inorsAdminCache", "tascAdminCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
@@ -2089,8 +2105,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getAllStudents(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )")
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #root.method.name )")
 	} )
 	public List<ObjectValueTO> getAllStudents(String adminYear, String nodeId, String customerId, String gradeId) {
 		List<ObjectValueTO> studentList = new ArrayList<ObjectValueTO>();
@@ -2114,8 +2130,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @see com.ctb.prism.admin.dao.IAdminDAO#getHierarchy(java.util.Map)
 	 */
 	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getHierarchy') )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getHierarchy') )")
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getHierarchy') )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getHierarchy') )")
 	} )
 	public ArrayList<OrgTreeTO> getHierarchy(Map<String, Object> paramMap) throws Exception {
 		final String nodeId = (String) paramMap.get("nodeid");

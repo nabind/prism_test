@@ -397,7 +397,7 @@ public class InorsController {
 			String assessmentId = request.getParameter("assessmentId");
 			logger.log(IAppLogger.INFO, "assessmentId = " + assessmentId);
 			Object reportFilterTO = reportService.getDefaultFilterTasc(allInputControls, currentUser, assessmentId, "", reportUrl);
-			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);
+			Map<String, Object> parameters = reportController.getReportParametersFromRequest(request, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null,reportUrl);
 			logger.log(IAppLogger.INFO, "parameters retrieved successfully from ReportController");
 
 			String mainQuery = jasperReport.getDatasets()[0].getQuery().getText(); // jasperReport.getQuery().getText();

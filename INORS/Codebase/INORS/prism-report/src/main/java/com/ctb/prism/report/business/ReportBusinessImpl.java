@@ -261,8 +261,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 		String userName = (String) paramMap.get("userName");
 		String customerId = (String)paramMap.get("customerId");	
-		String assessmentId = (String) paramMap.get("assessmentId");
-		String combAssessmentId = (String) paramMap.get("combAssessmentId");	
+		//String assessmentId = (String) paramMap.get("assessmentId");
+		//String combAssessmentId = (String) paramMap.get("combAssessmentId");	
 		String reportUrl = (String) paramMap.get("reportUrl");
 		@SuppressWarnings("unchecked")
 		Map<String, Object> sessionParams = (Map<String, Object>) paramMap.get("sessionParams");
@@ -277,9 +277,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 		try {
 			clazz = reportFilterFactory.getReportFilterTO();
 			obj = clazz.newInstance();
+			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+				clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
+				clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
+			}
 			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
-			clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
-			clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
+			//clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
+			//clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
 			clazz.getMethod("setP_customerid", String.class).invoke(obj, customerId);
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -289,9 +296,16 @@ public class ReportBusinessImpl implements IReportBusiness {
 			String labelId = ito.getLabelId();
 			String query = ito.getQuery();
 			if (query != null) {
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+				if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+						|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+						|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+						|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));	
+				}
+				//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));				
+				//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));				
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 
 				/*** NEW ***/
@@ -461,6 +475,24 @@ public class ReportBusinessImpl implements IReportBusiness {
 		}
 		return replacedQuery.length() == 0 ? inQuery : replacedQuery;
 	}
+	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name) )")
+	} )
+	public List<ObjectValueTO> getValuesOfSingleInput(Map<String, Object> paramMap) throws SystemException {
+		String reportUrl = (String) paramMap.get("reportUrl");
+		String query = (String) paramMap.get("query");
+		String userName = (String) paramMap.get("userName"); 
+		String customerId = (String) paramMap.get("customerId");
+		String changedObject = (String) paramMap.get("changedObject");
+		String changedValue = (String) paramMap.get("changedValue");
+		@SuppressWarnings("unchecked")
+		Map<String, String> replacableParams = (Map<String, String>) paramMap.get("replacableParams");
+		Object obj = paramMap.get("obj");
+		String userId = (String) paramMap.get("userId");
+		return getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, obj, userId, reportUrl);
+	}
 
 	/**
 	 * Fetch all values of a input after replacing all required parameters
@@ -477,7 +509,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @throws SystemException
 	 * @throws IllegalArgumentException
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object obj, String userId)
+	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, 
+			Map<String, String> replacableParams, Object obj, String userId, String reportUrl)
 			throws SystemException {
 		if (query == null)
 			return null;
@@ -486,10 +519,17 @@ public class ReportBusinessImpl implements IReportBusiness {
 			Class<?> c = reportFilterFactory.getReportFilterTO();
 			// replace all params
 			//String tenantId = reportDAO.getTenantId(userName);
+			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
+			}
 			String tenantId = replacableParams.get(IApplicationConstants.CURRORG);
-			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
+			//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
-			query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
+			//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 			query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);			
 			query = query.replace(CustomStringUtil.getJasperParameterString(changedObject), CustomStringUtil.appendString("'", changedValue, "'"));
 

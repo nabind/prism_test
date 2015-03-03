@@ -582,6 +582,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )"),
+			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
+	} )
 	public ArrayList<ParentTO> getParentList(final String orgId, final String adminYear, final String searchParam, final String orgMode, final String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
 		long t1 = System.currentTimeMillis();

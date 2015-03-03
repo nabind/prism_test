@@ -83,7 +83,7 @@ public class ReportContextCreatorServlet extends AbstractServlet {
 				try {
 					//controller.runReport(webReportContext, null);
 					/** PRISM **/
-					controller.runReport(webReportContext, null, request);
+					controller.runReport(webReportContext, null, request, response);
 				} catch (JRInteractiveException e) {
 					// there's no action running at this point, so nothing to do
 					log.error("Error on report execution", e);

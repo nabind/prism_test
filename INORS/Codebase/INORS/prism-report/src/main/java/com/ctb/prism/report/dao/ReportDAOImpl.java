@@ -210,7 +210,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#removeReportCache()
 	 */
 	//@CacheEvict(value ={ "compiledJrxml"}, allEntries = true)
-	@com.googlecode.ehcache.annotations.TriggersRemove(cacheName="compiledJrxml", removeAll=true)
+	@com.googlecode.ehcache.annotations.TriggersRemove(cacheName={"compiledJrxml", "allReports", "mainReport"}, removeAll=true)
 	public void removeReportCache() {
 		logger.log(IAppLogger.INFO, "Removed report cache");
 	}

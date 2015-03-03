@@ -38,6 +38,11 @@
         timeToIdleSeconds="0" timeToLiveSeconds="300000"
         memoryStoreEvictionPolicy="LRU" />
         
+    <cache name="mainReport" eternal="false"
+        maxElementsInMemory="100000" overflowToDisk="true" diskPersistent="false"
+        timeToIdleSeconds="0" timeToLiveSeconds="300000"
+        memoryStoreEvictionPolicy="LRU" />
+        
     <cache name="allAssessment" eternal="false"
         maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
         timeToIdleSeconds="0" timeToLiveSeconds="300000"

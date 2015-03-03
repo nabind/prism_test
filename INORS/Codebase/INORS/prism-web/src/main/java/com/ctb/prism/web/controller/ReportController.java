@@ -174,26 +174,27 @@ public class ReportController{
 
 			// get jasper report
 			List<ReportTO> jasperReports = getJasperReportObject(reportUrl);
+			JasperReport jasperReport = getMainReport(jasperReports);
 			//req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));
-			req.getSession().setAttribute("apiJasperReport" + reportUrl, getMainReport(jasperReports));
+			req.getSession().setAttribute("apiJasperReport" + reportUrl, jasperReport);
 			/** session to cache **/
 			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER), 
 					CustomStringUtil.appendString(reportUrl, "_", assessmentId), getMainReport(jasperReports));*/
 			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
 					"apiJasperReport" + reportUrl, getMainReport(jasperReports));*/
-			JasperReport jasperReport = getMainReport(jasperReports);
+			
 			if (jasperReport != null) {
 				reportName = jasperReport.getName();
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_HEIGHT), jasperReport.getPageHeight());
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperReport.getPageWidth());
 			}
 			
+			/** moved to controller.java in report module **/
+			/*
 			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId, true);
 			int noOfPages = jasperPrint.getPages().size();	
 			
 			if (noOfPages > 1) {
-/*				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-						reportUrl, jasperPrint);*/
 				req.getSession().setAttribute(reportUrl, IApplicationConstants.TRUE);
 				req.setAttribute("totalPages", noOfPages);
 				req.getSession().setAttribute(IApplicationConstants.TOTAL_PAGES, noOfPages);
@@ -208,7 +209,8 @@ public class ReportController{
 						req.getParameter("msg") != null ? req.getParameter("msg") : null);
 			} else {
 				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.TRUE);
-			}
+			}*/
+			/** End: moved to controller.java in report module **/
 			
 			/** perf issue */
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
@@ -220,7 +222,7 @@ public class ReportController{
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 			Map<String, Object> parameters = null;
 			if (IApplicationConstants.TRUE.equals(filter)) {
-				parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, drilldown);
+				parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, drilldown, reportUrl);
 				// remove jasper print object from session when filtering
 				req.getSession().removeAttribute(sessionParam);
 			} else {
@@ -628,7 +630,7 @@ public class ReportController{
 
 			Map<String, Object> parameters = null;
 			if (IApplicationConstants.TRUE.equals(filter)) {
-				parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, drilldown);
+				parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, drilldown,reportUrl);
 				// remove jasper print object from session when filtering
 				req.getSession().removeAttribute(sessionParam);
 			} else {
@@ -868,7 +870,7 @@ public class ReportController{
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 */
-	public Map<String, Object> getReportParametersFromRequest(HttpServletRequest req, List<InputControlTO> allInputControls, Class<?> reportFilterTO, String currOrg, String drilldown)
+	public Map<String, Object> getReportParametersFromRequest(HttpServletRequest req, List<InputControlTO> allInputControls, Class<?> reportFilterTO, String currOrg, String drilldown, String reportUrl)
 			throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Map<String, Object> parameters = null;
 		Map<String, Object> sessionParameters = null;
@@ -882,8 +884,17 @@ public class ReportController{
 			sessionParameters = new LinkedHashMap<String, Object>();
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, currOrg);
-			parameters.put(IApplicationConstants.JASPER_USER_PARAM, currentUser);
-			parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));// Added by Abir
+			
+			//Candidate report, student search, growth matrix and student tabular still needs username as parameter
+			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+				parameters.put(IApplicationConstants.JASPER_USER_PARAM, currentUser);
+				parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));// Added by Abir
+			}
+			//parameters.put(IApplicationConstants.JASPER_USER_PARAM, currentUser);
+			//parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));// Added by Abir
 			parameters.put(IApplicationConstants.JASPER_CUSTOMERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER));//Added by Abir
 			for (InputControlTO inputTO : allInputControls) {
 				/*
@@ -987,7 +998,7 @@ public class ReportController{
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl) {
 		//long start = System.currentTimeMillis();
 		String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
-		Map<String, Object> param =  reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg, req.getParameterMap());
+		Map<String, Object> param =  reportService.getReportParameter(allInputControls, reportFilterTO, jasperReport, getFullList, req, reportUrl, currentOrg);
 		//long end1 = System.currentTimeMillis();
 		//System.out.println(CustomStringUtil.getHMSTimeFormat(end1 - start)+" <<<< Time Taken: getReportParameter >>>> ");
 		return param;
@@ -1636,7 +1647,7 @@ public class ReportController{
 			InputControlFactory inputControlFact = new InputControlFactoryImpl();
 			for (InputControlTO inputControlTO : allCascading) {
 				// get list of values
-				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(inputControlTO.getQuery(), userName,customerId, changedObject, changedValue, replacableParams, reportFilterTO, userId);
+				List<ObjectValueTO> objects = reportService.getValuesOfSingleInput(reportUrl, inputControlTO.getQuery(), userName,customerId, changedObject, changedValue, replacableParams, reportFilterTO, userId);
 
 				// req.getSession().setAttribute(IApplicationConstants.INPUT_REMEMBER+inputControlTO.getLabelId(), objects);
 				/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {

@@ -200,15 +200,22 @@ public class ReportServiceImpl implements IReportService {
 			Map<String, Object> sessionParams, String userId, String currentOrg) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			paramMap.put("userName", userName);
+			paramMap.put("userId", userId);
+		}
 		paramMap.put("contractName", Utils.getContractName());
 		paramMap.put("tos", tos);
-		paramMap.put("userName", userName);
+		//paramMap.put("userName", userName);
 		paramMap.put("customerId", customerId);
 		paramMap.put("assessmentId", assessmentId);
 		paramMap.put("combAssessmentId", combAssessmentId);
 		paramMap.put("reportUrl", reportUrl);
 		paramMap.put("sessionParams", sessionParams);
-		paramMap.put("userId", userId);
+		//paramMap.put("userId", userId);
 		paramMap.put("currentOrg", currentOrg);
 		
 		//return reportBusiness.getDefaultFilter(tos,userName,customerId,assessmentId,combAssessmentId,reportUrl,sessionParams,userId,currentOrg);
@@ -230,9 +237,27 @@ public class ReportServiceImpl implements IReportService {
 	 * 
 	 * @see com.ctb.prism.report.service.IReportService#getValuesOfSingleInput(java .lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.lang.Object, java.lang.String)
 	 */
-	public List<ObjectValueTO> getValuesOfSingleInput(String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
+	public List<ObjectValueTO> getValuesOfSingleInput(String reportUrl, String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
 			throws SystemException {
-		return reportBusiness.getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, clazz, userId);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			paramMap.put("userName", userName); 
+			paramMap.put("userId", userId);
+		}
+		paramMap.put("reportUrl", reportUrl);
+		paramMap.put("query", query);
+		//paramMap.put("userName", userName); 
+		paramMap.put("customerId", customerId);
+		paramMap.put("changedObject", changedObject);
+		paramMap.put("changedValue", changedValue);
+		paramMap.put("replacableParams", replacableParams);
+		paramMap.put("obj", clazz);
+		//paramMap.put("userId", userId);
+		//return reportBusiness.getValuesOfSingleInput(query, userName, customerId, changedObject, changedValue, replacableParams, clazz, userId);
+		return reportBusiness.getValuesOfSingleInput(paramMap);
 	}
 
 	/*
@@ -475,7 +500,7 @@ public class ReportServiceImpl implements IReportService {
 					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
 	} )
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
-			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg, Map<String, String[]> param) {
+			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) {
 		//long start = System.currentTimeMillis();
 		Class<?> c = reportFilterFactory.getReportFilterTO();
 		//long end1 = System.currentTimeMillis();
@@ -483,10 +508,15 @@ public class ReportServiceImpl implements IReportService {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		try {
 			String loggedInUserJasperOrgId = (String) c.getMethod("getLoggedInUserJasperOrgId").invoke(reportFilterTO);
-			String userName = (String) c.getMethod("getLoggedInUserName").invoke(reportFilterTO);
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, loggedInUserJasperOrgId);
-			parameters.put(IApplicationConstants.JASPER_USER_PARAM, userName);
-			parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+				String userName = (String) c.getMethod("getLoggedInUserName").invoke(reportFilterTO);
+				parameters.put(IApplicationConstants.JASPER_USER_PARAM, userName);
+				parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));
+			}
 			parameters.put(IApplicationConstants.JASPER_CUSTOMERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER));
 			if (allInputControls != null) {
 				for (InputControlTO inputControlTO : allInputControls) {
@@ -764,6 +794,7 @@ public class ReportServiceImpl implements IReportService {
 	 * @throws JRException
 	 * @throws Exception
 	 */
+	@com.googlecode.ehcache.annotations.Cacheable(cacheName = "allReports")
 	public List<ReportTO> getJasperReportObject(String reportUrl) throws DataAccessException, JRException, Exception {
 		// Connection conn = null;
 		JasperReport jasperReport = null;
@@ -815,6 +846,7 @@ public class ReportServiceImpl implements IReportService {
 	 * @return
 	 * @throws Exception
 	 */
+	@com.googlecode.ehcache.annotations.Cacheable(cacheName = "mainReport")
 	public JasperReport getMainReport(List<ReportTO> jasperReportList) throws Exception {
 		JasperReport jasperReport = null;
 		boolean mainReportPresent = false;

@@ -82,7 +82,7 @@ public class ReportActionServlet extends AbstractServlet
 
             if (webReportContext != null) {
                 try {
-                	runAction(request, webReportContext);
+                	runAction(request, response, webReportContext);
                 	out.println("{\"contextid\": " + webReportContext.getId() + "}");
                 } catch (Exception e) {
                     log.error("Error on page status update", e);
@@ -108,7 +108,7 @@ public class ReportActionServlet extends AbstractServlet
 	 *
 	 */
 	public void runAction(
-		HttpServletRequest request,
+		HttpServletRequest request, HttpServletResponse response,
 		WebReportContext webReportContext
 		) throws JRException, JRInteractiveException
 	{
@@ -120,7 +120,7 @@ public class ReportActionServlet extends AbstractServlet
 		Controller controller = new Controller(getJasperReportsContext());
 		//controller.runReport(webReportContext, action);
 		/** PRISM **/
-		controller.runReport(webReportContext, action, request);
+		controller.runReport(webReportContext, action, request, response);
 	}
 
 
