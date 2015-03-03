@@ -65,7 +65,7 @@ public interface IReportQuery {
 	public static final String DELETE_REPORT = "PKG_MANAGE_REPORT.SP_DELETE_REPORT(?,?,?,?)";
 
 	// query to group download files
-	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
+	/*public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
 		"SELECT JT.JOB_ID, JT.JOB_STATUS, JT.REQUEST_TYPE, JT.REQUEST_DETAILS, JT.REQUEST_SUMMARY, JT.EXTRACT_CATEGORY,",
 		" JT.JOB_NAME, JT.REQUEST_FILENAME REQUEST_FILENAME, DCP.DB_PROPERY_VALUE || JT.REQUEST_FILENAME S3_KEY, JT.UPDATED_DATE_TIME,",
 		" JT.CREATED_DATE_TIME, JT.FILE_SIZE",
@@ -73,7 +73,18 @@ public interface IReportQuery {
 		" WHERE JT.JOB_STATUS != 'DL' AND JT.USERID = ?",
 		" AND DCP.DB_PROPERTY_NAME = 'static.pdf.location'",
 		" ORDER BY CREATED_DATE_TIME DESC"
+	);*/
+	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
+			"SELECT JT.JOB_ID, JT.JOB_STATUS, JT.REQUEST_TYPE, JT.REQUEST_DETAILS, JT.REQUEST_SUMMARY, JT.EXTRACT_CATEGORY,",
+			" JT.JOB_NAME, JT.REQUEST_FILENAME REQUEST_FILENAME, ",
+			" (SELECT DB_PROPERY_VALUE FROM DASH_CONTRACT_PROP WHERE DB_PROPERTY_NAME = 'static.pdf.location') || JT.REQUEST_FILENAME S3_KEY, ",
+			" JT.UPDATED_DATE_TIME, ",
+			" JT.CREATED_DATE_TIME, JT.FILE_SIZE ",
+			" FROM JOB_TRACKING JT",
+			" WHERE JT.JOB_STATUS IN ('ER','IP','CO') AND JT.USERID = ?",
+			" ORDER BY CREATED_DATE_TIME DESC"
 	);
+	
 
 	// query to group download request Details
 	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(
