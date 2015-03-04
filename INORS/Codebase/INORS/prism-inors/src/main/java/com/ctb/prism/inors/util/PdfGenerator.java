@@ -271,7 +271,7 @@ public class PdfGenerator {
     	FileOutputStream fos = null;
     	BufferedInputStream bis = null;
         try {
-        	System.out.println("Compressing pdfs ... ");
+        	//System.out.println("Compressing pdfs ... ");
 			File zipFile = new File(zipName);
 			fos = new FileOutputStream(zipFile);
 			zos = new ZipOutputStream(fos);
@@ -281,7 +281,7 @@ public class PdfGenerator {
 			int compressCount = 0;
 			for (String name : files) {
 				String archiveFileName = arcFiles.get(compressCount);
-				System.out.println("Compressing "+ ++compressCount + " of " + files.size());
+				//System.out.println("Compressing "+ ++compressCount + " of " + files.size());
 			    File file = new File(name);
 			    if (!file.exists()) {
 			        System.err.println("Skipping: " + name);
@@ -314,7 +314,7 @@ public class PdfGenerator {
 			IOUtils.closeQuietly(fos);
 			IOUtils.closeQuietly(bis);
 		}
-		System.out.println("Compressing completed ... ");
+		//System.out.println("Compressing completed ... ");
     }
 	
 }
