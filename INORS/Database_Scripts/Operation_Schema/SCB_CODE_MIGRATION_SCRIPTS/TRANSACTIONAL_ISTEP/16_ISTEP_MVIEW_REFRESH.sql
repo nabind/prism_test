@@ -24,7 +24,7 @@ end;
 
 begin
 
-DBMS_MVIEW.REFRESH('MV_ORG_TP_STRUCTURE', 'C');
+DBMS_MVIEW.REFRESH('MV_ORG_TP_STRUCTURE', '?');
 
 end;
 

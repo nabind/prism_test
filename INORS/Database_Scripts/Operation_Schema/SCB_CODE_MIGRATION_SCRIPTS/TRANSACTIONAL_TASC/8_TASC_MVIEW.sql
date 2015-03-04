@@ -1,4 +1,6 @@
---ORG_NODE_DIM_HIER(pkg_student_file_download must be there)
+----remember to change the schema name for global schema in the mviews MV_SUB_OBJ_FORM_MAP and MV_SUBTEST_SCORE_TYPE_MAP
+----pkg_student_file_download must be there
+--ORG_NODE_DIM_HIER
 CREATE MATERIALIZED VIEW ORG_NODE_DIM_HIER
 REFRESH COMPLETE ON DEMAND
 AS
@@ -767,6 +769,7 @@ FROM (SELECT LVL1.CUSTOMERID,LVL1.NUM_LEVELS,LISTAGG (LVL1.ORG_LABEL,'~') WITHIN
                      GROUP BY LVL1.CUSTOMERID,
                               LVL1.NUM_LEVELS)LVL2;
 	
+
 	
 CREATE MATERIALIZED VIEW MV_SUB_OBJ_FORM_MAP
 REFRESH COMPLETE ON DEMAND
@@ -782,20 +785,34 @@ SELECT  DISTINCT SUB.SUBTESTID,
                    SOM.objectiveID
                    /* *******************************************************
                     * This MATERIALIZED VIEW is created as a part of performance
-                    * improvemnt (query tunning) for the input control queries of 
-                    * Subtest (SF_GET_SUBTEST) and Form (SF_GET_FORM) 
+                    * improvemnt (query tunning) for the input control queries of
+                    * Subtest (SF_GET_SUBTEST) and Form (SF_GET_FORM)
                     * which were taking long time to execute.
                     * DATE: Feb-10-2015
                     * AUTHOR: Partha
                     *********************************************************/
             FROM SUBTEST_OBJECTIVE_MAP SOM,
-                 SUBTEST_DIM SUB,
+                 --SUBTEST_DIM 
+                 (SELECT SUBTESTID,
+                   SUBTEST_NAME,
+                   SUBTEST_SEQ,
+                   SUBTEST_CODE,
+                   SUBTEST_TYPE,
+                   CONTENTID,
+                   CANDIDATE_SUB_SEQ,
+                   DATETIMESTAMP
+                  FROM PRISMGLOBAL.SUBTEST_DIM
+                 WHERE CONTENTID IN (SELECT CONTENTID FROM CONTENT_DIM))SUB,
                  LEVEL_MAP LM,
-                 form_dim FRM
+                 --FORM_DIM 
+                 (SELECT FORMID, FORM_NAME, FORM_CODE, DATETIMESTAMP
+                   FROM PRISMGLOBAL.FORM_DIM
+                  WHERE PROJECTID = 1)FRM
             WHERE SUB.SUBTESTID = SOM.SUBTESTID
               AND LM.LEVEL_MAPID=SOM.LEVEL_MAPID
               AND FRM.FORMID = LM.FORMID
               AND SOM.ASSESSMENTID = LM.ASSESSMENTID;	
+
 
 			  
 CREATE MATERIALIZED VIEW MV_SUBTEST_SCORE_TYPE_MAP
@@ -803,20 +820,38 @@ REFRESH COMPLETE ON DEMAND
 AS
 SELECT  SUB.SUBTESTID, SUB.SUBTEST_NAME, SUB.SUBTEST_SEQ, SUB.SUBTEST_CODE, SUB.SUBTEST_TYPE, SUB.CONTENTID, SUB.CANDIDATE_SUB_SEQ ,
               STL.CATEGORY,STL.SCORE_TYPE,STL.SCORE_VALUE,STL.SCORE_VALUE_NAME,STL.CUST_PROD_ID,
-             CUST.CUSTOMERID 
+             CUST.CUSTOMERID
 			 /* *******************************************************
                     * This MATERIALIZED VIEW is created as a part of performance
-                    * improvemnt for the HSE dashboard 
+                    * improvemnt for the HSE dashboard
                     * which were taking long time to execute.
                     * DATE: Feb-23-2015
                     * AUTHOR: Partha
                     *********************************************************/
 FROM
 (SELECT * FROM SCORE_TYPE_LOOKUP WHERE CATEGORY = 'CONTENT' AND SCORE_TYPE = 'HSE') STL,
-SUBTEST_DIM SUB,
-CUST_PRODUCT_LINK CUST
-WHERE STL.CUST_PROD_ID = CUST.CUST_PROD_ID
-;			  
+--SUBTEST_DIM 
+(SELECT SUBTESTID,
+       SUBTEST_NAME,
+       SUBTEST_SEQ,
+       SUBTEST_CODE,
+       SUBTEST_TYPE,
+       CONTENTID,
+     CANDIDATE_SUB_SEQ,
+       DATETIMESTAMP
+  FROM PRISMGLOBAL.SUBTEST_DIM
+ WHERE CONTENTID IN (SELECT CONTENTID FROM CONTENT_DIM))SUB,
+--CUST_PRODUCT_LINK 
+(SELECT CUST_PROD_ID,
+       CUSTOMERID,
+       PRODUCTID,
+       ADMINID,
+       ACTIVATION_STATUS,
+       DATETIMESTAMP
+  FROM PRISMGLOBAL.CUST_PRODUCT_LINK
+ WHERE PRODUCTID IN
+       (SELECT PRODUCTID FROM PRISMGLOBAL.PRODUCT WHERE PROJECTID = 1))CUST
+WHERE STL.CUST_PROD_ID = CUST.CUST_PROD_ID;			  
 
 
 CREATE MATERIALIZED VIEW MV_ORG_TP_STRUCTURE

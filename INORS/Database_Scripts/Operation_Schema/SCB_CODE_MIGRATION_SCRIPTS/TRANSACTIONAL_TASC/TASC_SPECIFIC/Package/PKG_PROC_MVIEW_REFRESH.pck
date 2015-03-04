@@ -15,6 +15,69 @@ create or replace package body PKG_PROC_MVIEW_REFRESH is
   PROCEDURE PROC_ORG_NODE_DIM_HIER_REFERSH
   IS
   BEGIN
+      
+     ---crerated Mview CUSTOMER_INFO by dropping the View CUSTOMER_INFO as a part of performance tuning to remove nested loops
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'CUSTOMER_INFO',
+           'MVIEW',
+           'REFRESH STARTED',
+           'START',
+           SYSDATE);
+        COMMIT;
+        DBMS_MVIEW.REFRESH('CUSTOMER_INFO', 'C');
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'CUSTOMER_INFO',
+           'MVIEW',
+           'REFRESH COMPLETED',
+           'END',
+           SYSDATE);
+        COMMIT;    
+     ---crerated Mview CUST_PRODUCT_LINK by dropping the View CUST_PRODUCT_LINK as a part of performance tuning to remove nested loops
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'CUST_PRODUCT_LINK',
+           'MVIEW',
+           'REFRESH STARTED',
+           'START',
+           SYSDATE);
+        COMMIT;
+        DBMS_MVIEW.REFRESH('CUST_PRODUCT_LINK', 'C');
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'CUST_PRODUCT_LINK',
+           'MVIEW',
+           'REFRESH COMPLETED',
+           'END',
+           SYSDATE);
+        COMMIT;
+        
+        ---crerated Mview MV_ORG_TP_STRUCTURE by dropping the View MV_ORG_TP_STRUCTURE as a part of performance tuning of the manage module packages
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'MV_ORG_TP_STRUCTURE',
+           'MVIEW',
+           'REFRESH STARTED',
+           'START',
+           SYSDATE);
+        COMMIT;
+        DBMS_MVIEW.REFRESH('MV_ORG_TP_STRUCTURE', '?');
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'MV_ORG_TP_STRUCTURE',
+           'MVIEW',
+           'REFRESH COMPLETED',
+           'END',
+           SYSDATE);
+        COMMIT;
+  
         INSERT INTO PERF_LOG
         VALUES
           (PERF_LOG_SEQ.NEXTVAL,
@@ -59,6 +122,93 @@ create or replace package body PKG_PROC_MVIEW_REFRESH is
 
 PROCEDURE PROC_STUDENT_REFRESH(P_PROCESS_ID IN NUMBER) IS
 BEGIN
+---crerated Mview SUBTEST_DIM by dropping the View SUBTEST_DIM as a part of performance tuning to remove nested loops
+INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'SUBTEST_DIM',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('SUBTEST_DIM', 'C');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'SUBTEST_DIM',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+
+---crerated Mview FORM_DIM by dropping the View FORM_DIM as a part of performance tuning to remove nested loops
+INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'FORM_DIM',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('FORM_DIM', 'C');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'FORM_DIM',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+  
+  ---crerated Mview GENDER_DIM by dropping the View GENDER_DIM as a part of performance tuning to remove nested loops
+INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'GENDER_DIM',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('GENDER_DIM', 'C');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'GENDER_DIM',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+  
+   ---crerated Mview OBJECTIVE_DIM by dropping the View OBJECTIVE_DIM as a part of performance tuning to remove nested loops
+INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'OBJECTIVE_DIM',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('OBJECTIVE_DIM', 'C');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'OBJECTIVE_DIM',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
 
   INSERT INTO PERF_LOG
   VALUES
@@ -123,7 +273,7 @@ BEGIN
      'END',
      SYSDATE);
   COMMIT;
-  
+
    INSERT INTO PERF_LOG
   VALUES
     (PERF_LOG_SEQ.NEXTVAL,

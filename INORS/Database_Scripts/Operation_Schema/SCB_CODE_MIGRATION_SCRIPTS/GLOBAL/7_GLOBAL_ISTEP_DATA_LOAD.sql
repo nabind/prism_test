@@ -1,9 +1,9 @@
 /* -- LOOKUP TABLE Run this below insert script before running the whole script. 
    ---insert all values in upper case here
-   ----change the value for the PRESENT_VALUE_CHAR column with the balnk source ISTEP and TASC schema
-INSERT INTO TASC_LOOKUP_DATA_SWAP(PRESENT_VALUE_CHAR,COLUMN_TYPE) values('ISTEP_PRODCOPY','SOURCE_SCHEMA_ISTEP');
+   ----change the value for the PRESENT_VALUE_CHAR column with the source ISTEP and TASC schema
+INSERT INTO TASC_LOOKUP_DATA_SWAP(PRESENT_VALUE_CHAR,COLUMN_TYPE) values('ISTEPPRODCOPY','SOURCE_SCHEMA_ISTEP');
 
-INSERT INTO TASC_LOOKUP_DATA_SWAP(PRESENT_VALUE_CHAR,COLUMN_TYPE) values('TASC_PRODCOPY','SOURCE_SCHEMA_TASC');
+INSERT INTO TASC_LOOKUP_DATA_SWAP(PRESENT_VALUE_CHAR,COLUMN_TYPE) values('TASCPRODCOPY','SOURCE_SCHEMA_TASC');
 
 */
 

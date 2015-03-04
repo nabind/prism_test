@@ -1,6 +1,5 @@
 -------------------TRIGGERS FOR LOADING PROJECTID FROM UI---------------
------(remember to change the schema name for global schema, e.g. prismglobal to PRISMGLOBAL) 
-
+----(remember to change the schema name of global schema) 
 
 CREATE OR REPLACE TRIGGER TRG_DASH_REPORTS
 INSTEAD OF INSERT
@@ -9,7 +8,7 @@ FOR EACH ROW
 DECLARE
 BEGIN
 
-  INSERT INTO prismglobal.DASH_REPORTS
+  INSERT INTO prism_global.DASH_REPORTS
     (DB_REPORTID,
      REPORT_NAME,
      REPORT_DESC,
@@ -26,7 +25,7 @@ BEGIN
      :new.REPORT_TYPE,
      :new.REPORT_FOLDER_URI,
      :new.ACTIVATION_STATUS,
-     1,
+     2,
      :new.CREATED_DATE_TIME,
      :new.UPDATED_DATE_TIME);
 
@@ -39,7 +38,7 @@ CREATE OR REPLACE TRIGGER TRG_DASH_RPT_ACTION
 DECLARE
 BEGIN
 
-  INSERT INTO prismglobal.DASH_RPT_ACTION
+  INSERT INTO prism_global.DASH_RPT_ACTION
     (DB_ACTIONID,
      ACTION_NAME,
      ACTION_TYPE,
@@ -52,102 +51,12 @@ BEGIN
      :new.ACTION_NAME,
      :new.ACTION_TYPE,
      :new.DESCRIPTION,
-     1,
+     2,
      :new.CREATED_DATE_TIME,
      :new.UPDATED_DATE_TIME);
 
 END;
-/
-
---TRG_DEMO_VALID
-
-CREATE OR REPLACE TRIGGER TRG_DEMO_VALID
- BEFORE INSERT ON DEMOGRAPHIC_VALUES
- FOR EACH ROW
-Begin
-  Select seq_demo_valid.Nextval Into :New.DEMO_VALID From Dual;
-End TRG_DEMO_VALID;
-/
-
---TRG_ORG_USER_MAP
-
-CREATE OR REPLACE TRIGGER TRG_ORG_USER_MAP AFTER UPDATE OR DELETE OR INSERT
-ON org_users
-FOR EACH ROW
-DECLARE
-v_customerid NUMBER;
-
-BEGIN
-/*BEGIN 
-SELECT CUSTOMERID INTO v_customerid FROM USERS WHERE USERID=:NEW.userid;
-exception when others then
-v_customerid := NULL;
-End;*/
-IF UPDATING  THEN  
-
-BEGIN
-  SELECT CUSTOMERID
-    INTO V_CUSTOMERID
-    FROM USERS
-   WHERE USERID = :NEW.USERID;
-EXCEPTION
-  WHEN OTHERS THEN
-    V_CUSTOMERID := NULL;
-END;
-        
-      INSERT INTO org_user_map_temp VALUES(:NEW.userid,:NEW.org_nodeid,v_customerid,'UP');
-        
-ELSIF DELETING THEN   
-      
-      BEGIN
-  SELECT CUSTOMERID
-    INTO V_CUSTOMERID
-    FROM USERS
-   WHERE USERID = :OLD.USERID;
-EXCEPTION
-  WHEN OTHERS THEN
-    V_CUSTOMERID := NULL;
-END;  
-    
-      INSERT INTO org_user_map_temp VALUES(:OLD.userid,:OLD.org_nodeid,v_customerid,'DE');
-      
-ELSE 
-      
- BEGIN
-  SELECT CUSTOMERID
-    INTO V_CUSTOMERID
-    FROM USERS
-   WHERE USERID = :NEW.USERID;
-EXCEPTION
-  WHEN OTHERS THEN
-    V_CUSTOMERID := NULL;
-END;
-
-      INSERT INTO org_user_map_temp VALUES(:NEW.userid,:NEW.org_nodeid,v_customerid,'IN');               
-END IF;
-END ;
-/
-
---TRG_ORG_USER_MAP_STMT
-
-CREATE OR REPLACE TRIGGER TRG_ORG_USER_MAP_STMT AFTER UPDATE OR DELETE OR INSERT
-ON org_users
-
-
-DECLARE
---PRAGMA AUTONOMOUS_TRANSACTION;
-
-BEGIN
-
---  INSERT INTO org_user_map_temp VALUES(:NEW.userid,:NEW.org_nodeid,'IN'); 
-
-FOR I IN (SELECT * FROM org_user_map_temp ) 
-LOOP 
-    PKG_PRF_ORG_USR.SP_SEARCH_ORG_HIER(i.userid,i.org_nodeid,i.customerid,i.trigger_type); 
-END LOOP ; 
-END;
-
-/
+/ 
 
 CREATE OR REPLACE TRIGGER TRG_DASH_MENU_RPT_ACCESS
   INSTEAD OF INSERT ON DASH_MENU_RPT_ACCESS
@@ -155,7 +64,7 @@ CREATE OR REPLACE TRIGGER TRG_DASH_MENU_RPT_ACCESS
 DECLARE
 BEGIN
 
-INSERT INTO prismglobal.DASH_MENU_RPT_ACCESS
+INSERT INTO prism_global.DASH_MENU_RPT_ACCESS
   (DB_MENUID,
    DB_REPORTID,
    ROLEID,
@@ -173,7 +82,7 @@ VALUES
    :new.ORG_LEVEL,
    :new.CUST_PROD_ID,
    :new.REPORT_SEQ,
-   1,
+   2,
    :new.ACTIVATION_STATUS,
    :new.CREATED_DATE_TIME,
    :new.UPDATED_DATE_TIME);
@@ -188,7 +97,7 @@ CREATE OR REPLACE TRIGGER TRG_DASH_ACTION_ACCESS
 DECLARE
 BEGIN
 
-  INSERT INTO prismglobal.DASH_ACTION_ACCESS
+  INSERT INTO prism_global.DASH_ACTION_ACCESS
     (DB_ACT_ACCESSID,
      DB_MENUID,
      DB_REPORTID,
@@ -210,7 +119,7 @@ BEGIN
      :new.ORG_LEVEL,
      :new.CUST_PROD_ID,
      :new.ACTION_SEQ,
-     1,
+     2,
      :new.ACTIVATION_STATUS,
      :new.CREATED_DATE_TIME,
      :new.UPDATED_DATE_TIME);
@@ -219,16 +128,13 @@ END;
 
 /
 
-/* ********TRIGGER TRG_CUSTOMER_INFO is not required in TASC************************
-
 CREATE OR REPLACE TRIGGER TRG_CUSTOMER_INFO
   INSTEAD OF INSERT ON CUSTOMER_INFO
   FOR EACH ROW
 DECLARE
 BEGIN
 
-  INSERT INTO prismglobal.CUSTOMER_INFO
-
+  INSERT INTO prism_global.CUSTOMER_INFO
     (CUSTOMERID,
      CUSTOMER_NAME,
      DISPLAY_TP_SELECTION,
@@ -236,21 +142,17 @@ BEGIN
      SUPPORT_EMAIL,
      PROJECTID,
      SEND_LOGIN_PDF,
-     DATETIMESTAMP,
-     CUSTOMER_CODE)
+     DATETIMESTAMP)
   VALUES
     (:new.CUSTOMERID,
      :new.CUSTOMER_NAME,
      :new.DISPLAY_TP_SELECTION,
      :new.FILE_LOCATION,
      :new.SUPPORT_EMAIL,
-     1,
+     2,
      :new.SEND_LOGIN_PDF,
-     :new.DATETIMESTAMP,
-     :NEW.CUSTOMER_CODE);
+     :new.DATETIMESTAMP);
 
 END;
 
 /
-*/
-
