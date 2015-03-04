@@ -327,11 +327,11 @@
 			{
 				return;
 			}
-
+			var shortName = title.substring(0, 20) + '...';
 			// Create elements (and a little IE7 debug)
 			//$('<li><a href="#'+id+'">'+title+'</a></li>').appendTo(tabs).prev().removeClass('last-child');
 			//Changed for PRISM - added param in <li> - adding close span
-			$('<li param="'+id+'" id="'+id+'-'+id+'"><a assessment="'+assessmentId+'" href="#'+id+'" id="'+id+'_'+id+'">'+title+'<span reportId="'+reportId+'" param="'+id+'" class="close closereport show-on-parent-hover">x</span></a></li>').appendTo(tabs).prev().removeClass('last-child');
+			$('<li class="with-tooltip" title="'+title+'" name="'+title+'" shortName="'+shortName+'" param="'+id+'" id="'+id+'-'+id+'"><a assessment="'+assessmentId+'" href="#'+id+'" id="'+id+'_'+id+'"><span class="tabtext">'+shortName+'</span><span reportId="'+reportId+'" param="'+id+'" class="close closereport show-on-parent-hover">x</span></a></li>').appendTo(tabs).prev().removeClass('last-child');
 			tabsContent.append('<div id="'+id+'"'+(noPadding ? '' : ' class="with-padding"')+'>'+content+'</div>');
 
 			// Refresh tabs

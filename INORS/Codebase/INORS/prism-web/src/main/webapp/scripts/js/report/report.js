@@ -111,6 +111,13 @@ $(document).ready(function() {
 	});
 	// ============================= Show product logo =============================
 	$('.reporttabs > li > a').live('click', function(event) {
+		var allLis = $('.reporttabs > li > a');
+		$.each(allLis, function(index) { 
+			if($(this).parent().attr('shortName') != null) {
+				$(this).parent().find('.tabtext').text( $(this).parent().attr('shortName') );
+			}
+		});
+		$(this).parent().find('.tabtext').text( $(this).parent().attr('name') );
 		//$('.productImage').hide();
 		//$('#productImage'+$(this).attr('assessment')).show();
 		//$('#productImage'+$(this).attr('assessment')).attr('src', 'image.do?assessmentId='+$(this).attr('assessment'));
