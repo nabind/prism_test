@@ -313,7 +313,7 @@ public class StudentDataUtil {
 		XStream xs = new XStream(new StaxDriver(new XmlFriendlyNameCoder("_-", "_")));
 		xs.autodetectAnnotations(true);
 		String xml = xs.toXML(to);
-		System.out.println(xml);
+		//System.out.println(xml);
 		return xml;
 	}
 

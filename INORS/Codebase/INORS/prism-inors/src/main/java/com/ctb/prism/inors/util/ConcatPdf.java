@@ -55,7 +55,7 @@ public class ConcatPdf {
 			// Create Readers for the pdfs.
 			while (iteratorPDFs.hasNext()) {
 				pdfCount++;
-				System.out.println("merging pdf # "+pdfCount);
+				//System.out.println("merging pdf # "+pdfCount);
 				InputStream pdf = new FileInputStream(iteratorPDFs.next());
 				PdfReader pdfReader = new PdfReader(pdf);
 				//PdfReader pdfReader = rotatePdf(pdf);

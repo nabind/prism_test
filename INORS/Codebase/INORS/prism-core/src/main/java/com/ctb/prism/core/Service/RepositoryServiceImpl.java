@@ -110,7 +110,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	public byte[] getAssetBytes(String assetPath) throws IOException {
 		assetPath = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + assetPath;
 		assetPath = assetPath.replace("//", "/");
-		System.out.println("Downloading an object from " + assetPath);
+		//System.out.println("Downloading an object from " + assetPath);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		S3ObjectInputStream inputStream = object.getObjectContent();
 		byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
@@ -120,13 +120,13 @@ public class RepositoryServiceImpl implements IRepositoryService {
 
 	public byte[] getAssetBytesByS3Key(String s3Key) throws Exception {
 		s3Key = s3Key.replace("//", "/");
-		System.out.println("Downloading an object from: " + s3Key);
+		//System.out.println("Downloading an object from: " + s3Key);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, s3Key));
 		S3ObjectInputStream inputStream = object.getObjectContent();
 		byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
 		inputStream.close(); // Must be closed as it is directly opened from
 								// Amazon
-		System.out.println("Object downloaded successfully: " + s3Key);
+		//System.out.println("Object downloaded successfully: " + s3Key);
 		return bytes;
 	}
 

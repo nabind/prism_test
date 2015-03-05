@@ -58,7 +58,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 			String tableName = CustomStringUtil.appendString(wsTableName, environment.toUpperCase());
 			Table table = amazonDynamoDB.getTable(tableName);
 			try {
-				System.out.println("Adding data to " + tableName);
+				//System.out.println("Adding data to " + tableName);
 				Item item = new Item()
 						.withPrimaryKey("processid", processId)
 						.withString("request_obj", obj)
@@ -76,7 +76,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 		String tableName = getTableName(environment);
 		Table table = amazonDynamoDB.getTable(tableName);
 		try {
-			System.out.println("Adding data to " + tableName);
+			//System.out.println("Adding data to " + tableName);
 			Item item = new Item()
 					.withPrimaryKey("contract", contract)
 					.withString("key", key);
@@ -97,7 +97,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 		ItemCollection<QueryOutcome> items = table.query(querySpec);
 		Iterator<Item> iterator = items.iterator();
 
-		System.out.println("Query: printing results...");
+		//System.out.println("Query: printing results...");
 
 		/*while (iterator.hasNext()) {
 			//System.out.println(iterator.next().toJSONPretty());
@@ -124,7 +124,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 			table.deleteItem("contract", contract, "key", (String) iterator.next().get("key"));
 		}
 		
-		System.out.println("All cache key are deleted from " + tableName + " for contract " + contract);
+		//System.out.println("All cache key are deleted from " + tableName + " for contract " + contract);
 	}
 	
 	/**
@@ -135,14 +135,14 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 	 */
 	public void deleteItems(String environment, String contract, String key) {
 		String tableName = getTableName(environment);
-		System.out.println("Deleting data from " + tableName);
+		//System.out.println("Deleting data from " + tableName);
         Table table = amazonDynamoDB.getTable(tableName);
         try {
             DeleteItemOutcome outcome = table.deleteItem("contract", contract, "key", key);
 
             // Check the response.
-            System.out.println("Printing item that was deleted...");
-            System.out.println(outcome.getItem().toJSONPretty());
+            //System.out.println("Printing item that was deleted...");
+            //System.out.println(outcome.getItem().toJSONPretty());
 
         } catch (Exception e) {
             System.err.println("Error deleting item in " + tableName);

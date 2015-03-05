@@ -2060,7 +2060,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				stgOrgTO.getAdminId(), stgOrgTO.getCustomerId());
 		if (isInserted > 0) {
 			try {
-				System.out.println("Before Proc Call");
+				//System.out.println("Before Proc Call");
 				// Process proc =
 				// Runtime.getRuntime().exec("sh /home/prism/CallInformatica.sh");
 				// Process proc = Runtime.getRuntime().exec(new
@@ -2069,18 +2069,18 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				File file = new File("/home/prism");
 				String[] commands = new String[] { "/bin/bash", "CallInformatica.sh" };
 				Process proc = Runtime.getRuntime().exec(commands, null, file);
-				System.out.println("After Proc Call");
+				//System.out.println("After Proc Call");
 				read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				try {
 					proc.waitFor();
-					System.out.println("After wait for");
+					//System.out.println("After wait for");
 				} catch (InterruptedException e) {
-					System.out.println(e.getMessage());
+					//System.out.println(e.getMessage());
 					proc.getErrorStream();
 				}
 				while (read.ready()) {
-					System.out.println(read.readLine());
-					System.out.println("After read ready");
+					//System.out.println(read.readLine());
+					//System.out.println("After read ready");
 				}
 
 			} catch (IOException e) {
