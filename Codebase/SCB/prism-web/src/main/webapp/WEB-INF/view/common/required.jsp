@@ -1,0 +1,2 @@
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<small class="input-info"><span class="icon-star icon-size1 red"></span> &nbsp; = <spring:message code="label.requiredFields" /></small>

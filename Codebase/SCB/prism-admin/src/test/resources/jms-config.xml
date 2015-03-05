@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd">
+
+
+	<bean id="sqsConnectorFactory" class="org.skyscreamer.nevado.jms.connector.amazonaws.AmazonAwsSQSConnectorFactory" />
+
+	<bean id="connectionFactory" class="org.skyscreamer.nevado.jms.NevadoConnectionFactory">
+		<property name="sqsConnectorFactory" ref="sqsConnectorFactory" />
+		<property name="awsAccessKey" value="AKIAJCEB4JEZJRM2WFXQ" />
+		<property name="awsSecretKey" value="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" />
+	</bean>
+
+	<!-- <bean id="prism_job_queue" class="org.skyscreamer.nevado.jms.destination.NevadoQueue">
+		<constructor-arg value="${aws.queueName}" />
+	</bean> -->
+	
+	<bean id="cachedConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory"
+		p:targetConnectionFactory-ref="connectionFactory"
+		p:sessionCacheSize="10" />
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestinationName" value="PrismJobID_INORS_DEV" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
+	</bean>
+
+	<!-- <bean id="messageListner" class="com.ctb.prism.web.jms.JmsMessageListener" /> -->
+
+	<!-- <bean id="jmsConsumerConnectionFactory" 
+          class="org.springframework.jms.connection.CachingConnectionFactory"
+          p:targetConnectionFactory-ref="connectionFactory"
+		  p:sessionCacheSize="10" /> -->
+        
+        <!-- ok -->
+	<!-- <jms:listener-container container-type="default" connection-factory="jmsConsumerConnectionFactory" acknowledge="auto">
+		<jms:listener destination="${aws.queueName}" ref="messageListner" method="onSQSMessage" />
+	</jms:listener-container> -->
+	
+	<!-- Queue for storing cache keys -->
+	<bean id="jmsInorsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestinationName" value="PrismJobID_INORS_CACHE" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
+	</bean>
+	
+	<bean id="jmsTascTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestinationName" value="PrismJobID_TASC_CACHE" />
+		<property name="connectionFactory" ref="cachedConnectionFactory" />
+	</bean>
+	
+</beans>

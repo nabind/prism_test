@@ -1,0 +1,224 @@
+#jsTable_wrapper {
+	top: 85px !important;
+}
+.display-none {
+	display:none;	
+}
+/*
+table thead th.sorting_desc, table thead th.sorting_asc {
+	background-color: #0099CC;
+	white-space: nowrap;
+}
+.columnheader {
+	cursor: pointer;
+}
+table thead th{
+	height: 25px;
+    left: -1px;
+    position: relative;
+    top: -1px;
+    background-color: #307ABB;
+	text-align: center;
+	color: #FFFFFF;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+
+table tfoot tr:first-child{
+	background-color:#5F80AB;
+	text-align: center;
+	color: #FFFFFF;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.2;
+	height: 30px;
+}
+
+table tbody tr{
+	background-color:#E1E2E4;
+	text-align: center;
+	font-family: Arial;
+    font-size: 12px;
+    line-height: 1.2;
+	height: 20px;
+}
+table tbody tr td:first-child{
+    font-weight: bold;
+}
+table th.resizing {
+    cursor: col-resize;
+}
+
+.dataTables_wrapper{
+	border: 1px solid #FFFFFF;
+    position: relative;
+    width: auto;
+}*/
+body {
+	margin: 0;
+	padding: 0;
+	height: 600px;
+}
+
+table tfoot .searchRow {
+	position: absolute;
+	top: -25px;
+	left: -1px;
+}
+/*
+.css_both { background: url('../common/images/sort_both.png') no-repeat center right !important; position: absolute; top: 25px;}
+.css_up { background: url('../common/images/sort_desc.png') no-repeat center right; position: absolute; top: 25px;}
+.css_down{ background: url('../common/images/sort_asc.png') no-repeat center right;position: absolute; top: 25px; }
+*/
+.DataTables_sort_wrapper {
+	float: left;
+	clear: both;
+}
+
+.DataTables_sort_wrapper .spantext {
+	padding-left: 15px;
+	padding-right: 15px;
+	display: inline-block;
+}
+/*
+table.dataTable tr.odd td.sorting_1 {
+	background-color: inherit;	
+}
+table.dataTable tr.even td.sorting_1 {
+	background-color: inherit;	
+}*/
+.CRZ {
+	top: 54px !important;
+}
+
+.filter-dialog label {
+	display: block;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.filter-dialog>div {
+	margin-bottom: 10px;
+}
+
+.filter-dialog select {
+	margin-right: 10px;
+	vertical-align: top;
+}
+
+.filter-dialog select+span {
+	width: 270px;
+	display: inline-block;
+}
+
+.filter_number_range {
+	white-space: pre;
+	display: inline-block;
+}
+
+.filter_number_range input {
+	width: 100px;
+}
+
+.header-menu {
+	display: none;
+}
+
+th:hover>.header-menu {
+	display: block;
+	position: absolute;
+	top: 58px;
+	cursor: pointer;
+}
+
+/** Classes for charts */
+.setting {
+	height: 25px;
+	width: 32px;
+	background: url('../img/chart_options_button_sprite.png');
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	z-index: 9999;
+}
+
+.highcharts_parent_container:hover>.highcharts-container {
+	border: 0px solid grey;
+}
+
+.chartType {
+	padding: 10px;
+	clear: both;
+}
+
+.title {
+	background: #6383A8;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	color: white;
+	padding: 3px;
+}
+
+.icon {
+	height: 37px;
+	width: 54px;
+	background: url('../img/chart_type_sprite.png') repeat-y scroll 0 0 transparent;
+	float: left;
+}
+
+.iconPie1 {
+	background-position: 0px -1170px;
+}
+
+.iconArea1 {
+	background-position: 0px -650px;
+}
+
+.iconArea2 {
+	background-position: 0px -780px;
+}
+
+.iconArea3 {
+	background-position: 0px -910px;
+}
+
+.iconArea4 {
+	background-position: 0px -1040px;
+}
+
+.iconLine1 {
+	background-position: 0px -390px;
+	float: left;
+}
+
+.iconLine2 {
+	background-position: 0px -520px;
+}
+
+.iconBar1 {
+	background-position: 0px -195px;
+}
+
+.iconBar2 {
+	background-position: 0px -260px;
+}
+
+.iconBar3 {
+	background-position: 0px -325px;
+}
+
+.iconColumn1 {
+	background-position: 0px 0px;
+}
+
+.iconColumn2 {
+	background-position: 0px -65px;
+}
+
+.iconColumn3 {
+	background-position: 0px -130px;
+}

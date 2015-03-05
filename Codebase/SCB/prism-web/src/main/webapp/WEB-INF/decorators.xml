@@ -1,0 +1,108 @@
+<decorators defaultdir="/WEB-INF/decorator">
+	<excludes>
+		<pattern>/login*</pattern>
+		<pattern>/userlogin*</pattern>
+        <pattern>/style/*</pattern>
+        <pattern>/themes/*</pattern>         
+        <pattern>/scripts/*</pattern>         
+        <pattern>/images/*</pattern> 
+        <pattern>/img/*</pattern> 
+        <pattern>/AccountService/*</pattern> 
+        <pattern>/AccountService*</pattern> 
+        <pattern>/index.jsp</pattern>
+        <pattern>/denied.jsp</pattern>
+        <pattern>/accessDenied.jsp</pattern>
+        <pattern>/loadJSPView*</pattern>
+		<pattern>/loadReport*</pattern>
+		<pattern>/checkCascading*</pattern>
+		<pattern>/fetchReportMenu*</pattern>
+		<pattern>/acsipdf*</pattern>
+		<pattern>/inorspdf*</pattern>
+		<pattern>/resourcepdf*</pattern>
+		<pattern>/clearCache*</pattern>
+		<pattern>/showError.do</pattern>
+		<pattern>/clearAllCache.do*</pattern>
+		<pattern>/clearConfigCache.do</pattern>
+		<pattern>/clearReportCache.do</pattern>
+		<pattern>/clearContractCache.do*</pattern>
+		<pattern>/ReportServlet.do</pattern>
+		<pattern>/servlets/report</pattern>
+		<pattern>/servlets/resource</pattern>
+		<pattern>/servlets/report*</pattern>
+		<pattern>/servlets/resource*</pattern>
+		<pattern>/openReportHtmlApi*</pattern>
+		<pattern>/openReportHtmlAjax*</pattern>
+		<pattern>/jquery/*</pattern>
+		<pattern>/ajaxJSP/*</pattern>
+		<pattern>/StudentDataloadService*</pattern>
+		<pattern>/landing*</pattern>
+		<pattern>/downloadZippedPdf*</pattern>
+		<pattern>/downloadFile*</pattern>
+		<pattern>/groupDownloadFunction*</pattern>
+		<pattern>/getAssestList.do</pattern>
+	</excludes>
+	
+	<decorator name="parentnetwork" page="parentnetwork.jsp">
+		<pattern>/getStandardActivity*</pattern>
+		<pattern>/getStandardIndicator*</pattern>
+		<pattern>/getArticleDescription*</pattern>
+		<pattern>/getGradeSubtestInfo*</pattern>
+		<pattern>/getBrowseContent*</pattern>
+		<pattern>/getStandardMatters*</pattern>
+		<pattern>/historyBack*</pattern>
+    </decorator>
+	
+	<decorator name="report" page="reporttemplate.jsp">
+		<pattern>/openReportHtml*</pattern>
+		<pattern>/reportMoreInfo*</pattern>
+    </decorator>
+	
+	<decorator name="drilldown" page="public.jsp">
+		<pattern>/openDrilldownReport*</pattern>
+    </decorator>
+	
+	<decorator name="tiles" page="utility.jsp">
+        <pattern>/registration*</pattern>
+		<pattern>/register*</pattern>
+    </decorator>
+    
+    <decorator name="pwd" page="others.jsp">
+		<pattern>/changePassword*</pattern>
+    </decorator>
+    
+    <decorator name="inors" page="inorstemplate.jsp">
+		<pattern>/groupDownloadForm*</pattern>
+		<pattern>/icLetterDownloads*</pattern>
+		<pattern>/groupDownloadFiles*</pattern>
+		<pattern>/studentFileDownload*</pattern>
+		<pattern>/downloadStudentFile*</pattern>
+		<pattern>/grtICFileForm*</pattern>
+		<pattern>/loadHomePage*</pattern>
+		<pattern>/loadGrowthHome*</pattern>
+		<pattern>/rescoreRequestForm*</pattern>
+    </decorator>
+	
+  	<decorator name="main" page="main.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>
+	
+	
+    <!--  
+    <decorator name="tiles" page="utility.jsp">
+        <pattern>/registration*</pattern>
+		<pattern>/register*</pattern>
+    </decorator>-->
+
+	<!--  
+  	<decorator name="public" page="public.jsp"> 
+		<url-pattern>/login</url-pattern>
+		<url-pattern>/register</url-pattern>
+	</decorator>
+  	<decorator name="popup" page="popup.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>
+  	<decorator name="editorial" page="editorial.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>	
+    -->
+</decorators>
