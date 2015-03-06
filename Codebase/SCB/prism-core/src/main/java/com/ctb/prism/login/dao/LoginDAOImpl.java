@@ -912,6 +912,28 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			}
 		});
 	}
+	
+	/**
+	 * Get root path for customer and cust prod
+	 * @param customerId
+	 * @param custProdId
+	 * @return
+	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsConfigCache", condition="#contractName == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#custProdId).concat(#contractName).concat(#root.method.name) )"),
+			@Cacheable(value = "tascConfigCache",  condition="#contractName == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#custProdId).concat(#contractName).concat(#root.method.name) )"),
+			@Cacheable(value = "usmoConfigCache",  condition="#contractName == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#customerId).concat(#custProdId).concat(#contractName).concat(#root.method.name) )")
+	} )
+	public String getCustPath(String customerId, String custProdId, String contractName) {
+		logger.log(IAppLogger.INFO, "LoginDAOImpl. getRootPath(), customerId = " + customerId);
+		logger.log(IAppLogger.INFO, "LoginDAOImpl. getRootPath(), testAdmin = " + custProdId);
+		logger.log(IAppLogger.INFO, "LoginDAOImpl. getRootPath(), contractName = " + contractName);
+		return getJdbcTemplatePrism(contractName).queryForObject(IQueryConstants.GET_CUST_PATH, new Object[] { customerId, custProdId }, new RowMapper<String>() {
+			public String mapRow(ResultSet rs, int col) throws SQLException {
+				return rs.getString(1);
+			}
+		});
+	}
 
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.login.dao.ILoginDAO#getMenuMap(java.util.Map)

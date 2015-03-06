@@ -71,5 +71,7 @@ public interface IInorsService {
 	 * @return
 	 */
 	public String getCurrentAdminYear();
+	
+	public String downloadISR(Map<String,Object> paramMap);
 
 }

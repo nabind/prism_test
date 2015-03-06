@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -253,6 +255,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, "=END================== DOWNLOADING CANDIDATE REPORTS ================== JOB ID : " + jobId);
 			} else if (IApplicationConstants.CONTRACT_NAME_INORS.equalsIgnoreCase(contractName)) {
 				batchPDFDownload(jobId, contractName);
+			} else if (IApplicationConstants.CONTRACT_NAME.usmo.toString().equalsIgnoreCase(contractName)) {  
+				logger.log(IAppLogger.INFO, "=START================ DOWNLOADING MAP ISR REPORTS ================== JOB ID : " + jobId);
+				batchMAPIsrDownload(jobId, contractName);
+				logger.log(IAppLogger.INFO, "=END================== DOWNLOADING MAP ISR REPORTS ================== JOB ID : " + jobId);
 			} else {
 				logger.log(IAppLogger.ERROR, "Invalid Contract Name: " + contractName);
 			}
@@ -821,6 +827,206 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 */
 	public String getCurrentAdminYear() {
 		return inorsDAO.getCurrentAdminYear();
+	}
+	
+	/**
+	 * Download MAP ISR for a student and one subtest
+	 * @param custProdId
+	 * @param district
+	 * @param school
+	 * @param studentId
+	 * @param gradeId
+	 * @param folderLoc
+	 * @param subtest
+	 * @return
+	 */
+	public String downloadISR(Map<String,Object> paramMap) {
+		String custProdId = (String) paramMap.get("custProdId");
+		String district = (String) paramMap.get("district");
+		String school = (String) paramMap.get("school");
+		String studentId = (String) paramMap.get("studentId");
+		String gradeId = (String) paramMap.get("gradeId");
+		String folderLoc = (String) paramMap.get("folderLoc");
+		String subtest = (String) paramMap.get("subtest");
+		
+		String tempFileName = (CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf"));
+		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
+		fileName = fileName.replaceAll("\\\\", "/");
+		String folder = FileUtil.getDirFromFilePath(fileName);
+		File dir = new File(folder);
+		if (!dir.isDirectory()) {
+			dir.mkdirs();
+			logger.log(IAppLogger.INFO, "Directory created = " + folder);
+		} else {
+			logger.log(IAppLogger.INFO, "Directory exists = " + folder);
+		}
+		
+		try {
+			StringBuffer URLStringBuf = new StringBuffer();
+			URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
+			URLStringBuf.append("icDownload.do?reportUrl=").append(propertyLookup.get("mapIsrUrl"));
+			URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
+			URLStringBuf.append("&p_student_bio_id=").append(studentId);
+			URLStringBuf.append("&p_cust_prod_id=").append(custProdId);
+			URLStringBuf.append("&p_gradeid=").append(gradeId);
+			URLStringBuf.append("&p_subtestid=").append(subtest);
+			URLStringBuf.append("&contractName=").append(Utils.getContractName());
+
+			URL url = new URL(URLStringBuf.toString());
+			
+			OutputStream fos = fos = new FileOutputStream(fileName);
+
+			// Contacting the URL
+			logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
+			URLConnection urlConn = url.openConnection();
+
+			InputStream is = null;
+			// Checking whether the URL contains a PDF
+			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+				logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
+			} else {
+				// Read the PDF from the URL and save to a local file
+				is = url.openStream();
+				IOUtils.copy(is, fos);
+				logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + fileName);
+			}
+			
+
+			// release resources
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(fos);
+			
+		} catch (MalformedURLException e) {
+			fileName = null;
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			fileName = null;
+			e.printStackTrace();
+		} catch (IOException e) {
+			fileName = null;
+			e.printStackTrace();
+		} catch (Exception ex) {
+			fileName = null;
+		}
+		// upload the file to S3 (asynchronously) 
+		if(fileName != null) {
+			//repositoryService.uploadAsset(s3Location, file);
+		}
+		
+		return fileName;
+	}
+	
+	/**
+	 * Download merged MAP ISR PDF
+	 * @param jobId
+	 * @param contractName
+	 */
+	public void batchMAPIsrDownload(String jobId, String contractName) {
+		logger.log(IAppLogger.INFO, "Enter: batchMAPIsrDownload()");
+		logger.log(IAppLogger.INFO, "contractName: " + contractName);
+		try{
+			String tempDirectory = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
+					File.separator, "MAP", File.separator, "GDF", File.separator);
+			File tempJobDirectory = new File(tempDirectory);
+			if (!tempJobDirectory.exists()) {
+				logger.log(IAppLogger.INFO,  "Creating directory ... " + tempJobDirectory);
+				boolean status = tempJobDirectory.mkdir();
+				logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
+			}
+			StringBuffer job = new StringBuffer();
+			//String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
+			com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = getJob(jobId, contractName);
+			String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
+			logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
+			BulkDownloadTO bulkDownloadTO = Utils.jsonToObject(clobStr, BulkDownloadTO.class);
+			String rootPath = loginDAO.getCustPath(bulkDownloadTO.getCustomerId(), bulkDownloadTO.getTestAdministration(), contractName);
+			
+			
+			String[] subtests = bulkDownloadTO.getSubtest();
+			String students = bulkDownloadTO.getStudentBioIds();
+			String[] studentIds = (students != null) ? students.split(",") : null;
+			String mode = bulkDownloadTO.getDownloadMode();
+			
+			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
+					File.separator, "MAP", File.separator, "GDF", File.separator);
+			folderLoc = folderLoc.replace("//", "/");
+			
+			List<String> mergedFileNames = new LinkedList<String>();
+			List<String> archieveFileNames = new LinkedList<String>();
+			List<String> fileForStudent = null;
+			
+			for(String studentId : studentIds) {
+				fileForStudent = new LinkedList<String>();
+				for(String subtest : subtests) {
+					Map<String,Object> paramMap = new HashMap<String,Object>(); 
+					paramMap.put("custProdId", bulkDownloadTO.getTestAdministration());
+					paramMap.put("district", bulkDownloadTO.getCorp());
+					paramMap.put("school", bulkDownloadTO.getSchool());
+					paramMap.put("studentId", studentId);
+					paramMap.put("gradeId", bulkDownloadTO.getGrade());
+					paramMap.put("folderLoc", folderLoc);
+					paramMap.put("subtest", subtest);
+					String fileName = downloadISR(paramMap);
+					if(fileName != null) {
+						fileForStudent.add(fileName);
+					} else {
+						job.append("Error downloading PDF for student ").append(studentId).append(" and subtest ").append(subtest) ;
+					}
+				}
+				// combine student's PDF
+				String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
+						bulkDownloadTO.getCorp(), "_", bulkDownloadTO.getSchool(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
+				OutputStream os = new FileOutputStream(mergedFileName);
+				PdfGenerator.concatPDFs(fileForStudent, os, false);
+				IOUtils.closeQuietly(os);
+				mergedFileNames.add(mergedFileName);
+				archieveFileNames.add(FileUtil.getFileNameFromFilePath(mergedFileName));
+			}
+			
+			// create a merged PDF from archieveFileNames
+			OutputStream os = null;
+			String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", mode, "_",
+					bulkDownloadTO.getCorp(), "_", bulkDownloadTO.getSchool(), "_", Utils.getDateTime(true));
+			if("SP".equals(mode)) {
+				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".zip");
+				PdfGenerator.zipit(mergedFileNames, archieveFileNames, mergedFileName);
+			} else if("CP".equals(mode)) {
+				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".pdf");
+				os = new FileOutputStream(mergedFileName);
+				PdfGenerator.concatPDFs(mergedFileNames, os, false);
+			}
+			
+			// calculating file size
+			File file = new File(mergedFileName);
+			double size = 0;
+			DecimalFormat f = new DecimalFormat("##.00");
+			if (file.exists()) {
+				size = file.length() / 1024 / 1024;
+				if (size == 0) {
+					size = file.length() / 1024;
+					jobTrackingTO.setFileSize(f.format(size) + "K");
+				} else {
+					jobTrackingTO.setFileSize(f.format(size) + "M");
+				}
+			}
+			
+			// Upload File to S3
+			String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF");
+			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(mergedFileName, locForS3);
+			String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
+			job.append(jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1));
+
+			// set status to completed
+			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(locForS3, FileUtil.getFileNameFromFilePath(mergedFileName)));
+			jobTrackingTO.setJobStatus(jobStatus);
+			jobTrackingTO.setJobLog(job.toString());
+			updateJob(jobTrackingTO);
+				
+		
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 	}
 
 }

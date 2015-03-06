@@ -117,5 +117,9 @@ public class InorsServiceImpl implements IInorsService {
 	public String getCurrentAdminYear() {
 		return inorsBusiness.getCurrentAdminYear();
 	}
+	
+	public String downloadISR(Map<String,Object> paramMap) {
+		return inorsBusiness.downloadISR(paramMap);
+	}
 
 }

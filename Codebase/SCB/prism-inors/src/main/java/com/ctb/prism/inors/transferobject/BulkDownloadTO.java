@@ -52,6 +52,14 @@ public class BulkDownloadTO extends BaseTO {
 	private String startDate;
 	private String endDate;
 	
+	private String[] subtest;
+	
+	public String[] getSubtest() {
+		return subtest;
+	}
+	public void setSubtest(String[] subtest) {
+		this.subtest = subtest;
+	}
 	public String getStartDate() {
 		return startDate;
 	}

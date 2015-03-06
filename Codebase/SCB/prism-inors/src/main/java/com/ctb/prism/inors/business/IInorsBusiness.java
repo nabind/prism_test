@@ -98,4 +98,7 @@ public interface IInorsBusiness {
 	 */
 	public String getCurrentAdminYear();
 	
+	
+	public String downloadISR(Map<String,Object> paramMap);
+	
 }

@@ -2,6 +2,7 @@ package com.ctb.prism.web.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.jms.JMSException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -1677,60 +1679,22 @@ public class InorsController {
 		String gradeId = request.getParameter("p_grade");
 		String district = request.getParameter("p_district_Id");
 		String school = request.getParameter("p_school");
-		
+		InputStream is = null;
 		List<String> archieveFileNames = new LinkedList<String>();
 		String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, "MAP", File.separator);
 		folderLoc = folderLoc.replace("//", "/");
 		try {
 			for(String subtest : subtests) {
-				String tempFileName = (CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf"));
-				String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
-				fileName = fileName.replaceAll("\\\\", "/");
-				String folder = FileUtil.getDirFromFilePath(fileName);
-				File dir = new File(folder);
-				if (!dir.isDirectory()) {
-					dir.mkdirs();
-					logger.log(IAppLogger.INFO, "Directory created = " + folder);
-				} else {
-					logger.log(IAppLogger.INFO, "Directory exists = " + folder);
-				}
-				
-				StringBuffer URLStringBuf = new StringBuffer();
-				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
-				URLStringBuf.append("icDownload.do?reportUrl=").append(propertyLookup.get("mapIsrUrl"));
-				URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
-				URLStringBuf.append("&p_student_bio_id=").append(studentId);
-				URLStringBuf.append("&p_cust_prod_id=").append(custProdId);
-				URLStringBuf.append("&p_gradeid=").append(gradeId);
-				URLStringBuf.append("&p_subtestid=").append(subtest);
-				URLStringBuf.append("&contractName=").append(Utils.getContractName());
-
-				URL url = new URL(URLStringBuf.toString());
-				
-				OutputStream fos = fos = new FileOutputStream(fileName);
-
-				// Contacting the URL
-				logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
-				URLConnection urlConn = url.openConnection();
-
-				InputStream is = null;
-				// Checking whether the URL contains a PDF
-				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
-				} else {
-					// Read the PDF from the URL and save to a local file
-					is = url.openStream();
-					IOUtils.copy(is, fos);
-					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + fileName);
-				}
-				archieveFileNames.add(fileName);
-
-				// release resources
-				IOUtils.closeQuietly(is);
-				IOUtils.closeQuietly(fos);
-				
-				// upload the file to S3 (asynchronously) 
-				//repositoryService.uploadAsset(s3Location, file);
+				Map<String,Object> paramMap = new HashMap<String,Object>(); 
+				paramMap.put("custProdId", custProdId);
+				paramMap.put("district", district);
+				paramMap.put("school", school);
+				paramMap.put("studentId", studentId);
+				paramMap.put("gradeId", gradeId);
+				paramMap.put("folderLoc", folderLoc);
+				paramMap.put("subtest", subtest);
+				String fileName = inorsService.downloadISR(paramMap);
+				if(fileName != null) archieveFileNames.add(fileName);
 			}
 			
 			// create a merged PDF from archieveFileNames
@@ -1739,12 +1703,61 @@ public class InorsController {
 			PdfGenerator.concatPDFs(archieveFileNames, os, false);
 			
 			// download the file
-			InputStream is = new FileInputStream(mergedFileName);
+			is = new FileInputStream(mergedFileName);
 			FileUtil.browserDownload(response, IOUtils.toByteArray(is), FileUtil.getFileNameFromFilePath(mergedFileName));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
+	
+	/**
+	 * Group download file for Missouri
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/groupDownloadMapIsr")
+	public void groupDownloadMapIsr(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String[] subtests = request.getParameterValues("p_subtest");
+			String students = request.getParameter("studentId");
+			String custProdId = request.getParameter("p_test_administration");
+			String gradeId = request.getParameter("p_grade");
+			String district = request.getParameter("p_district_Id");
+			String school = request.getParameter("p_school");
 			
+			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			
+			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO(); 
+			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
+			bulkDownloadTO.setUsername(currentUser);
+			bulkDownloadTO.setTestAdministration(custProdId);
+			bulkDownloadTO.setSchool(school);
+			bulkDownloadTO.setCorp(district);
+			bulkDownloadTO.setGrade(gradeId);
+			bulkDownloadTO.setCustomerId(customer);
+			bulkDownloadTO.setDownloadMode(request.getParameter("mode"));
+			bulkDownloadTO.setStudentBioIds(students);
+			bulkDownloadTO.setSubtest(subtests);
+
+			bulkDownloadTO = inorsService.createJob(bulkDownloadTO);
+
+			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
+			messageProducer.sendJobForProcessing(String.valueOf(bulkDownloadTO.getJobId()), Utils.getContractName());
+
+			String status = "Error";
+			if (bulkDownloadTO.getJobId() != 0) {
+				status = "Success";
+			}
+
+			response.setContentType("application/json");
+			response.getWriter().write("");
+			response.getWriter().write("{\"status\":\"" + status + "\"}");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

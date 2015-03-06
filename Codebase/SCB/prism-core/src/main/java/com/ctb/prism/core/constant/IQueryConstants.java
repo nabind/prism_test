@@ -1087,6 +1087,13 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND cust.customerid = ? AND prod.productid = ? ",
 			" AND ROWNUM = 1");
 
+	public static final String GET_CUST_PATH = CustomStringUtil.appendString(
+			" SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
+			" WHERE lin.customerid = cust.customerid ",
+			" AND lin.productid = prod.productid ",
+			" AND cust.customerid = ? AND lin.CUST_PROD_ID = ? ",
+			" AND ROWNUM = 1");
+	
 	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT ADMIN_YEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y' AND ROWNUM = 1";
 
 	// query to capture the user  activity when clicked login as

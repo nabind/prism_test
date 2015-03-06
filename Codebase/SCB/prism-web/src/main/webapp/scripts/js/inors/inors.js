@@ -230,6 +230,20 @@ $(document).ready(function() {
 	// groupDownloadSubmit('SS');
 	//	});
 	
+	// Asynchronous : Submit to Group Download Files
+	$("#downloadSeparatePdfsMAP").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadMapCombined('SP');
+	});
+	// Asynchronous : Submit to Group Download Files
+	$("#downloadCombinedPdfsMAP").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadMapCombined('CP');
+	});
 
 // ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
@@ -1341,6 +1355,52 @@ function downloadMapIsr(studentId) {
 	
 	location.href = 'downloadMapIsr.do?' + dataUrl;
 	unblockUI();
+}
+
+/**
+ * Download MAP GLA ISR PDF based on multi-select student and subtest
+ * @param mode (SP or CP)
+ */
+function downloadMapCombined(mode) {
+	blockUI();
+	var status = false;
+	var subtest = $("#p_subtest", window.parent.document); 
+	var tab = $("li.active", window.parent.document).attr("param");
+	tab = tab.replace(/new-tab/g, "report-form-");
+	var formObj = $('.'+tab, window.parent.document);
+	var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + getSelectedStudentIdsAsCommaString();
+	
+	$.ajax({
+		type : "POST",
+		url : 'groupDownloadMapIsr.do',
+		data : dataUrl,
+		dataType : 'json',
+		cache : false,
+		async : false,
+		success : function(data) {
+			// show success notification
+			var serverResponseData = groupDownloadFunction(json);
+			if (serverResponseData) {
+				if (serverResponseData.handler == "success") {
+					status = true;
+				} else {
+					status = false;
+				}
+			} else {
+				$.modal.alert(strings['msg.isr']);
+			}
+			displayGroupDownloadStatus(status);
+			unblockUI();
+		},
+		error : function(data) {
+			if (data.status == "200") {
+				jsonOutputData = data;
+			} else {
+				$.modal.alert(strings['msg.nff']);
+			}
+			unblockUI();
+		}
+	});
 }
 
 /**
