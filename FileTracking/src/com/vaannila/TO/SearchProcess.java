@@ -36,6 +36,7 @@ public class SearchProcess implements Serializable {
 	private String testElementId = "";
 	private String barcode = "";
 	private String processId = "";
+	private String sourceSystemDesc = "";
 	
 	
 	public String getElementName() {
@@ -205,6 +206,12 @@ public class SearchProcess implements Serializable {
 	}
 	public void setProcessId(String processId) {
 		this.processId = processId;
+	}
+	public String getSourceSystemDesc() {
+		return sourceSystemDesc;
+	}
+	public void setSourceSystemDesc(String sourceSystemDesc) {
+		this.sourceSystemDesc = sourceSystemDesc;
 	}
 	
 	

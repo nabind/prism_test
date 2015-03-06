@@ -324,7 +324,13 @@ public class TascController {
 			process.setTestElementId(request.getParameter("testElementId"));
 			process.setBarcode(request.getParameter("barcode"));
 			process.setProcessId(request.getParameter("processId"));
-			
+			if("OAS".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("Online");
+			}else if("PP".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("Paper Pencil");
+			}else if("ERESOURCE".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("eResources");
+			}
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
@@ -497,7 +503,11 @@ public class TascController {
 				.append(",").append("Regst TC County Parish Code")
 				.append(",").append("Sched TC County Parish Code");
 			}
-			buffer.append("\n");
+			buffer.append(",").append("Source System")
+			.append(",").append("Processed Date From")
+			.append(",").append("Processed Date To")
+			.append(",").append("Error Log")
+			.append("\n");
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
 			buffer.append(data);

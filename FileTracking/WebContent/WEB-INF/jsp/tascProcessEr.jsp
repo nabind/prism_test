@@ -286,7 +286,7 @@
 					</a>
 				</div>
 				<div class="search-criteria">
-				<b>Showing search results for</b> Source System: <%=searchProcess.getSourceSystem()%>
+				<b>Showing search results for</b> Source System: <%=searchProcess.getSourceSystemDesc()%>
 				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
 					, Processed Date From: <%=searchProcess.getProcessedDateFrom()%>
 				<%}%>

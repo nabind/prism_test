@@ -57,6 +57,10 @@ public class StudentDetailsTO implements Serializable {
 	private String ecc = "";
 	private String regstTcCountyParishCode = "";
 	private String schedTcCountyParishCode = "";
+	private String sourceSystemDesc = "";
+	private String processedDateFrom = "";
+	private String processedDateTo = "";
+	private String errorLog = "";
 	
 	public String getProcessId() {
 		return processId;
@@ -371,6 +375,31 @@ public class StudentDetailsTO implements Serializable {
 		this.schedTcCountyParishCode = schedTcCountyParishCode;
 	}
 	
+	public String getSourceSystemDesc() {
+		return sourceSystemDesc;
+	}
+	public void setSourceSystemDesc(String sourceSystemDesc) {
+		this.sourceSystemDesc = sourceSystemDesc;
+	}
+	public String getProcessedDateFrom() {
+		return processedDateFrom;
+	}
+	public void setProcessedDateFrom(String processedDateFrom) {
+		this.processedDateFrom = processedDateFrom;
+	}
+	public String getProcessedDateTo() {
+		return processedDateTo;
+	}
+	public void setProcessedDateTo(String processedDateTo) {
+		this.processedDateTo = processedDateTo;
+	}
+	public String getErrorLog() {
+		return errorLog;
+	}
+	public void setErrorLog(String errorLog) {
+		this.errorLog = errorLog;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -437,7 +466,10 @@ public class StudentDetailsTO implements Serializable {
 			.append(",").append("\"").append(regstTcCountyParishCode).append("\"")
 			.append(",").append("\"").append(schedTcCountyParishCode).append("\"");
 		}
-		
+		buffer.append(",").append("\"").append(sourceSystemDesc).append("\"")
+		.append(",").append("\"").append(processedDateFrom).append("\"")
+		.append(",").append("\"").append(processedDateTo).append("\"")
+		.append(",").append("\"").append(errorLog).append("\"");
 		return buffer.toString();
 	}
 	
