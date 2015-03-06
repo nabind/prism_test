@@ -89,29 +89,65 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                                      P_OUT_CUR_CUST_PROD_DETAILS OUT GET_REFCURSOR,
                                      P_OUT_EXCEP_ERR_MSG         OUT VARCHAR2) IS
 
+  
+CURSOR c_get_admin_year IS 
+SELECT ADMIN_YEAR
+FROM ADMIN_DIM
+WHERE IS_CURRENT_ADMIN = 'Y';
+
+P_CURR_ADMIN_YEAR ADMIN_DIM.ADMIN_YEAR%TYPE := NULL;
+  
+  
   BEGIN
+    
+  OPEN c_get_admin_year;
+  FETCH c_get_admin_year INTO P_CURR_ADMIN_YEAR;
+  CLOSE c_get_admin_year;
+  
+  
     OPEN P_OUT_CUR_CUST_PROD_DETAILS FOR
-      SELECT VALUE, NAME
+     /* SELECT VALUE, NAME
         FROM (SELECT DISTINCT CUST.CUST_PROD_ID VALUE,
                               P.PRODUCT_NAME NAME,
-                              P.PRODUCT_SEQ /*,
-                                            DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
+                              P.PRODUCT_SEQ \*,
+                                            DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*\
                 FROM CUST_PRODUCT_LINK CUST,
                      PRODUCT P,
                      ORG_PRODUCT_LINK OPL,
                      (SELECT ADMINID, ADMIN_YEAR
                         FROM ADMIN_DIM
-                       WHERE ADMIN_YEAR <=
+                       WHERE ADMIN_YEAR <=P_CURR_ADMIN_YEAR\*
                              (SELECT ADMIN_YEAR
                                 FROM ADMIN_DIM
-                               WHERE IS_CURRENT_ADMIN = 'Y')) ADMIN
+                               WHERE IS_CURRENT_ADMIN = 'Y')*\) ADMIN
                WHERE CUST.CUSTOMERID = P_IN_CUSTOMERID
                  AND CUST.ADMINID = ADMIN.ADMINID
                  AND CUST.PRODUCTID = P.PRODUCTID
                  AND CUST.CUST_PROD_ID = OPL.CUST_PROD_ID
                  AND OPL.ORG_NODEID = P_IN_ORG_NODEID) A
       --WHERE A.SEQ <= 4
-       ORDER BY /*A.SEQ,*/ A.PRODUCT_SEQ DESC;
+       ORDER BY \*A.SEQ,*\ A.PRODUCT_SEQ DESC;*/
+       
+       
+       SELECT VALUE, NAME
+        FROM (SELECT DISTINCT CUST.CUST_PROD_ID VALUE,
+                              P.PRODUCT_NAME NAME,
+                              P.PRODUCT_SEQ 
+                FROM CUST_PRODUCT_LINK CUST,
+                     PRODUCT P,
+                  --   ORG_PRODUCT_LINK OPL,
+                     (SELECT ADMINID, ADMIN_YEAR
+                        FROM ADMIN_DIM
+                       WHERE ADMIN_YEAR <=P_CURR_ADMIN_YEAR) ADMIN
+               WHERE CUST.CUSTOMERID = P_IN_CUSTOMERID
+                 AND CUST.ADMINID = ADMIN.ADMINID
+                 AND CUST.PRODUCTID = P.PRODUCTID
+                 AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL 
+                             WHERE OPL.ORG_NODEID = P_IN_ORG_NODEID 
+                             AND CUST.CUST_PROD_ID = OPL.CUST_PROD_ID)
+                 
+                 ) A
+       ORDER BY  A.PRODUCT_SEQ DESC;
 
   EXCEPTION
     WHEN OTHERS THEN

@@ -162,42 +162,53 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_PARENT AS
          WHERE ROWNUM <= P_IN_MORE_COUNT
          ORDER BY UPPER(ABC.USERNAME);*/
          
-          SELECT ABC.USERID,
-               ABC.USERNAME,
-               ABC.FULLNAME,
-               ABC.STATUS,
-               TO_CHAR(ABC.LAST_LOGIN_ATTEMPT, 'MM/DD/YY') AS LAST_LOGIN_ATTEMPT,
-               ABC.ORG_NODE_NAME,
-               ABC.ORG_NODEID,
-               P_IN_ORG_NODE_ID AS TENANTID
-          FROM (SELECT USR.USERID,
-                       USR.USERNAME,
-                       USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME,
-                       USR.ACTIVATION_STATUS AS STATUS,
-                       USR.LAST_LOGIN_ATTEMPT,
-                       HIER.ORG_NODE_NAME,
-                       HIER.ORG_NODEID
-                  FROM USERS USR,
-                       USER_ROLE UR,
-                       ORG_USERS OU,
-                       (SELECT ORG_NODE_NAME,ORG_NODEID
-                          FROM ORG_NODE_DIM
-                         WHERE ORG_MODE = P_IN_ORG_MODE
-                         START WITH ORG_NODEID = P_IN_ORG_NODE_ID
-                        CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER
-                 WHERE USR.USERID = OU.USERID
-                   and OU.ORG_NODEID = HIER.ORG_NODEID
-                   AND USR.USERID = UR.USERID
-                   AND OU.USERID =  UR.USERID
-                   AND UR.ROLEID = P_IN_ROLEID
-                   AND EXISTS
-                 (SELECT 1
-                          FROM ORG_PRODUCT_LINK OPL
-                         WHERE OPL.ORG_NODEID = HIER.ORG_NODEID
-                           AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)
-                 ORDER BY UPPER(USR.USERNAME)) ABC
-         WHERE ROWNUM <= P_IN_MORE_COUNT
-         ORDER BY UPPER(ABC.USERNAME);
+         SELECT ABC.USERID,
+       ABC.USERNAME,
+       ABC.FULLNAME,
+       ABC.STATUS,
+       TO_CHAR(ABC.LAST_LOGIN_ATTEMPT, 'MM/DD/YY') AS LAST_LOGIN_ATTEMPT,
+       ABC.ORG_NODE_NAME,
+       ABC.ORG_NODEID,
+       P_IN_ORG_NODE_ID AS TENANTID
+  FROM (
+SELECT USR.USERID,
+               USR.USERNAME,
+               USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME,
+               USR.ACTIVATION_STATUS AS STATUS,
+               USR.LAST_LOGIN_ATTEMPT,
+               HIER.ORG_NODE_NAME,
+               HIER.ORG_NODEID
+          FROM USERS USR,
+              -- USER_ROLE UR,
+               ORG_USERS OU,
+               (SELECT ORG_NODE_NAME, ORG_NODEID
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_MODE = P_IN_ORG_MODE
+                 START WITH ORG_NODEID = P_IN_ORG_NODE_ID
+                CONNECT BY PRIOR ORG_NODEID = PARENT_ORG_NODEID) HIER,
+                ORG_PRODUCT_LINK OPL
+         WHERE USR.USERID = OU.USERID
+           and OU.ORG_NODEID = HIER.ORG_NODEID
+           --AND USR.USERID = UR.USERID
+          -- AND OU.USERID = UR.USERID
+          -- AND UR.ROLEID = P_IN_ROLEID
+           AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID
+           AND OPL.ORG_NODEID = HIER.ORG_NODEID
+          /* AND EXISTS (SELECT 1
+                  FROM ORG_PRODUCT_LINK OPL
+                 WHERE OPL.ORG_NODEID = HIER.ORG_NODEID
+                   AND OPL.CUST_PROD_ID = P_IN_CUST_PROD_ID)*/
+           AND EXISTS (SELECT 1 
+                       FROM  USER_ROLE UR 
+                       WHERE UR.ROLEID = P_IN_ROLEID
+                       AND OU.USERID = UR.USERID)        
+         ORDER BY UPPER(USR.USERNAME)) ABC
+ WHERE ROWNUM <= P_IN_MORE_COUNT
+ ORDER BY UPPER(ABC.USERNAME);
+         
+         
+         
+         
 
     END IF;
 

@@ -216,8 +216,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
                 CONNECT BY LEVEL <=
                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
               )
-         AND ((DAA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) /*OR
-             (DAA.ORG_LEVEL = -99)*/)
+         AND ((DAA.ORG_LEVEL = P_IN_ORG_NODE_LEVEL) OR
+             (DAA.ORG_LEVEL = -99))
          AND DR.ACTIVATION_STATUS = 'AC'
          AND DAA.ACTIVATION_STATUS = 'AC'
          AND DAA.CUST_PROD_ID = P_IN_CUST_PROD_ID
@@ -238,7 +238,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
                                     P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
   BEGIN
     OPEN P_OUT_REF_CURSOR FOR
-      SELECT DISTINCT ASS.DB_MENUID MENU_ID,
+      /*SELECT DISTINCT ASS.DB_MENUID MENU_ID,
                       ASS.MENU_NAME MENU_NAME,
                       RE.DB_REPORTID REPORT_ID,
                       REPORT_NAME,
@@ -265,7 +265,41 @@ CREATE OR REPLACE PACKAGE BODY PKG_MENU_ACCESS IS
               )
          AND ACC.ORG_LEVEL = P_IN_ORG_NODE_LEVEL
          AND ACC.CUST_PROD_ID = P_IN_CUST_PROD_ID
+       ORDER BY ASS.MENU_SEQ, ACC.REPORT_SEQ, RE.REPORT_NAME DESC;*/
+       
+       SELECT DISTINCT ASS.DB_MENUID MENU_ID,
+                      ASS.MENU_NAME MENU_NAME,
+                      RE.DB_REPORTID REPORT_ID,
+                      REPORT_NAME,
+                      REPORT_FOLDER_URI,
+                      RE.ACTIVATION_STATUS STATUS,
+                      REPORT_TYPE TYPE,
+                      ASS.MENU_SEQ,
+                      ACC.REPORT_SEQ,
+                      ACC.ORG_LEVEL ORGLEVEL
+        FROM (SELECT DB_REPORTID,ACTIVATION_STATUS,REPORT_NAME,REPORT_TYPE,REPORT_FOLDER_URI FROM DASH_REPORTS RE1 WHERE RE1.REPORT_TYPE LIKE (P_IN_REPORT_TYPE_LIKE) AND RE1.ACTIVATION_STATUS = 'AC')RE , 
+              DASH_MENUS ASS, 
+              DASH_MENU_RPT_ACCESS ACC
+       WHERE /*RE.REPORT_TYPE LIKE ('API%')
+         AND */ASS.DB_MENUID = ACC.DB_MENUID
+         AND ACC.DB_REPORTID = RE.DB_REPORTID
+         --AND RE.ACTIVATION_STATUS = 'AC'
+         AND ACC.ROLEID IN
+             (SELECT ROLEID
+                FROM ROLE
+               WHERE ROLE_NAME IN (WITH T AS (SELECT P_IN_ROLES AS TXT
+                                          FROM DUAL)
+                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
+                  FROM T
+                CONNECT BY LEVEL <=
+                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+              )
+         AND ACC.ORG_LEVEL =P_IN_ORG_NODE_LEVEL
+         AND ACC.CUST_PROD_ID = P_IN_CUST_PROD_ID
        ORDER BY ASS.MENU_SEQ, ACC.REPORT_SEQ, RE.REPORT_NAME DESC;
+       
+       
+       
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
