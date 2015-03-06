@@ -876,7 +876,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			
 			OutputStream fos = fos = new FileOutputStream(fileName);
 
-			// Contacting the URL
+			//Connecting the URL
 			logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
 			URLConnection urlConn = url.openConnection();
 

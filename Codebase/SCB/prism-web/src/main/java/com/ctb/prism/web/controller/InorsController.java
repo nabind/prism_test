@@ -1742,11 +1742,13 @@ public class InorsController {
 			groupDownloadTO.setButton(request.getParameter("mode"));
 			groupDownloadTO.setStudents(students);
 			groupDownloadTO.setSubtest(subtests);
-
+			groupDownloadTO.setGroupFile("ISR");
+			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
 			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
+			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 
 			String status = "Success";
 

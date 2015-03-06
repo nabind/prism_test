@@ -1379,14 +1379,19 @@ function downloadMapCombined(mode) {
 		async : false,
 		success : function(data) {
 			// show success notification
-			var serverResponseData = groupDownloadFunction(json);
+			/*var serverResponseData = groupDownloadFunction(json);
 			if (serverResponseData) {
 				if (serverResponseData.handler == "success") {
 					status = true;
 				} else {
 					status = false;
 				}
-			} else {
+			}*/ 
+			if(data.status == 'Success'){
+				status = true;
+			}
+			else {
+				status = false;
 				$.modal.alert(strings['msg.isr']);
 			}
 			displayGroupDownloadStatus(status);
@@ -1394,7 +1399,7 @@ function downloadMapCombined(mode) {
 		},
 		error : function(data) {
 			if (data.status == "200") {
-				jsonOutputData = data;
+				//jsonOutputData = data;
 			} else {
 				$.modal.alert(strings['msg.nff']);
 			}
