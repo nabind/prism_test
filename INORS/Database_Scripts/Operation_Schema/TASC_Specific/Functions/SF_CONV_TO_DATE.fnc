@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION SF_CONV_TO_DATE(p_date IN VARCHAR2
-                                        ,p_format IN VARCHAR2) 
-  RETURN DATE 
+                                        ,p_format IN VARCHAR2)
+  RETURN DATE
   DETERMINISTIC
   IS
     v_date DATE;

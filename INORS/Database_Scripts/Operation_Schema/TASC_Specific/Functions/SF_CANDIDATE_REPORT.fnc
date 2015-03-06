@@ -58,32 +58,32 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                   AND  SCR.GRADEID=i_GradeId
                   AND  SCR.SS>0
                   AND  NVL (TO_CHAR(SCR.STATUS_CODE),'-1') NOT IN ('3','5','6')
-                  AND  UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName) 
+                  AND  UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName)
                   AND  OUSR.ADMINID= SCR.ADMINID
                   AND  SCR.ORG_NODEID = OUSR.LOWEST_NODEID
                   AND  SUB.SUBTESTID = SCR.SUBTESTID
-                  AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp) 
+                  AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
                   ORDER BY SCR.STUDENT_BIO_ID)B
                   WHERE B.ROW_VAL NOT IN (0,2)
-                  
+
     UNION ALL
-                     
+
      SELECT DISTINCT 0 AS ROWNUMBER ,
-                    1 AS ROW_VAL, 
-                    SD.STUDENT_BIO_ID, 
-                    i_FormId AS FORMID, 
-                    NULL AS SUBTESTID1 , 
+                    1 AS ROW_VAL,
+                    SD.STUDENT_BIO_ID,
+                    i_FormId AS FORMID,
+                    NULL AS SUBTESTID1 ,
                     NULL AS SUBTESTID2,
                     NULL AS SUBTESTID3
          FROM STUDENT_BIO_DIM SD,ORGUSER_MAPPING OUSR
-         WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName) 
+         WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName)
            AND OUSR.LOWEST_NODEID = SD.ORG_NODEID
            AND OUSR.CUSTOMERID = SD.CUSTOMERID
            AND OUSR.ADMINID = SD.ADMINID
            AND SD.STUDENT_BIO_ID =i_StudentBioId
-           
+
          ORDER BY 3,1;
-         
+
        CURSOR c_Single_Dwnld_Org_Search
        IS
        SELECT ROW_NUMBER() OVER (PARTITION BY B.STUDENT_BIO_ID ORDER BY B.STUDENT_BIO_ID ) AS ROWNUMBER,B.*
@@ -110,33 +110,33 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                   AND  SCR.GRADEID=i_GradeId
                   AND  SCR.SS>0
                   AND  NVL (TO_CHAR(SCR.STATUS_CODE),'-1') NOT IN ('3','5','6')
-                  AND  UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName) 
+                  AND  UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName)
                   AND  OUSR.ADMINID= SCR.ADMINID
                   AND  SCR.ORG_NODEID = OUSR.LOWEST_NODEID
                   AND  SUB.SUBTESTID = SCR.SUBTESTID
-                  AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp) 
+                  AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
                   ORDER BY SCR.STUDENT_BIO_ID)B
-                  WHERE B.ROW_VAL NOT IN (0,2) 
-                  
+                  WHERE B.ROW_VAL NOT IN (0,2)
+
     UNION ALL
-                     
+
      SELECT DISTINCT 0 AS ROWNUMBER ,
-                    1 AS ROW_VAL, 
-                    SD.STUDENT_BIO_ID, 
-                    i_FormId AS FORMID, 
-                    NULL AS SUBTESTID1 , 
+                    1 AS ROW_VAL,
+                    SD.STUDENT_BIO_ID,
+                    i_FormId AS FORMID,
+                    NULL AS SUBTESTID1 ,
                     NULL AS SUBTESTID2,
                     NULL AS SUBTESTID3
          FROM STUDENT_BIO_DIM SD,ORGUSER_MAPPING_SEARCH OUSR
-         WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName) 
+         WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName)
            AND OUSR.LOWEST_NODEID = SD.ORG_NODEID
            AND OUSR.CUSTOMERID = SD.CUSTOMERID
            AND OUSR.ADMINID = SD.ADMINID
            AND SD.STUDENT_BIO_ID =i_StudentBioId
-           
+
          ORDER BY 3,1;
-         
-                  
+
+
        CURSOR c_Single_Dwnld_EduCenter
         IS
         SELECT ROW_NUMBER() OVER (PARTITION BY B.STUDENT_BIO_ID ORDER BY B.STUDENT_BIO_ID ) AS ROWNUMBER,B.*
@@ -164,7 +164,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                         AND  SCR.GRADEID=i_GradeId
                         AND  SCR.SS>0
                         AND  NVL (TO_CHAR(SCR.STATUS_CODE),'-1') NOT IN ('3','5','6')
-                        AND  UPPER (USR.USERNAME) = UPPER(i_LoggedInUserName) 
+                        AND  UPPER (USR.USERNAME) = UPPER(i_LoggedInUserName)
                         AND  USR.CUSTOMERID = CUST.CUSTOMERID
                         AND  ELINK.CUST_PROD_ID = CUST.CUST_PROD_ID
                         AND  USR.USERID = ELINK.USERID
@@ -176,30 +176,30 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                       AND  STD.STUDENT_BIO_ID = SCR.STUDENT_BIO_ID
                                       AND  STD.GENDERID = SCR.GENDERID
                                       AND  STD.CUSTOMERID = CUST.CUSTOMERID
-                                      ) 
+                                      )
                         AND  SUB.SUBTESTID = SCR.SUBTESTID
-                        AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp) 
+                        AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
                         ORDER BY SCR.STUDENT_BIO_ID)B
                         WHERE B.ROW_VAL NOT IN (0,2)
-            UNION ALL   
-                                 
+            UNION ALL
+
             SELECT DISTINCT 0 AS ROWNUMBER ,
-                            1 AS ROW_VAL, 
-                            STD.STUDENT_BIO_ID, 
-                            i_FormId AS FORMID, 
-                            NULL AS SUBTESTID1 , 
+                            1 AS ROW_VAL,
+                            STD.STUDENT_BIO_ID,
+                            i_FormId AS FORMID,
+                            NULL AS SUBTESTID1 ,
                             NULL AS SUBTESTID2,
                             NULL AS SUBTESTID3
                       FROM STUDENT_BIO_DIM STD,
                           EDU_CENTER_USER_LINK ELINK,
-                          USERS USR    
+                          USERS USR
                     WHERE STD.STUDENT_BIO_ID =i_StudentBioId
                      AND  ELINK.EDU_CENTERID = STD.EDU_CENTERID
                      AND  ELINK.USERID = USR.USERID
                      AND  UPPER(USR.USERNAME) = UPPER (i_LoggedInUserName)
-                     
-              ORDER BY 3,1;             
-                  
+
+              ORDER BY 3,1;
+
      CURSOR c_Bulk_Dwnld_Org
       IS
       SELECT ROW_NUMBER() OVER (PARTITION BY B.STUDENT_BIO_ID ORDER BY B.STUDENT_BIO_ID ) AS ROWNUMBER,B.*
@@ -241,18 +241,18 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                       --AND  SCR.TEST_DATE BETWEEN TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')
                       ORDER BY SCR.STUDENT_BIO_ID)B
                       WHERE B.ROW_VAL NOT IN (0,2)
-                      
+
                UNION ALL
-                  
+
                   SELECT DISTINCT 0 AS ROWNUMBER ,
-                                  1 AS ROW_VAL, 
-                                  SD.STUDENT_BIO_ID, 
-                                  -1 AS FORMID, 
-                                  NULL AS SUBTESTID1 , 
+                                  1 AS ROW_VAL,
+                                  SD.STUDENT_BIO_ID,
+                                  -1 AS FORMID,
+                                  NULL AS SUBTESTID1 ,
                                   NULL AS SUBTESTID2,
                                   NULL AS SUBTESTID3
                                FROM MV_STUDENT_DETAILS SD,ORGUSER_MAPPING OUSR
-                               WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName) 
+                               WHERE UPPER (OUSR.USERNAME) = UPPER(i_LoggedInUserName)
                                 -- AND OUSR.ORG_NODEID = i_OrgID
                                  AND OUSR.LOWEST_NODEID = SD.ORG_NODEID
                                  AND OUSR.CUSTOMERID = SD.CUSTOMERID
@@ -266,12 +266,12 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                                           FROM dual )
                                                      CONNECT BY level <=
                                                           LENGTH(txt)-LENGTH(REPLACE(txt,',',''))-1 )
-                                /*AND SD.DATE_TEST_TAKEN BETWEEN 
+                                /*AND SD.DATE_TEST_TAKEN BETWEEN
                                      TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')*/
-                     ORDER BY 3,1 ; 
-                      
-                      
-                      
+                     ORDER BY 3,1 ;
+
+
+
    CURSOR c_Bulk_Dwnld_EduCenter
       IS
       SELECT ROW_NUMBER() OVER (PARTITION BY B.STUDENT_BIO_ID ORDER BY B.STUDENT_BIO_ID ) AS ROWNUMBER,B.*
@@ -306,7 +306,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                       AND  SCR.GRADEID=i_GradeId
                       AND  SCR.SS>0
                       AND  NVL (TO_CHAR(SCR.STATUS_CODE),'-1') NOT IN ('3','5','6')
-                      AND  UPPER (USR.USERNAME) = UPPER(i_LoggedInUserName) 
+                      AND  UPPER (USR.USERNAME) = UPPER(i_LoggedInUserName)
                       AND  USR.CUSTOMERID = CUST.CUSTOMERID
                       AND  ELINK.CUST_PROD_ID = CUST.CUST_PROD_ID
                       AND  USR.USERID = ELINK.USERID
@@ -317,20 +317,20 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                     AND  STD.STUDENT_BIO_ID = SCR.STUDENT_BIO_ID
                                     AND  STD.GENDERID = SCR.GENDERID
                                     AND  STD.CUSTOMERID = CUST.CUSTOMERID
-                                    ) 
+                                    )
                       AND  SUB.SUBTESTID = SCR.SUBTESTID
                       AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
                      -- AND  SCR.TEST_DATE BETWEEN TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')
                       ORDER BY SCR.STUDENT_BIO_ID)B
-                      WHERE B.ROW_VAL NOT IN (0,2) 
-                      
-             UNION ALL 
-             
+                      WHERE B.ROW_VAL NOT IN (0,2)
+
+             UNION ALL
+
              SELECT DISTINCT 0 AS ROWNUMBER ,
-                          1 AS ROW_VAL, 
-                           SD.STUDENT_BIO_ID, 
-                          -1 AS FORMID, 
-                          NULL AS SUBTESTID1 , 
+                          1 AS ROW_VAL,
+                           SD.STUDENT_BIO_ID,
+                          -1 AS FORMID,
+                          NULL AS SUBTESTID1 ,
                           NULL AS SUBTESTID2,
                            NULL AS SUBTESTID3
                      FROM MV_STUDENT_DETAILS SD
@@ -347,11 +347,11 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                                           FROM dual )
                                                      CONNECT BY level <=
                                                           LENGTH(txt)-LENGTH(REPLACE(txt,',',''))-1 )
-                      /* AND SD.DATE_TEST_TAKEN BETWEEN 
+                      /* AND SD.DATE_TEST_TAKEN BETWEEN
                            TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')*/
-                ORDER BY 3,1  ;                          
+                ORDER BY 3,1  ;
 
-      
+
     CURSOR c_Single_Dwnld_EResource
     IS
     SELECT ROW_NUMBER() OVER (PARTITION BY B.STUDENT_BIO_ID ORDER BY B.STUDENT_BIO_ID ) AS ROWNUMBER,B.*
@@ -376,30 +376,30 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                       AND  SCR.GRADEID=i_GradeId
                       AND  SCR.SS>0
                       AND  NVL (TO_CHAR(SCR.STATUS_CODE),'-1') NOT IN ('3','5','6')
-                      AND  SCR.ORG_NODEID = i_OrgID 
+                      AND  SCR.ORG_NODEID = i_OrgID
                       AND  SUB.SUBTESTID = SCR.SUBTESTID
                       AND  SUB.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
                       --AND  SCR.TEST_DATE BETWEEN TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')
                       ORDER BY SCR.STUDENT_BIO_ID)B
                       WHERE B.ROW_VAL NOT IN (0,2)
-                      
+
                UNION ALL
-                  
+
                   SELECT DISTINCT 0 AS ROWNUMBER ,
-                                  1 AS ROW_VAL, 
-                                  SD.STUDENT_BIO_ID, 
-                                  -1 AS FORMID, 
-                                  NULL AS SUBTESTID1 , 
+                                  1 AS ROW_VAL,
+                                  SD.STUDENT_BIO_ID,
+                                  -1 AS FORMID,
+                                  NULL AS SUBTESTID1 ,
                                   NULL AS SUBTESTID2,
                                   NULL AS SUBTESTID3
                                FROM MV_STUDENT_DETAILS SD
                                WHERE SD.STUDENT_BIO_ID =i_StudentBioId
                                  AND  SD.ORG_NODEID = i_OrgID
                                  AND  SD.CUSTOMERID= i_CustId
-                                /*AND SD.DATE_TEST_TAKEN BETWEEN 
+                                /*AND SD.DATE_TEST_TAKEN BETWEEN
                                      TO_DATE(i_StartDate,'MM/DD/YYYY') AND TO_DATE(i_EndDate,'MM/DD/YYYY')*/
                      ORDER BY 3,1 ;
-                             
+
 
 
 
@@ -486,7 +486,7 @@ BEGIN
 
                     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
                     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
-                  END LOOP;         
+                  END LOOP;
          ELSE
              FOR r_Single_Dwnld_EduCenter IN c_Single_Dwnld_EduCenter
                 LOOP
@@ -505,7 +505,7 @@ BEGIN
                 END LOOP;
          END IF;
   END IF;
-  
+
 RETURN t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ;
 EXCEPTION
   WHEN OTHERS THEN
