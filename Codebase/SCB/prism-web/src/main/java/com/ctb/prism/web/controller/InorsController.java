@@ -1731,27 +1731,24 @@ public class InorsController {
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			
-			BulkDownloadTO bulkDownloadTO = new BulkDownloadTO(); 
-			bulkDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
-			bulkDownloadTO.setUsername(currentUser);
-			bulkDownloadTO.setTestAdministration(custProdId);
-			bulkDownloadTO.setSchool(school);
-			bulkDownloadTO.setCorp(district);
-			bulkDownloadTO.setGrade(gradeId);
-			bulkDownloadTO.setCustomerId(customer);
-			bulkDownloadTO.setDownloadMode(request.getParameter("mode"));
-			bulkDownloadTO.setStudentBioIds(students);
-			bulkDownloadTO.setSubtest(subtests);
+			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
+			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
+			groupDownloadTO.setUserName(currentUser);
+			groupDownloadTO.setTestAdministrationVal(custProdId);
+			groupDownloadTO.setSchool(school);
+			groupDownloadTO.setDistrict(district);
+			groupDownloadTO.setGrade(gradeId);
+			groupDownloadTO.setCustomerId(customer);
+			groupDownloadTO.setButton(request.getParameter("mode"));
+			groupDownloadTO.setStudents(students);
+			groupDownloadTO.setSubtest(subtests);
 
-			bulkDownloadTO = inorsService.createJob(bulkDownloadTO);
+			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			messageProducer.sendJobForProcessing(String.valueOf(bulkDownloadTO.getJobId()), Utils.getContractName());
+			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
 
-			String status = "Error";
-			if (bulkDownloadTO.getJobId() != 0) {
-				status = "Success";
-			}
+			String status = "Success";
 
 			response.setContentType("application/json");
 			response.getWriter().write("");

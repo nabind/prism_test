@@ -938,14 +938,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = getJob(jobId, contractName);
 			String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
 			logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
-			BulkDownloadTO bulkDownloadTO = Utils.jsonToObject(clobStr, BulkDownloadTO.class);
-			String rootPath = loginDAO.getCustPath(bulkDownloadTO.getCustomerId(), bulkDownloadTO.getTestAdministration(), contractName);
+			GroupDownloadTO groupDownloadTO = Utils.jsonToObject(clobStr, GroupDownloadTO.class);
+			String rootPath = loginDAO.getCustPath(groupDownloadTO.getCustomerId(), groupDownloadTO.getTestAdministrationVal(), contractName);
 			
 			
-			String[] subtests = bulkDownloadTO.getSubtest();
-			String students = bulkDownloadTO.getStudentBioIds();
+			String[] subtests = groupDownloadTO.getSubtest();
+			String students = groupDownloadTO.getStudents();
 			String[] studentIds = (students != null) ? students.split(",") : null;
-			String mode = bulkDownloadTO.getDownloadMode();
+			String mode = groupDownloadTO.getButton();
 			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
 					File.separator, "MAP", File.separator, "GDF", File.separator);
@@ -959,11 +959,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				fileForStudent = new LinkedList<String>();
 				for(String subtest : subtests) {
 					Map<String,Object> paramMap = new HashMap<String,Object>(); 
-					paramMap.put("custProdId", bulkDownloadTO.getTestAdministration());
-					paramMap.put("district", bulkDownloadTO.getCorp());
-					paramMap.put("school", bulkDownloadTO.getSchool());
+					paramMap.put("custProdId", groupDownloadTO.getTestAdministrationVal());
+					paramMap.put("district", groupDownloadTO.getDistrict());
+					paramMap.put("school", groupDownloadTO.getSchool());
 					paramMap.put("studentId", studentId);
-					paramMap.put("gradeId", bulkDownloadTO.getGrade());
+					paramMap.put("gradeId", groupDownloadTO.getGrade());
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
 					String fileName = downloadISR(paramMap);
@@ -975,7 +975,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				// combine student's PDF
 				String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-						bulkDownloadTO.getCorp(), "_", bulkDownloadTO.getSchool(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
+						groupDownloadTO.getDistrict(), "_", groupDownloadTO.getSchool(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
 				OutputStream os = new FileOutputStream(mergedFileName);
 				PdfGenerator.concatPDFs(fileForStudent, os, false);
 				IOUtils.closeQuietly(os);
@@ -986,7 +986,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			// create a merged PDF from archieveFileNames
 			OutputStream os = null;
 			String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", mode, "_",
-					bulkDownloadTO.getCorp(), "_", bulkDownloadTO.getSchool(), "_", Utils.getDateTime(true));
+					groupDownloadTO.getDistrict(), "_", groupDownloadTO.getSchool(), "_", Utils.getDateTime(true));
 			if("SP".equals(mode)) {
 				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".zip");
 				PdfGenerator.zipit(mergedFileNames, archieveFileNames, mergedFileName);
