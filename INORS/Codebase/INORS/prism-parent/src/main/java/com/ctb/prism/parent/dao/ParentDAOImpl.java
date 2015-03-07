@@ -1329,7 +1329,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			throw new BusinessException(e.getMessage());
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.ERROR, "ParentDAOImpl - updateAssessmentDetails() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateAssessmentDetails() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;
@@ -1686,7 +1685,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			return Boolean.FALSE;
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.ERROR, "ParentDAOImpl - updateUserProfile() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;
@@ -1744,7 +1742,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			returnFlag = Boolean.FALSE;
 		} finally {
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.ERROR, "ParentDAOImpl - addInvitationToAccount() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - addInvitationToAccount() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;
@@ -1815,7 +1812,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				returnFlag = Boolean.TRUE;
 			}
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.ERROR, "ParentDAOImpl - regenerateActivationCode() with error: " + objectValueTO.getErrorMsg());
 			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - regenerateActivationCode() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnFlag;

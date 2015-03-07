@@ -90,6 +90,22 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
 		String contractName = (String) parameters.get("contractName");
+		Object obj = parameters.get("p_Ethnicities");
+		if(obj != null && obj instanceof String) {
+			logger.log(IAppLogger.INFO, obj.toString() + " ----------------------------------------------------- ethnicity is string !!! - should be List of String" + jasperReport.getName());
+			String[] params = obj.toString().replace("[", "").replace("]", "").split(",");
+			List<String> inputCollection = Arrays.asList(params);
+			parameters.put("p_Ethnicities", inputCollection);
+		}
+		if(obj != null && obj instanceof List<?>) {
+			String ethnicity0 = ((List<String>) obj).get(0);
+			if(ethnicity0 != null && ethnicity0.contains(",")) {
+				logger.log(IAppLogger.INFO, obj.toString() + " -----------xxxxxxxxxxxxxx------------------------ ethnicity is List of string -- but not splitted" + jasperReport.getName());
+				String[] params = ethnicity0.replace("[", "").replace("]", "").split(",");
+				List<String> inputCollection = Arrays.asList(params);
+				parameters.put("p_Ethnicities", inputCollection);
+			}
+		}
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
 		try {
 			if (contractName != null && !contractName.isEmpty()) {

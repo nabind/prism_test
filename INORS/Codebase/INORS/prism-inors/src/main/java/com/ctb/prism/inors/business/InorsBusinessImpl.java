@@ -748,9 +748,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			wr.close();
 
 			int responseCode = urlConn.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url1.toString());
-			System.out.println("Post parameters : " + "reportUrl=/public/ISTEP/Reports/Dummy_Student_Report_files&assessmentId=0&type=pdf&token=0&filter=true&p_studentIds=23740625");
-			System.out.println("Response Code : " + responseCode);
+			logger.log(IAppLogger.INFO, "\nSending 'POST' request to URL : " + url1.toString());
+			logger.log(IAppLogger.INFO, "Post parameters : " + "reportUrl=/public/ISTEP/Reports/Dummy_Student_Report_files&assessmentId=0&type=pdf&token=0&filter=true&p_studentIds=23740625");
+			logger.log(IAppLogger.INFO, "Response Code : " + responseCode);
 
 			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
 				logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
