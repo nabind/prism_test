@@ -848,6 +848,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String gradeId = (String) paramMap.get("gradeId");
 		String folderLoc = (String) paramMap.get("folderLoc");
 		String subtest = (String) paramMap.get("subtest");
+		String contractName = (String) paramMap.get("contractName");
 		
 		String tempFileName = (CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf"));
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
@@ -870,7 +871,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			URLStringBuf.append("&p_cust_prod_id=").append(custProdId);
 			URLStringBuf.append("&p_gradeid=").append(gradeId);
 			URLStringBuf.append("&p_subtestid=").append(subtest);
-			URLStringBuf.append("&contractName=").append(Utils.getContractName());
+			URLStringBuf.append("&contractName=").append(contractName);
 
 			URL url = new URL(URLStringBuf.toString());
 			
@@ -966,6 +967,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					paramMap.put("gradeId", groupDownloadTO.getGrade());
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
+					paramMap.put("contractName", contractName);
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);

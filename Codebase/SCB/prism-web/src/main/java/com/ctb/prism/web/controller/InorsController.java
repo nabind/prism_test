@@ -1693,6 +1693,7 @@ public class InorsController {
 				paramMap.put("gradeId", gradeId);
 				paramMap.put("folderLoc", folderLoc);
 				paramMap.put("subtest", subtest);
+				paramMap.put("contractName", IApplicationConstants.CONTRACT_NAME.usmo.toString());
 				String fileName = inorsService.downloadISR(paramMap);
 				if(fileName != null) archieveFileNames.add(fileName);
 			}
