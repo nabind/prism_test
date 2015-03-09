@@ -4,107 +4,134 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.security.Key;
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.IOUtils;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 public class AESEncryption {
 
-	private static final String ALGO = "AES";
-	private static final byte[] keyValue = "ETCguRF49hEaRuZg".getBytes();
+	private static final String aesEncryptionAlgorithm = "AES";
+	//private static final byte[] keyValue = "ETCguRF49hEaRuZg".getBytes();
+	private static final String characterEncoding = "UTF-8";
+	private static final String cipherTransformation = "AES/CBC/PKCS5Padding";
+	private static final String keyValue = "ETCguRF49hEaRuZg";
 
-	public static String encrypt(String Data) throws Exception {
-		Key key = generateKey();
-		Cipher c = Cipher.getInstance(ALGO);
-		c.init(Cipher.ENCRYPT_MODE, key);
-		byte[] encVal = c.doFinal(Data.getBytes());
-		String encryptedValue = new BASE64Encoder().encode(encVal);
-		return encryptedValue;
-	}
-
-	public static String decrypt(String encryptedData) throws Exception {
-		Key key = generateKey();
-		Cipher c = Cipher.getInstance(ALGO);
-		c.init(Cipher.DECRYPT_MODE, key);
-		byte[] decordedValue = new BASE64Decoder().decodeBuffer(encryptedData);
-		byte[] decValue = c.doFinal(decordedValue);
-		String decryptedValue = new String(decValue);
-		return decryptedValue;
-	}
+	
+    private static byte[] getKeyBytes(String key) throws UnsupportedEncodingException{
+        byte[] keyBytes= new byte[16];
+        byte[] parameterKeyBytes= key.getBytes(characterEncoding);
+        System.arraycopy(parameterKeyBytes, 0, keyBytes, 0, Math.min(parameterKeyBytes.length, keyBytes.length));
+        return keyBytes;
+    }
+    
+   //***********Encryption***************//
 	
 	public static byte[] encrypt(InputStream Data) throws Exception {
 		return encrypt(Data, keyValue);
 	}
-	public static byte[] encrypt(InputStream Data, byte[] keyval) throws Exception {
-		Key key = generateKey(keyval);
-		Cipher c = Cipher.getInstance(ALGO);
-		c.init(Cipher.ENCRYPT_MODE, key);
-		byte[] encVal = c.doFinal(IOUtils.toByteArray(Data));
-		//String encryptedValue = new BASE64Encoder().encode(encVal);
-		//return encryptedValue;
-		
-		return encVal;
-	}
+	
+    private static byte[] encrypt(InputStream Data, String key) throws Exception {
+		byte[] inputStreamByte = IOUtils.toByteArray(Data);
+		byte[] keyBytes = getKeyBytes(key);
+		return encrypt(inputStreamByte,keyBytes, keyBytes);
+   	}
 
-	public static byte[] decrypt(byte[] encryptedData) throws Exception {
-		return decrypt(encryptedData, keyValue);
+    
+    private static byte[] encrypt(byte[] plainText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
+    {
+        Cipher cipher = Cipher.getInstance(cipherTransformation);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, aesEncryptionAlgorithm);
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(initialVector);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+        plainText = cipher.doFinal(plainText);
+        return plainText;
+    }
+    
+    //To test with plain text
+	public static String encrypt(String plainStr) throws Exception {
+		Cipher cipher = Cipher.getInstance(cipherTransformation);
+		byte[] key = getKeyBytes(keyValue);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, aesEncryptionAlgorithm);
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+    	byte[] encValue = cipher.doFinal(plainStr.getBytes());
+        String encryptedValue = new String(encValue);
+		return encryptedValue;
 	}
-	public static byte[] decrypt(byte[] encryptedData, byte[] keyVal) throws Exception {
-		Key key = generateKey(keyVal);
-		Cipher c = Cipher.getInstance(ALGO);
-		c.init(Cipher.DECRYPT_MODE, key);
-		//byte[] decordedValue = new BASE64Decoder().decodeBuffer(encryptedData);
-		byte[] decValue = c.doFinal(encryptedData);
-		//String decryptedValue = new String(decValue);
-		//return decryptedValue;
-		return decValue;
+    
+	   //***********Decryption***************//
+	
+    public static byte[] decrypt(byte[] encryptedData) throws Exception {
+       	return decrypt(encryptedData, keyValue);
 	}
-
-	private static Key generateKey() throws Exception {
-		return generateKey(keyValue);
+    
+    private static byte[] decrypt(byte[] inputStreamByte, String key) throws Exception {
+		byte[] keyBytes = getKeyBytes(key);
+		return decrypt(inputStreamByte,keyBytes, keyBytes);
+   	}
+    
+	private static byte[] decrypt(byte[] cipherText, byte[] key, byte [] initialVector) throws NoSuchAlgorithmException, 
+			NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
+    {
+        Cipher cipher = Cipher.getInstance(cipherTransformation);
+        SecretKeySpec secretKeySpecy = new SecretKeySpec(key, aesEncryptionAlgorithm);
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(initialVector);
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpecy, ivParameterSpec);
+        cipherText = cipher.doFinal(cipherText);
+        return cipherText;
+    }
+	
+	//To test with plain text
+	public static String decrypt(String encryptedData) throws Exception {
+		Cipher cipher = Cipher.getInstance(cipherTransformation);
+		byte[] key = getKeyBytes(keyValue);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, aesEncryptionAlgorithm);
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+       	byte[] decValue = cipher.doFinal(encryptedData.getBytes());
+		String decryptedValue = new String(decValue);
+		return decryptedValue;
 	}
 	
-	private static Key generateKey(byte[] keyVal) throws Exception {
-		byte [] subArray;
-		if(keyVal.length >= 16) subArray = Arrays.copyOfRange(keyVal, 0, 16);
-		else subArray = Arrays.copyOfRange(keyValue, 0, 16);
-		Key key = new SecretKeySpec(subArray, ALGO);
-		return key;
-	}
-
+	
 	public static void main(String[] args) throws Exception {
 
-		String password = "mypassword";
+		/*String password = "mypassword";
 		String passwordEnc = AESEncryption.encrypt(password);
 		String passwordDec = AESEncryption.decrypt(passwordEnc);
 
 		System.out.println("Plain Text : " + password);
 		System.out.println("Encrypted Text : " + passwordEnc);
-		System.out.println("Decrypted Text : " + passwordDec);
+		System.out.println("Decrypted Text : " + passwordDec);*/
 		
 		/* source file - clear text */ 
-		File initialFile = new File("C:\\temp\\sample.txt");
+		File initialFile = new File("C:\\temp\\Candidate_Report_10.pdf");
 	    InputStream targetStream = new FileInputStream(initialFile);
 	    
 	    /* encoded stream */
 	    byte[] encFile = AESEncryption.encrypt(targetStream);
 	    
 	    /* create encrypted file*/
-	    FileOutputStream enc = new FileOutputStream("C:\\temp\\sample_enc.txt");
+	    FileOutputStream enc = new FileOutputStream("C:\\temp\\Candidate_Report_10_enc.pdf");
 	    enc.write(encFile);
 	    
 	    /* get enc file*/
-	    InputStream encFileStream = new FileInputStream("C:\\temp\\sample_enc.txt");
+	    InputStream encFileStream = new FileInputStream("C:\\temp\\Candidate_Report_10_enc.pdf");
 	    
 	    /* decrypt file */
-	    FileOutputStream fos = new FileOutputStream("C:\\temp\\sample_out.txt");
+	    FileOutputStream fos = new FileOutputStream("C:\\temp\\Candidate_Report_10_out.pdf");
 	    fos.write(AESEncryption.decrypt(IOUtils.toByteArray(encFileStream)));
 	    
 	    IOUtils.closeQuietly(fos);
