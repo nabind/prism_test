@@ -1288,8 +1288,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			String customerId = to.getCustomerId();
 			String students = to.getStudents();
 			int studentCount = students.split(",").length;
-			int classCount = classNames.split(",").length;
-			int schoolCount = gradeNames.split(",").length;
+			
+			int classCount = 0;
+			if(classNames!=null){
+				classCount = classNames.split(",").length;
+			}
+			 
+			int schoolCount = 0;
+			if(classNames!=null){
+				schoolCount = gradeNames.split(",").length;
+			}
+			
 			String button = to.getButton();
 
 			// logger.log(IAppLogger.INFO, "fileName: " + fileName);

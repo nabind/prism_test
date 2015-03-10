@@ -59,16 +59,15 @@ public class DownloadService {
 	private void write(String token, HttpServletResponse response,
 			ByteArrayOutputStream baos) {
 		 
+		ServletOutputStream outputStream = null;
 		try {
-			logger.debug(baos.size());
+			logger.info("baos.size():"+baos.size());
 			
 			// Retrieve output stream
-			ServletOutputStream outputStream = response.getOutputStream();
+			outputStream = response.getOutputStream();
+			
 			// Write to output stream
 			baos.writeTo(outputStream);
-			// Flush the stream
-			outputStream.flush();
-			outputStream.close();
 			
 			// Remove download token
 			tokenService.remove(token);
@@ -76,6 +75,17 @@ public class DownloadService {
 		} catch (Exception e) {
 			logger.error("Unable to write report to the output stream");
 			throw new RuntimeException(e);
+		}finally{
+			try{
+				if(outputStream != null){
+					// Flush the stream
+					outputStream.flush();
+					outputStream.close();
+				}
+			}catch(Exception e){
+				logger.error("Unable to close/flush output stream");
+				throw new RuntimeException(e);
+			}	
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.ctb.prism.inors.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -981,6 +982,12 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				OutputStream os = new FileOutputStream(mergedFileName);
 				PdfGenerator.concatPDFs(fileForStudent, os, false);
 				IOUtils.closeQuietly(os);
+				
+				byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
+				FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
+			    fileOuputStream.write(byteArray);
+			    fileOuputStream.close();
+				
 				mergedFileNames.add(mergedFileName);
 				archieveFileNames.add(FileUtil.getFileNameFromFilePath(mergedFileName));
 			}
@@ -1013,7 +1020,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			}
 			
 			// Upload File to S3
-			String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF");
+			String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF", File.separator);
 			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(mergedFileName, locForS3);
 			String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
 			job.append(jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1));
@@ -1022,6 +1029,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(locForS3, FileUtil.getFileNameFromFilePath(mergedFileName)));
 			jobTrackingTO.setJobStatus(jobStatus);
 			jobTrackingTO.setJobLog(job.toString());
+			jobTrackingTO.setContractName(contractName);
 			updateJob(jobTrackingTO);
 				
 		

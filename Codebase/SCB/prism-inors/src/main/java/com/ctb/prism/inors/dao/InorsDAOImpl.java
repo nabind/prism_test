@@ -86,7 +86,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @return boolean
 	 */
 	public JobTrackingTO updateJob(JobTrackingTO jobTrackingTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.UPDATE_JOB, 
+		getJdbcTemplatePrism(jobTrackingTO.getContractName()).update(IQueryConstants.UPDATE_JOB, 
 				jobTrackingTO.getJobStatus(),
 				jobTrackingTO.getRequestFilename(),
 				jobTrackingTO.getJobLog(),

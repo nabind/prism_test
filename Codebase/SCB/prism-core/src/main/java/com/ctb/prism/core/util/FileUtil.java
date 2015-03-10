@@ -580,7 +580,7 @@ public class FileUtil {
 	 *            Pdf file path with file name
 	 * @return
 	 */
-	private static byte[] getDuplexPdfBytes(String filePath) {
+	public static byte[] getDuplexPdfBytes(String filePath) {
 		logger.log(IAppLogger.INFO, "Enter: getDuplexPdfBytes()");
 		logger.log(IAppLogger.INFO, "filePath = " + filePath);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
