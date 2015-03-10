@@ -824,16 +824,32 @@
 		</dependency>   -->
 	            
 		<!--  memcached with aws elastiCache -->            
-        <dependency>
+      <!--   <dependency>
 	        <groupId>com.google.code.simple-spring-memcached</groupId>
 	        <artifactId>spring-cache</artifactId>
 	        <version>3.3.0</version>
-	    </dependency>
-	    <dependency>
+	    </dependency> -->
+	  	<dependency>
+			<groupId>com.google.code.simple-spring-memcached</groupId>
+			<artifactId>spring-cache</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+
+
+	      
+	  <!--   <dependency>
 	        <groupId>com.google.code.simple-spring-memcached</groupId>
 	        <artifactId>xmemcached-provider</artifactId>
 	        <version>3.3.0</version>
-	    </dependency>
+	    </dependency> -->
+	    <dependency>
+			<groupId>com.google.code.simple-spring-memcached</groupId>
+			<artifactId>xmemcached-provider</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+
+
+	    
 	            
 		            
 
