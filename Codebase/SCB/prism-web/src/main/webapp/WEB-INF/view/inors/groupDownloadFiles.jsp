@@ -2,6 +2,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<spring:theme code="theme.name" var="themeName"/>
 
 <noscript class="message black-gradient simpler"><spring:message code="error.noscript"/></noscript>
 
@@ -44,7 +46,14 @@
 										<c:forEach var="group" items="${groupList}">
 											<tr id="${group.jobId}">
 											    <td scope="row">
-											    	<a href="#"	 jobId="${group.jobId}" class="view-requestdetails" title="View Request Detail">${group.displayFilename}</a>
+											    	<c:choose>
+  														<c:when test="${fn:contains(themeName, 'usmo')}" >
+  															${group.displayFilename}
+  														</c:when>
+  														<c:otherwise>
+											    			<a href="#"	 jobId="${group.jobId}" class="view-requestdetails" title="View Request Detail">${group.displayFilename}</a>
+											    		</c:otherwise>
+											    	</c:choose>
 											    </td>
 												<td scope="row">${group.createdDateTime}<br>
 											    </td>
