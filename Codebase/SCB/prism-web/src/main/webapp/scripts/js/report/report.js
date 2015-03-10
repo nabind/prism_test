@@ -119,8 +119,8 @@ $(document).ready(function() {
 		});
 		$(this).parent().find('.tabtext').text( $(this).parent().attr('name') );
 		/** This is added for Missouri */
-		var assessment = $(this).attr('assessment');
-		if(assessment == '101') $('.MAPNote').show();
+		var tabName = $(this).parent().find('.tabtext').text();
+		if(tabName != '') $('.MAPNote').show();
 		else $('.MAPNote').hide();
 		/** end for Missouri */
 		//$('.productImage').hide();
