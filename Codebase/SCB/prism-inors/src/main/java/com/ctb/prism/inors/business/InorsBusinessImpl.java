@@ -948,6 +948,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String students = groupDownloadTO.getStudents();
 			String[] studentIds = (students != null) ? students.split(",") : null;
 			String mode = groupDownloadTO.getButton();
+			String reqFileName = groupDownloadTO.getFileName();
 			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
 					File.separator, "MAP", File.separator, "GDF", File.separator);
@@ -994,8 +995,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			
 			// create a merged PDF from archieveFileNames
 			OutputStream os = null;
-			String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", mode, "_",
-					groupDownloadTO.getDistrict(), "_", groupDownloadTO.getSchool(), "_", Utils.getDateTime(true));
+			String mergedFileName = CustomStringUtil.appendString(folderLoc, reqFileName, "_", Utils.getDateTime(true));
 			if("SP".equals(mode)) {
 				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".zip");
 				PdfGenerator.zipit(mergedFileNames, archieveFileNames, mergedFileName);

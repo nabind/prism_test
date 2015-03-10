@@ -914,11 +914,24 @@ public class ReportController{
 								List<String> inputCollection = Arrays.asList(trimmedArray);
 								parameters.put(inputTO.getLabelId(), inputCollection);
 							} else {
-								parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+								if( "p_Ethnicities".equals(inputTO.getLabelId()) ) {
+									String[] params = req.getParameterValues(inputTO.getLabelId());
+									List<String> inputCollection = Arrays.asList(params);
+									parameters.put(inputTO.getLabelId(), inputCollection);
+								} else {
+									parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+								}
 							}
 						} else {
-							parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
-							sessionParameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+							if( "p_Ethnicities".equals(inputTO.getLabelId()) ) {
+								String[] params = req.getParameterValues(inputTO.getLabelId());
+								List<String> inputCollection = Arrays.asList(params);
+								parameters.put(inputTO.getLabelId(), inputCollection);
+								sessionParameters.put(inputTO.getLabelId(), inputCollection);
+							} else {
+								parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+								sessionParameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+							}
 						}
 						// parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
 					} else {
@@ -933,17 +946,21 @@ public class ReportController{
 								List<String> inputCollection = Arrays.asList(trimmedArray);
 								parameters.put(inputTO.getLabelId(), inputCollection);
 							} else {
-								parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+								if( "p_Ethnicities".equals(inputTO.getLabelId()) ) {
+									String[] params = req.getParameterValues(inputTO.getLabelId());
+									List<String> inputCollection = Arrays.asList(params);
+									parameters.put(inputTO.getLabelId(), inputCollection);
+								} else {
+									parameters.put(inputTO.getLabelId(), req.getParameter(inputTO.getLabelId()));
+								}
 							}
 						} else {
 							String[] params = req.getParameterValues(inputTO.getLabelId());
 							List<String> inputCollection = Arrays.asList(params);
-							;
 							parameters.put(inputTO.getLabelId(), inputCollection);
 							sessionParameters.put(inputTO.getLabelId(), inputCollection);
 						}
-					}
-				}
+					}}
 			}
 		}
 		/*if (IApplicationConstants.TRUE.equals(propertyLookup.get("jasper.retain.input.control"))) {

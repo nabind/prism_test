@@ -1727,6 +1727,7 @@ public class InorsController {
 			String gradeId = request.getParameter("p_grade");
 			String district = request.getParameter("p_district_Id");
 			String school = request.getParameter("p_school");
+			String fileName = (String) request.getParameter("fileName");
 			
 			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
@@ -1744,6 +1745,7 @@ public class InorsController {
 			groupDownloadTO.setStudents(students);
 			groupDownloadTO.setSubtest(subtests);
 			groupDownloadTO.setGroupFile("ISR");
+			groupDownloadTO.setFileName(fileName);
 			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
