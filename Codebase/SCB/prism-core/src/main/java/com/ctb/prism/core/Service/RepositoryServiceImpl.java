@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -197,5 +198,15 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		logger.log(IAppLogger.INFO, "downloading object into input strem");
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		return object.getObjectContent();
+	}
+	
+	/**
+	 * @author Joykumar Pal
+	 * @param key 
+	 * @param file
+	 */
+	@Async
+	public void uploadAssetAsync(String key, File file){
+		uploadAsset(key, file);
 	}
 }

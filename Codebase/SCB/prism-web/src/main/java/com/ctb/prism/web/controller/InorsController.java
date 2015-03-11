@@ -1679,6 +1679,7 @@ public class InorsController {
 		String gradeId = request.getParameter("p_grade");
 		String district = request.getParameter("p_district_Id");
 		String school = request.getParameter("p_school");
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		InputStream is = null;
 		List<String> archieveFileNames = new LinkedList<String>();
 		String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, "MAP", File.separator);
@@ -1693,6 +1694,7 @@ public class InorsController {
 				paramMap.put("gradeId", gradeId);
 				paramMap.put("folderLoc", folderLoc);
 				paramMap.put("subtest", subtest);
+				paramMap.put("customer", customer);
 				paramMap.put("contractName", IApplicationConstants.CONTRACT_NAME.usmo.toString());
 				String fileName = inorsService.downloadISR(paramMap);
 				if(fileName != null) archieveFileNames.add(fileName);

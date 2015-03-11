@@ -1,5 +1,6 @@
 package com.ctb.prism.core.Service;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,4 +51,11 @@ public interface IRepositoryService {
 	public void removeAsset(String key);
 	
 	public InputStream getAssetInputStream(String assetPath) throws IOException; 
+	
+	/**
+	 * @author Joykumar Pal
+	 * @param key 
+	 * @param file
+	 */
+	public void uploadAssetAsync(String key, File file);
 }

@@ -1,10 +1,12 @@
 package com.ctb.prism.inors.business;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -840,6 +842,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param folderLoc
 	 * @param subtest
 	 * @return
+	 * TODO Joy - Find the file from S3 first, if file does not exists, call report to generate the file after that upload the same 
 	 */
 	public String downloadISR(Map<String,Object> paramMap) {
 		String custProdId = (String) paramMap.get("custProdId");
@@ -850,8 +853,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String folderLoc = (String) paramMap.get("folderLoc");
 		String subtest = (String) paramMap.get("subtest");
 		String contractName = (String) paramMap.get("contractName");
+		String customer = (String) paramMap.get("customer");
 		
-		String tempFileName = (CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf"));
+		String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf");
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		fileName = fileName.replaceAll("\\\\", "/");
 		String folder = FileUtil.getDirFromFilePath(fileName);
@@ -862,41 +866,75 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		} else {
 			logger.log(IAppLogger.INFO, "Directory exists = " + folder);
 		}
-		
+		String locForS3 = "";
+		boolean uploadNeeded = false;
 		try {
-			StringBuffer URLStringBuf = new StringBuffer();
-			URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
-			URLStringBuf.append("icDownload.do?reportUrl=").append(propertyLookup.get("mapIsrUrl"));
-			URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
-			URLStringBuf.append("&p_student_bio_id=").append(studentId);
-			URLStringBuf.append("&p_cust_prod_id=").append(custProdId);
-			URLStringBuf.append("&p_gradeid=").append(gradeId);
-			URLStringBuf.append("&p_subtestid=").append(subtest);
-			URLStringBuf.append("&contractName=").append(contractName);
-
-			URL url = new URL(URLStringBuf.toString());
-			
-			OutputStream fos = fos = new FileOutputStream(fileName);
-
-			//Connecting the URL
-			logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
-			URLConnection urlConn = url.openConnection();
-
-			InputStream is = null;
-			// Checking whether the URL contains a PDF
-			if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
-				logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
-			} else {
-				// Read the PDF from the URL and save to a local file
-				is = url.openStream();
-				IOUtils.copy(is, fos);
-				logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + fileName);
+			String rootPath = loginDAO.getCustPath(customer, custProdId, contractName);
+			locForS3 = CustomStringUtil.appendString(rootPath, File.separator, 
+				IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
+				district,File.separator,
+				school,File.separator);
+			String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
+			byte[] assetBytes = new byte[0];
+			try{
+				assetBytes = repositoryService.getAssetBytes(fullFileNameS3);
+				logger.log(IAppLogger.INFO, "Successfully read from S3: " + fullFileNameS3+ "\nFile size "+assetBytes.length);
+			}catch(Exception e){
+				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
 			
+			
+			
+			if(assetBytes.length != 0){
+				FileUtil.createFile(fileName, assetBytes);
+			}else{
+				StringBuffer URLStringBuf = new StringBuffer();
+				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
+				URLStringBuf.append("icDownload.do?reportUrl=").append(propertyLookup.get("mapIsrUrl"));
+				URLStringBuf.append("&assessmentId=0&type=pdf&token=0&filter=true");
+				URLStringBuf.append("&p_student_bio_id=").append(studentId);
+				URLStringBuf.append("&p_cust_prod_id=").append(custProdId);
+				URLStringBuf.append("&p_gradeid=").append(gradeId);
+				URLStringBuf.append("&p_subtestid=").append(subtest);
+				URLStringBuf.append("&contractName=").append(contractName);
 
-			// release resources
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(fos);
+				URL url = new URL(URLStringBuf.toString());
+				
+				//Connecting the URL
+				logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
+				URLConnection urlConn = url.openConnection();
+
+				OutputStream fos = null;
+				InputStream is = null;
+				// Checking whether the URL contains a PDF
+				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
+				} else {
+					// Read the PDF from the URL and save to a local file
+					fos = new FileOutputStream(fileName);
+					is = url.openStream();
+					IOUtils.copy(is, fos);
+					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + fileName);
+				}
+				// release resources
+				IOUtils.closeQuietly(is);
+				IOUtils.closeQuietly(fos);
+				
+				File file = new File(fileName);
+				double size = 0;
+				if (file.exists()) {
+					size = file.length() / 1024;
+				}
+				logger.log(IAppLogger.INFO, "Size of "+fileName+" is: "+size+"K");
+				
+				if (size < 1) {
+					logger.log(IAppLogger.INFO, "No error "+fileName+" is empty");
+					uploadNeeded = false;
+					fileName = null;
+				}else{
+					uploadNeeded = true;
+				}
+			}
 			
 		} catch (MalformedURLException e) {
 			fileName = null;
@@ -909,10 +947,22 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			e.printStackTrace();
 		} catch (Exception ex) {
 			fileName = null;
+			ex.printStackTrace();
 		}
+		
 		// upload the file to S3 (asynchronously) 
-		if(fileName != null) {
-			//repositoryService.uploadAsset(s3Location, file);
+		if(fileName != null && uploadNeeded == true) {
+			File file = null;
+			try{
+				file = new File(fileName);
+				repositoryService.uploadAssetAsync(locForS3, file);
+				logger.log(IAppLogger.INFO, "\n------------MO ISR file : " + fileName);
+				logger.log(IAppLogger.INFO, "\n------------Uploaded to S3 location : " + locForS3);
+			}catch(Exception e){
+				logger.log(IAppLogger.ERROR, "\n------------Problem while uploading MO ISR file : " + fileName);
+				logger.log(IAppLogger.ERROR, "\n------------To S3 location : " + locForS3);
+				e.printStackTrace();
+			}
 		}
 		
 		return fileName;
@@ -984,10 +1034,12 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				PdfGenerator.concatPDFs(fileForStudent, os, false);
 				IOUtils.closeQuietly(os);
 				
-				byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
-				FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
-			    fileOuputStream.write(byteArray);
-			    fileOuputStream.close();
+				if("CP".equals(mode)){
+					byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
+					FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
+				    fileOuputStream.write(byteArray);
+				    fileOuputStream.close();
+				}
 				
 				mergedFileNames.add(mergedFileName);
 				archieveFileNames.add(FileUtil.getFileNameFromFilePath(mergedFileName));
