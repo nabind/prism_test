@@ -1020,6 +1020,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
 					paramMap.put("contractName", contractName);
+					paramMap.put("customer", groupDownloadTO.getCustomerId());
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);
