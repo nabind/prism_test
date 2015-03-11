@@ -1362,13 +1362,14 @@ function downloadMapIsr(studentId) {
  * @param mode (SP or CP)
  */
 function downloadMapCombined(mode) {
+	if ($("#groupDownload").validationEngine('validate')) {
 	blockUI();
 	var status = false;
 	var subtest = $("#p_subtest", window.parent.document); 
 	var tab = $("li.active", window.parent.document).attr("param");
 	tab = tab.replace(/new-tab/g, "report-form-");
 	var formObj = $('.'+tab, window.parent.document);
-	var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + getSelectedStudentIdsAsCommaString();
+	var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + getSelectedStudentIdsAsCommaString() + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
 	
 	$.ajax({
 		type : "POST",
@@ -1406,6 +1407,7 @@ function downloadMapCombined(mode) {
 			unblockUI();
 		}
 	});
+	}
 }
 
 /**

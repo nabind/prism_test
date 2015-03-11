@@ -1721,14 +1721,6 @@ public class InorsController {
 	@RequestMapping(value = "/groupDownloadMapIsr")
 	public void groupDownloadMapIsr(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			String[] subtests = request.getParameterValues("p_subtest");
-			String students = request.getParameter("studentId");
-			String custProdId = request.getParameter("p_test_administration");
-			String gradeId = request.getParameter("p_grade");
-			String district = request.getParameter("p_district_Id");
-			String school = request.getParameter("p_school");
-			String fileName = (String) request.getParameter("fileName");
-			
 			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
@@ -1736,16 +1728,17 @@ public class InorsController {
 			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
 			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
 			groupDownloadTO.setUserName(currentUser);
-			groupDownloadTO.setTestAdministrationVal(custProdId);
-			groupDownloadTO.setSchool(school);
-			groupDownloadTO.setDistrict(district);
-			groupDownloadTO.setGrade(gradeId);
+			groupDownloadTO.setTestAdministrationVal(request.getParameter("p_test_administration"));
+			groupDownloadTO.setSchool(request.getParameter("p_school"));
+			groupDownloadTO.setDistrict(request.getParameter("p_district_Id"));
+			groupDownloadTO.setGrade(request.getParameter("p_grade"));
 			groupDownloadTO.setCustomerId(customer);
 			groupDownloadTO.setButton(request.getParameter("mode"));
-			groupDownloadTO.setStudents(students);
-			groupDownloadTO.setSubtest(subtests);
+			groupDownloadTO.setStudents(request.getParameter("studentId"));
+			groupDownloadTO.setSubtest(request.getParameterValues("p_subtest"));
 			groupDownloadTO.setGroupFile("ISR");
-			groupDownloadTO.setFileName(fileName);
+			groupDownloadTO.setFileName(request.getParameter("fileName"));
+			groupDownloadTO.setEmail(request.getParameter("email"));
 			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 

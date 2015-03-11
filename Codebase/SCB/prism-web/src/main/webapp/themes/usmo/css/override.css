@@ -185,7 +185,7 @@ html {
 	position: absolute !important;
 	background: none;
 	box-shadow: none;
-	margin-top: -3px;
+	margin-top: 0px;
 	/*-webkit-background-size: auto, auto;
 	-webkit-box-shadow: rgba(0, 0, 0, 0.746094) 5px 5px 30px 0px inset;
 	-webkit-transition-delay: 0s;

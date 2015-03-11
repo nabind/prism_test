@@ -1031,7 +1031,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			jobTrackingTO.setJobLog(job.toString());
 			jobTrackingTO.setContractName(contractName);
 			updateJob(jobTrackingTO);
-				
+			
+			// email notification
+			if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
+				notificationMailGD(groupDownloadTO.getEmail(), mergedFileName);
+			} else {
+				logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
+			}
 		
 		} catch (Exception ex) {
 			ex.printStackTrace();

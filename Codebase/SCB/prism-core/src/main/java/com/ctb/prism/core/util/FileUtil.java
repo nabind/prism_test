@@ -662,10 +662,11 @@ public class FileUtil {
 		String zipFileName = "";
 		String userName = currentUser;
 		if(userName.indexOf("9rc^w") != -1) userName = userName.substring(0, userName.indexOf("9rc^w"));
+		if(userName.indexOf("@") != -1) userName = userName.replace("@", "");
 		if (IApplicationConstants.EXTRACT_FILETYPE.ICL.toString().equals(groupFile)) {
-			zipFileName = CustomStringUtil.appendString(userName, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."), " ", groupFile);
+			zipFileName = CustomStringUtil.appendString(userName, "_", CustomStringUtil.replaceAll(Utils.getDateTime(true), "-", "."), "_", groupFile);
 		} else {
-			zipFileName = CustomStringUtil.appendString(userName, " ", CustomStringUtil.replaceAll(Utils.getDateTime(), "-", "."));
+			zipFileName = CustomStringUtil.appendString(userName, "_", CustomStringUtil.replaceAll(Utils.getDateTime(true), "-", "."));
 		}
 		return zipFileName;
 	}

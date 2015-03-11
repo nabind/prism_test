@@ -829,15 +829,25 @@
 		</dependency>   -->
 	            
 		<!--  memcached with aws elastiCache -->            
-        <dependency>
+        <!-- <dependency>
 	        <groupId>com.google.code.simple-spring-memcached</groupId>
 	        <artifactId>spring-cache</artifactId>
 	        <version>3.3.0</version>
-	    </dependency>
+	    </dependency> -->
 	    <dependency>
+		    <groupId>com.google.code.simple-spring-memcached</groupId>
+			<artifactId>spring-cache</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+	    <!-- <dependency>
 	        <groupId>com.google.code.simple-spring-memcached</groupId>
 	        <artifactId>xmemcached-provider</artifactId>
 	        <version>3.3.0</version>
+	    </dependency> -->
+	    <dependency>
+	        <groupId>com.google.code.simple-spring-memcached</groupId>
+	        <artifactId>xmemcached-provider</artifactId>
+	        <version>3.5.0</version>
 	    </dependency>
 	            
 		            
@@ -905,18 +915,12 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
+	<!-- <repositories>
         <repository>
-            <id>sourceforge</id>
-            <url>http://oss.sonatype.org/content/groups/sourceforge/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>github</id>
+            <url>http://github.com/ragnor/simple-spring-memcached</url>
         </repository>
-    </repositories>
+    </repositories> -->
     
     <build>
 		<plugins>

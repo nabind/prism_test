@@ -246,7 +246,14 @@
 								<input type="hidden" name="j_contract" id="j_contract" value="" autocomplete="off">
 		
 								<p class="button-height">
-									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
+									<c:choose>
+  										<c:when test="${fn:contains(themeName, 'usmo')}" >
+											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /> <span class="red">(For CTB System Administrators Only)</span></button>
+										</c:when>
+										<c:otherwise>
+											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
+										</c:otherwise>
+									</c:choose>
 								</p>
 							</form:form>
 						</div>
