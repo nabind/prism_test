@@ -30,7 +30,7 @@
 									<a href="${report.reportOriginalUrl}" title="${report.reportName}">${report.reportName}</a>
 								</c:when>
 								<c:otherwise>
-									<span onclick="addReportTab('${report.reportUrl}', '${report.reportId}', '${fn:replace(report.reportName, singleQuote, escapeSingleQuote)}', '${assessments.assessmentId}', '', '${report.reportType}', '${report.customUrl}')">${report.reportName}</span>
+									<span onclick='addReportTab("${report.reportUrl}", "${report.reportId}",  "<c:out value="${report.reportName}" escapeXml="true"/>", "${assessments.assessmentId}", "", "${report.reportType}", "${report.customUrl}")'>${report.reportName}</span>
 								</c:otherwise>
 							</c:choose>
 						</li>
