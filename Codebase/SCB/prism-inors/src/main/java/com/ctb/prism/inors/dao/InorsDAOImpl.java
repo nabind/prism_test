@@ -1034,13 +1034,14 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		
 		final long districtId = Long.parseLong((String) paramMap.get("district"));
 		final long schoolId = Long.parseLong((String) paramMap.get("school"));
+		final String contractName = (String) paramMap.get("contractName");
 		
 		logger.log(IAppLogger.INFO, "districtId: " + districtId);
 		logger.log(IAppLogger.INFO, "schoolId: " + schoolId);
 		
 		Map<String,Object> returnMap = null;
 		try {
-			returnMap = (Map<String,Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			returnMap = (Map<String,Object>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.GET_CODE);
 					cs.setLong(1, districtId);

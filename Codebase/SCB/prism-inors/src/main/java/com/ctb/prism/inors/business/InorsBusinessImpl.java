@@ -858,6 +858,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		Map<String,Object> paramMapCode = new HashMap<String, Object>();
 		paramMapCode.put("district", district);
 		paramMapCode.put("school",school);
+		paramMapCode.put("contractName",contractName);
 		Map<String,Object> codeMap = getCode(paramMapCode);
 		String districtCode = (String) codeMap.get("districtCode");
 		String schoolCode = (String) codeMap.get("schoolCode");

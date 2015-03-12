@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -14,21 +15,30 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfGenerator {
@@ -134,10 +144,11 @@ public class PdfGenerator {
 		document.addSubject("Query Sheet");
 	}
 	
+	/*
 	public static void main(String[] args) {
 		BulkDownloadTO bulkDownloadTO = new BulkDownloadTO();
 		generateQuerysheet(bulkDownloadTO, null);
-	}
+	}*/
 	
 	/**
 	 * split pdfs into multiple pages
@@ -317,4 +328,80 @@ public class PdfGenerator {
 		System.out.println("Compressing completed ... ");
     }
 	
+	public static void manipulatePdf(String pdfFileSrc, String pdfFileDes) throws IOException,
+			DocumentException {
+		
+		/*String folder = FileUtil.getDirFromFilePath(pdfFileSrc);
+		folder = CustomStringUtil.appendString(folder, File.separator);
+		File dir = new File(folder);
+		if (!dir.isDirectory()) {
+			dir.mkdirs();
+			System.out.println("Directory created = " + folder);
+		} else {
+			System.out.println("Directory exists = " + folder);
+		}*/
+		
+		/*
+		FileUtils.deleteDirectory(dirLocation);
+		logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + dir);
+		
+		PdfReader reader = new PdfReader(pdfFileSrc);
+		int n = reader.getNumberOfPages();
+		int rot;
+		PdfDictionary pageDict;
+		for (int i = 1; i <= n; i++) {
+			rot = reader.getPageRotation(i);
+			pageDict = reader.getPageN(i);
+			pageDict.put(PdfName.ROTATE, new PdfNumber(rot + 90));
+		}
+		PdfStamper stamper = new PdfStamper(reader,
+				new FileOutputStream(pdfFileDes));
+		stamper.close();
+		reader.close();*/
+		
+		/*Document document = new Document(PageSize.A4.rotate());
+	    try {
+	      PdfWriter.getInstance(document, new FileOutputStream(pdfFileDes));
+	      document.open();
+	      document.add(new Paragraph("PageSize.A4.rotate()"));
+	      document.setPageSize(PageSize.A4);
+	      document.newPage();
+	      document.add(new Paragraph("This is portrait again"));
+	    } catch (DocumentException de) {
+	      System.err.println(de.getMessage());
+	    } catch (IOException ioe) {
+	      System.err.println(ioe.getMessage());
+	    }
+	    document.close();*/
+		
+		PdfReader reader = new PdfReader(pdfFileSrc);
+		int n = reader.getNumberOfPages();
+		int rot;
+		PdfDictionary pageDict;
+		for (int i = 1; i <= n; i++) {
+			rot = reader.getPageRotation(i);
+			pageDict = reader.getPageN(i);
+			Rectangle rectangle = reader.getPageSize(pageDict);
+			int a = rectangle.getRotation();
+			pageDict.put(PdfName.ROTATE, new PdfNumber(rot + 90));
+		}
+		PdfStamper stamper = new PdfStamper(reader,
+				new FileOutputStream(pdfFileDes));
+		stamper.close();
+		reader.close();
+		
+	}
+	
+	public static void main(String[] args) {
+		try {
+			manipulatePdf("C:\\Users\\541841\\Downloads\\GDFMAP_ISR_CP_4_578_20150310.085244.044.pdf",
+					"C:\\Users\\541841\\GDFMAP_ISR_CP_4_578_20150310.085244.044.pdf");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
