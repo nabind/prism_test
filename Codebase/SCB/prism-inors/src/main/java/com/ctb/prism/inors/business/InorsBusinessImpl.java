@@ -279,7 +279,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param jobTO
 	 */
 	private void batchCRPDFDownload(String jobId, String contractName) {
-		com.ctb.prism.core.transferobject.JobTrackingTO jobTO = getJob(jobId, contractName); // TODO : Initialize from database
+		com.ctb.prism.core.transferobject.JobTrackingTO jobTO = getJob(jobId, contractName); 
 		OutputStream fos = null;
 		InputStream is = null;
 		StringBuffer log = new StringBuffer();
@@ -604,7 +604,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						//jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
 						jobLog = "Asynchoronous Combined Pdf";
 					} else if ("SP".equals(button)) {
-						// TODO : convention implementation
 						Long orgNodeId = Long.parseLong(school);
 						logger.log(IAppLogger.INFO, "orgNodeId: " + orgNodeId);
 						logger.log(IAppLogger.INFO, "zipFileName(SP): " + zipFileName);
@@ -842,7 +841,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param folderLoc
 	 * @param subtest
 	 * @return
-	 * TODO Joy - Find the file from S3 first, if file does not exists, call report to generate the file after that upload the same 
+	 * Joy - Find the file from S3 first, if file does not exists, call report to generate the 
+	 * file after that upload the same 
 	 */
 	public String downloadISR(Map<String,Object> paramMap) {
 		String custProdId = (String) paramMap.get("custProdId");
@@ -855,7 +855,17 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String contractName = (String) paramMap.get("contractName");
 		String customer = (String) paramMap.get("customer");
 		
-		String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", district, "_", school, "_", studentId, "_", gradeId, "_", subtest, ".pdf");
+		Map<String,Object> paramMapCode = new HashMap<String, Object>();
+		paramMapCode.put("district", district);
+		paramMapCode.put("school",school);
+		Map<String,Object> codeMap = getCode(paramMapCode);
+		String districtCode = (String) codeMap.get("districtCode");
+		String schoolCode = (String) codeMap.get("schoolCode");
+		
+		String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
+				districtCode, "_", schoolCode, "_", 
+				gradeId, "_", subtest,"_", studentId, ".pdf");
+		
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		fileName = fileName.replaceAll("\\\\", "/");
 		String folder = FileUtil.getDirFromFilePath(fileName);
@@ -872,8 +882,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String rootPath = loginDAO.getCustPath(customer, custProdId, contractName);
 			locForS3 = CustomStringUtil.appendString(rootPath, File.separator, 
 				IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-				district,File.separator,
-				school,File.separator);
+				districtCode,File.separator,
+				schoolCode,File.separator);
 			String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
 			byte[] assetBytes = new byte[0];
 			try{
@@ -882,7 +892,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			}catch(Exception e){
 				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
-			
 			
 			
 			if(assetBytes.length != 0){
@@ -986,7 +995,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
 			}
 			StringBuffer job = new StringBuffer();
-			//String jobStatus = IApplicationConstants.JOB_STATUS.IP.toString();
 			com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = getJob(jobId, contractName);
 			String clobStr = jobTrackingTO != null ? jobTrackingTO.getRequestDetails(): "";
 			logger.log(IAppLogger.INFO, "Clob Data is : " + clobStr);
@@ -1030,7 +1038,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				// combine student's PDF
 				String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-						groupDownloadTO.getDistrict(), "_", groupDownloadTO.getSchool(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
+						groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
 				OutputStream os = new FileOutputStream(mergedFileName);
 				PdfGenerator.concatPDFs(fileForStudent, os, false);
 				IOUtils.closeQuietly(os);
@@ -1091,11 +1099,18 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			} else {
 				logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 			}
-		
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+	}
+
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	public Map<String, Object> getCode(Map<String, Object> paramMap) {
+		return inorsDAO.getCode(paramMap);
 	}
 
 }

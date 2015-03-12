@@ -119,5 +119,12 @@ public interface IInorsDAO {
 	 * @return
 	 */
 	public String getCurrentAdminYear();
+	
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	public Map<String,Object> getCode(Map<String,Object> paramMap);
 
 }

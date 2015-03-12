@@ -9,9 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -1013,6 +1015,63 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			}
 		}
 		return currentAdminYear;
+	}
+	
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	@SuppressWarnings("unchecked")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	} )
+	public Map<String,Object> getCode(Map<String,Object> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: getCode()");
+		long t1 = System.currentTimeMillis();
+		
+		final long districtId = Long.parseLong((String) paramMap.get("district"));
+		final long schoolId = Long.parseLong((String) paramMap.get("school"));
+		
+		logger.log(IAppLogger.INFO, "districtId: " + districtId);
+		logger.log(IAppLogger.INFO, "schoolId: " + schoolId);
+		
+		Map<String,Object> returnMap = null;
+		try {
+			returnMap = (Map<String,Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.GET_CODE);
+					cs.setLong(1, districtId);
+					cs.setLong(2, schoolId);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					Map<String,Object> returnMapRs = new HashMap<String,Object>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(3);
+						if(rs.next()) {
+							returnMapRs.put("districtCode", rs.getString("DISTRICT_CODE"));
+							returnMapRs.put("schoolCode", rs.getString("SCHOOL_CODE"));
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return returnMapRs;
+				}
+			});
+			logger.log(IAppLogger.INFO, "paramMap: " + paramMap.size());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: getCode() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return returnMap;
 	}
 
 }

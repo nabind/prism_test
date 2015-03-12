@@ -42,6 +42,8 @@ public class GroupDownloadTO extends BaseTO {
 	private String contractName;
 	private String[] subtest;
 	private String studentGroups;
+	private String districtCode;
+	private String schoolCode;
 
 	/**
 	 * @return the button
@@ -443,6 +445,38 @@ public class GroupDownloadTO extends BaseTO {
 	public void setString(String string) {
 		this.string = string;
 	}
+	
+	public String[] getSubtest() {
+		return subtest;
+	}
+
+	public void setSubtest(String[] subtest) {
+		this.subtest = subtest;
+	}
+
+	public String getStudentGroups() {
+		return studentGroups;
+	}
+
+	public void setStudentGroups(String studentGroups) {
+		this.studentGroups = studentGroups;
+	}
+
+	public String getDistrictCode() {
+		return districtCode;
+	}
+
+	public void setDistrictCode(String districtCode) {
+		this.districtCode = districtCode;
+	}
+
+	public String getSchoolCode() {
+		return schoolCode;
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
+	}
 
 	@Override
 	public String toString() {
@@ -488,21 +522,4 @@ public class GroupDownloadTO extends BaseTO {
 		buf.append(email);
 		return buf.toString();
 	}
-
-	public String[] getSubtest() {
-		return subtest;
-	}
-
-	public void setSubtest(String[] subtest) {
-		this.subtest = subtest;
-	}
-
-	public String getStudentGroups() {
-		return studentGroups;
-	}
-
-	public void setStudentGroups(String studentGroups) {
-		this.studentGroups = studentGroups;
-	}
-
 }

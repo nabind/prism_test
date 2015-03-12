@@ -121,5 +121,14 @@ public class InorsServiceImpl implements IInorsService {
 	public String downloadISR(Map<String,Object> paramMap) {
 		return inorsBusiness.downloadISR(paramMap);
 	}
+	
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	public Map<String,Object> getCode(Map<String,Object> paramMap){
+		return inorsBusiness.getCode(paramMap);
+	}
 
 }

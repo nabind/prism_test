@@ -54,5 +54,7 @@ public interface IInorsQuery {
 	
 	public static final String GET_PRODUCT_NAME_BY_ID = "SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCTID = ? AND ROWNUM = 1";
 	
+	public static final String GET_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_CODE(?, ?, ?, ?)}";
+	
 }
 

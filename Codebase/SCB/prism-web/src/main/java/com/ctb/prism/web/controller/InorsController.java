@@ -1742,6 +1742,13 @@ public class InorsController {
 			groupDownloadTO.setFileName(request.getParameter("fileName"));
 			groupDownloadTO.setEmail(request.getParameter("email"));
 			
+			Map<String,Object> paramMapCode = new HashMap<String, Object>();
+			paramMapCode.put("district", request.getParameter("p_district_Id"));
+			paramMapCode.put("school",request.getParameter("p_school"));
+			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
+			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
+			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
+			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
