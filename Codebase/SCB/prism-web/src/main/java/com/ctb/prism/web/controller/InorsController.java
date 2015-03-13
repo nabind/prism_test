@@ -1745,6 +1745,7 @@ public class InorsController {
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
 			paramMapCode.put("school",request.getParameter("p_school"));
+			paramMapCode.put("contractName", Utils.getContractName());
 			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
