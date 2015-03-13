@@ -455,11 +455,20 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			repositoryService.uploadAsset(s3Location, file);
 			logger.log(IAppLogger.INFO, "File(" + zipFileName + ") uploaded to S3");
 
-			// Delete File from Mount Location
-			String dir = FileUtil.getDirFromFilePath(zipFileName);
+			// Delete Folder from Mount Location
+			/*String dir = FileUtil.getDirFromFilePath(zipFileName);
 			File dirLocation = new File(dir);
 			FileUtils.deleteDirectory(dirLocation);
-			logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + dir);
+			logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + dir);*/
+			
+			// Delete Files from Mount Location
+			boolean fileDeleteFlag = FileUtils.deleteQuietly(file);
+			if(fileDeleteFlag){
+				logger.log(IAppLogger.INFO, "Temp file has been deleted successfully: " + zipFileName);
+			}else{
+				logger.log(IAppLogger.INFO, "Unable to delete Temp file: " + zipFileName);
+			}
+			
 
 			// Set Job Status and Log
 			jobStatus = IApplicationConstants.JOB_STATUS.CO.toString();
@@ -845,6 +854,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * file after that upload the same 
 	 */
 	public String downloadISR(Map<String,Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: InorsBusinessImpl - downloadISR()");
+		long t1 = System.currentTimeMillis();
 		String custProdId = (String) paramMap.get("custProdId");
 		String district = (String) paramMap.get("district");
 		String school = (String) paramMap.get("school");
@@ -960,20 +971,23 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			ex.printStackTrace();
 		}
 		
+		//File file = new File(fileName);
 		// upload the file to S3 (asynchronously) 
 		if(fileName != null && uploadNeeded == true) {
-			File file = null;
+			File file = new File(fileName);
 			try{
-				file = new File(fileName);
 				repositoryService.uploadAssetAsync(locForS3, file);
-				logger.log(IAppLogger.INFO, "\n------------MO ISR file : " + fileName);
-				logger.log(IAppLogger.INFO, "\n------------Uploaded to S3 location : " + locForS3);
 			}catch(Exception e){
 				logger.log(IAppLogger.ERROR, "\n------------Problem while uploading MO ISR file : " + fileName);
 				logger.log(IAppLogger.ERROR, "\n------------To S3 location : " + locForS3);
 				e.printStackTrace();
 			}
-		}
+		}/*else{
+			FileUtil.deleteFile(file);
+		}*/
+		
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: InorsBusinessImpl - downloadISR() took time: " + String.valueOf(t2 - t1) + "ms");
 		
 		return fileName;
 	}
@@ -1044,6 +1058,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				PdfGenerator.concatPDFs(fileForStudent, os, false);
 				IOUtils.closeQuietly(os);
 				
+				PdfGenerator.rotatePdf(mergedFileName);
 				if("CP".equals(mode)){
 					byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
 					FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
@@ -1068,19 +1083,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			}
 			
 			// calculating file size
-			File file = new File(mergedFileName);
-			double size = 0;
-			DecimalFormat f = new DecimalFormat("##.00");
-			if (file.exists()) {
-				size = file.length() / 1024 / 1024;
-				if (size == 0) {
-					size = file.length() / 1024;
-					jobTrackingTO.setFileSize(f.format(size) + "K");
-				} else {
-					jobTrackingTO.setFileSize(f.format(size) + "M");
-				}
-			}
-			
+			jobTrackingTO.setFileSize(FileUtil.getFileSizeReadable(mergedFileName));
+
 			// Upload File to S3
 			String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF", File.separator);
 			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(mergedFileName, locForS3);

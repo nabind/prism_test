@@ -29,6 +29,7 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -403,28 +404,6 @@ public class FileUtil {
 		}
 	}
 
-	/**
-	 * Returns the length of the file.
-	 * 
-	 * @param filePath
-	 * @return
-	 */
-	public static String fileSize(String filePath) {
-		File file = new File(filePath);
-		double size = 0;
-		DecimalFormat f = new DecimalFormat("##.00");
-		if (file.exists()) {
-			size = file.length() / 1024 / 1024;
-			if (size == 0) {
-				size = file.length() / 1024;
-				return (f.format(size) + " K");
-			} else {
-				return (f.format(size) + " M");
-			}
-		}
-		return "0 M";
-	}
-
 	public static String fileSize(byte[] fileBytes) {
 		double size = 0;
 		DecimalFormat f = new DecimalFormat("##.00");
@@ -761,6 +740,43 @@ public class FileUtil {
 			logger.log(IAppLogger.INFO, "merged pdf bytes [" + baos.size() + "] created");
 		}
 		return baos.toByteArray();
+	}
+	
+	/**
+	 * Returns the size of the file (B/K/M).
+	 * @author Joykumar pal
+	 * @param filePath
+	 * @return
+	 */
+	public static String getFileSizeReadable(String filePath) {
+		File file = new File(filePath);
+		double size = 0;
+		DecimalFormat f = new DecimalFormat("##.00");
+		if (file.exists()) {
+			size = file.length() / 1024 / 1024;
+			if (size == 0) {
+				size = file.length() / 1024;
+				return (f.format(size) + " K");
+			} else {
+				return (f.format(size) + " M");
+			}
+		}
+		return "0 M";
+	}
+	
+	/**
+	 * @author Joykumar pal
+	 * @param file
+	 * @return fileDeleteFlag
+	 */
+	public static boolean deleteFile(File file){
+		boolean fileDeleteFlag = FileUtils.deleteQuietly(file);
+		if(fileDeleteFlag){
+			logger.log(IAppLogger.INFO, "Temp file has been deleted successfully");
+		}else{
+			logger.log(IAppLogger.INFO, "Unable to delete Temp file");
+		}
+		return fileDeleteFlag;
 	}
 
 }

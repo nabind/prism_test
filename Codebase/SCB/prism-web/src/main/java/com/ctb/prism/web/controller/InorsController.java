@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -1680,7 +1681,10 @@ public class InorsController {
 		String district = request.getParameter("p_district_Id");
 		String school = request.getParameter("p_school");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		String mergedFileName = "";
+		OutputStream os = null;
 		InputStream is = null;
+		File mergedFile = null;
 		List<String> archieveFileNames = new LinkedList<String>();
 		String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, "MAP", File.separator);
 		folderLoc = folderLoc.replace("//", "/");
@@ -1701,17 +1705,27 @@ public class InorsController {
 			}
 			
 			// create a merged PDF from archieveFileNames
-			String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", studentId, "_", Utils.getDateTime(true), ".pdf");
-			OutputStream os = new FileOutputStream(mergedFileName);
+			mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", studentId, "_", Utils.getDateTime(true), ".pdf");
+			mergedFile = new File(mergedFileName);
+			os = new FileOutputStream(mergedFile);
 			PdfGenerator.concatPDFs(archieveFileNames, os, false);
+			PdfGenerator.rotatePdf(mergedFileName);
 			
-			// download the file
+			//download the file
 			is = new FileInputStream(mergedFileName);
 			FileUtil.browserDownload(response, IOUtils.toByteArray(is), FileUtil.getFileNameFromFilePath(mergedFileName));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(os);
+			boolean fileDeleteFlag = FileUtils.deleteQuietly(mergedFile);
+			if(fileDeleteFlag){
+				logger.log(IAppLogger.INFO, "Temp file has been deleted successfully: " + mergedFileName);
+			}else{
+				logger.log(IAppLogger.INFO, "Unable to delete Temp file: " + mergedFileName);
+			}
 		}
 	}
 	
@@ -1745,7 +1759,7 @@ public class InorsController {
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
 			paramMapCode.put("school",request.getParameter("p_school"));
-			paramMapCode.put("contractName", Utils.getContractName());
+			paramMapCode.put("contractName", IApplicationConstants.CONTRACT_NAME.usmo.toString());
 			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));

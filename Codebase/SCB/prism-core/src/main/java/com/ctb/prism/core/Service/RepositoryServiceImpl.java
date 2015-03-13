@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -204,9 +205,12 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	 * @author Joykumar Pal
 	 * @param key 
 	 * @param file
+	 * @category Upload file asynchronously and delete the temporary file
 	 */
 	@Async
 	public void uploadAssetAsync(String key, File file){
 		uploadAsset(key, file);
+		// Delete Files from Mount Location
+		//FileUtil.deleteFile(file);
 	}
 }

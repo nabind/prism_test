@@ -328,51 +328,20 @@ public class PdfGenerator {
 		System.out.println("Compressing completed ... ");
     }
 	
-	public static void manipulatePdf(String pdfFileSrc, String pdfFileDes) throws IOException,
+	public static void rotatePdf(String pdfFileSrc) throws IOException,
 			DocumentException {
 		
-		/*String folder = FileUtil.getDirFromFilePath(pdfFileSrc);
-		folder = CustomStringUtil.appendString(folder, File.separator);
-		File dir = new File(folder);
+		String srcfolder = FileUtil.getDirFromFilePath(pdfFileSrc);
+		String fileName = FileUtil.getFileNameFromFilePath(pdfFileSrc);
+		String destfolder = CustomStringUtil.appendString(srcfolder, File.separator, "temp", File.separator);
+		File dir = new File(destfolder);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
-			System.out.println("Directory created = " + folder);
+			System.out.println("Directory created = " + destfolder);
 		} else {
-			System.out.println("Directory exists = " + folder);
-		}*/
-		
-		/*
-		FileUtils.deleteDirectory(dirLocation);
-		logger.log(IAppLogger.INFO, "Temp Directory Deleted Successfully: " + dir);
-		
-		PdfReader reader = new PdfReader(pdfFileSrc);
-		int n = reader.getNumberOfPages();
-		int rot;
-		PdfDictionary pageDict;
-		for (int i = 1; i <= n; i++) {
-			rot = reader.getPageRotation(i);
-			pageDict = reader.getPageN(i);
-			pageDict.put(PdfName.ROTATE, new PdfNumber(rot + 90));
+			System.out.println("Directory exists = " + destfolder);
 		}
-		PdfStamper stamper = new PdfStamper(reader,
-				new FileOutputStream(pdfFileDes));
-		stamper.close();
-		reader.close();*/
-		
-		/*Document document = new Document(PageSize.A4.rotate());
-	    try {
-	      PdfWriter.getInstance(document, new FileOutputStream(pdfFileDes));
-	      document.open();
-	      document.add(new Paragraph("PageSize.A4.rotate()"));
-	      document.setPageSize(PageSize.A4);
-	      document.newPage();
-	      document.add(new Paragraph("This is portrait again"));
-	    } catch (DocumentException de) {
-	      System.err.println(de.getMessage());
-	    } catch (IOException ioe) {
-	      System.err.println(ioe.getMessage());
-	    }
-	    document.close();*/
+		String pdfFileDest = CustomStringUtil.appendString(destfolder, File.separator, fileName);
 		
 		PdfReader reader = new PdfReader(pdfFileSrc);
 		int n = reader.getNumberOfPages();
@@ -386,16 +355,22 @@ public class PdfGenerator {
 			pageDict.put(PdfName.ROTATE, new PdfNumber(rot + 90));
 		}
 		PdfStamper stamper = new PdfStamper(reader,
-				new FileOutputStream(pdfFileDes));
+				new FileOutputStream(pdfFileDest));
 		stamper.close();
 		reader.close();
+		System.out.println("Rotated PDF created = " + pdfFileDest);
+		FileUtil.deleteFile(new File(pdfFileSrc));
+		System.out.println("Old PDF deleted = " + pdfFileDest);
+		FileUtils.copyFileToDirectory(new File(pdfFileDest), new File(srcfolder));
+		System.out.println("New PDF created in: " + srcfolder);
+		FileUtils.deleteDirectory(new File(destfolder));
+		System.out.println("Temporary folder deleted: " + destfolder);
 		
 	}
 	
 	public static void main(String[] args) {
 		try {
-			manipulatePdf("C:\\Users\\541841\\Downloads\\GDFMAP_ISR_CP_4_578_20150310.085244.044.pdf",
-					"C:\\Users\\541841\\GDFMAP_ISR_CP_4_578_20150310.085244.044.pdf");
+			rotatePdf("C:\\Users\\541841\\Downloads\\MAP_ISR_148_20150313.085335.035.pdf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
