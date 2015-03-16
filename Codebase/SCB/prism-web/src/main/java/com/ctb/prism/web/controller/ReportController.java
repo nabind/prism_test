@@ -493,10 +493,12 @@ public class ReportController{
 						modelAndView.addObject("reportMsg", "This student did not take the test.");
 					}
 				}
+				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.FALSE); //Added by Abir
 				return modelAndView;
 			} else {
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_HEIGHT), jasperPrint.getPageHeight());
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperPrint.getPageWidth());
+				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.TRUE); //Added by Abir
 			}
 
 			exporter.exportReport();
