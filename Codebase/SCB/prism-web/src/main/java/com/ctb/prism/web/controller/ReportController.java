@@ -1885,6 +1885,9 @@ public class ReportController{
 		logger.log(IAppLogger.INFO, "Enter: download()");
 		String type = req.getParameter("type");
 		String reportUrl = req.getParameter("reportUrl");
+		if(reportUrl != null && reportUrl.indexOf("MO_OL_") != -1) {
+			reportUrl = reportUrl.replace("MO_OL_", "");
+		}
 		String token = req.getParameter("token");
 		String assessmentId = req.getParameter("assessmentId");
 		String filter = req.getParameter("filter");

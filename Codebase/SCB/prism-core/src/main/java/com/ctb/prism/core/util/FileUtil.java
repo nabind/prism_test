@@ -778,5 +778,18 @@ public class FileUtil {
 		}
 		return fileDeleteFlag;
 	}
+	
+	/**
+	 * Delete multiple files
+	 * @param files
+	 * @return
+	 */
+	public static boolean deleteFiles(List<String> files) {
+		boolean fileDeleteFlag = false;
+		for(String file : files) {
+			fileDeleteFlag = FileUtils.deleteQuietly(new File(file));
+		}
+		return fileDeleteFlag;
+	}
 
 }

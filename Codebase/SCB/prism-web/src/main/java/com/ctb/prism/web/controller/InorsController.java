@@ -1759,7 +1759,7 @@ public class InorsController {
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
 			paramMapCode.put("school",request.getParameter("p_school"));
-			paramMapCode.put("contractName", IApplicationConstants.CONTRACT_NAME.usmo.toString());
+			paramMapCode.put("contractName", Utils.getContractName());
 			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
@@ -1779,5 +1779,20 @@ public class InorsController {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * This method is called from Utility to generate PDFs
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/generateMapIsr")
+	public void generateMapIsr(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			groupDownloadMapIsr(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+		
 
 }

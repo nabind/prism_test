@@ -972,15 +972,18 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		}
 		
 		//File file = new File(fileName);
-		// upload the file to S3 (asynchronously) 
+		// upload the file to S3 (asynchronously)
 		if(fileName != null && uploadNeeded == true) {
 			File file = new File(fileName);
 			try{
-				repositoryService.uploadAssetAsync(locForS3, file);
+				// [Amit] making it synchronous as we have delete ISR issue from temp location
+				//repositoryService.uploadAssetAsync(locForS3, file);
+				repositoryService.uploadAsset(locForS3, file);
+				
+				// TODO save the location to PDF_FILES table for tracking
 			}catch(Exception e){
 				logger.log(IAppLogger.ERROR, "\n------------Problem while uploading MO ISR file : " + fileName);
-				logger.log(IAppLogger.ERROR, "\n------------To S3 location : " + locForS3);
-				e.printStackTrace();
+				logger.log(IAppLogger.ERROR, "\n------------To S3 location : " + locForS3, e);
 			}
 		}/*else{
 			FileUtil.deleteFile(file);
@@ -1030,6 +1033,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			List<String> mergedFileNames = new LinkedList<String>();
 			List<String> archieveFileNames = new LinkedList<String>();
 			List<String> fileForStudent = null;
+			List<String> allIsr = new LinkedList<String>();;
 			
 			for(String studentId : studentIds) {
 				fileForStudent = new LinkedList<String>();
@@ -1047,6 +1051,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);
+						allIsr.add(fileName);
 					} else {
 						job.append("Error downloading PDF for student ").append(studentId).append(" and subtest ").append(subtest) ;
 					}
@@ -1104,6 +1109,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			} else {
 				logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 			}
+			
+			// delete ISR from temp location 
+			FileUtil.deleteFiles(allIsr);
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
