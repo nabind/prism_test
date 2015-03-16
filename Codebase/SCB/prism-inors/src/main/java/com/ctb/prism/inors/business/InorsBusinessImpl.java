@@ -720,6 +720,33 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		}
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
+	
+	/**
+	 * send mail for MAP group download
+	 * @param email
+	 * @param fileName
+	 */
+	private void notificationMailMapGD(String email, String fileName) {
+		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
+		try {
+			String file = fileName;
+			Properties prop = new Properties();
+			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			String subject = propertyLookup.get("mail.gd.subject");
+			if(subject != null) subject = subject.replace("INORS", "MAP");
+			String mailBody = CustomStringUtil.appendString(file, propertyLookup.get("mail.gd.body"));
+			logger.log(IAppLogger.INFO, "Email triggered...");
+			emailSender.sendMail(prop, email, null, null, subject, mailBody);
+			logger.log(IAppLogger.INFO, "Email sent to : " + email);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1106,7 +1133,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			
 			// email notification
 			if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
-				notificationMailGD(groupDownloadTO.getEmail(), mergedFileName);
+				notificationMailMapGD(groupDownloadTO.getEmail(), mergedFileName);
 			} else {
 				logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 			}
