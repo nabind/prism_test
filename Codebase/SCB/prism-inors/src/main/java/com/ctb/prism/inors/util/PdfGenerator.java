@@ -332,8 +332,11 @@ public class PdfGenerator {
 			DocumentException {
 		
 		String srcfolder = FileUtil.getDirFromFilePath(pdfFileSrc);
+		System.out.println("srcfolder: " + srcfolder);
 		String fileName = FileUtil.getFileNameFromFilePath(pdfFileSrc);
-		String destfolder = CustomStringUtil.appendString(srcfolder, File.separator, "temp", File.separator);
+		System.out.println("fileName: " + fileName);
+		String destfolder = CustomStringUtil.appendString(srcfolder, "temp");
+		System.out.println("destfolder: " + destfolder);
 		File dir = new File(destfolder);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
@@ -342,6 +345,7 @@ public class PdfGenerator {
 			System.out.println("Directory exists = " + destfolder);
 		}
 		String pdfFileDest = CustomStringUtil.appendString(destfolder, File.separator, fileName);
+		System.out.println("pdfFileDest: " + pdfFileDest);
 		
 		PdfReader reader = new PdfReader(pdfFileSrc);
 		int n = reader.getNumberOfPages();

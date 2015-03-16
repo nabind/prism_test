@@ -1085,6 +1085,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".pdf");
 				os = new FileOutputStream(mergedFileName);
 				PdfGenerator.concatPDFs(mergedFileNames, os, false);
+				PdfGenerator.rotatePdf(mergedFileName);
 			}
 			
 			// calculating file size
