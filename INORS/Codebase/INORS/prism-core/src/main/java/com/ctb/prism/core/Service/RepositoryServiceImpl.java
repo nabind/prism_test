@@ -33,7 +33,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(RepositoryServiceImpl.class.getName());
 
-	private static final String FOLDER_SUFFIX = File.separator;
+	private static final String FOLDER_SUFFIX = "/";//File.separator;
 
 	private AmazonS3 s3client;
 	private String bucket;

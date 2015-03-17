@@ -305,6 +305,7 @@ public class PdfGenerator {
 			        zos.write(buffer, 0, bytesRead);
 			    }
 			    bis.close();
+			    compressCount = compressCount+1;
 			}
 			zos.close();
 		} catch (Exception e) {
