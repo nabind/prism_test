@@ -729,7 +729,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	private void notificationMailMapGD(String email, String fileName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
-			String file = fileName;
+			String file = FileUtil.getFileNameFromFilePath(fileName);
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
