@@ -493,14 +493,14 @@ public class ReportServiceImpl implements IReportService {
 	@Autowired private IReportFilterTOFactory reportFilterFactory;
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportServiceImpl.class.getName());
 	
-	@Caching( cacheable = {
+	/*@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'",
 					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )"),
 			@Cacheable(value = "tascDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",
 					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )"),
 			@Cacheable(value = "usmoDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",
 					key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( ('getReportParameter').concat(#currentOrg).concat(#reportUrl).concat( T(com.ctb.prism.core.util.CacheKeyUtils).string(#getFullList) ).concat( T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#param) ) )")
-	} )
+	} )*/
 	public Map<String, Object> getReportParameter(List<InputControlTO> allInputControls, Object reportFilterTO, 
 			JasperReport jasperReport, boolean getFullList, HttpServletRequest req, String reportUrl, String currentOrg) {
 		//long start = System.currentTimeMillis();
