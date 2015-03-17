@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -729,7 +730,16 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	private void notificationMailMapGD(String email, String fileName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
-			String file = FileUtil.getFileNameFromFilePath(fileName);
+			String fileExtn = FilenameUtils.getExtension(fileName);
+			String file = fileName;
+			if(file != null && file.lastIndexOf(File.separator) != -1) {
+				file = file.substring(file.lastIndexOf(File.separator)+1);
+				if(file.lastIndexOf("_") != -1) {
+					file = file.substring(0, file.lastIndexOf("_"));
+					file = CustomStringUtil.appendString(file, ".", fileExtn);
+				}
+				
+			}
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
