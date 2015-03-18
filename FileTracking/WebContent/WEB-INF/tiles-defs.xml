@@ -59,4 +59,14 @@
       <put-attribute name="body"   value="/WEB-INF/jsp/tascProcessEr.jsp"/>      
   </definition>
   
+  <definition name="mapSearch" extends="baseLayout">
+      <put-attribute name="title"  value="MAP Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/mapSearch.jsp"/>      
+  </definition>
+  
+  <definition name="mapProcess" extends="baseLayout">
+      <put-attribute name="title"  value="MAP Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/mapProcess.jsp"/>      
+  </definition>
+  
 </tiles-definitions>

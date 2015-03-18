@@ -61,7 +61,63 @@ public class StudentDetailsTO implements Serializable {
 	private String processedDateFrom = "";
 	private String processedDateTo = "";
 	private String errorLog = "";
+	private String grade;
+	private String district;
+	private String school;
+	private String drcStudentId;
+	private String testDate;
+	private String contantArea;
+	private String errorCode;
+	private String log;
 	
+	public String getTestDate() {
+		return testDate;
+	}
+	public void setTestDate(String testDate) {
+		this.testDate = testDate;
+	}
+	public String getContantArea() {
+		return contantArea;
+	}
+	public void setContantArea(String contantArea) {
+		this.contantArea = contantArea;
+	}
+	public String getErrorCode() {
+		return errorCode;
+	}
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+	public String getLog() {
+		return log;
+	}
+	public void setLog(String log) {
+		this.log = log;
+	}
+	public String getDrcStudentId() {
+		return drcStudentId;
+	}
+	public void setDrcStudentId(String drcStudentId) {
+		this.drcStudentId = drcStudentId;
+	}
+	public String getDistrict() {
+		return district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+	public String getSchool() {
+		return school;
+	}
+	public void setSchool(String school) {
+		this.school = school;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 	public String getProcessId() {
 		return processId;
 	}

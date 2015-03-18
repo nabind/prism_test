@@ -8,6 +8,7 @@ public class TASCProcessTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private String taskId = "";
 	private String processId = "";
 	private String fileName;
 	private String sourceSystem = "";
@@ -40,6 +41,12 @@ public class TASCProcessTO implements Serializable {
 	private String form = "";
 	private String erExcdId = "";
 	
+	public String getTaskId() {
+		return taskId;
+	}
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
 	public String getTestElementId() {
 		return testElementId;
 	}

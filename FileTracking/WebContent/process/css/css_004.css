@@ -1335,6 +1335,7 @@ table {
 	border: 0;
 	padding: 0;
 	margin: 0;
+	border-spacing: 0px;
 }
 
 tr {
@@ -1349,9 +1350,9 @@ tr.alternating {
 
 td {
 	border: 0;
-	/*border-right: 1px solid #e5e5e5;
-	border-left: 1px solid #e5e5e5;
-	border-bottom: 1px solid #e5e5e5;*/
+	border-right: 1px dotted #e5e5e5;
+	border-left: 1px dotted #e5e5e5;
+	border-bottom: 1px dotted #e5e5e5;
 	padding: 5px
 }
 
@@ -1361,7 +1362,8 @@ th {
 	border-left: 1px solid #e5e5e5;
 	border-bottom: 1px solid #e5e5e5;
 	padding: 5px;
-	background-color: #8d9c4b
+	/* background-color: #8d9c4b; */
+	background: #e6e6e6/*{bgColorDefault}*/ url(themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png)/*{bgImgUrlDefault}*/ 50%/*{bgDefaultXPos}*/ 50%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/
 }
 
 th p {

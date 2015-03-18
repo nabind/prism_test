@@ -55,6 +55,8 @@ public class UserController extends MultiActionController {
 		
 		String j_username_0 = prop.getProperty("j_username_0");
 		
+		String j_username_2 = prop.getProperty("j_username_2");
+		
 		String j_username_1 = prop.getProperty("j_username_1");
 		String j_password_1 = prop.getProperty("j_password_1");
 		
@@ -62,7 +64,7 @@ public class UserController extends MultiActionController {
 		String givenPassword = request.getParameter("j_password");
 		
 		String encPwd = PasswordCipherer.getEncryptedString(givenPassword);
-    	boolean tascuser = false;
+    	boolean tascuser = false, mapuser = false;
 		if(givenUsername != null && givenUsername.equals(j_username_1)) {
 			password = j_password_1;
 			username = j_username_1;
@@ -71,6 +73,12 @@ public class UserController extends MultiActionController {
 			password = password;
 			username = j_username_0;
 			tascuser = true;
+		}
+		if(givenUsername != null && givenUsername.equals(j_username_2)) {
+			password = password;
+			username = j_username_2;
+			tascuser = true;
+			mapuser = true;
 		}
     	if(encPwd != null && encPwd.equals(password)) {
     		if(username != null && username.equals(givenUsername)) {
@@ -88,7 +96,8 @@ public class UserController extends MultiActionController {
 	    				}
 	    			}
     			} else {
-    				return new ModelAndView("tascSearch", "message", "");
+    				if(mapuser) return new ModelAndView("mapSearch", "message", "");
+    				else return new ModelAndView("tascSearch", "message", "");
     			}
     			
 //    			StageDAOImpl stageDao = new StageDAOImpl();
