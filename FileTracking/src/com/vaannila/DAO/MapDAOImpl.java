@@ -30,19 +30,36 @@ public class MapDAOImpl {
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("select TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
-		queryBuff.append("OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(TASK_ID) FROM DUAL) STATUS ");
-		//queryBuff.append(",to_number(datetimestamp - to_date('01-JAN-1970','DD-MON-YYYY')) * (24 * 60 * 60 * 1000) long_time ");
-		queryBuff.append("from stg_task_status ");
+		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(TASK_ID) FROM DUAL) STATUS ");
+		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, DISTRICT_CODE, GRADE, CONTENT_AREA_TITLE SUBTEST ");
+		queryBuff.append(" from stg_task_status ");
 		// queryBuff.append(" WHERE rownum<10 ");
 		if(searchProcess != null) {
 			queryBuff.append(" WHERE 1 = 1 ");
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
 				queryBuff.append("AND (DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
+			} 
+			if(searchProcess.getProcessId() != null &&  searchProcess.getProcessId().trim().length() > 0) {
+				queryBuff.append("AND PROCESS_ID = ?");
+			}
+			if(searchProcess.getDistrict() != null &&  searchProcess.getDistrict().trim().length() > 0) {
+				queryBuff.append("AND DISTRICT_CODE = ?");
+			}
+			if(searchProcess.getGrade() != null &&  searchProcess.getGrade().trim().length() > 0) {
+				queryBuff.append("AND GRADE = ?");
+			}
+			if(searchProcess.getSubtest() != null &&  searchProcess.getSubtest().trim().length() > 0) {
+				queryBuff.append("AND CONTENT_AREA_TITLE = ?");
+			}
+			if(searchProcess.getProcessStatus() != null &&  searchProcess.getProcessStatus().trim().length() > 0) {
+				queryBuff.append("AND (SELECT getMapStatus(TASK_ID) FROM DUAL) = ?");
 			}
 			
+		} else {
+			queryBuff.append("where trunc(DATETIMESTAMP) = trunc(sysdate)");
 		}
-		queryBuff.append(" order by PROCESS_ID desc ");
+		queryBuff.append(" order by TASK_ID desc ");
 		String query = queryBuff.toString();
 		// System.out.println(query);
 		try {
@@ -56,8 +73,16 @@ public class MapDAOImpl {
 					pstmt.setString(++count, searchProcess.getCreatedDate());
 					pstmt.setString(++count, searchProcess.getUpdatedDate());
 				}
-				if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0) 
-					pstmt.setString(++count, searchProcess.getStructElement());
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getProcessId());
+				if(searchProcess.getDistrict() != null &&  searchProcess.getDistrict().trim().length() > 0)
+					pstmt.setString(++count, searchProcess.getDistrict());
+				if(searchProcess.getGrade() != null &&  searchProcess.getGrade().trim().length() > 0)
+					pstmt.setString(++count, searchProcess.getGrade());
+				if(searchProcess.getSubtest() != null &&  searchProcess.getSubtest().trim().length() > 0)
+					pstmt.setString(++count, searchProcess.getSubtest());
+				if(searchProcess.getProcessStatus() != null &&  searchProcess.getProcessStatus().trim().length() > 0)
+					pstmt.setString(++count, searchProcess.getProcessStatus());
 			}
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
@@ -74,6 +99,10 @@ public class MapDAOImpl {
 				processTO.setWkfPartitionName(rs.getString("WKF_PARTITION_NAME"));
 				processTO.setDateTimestamp(rs.getString("DATETIMESTAMP"));
 				processTO.setOverallStatus(rs.getString("STATUS"));
+				processTO.setDistrict(rs.getString("DISTRICT_CODE"));
+				processTO.setGrade(rs.getString("GRADE"));
+				processTO.setCaseCount(rs.getString("CASE_COUNT"));
+				processTO.setSubtest(rs.getString("SUBTEST"));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

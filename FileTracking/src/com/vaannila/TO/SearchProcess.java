@@ -37,8 +37,35 @@ public class SearchProcess implements Serializable {
 	private String barcode = "";
 	private String processId = "";
 	private String sourceSystemDesc = "";
+	private String district;
+	private String subtest;
+	private String processIdStr;
+	private String grade;
 	
-	
+	public String getDistrict() {
+		return district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+	public String getSubtest() {
+		return subtest;
+	}
+	public void setSubtest(String subtest) {
+		this.subtest = subtest;
+	}
+	public String getProcessIdStr() {
+		return processIdStr;
+	}
+	public void setProcessIdStr(String processIdStr) {
+		this.processIdStr = processIdStr;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 	public String getElementName() {
 		return elementName;
 	}

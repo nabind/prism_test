@@ -58,6 +58,35 @@ public class MapController {
 		return new ModelAndView("mapProcess", "message", jsonStr);
 	}
 	
+	@RequestMapping("/process/searchMap.htm")
+	public ModelAndView searchMap(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("process method called");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			SearchProcess process = new SearchProcess();
+			process.setCreatedDate(request.getParameter("updatedDateFrom"));
+			process.setUpdatedDate(request.getParameter("updatedDateTo"));
+			process.setProcessId(request.getParameter("processId"));
+			process.setDistrict(request.getParameter("districtCode"));
+			process.setGrade(request.getParameter("grade"));
+			process.setSubtest(request.getParameter("subtest"));
+			process.setProcessStatus(request.getParameter("processStatus"));
+			
+			request.getSession().setAttribute("mapRequestTO", process);
+			MapDAOImpl stageDao = new MapDAOImpl();
+			List<TASCProcessTO> processes = stageDao.getProcess(process);
+			
+			request.getSession().setAttribute("mapProcess", processes);
+			convertProcessToJson(processes);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("mapProcess", "message", jsonStr);
+	}
+	
 	@RequestMapping("/process/getErrorStudents.htm")
 	public @ResponseBody String getErrorStudents(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -124,7 +153,7 @@ public class MapController {
 	}
 	
 	@RequestMapping("/process/mapSearch.htm")
-	public ModelAndView tascSearch(HttpServletRequest request,
+	public ModelAndView mapSearch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("view method called");
 		String adminid = request.getParameter("adminid");
@@ -134,37 +163,6 @@ public class MapController {
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		
 		return new ModelAndView("mapSearch", "message", "");
-	}
-	
-	/**
-	 * This method is to search processes
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/process/searchMap.htm")
-	public ModelAndView searchTasc(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
-		try {
-			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
-			SearchProcess process = new SearchProcess();
-			process.setCreatedDate(request.getParameter("updatedDateFrom"));
-			process.setUpdatedDate(request.getParameter("updatedDateTo"));
-			
-			request.getSession().setAttribute("tascRequestTO", process);
-			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> processes = stageDao.getProcess(process);
-			
-			request.getSession().setAttribute("tascProcess", processes);
-			convertProcessToJson(processes);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return new ModelAndView("mapProcess", "message", jsonStr);
 	}
 	
 	public ModelAndView showDataload(HttpServletRequest request,

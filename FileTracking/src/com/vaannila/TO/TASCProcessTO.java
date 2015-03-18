@@ -40,7 +40,35 @@ public class TASCProcessTO implements Serializable {
 	private String stateCode = "";
 	private String form = "";
 	private String erExcdId = "";
+	private String district;
+	private String grade;
+	private String subtest;
+	private String caseCount;
 	
+	public String getDistrict() {
+		return district==null ? "" : district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+	public String getGrade() {
+		return grade == null ? "" : grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+	public String getSubtest() {
+		return subtest == null ? "" : subtest;
+	}
+	public void setSubtest(String subtest) {
+		this.subtest = subtest;
+	}
+	public String getCaseCount() {
+		return caseCount == null ? "NA" : caseCount;
+	}
+	public void setCaseCount(String caseCount) {
+		this.caseCount = caseCount;
+	}
 	public String getTaskId() {
 		return taskId;
 	}

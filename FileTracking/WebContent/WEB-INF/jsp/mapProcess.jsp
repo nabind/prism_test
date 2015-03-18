@@ -223,7 +223,7 @@
 			var dataString = "taskId="+processId;
 			
 			$("#errorLogDialog").html( '<img src="css/ajax-loader.gif"></img>' );
-			$("#ui-dialog-title-processLogDialog").html('Error Log for Task Id : '+processId);
+			$("#ui-dialog-title-errorLogDialog").html('Error Log for Task Id : '+processId);
 			jQuery("#errorLogDialog").dialog("open");
 			
 			
@@ -279,7 +279,10 @@
 						<th>Content Val.</th>
 						<th>Objective Val.</th>
 						<th>Item Val.</th>
-						<th>Partition Name</th>
+						<th>District Code</th>
+						<th>Grade</th>
+						<th>Content Area</th>
+						<th>Case Count</th>
 						<th>Processed Date</th>
 						<th>Source File Name</th>
 					</tr>
@@ -317,10 +320,15 @@
 						<td><%=process.getContentValidation() %></td>
 						<td><%=process.getObjValidation() %></td>
 						<td><%=process.getItemValidation() %></td>
+						
+						<td><%=process.getDistrict() %></td>
+						<td><%=process.getGrade() %></td>
+						<td><%=process.getSubtest() %></td>
+						<td><%=process.getCaseCount() %></td>
+						
 						<td><a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getTaskId() %>);'>
-							<%=process.getWkfPartitionName() %></a>
+							<%=process.getDateTimestamp() %></a>
 						</td>
-						<td><%=process.getDateTimestamp() %></td>
 						<%
 							String sourceFileName = process.getFileName();
 							if(sourceFileName != null && sourceFileName.length() > 16) {

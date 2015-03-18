@@ -104,6 +104,44 @@
 								<td>Processed Date To:</td>
 								<td><input type="text" name="updatedDateTo" id="updatedDateTo"></td>
 							</tr>
+							<tr>
+								<td>Process Id:</td>
+								<td><input type="text" name="processId" id="processId"></td>
+							</tr>
+							<tr>
+								<td>District Code:</td>
+								<td><input type="text" name="districtCode" id="districtCode"></td>
+							</tr>
+							<tr>
+								<td>Grade:</td>
+								<td><select name="grade">
+									<option value="">All</option>
+									<option value="03">Grade 3</option>
+									<option value="04">Grade 4</option>
+									<option value="05">Grade 5</option>
+									<option value="06">Grade 6</option>
+									<option value="07">Grade 7</option>
+									<option value="08">Grade 8</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td>Subtest:</td>
+								<td><select name="subtest">
+									<option value="">All</option>
+									<option value="English Language Arts">English/Language Arts</option>
+									<option value="Mathematics">Mathematics</option>
+									<option value="Science">Science</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td>Process Status:</td>
+								<td><select name="processStatus">
+									<option value="">All</option>
+									<option value="CO">Completed</option>
+									<option value="IN">In Progress</option>
+									<option value="ER">Error</option>
+								</select></td>
+							</tr>
 							
 							
 							<tr>
