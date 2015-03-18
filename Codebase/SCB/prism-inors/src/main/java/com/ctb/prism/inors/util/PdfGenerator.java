@@ -17,13 +17,16 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.lf5.LogLevel;
 
 import com.ctb.prism.core.logger.IAppLogger;
+import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.parent.dao.ParentDAOImpl;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -48,6 +51,8 @@ public class PdfGenerator {
 	private static Font fontBold = FontFactory.getFont("Arial", 9.0F, Font.BOLD, new Color(0, 0, 0));
 	private static Font tableHeaderFont = FontFactory.getFont("Arial", 9.0F, 1, new Color(0, 0, 0));
 	private static Font tableFont = FontFactory.getFont("Arial", 9.0F, 0, new Color(0, 0, 0));
+	
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentDAOImpl.class.getName());
 	
 	/**
 	 * Generates PDF for query sheet
@@ -282,7 +287,7 @@ public class PdfGenerator {
     	FileOutputStream fos = null;
     	BufferedInputStream bis = null;
         try {
-        	System.out.println("Compressing pdfs ... ");
+        	logger.log(IAppLogger.INFO, "Compressing pdfs ... ");
 			File zipFile = new File(zipName);
 			fos = new FileOutputStream(zipFile);
 			zos = new ZipOutputStream(fos);
@@ -292,7 +297,7 @@ public class PdfGenerator {
 			int compressCount = 0;
 			for (String name : files) {
 				String archiveFileName = arcFiles.get(compressCount);
-				System.out.println("Compressing "+ ++compressCount + " of " + files.size());
+				logger.log(IAppLogger.INFO, "Compressing "+ compressCount + " of " + files.size());
 			    File file = new File(name);
 			    if (!file.exists()) {
 			        System.err.println("Skipping: " + name);
@@ -316,6 +321,7 @@ public class PdfGenerator {
 			        zos.write(buffer, 0, bytesRead);
 			    }
 			    bis.close();
+			    compressCount = compressCount+1;
 			}
 			zos.close();
 		} catch (Exception e) {
@@ -325,27 +331,33 @@ public class PdfGenerator {
 			IOUtils.closeQuietly(fos);
 			IOUtils.closeQuietly(bis);
 		}
-		System.out.println("Compressing completed ... ");
+        logger.log(IAppLogger.INFO, "Compressing completed ... ");
     }
 	
+	/**
+	 * Rotate PDF clockwise 90 degree - this is used for MAP isr files after merge
+	 * @param pdfFileSrc
+	 * @throws IOException
+	 * @throws DocumentException
+	 */
 	public static void rotatePdf(String pdfFileSrc) throws IOException,
 			DocumentException {
 		
 		String srcfolder = FileUtil.getDirFromFilePath(pdfFileSrc);
-		System.out.println("srcfolder: " + srcfolder);
+		logger.log(IAppLogger.INFO, "srcfolder: " + srcfolder);
 		String fileName = FileUtil.getFileNameFromFilePath(pdfFileSrc);
-		System.out.println("fileName: " + fileName);
+		logger.log(IAppLogger.INFO, "fileName: " + fileName);
 		String destfolder = CustomStringUtil.appendString(srcfolder, "temp");
-		System.out.println("destfolder: " + destfolder);
+		logger.log(IAppLogger.INFO, "destfolder: " + destfolder);
 		File dir = new File(destfolder);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
-			System.out.println("Directory created = " + destfolder);
+			logger.log(IAppLogger.INFO, "Directory created = " + destfolder);
 		} else {
-			System.out.println("Directory exists = " + destfolder);
+			logger.log(IAppLogger.INFO, "Directory exists = " + destfolder);
 		}
 		String pdfFileDest = CustomStringUtil.appendString(destfolder, File.separator, fileName);
-		System.out.println("pdfFileDest: " + pdfFileDest);
+		logger.log(IAppLogger.INFO, "pdfFileDest: " + pdfFileDest);
 		
 		PdfReader reader = new PdfReader(pdfFileSrc);
 		int n = reader.getNumberOfPages();
@@ -362,13 +374,13 @@ public class PdfGenerator {
 				new FileOutputStream(pdfFileDest));
 		stamper.close();
 		reader.close();
-		System.out.println("Rotated PDF created = " + pdfFileDest);
+		logger.log(IAppLogger.INFO, "Rotated PDF created = " + pdfFileDest);
 		FileUtil.deleteFile(new File(pdfFileSrc));
-		System.out.println("Old PDF deleted = " + pdfFileDest);
+		logger.log(IAppLogger.INFO, "Old PDF deleted = " + pdfFileDest);
 		FileUtils.copyFileToDirectory(new File(pdfFileDest), new File(srcfolder));
-		System.out.println("New PDF created in: " + srcfolder);
+		logger.log(IAppLogger.INFO, "New PDF created in: " + srcfolder);
 		FileUtils.deleteDirectory(new File(destfolder));
-		System.out.println("Temporary folder deleted: " + destfolder);
+		logger.log(IAppLogger.INFO, "Temporary folder deleted: " + destfolder);
 		
 	}
 	

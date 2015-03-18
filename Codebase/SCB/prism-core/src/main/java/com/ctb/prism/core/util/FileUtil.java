@@ -431,9 +431,9 @@ public class FileUtil {
 		if (index != -1) {
 			fileName = filePath.substring(index + 1);
 		}
-		index = filePath.lastIndexOf('/');
+		index = fileName.lastIndexOf('/');
 		if (index != -1) {
-			fileName = filePath.substring(index + 1);
+			fileName = fileName.substring(index + 1);
 		}
 		return fileName;
 	}

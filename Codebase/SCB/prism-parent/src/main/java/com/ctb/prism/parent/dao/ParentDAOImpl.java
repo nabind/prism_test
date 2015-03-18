@@ -1716,7 +1716,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		boolean returnFlag = Boolean.FALSE;
 		
 		try {
-			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			//Giving patch as some times it is trying to access tasc package
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism(Utils.getContractName()).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT + "}");
 					cs.setString(1, (String)paramMap.get("curruser"));
