@@ -1633,6 +1633,24 @@ public class InorsController {
 		}
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for TASC GROUP DOWNLOAD FILES--------------- ");
 	}
+	
+	/**
+	 * @author Joykumar Pal
+	 * Scheduler every night @ 1 AM Group Download files deletion and job
+	 * tracking update if exp date >= SYSDATE Scheduler.
+	 * 
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "${cron.expression}")
+	public void deleteScheduledGroupFilesMap() {
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for USMO GROUP DOWNLOAD FILES --------------- ");
+		try {
+			deleteScheduledGroupFiles(IApplicationConstants.CONTRACT_NAME.usmo.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for USMO GROUP DOWNLOAD FILES--------------- ");
+	}
 
 	/**
 	 * @param contractName
