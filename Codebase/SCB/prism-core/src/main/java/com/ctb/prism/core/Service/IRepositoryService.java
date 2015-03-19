@@ -33,6 +33,8 @@ public interface IRepositoryService {
 	 */
 	public void uploadAsset(String key, File file);
 	
+	public void uploadMapAsset(String key, File file);
+	
 	/**
 	 * @param fullyQualifiedS3KeyPrefix
 	 * @param file

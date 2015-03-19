@@ -379,8 +379,8 @@ public class PdfGenerator {
 		logger.log(IAppLogger.INFO, "Old PDF deleted = " + pdfFileDest);
 		FileUtils.copyFileToDirectory(new File(pdfFileDest), new File(srcfolder));
 		logger.log(IAppLogger.INFO, "New PDF created in: " + srcfolder);
-		FileUtils.deleteDirectory(new File(destfolder));
-		logger.log(IAppLogger.INFO, "Temporary folder deleted: " + destfolder);
+		//FileUtils.deleteDirectory(new File(destfolder));
+		//logger.log(IAppLogger.INFO, "Temporary folder deleted: " + destfolder);
 		
 	}
 	

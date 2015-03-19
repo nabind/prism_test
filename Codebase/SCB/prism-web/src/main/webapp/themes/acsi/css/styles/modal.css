@@ -13,15 +13,17 @@
 
 /* Root element */
 #modals {
-	position: absolute;
+	/* position: absolute;
 	position: fixed;
-	/* z-index: 999300; */
+	z-index: 999300; */
 	top: 0;
 	right: 0;
 	left: 0;
 	}
 	#modals.with-blocker {
 		bottom: 0;
+		position: absolute;
+		position: fixed;
 		z-index: 999300;
 	}
 

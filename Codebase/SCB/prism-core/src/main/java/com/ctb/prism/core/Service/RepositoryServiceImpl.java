@@ -147,6 +147,16 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		s3client.putObject(bucket, key, file);
 		logger.log(IAppLogger.INFO, "Asset(" + key + ") uploaded successfully");
 	}
+	
+	public void uploadMapAsset(String key, File file) {
+		key = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + key;
+		String fileName = file.getName().substring(0, file.getName().indexOf(".pdf")+4);
+		key = key + FileUtil.getFileNameFromFilePath(fileName);
+		key = key.replace("//", "/");
+		logger.log(IAppLogger.INFO, "Uploading an Asset: " + key);
+		s3client.putObject(bucket, key, file);
+		logger.log(IAppLogger.INFO, "Asset(" + key + ") uploaded successfully");
+	}
 
 	/**
 	 * @param key

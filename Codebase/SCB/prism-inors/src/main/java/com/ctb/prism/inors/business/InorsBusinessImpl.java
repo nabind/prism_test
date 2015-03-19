@@ -916,6 +916,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				gradeId, "_", subtest,"_", studentId, ".pdf");
 		
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
+		String compFileName = "";
 		fileName = fileName.replaceAll("\\\\", "/");
 		String folder = FileUtil.getDirFromFilePath(fileName);
 		File dir = new File(folder);
@@ -942,9 +943,9 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
 			
-			
+			compFileName = CustomStringUtil.appendString(fileName, ".", ""+System.currentTimeMillis(), ".pdf");
 			if(assetBytes.length != 0){
-				FileUtil.createFile(fileName, assetBytes);
+				FileUtil.createFile(compFileName, assetBytes);
 			}else{
 				StringBuffer URLStringBuf = new StringBuffer();
 				URLStringBuf.append(propertyLookup.get("bulkDownloadUrl"));
@@ -969,57 +970,57 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
 				} else {
 					// Read the PDF from the URL and save to a local file
-					fos = new FileOutputStream(fileName);
+					fos = new FileOutputStream(compFileName);
 					is = url.openStream();
 					IOUtils.copy(is, fos);
-					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + fileName);
+					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + compFileName);
 				}
 				// release resources
 				IOUtils.closeQuietly(is);
 				IOUtils.closeQuietly(fos);
 				
-				File file = new File(fileName);
+				File file = new File(compFileName);
 				double size = 0;
 				if (file.exists()) {
 					size = file.length() / 1024;
 				}
-				logger.log(IAppLogger.INFO, "Size of "+fileName+" is: "+size+"K");
+				logger.log(IAppLogger.INFO, "Size of "+compFileName+" is: "+size+"K");
 				
 				if (size < 1) {
-					logger.log(IAppLogger.INFO, "No error "+fileName+" is empty");
+					logger.log(IAppLogger.INFO, "No error "+compFileName+" is empty");
 					uploadNeeded = false;
-					fileName = null;
+					compFileName = null;
 				}else{
 					uploadNeeded = true;
 				}
 			}
 			
 		} catch (MalformedURLException e) {
-			fileName = null;
+			compFileName = null;
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			fileName = null;
+			compFileName = null;
 			e.printStackTrace();
 		} catch (IOException e) {
-			fileName = null;
+			compFileName = null;
 			e.printStackTrace();
 		} catch (Exception ex) {
-			fileName = null;
+			compFileName = null;
 			ex.printStackTrace();
 		}
 		
 		//File file = new File(fileName);
 		// upload the file to S3 (asynchronously)
-		if(fileName != null && uploadNeeded == true) {
-			File file = new File(fileName);
+		if(compFileName != null && uploadNeeded == true) {
+			File file = new File(compFileName);
 			try{
 				// [Amit] making it synchronous as we have delete ISR issue from temp location
 				//repositoryService.uploadAssetAsync(locForS3, file);
-				repositoryService.uploadAsset(locForS3, file);
+				repositoryService.uploadMapAsset(locForS3, file);
 				
 				// TODO save the location to PDF_FILES table for tracking
 			}catch(Exception e){
-				logger.log(IAppLogger.ERROR, "\n------------Problem while uploading MO ISR file : " + fileName);
+				logger.log(IAppLogger.ERROR, "\n------------Problem while uploading MO ISR file : " + compFileName);
 				logger.log(IAppLogger.ERROR, "\n------------To S3 location : " + locForS3, e);
 			}
 		}/*else{
@@ -1029,7 +1030,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		long t2 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Exit: InorsBusinessImpl - downloadISR() took time: " + String.valueOf(t2 - t1) + "ms");
 		
-		return fileName;
+		return compFileName;
 	}
 	
 	/**

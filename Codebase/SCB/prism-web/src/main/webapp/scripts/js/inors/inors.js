@@ -1361,52 +1361,81 @@ function downloadMapIsr(studentId) {
  * Download MAP GLA ISR PDF based on multi-select student and subtest
  * @param mode (SP or CP)
  */
+var fileName = "";
 function downloadMapCombined(mode) {
+	displayGroupDownloadStatus(undefined);
 	if ($("#groupDownload").validationEngine('validate')) {
-	blockUI();
-	var status = false;
-	var subtest = $("#p_subtest", window.parent.document); 
-	var tab = $("li.active", window.parent.document).attr("param");
-	tab = tab.replace(/new-tab/g, "report-form-");
-	var formObj = $('.'+tab, window.parent.document);
-	var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + getSelectedStudentIdsAsCommaString() + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
-	
-	$.ajax({
-		type : "POST",
-		url : 'groupDownloadMapIsr.do',
-		data : dataUrl,
-		dataType : 'json',
-		cache : false,
-		async : false,
-		success : function(data) {
-			// show success notification
-			/*var serverResponseData = groupDownloadFunction(json);
-			if (serverResponseData) {
-				if (serverResponseData.handler == "success") {
-					status = true;
-				} else {
-					status = false;
-				}
-			}*/ 
-			if(data.status == 'Success'){
-				status = true;
-			}
-			else {
-				status = false;
-				$.modal.alert(strings['msg.isr']);
-			}
-			displayGroupDownloadStatus(status);
-			unblockUI();
-		},
-		error : function(data) {
-			if (data.status == "200") {
-				//jsonOutputData = data;
+		blockUI();
+		
+		var nameChanged = false;
+		
+		if(fileName == "") {
+			fileName = $("#fileName").val();
+			nameChanged = true;
+		} else {
+			// check if user changed file name
+			if(fileName == $("#fileName").val()) {
+				nameChanged = false;
+				unblockUI();
+				$.modal.alert('Seems like you have just requested a download with same "file name (Name of Generated File)". Please change the file name and try again.');
 			} else {
-				$.modal.alert(strings['msg.nff']);
+				fileName = $("#fileName").val();
+				nameChanged = true;
 			}
-			unblockUI();
 		}
-	});
+		
+		if(nameChanged) {
+			var status = false;
+			var subtest = $("#p_subtest", window.parent.document); 
+			var tab = $("li.active", window.parent.document).attr("param");
+			tab = tab.replace(/new-tab/g, "report-form-");
+			var formObj = $('.'+tab, window.parent.document);
+			var studentId = getSelectedStudentIdsAsCommaString();
+			if(studentId == "") {
+				unblockUI();
+				fileName = "";
+				$.modal.alert('Please select student(s)');
+			} else {
+				var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + studentId + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
+				
+				$.ajax({
+					type : "POST",
+					url : 'groupDownloadMapIsr.do',
+					data : dataUrl,
+					dataType : 'json',
+					cache : false,
+					async : false,
+					success : function(data) {
+						// show success notification
+						/*var serverResponseData = groupDownloadFunction(json);
+						if (serverResponseData) {
+							if (serverResponseData.handler == "success") {
+								status = true;
+							} else {
+								status = false;
+							}
+						}*/ 
+						if(data.status == 'Success'){
+							status = true;
+						}
+						else {
+							status = false;
+							$.modal.alert(strings['msg.isr']);
+						}
+						displayGroupDownloadStatus(status);
+						unblockUI();
+					},
+					error : function(data) {
+						if (data.status == "200") {
+							//jsonOutputData = data;
+						} else {
+							$.modal.alert(strings['msg.nff']);
+						}
+						unblockUI();
+					}
+				});
+			}
+		}
 	}
 }
 
