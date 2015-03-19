@@ -31,11 +31,11 @@ public class MapDAOImpl {
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("select TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
 		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(TASK_ID) FROM DUAL) STATUS ");
-		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, DISTRICT_CODE, GRADE, CONTENT_AREA_TITLE SUBTEST ");
-		queryBuff.append(" from stg_task_status ");
+		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, map.DISTRICT_CODE, map.GRADE, map.CONTENT_AREA_TITLE SUBTEST ");
+		queryBuff.append(" from stg_task_status task, stg_task_district_mapping map ");
 		// queryBuff.append(" WHERE rownum<10 ");
 		if(searchProcess != null) {
-			queryBuff.append(" WHERE 1 = 1 ");
+			queryBuff.append(" WHERE task.task_id = map.task_id ");
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
 				queryBuff.append("AND (DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
@@ -44,16 +44,16 @@ public class MapDAOImpl {
 				queryBuff.append("AND PROCESS_ID = ?");
 			}
 			if(searchProcess.getDistrict() != null &&  searchProcess.getDistrict().trim().length() > 0) {
-				queryBuff.append("AND DISTRICT_CODE = ?");
+				queryBuff.append("AND map.DISTRICT_CODE = ?");
 			}
 			if(searchProcess.getGrade() != null &&  searchProcess.getGrade().trim().length() > 0) {
-				queryBuff.append("AND GRADE = ?");
+				queryBuff.append("AND map.GRADE = ?");
 			}
 			if(searchProcess.getSubtest() != null &&  searchProcess.getSubtest().trim().length() > 0) {
-				queryBuff.append("AND CONTENT_AREA_TITLE = ?");
+				queryBuff.append("AND map.CONTENT_AREA_TITLE = ?");
 			}
 			if(searchProcess.getProcessStatus() != null &&  searchProcess.getProcessStatus().trim().length() > 0) {
-				queryBuff.append("AND (SELECT getMapStatus(TASK_ID) FROM DUAL) = ?");
+				queryBuff.append("AND (SELECT getMapStatus(task.TASK_ID) FROM DUAL) = ?");
 			}
 			
 		} else {
