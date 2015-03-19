@@ -323,7 +323,8 @@ public class TascDAOImpl {
 			queryBuff.append(" ESSH.ECC ECC,");
 			queryBuff.append(" ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE,");
 			queryBuff.append(" ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,");
-			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION");
+			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
+			queryBuff.append(" TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY') PROCESSED_DATE");
 			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
 			queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
 			queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
@@ -380,7 +381,8 @@ public class TascDAOImpl {
 			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST,");
 			queryBuff.append(" EED.TESTING_SITE_CODE TESTING_SITE_CODE,");
 			queryBuff.append(" EED.TESTING_SITE_NAME TESTING_SITE_NAME,");
-			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION");
+			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
+			queryBuff.append(" TO_CHAR(EED.CREATED_DATE_TIME, 'MM/DD/YYYY') PROCESSED_DATE");
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD");
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
@@ -438,7 +440,8 @@ public class TascDAOImpl {
 			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST,");
 			queryBuff.append(" 'NA' TESTING_SITE_CODE,");
 			queryBuff.append(" 'NA' TESTING_SITE_NAME,");
-			queryBuff.append(" '' ERROR_DESCRIPTION");
+			queryBuff.append(" '' ERROR_DESCRIPTION,");
+			queryBuff.append(" TO_CHAR(SPS.DATETIMESTAMP, 'MM/DD/YYYY') PROCESSED_DATE");
 			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
 			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
 			queryBuff.append(" STG_HIER_DETAILS        SHD,");
@@ -610,6 +613,7 @@ public class TascDAOImpl {
 				studentDetailsTO.setProcessedDateFrom(searchProcess.getProcessedDateFrom());
 				studentDetailsTO.setProcessedDateTo(searchProcess.getProcessedDateTo());
 				studentDetailsTO.setErrorLog(rs.getString("ERROR_DESCRIPTION") != null ? rs.getString("ERROR_DESCRIPTION") : "");
+				studentDetailsTO.setProcessedDate(rs.getString("PROCESSED_DATE") != null ? rs.getString("PROCESSED_DATE") : "");
 				
 				if("ERESOURCE".equals(searchProcess.getSourceSystem())){
 					studentDetailsTO.setCtbCustomerId(rs.getString("CTB_CUSTOMER_ID") != null ? rs.getString("CTB_CUSTOMER_ID") : "");

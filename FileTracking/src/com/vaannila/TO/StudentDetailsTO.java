@@ -69,6 +69,7 @@ public class StudentDetailsTO implements Serializable {
 	private String contantArea;
 	private String errorCode;
 	private String log;
+	private String processedDate = "";
 	
 	public String getTestDate() {
 		return testDate;
@@ -456,6 +457,12 @@ public class StudentDetailsTO implements Serializable {
 		this.errorLog = errorLog;
 	}
 	
+	public String getProcessedDate() {
+		return processedDate;
+	}
+	public void setProcessedDate(String processedDate) {
+		this.processedDate = processedDate;
+	}
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -523,8 +530,9 @@ public class StudentDetailsTO implements Serializable {
 			.append(",").append("\"").append(schedTcCountyParishCode).append("\"");
 		}
 		buffer.append(",").append("\"").append(sourceSystemDesc).append("\"")
-		.append(",").append("\"").append(processedDateFrom).append("\"")
-		.append(",").append("\"").append(processedDateTo).append("\"")
+		/*.append(",").append("\"").append(processedDateFrom).append("\"")
+		.append(",").append("\"").append(processedDateTo).append("\"")*/
+		.append(",").append("\"").append(processedDate).append("\"")
 		.append(",").append("\"").append(errorLog).append("\"");
 		return buffer.toString();
 	}

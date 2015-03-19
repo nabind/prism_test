@@ -504,8 +504,9 @@ public class TascController {
 				.append(",").append("Sched TC County Parish Code");
 			}
 			buffer.append(",").append("Source System")
-			.append(",").append("Processed Date From")
-			.append(",").append("Processed Date To")
+			/*.append(",").append("Processed Date From")
+			.append(",").append("Processed Date To")*/
+			.append(",").append("Processed Date")
 			.append(",").append("Error Log")
 			.append("\n");
 			
