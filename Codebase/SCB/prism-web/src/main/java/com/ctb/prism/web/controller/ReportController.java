@@ -190,7 +190,7 @@ public class ReportController{
 			}
 			
 			/** moved to controller.java in report module **/
-			/*
+			
 			JasperPrint jasperPrint = getJasperPrintObject(jasperReports, reportUrl, filter, assessmentId, sessionParam, req, drilldown, false, studentBioId, true);
 			int noOfPages = jasperPrint.getPages().size();	
 			
@@ -209,7 +209,7 @@ public class ReportController{
 						req.getParameter("msg") != null ? req.getParameter("msg") : null);
 			} else {
 				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.TRUE);
-			}*/
+			}
 			/** End: moved to controller.java in report module **/
 			
 			/** perf issue */

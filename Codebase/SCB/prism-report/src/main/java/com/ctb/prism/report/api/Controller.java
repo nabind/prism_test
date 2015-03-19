@@ -274,11 +274,10 @@ public class Controller
 				/*usabilityService.getSetCache((String) request.getSession().getAttribute(IApplicationConstants.CURRUSER),
 						reportUri, jasperPrint);*/
 				// moving the following section from reportController (API_TABLE report) to here
+				/*
 				int noOfPages = jasperPrint.getPages().size();	
 				
 				if (noOfPages > 1) {
-	/*				usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
-							reportUrl, jasperPrint);*/
 					request.getSession().setAttribute(reportUri, IApplicationConstants.TRUE);
 					request.setAttribute("totalPages", noOfPages);
 					request.getSession().setAttribute(IApplicationConstants.TOTAL_PAGES, noOfPages);
@@ -288,13 +287,13 @@ public class Controller
 				
 				if(noOfPages == 0) {
 					request.getSession().setAttribute("dataPresent_"+reportUri, IApplicationConstants.FALSE);
-					response.sendRedirect(CustomStringUtil.appendString("loadEmptyReport.do?reportName=",
+					response.sendRedirect(CustomStringUtil.appendString(request.getContextPath(), "/loadEmptyReport.do?reportName=",
 							jasperReport.getName(), "&reportMsg=", 
 							request.getParameter("msg") != null ? request.getParameter("msg") : null));
 				} else {
 					request.getSession().setAttribute("dataPresent_"+reportUri, IApplicationConstants.TRUE);
 				}
-				
+				*/
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
