@@ -569,6 +569,17 @@ public class CommonController extends BaseDAO {
 		return mv;
 	}
 	
+	@RequestMapping(value="/clearTascCache", method=RequestMethod.GET)
+	public ModelAndView clearTascCache(HttpServletRequest req, HttpServletResponse res) 
+		throws ServletException, IOException {
+	
+		ModelAndView mv = new ModelAndView("common/success");
+		logger.log(IAppLogger.INFO, "Inside clearTascCache");
+		String theme = themeResolver.resolveThemeName(req);
+		reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		return mv;
+	}
+	
 	@RequestMapping(value="/clearContractCache", method=RequestMethod.GET)
 	public ModelAndView clearContractCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
