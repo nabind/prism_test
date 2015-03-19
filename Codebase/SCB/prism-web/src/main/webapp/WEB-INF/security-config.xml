@@ -23,6 +23,7 @@
 	<http pattern="/showError.do" security="none" />
 	<http pattern="/clearAllCache.do" security="none" />
 	<http pattern="/clearContractCache.do" security="none" />
+	<http pattern="/clearTascCache.do" security="none" />
 	<http pattern="/clearConfigCache.do" security="none" />
 	<http pattern="/icDownload.do" security="none" />
 	<http pattern="/landing*" security="none" />
@@ -78,6 +79,7 @@
 				<beans:value>StudentDataloadService</beans:value>
 				<beans:value>ERStudentDataloadService</beans:value>
 				<beans:value>candidateReport.do</beans:value>
+				<beans:value>generateMapIsr.do</beans:value>
             </beans:list>
         </beans:constructor-arg>
     </beans:bean>
