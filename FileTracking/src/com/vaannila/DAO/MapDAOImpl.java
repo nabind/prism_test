@@ -29,8 +29,8 @@ public class MapDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("select TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
-		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(TASK_ID) FROM DUAL) STATUS ");
+		queryBuff.append("select task.TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
+		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
 		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, map.DISTRICT_CODE, map.GRADE, map.CONTENT_AREA_TITLE SUBTEST ");
 		queryBuff.append(" from stg_task_status task, stg_task_district_mapping map ");
 		// queryBuff.append(" WHERE rownum<10 ");
