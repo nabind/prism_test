@@ -30,7 +30,7 @@ public class MapDAOImpl {
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("select task.TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
-		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
+		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,task.DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
 		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, map.DISTRICT_CODE, map.GRADE, map.CONTENT_AREA_TITLE SUBTEST ");
 		queryBuff.append(" from stg_task_status task, stg_task_district_mapping map ");
 		// queryBuff.append(" WHERE rownum<10 ");
@@ -38,7 +38,7 @@ public class MapDAOImpl {
 			queryBuff.append(" WHERE task.task_id = map.task_id ");
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
-				queryBuff.append("AND (DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
+				queryBuff.append("AND (task.DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
 			} 
 			if(searchProcess.getProcessId() != null &&  searchProcess.getProcessId().trim().length() > 0) {
 				queryBuff.append("AND PROCESS_ID = ?");
@@ -57,7 +57,7 @@ public class MapDAOImpl {
 			}
 			
 		} else {
-			queryBuff.append("where trunc(DATETIMESTAMP) = trunc(sysdate)");
+			queryBuff.append("where trunc(task.DATETIMESTAMP) = trunc(sysdate)");
 		}
 		queryBuff.append(" order by TASK_ID desc ");
 		String query = queryBuff.toString();
