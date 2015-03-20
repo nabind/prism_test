@@ -273,16 +273,16 @@
 						<th>&nbsp;</th>
 						<th style="min-width: 60px;">Task Id</th>
 						<th>Process Id</th>
+						<th>District Code</th>
+						<th>Grade</th>
+						<th>Content Area</th>
+						<th>Case Count</th>
 						<th>Hier Val.</th>
 						<th>Bio Val.</th>
 						<th>Demo Val.</th>
 						<th>Content Val.</th>
 						<th>Objective Val.</th>
 						<th>Item Val.</th>
-						<th>District Code</th>
-						<th>Grade</th>
-						<th>Content Area</th>
-						<th>Case Count</th>
 						<th>Processed Date</th>
 						<th>Source File Name</th>
 					</tr>
@@ -314,17 +314,17 @@
 						</td>
 						
 						<td><%=process.getProcessId() %></td>
+						<td><%=process.getDistrict() %></td>
+						<td><%=process.getGrade() %></td>
+						<td><%=process.getSubtest() %></td>
+						<td><%=process.getCaseCount() %></td>
+						
 						<td><%=process.getHierValidation() %></td>
 						<td><%=process.getBioValidation() %></td>
 						<td><%=process.getDemoValidation() %></td>
 						<td><%=process.getContentValidation() %></td>
 						<td><%=process.getObjValidation() %></td>
 						<td><%=process.getItemValidation() %></td>
-						
-						<td><%=process.getDistrict() %></td>
-						<td><%=process.getGrade() %></td>
-						<td><%=process.getSubtest() %></td>
-						<td><%=process.getCaseCount() %></td>
 						
 						<td><a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getTaskId() %>);'>
 							<%=process.getDateTimestamp() %></a>
