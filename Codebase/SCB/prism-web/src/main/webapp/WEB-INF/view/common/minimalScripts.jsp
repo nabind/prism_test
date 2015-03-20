@@ -40,7 +40,8 @@
 	<script src="scripts/js/setup.js"></script>
 
 	<!-- Template functions -->
-	<script src="scripts/js/developr.input.js"></script>
+	<script src="scripts/js/developr.all.js"></script>
+	<!-- <script src="scripts/js/developr.input.js"></script>
 	<script src="scripts/js/developr.message.js"></script>
 	<script src="scripts/js/developr.modal.js"></script>
 	<script src="scripts/js/developr.navigable.js"></script>
@@ -48,7 +49,7 @@
 	<script src="scripts/js/developr.scroll.js"></script>
 	<script src="scripts/js/developr.progress-slider.js"></script>
 	<script src="scripts/js/developr.tooltip.js"></script>
-	<script src="scripts/js/developr.content-panel.js"></script>
+	<script src="scripts/js/developr.content-panel.js"></script> -->
 
 	
 	<!-- Custom functions -->
