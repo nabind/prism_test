@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.prism.service.InorsGrowthService;
 import com.prism.service.InorsService;
+import com.prism.service.MapService;
 import com.prism.service.PrismPdfService;
 import com.prism.service.TascService;
 import com.prism.util.Constants;
@@ -56,9 +57,11 @@ public class PrismPdfRunner {
 						logger.error("O = Org Node Id");
 						logger.error("E = Education Center Id");
 					}
+				} else if (Constants.ARG_0_MISSOURI.equalsIgnoreCase(arg0)) {
+					isValidArgs = true;
 				}
 			} else {
-				logger.error("First argument is Invalid. Please provide: I = Inors / S = INORS Growth / T = Tasc");
+				logger.error("First argument is Invalid. Please provide: I = Inors / S = INORS Growth / T = Tasc / M = Missouri");
 			}
 		}
 		if (isValidArgs) {
@@ -96,6 +99,8 @@ public class PrismPdfRunner {
 			service = new InorsGrowthService();
 		} else if (Constants.ARG_0_TASC.equalsIgnoreCase(arg0)) {
 			service = new TascService();
+		} else if (Constants.ARG_0_MISSOURI.equalsIgnoreCase(arg0)) {
+			service = new MapService();
 		}
 		return service;
 	}

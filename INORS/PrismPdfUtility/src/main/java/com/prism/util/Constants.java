@@ -8,6 +8,7 @@ public interface Constants {
 	public static final String ARG_0_INORS = "I";
 	public static final String ARG_0_INORS_GRWOTH= "P";
 	public static final String ARG_0_TASC = "T";
+	public static final String ARG_0_MISSOURI = "M";
 
 	public static final String INORS_PROPERTIES_FILE = "inors.properties";
 	public static final String INORS_JDBC_PROPERTIES_FILE = "inors_jdbc.properties";
@@ -17,6 +18,9 @@ public interface Constants {
 
 	public static final String TASC_PROPERTIES_FILE = "tasc.properties";
 	public static final String TASC_JDBC_PROPERTIES_FILE = "tasc_jdbc.properties";
+	
+	public static final String MAP_PROPERTIES_FILE = "map.properties";
+	public static final String MAP_JDBC_PROPERTIES_FILE = "map_jdbc.properties";
 
 	/*
 	 * L : Login PDF A: All = Login + IC I: IC for school S: IC for individual
