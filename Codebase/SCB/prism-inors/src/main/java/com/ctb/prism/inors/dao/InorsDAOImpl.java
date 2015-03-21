@@ -126,7 +126,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				for (Map<String, Object> fieldDetails : lstData) {
 					jobTrackingTO = new JobTrackingTO();
 					jobTrackingTO.setJobId(((BigDecimal) (fieldDetails.get("JOB_ID"))).longValue());
-					jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("USERID"))).toString());
+					if(fieldDetails.get("USERID") != null)  jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("USERID"))).toString()) ;
 					// jobTrackingTO.setUserName((String) (fieldDetails.get("username")));
 					jobTrackingTO.setJobName((String) (fieldDetails.get("JOB_NAME")));
 					jobTrackingTO.setExtractCategory((String) (fieldDetails.get("EXTRACT_CATEGORY")));

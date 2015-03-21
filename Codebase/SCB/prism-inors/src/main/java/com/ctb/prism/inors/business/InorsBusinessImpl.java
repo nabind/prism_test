@@ -1063,6 +1063,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String[] studentIds = (students != null) ? students.split(",") : null;
 			String mode = groupDownloadTO.getButton();
 			String reqFileName = groupDownloadTO.getFileName();
+			boolean isBulk = false;
+			if("BULK".equals(reqFileName) && "BULK".equals(groupDownloadTO.getEmail())) {
+				// PDF generation is requested from PDF generation Utility
+				isBulk = true;
+			}
 			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
 					File.separator, "MAP", File.separator, "GDF", File.separator);
@@ -1094,59 +1099,63 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						job.append("Error downloading PDF for student ").append(studentId).append(" and subtest ").append(subtest) ;
 					}
 				}
-				// combine student's PDF
-				String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-						groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
-				OutputStream os = new FileOutputStream(mergedFileName);
-				PdfGenerator.concatPDFs(fileForStudent, os, false);
-				IOUtils.closeQuietly(os);
-				
-				PdfGenerator.rotatePdf(mergedFileName);
-				if("CP".equals(mode)){
-					byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
-					FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
-				    fileOuputStream.write(byteArray);
-				    fileOuputStream.close();
+				if(!isBulk) {
+					// combine student's PDF
+					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
+							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
+					OutputStream os = new FileOutputStream(mergedFileName);
+					PdfGenerator.concatPDFs(fileForStudent, os, false);
+					IOUtils.closeQuietly(os);
+					
+					PdfGenerator.rotatePdf(mergedFileName);
+					if("CP".equals(mode)){
+						byte[] byteArray = FileUtil.getDuplexPdfBytes(mergedFileName);
+						FileOutputStream fileOuputStream = new FileOutputStream(mergedFileName); 
+					    fileOuputStream.write(byteArray);
+					    fileOuputStream.close();
+					}
+					
+					mergedFileNames.add(mergedFileName);
+					archieveFileNames.add(FileUtil.getFileNameFromFilePath(mergedFileName));
+				}
+			}
+			
+			if(!isBulk) {
+				// create a merged PDF from archieveFileNames
+				OutputStream os = null;
+				String mergedFileName = CustomStringUtil.appendString(folderLoc, reqFileName, "_", Utils.getDateTime(true));
+				if("SP".equals(mode)) {
+					mergedFileName = CustomStringUtil.appendString(mergedFileName, ".zip");
+					PdfGenerator.zipit(mergedFileNames, archieveFileNames, mergedFileName);
+				} else if("CP".equals(mode)) {
+					mergedFileName = CustomStringUtil.appendString(mergedFileName, ".pdf");
+					os = new FileOutputStream(mergedFileName);
+					PdfGenerator.concatPDFs(mergedFileNames, os, false);
+					PdfGenerator.rotatePdf(mergedFileName);
 				}
 				
-				mergedFileNames.add(mergedFileName);
-				archieveFileNames.add(FileUtil.getFileNameFromFilePath(mergedFileName));
-			}
-			
-			// create a merged PDF from archieveFileNames
-			OutputStream os = null;
-			String mergedFileName = CustomStringUtil.appendString(folderLoc, reqFileName, "_", Utils.getDateTime(true));
-			if("SP".equals(mode)) {
-				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".zip");
-				PdfGenerator.zipit(mergedFileNames, archieveFileNames, mergedFileName);
-			} else if("CP".equals(mode)) {
-				mergedFileName = CustomStringUtil.appendString(mergedFileName, ".pdf");
-				os = new FileOutputStream(mergedFileName);
-				PdfGenerator.concatPDFs(mergedFileNames, os, false);
-				PdfGenerator.rotatePdf(mergedFileName);
-			}
-			
-			// calculating file size
-			jobTrackingTO.setFileSize(FileUtil.getFileSizeReadable(mergedFileName));
-
-			// Upload File to S3
-			String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF", File.separator);
-			String jobStatus_jobLog = moveFileToS3AndCleanDirectory(mergedFileName, locForS3);
-			String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
-			job.append(jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1));
-
-			// set status to completed
-			jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(locForS3, FileUtil.getFileNameFromFilePath(mergedFileName)));
-			jobTrackingTO.setJobStatus(jobStatus);
-			jobTrackingTO.setJobLog(job.toString());
-			jobTrackingTO.setContractName(contractName);
-			updateJob(jobTrackingTO);
-			
-			// email notification
-			if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
-				notificationMailMapGD(groupDownloadTO.getEmail(), mergedFileName);
-			} else {
-				logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
+				// calculating file size
+				jobTrackingTO.setFileSize(FileUtil.getFileSizeReadable(mergedFileName));
+	
+				// Upload File to S3
+				String locForS3 = CustomStringUtil.appendString(rootPath, File.separator, "GDF", File.separator);
+				String jobStatus_jobLog = moveFileToS3AndCleanDirectory(mergedFileName, locForS3);
+				String jobStatus = jobStatus_jobLog.substring(0, jobStatus_jobLog.indexOf('|'));
+				job.append(jobStatus_jobLog.substring(jobStatus_jobLog.indexOf('|') + 1));
+	
+				// set status to completed
+				jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(locForS3, FileUtil.getFileNameFromFilePath(mergedFileName)));
+				jobTrackingTO.setJobStatus(jobStatus);
+				jobTrackingTO.setJobLog(job.toString());
+				jobTrackingTO.setContractName(contractName);
+				updateJob(jobTrackingTO);
+				
+				// email notification
+				if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
+					notificationMailMapGD(groupDownloadTO.getEmail(), mergedFileName);
+				} else {
+					logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
+				}
 			}
 			
 			// delete ISR from temp location 

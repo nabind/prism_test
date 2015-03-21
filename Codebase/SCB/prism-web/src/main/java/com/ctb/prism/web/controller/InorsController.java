@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ThemeResolver;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
 import com.ctb.prism.admin.transferobject.OrgTO;
@@ -103,6 +105,8 @@ public class InorsController {
 	@Autowired	private ILoginService loginService;
 	
 	@Autowired private IRepositoryService repositoryService;
+	
+	@Autowired private CookieThemeResolver themeResolver;
 
 	/**
 	 * For Group Download Listing.
@@ -127,7 +131,8 @@ public class InorsController {
 		if (groupList != null && !groupList.isEmpty()) {
 			for (JobTrackingTO to : groupList) {
 				String displayFilename = to.getRequestFilename();
-				if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(to.getRequestType())) {
+				if (IApplicationConstants.REQUEST_TYPE.GDF.toString().equals(to.getRequestType())
+						&& !IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(Utils.getContractName())) {
 					if (displayFilename != null && !displayFilename.isEmpty()) {
 						int length = displayFilename.length();
 						int u = displayFilename.lastIndexOf("_");
@@ -1759,6 +1764,16 @@ public class InorsController {
 			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 			
+			// fall back for PDF utility
+			currentUser = (currentUser == null) ? request.getParameter("username") : currentUser;
+			currentUserId = (currentUserId == null) ? request.getParameter("userid") : currentUserId;
+			customer = (customer == null) ? request.getParameter("customerid") : customer;
+			
+			String theme = Utils.getContractName();
+			if(theme != null && theme.trim().length() == 0) {
+				theme = request.getParameter("theme");
+				themeResolver.setThemeName(request, response, theme);
+			}
 			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
 			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
 			groupDownloadTO.setUserName(currentUser);
@@ -1777,7 +1792,7 @@ public class InorsController {
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
 			paramMapCode.put("school",request.getParameter("p_school"));
-			paramMapCode.put("contractName", Utils.getContractName());
+			paramMapCode.put("contractName", theme);
 			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
@@ -1785,7 +1800,7 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
+			messageProducer.sendJobForProcessing(jobTrackingId, theme);
 			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 
 			String status = "Success";
