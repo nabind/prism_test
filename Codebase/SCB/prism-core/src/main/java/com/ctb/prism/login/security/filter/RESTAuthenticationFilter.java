@@ -304,6 +304,10 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         	
         } else {
         	String queryStr = request.getQueryString();
+    		if("BULK".equals(request.getParameter("fileName")) && "BULK".equals(request.getParameter("email"))) {
+    			// request is coming from pdf utility
+    			queryStr = queryStr + "&wsdl";
+    		}
         	if(queryStr != null && (queryStr.endsWith("wsdl") || queryStr.startsWith("xsd"))) {
         		// WSDL request - we need to login as a dummy user
         		isWebServiceCall = true;
@@ -324,7 +328,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 		        return this.getAuthenticationManager().authenticate(authRequest);
         	} else {
 	        	//return super.attemptAuthentication(request, response);
-	        	if (postOnly && !request.getMethod().equals("POST")) {
+        		if ((postOnly && !request.getMethod().equals("POST"))) {
 	                throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 	            }
 	
