@@ -200,10 +200,7 @@ public class ReportServiceImpl implements IReportService {
 			Map<String, Object> sessionParams, String userId, String currentOrg) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+		if(Utils.usernameNeeded(reportUrl)) {
 			paramMap.put("userName", userName);
 			paramMap.put("userId", userId);
 		}
@@ -240,10 +237,7 @@ public class ReportServiceImpl implements IReportService {
 	public List<ObjectValueTO> getValuesOfSingleInput(String reportUrl, String query, String userName, String customerId, String changedObject, String changedValue, Map<String, String> replacableParams, Object clazz, String userId)
 	throws SystemException {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+		if(Utils.usernameNeeded(reportUrl)) {
 			paramMap.put("userName", userName); 
 			paramMap.put("userId", userId);
 		}
@@ -511,10 +505,7 @@ public class ReportServiceImpl implements IReportService {
 		try {
 			String loggedInUserJasperOrgId = (String) c.getMethod("getLoggedInUserJasperOrgId").invoke(reportFilterTO);
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, loggedInUserJasperOrgId);
-			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			if(Utils.usernameNeeded(reportUrl)) {
 				String userName = (String) c.getMethod("getLoggedInUserName").invoke(reportFilterTO);
 				parameters.put(IApplicationConstants.JASPER_USER_PARAM, userName);
 				parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));

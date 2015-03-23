@@ -28,6 +28,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -1677,9 +1678,11 @@ public class InorsController {
 				String filePath = job.getValue();
 				String s3Key = envPrefix.toUpperCase() + filePath;
 				try {
-					logger.log(IAppLogger.INFO, "Deleting Asset(" + s3Key + ") From S3");
-					repositoryService.removeAsset(s3Key);
-					logger.log(IAppLogger.INFO, "Asset(" + s3Key + ") Deleted Successfully From S3");
+					if(!StringUtils.isEmpty(filePath)) {
+						logger.log(IAppLogger.INFO, "Deleting Asset(" + s3Key + ") From S3");
+						repositoryService.removeAsset(s3Key);
+						logger.log(IAppLogger.INFO, "Asset(" + s3Key + ") Deleted Successfully From S3");
+					}
 					paramMap.clear();
 					paramMap.put("contractName", contractName);
 					paramMap.put("appendLog", " ... File is deleted by cron job as the file is expired : " + Utils.getDateTime());

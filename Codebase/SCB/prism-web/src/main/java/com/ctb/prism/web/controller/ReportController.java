@@ -888,10 +888,7 @@ public class ReportController{
 			parameters.put(IApplicationConstants.JASPER_ORG_PARAM, currOrg);
 
 			//Candidate report, student search, growth matrix and student tabular still needs username as parameter
-			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			if(Utils.usernameNeeded(reportUrl)) {
 				parameters.put(IApplicationConstants.JASPER_USER_PARAM, currentUser);
 				parameters.put(IApplicationConstants.JASPER_USERID_PARAM, (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID));// Added by Abir
 			}

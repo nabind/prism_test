@@ -560,5 +560,22 @@ public final class Utils {
 		}
 		return bytes;
 	}
+	
+	
+	public static boolean usernameNeeded(String reportUrl) {
+
+		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
+				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
+				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
+				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)
+				|| (reportUrl != null && reportUrl.indexOf("TASC_Edu_Center") != -1 ) ) {
+			return true;
+		}
+
+	    return false;
+	}
+	
+	
+	
 
 }

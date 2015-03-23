@@ -280,10 +280,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		try {
 			clazz = reportFilterFactory.getReportFilterTO();
 			obj = clazz.newInstance();
-			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			if(Utils.usernameNeeded(reportUrl)) {
 				clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
 				clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
 			}
@@ -299,10 +296,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			String labelId = ito.getLabelId();
 			String query = ito.getQuery();
 			if (query != null) {
-				if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-						|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-						|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-						|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+				if(Utils.usernameNeeded(reportUrl)) {
 					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));	
 				}
@@ -523,10 +517,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			Class<?> c = reportFilterFactory.getReportFilterTO();
 			// replace all params
 			//String tenantId = reportDAO.getTenantId(userName);
-			if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
-					|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
-					|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
-					|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)) {
+			if(Utils.usernameNeeded(reportUrl)) {
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));
 			}
