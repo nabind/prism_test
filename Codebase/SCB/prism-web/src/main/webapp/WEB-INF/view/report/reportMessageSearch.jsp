@@ -62,19 +62,8 @@
 							</div>
 							</c:when>
 							<c:when test="${serviceMapReportMessageFilter.reportName=='Generic System Configuration'}">
-								<spring:theme code="theme.name" var="themeName"/>
-								<c:choose>
-									<c:when test="${themeName == 'tasc'}" >
-										<input id="custProdId" name="custProdId" value=3001 style="visibility: hidden;">
-									</c:when>
-									<c:when test="${themeName == 'inors'}" >
-										<input id="custProdId" name="custProdId" value=5001 style="visibility: hidden;">
-									</c:when>
-									<c:when test="${themeName == 'usmo'}" >
-										<input id="custProdId" name="custProdId" value=5027 style="visibility: hidden;">
-									</c:when>
-								</c:choose>
-							</c:when>	
+								<input id="custProdId" name="custProdId" value="${propertyMap['default.custProdId.gscm']}" style="visibility: hidden;">
+							</c:when>
 				    </c:choose>
 					</div>
 				</div>
