@@ -57,12 +57,15 @@
 		$(document).ready(function() {
 			 update_rows();
 			 
-			oTable = $('#process').dataTable({
+			 oTable = $('#process').dataTable({
 				"bJQueryUI": true,
 				"sPaginationType": "full_numbers",
 				"aaSorting": [[ 1, "desc" ]],
+				"bUseRendered" : true,
 				"aoColumnDefs": [ 
-								  { "bVisible": false, "aTargets": [ 0 ] }
+								  { "bVisible": false, "aTargets": [ 0 ] },
+								  { "sType": "numeric", "aTargets": [2] },
+								  { "bSortable": false, "aTargets": [ 1 ] }
 								]
 			});
 			
@@ -271,12 +274,14 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
+						<th>&nbsp;</th>
 						<th style="min-width: 60px;">Task Id</th>
 						<th>Process Id</th>
 						<th>District Code</th>
 						<th>Grade</th>
 						<th>Content Area</th>
 						<th>Case Count</th>
+						<th>Overall Val.</th>
 						<th>Hier Val.</th>
 						<th>Bio Val.</th>
 						<th>Demo Val.</th>
@@ -300,25 +305,27 @@
 						<td style="padding-top: 12px;" nowrap>
 							<%if("CO".equals(process.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
-								<%=process.getTaskId() %>
 							<%} else if("IN".equals(process.getOverallStatus())) {%>
 								<span class="progress" title="In Progress"></span>
-								<%=process.getTaskId() %>
 							<%} else {%>
 								<span class="error" title="Error"></span>
-								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getStudentLog(<%=process.getTaskId() %>);'>
-									<%=process.getTaskId() %>
-								</a>
 							<%} %>
-							
 						</td>
-						
+						<td><%=process.getTaskId() %></td>
 						<td><%=process.getProcessId() %></td>
 						<td><%=process.getDistrict() %></td>
 						<td><%=process.getGrade() %></td>
 						<td><%=process.getSubtest() %></td>
 						<td><%=process.getCaseCount() %></td>
-						
+						<td>
+							<%if("ER".equals(process.getOverallStatus())){%>
+								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='getStudentLog(<%=process.getTaskId() %>);'>
+									<%=process.getOverallStatus() %>
+								</a>
+							<%}else{%>
+								<%=process.getOverallStatus() %>
+							<%}%>
+						</td>
 						<td><%=process.getHierValidation() %></td>
 						<td><%=process.getBioValidation() %></td>
 						<td><%=process.getDemoValidation() %></td>
