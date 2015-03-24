@@ -64,7 +64,7 @@
 				"bUseRendered" : true,
 				"aoColumnDefs": [ 
 								  { "bVisible": false, "aTargets": [ 0 ] },
-								  { "sType": "numeric", "aTargets": [2] },
+								  { "sType": "numeric", "aTargets": [3,4] },
 								  { "bSortable": false, "aTargets": [ 1 ] }
 								]
 			});
