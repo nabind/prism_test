@@ -1778,12 +1778,18 @@ public class InorsController {
 				themeResolver.setThemeName(request, response, theme);
 			}
 			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
+			if(request.getParameter("userid")!=null) // from utility
+				currentUserId = request.getParameter("userid"); 
 			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
+			if(request.getParameter("username") != null) // from utility
+				currentUser = request.getParameter("username"); 
 			groupDownloadTO.setUserName(currentUser);
 			groupDownloadTO.setTestAdministrationVal(request.getParameter("p_test_administration"));
 			groupDownloadTO.setSchool(request.getParameter("p_school"));
 			groupDownloadTO.setDistrict(request.getParameter("p_district_Id"));
 			groupDownloadTO.setGrade(request.getParameter("p_grade"));
+			if(request.getParameter("customerid")!=null) // from utility
+				customer = request.getParameter("customerid");
 			groupDownloadTO.setCustomerId(customer);
 			groupDownloadTO.setButton(request.getParameter("mode"));
 			groupDownloadTO.setStudents(request.getParameter("studentId"));
@@ -1795,7 +1801,11 @@ public class InorsController {
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
 			paramMapCode.put("school",request.getParameter("p_school"));
-			paramMapCode.put("contractName", theme);
+			String contractName =  Utils.getContractName() != null && Utils.getContractName().length() > 0 ?
+					Utils.getContractName() : request.getParameter("j_contract"); // from utility
+					
+			paramMapCode.put("contractName", contractName);
+			themeResolver.setThemeName(request, response, theme !=null && theme.length()>0 ? theme : request.getParameter("theme")); // from utility
 			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
@@ -1803,7 +1813,7 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			messageProducer.sendJobForProcessing(jobTrackingId, contractName);
 			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 
 			String status = "Success";
