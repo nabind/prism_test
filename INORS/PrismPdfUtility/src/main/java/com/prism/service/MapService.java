@@ -86,6 +86,9 @@ public class MapService implements PrismPdfService {
 				
 				// divide students based on grade
 				for(StudentTO studentTO : students) {
+					// TODO delete existing pdf for this student from s3
+					
+					
 					newGrade = studentTO.getGradeId();
 					subtest.add(studentTO.getSubtest());
 					if(oldGrade.equals(newGrade)) {
