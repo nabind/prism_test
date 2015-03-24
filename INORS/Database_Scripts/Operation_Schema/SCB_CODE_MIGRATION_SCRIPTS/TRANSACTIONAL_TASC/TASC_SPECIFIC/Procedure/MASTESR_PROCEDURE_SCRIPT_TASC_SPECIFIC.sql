@@ -4,3 +4,4 @@
 @\SP_EXISTING_CUSTOMER_UPDATE.prc;
 @\SP_STG_TASC_HIER_EXTRACT_VAL.prc;
 @\SP_TASC_CREATE_MENU.prc;
+@\p_insrt_stdn_extrc_data.prc;
