@@ -275,18 +275,19 @@
 					<tr>
 						<th>&nbsp;</th>
 						<th>&nbsp;</th>
+						<th>Status</th>
 						<th style="min-width: 60px;">Task Id</th>
 						<th>Process Id</th>
 						<th>District Code</th>
 						<th>Grade</th>
 						<th>Content Area</th>
 						<th>Case Count</th>
-						<th>Overall Val.</th>
+						
 						<th>Hier Val.</th>
 						<th>Bio Val.</th>
 						<th>Demo Val.</th>
-						<th>Content Val.</th>
-						<th>Objective Val.</th>
+						<th>Cnt. Val.</th>
+						<th>Obj. Val.</th>
 						<th>Item Val.</th>
 						<th>Processed Date</th>
 						<th>Source File Name</th>
@@ -311,21 +312,26 @@
 								<span class="error" title="Error"></span>
 							<%} %>
 						</td>
+						
+						<td>
+							<%if("ER".equals(process.getOverallStatus())){%>
+								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='getStudentLog(<%=process.getTaskId() %>);'>
+									Error
+								</a>
+							<%}else if("CO".equals(process.getOverallStatus())) {%>
+								Completed
+							<%} else {%>
+								In Progress
+							<%}%>
+						</td>
+						
 						<td><%=process.getTaskId() %></td>
 						<td><%=process.getProcessId() %></td>
 						<td><%=process.getDistrict() %></td>
 						<td><%=process.getGrade() %></td>
 						<td><%=process.getSubtest() %></td>
 						<td><%=process.getCaseCount() %></td>
-						<td>
-							<%if("ER".equals(process.getOverallStatus())){%>
-								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='getStudentLog(<%=process.getTaskId() %>);'>
-									<%=process.getOverallStatus() %>
-								</a>
-							<%}else{%>
-								<%=process.getOverallStatus() %>
-							<%}%>
-						</td>
+						
 						<td><%=process.getHierValidation() %></td>
 						<td><%=process.getBioValidation() %></td>
 						<td><%=process.getDemoValidation() %></td>
@@ -354,7 +360,7 @@
 				
 				<p style="padding-top:20px"><b>Validation Status:</b> VA = Validated, CO = Completed, IN = In Progress, AC = Active, <span style="color: red">ER = Error</span> </p>
 				
-				<p><b>Val.</b> = Validation Status</p>
+				<p><b>Val.</b> = Validation Status, <b>Cnt.</b> = Content, <b>Obj.</b> = Objective <b>Hier</b> = Hierarchy, <b>Bio</b> = Biographic </p>
 				<p><b>Overall Status:</b><br/>
 					<span class="completed" title="Completed"></span> = Completed/Success <br/>
 					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = In Progress<br/>
