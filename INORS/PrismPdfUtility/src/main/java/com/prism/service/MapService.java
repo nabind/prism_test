@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import com.prism.dao.MapDao;
 import com.prism.mail.EmailSender;
+import com.prism.to.OrgTO;
 import com.prism.to.StudentTO;
 import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
@@ -64,9 +65,7 @@ public class MapService implements PrismPdfService {
 	public void mainMethod(String[] args) {
 		logger.info("Starting MapService..");
 		String custProdId = args[0];
-		String[] args1 = CustomStringUtil.getAllButFirstArg(args);
-		String customerId = args1[0];
-		String[] schoolIds = CustomStringUtil.getAllButFirstArg(args1);
+		String[] schoolIds = CustomStringUtil.getAllButFirstArg(args);
 		Properties configProperties = PropertyFile.loadProperties(Constants.MAP_JDBC_PROPERTIES_FILE);
 		Properties mapProperties = PropertyFile.loadProperties(Constants.MAP_PROPERTIES_FILE);
 		
@@ -75,7 +74,9 @@ public class MapService implements PrismPdfService {
 				dao = new MapDao(configProperties);
 			}
 			for(String schoolOrgNodeId : schoolIds) {
-				String districtOrgNodeId = dao.getParentOrgNodeId(schoolOrgNodeId);
+				OrgTO orgTo = dao.getParentOrgNodeId(schoolOrgNodeId);
+				String districtOrgNodeId = orgTo.getParentJasperOrgId();
+				String customerId = orgTo.getCustomerCode();
 				List<StudentTO> students = dao.getStudents(schoolOrgNodeId);
 				String userId = dao.getDummyUser();
 				StringBuffer studentIds = new StringBuffer();

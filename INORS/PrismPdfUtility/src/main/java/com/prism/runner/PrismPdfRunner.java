@@ -45,6 +45,7 @@ public class PrismPdfRunner {
 						logger.error("I = IC Letter Pdf");
 						logger.error("A = Both Login Pdf and IC Letter Pdf");
 						logger.error("S = Individual IC Letter Pdf");
+						logger.error("M = Individual IC Letter Pdf");
 					}
 				} else if (Constants.ARG_0_INORS_GRWOTH.equalsIgnoreCase(arg0)) {
 					isValidArgs = true;

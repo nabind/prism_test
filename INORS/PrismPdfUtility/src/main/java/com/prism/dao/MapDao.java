@@ -85,8 +85,7 @@ public class MapDao extends CommonDao {
 		}
 		return students;
 	}
-
-
+	
 	/**
 	 * Fetch Education Center information
 	 * 
@@ -119,19 +118,21 @@ public class MapDao extends CommonDao {
 	}
 
 
-	public String getParentOrgNodeId(String orgNodeId) throws Exception {
+	public OrgTO getParentOrgNodeId(String orgNodeId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String parentOrgNodeId = null;
+		OrgTO orgTO = new OrgTO();
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = "SELECT PARENT_ORG_NODEID FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
+			String query = "SELECT PARENT_ORG_NODEID, customerid FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.valueOf(orgNodeId));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				parentOrgNodeId = rs.getString(1);
+				orgTO.setParentJasperOrgId(rs.getString(1));
+				orgTO.setCustomerCode(rs.getString(2));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -139,7 +140,7 @@ public class MapDao extends CommonDao {
 		} finally {
 			releaseResources(conn, pstmt, rs);
 		}
-		return parentOrgNodeId;
+		return orgTO;
 	}
 	
 	public String getDummyUser() throws Exception {
