@@ -50,7 +50,7 @@ public class MapService implements PrismPdfService {
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
-		map.mainMethod(new String[]{"5050", "576"});
+		map.mainMethod(new String[]{"5050", /*"576"*/ "7391"});
 	}
 
 	/**
@@ -73,6 +73,10 @@ public class MapService implements PrismPdfService {
 				String districtOrgNodeId = orgTo.getParentJasperOrgId();
 				String customerId = orgTo.getCustomerCode();
 				List<StudentTO> students = dao.getStudents(schoolOrgNodeId);
+				if(students != null && students.size() == 0) {
+					logger.info("There is no student present for school " + schoolOrgNodeId);
+					continue;
+				}
 				String userId = dao.getDummyUser();
 				StringBuffer studentIds = new StringBuffer();
 				String oldGrade = "", newGrade = "";
@@ -107,7 +111,7 @@ public class MapService implements PrismPdfService {
 					Map.Entry mapEntry = (Map.Entry) itr.next();
 					String gradeid = (String) mapEntry.getKey();
 					String allStudents = (String) mapEntry.getValue();
-					if(allStudents != null) allStudents = allStudents.substring(0, allStudents.length()-1);
+					if(allStudents != null && allStudents.length() > 1) allStudents = allStudents.substring(0, allStudents.length()-1);
 					
 					
 					String[] studentArr = allStudents.split(",");
