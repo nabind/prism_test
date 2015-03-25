@@ -904,7 +904,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String subtest = (String) paramMap.get("subtest");
 		String contractName = (String) paramMap.get("contractName");
 		String customer = (String) paramMap.get("customer");
-		boolean isBulk = (Boolean) paramMap.get("isBulk");
+		boolean isBulk = false;
+		if(paramMap.get("isBulk") != null) isBulk = (Boolean) paramMap.get("isBulk");
 		
 		Map<String,Object> paramMapCode = new HashMap<String, Object>();
 		paramMapCode.put("district", district);
