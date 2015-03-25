@@ -52,7 +52,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                                    P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2) IS
     P_OUT_EXCEP_ERR_MSG1 VARCHAR2(1000);
   BEGIN
-  
+
     OPEN P_OUT_USER_CURSOR FOR
       SELECT USERID,
              USERNAME,
@@ -70,11 +70,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
              SALT
         FROM USERS USR
        WHERE UPPER(USR.USERNAME) = UPPER(P_IN_USERNAME);
-  
+
     SP_GET_SECURITY_QUESTIONS(P_IN_USERNAME,
                               P_OUT_SECURITY_QUESTIONS_CUR,
                               P_OUT_EXCEP_ERR_MSG1);
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -86,9 +86,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
   PROCEDURE SP_GET_SECURITY_QUESTIONS(P_IN_USERNAME                IN USERS.USERNAME%TYPE,
                                       P_OUT_SECURITY_QUESTIONS_CUR OUT REF_CURSOR,
                                       P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2) IS
-  
+
   BEGIN
-  
+
     IF P_IN_USERNAME = '0' THEN
       OPEN P_OUT_SECURITY_QUESTIONS_CUR FOR
         SELECT PH_QUESTIONID  AS QUESTION_ID,
@@ -110,7 +110,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
            AND U.ACTIVATION_STATUS IN ('SS', 'AC')
          ORDER BY A.PH_ANSWERID;
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -125,21 +125,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                               P_IN_PH_ANSWER_VALUES IN VARCHAR2,
                               P_OUT_STATUS_NUMBER   OUT NUMBER,
                               P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
-  
+
     V_NO_OF_ANSWERS NUMBER(3) := 0;
     V_ERR_MSG       VARCHAR2(1000) := 'PKG_MY_ACCOUNT.SP_SAVE_PH_ANSWER FAILED: ';
   BEGIN
-  
+
     P_OUT_STATUS_NUMBER := 0;
-  
+
     SELECT COUNT(1)
       INTO V_NO_OF_ANSWERS
       FROM PWD_HINT_ANSWERS P
      WHERE P.USERID = P_IN_USERID;
-  
+
     IF V_NO_OF_ANSWERS = 0 THEN
-    
-      --INSERTING ANSWERS IF THERE NO EXISTING ANSWERS  
+
+      --INSERTING ANSWERS IF THERE NO EXISTING ANSWERS
       FOR REC_SECURITY_QAS IN (WITH T AS (SELECT P_IN_PH_QUESTIONIDS   COL1,
                                                   P_IN_PH_ANSWER_VALUES COL2
                                              FROM DUAL)SELECT REGEXP_SUBSTR(COL1,
@@ -154,7 +154,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                                CONNECT BY LEVEL <=
                                           REGEXP_COUNT(COL1,
                                                        '~') + 1) LOOP
-      
+
         INSERT INTO PWD_HINT_ANSWERS
           (PH_ANSWERID,
            USERID,
@@ -167,11 +167,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
            REC_SECURITY_QAS.PH_QUESTIONID,
            REC_SECURITY_QAS.ANSWER_VALUE,
            SYSDATE);
-      
+
       END LOOP;
-    
+
     ELSE
-    
+
       --UPDATING ANSWER IF THERE IS EXISTING ANSWER
       FOR REC_SECURITY_QAS IN (WITH T AS (SELECT P_IN_PH_QUESTIONIDS   COL1,
                                                   P_IN_PH_ANSWER_VALUES COL2,
@@ -192,20 +192,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                                CONNECT BY LEVEL <=
                                           REGEXP_COUNT(COL1,
                                                        '~') + 1) LOOP
-      
+
         UPDATE PWD_HINT_ANSWERS PHA
            SET PHA.PH_QUESTIONID     = REC_SECURITY_QAS.PH_QUESTIONID,
                PHA.ANSWER_VALUE      = REC_SECURITY_QAS.ANSWER_VALUE,
                PHA.UPDATED_DATE_TIME = SYSDATE
          WHERE PHA.USERID = P_IN_USERID
            AND PHA.PH_ANSWERID = REC_SECURITY_QAS.PH_ANSWERID;
-      
+
       END LOOP;
-    
+
     END IF;
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       ROLLBACK;
@@ -231,36 +231,36 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
                                    P_IN_PH_ANSWER_VALUES IN VARCHAR2,
                                    P_OUT_STATUS_NUMBER   OUT NUMBER,
                                    P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
-  
+
     P_OUT_STATUS_PWD_HISTORY NUMBER := 0;
     P_OUT_STATUS_PH_ANSWER   NUMBER := 0;
     P_OUT_EXCEP_ERR_MSG1     VARCHAR2(1000);
     V_ERR_MSG                VARCHAR2(1000) := 'PKG_MY_ACCOUNT.SP_UPDATE_USER_ACCOUNT FAILED: ';
   BEGIN
-  
+
     P_OUT_STATUS_NUMBER := 0;
-  
+
     IF P_IN_PASSWORD <> '-99' THEN
-    
-      --INSERTING PASSWORD DATA IN USERS TABLE  
+
+      --INSERTING PASSWORD DATA IN USERS TABLE
       UPDATE USERS
          SET IS_FIRSTTIME_LOGIN = 'N',
              PASSWORD           = P_IN_PASSWORD,
              SALT               = P_IN_SALT
        WHERE USERID = P_IN_USERID;
-    
+
       PKG_ADMIN_MODULE.SP_SAVE_PASSWORD_HISTORY(P_IN_USERID,
                                                 P_IN_PASSWORD,
                                                 P_OUT_STATUS_PWD_HISTORY,
                                                 P_OUT_EXCEP_ERR_MSG1);
-    
+
       IF P_OUT_STATUS_PWD_HISTORY <> 1 THEN
         ROLLBACK;
         P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
         RAISE_APPLICATION_ERROR(-20000, P_OUT_EXCEP_ERR_MSG);
       END IF;
     END IF;
-  
+
     UPDATE USERS
        SET LAST_NAME         = P_IN_LAST_NAME,
            FIRST_NAME        = P_IN_FIRST_NAME,
@@ -274,22 +274,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MY_ACCOUNT IS
            DISPLAY_USERNAME  = P_IN_DISPLAY_USERNAME,
            UPDATED_DATE_TIME = SYSDATE
      WHERE USERID = P_IN_USERID;
-  
+
     SP_SAVE_PH_ANSWER(P_IN_USERID,
                       P_IN_PH_QUESTIONIDS,
                       P_IN_PH_ANSWERIDS,
                       P_IN_PH_ANSWER_VALUES,
                       P_OUT_STATUS_PH_ANSWER,
                       P_OUT_EXCEP_ERR_MSG1);
-  
+
     IF P_OUT_STATUS_PH_ANSWER <> 1 THEN
       ROLLBACK;
       P_OUT_EXCEP_ERR_MSG := P_OUT_EXCEP_ERR_MSG1;
       RAISE_APPLICATION_ERROR(-20000, P_OUT_EXCEP_ERR_MSG);
     END IF;
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       ROLLBACK;

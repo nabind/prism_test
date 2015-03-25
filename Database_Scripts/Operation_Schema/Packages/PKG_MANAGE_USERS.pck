@@ -318,26 +318,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
   
     OPEN P_OUT_REF_CURSOR FOR
     /* SELECT DISTINCT RLE.ROLEID,
-                              RLE.ROLE_NAME,
-                              OTS.ORG_LABEL,
-                              RLE.DESCRIPTION
-                FROM USER_ROLE URLE,
-                     ROLE RLE,
-                     USERS USR,
-                     ORG_USERS OU,
-                     (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
-                       GROUP(
-                       ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
-                        FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
-                                FROM ORG_TP_STRUCTURE
-                               ORDER BY ORG_LEVEL) TEMP
-                       GROUP BY TEMP.ORG_LEVEL) OTS
-               WHERE USR.USERID = P_IN_USER_ID
-                 AND URLE.USERID = USR.USERID
-                 AND RLE.ROLEID = URLE.ROLEID
-                 AND USR.USERID = OU.USERID
-                 AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
-               ORDER BY ROLEID;*/
+                          RLE.ROLE_NAME,
+                          OTS.ORG_LABEL,
+                          RLE.DESCRIPTION
+            FROM USER_ROLE URLE,
+                 ROLE RLE,
+                 USERS USR,
+                 ORG_USERS OU,
+                 (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+                   GROUP(
+                   ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                    FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                            FROM ORG_TP_STRUCTURE
+                           ORDER BY ORG_LEVEL) TEMP
+                   GROUP BY TEMP.ORG_LEVEL) OTS
+           WHERE USR.USERID = P_IN_USER_ID
+             AND URLE.USERID = USR.USERID
+             AND RLE.ROLEID = URLE.ROLEID
+             AND USR.USERID = OU.USERID
+             AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
+           ORDER BY ROLEID;*/
     
       SELECT DISTINCT RLE.ROLEID,
                       RLE.ROLE_NAME,
@@ -615,30 +615,30 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_USERS IS
   
     OPEN P_OUT_REF_CURSOR FOR
     /*SELECT RE.ROLEID AS ROLEID,
-                      RE.ROLE_NAME AS ROLE_NAME,
-                      OTS.ORG_LABEL || ' ' || RE.DESCRIPTION AS DESCRIPTION
-                 FROM ROLE RE,
-                      USER_ROLE UR,
-                      USERS U,
-                      ORG_USERS OU,
-                      (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
-                        GROUP(
-                        ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
-                         FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
-                                 FROM ORG_TP_STRUCTURE
-                                ORDER BY ORG_LEVEL) TEMP
-                        GROUP BY TEMP.ORG_LEVEL) OTS
-                WHERE UR.USERID = P_IN_USERID
-                  AND U.USERID = P_IN_USERID
-                  AND OU.USERID = P_IN_USERID
-                  AND UR.ROLEID = RE.ROLEID
-                  AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
-                  AND RE.ROLE_NAME NOT IN (WITH T AS (SELECT P_IN_ROLE AS TXT
-                                                        FROM DUAL)
-                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
-                   FROM T
-                 CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
-                  ORDER BY RE.ROLEID;*/
+                  RE.ROLE_NAME AS ROLE_NAME,
+                  OTS.ORG_LABEL || ' ' || RE.DESCRIPTION AS DESCRIPTION
+             FROM ROLE RE,
+                  USER_ROLE UR,
+                  USERS U,
+                  ORG_USERS OU,
+                  (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+                    GROUP(
+                    ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                     FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                             FROM ORG_TP_STRUCTURE
+                            ORDER BY ORG_LEVEL) TEMP
+                    GROUP BY TEMP.ORG_LEVEL) OTS
+            WHERE UR.USERID = P_IN_USERID
+              AND U.USERID = P_IN_USERID
+              AND OU.USERID = P_IN_USERID
+              AND UR.ROLEID = RE.ROLEID
+              AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
+              AND RE.ROLE_NAME NOT IN (WITH T AS (SELECT P_IN_ROLE AS TXT
+                                                    FROM DUAL)
+             SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
+               FROM T
+             CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1)
+              ORDER BY RE.ROLEID;*/
     
       SELECT RE.ROLEID AS ROLEID,
              RE.ROLE_NAME AS ROLE_NAME,
