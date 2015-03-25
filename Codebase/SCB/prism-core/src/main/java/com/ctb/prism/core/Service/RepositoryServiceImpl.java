@@ -112,6 +112,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	public byte[] getAssetBytes(String assetPath) throws IOException {
 		assetPath = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + assetPath;
 		assetPath = assetPath.replace("//", "/");
+		assetPath = assetPath.replaceAll("\\\\", "/");
 		System.out.println("Downloading an object from " + assetPath);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		S3ObjectInputStream inputStream = object.getObjectContent();
@@ -122,6 +123,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 
 	public byte[] getAssetBytesByS3Key(String s3Key) throws Exception {
 		s3Key = s3Key.replace("//", "/");
+		s3Key = s3Key.replaceAll("\\\\", "/");
 		System.out.println("Downloading an object from: " + s3Key);
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, s3Key));
 		S3ObjectInputStream inputStream = object.getObjectContent();
@@ -143,6 +145,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		key = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + key;
 		key = key + FileUtil.getFileNameFromFilePath(file.getName());
 		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "Uploading an Asset: " + key);
 		s3client.putObject(bucket, key, file);
 		logger.log(IAppLogger.INFO, "Asset(" + key + ") uploaded successfully");
@@ -153,6 +156,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		String fileName = file.getName().substring(0, file.getName().indexOf(".pdf")+4);
 		key = key + FileUtil.getFileNameFromFilePath(fileName);
 		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "Uploading an Asset: " + key);
 		s3client.putObject(bucket, key, file);
 		logger.log(IAppLogger.INFO, "Asset(" + key + ") uploaded successfully");
@@ -168,6 +172,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	public void uploadAsset(String key, InputStream is) {
 		key = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + key;
 		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "key = " + key);
 		byte[] contentBytes = null;
 		try {
@@ -188,6 +193,7 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	 */
 	public void uploadAssetByS3Key(String fullyQualifiedS3Key, File file) throws Exception {
 		fullyQualifiedS3Key = fullyQualifiedS3Key.replace("//", "/");
+		fullyQualifiedS3Key = fullyQualifiedS3Key.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "Uploading asset to S3: " + fullyQualifiedS3Key);
 		s3client.putObject(bucket, fullyQualifiedS3Key, file);
 		logger.log(IAppLogger.INFO, "Asset(" + fullyQualifiedS3Key + ") uploaded successfully");
@@ -200,12 +206,16 @@ public class RepositoryServiceImpl implements IRepositoryService {
 	 * com.ctb.prism.core.Service.IRepositoryService#removeAsset(java.io.File)
 	 */
 	public void removeAsset(String key) {
+		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "key = " + key);
 		s3client.deleteObject(bucket, key);
 		logger.log(IAppLogger.INFO, "Asset Removed from S3: " + key);
 	}
 
 	public InputStream getAssetInputStream(String assetPath) throws IOException {
+		assetPath = assetPath.replace("//", "/");
+		assetPath = assetPath.replaceAll("\\\\", "/");
 		logger.log(IAppLogger.INFO, "downloading object into input strem");
 		S3Object object = s3client.getObject(new GetObjectRequest(bucket, assetPath));
 		return object.getObjectContent();
