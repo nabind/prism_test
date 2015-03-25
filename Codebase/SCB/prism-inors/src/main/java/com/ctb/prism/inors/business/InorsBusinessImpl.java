@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -967,12 +969,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				
 				//Connecting the URL
 				logger.log(IAppLogger.INFO, "\nConnecting to: " + url.toString());
-				URLConnection urlConn = url.openConnection();
+				//URLConnection urlConn = url.openConnection();
+				HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 
 				OutputStream fos = null;
 				InputStream is = null;
 				// Checking whether the URL contains a PDF
-				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+				/*if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
 					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a PDF.]");
 				} else {
 					// Read the PDF from the URL and save to a local file
@@ -980,7 +983,20 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					is = url.openStream();
 					IOUtils.copy(is, fos);
 					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + compFileName);
+				}*/
+				
+				// Checking whether the URL contains a PDF
+				if (!urlConn.getContentType().equalsIgnoreCase("application/pdf")) {
+					logger.log(IAppLogger.ERROR, " : FAILED.\n[Sorry. This is not a MAP ISR PDF.]");
+					return null;
+				} else {
+					// Read the PDF from the URL and save to a local file
+					fos = new FileOutputStream(compFileName);
+					is = urlConn.getInputStream();
+					IOUtils.copy(is, fos);
+					logger.log(IAppLogger.INFO, "\n------------MO ISR PDF Created: " + compFileName);
 				}
+				
 				// release resources
 				IOUtils.closeQuietly(is);
 				IOUtils.closeQuietly(fos);
@@ -1070,9 +1086,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String mode = groupDownloadTO.getButton();
 			String reqFileName = groupDownloadTO.getFileName();
 			boolean isBulk = false;
+			long startTime = 0;
 			if("BULK".equals(reqFileName) && "BULK".equals(groupDownloadTO.getEmail())) {
 				// PDF generation is requested from PDF generation Utility
 				isBulk = true;
+				startTime = System.currentTimeMillis();
 			}
 			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
@@ -1163,6 +1181,12 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				} else {
 					logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 				}
+			} else {
+				long endTime = System.currentTimeMillis();
+				long timeDiff = endTime - startTime;
+				String timeTaken = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeDiff), TimeUnit.MILLISECONDS.toSeconds(timeDiff)
+						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
+				logger.log(IAppLogger.WARN, CustomStringUtil.appendString("--------------- Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken));
 			}
 			
 			// delete ISR from temp location 
