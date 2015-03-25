@@ -1,16 +1,9 @@
 package com.prism.service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +24,6 @@ import com.prism.to.StudentTO;
 import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
 import com.prism.util.PropertyFile;
-import com.prism.util.ReportPDF;
  
 
 
@@ -55,7 +47,7 @@ public class MapService implements PrismPdfService {
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
-		map.mainMethod(new String[]{"5050", "1036", "576"});
+		map.mainMethod(new String[]{"5050", "576"});
 	}
 
 	/**
@@ -86,9 +78,6 @@ public class MapService implements PrismPdfService {
 				
 				// divide students based on grade
 				for(StudentTO studentTO : students) {
-					// TODO delete existing pdf for this student from s3
-					
-					
 					newGrade = studentTO.getGradeId();
 					subtest.add(studentTO.getSubtest());
 					if(oldGrade.equals(newGrade)) {
@@ -149,11 +138,11 @@ public class MapService implements PrismPdfService {
 							
 							sendPost(mapProperties, urlParameters);
 							
-							break;
+							//break; // for debug
 						}
-						break;
+						//break; // for debug
 					}
-					break;
+					//break; // for debug
 				}
 			}
 		} catch (Exception e) {
@@ -175,7 +164,7 @@ public class MapService implements PrismPdfService {
 		System.out.println(connection.getResponseCode() + " <<-------- x ----------- PDF generation completed for one set");
  
 	}
-
+	
 	/**
 	 * 
 	 * @param message
