@@ -1,0 +1,129 @@
+create or replace package PKG_PROC_MVIEW_REFRESH is
+
+  -- Author  : Debashis Deb
+  -- Created : 12/12/2013 12:41:47 PM
+  -- Purpose : This Package will be used at the ETL side.
+
+  PROCEDURE PROC_ORG_NODE_DIM_HIER_REFERSH ;
+--  PROCEDURE PROC_STUDENT_REFRESH (P_PROCESS_ID IN NUMBER) ;
+
+
+end PKG_PROC_MVIEW_REFRESH;
+/
+create or replace package body PKG_PROC_MVIEW_REFRESH is
+
+  PROCEDURE PROC_ORG_NODE_DIM_HIER_REFERSH 
+  IS 
+  BEGIN 
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'MV_TEST_PROGRAM',
+           'MVIEW',
+           'REFRESH STARTED',
+           'START',
+           SYSDATE);
+        COMMIT;
+        DBMS_MVIEW.REFRESH('MV_TEST_PROGRAM', 'C');
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'MV_TEST_PROGRAM',
+           'MVIEW',
+           'REFRESH COMPLETED',
+           'END',
+           SYSDATE);
+        COMMIT;
+     
+        /*  
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'ORG_NODE_DIM_HIER',
+           'MVIEW',
+           'REFRESH STARTED',
+           'START',
+           SYSDATE);
+        COMMIT;
+        DBMS_MVIEW.REFRESH('ORG_NODE_DIM_HIER', 'C');
+        INSERT INTO PERF_LOG
+        VALUES
+          (PERF_LOG_SEQ.NEXTVAL,
+           'ORG_NODE_DIM_HIER',
+           'MVIEW',
+           'REFRESH COMPLETED',
+           'END',
+           SYSDATE);
+        COMMIT;*/
+        END ; 
+/*        
+PROCEDURE PROC_STUDENT_REFRESH(P_PROCESS_ID IN NUMBER) IS
+BEGIN
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'TABLE_1_STU',
+     'TABLE',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+
+  PKG_PRF_ORG_USR.SP_STUDENT_DEMO_VALUES(P_PROCESS_ID);
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'TABLE_1_STU',
+     'TABLE',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'MV_STUDENT_DETAILS',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('MV_STUDENT_DETAILS', 'F');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'MV_STUDENT_DETAILS',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'MV_STUDENT_FILE_DOWNLOAD',
+     'MVIEW',
+     'REFRESH STARTED',
+     'START',
+     SYSDATE);
+  COMMIT;
+  DBMS_MVIEW.REFRESH('MV_STUDENT_FILE_DOWNLOAD', 'F');
+
+  INSERT INTO PERF_LOG
+  VALUES
+    (PERF_LOG_SEQ.NEXTVAL,
+     'MV_STUDENT_FILE_DOWNLOAD',
+     'MVIEW',
+     'REFRESH COMPLETED',
+     'END',
+     SYSDATE);
+  COMMIT;
+
+END PROC_STUDENT_REFRESH;*/
+end PKG_PROC_MVIEW_REFRESH;
+/
