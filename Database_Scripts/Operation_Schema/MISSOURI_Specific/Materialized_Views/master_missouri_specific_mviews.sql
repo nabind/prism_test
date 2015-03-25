@@ -1,1 +1,0 @@
-@\MV_RPRT_STUD_DETAILS.sql;
