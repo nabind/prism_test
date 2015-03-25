@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -44,6 +45,8 @@ public class MapService implements PrismPdfService {
 	private Map<Integer, String> orgMap = null;
 	
 	private final String USER_AGENT = "Mozilla/5.0";
+	
+	int lengthToSplit = 50;
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
@@ -109,7 +112,6 @@ public class MapService implements PrismPdfService {
 					
 					String[] studentArr = allStudents.split(",");
 					List<String> chunks = new  ArrayList<String>();
-					int lengthToSplit = 5;
 					if(studentArr.length > lengthToSplit) {
 						int arrayLength = studentArr.length;
 						for (int i = 0; i < arrayLength; i = i + lengthToSplit) {
@@ -145,6 +147,7 @@ public class MapService implements PrismPdfService {
 					//break; // for debug
 				}
 			}
+			EmailSender.sendMailInors(mapProperties, mapProperties.getProperty("supportEmail"), mapProperties.getProperty("mailSubject"),  mapProperties.getProperty("messageBody"), null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -154,14 +157,22 @@ public class MapService implements PrismPdfService {
 	
 	// HTTP POST request
 	private void sendPost(Properties mapProperties, String urlParameters) throws Exception {
- 
+		long startTime = System.currentTimeMillis();
 		String targetUrl = mapProperties.getProperty("prism.map.url");
+		
+		logger.info("calling next thread ... ");
 		
 		HttpURLConnection connection = (HttpURLConnection) new URL(targetUrl+"?"+urlParameters).openConnection();
 		connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
 		connection.connect();
 		
-		System.out.println(connection.getResponseCode() + " <<-------- x ----------- PDF generation completed for one set");
+		logger.info(connection.getResponseCode() + " <<-------- x ----------- PDF generation requested for " + lengthToSplit + " students");
+		
+		long endTime = System.currentTimeMillis();
+		long timeDiff = endTime - startTime;
+		String timeTaken = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeDiff), TimeUnit.MILLISECONDS.toSeconds(timeDiff)
+				- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
+		logger.info("Time Taken = " + timeTaken);
  
 	}
 	
