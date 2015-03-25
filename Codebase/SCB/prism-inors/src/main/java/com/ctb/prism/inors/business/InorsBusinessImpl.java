@@ -902,6 +902,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String subtest = (String) paramMap.get("subtest");
 		String contractName = (String) paramMap.get("contractName");
 		String customer = (String) paramMap.get("customer");
+		boolean isBulk = (Boolean) paramMap.get("isBulk");
 		
 		Map<String,Object> paramMapCode = new HashMap<String, Object>();
 		paramMapCode.put("district", district);
@@ -937,8 +938,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
 			byte[] assetBytes = new byte[0];
 			try{
-				assetBytes = repositoryService.getAssetBytes(fullFileNameS3);
-				logger.log(IAppLogger.INFO, "Successfully read from S3: " + fullFileNameS3+ "\nFile size "+assetBytes.length);
+				if(isBulk) {
+					repositoryService.removeAsset(fullFileNameS3);
+					logger.log(IAppLogger.INFO, "Successfully deleted from S3: " + fullFileNameS3);
+				} else {
+					assetBytes = repositoryService.getAssetBytes(fullFileNameS3);
+					logger.log(IAppLogger.INFO, "Successfully read from S3: " + fullFileNameS3+ "\nFile size "+assetBytes.length);
+				}
 			}catch(Exception e){
 				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
@@ -1091,6 +1097,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					paramMap.put("subtest", subtest);
 					paramMap.put("contractName", contractName);
 					paramMap.put("customer", groupDownloadTO.getCustomerId());
+					paramMap.put("isBulk", isBulk);
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);
