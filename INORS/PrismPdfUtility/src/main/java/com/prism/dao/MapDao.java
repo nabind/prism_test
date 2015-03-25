@@ -164,5 +164,43 @@ public class MapDao extends CommonDao {
 		}
 		return userid;
 	}
+	
+	
+	/**
+	 * Fetch current school of a students based on subtestId and custProdId and 
+	 * 
+	 * @param bioId
+	 * @param subtestId
+	 * @param custProdId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getStudentCurrentSchool(String bioId,String subtestId, String custProdId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StudentTO student = null;
+		String studentSchool = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			String query = CustomStringUtil.appendString(" select org_nodeid from subtest_score_fact where student_bio_id = ? ",
+					" and subtestid = ?  and  cust_prod_id = ?");
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1, Long.valueOf(bioId));
+			pstmt.setLong(2, Long.valueOf(subtestId));
+			pstmt.setLong(3, Long.valueOf(custProdId));
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+			  studentSchool = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		return studentSchool;
+	}
 
 }

@@ -63,6 +63,7 @@ public class MapService implements PrismPdfService {
 		String[] schoolIds = CustomStringUtil.getAllButFirstArg(args);
 		Properties configProperties = PropertyFile.loadProperties(Constants.MAP_JDBC_PROPERTIES_FILE);
 		Properties mapProperties = PropertyFile.loadProperties(Constants.MAP_PROPERTIES_FILE);
+		String curStudentSchoolId = null;
 		
 		try {
 			if (dao == null) {
@@ -97,6 +98,7 @@ public class MapService implements PrismPdfService {
 							//studentIds.delete(studentIds.length()-1, studentIds.length());
 							map.put(oldGrade, studentIds.toString());
 							studentIds = new StringBuffer();
+							studentIds.append(studentTO.getStudentBioId()).append(",");
 							oldGrade = newGrade;
 						}
 					}
@@ -138,12 +140,15 @@ public class MapService implements PrismPdfService {
 					for(String chunkStud : chunks) {
 						// now iterate on subtests
 						for(String subtestId : subtest) {
-							String urlParameters = CustomStringUtil.appendString("p_test_administration=", custProdId, "&p_school=", schoolOrgNodeId, "&p_district_Id=", districtOrgNodeId,
-									"&p_grade=", gradeid, "&studentId=", chunkStud, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
-									"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId);
-							
-							sendPost(mapProperties, urlParameters);
-							
+							//Need to open the following  checking if we  want to put pdf if the student based on subtest with exact school folder in s3 
+							/*curStudentSchoolId = dao.getStudentCurrentSchool(chunkStud, subtestId, custProdId);
+							if(curStudentSchoolId != null && curStudentSchoolId.equals(schoolOrgNodeId)) {*/
+								String urlParameters = CustomStringUtil.appendString("p_test_administration=", custProdId, "&p_school=", schoolOrgNodeId, "&p_district_Id=", districtOrgNodeId,
+										"&p_grade=", gradeid, "&studentId=", chunkStud, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
+										"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId);
+								
+								sendPost(mapProperties, urlParameters);
+							/*}*/
 							//break; // for debug
 						}
 						//break; // for debug
