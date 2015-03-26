@@ -759,6 +759,30 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		}
 		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
 	}
+	
+	/**
+	 * Utility support mail
+	 * @param email
+	 * @param fileName
+	 */
+	private void notificationMailISRUtility(String email, String body, String jobId) {
+		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
+		try {
+			Properties prop = new Properties();
+			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
+			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
+			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			String subject = CustomStringUtil.appendString("ISR Generation Completed for job ", jobId, " - ", propertyLookup.get("environment.postfix"));
+			logger.log(IAppLogger.INFO, "Email triggered...");
+			emailSender.sendMail(prop, email, null, null, subject, body);
+			logger.log(IAppLogger.INFO, "Email sent to : " + email);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.log(IAppLogger.INFO, "Exit: notificationMailGD()");
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1187,7 +1211,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				long timeDiff = endTime - startTime;
 				String timeTaken = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeDiff), TimeUnit.MILLISECONDS.toSeconds(timeDiff)
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
-				logger.log(IAppLogger.WARN, CustomStringUtil.appendString("--------------- Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken));
+				
+				String[] str = new String[allIsr.size()];
+				logger.log(IAppLogger.INFO, CustomStringUtil.appendString("--------------- Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken));
+				logger.log(IAppLogger.INFO, Utils.arrayToSeparatedString( allIsr.toArray(str), '\n'));
+				String body = CustomStringUtil.appendString("Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken,
+						"<br/><br/>", "Files generated are: <br/>", Utils.arrayToSeparatedString( allIsr.toArray(str), "<br/>"));
+				
+				notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId);
 			}
 			
 			// delete ISR from temp location 
