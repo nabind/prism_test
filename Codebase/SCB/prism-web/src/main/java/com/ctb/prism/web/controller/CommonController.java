@@ -577,6 +577,19 @@ public class CommonController extends BaseDAO {
 		logger.log(IAppLogger.INFO, "Inside clearTascCache");
 		String theme = themeResolver.resolveThemeName(req);
 		reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
+		return mv;
+	}
+	
+	@RequestMapping(value="/clearPrismCache", method=RequestMethod.GET)
+	public ModelAndView clearPrismCache(HttpServletRequest req, HttpServletResponse res) 
+		throws ServletException, IOException {
+	
+		ModelAndView mv = new ModelAndView("common/success");
+		logger.log(IAppLogger.INFO, "Inside clearTascCache");
+		String theme = themeResolver.resolveThemeName(req);
+		reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
 		return mv;
 	}
 	

@@ -25,6 +25,8 @@
 		<pattern>/clearConfigCache.do</pattern>
 		<pattern>/clearReportCache.do</pattern>
 		<pattern>/clearContractCache.do*</pattern>
+		<pattern>/clearTascCache.do*</pattern>
+		<pattern>/clearPrismCache.do*</pattern>
 		<pattern>/ReportServlet.do</pattern>
 		<pattern>/servlets/report</pattern>
 		<pattern>/servlets/resource</pattern>

@@ -24,6 +24,7 @@
 	<http pattern="/clearAllCache.do" security="none" />
 	<http pattern="/clearContractCache.do" security="none" />
 	<http pattern="/clearTascCache.do" security="none" />
+	<http pattern="/clearPrismCache.do" security="none" />
 	<http pattern="/clearConfigCache.do" security="none" />
 	<http pattern="/icDownload.do" security="none" />
 	<http pattern="/landing*" security="none" />
