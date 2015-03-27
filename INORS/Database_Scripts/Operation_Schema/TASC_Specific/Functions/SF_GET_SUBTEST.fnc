@@ -66,10 +66,11 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                 --AND OFT.GRADEID = i_GradeId
              AND OFT.LEVELID = SOM.LEVELID
              AND OFT.ASSESSMENTID = SOM.ASSESSMENTID
-             AND OFT.SS > 0)
+             /*AND OFT.SS > 0*/ --commented as directed during QA 03/27/2015 
+             )
 
           UNION
-            
+
            SELECT  DISTINCT SOM.SUBTESTID,
                    SOM.SUBTEST_NAME,
                    SOM.SUBTEST_SEQ
@@ -107,7 +108,8 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                              AND OFT.ASSESSMENTID = SOM.ASSESSMENTID
                              AND OFT.objectiveID = SOM.objectiveID
                              AND OFT.FORMID = SOM.FORMID
-                             AND OFT.SS > 0 )
+                             /*AND OFT.SS > 0*/ --commented as directed during QA 03/27/2015
+                             )
               ORDER BY 3;
 
   CURSOR c_Get_Subtest_Sub
@@ -148,7 +150,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
            AND SOM.FORMID = GSL.FORMID
            AND SOM.ASSESSMENTID = GSL.ASSESSMENTID
            AND SOM.LEVELID = GSL.LEVELID
-           
+
         UNION
 
         SELECT DISTINCT SOM.SUBTESTID, SOM.SUBTEST_NAME, SOM.SUBTEST_SEQ
@@ -222,7 +224,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
              AND SOM.ASSESSMENTID = GSL.ASSESSMENTID
              AND SOM.LEVELID = GSL.LEVELID
              AND SOM.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
-           
+
         UNION
 
         SELECT DISTINCT SOM.SUBTESTID, SOM.SUBTEST_NAME, SOM.SUBTEST_SEQ

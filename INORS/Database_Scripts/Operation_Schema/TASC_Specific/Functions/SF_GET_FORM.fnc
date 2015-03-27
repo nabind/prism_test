@@ -39,15 +39,15 @@ PRAGMA AUTONOMOUS_TRANSACTION;
   IS
   SELECT DISTINCT SOM.FORMID,SOM.FORM_NAME
           FROM MV_SUB_OBJ_FORM_MAP SOM
-          WHERE SOM.SUBTESTID =  Subtest_Id 
+          WHERE SOM.SUBTESTID =  Subtest_Id
             AND EXISTS (SELECT 1 FROM OBJECTIVE_SCORE_FACT  OFT,
                                       ORG_LSTNODE_LINK      OLNK,
                                       CUST_PRODUCT_LINK CUST
                         WHERE OLNK.ORG_NODEID = i_LoggedInUserJasperOrgId
                            AND OLNK.ORG_LSTNODEID = OFT.ORG_NODEID
                            AND OLNK.ADMINID= OFT.ADMINID
-                          AND OFT.SUBTESTID = SOM.SUBTESTID 
-                          AND OFT.objectiveID = SOM.objectiveID 
+                          AND OFT.SUBTESTID = SOM.SUBTESTID
+                          AND OFT.objectiveID = SOM.objectiveID
                           AND CUST.PRODUCTID = DECODE(i_ProductId,
                                        -99,
                                        (SELECT PRODUCTID
@@ -62,21 +62,21 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                        i_ProductId)
                         AND OFT.CUST_PROD_ID = CUST.CUST_PROD_ID
                         AND OFT.ADMINID = CUST.ADMINID
-                        AND OFT.FORMID = SOM.FORMID                       
-                       )  
-   UNION 
-                        
-                       
+                        AND OFT.FORMID = SOM.FORMID
+                       )
+   UNION
+
+
     SELECT DISTINCT SOM.FORMID,SOM.FORM_NAME
             FROM MV_SUB_OBJ_FORM_MAP SOM
             WHERE SOM.SUBTESTID =  Subtest_Id
              AND  EXISTS (SELECT 1 FROM   EDU_CENTER_DETAILS EDTLS,
-                                          STUDENT_BIO_DIM STD,             
+                                          STUDENT_BIO_DIM STD,
                                           OBJECTIVE_SCORE_FACT OFT  ,
-                                          CUST_PRODUCT_LINK CUST 
+                                          CUST_PRODUCT_LINK CUST
                            WHERE EDTLS.EDU_CENTERID = i_LoggedInUserJasperOrgId
-                             AND STD.EDU_CENTERID = EDTLS.EDU_CENTERID 
-                             AND CUST.CUSTOMERID =  EDTLS.CUSTOMERID                          
+                             AND STD.EDU_CENTERID = EDTLS.EDU_CENTERID
+                             AND CUST.CUSTOMERID =  EDTLS.CUSTOMERID
                              AND STD.ORG_NODEID = OFT.ORG_NODEID
                              AND OFT.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
                              AND STD.GRADEID =  DECODE(i_GradeId,
@@ -91,11 +91,11 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                                     WHERE GRADE_NAME = 'AD'
                                                       AND ROWNUM = 1),
                                                   i_GradeId)
-                            -- AND STD.CUSTOMERID = v_Cust_Id -- changed by Debashis on 29/01/2014 For Performance 
+                            -- AND STD.CUSTOMERID = v_Cust_Id -- changed by Debashis on 29/01/2014 For Performance
                              AND STD.CUSTOMERID = EDTLS.CUSTOMERID
                              AND STD.GRADEID = OFT.GRADEID
                              AND STD.ADMINID = OFT.ADMINID
-                             AND OFT.SUBTESTID = SOM.SUBTESTID 
+                             AND OFT.SUBTESTID = SOM.SUBTESTID
                              AND OFT.LEVELID = SOM.LEVELID
                               AND CUST.PRODUCTID = DECODE(i_ProductId,
                                        -99,
@@ -111,13 +111,13 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                        i_ProductId)
                         AND OFT.CUST_PROD_ID = CUST.CUST_PROD_ID
                         AND OFT.ADMINID = CUST.ADMINID
-                        AND OFT.objectiveID = SOM.objectiveID 
+                        AND OFT.objectiveID = SOM.objectiveID
                         AND OFT.FORMID = SOM.FORMID
                         AND ROWNUM =1)
                ORDER BY 1;
-        
-       
-      
+
+
+
 
  CURSOR c_Get_Form_For_Sub (v_SubtestMulti_Id VARCHAR2)
   IS
@@ -146,7 +146,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                    AND SCR.ASSESSMENTID = SOM.ASSESSMENTID
                                    AND SCR.SUBTESTID = SOM.SUBTESTID
                                    AND SCR.LEVELID = SOM.LEVELID
-                                   AND SCR.FORMID = SOM.FORMID 
+                                   AND SCR.FORMID = SOM.FORMID
                                     AND CUST.PRODUCTID = DECODE(i_ProductId,
                                        -99,
                                        (SELECT PRODUCTID
@@ -161,7 +161,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                        i_ProductId)
                                     AND SCR.CUST_PROD_ID = CUST.CUST_PROD_ID
                                     AND SCR.ADMINID = CUST.ADMINID)
-                
+
           UNION
           SELECT DISTINCT SOM.FORMID,SOM.FORM_NAME
               FROM --FORM_DIM FRM,
@@ -206,7 +206,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                      AND STD.STUDENT_BIO_ID = SCR.STUDENT_BIO_ID
                                      AND STD.GENDERID = SCR.GENDERID
                                      AND SCR.LEVELID = SOM.LEVELID
-                                     AND SCR.FORMID = SOM.FORMID                                     
+                                     AND SCR.FORMID = SOM.FORMID
                                      AND SCR.ASSESSMENTID = SOM.ASSESSMENTID
                                      AND CUST.PRODUCTID = DECODE(i_ProductId,
                                                            -99,
@@ -223,7 +223,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                                     AND SCR.CUST_PROD_ID = CUST.CUST_PROD_ID
                                     AND SCR.ADMINID = CUST.ADMINID
                                      AND ROWNUM =1)
-                
+
            ORDER BY 1;
 
 
@@ -233,7 +233,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
   SELECT SUBTESTID,
          SUBTEST_NAME,
          SUBTEST_SEQ
-  FROM 
+  FROM
   (SELECT DISTINCT SOM.SUBTESTID, SOM.SUBTEST_NAME, SOM.SUBTEST_SEQ
     FROM MV_SUB_OBJ_FORM_MAP SOM
    WHERE SOM.SUBTEST_CODE NOT IN (v_ELA, v_OverAllComp)
@@ -265,10 +265,11 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                 --AND OFT.GRADEID = i_GradeId
              AND OFT.LEVELID = SOM.LEVELID
              AND OFT.ASSESSMENTID = SOM.ASSESSMENTID
-             AND OFT.SS > 0)
+             /*AND OFT.SS > 0*/--commented as directed during QA 03/27/2015
+             )
 
           UNION
-            
+
            SELECT  DISTINCT SOM.SUBTESTID,
                    SOM.SUBTEST_NAME,
                    SOM.SUBTEST_SEQ
@@ -306,7 +307,8 @@ PRAGMA AUTONOMOUS_TRANSACTION;
                              AND OFT.ASSESSMENTID = SOM.ASSESSMENTID
                              AND OFT.objectiveID = SOM.objectiveID
                              AND OFT.FORMID = SOM.FORMID
-                             AND OFT.SS > 0 )
+                             /*AND OFT.SS > 0*/ --commented as directed during QA 03/27/2015
+                             )
               ORDER BY 3) WHERE ROWNUM=1;
 
   CURSOR c_Get_Subtest_Sub_Login (Cust_Id CUSTOMER_INFO.CUSTOMERID%TYPE)
@@ -349,7 +351,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
            AND SOM.FORMID = GSL.FORMID
            AND SOM.ASSESSMENTID = GSL.ASSESSMENTID
            AND SOM.LEVELID = GSL.LEVELID
-           
+
         UNION
 
         SELECT DISTINCT SOM.SUBTESTID, SOM.SUBTEST_NAME, SOM.SUBTEST_SEQ
@@ -425,7 +427,7 @@ PRAGMA AUTONOMOUS_TRANSACTION;
              AND SOM.ASSESSMENTID = GSL.ASSESSMENTID
              AND SOM.LEVELID = GSL.LEVELID
              AND SOM.SUBTEST_CODE NOT IN (v_ELA,v_OverAllComp)
-           
+
         UNION
 
         SELECT DISTINCT SOM.SUBTESTID, SOM.SUBTEST_NAME, SOM.SUBTEST_SEQ
@@ -482,7 +484,7 @@ BEGIN
    ELSE
       v_Cust_Id := i_AdminId;
       v_Date_End := i_Start_Test_Date;
-      v_Date_Start :=i_End_Test_Date; 
+      v_Date_Start :=i_End_Test_Date;
   END IF;
 
 
@@ -516,14 +518,14 @@ BEGIN
 
     --IF v_Cust_Id IS NOT NULL THEN
        IF i_type = 1  THEN
-      
+
           FOR r_Get_Form_For_Obj IN c_Get_Form_For_Obj(v_Subtest_Id)
               LOOP
                    t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
 
                    t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Form_For_Obj.FORMID;
                    t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Form_For_Obj.FORM_NAME;
-                                        
+
                    t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
                    t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT):= t_PRS_PGT_GLOBAL_TEMP_OBJ;
 
