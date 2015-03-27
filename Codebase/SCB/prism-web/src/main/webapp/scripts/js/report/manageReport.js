@@ -333,7 +333,11 @@ var row = $("#"+reportId + '_' +reportId);
 						$(this).trigger('update-select-list');
 					});
 				});
+			} else {
+				$("#editCustomerType option").change();
+				$("#editCustomerType option").trigger('update-select-list');
 			}
+
 			var roles = data[0].roles;
 			if(typeof roles != "undefined") {
 				$.each(roles, function(index, value) {
