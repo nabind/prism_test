@@ -515,6 +515,19 @@ public final class Utils {
 		}
 	}
 	
+	public static String arrayToSeparatedString(String[] strArr, String separator) {
+		if (strArr != null && strArr.length > 0) {
+			StringBuilder strBuilder = new StringBuilder();
+			for (String n : strArr) {
+				strBuilder.append(n).append(separator);
+			}
+			strBuilder.deleteCharAt(strBuilder.length() - 1);
+			return strBuilder.toString();
+		} else {
+			return "";
+		}
+	}
+	
 	/**
 	 * @author Abir
 	 * @param String 

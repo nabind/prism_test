@@ -773,7 +773,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
 			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
 			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-			String subject = CustomStringUtil.appendString("ISR Generation Completed for job ", jobId, " - ", propertyLookup.get("environment.postfix"));
+			String subject = CustomStringUtil.appendString("ISR Generation for job ", jobId, " - ", propertyLookup.get("environment.postfix"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
 			emailSender.sendMail(prop, email, null, null, subject, body);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
@@ -1216,7 +1216,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, CustomStringUtil.appendString("--------------- Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken));
 				logger.log(IAppLogger.INFO, Utils.arrayToSeparatedString( allIsr.toArray(str), '\n'));
 				String body = CustomStringUtil.appendString("Time Taken to generate ", allIsr == null ? "0" : allIsr.size()+"" , " ISR files = ", timeTaken,
-						"<br/><br/>", "Files generated are: <br/>", Utils.arrayToSeparatedString( allIsr.toArray(str), "<br/>"));
+						"<br/><br/>", "Files generated are: <br/>", Utils.arrayToSeparatedString( allIsr.toArray(str), "<br/>"),
+						"<br/><br/>", "job log: <br/>", job.toString());
 				
 				notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId);
 			}
