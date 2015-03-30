@@ -127,7 +127,7 @@ public class TascDAOImpl {
 	}
 	
 	/**
-	 * Method to update the process log
+	 * Method to get success and failure count for last 90 days
 	 * @param processId
 	 * @param log
 	 * @return
@@ -151,7 +151,8 @@ public class TascDAOImpl {
 							" (SELECT TO_CHAR(TO_DATE(TO_CHAR((SELECT MIN(DATETIMESTAMP) FROM STG_PROCESS_STATUS),'MM-DD-YYYY'),'MM-DD-YYYY') - 1 + ROWNUM, 'MM-DD-YYYY') AS D , "+
 							 " TO_CHAR((SELECT MIN(DATETIMESTAMP) FROM STG_PROCESS_STATUS),'YYYY,MM,DD') as c "+
 								" FROM ALL_OBJECTS WHERE TO_DATE(TO_CHAR((SELECT MIN(DATETIMESTAMP) FROM STG_PROCESS_STATUS),'MM-DD-YYYY'),'MM-DD-YYYY') - 1 + ROWNUM <= TO_DATE(TO_CHAR((SELECT MAX(DATETIMESTAMP) "+ 
-								" FROM STG_PROCESS_STATUS),'MM-DD-YYYY'), 'MM-DD-YYYY')) BB WHERE PP.D(+) = BB.D and OL.D(+) = BB.D AND ERR_COUNT.D(+) = BB.D AND COM_COUNT.D(+) = BB.D ORDER BY BB.D";  
+								" FROM STG_PROCESS_STATUS),'MM-DD-YYYY'), 'MM-DD-YYYY')) BB WHERE PP.D(+) = BB.D and OL.D(+) = BB.D AND ERR_COUNT.D(+) = BB.D AND COM_COUNT.D(+) = BB.D "+
+								" and TO_DATE(BB.D, 'MM-DD-YYYY') >= to_date((TO_CHAR(SYSDATE-90, 'MM-DD-YYYY')), 'MM-DD-YYYY') ORDER BY BB.D";  
 			pstmt = conn.prepareCall(query);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
