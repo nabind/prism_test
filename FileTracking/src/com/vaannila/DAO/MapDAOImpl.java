@@ -34,8 +34,8 @@ public class MapDAOImpl {
 		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, map.DISTRICT_CODE, map.GRADE, map.CONTENT_AREA_TITLE SUBTEST ");
 		queryBuff.append(" from stg_task_status task, stg_task_district_mapping map ");
 		// queryBuff.append(" WHERE rownum<10 ");
-		if(searchProcess != null) {
-			queryBuff.append(" WHERE task.task_id = map.task_id ");
+		queryBuff.append(" WHERE task.task_id = map.task_id ");
+		if(searchProcess != null) {			
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
 				queryBuff.append("AND (task.DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
@@ -57,7 +57,7 @@ public class MapDAOImpl {
 			}
 			
 		} else {
-			queryBuff.append("where trunc(task.DATETIMESTAMP) = trunc(sysdate)");
+			queryBuff.append("AND trunc(task.DATETIMESTAMP) = trunc(sysdate)");
 		}
 		queryBuff.append(" order by TASK_ID desc ");
 		String query = queryBuff.toString();
