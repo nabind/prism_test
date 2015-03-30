@@ -57,7 +57,7 @@
 			if(updatedDateFrom=="" || updatedDateTo==""){
 				jQuery("#errorLogDialog").dialog("open");
 				$("#ui-dialog-title-errorLogDialog").html('Error');
-				$("#errorLog").html("Atleast Processed Date range is required.");
+				$("#errorLog").html("Processed Date range is required.");
 			} else{
 				$('#searchTascForm').submit();
 			}
