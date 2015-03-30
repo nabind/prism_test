@@ -343,5 +343,74 @@ create index INDX_DASH_REPORTS_TM1 on DASH_REPORTS (PROJECTID, DB_REPORTID, REPO
   )
 NOPARALLEL;
 
+----MISSING INDEXES FROM PERF 03/27/2015
+CREATE UNIQUE INDEX PK_FORM_DIM ON FORM_DIM 
+(FORMID) 
+TABLESPACE USERS 
+PCTFREE    10 
+INITRANS   2 
+MAXTRANS   255 
+STORAGE    ( 
+            INITIAL          64K 
+            NEXT             1M 
+            MAXSIZE          UNLIMITED 
+            MINEXTENTS       1 
+            MAXEXTENTS       UNLIMITED 
+            PCTINCREASE      0 
+            BUFFER_POOL      DEFAULT 
+           ) 
+NOPARALLEL; 
+  
+CREATE UNIQUE INDEX PK_GENDER_DIM ON GENDER_DIM 
+(GENDERID) 
+TABLESPACE USERS 
+PCTFREE    10 
+INITRANS   2 
+MAXTRANS   255 
+STORAGE    ( 
+            INITIAL          64K 
+            NEXT             1M 
+            MAXSIZE          UNLIMITED 
+            MINEXTENTS       1 
+            MAXEXTENTS       UNLIMITED 
+            PCTINCREASE      0 
+            BUFFER_POOL      DEFAULT 
+           ) 
+NOPARALLEL; 
+  
+CREATE UNIQUE INDEX PK_LEVEL_MAP ON LEVEL_MAP 
+(LEVEL_MAPID) 
+TABLESPACE USERS 
+PCTFREE    10 
+INITRANS   2 
+MAXTRANS   255 
+STORAGE    ( 
+            INITIAL          64K 
+            NEXT             1M 
+            MAXSIZE          UNLIMITED 
+            MINEXTENTS       1 
+            MAXEXTENTS       UNLIMITED 
+            PCTINCREASE      0 
+            BUFFER_POOL      DEFAULT 
+           ) 
+NOPARALLEL; 
+  
+CREATE UNIQUE INDEX PK_SUBJECT_DIM ON SUBTEST_DIM 
+(SUBTESTID) 
+TABLESPACE USERS 
+PCTFREE    10 
+INITRANS   2 
+MAXTRANS   255 
+STORAGE    ( 
+            INITIAL          64K 
+            NEXT             1M 
+            MAXSIZE          UNLIMITED 
+            MINEXTENTS       1 
+            MAXEXTENTS       UNLIMITED 
+            PCTINCREASE      0 
+            BUFFER_POOL      DEFAULT 
+           ) 
+NOPARALLEL; 
+
 
   
