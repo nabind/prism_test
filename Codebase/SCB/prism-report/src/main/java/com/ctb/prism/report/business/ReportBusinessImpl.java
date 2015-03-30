@@ -577,7 +577,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			}
 
 			logger.log(IAppLogger.DEBUG, query);
-			System.out.println("Query for Cascading filter:" +query);
+			//System.out.println("Query for Cascading filter:" +query);
 
 			// fetch data
 			return reportDAO.getValuesOfSingleInput(query);
