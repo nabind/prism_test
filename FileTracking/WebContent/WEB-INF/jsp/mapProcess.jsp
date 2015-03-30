@@ -6,6 +6,7 @@
 <%@page import="com.vaannila.web.UserController" %>
 <%@page import="java.util.Properties" %>
 <%@page import="com.vaannila.util.PropertyFile" %>
+<%@page import="com.vaannila.TO.SearchProcess"%>
 
 <style>
 	.completed {
@@ -40,6 +41,13 @@
 		margin-top: -9px;
 		position: relative;
 		z-index: 88;
+	}
+	.search-criteria {
+		background-color: rgb(174, 208, 187);
+		padding: 10px;
+		margin-bottom: 10px;
+		text-align: justify;
+		border-radius: 5px;
 	}
 </style>
 <script src="css/jquery.validate.js"></script>
@@ -268,7 +276,33 @@
 	 
 		<div id="accordion">
 				<!-- panel -->
-				
+				<% 
+				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("mapRequestTO");
+				%>
+				<div class="search-criteria">
+					<b>Showing search results for</b>
+					<%if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0){%>
+						, Processed Date From: <%=searchProcess.getCreatedDate()%>
+					<%}%>
+					<%if(searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0){%>
+						, Processed Date To: <%=searchProcess.getUpdatedDate()%>
+					<%}%>
+					<%if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){%>
+						, Process Id: <%=searchProcess.getProcessId()%>
+					<%}%>
+					<%if(searchProcess.getDistrict() != null && searchProcess.getDistrict().trim().length() > 0){%>
+						, District: <%=searchProcess.getDistrict()%>
+					<%}%>
+					<%if(searchProcess.getGrade() != null && searchProcess.getGrade().trim().length() > 0){%>
+						, Grade: <%=searchProcess.getGrade()%>
+					<%}%>
+					<%if(searchProcess.getSubtest() != null && searchProcess.getSubtest().trim().length() > 0){%>
+						, Subtest: <%=searchProcess.getSubtest()%>
+					<%}%>
+					<%if(searchProcess.getProcessStatus() != null && searchProcess.getProcessStatus().trim().length() > 0){%>
+						, Process Status: <%=searchProcess.getProcessStatus()%>
+					<%}%>				
+				</div>
 				
 				<table id="process" width="100%">
 				<thead>

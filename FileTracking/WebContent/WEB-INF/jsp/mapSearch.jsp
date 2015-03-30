@@ -53,8 +53,8 @@
 		function validateForm(){
 			var updatedDateFrom = $('#updatedDateFrom').val();
 			var updatedDateTo = $('#updatedDateTo').val();
-			
-			if(updatedDateFrom=="" || updatedDateTo==""){
+			var processid = $('#processId').val();
+			if(processid == "" && (updatedDateFrom=="" || updatedDateTo=="")){
 				jQuery("#errorLogDialog").dialog("open");
 				$("#ui-dialog-title-errorLogDialog").html('Error');
 				$("#errorLog").html("Processed Date range is required.");
