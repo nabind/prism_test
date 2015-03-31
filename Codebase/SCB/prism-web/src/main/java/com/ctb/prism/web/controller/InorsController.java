@@ -146,6 +146,21 @@ public class InorsController {
 							logger.log(IAppLogger.INFO, "displayFilename=" + displayFilename);
 						}
 					}
+				} else if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(Utils.getContractName())) {
+					// this section is for MO
+					if (displayFilename != null && !displayFilename.isEmpty()) {
+						int length = displayFilename.length();
+						int u = displayFilename.lastIndexOf("_");
+						int e = displayFilename.lastIndexOf(".");
+						logger.log(IAppLogger.INFO, "length=" + length + ", u=" + u + ", e=" + e);
+						if (u > -1 && e > -1 && length > u && length > e && e > u) {
+							String prefix = displayFilename.substring(0, u);
+							String suffix = displayFilename.substring(e);
+							if(!(".PDF".equalsIgnoreCase(suffix) || ".ZIP".equalsIgnoreCase(suffix))) suffix = ""; 
+							displayFilename = prefix + suffix;
+							logger.log(IAppLogger.INFO, "displayFilename=" + displayFilename);
+						}
+					}
 				}
 				to.setDisplayFilename(displayFilename);
 				to.setOrgLevel(orgLevel);
