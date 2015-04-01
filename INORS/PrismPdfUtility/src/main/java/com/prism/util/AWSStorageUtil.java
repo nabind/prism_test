@@ -3,6 +3,7 @@ package com.prism.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -12,7 +13,12 @@ import com.amazonaws.Protocol;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
+import com.amazonaws.services.s3.model.DeleteObjectsResult;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.MultiObjectDeleteException;
+import com.amazonaws.services.s3.model.MultiObjectDeleteException.DeleteError;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
@@ -91,6 +97,36 @@ public class AWSStorageUtil {
 			logger.info(" - " + objectSummary.getKey() + " " + "(size = " + objectSummary.getSize() + ")");
 		}
 		logger.info("Exit: getObjectList()");
+	}
+	
+	/**
+	 * Remove assets from s3
+	 */
+	public void removeAsset(List<KeyVersion> keys) {
+		logger.info("keys = " + keys);
+		DeleteObjectsRequest multiObjectDeleteRequest = new DeleteObjectsRequest(this.bucketName);
+		multiObjectDeleteRequest.setKeys(keys);
+		
+		try {
+		    DeleteObjectsResult delObjRes = s3.deleteObjects(multiObjectDeleteRequest);
+		    logger.info("Successfully deleted all the %s items.\n" + delObjRes.getDeletedObjects().size());
+		    			
+		} catch (MultiObjectDeleteException mode) {
+		    // Process exception.
+			printDeleteResults(mode);
+		}
+		logger.info("Asset Removed from S3: ");
+	}
+	
+	private void printDeleteResults(MultiObjectDeleteException mode) {
+        System.out.format("%s \n", mode.getMessage());
+        System.out.format("No. of objects successfully deleted = %s\n", mode.getDeletedObjects().size());
+        System.out.format("No. of objects failed to delete = %s\n", mode.getErrors().size());
+        System.out.format("Printing error data...\n");
+        for (DeleteError deleteError : mode.getErrors()){
+            System.out.format("Object Key: %s\t%s\t%s\n", 
+                    deleteError.getKey(), deleteError.getCode(), deleteError.getMessage());
+        }
 	}
 
 }

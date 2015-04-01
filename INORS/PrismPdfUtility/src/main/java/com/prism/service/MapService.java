@@ -1,5 +1,6 @@
 package com.prism.service;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -18,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
 import com.prism.dao.MapDao;
 import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
 import com.prism.to.StudentTO;
+import com.prism.util.AWSStorageUtil;
 import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
 import com.prism.util.PropertyFile;
@@ -73,6 +76,12 @@ public class MapService implements PrismPdfService {
 				OrgTO orgTo = dao.getParentOrgNodeId(schoolOrgNodeId);
 				String districtOrgNodeId = orgTo.getParentJasperOrgId();
 				String customerId = orgTo.getCustomerCode();
+				String orgNodePath = orgTo.getOrgNodeCodePath();
+				
+				String orgNodeCodes[] = orgNodePath.split("~");
+				String districtCode = orgNodeCodes[2];
+				String schoolCode =  orgNodeCodes[3];
+				
 				List<StudentTO> students = dao.getStudents(schoolOrgNodeId);
 				if(students != null && students.size() == 0) {
 					logger.info("There is no student present for school " + schoolOrgNodeId);
@@ -136,6 +145,26 @@ public class MapService implements PrismPdfService {
 					} else {
 						chunks.add(allStudents);
 					}
+					
+					String rootPath = dao.getRootFilePath(customerId,custProdId);
+					String rootLocForS3 = CustomStringUtil.appendString(rootPath, File.separator, 
+							"ISR", File.separator,districtCode,File.separator,
+							schoolCode,File.separator);
+					
+					//Removing entire directory in S3 for the current school
+					List<KeyVersion> keys = new ArrayList<KeyVersion>();
+					
+					
+					String[] StudentIdArr = allStudents.split(",");
+					
+					for (int i= 0; i < StudentIdArr.length; i++) {
+						for(String subtestId : subtest) {
+							keys.add(new KeyVersion(CustomStringUtil.appendString(rootLocForS3,  
+									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId,"_",StudentIdArr[i],".pdf")));
+						}
+					}					
+					
+					removeFilesFromS3(keys);
 					
 					for(String chunkStud : chunks) {
 						// now iterate on subtests
@@ -280,5 +309,12 @@ public class MapService implements PrismPdfService {
 		return mailSent;
 	}
 
+	
+	private void removeFilesFromS3(List<KeyVersion> keys) {
+		AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
+		logger.debug("Calling aWSStorageUtil.removeFilesFromS3 ");
+		aWSStorageUtil.removeAsset(keys);
+		logger.info("File Successfully removed from S3");
+	}
 	
 }

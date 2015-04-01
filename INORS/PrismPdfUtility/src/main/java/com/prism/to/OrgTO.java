@@ -38,6 +38,9 @@ public class OrgTO implements Comparable<OrgTO> {
 	private int gradeSeq;
 	private String orgMode;
 	private String testAdministration;
+	private String orgNodeCodePath;
+
+	
 
 	// Istep
 	private String orgNode;
@@ -386,7 +389,15 @@ public class OrgTO implements Comparable<OrgTO> {
 		// Tasc
 		this.sendLoginPdf = "Y".equals(sendLoginPdf) ? true : false;
 	}
+	
+	public String getOrgNodeCodePath() {
+		return orgNodeCodePath;
+	}
 
+	public void setOrgNodeCodePath(String orgNodeCodePath) {
+		this.orgNodeCodePath = orgNodeCodePath;
+	}
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -126,13 +126,14 @@ public class MapDao extends CommonDao {
 		OrgTO orgTO = new OrgTO();
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = "SELECT PARENT_ORG_NODEID, customerid FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
+			String query = "SELECT PARENT_ORG_NODEID, CUSTOMERID ,ORG_NODE_CODE_PATH FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.valueOf(orgNodeId));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				orgTO.setParentJasperOrgId(rs.getString(1));
 				orgTO.setCustomerCode(rs.getString(2));
+				orgTO.setOrgNodeCodePath(rs.getString(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -201,6 +202,43 @@ public class MapDao extends CommonDao {
 			releaseResources(conn, pstmt, rs);
 		}
 		return studentSchool;
+	}
+	
+	/**
+	 * Fetch S3 root path for ISR based on customerId and custProdId  
+	 * @param customerId
+	 * @param custProdId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getRootFilePath(String customerId, String custProdId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String rootFilePath = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			String query = CustomStringUtil.appendString(
+					"SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
+					" WHERE lin.customerid = cust.customerid ",
+					" AND lin.productid = prod.productid ",
+					" AND cust.customerid = ? AND lin.CUST_PROD_ID = ? ",
+					" AND ROWNUM = 1");
+			pstmt = conn.prepareCall(query);
+			pstmt.setLong(1, Long.valueOf(customerId));
+			pstmt.setLong(2, Long.valueOf(custProdId));
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+			  rootFilePath = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		return rootFilePath;
 	}
 
 }
