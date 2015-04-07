@@ -130,27 +130,30 @@
 				$("#_class_count").text( data.process.classCount );
 				$("#_stud_count").text( data.process.studCount );
 				$("#_user_count").text( data.process.userCount );
-				if(pdfStatus == 'Success' && pdfPresent) {
-				$("#_pdf_name").html( '<a href="viewPdf.htm?type=L&processId='+processId+'" target="_blank" name="processId" class="regularLink">View/Download</a>' );
-				} else {
-				$("#_pdf_name").html( 'No PDF is generated for this process.' );
-				}
 				
 				if(letterPresent) {
 					$("#_letter_name").html( '<a href="viewPdf.htm?type=I&processId='+processId+'" target="_blank" name="processId" class="regularLink">View/Download</a>' );
-					} else {
-					$("#_leter_name").html( 'No Invitation Letter is generated for this process.' );
+				} else {
+					$("#_letter_name").html( 'No Invitation Letter is generated for this process.' );
+				}
+				
+				if(/*pdfStatus == 'Success' &&*/ pdfPresent) {
+					$("#_pdf_name").html( '<a href="viewPdf.htm?type=L&processId='+processId+'" target="_blank" name="processId" class="regularLink">View/Download</a>' );
+				} else {
+					$("#_pdf_name").html( 'No PDF is generated for this process.' );
 				}
 				
 				
+				
+				
 				<% if(UserController.checkAdmin(request)) { %>
-				if(pdfStatus == 'Success' && pdfPresent) {
+				if(/* pdfStatus == 'Success' &&  */pdfPresent) {
 					$("#_resend_pdf").html( '<a class="_resend_pdf buttonLink" href="#" onClick="sendEmail(this.id, \'L\');" name="processId" id="'+processId+'">Resend login email</a> to [<span class="_to_email">'+data.process.email+'</span>]' );
 				}
 				if(letterPresent) {
 					$("#_resend_letter").html( '<a class="_resend_letter buttonLink" href="#" onClick="sendEmail(this.id, \'I\');" name="processId" id="'+processId+'">Resend invitation letter</a> to [<span class="_to_email">'+data.process.email+'</span>]' );
 				}
-				if(pdfStatus == 'Success' && pdfPresent && letterPresent) {
+				if(/* pdfStatus == 'Success' &&  */pdfPresent && letterPresent) {
 					$("#_resend_both").html( '<a class="_resend_both buttonLinkGreen" href="#" onClick="sendEmail(this.id, \'A\');" name="processId" id="'+processId+'">Resend Both PDFs</a> to [<span class="_to_email">'+data.process.email+'</span>]' );
 				}
 				<% } %>
@@ -381,16 +384,16 @@
 							if(log != null && log.indexOf("No New School and Teacher user found. Exiting the process.") != -1) {
 								pdfPresent = false;
 							} */
-							boolean pdfPresent = true;
+							boolean pdfPresent = false;
 							String pdfFileLoc = process.getLoginPDFLoc();
-							if(pdfFileLoc != null && pdfFileLoc.trim().length() == 0) {
-								pdfPresent = false;
+							if(pdfFileLoc != null && pdfFileLoc.trim().length() > 0) {
+								pdfPresent = true;
 							}
 							
-							boolean letterPresent = true;
+							boolean letterPresent = false;
 							String letterFileLoc = process.getLetterPDFLoc();
-							if(letterFileLoc != null && letterFileLoc.trim().length() == 0) {
-								letterPresent = false;
+							if(letterFileLoc != null && letterFileLoc.trim().length() > 0) {
+								letterPresent = true;
 							}
 						
 						%>
