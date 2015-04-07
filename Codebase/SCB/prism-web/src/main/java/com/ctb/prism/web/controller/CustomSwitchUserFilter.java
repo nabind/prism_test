@@ -28,7 +28,6 @@ import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -50,12 +49,15 @@ import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.security.provider.UserDetailsManager;
+import com.ctb.prism.login.security.tokens.UsernamePasswordAuthenticationToken;
 import com.ctb.prism.login.transferobject.UserTO;
 
 public class CustomSwitchUserFilter extends GenericFilterBean implements
@@ -85,6 +87,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 	
 	@Autowired
 	private ILoginService loginService;
+	
+	@Autowired private CookieThemeResolver themeResolver;
 
 	// ~ Methods
 	// ========================================================================================================
@@ -117,6 +121,11 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
+		if(contractName != null && contractName.trim().length() == 0) {
+			contractName = request.getParameter("theme");
+			themeResolver.setThemeName(request, response, contractName);
+		}
 		// check for switch or exit request
 		if (requiresSwitchUser(request)) {
 			// if set, attempt switch and store original
@@ -141,6 +150,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				}
 				//Get details of prev admin user details
 				paramMap.put("username", prevAdmin);
+				paramMap.put("contractName", contractName);
 				UserTO prevAdminuserDetails = loginService.getUserByEmail(paramMap);
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN, prevAdmin);
@@ -186,6 +196,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				//Get details of prev admin user details				
 				try {
 					paramMap.put("username", userDetails.getUsername());
+					paramMap.put("contractName", contractName);
 					UserTO prevAdminuserDetails = loginService.getUserByEmail(paramMap);
 					request.getSession().setAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME, prevAdminuserDetails.getDisplayName());
 				} catch (SystemException e) {
@@ -228,6 +239,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 	protected Authentication attemptSwitchUser(HttpServletRequest request)
 			throws AuthenticationException {
 		UsernamePasswordAuthenticationToken targetUserRequest = null;
+		
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
 
 		String username = request.getParameter(SPRING_SECURITY_SWITCH_USERNAME_KEY);
 		String isEdu = request.getParameter("isEdu");
@@ -252,6 +265,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			paramMap.put("username", username);
 			paramMap.put("custProdId", adminYear);
 			paramMap.put("prevOrgId", prevOrgId);
+			paramMap.put("contractName", contractName);
 			if(!loginService.checkOrgHierarchy(paramMap)){
 				return null;
 			}
@@ -270,6 +284,8 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 
 		// OK, create the switch user token
 		targetUserRequest = createSwitchUserToken(request, targetUser, isEdu);
+		// added to pass contract name in custom UsernamePasswordAuthenticationToken
+    	if(targetUserRequest != null) targetUserRequest.setContractName(Utils.getContractName(contractName));
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Switch User Token [" + targetUserRequest + "]");

@@ -1,7 +1,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page import="com.ctb.prism.core.constant.IApplicationConstants"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
+<spring:theme code="theme.name" var="themeName"/>
 <c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 	<!--[if gt IE 8]>
@@ -432,7 +434,7 @@
 									if(isClassUser(this.availableRoleList)) userContent += ' <a id="'+ this.userId +'" tenantId ="' + this.tenantId + '" href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a> ';
 								</sec:authorize>
 
-								userContent += ' <a id="'+ this.userId +'" param="'+ this.userName +'" href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>';
+								userContent += ' <a id="'+ this.userId +'" param="'+ this.userName +'" themeName="${themeName}"  href="javascript:void(0);" class="button icon-users icon-size2 with-tooltip login-as" title="Login as User"></a>';
 						  
 							  <sec:authorize ifNotGranted="ROLE_SSO">
 								userContent += ' <a id="'+ this.userId +'" userName="'+ this.userName + '" parentId="' + this.parentId + '" tenantId ="' + this.tenantId +'" href="#" class=" button icon-trash with-tooltip confirm delete-User" title="Delete"></a>';

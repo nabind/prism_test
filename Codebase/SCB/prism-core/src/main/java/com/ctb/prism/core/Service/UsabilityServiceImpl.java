@@ -174,6 +174,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 		try {
     		JAXBContext jc = JAXBContext.newInstance( StudentList.class );
     		Marshaller mc = jc.createMarshaller();
+    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentList, result);
     		storeWsObject(result.getWriter().toString(), processId, requestObj);
@@ -186,6 +187,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 		try {
     		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
     		Marshaller mc = jc.createMarshaller();
+    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentListTO, result);
     		storeWsObject(result.getWriter().toString(), processId, requestObj);
@@ -198,6 +200,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 		try {
 			JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
     		Marshaller mc = jc.createMarshaller();
+    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentDataLoadTO, result);
     		storeWsObject(result.getWriter().toString(), processId, requestObj);

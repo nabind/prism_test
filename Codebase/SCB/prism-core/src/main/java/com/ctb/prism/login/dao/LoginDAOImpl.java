@@ -1187,11 +1187,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		
 		final String userName = (String)paramMap.get("username"); 
 		final String custProdId = (String)paramMap.get("custProdId"); 
-		final String prevOrgId = (String)paramMap.get("prevOrgId"); 
+		final String prevOrgId = (String)paramMap.get("prevOrgId");
+		String contractName = (String)paramMap.get("contractName"); 
+		if(contractName == null) contractName = Utils.getContractName();
 		BigDecimal existFlag;
 		boolean returnFlag = Boolean.FALSE;
 		try{
-			existFlag = (BigDecimal)getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+			existFlag = (BigDecimal)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_ORG_HIERARCHY);
 					cs.setString(1, userName);

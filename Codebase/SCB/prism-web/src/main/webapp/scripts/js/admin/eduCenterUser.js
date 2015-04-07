@@ -47,7 +47,7 @@ $(document).ready(function() {
 		
 	});	
 	$(".login-as").live("click", function() {
-		location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param');
+		location.href = 'j_spring_security_switch_user?j_username='+$(this).attr('param') + '&theme=' + $(this).attr('themeName');
 	});	
 	
 	//====================THIS METHOD POPULATES THE COUNTRY IN THE PROFILE PAGE=============

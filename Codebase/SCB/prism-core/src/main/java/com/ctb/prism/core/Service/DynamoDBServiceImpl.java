@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.ctb.prism.core.util.CustomStringUtil;
+import com.ctb.prism.core.util.Utils;
 
 @Service("dynamoDBService")
 public class DynamoDBServiceImpl implements IDynamoDBService {
@@ -44,7 +46,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
         	BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIAJCEB4JEZJRM2WFXQ", "lOxQhmTWGFe2tKb0YdxHsnaHTAGY3vCjddj0Lfet");
         	DynamoDB ddb = new DynamoDB(new AmazonDynamoDBClient(awsCreds));
         	sdb.amazonDynamoDB = ddb;
-        	sdb.storeWsObject("qa", "<request>asas</request>", 12345, true);
+        	sdb.storeWsObject("qa", "<rosterId>asas</rosterId>", 12345, true);
         	//loadCacheKey("dev", "inors", "11111");
         	//sdb.fetchCacheKeys("dev", "tasc");
         	//sdb.deleteContractKeys("dev", "inors");
@@ -53,22 +55,56 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
         }
     }
     
+    @Autowired	private IRepositoryService repositoryService;
+    
     public void storeWsObject(String environment, String obj, long processId, boolean requestObj) {
     	if(environment != null && processId != 0) {
 			String tableName = CustomStringUtil.appendString(wsTableName, environment.toUpperCase());
 			Table table = amazonDynamoDB.getTable(tableName);
+			String s3Location = "";
 			try {
-				System.out.println("Adding data to " + tableName);
+				// store the xml to S3
+				s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/" + processId, requestObj? "_REQ" : "_RES", ".xml") ;
+				repositoryService.uploadAsset(s3Location, IOUtils.toInputStream(obj));
+			} catch (Exception e) {
+				s3Location = "failed";
+			}
+			
+			try {
+				// get roster id for OAS
+				String rosterId = between(obj, "<rosterId>", "</rosterId>");
+				String uuid = between(obj, "<UUID>", "</UUID>");
+				
 				Item item = new Item()
 						.withPrimaryKey("processid", processId)
-						.withString("request_obj", obj)
-						.withString("type", requestObj? "REQ" : "RES");
+						.withString("request_obj", CustomStringUtil.appendString("Request xml stored into s3: ", s3Location))
+						.withString("type", requestObj? "REQ" : "RES")
+						.withString("roster_id", rosterId)
+						.withString("uuid", uuid)
+						.withString("date", Utils.getDateTime(true))
+						.withString("source", "-".equals(rosterId)? "ER" : "OAS");
 				table.putItem(item);
+				
 			} catch (Exception e) {
-				System.err.println("Failed to create item in " + tableName);
-				System.err.println(e.getMessage());
 			}
     	}
+	}
+    
+	private static String between(String value, String a, String b) {
+		// Return a substring between the two strings.
+		int posA = value.indexOf(a);
+		if (posA == -1) {
+			return "-";
+		}
+		int posB = value.lastIndexOf(b);
+		if (posB == -1) {
+			return "-";
+		}
+		int adjustedPosA = posA + a.length();
+		if (adjustedPosA >= posB) {
+			return "-";
+		}
+		return value.substring(adjustedPosA, posB);
 	}
     
     
