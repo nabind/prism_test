@@ -273,7 +273,7 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 		
 		
 		
-		UserDetails targetUser = userDetailsService.loadUserByUsername(username);
+		UserDetails targetUser = userDetailsService.loadUserByUsername(username, contractName);
 		
 		String loginAs = (String) request.getSession().getAttribute(IApplicationConstants.LOGIN_AS);
 		if (loginAs != null && IApplicationConstants.ACTIVE_FLAG.equals(loginAs)) {
