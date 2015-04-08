@@ -273,98 +273,104 @@ public class TascDAOImpl {
 		StringBuffer queryBuff = new StringBuffer();
 		
 		if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-			queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
-			queryBuff.append(" ESSH.UUID UUID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
-			queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
-			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'ERESOURCE') SOURCE_SYSTEM,");
-			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'CO') EXCEPTION_STATUS,");
-			queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
-			queryBuff.append(" ESSH.BARCODE BARCODE,");
-			queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
-			queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
-			queryBuff.append(" ESSH.FORM FORM,");
-			queryBuff.append(" ESSH.DATETIMESTAMP,");
-			queryBuff.append(" NVL(EED.ER_EXCDID, 0) ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,");
-			queryBuff.append(" ESSH.TESTCENTERCODE TESTING_SITE_CODE,");
-			queryBuff.append(" ESSH.TESTCENTERNAME TESTING_SITE_NAME,");
-			queryBuff.append(" ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID,");
-			queryBuff.append(" ESSH.STATENAME STATENAME,");
-			queryBuff.append(" ESSH.DATEOFBIRTH DATEOFBIRTH,");
-			queryBuff.append(" ESSH.GENDER GENDER,");
-			queryBuff.append(" ESSH.GOVERNMENTID GOVERNMENTID,");
-			queryBuff.append(" ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE,");
-			queryBuff.append(" ESSH.ADDRESS1 ADDRESS1,");
-			queryBuff.append(" ESSH.CITY CITY,");
-			queryBuff.append(" ESSH.COUNTY COUNTY,");
-			queryBuff.append(" ESSH.STATE STATE,");
-			queryBuff.append(" ESSH.ZIP ZIP,");
-			queryBuff.append(" ESSH.EMAIL EMAIL,");
-			queryBuff.append(" ESSH.ALTERNATEEMAIL ALTERNATEEMAIL,");
-			queryBuff.append(" ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,");
-			queryBuff.append(" ESSH.CELLPHONENUMBER CELLPHONENUMBER,");
-			queryBuff.append(" ESSH.ALTERNATENUMBER ALTERNATENUMBER,");
-			queryBuff.append(" ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE,");
-			queryBuff.append(" ESSH.HOMELANGUAGE HOMELANGUAGE,");
-			queryBuff.append(" ESSH.EDUCATIONLEVEL EDUCATIONLEVEL,");
-			queryBuff.append(" ESSH.ATTENDCOLLEGE ATTENDCOLLEGE,");
-			queryBuff.append(" ESSH.CONTACT CONTACT,");
-			queryBuff.append(" ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,");
-			queryBuff.append(" ESSH.REGISTEREDON REGISTEREDON,");
-			queryBuff.append(" ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER,");
-			queryBuff.append(" ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE,");
-			queryBuff.append(" ESSH.SCHEDULE_ID SCHEDULE_ID,");
-			queryBuff.append(" ESSH.TIMEOFDAY TIMEOFDAY,");
-			queryBuff.append(" ESSH.DATECHECKEDIN DATECHECKEDIN,");
-			queryBuff.append(" ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE,");
-			queryBuff.append(" ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE,");
-			queryBuff.append(" ESSH.TASCREADINESS TASCREADINESS,");
-			queryBuff.append(" ESSH.ECC ECC,");
-			queryBuff.append(" ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE,");
-			queryBuff.append(" ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,");
-			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
-			queryBuff.append(" TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY') PROCESSED_DATE");
-			queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
-			queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
-			queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
-			queryBuff.append(" WHERE 1 = 1");
+			//temporary patch needed for production
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
+				getERQueryForDate(queryBuff);
+			} else {
+				queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
+				queryBuff.append(" ESSH.UUID UUID,");
+				queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
+				queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
+				queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
+				queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'ERESOURCE') SOURCE_SYSTEM,");
+				queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'CO') EXCEPTION_STATUS,");
+				queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
+				queryBuff.append(" ESSH.BARCODE BARCODE,");
+				queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
+				queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
+				queryBuff.append(" ESSH.FORM FORM,");
+				queryBuff.append(" ESSH.DATETIMESTAMP,");
+				queryBuff.append(" NVL(EED.ER_EXCDID, 0) ER_EXCDID,");
+				queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,");
+				queryBuff.append(" ESSH.TESTCENTERCODE TESTING_SITE_CODE,");
+				queryBuff.append(" ESSH.TESTCENTERNAME TESTING_SITE_NAME,");
+				queryBuff.append(" ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID,");
+				queryBuff.append(" ESSH.STATENAME STATENAME,");
+				queryBuff.append(" ESSH.DATEOFBIRTH DATEOFBIRTH,");
+				queryBuff.append(" ESSH.GENDER GENDER,");
+				queryBuff.append(" ESSH.GOVERNMENTID GOVERNMENTID,");
+				queryBuff.append(" ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE,");
+				queryBuff.append(" ESSH.ADDRESS1 ADDRESS1,");
+				queryBuff.append(" ESSH.CITY CITY,");
+				queryBuff.append(" ESSH.COUNTY COUNTY,");
+				queryBuff.append(" ESSH.STATE STATE,");
+				queryBuff.append(" ESSH.ZIP ZIP,");
+				queryBuff.append(" ESSH.EMAIL EMAIL,");
+				queryBuff.append(" ESSH.ALTERNATEEMAIL ALTERNATEEMAIL,");
+				queryBuff.append(" ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,");
+				queryBuff.append(" ESSH.CELLPHONENUMBER CELLPHONENUMBER,");
+				queryBuff.append(" ESSH.ALTERNATENUMBER ALTERNATENUMBER,");
+				queryBuff.append(" ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE,");
+				queryBuff.append(" ESSH.HOMELANGUAGE HOMELANGUAGE,");
+				queryBuff.append(" ESSH.EDUCATIONLEVEL EDUCATIONLEVEL,");
+				queryBuff.append(" ESSH.ATTENDCOLLEGE ATTENDCOLLEGE,");
+				queryBuff.append(" ESSH.CONTACT CONTACT,");
+				queryBuff.append(" ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,");
+				queryBuff.append(" ESSH.REGISTEREDON REGISTEREDON,");
+				queryBuff.append(" ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER,");
+				queryBuff.append(" ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE,");
+				queryBuff.append(" ESSH.SCHEDULE_ID SCHEDULE_ID,");
+				queryBuff.append(" ESSH.TIMEOFDAY TIMEOFDAY,");
+				queryBuff.append(" ESSH.DATECHECKEDIN DATECHECKEDIN,");
+				queryBuff.append(" ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE,");
+				queryBuff.append(" ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE,");
+				queryBuff.append(" ESSH.TASCREADINESS TASCREADINESS,");
+				queryBuff.append(" ESSH.ECC ECC,");
+				queryBuff.append(" ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE,");
+				queryBuff.append(" ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,");
+				queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
+				queryBuff.append(" TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY') PROCESSED_DATE");
+				queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
+				queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
+				queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
+				queryBuff.append(" WHERE 1 = 1");
+				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+					queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
+				}
+				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+					queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')");
+				}
+				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+					queryBuff.append(" AND ESSH.UUID LIKE ?");
+				}
+				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+					queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER(?)");
+				}
+				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+					queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
+				}
+				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+					queryBuff.append(" AND ESSH.ER_SS_HISTID = ?");
+				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					queryBuff.append(" AND EED.PROCESS_ID = ?");
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					queryBuff.append(" AND ESSH.STATE_CODE = ?");
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					queryBuff.append(" AND ESSH.FORM = ?");
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					queryBuff.append(" AND ESSH.BARCODE = ?");
+				}
+				queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
 			}
-			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')");
-			}
-			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				queryBuff.append(" AND ESSH.UUID LIKE ?");
-			}
-			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-				queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER(?)");
-			}
-			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
-			}
-			if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
-				queryBuff.append(" AND ESSH.ER_SS_HISTID = ?");
-			}
-			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-				queryBuff.append(" AND EED.PROCESS_ID = ?");
-			}
-			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-				queryBuff.append(" AND ESSH.STATE_CODE = ?");
-			}
-			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-				queryBuff.append(" AND ESSH.FORM = ?");
-			}
-			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-				queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
-			}
-			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-				queryBuff.append(" AND ESSH.BARCODE = ?");
-			}
-			queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
-		}else{
+			
+		} else{
 			queryBuff.append("SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
 			queryBuff.append(" ESD.UUID UUID,");
 			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
@@ -852,6 +858,34 @@ public class TascDAOImpl {
 			try {conn.close();} catch (Exception e2) {}
 		}
 		return errorLog;
+	}
+	
+	private StringBuffer getERQueryForDate(StringBuffer queryBuff){
+		queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,")
+		.append(" ESSH.UUID UUID,")
+		.append(" TO_CHAR(NVL((SELECT EED.TEST_ELEMENT_ID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'NA')) TEST_ELEMENT_ID,")
+		.append(" NVL(TO_CHAR((SELECT EED.PROCESS_ID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID)), 'NA') PROCESS_ID,")
+		.append(" TO_CHAR(NVL((SELECT EED.EXCEPTION_CODE FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'NA')) EXCEPTION_CODE,")
+		.append(" NVL((SELECT EED.SOURCE_SYSTEM FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'ERESOURCE') SOURCE_SYSTEM,")
+		.append(" NVL((SELECT EED.EXCEPTION_STATUS FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'CO') EXCEPTION_STATUS,")
+		.append(" ESSH.ER_SS_HISTID ER_SS_HISTID, ESSH.BARCODE BARCODE, ESSH.DATE_SCHEDULED DATE_SCHEDULED, ESSH.STATE_CODE STATE_CODE, ESSH.FORM FORM,ESSH.DATETIMESTAMP,")
+		.append(" NVL((SELECT EED.ER_EXCDID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 0) ER_EXCDID,")
+		.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,")
+		.append(" ESSH.TESTCENTERCODE TESTING_SITE_CODE, ESSH.TESTCENTERNAME TESTING_SITE_NAME, ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID, ESSH.STATENAME STATENAME,")
+		.append(" ESSH.DATEOFBIRTH DATEOFBIRTH, ESSH.GENDER GENDER, ESSH.GOVERNMENTID GOVERNMENTID, ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE, ESSH.ADDRESS1 ADDRESS1,")
+		.append(" ESSH.CITY CITY, ESSH.COUNTY COUNTY, ESSH.STATE STATE, ESSH.ZIP ZIP, ESSH.EMAIL EMAIL, ESSH.ALTERNATEEMAIL ALTERNATEEMAIL, ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,")
+		.append(" ESSH.CELLPHONENUMBER CELLPHONENUMBER, ESSH.ALTERNATENUMBER ALTERNATENUMBER, ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE, ESSH.HOMELANGUAGE HOMELANGUAGE,")
+		.append(" ESSH.EDUCATIONLEVEL EDUCATIONLEVEL, ESSH.ATTENDCOLLEGE ATTENDCOLLEGE, ESSH.CONTACT CONTACT, ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,")
+		.append(" ESSH.REGISTEREDON REGISTEREDON, ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER, ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE, ESSH.SCHEDULE_ID SCHEDULE_ID,")
+		.append(" ESSH.TIMEOFDAY TIMEOFDAY, ESSH.DATECHECKEDIN DATECHECKEDIN, ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE, ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE, ESSH.TASCREADINESS TASCREADINESS,")
+		.append(" ESSH.ECC ECC, ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE, ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,")
+		.append(" DECODE(NVL((SELECT EED.ER_EXCDID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 0),0,'', 'ERROR CODE-' || (SELECT EED.EXCEPTION_CODE FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID) || ': ' ||")
+		.append(" (SELECT EED.DESCRIPTION FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID)) ERROR_DESCRIPTION, TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY') PROCESSED_DATE")
+		.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH")
+		.append(" WHERE TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')")
+		.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')")
+		.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
+		return queryBuff;
 	}
 	
 }
