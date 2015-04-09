@@ -16,12 +16,16 @@ import java.io.OutputStream;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.HtmlUtils;
 
@@ -31,6 +35,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.USER_TYPE;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.login.Service.ILoginService;
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.google.gson.Gson;
@@ -574,14 +579,31 @@ public final class Utils {
 		return bytes;
 	}
 	
-	
 	public static boolean usernameNeeded(String reportUrl) {
-
+		boolean userNeeded = false;
+		try { 
+			// this block is added to check if the user has CTB role - needed for inors RTR user to see data even if the dataload message is on
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			AuthenticatedUser authenticatedUser = (AuthenticatedUser) auth.getPrincipal();
+			Collection<GrantedAuthority> authorities = authenticatedUser.getAuthorities();
+			if(authorities != null) {
+				List<GrantedAuthority> extraAuths = new ArrayList<GrantedAuthority>(auth.getAuthorities());
+				extraAuths.addAll(authorities);
+				for (int i = 0; i < extraAuths.size(); i++) {
+					if("ROLE_CTB".equals(extraAuths.get(i).getAuthority())) {
+						userNeeded = true;
+						break;
+					}
+				}
+			}
+		} catch (Exception ex) {}
+		
 		if("/public/TASC/Reports/Student_Search_files".equals(reportUrl)
 				|| "/public/TASC/Reports/TASC_Org_Hier/Candidate_Report_files".equals(reportUrl)
 				|| "/public/INORS/Report/IStep_Growth_Matrix_1_files".equals(reportUrl)
 				|| "/public/INORS/Report/Student_Tabular_Report_files".equals(reportUrl)
-				|| (reportUrl != null && reportUrl.indexOf("TASC_Edu_Center") != -1 ) ) {
+				|| (reportUrl != null && reportUrl.indexOf("TASC_Edu_Center") != -1 ) 
+				|| userNeeded) {
 			return true;
 		}
 
