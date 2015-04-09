@@ -1528,6 +1528,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					Long jobId = ((BigDecimal) data.get("job_id")).longValue();
 					if (filePath != null && filePath.length() > 0) {
 						jobMap.put(jobId, filePath);
+					}else{
+						jobMap.put(jobId, "");
 					}
 				}
 			}
