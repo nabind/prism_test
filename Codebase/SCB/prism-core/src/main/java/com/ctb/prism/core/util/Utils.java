@@ -579,6 +579,11 @@ public final class Utils {
 		return bytes;
 	}
 	
+	/**
+	 * This method returns true if we need to pass username and userid to reports
+	 * @param reportUrl
+	 * @return
+	 */
 	public static boolean usernameNeeded(String reportUrl) {
 		boolean userNeeded = false;
 		try { 
