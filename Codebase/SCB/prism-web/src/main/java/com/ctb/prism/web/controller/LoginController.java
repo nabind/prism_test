@@ -258,8 +258,9 @@ public class LoginController {
 		
 		if(paramMap.get("theme") != null){
 			String theme = (String)paramMap.get("theme");
+			paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 			if("login".equals(paramMap.get("action"))){
-				paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
+				//paramMap.put("contractName", Utils.getContractNameNoLogin(theme));
 				if (theme.indexOf(IApplicationConstants.PARENT_LOGIN) != -1) {
 					paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE);
 				}else{
@@ -279,7 +280,6 @@ public class LoginController {
 				}
 			}
 		}
-		
 		Map<String, Object> messageMap = loginService.getSystemConfigurationMessage(paramMap);
 		return messageMap;
 	}
