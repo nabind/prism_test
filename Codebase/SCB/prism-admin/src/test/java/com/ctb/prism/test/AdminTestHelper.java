@@ -802,6 +802,18 @@ public class AdminTestHelper {
 		paramMap.put("userRoles", new String[] { "CTB_USER" });
 		return paramMap;
 	}
+	
+	public static Map<String, Object> helpAddNewUser2(TestParams testParams) {
+		Map<String, Object> searchParamMap = new HashMap<String, Object>();
+		searchParamMap.put("NODEID", "0");
+		searchParamMap.put("CURRENTORG", "0");				
+		searchParamMap.put("ADMINYEAR", "0");
+		searchParamMap.put("SEARCHPARAM", null);
+		searchParamMap.put("CUSTOMERID", "0");
+		searchParamMap.put("ORGMODE","PUBLIC");
+		searchParamMap.put("moreCount", "15");
+		return searchParamMap;
+	}
 
 	public static Map<String, Object> helpSearchEduUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();

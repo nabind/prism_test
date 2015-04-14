@@ -97,11 +97,11 @@ public class AdminServiceImpl implements IAdminService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.service.IAdminService#addNewUser(java.util.Map)
+	 * @see com.ctb.prism.admin.service.IAdminService#addNewUser(java.util.Map,java.util.Map)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception{
-		return adminBusiness.addNewUser(paramMap);
+	public UserTO addNewUser(Map<String, Object> paramMap,Map<String, Object> searchParamMap) throws Exception{
+		return adminBusiness.addNewUser(paramMap,searchParamMap);
 	}
 
 	/*

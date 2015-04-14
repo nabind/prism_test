@@ -62,6 +62,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 	private IAdminService adminService;
 
 	TestParams testParams;
+	TestParams testParams2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -136,7 +137,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testAddNewUser() throws Exception {
-		UserTO user = adminService.addNewUser(AdminTestHelper.helpAddNewUser(testParams));
+		UserTO user = adminService.addNewUser(AdminTestHelper.helpAddNewUser(testParams),AdminTestHelper.helpAddNewUser2(testParams2));
 		assertNotNull(user);
 	}
 

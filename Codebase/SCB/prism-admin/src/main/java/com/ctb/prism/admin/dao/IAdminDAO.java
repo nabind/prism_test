@@ -84,11 +84,12 @@ public interface IAdminDAO {
 	 * add new user
 	 * 
 	 * @param paramMap
+	 * @param searchParamMap
 	 * @return
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception;
+	public UserTO addNewUser(Map<String, Object> paramMap,Map<String, Object> searchParamMap) throws Exception;
 
 	/**
 	 * @param userName
