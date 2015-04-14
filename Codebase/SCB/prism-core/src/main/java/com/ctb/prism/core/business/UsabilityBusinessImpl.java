@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.dao.IUsabilityDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -131,5 +133,16 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO) {
 		return usabilityDAO.updateFileSize(jobTrackingTO);
 	}
-
+	
+	public void generateStudentXMLExtract(Map<String, Object> paramMap) {
+		usabilityDAO.generateStudentXMLExtract(paramMap);
+	}
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap) {
+		return usabilityDAO.getClobXMLFile(paramMap);
+	}
 }

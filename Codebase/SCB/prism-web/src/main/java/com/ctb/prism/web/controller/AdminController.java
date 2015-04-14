@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +41,7 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.EmailSender;
 import com.ctb.prism.core.util.FileUtil;
@@ -895,7 +897,18 @@ public class AdminController {
 			/*userTo = adminService.addNewUser(userId, tenantId, userName,
 							emailId, password, userStatus, userRoles,orgLevel, adminYear, customer);*/
 			paramMap.put("contractName", Utils.getContractName());
-			userTo = adminService.addNewUser(paramMap);
+			
+			//Second parameter is needed to build cache key to implement cachePut
+			Map<String,Object> searchParamMap = new HashMap<String,Object>(); 
+			searchParamMap.put("NODEID", tenantId);
+			searchParamMap.put("CURRENTORG", tenantId);				
+			searchParamMap.put("ADMINYEAR", adminYear);
+			searchParamMap.put("SEARCHPARAM", null);
+			searchParamMap.put("CUSTOMERID", customer);
+			searchParamMap.put("ORGMODE", req.getSession().getAttribute(IApplicationConstants.ORG_MODE));
+			searchParamMap.put("moreCount", propertyLookup.get("count.results.button.more"));
+			
+			userTo = adminService.addNewUser(paramMap, searchParamMap);
 			res.setContentType("text/plain");
 			
 			if (userTo != null) {
@@ -2327,36 +2340,45 @@ public class AdminController {
 			paramMap.put("endDate", endDate);
 			paramMap.put("dateType", dateType);
 			
-			JobTrackingTO jobTrackingTO = new JobTrackingTO(); 
-			String docName = CustomStringUtil.appendString(currentUser, "_" ,Utils.getDateTime(), "_Querysheet.pdf");
-            jobTrackingTO.setJobName(docName);
-            jobTrackingTO.setUserId((String) request.getSession().getAttribute(
-            		IApplicationConstants.CURRUSERID));
-            String username = currentUser;
-            if(username != null && username.indexOf(RESTAuthenticationFilter.RANDOM_STRING) != -1) {
-            	// remove random character for SSO users
-            	username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
-            }
-            jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(
-            		username, "_", customer, "_StudentDataFile_", Utils.getDateTime("yyyyMMdd.HHmmss.SSS"), ".", fileType)
-                    );
-            //jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
-            jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.valueOf(dateType).toString());
-            jobTrackingTO.setRequestType(REQUEST_TYPE.SDF.toString());  
-            jobTrackingTO.setExtractFiletype(EXTRACT_FILETYPE.valueOf(fileType).toString());
-            String type = ("TTD".equals(dateType))? "Test Taken Date" : "Last Updated Date";
-            jobTrackingTO.setRequestSummary(CustomStringUtil.appendString(
-            		"Download student data file in ", fileType, " format.",
-            		//"\n\nRequest parameters:",
-            		"\n\nDate Type: ", type,
-            		"\n\nStart Date: ", startDate,
-            		"\n\nEnd Date: ", endDate));
-            jobTrackingTO.setJobStatus(JOB_STATUS.SU.toString()); 
-            jobTrackingTO.setCustomerId(customer);
-            jobTrackingTO.setExtractStartdate(startDate);
-            jobTrackingTO.setExtractEnddate(endDate);
-             
-			jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO); 
+			/* For On demand Student XML file generation we don't need to insert data in Job tracking from here as 
+			 * this will be handel in the PKG_DATA_EXTRACT.SP_CUSTOMER_STD_EXTRACT_ONLINE procedure*/
+			if(fileType.equals("XML")){
+				paramMap.put("customerId", customer);
+				paramMap.put("contractName", Utils.getContractName()); // needed as this will be async
+				usabilityService.generateStudentXMLExtract(paramMap);
+			} else {
+				JobTrackingTO jobTrackingTO = new JobTrackingTO(); 
+				String docName = CustomStringUtil.appendString(currentUser, "_" ,Utils.getDateTime(), "_Querysheet.pdf");
+	            jobTrackingTO.setJobName(docName);
+	            jobTrackingTO.setUserId((String) request.getSession().getAttribute(
+	            		IApplicationConstants.CURRUSERID));
+	            String username = currentUser;
+	            if(username != null && username.indexOf(RESTAuthenticationFilter.RANDOM_STRING) != -1) {
+	            	// remove random character for SSO users
+	            	username = username.substring(0, username.indexOf(RESTAuthenticationFilter.RANDOM_STRING));
+	            }
+	            jobTrackingTO.setRequestFilename(CustomStringUtil.appendString(
+	            		username, "_", customer, "_StudentDataFile_", Utils.getDateTime("yyyyMMdd.HHmmss.SSS"), ".", fileType)
+	                    );
+	            //jobTrackingTO.setAdminId(request.getParameter("p_Admin_Name"));
+	            jobTrackingTO.setExtractCategory(EXTRACT_CATEGORY.valueOf(dateType).toString());
+	            jobTrackingTO.setRequestType(REQUEST_TYPE.SDF.toString());  
+	            jobTrackingTO.setExtractFiletype(EXTRACT_FILETYPE.valueOf(fileType).toString());
+	            String type = ("TTD".equals(dateType))? "Test Taken Date" : "Last Updated Date";
+	            jobTrackingTO.setRequestSummary(CustomStringUtil.appendString(
+	            		"Download student data file in ", fileType, " format.",
+	            		//"\n\nRequest parameters:",
+	            		"\n\nDate Type: ", type,
+	            		"\n\nStart Date: ", startDate,
+	            		"\n\nEnd Date: ", endDate));
+	            jobTrackingTO.setJobStatus(JOB_STATUS.SU.toString()); 
+	            jobTrackingTO.setCustomerId(customer);
+	            jobTrackingTO.setExtractStartdate(startDate);
+	            jobTrackingTO.setExtractEnddate(endDate);
+	             
+				jobTrackingTO = usabilityService.insertIntoJobTracking(jobTrackingTO); 
+			}
+						
 			
 			response.setContentType("application/json");
 			response.getWriter().write( "{\"status\":\"Success\"}" );
@@ -2404,6 +2426,10 @@ public class AdminController {
 		String jobId = (String) request.getParameter("jobId");
 		String filePath = (String) request.getParameter("filePath");
 		String fileName = (String) request.getParameter("fileName");
+		String envString =  null;
+		String FOLDER_SUFFIX = "/";
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		
 		try {
 			if(jobId!=null && jobId.trim().length() > 0 ){
 				jobTrackingTO = usabilityService.getFileSize(jobId);
@@ -2413,29 +2439,74 @@ public class AdminController {
 				fileDetails.add(jobTrackingTO);
 			} else {
 				logger.log(IAppLogger.INFO, "retrieving FileSize() of " + filePath);
-				byte[] fileBytes =repositoryService.getAssetBytes(filePath);	
-				if(fileBytes.length > 0){
-					jobTrackingTO.setFileSize(FileUtil.humanReadableByteCount(fileBytes.length));
-					jobTrackingTO.setJobId(Long.parseLong(jobId));
+				
+				if(fileName.endsWith(".xml")) {
+					
+					@SuppressWarnings("unchecked")
+					Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
+					if(propertyMap == null){
+						Map<String, Object> tileParamMap = new HashMap<String, Object>();
+						tileParamMap.put("contractName", Utils.getContractName());
+						propertyMap = loginService.getContractProerty(tileParamMap);
+						request.getSession().setAttribute("propertyMap", propertyMap);
+					}
+					
+					envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + IApplicationConstants.SDF_XML_S3_LOCATION;
+					filePath = envString + fileName;
+				}
+				try{
+					byte[] fileBytes =repositoryService.getAssetBytes(filePath);
+					if(fileBytes.length > 0){
+						jobTrackingTO.setFileSize(FileUtil.humanReadableByteCount(fileBytes.length));
+						jobTrackingTO.setJobId(Long.parseLong(jobId));
+						jobTrackingTO.setFilePath(filePath);
+						jobTrackingTO.setRequestFilename(fileName);
+						fileDetails.add(jobTrackingTO);
+						jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
+					}	
+				} catch(Exception e) {
+					/*File need to be created from studentdata_extract clob and upload into s3*/
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("customer", customer);
+					paramMap.put("jobId",jobId);
+					StudentDataExtractTO studentDataExtractTO = usabilityService.getClobXMLFile(paramMap);
+					String studentXML = studentDataExtractTO.getStudentDataXML();
+
+					String fileLocation = CustomStringUtil.appendString(propertyLookup.get("xmlGenPath"), fileName);
+					
+					//fileLocation = fileLocation.replace("//", "/");
+					String tempDirectory = FileUtil.getDirFromFilePath(fileLocation);
+					File tempJobDirectory = new File(tempDirectory);
+					
+					if (!tempJobDirectory.exists()) {
+						logger.log(IAppLogger.INFO, "Creating directory ... " + tempJobDirectory);
+						boolean status = tempJobDirectory.mkdir();
+						logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
+					} else {
+						logger.log(IAppLogger.INFO, "Directory exists: " + tempJobDirectory);
+					}
+					File tempFile = new File(fileLocation);
+					FileUtil.createFile(fileLocation, studentXML.getBytes());
+					repositoryService.uploadAsset(envString, tempFile);
+					
+					jobTrackingTO = new JobTrackingTO();
+					jobTrackingTO.setJobId(Long.valueOf(jobId));
+					jobTrackingTO.setFileSize(FileUtil.fileSize(studentXML.getBytes()));
 					jobTrackingTO.setFilePath(filePath);
 					jobTrackingTO.setRequestFilename(fileName);
 					fileDetails.add(jobTrackingTO);
-					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
-				}				
-				/* File file = new File(filePath);
-				   if (file.exists()) {
-					double bytes = file.length();
-					double kilobytes = (bytes / 1024);
-					double megabytes = (kilobytes / 1024);
-					DecimalFormat df = new DecimalFormat("0.000");
-					df.setMaximumFractionDigits(3);
-					jobTrackingTO.setFileSize(df.format(megabytes) + "M");
-					jobTrackingTO.setJobId(Long.parseLong(jobId));
-					jobTrackingTO.setFilePath(filePath);
-					jobTrackingTO.setRequestFilename(fileName);
-					fileDetails.add(jobTrackingTO);
-					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);
-				}*/
+					jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);					
+					
+					//Time to delete the temporary file
+					boolean fileDeleteFlag = FileUtils.deleteQuietly(tempFile); //delete temp file
+					//tempJobDirectory.delete(); //delete temp directory
+					if(fileDeleteFlag){
+						logger.log(IAppLogger.INFO, "Temp file has been deleted successfully: " + fileName);
+					}else{
+						logger.log(IAppLogger.INFO, "Unable to delete Temp file: " + fileName);
+					}
+					
+				}
 			}
 			if (fileDetails.size() != 0) {
 				jsonString = JsonUtil.convertToJsonAdmin(fileDetails);

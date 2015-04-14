@@ -64,7 +64,7 @@
 		    											<c:when test="${group.jobStatus=='ER'}">
 		    												<span class="button icon-cross-round icon-size2 red with-tooltip" title="Error in file generation"></span>
 		    											</c:when>
-		    											<c:when test="${group.jobStatus=='NA'}">
+		    											<c:when test="${group.jobStatus=='NA' || group.jobStatus=='NRF'}">
 		    												<span class="button icon-forbidden icon-size2 orange with-tooltip" title="No files available for the selected criteria"></span>
 		    											</c:when>
 		    											<c:when test="${group.jobStatus=='CO'}">
@@ -92,6 +92,9 @@
 			                                            </c:when>
 			                                            <c:when test="${group.jobStatus=='ER'}">
 			                                            	<span class="icon-cross-round icon-size2 red" title="Error"></span>
+			                                            </c:when>
+			                                             <c:when test="${group.jobStatus=='NRF'}">
+			                                            	<span class="icon-minus-round icon-size2" title="No Result Found"></span>
 			                                            </c:when>
 			                                            <c:otherwise>
 												 			<span class="icon-hourglass icon-size2" title="In Progress"></span>

@@ -59,6 +59,8 @@ public interface IApplicationConstants {
 	public static String GDF_S3_LOCATION = "GDF/";
 	
 	public static String CR_BULK_S3_LOCATION = "/CR_BULK/";
+	
+	public static String SDF_XML_S3_LOCATION = "/SDF_XML/";
 
 	//public static String S3KEY_GRT_IC_STATIC_FILES = "S3KEY_GRT_IC_STATIC_FILES";
 	

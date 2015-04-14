@@ -4,6 +4,8 @@
 package com.ctb.prism.core.dao;
 
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,15 +27,19 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IQueryConstants;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
@@ -1156,5 +1162,102 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		jobTrackingTO.setSuccess(true);
 		return jobTrackingTO;
 	}
+	
+	public void generateStudentXMLExtract(Map<String, Object> paramMap){
+		final Long customerId =  Long.parseLong((String)paramMap.get("customerId"));
+		final String startDate = ((String)paramMap.get("startDate")).replaceAll("/", "");
+		final String endDate = ((String)paramMap.get("endDate")).replaceAll("/", "");
+		final String contractName  = (String)paramMap.get("contractName");
+		logger.log(IAppLogger.INFO, "generateStudentXMLExtract() is being called" );
+		logger.log(IAppLogger.INFO,"customerId : "+customerId);
+		logger.log(IAppLogger.INFO,"startDate : "+startDate);
+		logger.log(IAppLogger.INFO,"endDate : "+endDate);
+		
+		boolean status = false;
+		long t1 = System.currentTimeMillis();
+		try {
+			status =  (Boolean) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall(IQueryConstants.SP_CUSTOMER_STD_EXTRACT_ONLINE);
+					cs.setLong(1, customerId);
+					cs.setLong(2, -1L);
+					cs.setString(3, startDate.replaceAll("/", ""));
+					cs.setString(4, endDate.replaceAll("/", ""));
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					try {
+						cs.execute();						
+					} catch (SQLException e) {
+        				e.printStackTrace();
+        				return false;
+        			}
+					logger.log(IAppLogger.INFO, "generateStudentXMLExtract() has been called" );
+        			return true;
+				}	
+			});
+		} catch(Exception e){
+			e.printStackTrace();			
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - deleteReport() took time: "+String.valueOf(t2 - t1)+"ms");
+		}		
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.dao.IParentDAO#getContentForEdit(java.util.Map)
+	 */
+	public StudentDataExtractTO getClobXMLFile(final Map<String, Object> paramMap) {
+		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - getClobXMLFile()");
+		long t1 = System.currentTimeMillis();
+		StudentDataExtractTO studentDataExtractTO = null;
+		final long customer = Long.valueOf((String)paramMap.get("customer"));
+		final long jobId = Long.valueOf((String)paramMap.get("jobId")); 
+
+		try {
+			studentDataExtractTO = (StudentDataExtractTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_CLOB_XML_FILE + "}");
+					cs.setLong(1, jobId);
+					cs.setLong(2, customer);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					StudentDataExtractTO studentDataExtractTOResult = null;
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(3);
+						if (rs.next()) {
+							studentDataExtractTOResult = new StudentDataExtractTO();
+							studentDataExtractTOResult.setJobId(rs.getLong("JOB_ID"));
+							studentDataExtractTOResult.setCustomerId(rs.getLong("CUSTOMERID"));
+							studentDataExtractTOResult.setStudentDataXML(Utils.convertClobToString((Clob) rs.getClob("STUDENTDATA_XML")));
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return studentDataExtractTOResult;
+				}
+			});
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - getClobXMLFile() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return studentDataExtractTO;
+	}
+
 	
 }

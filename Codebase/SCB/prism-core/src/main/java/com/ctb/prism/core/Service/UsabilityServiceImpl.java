@@ -3,7 +3,6 @@
  */
 package com.ctb.prism.core.Service;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.util.Map;
 
@@ -19,13 +18,14 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.ctb.prism.core.business.IUsabilityBusiness;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
-import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -212,5 +212,16 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	private void storeWsObject(String obj, long processId, boolean requestObj) {
 		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj);
 	}
-
+	
+	public void generateStudentXMLExtract(Map<String, Object> paramMap){
+		usabilityBuisness.generateStudentXMLExtract(paramMap);
+	}
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap) {
+		return usabilityBuisness.getClobXMLFile(paramMap);
+	}
 }

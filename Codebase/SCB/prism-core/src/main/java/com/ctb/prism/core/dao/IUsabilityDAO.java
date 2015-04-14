@@ -5,8 +5,10 @@ package com.ctb.prism.core.dao;
 
 import java.util.Map;
 
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -144,4 +146,16 @@ public interface IUsabilityDAO {
 	 * @return
 	 */
 	public JobTrackingTO updateFileSize(JobTrackingTO jobTrackingTO);
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public void generateStudentXMLExtract(Map<String, Object> paramMap);
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap); 
 }

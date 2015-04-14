@@ -2,14 +2,10 @@ package com.ctb.prism.web.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.jms.JMSException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.ThemeResolver;
 import org.springframework.web.servlet.theme.CookieThemeResolver;
 
 import com.ctb.prism.admin.service.IAdminService;
@@ -78,6 +72,7 @@ import com.ctb.prism.report.transferobject.ObjectValueTO;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.web.util.JsonUtil;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 /**
  * @author TCS
  * 
@@ -229,15 +224,33 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "fileName = " + fileName);
 		logger.log(IAppLogger.INFO, "orgLevel = " + orgLevel);
 		logger.log(IAppLogger.INFO, "requestType = " + requestType);
-
+		
+		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		
+		String envString =  null;
+		
 		try {
-			// Get file bytes from Amazon S3
-			byte[] assetBytes = repositoryService.getAssetBytes(filePath);
+			// Get file bytes from Amazon S3			
+			
+			if(fileName.endsWith(".xml")) {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> propertyMap = (Map<String,Object>)request.getSession().getAttribute("propertyMap");
+				if(propertyMap == null){
+					Map<String, Object> tileParamMap = new HashMap<String, Object>();
+					tileParamMap.put("contractName", Utils.getContractName());
+					propertyMap = loginService.getContractProerty(tileParamMap);
+					request.getSession().setAttribute("propertyMap", propertyMap);
+				}
+				
+				envString = (String) propertyMap.get(IApplicationConstants.STATIC_PDF_LOCATION) + IApplicationConstants.SDF_XML_S3_LOCATION;
+				
+			}
+			byte[] assetBytes = repositoryService.getAssetBytes(envString!=null ? envString + filePath: filePath);
 			logger.log(IAppLogger.INFO, "Successfully read bytes from S3: " + filePath);
 
 			// For TASC Student Data File Download - the asset bytes are
 			// converted to password protected zip bytes
-			if (orgLevel.equals("1") && requestType.equals("SDF") && !fileName.endsWith(".zip")) {
+			if (orgLevel.equals("1") && requestType.equals("SDF") && !fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
 				// Save file in temp directory
 				String fileLocation = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), File.separator, jobId, File.separator, fileName);
 				fileLocation = fileLocation.replace("//", "/");
@@ -276,7 +289,51 @@ public class InorsController {
 			}
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "downloadGroupDownloadFiles - ", e);
-			e.printStackTrace();
+			logger.log(IAppLogger.INFO, "File not found so getting from DB - ");
+			if(fileName.endsWith(".xml")) {
+				/*File need to be created from studentdata_extract clob and upload into s3*/
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("customer", customer);
+				paramMap.put("jobId",jobId);
+				StudentDataExtractTO studentDataExtractTO = usabilityService.getClobXMLFile(paramMap);
+				String studentXML = studentDataExtractTO.getStudentDataXML();
+
+				String fileLocation = CustomStringUtil.appendString(propertyLookup.get("xmlGenPath"), fileName);
+				
+				//fileLocation = fileLocation.replace("//", "/");
+				String tempDirectory = FileUtil.getDirFromFilePath(fileLocation);
+				File tempJobDirectory = new File(tempDirectory);
+				
+				if (!tempJobDirectory.exists()) {
+					logger.log(IAppLogger.INFO, "Creating directory ... " + tempJobDirectory);
+					boolean status = tempJobDirectory.mkdir();
+					logger.log(IAppLogger.INFO, tempJobDirectory + " : " + status);
+				} else {
+					logger.log(IAppLogger.INFO, "Directory exists: " + tempJobDirectory);
+				}
+				File tempFile = new File(fileLocation);
+				FileUtil.createFile(fileLocation, studentXML.getBytes());
+				repositoryService.uploadAsset(envString, tempFile);
+				
+				com.ctb.prism.core.transferobject.JobTrackingTO jobTrackingTO = new com.ctb.prism.core.transferobject.JobTrackingTO();
+				jobTrackingTO.setJobId(Long.valueOf(jobId));
+				jobTrackingTO.setFileSize(FileUtil.fileSize(studentXML.getBytes()));
+				jobTrackingTO.setFilePath(envString+filePath);
+				jobTrackingTO.setRequestFilename(fileName);	
+				
+				jobTrackingTO = usabilityService.updateFileSize(jobTrackingTO);			
+				
+				boolean fileDeleteFlag = FileUtils.deleteQuietly(tempFile); //delete temp file
+				//tempJobDirectory.delete(); //delete temp directory
+				if(fileDeleteFlag){
+					logger.log(IAppLogger.INFO, "Temp file has been deleted successfully: " + fileName);
+				}else{
+					logger.log(IAppLogger.INFO, "Unable to delete Temp file: " + fileName);
+				}
+				
+				FileUtil.browserDownload(response, studentXML.getBytes(), fileName);
+			}
+			
 		}
 		logger.log(IAppLogger.INFO, "Exit: Controller - downloadGroupDownloadFiles");
 	}

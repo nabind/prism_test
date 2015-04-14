@@ -90,10 +90,36 @@ $(document).ready(function() {
 	});
 	
 	$("#downloadStudentFileXML").on("click", function() {
-		var startDate = $("#p_Start_Date").val();
+		/*var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=XML&startDate=" + startDate + "&endDate=" + endDate;
-		$("#downloadStudentFileXML").attr("href", href);
+		$("#downloadStudentFileXML").attr("href", href);*/
+		$(".success-message").hide(100);
+		$(".error-message").hide(100);
+		$(".error-message2").hide(100);
+		var formObj = $('#downloadStudentFile');
+		$(formObj).validationEngine();
+		if(formObj.validationEngine('validate')) {
+			if($("#p_Date_Type").val() == 'TTD') {
+				if(($("#p_Start_Date").val() != '' && $("#p_End_Date").val() != '')
+						|| ($("#p_Start_Date").val() == '' && $("#p_End_Date").val() == '')) {
+						var diff = new Date($("#p_End_Date").val()) - new Date($("#p_Start_Date").val());
+						diff = diff/1000/60/60/24;
+						if(diff > 30) {
+							$(".error-message2").show(200);
+						} else if(diff < 0) { 
+							$.modal.alert('End date should be greater than start date.');
+						} else {
+							downloadStudentDataFile('XML');
+						}
+					} else {
+						if($("#p_Start_Date").val() == '') $.modal.alert('Please provide start date.');
+						if($("#p_End_Date").val() == '') $.modal.alert('Please provide end date.');
+					}
+			} else {
+				$.modal.alert('For XML extract Date type should be Test taken Date.');
+			}		
+		}
 	});
 	
 	$("#downloadStudentFileCSV").on("click", function() {

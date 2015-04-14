@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.springframework.scheduling.annotation.Async;
 
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
@@ -116,4 +118,13 @@ public interface IUsabilityService {
 	
 	@Async
 	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj);
+	
+	@Async
+	public void generateStudentXMLExtract(Map<String, Object> paramMap);
+	
+	/**
+	 * @param paramMap
+	 * @throws Exception
+	 */
+	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap);
 }
