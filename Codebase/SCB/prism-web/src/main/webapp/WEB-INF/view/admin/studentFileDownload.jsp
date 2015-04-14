@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:message var="studentFileDownload" key="student.file.download.button" />
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="downloadStudentFile" modelAttribute="downloadStudentFile">
@@ -49,11 +50,13 @@
 				<span class="button-icon icon-download blue-gradient report-btn">DAT</span> <spring:message code="label.generateDownloadFile" />
 			</a>
 		</div>
-		<!-- <div class="columns accordion with-padding" style="margin-bottom: 0">
-			<a class="button float-right" id="downloadStudentFileXML" style="cursor: pointer; top: 6px;position: right;">
-				<span class="button-icon icon-download blue-gradient report-btn">XML</span> <spring:message code="label.generateDownloadFile" />
-			</a>
-		</div> -->
+		<sec:authorize ifAnyGranted="ROLE_CTB">
+			<div class="columns accordion with-padding" style="margin-bottom: 0">
+				<a class="button float-right" id="downloadStudentFileXML" style="cursor: pointer; top: 6px;position: right;">
+					<span class="button-icon icon-download blue-gradient report-btn">XML</span> <spring:message code="label.generateDownloadFile" />
+				</a>
+			</div>
+		</sec:authorize>
 		</c:if>
 	</form:form>
 </div>
