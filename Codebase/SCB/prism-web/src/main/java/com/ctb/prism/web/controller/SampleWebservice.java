@@ -150,7 +150,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     			// create process
     			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
     			processId = studentDataLoadTO.getProcessId();
-    			usabilityService.storeOASWSObject(studentListTO, processId, true);
+    			usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
     			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
     			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
     			// load student data into staging tables
@@ -264,7 +264,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	    		mc.marshal(studentDataLoadTO, System.out);
     		}
-    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getProcessId(), false);
+    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getProcessId(), false, "OAS");
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

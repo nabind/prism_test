@@ -83,7 +83,7 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
     	StudentDataLoadTO studentDataLoadTO = null;
     	try {
     		studentDataLoadTO = erService.updateStagingData(studentList, studentDataLoadTO);
-    		usabilityService.storeERWSObject(studentList, studentDataLoadTO.getObjectiveDetailsId(), true);
+    		usabilityService.storeERWSObject(studentList, studentDataLoadTO.getObjectiveDetailsId(), true, "ER");
     		if(studentDataLoadTO == null) {
     			studentDataLoadTO = new StudentDataLoadTO();
     			studentDataLoadTO.setStatus("ERROR");
@@ -109,7 +109,7 @@ public class ERWebservice extends SpringBeanAutowiringSupport {
 	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	    		mc.marshal(studentDataLoadTO, System.out);
     		}
-    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getObjectiveDetailsId(), false);
+    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getObjectiveDetailsId(), false, "ER");
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

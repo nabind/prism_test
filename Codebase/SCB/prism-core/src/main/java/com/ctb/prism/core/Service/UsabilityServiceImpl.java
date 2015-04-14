@@ -170,47 +170,47 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	
 	@Autowired private IDynamoDBService dynamoDBService;
 	@Autowired private IPropertyLookup propertyLookup;
-	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj) {
+	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj, String source) {
 		try {
     		JAXBContext jc = JAXBContext.newInstance( StudentList.class );
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentList, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj) {
+	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj, String source) {
 		try {
     		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentListTO, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj) {
+	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source) {
 		try {
 			JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentDataLoadTO, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void storeWsObject(String obj, long processId, boolean requestObj) {
-		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj);
+	private void storeWsObject(String obj, long processId, boolean requestObj, String source) {
+		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj, source);
 	}
 	
 	public void generateStudentXMLExtract(Map<String, Object> paramMap){

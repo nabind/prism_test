@@ -49,11 +49,11 @@
 				<span class="button-icon icon-download blue-gradient report-btn">DAT</span> <spring:message code="label.generateDownloadFile" />
 			</a>
 		</div>
-		<div class="columns accordion with-padding" style="margin-bottom: 0">
+		<!-- <div class="columns accordion with-padding" style="margin-bottom: 0">
 			<a class="button float-right" id="downloadStudentFileXML" style="cursor: pointer; top: 6px;position: right;">
 				<span class="button-icon icon-download blue-gradient report-btn">XML</span> <spring:message code="label.generateDownloadFile" />
 			</a>
-		</div>
+		</div> -->
 		</c:if>
 	</form:form>
 </div>

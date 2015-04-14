@@ -15,6 +15,6 @@ public interface IDynamoDBService {
 	
 	public void deleteItems(String environment, String contract, String key);
 	
-	public void storeWsObject(String environment, String obj, long processId, boolean requestObj);
+	public void storeWsObject(String environment, String obj, long processId, boolean requestObj, String source);
 
 }

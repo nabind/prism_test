@@ -111,13 +111,13 @@ public interface IUsabilityService {
 	
 	
 	@Async
-	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj);
+	public void storeERWSObject(StudentList studentList, long processId, boolean requestObj, String source);
 
 	@Async
-	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj);
+	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj, String source);
 	
 	@Async
-	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj);
+	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source);
 	
 	@Async
 	public void generateStudentXMLExtract(Map<String, Object> paramMap);

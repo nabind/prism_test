@@ -50,7 +50,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
     	DynamoDBServiceImpl sdb = new DynamoDBServiceImpl();
         try {
         	DynamoDBServiceImpl cc = new DynamoDBServiceImpl();
-        	cc.storeWsObject("QA", "<xml> store me </xml>", 12323, true);
+        	cc.storeWsObject("QA", "<xml> store me </xml>", 12323, true, "");
         } catch (AmazonServiceException ase) {
             System.err.println("Data load script failed.");
         }
