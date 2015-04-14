@@ -472,6 +472,7 @@ public class LoginController {
 				paramMap.put("roles", roles.toString());
 				req.getSession().setAttribute(IApplicationConstants.CURR_USER_ROLES, roles.toString());
 				
+				paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);
 				logger.log(IAppLogger.INFO, "menuSet : " + Utils.objectToJson(menuSet));
