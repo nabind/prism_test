@@ -103,7 +103,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
      WHERE DIRECTORY_NAME = LV_DIRECTORY_NAME;
   
     IF (P_DATE_OFFSET >= 0 AND P_START_DATE = 'NA' AND P_END_DATE = 'NA' AND
-       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O')) THEN
+       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O'  OR P_FTP_MODE = 'OL')) THEN
     
       LV_EXTRACT_START_DATE := TRUNC(SYSDATE - P_DATE_OFFSET);
       LV_EXTRACT_END_DATE   := TRUNC(SYSDATE);
@@ -1083,7 +1083,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     commit; */
 
     SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  => IN_CUSTOMERID,
-                               P_DATE_OFFSET => -1,
+                               P_DATE_OFFSET => IN_DATE_OFFSET,
                                P_START_DATE  => IN_START_DATE,
                                P_END_DATE    => IN_END_DATE,
                                P_FTP_MODE    => 'OL');
