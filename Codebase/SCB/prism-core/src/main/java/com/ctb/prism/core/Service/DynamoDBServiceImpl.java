@@ -69,9 +69,9 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 			try {
 				// store the xml to S3
 				if(requestObj) {
-					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_ROSTERID_", rosterId, "_UUID_", uuid, "_REQ") ;
+					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_ROSTERID_", rosterId, "_REQ_", source) ;
 				} else {
-					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_RES") ;
+					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_RES_", source) ;
 				}
 				repositoryService.uploadAsset(s3Location, stream2file(obj));
 			} catch (Exception e) {
