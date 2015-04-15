@@ -100,7 +100,7 @@ $(document).ready(function() {
 		var formObj = $('#downloadStudentFile');
 		$(formObj).validationEngine();
 		if(formObj.validationEngine('validate')) {
-			if($("#p_Date_Type").val() == 'TTD') {
+			if($("#p_Date_Type").val() == 'PD') {
 				if(($("#p_Start_Date").val() != '' && $("#p_End_Date").val() != '')
 						|| ($("#p_Start_Date").val() == '' && $("#p_End_Date").val() == '')) {
 						var diff = new Date($("#p_End_Date").val()) - new Date($("#p_Start_Date").val());
@@ -117,7 +117,7 @@ $(document).ready(function() {
 						if($("#p_End_Date").val() == '') $.modal.alert('Please provide end date.');
 					}
 			} else {
-				$.modal.alert('For XML extract Date type should be Test taken Date.');
+				$.modal.alert('For XML extract Date type should be Last Updated Date.');
 			}		
 		}
 	});
