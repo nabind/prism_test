@@ -1181,9 +1181,9 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 					CallableStatement cs = null;
 					cs = con.prepareCall(IQueryConstants.SP_CUSTOMER_STD_EXTRACT_ONLINE);
 					cs.setLong(1, customerId);
-					cs.setLong(2, -1L);
-					cs.setString(3, startDate.replaceAll("/", ""));
-					cs.setString(4, endDate.replaceAll("/", ""));
+					cs.setLong(2,  startDate.length()>0 || endDate.length()>0 ? -1L : 30L);
+					cs.setString(3, startDate.length()>0 ? startDate.replaceAll("/", ""):"NA");
+					cs.setString(4, endDate.length()>0 ? endDate.replaceAll("/", ""): "NA");
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
