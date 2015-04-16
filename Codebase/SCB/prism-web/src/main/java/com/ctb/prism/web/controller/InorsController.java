@@ -874,9 +874,12 @@ public class InorsController {
 		String hideContentFlag = IApplicationConstants.FLAG_N;
 		String currentAdminYear = inorsService.getCurrentAdminYear();
 		int lastAdmYr = Integer.parseInt(currentAdminYear) - 1;
+		int lastToLastAdmYr = Integer.parseInt(currentAdminYear) - 2;
 		String lastAdminYear = String.valueOf(lastAdmYr);
+		String lastToLastAdminYear = String.valueOf(lastToLastAdmYr);
 		logger.log(IAppLogger.INFO, "currentAdminYear=" + currentAdminYear);
 		logger.log(IAppLogger.INFO, "lastAdminYear=" + lastAdminYear);
+		logger.log(IAppLogger.INFO, "lastToLastAdminYear=" + lastToLastAdminYear);
 		if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.ICL.toString())) {
 			// Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
 			// Report Notification: Invitation Code Letters (IC) are available for the current ISTEP+ administration only.
@@ -895,7 +898,7 @@ public class InorsController {
 			// Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)
 			if (productName != null) {
 				if (productName.startsWith("ISTEP+")) {
-					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -909,19 +912,19 @@ public class InorsController {
 			// Rule 4: IREAD-3 Student Report (ISR) for the 2013 and 2014 administrations (Spring and Summer).
 			if (productName != null) {
 				if (productName.startsWith("ISTEP+")) {
-					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IMAST")) {
-					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
 					}
 				} else if (productName.startsWith("IREAD-3")) {
-					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+					if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 						// OK
 					} else {
 						hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -933,19 +936,19 @@ public class InorsController {
 		} else if (groupFile.equals(IApplicationConstants.EXTRACT_FILETYPE.BOTH.toString())) {
 			// Rule 2, 3 and 4
 			if (productName.startsWith("ISTEP+")) {
-				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
 				}
 			} else if (productName.startsWith("IMAST")) {
-				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
 				}
 			} else if (productName.startsWith("IREAD-3")) {
-				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear))) {
+				if ((productName.endsWith(currentAdminYear)) || (productName.endsWith(lastAdminYear)) || (productName.endsWith(lastToLastAdminYear))) {
 					// OK
 				} else {
 					hideContentFlag = IApplicationConstants.FLAG_Y;
@@ -1901,6 +1904,216 @@ public class InorsController {
 			e.printStackTrace();
 		}
 	}	
+	
+	
+	@RequestMapping(value = "/grfDownloadForm", method = RequestMethod.GET)
+	public ModelAndView grfDownloadForm(HttpServletRequest request, HttpServletResponse response) {
+		logger.log(IAppLogger.INFO, "Enter: grfDownloadForm()");
+		ModelAndView modelAndView = new ModelAndView("mo/grfDownloads");
+
+		String contractName = Utils.getContractName();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		String reportId = (String) request.getParameter("reportId");
+		logger.log(IAppLogger.INFO, "reportId=" + reportId);
+
+		//paramMap.put("messageNames", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
+		//Map<String, String> messageMap = reportService.getGenericSystemConfigurationMessages(paramMap);
+		//String groupDownloadInstructionMessage = messageMap.get("Group Download Instruction");
+		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
+		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+		String loggedInOrgNodeId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+	
+		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		//String testProgram = (String) request.getParameter("p_test_program");
+		//String corpDiocese = (String) request.getParameter("p_corpdiocese");
+		//String school = (String) request.getParameter("p_school");
+		//String klass = (String) request.getParameter("p_class");
+		//String grade = (String) request.getParameter("p_grade");
+		//String groupFile = (String) request.getParameter("p_generate_file");
+		//String collationHierarchy = (String) request.getParameter("p_collation");
+		String[] subtest = request.getParameterValues("p_subtest");
+		//String studentGroups = request.getParameter("p_student_groups");
+		String studentSelection = request.getParameter("p_student_selection");
 		
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		//logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		//logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		//logger.log(IAppLogger.INFO, "school=" + school);
+		//logger.log(IAppLogger.INFO, "klass=" + klass);
+		//logger.log(IAppLogger.INFO, "grade=" + grade);
+		//logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+		//logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
+		//logger.log(IAppLogger.INFO, "studentGroups=" + studentGroups);
+		logger.log(IAppLogger.INFO, "studentSelection=" + studentSelection);
+				
+		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
+			String reportUrl = (String) request.getParameter("reportUrl");
+			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+			modelAndView.addObject("reportUrl", reportUrl);
+			// get parameter values for report
+			long t1 = System.currentTimeMillis();
+			Map<String, Object> parameters = getReportParameters(request, reportUrl);
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "groupDownloadForm - getReportParameters() took time: " + String.valueOf(t2 - t1) + "ms");
+			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+			if ((parameters != null) && (!parameters.isEmpty())) {
+				testAdministrationVal = CustomStringUtil.getNotNullString(parameters.get("p_test_administration"));
+				//testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
+				//corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
+				//school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
+				//klass = CustomStringUtil.getNotNullString(parameters.get("p_class"));
+				//grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
+				//groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
+				//collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
+				if(parameters.get("p_subtest") != null){
+					ArrayList<String> list = (ArrayList<String>)parameters.get("p_subtest");
+					subtest = list.toArray(new String[list.size()]);
+				}
+				//studentGroups = CustomStringUtil.getNotNullString(parameters.get("p_student_groups"));
+				studentSelection = CustomStringUtil.getNotNullString(parameters.get("p_student_selection"));
+			}
+		} else {
+			/****NEW***/
+			Map<String, String[]> sessionParams = (Map<String, String[]>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
+			if(sessionParams == null) sessionParams = new HashMap<String, String[]>();
+			Iterator itr = request.getParameterMap().entrySet().iterator();
+			while (itr.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) itr.next();
+				request.getSession().setAttribute("_REMEMBER_ME_" + mapEntry.getKey(), mapEntry.getValue());
+				sessionParams.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+			}
+			request.getSession().setAttribute("_REMEMBER_ME_ALL_", sessionParams);
+			/****NEW***/
+		}
+		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+		//logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		//logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		//logger.log(IAppLogger.INFO, "school=" + school);
+		//logger.log(IAppLogger.INFO, "klass=" + klass);
+		//logger.log(IAppLogger.INFO, "grade=" + grade);
+		//logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
+		//logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
+		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
+		//logger.log(IAppLogger.INFO, "studentGroups=" + studentGroups);
+		logger.log(IAppLogger.INFO, "studentSelection=" + studentSelection);
+
+		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
+		//modelAndView.addObject("testProgram", testProgram);
+		//modelAndView.addObject("corpDiocese", corpDiocese);
+		//modelAndView.addObject("school", school);
+		//modelAndView.addObject("klass", klass);
+		//modelAndView.addObject("grade", grade);
+		//modelAndView.addObject("groupFile", groupFile);
+		//modelAndView.addObject("collationHierarchy", collationHierarchy);
+		modelAndView.addObject("subtest", subtest);
+		//modelAndView.addObject("studentGroups", studentGroups);
+		modelAndView.addObject("studentSelection",studentSelection);
+		
+		request.getSession().setAttribute("GRF_testadmin", testAdministrationVal);
+		List<ReportMessageTO> reportMessages = null;
+		if (testAdministrationVal != null) {
+			String productId = testAdministrationVal;
+			logger.log(IAppLogger.INFO, "reportId=" + reportId);
+			logger.log(IAppLogger.INFO, "productId=" + productId);
+			logger.log(IAppLogger.INFO, "customerId=" + customerId);
+			logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
+			Map<String, Object> parameterMap = new HashMap<String, Object>();
+			parameterMap.put("REPORT_ID", reportId);
+			parameterMap.put("PRODUCT_ID", productId);
+			parameterMap.put("CUSTOMER_ID", customerId);
+			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
+			// parameterMap.put("USER_ID", currentUserId);
+			/*reportMessages = reportService.getAllReportMessages(parameterMap);
+			Map<String, String> hiddenReportTypes = new HashMap<String, String>();
+			hiddenReportTypes.put(IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString(), IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
+			reportMessages = setDisplayFlags(reportMessages, hiddenReportTypes);
+			modelAndView.addObject("reportMessages", reportMessages);*/
+			
+			String productName = "";
+			String hideContentFlag = "";
+			//String dataloadMessage = "";
+			if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
+				hideContentFlag = IApplicationConstants.FLAG_N;
+			}else{
+				productName = getProductNameById(testAdministrationVal);
+				//hideContentFlag = getHideContentFlagGroupDownloadForm(groupFile, productName, reportMessages);
+				//dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+			}
+			
+			/*if (hideContentFlag.equals(IApplicationConstants.FLAG_N)) {
+				try {
+					String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+					String fileName = (String) request.getParameter("fileName");
+					if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+						fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
+						if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
+							fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
+							request.getSession().setAttribute("FILE_NAME_GD", fileName);
+						}
+					}
+					String email = (String) request.getParameter("email");
+					if ((email == null) || (email.equalsIgnoreCase("null"))) {
+						email = (String) request.getSession().getAttribute("EMAIL_GD");
+						if ((email == null) || (email.equalsIgnoreCase("null"))) {
+							email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
+						}
+					}
+					logger.log(IAppLogger.INFO, "fileName=" + fileName);
+					logger.log(IAppLogger.INFO, "email=" + email);
+					modelAndView.addObject("fileName", fileName);
+					modelAndView.addObject("email", email);
+
+					List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
+					GroupDownloadTO to = new GroupDownloadTO();
+					to.setSchool(school);
+					to.setKlass(klass);
+					to.setGrade(grade);
+					to.setTestProgram(testProgram);
+					to.setTestAdministrationVal(testAdministrationVal);
+					to.setDistrict(corpDiocese);
+					to.setCollationHierarchy(collationHierarchy);
+					to.setCustomerId(customerId);
+					to.setOrgNodeLevel(orgNodeLevel);
+					to.setGroupFile(groupFile);
+					// to.setUserId(currentUserId);
+					to.setLoggedInOrgNodeId(loggedInOrgNodeId);
+					to.setUserName(currentUserName);
+					to.setSubtest(subtest);
+					to.setContractName(contractName);
+					to.setStudentGroups(studentGroups);
+					if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
+						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
+						studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
+					}
+					Integer rowNum = 0;
+					for(GroupDownloadStudentTO student : studentList) {
+						rowNum = rowNum + 1;
+						student.setRowNum(rowNum);
+					}
+					logger.log(IAppLogger.INFO, "Students after removing duplicates: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
+					modelAndView.addObject("studentList", studentList);
+					modelAndView.addObject("studentCount", studentList.size());
+				} catch (Exception e) {
+					logger.log(IAppLogger.ERROR, e.getMessage(), e);
+					e.printStackTrace();
+				}
+			} else {
+				logger.log(IAppLogger.INFO, "------------------------Hiding the input form---------------------");
+			}
+		//	logger.log(IAppLogger.INFO, "hideContentFlag=" + hideContentFlag);
+		//	logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
+		//	modelAndView.addObject("hideContentFlag", hideContentFlag);
+		//	modelAndView.addObject("dataloadMessage", dataloadMessage);
+			 */
+		} else {
+			modelAndView.addObject("reportMessages", null);
+		}
+		//modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
+		logger.log(IAppLogger.INFO, "Exit: grfDownloadForm()");
+		return modelAndView;
+	}
 
 }
