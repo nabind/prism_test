@@ -393,6 +393,7 @@ public class TascDAOImpl {
 			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
 			queryBuff.append(" ER_STUDENT_DEMO   ESD");
 			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
+			queryBuff.append(" AND EED.STATE_CODE = ESD.STATE");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
