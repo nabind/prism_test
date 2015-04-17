@@ -1,5 +1,6 @@
 <!-- ActionMap will hold all the action available for the logged in user, based on org level and role -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <c:set var="actionMap" value="${actionMap}" scope="session"/>
 
 <script type="text/javascript">
@@ -178,5 +179,7 @@
 	strings['manage.parents.viewChildren'] = "<spring:message code='manage.parents.viewChildren' javaScriptEscape='true' />";
 	
 	strings['manage.students.assessment'] = "<spring:message code='manage.students.assessment' javaScriptEscape='true' />";
+	
+	strings['prism.theme'] = "<spring:theme code='theme.name' javaScriptEscape='true' />";
 	
 </script>

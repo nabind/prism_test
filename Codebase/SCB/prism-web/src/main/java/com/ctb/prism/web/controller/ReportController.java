@@ -1862,6 +1862,11 @@ public class ReportController{
 		paramMap.put("parentReports", parentReports);
 		paramMap.put("orgNodeLevel", orgNodeLevel);
 		paramMap.put("defaultCustProdId",loggedinUserTO.getDefultCustProdId());
+		String contractName = loggedinUserTO.getContractName();
+		if(contractName != null && contractName.trim().length() == 0) {
+			contractName = Utils.getContractNameNoLogin(req.getParameter("theme"));
+		}
+		paramMap.put("contractName", contractName);
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {
 			List<AssessmentTO> assessmentList = reportService.getAssessments(paramMap);

@@ -756,7 +756,8 @@ function openAdminMenu() {
 
 //============================= FETCH REPORT MENU =============================
 function fetchReportMenu(typ) {
-	var dataURL = "";
+	var theme = strings['prism.theme'];
+	var dataURL = "theme="+theme;
 	$.ajax({
 		type : "GET",
 		url : 'fetchReportMenu.do',
