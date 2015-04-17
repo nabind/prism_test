@@ -270,6 +270,14 @@ $(document).ready(function() {
 		$(document).click();
 		downloadMapCombined('CP');
 	});
+	
+	//Submit to GRF Download
+	$("#downloadGrf").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadGrf();
+	});
 
 // ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
@@ -1464,6 +1472,51 @@ function downloadMapCombined(mode) {
 		}
 	}
 }
+
+/**
+ * @author Joykumar Pal
+ * Download GRF based on multi-select student and subtest
+ */
+function downloadGrf() {
+	displayGroupDownloadStatus(undefined);
+	if ($("#grfDownload").validationEngine('validate')) {
+		blockUI();
+		var status = false;
+		var subtest = $("#p_subtest", window.parent.document); 
+		var tab = $("li.active", window.parent.document).attr("param");
+		tab = tab.replace(/new-tab/g, "report-form-");
+		var formObj = $('.'+tab, window.parent.document);
+		var dataUrl = $(formObj).serialize() + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
+			
+		$.ajax({
+			type : "POST",
+			url : 'grfDownload.do',
+			data : dataUrl,
+			dataType : 'json',
+			cache : false,
+			async : false,
+			success : function(data) {
+				if(data.status == 'Success'){
+					status = true;
+				}
+				else {
+					status = false;
+					$.modal.alert(strings['msg.isr']);
+				}
+				displayGroupDownloadStatus(status);
+				unblockUI();
+			},
+			error : function(data) {
+				if (data.status == "200") {
+				} else {
+					$.modal.alert(strings['msg.nff']);
+				}
+				unblockUI();
+			}
+		});
+	}
+}
+
 
 /**
  * Does not actually submit the form, but it feels alike.

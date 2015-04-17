@@ -32,7 +32,7 @@ public interface IApplicationConstants {
 	};
 
 	public static enum REQUEST_TYPE {
-		SDF, SBE, GDF
+		SDF, SBE, GDF, GRF
 	};
 
 	/**
@@ -135,6 +135,7 @@ public interface IApplicationConstants {
 	public static final String DOWNLOAD_TYPE_SINGLE = "S";
 	public static final String DOWNLOAD_MODE_IC = "IC";
 	public static final String DOWNLOAD_MODE_GD = "GD";
+	public static final String DOWNLOAD_GRF_BUTTON = "downloadGrf";
 
 	public static final String FLAG_Y = "Y";
 	public static final String FLAG_N = "N";
@@ -249,6 +250,7 @@ public interface IApplicationConstants {
 	public static final String GROUP_DOWNLOAD_INSTRUCTION = "Group Download Instruction";
 	public static final String DATALOAD_MESSAGE = "Dataload Message";
 	public static final String EMBARGO_NOTICE = "Embargo Notice";
+	public static final String REPORT_MESSAGE = "Report Message";
 
 	// Article/Content type
 	public static final String CONTENT_TYPE_ACT = "ACT";

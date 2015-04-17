@@ -82,6 +82,7 @@
 		<pattern>/loadHomePage*</pattern>
 		<pattern>/loadGrowthHome*</pattern>
 		<pattern>/rescoreRequestForm*</pattern>
+		<pattern>/grfDownloadForm*</pattern>
     </decorator>
 	
   	<decorator name="main" page="main.jsp"> 

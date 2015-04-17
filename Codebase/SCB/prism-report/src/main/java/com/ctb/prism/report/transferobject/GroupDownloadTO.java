@@ -44,6 +44,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String studentGroups;
 	private String districtCode;
 	private String schoolCode;
+	private String studentSelection = "";
 
 	/**
 	 * @return the button
@@ -476,6 +477,14 @@ public class GroupDownloadTO extends BaseTO {
 
 	public void setSchoolCode(String schoolCode) {
 		this.schoolCode = schoolCode;
+	}
+
+	public String getStudentSelection() {
+		return studentSelection;
+	}
+
+	public void setStudentSelection(String studentSelection) {
+		this.studentSelection = studentSelection;
 	}
 
 	@Override

@@ -167,7 +167,11 @@
 	                            </a>
 	                            </c:if>
 							</c:if>
-							<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass} refreh-button-${homeReport.tabCount}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>
+							
+							<c:if test="${homeReport.reportUrl != '/public/Missouri/Report/GRF_files' }">
+								<a href="javascript:void(0)" class="button blue-gradient glossy ${homeReport.refreshButtonClass} refreh-button-${homeReport.tabCount}" reportName="${homeReport.reportName}" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}" apiUrl="${homeReport.reportApiUrl}">Refresh ${name}</a>
+							</c:if>
+							
 						</div>
 						<div class="with-mid-padding mid-margin-bottom icholderinner icholderinner-${homeReport.tabCount}" style="min-width:200px;overflow-x:auto !important">
 							<div class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer-${homeReport.tabCount}" style="line-height:6px;min-width:720px">

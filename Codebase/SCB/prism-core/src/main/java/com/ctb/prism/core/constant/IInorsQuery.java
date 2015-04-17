@@ -56,5 +56,7 @@ public interface IInorsQuery {
 	
 	public static final String GET_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_CODE(?, ?, ?, ?)}";
 	
+	public static final String GET_TP_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_TP_CODE(?, ?, ?)}";
+	
 }
 

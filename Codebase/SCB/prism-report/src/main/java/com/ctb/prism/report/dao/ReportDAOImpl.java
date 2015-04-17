@@ -1940,10 +1940,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
-		// String currUserId = to.getUserId();
 		String currUserName = to.getUserName();
 		String currAdminId = to.getAdminId();
 		String currCustomerId = to.getCustomerId();
+		String studentSelection = IApplicationConstants.FLAG_N.equals(to.getStudentSelection()) ? "NO" : "YES";
+		
 
 		logger.log(IAppLogger.INFO, "button = " + button);
 		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
@@ -1951,31 +1952,44 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "groupFile = " + groupFile);
 		logger.log(IAppLogger.INFO, "students = " + students);
 		logger.log(IAppLogger.INFO, "orgNodeId = " + orgNodeId);
-		// logger.log(IAppLogger.INFO, "currUserId = " + currUserId);
 		logger.log(IAppLogger.INFO, "currUserName = " + currUserName);
 		logger.log(IAppLogger.INFO, "currAdminId = " + currAdminId);
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
+		logger.log(IAppLogger.INFO, "studentSelection = " + studentSelection);
 
 		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
-		// Long userId = (currUserId != null) ? Long.valueOf(currUserId) : 0;
 		String job_name = groupFile;
 		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;
-		String request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
+		
+		String request_type = "";
+		String request_summary = "";
+		String request_filename = null;
+		String otherRequestParams = null;
+		String job_status = "";
+		if(IApplicationConstants.DOWNLOAD_GRF_BUTTON.equals(button)){
+			otherRequestParams = CustomStringUtil.appendString("cust_prod_id='",testAdministrationVal,"'|","appeal_ind='",studentSelection,"'");
+			request_filename = fileName;
+			request_type = IApplicationConstants.REQUEST_TYPE.GRF.toString();
+			request_summary = "GRF Download - " + groupFile + ": Submitted";
+			job_status = IApplicationConstants.JOB_STATUS.SU.toString();
+		}else{
+			request_type = IApplicationConstants.REQUEST_TYPE.GDF.toString(); // As per requirement email
+			request_summary = "Group Download - " + groupFile + ": In Progress";
+			job_status = IApplicationConstants.JOB_STATUS.IP.toString();
+		}
+		
 		String request_details_str = Utils.objectToJson(to);
-		String request_summary = "Group Download - " + groupFile + ": In Progress";
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
 		LobHandler lobHandler = new DefaultLobHandler();
-		String request_filename = null;
 		String request_email = to.getEmail();
 		String job_log = null;
-		String job_status = IApplicationConstants.JOB_STATUS.IP.toString();
+		
 		Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
 		Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
 
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
-		// logger.log(IAppLogger.INFO, "userId = " + userId);
 		logger.log(IAppLogger.INFO, "job_name = " + job_name);
 		logger.log(IAppLogger.INFO, "extract_category = " + extract_category);
 		logger.log(IAppLogger.INFO, "extract_filetype = " + extract_filetype);
@@ -1990,11 +2004,12 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 
 		int count = getJdbcTemplatePrism().update(
-				IQueryConstants.INSERT_JOB_TRACKING,
-				new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
-						request_filename, request_email, job_log, job_status, customerid, productId, customerid },
-				new int[] { Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
-						Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC });
+					IQueryConstants.INSERT_JOB_TRACKING,
+					new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
+							request_filename, request_email, job_log, job_status, customerid, productId, customerid, otherRequestParams },
+					new int[] { Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
+							Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR });
+		
 		logger.log(IAppLogger.INFO, "count = " + count);
 		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
 		return job_id.toString();

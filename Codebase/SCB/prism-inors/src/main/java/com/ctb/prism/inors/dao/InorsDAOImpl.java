@@ -1074,5 +1074,59 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		}
 		return returnMap;
 	}
+	
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	@SuppressWarnings("unchecked")
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)) )")
+	} )
+	public Map<String,Object> getTpCode(Map<String,Object> paramMap){
+		logger.log(IAppLogger.INFO, "Enter: getTpCode()");
+		long t1 = System.currentTimeMillis();
+		
+		final long custProdId = Long.parseLong((String) paramMap.get("custProdId"));
+		
+		logger.log(IAppLogger.INFO, "custProdId: " + custProdId);
+		
+		Map<String,Object> returnMap = null;
+		try {
+			returnMap = (Map<String,Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.GET_TP_CODE);
+					cs.setLong(1, custProdId);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					Map<String,Object> returnMapRs = new HashMap<String,Object>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(2);
+						if(rs.next()) {
+							returnMapRs.put("tpCode", rs.getString("TP_CODE"));
+							returnMapRs.put("productId", rs.getString("PRODUCTID"));
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return returnMapRs;
+				}
+			});
+			logger.log(IAppLogger.INFO, "paramMap: " + paramMap.size());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: getTpCode() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return returnMap;
+	}
 
 }

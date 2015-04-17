@@ -636,8 +636,6 @@ public class InorsController {
 		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, customerId, assessmentId, "", 
 				reportUrl, inputControls, currentUserId, (String) request.getSession().getAttribute(IApplicationConstants.CURRORG));
 		return reportController.getReportParameter(allInputControls, reportFilterTO, false, request, reportUrl);
-		//JasperReport jasperReport = reportService.getReportJasperObject(reportUrl);
-		//return reportController.getReportParameter(allInputControls, reportFilterTO, jasperReport, request, reportUrl);
 	}
 
 	/**
@@ -863,8 +861,11 @@ public class InorsController {
 	}
 
 	/**
-	 * Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only. Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+
-	 * administrations. (Not available for IMAST or IREAD-3) Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations. Rule 4: IREAD-3 Student Report (ISR) for the 2013
+	 * Rule 1: Invitation Code Letters (IC) are available for the current ISTEP+ administration only. 
+	 * Rule 2: Image of student responses to Applied Skills test. For the two most recent ISTEP+
+	 * administrations. (Not available for IMAST or IREAD-3) 
+	 * Rule 3: ISTEP+ and IMAST Student Report (ISR) for the two most recent administrations. 
+	 * Rule 4: IREAD-3 Student Report (ISR) for the 2013
 	 * and 2014 administrations (Spring and Summer).
 	 * 
 	 * @param reportMessages
@@ -1906,73 +1907,40 @@ public class InorsController {
 	}	
 	
 	
+	/**
+	 * @author Joykumar Pal
+	 * Entry method for GRF Download screen for MO. This method takes care of I/P controls and submit request to
+	 * JOB_TRACKING table for GRF file.
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/grfDownloadForm", method = RequestMethod.GET)
 	public ModelAndView grfDownloadForm(HttpServletRequest request, HttpServletResponse response) {
-		logger.log(IAppLogger.INFO, "Enter: grfDownloadForm()");
-		ModelAndView modelAndView = new ModelAndView("mo/grfDownloads");
-
-		String contractName = Utils.getContractName();
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		String reportId = (String) request.getParameter("reportId");
-		logger.log(IAppLogger.INFO, "reportId=" + reportId);
-
-		//paramMap.put("messageNames", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
-		//Map<String, String> messageMap = reportService.getGenericSystemConfigurationMessages(paramMap);
-		//String groupDownloadInstructionMessage = messageMap.get("Group Download Instruction");
-		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
-		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
-		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-		String loggedInOrgNodeId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
-	
-		String testAdministrationVal = (String) request.getParameter("p_test_administration");
-		//String testProgram = (String) request.getParameter("p_test_program");
-		//String corpDiocese = (String) request.getParameter("p_corpdiocese");
-		//String school = (String) request.getParameter("p_school");
-		//String klass = (String) request.getParameter("p_class");
-		//String grade = (String) request.getParameter("p_grade");
-		//String groupFile = (String) request.getParameter("p_generate_file");
-		//String collationHierarchy = (String) request.getParameter("p_collation");
-		String[] subtest = request.getParameterValues("p_subtest");
-		//String studentGroups = request.getParameter("p_student_groups");
-		String studentSelection = request.getParameter("p_student_selection");
 		
+		logger.log(IAppLogger.INFO, "Enter: grfDownloadForm()");
+		ModelAndView modelAndView = new ModelAndView("inors/grfDownloads");
+		
+		String reportId = (String) request.getParameter("reportId");
+		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		String studentSelection = (String) request.getParameter("p_student_selection");
+		logger.log(IAppLogger.INFO, "reportId=" + reportId);
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
-		//logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
-		//logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
-		//logger.log(IAppLogger.INFO, "school=" + school);
-		//logger.log(IAppLogger.INFO, "klass=" + klass);
-		//logger.log(IAppLogger.INFO, "grade=" + grade);
-		//logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
-		//logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
-		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
-		//logger.log(IAppLogger.INFO, "studentGroups=" + studentGroups);
 		logger.log(IAppLogger.INFO, "studentSelection=" + studentSelection);
-				
+
 		if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
 			String reportUrl = (String) request.getParameter("reportUrl");
 			logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
 			modelAndView.addObject("reportUrl", reportUrl);
+			
 			// get parameter values for report
 			long t1 = System.currentTimeMillis();
 			Map<String, Object> parameters = getReportParameters(request, reportUrl);
 			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "groupDownloadForm - getReportParameters() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.log(IAppLogger.INFO, "grfDownloadForm - getReportParameters() took time: " + String.valueOf(t2 - t1) + "ms");
 			request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
 			if ((parameters != null) && (!parameters.isEmpty())) {
 				testAdministrationVal = CustomStringUtil.getNotNullString(parameters.get("p_test_administration"));
-				//testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
-				//corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
-				//school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
-				//klass = CustomStringUtil.getNotNullString(parameters.get("p_class"));
-				//grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
-				//groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
-				//collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
-				if(parameters.get("p_subtest") != null){
-					ArrayList<String> list = (ArrayList<String>)parameters.get("p_subtest");
-					subtest = list.toArray(new String[list.size()]);
-				}
-				//studentGroups = CustomStringUtil.getNotNullString(parameters.get("p_student_groups"));
 				studentSelection = CustomStringUtil.getNotNullString(parameters.get("p_student_selection"));
 			}
 		} else {
@@ -1989,131 +1957,93 @@ public class InorsController {
 			/****NEW***/
 		}
 		logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
-		//logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
-		//logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
-		//logger.log(IAppLogger.INFO, "school=" + school);
-		//logger.log(IAppLogger.INFO, "klass=" + klass);
-		//logger.log(IAppLogger.INFO, "grade=" + grade);
-		//logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
-		//logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
-		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
-		//logger.log(IAppLogger.INFO, "studentGroups=" + studentGroups);
 		logger.log(IAppLogger.INFO, "studentSelection=" + studentSelection);
-
+		
 		modelAndView.addObject("testAdministrationVal", testAdministrationVal);
-		//modelAndView.addObject("testProgram", testProgram);
-		//modelAndView.addObject("corpDiocese", corpDiocese);
-		//modelAndView.addObject("school", school);
-		//modelAndView.addObject("klass", klass);
-		//modelAndView.addObject("grade", grade);
-		//modelAndView.addObject("groupFile", groupFile);
-		//modelAndView.addObject("collationHierarchy", collationHierarchy);
-		modelAndView.addObject("subtest", subtest);
-		//modelAndView.addObject("studentGroups", studentGroups);
-		modelAndView.addObject("studentSelection",studentSelection);
+		modelAndView.addObject("studentSelection", studentSelection);
 		
 		request.getSession().setAttribute("GRF_testadmin", testAdministrationVal);
-		List<ReportMessageTO> reportMessages = null;
+		
+		String reportMessage = "";
 		if (testAdministrationVal != null) {
-			String productId = testAdministrationVal;
-			logger.log(IAppLogger.INFO, "reportId=" + reportId);
-			logger.log(IAppLogger.INFO, "productId=" + productId);
-			logger.log(IAppLogger.INFO, "customerId=" + customerId);
-			logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
-			Map<String, Object> parameterMap = new HashMap<String, Object>();
-			parameterMap.put("REPORT_ID", reportId);
-			parameterMap.put("PRODUCT_ID", productId);
-			parameterMap.put("CUSTOMER_ID", customerId);
-			parameterMap.put("ORG_NODE_LEVEL", orgNodeLevel);
-			// parameterMap.put("USER_ID", currentUserId);
-			/*reportMessages = reportService.getAllReportMessages(parameterMap);
-			Map<String, String> hiddenReportTypes = new HashMap<String, String>();
-			hiddenReportTypes.put(IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString(), IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
-			reportMessages = setDisplayFlags(reportMessages, hiddenReportTypes);
-			modelAndView.addObject("reportMessages", reportMessages);*/
 			
-			String productName = "";
-			String hideContentFlag = "";
-			//String dataloadMessage = "";
-			if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
-				hideContentFlag = IApplicationConstants.FLAG_N;
-			}else{
-				productName = getProductNameById(testAdministrationVal);
-				//hideContentFlag = getHideContentFlagGroupDownloadForm(groupFile, productName, reportMessages);
-				//dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
-			}
+			Map<String, Object> paramMapGetTpCode = new HashMap<String, Object>();
+			paramMapGetTpCode.put("custProdId", testAdministrationVal);
+			Map<String,Object> returnMap = inorsService.getTpCode(paramMapGetTpCode);
+			String tpCode = (String)returnMap.get("tpCode");
+			String productId = (String)returnMap.get("productId");
+			request.getSession().setAttribute("GRF_tpCode", tpCode);
 			
-			/*if (hideContentFlag.equals(IApplicationConstants.FLAG_N)) {
-				try {
-					String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
-					String fileName = (String) request.getParameter("fileName");
-					if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-						fileName = (String) request.getSession().getAttribute("FILE_NAME_GD");
-						if ((fileName == null) || (fileName.equalsIgnoreCase("null"))) {
-							fileName = FileUtil.generateDefaultZipFileName(currentUser, groupFile);
-							request.getSession().setAttribute("FILE_NAME_GD", fileName);
-						}
-					}
-					String email = (String) request.getParameter("email");
-					if ((email == null) || (email.equalsIgnoreCase("null"))) {
-						email = (String) request.getSession().getAttribute("EMAIL_GD");
-						if ((email == null) || (email.equalsIgnoreCase("null"))) {
-							email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
-						}
-					}
-					logger.log(IAppLogger.INFO, "fileName=" + fileName);
-					logger.log(IAppLogger.INFO, "email=" + email);
-					modelAndView.addObject("fileName", fileName);
-					modelAndView.addObject("email", email);
+			Map<String, Object> paramMapGetReportMessage = new HashMap<String, Object>();
+			paramMapGetReportMessage.put("REPORT_ID", reportId);
+			paramMapGetReportMessage.put("MESSAGE_TYPE", IApplicationConstants.DASH_MESSAGE_TYPE.RM.toString());
+			paramMapGetReportMessage.put("MESSAGE_NAME", IApplicationConstants.REPORT_MESSAGE);
+			paramMapGetReportMessage.put("PRODUCT_ID", productId);
+			paramMapGetReportMessage.put("CUSTOMER_ID", (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER));
+			paramMapGetReportMessage.put("ORG_NODE_LEVEL", ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString());
+			reportMessage = reportService.getReportMessage(paramMapGetReportMessage);
 
-					List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
-					GroupDownloadTO to = new GroupDownloadTO();
-					to.setSchool(school);
-					to.setKlass(klass);
-					to.setGrade(grade);
-					to.setTestProgram(testProgram);
-					to.setTestAdministrationVal(testAdministrationVal);
-					to.setDistrict(corpDiocese);
-					to.setCollationHierarchy(collationHierarchy);
-					to.setCustomerId(customerId);
-					to.setOrgNodeLevel(orgNodeLevel);
-					to.setGroupFile(groupFile);
-					// to.setUserId(currentUserId);
-					to.setLoggedInOrgNodeId(loggedInOrgNodeId);
-					to.setUserName(currentUserName);
-					to.setSubtest(subtest);
-					to.setContractName(contractName);
-					to.setStudentGroups(studentGroups);
-					if ((testAdministrationVal != null) && (!"null".equalsIgnoreCase(testAdministrationVal))) {
-						LinkedHashSet<GroupDownloadStudentTO> tempList = new LinkedHashSet<GroupDownloadStudentTO>(populateStudentTableGD(to));
-						studentList = new ArrayList<GroupDownloadStudentTO>(tempList);
-					}
-					Integer rowNum = 0;
-					for(GroupDownloadStudentTO student : studentList) {
-						rowNum = rowNum + 1;
-						student.setRowNum(rowNum);
-					}
-					logger.log(IAppLogger.INFO, "Students after removing duplicates: " + studentList.size() + "\n" + JsonUtil.convertToJsonAdmin(studentList));
-					modelAndView.addObject("studentList", studentList);
-					modelAndView.addObject("studentCount", studentList.size());
-				} catch (Exception e) {
-					logger.log(IAppLogger.ERROR, e.getMessage(), e);
-					e.printStackTrace();
-				}
-			} else {
-				logger.log(IAppLogger.INFO, "------------------------Hiding the input form---------------------");
-			}
-		//	logger.log(IAppLogger.INFO, "hideContentFlag=" + hideContentFlag);
-		//	logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
-		//	modelAndView.addObject("hideContentFlag", hideContentFlag);
-		//	modelAndView.addObject("dataloadMessage", dataloadMessage);
-			 */
 		} else {
 			modelAndView.addObject("reportMessages", null);
 		}
-		//modelAndView.addObject("groupDownloadInstructionMessage", groupDownloadInstructionMessage);
+		modelAndView.addObject("reportMessage", reportMessage);
 		logger.log(IAppLogger.INFO, "Exit: grfDownloadForm()");
 		return modelAndView;
+	}
+		
+	/**
+	 * @author Joykumar Pal
+	 * GRF download file for Missouri
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/grfDownload")
+	public void grfDownload(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
+			String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			
+			currentUser = (currentUser == null) ? request.getParameter("username") : currentUser;
+			currentUserId = (currentUserId == null) ? request.getParameter("userid") : currentUserId;
+			customer = (customer == null) ? request.getParameter("customerid") : customer;
+			
+			String testAdministrationVal = (String) request.getParameter("p_test_administration");
+			String studentSelection = (String) request.getParameter("p_student_selection");
+			
+			String tpCode = (String)request.getSession().getAttribute("GRF_tpCode");
+			String email = (String) request.getSession().getAttribute(IApplicationConstants.EMAIL);
+			
+			String appealFlag = "APPEAL";
+			if(IApplicationConstants.FLAG_N.equals(studentSelection)){
+				appealFlag = "ALL";
+			}
+			String fileName = CustomStringUtil.appendString("CTB_GRF_", tpCode, "_", appealFlag, "_", Utils.getDateTime(true), ".DAT");
+			
+			logger.log(IAppLogger.INFO, "fileName=" + fileName);
+			logger.log(IAppLogger.INFO, "email=" + email);
+			
+			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
+			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
+			groupDownloadTO.setUserName(currentUser);
+			groupDownloadTO.setTestAdministrationVal(testAdministrationVal);
+			groupDownloadTO.setCustomerId(customer);
+			groupDownloadTO.setGroupFile("DAT");
+			groupDownloadTO.setFileName(fileName);
+			groupDownloadTO.setEmail(email);
+			groupDownloadTO.setButton(IApplicationConstants.DOWNLOAD_GRF_BUTTON);
+			groupDownloadTO.setStudentSelection(studentSelection);
+			
+			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
+			logger.log(IAppLogger.INFO, "jobTrackingId: "+jobTrackingId);
+			String status = "Success";
+
+			response.setContentType("application/json");
+			response.getWriter().write("");
+			response.getWriter().write("{\"status\":\"" + status + "\"}");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -80,5 +80,12 @@ public interface IInorsService {
 	 * @return returnMap
 	 */
 	public Map<String,Object> getCode(Map<String,Object> paramMap);
+	
+	/**
+	 * @author Joy Kumar Pal
+	 * @param paramMap
+	 * @return returnMap
+	 */
+	public Map<String,Object> getTpCode(Map<String,Object> paramMap);
 
 }

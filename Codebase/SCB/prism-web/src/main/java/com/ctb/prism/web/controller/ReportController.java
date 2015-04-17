@@ -2267,7 +2267,7 @@ public class ReportController{
 	@ResponseBody
 	public String updateActions(HttpServletRequest req) {
 		String status = null;
-		logger.log(IAppLogger.INFO, "Enter: updateReport()");
+		logger.log(IAppLogger.INFO, "Enter: updateActions()");
 		String reportId = req.getParameter("reportIdForAction");
 		String custProdId = req.getParameter("productForAction");
 		String actionId = req.getParameter("newAction");
@@ -2292,7 +2292,7 @@ public class ReportController{
 			status = "Error";
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);
 		}
-		logger.log(IAppLogger.INFO, "Exit: updateReport()");
+		logger.log(IAppLogger.INFO, "Exit: updateActions()");
 		return "{\"status\":\"" + status + "\"}";
 	}
 	
