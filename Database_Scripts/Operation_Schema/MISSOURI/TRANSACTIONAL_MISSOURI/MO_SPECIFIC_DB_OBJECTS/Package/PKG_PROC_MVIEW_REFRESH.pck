@@ -12,9 +12,9 @@ end PKG_PROC_MVIEW_REFRESH;
 /
 create or replace package body PKG_PROC_MVIEW_REFRESH is
 
-  PROCEDURE PROC_ORG_NODE_DIM_HIER_REFERSH
-  IS
-  BEGIN
+  PROCEDURE PROC_ORG_NODE_DIM_HIER_REFERSH 
+  IS 
+  BEGIN 
         INSERT INTO PERF_LOG
         VALUES
           (PERF_LOG_SEQ.NEXTVAL,
@@ -34,29 +34,29 @@ create or replace package body PKG_PROC_MVIEW_REFRESH is
            'END',
            SYSDATE);
         COMMIT;
-
-        
+     
+        /*  
         INSERT INTO PERF_LOG
         VALUES
           (PERF_LOG_SEQ.NEXTVAL,
-           'MV_ORG_TP_STRUCTURE',
+           'ORG_NODE_DIM_HIER',
            'MVIEW',
            'REFRESH STARTED',
            'START',
            SYSDATE);
         COMMIT;
-        DBMS_MVIEW.REFRESH('MV_ORG_TP_STRUCTURE', '?');
+        DBMS_MVIEW.REFRESH('ORG_NODE_DIM_HIER', 'C');
         INSERT INTO PERF_LOG
         VALUES
           (PERF_LOG_SEQ.NEXTVAL,
-           'MV_ORG_TP_STRUCTURE',
+           'ORG_NODE_DIM_HIER',
            'MVIEW',
            'REFRESH COMPLETED',
            'END',
            SYSDATE);
-        COMMIT;
-        END ;
-/*
+        COMMIT;*/
+        END ; 
+/*        
 PROCEDURE PROC_STUDENT_REFRESH(P_PROCESS_ID IN NUMBER) IS
 BEGIN
 

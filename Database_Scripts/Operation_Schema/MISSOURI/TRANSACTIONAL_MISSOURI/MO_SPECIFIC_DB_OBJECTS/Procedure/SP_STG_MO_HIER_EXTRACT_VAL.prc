@@ -27,7 +27,7 @@ BEGIN
       FROM (SELECT DISTINCT F.PROCESS_ID
               FROM STG_MO_HIER_EXTRACT F
              WHERE F.ORG_TP IS NULL
-              --  OR LENGTH(F.ORG_TP) <> 10
+                OR LENGTH(F.ORG_TP) <> 10
                 OR (SELECT DISTINCT T.CUSTOMERID
                       FROM TEST_PROGRAM T
                      WHERE T.TP_CODE = F.ORG_TP) IS NULL);
@@ -38,10 +38,15 @@ BEGIN
         FROM (SELECT DISTINCT F.PROCESS_ID
                 FROM STG_MO_HIER_EXTRACT F
                WHERE F.ORG_TP IS NULL
-                  OR LENGTH(F.ORG_TP) <> 10
+               --   OR LENGTH(F.ORG_TP) <> 10
                   OR (SELECT DISTINCT T.CUSTOMERID
                         FROM TEST_PROGRAM T
-                       WHERE T.TP_CODE = F.ORG_TP) IS NULL);
+                       WHERE T.TP_CODE = F.ORG_TP
+                         AND T.CUSTOMERID = 
+                            (SELECT CUSTOMERID 
+                               FROM CUSTOMER_INFO
+                              WHERE CUSTOMER_CODE = F.ELEMENT_A_HIERARCHY_CODE)
+                       ) IS NULL);
 
       IF (V_ERR_PROCESS_ID IS NOT NULL) THEN
         V_FLAG := 'Y';
