@@ -1,29 +1,6 @@
 delete from dash_contract_prop where projectid = 3;
 
-insert into DASH_CONTRACT_PROP
-  (DB_PROPERTYID,
-   DB_PROPERTY_NAME,
-   DB_PROPERY_VALUE,
-   SSO_SOURCE,
-   PROJECTID)
-values
-  ((select max(DB_PROPERTYID) + 1 from dash_contract_prop),
-   'default.custProdId.gscm',
-   '3001',
-   null,
-   1);
-insert into DASH_CONTRACT_PROP
-  (DB_PROPERTYID,
-   DB_PROPERTY_NAME,
-   DB_PROPERY_VALUE,
-   SSO_SOURCE,
-   PROJECTID)
-values
-  ((select max(DB_PROPERTYID) + 1 from dash_contract_prop),
-   'default.custProdId.gscm',
-   '5001',
-   null,
-   2);
+
 insert into DASH_CONTRACT_PROP
   (DB_PROPERTYID,
    DB_PROPERTY_NAME,

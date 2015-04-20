@@ -47,3 +47,6 @@ SET DEFINE OFF;
 insert into dash_reports(db_reportid,report_name,report_desc,report_type,report_folder_uri,activation_status,created_date_time,projectid)
 values(DB_REPORT_ID_SEQ.Nextval,q'[Guide to Interpreting Results &#40;GIR&#41;]','GIR','API_NFCUSTOM','resourcepdf|resourcepdf.do?pdfFileName=/Static_PDF/GIR.pdf','AC',sysdate,3);
 SET DEFINE ON;
+
+insert into dash_reports(db_reportid,report_name,report_desc,report_type,report_folder_uri,activation_status,created_date_time,projectid)
+values(DB_REPORT_ID_SEQ.Nextval,'GRF Download','GRF Download','API_CUSTOM','/public/Missouri/Report/GRF_files|grfDownloadForm.do','AC',sysdate,3);

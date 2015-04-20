@@ -23,7 +23,7 @@ values(seq_dash_rpt_action.nextval,'Delete Content','CON','Delete Content',sysda
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'More','CON','More',sysdate,3);
 
---Group Download Filess
+--Group Download Files
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Refresh','GDF','Refresh Button in Group Download Files',sysdate,3);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
@@ -38,3 +38,7 @@ insert into dash_rpt_action(db_actionid,action_name,action_type,description,crea
 values(seq_dash_rpt_action.nextval,'Combined Pdf','GDL','Combined Pdf Button in Group Downloads',sysdate,3);
 insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
 values(seq_dash_rpt_action.nextval,'Separate Pdf','GDL','Separate Pdf Button in Group Downloads',sysdate,3);
+
+--GRF Download
+insert into dash_rpt_action(db_actionid,action_name,action_type,description,created_date_time,projectid)
+values(seq_dash_rpt_action.nextval,'GRF Download','GRF','GRF Download Button in GRF Download',sysdate,3);
