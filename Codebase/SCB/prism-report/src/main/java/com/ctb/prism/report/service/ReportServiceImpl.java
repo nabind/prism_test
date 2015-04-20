@@ -81,7 +81,9 @@ public class ReportServiceImpl implements IReportService {
 		parameters.put("p_Is3D", IApplicationConstants.FLAG_N);
 		JasperPrint jasperPrint = reportBusiness.getFilledReport(jasperReport, parameters);
 		/** session to cache **/
-		usabilityService.getSetCache(user, CustomStringUtil.appendString(sessionParam, Utils.getContractName()), jasperPrint);
+		//usabilityService.getSetCache(user, CustomStringUtil.appendString(sessionParam, Utils.getContractName()), jasperPrint);
+		usabilityService.getSetCache(user, CustomStringUtil.appendString(sessionParam, (String)parameters.get("contractName")), jasperPrint);
+		
 	}
 
 	/*
