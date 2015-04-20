@@ -55,7 +55,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
     V_DASH_MESSAGES       NUMBER;
     --  V_PP_TPCODE_CHK             NUMBER;
     V_CUST_CODE_CHK NUMBER;
-    EXP_CUST_CODE_CHK EXCEPTION;
+    EXP_CUST_CODE_CHK        EXCEPTION;
     ERR_INPUT_TPCODE_INVALID EXCEPTION;
   
     CURSOR C_DEMO IS
@@ -269,7 +269,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
        UPDATED_DATE_TIME)
       SELECT MISSOURI.ARTICLE_METADATA_SEQ.NEXTVAL AS ARTICLEID,
              ARTICLE_NAME,
-             V_CUST_PROD_ID AS CUST_PROD_ID,
+             V_CUST_PROD_ID                        AS CUST_PROD_ID,
              SUBT_OBJ_MAPID,
              SUBTESTID,
              ARTICLE_CONTENT_ID,
@@ -281,8 +281,8 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
              GRADEID,
              PROFICIENCY_LEVEL,
              RESOLVED_RPRT_STATUS,
-             SYSDATE AS CREATED_DATE_TIME,
-             SYSDATE AS UPDATED_DATE_TIME
+             SYSDATE                               AS CREATED_DATE_TIME,
+             SYSDATE                               AS UPDATED_DATE_TIME
         FROM MISSOURI.ARTICLE_METADATA A
        WHERE A.CUST_PROD_ID = V_OLD_CUST_PRODID;
   
@@ -499,9 +499,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
   
     --COMMIT;
   
-    SELECT MAX(ORG_NODEID)
-      INTO V_ORG_NODE_ID
-      FROM MISSOURI.ORG_NODE_DIM;
+    SELECT MAX(ORG_NODEID) INTO V_ORG_NODE_ID FROM MISSOURI.ORG_NODE_DIM;
   
     IF V_ORG_NODE_ID IS NULL THEN
       V_ORG_NODE_ID := 1;
@@ -597,8 +595,8 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
                V_CUST_PROD_ID CUST_PROD_ID,
                SYSDATE
           FROM DASH_MESSAGE_TYPE
-         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID;
-      -- AND MESSAGE_TYPE <> 'GSCM';
+         WHERE CUST_PROD_ID = V_OLD_CUST_PRODID
+           AND MESSAGE_TYPE <> 'GSCM';
     
     END IF;
   
@@ -627,8 +625,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
          WHERE CUST_PROD_ID = V_OLD_CUST_PRODID
            AND MSG_TYPEID IN (SELECT MSG_TYPEID
                                 FROM DASH_MESSAGE_TYPE
-                              /* WHERE MESSAGE_TYPE <> 'GSCM'*/
-                              );
+                               WHERE MESSAGE_TYPE <> 'GSCM');
     
     END IF;
   
@@ -658,11 +655,11 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
                DB_ACTIONID,
                ROLEID,
                ORG_LEVEL,
-               V_CUST_PROD_ID CUST_PROD_ID,
+               V_CUST_PROD_ID                 CUST_PROD_ID,
                ACTION_SEQ,
                P_PROJECT_ID,
                ACTIVATION_STATUS,
-               SYSDATE CREATED_DATE_TIME
+               SYSDATE                        CREATED_DATE_TIME
           FROM DASH_ACTION_ACCESS
          WHERE CUST_PROD_ID = V_OLD_CUST_PRODID;
     
