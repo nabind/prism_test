@@ -22,10 +22,12 @@
 		</dl>
 		
 		<div class="columns accordion with-padding" style="margin-bottom:0">
-			<a href="#" class="button" id="downloadGrf" style="margin-left: 10px; float: right;">
-				<span class="button-icon icon-download blue-gradient report-btn"></span>
-				<spring:message code="button.grfDownload.downloadGrf" />
-			</a>
+			<!--<c:if test="${not empty actionMap[grfDownload]}"> -->
+				<a href="#" class="button" id="downloadGrf" style="margin-left: 10px; float: right;">
+					<span class="button-icon icon-download blue-gradient report-btn"></span>
+					<spring:message code="button.grfDownload.downloadGrf" />
+				</a>
+			<!-- </c:if>-->
 		</div>
 	</form:form>
 </div>
