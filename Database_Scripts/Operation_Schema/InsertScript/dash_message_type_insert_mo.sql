@@ -148,4 +148,19 @@ INSERT INTO DASH_MESSAGE_TYPE
        'PSCM',
        'Message configuration for right sided menu',
        5027,
-       SYSDATE);	   	   
+       SYSDATE);	
+       
+insert into dash_message_type
+      (msg_typeid,
+       message_name,
+       message_type,
+       description,
+     cust_prod_id,
+       created_date_time)
+    values
+      (1057,
+       'Report Message',
+       'RM',
+       'Report page ---Report Message(below the report header)',
+	   5027,
+       sysdate);       
