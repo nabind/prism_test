@@ -11,23 +11,24 @@
 		<p class="error-message message small-margin-bottom red-gradient" style="display:none"><spring:message code="msg.error.groupDownload"/></p>
 		<input type="hidden" value="/public/Missouri/Report/GRF_files" name="reportUrl" >
 		
-		<dl class="download-instructions accordion same-height">
-			<c:if test="${not empty reportMessage}"><dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
-			<c:if test="${empty reportMessage}"><dt class="open accordion-header"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span></c:if>
-			</span> Report Messages</dt>
-			<c:if test="${not empty reportMessage}"><dd style="height: auto; display: none;" class="accordion-body with-padding"></c:if>
-			<c:if test="${empty reportMessage}"><dd style="height: auto;" class="accordion-body with-padding"></c:if>
-					${reportMessage}
-			</dd>
-		</dl>
+		<c:if test="${not empty reportMessage}">
+			<dl class="download-instructions accordion same-height">
+				<c:if test="${not empty reportMessage}"><dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span></c:if>
+				<c:if test="${empty reportMessage}"><dt class="open accordion-header"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span></c:if>
+				</span> Report Messages</dt>
+				<c:if test="${not empty reportMessage}"><dd style="height: auto; display: none;" class="accordion-body with-padding"></c:if>
+				<c:if test="${empty reportMessage}"><dd style="height: auto;" class="accordion-body with-padding"></c:if>
+						${reportMessage}
+				</dd>
+			</dl>
+		</c:if>
 		
 		<div class="columns accordion with-padding" style="margin-bottom:0">
-			<!--<c:if test="${not empty actionMap[grfDownload]}"> -->
 				<a href="#" class="button" id="downloadGrf" style="margin-left: 10px; float: right;">
 					<span class="button-icon icon-download blue-gradient report-btn"></span>
 					<spring:message code="button.grfDownload.downloadGrf" />
 				</a>
-			<!-- </c:if>-->
+			
 		</div>
 	</form:form>
 </div>
