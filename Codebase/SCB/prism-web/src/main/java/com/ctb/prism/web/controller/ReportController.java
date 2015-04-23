@@ -448,7 +448,7 @@ public class ReportController{
 			/** session to cache **/
 			/*usabilityService.getSetCache((String) req.getSession().getAttribute(IApplicationConstants.CURRUSER),
 					reportUrl, jasperPrint);*/
-			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?jrprint=" + printSession + "&image=");
+			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "servlets/images?_="+ Math.random()*1000000 +"&jrprint=" + printSession + "&image=");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, "");
 			exporter.setParameter(JRHtmlExporterParameter.HTML_FOOTER, "");
 			
