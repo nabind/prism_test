@@ -175,6 +175,7 @@ public class JobTrackingTO extends BaseTO {
 		this.requestEmail = requestEmail;
 	}
 	public String getJobLog() {
+		if(jobLog != null && jobLog.length() > 4000) return jobLog.substring(0, 3999);
 		return jobLog;
 	}
 	public void setJobLog(String jobLog) {
