@@ -57,6 +57,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
     V_CUST_CODE_CHK NUMBER;
     EXP_CUST_CODE_CHK        EXCEPTION;
     ERR_INPUT_TPCODE_INVALID EXCEPTION;
+    V_DEMO_CUSTOMER VARCHAR2 (32) DEFAULT 'Missouri_MAP_Demo_Customer';
   
     CURSOR C_DEMO IS
       SELECT DEMOID,
@@ -89,7 +90,8 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
     Select CUSTOMERID
       INTO V_OLD_CUSTOMERID
       from customer_info
-     where CUSTOMERID = 1036;
+     where CUSTOMER_NAME = V_DEMO_CUSTOMER
+     AND PROJECTID = P_PROJECT_ID;
   
     select CUST_PROD_ID
       into V_OLD_CUST_PRODID
@@ -115,7 +117,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
   
     IF V_CUSTOMER_ID IS NULL THEN
     
-      V_CUSTOMER_ID := 1036;
+      V_CUSTOMER_ID := V_OLD_CUSTOMERID;
     
       INSERT INTO prismglobal.CUSTOMER_INFO
         (CUSTOMERID,
@@ -128,7 +130,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
          CUSTOMER_CODE,
          PROJECTID)
       VALUES
-        (1036,
+        (V_OLD_CUSTOMERID,
          P_CUSTOMER_NAME,
          'Y',
          P_DATA_LOC,
@@ -184,7 +186,7 @@ create or replace package body PKG_MO_CUSTOMER_CREATION is
   
     IF V_CUST_PROD_ID IS NULL THEN
     
-      V_CUST_PROD_ID := 5050;
+      V_CUST_PROD_ID := V_OLD_CUST_PRODID;
     
       INSERT INTO prismglobal.CUST_PRODUCT_LINK
         (CUST_PROD_ID,
