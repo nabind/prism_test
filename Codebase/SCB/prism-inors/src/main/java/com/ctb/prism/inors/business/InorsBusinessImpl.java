@@ -1146,7 +1146,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						fileForStudent.add(fileName);
 						allIsr.add(fileName);
 					} else {
-						job.append("Error downloading PDF for student ").append(studentId).append(" and subtest ").append(subtest) ;
+						job.append(",NO PDF std:").append(studentId).append("|subtst:").append(subtest) ;
 					}
 				}
 				if(!isBulk) {

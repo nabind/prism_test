@@ -52,7 +52,7 @@ public class PdfGenerator {
 	private static Font tableHeaderFont = FontFactory.getFont("Arial", 9.0F, 1, new Color(0, 0, 0));
 	private static Font tableFont = FontFactory.getFont("Arial", 9.0F, 0, new Color(0, 0, 0));
 	
-	private static final IAppLogger logger = LogFactory.getLoggerInstance(ParentDAOImpl.class.getName());
+	private static final IAppLogger logger = LogFactory.getLoggerInstance(PdfGenerator.class.getName());
 	
 	/**
 	 * Generates PDF for query sheet
