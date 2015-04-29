@@ -402,10 +402,10 @@ public class TascDAOImpl {
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(?, 'MM/DD/YYYY')");
 			}
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				queryBuff.append(" AND ESD.UUID LIKE ?");
+				queryBuff.append(" AND EED.ER_UUID LIKE ?");
 			}
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-				queryBuff.append(" AND UPPER(ESD.LASTNAME) LIKE UPPER(?)");
+				queryBuff.append(" AND UPPER(EED.LAST_NAME) LIKE UPPER(?)");
 			}
 			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
