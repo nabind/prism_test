@@ -371,8 +371,8 @@ public class TascDAOImpl {
 			}
 			
 		} else{
-			queryBuff.append("SELECT ESD.LASTNAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
-			queryBuff.append(" ESD.UUID UUID,");
+			queryBuff.append("SELECT EED.LAST_NAME || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
+			queryBuff.append(" EED.ER_UUID UUID,");
 			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
 			queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
 			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
