@@ -572,23 +572,24 @@ public class CommonController extends BaseDAO {
 	@RequestMapping(value="/clearTascCache", method=RequestMethod.GET)
 	public ModelAndView clearTascCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
-	
+		String theme = req.getParameter("theme");
 		ModelAndView mv = new ModelAndView("common/success");
 		logger.log(IAppLogger.INFO, "Inside clearTascCache");
-		String theme = themeResolver.resolveThemeName(req);
-		reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		if(theme == null) theme = themeResolver.resolveThemeName(req);
+		reportService.removeCacheSimpleDB(theme);
 		mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
+		System.out.println("--All TASC cacahe cleared:theme>"+theme);
 		return mv;
 	}
 	
 	@RequestMapping(value="/clearPrismCache", method=RequestMethod.GET)
 	public ModelAndView clearPrismCache(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
-	
+		String theme = req.getParameter("theme");
 		ModelAndView mv = new ModelAndView("common/success");
 		logger.log(IAppLogger.INFO, "Inside clearTascCache");
-		String theme = themeResolver.resolveThemeName(req);
-		reportService.removeCacheSimpleDB(Utils.getContractName(theme));
+		if(theme == null) theme = themeResolver.resolveThemeName(req);
+		reportService.removeCacheSimpleDB(theme);
 		mv.addObject("message", "All Cache cleared !!! for " +Utils.getContractName(theme));
 		return mv;
 	}
