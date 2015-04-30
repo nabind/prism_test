@@ -2157,7 +2157,8 @@ public class AdminController {
 	public String resetPassword(HttpServletRequest req, HttpServletResponse res ) {
 		logger.log(IAppLogger.INFO, "Enter: AdminController - resetPassword");
 		String sendEmailFlag = "0";
-		Map<String, Object> paramMap = new HashMap<String, Object>();		
+		Map<String, Object> paramMap = new HashMap<String, Object>();	
+		String pwd = "";
 		try {
 			String userName= (String) req.getParameter("userName");
 			if ( userName != null ) {
@@ -2165,6 +2166,7 @@ public class AdminController {
 				paramMap.put("username", userName);
 				paramMap.put("contractName", Utils.getContractName());
 				com.ctb.prism.login.transferobject.UserTO userTO = adminService.resetPassword(paramMap);
+				if(userTO != null) pwd = userTO.getPassword();
 				if (userTO.getUserEmail() != null && userTO.getPassword() != null) {
 					try{
 						emailSender.sendUserPasswordEmail(userTO.getUserEmail(),null,userTO.getPassword());
@@ -2176,7 +2178,7 @@ public class AdminController {
 				}
 			}
 			
-			res.getWriter().write("{\"sendEmailFlag\":\"" + sendEmailFlag + "\"}");
+			res.getWriter().write("{\"sendEmailFlag\":\"" + sendEmailFlag + "\",\"password\":\"" + pwd + "\"}");
 			
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, e.getMessage(), e);

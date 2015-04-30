@@ -1152,7 +1152,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				if(!isBulk) {
 					// combine student's PDF
 					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", Utils.getDateTime(true), ".pdf");
+							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", System.currentTimeMillis()+""/*Utils.getDateTime(true)*/, ".pdf");
 					OutputStream os = new FileOutputStream(mergedFileName);
 					PdfGenerator.concatPDFs(fileForStudent, os, false);
 					IOUtils.closeQuietly(os);

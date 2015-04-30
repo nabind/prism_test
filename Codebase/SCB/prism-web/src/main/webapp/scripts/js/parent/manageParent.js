@@ -667,9 +667,10 @@
 				//=========REBUILD THE MODAL DOM========
 					if( data.sendEmailFlag == "1") {
 						win.setModalTitle(strings['msg.newParentPassword']);
-						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");				
+						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");
+						$.modal.alert('New password is sent to user email. \nNew password is: '+data.password );
 					} else {
-						$.modal.alert(strings['script.parent.passwordResetError']);
+						$.modal.alert('No email is associated with the user. Please notify password to user. \nNew password is: '+data.password );
 					}	
 				}
 				else {
