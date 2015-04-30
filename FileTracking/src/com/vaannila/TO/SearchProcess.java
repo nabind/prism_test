@@ -2,27 +2,27 @@ package com.vaannila.TO;
 
 import java.io.Serializable;
 
-public class SearchProcess implements Serializable {
+public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 262460751035212841L;
-	private long processid;
-	private String structElement;
-	private String orgLevel;
-	private String caseCount;
-	private String dataStatus;
-	private String pdfStatus;
-	private String targetStatus;
-	private String targerEmailStatus;
-	private String processStatus;
-	private String processLog;
-	private String sourceFileName;
-	private String createdDate;
-	private String updatedDate;
-	private String elementName;
-	private String customarCode;
+	private long processid = 0;
+	private String structElement = "";
+	private String orgLevel = "";
+	private String caseCount = "";
+	private String dataStatus = "";
+	private String pdfStatus = "";
+	private String targetStatus = "";
+	private String targerEmailStatus = "";
+	private String processStatus = "";
+	private String processLog = "";
+	private String sourceFileName = "";
+	private String createdDate = "";
+	private String updatedDate = "";
+	private String elementName = "";
+	private String customarCode = "";
 	private String processedDateFrom = "";
 	private String processedDateTo = "";
 	private String uuid = "";
@@ -37,10 +37,15 @@ public class SearchProcess implements Serializable {
 	private String barcode = "";
 	private String processId = "";
 	private String sourceSystemDesc = "";
-	private String district;
-	private String subtest;
-	private String processIdStr;
-	private String grade;
+	private String district = "";
+	private String subtest = "";
+	private String processIdStr = "";
+	private String grade = "";
+	private long fromRowNum = 0;
+	private long toRowNum = 0;
+	private long pageNumber = 0;
+	private long pageDisplayLength = 0;
+	
 	
 	public String getDistrict() {
 		return district;
@@ -240,7 +245,146 @@ public class SearchProcess implements Serializable {
 	public void setSourceSystemDesc(String sourceSystemDesc) {
 		this.sourceSystemDesc = sourceSystemDesc;
 	}
+	public long getFromRowNum() {
+		this.fromRowNum = ((this.pageNumber - 1) * this.pageDisplayLength) + 1;
+		return fromRowNum;
+	}
+	public void setFromRowNum(long fromRowNum) {
+		this.fromRowNum = fromRowNum;
+	}
+	public long getToRowNum() {
+		this.toRowNum = (this.pageNumber * this.pageDisplayLength);
+		return toRowNum;
+	}
+	public void setToRowNum(long toRowNum) {
+		this.toRowNum = toRowNum;
+	}
+	public long getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(long pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+	public long getPageDisplayLength() {
+		return pageDisplayLength;
+	}
+	public void setPageDisplayLength(long pageDisplayLength) {
+		this.pageDisplayLength = pageDisplayLength;
+	}
 	
-	
-	
+	public int compareTo(SearchProcess searchProcess) {
+		int compareFlag = 0;
+		if (this.processid != searchProcess.processid){
+			compareFlag = 1;
+		}
+		if(!this.structElement.equals(searchProcess.structElement)){
+			compareFlag = 1;
+		}
+		if(!this.orgLevel.equals(searchProcess.orgLevel)){
+			compareFlag = 1;
+		}
+		if(!this.caseCount.equals(searchProcess.caseCount)){
+			compareFlag = 1;
+		}
+		if(!this.dataStatus.equals(searchProcess.dataStatus)){
+			compareFlag = 1;
+		}
+		if(!this.pdfStatus.equals(searchProcess.pdfStatus)){
+			compareFlag = 1;
+		}
+		if(!this.targetStatus.equals(searchProcess.targetStatus)){
+			compareFlag = 1;
+		}
+		if(!this.targerEmailStatus.equals(searchProcess.targerEmailStatus)){
+			compareFlag = 1;
+		}
+		if(!this.processStatus.equals(searchProcess.processStatus)){
+			compareFlag = 1;
+		}
+		if(!this.processLog.equals(searchProcess.processLog)){
+			compareFlag = 1;
+		}
+		if(!this.sourceFileName.equals(searchProcess.sourceFileName)){
+			compareFlag = 1;
+		}
+		if(!this.createdDate.equals(searchProcess.createdDate)){
+			compareFlag = 1;
+		}
+		if(!this.updatedDate.equals(searchProcess.updatedDate)){
+			compareFlag = 1;
+		}
+		if(!this.elementName.equals(searchProcess.elementName)){
+			compareFlag = 1;
+		}
+		if(!this.customarCode.equals(searchProcess.customarCode)){
+			compareFlag = 1;
+		}
+		if(!this.processedDateFrom.equals(searchProcess.processedDateFrom)){
+			compareFlag = 1;
+		}
+		if(!this.processedDateTo.equals(searchProcess.processedDateTo)){
+			compareFlag = 1;
+		}
+		if(!this.uuid.equals(searchProcess.uuid)){
+			compareFlag = 1;
+		}
+		if(!this.recordId.equals(searchProcess.recordId)){
+			compareFlag = 1;
+		}
+		if(!this.lastName.equals(searchProcess.lastName)){
+			compareFlag = 1;
+		}
+		if(!this.exceptionCode.equals(searchProcess.exceptionCode)){
+			compareFlag = 1;
+		}
+		if(!this.subjectCa.equals(searchProcess.subjectCa)){
+			compareFlag = 1;
+		}
+		if(!this.sourceSystem.equals(searchProcess.sourceSystem)){
+			compareFlag = 1;
+		}
+		if(!this.stateCode.equals(searchProcess.stateCode)){
+			compareFlag = 1;
+		}
+		if(!this.form.equals(searchProcess.form)){
+			compareFlag = 1;
+		}
+		if(!this.testElementId.equals(searchProcess.testElementId)){
+			compareFlag = 1;
+		}
+		if(!this.barcode.equals(searchProcess.barcode)){
+			compareFlag = 1;
+		}
+		if(!this.processId.equals(searchProcess.processId)){
+			compareFlag = 1;
+		}
+		if(!this.sourceSystemDesc.equals(searchProcess.sourceSystemDesc)){
+			compareFlag = 1;
+		}
+		if(!this.district.equals(searchProcess.district)){
+			compareFlag = 1;
+		}
+		if(!this.subtest.equals(searchProcess.subtest)){
+			compareFlag = 1;
+		}
+		if(!this.processIdStr.equals(searchProcess.processIdStr)){
+			compareFlag = 1;
+		}
+		if(!this.grade.equals(searchProcess.grade)){
+			compareFlag = 1;
+		}
+		if(this.fromRowNum != searchProcess.fromRowNum){
+			compareFlag = 1;
+		}
+		if(this.toRowNum != searchProcess.toRowNum){
+			compareFlag = 1;
+		}
+		if(this.pageNumber != searchProcess.pageNumber){
+			compareFlag = 1;
+		}
+		if(this.pageDisplayLength != searchProcess.pageDisplayLength){
+			compareFlag = 1;
+		}
+		return compareFlag;
+	}
 }

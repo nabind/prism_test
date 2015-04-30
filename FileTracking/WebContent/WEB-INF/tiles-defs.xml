@@ -14,6 +14,14 @@
       <put-attribute name="footer"   value="/WEB-INF/tiles/footer.jsp"/>
   </definition>
   
+  <definition name="baseLayoutNew" template="/WEB-INF/tiles/baseLayoutNew.jsp">
+      <put-attribute name="title"  value="Template"/>
+      <put-attribute name="header" value="/WEB-INF/tiles/header.jsp"/>
+      <put-attribute name="menu"   value="/WEB-INF/tiles/menu.jsp"/>
+      <put-attribute name="body"   value="/WEB-INF/tiles/body.jsp"/>
+      <put-attribute name="footer"   value="/WEB-INF/tiles/footer.jsp"/>
+  </definition>
+  
   <definition name="welcome" extends="baseLayout">
       <put-attribute name="title"  value="Welcome"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/welcome.jsp"/>      
@@ -57,6 +65,11 @@
   <definition name="tascProcessEr" extends="baseLayout">
       <put-attribute name="title"  value="TASC Process"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/tascProcessEr.jsp"/>      
+  </definition>
+  
+  <definition name="tascProcessErPaging" extends="baseLayoutNew">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/tascProcessErPaging.jsp"/>      
   </definition>
   
   <definition name="mapSearch" extends="baseLayout">

@@ -9,7 +9,7 @@ public class StudentDetailsTO implements Serializable {
 	private String fileName;
 	private String sourceSystem = "";
 	private String erValidation;
-	private String overallStatus;
+	private String overallStatus = "";
 	private String testElementId = "";
 	private String studentName = "";
 	private String uuid = "";

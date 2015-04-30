@@ -1,5 +1,6 @@
 package com.vaannila.DAO;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import oracle.jdbc.OracleTypes;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.JDCConnectionDriver;
@@ -887,6 +889,239 @@ public class TascDAOImpl {
 		.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')")
 		.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
 		return queryBuff;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get Searched records page wise
+	 * @throws Exception
+	 */
+	//TODO: Need to implement cache
+	public List<StudentDetailsTO> getProcessErPaging(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getProcessErPaging()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		StudentDetailsTO studentDetailsTO = null;
+		List<StudentDetailsTO> studentDetailsTOList = new ArrayList<StudentDetailsTO>();
+		
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderErrorMsg = 0;
+			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+					cs.setString(++count, searchProcess.getProcessedDateFrom());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+					cs.setString(++count, searchProcess.getProcessedDateTo());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+					cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+					cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					cs.setString(++count, searchProcess.getStateCode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					cs.setString(++count, searchProcess.getForm());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					cs.setString(++count, searchProcess.getTestElementId());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					cs.setString(++count, searchProcess.getBarcode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				cs.setString(++count, "-1");
+				cs.setString(++count, "-1");
+				cs.setLong(++count, searchProcess.getFromRowNum());
+				cs.setLong(++count, searchProcess.getToRowNum());				
+				placeHolderTotalRecCount = ++count;
+				cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+				placeHolderData = ++count;
+				cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+				placeHolderErrorMsg = ++count;
+				cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			}
+			
+			cs.execute();
+			rs = (ResultSet) cs.getObject(placeHolderData);
+			while(rs.next()) {
+				studentDetailsTO = new StudentDetailsTO();
+				studentDetailsTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
+				studentDetailsTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
+				studentDetailsTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
+				studentDetailsTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
+				studentDetailsTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
+				studentDetailsTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
+				studentDetailsTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
+				studentDetailsTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
+				studentDetailsTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
+				studentDetailsTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
+				studentDetailsTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
+				studentDetailsTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
+				studentDetailsTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
+				studentDetailsTO.setSubtestName(rs.getString("SUBTEST") != null ? rs.getString("SUBTEST") : "");
+				studentDetailsTO.setProcessedDate(rs.getString("PROCESSED_DATE") != null ? rs.getString("PROCESSED_DATE") : "");
+				studentDetailsTOList.add(studentDetailsTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getProcessErPaging() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return studentDetailsTOList;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get total record count for search criteria
+	 * @throws Exception
+	 */
+	//TODO: Need to implement cache
+	public long getTotalRecordCount(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getTotalRecord()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		long totalRecordCount = 0;
+		
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderErrorMsg = 0;
+			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+					cs.setString(++count, searchProcess.getProcessedDateFrom());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+					cs.setString(++count, searchProcess.getProcessedDateTo());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+					cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+					cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+					cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+				}else{
+					cs.setLong(++count, -1);
+				}
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+					cs.setString(++count, searchProcess.getStateCode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+					cs.setString(++count, searchProcess.getForm());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+					cs.setString(++count, searchProcess.getTestElementId());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+					cs.setString(++count, searchProcess.getBarcode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				cs.setString(++count, "-1");
+				cs.setString(++count, "-1");
+				cs.setLong(++count, searchProcess.getFromRowNum());
+				cs.setLong(++count, searchProcess.getToRowNum());				
+				placeHolderTotalRecCount = ++count;
+				cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+				placeHolderData = ++count;
+				cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+				placeHolderErrorMsg = ++count;
+				cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			}
+			
+			cs.execute();
+			rs = (ResultSet) cs.getObject(placeHolderTotalRecCount);
+			if(rs.next()) {
+				totalRecordCount = rs.getLong("TOTAL_RECORD_COUNT");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getTotalRecord() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return totalRecordCount;
 	}
 	
 }

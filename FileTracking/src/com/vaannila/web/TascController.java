@@ -1,6 +1,7 @@
 package com.vaannila.web;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,8 +22,11 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
+import com.vaannila.TO.StudentJsonObject;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.Utils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Controller
 public class TascController {
@@ -304,7 +309,7 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/process/searchTascEr.htm")
+	/*@RequestMapping("/process/searchTascEr.htm")
 	public ModelAndView searchTascEr(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("Enter: searchTascEr()");
@@ -334,17 +339,148 @@ public class TascController {
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessEr(process);
+			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
 			
-			request.getSession().setAttribute("studentDetailsTOList", studentDetailsTOList);
 			convertProcessToJson(studentDetailsTOList);
 			
 		} catch (Exception e) {
-			request.getSession().removeAttribute("tascProcessEr");
 			e.printStackTrace();
 		}
-		
 		return new ModelAndView("tascProcessEr", "message", jsonStr);
+	}*/
+	
+	/**
+	 * This method is to show searched records page wise for eResource and normal for other
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/searchTascEr.htm")
+	public ModelAndView searchTascEr(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchTascEr()");
+		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+		try {
+			if(!UserController.checkLogin(request)) return modelAndView;
+			SearchProcess process = new SearchProcess();
+			process.setProcessedDateFrom(request.getParameter("processedDateFrom"));
+			process.setProcessedDateTo(request.getParameter("processedDateTo"));
+			process.setUuid(request.getParameter("uuid"));
+			process.setRecordId(request.getParameter("recordId"));
+			process.setLastName(request.getParameter("lastName"));
+			process.setExceptionCode(request.getParameter("exceptionCode"));
+			process.setSubjectCa(request.getParameter("subjectCa"));
+			process.setSourceSystem(request.getParameter("sourceSystem"));
+			process.setStateCode(request.getParameter("stateCode"));
+			process.setForm(request.getParameter("form"));
+			process.setTestElementId(request.getParameter("testElementId"));
+			process.setBarcode(request.getParameter("barcode"));
+			process.setProcessId(request.getParameter("processId"));
+			if("OAS".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("Online");
+			}else if("PP".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("Paper Pencil");
+			}else if("ERESOURCE".equals(process.getSourceSystem())){
+				process.setSourceSystemDesc("eResources");
+			}
+			
+			request.getSession().setAttribute("tascRequestTO", process);
+			
+			if(!"ERESOURCE".equals(process.getSourceSystem())){
+				TascDAOImpl stageDao = new TascDAOImpl();
+				List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
+				convertProcessToJson(studentDetailsTOList);
+				modelAndView = new ModelAndView("tascProcessEr", "message", "jsonStr");
+			}else{
+				modelAndView = new ModelAndView("tascProcessErPaging", "message", jsonStr);
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	/**
+	 * This method is for paging
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/process/searchTascErPaging.htm", method = RequestMethod.GET)
+	public @ResponseBody String searchTascErPaging(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchTascErPaging()");
+		TascDAOImpl stageDao = new TascDAOImpl();
+    	SearchProcess process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
+    	long totalRecordCount = stageDao.getTotalRecordCount(process);
+    	
+    	long pageNumber = 0;
+    	if (null != request.getParameter("iDisplayStart")){
+    		pageNumber = (Long.parseLong(request.getParameter("iDisplayStart"))/10)+1;
+    	}
+    	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
+    	process.setPageNumber(pageNumber);
+    	process.setPageDisplayLength(pageDisplayLength);
+    	
+    	
+    	//TODO FOR SORTING
+    	String sEcho = request.getParameter("sEcho");
+        String sCol = request.getParameter("iSortCol_0");
+        String sdir = request.getParameter("sSortDir_0");
+    	
+		
+		List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
+    	
+		//TODO: Total Searching 
+		String searchParameter = request.getParameter("sSearch");
+		
+    	/*
+    	if (null != searchParameter && !searchParameter.equals("")){
+    		studentDetailsTOList = getListBasedOnSearchParameter(searchParameter,studentDetailsTOList);
+    	}*/
+    	
+		StudentJsonObject studentJsonObject = new StudentJsonObject();
+		studentJsonObject.setiTotalDisplayRecords(totalRecordCount);
+		studentJsonObject.setiTotalRecords(totalRecordCount);
+		studentJsonObject.setAaData(studentDetailsTOList);
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String jsonStr = gson.toJson(studentJsonObject);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonStr);
+		return null;			
+	}
+	
+	private List<StudentDetailsTO> getListBasedOnSearchParameter(String searchParameter,List<StudentDetailsTO> studentDetailsTOList) {
+		List<StudentDetailsTO> studentDetailsTOListForSearch = new ArrayList<StudentDetailsTO>();
+		searchParameter = searchParameter.toUpperCase();
+		for (StudentDetailsTO studentDetailsTO : studentDetailsTOList) {
+			if(studentDetailsTO.getStudentName().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getUuid().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getTestElementId().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getProcessId().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getExceptionCode().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getSourceSystem().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getOverallStatus().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getErSsHistId().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getBarcode().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getDateScheduled().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getStateCode().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getForm().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getErExcdId().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getSubtestName().toUpperCase().indexOf(searchParameter)!=-1
+					|| studentDetailsTO.getProcessedDate().toUpperCase().indexOf(searchParameter)!=-1){
+				
+				studentDetailsTOListForSearch.add(studentDetailsTO);
+				
+			}
+		}
+		return studentDetailsTOListForSearch;
 	}
 	
 	/**
@@ -449,7 +585,9 @@ public class TascController {
 		List<StudentDetailsTO> studentDetailsTOList = null;
 		try {
 			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
-			studentDetailsTOList = (List<StudentDetailsTO>)request.getSession().getAttribute("studentDetailsTOList");
+			//studentDetailsTOList = (List<StudentDetailsTO>)request.getSession().getAttribute("studentDetailsTOList");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			studentDetailsTOList = stageDao.getProcessEr(process);
 			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Record Id")

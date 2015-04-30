@@ -22,7 +22,7 @@
 			
 			$('#processedDateTo').datepicker();
 			
-			$('#tascSearchErButton').live("click", function(){
+			$('#tascSearchErButton').on("click", function(){
 				validateForm();
 			});
 			
