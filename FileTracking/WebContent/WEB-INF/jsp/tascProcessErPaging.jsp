@@ -15,8 +15,8 @@
 		width: 34px;
 		height: 34px;
 		background: url(css/sprites.png) no-repeat -68px -94px;
-		margin-left: -12px;
-		margin-top: -9px;
+		margin-left: -2px;
+		margin-top: 1px;
 		position: relative;
 		z-index: 88;
 	}
@@ -26,8 +26,8 @@
 		width: 34px;
 		height: 34px;
 		background: url(css/sprites.png) no-repeat -102px -94px;
-		margin-left: -12px;
-		margin-top: -9px;
+		margin-left: -2px;
+		margin-top: 1px;
 		position: relative;
 		z-index: 88;
 	}
@@ -37,8 +37,8 @@
 		width: 34px;
 		height: 34px;
 		background: url(css/sprites.png) no-repeat -136px -94px;
-		margin-left: -12px;
-		margin-top: -9px;
+		margin-left: -2px;
+		margin-top: 1px;
 		position: relative;
 		z-index: 88;
 	}
@@ -63,8 +63,7 @@
 		$("#process").dataTable( {
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
-			//"aaSorting": [[ 0, "desc" ]],
-			 "order": [[ 0, "desc" ]],
+			"order": [[ 1, "desc" ]],
 	        "bProcessing": true,
 	        "bServerSide": true,
 	        "sort": "position",
@@ -75,26 +74,80 @@
 	        	update_rows();
 	        },         
 	        "sAjaxSource": "searchTascErPaging.htm",
+	        "aoColumnDefs": [ 
+							  { 'bSortable': false, 'aTargets': [ 0 ]}
+							],
 	        "aoColumns": [
 				{ 
-					"mData": "erSsHistId",
-					"targets": [ 0 ],
-		            "orderData": [ 0, 1 ]
+					"mData": "overallStatus",
+					"mRender": function (oObj) {
+						if(oObj == 'CO'){
+	                		return "<span class='completed' title='Completed'></span>";
+	                	}else if(oObj == 'ER'){
+	                		return "<span class='error' title='Error'></span>";
+	                	}else if(oObj == 'IN'){
+	                		return "<span class='progress' title='Invalidated'></span>";
+	                	}else{
+	                		return "<span class='progress' title='In Progress'></span>";
+	                	}
+	                }		
+				},	                      
+				{
+					"mRender": function ( data, type, row ) {
+						if(row.erExcdId != "0"){
+							var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getErrorLog("
+											+ row.erExcdId + ");'>";
+							if(row.erSsHistId =="0"){
+								html += row.processId;
+							}else{
+								html += row.erSsHistId;
+							}
+							html += "</a>";
+							return html;
+		                }else{
+								if(row.erSsHistId =="0"){
+									return row.processId;
+								}else{
+									return row.erSsHistId;
+								}
+							}
+						}
 				},
 				{ "mData": "studentName" },
 				{ "mData": "uuid" },
 				{ "mData": "testElementId" },
 				{ "mData": "processId" },
 				{ "mData": "exceptionCode" },
-				{ "mData": "overallStatus" },
+				{ 
+					"mData": "overallStatus",
+					"mRender": function (oObj) {
+						if(oObj == 'CO'){
+	                		return "Completed";
+	                	}else if(oObj == 'ER'){
+	                		return "Error";
+	                	}else if(oObj == 'IN'){
+	                		return "Invalidated";
+	                	}else{
+	                		return "In Progress";
+	                	}
+	                }		
+				},
 				{ "mData": "barcode" },
 				{ "mData": "dateScheduled" },
 				{ "mData": "stateCode"},
 				{ "mData": "form"},
 				{ "mData": "subtestName"},
-				{ 
-					"mData": null,
-					"defaultContent": ""
+				{
+					"mRender": function ( data, type, row ) {
+						var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='";
+						if(row.sourceSystem == 'ERESOURCE'){
+							html = html + "getStudentHist(" +row.erSsHistId + ");'>";
+						}else{
+							html = html + "getMoreInfo(" +row.erExcdId + ");'>";
+						}
+						html += "More Info</a>";
+						return html;
+					}
 				}
 	        ]
 	    });
@@ -322,6 +375,7 @@
 				<table id="process" width="100%">
 					<thead>
 						<tr>
+							<th >&nbsp;</th>
 							<th style="min-width: 60px;">Record Id</th>
 							<th>Student Name</th>
 							<th>UUID</th>

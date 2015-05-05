@@ -17,7 +17,7 @@
 	
 	
 	<script src="js/jquery/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.6/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.7/jquery.dataTables.min.js"></script>
 	<script src="css/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
 
