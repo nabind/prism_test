@@ -168,6 +168,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         
         if(signature != null && !signature.isEmpty()) { // SSO request
         	logger.info("Authentication Filter : Validating request type.");
+        	themeResolver.setThemeName(request, response, theme);
         	try {
         		/* ## new for eR candidate report */
         		if(studentId != null && studentId.length() > 0) {
