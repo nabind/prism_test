@@ -49,6 +49,7 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
             AuthenticationException exception) throws IOException, ServletException {
 		boolean ssoRedirect = false;
 		String redirectUrl = null;
+		String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
 		if(IApplicationConstants.SOAP.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))
 				/* ## new for eR candidate report (or section)*/
 				|| IApplicationConstants.REST.equals(request.getHeader(IApplicationConstants.CLIENT_TYPE))) {
@@ -62,7 +63,7 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
 				String signature = getHeaderValue(request, "signature");
 				if(!StringUtils.isEmpty(signature) || !StringUtils.isEmpty(applicationName)) {
 					// login failure during SSO
-					String contractName = Utils.getContractName(themeResolver.resolveThemeName(request));
+					//String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(request));
 					Map<String, Object> tileParamMap = new HashMap<String, Object>();
 					tileParamMap.put("contractName", contractName);
 					Map<String, Object> propertyMap = loginService.getContractProerty(tileParamMap);
@@ -88,19 +89,20 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
 
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed: " + exception.getMessage());
         } else {
+        	String faliureUrlTheme = failureUrl + "&theme=" + contractName;
             saveException(request, exception);
 
             if (forwardToDestination) {
-                logger.debug("Forwarding to " + failureUrl);
+                logger.debug("Forwarding to " + faliureUrlTheme);
 
-                request.getRequestDispatcher(failureUrl).forward(request, response);
+                request.getRequestDispatcher(faliureUrlTheme).forward(request, response);
             } else {
             	if(ssoRedirect) {
             		logger.info("Redirecting to " + redirectUrl);
             		getRedirectStrategy().sendRedirect(request, response, redirectUrl);
             	} else {
-            		logger.info("Redirecting to " + failureUrl);
-            		getRedirectStrategy().sendRedirect(request, response, failureUrl);
+            		logger.info("Redirecting to " + faliureUrlTheme);
+            		getRedirectStrategy().sendRedirect(request, response, faliureUrlTheme);
             	}
                 if(isWebService) response.getWriter().write("Unauthorized request!!");
             }
