@@ -498,6 +498,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 		} catch (AuthenticationException failed) {
 			// Authentication failed
 			logger.error("Authentication failed :: " + failed.getMessage());
+			String theme = getHeaderValue(request, THEME_PARAM);
+			logger.info("theme: "+theme);
+			themeResolver.setThemeName(request, response, theme);
 			unsuccessfulAuthentication(request, response, failed);
 
 			return;
