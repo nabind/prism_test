@@ -452,33 +452,6 @@ public class TascController {
 		return null;			
 	}
 	
-	private List<StudentDetailsTO> getListBasedOnSearchParameter(String searchParameter,List<StudentDetailsTO> studentDetailsTOList) {
-		List<StudentDetailsTO> studentDetailsTOListForSearch = new ArrayList<StudentDetailsTO>();
-		searchParameter = searchParameter.toUpperCase();
-		for (StudentDetailsTO studentDetailsTO : studentDetailsTOList) {
-			if(studentDetailsTO.getStudentName().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getUuid().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getTestElementId().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getProcessId().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getExceptionCode().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getSourceSystem().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getOverallStatus().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getErSsHistId().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getBarcode().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getDateScheduled().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getStateCode().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getForm().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getErExcdId().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getSubtestName().toUpperCase().indexOf(searchParameter)!=-1
-					|| studentDetailsTO.getProcessedDate().toUpperCase().indexOf(searchParameter)!=-1){
-				
-				studentDetailsTOListForSearch.add(studentDetailsTO);
-				
-			}
-		}
-		return studentDetailsTOListForSearch;
-	}
-	
 	/**
 	 * @author Joy
 	 * @param request
