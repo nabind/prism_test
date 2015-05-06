@@ -45,6 +45,7 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private long toRowNum = 0;
 	private long pageNumber = 0;
 	private long pageDisplayLength = 0;
+	private String searchParam = "";
 	
 	
 	public String getDistrict() {
@@ -386,5 +387,11 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 			compareFlag = 1;
 		}
 		return compareFlag;
+	}
+	public String getSearchParam() {
+		return searchParam;
+	}
+	public void setSearchParam(String searchParam) {
+		this.searchParam = searchParam;
 	}
 }

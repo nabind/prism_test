@@ -212,8 +212,12 @@
 		clearStudentDetailsTableRows();
 		var dataString = "erSsHistId="+erSsHistId;
 		$("#stuHist").html( '<img src="css/ajax-loader.gif"></img>' );
-		$("#ui-dialog-title-stuHistDialog").html('Student Details for Record Id : '+erSsHistId);
-		jQuery("#stuHistDialog").dialog("open");
+		var dialogTitle = 'Student Details for Record Id : '+erSsHistId;
+		jQuery("#stuHistDialog").dialog({
+			title: dialogTitle,
+			width: 510,
+			height: 448
+		});
 		$.ajax({
 		      type: "POST",
 		      url: "getStudentHist.htm",
@@ -275,8 +279,11 @@
 		clearMoreInfoTableRows();
 		var dataString = "erExcdId="+erExcdId;
 		$("#moreInfo").html( '<img src="css/ajax-loader.gif"></img>' );
-		$("#ui-dialog-title-moreInfoDialog").html('More Info: ');
-		jQuery("#moreInfoDialog").dialog("open");
+		jQuery("#moreInfoDialog").dialog({
+			title: 'More Info: ',
+			width: 510,
+			height: 448
+		});
 		$.ajax({
 		      type: "POST",
 		      url: "getMoreInfo.htm",
@@ -303,8 +310,11 @@
 	function getErrorLog(erExcdId) {
 		var dataString = "erExcdId="+erExcdId;
 		$("#errorLog").html( '<img src="css/ajax-loader.gif"></img>' );
-		jQuery("#errorLogDialog").dialog("open");
-		$("#ui-dialog-title-errorLogDialog").html('Error Log');
+		jQuery("#errorLogDialog").dialog({
+			title: 'Error Log',
+			width: 510,
+			height: 448
+		});
 		$.ajax({
 		      type: "POST",
 		      url: "getErrorLog.htm",
@@ -403,7 +413,7 @@
 					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
-				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px'>
+				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>
 					<p id="stuHist"><p>
 					<table class="process_details">
 						<tr>
@@ -519,6 +529,7 @@
 						</tr>
 					</table>
 				</div>
+				
 				<div id="moreInfoDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="moreInfo"><p>
 					<table width="100%" class="process_details">

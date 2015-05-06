@@ -417,6 +417,10 @@ public class TascController {
 		System.out.println("Enter: searchTascErPaging()");
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
+    	String searchParameter = request.getParameter("sSearch");
+    	if(searchParameter != null){
+    		process.setSearchParam(searchParameter);
+    	}
     	long totalRecordCount = stageDao.getTotalRecordCount(process);
     	
     	long pageNumber = 0;
@@ -435,14 +439,6 @@ public class TascController {
     	
 		
 		List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
-    	
-		//TODO: Total Searching 
-		String searchParameter = request.getParameter("sSearch");
-		
-    	/*
-    	if (null != searchParameter && !searchParameter.equals("")){
-    		studentDetailsTOList = getListBasedOnSearchParameter(searchParameter,studentDetailsTOList);
-    	}*/
     	
 		StudentJsonObject studentJsonObject = new StudentJsonObject();
 		studentJsonObject.setiTotalDisplayRecords(totalRecordCount);

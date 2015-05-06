@@ -13,6 +13,7 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                            P_FORM                       IN VARCHAR2,
                            P_TEST_ELEMENT_ID            IN VARCHAR2,
                            P_TEST_BARCODE               IN VARCHAR2,
+                           P_SEARCH_PARAM               IN VARCHAR2,
                            P_ORDERED_COLUMN             IN VARCHAR2,
                            P_ORDER                      IN VARCHAR2,
                            P_ROWNUM_FROM                IN NUMBER,
@@ -36,6 +37,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            P_FORM                       IN VARCHAR2,
                            P_TEST_ELEMENT_ID            IN VARCHAR2,
                            P_TEST_BARCODE               IN VARCHAR2,
+                           P_SEARCH_PARAM               IN VARCHAR2,
                            P_ORDERED_COLUMN             IN VARCHAR2,
                            P_ORDER                      IN VARCHAR2,
                            P_ROWNUM_FROM                IN NUMBER,
@@ -47,6 +49,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
     V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
+    V_EXCEPTION_STATUS         VARCHAR2(10) := '';
   
   BEGIN
   
@@ -131,6 +134,37 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                         P_TEST_BARCODE || '''';
     END IF;
   
+    IF P_SEARCH_PARAM <> '-1' THEN
+      V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
+                        ') TAB_SEARCH WHERE STUDENTNAME LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR UUID LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR TEST_ELEMENT_ID LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR PROCESS_ID LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR EXCEPTION_CODE LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR ER_SS_HISTID LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR BARCODE LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR DATE_SCHEDULED LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR STATE_CODE LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR FORM LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR ER_EXCDID LIKE ''%' ||
+                        P_SEARCH_PARAM || '%'' OR SUBTEST LIKE ''%' ||
+                        P_SEARCH_PARAM || '%''';
+    
+      IF P_SEARCH_PARAM = 'Error' THEN
+        V_EXCEPTION_STATUS := 'ER';
+      ELSIF P_SEARCH_PARAM = 'Completed' THEN
+        V_EXCEPTION_STATUS := 'CO';
+      ELSIF P_SEARCH_PARAM = 'Invalidated' THEN
+        V_EXCEPTION_STATUS := 'IN';
+      END IF;
+    
+      IF V_EXCEPTION_STATUS <> '' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || 'OR EXCEPTION_STATUS LIKE ''%' ||
+                          V_EXCEPTION_STATUS || '%''';
+      END IF;
+    
+    END IF;
+  
     V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
                                   'SELECT COUNT(1) TOTAL_RECORD_COUNT FROM (' ||
                                   V_QUERY_ACTUAL || ') TAB';
@@ -141,7 +175,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     OPEN P_OUT_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
   
     V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                      ' ORDER BY ESSH.ER_SS_HISTID DESC, STUDENTNAME';
+                      ' ORDER BY ER_SS_HISTID DESC, STUDENTNAME';
   
     DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);
   

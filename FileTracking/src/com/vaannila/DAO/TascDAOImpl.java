@@ -914,7 +914,7 @@ public class TascDAOImpl {
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					cs.setString(++count, searchProcess.getProcessedDateFrom());
 				}else{
@@ -967,6 +967,11 @@ public class TascDAOImpl {
 				}
 				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
 					cs.setString(++count, searchProcess.getBarcode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+					cs.setString(++count, searchProcess.getSearchParam());
 				}else{
 					cs.setString(++count, "-1");
 				}
@@ -1038,7 +1043,7 @@ public class TascDAOImpl {
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					cs.setString(++count, searchProcess.getProcessedDateFrom());
 				}else{
@@ -1091,6 +1096,11 @@ public class TascDAOImpl {
 				}
 				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
 					cs.setString(++count, searchProcess.getBarcode());
+				}else{
+					cs.setString(++count, "-1");
+				}
+				if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+					cs.setString(++count, searchProcess.getSearchParam());
 				}else{
 					cs.setString(++count, "-1");
 				}
