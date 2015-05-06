@@ -67,7 +67,7 @@
 	        "bProcessing": true,
 	        "bServerSide": true,
 	        "sort": "position",
-	        "bStateSave": true,
+	        "bStateSave": false,
 	        "iDisplayLength": 10,
 	        "iDisplayStart": 0,
 	        "fnDrawCallback": function () {
