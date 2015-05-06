@@ -431,12 +431,11 @@ public class TascController {
     	process.setPageNumber(pageNumber);
     	process.setPageDisplayLength(pageDisplayLength);
     	
-    	
-    	//TODO FOR SORTING
-    	String sEcho = request.getParameter("sEcho");
-        String sCol = request.getParameter("iSortCol_0");
-        String sdir = request.getParameter("sSortDir_0");
-    	
+    	String sortEcho = request.getParameter("sEcho");
+        String sortCol = request.getParameter("iSortCol_0");
+        String sortDir = request.getParameter("sSortDir_0");
+        process.setSortCol(sortCol);
+        process.setSortDir(sortDir);
 		
 		List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
     	

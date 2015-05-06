@@ -975,8 +975,8 @@ public class TascDAOImpl {
 				}else{
 					cs.setString(++count, "-1");
 				}
-				cs.setString(++count, "-1");
-				cs.setString(++count, "-1");
+				cs.setString(++count, searchProcess.getSortCol());
+				cs.setString(++count, searchProcess.getSortDir());
 				cs.setLong(++count, searchProcess.getFromRowNum());
 				cs.setLong(++count, searchProcess.getToRowNum());				
 				placeHolderTotalRecCount = ++count;
