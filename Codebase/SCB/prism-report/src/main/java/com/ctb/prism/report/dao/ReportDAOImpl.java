@@ -1553,7 +1553,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public void updateScheduledGroupFiles(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.ERROR, "Enter: updateScheduledGroupFiles("+paramMap+")");
 		String contractName = (String) paramMap.get("contractName");
-		String appendLog = (String) paramMap.get("appendLog");
+		String appendLog = null;
+		
+		if(paramMap.get("appendLog") != null && ((String)paramMap.get("appendLog")).length() > 4000) 
+			appendLog = ((String)paramMap.get("appendLog")).substring(0, 3999);
+		else {
+			appendLog = (String) paramMap.get("appendLog");
+		}
+		
 		Long jobId = (Long) paramMap.get("jobId");
 		try {
 			getJdbcTemplatePrism(contractName).update(IReportQuery.DELETE_SCHEDULED_GROUP_FILES, appendLog, jobId);
