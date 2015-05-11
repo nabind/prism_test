@@ -175,7 +175,8 @@ public class UtilsTest {
 
 	@Test
 	public void testDeserialize() {
-		byte[] bytes = "abcd".getBytes();
+		String testStr = "prism test";
+		byte[] bytes = testStr.getBytes();
 		Object obj = utils.deserialize(bytes);
 		assertNull(obj);
 	}

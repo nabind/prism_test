@@ -21,4 +21,5 @@
 	<import resource="jms-config.xml" />
 	<import resource="simpledb-config.xml" />
 	<import resource="applicationContext-theme.xml" />
+	<import resource="dynamodb-config.xml" />
 </beans>

@@ -110,13 +110,13 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 	@Test(expected=java.lang.Exception.class)
 	public void testUpdateUser() throws BusinessException, Exception {
 		String Id = "";
-		String userId = "";
-		String userName = "";
-		String emailId = "";
-		String password = "";
-		String userStatus = "";
-		String[] userRoles = new String[] { "" };
-		String salt = "";
+		String userId = "1";
+		String userName = "test";
+		String emailId = "test@ctb.com";
+		String password = "test";
+		String userStatus = "AC";
+		String[] userRoles = new String[] { "ROLE_USER" };
+		String salt = "haI0iamff8ICeNNFWmV6";
 		boolean status = adminService.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles, salt);
 		assertNotNull(status);
 	}
@@ -143,11 +143,11 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSearchUser() {
-		String userName = "";
+		String userName = "test";
 		String parentId = "0";
-		String adminYear = "0";
+		String adminYear = "5050";
 		String isExactSearch = "N";
-		String orgMode = "";
+		String orgMode = "PUBLIC";
 		ArrayList<UserTO> userList = adminService.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
 		assertNotNull(userList);
 	}
@@ -195,7 +195,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		String tenantId = "0";
 		String adminYear = "0";
 		long customerId = 0L;
-		String orgMode = "";
+		String orgMode = "PUBLIC";
 		OrgTO to = adminService.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 		assertNotNull(to);
 	}
@@ -247,8 +247,8 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testAssociateUserToRole() throws Exception {
-		String roleId = "0";
-		String userName = "";
+		String roleId = "1";
+		String userName = "test";
 		boolean status = adminService.associateUserToRole(roleId, userName);
 		assertNotNull(status);
 	}
@@ -263,9 +263,9 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSaveRole() throws Exception {
-		String roleId = "0";
-		String roleName = "TEST";
-		String roleDescription = "Test";
+		String roleId = "1";
+		String roleName = "ROLE_USER";
+		String roleDescription = "USER";
 		boolean status = adminService.saveRole(roleId, roleName, roleDescription);
 		assertNotNull(status);
 	}

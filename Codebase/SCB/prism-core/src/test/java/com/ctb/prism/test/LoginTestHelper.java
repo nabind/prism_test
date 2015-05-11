@@ -22,10 +22,10 @@ public class LoginTestHelper {
 
 	public static Map<String, Object> helpGetSystemConfigurationMessage(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("REPORT_NAME", "");
-		paramMap.put("MESSAGE_TYPE", "");
-		paramMap.put("MESSAGE_NAME", "");
-		paramMap.put("custProdId", 0L);
+		paramMap.put("REPORT_NAME", "Generic System Configuration");
+		paramMap.put("MESSAGE_TYPE", "GSCM");
+		paramMap.put("MESSAGE_NAME", "Common Header");
+		paramMap.put("custProdId", 5050L);
 		paramMap.put("contractName", testParams.getContractName());
 		paramMap.put(IApplicationConstants.PURPOSE_PRISM, IApplicationConstants.PURPOSE_LANDING_PAGE);
 		return paramMap;
@@ -33,15 +33,15 @@ public class LoginTestHelper {
 
 	public static Map<String, Object> helpGetUserDetails(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userName", "");
-		paramMap.put("password", "");
-		paramMap.put("userDisplayName", "");
-		paramMap.put("emailId", "");
-		paramMap.put("userStatus", "");
-		paramMap.put("customer", "0");
-		paramMap.put("tenantId", "0");
-		paramMap.put("orgLevel", "0");
-		paramMap.put("userRoles", null);
+		paramMap.put("userName", "test");
+		paramMap.put("password", "test");
+		paramMap.put("userDisplayName", "test");
+		paramMap.put("emailId", "test@ctb.com");
+		paramMap.put("userStatus", "AC");
+		paramMap.put("customer", "1059");
+		paramMap.put("tenantId", "18134");
+		paramMap.put("orgLevel", "2");
+		paramMap.put("userRoles", "ROLE_USER");
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
 	}
@@ -84,6 +84,9 @@ public class LoginTestHelper {
 
 	public static Map<String, Object> helpCheckOrgHierarchy(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("username", "test");
+		paramMap.put("custProdId", "5050");
+		paramMap.put("prevOrgId", "18134");
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
 	}
@@ -104,15 +107,15 @@ public class LoginTestHelper {
 
 	public static Map<String, Object> helpAddNewUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userName", "");
-		paramMap.put("password", "");
-		paramMap.put("userDisplayName", "");
-		paramMap.put("emailId", "");
-		paramMap.put("userStatus", "");
-		paramMap.put("customer", "0");
-		paramMap.put("tenantId", "0");
-		paramMap.put("orgLevel", "0");
-		paramMap.put("userRoles", null);
+		paramMap.put("userName", "test");
+		paramMap.put("password", "test");
+		paramMap.put("userDisplayName", "test");
+		paramMap.put("emailId", "test@ctb.com");
+		paramMap.put("userStatus", "AC");
+		paramMap.put("customer", "1059");
+		paramMap.put("tenantId", "18134");
+		paramMap.put("orgLevel", "2");
+		paramMap.put("userRoles", "ROLE_USER");
 		paramMap.put("contractName", testParams.getContractName());
 		return paramMap;
 	}

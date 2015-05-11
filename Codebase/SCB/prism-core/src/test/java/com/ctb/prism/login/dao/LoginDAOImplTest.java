@@ -164,8 +164,8 @@ public class LoginDAOImplTest extends AbstractTransactionalJUnit4SpringContextTe
 
 	@Test
 	public void testGetRootPath() {
-		String customerId = "1000";
-		String testAdmin = "3001";
+		String customerId = "1059";
+		String testAdmin = "5050";
 		String str = loginDao.getRootPath(customerId, testAdmin, testParams.getContractName());
 		assertNotNull(str);
 	}
