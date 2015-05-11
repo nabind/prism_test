@@ -302,6 +302,22 @@ public class TascController {
 	}
 	
 	/**
+	 * This method is to collect search criteria
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/tascSearchErNew.htm")
+	public ModelAndView tascSearchErNew(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: tascSearchErNew()");
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		return new ModelAndView("tascSearchErNew", "message", "");
+	}
+	
+	/**
 	 * This method is to show searched records
 	 * @author Joy
 	 * @param request
@@ -309,7 +325,7 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
-	/*@RequestMapping("/process/searchTascEr.htm")
+	@RequestMapping("/process/searchTascEr.htm")
 	public ModelAndView searchTascEr(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("Enter: searchTascEr()");
@@ -339,15 +355,15 @@ public class TascController {
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
-			
+			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessEr(process);
+			request.getSession().setAttribute("studentDetailsTOList", studentDetailsTOList);
 			convertProcessToJson(studentDetailsTOList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return new ModelAndView("tascProcessEr", "message", jsonStr);
-	}*/
+	}
 	
 	/**
 	 * This method is to show searched records page wise for eResource and normal for other
@@ -357,10 +373,10 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/process/searchTascEr.htm")
-	public ModelAndView searchTascEr(HttpServletRequest request,
+	@RequestMapping("/process/searchTascErNew.htm")
+	public ModelAndView searchTascErNew(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchTascEr()");
+		System.out.println("Enter: searchTascErNew()");
 		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;

@@ -49,7 +49,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
     V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
-    V_EXCEPTION_STATUS         VARCHAR2(10) := '';
+    V_EXCEPTION_STATUS         VARCHAR2(10) := '-1';
+    V_SEARCH_PARAM             VARCHAR2(100);
+    V_SEARCH_PARAM_COUNT       NUMBER := 0;
   
   BEGIN
   
@@ -136,31 +138,69 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     IF P_SEARCH_PARAM <> '-1' THEN
       V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
-                        ') TAB_SEARCH WHERE STUDENTNAME LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR UUID LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR TEST_ELEMENT_ID LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR PROCESS_ID LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR EXCEPTION_CODE LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR ER_SS_HISTID LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR BARCODE LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR DATE_SCHEDULED LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR STATE_CODE LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR FORM LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR ER_EXCDID LIKE ''%' ||
-                        P_SEARCH_PARAM || '%'' OR SUBTEST LIKE ''%' ||
-                        P_SEARCH_PARAM || '%''';
+                        ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(PROCESS_ID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(EXCEPTION_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(ER_SS_HISTID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DATE_SCHEDULED) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(STATE_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(FORM) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(ER_EXCDID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SUBTEST) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM || '%'')';
     
-      IF P_SEARCH_PARAM = 'Error' THEN
-        V_EXCEPTION_STATUS := 'ER';
-      ELSIF P_SEARCH_PARAM = 'Completed' THEN
-        V_EXCEPTION_STATUS := 'CO';
-      ELSIF P_SEARCH_PARAM = 'Invalidated' THEN
-        V_EXCEPTION_STATUS := 'IN';
+      V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
+    
+      SELECT COUNT(TAB.EXCEPTION_STATUS)
+        INTO V_SEARCH_PARAM_COUNT
+        FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                           FROM DUAL)
+               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                 FROM T
+               CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
+    
+    
+      IF V_SEARCH_PARAM_COUNT <> 0 THEN
+        SELECT TAB.EXCEPTION_STATUS
+          INTO V_SEARCH_PARAM
+          FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                             FROM DUAL)
+                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                   FROM T
+                 CONNECT BY LEVEL <=
+                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                  WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
+      
+      
+        IF V_SEARCH_PARAM = 'ERROR' THEN
+          V_EXCEPTION_STATUS := 'ER';
+        ELSIF V_SEARCH_PARAM = 'COMPLETED' THEN
+          V_EXCEPTION_STATUS := 'CO';
+        ELSIF V_SEARCH_PARAM = 'INVALIDATED' THEN
+          V_EXCEPTION_STATUS := 'IN';
+        END IF;
       END IF;
     
-      IF V_EXCEPTION_STATUS <> '' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || 'OR EXCEPTION_STATUS LIKE ''%' ||
-                          V_EXCEPTION_STATUS || '%''';
+      DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);
+    
+      IF V_EXCEPTION_STATUS <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' OR EXCEPTION_STATUS = ''' ||
+                          V_EXCEPTION_STATUS || '''';
       END IF;
     
     END IF;

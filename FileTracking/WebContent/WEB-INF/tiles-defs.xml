@@ -62,6 +62,11 @@
       <put-attribute name="body"   value="/WEB-INF/jsp/tascSearchEr.jsp"/>      
   </definition>
   
+  <definition name="tascSearchErNew" extends="baseLayout">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/tascSearchErNew.jsp"/>      
+  </definition>
+  
   <definition name="tascProcessEr" extends="baseLayout">
       <put-attribute name="title"  value="TASC Process"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/tascProcessEr.jsp"/>      
