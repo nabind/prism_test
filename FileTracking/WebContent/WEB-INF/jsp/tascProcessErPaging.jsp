@@ -84,8 +84,11 @@
 	}
 	
 	$(document).ready(function() {
+		$.fn.dataTable.ext.errMode = 'none';
 		
-		$("#process").dataTable( {
+		$("#process").on( 'error.dt', function ( e, settings, techNote, message ) {
+			alert( 'Error has occurred, please contact system administrator');
+	    	}).dataTable( {
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"order": [[ 1, "desc" ]],
@@ -433,9 +436,9 @@
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<span class="completed" title="Completed"></span> = Completed/Success <br/>
-					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
-					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
+					<span class="completed" title="Completed"></span><div style="display:inline;">= Completed/Success</div><br/>
+					<span class="progress" title="Completed" style="margin-left: -34px;"></span><div style="display:inline;"> = Invalidated</div><br/>
+					<span class="error" title="Completed" style="margin-left: -34px;"></span> <div style="display:inline;">= Error</div>
 				</p>
 				
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>
