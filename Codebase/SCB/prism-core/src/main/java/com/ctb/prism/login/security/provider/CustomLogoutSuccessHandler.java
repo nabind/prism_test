@@ -59,7 +59,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler
 				tileParamMap.put("contractName", contractName);
 				Map<String, Object> propertyMap = loginService.getContractProerty(tileParamMap);
 				if(propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGOUT+"~"+CustomStringUtil.appendString(applicationName, "|", contractName)) != null) {
-					String redirectUrl = (String) propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGINFAIL+"~"+CustomStringUtil.appendString(applicationName, "|", contractName));
+					String redirectUrl = (String) propertyMap.get(IApplicationConstants.SSO_REDIRECT_LOGOUT+"~"+CustomStringUtil.appendString(applicationName, "|", contractName));
 					if(!StringUtils.isEmpty(redirectUrl)) super.setDefaultTargetUrl(redirectUrl);
 				}
 			}
