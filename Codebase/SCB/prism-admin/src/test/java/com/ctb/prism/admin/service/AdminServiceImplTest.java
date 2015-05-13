@@ -356,6 +356,10 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		loggedinUserTO.setUserId("0");
 		outputMap = adminService.getEducationCenter(paramMap);
 		assertNotNull(outputMap);
+		
+		paramMap.put("loggedinUserTO", null);
+		outputMap = adminService.getEducationCenter(paramMap);
+		assertNotNull(outputMap);
 	}
 
 	@Test
