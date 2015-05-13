@@ -1033,7 +1033,7 @@ public class TascDAOImpl {
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					cs.setString(++count, searchProcess.getProcessedDateFrom());
 				}else{
@@ -1168,7 +1168,7 @@ public class TascDAOImpl {
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_ER_DATA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					cs.setString(++count, searchProcess.getProcessedDateFrom());
 				}else{
