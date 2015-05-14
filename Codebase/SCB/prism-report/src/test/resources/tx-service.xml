@@ -103,5 +103,13 @@
     <bean id="anonymousAuthenticationProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
         <property name="key"><value>foobar</value></property>
     </bean>
+    
+    <bean id="hmacEncoder" class="com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder">
+    	<constructor-arg index="0" value="BTCguSF49hYaPmAfe9Q29LtsQ2X"/>
+    	<constructor-arg index="1" type="int" value="30"/>
+    	<constructor-arg index="2" value="HmacSHA1"/>
+    	<property name="timeZone" value="GMT" />
+    	<property name="URL_ENCODING" value="UTF-8" />
+    </bean>
 
 </beans>

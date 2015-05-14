@@ -16,10 +16,12 @@
 	<context:component-scan base-package="com.ctb.prism.web" />
 
 	<context:property-placeholder location="classpath*:aws.properties" />
-
+	<context:property-placeholder location="classpath*:jasperreports.properties" />
+	
 	<import resource="tx-service.xml" />
 	<import resource="jms-config.xml" />
 	<import resource="simpledb-config.xml" />
 	<import resource="applicationContext-theme.xml" />
 	<import resource="dynamodb-config.xml" />
+	
 </beans>

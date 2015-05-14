@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 
@@ -32,7 +34,7 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
 	private ParentController controller;
-
+	
 	TestParams testParams;
 
 	@Before
@@ -86,6 +88,21 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testUpdateProfile() throws IOException {
+		request.setParameter("userId","111");
+		request.setParameter("username","testUser");
+		request.setParameter("password","Passwd12"); 
+		request.setParameter("firstName","testFirst");
+		request.setParameter("lastName","testLast");
+		request.setParameter("verify_mail","test@ctb.com");
+		request.setParameter("mobile","1234567890");
+		request.setParameter("zip_code","93940");
+		request.setParameter("userCountry","US");
+		request.setParameter("country","USA");
+		request.setParameter("street","casanoa avenue");
+		request.setParameter("city","monterey");
+		request.setParameter("state","CA");
+		request.setParameter("displayName","testDisp");
+		request.setParameter("salt","y5ihlLuNF9v8rekOd2Qy");
 		ModelAndView mv = controller.updateProfile(request, response);
 		assertNull(mv);
 	}
@@ -104,6 +121,18 @@ public class ParentControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testGetChildrenList() {
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE,"PUBLIC");
+		request.setParameter("AdminYear","5050");
+		request.setParameter("isPN","Y");
+		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = new com.ctb.prism.login.transferobject.UserTO();
+		loggedinUserTO.setCustomerId("1057");
+		loggedinUserTO.setOrgCode("092087");
+		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS,loggedinUserTO);
+		request.setParameter("parentName","testParent");
+		request.setParameter("orgId","10195");
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER,"testParent");
+		request.setParameter("clickedTreeNode","10195");
+		request.getSession().setAttribute(IApplicationConstants.CURRORG,"10195");
 		String json = controller.getChildrenList(request, response);
 		assertNull(json);
 	}

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 import static org.junit.Assert.assertEquals;
@@ -29,6 +30,10 @@ public class CommonControllerTest extends AbstractJUnit4SpringContextTests{
 	
 	@Autowired
 	private CommonController controller;
+	
+	@Autowired
+    DigitalMeasuresHMACQueryStringBuilder hmac;
+	
 	TestParams testParams;
 	
 	@Before
@@ -61,6 +66,8 @@ public class CommonControllerTest extends AbstractJUnit4SpringContextTests{
 	
 	@Test
 	public void testLoadJSPView(){
+		request.setParameter("studentId", "7356");
+		request.setParameter("reportType","TABLE");
 		ModelAndView mv = controller.loadJSPView(request, response);
 		assertNotNull(mv);	
 	}

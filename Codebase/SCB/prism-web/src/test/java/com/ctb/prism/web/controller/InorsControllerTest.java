@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
@@ -74,6 +75,12 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testDownloadGroupDownloadFiles() {
+		
+		request.setParameter("jobId","11111");
+		request.setParameter("filePath","/MAPREPORTS/MISSOURI/MAPSMTSPR2015/GDF/");
+		request.setParameter("orgLevel","2");
+		request.setParameter("requestType","SDF");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER,"1057");
 		controller.downloadGroupDownloadFiles(request, response);
 		assertNotNull("Method return is void");
 	}
@@ -140,6 +147,12 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 	@Test
 	public void testGroupDownloadFunction() throws SystemException {
 		request.setParameter("json", WebTestHelper.requestDetails);
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
+		propertyMap.put(IApplicationConstants.STATIC_PDF_LOCATION,"MAPREPORTS");
+		request.getSession().setAttribute("propertyMap",propertyMap);
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER,"test");
+		request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR,"5050");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER,"1057");
 		String str = controller.groupDownloadFunction(request, response);
 		assertNotNull(str);
 	}
@@ -152,6 +165,7 @@ public class InorsControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testDownloadFile() {
+		request.setParameter("fileName","testFirst");
 		controller.downloadFile(request, response);
 		assertNotNull("Method return is void");
 	}

@@ -26,6 +26,7 @@ import com.ctb.prism.test.WebTestHelper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
+//@ContextConfiguration({"classpath*:/test-context.xml"})
 public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	private MockHttpServletRequest request;
@@ -96,17 +97,22 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSearchOrgAutoComplete() {
+		request.setParameter("AdminYear","5050");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER,"1057");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE,"PUBLIC");
+		request.setParameter("selectedOrg","10195");
+		request.setParameter("term","FT. ZUMWALT R-II");
 		String str = controller.searchOrgAutoComplete(request, response);
-		assertNull(str);
+		assertNotNull(str);
 	}
 
 	@Test
 	public void testManageUser() throws Exception {
-		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "0");
-		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "0");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER, "1057");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE, "PUBLIC");
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = WebTestHelper.getLoggedinUserTO(testParams);
 		request.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, loggedinUserTO);
-		request.setParameter("AdminYear", "0");
+		request.setParameter("AdminYear", "5050");
 		ModelAndView mv = controller.manageUser(request, response, session);
 		assertNotNull(mv);
 	}
@@ -150,6 +156,22 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testAddNewUser() throws IOException {
+		request.setParameter("AdminYear","5050");
+		request.setParameter("tenantId","10195");
+		request.setParameter("userName","test12");
+		request.setParameter("userId","999999");
+		request.setParameter("emailId", "test@ctb.com");
+		request.setParameter("password","Passwd12");
+		request.setParameter("userStatus","AC");
+		request.setParameter("orgLevel","2");
+		request.setParameter("purpose","add");
+		request.setParameter("eduCenterId", "");
+		String[] userRoles = new String[2];
+		userRoles[0] = "ROLE_USER";
+		request.setParameter("userRole",userRoles);
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER,"1057");
+		request.getSession().setAttribute(IApplicationConstants.ORG_MODE,"PUBLIC");
+		
 		ModelAndView mv = controller.addNewUser(request, response);
 		assertNull(mv);
 	}
@@ -321,6 +343,10 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testRegenerateActivationCode() throws IOException {
+		request.setParameter("studentBioId","1111");
+		request.setParameter("adminYear","5050");
+		request.setParameter("invitationCode","WES1A");
+		request.setParameter("testElementId","6966222");
 		String str = controller.regenerateActivationCode(request, response);
 		assertNull(str);
 	}
@@ -333,6 +359,13 @@ public class AdminControllerTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testDownloadStudentFile() {
+		request.getSession().setAttribute(IApplicationConstants.CURRUSERID,"9999");
+		request.getSession().setAttribute(IApplicationConstants.CURRUSER,"testUser");
+		request.getSession().setAttribute(IApplicationConstants.CUSTOMER,"1057");
+		request.setParameter("startDate","01/01/2015");
+		request.setParameter("endDate","02/02/2015");
+		request.setParameter("type","DAT");
+		request.setParameter("dateType","TTD");
 		String str = controller.downloadStudentFile(request, response);
 		assertNull(str);
 	}

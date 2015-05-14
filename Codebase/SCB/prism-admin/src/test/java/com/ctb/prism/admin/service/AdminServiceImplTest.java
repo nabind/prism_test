@@ -247,8 +247,8 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testAssociateUserToRole() throws Exception {
-		String roleId = "1";
-		String userName = "test";
+		String roleId = "3";
+		String userName = "testuser";
 		boolean status = adminService.associateUserToRole(roleId, userName);
 		assertNotNull(status);
 	}
