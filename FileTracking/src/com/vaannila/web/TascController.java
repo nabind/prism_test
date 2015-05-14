@@ -404,14 +404,15 @@ public class TascController {
 			
 			request.getSession().setAttribute("tascRequestTO", process);
 			
-			if(!"ERESOURCE".equals(process.getSourceSystem())){
+			/*if(!"ERESOURCE".equals(process.getSourceSystem())){
 				TascDAOImpl stageDao = new TascDAOImpl();
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
 				convertProcessToJson(studentDetailsTOList);
 				modelAndView = new ModelAndView("tascProcessEr", "message", "jsonStr");
 			}else{
 				modelAndView = new ModelAndView("tascProcessErPaging", "message", jsonStr);
-			}
+			}*/
+			modelAndView = new ModelAndView("tascProcessErPaging", "message", jsonStr);
 			
 			
 		} catch (Exception e) {

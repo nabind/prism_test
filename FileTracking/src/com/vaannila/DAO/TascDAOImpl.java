@@ -381,7 +381,7 @@ public class TascDAOImpl {
 			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
 			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
-			queryBuff.append(" NVL(EED.ER_SS_HISTID, 0) ER_SS_HISTID,");
+			queryBuff.append(" 0 ER_SS_HISTID,");
 			queryBuff.append(" EED.BARCODE BARCODE,");
 			queryBuff.append(" TO_CHAR(EED.TEST_DATE, 'MM/DD/YYYY') DATE_SCHEDULED,");
 			queryBuff.append(" EED.STATE_CODE STATE_CODE,");
@@ -414,9 +414,9 @@ public class TascDAOImpl {
 			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
 			}
-			if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+			/*if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 				queryBuff.append(" AND EED.ER_SS_HISTID = ?");
-			}
+			}*/
 			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 				queryBuff.append(" AND EED.PROCESS_ID = ?");
 			}
@@ -441,7 +441,7 @@ public class TascDAOImpl {
 			queryBuff.append(" NVL(TO_CHAR(SPS.PROCESS_ID), 'NA') PROCESS_ID,");
 			//queryBuff.append(" 'NA' EXCEPTION_CODE,");
 			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
-			queryBuff.append(" NVL(SPS.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
+			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
 			//queryBuff.append(" 'NA' EXCEPTION_STATUS,");
 			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS, ");
 			queryBuff.append(" 0 ER_SS_HISTID,");
@@ -560,9 +560,9 @@ public class TascDAOImpl {
 				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
 				}
-				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
+				/*if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
-				}
+				}*/
 				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
 				}
@@ -578,7 +578,8 @@ public class TascDAOImpl {
 				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
 					pstmt.setString(++count, searchProcess.getBarcode());
 				}
-				pstmt.setString(++count, ("OAS".equals(searchProcess.getSourceSystem())? "OL" : searchProcess.getSourceSystem()));
+				//pstmt.setString(++count, ("OAS".equals(searchProcess.getSourceSystem())? "OL" : searchProcess.getSourceSystem()));
+				pstmt.setString(++count, searchProcess.getSourceSystem());
 				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
 				}
@@ -1032,79 +1033,90 @@ public class TascDAOImpl {
 			int placeHolderTotalRecCount = 0;
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
+			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					cs.setString(++count, searchProcess.getProcessedDateFrom());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					cs.setString(++count, searchProcess.getProcessedDateTo());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					cs.setString(++count, "%"+searchProcess.getUuid()+"%");
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					cs.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
-				}else{
-					cs.setLong(++count, -1);
-				}
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			}else{
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			}
+			cs = conn.prepareCall(query);
+			
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+				cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
+			}else{
+				cs.setLong(++count, -1);
+			}
+			
+			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
 				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 					cs.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
 				}else{
 					cs.setLong(++count, -1);
 				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-				}else{
-					cs.setLong(++count, -1);
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					cs.setString(++count, searchProcess.getStateCode());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					cs.setString(++count, searchProcess.getForm());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					cs.setString(++count, searchProcess.getTestElementId());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					cs.setString(++count, searchProcess.getBarcode());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
-					cs.setString(++count, searchProcess.getSearchParam());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				cs.setString(++count, searchProcess.getSortCol());
-				cs.setString(++count, searchProcess.getSortDir());
-				cs.setLong(++count, searchProcess.getFromRowNum());
-				cs.setLong(++count, searchProcess.getToRowNum());				
-				placeHolderTotalRecCount = ++count;
-				cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
-				placeHolderData = ++count;
-				cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
-				placeHolderErrorMsg = ++count;
-				cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			}else{
+				cs.setString(++count, searchProcess.getSourceSystem());
 			}
+			
+			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+				cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+			}else{
+				cs.setLong(++count, -1);
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStateCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				cs.setString(++count, searchProcess.getForm());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getTestElementId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, searchProcess.getSortCol());
+			cs.setString(++count, searchProcess.getSortDir());
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
 			
 			cs.execute();
 			String errorMessage = cs.getString(placeHolderErrorMsg);
@@ -1167,79 +1179,91 @@ public class TascDAOImpl {
 			int placeHolderTotalRecCount = 0;
 			int placeHolderData = 0;
 			int placeHolderErrorMsg = 0;
+			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				cs = conn.prepareCall("{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					cs.setString(++count, searchProcess.getProcessedDateFrom());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					cs.setString(++count, searchProcess.getProcessedDateTo());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					cs.setString(++count, "%"+searchProcess.getUuid()+"%");
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					cs.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
-				}else{
-					cs.setLong(++count, -1);
-				}
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			}else{
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			}
+			System.out.println("query: "+query);
+			cs = conn.prepareCall(query);
+			
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+				cs.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
+			}else{
+				cs.setLong(++count, -1);
+			}
+			
+			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
 				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
 					cs.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
 				}else{
 					cs.setLong(++count, -1);
 				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-				}else{
-					cs.setLong(++count, -1);
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					cs.setString(++count, searchProcess.getStateCode());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					cs.setString(++count, searchProcess.getForm());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					cs.setString(++count, searchProcess.getTestElementId());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					cs.setString(++count, searchProcess.getBarcode());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
-					cs.setString(++count, searchProcess.getSearchParam());
-				}else{
-					cs.setString(++count, "-1");
-				}
-				cs.setString(++count, "-1");
-				cs.setString(++count, "-1");
-				cs.setLong(++count, searchProcess.getFromRowNum());
-				cs.setLong(++count, searchProcess.getToRowNum());				
-				placeHolderTotalRecCount = ++count;
-				cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
-				placeHolderData = ++count;
-				cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
-				placeHolderErrorMsg = ++count;
-				cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			}else{
+				cs.setString(++count, searchProcess.getSourceSystem());
 			}
+			
+			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
+				cs.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
+			}else{
+				cs.setLong(++count, -1);
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStateCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				cs.setString(++count, searchProcess.getForm());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getTestElementId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, "-1");
+			cs.setString(++count, "-1");
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
 			
 			cs.execute();
 			String errorMessage = cs.getString(placeHolderErrorMsg);
