@@ -3,6 +3,7 @@ package com.prism.service;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.cert.X509Certificate;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -53,7 +62,7 @@ public class MapService implements PrismPdfService {
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
-		map.mainMethod(new String[]{"5050", /*"576"*/ "7391"});
+		map.mainMethod(new String[]{"5035", /*"576"*/ "7391"});
 	}
 
 	/**
@@ -199,6 +208,42 @@ public class MapService implements PrismPdfService {
 		String targetUrl = mapProperties.getProperty("prism.map.url");
 		
 		logger.info("calling next thread ... ");
+		
+		/** CODE TO IGNORE SSL CERTIFICATE ERROR **/
+		// Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(
+						java.security.cert.X509Certificate[] chain,
+						String authType) throws CertificateException {
+					// TODO Auto-generated method stub
+				}
+				public void checkServerTrusted(
+						java.security.cert.X509Certificate[] chain,
+						String authType) throws CertificateException {
+					// TODO Auto-generated method stub
+				}
+            }
+        };
+ 
+        // Install the all-trusting trust manager
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+ 
+        // Create all-trusting host name verifier
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+ 
+        // Install the all-trusting host verifier
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        /** END: CODE TO IGNORE SSL CERTIFICATE ERROR **/
+        
 		
 		HttpURLConnection connection = (HttpURLConnection) new URL(targetUrl+"?"+urlParameters).openConnection();
 		connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
