@@ -42,6 +42,15 @@
 		position: relative;
 		z-index: 88;
 	}
+	.legend {
+		margin-left: -12px !important;
+		margin-top: -9px !important;
+	}
+	
+	.legend2 {
+		margin-left: -34px !important;
+	}
+	
 	.search-criteria {
 		background-color: rgb(174, 208, 187);
 		padding: 10px;
@@ -436,9 +445,9 @@
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<span class="completed" title="Completed"></span> = Completed/Success <br/>
-					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
-					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
+					<span class="completed legend" title="Completed"></span> = Completed/Success <br/>
+					<span class="progress legend legend2" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
+					<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>
