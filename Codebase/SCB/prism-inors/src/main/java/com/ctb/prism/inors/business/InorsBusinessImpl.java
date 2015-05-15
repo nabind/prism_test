@@ -676,7 +676,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 
 		// email notification
 		if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
-			notificationMailGD(to.getEmail(), to.getFileName());
+			notificationMailGD(to.getEmail(), to.getFileName(), contractName);
 		} else {
 			logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 		}
@@ -695,7 +695,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * 
 	 * @param email
 	 */
-	private void notificationMailGD(String email, String fileName) {
+	private void notificationMailGD(String email, String fileName, String contractName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
 			String file = fileName;
@@ -707,15 +707,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				
 			}
+			Map<String, Object> tileParamMap = new HashMap<String, Object>();
+			tileParamMap.put("contractName", contractName);
+			Map<String, Object> propertyMap = loginDAO.getContractProerty(tileParamMap);
+			
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
-			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
-			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-			String subject = propertyLookup.get("mail.gd.subject");
-			String mailBody = CustomStringUtil.appendString(file, propertyLookup.get("mail.gd.body"));
+			//prop.setProperty("senderMail", propertyLookup.get("senderMail"));
+			//prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			prop.setProperty("senderMail", (String) propertyMap.get("email.sender"));
+			prop.setProperty("supportEmail", (String) propertyMap.get("support.email"));
+			//String subject = propertyLookup.get("mail.gd.subject");
+			String mailBody = CustomStringUtil.appendString(file, (String) propertyMap.get("notification.email.body"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
-			emailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, (String) propertyMap.get("notification.email.subject"), mailBody);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
@@ -729,7 +735,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param email
 	 * @param fileName
 	 */
-	private void notificationMailMapGD(String email, String fileName) {
+	private void notificationMailMapGD(String email, String fileName, String contractName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
 			String fileExtn = FilenameUtils.getExtension(fileName);
@@ -742,16 +748,20 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				
 			}
+			Map<String, Object> tileParamMap = new HashMap<String, Object>();
+			tileParamMap.put("contractName", contractName);
+			Map<String, Object> propertyMap = loginDAO.getContractProerty(tileParamMap);
+			
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
-			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
-			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
-			String subject = propertyLookup.get("mail.gd.subject");
-			if(subject != null) subject = subject.replace("INORS", "MAP");
-			String mailBody = CustomStringUtil.appendString(file, propertyLookup.get("mail.gd.body"));
+			prop.setProperty("senderMail", (String) propertyMap.get("email.sender"));
+			prop.setProperty("supportEmail", (String) propertyMap.get("support.email"));
+			//String subject = propertyLookup.get("mail.gd.subject");
+			//if(subject != null) subject = subject.replace("INORS", "MAP");
+			String mailBody = CustomStringUtil.appendString(file, (String) propertyMap.get("notification.email.body"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
-			emailSender.sendMail(prop, email, null, null, subject, mailBody);
+			emailSender.sendMail(prop, email, null, null, (String) propertyMap.get("notification.email.subject"), mailBody);
 			logger.log(IAppLogger.INFO, "Email sent to : " + email);
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Unable to send Email: " + e.getMessage());
@@ -765,14 +775,18 @@ public class InorsBusinessImpl implements IInorsBusiness {
 	 * @param email
 	 * @param fileName
 	 */
-	private void notificationMailISRUtility(String email, String body, String jobId) {
+	private void notificationMailISRUtility(String email, String body, String jobId, String contractName) {
 		logger.log(IAppLogger.INFO, "Enter: notificationMailGD()");
 		try {
+			Map<String, Object> tileParamMap = new HashMap<String, Object>();
+			tileParamMap.put("contractName", contractName);
+			Map<String, Object> propertyMap = loginDAO.getContractProerty(tileParamMap);
+			
 			Properties prop = new Properties();
 			prop.setProperty(IEmailConstants.SMTP_HOST, propertyLookup.get(IEmailConstants.SMTP_HOST));
 			prop.setProperty(IEmailConstants.SMTP_PORT, propertyLookup.get(IEmailConstants.SMTP_PORT));
-			prop.setProperty("senderMail", propertyLookup.get("senderMail"));
-			prop.setProperty("supportEmail", propertyLookup.get("supportEmail"));
+			prop.setProperty("senderMail", (String) propertyMap.get("email.sender"));
+			prop.setProperty("supportEmail", (String) propertyMap.get("support.email"));
 			String subject = CustomStringUtil.appendString("ISR Generation for job ", jobId, " - ", propertyLookup.get("environment.postfix"));
 			logger.log(IAppLogger.INFO, "Email triggered...");
 			emailSender.sendMail(prop, email, null, null, subject, body);
@@ -1202,7 +1216,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				
 				// email notification
 				if(IApplicationConstants.JOB_STATUS.CO.toString().equals(jobStatus)) {
-					notificationMailMapGD(groupDownloadTO.getEmail(), mergedFileName);
+					notificationMailMapGD(groupDownloadTO.getEmail(), mergedFileName, contractName);
 				} else {
 					logger.log(IAppLogger.INFO, "Notification Mail was Not Sent. jobStatus = " + jobStatus);
 				}
@@ -1219,7 +1233,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						"<br/><br/>", "Files generated are: <br/>", Utils.arrayToSeparatedString( allIsr.toArray(str), "<br/>"),
 						"<br/><br/>", "job log: <br/>", job.toString());
 				
-				notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId);
+				notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId, contractName);
 			}
 			
 			// delete ISR from temp location 
