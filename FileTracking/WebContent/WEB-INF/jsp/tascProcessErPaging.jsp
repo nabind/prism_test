@@ -436,9 +436,9 @@
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<span class="completed" title="Completed"></span><div style="display:inline;">= Completed/Success</div><br/>
-					<span class="progress" title="Completed" style="margin-left: -34px;"></span><div style="display:inline;"> = Invalidated</div><br/>
-					<span class="error" title="Completed" style="margin-left: -34px;"></span> <div style="display:inline;">= Error</div>
+					<span class="completed" title="Completed"></span> = Completed/Success <br/>
+					<span class="progress" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
+					<span class="error" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>

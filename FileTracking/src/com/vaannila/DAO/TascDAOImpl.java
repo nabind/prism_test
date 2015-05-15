@@ -1112,7 +1112,7 @@ public class TascDAOImpl {
 			cs.setLong(++count, searchProcess.getFromRowNum());
 			cs.setLong(++count, searchProcess.getToRowNum());				
 			placeHolderTotalRecCount = ++count;
-			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
 			placeHolderData = ++count;
 			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
 			placeHolderErrorMsg = ++count;
@@ -1259,7 +1259,7 @@ public class TascDAOImpl {
 			cs.setLong(++count, searchProcess.getFromRowNum());
 			cs.setLong(++count, searchProcess.getToRowNum());				
 			placeHolderTotalRecCount = ++count;
-			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.CURSOR);
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
 			placeHolderData = ++count;
 			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
 			placeHolderErrorMsg = ++count;
@@ -1268,10 +1268,7 @@ public class TascDAOImpl {
 			cs.execute();
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
-				rs = (ResultSet) cs.getObject(placeHolderTotalRecCount);
-				if(rs.next()) {
-					totalRecordCount = rs.getLong("TOTAL_RECORD_COUNT");
-				}
+				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
 			}else{
 				System.out.println("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);

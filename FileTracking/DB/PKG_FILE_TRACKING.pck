@@ -2,69 +2,69 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING_1 AS
 
   TYPE GET_REFCURSOR IS REF CURSOR;
 
-  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM                  IN VARCHAR2,
-                           P_DATE_TO                    IN VARCHAR2,
-                           P_UUID                       IN VARCHAR2,
-                           P_LAST_NAME                  IN VARCHAR2,
-                           P_EX_CODE                    IN NUMBER,
-                           P_RECORD_ID                  IN NUMBER,
-                           P_PROCESS_ID                 IN NUMBER,
-                           P_STATE_CODE                 IN VARCHAR2,
-                           P_FORM                       IN VARCHAR2,
-                           P_TEST_ELEMENT_ID            IN VARCHAR2,
-                           P_TEST_BARCODE               IN VARCHAR2,
-                           P_SEARCH_PARAM               IN VARCHAR2,
-                           P_ORDERED_COLUMN             IN VARCHAR2,
-                           P_ORDER                      IN VARCHAR2,
-                           P_ROWNUM_FROM                IN NUMBER,
-                           P_ROWNUM_TO                  IN NUMBER,
-                           P_OUT_CUR_TOTAL_RECORD_COUNT OUT GET_REFCURSOR,
-                           P_OUT_CUR_ER_DATA            OUT GET_REFCURSOR,
-                           P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2);
+  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM              IN VARCHAR2,
+                           P_DATE_TO                IN VARCHAR2,
+                           P_UUID                   IN VARCHAR2,
+                           P_LAST_NAME              IN VARCHAR2,
+                           P_EX_CODE                IN NUMBER,
+                           P_RECORD_ID              IN NUMBER,
+                           P_PROCESS_ID             IN NUMBER,
+                           P_STATE_CODE             IN VARCHAR2,
+                           P_FORM                   IN VARCHAR2,
+                           P_TEST_ELEMENT_ID        IN VARCHAR2,
+                           P_TEST_BARCODE           IN VARCHAR2,
+                           P_SEARCH_PARAM           IN VARCHAR2,
+                           P_ORDERED_COLUMN         IN VARCHAR2,
+                           P_ORDER                  IN VARCHAR2,
+                           P_ROWNUM_FROM            IN NUMBER,
+                           P_ROWNUM_TO              IN NUMBER,
+                           P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                           P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                           P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
-  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM                  IN VARCHAR2,
-                              P_DATE_TO                    IN VARCHAR2,
-                              P_UUID                       IN VARCHAR2,
-                              P_LAST_NAME                  IN VARCHAR2,
-                              P_EX_CODE                    IN NUMBER,
-                              P_SOURCE_SYSTEM              IN VARCHAR2,
-                              P_PROCESS_ID                 IN NUMBER,
-                              P_STATE_CODE                 IN VARCHAR2,
-                              P_FORM                       IN VARCHAR2,
-                              P_TEST_ELEMENT_ID            IN VARCHAR2,
-                              P_TEST_BARCODE               IN VARCHAR2,
-                              P_SEARCH_PARAM               IN VARCHAR2,
-                              P_ORDERED_COLUMN             IN VARCHAR2,
-                              P_ORDER                      IN VARCHAR2,
-                              P_ROWNUM_FROM                IN NUMBER,
-                              P_ROWNUM_TO                  IN NUMBER,
-                              P_OUT_CUR_TOTAL_RECORD_COUNT OUT GET_REFCURSOR,
-                              P_OUT_CUR_ER_DATA            OUT GET_REFCURSOR,
-                              P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2);
+  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM              IN VARCHAR2,
+                              P_DATE_TO                IN VARCHAR2,
+                              P_UUID                   IN VARCHAR2,
+                              P_LAST_NAME              IN VARCHAR2,
+                              P_EX_CODE                IN NUMBER,
+                              P_SOURCE_SYSTEM          IN VARCHAR2,
+                              P_PROCESS_ID             IN NUMBER,
+                              P_STATE_CODE             IN VARCHAR2,
+                              P_FORM                   IN VARCHAR2,
+                              P_TEST_ELEMENT_ID        IN VARCHAR2,
+                              P_TEST_BARCODE           IN VARCHAR2,
+                              P_SEARCH_PARAM           IN VARCHAR2,
+                              P_ORDERED_COLUMN         IN VARCHAR2,
+                              P_ORDER                  IN VARCHAR2,
+                              P_ROWNUM_FROM            IN NUMBER,
+                              P_ROWNUM_TO              IN NUMBER,
+                              P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                              P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                              P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
 END PKG_FILE_TRACKING_1;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
 
-  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM                  IN VARCHAR2,
-                           P_DATE_TO                    IN VARCHAR2,
-                           P_UUID                       IN VARCHAR2,
-                           P_LAST_NAME                  IN VARCHAR2,
-                           P_EX_CODE                    IN NUMBER,
-                           P_RECORD_ID                  IN NUMBER,
-                           P_PROCESS_ID                 IN NUMBER,
-                           P_STATE_CODE                 IN VARCHAR2,
-                           P_FORM                       IN VARCHAR2,
-                           P_TEST_ELEMENT_ID            IN VARCHAR2,
-                           P_TEST_BARCODE               IN VARCHAR2,
-                           P_SEARCH_PARAM               IN VARCHAR2,
-                           P_ORDERED_COLUMN             IN VARCHAR2,
-                           P_ORDER                      IN VARCHAR2,
-                           P_ROWNUM_FROM                IN NUMBER,
-                           P_ROWNUM_TO                  IN NUMBER,
-                           P_OUT_CUR_TOTAL_RECORD_COUNT OUT GET_REFCURSOR,
-                           P_OUT_CUR_ER_DATA            OUT GET_REFCURSOR,
-                           P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2) IS
+  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM              IN VARCHAR2,
+                           P_DATE_TO                IN VARCHAR2,
+                           P_UUID                   IN VARCHAR2,
+                           P_LAST_NAME              IN VARCHAR2,
+                           P_EX_CODE                IN NUMBER,
+                           P_RECORD_ID              IN NUMBER,
+                           P_PROCESS_ID             IN NUMBER,
+                           P_STATE_CODE             IN VARCHAR2,
+                           P_FORM                   IN VARCHAR2,
+                           P_TEST_ELEMENT_ID        IN VARCHAR2,
+                           P_TEST_BARCODE           IN VARCHAR2,
+                           P_SEARCH_PARAM           IN VARCHAR2,
+                           P_ORDERED_COLUMN         IN VARCHAR2,
+                           P_ORDER                  IN VARCHAR2,
+                           P_ROWNUM_FROM            IN NUMBER,
+                           P_ROWNUM_TO              IN NUMBER,
+                           P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                           P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                           P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
@@ -72,6 +72,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
     V_EXCEPTION_STATUS         VARCHAR2(10) := '-1';
     V_SEARCH_PARAM             VARCHAR2(100);
     V_SEARCH_PARAM_COUNT       NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
   
   BEGIN
   
@@ -232,7 +233,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
     V_QUERY_TOTAL_RECORD_COUNT);*/
   
-    OPEN P_OUT_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+      LOOP
+        FETCH V_CUR_TOTAL_RECORD_COUNT
+          INTO P_OUT_TOTAL_RECORD_COUNT;
+        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+                             P_OUT_TOTAL_RECORD_COUNT);
+      END LOOP;
+      CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
   
     IF P_ORDERED_COLUMN <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORDER BY ';
@@ -288,25 +299,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_ER;
 
-  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM                  IN VARCHAR2,
-                              P_DATE_TO                    IN VARCHAR2,
-                              P_UUID                       IN VARCHAR2,
-                              P_LAST_NAME                  IN VARCHAR2,
-                              P_EX_CODE                    IN NUMBER,
-                              P_SOURCE_SYSTEM              IN VARCHAR2,
-                              P_PROCESS_ID                 IN NUMBER,
-                              P_STATE_CODE                 IN VARCHAR2,
-                              P_FORM                       IN VARCHAR2,
-                              P_TEST_ELEMENT_ID            IN VARCHAR2,
-                              P_TEST_BARCODE               IN VARCHAR2,
-                              P_SEARCH_PARAM               IN VARCHAR2,
-                              P_ORDERED_COLUMN             IN VARCHAR2,
-                              P_ORDER                      IN VARCHAR2,
-                              P_ROWNUM_FROM                IN NUMBER,
-                              P_ROWNUM_TO                  IN NUMBER,
-                              P_OUT_CUR_TOTAL_RECORD_COUNT OUT GET_REFCURSOR,
-                              P_OUT_CUR_ER_DATA            OUT GET_REFCURSOR,
-                              P_OUT_EXCEP_ERR_MSG          OUT VARCHAR2) IS
+  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM              IN VARCHAR2,
+                              P_DATE_TO                IN VARCHAR2,
+                              P_UUID                   IN VARCHAR2,
+                              P_LAST_NAME              IN VARCHAR2,
+                              P_EX_CODE                IN NUMBER,
+                              P_SOURCE_SYSTEM          IN VARCHAR2,
+                              P_PROCESS_ID             IN NUMBER,
+                              P_STATE_CODE             IN VARCHAR2,
+                              P_FORM                   IN VARCHAR2,
+                              P_TEST_ELEMENT_ID        IN VARCHAR2,
+                              P_TEST_BARCODE           IN VARCHAR2,
+                              P_SEARCH_PARAM           IN VARCHAR2,
+                              P_ORDERED_COLUMN         IN VARCHAR2,
+                              P_ORDER                  IN VARCHAR2,
+                              P_ROWNUM_FROM            IN NUMBER,
+                              P_ROWNUM_TO              IN NUMBER,
+                              P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                              P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                              P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
@@ -314,6 +325,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
     V_EXCEPTION_STATUS         VARCHAR2(10) := '-1';
     V_SEARCH_PARAM             VARCHAR2(100);
     V_SEARCH_PARAM_COUNT       NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
   
   BEGIN
   
@@ -537,13 +549,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
     END IF;
   
     V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
-                                  'SELECT COUNT(1) TOTAL_RECORD_COUNT FROM (' ||
+                                  'SELECT COUNT(1) FROM (' ||
                                   V_QUERY_ACTUAL || ') TAB';
   
     DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
                          V_QUERY_TOTAL_RECORD_COUNT);
   
-    OPEN P_OUT_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+      LOOP
+        FETCH V_CUR_TOTAL_RECORD_COUNT
+          INTO P_OUT_TOTAL_RECORD_COUNT;
+        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+                             P_OUT_TOTAL_RECORD_COUNT);
+      END LOOP;
+      CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
   
     IF P_ORDERED_COLUMN <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORDER BY ';
