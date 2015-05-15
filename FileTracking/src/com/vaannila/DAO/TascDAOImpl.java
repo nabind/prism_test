@@ -1035,10 +1035,11 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
+			System.out.println("DATA query: "+query);
 			cs = conn.prepareCall(query);
 			
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
@@ -1181,11 +1182,11 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
-			System.out.println("query: "+query);
+			System.out.println("COUNT query: "+query);
 			cs = conn.prepareCall(query);
 			
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){

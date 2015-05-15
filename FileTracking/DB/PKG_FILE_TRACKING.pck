@@ -230,8 +230,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                   'SELECT COUNT(1) TOTAL_RECORD_COUNT FROM (' ||
                                   V_QUERY_ACTUAL || ') TAB';
   
-    DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
-    V_QUERY_TOTAL_RECORD_COUNT);
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
+    V_QUERY_TOTAL_RECORD_COUNT);*/
   
     OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
     IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
@@ -239,8 +239,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
         FETCH V_CUR_TOTAL_RECORD_COUNT
           INTO P_OUT_TOTAL_RECORD_COUNT;
         EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
-                             P_OUT_TOTAL_RECORD_COUNT);
+        /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+        P_OUT_TOTAL_RECORD_COUNT);*/
       END LOOP;
       CLOSE V_CUR_TOTAL_RECORD_COUNT;
     END IF;
@@ -290,7 +290,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                       P_ROWNUM_TO || ')
        WHERE RNUM >= ' || P_ROWNUM_FROM;
   
-    DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
   
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
   
@@ -319,13 +319,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                               P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
                               P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
-    V_QUERY_PAGING             CLOB := '';
-    V_QUERY_ACTUAL             CLOB := '';
-    V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
-    V_EXCEPTION_STATUS         VARCHAR2(10) := '-1';
-    V_SEARCH_PARAM             VARCHAR2(100);
-    V_SEARCH_PARAM_COUNT       NUMBER := 0;
-    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
+    V_QUERY_PAGING              CLOB := '';
+    V_QUERY_ACTUAL              CLOB := '';
+    V_QUERY_TOTAL_RECORD_COUNT  CLOB := '';
+    V_QRY_ACTUAL_TOTAL_REC_CNT  CLOB := '';
+    V_EXCEPTION_STATUS          VARCHAR2(10) := '-1';
+    V_SEARCH_PARAM              VARCHAR2(100);
+    V_SEARCH_PARAM_COUNT        NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT    GET_REFCURSOR;
+    V_ACTUAL_TOTAL_RECORD_COUNT NUMBER := 0;
   
   BEGIN
   
@@ -481,6 +483,27 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                         P_TEST_BARCODE || '''';
     END IF;
   
+    --CHECK FOR DATA EXISTANCE START
+    V_QRY_ACTUAL_TOTAL_REC_CNT := V_QRY_ACTUAL_TOTAL_REC_CNT ||
+                                  'SELECT COUNT(1) FROM (' ||
+                                  V_QUERY_ACTUAL || ') TAB';
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QRY_ACTUAL_TOTAL_REC_CNT: ' ||
+    V_QRY_ACTUAL_TOTAL_REC_CNT);*/
+  
+    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QRY_ACTUAL_TOTAL_REC_CNT;
+    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+      LOOP
+        FETCH V_CUR_TOTAL_RECORD_COUNT
+          INTO V_ACTUAL_TOTAL_RECORD_COUNT;
+        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+        /*DBMS_OUTPUT.PUT_LINE('V_ACTUAL_TOTAL_RECORD_COUNT: ' ||
+        V_ACTUAL_TOTAL_RECORD_COUNT);*/
+      END LOOP;
+      CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
+    --CHECK FOR DATA EXISTANCE END
+  
     IF P_SEARCH_PARAM <> '-1' THEN
       V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
                         ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
@@ -539,7 +562,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
         END IF;
       END IF;
     
-      DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);
+      /*DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);*/
     
       IF V_EXCEPTION_STATUS <> '-1' THEN
         V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' OR EXCEPTION_STATUS = ''' ||
@@ -552,8 +575,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                   'SELECT COUNT(1) FROM (' ||
                                   V_QUERY_ACTUAL || ') TAB';
   
-    DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
-                         V_QUERY_TOTAL_RECORD_COUNT);
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
+    V_QUERY_TOTAL_RECORD_COUNT);*/
   
     OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
     IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
@@ -561,10 +584,158 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
         FETCH V_CUR_TOTAL_RECORD_COUNT
           INTO P_OUT_TOTAL_RECORD_COUNT;
         EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
-                             P_OUT_TOTAL_RECORD_COUNT);
+        /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+        P_OUT_TOTAL_RECORD_COUNT);*/
       END LOOP;
       CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
+  
+    --FOR TESTING
+    --V_ACTUAL_TOTAL_RECORD_COUNT := 0;
+  
+    IF V_ACTUAL_TOTAL_RECORD_COUNT = 0 THEN
+      V_QUERY_ACTUAL := ' select ex.last_name STUDENTNAME, ex.er_uuid UUID, ex.test_element_id TEST_ELEMENT_ID,
+      ex.process_id PROCESS_ID, ex.exception_code EXCEPTION_CODE, ex.source_system SOURCE_SYSTEM,
+      ex.exception_status EXCEPTION_STATUS, 0 ER_SS_HISTID, ex.barcode BARCODE, ex.test_date DATE_SCHEDULED,
+      ex.state_code STATE_CODE, ex.form FORM, ex.created_date_time DATETIMESTAMP, ex.er_excdid ER_EXCDID,
+      ex.content_code SUBTEST, ''NA'' TESTING_SITE_CODE, ''NA'' TESTING_SITE_NAME, ex.description ERROR_DESCRIPTION,
+      ex.created_date_time PROCESSED_DATE
+      from er_exception_data ex
+      where ex.source_system = ''' ||
+                        P_SOURCE_SYSTEM || '''';
+      IF P_DATE_FROM <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                          ' AND TRUNC(ex.created_date_time) >= TO_DATE(''' ||
+                          P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+      END IF;
+    
+      IF P_DATE_TO <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                          ' AND TRUNC(ex.created_date_time) <= TO_DATE(''' ||
+                          P_DATE_TO || ''', ''MM/DD/YYYY'')';
+      END IF;
+    
+      IF P_UUID <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.er_uuid LIKE ''%' ||
+                          P_UUID || '%''';
+      END IF;
+    
+      IF P_LAST_NAME <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                          ' AND UPPER(ex.last_name) LIKE UPPER(''%' ||
+                          P_LAST_NAME || '%'')';
+      END IF;
+    
+      IF P_PROCESS_ID <> -1 THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.process_id =' ||
+                          P_PROCESS_ID;
+      END IF;
+    
+      IF P_STATE_CODE <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.state_code = ''' ||
+                          P_STATE_CODE || '''';
+      END IF;
+    
+      IF P_FORM <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.form =''' || P_FORM || '''';
+      END IF;
+    
+      IF P_TEST_ELEMENT_ID <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.test_element_id =''' ||
+                          P_TEST_ELEMENT_ID || '''';
+      END IF;
+    
+      IF P_TEST_BARCODE <> '-1' THEN
+        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.barcode = ''' ||
+                          P_TEST_BARCODE || '''';
+      END IF;
+    
+      IF P_SEARCH_PARAM <> '-1' THEN
+        V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
+                          ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(PROCESS_ID) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(EXCEPTION_CODE) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(DATE_SCHEDULED) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(STATE_CODE) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(FORM) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(ER_EXCDID) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM ||
+                          '%'') OR UPPER(SUBTEST) LIKE UPPER(''%' ||
+                          P_SEARCH_PARAM || '%'')';
+      
+        V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
+      
+        SELECT COUNT(TAB.EXCEPTION_STATUS)
+          INTO V_SEARCH_PARAM_COUNT
+          FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                             FROM DUAL)
+                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                   FROM T
+                 CONNECT BY LEVEL <=
+                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                  WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
+      
+      
+        IF V_SEARCH_PARAM_COUNT <> 0 THEN
+          SELECT TAB.EXCEPTION_STATUS
+            INTO V_SEARCH_PARAM
+            FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                               FROM DUAL)
+                   SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                     FROM T
+                   CONNECT BY LEVEL <=
+                              LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                    WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
+        
+        
+          IF V_SEARCH_PARAM = 'ERROR' THEN
+            V_EXCEPTION_STATUS := 'ER';
+          ELSIF V_SEARCH_PARAM = 'COMPLETED' THEN
+            V_EXCEPTION_STATUS := 'CO';
+          ELSIF V_SEARCH_PARAM = 'INVALIDATED' THEN
+            V_EXCEPTION_STATUS := 'IN';
+          END IF;
+        END IF;
+      
+        /*DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);*/
+      
+        IF V_EXCEPTION_STATUS <> '-1' THEN
+          V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' OR EXCEPTION_STATUS = ''' ||
+                            V_EXCEPTION_STATUS || '''';
+        END IF;
+      
+      END IF;
+    
+      V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
+                                    'SELECT COUNT(1) FROM (' ||
+                                    V_QUERY_ACTUAL || ') TAB';
+    
+      /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
+      V_QUERY_TOTAL_RECORD_COUNT);*/
+    
+      OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+      IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+        LOOP
+          FETCH V_CUR_TOTAL_RECORD_COUNT
+            INTO P_OUT_TOTAL_RECORD_COUNT;
+          EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+          /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+          P_OUT_TOTAL_RECORD_COUNT);*/
+        END LOOP;
+        CLOSE V_CUR_TOTAL_RECORD_COUNT;
+      END IF;
     END IF;
   
     IF P_ORDERED_COLUMN <> '-1' THEN
@@ -603,7 +774,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DESC ';
     END IF;
   
-    DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
   
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
@@ -612,7 +783,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                       P_ROWNUM_TO || ')
        WHERE RNUM >= ' || P_ROWNUM_FROM;
   
-    DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
   
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
   
