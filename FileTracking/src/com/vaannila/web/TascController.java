@@ -440,11 +440,12 @@ public class TascController {
     	}
     	long totalRecordCount = stageDao.getTotalRecordCount(process);
     	
+    	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
     	long pageNumber = 0;
     	if (null != request.getParameter("iDisplayStart")){
-    		pageNumber = (Long.parseLong(request.getParameter("iDisplayStart"))/10)+1;
+    		pageNumber = (Long.parseLong(request.getParameter("iDisplayStart"))/pageDisplayLength)+1;
     	}
-    	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
+    	
     	process.setPageNumber(pageNumber);
     	process.setPageDisplayLength(pageDisplayLength);
     	
