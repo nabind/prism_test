@@ -6,12 +6,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import com.ctb.prism.core.transferobject.ObjectValueTO;
+
 public interface IRepositoryService {
 	/**
 	 * @param path
 	 * @return
 	 */
 	public List<String> getAssetList(String path);
+	
+	/**
+	 * @param path
+	 * @return
+	 */
+	public List<ObjectValueTO> getAssetListWithPath(String path); 
 
 	/**
 	 * @param assetPath
