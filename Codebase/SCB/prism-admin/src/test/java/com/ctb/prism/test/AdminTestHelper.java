@@ -760,21 +760,21 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpGetUserDetailsOnClick(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("NODEID", "10195");
-		paramMap.put("CURRENTORG", "10195");
-		paramMap.put("ADMINYEAR", "5074");
+		paramMap.put("NODEID", "0");
+		paramMap.put("CURRENTORG", "0");
+		paramMap.put("ADMINYEAR", "0");
 		paramMap.put("SEARCHPARAM", null);
-		paramMap.put("customerId", "1057L");
-		paramMap.put("CUSTOMERID", "1057L");
-		paramMap.put("ORGMODE", "PUBLIC");
+		paramMap.put("customerId", "0");
+		paramMap.put("CUSTOMERID", "0");
+		paramMap.put("ORGMODE", "0");
 		paramMap.put("moreCount", "15");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpEditUserData(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userId", "adminDAO");
-		paramMap.put("customer", "1057L");
+		paramMap.put("userId", "0");
+		paramMap.put("customer", "0");
 		return paramMap;
 	}
 
@@ -817,8 +817,8 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpSearchEduUser(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userName", "test");
-		paramMap.put("tenantId", "10195");
+		paramMap.put("userName", "0");
+		paramMap.put("tenantId", "0");
 		paramMap.put("isExactSearch", "N");
 		return paramMap;
 	}
@@ -856,41 +856,41 @@ public class AdminTestHelper {
 
 	public static Map<String, Object> helpGetRoleDetailsById(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("roleId", "1");
-		paramMap.put("currentOrg", "10195");
-		paramMap.put("customer", "1057L");
+		paramMap.put("roleId", "0");
+		paramMap.put("currentOrg", "0");
+		paramMap.put("customer", "0");
 		paramMap.put("moreRole", "true");
-		paramMap.put("lastUserId", "4075094");
+		paramMap.put("lastUserId", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrganizationTree(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("nodeid", "10195");
-		paramMap.put("currOrg", "10195");
+		paramMap.put("nodeid", "0");
+		paramMap.put("currOrg", "0");
 		paramMap.put("isFirstLoad", true);
-		paramMap.put("adminYear", "5074");
-		paramMap.put("customerId", 1057L);
-		paramMap.put("orgMode", "PUBLIC");
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", 0L);
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrgTree(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("nodeid", "10195");
+		paramMap.put("nodeid", "0");
 		paramMap.put("isFirstLoad", true);
-		paramMap.put("adminYear", "5074");
-		paramMap.put("customerId", 1057L);
-		paramMap.put("orgMode", "PUBLIC");
+		paramMap.put("adminYear", "0");
+		paramMap.put("customerId", 0L);
+		paramMap.put("orgMode", "0");
 		return paramMap;
 	}
 
 	public static Map<String, Object> helpGetOrganizationTreeOnRedirect(TestParams testParams) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("nodeid", "10195");
-		paramMap.put("currOrg", "10195");
-		paramMap.put("userId", "4075094");
-		paramMap.put("customerId", 1057L);
+		paramMap.put("nodeid", "0");
+		paramMap.put("currOrg", "0");
+		paramMap.put("userId", "0");
+		paramMap.put("customerId", 0L);
 		paramMap.put("isRedirected", true);
 		return paramMap;
 	}
