@@ -1,18 +1,33 @@
 package com.ctb.prism.core.Service;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@Ignore
+import com.ctb.prism.core.transferobject.ObjectValueTO;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/test-context.xml" })
 public class RepositoryServiceImplTest  extends AbstractJUnit4SpringContextTests  {
 
+	private String bucket = null;
+	@Autowired
+	private IRepositoryService repositorySerivice;
+	
 	@Before
 	public void setUp() throws Exception {
+		bucket = "prismdev";
 	}
 
 	@After
@@ -31,22 +46,30 @@ public class RepositoryServiceImplTest  extends AbstractJUnit4SpringContextTests
 
 	@Test
 	public void testGetAssetList() {
-		fail("Not yet implemented");
+		String path= "/MAPREPORTS/MISSOURI/GRF";
+	    List<String> assestList = repositorySerivice.getAssetList(path);
+		assertNotNull(assestList);
 	}
 
 	@Test
 	public void testGetAssetListWithPath() {
-		fail("Not yet implemented");
+		String path= "/MAPREPORTS/MISSOURI/GRF";
+	    List<ObjectValueTO> assestList = repositorySerivice.getAssetListWithPath(path);
+		assertNotNull(assestList);
 	}
 
 	@Test
-	public void testGetAssetBytes() {
-		fail("Not yet implemented");
+	public void testGetAssetBytes() throws IOException {
+		String assetPath= "/MAPREPORTS/MISSOURI/GRF";
+		byte[] bytedata = repositorySerivice.getAssetBytes(assetPath);
+		assertNotNull(bytedata);
 	}
 
 	@Test
-	public void testGetAssetBytesByS3Key() {
-		fail("Not yet implemented");
+	public void testGetAssetBytesByS3Key() throws Exception {
+		String assetPath= "/DEV/MAPREPORTS/MISSOURI/GRF";
+		byte[] bytedata = repositorySerivice.getAssetBytesByS3Key(assetPath);
+		assertNotNull(bytedata);
 	}
 
 	@Test
