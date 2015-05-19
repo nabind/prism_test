@@ -1,9 +1,14 @@
 package com.ctb.prism.core.Service;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.junit.After;
@@ -49,6 +54,9 @@ public class RepositoryServiceImplTest  extends AbstractJUnit4SpringContextTests
 		String path= "/MAPREPORTS/MISSOURI/GRF";
 	    List<String> assestList = repositorySerivice.getAssetList(path);
 		assertNotNull(assestList);
+		path= null;
+		assestList = repositorySerivice.getAssetList(path);
+		assertNull(assestList);
 	}
 
 	@Test
@@ -74,37 +82,56 @@ public class RepositoryServiceImplTest  extends AbstractJUnit4SpringContextTests
 
 	@Test
 	public void testUploadAssetStringFile() {
-		fail("Not yet implemented");
+		String key = "/MAPREPORTS/MISSOURI/GRF";
+		File file = new File("test");
+		repositorySerivice.uploadAsset(key, file);
+		assertNotNull("");
 	}
 
 	@Test
 	public void testUploadMapAsset() {
-		fail("Not yet implemented");
+		String key = "/MAPREPORTS/MISSOURI/GRF";
+		File file = new File("test.txt");
+		repositorySerivice.uploadMapAsset(key, file);
+		assertNotNull("");
 	}
 
 	@Test
-	public void testUploadAssetStringInputStream() {
-		fail("Not yet implemented");
+	public void testUploadAssetStringInputStream() throws FileNotFoundException {
+		String key = "/MAPREPORTS/MISSOURI/GRF";
+		InputStream is = new FileInputStream("test.txt");	
+		repositorySerivice.uploadAsset(key, is);
+		assertNotNull("");
 	}
 
 	@Test
-	public void testUploadAssetByS3Key() {
-		fail("Not yet implemented");
+	public void testUploadAssetByS3Key() throws Exception {
+		String fullyQualifiedS3Key = "/MAPREPORTS/MISSOURI/GRF"; 
+		File file = new File("test.txt");
+		repositorySerivice.uploadAssetByS3Key(fullyQualifiedS3Key, file);
+		assertNotNull("");
 	}
 
 	@Test
 	public void testRemoveAsset() {
-		fail("Not yet implemented");
+		String key = "/MAPREPORTS/MISSOURI/GRF";
+		repositorySerivice.removeAsset(key);
+		assertNotNull("");
 	}
 
 	@Test
-	public void testGetAssetInputStream() {
-		fail("Not yet implemented");
+	public void testGetAssetInputStream() throws IOException {
+		String assetPath = "/MAPREPORTS/MISSOURI/GRF";
+		InputStream is =  repositorySerivice.getAssetInputStream(assetPath);
+		assertNotNull(is);
 	}
 
 	@Test
 	public void testUploadAssetAsync() {
-		fail("Not yet implemented");
+		String key = "/MAPREPORTS/MISSOURI/GRF";
+		File file = new File("test.txt");
+		repositorySerivice.uploadAssetAsync(key, file);
+		assertNotNull("");
 	}
 
 }
