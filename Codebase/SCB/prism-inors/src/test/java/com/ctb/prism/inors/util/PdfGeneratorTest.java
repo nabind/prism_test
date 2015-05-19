@@ -1,0 +1,116 @@
+package com.ctb.prism.inors.util;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.test.InorsTestHelper;
+import com.ctb.prism.test.TestParams;
+import com.ctb.prism.test.TestUtil;
+import com.lowagie.text.DocumentException;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/test-context.xml" })
+public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
+	
+	@Autowired
+	PdfGenerator pdfGenerator;
+	
+	@Autowired
+	IPropertyLookup propertyLookup; 
+	
+	TestParams testParams;
+	
+	
+	@Before
+	public void setUp() throws Exception {
+		testParams = TestUtil.getTestParams();
+		TestUtil.byPassLogin(testParams);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void testGenerateQuerysheet() {
+		BulkDownloadTO bulkDownloadTO = InorsTestHelper.getBulkDownloadTO(testParams);
+		String docLoc = pdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
+		assertNotNull(docLoc);
+	}
+
+	@Test
+	public void testGenerateQuerysheetForCR() {
+		BulkDownloadTO bulkDownloadTO = InorsTestHelper.getBulkDownloadTO(testParams);
+		String docLoc = pdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
+		assertNotNull(docLoc);
+	}
+
+	@SuppressWarnings("static-access")
+	@Test
+	public void testSplitPDF() throws FileNotFoundException {
+		InputStream inputStream = new FileInputStream("test.pdf");
+        OutputStream outputStream = new FileOutputStream("test.pdf");
+        int fromPage = 1;
+        int toPage  = 2;
+        pdfGenerator.splitPDF(inputStream, outputStream, fromPage, toPage);
+		assertNotNull("");
+	}
+
+	@Test
+	public void testConcatPDFs() throws FileNotFoundException {
+		List<String> listOfPDFFiles = new ArrayList<String>();
+		listOfPDFFiles.add("test1.pdf");
+		listOfPDFFiles.add("test2.pdf");
+        OutputStream outputStream = new FileOutputStream("test.pdf");
+        boolean paginate = true;
+        pdfGenerator.concatPDFs(listOfPDFFiles, outputStream, paginate);
+        assertNotNull("");
+        
+	}
+
+	@Test
+	public void testZipit() throws Exception {
+		List<String> files = new ArrayList<String>();
+		files.add("test.pdf");
+		List<String> arcFiles = new ArrayList<String>();
+		files.add("test.pdf");
+		String zipName = "test.zip";
+		pdfGenerator.zipit(files, arcFiles, zipName);
+		assertNotNull("");
+	}
+
+	@Test
+	public void testRotatePdf() throws IOException, DocumentException {
+		String pdfFileSrc = "test.pdf";
+		pdfGenerator.rotatePdf(pdfFileSrc);
+		assertNotNull("");
+	}
+	
+	@Ignore
+	@Test
+	public void testMain() {
+		fail("Not yet implemented");
+	}
+
+}
