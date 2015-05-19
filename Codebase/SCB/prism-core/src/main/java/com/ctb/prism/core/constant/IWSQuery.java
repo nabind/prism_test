@@ -16,6 +16,14 @@ public interface IWSQuery {
 	
 	public static final String UPDATE_PARTITION = "UPDATE JOB_PARTITION_STATUS SET STATUS = ? WHERE STATUS = ? AND WKF_PARTITION_NAME = ?";
 	
+	public static final String GET_ROSTER = "SELECT rosterid FROM OAS_WS_ROSTER WHERE rosterid = ? AND ROWNUM = 1";
+	
+	public static final String CREATE_ROSTER = CustomStringUtil.appendString(
+			" insert into OAS_WS_ROSTER (rosterid, datetimestamp) values (?, SYSDATE) ") ;
+	
+	public static final String REMOVE_ROSTER = CustomStringUtil.appendString(
+			" delete from OAS_WS_ROSTER where rosterid = ? ") ;
+	
 	public static final String CREATE_PROCESS_STATUS = CustomStringUtil.appendString(
 		" insert into stg_process_status (process_id, source_system, hier_validation, bio_validation, demo_validation, ",
 		" content_validation, objective_validation, item_validation, wkf_partition_name, datetimestamp) ",

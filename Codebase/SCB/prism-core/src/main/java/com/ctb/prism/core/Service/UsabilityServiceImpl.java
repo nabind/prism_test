@@ -224,4 +224,12 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap) {
 		return usabilityBuisness.getClobXMLFile(paramMap);
 	}
+	
+	public boolean createRoster(StudentListTO studentListTO) throws Exception {
+		return usabilityBuisness.createRoster(studentListTO);
+	}
+	
+	public void removeRoster(StudentListTO studentListTO) throws Exception {
+		usabilityBuisness.removeRoster(studentListTO);
+	}
 }

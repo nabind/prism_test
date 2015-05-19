@@ -104,5 +104,9 @@ public interface IUsabilityBusiness {
 	 * @throws Exception
 	 */
 	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap);
+	
+	public boolean createRoster(StudentListTO studentListTO) throws Exception;
+	
+	public void removeRoster(StudentListTO studentListTO) throws Exception;
 
 }

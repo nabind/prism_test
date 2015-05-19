@@ -148,6 +148,41 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 			}
 		});
 	}
+	
+	/**
+	 * Insert rosterId to block any duplicate student parallel processing
+	 * @param rosterId
+	 * @throws Exception
+	 */
+	public synchronized String getRoster(final String rosterId)
+			throws Exception {
+		List<String> strLst  = getJdbcTemplatePrism().query(IQueryConstants.GET_ROSTER, new Object[]{ rosterId }, new RowMapper<String>() {
+			public String mapRow(ResultSet rs, int col) throws SQLException {
+				String outRoster = (rs.getString(1));
+				return outRoster;
+			}
+		});
+		if ( strLst.isEmpty() ) {
+			return null;
+		} else return strLst.get(0);
+	}
+	
+	public synchronized boolean createRoster(String rosterId)
+			throws Exception {
+		int count = getJdbcTemplatePrism().update(IQueryConstants.CREATE_ROSTER, rosterId);
+		if(count > 0) return true;
+		else return false;
+	}
+	
+	/**
+	 * Delete the roster when web service validation is completed
+	 * @param rosterId
+	 * @throws Exception
+	 */
+	public void removeRoster(String rosterId)
+			throws Exception {
+		getJdbcTemplatePrism().update(IQueryConstants.REMOVE_ROSTER, rosterId);
+	}
 
 	/**
 	 * This method should not be called more than once within a single session.

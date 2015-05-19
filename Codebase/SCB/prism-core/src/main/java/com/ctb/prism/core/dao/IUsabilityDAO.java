@@ -158,4 +158,10 @@ public interface IUsabilityDAO {
 	 * @throws Exception
 	 */
 	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap); 
+	
+	public String getRoster(final String rosterId) throws Exception;
+			
+	public boolean createRoster(String rosterId) throws Exception;
+	
+	public void removeRoster(String rosterId) throws Exception;
 }

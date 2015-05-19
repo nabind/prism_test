@@ -3,6 +3,7 @@
  */
 package com.ctb.prism.core.business;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
+import com.ctb.prism.webservice.transferobject.RosterDetailsTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -144,5 +146,28 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 	 */
 	public StudentDataExtractTO getClobXMLFile(Map<String, Object> paramMap) {
 		return usabilityDAO.getClobXMLFile(paramMap);
+	}
+	
+	public boolean createRoster(StudentListTO studentListTO) throws Exception {
+		boolean isSuccess = false;
+		List<RosterDetailsTO> rosterList = studentListTO.getRosterDetailsTO();
+		for(RosterDetailsTO roster : rosterList) {
+			String outRoster = usabilityDAO.getRoster(roster.getRosterId());
+			if(!(outRoster != null && outRoster.length() > 0)) {
+				isSuccess = usabilityDAO.createRoster(roster.getRosterId());
+			} else {
+				isSuccess = false;
+			}
+		}
+		return isSuccess;
+	}
+	
+	public void removeRoster(StudentListTO studentListTO) throws Exception {
+		List<RosterDetailsTO> rosterList = studentListTO.getRosterDetailsTO();
+		for(RosterDetailsTO roster : rosterList) {
+			try { 
+				usabilityDAO.removeRoster(roster.getRosterId());
+			} catch (Exception ex) {}
+		}
 	}
 }
