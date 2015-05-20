@@ -419,10 +419,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                     TO_CHAR(SSSD.DATE_TEST_TAKEN, ''MM/DD/YYYY'') DATE_SCHEDULED,
                     EED.state_code STATE_CODE,
                     SSSD.TEST_FORM FORM,
-                    SPS.DATETIMESTAMP DATETIMESTAMP,
+                    EED.CREATED_DATE_TIME DATETIMESTAMP,
                     NVL(EED.ER_EXCDID,0) ER_EXCDID,
                     (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST,
-                    TO_CHAR(SPS.DATETIMESTAMP, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
+                    TO_CHAR(EED.CREATED_DATE_TIME, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
       FROM STG_STD_BIO_DETAILS SSBD,STG_STD_SUBTEST_DETAILS SSSD,
       STG_HIER_DETAILS SHD,STG_PROCESS_STATUS SPS,
       ER_EXCEPTION_DATA EED 
@@ -436,13 +436,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(SPS.DATETIMESTAMP) >= TO_DATE(''' ||
+                        ' AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(''' ||
                         P_DATE_FROM || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_DATE_TO <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(SPS.DATETIMESTAMP) <= TO_DATE(''' ||
+                        ' AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(''' ||
                         P_DATE_TO || ''', ''MM/DD/YYYY'')';
     END IF;
   
