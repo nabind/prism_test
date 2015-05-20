@@ -33,8 +33,6 @@ import com.lowagie.text.DocumentException;
 @ContextConfiguration(locations = { "/test-context.xml" })
 public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 	
-	@Autowired
-	PdfGenerator pdfGenerator;
 	
 	@Autowired
 	IPropertyLookup propertyLookup; 
@@ -55,14 +53,14 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 	@Test
 	public void testGenerateQuerysheet() {
 		BulkDownloadTO bulkDownloadTO = InorsTestHelper.getBulkDownloadTO(testParams);
-		String docLoc = pdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
+		String docLoc = PdfGenerator.generateQuerysheet(bulkDownloadTO, propertyLookup);
 		assertNotNull(docLoc);
 	}
 
 	@Test
 	public void testGenerateQuerysheetForCR() {
 		BulkDownloadTO bulkDownloadTO = InorsTestHelper.getBulkDownloadTO(testParams);
-		String docLoc = pdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
+		String docLoc = PdfGenerator.generateQuerysheetForCR(bulkDownloadTO, propertyLookup);
 		assertNotNull(docLoc);
 	}
 
@@ -73,7 +71,7 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
         OutputStream outputStream = new FileOutputStream("test.pdf");
         int fromPage = 1;
         int toPage  = 2;
-        pdfGenerator.splitPDF(inputStream, outputStream, fromPage, toPage);
+        PdfGenerator.splitPDF(inputStream, outputStream, fromPage, toPage);
 		assertNotNull("");
 	}
 
@@ -84,7 +82,7 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 		listOfPDFFiles.add("test2.pdf");
         OutputStream outputStream = new FileOutputStream("test.pdf");
         boolean paginate = true;
-        pdfGenerator.concatPDFs(listOfPDFFiles, outputStream, paginate);
+        PdfGenerator.concatPDFs(listOfPDFFiles, outputStream, paginate);
         assertNotNull("");
         
 	}
@@ -96,14 +94,14 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 		List<String> arcFiles = new ArrayList<String>();
 		files.add("test.pdf");
 		String zipName = "test.zip";
-		pdfGenerator.zipit(files, arcFiles, zipName);
+		PdfGenerator.zipit(files, arcFiles, zipName);
 		assertNotNull("");
 	}
 
 	@Test
 	public void testRotatePdf() throws IOException, DocumentException {
 		String pdfFileSrc = "test.pdf";
-		pdfGenerator.rotatePdf(pdfFileSrc);
+		PdfGenerator.rotatePdf(pdfFileSrc);
 		assertNotNull("");
 	}
 	

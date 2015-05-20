@@ -338,7 +338,7 @@ public class InorsTestHelper {
 		return to;
 	}
 
-	public static Map<String, String> helpTestGetDownloadData(TestParams testParams) {
+/*	public static Map<String, String> helpTestGetDownloadData(TestParams testParams) {
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("type", "");
 		paramMap.put("customerId", "0");
@@ -347,7 +347,7 @@ public class InorsTestHelper {
 		paramMap.put("parentOrgNodeId", "0");
 		paramMap.put("orgNodeId", "0");
 		return paramMap;
-	}
+	}*/
 
 	public static Map<String, String> helpTestPopulateDistrictGrt(TestParams testParams) {
 		Map<String, String> paramMap = new HashMap<String, String>();
@@ -381,4 +381,24 @@ public class InorsTestHelper {
 		to.setContractName(testParams.getContractName());
 		return to;
 	}
+	
+	public static Map<String, String> helpTestGetDownloadData(TestParams testParams){
+		Map<String, String> paramMap = new HashMap<String,String>();
+		paramMap.put("type", "GRT");
+		paramMap.put("customerId", "1057");
+		paramMap.put("productId", "2001");
+		paramMap.put("testProgram", "5074");
+		paramMap.put("parentOrgNodeId", "10437");
+		paramMap.put("orgNodeId", "10771");
+		return paramMap;
+	}
+	
+	public static Map<String, String>  helpPopulateGrt (TestParams testParams){
+		Map<String, String> paramMap = new HashMap<String,String>();
+		paramMap.put("testProgram", "5074");
+		paramMap.put("districtId", "10437");
+		return paramMap;
+	}
 }
+
+
