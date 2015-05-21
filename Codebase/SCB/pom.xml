@@ -1035,6 +1035,8 @@
 							<exclude>**/com/ctb/prism/web/controller/ManageContentController*</exclude>
 							<exclude>**/com/ctb/prism/web/controller/ManageMessageController*</exclude>
 							<exclude>**/com/ctb/prism/web/controller/ER*</exclude>
+							<exclude>com/ctb/prism/core/Service/RepositoryServiceImpl*</exclude>
+							<exclude>com/ctb/prism/core/Service/SimpleDBServiceImpl*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
