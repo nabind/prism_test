@@ -112,7 +112,8 @@
 	        },         
 	        "sAjaxSource": "searchTascErPaging.htm",
 	        "aoColumnDefs": [ 
-							  { 'bSortable': false, 'aTargets': [ 0 ]}
+							  { 'bSortable': false, 'aTargets': [ 0 ]},
+							  { 'bSortable': false, 'aTargets': [ 13 ]}
 							],
 	        "aoColumns": [
 				{ 
