@@ -50,6 +50,11 @@
 	.legend2 {
 		margin-left: -34px !important;
 	}
+	@-moz-document url-prefix() { 
+	  .legend3 {
+	     margin-left: -12px !important;
+	  }
+	}
 	
 	.search-criteria {
 		background-color: rgb(174, 208, 187);
@@ -448,7 +453,7 @@
 					<b>Overall Status:</b><br/>
 					<span class="completed legend" title="Completed"></span> = Completed/Success <br/>
 					<span class="progress legend legend2" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
-					<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error
+					<span class="error legend legend2 legend3" title="Completed" style="margin-left: -34px;"></span> = Error
 				</p>
 				
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>
