@@ -1733,6 +1733,23 @@ public class InorsController {
 		}
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for USMO GROUP DOWNLOAD FILES--------------- ");
 	}
+	
+	/**
+	 * @author Joykumar Pal
+	 * Scheduler every night @ 12 O Clock to add a message to SQS
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "${cron.expression}")
+	public void addEmptyMessageJms() {
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 12 O Clock to add a message to SQS  --------------- ");
+		try {
+			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
+			messageProducer.sendJobForProcessing("0", "Empty SQS Message");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 12 O Clock to add a message to SQS--------------- ");
+	}
 
 	/**
 	 * @param contractName
