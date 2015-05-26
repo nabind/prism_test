@@ -21,10 +21,10 @@ public class InorsTestHelper {
 	public static BulkDownloadTO getBulkDownloadTO(TestParams testParams) {
 		BulkDownloadTO to = new BulkDownloadTO();
 		to.setTestAdministration("");
-		to.setTestProgram("");
+		to.setTestProgram("5065");
 		to.setCorp("");
 		to.setSchool("");
-		to.setGrade("");
+		to.setGrade("10010");
 		to.setOrgClass("");
 		to.setFileName("");
 		to.setDateRequested("");
@@ -40,9 +40,9 @@ public class InorsTestHelper {
 		to.setEmail("");
 		to.setGroupFile("");
 		to.setCollationHierarchy("");
-		to.setSelectedNodes("0,1");
+		to.setSelectedNodes("9803|9804|9805");
 		to.setIstepPlus(false);
-		to.setCustomerId("");
+		to.setCustomerId("1048");
 		to.setJobId(0L);
 		to.setReportUrl("");
 		to.setStatus("");
