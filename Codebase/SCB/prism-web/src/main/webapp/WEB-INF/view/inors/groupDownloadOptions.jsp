@@ -1,7 +1,4 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<style>
-	div.scrollingHotSpotLeft, div.scrollingHotSpotRight {display: none}
-</style>
 <fmt:message var="combinedPdf" key="group.downloads.combined" />
 <fmt:message var="separatePdf" key="group.downloads.separate" />
 		<div id="sorting-advanced_wrapper" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
