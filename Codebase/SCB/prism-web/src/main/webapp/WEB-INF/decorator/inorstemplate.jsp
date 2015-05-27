@@ -38,9 +38,9 @@
 		<script>
 		// As we don't need horizontal scrolling for custom jsp 
 		$(document).ready(function() {
-			// commenting as this is removing scrolling for entire page
-			//$(".scrollingHotSpotRight", window.parent.document).hide();
-			//$(".scrollingHotSpotLeft", window.parent.document).hide();
+			// commenting/removing as this is removing scrolling for entire page
+			/*$(".scrollingHotSpotRight", window.parent.document).hide();
+			$(".scrollingHotSpotLeft", window.parent.document).hide(); */
 		});
 		// ========================== CODE FOR MODAL PROGRESSBAR ==========================
 	    function blockUI(obj) {
