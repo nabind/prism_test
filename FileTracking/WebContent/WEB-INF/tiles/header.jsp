@@ -58,6 +58,9 @@ function refreshList(adminid, url) {
 			<span><a id="toproot1" class="off" href="tascSearchErNew.htm">&nbsp; Search TASC Processes ER New&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
+			<span><a id="toproot1" class="off" href="combined.htm">&nbsp; Check single student&nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
 			<% } else if("MapAdmin".equals(request.getSession().getAttribute("userName"))) { %>
 			<span><a id="toproot2" class="off" href="mapSearch.htm">&nbsp;Search MAP Process&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">

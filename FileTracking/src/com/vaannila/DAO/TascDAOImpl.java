@@ -1274,4 +1274,84 @@ public class TascDAOImpl {
 		return totalRecordCount;
 	}
 	
+	
+	public List<StudentDetailsTO> getCombinedProcess(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getProcess()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StudentDetailsTO processTO = null;
+		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
+		StringBuffer queryBuff = new StringBuffer();
+				
+		queryBuff.append("select info.customer_code state, content_area_code cnt_code, ss.subtest_name, f.formid, form, content_test_code test_code, ");
+		queryBuff.append("decode(content_test_type,0,'OL','PP') type, pp_oas_linkedid, s.barcode,f.status_code, f.ncr,  ");
+		queryBuff.append("bio.student_bio_id, bio.test_element_id, d.lastname, f.datetimestamp,f.hse ");
+		queryBuff.append("from er_test_schedule s, er_student_demo d, student_bio_dim bio, subtest_score_fact f, customer_info info, subtest_dim ss, form_dim form ");
+		queryBuff.append("where d.er_studid = s.er_studid ");
+		queryBuff.append("and info.customerid = bio.customerid ");
+		queryBuff.append("and form.formid = f.formid ");
+		queryBuff.append("and form = form.form_code ");
+		queryBuff.append("and ss.subtest_code = s.content_area_code ");
+		queryBuff.append("and ss.subtestid = f.subtestid ");
+		queryBuff.append("and info.customer_code = state_code ");
+		queryBuff.append("and bio.ext_student_id = d.uuid ");
+		queryBuff.append("and f.student_bio_id = bio.student_bio_id ");
+		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+			queryBuff.append(" and bio.test_element_id = ? ");
+		}
+		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+			queryBuff.append(" and uuid = ? ");
+		}
+		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+			queryBuff.append(" and state_code = ? ");
+		}
+		queryBuff.append("order by 2, 12 ");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+				pstmt.setString(++count, searchProcess.getTestElementId() );
+			}
+			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+				pstmt.setString(++count, searchProcess.getUuid() );
+			}
+			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setStateCode(rs.getString("state"));
+				processTO.setSubtestName(rs.getString(3));
+				processTO.setForm(rs.getString(5));
+				processTO.setContentTestCode(rs.getString(6));
+				processTO.setSourceSystem(rs.getString(7));
+				processTO.setPpOaslinkedId(rs.getString(8));
+				processTO.setBarcode(rs.getString(9));
+				processTO.setStatusCode(rs.getString(10));
+				processTO.setNcr(rs.getString(11));
+				processTO.setStudentBioId(rs.getString(12));
+				processTO.setTestElementId(rs.getString(13));
+				processTO.setStudentName(rs.getString(14));
+				processTO.setUpdatedDate(rs.getString(15));
+				processTO.setHse(rs.getString(16));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		System.out.println("Exit: getProcess()");
+		return processList;
+	}
+	
 }

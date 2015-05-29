@@ -433,6 +433,10 @@ public class UserController extends MultiActionController {
 						pdfFileLoc = orgProcess.getLetterPDFLoc();
 						message = "Invitation Letter";
 					} 
+					if(pdfFileLoc != null && pdfFileLoc.trim().length() > 0) {
+						Properties prop = PropertyFile.loadProperties("acsi.properties");
+						pdfFileLoc = pdfFileLoc.replaceAll(prop.getProperty("pdfGenPath"), prop.getProperty("pdfGenPathNew"));
+					}
 					if(pdfFileLoc == null ||(pdfFileLoc != null && pdfFileLoc.trim().length() == 0)) {
 						pdfFileLoc = orgProcess.getProcessLog();
 						if(pdfFileLoc != null && pdfFileLoc.indexOf("Created PDF with name : ") != -1) {

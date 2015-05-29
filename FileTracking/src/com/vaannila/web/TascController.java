@@ -643,4 +643,32 @@ public class TascController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping("/process/combined.htm")
+	public ModelAndView searchCombined(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchTascEr()");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			SearchProcess process = new SearchProcess();
+			process.setUuid(request.getParameter("uuid"));
+			process.setTestElementId(request.getParameter("testElementId"));
+			process.setStateCode(request.getParameter("stateCode"));
+			request.getSession().setAttribute("combinedRequestTO", process);
+			
+			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getTestElementId() != null && process.getTestElementId().length() > 0) ) {
+				TascDAOImpl stageDao = new TascDAOImpl();
+				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
+				request.setAttribute("combinedList", studentDetailsTOList);
+				convertProcessToJson(studentDetailsTOList);
+				return new ModelAndView("combined", "message", "");
+			} else {
+				return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ModelAndView("combined", "message", jsonStr);
+	}
 }

@@ -70,7 +70,49 @@ public class StudentDetailsTO implements Serializable {
 	private String errorCode;
 	private String log;
 	private String processedDate = "";
+	private String ppOaslinkedId = "";
+	private String statusCode = "";
+	private String ncr = "";
+	private String hse = "";
+	private String StudentBioId = "";
+	private String updatedDate = "";
 	
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	public String getStudentBioId() {
+		return StudentBioId;
+	}
+	public void setStudentBioId(String studentBioId) {
+		StudentBioId = studentBioId;
+	}
+	public String getStatusCode() {
+		return statusCode==null ? "" : statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getNcr() {
+		return ncr==null? "" : ncr;
+	}
+	public void setNcr(String ncr) {
+		this.ncr = ncr;
+	}
+	public String getHse() {
+		return hse==null? "" : hse;
+	}
+	public void setHse(String hse) {
+		this.hse = hse;
+	}
+	public String getPpOaslinkedId() {
+		return ppOaslinkedId==null? "" : ppOaslinkedId;
+	}
+	public void setPpOaslinkedId(String ppOaslinkedId) {
+		this.ppOaslinkedId = ppOaslinkedId;
+	}
 	public String getTestDate() {
 		return testDate;
 	}
@@ -186,7 +228,7 @@ public class StudentDetailsTO implements Serializable {
 		this.erSsHistId = erSsHistId;
 	}
 	public String getBarcode() {
-		return barcode;
+		return barcode==null? "" : barcode;
 	}
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
