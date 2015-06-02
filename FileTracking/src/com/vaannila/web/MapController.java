@@ -51,6 +51,12 @@ public class MapController {
 			System.out.println("got processes successfully");
 			request.getSession().setAttribute("mapProcess", processes);
 			convertProcessToJson(processes);
+			
+			//dummy search param
+			SearchProcess process = new SearchProcess();
+			process.setCreatedDate("today");
+			process.setUpdatedDate("today");
+			request.getSession().setAttribute("mapRequestTO", process);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
