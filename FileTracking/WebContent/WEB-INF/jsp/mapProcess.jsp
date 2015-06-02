@@ -379,7 +379,12 @@
 						<%
 							String sourceFileName = process.getFileName();
 							if(sourceFileName != null && sourceFileName.length() > 16) {
-								sourceFileName = sourceFileName.substring(0, 16) + " " + sourceFileName.substring(16, sourceFileName.length());
+								String remainingName = sourceFileName.substring(16, sourceFileName.length());
+								if(remainingName.length() > 16) {
+									sourceFileName = sourceFileName.substring(0, 16) + " " + remainingName.substring(0, 16) + " " + remainingName.substring(16, remainingName.length());
+								} else {
+									sourceFileName = sourceFileName.substring(0, 16) + " " + remainingName;
+								}
 							} else {
 								sourceFileName = "NA";
 							}
