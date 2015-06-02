@@ -365,12 +365,16 @@ public class UserController extends MultiActionController {
 					break;
 				}
 			}
-			System.out.println("pdfFileLoc >>>"+pdfFileLoc+"<<<");
+			
 			if(pdfFileLoc != null && pdfFileLoc.length() > 0) {
 				String pdfFileName = pdfFileLoc.substring(pdfFileLoc.lastIndexOf("/"), pdfFileLoc.length());
 				//schoolEmail = "amit_dhara@ctb.com"; // TODO remove
 				
 				Properties prop = PropertyFile.loadProperties("acsi.properties");
+				pdfFileLoc = pdfFileLoc.replaceAll(prop.getProperty("pdfGenPath"), prop.getProperty("pdfGenPathNew"));
+				letterFileLoc = letterFileLoc.replaceAll(prop.getProperty("pdfGenPath"), prop.getProperty("pdfGenPathNew"));
+				System.out.println("email pdfFileLoc >>>"+pdfFileLoc+"<<<");
+				System.out.println("email letterFileLoc >>>"+letterFileLoc+"<<<");
 				String mailSubject = prop.getProperty("mailSubject");
 				String mailBody = prop.getProperty("messageBody")+prop.getProperty("messageFooter");
 				//_SendMailSSL.sendMail(prop, schoolEmail, pdfFileLoc, pdfFileName, mailSubject, mailBody);

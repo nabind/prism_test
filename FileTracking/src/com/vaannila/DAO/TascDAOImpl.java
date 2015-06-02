@@ -1284,29 +1284,30 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 				
-		queryBuff.append("select info.customer_code state, content_area_code cnt_code, ss.subtest_name, f.formid, form, content_test_code test_code, ");
-		queryBuff.append("decode(content_test_type,0,'OL','PP') type, pp_oas_linkedid, s.barcode,f.status_code, f.ncr,  ");
-		queryBuff.append("bio.student_bio_id, bio.test_element_id, d.lastname, f.datetimestamp,f.hse ");
-		queryBuff.append("from er_test_schedule s, er_student_demo d, student_bio_dim bio, subtest_score_fact f, customer_info info, subtest_dim ss, form_dim form ");
-		queryBuff.append("where d.er_studid = s.er_studid ");
-		queryBuff.append("and info.customerid = bio.customerid ");
-		queryBuff.append("and form.formid = f.formid ");
-		queryBuff.append("and form = form.form_code ");
-		queryBuff.append("and ss.subtest_code = s.content_area_code ");
-		queryBuff.append("and ss.subtestid = f.subtestid ");
-		queryBuff.append("and info.customer_code = state_code ");
-		queryBuff.append("and bio.ext_student_id = d.uuid ");
-		queryBuff.append("and f.student_bio_id = bio.student_bio_id ");
+		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ncr, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, UPPER(TRIM(s.last_name)) AS last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ncr from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'OL') s, (select s.state_code, s.uuid, t.barcode, t.form, UPPER(TRIM(S.LASTNAME)) AS LAST_NAME, TO_CHAR(T.DATE_SCHEDULED, 'DD-MON-YYYY') AS DATE_SCHEDULED, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.form_code = e.form and s.subtest_code = e.content_area_code AND S.LAST_NAME = E.LAST_NAME ");
 		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
-			queryBuff.append(" and bio.test_element_id = ? ");
+			queryBuff.append(" and s.test_element_id = ? ");
 		}
 		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
-			queryBuff.append(" and uuid = ? ");
+			queryBuff.append(" and s.uuid like ? ");
 		}
 		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
-			queryBuff.append(" and state_code = ? ");
+			queryBuff.append(" and s.state_code = ? ");
 		}
-		queryBuff.append("order by 2, 12 ");
+		
+		queryBuff.append("union ");
+		
+		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ncr, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, s.last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ncr from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'PP') s, (select s.state_code, s.uuid, t.barcode, t.form, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.barcode = e.barcode and s.form_code = e.form and s.subtest_code = e.content_area_code ");
+		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+			queryBuff.append(" and s.test_element_id = ? ");
+		}
+		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+			queryBuff.append(" and s.uuid like ? ");
+		}
+		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+			queryBuff.append(" and s.state_code = ? ");
+		}
+		queryBuff.append("order by 1, 2 ");
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
@@ -1318,7 +1319,16 @@ public class TascDAOImpl {
 				pstmt.setString(++count, searchProcess.getTestElementId() );
 			}
 			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
-				pstmt.setString(++count, searchProcess.getUuid() );
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%" );
+			}
+			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+				pstmt.setString(++count, searchProcess.getTestElementId() );
+			}
+			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%" );
 			}
 			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 				pstmt.setString(++count, searchProcess.getStateCode() );
@@ -1326,20 +1336,21 @@ public class TascDAOImpl {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new StudentDetailsTO();
-				processTO.setStateCode(rs.getString("state"));
+				processTO.setStateCode(rs.getString(1));
 				processTO.setSubtestName(rs.getString(3));
-				processTO.setForm(rs.getString(5));
-				processTO.setContentTestCode(rs.getString(6));
-				processTO.setSourceSystem(rs.getString(7));
-				processTO.setPpOaslinkedId(rs.getString(8));
-				processTO.setBarcode(rs.getString(9));
-				processTO.setStatusCode(rs.getString(10));
-				processTO.setNcr(rs.getString(11));
-				processTO.setStudentBioId(rs.getString(12));
-				processTO.setTestElementId(rs.getString(13));
-				processTO.setStudentName(rs.getString(14));
-				processTO.setUpdatedDate(rs.getString(15));
-				processTO.setHse(rs.getString(16));
+				processTO.setForm(rs.getString(4));
+				processTO.setContentTestCode(rs.getString(5));
+				processTO.setSourceSystem(rs.getString(6));
+				processTO.setPpOaslinkedId(rs.getString(7));
+				processTO.setBarcode(rs.getString(8));
+				processTO.setStatusCode(rs.getString(9));
+				processTO.setNcr(rs.getString(10));
+				processTO.setStudentBioId(rs.getString(11));
+				processTO.setTestElementId(rs.getString(12));
+				processTO.setStudentName(rs.getString(13));
+				processTO.setUpdatedDate(rs.getString(14));
+				processTO.setHse(rs.getString(15));
+				processTO.setUuid(rs.getString(16));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

@@ -109,6 +109,8 @@
 						<th>Score Date</th>
 						<th>Bio ID</th>
 						<th>TestElem ID</th>
+						<th>Name</th>
+						<th>UUID</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -143,6 +145,8 @@
 						<td><%=process.getUpdatedDate() %></td>
 						<td><%=process.getStudentBioId() %></td>
 						<td><%=process.getTestElementId() %></td>
+						<td><%=process.getStudentName() %></td>
+						<td><%=process.getUuid() %></td>
 					</tr>
 				
 				
