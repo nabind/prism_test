@@ -137,7 +137,19 @@
 						<td><%=process.getForm() %></td>
 						<td><%=process.getContentTestCode() %></td>
 						<td><%=process.getSourceSystem() %></td>
-						<td><%=process.getPpOaslinkedId() %></td>
+						<td>
+							<%
+							if(process.getPpOaslinkedId() != null && process.getPpOaslinkedId().equals(process.getTestElementId())) {
+							%>
+								<%=process.getPpOaslinkedId() %>
+							<%
+							} else if("".equals(process.getPpOaslinkedId())) {
+							%>
+								<%=process.getPpOaslinkedId() %>
+							<%} else {%>
+								NA
+							<%} %>
+						</td>
 						<td><%=process.getBarcode() %></td>
 						<td><%=process.getStatusCode() %></td>
 						<td><%=process.getNcr() %></td>
