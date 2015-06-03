@@ -1,6 +1,7 @@
 @\Operation_Schema\Procedure\PRC_CONFIGURATION.prc;
 -- Run PRC_CONFIGURATION(3) manually
 @\Operation_Schema\Packages\master_package.sql;
+@\Operation_Schema\MISSOURI\TRANSACTIONAL_MISSOURI\MO_SPECIFIC_DB_OBJECTS\Constraint\master_constraint.sql;
 ---COMMENTED BY PARTHA
 --@\Operation_Schema\MISSOURI_Specific\Packages\master_missouri_specific_packages.sql; 
 --@\Operation_Schema\MISSOURI_Specific\Types\master_missouri_specific_types.sql;
