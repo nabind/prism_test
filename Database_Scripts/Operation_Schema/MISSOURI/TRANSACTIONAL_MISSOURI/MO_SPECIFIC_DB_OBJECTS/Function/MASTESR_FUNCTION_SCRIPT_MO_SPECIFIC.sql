@@ -8,3 +8,4 @@
 @\SF_GET_GRADE.fnc;
 @\SF_GET_SUBTEST.fnc;
 @\SF_GEN_INVITE_CODE.fnc;
+@\SF_MO_GENERATE_LABEL.fnc;
