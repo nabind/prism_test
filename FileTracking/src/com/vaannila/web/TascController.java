@@ -660,6 +660,16 @@ public class TascController {
 				TascDAOImpl stageDao = new TascDAOImpl();
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
+				
+				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
+				request.setAttribute("erBucket", erBucket);
+				
+				List<StudentDetailsTO> erError = stageDao.getERError(process);
+				request.setAttribute("erError", erError);
+				
+				List<StudentDetailsTO> oasPpError = stageDao.getOasPPError(process);
+				request.setAttribute("oasPpError", oasPpError);
+				
 				convertProcessToJson(studentDetailsTOList);
 				return new ModelAndView("combined", "message", "");
 			} else {

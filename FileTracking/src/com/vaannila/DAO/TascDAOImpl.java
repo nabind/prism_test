@@ -1365,4 +1365,184 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
+	public List<StudentDetailsTO> getERBucket(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getERBucket()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StudentDetailsTO processTO = null;
+		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
+		StringBuffer queryBuff = new StringBuffer();
+				
+		queryBuff.append("select schedule_id, content_area_code, content_test_code, decode(content_test_type,0,'OL','PP') type, pp_oas_linkedid, barcode, form,  testcentername, s.created_date_time, s.updated_date_time, uuid, state_code, lastname || ', ' || firstname || ' ' || middlename name, s.date_scheduled from er_test_schedule s, er_student_demo d  where d.er_studid = s.er_studid ");
+		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+			queryBuff.append(" and uuid like ? ");
+		}
+		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+			queryBuff.append(" and state_code = ? ");
+		}
+		
+		queryBuff.append("order by 2 ");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%" );
+			}
+			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setScheduleId(rs.getString(1));
+				processTO.setContantArea(rs.getString(2));
+				processTO.setContentTestCode(rs.getString(3));
+				processTO.setSourceSystem(rs.getString(4));
+				processTO.setPpOaslinkedId(rs.getString(5));
+				processTO.setBarcode(rs.getString(6));
+				processTO.setForm(rs.getString(7));
+				processTO.setTestCenterName(rs.getString(8));
+				processTO.setCreatedDate(rs.getString(9));
+				processTO.setUpdatedDate(rs.getString(10));
+				processTO.setUuid(rs.getString(11));
+				processTO.setStateCode(rs.getString(12));
+				processTO.setStudentName(rs.getString(13));
+				processTO.setDateScheduled(rs.getString(14));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		System.out.println("Exit: getERBucket()");
+		return processList;
+	}
+	
+	public List<StudentDetailsTO> getERError(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getERError()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StudentDetailsTO processTO = null;
+		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
+		StringBuffer queryBuff = new StringBuffer();
+				
+		queryBuff.append("select exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP') type, trunc(datetimestamp) from er_exception_data exc, er_student_sched_history hist  where hist.er_ss_histid = exc.er_ss_histid  and source_system = 'ERESOURCE'  ");
+		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+			queryBuff.append(" and exc.er_uuid like ? ");
+		}
+		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+			queryBuff.append(" and exc.state_code = ? ");
+		}
+		
+		queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP'), trunc(datetimestamp) ");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%" );
+			}
+			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setUuid(rs.getString(1));
+				processTO.setContantArea(rs.getString(2));
+				processTO.setStateCode(rs.getString(3));
+				processTO.setForm(rs.getString(4));
+				processTO.setStudentName(rs.getString(5));
+				processTO.setBarcode(rs.getString(6));
+				processTO.setTestDate(rs.getString(7));
+				processTO.setErrorLog(rs.getString(8));
+				processTO.setContentTestCode(rs.getString(9));
+				processTO.setSourceSystem(rs.getString(10));
+				processTO.setCreatedDate(rs.getString(11));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		System.out.println("Exit: getERError()");
+		return processList;
+	}
+	
+	public List<StudentDetailsTO> getOasPPError(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getOasPPError()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StudentDetailsTO processTO = null;
+		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
+		StringBuffer queryBuff = new StringBuffer();
+				
+		queryBuff.append("select source_system, er_uuid, test_element_id, state_code, last_name, form, barcode, test_date, description, created_date_time,updated_date_time, content_code from er_exception_data exc where source_system in ( 'PP', 'OAS' ) and exc.exception_status not in ('IN') ");
+		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+			queryBuff.append(" and er_uuid like ? ");
+		}
+		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+			queryBuff.append(" and state_code = ? ");
+		}
+		
+		String query = queryBuff.toString();
+		System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
+				pstmt.setString(++count, "%"+searchProcess.getUuid()+"%" );
+			}
+			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
+				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setSourceSystem(rs.getString(1));
+				processTO.setUuid(rs.getString(2));
+				processTO.setTestElementId(rs.getString(3));
+				processTO.setStateCode(rs.getString(4));
+				processTO.setStudentName(rs.getString(5));
+				processTO.setForm(rs.getString(6));
+				processTO.setBarcode(rs.getString(7));
+				processTO.setTestDate(rs.getString(8));
+				processTO.setErrorLog(rs.getString(9));
+				processTO.setCreatedDate(rs.getString(10));
+				processTO.setUpdatedDate(rs.getString(11));
+				processTO.setContantArea(rs.getString(12));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		System.out.println("Exit: getOasPPError()");
+		return processList;
+	}
+	
 }

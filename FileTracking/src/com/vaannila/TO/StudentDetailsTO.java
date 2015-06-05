@@ -76,9 +76,16 @@ public class StudentDetailsTO implements Serializable {
 	private String hse = "";
 	private String StudentBioId = "";
 	private String updatedDate = "";
+	private String createdDate;
 	
+	public String getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
 	public String getUpdatedDate() {
-		return updatedDate;
+		return updatedDate==null?"":updatedDate;
 	}
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
@@ -114,7 +121,7 @@ public class StudentDetailsTO implements Serializable {
 		this.ppOaslinkedId = ppOaslinkedId;
 	}
 	public String getTestDate() {
-		return testDate;
+		return testDate==null? "" : testDate;
 	}
 	public void setTestDate(String testDate) {
 		this.testDate = testDate;
@@ -198,7 +205,7 @@ public class StudentDetailsTO implements Serializable {
 		this.testElementId = testElementId;
 	}
 	public String getStudentName() {
-		return studentName;
+		return studentName==null? "" : studentName;
 	}
 	public void setStudentName(String studentName) {
 		this.studentName = studentName;

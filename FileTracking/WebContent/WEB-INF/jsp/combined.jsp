@@ -44,12 +44,41 @@
 			oTable = $('#process').dataTable({
 				"bJQueryUI": true,
 				"sPaginationType": "full_numbers",
-				"aaSorting": [[ 2, "desc" ]],
+				"aaSorting": [[ 2, "asc" ]],
+				"aoColumnDefs": [ 
+								  { "bVisible": false, "aTargets": [ 0 ] }
+								]
+			});
+			
+			oTable1 = $('#erbucket').dataTable({
+				"bJQueryUI": true,
+				"sPaginationType": "full_numbers",
+				"aaSorting": [[ 2, "asc" ]],
+				"aoColumnDefs": [ 
+								  { "bVisible": false, "aTargets": [ 0 ] }
+								]
+			});
+			
+			oTable2 = $('#ererror').dataTable({
+				"bJQueryUI": true,
+				"sPaginationType": "full_numbers",
+				"aaSorting": [[ 1, "asc" ]],
+				"aoColumnDefs": [ 
+								  { "bVisible": false, "aTargets": [ 0 ] }
+								]
+			});
+			
+			oTable3 = $('#oaspperror').dataTable({
+				"bJQueryUI": true,
+				"sPaginationType": "full_numbers",
+				"aaSorting": [[ 3, "asc" ]],
 				"aoColumnDefs": [ 
 								  { "bVisible": false, "aTargets": [ 0 ] }
 								]
 			});
 	    });
+		
+		
 		
 	</script>
 	
@@ -91,6 +120,7 @@
 		<div id="articlecontent">
 			<div id="accordion" style="margin-top:25px">
 				<!-- panel -->
+				<h4>ER Data Compared to Operational (PRISM report data)</h4>
 				<table id="process" width="100%">
 				<thead>
 					<tr>
@@ -168,6 +198,159 @@
 				</tbody>
 				</table>
 				<br><br>
+				
+				<h4> ER Bucket: </h4>
+				<table id="erbucket" width="100%">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Lock?</th>
+						<th>State</th>
+						<th>UUID</th>
+						<th>Name</th>
+						<th>Schedule Id</th>
+						<th>Subtest</th>
+						<th>Form</th>
+						<th>Test Code</th>
+						<th>Date test Taken</th>
+						<th>Mode</th>
+						<th>Lock Id</th>
+						<th>Barcode</th>
+						<th>Created Date</th>
+						<th>Updated Date</th>
+					</tr>
+					</thead>
+					<tbody>
+				<% 
+				java.util.List<StudentDetailsTO> erBucket = (ArrayList) request.getAttribute("erBucket");
+				if(erBucket != null) {
+				for(StudentDetailsTO bucket : erBucket) {
+				%>
+					<tr>
+						<td>&nbsp;</td>
+						
+						<td style="padding-top: 12px;" nowrap>
+							<%if(bucket.getPpOaslinkedId() != null && bucket.getPpOaslinkedId().length() > 0) { %>
+								<span class="locked" title="Completed"></span> 
+							<%} else {%>
+								<span class="unlocked" title="Error"></span> 
+							<%} %>
+						</td>
+						
+						<td><%=bucket.getStateCode() %></td>
+						<td><%=bucket.getUuid() %></td>
+						<td><%=bucket.getStudentName() %></td>
+						<td><%=bucket.getScheduleId() %></td>
+						<td><%=bucket.getContantArea() %></td>
+						<td><%=bucket.getForm() %></td>
+						<td><%=bucket.getContentTestCode() %></td>
+						<td><%=bucket.getDateScheduled() %></td>
+						<td><%=bucket.getSourceSystem() %></td>
+						<td><%=bucket.getPpOaslinkedId() %></td>
+						<td><%=bucket.getBarcode() %></td>
+						<td><%=bucket.getCreatedDate() %></td>
+						<td><%=bucket.getUpdatedDate() %></td>
+					</tr>
+				
+				
+				<%}
+				}
+				%>
+				</tbody>
+				</table>
+				
+				<br/><br/>
+				
+				<h4> Latest ER Error: </h4>
+				<table id="ererror" width="100%">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Subtest</th>
+						<th>Form</th>
+						<th>Test Code</th>
+						<th>Mode</th>
+						<th>Barcode</th>
+						<th>Test Date</th>
+						<th>Description</th>
+						<th>Date Received</th>
+					</tr>
+					</thead>
+					<tbody>
+				<% 
+				java.util.List<StudentDetailsTO> erError = (ArrayList) request.getAttribute("erError");
+				if(erError != null) {
+				for(StudentDetailsTO error : erError) {
+				%>
+					<tr>
+						<td>&nbsp;</td>
+						
+						<td><%=error.getContantArea() %></td>
+						<td><%=error.getForm() %></td>
+						<td><%=error.getContentTestCode() %></td>
+						<td><%=error.getSourceSystem() %></td>
+						<td><%=error.getBarcode() %></td>
+						<td>
+							<% 	
+								String testDate = "";
+								if(error.getTestDate() != null && error.getTestDate().length() >= 8 ) { 
+									testDate = error.getTestDate().substring(0, 4) + "-" + error.getTestDate().substring(4, 6) + "-" + error.getTestDate().substring(6, 8);
+								}
+							%>
+							<%=testDate %></td>
+						<td><%=error.getErrorLog() %></td>
+						<td><%=error.getCreatedDate() %></td>
+					</tr>
+				
+				<%}
+				}
+				%>
+				</tbody>
+				</table>
+				
+				<br/><br/>
+				
+				<h4> Latest OAS/PP Error: </h4>
+				<table id="oaspperror" width="100%">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Source</th>
+						<th>L Name</th>
+						<th>Subtest</th>
+						<th>Form</th>
+						<th>Barcode</th>
+						<th>Test Date</th>
+						<th>Description</th>
+						<th>Date Received</th>
+					</tr>
+					</thead>
+					<tbody>
+				<% 
+				java.util.List<StudentDetailsTO> oasPpError = (ArrayList) request.getAttribute("oasPpError");
+				if(oasPpError != null) {
+				for(StudentDetailsTO error : oasPpError) {
+				%>
+					<tr>
+						<td>&nbsp;</td>
+						
+						<td><%=error.getSourceSystem() %></td>
+						<td><%=error.getStudentName() %></td>
+						<td><%=error.getContantArea() %></td>
+						<td><%=error.getForm() %></td>
+						<td><%=error.getBarcode() %></td>
+						<td><%=error.getTestDate() %></td>
+						<td><%=error.getErrorLog() %></td>
+						<td><%=error.getCreatedDate() %></td>
+					</tr>
+				
+				<%}
+				}
+				%>
+				</tbody>
+				</table>
+				
+				<br/><br/>
 				<p><b>Source System:</b> PP = Paper Pencil, OL = Online (Web service)</p>
 				<p><b>Overall Status:</b><br/>
 					<span class="locked" title="Completed"></span> = Locked <br/>
