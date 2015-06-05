@@ -234,6 +234,13 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	    			studentDataLoadTO.setErrorMessages(errorMessage);
 	    			studentDataLoadTO.setSummary("All processes are busy");
 	    		}
+	    		//Moved this section in order to delete roster row from OAS_WS_ROSTER
+	    		try {
+					usabilityService.removeRoster(studentListTO);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    		
     		} else {
     			studentDataLoadTO.setStatus("ERROR");
     			studentDataLoadTO.setStatusCode(0);
@@ -260,11 +267,12 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			try {
+			// This will again open the flood gate for duplicate roster id. Moving it inside the succesfull roster id insertion section in OAS_WS_ROSTER
+			/*try {
 				usabilityService.removeRoster(studentListTO);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 		long end = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "-----------------------------------x----------------------------------- "+processId);
