@@ -62,7 +62,7 @@
 			oTable2 = $('#ererror').dataTable({
 				"bJQueryUI": true,
 				"sPaginationType": "full_numbers",
-				"aaSorting": [[ 1, "asc" ]],
+				"aaSorting": [[ 9, "desc" ]],
 				"aoColumnDefs": [ 
 								  { "bVisible": false, "aTargets": [ 0 ] }
 								]
@@ -134,7 +134,7 @@
 						<th>Lock Id</th>
 						<th>Barcode</th>
 						<th>Status Code</th>
-						<th>NCR</th>
+						<th>SS</th>
 						<th>HSE</th>
 						<th>Score Date</th>
 						<th>Bio ID</th>
@@ -182,7 +182,7 @@
 						</td>
 						<td><%=process.getBarcode() %></td>
 						<td><%=process.getStatusCode() %></td>
-						<td><%=process.getNcr() %></td>
+						<td><%=process.getSs() %></td>
 						<td><%=process.getHse() %></td>
 						<td><%=process.getUpdatedDate() %></td>
 						<td><%=process.getStudentBioId() %></td>
@@ -266,6 +266,7 @@
 				<thead>
 					<tr>
 						<th>&nbsp;</th>
+						<th>Schedule Id</th>
 						<th>Subtest</th>
 						<th>Form</th>
 						<th>Test Code</th>
@@ -284,7 +285,7 @@
 				%>
 					<tr>
 						<td>&nbsp;</td>
-						
+						<td><%=error.getScheduleId() %></td>
 						<td><%=error.getContantArea() %></td>
 						<td><%=error.getForm() %></td>
 						<td><%=error.getContentTestCode() %></td>

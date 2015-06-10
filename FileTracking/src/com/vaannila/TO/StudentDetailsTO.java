@@ -74,10 +74,17 @@ public class StudentDetailsTO implements Serializable {
 	private String statusCode = "";
 	private String ncr = "";
 	private String hse = "";
+	private String ss;
 	private String StudentBioId = "";
 	private String updatedDate = "";
 	private String createdDate;
 	
+	public String getSs() {
+		return ss==null? "" : ss;
+	}
+	public void setSs(String ss) {
+		this.ss = ss;
+	}
 	public String getCreatedDate() {
 		return createdDate;
 	}
@@ -127,7 +134,7 @@ public class StudentDetailsTO implements Serializable {
 		this.testDate = testDate;
 	}
 	public String getContantArea() {
-		return contantArea;
+		return contantArea==null? "" : contantArea;
 	}
 	public void setContantArea(String contantArea) {
 		this.contantArea = contantArea;
@@ -253,7 +260,7 @@ public class StudentDetailsTO implements Serializable {
 		this.stateCode = stateCode;
 	}
 	public String getForm() {
-		return form;
+		return form==null? "" : form;
 	}
 	public void setForm(String form) {
 		this.form = form;

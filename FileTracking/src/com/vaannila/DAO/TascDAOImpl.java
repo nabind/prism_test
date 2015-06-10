@@ -1284,7 +1284,7 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 				
-		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ncr, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, UPPER(TRIM(s.last_name)) AS last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ncr from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'OL') s, (select s.state_code, s.uuid, t.barcode, t.form, UPPER(TRIM(S.LASTNAME)) AS LAST_NAME, TO_CHAR(T.DATE_SCHEDULED, 'DD-MON-YYYY') AS DATE_SCHEDULED, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.form_code = e.form and s.subtest_code = e.content_area_code AND S.LAST_NAME = E.LAST_NAME ");
+		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ss, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, UPPER(TRIM(s.last_name)) AS last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ss from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'OL') s, (select s.state_code, s.uuid, t.barcode, t.form, UPPER(TRIM(S.LASTNAME)) AS LAST_NAME, TO_CHAR(T.DATE_SCHEDULED, 'DD-MON-YYYY') AS DATE_SCHEDULED, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.form_code = e.form and s.subtest_code = e.content_area_code AND S.LAST_NAME = E.LAST_NAME ");
 		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
 			queryBuff.append(" and s.test_element_id = ? ");
 		}
@@ -1297,7 +1297,7 @@ public class TascDAOImpl {
 		
 		queryBuff.append("union ");
 		
-		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ncr, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, s.last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ncr from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'PP') s, (select s.state_code, s.uuid, t.barcode, t.form, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.barcode = e.barcode and s.form_code = e.form and s.subtest_code = e.content_area_code ");
+		queryBuff.append("select s.state_code state, s.subtest_code, s.subtest_name, s.form_code form, e.content_test_code, s.student_mode type, pp_oas_linkedid, s.barcode,s.status_code, s.ss, s.student_bio_id, s.test_element_id, s.name, s.datetimestamp,s.hse,e.uuid from (select c.customerid, c.customer_name, c.customer_code as state_code, s.ext_student_id as UUID, s.barcode, sd.subtest_code, f.form_code, s.student_bio_id, s.test_element_id, s.last_name || ', ' || s.first_name || ' ' || s.middle_name name, s.middle_name, s.last_name, sd.subtest_name, TO_CHAR(sf.test_date, 'DD-MON-YYYY') AS test_date, sf.status_code, sf.datetimestamp, s.student_mode, sf.hse, sf.ss from student_bio_dim    s, customer_info      c, subtest_score_fact sf, subtest_dim        sd, form_dim           f where s.customerid = c.customerid and s.student_bio_id = sf.student_bio_id and sf.subtestid = sd.subtestid and sf.formid = f.formid and s.student_mode = 'PP') s, (select s.state_code, s.uuid, t.barcode, t.form, t.content_area_code, t.pp_oas_linkedid, t.content_test_code from er_student_demo s, er_test_schedule t where s.er_studid = t.er_studid) e where s.state_code = e.state_code and s.UUID = e.UUID and s.barcode = e.barcode and s.form_code = e.form and s.subtest_code = e.content_area_code ");
 		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
 			queryBuff.append(" and s.test_element_id = ? ");
 		}
@@ -1344,7 +1344,7 @@ public class TascDAOImpl {
 				processTO.setPpOaslinkedId(rs.getString(7));
 				processTO.setBarcode(rs.getString(8));
 				processTO.setStatusCode(rs.getString(9));
-				processTO.setNcr(rs.getString(10));
+				processTO.setSs(rs.getString(10));
 				processTO.setStudentBioId(rs.getString(11));
 				processTO.setTestElementId(rs.getString(12));
 				processTO.setStudentName(rs.getString(13));
@@ -1436,7 +1436,7 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 				
-		queryBuff.append("select exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP') type, trunc(datetimestamp) from er_exception_data exc, er_student_sched_history hist  where hist.er_ss_histid = exc.er_ss_histid  and source_system = 'ERESOURCE'  ");
+		queryBuff.append("select exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP') type, trunc(datetimestamp), hist.schedule_id from er_exception_data exc, er_student_sched_history hist  where hist.er_ss_histid = exc.er_ss_histid  and source_system = 'ERESOURCE'  ");
 		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
 			queryBuff.append(" and exc.er_uuid like ? ");
 		}
@@ -1444,7 +1444,7 @@ public class TascDAOImpl {
 			queryBuff.append(" and exc.state_code = ? ");
 		}
 		
-		queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP'), trunc(datetimestamp) ");
+		queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP'), trunc(datetimestamp),hist.schedule_id ");
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
@@ -1472,6 +1472,7 @@ public class TascDAOImpl {
 				processTO.setContentTestCode(rs.getString(9));
 				processTO.setSourceSystem(rs.getString(10));
 				processTO.setCreatedDate(rs.getString(11));
+				processTO.setScheduleId(rs.getString(12));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {
