@@ -1276,7 +1276,7 @@ public class TascDAOImpl {
 	
 	
 	public List<StudentDetailsTO> getCombinedProcess(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getProcess()");
+		System.out.println("Enter: getCombinedProcess()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1361,7 +1361,7 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getProcess()");
+		System.out.println("Exit: getCombinedProcess()");
 		return processList;
 	}
 	
