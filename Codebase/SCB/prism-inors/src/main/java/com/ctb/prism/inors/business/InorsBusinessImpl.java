@@ -1233,7 +1233,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						"<br/><br/>", "Files generated are: <br/>", Utils.arrayToSeparatedString( allIsr.toArray(str), "<br/>"),
 						"<br/><br/>", "job log: <br/>", job.toString());
 				
-				notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId, contractName);
+				//notificationMailISRUtility(propertyLookup.get("supportEmail"), body, jobId, contractName);
 			}
 			
 			// delete ISR from temp location 
