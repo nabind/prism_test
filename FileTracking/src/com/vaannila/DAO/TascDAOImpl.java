@@ -460,7 +460,7 @@ public class TascDAOImpl {
 			queryBuff.append(" and SSBD.TEST_ELEMENT_ID = EED.TEST_ELEMENT_ID");
 			queryBuff.append(" AND EED.PROCESS_ID = SPS.PROCESS_ID");
 			queryBuff.append(" AND SSSD.CONTENT_NAME = EED.CONTENT_CODE ");
-			//queryBuff.append(" AND SHD.ORG_LEVEL = 1");
+			queryBuff.append(" AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = SHD.ORG_CODE) ");
 			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
@@ -473,6 +473,9 @@ public class TascDAOImpl {
 			}
 			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 				queryBuff.append(" AND UPPER(SSBD.LAST_NAME) LIKE UPPER(?)");
+			}
+			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
 			}
 			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 				queryBuff.append(" AND SPS.PROCESS_ID = ?");
@@ -578,6 +581,9 @@ public class TascDAOImpl {
 				}
 				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
 					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
+				}
+				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
+					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
 				}
 				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
 					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
