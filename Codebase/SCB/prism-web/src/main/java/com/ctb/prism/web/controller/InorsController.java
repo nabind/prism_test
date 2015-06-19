@@ -1752,6 +1752,23 @@ public class InorsController {
 	}
 
 	/**
+	 * @author Abir
+	 * Scheduler every night @ 12 O Clock to clean up files in /opt/TempIC folder which are older than 3 days
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "${cron.expression}")
+	public void cleanUpTempIC() {
+		logger.log(IAppLogger.INFO, " START CRON JOB @ 12 O Clock to clean up /opt/TempIC folder  --------------- ");
+		try {
+			FileUtil.deleteOldFiles(IApplicationConstants.OFFSET_DAYS,propertyLookup);
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR,"Error execution cleanup job" + e);
+		}
+		logger.log(IAppLogger.INFO, "END CRON JOB @ 12 O Clock to clean up /opt/TempIC folder --------------- ");
+	}
+
+	
+	/**
 	 * @param contractName
 	 * @throws Exception
 	 */
@@ -2063,4 +2080,5 @@ public class InorsController {
 		}
 	}
 
+	
 }

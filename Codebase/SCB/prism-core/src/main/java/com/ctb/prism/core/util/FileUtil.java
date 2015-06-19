@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,9 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AgeFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -43,6 +48,8 @@ import org.springframework.util.FileCopyUtils;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
+import com.ctb.prism.core.resourceloader.IPropertyLookup;
+import com.ctb.prism.core.resourceloader.PropertyLookupImpl;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -66,6 +73,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * 
  */
 public class FileUtil {
+
+	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(FileUtil.class.getName());
 	// private static final String TEST_DIR = "C:\\Temp\\GroupDownload\\";
 
@@ -791,5 +800,23 @@ public class FileUtil {
 		}
 		return fileDeleteFlag;
 	}
+	
+	/*
+	 * @author Abir
+	 * Cleanup files from /opt/TemIC folder which are older than 3 days
+	 * @param noOfDays
+	 * @param propertyLookup
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public static void deleteOldFiles(String noOfDays,IPropertyLookup propertyLookup) {
+        Date oldestAllowedFileDate = DateUtils.addDays(new Date(), - Integer.parseInt(noOfDays)); //minus days from current date
+        String tempDirectory = propertyLookup.get("pdfGenPathIC");
+        File targetDir = new File(tempDirectory);
+        Iterator<File> filesToDelete = FileUtils.iterateFiles(targetDir, new AgeFileFilter(oldestAllowedFileDate),  TrueFileFilter.INSTANCE); 
+        while (filesToDelete.hasNext()) { 
+            FileUtils.deleteQuietly(filesToDelete.next()); 
+        }  //don't want an exception if a file is not deleted. Otherwise use filesToDelete.next().delete() in a try/catch
+    }
 
 }
