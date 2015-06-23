@@ -403,15 +403,6 @@ public class TascController {
 			}
 			
 			request.getSession().setAttribute("tascRequestTO", process);
-			
-			/*if(!"ERESOURCE".equals(process.getSourceSystem())){
-				TascDAOImpl stageDao = new TascDAOImpl();
-				List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessErPaging(process);
-				convertProcessToJson(studentDetailsTOList);
-				modelAndView = new ModelAndView("tascProcessEr", "message", "jsonStr");
-			}else{
-				modelAndView = new ModelAndView("tascProcessErPaging", "message", jsonStr);
-			}*/
 			modelAndView = new ModelAndView("tascProcessErPaging", "message", jsonStr);
 			
 			
@@ -565,15 +556,22 @@ public class TascController {
 	@RequestMapping("/process/downloadCsv.htm")
 	public void downloadCsv(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: downloadCsv()");
+		long t1 = System.currentTimeMillis();
 		String fileName = "data.csv";
 		String contentType = "application/octet-stream";
 		SearchProcess process = new SearchProcess();
 		List<StudentDetailsTO> studentDetailsTOList = null;
 		try {
 			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
-			//studentDetailsTOList = (List<StudentDetailsTO>)request.getSession().getAttribute("studentDetailsTOList");
+			process.setMode("CSV");
+			process.setSortCol("13");
+			process.setSortDir("desc");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			studentDetailsTOList = stageDao.getProcessEr(process);
+			studentDetailsTOList = stageDao.getProcessErPaging(process);
+			process.setMode("");
+			process.setSortCol("");
+			process.setSortDir("");
 			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Record Id")
@@ -641,6 +639,9 @@ public class TascController {
 		} catch (Exception e) {
 			System.out.println("Failed to download the file");
 			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: downloadCsv() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 	

@@ -48,6 +48,7 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String searchParam = "";
 	private String sortCol = "";
 	private String sortDir = "";
+	private String mode = "";
 	
 	public String getDistrict() {
 		return district;
@@ -406,5 +407,11 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	}
 	public void setSortDir(String sortDir) {
 		this.sortDir = sortDir;
+	}
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 }

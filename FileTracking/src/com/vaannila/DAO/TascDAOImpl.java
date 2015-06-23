@@ -264,6 +264,7 @@ public class TascDAOImpl {
 	 * @author Joy
 	 * Get Searched records
 	 * @throws Exception
+	 * @Deprecated - Don't use this
 	 */
 	public List<StudentDetailsTO> getProcessEr(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getProcessEr()");
@@ -1024,13 +1025,14 @@ public class TascDAOImpl {
 			conn = driver.connect(DATA_SOURCE, null);
 			int count = 0;
 			int placeHolderTotalRecCount = 0;
-			int placeHolderData = 0;
+			int placeHolderDataOnline = 0;
+			int placeHolderDataCsv = 0;
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
 			System.out.println("DATA query: "+query);
 			cs = conn.prepareCall(query);
@@ -1107,15 +1109,23 @@ public class TascDAOImpl {
 			cs.setLong(++count, searchProcess.getToRowNum());				
 			placeHolderTotalRecCount = ++count;
 			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
-			placeHolderData = ++count;
-			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderDataOnline = ++count;
+			cs.registerOutParameter(placeHolderDataOnline, OracleTypes.CURSOR);
+			placeHolderDataCsv = ++count;
+			cs.registerOutParameter(placeHolderDataCsv, OracleTypes.CURSOR);
 			placeHolderErrorMsg = ++count;
 			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
 			
 			cs.execute();
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
-				rs = (ResultSet) cs.getObject(placeHolderData);
+				if("CSV".equals(searchProcess.getMode())){
+					System.out.println("Fetching data for CSV");
+					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
+				}else{
+					rs = (ResultSet) cs.getObject(placeHolderDataOnline);
+					System.out.println("Fetching data for Online Display");
+				}
 				while(rs.next()) {
 					studentDetailsTO = new StudentDetailsTO();
 					studentDetailsTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
@@ -1133,6 +1143,49 @@ public class TascDAOImpl {
 					studentDetailsTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
 					studentDetailsTO.setSubtestName(rs.getString("SUBTEST") != null ? rs.getString("SUBTEST") : "");
 					studentDetailsTO.setProcessedDate(rs.getString("PROCESSED_DATE") != null ? rs.getString("PROCESSED_DATE") : "");
+					studentDetailsTO.setTestCenterCode(rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
+					studentDetailsTO.setTestCenterName(rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
+					studentDetailsTO.setSourceSystemDesc(searchProcess.getSourceSystemDesc());
+					studentDetailsTO.setProcessedDateFrom(searchProcess.getProcessedDateFrom());
+					studentDetailsTO.setProcessedDateTo(searchProcess.getProcessedDateTo());
+					studentDetailsTO.setErrorLog(rs.getString("ERROR_DESCRIPTION") != null ? rs.getString("ERROR_DESCRIPTION") : "");
+					
+					if("ERESOURCE".equals(searchProcess.getSourceSystem())){
+						studentDetailsTO.setCtbCustomerId(rs.getString("CTB_CUSTOMER_ID") != null ? rs.getString("CTB_CUSTOMER_ID") : "");
+						studentDetailsTO.setStateName(rs.getString("STATENAME") != null ? rs.getString("STATENAME") : "");
+						studentDetailsTO.setDob(rs.getString("DATEOFBIRTH") !=null ? rs.getString("DATEOFBIRTH") : "");
+						studentDetailsTO.setGender(rs.getString("GENDER") != null ? rs.getString("GENDER") : "");
+						studentDetailsTO.setGovermentId(rs.getString("GOVERNMENTID") != null ? rs.getString("GOVERNMENTID") : "");
+						studentDetailsTO.setGovermentIdType(rs.getString("GOVERNMENTIDTYPE") != null ? rs.getString("GOVERNMENTIDTYPE") : "");
+						studentDetailsTO.setAddress(rs.getString("ADDRESS1") != null ? rs.getString("ADDRESS1") : "");
+						studentDetailsTO.setCity(rs.getString("CITY") != null ? rs.getString("CITY") : "");
+						studentDetailsTO.setCounty(rs.getString("COUNTY") != null ? rs.getString("COUNTY") : "");
+						studentDetailsTO.setState(rs.getString("STATE") != null ? rs.getString("STATE") : "");
+						studentDetailsTO.setZip(rs.getString("ZIP") != null ? rs.getString("ZIP") : "");
+						studentDetailsTO.setEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
+						studentDetailsTO.setAlternateEmail(rs.getString("ALTERNATEEMAIL") != null ? rs.getString("ALTERNATEEMAIL") : "");
+						studentDetailsTO.setPrimaryPhoneNumber(rs.getString("PRIMARYPHONENUMBER") != null ? rs.getString("PRIMARYPHONENUMBER") : "");
+						studentDetailsTO.setCellPhoneNumber(rs.getString("CELLPHONENUMBER") != null ? rs.getString("CELLPHONENUMBER") : "");
+						studentDetailsTO.setAlternatePhoneNumber(rs.getString("ALTERNATENUMBER") != null ? rs.getString("ALTERNATENUMBER") : "");
+						studentDetailsTO.setResolvedEthnicityRace(rs.getString("RESOLVED_ETHNICITY_RACE") != null ? rs.getString("RESOLVED_ETHNICITY_RACE") : "");
+						studentDetailsTO.setHomeLanguage(rs.getString("HOMELANGUAGE") != null ? rs.getString("HOMELANGUAGE") : "");
+						studentDetailsTO.setEducationLevel(rs.getString("EDUCATIONLEVEL") != null ? rs.getString("EDUCATIONLEVEL") : "");
+						studentDetailsTO.setAttendCollege(rs.getString("ATTENDCOLLEGE") != null ? rs.getString("ATTENDCOLLEGE") : "");
+						studentDetailsTO.setContact(rs.getString("CONTACT") != null ? rs.getString("CONTACT") : "");
+						studentDetailsTO.setExamineeCountyParishCode(rs.getString("EXAMINEECOUNTYPARISHCODE") != null ? rs.getString("EXAMINEECOUNTYPARISHCODE") : "");
+						studentDetailsTO.setRegisteredOn(rs.getString("REGISTEREDON") != null ? rs.getString("REGISTEREDON") : "");
+						studentDetailsTO.setRegisteredTestCenter(rs.getString("REGISTEREDATTESTCENTER") != null ? rs.getString("REGISTEREDATTESTCENTER") : "");
+						studentDetailsTO.setRegisteredTestCenterCode(rs.getString("REGISTEREDATTESTCENTERCODE") !=null ? rs.getString("REGISTEREDATTESTCENTERCODE") : "");
+						studentDetailsTO.setScheduleId(rs.getString("SCHEDULE_ID") != null ? rs.getString("SCHEDULE_ID") : "");
+						studentDetailsTO.setTimeOfDay(rs.getString("TIMEOFDAY") != null ? rs.getString("TIMEOFDAY") : "");
+						studentDetailsTO.setCheckedInDate(rs.getString("DATECHECKEDIN") != null ? rs.getString("DATECHECKEDIN") : "");
+						studentDetailsTO.setContentTestType(rs.getString("CONTENT_TEST_TYPE") != null ? rs.getString("CONTENT_TEST_TYPE") : "");
+						studentDetailsTO.setContentTestCode(rs.getString("CONTENT_TEST_CODE") != null ? rs.getString("CONTENT_TEST_CODE") : "");
+						studentDetailsTO.setTascRadiness(rs.getString("TASCREADINESS") != null ? rs.getString("TASCREADINESS") : "");
+						studentDetailsTO.setEcc(rs.getString("ECC") != null ? rs.getString("ECC") : "");
+						studentDetailsTO.setRegstTcCountyParishCode(rs.getString("REGST_TC_COUNTYPARISHCODE") != null ? rs.getString("REGST_TC_COUNTYPARISHCODE") : "");
+						studentDetailsTO.setSchedTcCountyParishCode(rs.getString("SCHED_TC_COUNTYPARISHCODE") != null ? rs.getString("SCHED_TC_COUNTYPARISHCODE") : "");
+					}
 					studentDetailsTOList.add(studentDetailsTO);
 				}
 			}else{
@@ -1175,9 +1228,9 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING_1.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
 			System.out.println("COUNT query: "+query);
 			cs = conn.prepareCall(query);
@@ -1254,6 +1307,8 @@ public class TascDAOImpl {
 			cs.setLong(++count, searchProcess.getToRowNum());				
 			placeHolderTotalRecCount = ++count;
 			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
 			placeHolderData = ++count;
 			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
 			placeHolderErrorMsg = ++count;

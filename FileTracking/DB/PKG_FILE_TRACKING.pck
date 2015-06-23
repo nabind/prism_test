@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
+CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING_1 AS
 
   TYPE GET_REFCURSOR IS REF CURSOR;
 
@@ -20,6 +20,7 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                            P_ROWNUM_TO              IN NUMBER,
                            P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
                            P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                           P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
   PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM              IN VARCHAR2,
@@ -40,11 +41,12 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                               P_ROWNUM_TO              IN NUMBER,
                               P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
                               P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                              P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                               P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
-END PKG_FILE_TRACKING;
+END PKG_FILE_TRACKING_1;
 /
-CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
+CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING_1 AS
 
   PROCEDURE SP_GET_DATA_ER(P_DATE_FROM              IN VARCHAR2,
                            P_DATE_TO                IN VARCHAR2,
@@ -64,6 +66,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            P_ROWNUM_TO              IN NUMBER,
                            P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
                            P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                           P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
     V_QUERY_PAGING             CLOB := '';
@@ -94,7 +97,44 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                     (SELECT SUBTEST_NAME
                        FROM SUBTEST_DIM
                       WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,
-                    TO_CHAR(ESSH.DATETIMESTAMP, ''MM/DD/YYYY'') PROCESSED_DATE
+                    ESSH.TESTCENTERCODE TESTING_SITE_CODE,
+                    ESSH.TESTCENTERNAME TESTING_SITE_NAME,
+                    ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID,
+                    ESSH.STATENAME STATENAME,
+                    ESSH.DATEOFBIRTH DATEOFBIRTH,
+                    ESSH.GENDER GENDER,
+                    ESSH.GOVERNMENTID GOVERNMENTID,
+                    ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE,
+                    ESSH.ADDRESS1 ADDRESS1,
+                    ESSH.CITY CITY,
+                    ESSH.COUNTY COUNTY,
+                    ESSH.STATE STATE,
+                    ESSH.ZIP ZIP,
+                    ESSH.EMAIL EMAIL,
+                    ESSH.ALTERNATEEMAIL ALTERNATEEMAIL,
+                    ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,
+                    ESSH.CELLPHONENUMBER CELLPHONENUMBER,
+                    ESSH.ALTERNATENUMBER ALTERNATENUMBER,
+                    ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE,
+                    ESSH.HOMELANGUAGE HOMELANGUAGE,
+                    ESSH.EDUCATIONLEVEL EDUCATIONLEVEL,
+                    ESSH.ATTENDCOLLEGE ATTENDCOLLEGE,
+                    ESSH.CONTACT CONTACT,
+                    ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,
+                    ESSH.REGISTEREDON REGISTEREDON,
+                    ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER,
+                    ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE,
+                    ESSH.SCHEDULE_ID SCHEDULE_ID,
+                    ESSH.TIMEOFDAY TIMEOFDAY,
+                    ESSH.DATECHECKEDIN DATECHECKEDIN,
+                    ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE,
+                    ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE,
+                    ESSH.TASCREADINESS TASCREADINESS,
+                    ESSH.ECC ECC,
+                    ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE,
+                    ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,
+                    DECODE(NVL(EED.ER_EXCDID, 0), 0, '''', ''ERROR CODE-'' || EED.EXCEPTION_CODE || '': '' || EED.DESCRIPTION) ERROR_DESCRIPTION,
+                    TO_CHAR(ESSH.DATETIMESTAMP, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
       FROM ER_STUDENT_SCHED_HISTORY ESSH
       LEFT OUTER JOIN ER_EXCEPTION_DATA EED
         ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID
@@ -280,6 +320,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FORM ';
     ELSIF P_ORDERED_COLUMN = '12' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SUBTEST ';
+    ELSIF P_ORDERED_COLUMN = '13' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PROCESSED_DATE ';
     END IF;
   
     IF P_ORDER = 'asc' THEN
@@ -289,6 +331,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     END IF;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
+    OPEN P_OUT_CUR_ER_DATA_CSV FOR V_QUERY_ACTUAL;
   
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
@@ -298,7 +341,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
        WHERE RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
-  
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
   
   EXCEPTION
@@ -324,42 +366,49 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                               P_ROWNUM_TO              IN NUMBER,
                               P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
                               P_OUT_CUR_ER_DATA        OUT GET_REFCURSOR,
+                              P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                               P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
-    V_QUERY_PAGING              CLOB := '';
-    V_QUERY_ACTUAL              CLOB := '';
-    V_QUERY_TOTAL_RECORD_COUNT  CLOB := '';
-    V_QRY_ACTUAL_TOTAL_REC_CNT  CLOB := '';
-    V_EXCEPTION_STATUS          VARCHAR2(100) := '';
-    V_SEARCH_PARAM              VARCHAR2(100);
-    V_SEARCH_PARAM_COUNT        NUMBER := 0;
-    V_CUR_TOTAL_RECORD_COUNT    GET_REFCURSOR;
-    V_ACTUAL_TOTAL_RECORD_COUNT NUMBER := 0;
+    V_QUERY_PAGING             CLOB := '';
+    V_QUERY_ACTUAL             CLOB := '';
+    V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
+    V_EXCEPTION_STATUS         VARCHAR2(100) := '';
+    V_SEARCH_PARAM             VARCHAR2(100);
+    V_SEARCH_PARAM_COUNT       NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
   
   BEGIN
   
-    V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SELECT nvl(EED.LAST_NAME,ESD.lastname) || '', '' || ESD.FIRSTNAME || '' '' ||
-                    ESD.MIDDLENAME STUDENTNAME,
-                    EED.ER_UUID UUID,
-                    TO_CHAR(NVL(EED.TEST_ELEMENT_ID, ''NA'')) TEST_ELEMENT_ID,
-                    NVL(TO_CHAR(EED.PROCESS_ID), ''NA'') PROCESS_ID,
-                    TO_CHAR(NVL(EED.EXCEPTION_CODE, ''NA'')) EXCEPTION_CODE,
-                    NVL(EED.SOURCE_SYSTEM, ''NA'') SOURCE_SYSTEM,
-                    NVL(EED.EXCEPTION_STATUS, ''NA'') EXCEPTION_STATUS,
-                    NVL(EED.ER_SS_HISTID, 0) ER_SS_HISTID,
-                    EED.BARCODE BARCODE,
-                    TO_CHAR(EED.TEST_DATE, ''MM/DD/YYYY'') DATE_SCHEDULED,
-                    EED.STATE_CODE STATE_CODE,
-                    EED.FORM FORM,
-                    EED.CREATED_DATE_TIME DATETIMESTAMP,
-                    NVL(EED.ER_EXCDID,0) ER_EXCDID,
-                    (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST,
-                    TO_CHAR(EED.CREATED_DATE_TIME, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
-      FROM ER_EXCEPTION_DATA EED,ER_STUDENT_DEMO   ESD
-     WHERE EED.ER_UUID = ESD.UUID 
-     AND (eed.state_code is null 
-     OR eed.state_code = esd.state_code) 
-     AND EED.SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
+    V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                      ' SELECT NVL((SELECT ESD.LASTNAME || '','' || ESD.FIRSTNAME || '' '' || ESD.MIDDLENAME
+          FROM ER_STUDENT_DEMO ESD
+         WHERE ESD.UUID = EED.ER_UUID
+           AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = ESD.STATE_CODE)),EED.LAST_NAME) STUDENTNAME,
+       EED.ER_UUID UUID,
+       EED.TEST_ELEMENT_ID TEST_ELEMENT_ID,
+       EED.PROCESS_ID PROCESS_ID,
+       EED.EXCEPTION_CODE EXCEPTION_CODE,
+       EED.SOURCE_SYSTEM SOURCE_SYSTEM,
+       EED.EXCEPTION_STATUS EXCEPTION_STATUS,
+       0 ER_SS_HISTID,
+       EED.BARCODE BARCODE,
+       EED.TEST_DATE DATE_SCHEDULED,
+       EED.STATE_CODE STATE_CODE,
+       EED.FORM FORM,
+       EED.ER_EXCDID ER_EXCDID,
+       (SELECT SUBTEST_NAME
+          FROM SUBTEST_DIM
+         WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST,
+       EED.TESTING_SITE_CODE TESTING_SITE_CODE,
+       EED.TESTING_SITE_NAME TESTING_SITE_NAME,
+       DECODE(NVL(EED.ER_EXCDID, 0),
+              0,
+              '''',
+              ''ERROR CODE-'' || EED.EXCEPTION_CODE || '': '' || EED.DESCRIPTION) ERROR_DESCRIPTION,
+       TO_CHAR(EED.CREATED_DATE_TIME, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
+       FROM ER_EXCEPTION_DATA EED
+       WHERE EED.SOURCE_SYSTEM =  ''' ||
+                      P_SOURCE_SYSTEM || '''';
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
@@ -412,110 +461,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.BARCODE =  ''' ||
                         P_TEST_BARCODE || '''';
     END IF;
-  
-    V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' UNION SELECT SSBD.LAST_NAME || '', '' || SSBD.FIRST_NAME || '' '' ||
-                    SSBD.MIDDLE_NAME STUDENTNAME,
-                    SSBD.EXT_STUDENT_ID UUID,
-                    TO_CHAR(NVL(SSBD.TEST_ELEMENT_ID, ''NA'')) TEST_ELEMENT_ID,
-                    NVL(TO_CHAR(SPS.PROCESS_ID), ''NA'') PROCESS_ID,
-                    TO_CHAR(NVL(EED.EXCEPTION_CODE, ''NA'')) EXCEPTION_CODE,
-                    NVL(EED.SOURCE_SYSTEM, ''NA'') SOURCE_SYSTEM,
-                    NVL(EED.EXCEPTION_STATUS, ''NA'') EXCEPTION_STATUS,
-                    0 ER_SS_HISTID,
-                    SSBD.BARCODE BARCODE,
-                    TO_CHAR(SSSD.DATE_TEST_TAKEN, ''MM/DD/YYYY'') DATE_SCHEDULED,
-                    EED.state_code STATE_CODE,
-                    SSSD.TEST_FORM FORM,
-                    EED.CREATED_DATE_TIME DATETIMESTAMP,
-                    NVL(EED.ER_EXCDID,0) ER_EXCDID,
-                    (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST,
-                    TO_CHAR(EED.CREATED_DATE_TIME, ''MM/DD/YYYY HH:mm:ss'') PROCESSED_DATE
-      FROM STG_STD_BIO_DETAILS SSBD,STG_STD_SUBTEST_DETAILS SSSD,
-      STG_HIER_DETAILS SHD,STG_PROCESS_STATUS SPS,
-      ER_EXCEPTION_DATA EED 
-     WHERE ssbd.wkf_partition_name = ''ER_EXCP'' 
-     AND SSSD.WKF_PARTITION_NAME = ''ER_EXCP'' 
-     AND SSBD.STUDENT_BIO_DETAILS_ID = SSSD.STUDENT_BIO_DETAILS_ID
-     and SSBD.TEST_ELEMENT_ID = EED.TEST_ELEMENT_ID
-     AND EED.PROCESS_ID = SPS.PROCESS_ID
-     AND SSSD.CONTENT_NAME = EED.CONTENT_CODE
-     AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = SHD.ORG_CODE)
-     AND EED.SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
-  
-    IF P_DATE_FROM <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(''' ||
-                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
-    END IF;
-  
-    IF P_DATE_TO <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(''' ||
-                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
-    END IF;
-  
-    IF P_UUID <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND SSBD.EXT_STUDENT_ID LIKE ''%' || P_UUID ||
-                        '%''';
-    END IF;
-  
-    IF P_LAST_NAME <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND UPPER(SSBD.LAST_NAME) LIKE UPPER(''%' ||
-                        P_LAST_NAME || '%'')';
-    END IF;
-  
-    IF P_EX_CODE <> -1 THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.EXCEPTION_CODE = ' ||
-                        P_EX_CODE;
-    END IF;
-  
-    IF P_PROCESS_ID <> -1 THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND SPS.PROCESS_ID = ' ||
-                        P_PROCESS_ID;
-    END IF;
-  
-    IF P_STATE_CODE <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND SHD.ORG_CODE =  ''' ||
-                        P_STATE_CODE || '''';
-    END IF;
-  
-    IF P_FORM <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND SSSD.TEST_FORM =   ''' ||
-                        P_FORM || '''';
-    END IF;
-  
-    IF P_TEST_ELEMENT_ID <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND SSBD.TEST_ELEMENT_ID = ''' ||
-                        P_TEST_ELEMENT_ID || '''';
-    END IF;
-  
-    IF P_TEST_BARCODE <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND SSBD.BARCODE = ''' ||
-                        P_TEST_BARCODE || '''';
-    END IF;
-  
-    --CHECK FOR DATA EXISTANCE START
-    V_QRY_ACTUAL_TOTAL_REC_CNT := V_QRY_ACTUAL_TOTAL_REC_CNT ||
-                                  'SELECT COUNT(1) FROM (' ||
-                                  V_QUERY_ACTUAL || ') TAB';
-  
-    /*DBMS_OUTPUT.PUT_LINE('V_QRY_ACTUAL_TOTAL_REC_CNT: ' ||
-    V_QRY_ACTUAL_TOTAL_REC_CNT);*/
-  
-    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QRY_ACTUAL_TOTAL_REC_CNT;
-    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
-      LOOP
-        FETCH V_CUR_TOTAL_RECORD_COUNT
-          INTO V_ACTUAL_TOTAL_RECORD_COUNT;
-        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
-        /*DBMS_OUTPUT.PUT_LINE('V_ACTUAL_TOTAL_RECORD_COUNT: ' ||
-        V_ACTUAL_TOTAL_RECORD_COUNT);*/
-      END LOOP;
-      CLOSE V_CUR_TOTAL_RECORD_COUNT;
-    END IF;
-    --CHECK FOR DATA EXISTANCE END
   
     IF P_SEARCH_PARAM <> '-1' THEN
       V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
@@ -610,164 +555,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       CLOSE V_CUR_TOTAL_RECORD_COUNT;
     END IF;
   
-    --FOR TESTING
-    --V_ACTUAL_TOTAL_RECORD_COUNT := 0;
-  
-    IF V_ACTUAL_TOTAL_RECORD_COUNT = 0 THEN
-      V_QUERY_TOTAL_RECORD_COUNT := '';
-      V_QUERY_ACTUAL             := ' select ex.last_name STUDENTNAME, ex.er_uuid UUID, ex.test_element_id TEST_ELEMENT_ID,
-      ex.process_id PROCESS_ID, ex.exception_code EXCEPTION_CODE, ex.source_system SOURCE_SYSTEM,
-      ex.exception_status EXCEPTION_STATUS, 0 ER_SS_HISTID, ex.barcode BARCODE, ex.test_date DATE_SCHEDULED,
-      ex.state_code STATE_CODE, ex.form FORM, ex.created_date_time DATETIMESTAMP, ex.er_excdid ER_EXCDID,
-      ex.content_code SUBTEST, ''NA'' TESTING_SITE_CODE, ''NA'' TESTING_SITE_NAME, ex.description ERROR_DESCRIPTION,
-      ex.created_date_time PROCESSED_DATE
-      from er_exception_data ex
-      where ex.source_system = ''' ||
-                                    P_SOURCE_SYSTEM || '''';
-      IF P_DATE_FROM <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                          ' AND TRUNC(ex.created_date_time) >= TO_DATE(''' ||
-                          P_DATE_FROM || ''', ''MM/DD/YYYY'')';
-      END IF;
-    
-      IF P_DATE_TO <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                          ' AND TRUNC(ex.created_date_time) <= TO_DATE(''' ||
-                          P_DATE_TO || ''', ''MM/DD/YYYY'')';
-      END IF;
-    
-      IF P_UUID <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.er_uuid LIKE ''%' ||
-                          P_UUID || '%''';
-      END IF;
-    
-      IF P_LAST_NAME <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                          ' AND UPPER(ex.last_name) LIKE UPPER(''%' ||
-                          P_LAST_NAME || '%'')';
-      END IF;
-    
-      IF P_PROCESS_ID <> -1 THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.process_id =' ||
-                          P_PROCESS_ID;
-      END IF;
-    
-      IF P_STATE_CODE <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.state_code = ''' ||
-                          P_STATE_CODE || '''';
-      END IF;
-    
-      IF P_FORM <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.form =''' || P_FORM || '''';
-      END IF;
-    
-      IF P_TEST_ELEMENT_ID <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.test_element_id =''' ||
-                          P_TEST_ELEMENT_ID || '''';
-      END IF;
-    
-      IF P_TEST_BARCODE <> '-1' THEN
-        V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND ex.barcode = ''' ||
-                          P_TEST_BARCODE || '''';
-      END IF;
-    
-      IF P_SEARCH_PARAM <> '-1' THEN
-        V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
-                          ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(PROCESS_ID) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(EXCEPTION_CODE) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(DATE_SCHEDULED) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(STATE_CODE) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(FORM) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(ER_EXCDID) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM ||
-                          '%'') OR UPPER(SUBTEST) LIKE UPPER(''%' ||
-                          P_SEARCH_PARAM || '%'')';
-      
-        V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
-      
-        SELECT COUNT(TAB.EXCEPTION_STATUS)
-          INTO V_SEARCH_PARAM_COUNT
-          FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
-                             FROM DUAL)
-                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
-                   FROM T
-                 CONNECT BY LEVEL <=
-                            LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
-                  WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
-      
-      
-        IF V_SEARCH_PARAM_COUNT <> 0 THEN
-          IF V_SEARCH_PARAM_COUNT = 3 THEN
-            V_EXCEPTION_STATUS := '''ER''' || ',' || '''CO''' || ',' ||
-                                  '''IN''';
-          ELSE
-            V_EXCEPTION_STATUS := '';
-            FOR REC IN (SELECT TAB.EXCEPTION_STATUS ES
-                          FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
-                                             FROM DUAL)
-                                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
-                                   FROM T
-                                 CONNECT BY LEVEL <=
-                                            LENGTH(REGEXP_REPLACE(TXT,
-                                                                  '[^,]*')) + 1) TAB
-                                  WHERE TAB.EXCEPTION_STATUS LIKE
-                                        UPPER(V_SEARCH_PARAM)
-                        ) LOOP
-              V_SEARCH_PARAM := REC.ES;
-              IF V_SEARCH_PARAM = 'ERROR' THEN
-                V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''ER''' || ',';
-              ELSIF V_SEARCH_PARAM = 'COMPLETED' THEN
-                V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''CO''' || ',';
-              ELSIF V_SEARCH_PARAM = 'INVALIDATED' THEN
-                V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''IN''' || ',';
-              END IF;
-            END LOOP;
-            V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''''';
-          END IF;
-        
-          /*DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);*/
-        
-          IF V_SEARCH_PARAM_COUNT <> 0 THEN
-            V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                              ' OR EXCEPTION_STATUS IN ( ' ||
-                              V_EXCEPTION_STATUS || ')';
-          END IF;
-        END IF;
-      END IF;
-    
-      V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
-                                    'SELECT COUNT(1) FROM (' ||
-                                    V_QUERY_ACTUAL || ') TAB';
-    
-      /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
-      V_QUERY_TOTAL_RECORD_COUNT);*/
-    
-      OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
-      IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
-        LOOP
-          FETCH V_CUR_TOTAL_RECORD_COUNT
-            INTO P_OUT_TOTAL_RECORD_COUNT;
-          EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
-          /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
-          P_OUT_TOTAL_RECORD_COUNT);*/
-        END LOOP;
-        CLOSE V_CUR_TOTAL_RECORD_COUNT;
-      END IF;
-    END IF;
-  
     IF P_ORDERED_COLUMN <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORDER BY ';
     END IF;
@@ -796,6 +583,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FORM ';
     ELSIF P_ORDERED_COLUMN = '12' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SUBTEST ';
+    ELSIF P_ORDERED_COLUMN = '13' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PROCESSED_DATE ';
     END IF;
   
     IF P_ORDER = 'asc' THEN
@@ -805,6 +594,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     END IF;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
+    OPEN P_OUT_CUR_ER_DATA_CSV FOR V_QUERY_ACTUAL;
   
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
@@ -814,7 +604,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
        WHERE RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
-  
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
   
   EXCEPTION
@@ -822,5 +611,5 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_OL_PP;
 
-END PKG_FILE_TRACKING; --END OF PACKAGE
+END PKG_FILE_TRACKING_1; --END OF PACKAGE
 /
