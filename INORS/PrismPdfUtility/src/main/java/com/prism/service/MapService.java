@@ -358,7 +358,11 @@ public class MapService implements PrismPdfService {
 	private void removeFilesFromS3(List<KeyVersion> keys) {
 		AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
 		logger.debug("Calling aWSStorageUtil.removeFilesFromS3 ");
+		try{
 		aWSStorageUtil.removeAsset(keys);
+		} catch(Exception e) {
+			
+		}
 		logger.info("File Successfully removed from S3");
 	}
 	
