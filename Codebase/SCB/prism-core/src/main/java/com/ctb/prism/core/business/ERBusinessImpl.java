@@ -79,8 +79,11 @@ public class ERBusinessImpl implements IERBusiness {
 							if(!duplicate.add(scheduleDetails.getContentAreaCode())) {
 								// duplicate schedule present - raise error
 								String historyId = history.get(scheduleDetails.getScheduleID());
-								errorMsg.add(scheduleError("ERR-153: Duplicate schedule present for same content area code", studentDetails.getUUID(), scheduleDetails));
-								erDAO.exceptionHistoryUpdate(studentDetails, historyId, errorMsg);
+								String err = scheduleError("ERR-153: Duplicate schedule present for same content area code", studentDetails.getUUID(), scheduleDetails);
+								errorMsg.add(err);
+								List<String> errLst = new ArrayList<String>();
+								errLst.add(err);
+								erDAO.exceptionHistoryUpdate(studentDetails, historyId, errLst);
 								scheduleError = true;
 								break;
 							}

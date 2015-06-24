@@ -128,6 +128,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
     	String partitionName = "";
     	long start = System.currentTimeMillis();
     	long processId = -99;
+    	boolean storedLog = false;
     	// to print the output xml
     	try {
     		if("true".equals(propertyLookup.get("print.ws.log"))) {
@@ -152,6 +153,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	    			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
 	    			processId = studentDataLoadTO.getProcessId();
 	    			usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
+	    			storedLog = true;
 	    			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
 	    			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
 	    			// load student data into staging tables
@@ -264,6 +266,13 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 		} finally {
 			try {
 				usabilityService.updatePartition(partitionName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				if(!storedLog) {
+					usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -60,7 +60,7 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
 				if(requestObj) {
 					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_ROSTERID_", rosterId, "_REQ_", source) ;
 				} else {
-					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_RES_", source) ;
+					s3Location = CustomStringUtil.appendString("/PRISMLOG/WSLOG/PROCESSID_" + processId, "_ROSTERID_", (rosterId == null) ? "NA" : rosterId, "_RES_", source) ;
 				}
 				repositoryService.uploadAsset(s3Location, stream2file(obj));
 			} catch (Exception e) {
