@@ -32,8 +32,8 @@ public class MapDAOImpl {
 		queryBuff.append("select task.TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
 		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,task.DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
 		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT");
-		queryBuff.append(" , (select DISTRICT_CODE from stg_task_district_mapping where task_id = task.task_id)");
-		queryBuff.append(" , (select GRADE from stg_task_district_mapping where task_id = task.task_id)");
+		queryBuff.append(" , (select DISTRICT_CODE from stg_task_district_mapping where task_id = task.task_id) DISTRICT_CODE ");
+		queryBuff.append(" , (select GRADE from stg_task_district_mapping where task_id = task.task_id) GRADE ");
 		queryBuff.append(" , (select CONTENT_AREA_TITLE from stg_task_district_mapping where task_id = task.task_id) SUBTEST ");
 		queryBuff.append(" from stg_task_status task ");
 		// queryBuff.append(" WHERE rownum<10 ");
