@@ -31,10 +31,13 @@ public class MapDAOImpl {
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("select task.TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
 		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,task.DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
-		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT, map.DISTRICT_CODE, map.GRADE, map.CONTENT_AREA_TITLE SUBTEST ");
-		queryBuff.append(" from stg_task_status task, stg_task_district_mapping map ");
+		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT");
+		queryBuff.append(" , (select DISTRICT_CODE from stg_task_district_mapping where task_id = task.task_id)");
+		queryBuff.append(" , (select GRADE from stg_task_district_mapping where task_id = task.task_id)");
+		queryBuff.append(" , (select CONTENT_AREA_TITLE from stg_task_district_mapping where task_id = task.task_id) SUBTEST ");
+		queryBuff.append(" from stg_task_status task ");
 		// queryBuff.append(" WHERE rownum<10 ");
-		queryBuff.append(" WHERE task.task_id = map.task_id ");
+		queryBuff.append(" WHERE 1 = 1 ");
 		if(searchProcess != null) {			
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
