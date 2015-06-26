@@ -1,16 +1,12 @@
 package com.ctb.prism.inors.business;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,6 +48,7 @@ import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.inors.dao.IInorsDAO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.StudentPDFLogTO;
 import com.ctb.prism.inors.util.PdfGenerator;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.report.business.IReportBusiness;
@@ -1159,6 +1156,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					if(fileName != null) {
 						fileForStudent.add(fileName);
 						allIsr.add(fileName);
+						/*Code added to keep the student PDF log*/
+						StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
+						studentPDFLogTO.setStudentBioId(Long.valueOf(studentId));
+						studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
+						studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
+						studentPDFLogTO.setFileName(fileName);
+						inorsDAO.auditPDFUtiity(studentPDFLogTO);
 					} else {
 						job.append(",NO PDF std:").append(studentId).append("|subtst:").append(subtest) ;
 					}

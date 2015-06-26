@@ -31,6 +31,7 @@ import com.ctb.prism.inors.constant.InorsDownloadConstants;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
 import com.ctb.prism.inors.transferobject.GrtTO;
 import com.ctb.prism.inors.transferobject.InvitationCodeTO;
+import com.ctb.prism.inors.transferobject.StudentPDFLogTO;
 import com.ctb.prism.inors.util.InorsDownloadUtil;
 
 /**
@@ -1128,5 +1129,17 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		}
 		return returnMap;
 	}
+	
+	/*
+	 * Insert pdf log
+	 */
+	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO) {
+		getJdbcTemplatePrism().update(IQueryConstants.CREATE_STUDENT_PDF_LOG,
+				studentPDFLogTO.getStudentBioId(),
+				studentPDFLogTO.getSubtestId(),
+				studentPDFLogTO.getOrgNodeId(),
+				studentPDFLogTO.getFileName());		
+	}
+	
 
 }

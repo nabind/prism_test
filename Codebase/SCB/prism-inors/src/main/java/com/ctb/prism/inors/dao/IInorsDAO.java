@@ -7,6 +7,7 @@ import java.util.Map;
 import com.ctb.prism.core.transferobject.BaseTO;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.inors.transferobject.BulkDownloadTO;
+import com.ctb.prism.inors.transferobject.StudentPDFLogTO;
 
 /**
  * @author TCS
@@ -134,4 +135,9 @@ public interface IInorsDAO {
 	 */
 	public Map<String,Object> getTpCode(Map<String,Object> paramMap);
 
+	/*
+	 * @author Abir
+	 * @param
+	 */
+	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO); 
 }

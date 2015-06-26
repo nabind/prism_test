@@ -58,5 +58,9 @@ public interface IInorsQuery {
 	
 	public static final String GET_TP_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_TP_CODE(?, ?, ?)}";
 	
+	public static final String CREATE_STUDENT_PDF_LOG = CustomStringUtil.appendString(
+			"INSERT INTO STUDENT_PDF_LOG (STUDENT_BIO_ID,SUBTESTID,ORG_NODEID,FILENAME,CREATED_DATE_TIME) VALUES (",
+			" ?, ?, ?, ?, SYSDATE)");
+	
 }
 
