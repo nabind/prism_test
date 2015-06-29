@@ -101,22 +101,24 @@ public class MapService implements PrismPdfService {
 				String oldGrade = "", newGrade = "";
 				Map<String, String> map = new HashMap<String, String>();
 				Set<String> subtest = new HashSet<String>();
+				String strSubtest ="";
 				
 				// divide students based on grade
 				for(StudentTO studentTO : students) {
 					newGrade = studentTO.getGradeId();
 					subtest.add(studentTO.getSubtest());
+					strSubtest = studentTO.getSubtest();
 					if(oldGrade.equals(newGrade)) {
-						studentIds.append(studentTO.getStudentBioId()).append(",");
+						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
 					} else {
 						if("".equals(oldGrade)) {
 							oldGrade = newGrade;
-							studentIds.append(studentTO.getStudentBioId()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
 						} else {
 							//studentIds.delete(studentIds.length()-1, studentIds.length());
 							map.put(oldGrade, studentIds.toString());
 							studentIds = new StringBuffer();
-							studentIds.append(studentTO.getStudentBioId()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
 							oldGrade = newGrade;
 						}
 					}
@@ -168,24 +170,39 @@ public class MapService implements PrismPdfService {
 					
 					for (int i= 0; i < StudentIdArr.length; i++) {
 						for(String subtestId : subtest) {
-							keys.add(new KeyVersion(CustomStringUtil.appendString(rootLocForS3,  
-									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId,"_",StudentIdArr[i],".pdf")));
+							String[] stduentDetails = StudentIdArr[i].split(":");
+							if(stduentDetails[0].equals(subtestId))
+								keys.add(new KeyVersion(CustomStringUtil.appendString("/QA",rootLocForS3,  
+									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId,"_",stduentDetails[1],".pdf")));
 						}
 					}					
 					
 					removeFilesFromS3(keys);
+					StringBuffer chunkBuff = new StringBuffer();
 					
 					for(String chunkStud : chunks) {
 						// now iterate on subtests
 						for(String subtestId : subtest) {
+							String[] studentList = chunkStud.split(",");
+							for (int j=0; j <studentList.length ; j++) {
+								String[] stduentDetails = studentList[j].split(":");
+								if(subtestId.equals(stduentDetails[0])) {
+									chunkBuff.append(stduentDetails[1]).append(",");
+								}
+							}
+							String newChunks = chunkBuff.toString();
+							if(newChunks != null && newChunks.length() > 1) newChunks = newChunks.substring(0, newChunks.length()-1);
 							//Need to open the following  checking if we  want to put pdf if the student based on subtest with exact school folder in s3 
 							/*curStudentSchoolId = dao.getStudentCurrentSchool(chunkStud, subtestId, custProdId);
 							if(curStudentSchoolId != null && curStudentSchoolId.equals(schoolOrgNodeId)) {*/
+							if (newChunks != null && newChunks.length() >  0) {
 								String urlParameters = CustomStringUtil.appendString("p_test_administration=", custProdId, "&p_school=", schoolOrgNodeId, "&p_district_Id=", districtOrgNodeId,
-										"&p_grade=", gradeid, "&studentId=", chunkStud, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
+										"&p_grade=", gradeid, "&studentId=", newChunks, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
 										"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId);
 								
 								sendPost(mapProperties, urlParameters);
+								chunkBuff = new StringBuffer(); //reset buffer
+							}								
 							/*}*/
 							//break; // for debug
 						}
