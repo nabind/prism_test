@@ -101,13 +101,12 @@ public class MapService implements PrismPdfService {
 				String oldGrade = "", newGrade = "";
 				Map<String, String> map = new HashMap<String, String>();
 				Set<String> subtest = new HashSet<String>();
-				String strSubtest ="";
-				
+							
 				// divide students based on grade
 				for(StudentTO studentTO : students) {
 					newGrade = studentTO.getGradeId();
 					subtest.add(studentTO.getSubtest());
-					strSubtest = studentTO.getSubtest();
+
 					if(oldGrade.equals(newGrade)) {
 						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
 					} else {
