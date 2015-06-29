@@ -1131,10 +1131,17 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	}
 	
 	/*
-	 * Insert pdf log
+	 * Insert pdf log for PDF utility
+	 * @param StudentPDFLogTO
+	 * @param contractName
 	 */
-	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO) {
-		getJdbcTemplatePrism().update(IQueryConstants.CREATE_STUDENT_PDF_LOG,
+	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO,String contractName) {
+		logger.log(IAppLogger.INFO, "student:" + studentPDFLogTO.getStudentBioId());
+		logger.log(IAppLogger.INFO, "subtest:" + studentPDFLogTO.getSubtestId());
+		logger.log(IAppLogger.INFO, "school:" + studentPDFLogTO.getOrgNodeId());
+		logger.log(IAppLogger.INFO, "ISR File:" + studentPDFLogTO.getFileName());
+
+		getJdbcTemplatePrism(contractName).update(IQueryConstants.CREATE_STUDENT_PDF_LOG,
 				studentPDFLogTO.getStudentBioId(),
 				studentPDFLogTO.getSubtestId(),
 				studentPDFLogTO.getOrgNodeId(),
