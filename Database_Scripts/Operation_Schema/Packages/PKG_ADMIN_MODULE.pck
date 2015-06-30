@@ -369,7 +369,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
 
       END LOOP;
 
-      INSERT INTO PASSWORD_HISTORY
+      /*INSERT INTO PASSWORD_HISTORY
         (PWD_HISTORYID, USERID, PASSWORD, CREATED_DATE_TIME)
       VALUES
         (SEQ_PASSWORD_HISTORY.NEXTVAL, USERSEQID, P_IN_PASSWORD, SYSDATE);
@@ -377,7 +377,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ADMIN_MODULE IS
       PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(USERSEQID,
                                                    P_OUT_USER_REF_CURSOR,
                                                    P_OUT_ROLES_REF_CURSOR,
-                                                   P_OUT_EXCEP_ERR_MSG);
+                                                   P_OUT_EXCEP_ERR_MSG);*/
 
     END IF;
 
