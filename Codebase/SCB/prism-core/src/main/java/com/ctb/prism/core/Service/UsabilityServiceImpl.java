@@ -4,6 +4,7 @@
 package com.ctb.prism.core.Service;
 
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -26,7 +27,9 @@ import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
+import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
+import com.ctb.prism.webservice.transferobject.RosterDetailsTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -177,7 +180,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentList, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source, null);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
@@ -185,32 +188,38 @@ public class UsabilityServiceImpl implements IUsabilityService {
 
 	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj, String source) {
 		try {
+			String rosterId = getRosterId(studentListTO);
     		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentListTO, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source, rosterId);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void storeWSResponse(StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source) {
+		storeWSResponse(null, studentDataLoadTO, processId, requestObj, source);
+	}
+	
+	public void storeWSResponse(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source) {
 		try {
+			String rosterId = getRosterId(studentListTO);
 			JAXBContext jc = JAXBContext.newInstance( StudentDataLoadTO.class );
     		Marshaller mc = jc.createMarshaller();
     		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     		StreamResult result=new StreamResult(new StringWriter());
     		mc.marshal(studentDataLoadTO, result);
-    		storeWsObject(result.getWriter().toString(), processId, requestObj, source);
+    		storeWsObject(result.getWriter().toString(), processId, requestObj, source, rosterId);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void storeWsObject(String obj, long processId, boolean requestObj, String source) {
-		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj, source);
+	private void storeWsObject(String obj, long processId, boolean requestObj, String source, String rosterId) {
+		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj, source, rosterId);
 	}
 	
 	public void generateStudentXMLExtract(Map<String, Object> paramMap){
@@ -231,5 +240,33 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	
 	public void removeRoster(StudentListTO studentListTO) throws Exception {
 		usabilityBuisness.removeRoster(studentListTO);
+	}
+	
+	private String getRosterId(StudentListTO studentListTO) {
+		String rosterId = "";
+		try {
+			if(studentListTO != null) {
+				List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
+				for(RosterDetailsTO rosterDetailsTO : rosterDetailsList) {
+					rosterId = rosterId + rosterDetailsTO.getRosterId() + "-";
+				}
+				if(rosterId.length() > 0) rosterId = rosterId.substring(0, rosterId.length()-1);
+			}
+		} catch (Exception e) {}
+		return rosterId;
+	}
+	
+	private String getUuid(StudentList studentList) {
+		String uuid = "";
+		try {
+			if(studentList != null && studentList.getStudentDetails() != null) {
+				List<StudentDetails> studentDetailsList = studentList.getStudentDetails();
+				for(StudentDetails studentDetails : studentDetailsList) {
+					uuid = uuid + studentDetails.getUUID() + "-";
+				}
+				if(uuid.length() > 0) uuid = uuid.substring(0, uuid.length()-1);
+			}
+		} catch (Exception e) {}
+		return uuid;
 	}
 }

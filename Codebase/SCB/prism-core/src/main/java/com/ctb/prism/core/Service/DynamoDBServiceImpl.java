@@ -48,12 +48,16 @@ public class DynamoDBServiceImpl implements IDynamoDBService {
     @Autowired	private IRepositoryService repositoryService;
     
     public void storeWsObject(String environment, String obj, long processId, boolean requestObj, String source) {
+    	storeWsObject(environment, obj, processId, requestObj, source, null);
+    }
+    
+    public void storeWsObject(String environment, String obj, long processId, boolean requestObj, String source, String inRosterId) {
     	if(environment != null && processId != 0) {
 			String tableName = CustomStringUtil.appendString(wsTableName, environment.toUpperCase());
 			Table table = amazonDynamoDB.getTable(tableName);
 			String s3Location = "";
 			// get roster id for OAS
-			String rosterId = between(obj, "<rosterId>", "</rosterId>");
+			String rosterId = (inRosterId != null && inRosterId.length() > 0)? inRosterId : between(obj, "<rosterId>", "</rosterId>");
 			String uuid = between(obj, "<UUID>", "</UUID>");
 			try {
 				// store the xml to S3

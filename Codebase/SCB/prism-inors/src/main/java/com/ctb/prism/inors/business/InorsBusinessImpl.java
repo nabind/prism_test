@@ -1156,22 +1156,24 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					if(fileName != null) {
 						fileForStudent.add(fileName);
 						allIsr.add(fileName);
-						/*Code added to keep the student PDF log*/
-						String tempFileName = CustomStringUtil.appendString("MAP_ISR_",  groupDownloadTO.getTestAdministrationVal(), "_", 
-								groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
-								groupDownloadTO.getGrade(), "_", subtest,"_", studentId, ".pdf");
-					
-						String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-								groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGrade(),File.separator);
+						try {
+							/*Code added to keep the student PDF log*/
+							String tempFileName = CustomStringUtil.appendString("MAP_ISR_",  groupDownloadTO.getTestAdministrationVal(), "_", 
+									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
+									groupDownloadTO.getGrade(), "_", subtest,"_", studentId, ".pdf");
 						
-						String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
-						
-						StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
-						studentPDFLogTO.setStudentBioId(Long.valueOf(studentId));
-						studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
-						studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
-						studentPDFLogTO.setFileName(fullFileNameS3);
-						inorsDAO.auditPDFUtiity(studentPDFLogTO,contractName);
+							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
+									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGrade(),File.separator);
+							
+							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
+							
+							StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
+							studentPDFLogTO.setStudentBioId(Long.valueOf(studentId));
+							studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
+							studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
+							studentPDFLogTO.setFileName(fullFileNameS3);
+							inorsDAO.auditPDFUtiity(studentPDFLogTO,contractName);
+						} catch (Exception ex) {}
 					} else {
 						job.append(",NO PDF std:").append(studentId).append("|subtst:").append(subtest) ;
 					}

@@ -139,5 +139,5 @@ public interface IInorsDAO {
 	 * @author Abir
 	 * @param
 	 */
-	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO); 
+	public void auditPDFUtiity(StudentPDFLogTO studentPDFLogTO, String contractName); 
 }

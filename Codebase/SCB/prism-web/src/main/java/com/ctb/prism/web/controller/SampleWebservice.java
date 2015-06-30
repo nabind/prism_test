@@ -143,91 +143,106 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 		}
 		
     	try {
-    		if(usabilityService.createRoster(studentListTO)) {
+    		//if(usabilityService.createRoster(studentListTO)) {
 	    		partitionName = getPartitionName();
 	    		logger.log(logger.INFO, "    >> partitionName : " + partitionName);
 	    		System.out.println("    >> partitionName : " + partitionName);
 	    		if(partitionName != null && partitionName.length() > 0) {
-	    			studentDataLoadTO.setPartitionName(partitionName);
-	    			// create process
-	    			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
-	    			processId = studentDataLoadTO.getProcessId();
-	    			usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
-	    			storedLog = true;
-	    			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
-	    			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
-	    			// load student data into staging tables
-					studentDataLoadTO = usabilityService.updateStagingData(studentListTO, studentDataLoadTO);
-					if(studentDataLoadTO != null) {
-						studentDataLoadTO.setStatus("SUCCESS");
-						studentDataLoadTO.setStatusCode(1);
-						studentDataLoadTO.setSummary("Student loaded successfully");
-					}
-					logger.log(logger.INFO, "    >> Staging load is completed");
-					/* Staging load is completed */
-					
-					// Call ETL to start workflow
-					BufferedReader read = null;
-					logger.log(logger.INFO, "    >> Before Proc Call");
-					
-					File file = new File(propertyLookup.get("ETL.file.loc"));
-					String[] commands = new String[]{
-							propertyLookup.get("ETL.shell.command.1"),
-							propertyLookup.get("ETL.shell.command.2"),
-							studentDataLoadTO.getPartitionName()
-							};
-					Process proc =  Runtime.getRuntime().exec(commands,null,file);
-									
-					logger.log(logger.INFO, "    >> After Proc Call");
-					read = new BufferedReader(new InputStreamReader(
-		                    proc.getInputStream()));
-					try {
-		                proc.waitFor();
-		                logger.log(logger.INFO, "    >> After wait for");	               
-		            } catch (InterruptedException e) {
-		            	logger.log(logger.ERROR, e.getMessage());
-		                proc.getErrorStream();
-		            }    
-		            while (read.ready()) {
-		            	logger.log(logger.INFO, read.readLine());
-		            	logger.log(logger.INFO, "    >> After read ready");	                	
-		            }
-		            
-		            // Read status from org_process_status table and update studentDataLoadTO.StatusCode and return
-		            logger.log(logger.INFO, "    >> ETL data validation is completed. Checking status ... ");
-		            // Get validation status
-		            ProcessTO processTO = new ProcessTO();
-		            processTO.setProcessId(""+studentDataLoadTO.getProcessId());
-		            processTO = usabilityService.getProces(processTO);
-		            
-		            logger.log(logger.INFO, "    >> processTO : ");
-		            logger.log(logger.INFO, processTO.toString()); 
-		            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getErValidation())) {
-		            	logger.log(logger.INFO, "    >> ER VALIDATION FAILED !!! ");
-		            	studentDataLoadTO.setStatus("ER_ERROR");
-		    			studentDataLoadTO.setStatusCode(-99);
-		    			List<String> errorMessage = new ArrayList<String>();
-		    			errorMessage.add(processTO.getProcessLog());
-		    			studentDataLoadTO.setErrorMessages(errorMessage);
-		    			studentDataLoadTO.setSummary("ER data validation failed");
-		            } else {
-			            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getHierValidation())
-			            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getBioValidation())
-			            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getDemoValidation())
-			            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getContentValidation())
-			            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getObjectiveValidation())
-			            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getItemValidation())
-			            	) {
-			            	logger.log(logger.INFO, "Data validation failed");
-			            	studentDataLoadTO.setStatus("ERROR");
-			    			studentDataLoadTO.setStatusCode(0);
+	    			if(usabilityService.createRoster(studentListTO)) {
+		    			studentDataLoadTO.setPartitionName(partitionName);
+		    			// create process
+		    			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
+		    			processId = studentDataLoadTO.getProcessId();
+		    			usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
+		    			storedLog = true;
+		    			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
+		    			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
+		    			// load student data into staging tables
+						studentDataLoadTO = usabilityService.updateStagingData(studentListTO, studentDataLoadTO);
+						if(studentDataLoadTO != null) {
+							studentDataLoadTO.setStatus("SUCCESS");
+							studentDataLoadTO.setStatusCode(1);
+							studentDataLoadTO.setSummary("Student loaded successfully");
+						}
+						logger.log(logger.INFO, "    >> Staging load is completed");
+						/* Staging load is completed */
+						
+						// Call ETL to start workflow
+						BufferedReader read = null;
+						logger.log(logger.INFO, "    >> Before Proc Call");
+						
+						File file = new File(propertyLookup.get("ETL.file.loc"));
+						String[] commands = new String[]{
+								propertyLookup.get("ETL.shell.command.1"),
+								propertyLookup.get("ETL.shell.command.2"),
+								studentDataLoadTO.getPartitionName()
+								};
+						Process proc =  Runtime.getRuntime().exec(commands,null,file);
+										
+						logger.log(logger.INFO, "    >> After Proc Call");
+						read = new BufferedReader(new InputStreamReader(
+			                    proc.getInputStream()));
+						try {
+			                proc.waitFor();
+			                logger.log(logger.INFO, "    >> After wait for");	               
+			            } catch (InterruptedException e) {
+			            	logger.log(logger.ERROR, e.getMessage());
+			                proc.getErrorStream();
+			            }    
+			            while (read.ready()) {
+			            	logger.log(logger.INFO, read.readLine());
+			            	logger.log(logger.INFO, "    >> After read ready");	                	
+			            }
+			            
+			            // Read status from org_process_status table and update studentDataLoadTO.StatusCode and return
+			            logger.log(logger.INFO, "    >> ETL data validation is completed. Checking status ... ");
+			            // Get validation status
+			            ProcessTO processTO = new ProcessTO();
+			            processTO.setProcessId(""+studentDataLoadTO.getProcessId());
+			            processTO = usabilityService.getProces(processTO);
+			            
+			            logger.log(logger.INFO, "    >> processTO : ");
+			            logger.log(logger.INFO, processTO.toString()); 
+			            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getErValidation())) {
+			            	logger.log(logger.INFO, "    >> ER VALIDATION FAILED !!! ");
+			            	studentDataLoadTO.setStatus("ER_ERROR");
+			    			studentDataLoadTO.setStatusCode(-99);
 			    			List<String> errorMessage = new ArrayList<String>();
 			    			errorMessage.add(processTO.getProcessLog());
 			    			studentDataLoadTO.setErrorMessages(errorMessage);
-			    			studentDataLoadTO.setSummary("Data validation failed");
+			    			studentDataLoadTO.setSummary("ER data validation failed");
+			            } else {
+				            if(!IApplicationConstants.COMPLETED_FLAG.equals(processTO.getHierValidation())
+				            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getBioValidation())
+				            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getDemoValidation())
+				            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getContentValidation())
+				            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getObjectiveValidation())
+				            		|| !IApplicationConstants.COMPLETED_FLAG.equals(processTO.getItemValidation())
+				            	) {
+				            	logger.log(logger.INFO, "Data validation failed");
+				            	studentDataLoadTO.setStatus("ERROR");
+				    			studentDataLoadTO.setStatusCode(0);
+				    			List<String> errorMessage = new ArrayList<String>();
+				    			errorMessage.add(processTO.getProcessLog());
+				    			studentDataLoadTO.setErrorMessages(errorMessage);
+				    			studentDataLoadTO.setSummary("Data validation failed");
+				            }
 			            }
-		            }
-		            //return studentDataLoadTO; 
+			            //return studentDataLoadTO; 
+			            //Moved this section in order to delete roster row from OAS_WS_ROSTER
+			    		try {
+							usabilityService.removeRoster(studentListTO);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		    		} else {
+		    			studentDataLoadTO.setStatus("ERROR");
+		    			studentDataLoadTO.setStatusCode(0);
+		    			List<String> errorMessage = new ArrayList<String>();
+		    			errorMessage.add("Duplicate roster processing is in progress. Please try later.");
+		    			studentDataLoadTO.setErrorMessages(errorMessage);
+		    			studentDataLoadTO.setSummary("Duplicate roster processing");
+		    		}
 	    		} else {
 	    			studentDataLoadTO.setStatus("ERROR");
 	    			studentDataLoadTO.setStatusCode(0);
@@ -236,21 +251,21 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	    			studentDataLoadTO.setErrorMessages(errorMessage);
 	    			studentDataLoadTO.setSummary("All processes are busy");
 	    		}
-	    		//Moved this section in order to delete roster row from OAS_WS_ROSTER
+	    		/*//Moved this section in order to delete roster row from OAS_WS_ROSTER
 	    		try {
 					usabilityService.removeRoster(studentListTO);
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
+				}*/
 	    		
-    		} else {
+    		/*} else {
     			studentDataLoadTO.setStatus("ERROR");
     			studentDataLoadTO.setStatusCode(0);
     			List<String> errorMessage = new ArrayList<String>();
     			errorMessage.add("Duplicate roster processing is in progress. Please try later.");
     			studentDataLoadTO.setErrorMessages(errorMessage);
     			studentDataLoadTO.setSummary("Duplicate roster processing");
-    		}
+    		}*/
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "SampleWebservice - loadStudentData :: " + e.getMessage());
 			// TODO update process with ERROR LOG and change all validation status to error
@@ -260,6 +275,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 			studentDataLoadTO.setStatusCode(0);
 			List<String> errorMessage = new ArrayList<String>();
 			errorMessage.add("Error invoking web service. Please try later.");
+			errorMessage.add("Error: " + e.getMessage());
 			studentDataLoadTO.setErrorMessages(errorMessage);
 			studentDataLoadTO.setSummary("Student dataload failed");
 			e.printStackTrace();
@@ -295,7 +311,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 	    		mc.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	    		mc.marshal(studentDataLoadTO, System.out);
     		}
-    		usabilityService.storeWSResponse(studentDataLoadTO, studentDataLoadTO.getProcessId(), false, "OAS");
+    		usabilityService.storeWSResponse(studentListTO, studentDataLoadTO, studentDataLoadTO.getProcessId(), false, "OAS");
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
