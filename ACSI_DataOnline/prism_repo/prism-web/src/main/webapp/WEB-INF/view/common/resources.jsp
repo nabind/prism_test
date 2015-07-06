@@ -22,8 +22,10 @@
 					<li class="mid-margin-left font-12 small-line-height"><a class="resources" onclick="downloadResources(this)" href="#nogo" param="acsipdf.do?pdfFileName=Static_PDF/Longitudinal_Tracking_Prep_Info.pdf&userType=${currOrg}" > Preparation for Longitudinal Tracking</a></li>
 					
 					<sec:authorize ifAnyGranted="ROLE_ACSI">
-					<li class="mid-margin-left font-12 small-line-height no-shadow"><a class="resources" onclick="downloadResources(this)" href="#nogo" param="acsipdf.do?pdfFileName=Static_PDF/2012_School_names.pdf&userType=${currOrg}" > School Name List</a></li>
+					<li class="mid-margin-left font-12 small-line-height"><a class="resources" onclick="downloadResources(this)" href="#nogo" param="acsipdf.do?pdfFileName=Static_PDF/2012_School_names.pdf&userType=${currOrg}" > School Name List</a></li>
 					</sec:authorize>
+					<li class="mid-margin-left font-12 small-line-height"><a class="resources" onclick="downloadResources(this)" href="#nogo" param="acsipdf.do?pdfFileName=Static_PDF/Moderate_Mastery_Ranges.pdf&userType=${currOrg}" > Moderate Mastery Ranges</a></li>
+					<li class="mid-margin-left font-12 small-line-height no-shadow"><a class="resources" onclick="downloadResources(this)" href="#nogo" param="acsipdf.do?pdfFileName=Static_PDF/SS_to_GE_and_SS_to_GME.pdf&userType=${currOrg}" > SS to GE and SS to GME</a></li>
 				</sec:authorize>	
 				<sec:authorize ifAnyGranted="ROLE_PARENT">
 					<li class="mid-margin-left font-12 small-line-height">
