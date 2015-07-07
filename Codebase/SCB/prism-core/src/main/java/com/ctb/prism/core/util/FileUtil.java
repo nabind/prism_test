@@ -803,7 +803,7 @@ public class FileUtil {
 	
 	/*
 	 * @author Abir
-	 * Cleanup files from /opt/TemIC folder which are older than 3 days
+	 * Cleanup files from /opt/TemIC folder which are older than 1 days
 	 * @param noOfDays
 	 * @param propertyLookup
 	 * 

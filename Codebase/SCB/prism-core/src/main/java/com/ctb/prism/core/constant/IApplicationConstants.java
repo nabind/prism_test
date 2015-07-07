@@ -291,6 +291,6 @@ public interface IApplicationConstants {
 	public static final String SSO_REDIRECT_LOGINFAIL ="sso.redirect.loginfail";
 	public static final String SSO_REDIRECT_LOGOUT ="sso.redirect.logout";
 	
-	public static final String OFFSET_DAYS="3";
+	public static final String OFFSET_DAYS="1";
 	
 }
