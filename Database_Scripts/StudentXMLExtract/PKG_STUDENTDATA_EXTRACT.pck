@@ -1,5 +1,7 @@
 CREATE OR REPLACE PACKAGE PKG_STUDENTDATA_EXTRACT IS
 
+  TYPE REF_CURSOR IS REF CURSOR;  
+
   PROCEDURE SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  IN NUMBER,
                                        P_DATE_OFFSET IN NUMBER DEFAULT 0,
                                        P_START_DATE  IN VARCHAR2,
@@ -15,11 +17,20 @@ CREATE OR REPLACE PACKAGE PKG_STUDENTDATA_EXTRACT IS
                                           IN_DATE_OFFSET IN NUMBER,
                                           IN_START_DATE  IN VARCHAR2,
                                           IN_END_DATE    IN VARCHAR2);
+  
+  PROCEDURE SP_CUSTOMER_STD_EXTRACT_ONLINE(IN_CUSTOMERID  IN NUMBER,
+                                          IN_DATE_OFFSET IN NUMBER,
+                                          IN_START_DATE  IN VARCHAR2,
+                                          IN_END_DATE    IN VARCHAR2);                                          
 
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_WEEKLY;
   
   PROCEDURE SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID IN NUMBER, IN_CUSTOMERID NUMBER , lv_ER_demo_CODE_det_typ IN OUT NOCOPY ER_demo_CODE_det_typ )  ; 
-
+  
+  PROCEDURE SP_GET_CLOB_XML_FILE( P_IN_JOB             IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
+                                  P_IN_CUSTOMERID      IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
+                                  P_OUT_REF_CURSOR     OUT REF_CURSOR,
+                                  P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
 END PKG_STUDENTDATA_EXTRACT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
@@ -92,12 +103,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
      WHERE DIRECTORY_NAME = LV_DIRECTORY_NAME;
   
     IF (P_DATE_OFFSET >= 0 AND P_START_DATE = 'NA' AND P_END_DATE = 'NA' AND
-       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O')) THEN
+       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O'  OR P_FTP_MODE = 'OL')) THEN
     
       LV_EXTRACT_START_DATE := TRUNC(SYSDATE - P_DATE_OFFSET);
       LV_EXTRACT_END_DATE   := TRUNC(SYSDATE);
       DBMS_OUTPUT.PUT_LINE('4');
-    ELSIF (P_FTP_MODE = 'R') THEN
+    ELSIF (P_FTP_MODE = 'R' OR P_FTP_MODE = 'OL') THEN
     
       SELECT TRUNC(TO_DATE(P_START_DATE, 'MMDDYYYY'))
         INTO LV_EXTRACT_START_DATE
@@ -137,6 +148,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
   
     LV_JOB_ID := JOB_SEQ.NEXTVAL;
     DBMS_OUTPUT.PUT_LINE('LV_JOB_ID' || LV_JOB_ID);
+    
+    IF (P_FTP_MODE = 'W') THEN
+      LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCWEEKLY_STUDENTDATAFILE_' ||
+                      TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
+    ELSIF (P_FTP_MODE = 'OL') THEN
+      LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCONLINE_STUDENTDATAFILE_' ||
+                      TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') || '.xml';    
+    ELSE
+      LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASC_STUDENTDATAFILE_' ||
+                      TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
+    END IF;
+    
     INSERT INTO JOB_TRACKING
       (JOB_ID,
        USERID,
@@ -169,7 +192,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
        'SDF',
        NULL,
        NULL,
-       NULL,
+       LV_FILE_NAME,
        NULL,
        TO_CHAR(SYSDATE, 'mm/dd/yyyy hh:mi:ss') ||
        '***TASC PRISM XML STUDENT DOWNLOAD IS IN PROGRESS *** ',
@@ -497,9 +520,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                   FROM TABLE(LV_ORGDETAILS_ARR) A
                  WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID);
       
-        --Added by Indranil for ELA & OVC
+        --Added by Indranil for ELA & OVC 
+        --Removed by debashis on 12/02/2015 as this is not required  
       
-        SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
+       /* SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
                                          SUBTEST_VW.SUBTESTID,
                                          SUBTEST_VW.CUSTOMERID,
                                          SUBTEST_VW.SUBTEST_NAME,
@@ -575,7 +599,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                    AND STD.STUDENT_BIO_ID IN
                        (SELECT DISTINCT STUDENT_BIO_ID
                           FROM TABLE(LV_ORGDETAILS_ARR) A
-                         WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID)) SUBTEST_VW;
+                         WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID)) SUBTEST_VW;*/
       
         -- Org Node Details
         FOR J IN (SELECT DISTINCT ORG_NAME,
@@ -883,15 +907,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     
     END IF;
   
-    IF (P_FTP_MODE = 'W') THEN
+/*    IF (P_FTP_MODE = 'W') THEN
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCWEEKLY_STUDENTDATAFILE_' ||
                       TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
+    ELSIF (P_FTP_MODE = 'OL') THEN
+      LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCONLINE_STUDENTDATAFILE_' ||
+                      TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') || '.xml';    
     ELSE
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASC_STUDENTDATAFILE_' ||
                       TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
-    END IF;
+    END IF;*/
   
-    DBMS_XSLPROCESSOR.CLOB2FILE(LV_XML1, LV_DIRECTORY_NAME, LV_FILE_NAME);
+    IF (P_FTP_MODE <> 'OL') THEN
+       DBMS_XSLPROCESSOR.CLOB2FILE(LV_XML1, LV_DIRECTORY_NAME, LV_FILE_NAME);
+    END IF;       
   
     UPDATE JOB_TRACKING A
        SET --A.EXTRACT_ENDDATE   = SYSDATE,
@@ -899,7 +928,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                 TO_CHAR(SYSDATE, 'mm/dd/yyyy hh:mi:ss') ||
                                 '***TASC PRISM XML STUDENT DOWNLOAD IS COMPLETED *** ',
            A.JOB_STATUS        = 'CO',
-           A.REQUEST_FILENAME  = LV_FILE_NAME,
+           --A.REQUEST_FILENAME  = LV_FILE_NAME,
            A.UPDATED_DATE_TIME = SYSDATE
      WHERE JOB_ID = LV_JOB_ID;
   
@@ -1043,6 +1072,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     /*    insert into temp (abc) values (IN_END_DATE);
     commit; */
   END;
+  
+  
+  PROCEDURE SP_CUSTOMER_STD_EXTRACT_ONLINE(IN_CUSTOMERID  IN NUMBER,
+                                          IN_DATE_OFFSET IN NUMBER,
+                                          IN_START_DATE  IN VARCHAR2,
+                                          IN_END_DATE    IN VARCHAR2) IS
+  BEGIN
+    /* insert into temp (abc) values (IN_START_DATE);
+    commit; */
+
+    SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  => IN_CUSTOMERID,
+                               P_DATE_OFFSET => IN_DATE_OFFSET,
+                               P_START_DATE  => IN_START_DATE,
+                               P_END_DATE    => IN_END_DATE,
+                               P_FTP_MODE    => 'OL');
+    /*    insert into temp (abc) values (IN_END_DATE);
+    commit; */
+  END;
 
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_WEEKLY IS
   BEGIN
@@ -1140,7 +1187,24 @@ SELECT ER_DEMO_CODE_DET_OBJ(STUDENT_BIO_ID,
      END IF ; */
    
   END ;  
+ 
+ PROCEDURE SP_GET_CLOB_XML_FILE( P_IN_JOB             IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
+                                 P_IN_CUSTOMERID      IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
+                                 P_OUT_REF_CURSOR     OUT REF_CURSOR,
+                                 P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
 
+  BEGIN
+
+    OPEN P_OUT_REF_CURSOR FOR
+      SELECT JOB_ID,CUSTOMERID,STUDENTDATA_XML
+        FROM  STUDENTDATA_EXTRACT  
+       WHERE JOB_ID = P_IN_JOB AND CUSTOMERID = P_IN_CUSTOMERID;
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
+
+  END SP_GET_CLOB_XML_FILE;
 
 
 END PKG_STUDENTDATA_EXTRACT;
