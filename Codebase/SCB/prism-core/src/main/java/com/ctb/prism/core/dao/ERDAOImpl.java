@@ -257,7 +257,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, bioDetails.getFirstName());
 				cs.setString(count++, bioDetails.getMiddleName());
 				cs.setString(count++, bioDetails.getLastName());
-				cs.setDate(count++, toDate(bioDetails.getDateOfBirth()));
+				//cs.setDate(count++, toDate(bioDetails.getDateOfBirth()));
+				cs.setString(count++, bioDetails.getDateOfBirth());
 				cs.setString(count++, bioDetails.getGender());
 				cs.setString(count++, demoDetails.getGovernmentID());
 				cs.setString(count++, demoDetails.getGovernmentIDType());
@@ -278,7 +279,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, demoDetails.getAttendCollege());
 				cs.setString(count++, demoDetails.getContact());
 				cs.setString(count++, demoDetails.getExamineeCcountyParishCode());
-				cs.setTimestamp(count++, toDateTimestamp(demoDetails.getRegisteredOn()));
+				//cs.setTimestamp(count++, toDateTimestamp(demoDetails.getRegisteredOn()));
+				cs.setString(count++, demoDetails.getRegisteredOn());
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenter());
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCode());
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCountyParishCode());
@@ -336,9 +338,11 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 						bioDetails.getLastName(), ", ", bioDetails.getFirstName(), " ", bioDetails.getMiddleName()));
 				cs.setLong(count++, studentDataLoadTO.getStudentBioDetailsId());
 				cs.setLong(count++, toLong(scheduleDetails.getScheduleID()));
-				cs.setTimestamp(count++, toDateTimestamp(scheduleDetails.getDateScheduled()));
+				//cs.setTimestamp(count++, toDateTimestamp(scheduleDetails.getDateScheduled()));
+				cs.setString(count++, scheduleDetails.getDateScheduled());
 				cs.setString(count++, scheduleDetails.getTimeOfDay());
-				cs.setTimestamp(count++, toDateTimestamp(scheduleDetails.getDateCheckedIn()));
+				//cs.setTimestamp(count++, toDateTimestamp(scheduleDetails.getDateCheckedIn()));
+				cs.setString(count++, scheduleDetails.getDateCheckedIn());
 				cs.setLong(count++, toLong(scheduleDetails.getContentAreaCode()));
 				cs.setString(count++, scheduleDetails.getContentTestType());
 				cs.setLong(count++, toLong(scheduleDetails.getContentTestCode()));
