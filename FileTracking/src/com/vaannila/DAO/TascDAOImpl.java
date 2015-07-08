@@ -1442,6 +1442,9 @@ public class TascDAOImpl {
 		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 			queryBuff.append(" and state_code = ? ");
 		}
+		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+			queryBuff.append(" and pp_oas_linkedid = ? ");
+		}
 		
 		queryBuff.append("order by 2 ");
 		String query = queryBuff.toString();
@@ -1456,6 +1459,9 @@ public class TascDAOImpl {
 			}
 			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+				pstmt.setString(++count, searchProcess.getTestElementId());
 			}
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
@@ -1497,15 +1503,18 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 				
-		queryBuff.append("select exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP') type, trunc(datetimestamp), hist.schedule_id from er_exception_data exc, er_student_sched_history hist  where hist.er_ss_histid = exc.er_ss_histid  and source_system = 'ERESOURCE'  ");
+		queryBuff.append("select distinct exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,'0','OL','PP') type, trunc(datetimestamp), hist.schedule_id from er_exception_data exc, er_student_sched_history hist  where hist.er_ss_histid = exc.er_ss_histid  and source_system = 'ERESOURCE'  ");
 		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
 			queryBuff.append(" and exc.er_uuid like ? ");
 		}
 		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 			queryBuff.append(" and exc.state_code = ? ");
 		}
+		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+			queryBuff.append(" and test_element_id = ? ");
+		}
 		
-		queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,0,'OL','PP'), trunc(datetimestamp),hist.schedule_id ");
+		//queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,'0','OL','PP'), trunc(datetimestamp),hist.schedule_id ");
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
@@ -1519,6 +1528,10 @@ public class TascDAOImpl {
 			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 				pstmt.setString(++count, searchProcess.getStateCode() );
 			}
+			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+				pstmt.setString(++count, searchProcess.getTestElementId());
+			}
+			
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new StudentDetailsTO();
@@ -1564,6 +1577,9 @@ public class TascDAOImpl {
 		if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 			queryBuff.append(" and state_code = ? ");
 		}
+		if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+			queryBuff.append(" and test_element_id = ? ");
+		}
 		
 		String query = queryBuff.toString();
 		System.out.println(query);
@@ -1577,6 +1593,9 @@ public class TascDAOImpl {
 			}
 			if(searchProcess != null && searchProcess.getStateCode() != null && searchProcess.getStateCode().length() > 0) {
 				pstmt.setString(++count, searchProcess.getStateCode() );
+			}
+			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
+				pstmt.setString(++count, searchProcess.getTestElementId());
 			}
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
