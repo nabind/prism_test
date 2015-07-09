@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.ctb.prism.core.business.IUsabilityBusiness;
@@ -221,7 +222,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	private void storeWsObject(String obj, long processId, boolean requestObj, String source, String rosterId) {
 		dynamoDBService.storeWsObject(propertyLookup.get("environment.postfix"), obj, processId, requestObj, source, rosterId);
 	}
-	
+	@Async
 	public void generateStudentXMLExtract(Map<String, Object> paramMap){
 		usabilityBuisness.generateStudentXMLExtract(paramMap);
 	}
