@@ -412,8 +412,8 @@ public class FileUtil {
 			}
 		}
 	}
-
-	public static String fileSize(byte[] fileBytes) {
+//Code Changed in order to calculate exact file size(upto two decimal)
+/*	public static String fileSize(byte[] fileBytes) {
 		double size = 0;
 		DecimalFormat f = new DecimalFormat("##.00");
 		size = fileBytes.length / 1024 / 1024;
@@ -423,8 +423,20 @@ public class FileUtil {
 		} else {
 			return (f.format(size) + " M");
 		}
-	}
+	}*/
 
+	public static String fileSize(byte[] fileBytes) {
+		double size = 0.00d;
+		DecimalFormat f = new DecimalFormat("##.##");
+		size = (double)(fileBytes.length / 1024) / 1024;
+		if (size <1) {
+			size = (double) fileBytes.length / 1024;
+			return (f.format(size) + " K");
+		} else {
+			return (f.format(size) + " M");
+		}
+	}
+	
 	/**
 	 * Returns the file name from the file path.
 	 * 
@@ -818,5 +830,7 @@ public class FileUtil {
             FileUtils.deleteQuietly(filesToDelete.next()); 
         }  //don't want an exception if a file is not deleted. Otherwise use filesToDelete.next().delete() in a try/catch
     }
+	
+
 
 }
