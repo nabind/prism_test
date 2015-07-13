@@ -57,7 +57,7 @@
 		$(document).ready(function() {
 		//=====================PASSWORD Expiration Warning================= 				
 		 	if($('#new-tab0_new-tab0').length > 0 && $('#pwdWarning').val() == 'TRUE') {
-				notify('Notification!', 'Password is near to expiry <b>Consider Changing your password</b>.', {
+				notify('Notification!', 'Your password will expire soon.<b> Please consider changing your password.</b>', {
 					system:				true,
 					vPos:				'top',
 					hPos:				'center',
