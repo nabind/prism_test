@@ -367,6 +367,22 @@ public class ReportBusinessImpl implements IReportBusiness {
 					methodName = CustomStringUtil.appendString("set", labelId.substring(0, 1).toUpperCase(), labelId.substring(1));
 					Method setterMethod = clazz.getMethod(methodName, new Class[] { List.class });
 					setterMethod.invoke(obj, list);
+					
+					/*Defect 82735
+					 * Patch for missouri from student label to roster report 
+					 * Number of filter increasing in roster, hence default value -99 is getting replaced
+					 * for subtest and grade, resulting incorrect input query value 
+					 * But we need to make sure for the first time load -99 value should not be replaced
+					*/
+					if( "/public/Missouri/Report/Student_Roster_files".equals(reportUrl) 
+							&& (labelId.equals("p_grade") || labelId.equals("p_subtest")) 
+							&& sessionParams.get("p_district_Id")!= null) 	{
+						String[] listValues = new String[list.size()];
+						for (int s=0; s < list.size(); s++){
+							listValues[s] =  list.get(0).getValue();
+						}
+					  sessionParams.put(labelId, listValues);
+					}
 				} catch (Exception e) {
 					logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Could not invoke method ", methodName, "on ReportFilterTO"), e);
 				}
