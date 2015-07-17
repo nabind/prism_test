@@ -208,6 +208,7 @@
 							<p class="button-height inline-label">
 									<label class="label" for="editMenuType"><spring:message code="label.menuName" /></label>
 									<select id="editMenuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
+										<option value="106"><spring:message code="label.reports.istepSpring2015" /></option>
 										<option value="101"><spring:message code="label.reports" /></option>
 										<option value="102"><spring:message code="label.downloads" /></option>
 										<option value="103"><spring:message code="menuName.content.rsc" /></option>
@@ -290,6 +291,7 @@
 							<p class="button-height inline-label">
 									<label class="label" for="reportType"><spring:message code="label.menuName" /></label>
 									<select id="menuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
+										<option value="106"><spring:message code="label.reports.istepSpring2015" /></option>
 										<option value="101"><spring:message code="label.reports" /></option>
 										<option value="102"><spring:message code="label.downloads" /></option>
 										<option value="103"><spring:message code="menuName.content.rsc" /></option>

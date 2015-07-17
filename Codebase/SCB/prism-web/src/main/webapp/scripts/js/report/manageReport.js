@@ -377,7 +377,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("#editReportForm").modal({
 				title: strings['msg.editReport'],
 				height: 470,
-				width: 400,
+				width: 440,
 				resizable: false,
 				draggable: false,
 				buttons: {
@@ -639,7 +639,7 @@ $('.delete-Report').live("click", function() {
 		$("#addReport").modal({
 			title: strings['msg.addReport'],
 			height:470,
-			width:400,
+			width:440,
 			draggable: false,
 			buttons: {
 				'Cancel': {
