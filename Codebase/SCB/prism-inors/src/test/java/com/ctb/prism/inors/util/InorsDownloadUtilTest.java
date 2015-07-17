@@ -1,7 +1,6 @@
 package com.ctb.prism.inors.util;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,13 +10,19 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.admin.transferobject.UserDataTO;
 import com.ctb.prism.admin.transferobject.UserTO;
 
-public class InorsDownloadUtilTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/test-context.xml" })
+public class InorsDownloadUtilTest  extends AbstractJUnit4SpringContextTests {
 
-	InorsDownloadUtil util;
+/*	InorsDownloadUtil util;
 
 	@Before
 	public void setUp() throws Exception {
@@ -26,20 +31,20 @@ public class InorsDownloadUtilTest {
 
 	@After
 	public void tearDown() throws Exception {
-	}
+	}*/
 
 	@Test
 	public void testGetTableDataBytes() {
 		ArrayList<ArrayList<String>> tableData = null;
 		String delimiter = ",";
-		byte[] bytes = util.getTableDataBytes(tableData, delimiter);
+		byte[] bytes = InorsDownloadUtil.getTableDataBytes(tableData, delimiter);
 		assertNotNull(bytes);
 
 		tableData = new ArrayList<ArrayList<String>>();
 		ArrayList<String> listData = new ArrayList<String>();
 		listData.add("Hello");
 		tableData.add(listData);
-		bytes = util.getTableDataBytes(tableData, delimiter);
+		bytes = InorsDownloadUtil.getTableDataBytes(tableData, delimiter);
 		assertNotNull(bytes);
 	}
 
@@ -47,11 +52,11 @@ public class InorsDownloadUtilTest {
 	public void testWrap() {
 		Object data = null;
 		char wrapChar = '"';
-		String s = util.wrap(data, wrapChar);
+		String s = InorsDownloadUtil.wrap(data, wrapChar);
 		assertNotNull(s);
 
 		data = "Hello";
-		s = util.wrap(data, wrapChar);
+		s = InorsDownloadUtil.wrap(data, wrapChar);
 		assertNotNull(s);
 	}
 
@@ -59,12 +64,12 @@ public class InorsDownloadUtilTest {
 	public void testGetUserDataBytes() {
 		List<UserDataTO> userList = null;
 		String delimiter = ",";
-		byte[] bytes = util.getUserDataBytes(userList, delimiter);
+		byte[] bytes = InorsDownloadUtil.getUserDataBytes(userList, delimiter);
 		assertNotNull(bytes);
 
 		userList = new ArrayList<UserDataTO>();
 		userList.add(new UserDataTO());
-		bytes = util.getUserDataBytes(userList, delimiter);
+		bytes = InorsDownloadUtil.getUserDataBytes(userList, delimiter);
 		assertNotNull(bytes);
 	}
 
@@ -72,7 +77,7 @@ public class InorsDownloadUtilTest {
 	public void testGetUserDataList() {
 		List<UserTO> userList = new ArrayList<UserTO>();
 		userList.add(new UserTO());
-		List<UserDataTO> userDataList = util.getUserDataList(userList);
+		List<UserDataTO> userDataList = InorsDownloadUtil.getUserDataList(userList);
 		assertNotNull(userDataList);
 	}
 
@@ -81,17 +86,17 @@ public class InorsDownloadUtilTest {
 		ResultSet rs = null;
 		ArrayList<String> aliasList = new ArrayList<String>();
 		ArrayList<String> headerList = new ArrayList<String>();
-		ArrayList<ArrayList<String>> lostOfList = util.getTableDataFromResultSet(rs, aliasList, headerList);
+		ArrayList<ArrayList<String>> lostOfList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
 	}
 
 	@Test
 	public void testGetRowDataLayout() {
 		String commaString = null;
-		ArrayList<String> stringList = util.getRowDataLayout(commaString);
+		ArrayList<String> stringList = InorsDownloadUtil.getRowDataLayout(commaString);
 		assertNotNull(stringList);
 		
 		commaString = "A,B";
-		stringList = util.getRowDataLayout(commaString);
+		stringList = InorsDownloadUtil.getRowDataLayout(commaString);
 		assertNotNull(stringList);
 	}
 

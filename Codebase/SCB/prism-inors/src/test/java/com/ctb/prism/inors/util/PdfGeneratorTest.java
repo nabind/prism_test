@@ -67,8 +67,8 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testSplitPDF() throws FileNotFoundException {
-		InputStream inputStream = new FileInputStream("test.pdf");
-        OutputStream outputStream = new FileOutputStream("test.pdf");
+		InputStream inputStream = new FileInputStream("Candidate_Report_10.pdf");
+        OutputStream outputStream = new FileOutputStream("Candidate_Report_10.pdf");
         int fromPage = 1;
         int toPage  = 2;
         PdfGenerator.splitPDF(inputStream, outputStream, fromPage, toPage);
@@ -78,9 +78,9 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 	@Test
 	public void testConcatPDFs() throws FileNotFoundException {
 		List<String> listOfPDFFiles = new ArrayList<String>();
-		listOfPDFFiles.add("test1.pdf");
-		listOfPDFFiles.add("test2.pdf");
-        OutputStream outputStream = new FileOutputStream("test.pdf");
+		listOfPDFFiles.add("Candidate_Report_10.pdf");
+		listOfPDFFiles.add("Candidate_Report_11.pdf");
+        OutputStream outputStream = new FileOutputStream("Candidate_Report_10.pdf");
         boolean paginate = true;
         PdfGenerator.concatPDFs(listOfPDFFiles, outputStream, paginate);
         assertNotNull("");
@@ -90,9 +90,9 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 	@Test
 	public void testZipit() throws Exception {
 		List<String> files = new ArrayList<String>();
-		files.add("test.pdf");
+		files.add("Candidate_Report_10.pdf");
 		List<String> arcFiles = new ArrayList<String>();
-		files.add("test.pdf");
+		files.add("Candidate_Report_10.pdf");
 		String zipName = "test.zip";
 		PdfGenerator.zipit(files, arcFiles, zipName);
 		assertNotNull("");
@@ -100,7 +100,7 @@ public class PdfGeneratorTest extends AbstractJUnit4SpringContextTests  {
 
 	@Test
 	public void testRotatePdf() throws IOException, DocumentException {
-		String pdfFileSrc = "test.pdf";
+		String pdfFileSrc = "Candidate_Report_10.pdf";
 		PdfGenerator.rotatePdf(pdfFileSrc);
 		assertNotNull("");
 	}
