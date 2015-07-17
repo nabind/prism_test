@@ -25,23 +25,23 @@ public class SSOTest {
 	//private static String REQUEST_PATH = "/reports.do?";  
 	
 	//private static String REQUEST_URL = "http://10.160.23.51:8080/prism/userlogin.do?theme=inors";
-	private static String REQUEST_URL = "http://localhost:8080/prism/reports.do";
+	private static String REQUEST_URL = "https://prism-qa-274458748.us-east-1.elb.amazonaws.com/prism/reports.do";
 	
 	private static String IP = "127.0.0.1";
-	private static String SECRET_KEY =  "BTCguSF49hYaPmAfe9Q29LtsQ2X";
+	private static String SECRET_KEY =  "WPZguVF49hXaRuZfe9L29ItsC2I";//"BTCguSF49hYaPmAfe9Q29LtsQ2X";
 	private static String URL_ENCODING = "UTF-8";
 	private static String ENCODING_ALGORITHM = "HmacSHA1";
 	private static String timeZone = "GMT";
 	
-	private static String customer_id = "M013883003"; //tp code
-	private static String org_code = "D1~9210~A470"; //org_code path
+	private static String customer_id = "14829"; //tp code
+	private static String org_code = "CA~40000004~300000004"; //org_code path
 	private static String org_level ="3";
-	private static String application_name = "CTB.COM"; 
+	private static String application_name = "OAS"; 
 	private static String user_role = "Admin";
 	private static String user_regular = "Regular";
-	private static String user_name ="istep_admin_prism";
+	private static String user_name ="oas_user";
 	
-	private static String theme ="inors";//or tasc
+	private static String theme ="tasc";//or tasc
 	
 	static final String JDBC_DRIVER = "oracle.jdbc.OracleDriver";
 	private static SecretKey secretKey;
