@@ -700,6 +700,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
 		} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
 			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId, paramMap);
+		} else if (roles.indexOf("ROLE_RESCORE") != -1) {/* For rescore user */
+			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_RESCORE_ID, orgNodeLevel, custProdId, paramMap);
 		} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
 			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
 		} else { /* For All users other than growth user */
