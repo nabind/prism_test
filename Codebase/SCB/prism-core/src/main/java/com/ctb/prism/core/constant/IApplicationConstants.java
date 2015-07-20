@@ -206,6 +206,7 @@ public interface IApplicationConstants {
 	public static final long ROLE_PARENT_ID = 6;
 	public static final String ROLE_GROWTH_ID = "8";
 	public static final long ROLE_EDU_ADMIN_ID = 9;
+	public static final String ROLE_RESCORE_ID = "12";
 	public static final String LOGIN_AS = "LOGIN_AS";
 	public static final String ORG_USER_FLAG = "O";
 	public static final String EDU_USER_FLAG = "E";
