@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,15 +110,17 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test(expected=java.lang.Exception.class)
 	public void testUpdateUser() throws BusinessException, Exception {
-		String Id = "";
-		String userId = "1";
-		String userName = "test";
-		String emailId = "test@ctb.com";
-		String password = "test";
-		String userStatus = "AC";
-		String[] userRoles = new String[] { "ROLE_USER" };
-		String salt = "haI0iamff8ICeNNFWmV6";
-		boolean status = adminService.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles, salt);
+		Map<String, Object> paramMap = new HashMap<String, Object>();		
+		paramMap.put("Id", "");
+		paramMap.put("userId", "1");
+		paramMap.put("userName", "test");
+		paramMap.put("emailId", "test@ctb.com");
+		paramMap.put("password", "test");
+		paramMap.put("userStatus", "AC");
+		paramMap.put("userRoles", new String[] { "ROLE_USER" });
+		paramMap.put("salt", "haI0iamff8ICeNNFWmV6");
+		paramMap.put("contractName", "inors");
+		boolean status = adminService.updateUser(paramMap);
 		assertNotNull(status);
 	}
 

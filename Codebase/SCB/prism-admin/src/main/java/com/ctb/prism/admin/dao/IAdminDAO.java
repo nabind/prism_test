@@ -53,18 +53,12 @@ public interface IAdminDAO {
 	public UserTO getEditUserData(Map<String, Object> paramMap) throws Exception;
 
 	/**
-	 * @param Id
-	 * @param userId
-	 * @param userName
-	 * @param emailId
-	 * @param password
-	 * @param userStatus
-	 * @param userRoles
+	 * @param paramMap < Id,userId,userName,emailId,password,userStatus,userRoles >
 	 * @return
 	 * @throws BusinessException
 	 * @throws Exception
 	 */
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception;
+	public boolean updateUser(Map<String, Object> paramMap) throws BusinessException, Exception;
 
 	/**
 	 * @param paramMap

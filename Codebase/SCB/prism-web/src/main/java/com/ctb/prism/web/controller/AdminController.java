@@ -715,9 +715,19 @@ public class AdminController {
 					}
 				}
 			}	
-	
-			boolean isSaved = adminService.updateUser(Id, userId, userName,
-					emailId, password, userStatus, userRoles, salt);
+			
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("Id", Id);
+			paramMap.put("userId", userId);
+			paramMap.put("userName", userName);
+			paramMap.put("emailId", emailId);
+			paramMap.put("password", password);
+			paramMap.put("userStatus", userStatus);
+			paramMap.put("userRoles", userRoles);
+			paramMap.put("salt", salt);
+			paramMap.put("contractName", Utils.getContractName());
+			
+			boolean isSaved = adminService.updateUser(paramMap);
 			res.setContentType("text/plain");
 			
 			if (isSaved) {

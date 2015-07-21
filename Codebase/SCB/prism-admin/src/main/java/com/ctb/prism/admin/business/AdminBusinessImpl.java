@@ -82,10 +82,10 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.ctb.prism.admin.business.IAdminBusiness#updateUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+	 * @see com.ctb.prism.admin.business.IAdminBusiness#updateUser(Map<String, Object>)
 	 */
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
-		return adminDAO.updateUser(Id, userId, userName, emailId, password, userStatus, userRoles, salt);
+	public boolean updateUser(Map<String, Object> paramMap) throws BusinessException, Exception {
+		return adminDAO.updateUser(paramMap);
 	}
 
 	/*

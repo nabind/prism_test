@@ -1046,13 +1046,30 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 *            userId, userName, emailId, password, userStatus,userRoles
 	 * @return
 	 */
-	@Caching( evict = { 
+	/*@Caching( evict = { 
 			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
 			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true),
 			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true)
+	} )*/
+	
+	@Caching( put = {
+			@CachePut(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#searchParamMap)).concat('updateUser'))"),
+			@CachePut(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#searchParamMap)).concat('updateUser'))"),
+			@CachePut(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#searchParamMap)).concat('updateUser'))")
 	} )
-	public boolean updateUser(String Id, String userId, String userName, String emailId, String password, String userStatus, String[] userRoles, String salt) throws BusinessException, Exception {
+	
+	public boolean updateUser(Map<String, Object> paramMap) throws BusinessException, Exception {
 		logger.log(IAppLogger.INFO, "Enter: updateUser()");
+		
+		String Id = (String)paramMap.get("Id");
+		String userId = (String)paramMap.get("userId");
+		String userName = (String)paramMap.get("userName");
+		String emailId = (String)paramMap.get("emailId");
+		String password = (String)paramMap.get("password");
+		String userStatus = (String)paramMap.get("userStatus");
+		String[] userRoles = (String[])paramMap.get("userRoles");
+		String salt = (String)paramMap.get("salt");
+		
 		try {
 			boolean ldapFlag = true;
 			if (password != null && !"".equals(password)) {
