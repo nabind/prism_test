@@ -1216,7 +1216,7 @@ public class TascDAOImpl {
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
-		ResultSet rs = null;
+		//ResultSet rs = null;
 		long totalRecordCount = 0;
 		
 		try {
@@ -1326,7 +1326,7 @@ public class TascDAOImpl {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		} finally {
-			try {rs.close();} catch (Exception e2) {}
+			//try {rs.close();} catch (Exception e2) {}
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
