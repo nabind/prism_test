@@ -32,6 +32,7 @@ import com.ctb.prism.report.service.IReportService;
 import com.ctb.prism.report.service.IRescoreRequestService;
 import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.RescoreRequestTO;
+import com.ctb.prism.report.transferobject.RescoreSubtestTO;
 import com.google.gson.Gson;
 
 /**
@@ -159,6 +160,120 @@ public class RescoreRequestController {
 		String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
 		logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
 		modelAndView.addObject("dataloadMessage", dataloadMessage);
+		return modelAndView;
+	}
+	
+	
+	/**
+	 * Opens the Rescore Request Form and populate required data for ISTEP+ Spring 2015.
+	 * 
+	 * @return
+	 * @throws ServletException, IOException,BusinessException
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/rescoreRequestForm2015", method = RequestMethod.GET)
+	public ModelAndView rescoreRequestForm2015(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestController - rescoreRequestForm2015()");
+		long t1 = System.currentTimeMillis();
+		
+		ModelAndView modelAndView = new ModelAndView("report/rescoreRequestForm2015");
+		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+		
+		String reportUrl = (String) request.getParameter("reportUrl");
+		String reportId = (String) request.getParameter("reportId");
+		String testAdministrationVal = (String) request.getParameter("p_test_administration");
+		String testProgram = (String) request.getParameter("p_test_program");
+		String corpDiocese = (String) request.getParameter("p_corpdiocese");
+		String school = (String) request.getParameter("p_school");
+		String grade = (String) request.getParameter("p_grade");
+		String studentBioId = (String) request.getParameter("p_student");
+		
+		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
+		logger.log(IAppLogger.INFO, "testAdministration=" + testAdministrationVal);
+		logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+		logger.log(IAppLogger.INFO, "school=" + school);
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "studentBioId=" + studentBioId);
+		
+		
+		try{
+			if ((testAdministrationVal == null) || ("null".equalsIgnoreCase(testAdministrationVal))) {
+				Map<String, Object> parameters = inorsController.getReportParameters(request, reportUrl);
+				request.getSession().setAttribute(IApplicationConstants.REPORT_TYPE_CUSTOM + "parameters" + reportUrl, parameters);
+				if ((parameters != null) && (!parameters.isEmpty())) {
+					testAdministrationVal = CustomStringUtil.getNotNullString(parameters.get("p_test_administration"));
+					testProgram = CustomStringUtil.getNotNullString(parameters.get("p_test_program"));
+					corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
+					school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
+					grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
+					studentBioId = CustomStringUtil.getNotNullString(parameters.get("p_student"));
+				}
+			} else {
+				Map<String, String[]> sessionParams = (Map<String, String[]>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
+				if(sessionParams == null) sessionParams = new HashMap<String, String[]>();
+				Iterator itr = request.getParameterMap().entrySet().iterator();
+				while (itr.hasNext()) {
+					Map.Entry mapEntry = (Map.Entry) itr.next();
+					request.getSession().setAttribute("_REMEMBER_ME_" + mapEntry.getKey(), mapEntry.getValue());
+					sessionParams.put((String) mapEntry.getKey(), (String[]) mapEntry.getValue());
+				}
+				request.getSession().setAttribute("_REMEMBER_ME_ALL_", sessionParams);
+			}
+			
+			logger.log(IAppLogger.INFO, "testAdministrationVal=" + testAdministrationVal);
+			logger.log(IAppLogger.INFO, "testProgram=" + testProgram);
+			logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
+			logger.log(IAppLogger.INFO, "school=" + school);
+			logger.log(IAppLogger.INFO, "grade=" + grade);
+			logger.log(IAppLogger.INFO, "studentBioId=" + studentBioId);
+			
+			//service call to get student's re-score data
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("testAdministrationVal", testAdministrationVal);
+			paramMap.put("testProgram", testProgram);
+			paramMap.put("corpDiocese", corpDiocese);
+			paramMap.put("school", school);
+			paramMap.put("grade", grade);
+			paramMap.put("studentBioId", studentBioId);
+			paramMap.put("loggedinUserTO", loggedinUserTO);
+			
+			Map<String, Object> rescoreRequestMap = rescoreRequestService.getRescoreRequestForm2015(paramMap);
+			String studentFullName = (String)rescoreRequestMap.get("studentFullName");
+			String requestedDate = (String)rescoreRequestMap.get("requestedDate");
+			RescoreSubtestTO rescoreElaTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreElaTO");
+			RescoreSubtestTO rescoreMathTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreMathTO");
+			RescoreSubtestTO rescoreScienceTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreScienceTO");
+			
+			//Add object to modelAndView
+			modelAndView.addObject("reportUrl", reportUrl);
+			modelAndView.addObject("testAdministrationVal", testAdministrationVal);
+			modelAndView.addObject("testProgram", testProgram);
+			modelAndView.addObject("corpDiocese", corpDiocese);
+			modelAndView.addObject("school", school);
+			modelAndView.addObject("grade", grade);
+			modelAndView.addObject("studentBioId", studentBioId);
+			modelAndView.addObject("studentFullName", studentFullName);
+			modelAndView.addObject("requestedDate", requestedDate);
+			modelAndView.addObject("rescoreElaTO", rescoreElaTO);
+			modelAndView.addObject("rescoreMathTO", rescoreMathTO);
+			modelAndView.addObject("rescoreScienceTO", rescoreScienceTO);
+			
+			List<ReportMessageTO> reportMessages = getAllReportMessages(request, testAdministrationVal);
+			modelAndView.addObject("reportMessages", reportMessages);
+			String dataloadMessage = getReportMessage(reportMessages, IApplicationConstants.DASH_MESSAGE_TYPE.DM.toString(), IApplicationConstants.DATALOAD_MESSAGE);
+			logger.log(IAppLogger.INFO, "dataloadMessage=" + dataloadMessage);
+			modelAndView.addObject("dataloadMessage", dataloadMessage);
+			
+		}catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+			throw new BusinessException("Problem Occured");
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestController - rescoreRequestForm2015() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
 		return modelAndView;
 	}
 	

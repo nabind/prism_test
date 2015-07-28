@@ -476,5 +476,73 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		}
 		return notDnpStudentList;
 	}
+	
+	/**
+	 * @author Joy
+	 * (non-Javadoc)
+	 * @see
+	 * com.ctb.prism.report.dao.IRescoreRequestDAO#getSubtestDetails(java.util.Map)
+	 */
+	public List<RescoreRequestTO> getSubtestDetails(Map<String, Object> paramMap) throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: RescoreRequestDAOImpl - getSubtestDetails()");
+		long t1 = System.currentTimeMillis();
+		List<RescoreRequestTO> subtestList = null;
+		final String studentBioId = (String) paramMap.get("studentBioId");
+		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
+		try {
+			subtestList = (List<RescoreRequestTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = null;
+					cs = con.prepareCall("{call " + IQueryConstants.GET_SUBTEST_DETAILS + "}");
+					cs.setLong(1, Long.valueOf(studentBioId));
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<RescoreRequestTO> subtestResult = new ArrayList<RescoreRequestTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(2);
+						RescoreRequestTO rescoreRequestTO = null;
+						while (rs.next()) {
+							rescoreRequestTO = new RescoreRequestTO();
+							rescoreRequestTO.setStudentBioId(rs.getLong("STUDENT_BIO_ID"));
+							rescoreRequestTO.setStudentFullName(rs.getString("STUDENT_FULL_NAME"));
+							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
+							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
+							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
+							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
+							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
+							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
+							rescoreRequestTO.setItemPart(rs.getString("ITEM_PART"));
+							rescoreRequestTO.setItemScore(rs.getString("ITEM_SCORE"));
+							rescoreRequestTO.setPointPossible(rs.getString("POINT_POSSIBLE"));
+							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
+							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
+							rescoreRequestTO.setUserId(rs.getLong("USERID"));
+							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
+							subtestResult.add(rescoreRequestTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return subtestResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: RescoreRequestDAOImpl - getSubtestDetails() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return subtestList;
+	}
 
 }

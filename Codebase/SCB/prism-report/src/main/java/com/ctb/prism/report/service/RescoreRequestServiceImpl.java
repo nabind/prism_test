@@ -69,4 +69,8 @@ public class RescoreRequestServiceImpl implements IRescoreRequestService {
 	public RescoreRequestTO getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException {
 		return rescoreRequestBusiness.getNotDnpStudentDetails(paramMap);
 	}
+
+	public Map<String, Object> getRescoreRequestForm2015(Map<String, Object> paramMap) throws BusinessException {
+		return rescoreRequestBusiness.getRescoreRequestForm2015(paramMap);
+	}
 }

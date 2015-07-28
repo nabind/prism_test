@@ -45,4 +45,12 @@ public interface IRescoreRequestBusiness {
 	 * @throws BusinessException
 	 */
 	public RescoreRequestTO getNotDnpStudentDetails(Map<String, Object> paramMap) throws BusinessException;
+	
+	/**
+	 * @author Joy
+	 * @param paramMap
+	 * @return
+	 * @throws BusinessException
+	 */
+	public Map<String, Object> getRescoreRequestForm2015(Map<String, Object> paramMap) throws BusinessException;
 }

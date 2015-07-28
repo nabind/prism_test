@@ -21,5 +21,7 @@ public interface IRescoreRequestQuery {
 	public static final String GET_NOT_DNP_STUDENT = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT(?,?,?,?,?,?)";
 	
 	public static final String GET_NOT_DNP_STUDENT_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT_DETAILS(?,?,?,?,?,?,?)";
+	
+	public static final String GET_SUBTEST_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_SUBTEST_DETAILS(?,?,?)";
 
 }

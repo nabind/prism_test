@@ -60,5 +60,13 @@ public interface IRescoreRequestDAO {
 	 * @throws BusinessException
 	 */
 	public List<RescoreRequestTO> getNotDnpStudentList(Map<String, Object> paramMap) throws BusinessException;
+	
+	/**
+	 * @author Joy
+	 * @param paramMap
+	 * @return
+	 * @throws BusinessException
+	 */
+	public List<RescoreRequestTO> getSubtestDetails(Map<String, Object> paramMap) throws BusinessException;
 
 }

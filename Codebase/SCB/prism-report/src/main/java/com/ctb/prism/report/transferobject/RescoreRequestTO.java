@@ -40,6 +40,9 @@ public class RescoreRequestTO extends BaseTO {
 	private long rrfId = 0;
 	private long itemNumber = 0;
 	private String moduleId = "";
+	private String itemPart = "";
+	private String itemScore = "";
+	private String pointPossible = "";
 	
 	public String getButton() {
 		return button;
@@ -214,6 +217,24 @@ public class RescoreRequestTO extends BaseTO {
 	}
 	public void setModuleId(String moduleId) {
 		this.moduleId = moduleId;
+	}
+	public String getItemPart() {
+		return itemPart;
+	}
+	public void setItemPart(String itemPart) {
+		this.itemPart = itemPart;
+	}
+	public String getItemScore() {
+		return itemScore;
+	}
+	public void setItemScore(String itemScore) {
+		this.itemScore = itemScore;
+	}
+	public String getPointPossible() {
+		return pointPossible;
+	}
+	public void setPointPossible(String pointPossible) {
+		this.pointPossible = pointPossible;
 	}
 	
 }

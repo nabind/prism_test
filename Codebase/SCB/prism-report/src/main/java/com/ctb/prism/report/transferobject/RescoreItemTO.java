@@ -22,6 +22,10 @@ public class RescoreItemTO extends BaseTO {
 	private String userName = "";
 	private long itemNumber = 0;
 	private long studentBioId = 0;
+	private String itemPart = "";
+	private String itemScore = "";
+	private String pointPossible = "";
+	private String performanceLevel = "";
 	
 	public long getItemsetId() {
 		return itemsetId;
@@ -76,6 +80,30 @@ public class RescoreItemTO extends BaseTO {
 	}
 	public void setStudentBioId(long studentBioId) {
 		this.studentBioId = studentBioId;
+	}
+	public String getItemPart() {
+		return itemPart;
+	}
+	public void setItemPart(String itemPart) {
+		this.itemPart = itemPart;
+	}
+	public String getItemScore() {
+		return itemScore;
+	}
+	public void setItemScore(String itemScore) {
+		this.itemScore = itemScore;
+	}
+	public String getPointPossible() {
+		return pointPossible;
+	}
+	public void setPointPossible(String pointPossible) {
+		this.pointPossible = pointPossible;
+	}
+	public String getPerformanceLevel() {
+		return performanceLevel;
+	}
+	public void setPerformanceLevel(String performanceLevel) {
+		this.performanceLevel = performanceLevel;
 	}
 	
 }

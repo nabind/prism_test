@@ -39,6 +39,30 @@ $(document).ready(function() {
 	$( "#studentTableRRF_filter > label" ).css( "cursor", "default" );
 	$( ".sorting_disabled" ).css( "cursor", "default" );
 	
+	$("#studentTableRRF2015").dataTable({
+		'aoColumnDefs' : [ {
+			'bSortable' : false,
+			'aTargets' : [1]
+		} ],
+		'sPaginationType' : 'full_numbers',
+		'fnDrawCallback': function( oSettings ) {
+			$('.item-link-dnp').off().on('click', function(){
+				submitRescoreRequest('#studentTableRRF2015',$(this));
+			});
+			runDatePickerScripts($(".rescore-date-dnp"));
+			$(".rescore-date-dnp").on("change", function(event) {
+				activeInactiveItems('#studentTableRRF2015',$(this));
+				$(".rescore-date-dnp").attr("style", "width: 70px; float: right; cursor:default;");
+		    });
+			$(".rescore-date-dnp").on("focus", function(event) {
+				$(this).blur();
+		    });
+		}
+	});
+	$( "#studentTableRRF2015_length > label" ).css( "cursor", "default" );
+	$( "#studentTableRRF2015_filter > label" ).css( "cursor", "default" );
+	$( ".sorting_disabled" ).css( "cursor", "default" );
+	
 	oTable = $("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
 			'bSortable' : false,
@@ -74,6 +98,8 @@ $(document).ready(function() {
 	$('.addStudent').live('click', function(){
 		addStudent();
 	});
+	
+	
 });
 //=====document.ready End=========================================
 

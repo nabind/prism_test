@@ -2,8 +2,11 @@ package com.ctb.prism.report.business;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +36,6 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 	 * (java.util.Map)
 	 */
 	public Map<String, Object> getRescoreRequestForm(Map<String, Object> paramMap) throws BusinessException {
-
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("dnpStudentList", arrangeRescoreData(rescoreRequestDAO.getDnpStudentList(paramMap), paramMap));
 		returnMap.put("notDnpStudents", rescoreRequestDAO.getNotDnpStudents(paramMap));
@@ -362,5 +364,209 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		List<RescoreRequestTO> notDnpStudentDetails = arrangeRescoreData(rescoreRequestDAO.getNotDnpStudentDetails(paramMap), paramMap);
 		RescoreRequestTO rescoreStudentTO = notDnpStudentDetails.get(0);
 		return rescoreStudentTO;
+	}
+	
+	/**
+	 * @author Joy 
+	 * (non-Javadoc)
+	 * @see
+	 * com.ctb.prism.report.business.IRescoreRequestBusiness#getRescoreRequestForm
+	 * (java.util.Map)
+	 */
+	public Map<String, Object> getRescoreRequestForm2015(Map<String, Object> paramMap) throws BusinessException {
+		Map<String, Object> returnMap = arrangeRescoreData2015(rescoreRequestDAO.getSubtestDetails(paramMap));
+		return returnMap;
+	}
+	
+	private Map<String, Object> arrangeRescoreData2015(List<RescoreRequestTO> subtestList){
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		if(subtestList.isEmpty()){
+			return returnMap;
+		}
+		String studentFullName = (String)subtestList.get(0).getStudentFullName();
+		String requestedDate = (String)subtestList.get(0).getRequestedDate();
+		returnMap.put("studentFullName", studentFullName);
+		returnMap.put("requestedDate", requestedDate);
+		
+		
+		RescoreSubtestTO rescoreElaTO = null;
+		RescoreSubtestTO rescoreMathTO = null;
+		RescoreSubtestTO rescoreScienceTO = null;
+		
+		RescoreSessionTO rescoreSessionTO = null;
+		RescoreItemTO rescoreItemTO = null;
+		
+		//ELA
+		List<RescoreSessionTO> rescoreSessionTOList = new ArrayList<RescoreSessionTO>();
+		List<RescoreItemTO> rescoreItemTOList = new ArrayList<RescoreItemTO>();
+		RescoreSessionTO rescoreSessionTOLastAdded = null;
+		rescoreElaTO = new RescoreSubtestTO();
+		for (RescoreRequestTO rescoreRequestTO : subtestList) {
+			if("ELA".equals(rescoreRequestTO.getSubtestCode())){
+				rescoreItemTO = new RescoreItemTO();
+				rescoreItemTO.setItemNumber(rescoreRequestTO.getItemNumber());
+				rescoreItemTO.setIsRequested(rescoreRequestTO.getIsRequested());
+				rescoreItemTO.setItemPart(rescoreRequestTO.getItemPart());
+				rescoreItemTO.setItemScore(rescoreRequestTO.getItemScore());
+				rescoreItemTO.setItemsetId(rescoreRequestTO.getItemsetId());
+				rescoreItemTO.setPointPossible(rescoreRequestTO.getPointPossible());
+				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
+				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
+				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				
+				//Last added object
+				if(!rescoreSessionTOList.isEmpty()){
+					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
+					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+						rescoreItemTOList.add(rescoreItemTO);
+					}else{
+						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+						rescoreItemTOList = new ArrayList<RescoreItemTO>();
+						rescoreItemTOList.add(rescoreItemTO);
+						
+						//Populate session
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+						rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+						rescoreSessionTOList.add(rescoreSessionTO);
+					}
+				}else{
+					rescoreItemTOList = new ArrayList<RescoreItemTO>();
+					rescoreItemTOList.add(rescoreItemTO);
+					
+					//Populate session
+					rescoreSessionTO = new RescoreSessionTO();
+					rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+					rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+					rescoreSessionTOList.add(rescoreSessionTO);
+				}
+				
+				rescoreElaTO.setSubtestId(rescoreRequestTO.getSubtestId());
+				rescoreElaTO.setSubtestCode(rescoreRequestTO.getSubtestCode());
+			}
+		}
+		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+			rescoreElaTO.setRescoreSessionTOList(rescoreSessionTOList);
+		}
+		
+		
+		
+		//MATH
+		rescoreSessionTOList = new ArrayList<RescoreSessionTO>();
+		rescoreItemTOList = new ArrayList<RescoreItemTO>();
+		rescoreSessionTOLastAdded = null;
+		rescoreMathTO = new RescoreSubtestTO();
+		for (RescoreRequestTO rescoreRequestTO : subtestList) {
+			if("MATH".equals(rescoreRequestTO.getSubtestCode())){
+				rescoreItemTO = new RescoreItemTO();
+				rescoreItemTO.setItemNumber(rescoreRequestTO.getItemNumber());
+				rescoreItemTO.setIsRequested(rescoreRequestTO.getIsRequested());
+				rescoreItemTO.setItemPart(rescoreRequestTO.getItemPart());
+				rescoreItemTO.setItemScore(rescoreRequestTO.getItemScore());
+				rescoreItemTO.setItemsetId(rescoreRequestTO.getItemsetId());
+				rescoreItemTO.setPointPossible(rescoreRequestTO.getPointPossible());
+				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
+				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
+				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				
+				//Last added object
+				if(!rescoreSessionTOList.isEmpty()){
+					//rescoreSessionTOLastAdded = (RescoreSessionTO)rescoreSessionSet.toArray()[rescoreSessionSet.size()-1];
+					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
+					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+						rescoreItemTOList.add(rescoreItemTO);
+					}else{
+						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+						rescoreItemTOList = new ArrayList<RescoreItemTO>();
+						rescoreItemTOList.add(rescoreItemTO);
+						
+						//Populate session
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+						rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+						rescoreSessionTOList.add(rescoreSessionTO);
+					}
+				}else{
+					rescoreItemTOList = new ArrayList<RescoreItemTO>();
+					rescoreItemTOList.add(rescoreItemTO);
+					
+					//Populate session
+					rescoreSessionTO = new RescoreSessionTO();
+					rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+					rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+					rescoreSessionTOList.add(rescoreSessionTO);
+				}
+				
+				rescoreMathTO.setSubtestId(rescoreRequestTO.getSubtestId());
+				rescoreMathTO.setSubtestCode(rescoreRequestTO.getSubtestCode());
+			}
+		}
+		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+			rescoreMathTO.setRescoreSessionTOList(rescoreSessionTOList);
+		}
+		
+		//SCI
+		rescoreSessionTOList = new ArrayList<RescoreSessionTO>();
+		rescoreItemTOList = new ArrayList<RescoreItemTO>();
+		rescoreSessionTOLastAdded = null;
+		rescoreScienceTO = new RescoreSubtestTO();
+		for (RescoreRequestTO rescoreRequestTO : subtestList) {
+			if("SCI".equals(rescoreRequestTO.getSubtestCode())){
+				rescoreItemTO = new RescoreItemTO();
+				rescoreItemTO.setItemNumber(rescoreRequestTO.getItemNumber());
+				rescoreItemTO.setIsRequested(rescoreRequestTO.getIsRequested());
+				rescoreItemTO.setItemPart(rescoreRequestTO.getItemPart());
+				rescoreItemTO.setItemScore(rescoreRequestTO.getItemScore());
+				rescoreItemTO.setItemsetId(rescoreRequestTO.getItemsetId());
+				rescoreItemTO.setPointPossible(rescoreRequestTO.getPointPossible());
+				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
+				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
+				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				
+				//Last added object
+				if(!rescoreSessionTOList.isEmpty()){
+					//rescoreSessionTOLastAdded = (RescoreSessionTO)rescoreSessionSet.toArray()[rescoreSessionSet.size()-1];
+					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
+					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+						rescoreItemTOList.add(rescoreItemTO);
+					}else{
+						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+						rescoreItemTOList = new ArrayList<RescoreItemTO>();
+						rescoreItemTOList.add(rescoreItemTO);
+						
+						//Populate session
+						rescoreSessionTO = new RescoreSessionTO();
+						rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+						rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+						rescoreSessionTOList.add(rescoreSessionTO);
+					}
+				}else{
+					rescoreItemTOList = new ArrayList<RescoreItemTO>();
+					rescoreItemTOList.add(rescoreItemTO);
+					
+					//Populate session
+					rescoreSessionTO = new RescoreSessionTO();
+					rescoreSessionTO.setSessionId(rescoreRequestTO.getSessionId());
+					rescoreSessionTO.setModuleId(rescoreRequestTO.getModuleId());
+					rescoreSessionTOList.add(rescoreSessionTO);
+				}
+				
+				rescoreScienceTO.setSubtestId(rescoreRequestTO.getSubtestId());
+				rescoreScienceTO.setSubtestCode(rescoreRequestTO.getSubtestCode());
+			}
+		}
+		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
+			rescoreScienceTO.setRescoreSessionTOList(rescoreSessionTOList);
+		}
+		
+		returnMap.put("rescoreElaTO", rescoreElaTO);
+		returnMap.put("rescoreMathTO", rescoreMathTO);
+		returnMap.put("rescoreScienceTO", rescoreScienceTO);
+		
+		return returnMap;
 	}
 }
