@@ -60,8 +60,8 @@
 			</div>
 		</div>
 		
-		<div id="sorting-advanced_wrapper_" class="dataTables_wrapper" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
-			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on " id="studentTableRRF2015">
+		<div id="" class="" role="grid" style="margin-top: 10px; margin-bottom: 15px;">
+			<table aria-describedby="sorting-advanced_info" class="table responsive-table responsive-table-on" id="">
 				<thead>
 					<tr role="row">
 						<th aria-label="Text: activate to sort column ascending" style="width: 130px;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting" scope="col">
@@ -91,7 +91,7 @@
 						</c:choose>
 					</tr>
 				</thead>
-				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListRRF2015">
+				<tbody aria-relevant="all" aria-live="polite" role="alert" id="">
 					<tr>
 						<c:forEach begin="3" end="6" var="innerSessionId"> 
 							<c:set var="sessionId" value="${innerSessionId}" />
@@ -134,7 +134,6 @@
 						</c:forEach>
 						<c:forEach begin="1" end="2" var="innerSessionId">
 							<c:set var="sessionId" value="${innerSessionId}" />
-							<c:out value="${innerSessionId}" />
 							<td class="">
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreMathTO.rescoreSessionTOList}">
 						    		<c:if test="${rescoreSessionTO.sessionId == sessionId}"> 
@@ -223,7 +222,8 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
-				
+		
+		
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
