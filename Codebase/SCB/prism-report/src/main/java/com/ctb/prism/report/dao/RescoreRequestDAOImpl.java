@@ -73,7 +73,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
-							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setSessionId(rs.getString("SESSION_ID"));
 							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
@@ -118,6 +118,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		final String requestedStatus = (String) paramMap.get("requestedStatus");
 		final String requestedDate = (String) paramMap.get("requestedDate");
 		final long userId = ((Long) paramMap.get("userId")).longValue();
+		final long rrfId = ((Long) paramMap.get("rrfId")).longValue();
+		
 		logger.log(IAppLogger.INFO, "studentBioId = " + studentBioId);
 		logger.log(IAppLogger.INFO, "subtestId = " + subtestId);
 		logger.log(IAppLogger.INFO, "sessionId = " + sessionId);
@@ -126,6 +128,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 		logger.log(IAppLogger.INFO, "userId = " + userId);
 		logger.log(IAppLogger.INFO, "requestedStatus = " + requestedStatus);
 		logger.log(IAppLogger.INFO, "requestedDate = " + requestedDate);
+		logger.log(IAppLogger.INFO, "rrfId = " + rrfId);
+		
 		try {
 			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
@@ -138,8 +142,9 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(6, userId);
 					cs.setString(7, requestedStatus);
 					cs.setString(8, requestedDate);
-					cs.registerOutParameter(9, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.setLong(9, rrfId);
+					cs.registerOutParameter(10, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(11, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -148,7 +153,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(9);
+						executionStatus = cs.getLong(10);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -377,7 +382,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
-							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setSessionId(rs.getString("SESSION_ID"));
 							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
@@ -451,7 +456,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
-							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setSessionId(rs.getString("SESSION_ID"));
 							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setPerformanceLevel(rs.getString("PERFORMANCE_LEVEL"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));
@@ -514,7 +519,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setRequestedDate(rs.getString("REQUESTED_DATE"));
 							rescoreRequestTO.setSubtestId(rs.getLong("SUBTESTID"));
 							rescoreRequestTO.setSubtestCode(rs.getString("SUBTEST_CODE"));
-							rescoreRequestTO.setSessionId(rs.getLong("SESSION_ID"));
+							rescoreRequestTO.setSessionId(rs.getString("SESSION_ID"));
 							rescoreRequestTO.setModuleId(rs.getString("MODEULEID"));
 							rescoreRequestTO.setItemsetId(rs.getLong("ITEMSETID"));
 							rescoreRequestTO.setItemNumber(rs.getLong("ITEM_NUMBER"));

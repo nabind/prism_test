@@ -30,7 +30,7 @@ public class RescoreRequestTO extends BaseTO {
 	private long studentBioId = 0;
 	private String requestedDate = "";
 	private long subtestId = 0;
-	private long sessionId = 0;
+	private String sessionId = "";
 	private String performanceLevel = "";
 	private long itemsetId = 0;
 	private String isRequested = "";
@@ -146,10 +146,10 @@ public class RescoreRequestTO extends BaseTO {
 	public void setSubtestId(long subtestId) {
 		this.subtestId = subtestId;
 	}
-	public long getSessionId() {
+	public String getSessionId() {
 		return sessionId;
 	}
-	public void setSessionId(long sessionId) {
+	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
 	public String getPerformanceLevel() {

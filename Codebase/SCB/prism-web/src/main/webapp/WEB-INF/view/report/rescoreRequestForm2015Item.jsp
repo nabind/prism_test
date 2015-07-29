@@ -1,43 +1,76 @@
-<c:forEach var="rescoreItemTO"
-	items="${rescoreSessionTO.rescoreItemTOList}" varStatus="theCount">
-	<div class="item-div-normal-${rescoreItemTO.studentBioId}">
+<c:forEach var="rescoreItemTO" items="${rescoreSessionTO.rescoreItemTOList}">
+	<div class="item-div-normal-${studentBioId}">
 		<c:choose>
 			<c:when test="${rescoreItemTO.requestedDate == '-1'}">
-				<small class="item-tag tag align-row grey-bg">
-					${rescoreItemTO.itemNumber}-${rescoreItemTO.itemPart}-${rescoreItemTO.itemScore}-${rescoreItemTO.pointPossible}
-				</small>
-				<br>
+				<big class="new-row item-tag button compact grey-gradient" style="margin-bottom: 2px;width: 125px;">
+					${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+				</big>
 			</c:when>
 			<c:otherwise>
 				<c:choose>
 					<c:when test="${rescoreItemTO.isRequested=='N'}">
-						<a class="item-link-dnp align-row" action="submitRescoreRequest"
-							rrfId="${rescoreItemTO.rrfId}"
-							id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.rrfId}"
-							href="#nogo"> <small class="item-tag tag">
-								${rescoreItemTO.itemNumber}-${rescoreItemTO.itemPart}-${rescoreItemTO.itemScore}-${rescoreItemTO.pointPossible}
-						</small><br>
+						<a class="item-link-2015 align-row" 
+							action="submitRescoreRequest" 
+							rrfId="${rescoreItemTO.rrfId}" 
+							studentBioId="${rescoreItemTO.studentBioId}" 
+							id="item_${rescoreItemTO.rrfId}"
+							href="#nogo">
+								<big class="new-row item-tag button compact blue-gradient" style="margin-bottom: 2px;width: 125px;">
+									${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+								</big>
 						</a>
+						<br/>
 					</c:when>
 					<c:when test="${rescoreItemTO.isRequested=='Y'}">
-						<a class="item-link-dnp align-row" action="submitRescoreRequest"
+						<a class="item-link-2015 align-row" 
+							action="submitRescoreRequest" 
 							rrfId="${rescoreItemTO.rrfId}"
-							id="item_${rescoreItemTO.studentBioId}_${rescoreSubtestTO.subtestId}_${rescoreSessionTO.sessionId}_${rescoreItemTO.rrfId}"
-							href="#nogo"> <small class="item-tag tag red-bg">
-								${rescoreItemTO.itemNumber}-${rescoreItemTO.itemPart}-${rescoreItemTO.itemScore}-${rescoreItemTO.pointPossible}
-						</small><br>
+							studentBioId="${rescoreItemTO.studentBioId}"  
+							id="item_${rescoreItemTO.rrfId}"
+							href="#nogo">
+								<big class="new-row item-tag button compact red-gradient" style="margin-bottom: 2px;width: 125px;">
+									${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+								</big>
 						</a>
+						<br/>
 					</c:when>
 				</c:choose>
 			</c:otherwise>
 		</c:choose>
 	</div>
-	<div class="item-div-inact-${rescoreItemTO.studentBioId}"
-		style="display: none;">
-		<c:if test="${rescoreItemTO.itemNumber != 0}">
-			<small class="item-tag tag align-row grey-bg">
-				${rescoreItemTO.itemNumber}-${rescoreItemTO.itemPart}-${rescoreItemTO.itemScore}-${rescoreItemTO.pointPossible}
-			</small>
-		</c:if>
+	<div class="item-div-act-${studentBioId}" style="display: none;">
+		<c:choose>
+			<c:when test="${rescoreItemTO.isRequested=='N'}">
+				<a class="item-link-2015 align-row" 
+					action="submitRescoreRequest" 
+					rrfId="${rescoreItemTO.rrfId}"
+					studentBioId="${rescoreItemTO.studentBioId}"  
+					id="item_${rescoreItemTO.rrfId}"
+					href="#nogo">
+						<big class="new-row item-tag button compact blue-gradient" style="margin-bottom: 2px;width: 125px;">
+							${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+						</big>
+				</a>
+				<br/>
+			</c:when>
+			<c:when test="${rescoreItemTO.isRequested=='Y'}">
+				<a class="item-link-2015 align-row" 
+					action="submitRescoreRequest" 
+					rrfId="${rescoreItemTO.rrfId}" 
+					studentBioId="${rescoreItemTO.studentBioId}"  
+					id="item_${rescoreItemTO.rrfId}"
+					href="#nogo">
+						<big class="new-row item-tag button compact red-gradient" style="margin-bottom: 2px;width: 125px;">
+							${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+						</big>
+				</a>
+				<br/>
+			</c:when>
+		</c:choose>
 	</div>
-</c:forEach>
+	<div class="item-div-inact-${studentBioId}" style="display: none;">
+		<big class="new-row item-tag button compact grey-gradient" style="margin-bottom: 2px;width: 125px;">
+			${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+		</big>
+	</div>
+</c:forEach>									 

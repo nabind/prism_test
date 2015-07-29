@@ -12,7 +12,7 @@ public interface IRescoreRequestQuery {
 
 	public static final String GET_DNP_STUDENT_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_DNP_STUDENT_DETAILS(?,?,?,?,?,?)";
 	
-	public static final String SUBMIT_RESCORE_REQUEST = "PKG_RESCORE_REQUEST.SP_SUBMIT_RESCORE_REQUEST(?,?,?,?,?,?,?,?,?,?)";
+	public static final String SUBMIT_RESCORE_REQUEST = "PKG_RESCORE_REQUEST.SP_SUBMIT_RESCORE_REQUEST(?,?,?,?,?,?,?,?,?,?,?)";
 	
 	public static final String RESET_ITEM_STATE = "PKG_RESCORE_REQUEST.SP_RESET_ITEM_STATE(?,?,?,?,?,?)";
 	

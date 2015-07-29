@@ -39,29 +39,24 @@ $(document).ready(function() {
 	$( "#studentTableRRF_filter > label" ).css( "cursor", "default" );
 	$( ".sorting_disabled" ).css( "cursor", "default" );
 	
+	runDatePickerScripts($(".rescore-date-2015"));
+	
+	$(".rescore-date-2015").on("change", function(event) {
+		activeInactiveItems('#studentTableRRF2015',$(this));
+		$(".rescore-date-2015").attr("style", "width: 70px; float: right; cursor:default;");
+    });
+	
+	$(".rescore-date-2015").on("focus", function(event) {
+		$(this).blur();
+    });
+	
 	$("#studentTableRRF2015").dataTable({
-		'aoColumnDefs' : [ {
-			'bSortable' : false,
-			'aTargets' : [1]
-		} ],
-		'sPaginationType' : 'full_numbers',
 		'fnDrawCallback': function( oSettings ) {
-			$('.item-link-dnp').off().on('click', function(){
+			$('.item-link-2015').off().on('click', function(){
 				submitRescoreRequest('#studentTableRRF2015',$(this));
 			});
-			runDatePickerScripts($(".rescore-date-dnp"));
-			$(".rescore-date-dnp").on("change", function(event) {
-				activeInactiveItems('#studentTableRRF2015',$(this));
-				$(".rescore-date-dnp").attr("style", "width: 70px; float: right; cursor:default;");
-		    });
-			$(".rescore-date-dnp").on("focus", function(event) {
-				$(this).blur();
-		    });
 		}
 	});
-	$( "#studentTableRRF2015_length > label" ).css( "cursor", "default" );
-	$( "#studentTableRRF2015_filter > label" ).css( "cursor", "default" );
-	$( ".sorting_disabled" ).css( "cursor", "default" );
 	
 	oTable = $("#studentTableRRF_2").dataTable({
 		'aoColumnDefs' : [ {
@@ -197,14 +192,22 @@ function submitRescoreRequest(containerId,obj){
 	var moduleId = (typeof $(obj).attr('moduleId') !== 'undefined') ? $(obj).attr('moduleId') : 0;
 	var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 	var elementId = (typeof $(obj).attr('id') !== 'undefined') ? $(obj).attr('id') : 0;
+	var rrfId = (typeof $(obj).attr('rrfId') !== 'undefined') ? $(obj).attr('rrfId') : 0;
+	
+	var requestedDate = "";
+	var isRequested = "";
+	if(rrfId == 0){
+		requestedDate = $(containerId+' #rescoreDate_'+studentBioId).val();
+		isRequested = $(containerId+' #'+elementId +' .item-tag').hasClass('red-bg');
+	}else{
+		requestedDate = $('#rescoreDate_'+studentBioId).val();
+		isRequested = $(containerId+' #'+elementId +' .item-tag').hasClass('red-gradient');
+	}
 	
 	var requestedStatus = "Y";
-	var isRequested = $(containerId+' #'+elementId +' .item-tag').hasClass('red-bg');
 	if(isRequested){
 		requestedStatus = "N";
 	}
-	
-	var requestedDate =  $(containerId+' #rescoreDate_'+studentBioId).val();
 	
 	if((requestedDate.length > 0) && isDate(requestedDate)){
 		blockUI();
@@ -216,7 +219,8 @@ function submitRescoreRequest(containerId,obj){
 						+'&moduleId='+moduleId
 						+'&studentBioId='+studentBioId
 						+'&requestedStatus='+requestedStatus
-						+'&requestedDate='+requestedDate;
+						+'&requestedDate='+requestedDate
+						+'&rrfId='+rrfId;
 	
 		$.ajax({
 			type : "GET",
@@ -228,9 +232,18 @@ function submitRescoreRequest(containerId,obj){
 				unblockUI();
 				if(data.value >= 1){
 					if(requestedStatus == "Y"){
-						$(containerId+' #'+elementId +' .item-tag').addClass('red-bg');
+						if(rrfId == 0){
+							$(containerId+' #'+elementId +' .item-tag').addClass('red-bg');
+						}else{
+							$(containerId+' #'+elementId +' .item-tag').addClass('red-gradient');
+						}
 					}else{
-						$(containerId+' #'+elementId +' .item-tag').removeClass('red-bg');
+						if(rrfId == 0){
+							$(containerId+' #'+elementId +' .item-tag').removeClass('red-bg');
+						}else{
+							$(containerId+' #'+elementId +' .item-tag').removeClass('red-gradient');
+							$(containerId+' #'+elementId +' .item-tag').addClass('blue-gradient');
+						}
 					}
 				}else{
 					$.modal.alert(ERROR_MESSAGE);

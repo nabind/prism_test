@@ -63,7 +63,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 
 		long curStudentBioId = 0;
 		long curSubtestId = 0;
-		long curSessionId = 0;
+		String curSessionId = "";
 		boolean addToList = false;
 		int index = 0;
 
@@ -96,7 +96,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 						rescoreSubtestTO.setSubtestId(rescoreRequestTOSubt.getSubtestId());
 						rescoreSubtestTO.setSubtestCode(rescoreRequestTOSubt.getSubtestCode());
 						rescoreSubtestTO.setPerformanceLevel(rescoreRequestTOSubt.getPerformanceLevel());
-						curSessionId = 0;
+						curSessionId = "";
 					}
 
 					for (RescoreRequestTO rescoreRequestTOSession : studentList) {
@@ -107,7 +107,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 						rescoreRequestTOSession = studentList.get(index);
 						if ((modifiedRescoreRequestTO.getStudentBioId() == rescoreRequestTOSession.getStudentBioId())
 								&& (rescoreSubtestTO.getSubtestId() == rescoreRequestTOSession.getSubtestId())) {
-							if (curSessionId != rescoreRequestTOSession.getSessionId()) {
+							if (!curSessionId.equals(rescoreRequestTOSession.getSessionId())) {
 								rescoreSessionTO = new RescoreSessionTO();
 								rescoreSessionTO.setModuleId(rescoreRequestTOSession.getModuleId());
 								rescoreSessionTO.setSessionId(rescoreRequestTOSession.getSessionId());
@@ -122,7 +122,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 								rescoreRequestTOItem = studentList.get(index);
 								if ((modifiedRescoreRequestTO.getStudentBioId() == rescoreRequestTOItem.getStudentBioId())
 										&& (rescoreSubtestTO.getSubtestId() == rescoreRequestTOItem.getSubtestId())
-										&& (rescoreRequestTOSession.getSessionId() == rescoreRequestTOItem.getSessionId())) {
+										&& (rescoreRequestTOSession.getSessionId().equals(rescoreRequestTOItem.getSessionId()))) {
 									rescoreItemTO = new RescoreItemTO();
 									rescoreItemTO.setStudentBioId(rescoreRequestTOItem.getStudentBioId());
 									rescoreItemTO.setItemsetId(rescoreRequestTOItem.getItemsetId());
@@ -182,7 +182,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 						rescoreItemTO = new RescoreItemTO();
 						rescoreSessionTO = new RescoreSessionTO();
 						rescoreSessionTO.getRescoreItemTOList().add(rescoreItemTO);
-						if (rescoreRequestTOSubt.getRescoreSessionTOList().get(0).getSessionId() == 2) {
+						if (rescoreRequestTOSubt.getRescoreSessionTOList().get(0).getSessionId().equals("2")) {
 							// For Session 3
 							rescoreRequestTOSubt.getRescoreSessionTOList().add(rescoreSessionTO);
 						} else {
@@ -414,6 +414,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
 				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
 				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				rescoreItemTO.setRequestedDate(rescoreRequestTO.getRequestedDate());
 				
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
@@ -470,10 +471,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
 				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
 				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				rescoreItemTO.setRequestedDate(rescoreRequestTO.getRequestedDate());
 				
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
-					//rescoreSessionTOLastAdded = (RescoreSessionTO)rescoreSessionSet.toArray()[rescoreSessionSet.size()-1];
 					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
 					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
 						rescoreItemTOList.add(rescoreItemTO);
@@ -525,10 +526,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				rescoreItemTO.setPerformanceLevel(rescoreRequestTO.getPerformanceLevel());
 				rescoreItemTO.setStudentBioId(rescoreRequestTO.getStudentBioId());
 				rescoreItemTO.setRrfId(rescoreRequestTO.getRrfId());
+				rescoreItemTO.setRequestedDate(rescoreRequestTO.getRequestedDate());
 				
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
-					//rescoreSessionTOLastAdded = (RescoreSessionTO)rescoreSessionSet.toArray()[rescoreSessionSet.size()-1];
 					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
 					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
 						rescoreItemTOList.add(rescoreItemTO);

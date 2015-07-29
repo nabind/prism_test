@@ -15,14 +15,14 @@ import com.ctb.prism.core.util.CustomStringUtil;
 public class RescoreSessionTO extends BaseTO {
 	
 	private static final long serialVersionUID = 1L;
-	private long sessionId = 0;
+	private String sessionId = "";
 	private String moduleId = "";
 	private List<RescoreItemTO> rescoreItemTOList = new ArrayList<RescoreItemTO>();
 	
-	public long getSessionId() {
+	public String getSessionId() {
 		return sessionId;
 	}
-	public void setSessionId(long sessionId) {
+	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
 	public List<RescoreItemTO> getRescoreItemTOList() {

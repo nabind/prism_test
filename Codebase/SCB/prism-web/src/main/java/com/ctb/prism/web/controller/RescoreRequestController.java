@@ -327,6 +327,7 @@ public class RescoreRequestController {
 		long studentBioId = Long.parseLong(request.getParameter("studentBioId"));
 		String requestedStatus = request.getParameter("requestedStatus");
 		String requestedDate = request.getParameter("requestedDate"); 
+		long rrfId = Long.parseLong(request.getParameter("rrfId"));
 	
 		UserTO loggedinUserTO = (UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		long userId = Long.parseLong(loggedinUserTO.getUserId());
@@ -340,6 +341,7 @@ public class RescoreRequestController {
 		paramMap.put("requestedStatus", requestedStatus);
 		paramMap.put("requestedDate", requestedDate);
 		paramMap.put("userId", userId);
+		paramMap.put("rrfId", rrfId);
 		
 		com.ctb.prism.core.transferobject.ObjectValueTO statusTO = null;
 		Gson gson = new Gson();
