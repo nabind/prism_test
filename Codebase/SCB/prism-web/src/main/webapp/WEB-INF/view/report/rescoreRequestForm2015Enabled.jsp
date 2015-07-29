@@ -1,3 +1,14 @@
+<style>
+.itemBox {
+	margin-bottom: 4px;
+  	width: 125px;
+  	font-weight: bold;
+  	font-size: 12px;
+}
+.itemBoxGrey {
+	margin-left: 2px;
+}
+</style>
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
 	<form:form method="POST" id="rescoreRequestForm2015" modelAttribute="rescoreRequestForm2015">
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none"><spring:message code="label.success" /></p>
@@ -18,20 +29,23 @@
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
 					<c:if test="${reportMessage.messageType == 'RL'}"><%-- Report Legend --%>
-						<dl class="download-instructions accordion same-height">
-							<dd class="accordion-body with-padding">${ reportMessage.message }</dd>
-						</dl>
+						<details class="details margin-bottom" style="line-height: 8px;">
+							<summary><b>Instructions</b></summary>
+							<div class="with-padding" style="line-height: 16px;">
+								${ reportMessage.message }
+							</div>
+						</details>
 					</c:if>
 				</c:if>
 			</c:forEach>
 		</c:if>
 		
 		<div class="columns" style="margin-top:20px">
-			<div class="new-row three-columns with-small-padding vertical-center" style="width: 33% !important;">
+			<div class="new-row six-columns with-small-padding vertical-center">
 				<b><spring:message code="label.student" /> <span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${studentFullName}</span></b>
 			</div>
-			<div class="three-columns" style="width: 33% !important;">
-				<b><spring:message code="label.parentRescoreDate" />
+			<div class="new-row four-columns with-small-padding vertical-center">
+				<b><spring:message code="label.parentRescoreDate" /></b>
 				<c:choose>
 		    		<c:when test="${requestedDate =='-1'}">
 			    		<span class="input" style="width: 100px;">
@@ -53,7 +67,7 @@
 		    		</c:otherwise>
 		    	</c:choose>	
 			</div>
-			<div class="three-columns" style="width: 33% !important;">
+			<div class="six-columns with-small-padding vertical-center">
 				<a href="#downloadZippedPdf.do?fileName=&fileType=Image_Print" class="button" id="" >
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="button.download.ip" />

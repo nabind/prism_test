@@ -85,9 +85,10 @@
 		<script src="scripts/js/libs/formValidator/jquery.validationEngine.js"></script>
 		<script src="scripts/js/libs/formValidator/languages/jquery.validationEngine-en.js"></script>
 		<script src="scripts/js/libs/formValidator/other-validations.js"></script>
+		<script src="scripts/js/developr.notify.js"></script>
 	
 		<script src="scripts/js/inors/inors.js"></script>
-		<script src="scripts/js/report/rescoreRequest.js"></script>
+		<script src="scripts/js/report/rescoreRequest.js?v=2"></script>
 		
 	</html>     	
 			
