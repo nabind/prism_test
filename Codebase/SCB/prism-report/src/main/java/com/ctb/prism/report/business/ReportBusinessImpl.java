@@ -75,7 +75,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		if (jasperReport != null 
-				&& ("Rescore Request Form".equals(jasperReport.getName().trim()) 
+				&& ( (jasperReport.getName() != null && jasperReport.getName().trim().startsWith("Rescore_review") )
 						|| "Invitation Pdf".equals(jasperReport.getName().trim()))
 						|| "Rescore Request Log".equals(jasperReport.getName().trim())
 						|| "Rescore Request Summary".equals(jasperReport.getName().trim())) {
