@@ -149,7 +149,7 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 
 	@Test
 	public void testAddNewUser()  throws Exception{
-		UserTO user = adminDAO.addNewUser(AdminTestHelper.helpAddNewUser(testParams),AdminTestHelper.helpAddNewUser2(testParams2));
+		UserTO user = adminDAO.addNewUser(AdminTestHelper.helpAddNewUser(testParams));
 		assertNotNull(user);
 	}
 

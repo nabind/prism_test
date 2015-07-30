@@ -918,7 +918,7 @@ public class AdminController {
 			searchParamMap.put("ORGMODE", req.getSession().getAttribute(IApplicationConstants.ORG_MODE));
 			searchParamMap.put("moreCount", propertyLookup.get("count.results.button.more"));
 			
-			userTo = adminService.addNewUser(paramMap, searchParamMap);
+			userTo = adminService.addNewUser(paramMap);
 			res.setContentType("text/plain");
 			
 			if (userTo != null) {
