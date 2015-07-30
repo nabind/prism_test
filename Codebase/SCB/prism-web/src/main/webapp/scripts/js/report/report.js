@@ -769,6 +769,9 @@ function fetchReportMenu(typ) {
 			$("#prismMenu").html(data);
 			if(typ == 'ADM') {
 				$("#menu_Reports").hide();
+				// added following two lines for new requirement in inors
+				$("[id='menu_Reports (ISTEP+ Spring 2015)']").hide();
+				$("[id='menu_Reports (All except ISTEP+ Spring 2015)").hide();
 				$("#menu_Downloads").hide();
 				//$("#menu_Resources").addClass('black-gradient');
 				//$("[id='menu_Useful Links']").addClass('black-gradient');
