@@ -156,9 +156,9 @@
 					<div class="cyan-gradient icholder icholder-${homeReport.tabCount} rounded-border-bottom display-none" style="border-bottom: 1px solid #CCC;">
 						<div class="refresh-report" style="position: absolute; top: 3px; right: 15px;">
 							<c:if test="${homeReport.reportUrl == '/public/INORS/Report/INORS_2015/Rescore_Request_Form_files' }">
-								<a href="#nogo" class="button review-button-pdf review-button-pdf-${homeReport.tabCount} orange-gradient glossy compact with-tooltip" 
+								<a href="#nogo" class="button icon-read review-button-pdf review-button-pdf-${homeReport.tabCount} green-gradient glossy compact with-tooltip" 
 									title="Review Rescore" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
-									<span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span>
+									<!-- <span class="button-icon blue-gradient report-btn"><span class="icon-read"></span></span> -->
 									<spring:message code="label.review" />
 								</a>
 								<c:if test="${not fn:containsIgnoreCase(themeName, 'TASC')}">
