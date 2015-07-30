@@ -30,12 +30,14 @@
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
 					<c:if test="${reportMessage.messageType == 'RL'}"><%-- Report Legend --%>
-						<details class="details margin-bottom" style="line-height: 8px;">
-							<summary><b>Instructions</b></summary>
-							<div class="with-padding" style="line-height: 16px;">
-								${ reportMessage.message }
-							</div>
-						</details>
+						<dl class="download-instructions accordion same-height">
+							<dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span>
+								<b>Instructions</b>
+								<dd style="height: auto; display: none;" class="accordion-body with-padding">		
+									${ reportMessage.message }
+								</dd>
+							</dt>
+						</dl>
 					</c:if>
 				</c:if>
 			</c:forEach>
