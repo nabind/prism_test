@@ -419,7 +419,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
 					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
-					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+					if(rescoreSessionTOLastAdded.getSessionId().equals(rescoreRequestTO.getSessionId())){
 						rescoreItemTOList.add(rescoreItemTO);
 					}else{
 						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
@@ -476,7 +476,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
 					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
-					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+					if(rescoreSessionTOLastAdded.getSessionId().equals(rescoreRequestTO.getSessionId())){
 						rescoreItemTOList.add(rescoreItemTO);
 					}else{
 						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
@@ -531,7 +531,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 				//Last added object
 				if(!rescoreSessionTOList.isEmpty()){
 					rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
-					if(rescoreSessionTOLastAdded.getSessionId() == rescoreRequestTO.getSessionId()){
+					if(rescoreSessionTOLastAdded.getSessionId().equals(rescoreRequestTO.getSessionId())){
 						rescoreItemTOList.add(rescoreItemTO);
 					}else{
 						rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);

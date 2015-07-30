@@ -50,14 +50,6 @@ $(document).ready(function() {
 		$(this).blur();
     });
 	
-	/*$("#studentTableRRF2015").dataTable({
-		'fnDrawCallback': function( oSettings ) {
-			$('.item-link-2015').off().on('click', function(){
-				submitRescoreRequest('#studentTableRRF2015',$(this));
-			});
-		}
-	});*/
-	
 	$('.item-link-2015').live('click', function(){
 		submitRescoreRequest('#studentTableRRF2015',$(this));
 	});

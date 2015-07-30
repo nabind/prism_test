@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <style>
 .itemBox {
 	margin-bottom: 4px;
@@ -112,7 +113,7 @@
 							<c:set var="sessionId" value="${innerSessionId}" />
 							<td class=""> 
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreElaTO.rescoreSessionTOList}">
-									<c:if test="${rescoreSessionTO.sessionId == sessionId}"> 
+									<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}"> 
 										<%@ include file="rescoreRequestForm2015Item.jsp" %>
 									</c:if>
 						    	</c:forEach>
@@ -122,7 +123,7 @@
 							<c:set var="sessionId" value="${innerSessionId}" />
 							<td class="">
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreMathTO.rescoreSessionTOList}">
-						    		<c:if test="${rescoreSessionTO.sessionId == sessionId}"> 
+						    		<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
 										<%@ include file="rescoreRequestForm2015Item.jsp" %>
 									</c:if> 
 						    	</c:forEach>
@@ -132,8 +133,8 @@
 							<c:when test="${grade =='10002' || grade =='10004'}">
 						    	<td class="">
 						    		<c:forEach var="rescoreSessionTO" items="${rescoreScienceTO.rescoreSessionTOList}">
-						    			<c:if test="${rescoreSessionTO.sessionId == sessionId}"> 
-										<%@ include file="rescoreRequestForm2015Item.jsp" %>
+						    			<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
+											<%@ include file="rescoreRequestForm2015Item.jsp" %>
 									</c:if> 
 						    		</c:forEach>
 				    			</td>
