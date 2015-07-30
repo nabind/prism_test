@@ -50,12 +50,16 @@ $(document).ready(function() {
 		$(this).blur();
     });
 	
-	$("#studentTableRRF2015").dataTable({
+	/*$("#studentTableRRF2015").dataTable({
 		'fnDrawCallback': function( oSettings ) {
 			$('.item-link-2015').off().on('click', function(){
 				submitRescoreRequest('#studentTableRRF2015',$(this));
 			});
 		}
+	});*/
+	
+	$('.item-link-2015').live('click', function(){
+		submitRescoreRequest('#studentTableRRF2015',$(this));
 	});
 	
 	oTable = $("#studentTableRRF_2").dataTable({
@@ -235,6 +239,7 @@ function submitRescoreRequest(containerId,obj){
 						if(rrfId == 0){
 							$(containerId+' #'+elementId +' .item-tag').addClass('red-bg');
 						}else{
+							$(containerId+' #'+elementId +' .item-tag').removeClass('blue-gradient');
 							$(containerId+' #'+elementId +' .item-tag').addClass('red-gradient');
 						}
 					}else{
@@ -245,6 +250,11 @@ function submitRescoreRequest(containerId,obj){
 							$(containerId+' #'+elementId +' .item-tag').addClass('blue-gradient');
 						}
 					}
+					notify('Saved!', 'Changes saved successfully.',{
+						hPos: 'center',
+						closeDelay: 2000,
+						rotate: true
+					});
 				}else{
 					$.modal.alert(ERROR_MESSAGE);
 				}
