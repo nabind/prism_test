@@ -689,6 +689,7 @@ PROCEDURE SP_GET_ROLE_USER(  P_IN_ROLE            IN VARCHAR2,
   END SP_GET_ROLE_DETAILS;
 
 
+  /*Updated in order to get the roles restriction from property driven instead of hard coding*/
   PROCEDURE SP_GET_USER_DETAILS_ON_EDIT (P_IN_USERID          IN USERS.USERID%TYPE,
                                          P_OUT_USER_REF_CURSOR     OUT GET_REF_CURSOR,
                                          P_OUT_ROLES_REF_CURSOR    OUT GET_REF_CURSOR,
@@ -704,28 +705,34 @@ PROCEDURE SP_GET_ROLE_USER(  P_IN_ROLE            IN VARCHAR2,
        WHERE USR.USERID = P_IN_USERID;
 
     OPEN P_OUT_ROLES_REF_CURSOR FOR
-       SELECT DISTINCT RLE.ROLEID AS ROLE_ID,
-                       RLE.ROLE_NAME AS ROLENAME,
-                       OTS.ORG_LABEL || ' ' || RLE.DESCRIPTION AS DESCRIPTION
-         FROM ROLE RLE,
-              USER_ROLE URLE,
-               ORG_USERS OU,
-              (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
-                GROUP(
-                ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
-                 FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
-                         FROM ORG_TP_STRUCTURE
-                        ORDER BY ORG_LEVEL) TEMP
-                GROUP BY TEMP.ORG_LEVEL) OTS
-        WHERE URLE.ROLEID = RLE.ROLEID
-        AND URLE.USERID =  OU.USERID
-          AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
-             AND OU.ORG_NODE_LEVEL =
-              (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = P_IN_USERID)
-          AND OTS.ORG_LEVEL =
-              (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = P_IN_USERID)
-          AND RLE.ROLE_NAME NOT IN ('ROLE_CTB', 'ROLE_PARENT', 'ROLE_SUPER', 'ROLE_RESCORE')
-        ORDER BY RLE.ROLEID;
+      SELECT DISTINCT RLE.ROLEID AS ROLE_ID,
+                      RLE.ROLE_NAME AS ROLENAME,
+                      OTS.ORG_LABEL || ' ' || RLE.DESCRIPTION AS DESCRIPTION
+        FROM ROLE RLE,
+             USER_ROLE URLE,
+             ORG_USERS OU,
+             (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/') WITHIN
+               GROUP(
+               ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL
+                FROM (SELECT DISTINCT ORG_LEVEL, ORG_LABEL
+                        FROM ORG_TP_STRUCTURE
+                       ORDER BY ORG_LEVEL) TEMP
+               GROUP BY TEMP.ORG_LEVEL) OTS
+       WHERE URLE.ROLEID = RLE.ROLEID
+         AND URLE.USERID = OU.USERID
+         AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL
+         AND OU.ORG_NODE_LEVEL =
+             (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = P_IN_USERID)
+         AND OTS.ORG_LEVEL =
+             (SELECT ORG_NODE_LEVEL FROM ORG_USERS WHERE USERID = P_IN_USERID)
+         -- AND RLE.ROLE_NAME NOT IN ('ROLE_CTB', 'ROLE_PARENT', 'ROLE_SUPER', 'ROLE_RESCORE')
+         AND RLE.ROLE_NAME NOT IN (WITH T AS (SELECT DB_PROPERY_VALUE AS ROLES
+                                                FROM DASH_CONTRACT_PROP
+                                               WHERE DB_PROPERTY_NAME = 'role.not.added')
+        SELECT REGEXP_SUBSTR(ROLES, '[^,]+', 1, LEVEL) AS ROLE_NAME
+          FROM T
+        CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(ROLES, '[^,]*')) + 1)
+         ORDER BY RLE.ROLEID;
 
   EXCEPTION
     WHEN OTHERS THEN
