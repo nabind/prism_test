@@ -382,7 +382,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                       ISD.POINT_POSSIBLE POINT_POSSIBLE,
                       RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
                       NVL(RRF.IS_REQUESTED, 'N') IS_REQUESTED,
-                      RRF.REQUESTED_USERID USERID
+                      RRF.REQUESTED_USERID USERID,
+                      NVL((SELECT S.FILENAME
+                            FROM STUDENT_PDF_FILES S, PDF_REPORTS P
+                           WHERE P.REPORT_NAME = 'IP'
+                             AND P.CUST_PROD_ID = RRF.CUST_PROD_ID
+                             AND P.PDF_REPORTID = S.PDF_REPORTID
+                             AND S.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID),
+                          -99) IP
         FROM RESCORE_REQUEST_FORM RRF,
              ITEMSET_DIM          ISD,
              SUBTEST_DIM          SD,
