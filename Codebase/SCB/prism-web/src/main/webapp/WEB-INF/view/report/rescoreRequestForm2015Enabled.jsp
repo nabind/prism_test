@@ -71,7 +71,7 @@
 		    	</c:choose>	
 			</div>
 			<div class="six-columns with-small-padding vertical-center">
-				<a href="#downloadZippedPdf.do?fileName=&fileType=Image_Print" class="button" id="" >
+				<a href="downloadZippedPdf.do?fileName=${ipFileName}&fileType=Image_Print" class="button" id="" >
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="button.download.ip" />
 			</a>

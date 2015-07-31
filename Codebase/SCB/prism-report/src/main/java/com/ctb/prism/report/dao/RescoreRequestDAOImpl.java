@@ -530,6 +530,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 							rescoreRequestTO.setIsRequested(rs.getString("IS_REQUESTED"));
 							rescoreRequestTO.setUserId(rs.getLong("USERID"));
 							rescoreRequestTO.setRrfId(rs.getLong("RRF_ID"));
+							rescoreRequestTO.setIpFileName(rs.getString("IP"));
 							subtestResult.add(rescoreRequestTO);
 						}
 					} catch (SQLException e) {

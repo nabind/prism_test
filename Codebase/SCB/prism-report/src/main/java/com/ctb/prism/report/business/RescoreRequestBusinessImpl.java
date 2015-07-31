@@ -386,8 +386,10 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 		}
 		String studentFullName = (String)subtestList.get(0).getStudentFullName();
 		String requestedDate = (String)subtestList.get(0).getRequestedDate();
+		String ipFileName = (String)subtestList.get(0).getIpFileName();
 		returnMap.put("studentFullName", studentFullName);
 		returnMap.put("requestedDate", requestedDate);
+		returnMap.put("ipFileName", ipFileName);
 		
 		
 		RescoreSubtestTO rescoreElaTO = null;

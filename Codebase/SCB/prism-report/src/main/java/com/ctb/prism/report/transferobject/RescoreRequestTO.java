@@ -43,6 +43,7 @@ public class RescoreRequestTO extends BaseTO {
 	private String itemPart = "";
 	private String itemScore = "";
 	private String pointPossible = "";
+	private String ipFileName = "";
 	
 	public String getButton() {
 		return button;
@@ -235,6 +236,12 @@ public class RescoreRequestTO extends BaseTO {
 	}
 	public void setPointPossible(String pointPossible) {
 		this.pointPossible = pointPossible;
+	}
+	public String getIpFileName() {
+		return ipFileName;
+	}
+	public void setIpFileName(String ipFileName) {
+		this.ipFileName = ipFileName;
 	}
 	
 }

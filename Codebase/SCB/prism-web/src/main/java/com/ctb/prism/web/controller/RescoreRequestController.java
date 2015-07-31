@@ -239,13 +239,16 @@ public class RescoreRequestController {
 			paramMap.put("grade", grade);
 			paramMap.put("studentBioId", studentBioId);
 			paramMap.put("loggedinUserTO", loggedinUserTO);
+			request.getSession().setAttribute("GDF_testadmin", testAdministrationVal);
 			
 			Map<String, Object> rescoreRequestMap = rescoreRequestService.getRescoreRequestForm2015(paramMap);
 			String studentFullName = (String)rescoreRequestMap.get("studentFullName");
 			String requestedDate = (String)rescoreRequestMap.get("requestedDate");
+			String ipFileName = (String)rescoreRequestMap.get("ipFileName");
 			RescoreSubtestTO rescoreElaTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreElaTO");
 			RescoreSubtestTO rescoreMathTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreMathTO");
 			RescoreSubtestTO rescoreScienceTO = (RescoreSubtestTO)rescoreRequestMap.get("rescoreScienceTO");
+			
 			
 			//Add object to modelAndView
 			modelAndView.addObject("reportUrl", reportUrl);
@@ -257,6 +260,7 @@ public class RescoreRequestController {
 			modelAndView.addObject("studentBioId", studentBioId);
 			modelAndView.addObject("studentFullName", studentFullName);
 			modelAndView.addObject("requestedDate", requestedDate);
+			modelAndView.addObject("ipFileName", ipFileName);
 			modelAndView.addObject("rescoreElaTO", rescoreElaTO);
 			modelAndView.addObject("rescoreMathTO", rescoreMathTO);
 			modelAndView.addObject("rescoreScienceTO", rescoreScienceTO);
