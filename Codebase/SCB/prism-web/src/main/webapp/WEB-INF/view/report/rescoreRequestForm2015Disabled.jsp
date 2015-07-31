@@ -51,22 +51,10 @@
 				<b><spring:message code="label.parentRescoreDate" /></b>
 				<c:choose>
 		    		<c:when test="${requestedDate =='-1'}">
-			    		<span class="input" style="width: 100px;">
-			    			<input type="text" readonly="true"
-			    				class="rescore-date-2015 input-unstyled"
-			    				studentBioId="${studentBioId}" 
-				    			id="rescoreDate_${studentBioId}" 
-				    			value="" /> 
-				    	</span>
+			    		<span style="padding-left: 5px; " class="tag orange-bg with-small-padding">NA</span>
 		    		</c:when>
 		    		<c:otherwise>
-			    		<span class="input" style="width: 100px;">
-			    			<input type="text" readonly="true"
-			    				class="rescore-date-2015 input-unstyled"
-								studentBioId="${studentBioId}" 
-			    				id="rescoreDate_${studentBioId}" 
-			    				value="${requestedDate}" /> 
-			    		</span>
+			    		<span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${requestedDate}</span>
 		    		</c:otherwise>
 		    	</c:choose>	
 			</div>
