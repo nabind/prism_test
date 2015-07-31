@@ -44,10 +44,10 @@
 		</c:if>
 		
 		<div class="columns" style="margin-top:20px">
-			<div class="new-row six-columns with-small-padding vertical-center">
+			<div class="new-row six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<b><spring:message code="label.student" /> <span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${studentFullName}</span></b>
 			</div>
-			<div class="new-row four-columns with-small-padding vertical-center">
+			<div class="new-row four-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<b><spring:message code="label.parentRescoreDate" /></b>
 				<c:choose>
 		    		<c:when test="${requestedDate =='-1'}">
@@ -70,8 +70,8 @@
 		    		</c:otherwise>
 		    	</c:choose>	
 			</div>
-			<div class="six-columns with-small-padding vertical-center">
-				<a href="downloadZippedPdf.do?fileName=${ipFileName}&fileType=Image_Print" class="button" id="" >
+			<div class="six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
+				<a href="downloadZippedPdf.do?fileName=${ipFileName}&fileType=Image_Print" class="button" id="" target="_blank">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="button.download.ip" />
 			</a>
