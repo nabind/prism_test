@@ -91,6 +91,9 @@
 														<c:if test="${role == 'ROLE_USER'}">
 														<small class="tag black-bg role ${role}">${role}</small><br />
 														</c:if>
+														<c:if test="${role == 'ROLE_RESCORE'}">
+														<small class="tag yellow-bg role ${role}">${role}</small><br />
+														</c:if>
 													</c:forEach>
 												</td>
 												<td class="vertical-center">
@@ -297,7 +300,7 @@
 										<option value="PN_NFCUSTOM">PN NO FILTER CUSTOM</option>
 									</select>
 							</p>
-							<p class="button-height inline-label">
+							<%--<p class="button-height inline-label">
 									<label class="label" for="reportType"><spring:message code="label.menuName" /></label>
 									<select id="menuType" name="menuType" class="select multiple-as-single easy-multiple-selection check-list" >
 										<option value="106"><spring:message code="label.reports.istepSpring2015" /></option>
@@ -307,7 +310,17 @@
 										<option value="104"><spring:message code="label.usefulLinks" /></option>
 										<option value="105"><spring:message code="label.manage" /></option>
 									</select>
+							</p>--%>
+							
+							<p class="button-height inline-label">
+								<label class="label" for="editMenuType"><spring:message code="label.menuName" /></label>
+								<select id="menuType" name="menuType" style="width:200px" class="select multiple-as-single easy-multiple-selection check-list  validate[required]" >
+									<c:forEach var="allMenu" items="${allMenus}">
+												<option value="${allMenu.value}">${allMenu.name}</option>
+									</c:forEach>
+								</select>
 							</p>
+							
 							<p class="button-height inline-label">
 								<label class="label" for="reportUri"><spring:message code="label.reportURI" /><span class="icon-star icon-size1 red"></span></label>
 								<input type="text" name="reportUri" id="reportUri" style="width:200px" class="input full-width newReportName reset validate[required]" />
