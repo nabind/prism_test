@@ -119,8 +119,8 @@ $(document).ready(function() {
 		});
 		$(this).parent().find('.tabtext').text( $(this).parent().attr('name') );
 		/** This is added for Missouri */
-		var assessment = $(this).attr('assessment');
-		if(assessment == '101') $('.MAPNote').show();
+		var tabName = $(this).parent().find('.tabtext').text();
+		if(tabName != '') $('.MAPNote').show();
 		else $('.MAPNote').hide();
 		/** end for Missouri */
 		//$('.productImage').hide();
@@ -756,7 +756,8 @@ function openAdminMenu() {
 
 //============================= FETCH REPORT MENU =============================
 function fetchReportMenu(typ) {
-	var dataURL = "";
+	var theme = strings['prism.theme'];
+	var dataURL = "theme="+theme;
 	$.ajax({
 		type : "GET",
 		url : 'fetchReportMenu.do',
@@ -768,6 +769,9 @@ function fetchReportMenu(typ) {
 			$("#prismMenu").html(data);
 			if(typ == 'ADM') {
 				$("#menu_Reports").hide();
+				// added following two lines for new requirement in inors
+				$("[id='menu_Reports (ISTEP+ Spring 2015)']").hide();
+				$("[id='menu_Reports (All except ISTEP+ Spring 2015)").hide();
 				$("#menu_Downloads").hide();
 				//$("#menu_Resources").addClass('black-gradient');
 				//$("[id='menu_Useful Links']").addClass('black-gradient');
@@ -1607,7 +1611,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("input#reportName").val(data[0].reportName);
 			$("input#reportDescription").val(data[0].reportDescription);
 			$("input#reportUrl").val(data[0].reportOriginalUrl);
-			$("input#menuType").val(data[0].menuType);
+			//$("input#menuType").val(data[0].menuType);
 			$("input#reportType").val(data[0].reportType);
 			$("input#reportSequence").val(data[0].reportSequence);
 			$("input#customerType").val(data[0].customerType);
@@ -1619,6 +1623,19 @@ var row = $("#"+reportId + '_' +reportId);
 				$("input#editReportStatus").removeAttr('checked');
 			}
 			$("input#editReportStatus").change();
+			/*var menuType = data[0].menuId;
+			if(typeof menuType != "undefined") {
+				$.each(menuType, function(index, value) {
+					$("#editMenuType option").each(function() {				
+						if($(this).val() == menuType) {
+							$(this).attr('selected', 'true');
+						} 
+						$(this).change();
+						$(this).trigger('update-select-list');
+					});
+				});
+			}*/
+			
 			var menuType = data[0].menuId;
 			if(typeof menuType != "undefined") {
 				$.each(menuType, function(index, value) {
@@ -1630,7 +1647,11 @@ var row = $("#"+reportId + '_' +reportId);
 						$(this).trigger('update-select-list');
 					});
 				});
+			} else {
+				$("#editMenuType option").change();
+				$("#editMenuType option").trigger('update-select-list');
 			}
+			
 			var reportType = data[0].reportType;
 			if(typeof reportType != "undefined") {
 				$.each(reportType, function(index, value) {
@@ -1654,7 +1675,11 @@ var row = $("#"+reportId + '_' +reportId);
 						$(this).trigger('update-select-list');
 					});
 				});
+			} else {
+				$("#editCustomerType option").change();
+				$("#editCustomerType option").trigger('update-select-list');
 			}
+
 			var roles = data[0].roles;
 			if(typeof roles != "undefined") {
 				$.each(roles, function(index, value) {
@@ -1694,7 +1719,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("#editReportForm").modal({
 				title: strings['msg.editReport'],
 				height: 470,
-				width: 400,
+				width: 440,
 				resizable: false,
 				draggable: false,
 				buttons: {
@@ -1956,7 +1981,7 @@ $('.delete-Report').live("click", function() {
 		$("#addReport").modal({
 			title: strings['msg.addReport'],
 			height:470,
-			width:400,
+			width:440,
 			draggable: false,
 			buttons: {
 				'Cancel': {
@@ -2333,11 +2358,11 @@ $(document).ready(function() {
 	
 	if ($('#educationTab').val() != "" && $('#educationTab').val() == "educationUserTab") {
 		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=Y';
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=Y&theme=' + $(this).attr('themeName');
 		});
 	} else {
 		$(".login-as").live("click", function() {
-			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=N';
+			location.href = 'j_spring_security_switch_user?j_username=' + $(this).attr('param')+ '&isEdu=N&theme=' + $(this).attr('themeName');
 		});
 	}
 	
@@ -2397,7 +2422,7 @@ $(document).ready(function() {
 	function loginAs(event,$obj){
 		if(!$obj.hasClass('disabled')){
 			$obj.addClass('disabled');
-			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param');
+			location.href = 'j_spring_security_switch_user?j_username='+$obj.attr('param') + '&theme=' + $obj.attr('themeName');
 		}
 	}
 	//===================================Education Center User Details Screen=====================
@@ -6487,9 +6512,10 @@ $(document).ready(function() {
 				//=========REBUILD THE MODAL DOM========
 					if( data.sendEmailFlag == "1") {
 						win.setModalTitle(strings['msg.newParentPassword']);
-						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");				
+						buildResetPasswordDom(parentDisplayName,"passwordModal","passwordModalContainer");
+						$.modal.alert('New password is sent to user email. \nNew password is: '+data.password );
 					} else {
-						$.modal.alert(strings['script.parent.passwordResetError']);
+						$.modal.alert('No email is associated with the user. Please notify password to user. \nNew password is: '+data.password );
 					}	
 				}
 				else {
@@ -8521,10 +8547,36 @@ $(document).ready(function() {
 	});
 	
 	$("#downloadStudentFileXML").on("click", function() {
-		var startDate = $("#p_Start_Date").val();
+		/*var startDate = $("#p_Start_Date").val();
 		var endDate = $("#p_End_Date").val();
 		var href = "downloadStudentFile.do?type=XML&startDate=" + startDate + "&endDate=" + endDate;
-		$("#downloadStudentFileXML").attr("href", href);
+		$("#downloadStudentFileXML").attr("href", href);*/
+		$(".success-message").hide(100);
+		$(".error-message").hide(100);
+		$(".error-message2").hide(100);
+		var formObj = $('#downloadStudentFile');
+		$(formObj).validationEngine();
+		if(formObj.validationEngine('validate')) {
+			if($("#p_Date_Type").val() == 'PD') {
+				if(($("#p_Start_Date").val() != '' && $("#p_End_Date").val() != '')
+						|| ($("#p_Start_Date").val() == '' && $("#p_End_Date").val() == '')) {
+						var diff = new Date($("#p_End_Date").val()) - new Date($("#p_Start_Date").val());
+						diff = diff/1000/60/60/24;
+						if(diff > 30) {
+							$(".error-message2").show(200);
+						} else if(diff < 0) { 
+							$.modal.alert('End date should be greater than start date.');
+						} else {
+							downloadStudentDataFile('XML');
+						}
+					} else {
+						if($("#p_Start_Date").val() == '') $.modal.alert('Please provide start date.');
+						if($("#p_End_Date").val() == '') $.modal.alert('Please provide end date.');
+					}
+			} else {
+				$.modal.alert('For XML extract Date type should be Last Updated Date.');
+			}		
+		}
 	});
 	
 	$("#downloadStudentFileCSV").on("click", function() {
@@ -8661,6 +8713,28 @@ $(document).ready(function() {
 	// groupDownloadSubmit('SS');
 	//	});
 	
+	// Asynchronous : Submit to Group Download Files
+	$("#downloadSeparatePdfsMAP").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadMapCombined('SP');
+	});
+	// Asynchronous : Submit to Group Download Files
+	$("#downloadCombinedPdfsMAP").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadMapCombined('CP');
+	});
+	
+	//Submit to GRF Download
+	$("#downloadGrf").on("click", function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$(document).click();
+		downloadGrf();
+	});
 
 // ==================== STUDENT DATATABLE IN GROUP DOWNLOAD ===========================
 	$("#studentTableGD").dataTable({
@@ -9773,6 +9847,133 @@ function downloadMapIsr(studentId) {
 	location.href = 'downloadMapIsr.do?' + dataUrl;
 	unblockUI();
 }
+
+/**
+ * Download MAP GLA ISR PDF based on multi-select student and subtest
+ * @param mode (SP or CP)
+ */
+var fileName = "";
+function downloadMapCombined(mode) {
+	displayGroupDownloadStatus(undefined);
+	if ($("#groupDownload").validationEngine('validate')) {
+		blockUI();
+		
+		var nameChanged = false;
+		
+		if(fileName == "") {
+			fileName = $("#fileName").val();
+			nameChanged = true;
+		} else {
+			// check if user changed file name
+			if(fileName == $("#fileName").val()) {
+				nameChanged = false;
+				unblockUI();
+				$.modal.alert('Seems like you have just requested a download with same "file name (Name of Generated File)". Please change the file name and try again.');
+			} else {
+				fileName = $("#fileName").val();
+				nameChanged = true;
+			}
+		}
+		
+		if(nameChanged) {
+			var status = false;
+			var subtest = $("#p_subtest", window.parent.document); 
+			var tab = $("li.active", window.parent.document).attr("param");
+			tab = tab.replace(/new-tab/g, "report-form-");
+			var formObj = $('.'+tab, window.parent.document);
+			var studentId = getSelectedStudentIdsAsCommaString();
+			if(studentId == "") {
+				unblockUI();
+				fileName = "";
+				$.modal.alert('Please select student(s)');
+			} else {
+				var dataUrl = $(formObj).serialize() + '&mode=' + mode + '&studentId=' + studentId + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
+				
+				$.ajax({
+					type : "POST",
+					url : 'groupDownloadMapIsr.do',
+					data : dataUrl,
+					dataType : 'json',
+					cache : false,
+					async : false,
+					success : function(data) {
+						// show success notification
+						/*var serverResponseData = groupDownloadFunction(json);
+						if (serverResponseData) {
+							if (serverResponseData.handler == "success") {
+								status = true;
+							} else {
+								status = false;
+							}
+						}*/ 
+						if(data.status == 'Success'){
+							status = true;
+						}
+						else {
+							status = false;
+							$.modal.alert(strings['msg.isr']);
+						}
+						displayGroupDownloadStatus(status);
+						unblockUI();
+					},
+					error : function(data) {
+						if (data.status == "200") {
+							//jsonOutputData = data;
+						} else {
+							$.modal.alert(strings['msg.nff']);
+						}
+						unblockUI();
+					}
+				});
+			}
+		}
+	}
+}
+
+/**
+ * @author Joykumar Pal
+ * Download GRF based on multi-select student and subtest
+ */
+function downloadGrf() {
+	displayGroupDownloadStatus(undefined);
+	if ($("#grfDownload").validationEngine('validate')) {
+		blockUI();
+		var status = false;
+		var subtest = $("#p_subtest", window.parent.document); 
+		var tab = $("li.active", window.parent.document).attr("param");
+		tab = tab.replace(/new-tab/g, "report-form-");
+		var formObj = $('.'+tab, window.parent.document);
+		var dataUrl = $(formObj).serialize() + '&fileName=' + $("#fileName").val() + '&email=' + $("#email").val();
+			
+		$.ajax({
+			type : "POST",
+			url : 'grfDownload.do',
+			data : dataUrl,
+			dataType : 'json',
+			cache : false,
+			async : false,
+			success : function(data) {
+				if(data.status == 'Success'){
+					status = true;
+				}
+				else {
+					status = false;
+					$.modal.alert(strings['msg.isr']);
+				}
+				displayGroupDownloadStatus(status);
+				unblockUI();
+			},
+			error : function(data) {
+				if (data.status == "200") {
+				} else {
+					$.modal.alert(strings['msg.nff']);
+				}
+				unblockUI();
+			}
+		});
+	}
+}
+
 
 /**
  * Does not actually submit the form, but it feels alike.

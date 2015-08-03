@@ -186,5 +186,9 @@ public interface IReportQuery {
 			" AND SCHOOL.ORG_NODE_LEVEL = 3",
 			"AND SBD.STUDENT_BIO_ID IN (~)"
 			);
+	
+	public static final String GET_ALL_MENUS = CustomStringUtil.appendString(
+			" SELECT DB_MENUID,MENU_NAME,DESCRIPTION FROM DASH_MENUS"
+			);
 }
 

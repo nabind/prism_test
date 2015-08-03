@@ -167,6 +167,11 @@ public interface IReportDAO {
 	 * @return
 	 */
 	public List<ObjectValueTO> getAllAssessments();
+	
+	/**
+	 * @return
+	 */
+	public List<ObjectValueTO> getAllMenus() throws SystemException;
 
 	/**
 	 * @param reportIdentifier

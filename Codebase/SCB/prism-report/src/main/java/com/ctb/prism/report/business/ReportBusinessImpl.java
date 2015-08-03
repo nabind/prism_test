@@ -648,6 +648,15 @@ public class ReportBusinessImpl implements IReportBusiness {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			try {
+				List<ObjectValueTO> menuList = reportDAO.getAllMenus();
+				allReports.get(0).setMenuList(menuList);
+			} catch (SystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		return allReports;
 	}

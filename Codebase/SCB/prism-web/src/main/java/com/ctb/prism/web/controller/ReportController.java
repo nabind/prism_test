@@ -1771,6 +1771,7 @@ public class ReportController{
 			modelAndView.addObject("allAdminYear", reportList.get(0).getAdminYear());
 			modelAndView.addObject("allCustomer", reportList.get(0).getCustomerProductList());
 			modelAndView.addObject("allOrgNode", reportList.get(0).getOrgNodeLevelList());
+			modelAndView.addObject("allMenus", reportList.get(0).getMenuList());
 		}
 		String replist = JsonUtil.convertToJsonAdmin(reportList);
 		logger.log(IAppLogger.DEBUG, replist);
@@ -2136,6 +2137,7 @@ public class ReportController{
 				modelAndView.addObject("allAdminYear", reportEditList.get(0).getAdminYear());
 				modelAndView.addObject("allCustomer", reportEditList.get(0).getCustomerProductList());
 				modelAndView.addObject("allOrgNode", reportEditList.get(0).getOrgNodeLevelList());
+				modelAndView.addObject("allMenus", reportEditList.get(0).getMenuList());
 			}
 			modelAndView.addObject("reportEditList", reportEditList);
 			String editReportJsonString = JsonUtil.convertToJsonAdmin(reportEditList);

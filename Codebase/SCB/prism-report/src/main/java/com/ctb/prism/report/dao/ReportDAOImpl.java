@@ -789,6 +789,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		return roles;
 	}
 
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
+	} )
 	public List<ObjectValueTO> getAllAssessments() {
 		List<ObjectValueTO> assessments = null;
 		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.ALL_ASSESSMENTS);
@@ -802,6 +807,27 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		return assessments;
+	}
+	
+	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getAllRoles'.concat(#root.method.name) )")
+	} )
+	public List<ObjectValueTO>  getAllMenus() throws SystemException{
+		List<ObjectValueTO> menuList = null;
+		List<Map<String, Object>> dataList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ALL_MENUS);
+		if (dataList != null && dataList.size() > 0) {
+			menuList = new ArrayList<ObjectValueTO>();
+			for (Map<String, Object> data : dataList) {
+				ObjectValueTO to = new ObjectValueTO();
+				to.setValue(((BigDecimal) data.get("DB_MENUID")).toString());
+				to.setName((String) data.get("MENU_NAME"));
+				menuList.add(to);
+			}
+		}
+		return menuList;
 	}
 
 	/**

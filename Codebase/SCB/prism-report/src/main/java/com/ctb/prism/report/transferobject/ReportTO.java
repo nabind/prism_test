@@ -52,12 +52,14 @@ public class ReportTO extends BaseTO {
 	private List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList;
 	private List<com.ctb.prism.core.transferobject.ObjectValueTO> orgNodeLevelList;
 	private List<com.ctb.prism.core.transferobject.ObjectValueTO> adminYear;
+	private List<ObjectValueTO> menuList;
 	
 	private String reportApiUrl;
 	private String customUrl;
 	private String refreshButtonClass;
 	private String scrolling;
 	private String hideFilter;
+	
 	
 	private String orgLevel;
 	private String menuId;
@@ -314,6 +316,14 @@ public class ReportTO extends BaseTO {
 	public void setAdminYear(List<com.ctb.prism.core.transferobject.ObjectValueTO> adminYear) {
 		this.adminYear = adminYear;
 	}
+	
+	public List<ObjectValueTO> getMenuList() {
+		return menuList;
+	}
+	public void setMenuList(List<ObjectValueTO> menuList) {
+		this.menuList = menuList;
+	}
+	
 	public String getAllOrgNode() {
 		return allOrgNode;
 	}
