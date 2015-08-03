@@ -286,7 +286,7 @@ var row = $("#"+reportId + '_' +reportId);
 			$("input#reportName").val(data[0].reportName);
 			$("input#reportDescription").val(data[0].reportDescription);
 			$("input#reportUrl").val(data[0].reportOriginalUrl);
-			$("input#menuType").val(data[0].menuType);
+			//$("input#menuType").val(data[0].menuType);
 			$("input#reportType").val(data[0].reportType);
 			$("input#reportSequence").val(data[0].reportSequence);
 			$("input#customerType").val(data[0].customerType);
@@ -298,6 +298,19 @@ var row = $("#"+reportId + '_' +reportId);
 				$("input#editReportStatus").removeAttr('checked');
 			}
 			$("input#editReportStatus").change();
+			/*var menuType = data[0].menuId;
+			if(typeof menuType != "undefined") {
+				$.each(menuType, function(index, value) {
+					$("#editMenuType option").each(function() {				
+						if($(this).val() == menuType) {
+							$(this).attr('selected', 'true');
+						} 
+						$(this).change();
+						$(this).trigger('update-select-list');
+					});
+				});
+			}*/
+			
 			var menuType = data[0].menuId;
 			if(typeof menuType != "undefined") {
 				$.each(menuType, function(index, value) {
@@ -309,7 +322,11 @@ var row = $("#"+reportId + '_' +reportId);
 						$(this).trigger('update-select-list');
 					});
 				});
+			} else {
+				$("#editMenuType option").change();
+				$("#editMenuType option").trigger('update-select-list');
 			}
+			
 			var reportType = data[0].reportType;
 			if(typeof reportType != "undefined") {
 				$.each(reportType, function(index, value) {
