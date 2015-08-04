@@ -239,17 +239,21 @@ $(document).ready(function() {
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		groupDownloadSubmit('SP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			groupDownloadSubmit('SP');
+		}
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadCombinedPdfsGD").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		groupDownloadSubmit('CP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			groupDownloadSubmit('CP');
+		}
 	});
 	// Synchronous : Immediate download
 	// $("#downloadSinglePdfsGD").on("click", function() {
@@ -258,17 +262,21 @@ $(document).ready(function() {
 	
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsMAP").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		downloadMapCombined('SP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			downloadMapCombined('SP');
+		}
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadCombinedPdfsMAP").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		downloadMapCombined('CP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			downloadMapCombined('CP');
+		}
 	});
 	
 	//Submit to GRF Download

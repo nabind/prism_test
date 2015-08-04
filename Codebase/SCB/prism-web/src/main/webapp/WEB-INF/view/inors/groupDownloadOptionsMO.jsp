@@ -51,13 +51,13 @@
 		</div>
 		<div class="columns accordion with-padding" style="margin-bottom:0">
 			<c:if test="${not empty actionMap[separatePdf]}">
-			<a href="#" class="downloadBulkPdf button" id="downloadSeparatePdfsMAP" style="margin-left: 0px; float: left;">
+			<a href="#nogo" class="downloadBulkPdf button" id="downloadSeparatePdfsMAP" style="margin-left: 0px; float: left;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="msg.label.groupDownload.downloadSeparatePdfsGD" />
 			</a>
 			</c:if>
 			<c:if test="${not empty actionMap[combinedPdf]}">
-			<a href="#" class="downloadBulkPdf button" id="downloadCombinedPdfsMAP" style="margin-left: 10px; float: right;">
+			<a href="#nogo" class="downloadBulkPdf button" id="downloadCombinedPdfsMAP" style="margin-left: 10px; float: right;">
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="msg.label.groupDownload.downloadCombinedPdfsGD" />
 			</a>

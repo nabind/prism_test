@@ -87,7 +87,7 @@
 		<script src="scripts/js/libs/formValidator/other-validations.js"></script>
 		<script src="scripts/js/developr.notify.js"></script>
 	
-		<script src="scripts/js/inors/inors.js"></script>
+		<script src="scripts/js/inors/inors.js?v=2"></script>
 		<script src="scripts/js/report/rescoreRequest.js?v=2"></script>
 		
 	</html>     	
