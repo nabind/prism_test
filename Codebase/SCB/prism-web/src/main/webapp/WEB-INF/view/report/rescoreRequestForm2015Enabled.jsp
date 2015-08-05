@@ -133,13 +133,16 @@
 						</c:forEach>
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
-						    	<td class="">
-						    		<c:forEach var="rescoreSessionTO" items="${rescoreScienceTO.rescoreSessionTOList}">
-						    			<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
-											<%@ include file="rescoreRequestForm2015Item.jsp" %>
-									</c:if> 
-						    		</c:forEach>
-				    			</td>
+								<c:forEach begin="7" end="7" var="innerSessionId">
+									<c:set var="sessionId" value="${innerSessionId}" />
+							    	<td class="">
+							    		<c:forEach var="rescoreSessionTO" items="${rescoreScienceTO.rescoreSessionTOList}">
+							    			<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
+												<%@ include file="rescoreRequestForm2015Item.jsp" %>
+										</c:if> 
+							    		</c:forEach>
+					    			</td>
+					    		</c:forEach>
 						    </c:when>
 						</c:choose>
 				   </tr>
