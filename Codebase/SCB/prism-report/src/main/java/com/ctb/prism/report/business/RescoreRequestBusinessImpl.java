@@ -450,6 +450,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 			}
 		}
 		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
 			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
 			rescoreElaTO.setRescoreSessionTOList(rescoreSessionTOList);
 		}
@@ -507,6 +508,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 			}
 		}
 		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
 			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
 			rescoreMathTO.setRescoreSessionTOList(rescoreSessionTOList);
 		}
@@ -562,6 +564,7 @@ public class RescoreRequestBusinessImpl implements IRescoreRequestBusiness {
 			}
 		}
 		if(!rescoreItemTOList.isEmpty()){
+			rescoreSessionTOLastAdded = rescoreSessionTOList.get(rescoreSessionTOList.size()-1);
 			rescoreSessionTOLastAdded.setRescoreItemTOList(rescoreItemTOList);
 			rescoreScienceTO.setRescoreSessionTOList(rescoreSessionTOList);
 		}
