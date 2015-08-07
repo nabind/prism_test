@@ -72,9 +72,9 @@
 			</div>
 			<div class="six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<a href="downloadZippedPdf.do?fileName=${ipFileName}&fileType=Image_Print" class="button" id="" target="_blank">
-				<span class="button-icon icon-download blue-gradient report-btn"></span>
-				<spring:message code="button.download.ip" />
-			</a>
+					<span class="button-icon icon-download blue-gradient report-btn"></span>
+					<spring:message code="button.download.ip" />
+				</a>
 			</div>
 		</div>
 		
@@ -112,20 +112,18 @@
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="">
 					<tr>
 						<c:forEach begin="3" end="6" var="innerSessionId"> 
-							<c:set var="sessionId" value="${innerSessionId}" />
 							<td class=""> 
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreElaTO.rescoreSessionTOList}">
-									<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}"> 
+									<c:if test="${fn:contains(rescoreSessionTO.sessionId, innerSessionId)}"> 
 										<%@ include file="rescoreRequestForm2015Item.jsp" %>
 									</c:if>
 						    	</c:forEach>
 				    		</td>
 						</c:forEach>
 						<c:forEach begin="1" end="2" var="innerSessionId">
-							<c:set var="sessionId" value="${innerSessionId}" />
 							<td class="">
 						    	<c:forEach var="rescoreSessionTO" items="${rescoreMathTO.rescoreSessionTOList}">
-						    		<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
+						    		<c:if test="${fn:contains(rescoreSessionTO.sessionId, innerSessionId)}">
 										<%@ include file="rescoreRequestForm2015Item.jsp" %>
 									</c:if> 
 						    	</c:forEach>
@@ -134,10 +132,9 @@
 						<c:choose>
 							<c:when test="${grade =='10002' || grade =='10004'}">
 								<c:forEach begin="7" end="7" var="innerSessionId">
-									<c:set var="sessionId" value="${innerSessionId}" />
-							    	<td class="">
+									<td class="">
 							    		<c:forEach var="rescoreSessionTO" items="${rescoreScienceTO.rescoreSessionTOList}">
-							    			<c:if test="${fn:contains(rescoreSessionTO.sessionId, sessionId)}">
+							    			<c:if test="${fn:contains(rescoreSessionTO.sessionId, innerSessionId)}">
 												<%@ include file="rescoreRequestForm2015Item.jsp" %>
 										</c:if> 
 							    		</c:forEach>
