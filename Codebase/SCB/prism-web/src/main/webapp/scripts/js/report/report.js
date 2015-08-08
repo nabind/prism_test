@@ -1189,7 +1189,8 @@ function getCascading(selectedObj) {
 	$('#report-iframe-'+tabCount).contents().find('#downloadSeparatePdfsGD').addClass('disabled');
 	$('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsGD').addClass('disabled');
 	if($('#report-iframe-'+tabCount).contents().find('#downloadDisable').length == 0 ) {
-		$('<p class="message red" id="downloadDisable">Please click <span class="green-bg">Refresh</span> to enable these buttons.</p>').insertAfter( $('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsMAP') );
+		$('<p class="message red icon-warning" id="downloadDisable" style="margin-top:50px"><b>Attention:</b> One of the Filter Options has been changed. Please click the <span class="green-bg">Refresh</span> button at the top of the page to see the updated student selection and enable the Generate Download File PDFs buttons.</p>').insertAfter( $('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsMAP') );
+		$('<p class="message red icon-warning" id="downloadDisable" style="margin-top:50px"><b>Attention:</b> One of the Filter Options has been changed. Please click the <span class="green-bg">Refresh</span> button at the top of the page to see the updated student selection and enable the Generate Download File PDFs buttons.</p>').insertAfter( $('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsGD') );
 	}
 	
 	
