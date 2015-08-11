@@ -41,16 +41,23 @@
 	<div class="item-div-act-${studentBioId}" style="display: none;">
 		<c:choose>
 			<c:when test="${rescoreItemTO.isRequested=='N'}">
-				<c:if test="${rescoreItemTO.itemScore == 'A'}">
-					<big class="new-row item-tag message itemBox itemBoxGrey compact align-center grey-gradient with-tooltip" title="Omitted Item" data-tooltip-options='{"position":"right"}'>
-						${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
-					</big>
-				</c:if>
-				<c:if test="${rescoreItemTO.itemScore != 'A'}">
-						<big class="new-row item-tag message itemBox compact align-center blue-gradient" >
+				<c:choose>
+					<c:when test="${rescoreItemTO.itemScore == 'A'}">
+						<big class="new-row item-tag message itemBox itemBoxGrey compact align-center grey-gradient with-tooltip" title="Omitted Item" data-tooltip-options='{"position":"right"}'>
 							${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
 						</big>
-				</c:if>
+					</c:when>
+					<c:when test="${ftld:isNumeric(rescoreItemTO.itemScore) && rescoreItemTO.itemScore.equals(rescoreItemTO.pointPossible)}">
+						<big class="new-row item-tag message itemBox itemBoxGrey compact align-center grey-gradient with-tooltip" title="Max score achieved" data-tooltip-options='{"position":"right"}'>
+							${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+						</big>
+					</c:when>
+					<c:otherwise>
+							<big class="new-row item-tag message itemBox compact align-center blue-gradient" >
+								${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
+							</big>
+					</c:otherwise>
+				</c:choose>
 			</c:when>
 			<c:when test="${rescoreItemTO.isRequested=='Y'}">
 						<big class="new-row item-tag message itemBox compact align-center red-gradient" >
