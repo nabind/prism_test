@@ -17,7 +17,7 @@
 									${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
 								</big>
 							</c:when>
-							<c:when test="${ftld:isNumeric(rescoreItemTO.itemScore) && rescoreItemTO.itemScore==rescoreItemTO.pointPossible}">
+							<c:when test="${ftld:isNumeric(rescoreItemTO.itemScore) && rescoreItemTO.itemScore.equals(rescoreItemTO.pointPossible)}">
 								<big class="new-row item-tag message itemBox itemBoxGrey compact align-center grey-gradient with-tooltip" title="Max score achieved" data-tooltip-options='{"position":"right"}'>
 									${rescoreItemTO.itemNumber} - ${rescoreItemTO.itemPart} - ${rescoreItemTO.itemScore} - ${rescoreItemTO.pointPossible}
 								</big>
