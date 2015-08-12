@@ -570,13 +570,13 @@ public class ParentController {
 	 * @param res
 	 * @return
 	 */
-	@RequestMapping(value = "/validatePwd", method = RequestMethod.GET)
+	@RequestMapping(value = "/validatePwd", method = RequestMethod.POST)
 	public ModelAndView validatePwd(HttpServletRequest req,
 			HttpServletResponse res) {
 		try {
 			logger.log(IAppLogger.INFO, "Enter: ParentController - validatePwd");
 			String password = (String) req.getParameter("password");
-			String username = (String) req.getParameter("username");
+			String username = (String) (req.getParameter("username")== null?  req.getParameter("loggedInUserName") : req.getParameter("username"));
 			String status = "Success";
 			
 			if(password!=null) {
@@ -640,5 +640,39 @@ public class ParentController {
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * Validating the Phone
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping(value = "/validatePhone", method = RequestMethod.GET)
+	public ModelAndView validatePhone(HttpServletRequest req,
+			HttpServletResponse res) {
+		try {
+			logger.log(IAppLogger.INFO, "Enter: ParentController - validatePhone");
+			String phone = (String) req.getParameter("phone");
+			String status = "Success";
+			
+			if(phone!=null) {				
+				if(phone.length() > 20) {
+					status="invaldPhone";
+					res.getWriter().write("{\"status\":\"" + status + "\"}");
+					return null;
+				}
+			}	
+	
+			res.getWriter().write("{\"status\":\"" + status + "\"}");
+
+			logger.log(IAppLogger.INFO, "Exit: ParentController - validatePhone");
+
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error performing validation on Phone", e);
+		}
+		return null;
+	}
+	
 		
 }

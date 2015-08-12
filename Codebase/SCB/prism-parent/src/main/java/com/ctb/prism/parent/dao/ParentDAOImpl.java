@@ -1411,7 +1411,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			throw new BusinessException(bex.getCustomExceptionMessage());
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating frist time user details.", e);
-			return false;
+			throw new BusinessException(e.getMessage());
 		}
 		return status;
 	}

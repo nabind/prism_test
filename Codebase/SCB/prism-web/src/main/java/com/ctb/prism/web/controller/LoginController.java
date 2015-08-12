@@ -669,6 +669,8 @@ public class LoginController {
 		String state = (String) req.getParameter("state");
 		String zip_code = (String) req.getParameter("zip_code");
 		String country = (String) req.getParameter("userCountry");
+		
+		String errorMsg = null;
 		// checking whether the country has been selected form the drop down, if not then taking the default value of the dropdown
 		if (country.trim().length() <= 0) {
 			country = req.getParameter("country");
@@ -719,7 +721,7 @@ public class LoginController {
 		boolean success = false;
 		try {
 			success = parentService.firstTimeUserLogin(parentTO);
-		} catch (Exception ex) {
+		} catch (BusinessException ex) {
 			success = false;
 		}
 

@@ -516,7 +516,7 @@ $(document).ready(function() {
 		e.stopImmediatePropagation();
 		$("#loggedInUserName").val($("#changePasswordFrom #currUser").text());
 		//alert($("#changePasswordFrom #currUser").text());
-		validatePwd($("#changePasswordFrom input#password"),$("#changePasswordFrom input#loggedInUserName"),$("#changePasswordFrom"), '0');
+		validatePwd($("#changePasswordFrom input#password"),$("#changePasswordFrom input#loggedInUserName"),$("#changePasswordFrom"),$("#changePasswordFrom input#mobile"), '0');
 		//$("#changePasswordFrom").submit();
 	});	
 //========================REGISTRATION FORM SUBMISSION=====================	
@@ -524,7 +524,7 @@ $(document).ready(function() {
 		//Fix for TD 78521 - By Joy
 		if($("#usernameDiv #imgHolder > #validated").hasClass("validated") || $("#usernameDiv #imgHolder").html() == ""){
 			e.stopImmediatePropagation();
-			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"),$("#registrationForm input#mobile"));
 		}else{
 			stepBack(2);
 			e.stopImmediatePropagation();
@@ -538,79 +538,123 @@ $(document).ready(function() {
 		});
 		
 //=============================AJAX CALL TO VALIDATE PASSWORD===========================			
-	function validatePwd(pwdObj,useNameObj,formObj, pwdPage)
-		{
-			if(formObj.validationEngine('validate')){
-			 blockUI();
-			}
-			var patt=/^(\d+.*|-\d+.*)/g;
-			var password=pwdObj.val();
-			var username=useNameObj.val();
-			if(password.indexOf(username) != -1) {
-				unblockUI();
-				$.modal.alert(strings['script.user.passwordPartUsername']);
-			} /*else if (patt.test(username)) {
-				unblockUI();
-				$.modal.alert(strings['script.user.useridStartNumber']);
-			}*/ else {
-				$.ajax({
-					type : "GET",
-					url : 'validatePwd.do',
-					data : 'password='+password+'&username='+username,
-					contentType: "application/json",
-					dataType : 'html',
-					cache:false,
-					success : function(data) {
-						
-						var obj = jQuery.parseJSON(data);
+	function validatePwd(pwdObj,useNameObj,formObj,phObj, pwdPage)
+	{
+		if(formObj.validationEngine('validate')){
+		 blockUI();
+		}
+		
+		var password=pwdObj.val();
+		var username=useNameObj.val();
+	
+		if(password.indexOf(username) != -1) {
+			unblockUI();
+			$.modal.alert(strings['script.user.passwordPartUsername']);
+		} else {
+			$.ajax({
+				type : "POST",
+				url : 'validatePwd.do',
+				data : formObj.serialize(),
+				dataType : 'html',
+				cache:false,
+				success : function(data) {
 					
-						if (obj.status == 'equalsUserName')	{
-							$.modal.alert(strings['script.user.passwordLikeUsername']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'invalidPwd'){
-							$.modal.alert(strings['script.user.passwordPolicy']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'invalidPwdHistory') {
-							$.modal.alert(strings['script.user.passwordPolicyHistory']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'LDAP_ERROR'){
-							$.modal.alert(obj.message);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'Success') {
-						   	if (validateSecurityQuestion()){
-								formObj.submit();
-							}else{
-								$.modal.alert(strings['script.parent.question']);
-								unblockUI();
-							}
-								
-						} else {
-							$.modal.alert(strings['script.user.saveError']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-					},
-					error : function(data){
+					var obj = jQuery.parseJSON(data);
+				
+					if (obj.status == 'equalsUserName')	{
+						$.modal.alert(strings['script.user.passwordLikeUsername']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
 						unblockUI();
-						$.modal.alert(strings['script.common.error1']);
-						
 					}
-				});
-			}		
-   }
+					else if(obj.status == 'invalidPwd'){
+						$.modal.alert(strings['script.user.passwordPolicy']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'invalidPwdHistory') {
+						$.modal.alert(strings['script.user.passwordPolicyHistory']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'LDAP_ERROR'){
+						$.modal.alert(obj.message);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'Success') {
+						validatePh(phObj,formObj);
+					   /*	if (validateSecurityQuestion()){
+							formObj.submit();
+						}else{
+							$.modal.alert(strings['script.parent.question']);
+							unblockUI();
+						}*/
+							
+					} else {
+						$.modal.alert(strings['script.user.saveError']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+				},
+				error : function(data){
+					unblockUI();
+					$.modal.alert(strings['script.common.error1']);
+					
+				}
+			});
+		}		
+}
+
+//=============================AJAX CALL TO VALIDATE PHONE===========================	
+function validatePh (phObj,formObj)
+{
+	if(formObj.validationEngine('validate')){
+	 blockUI();
+	}
+	var phone =phObj.val();
+		$.ajax({
+			type : "GET",
+			url : 'validatePhone.do',
+			data : 'phone='+phone,
+			contentType: "application/json",
+			dataType : 'html',
+			cache:false,
+			success : function(data) {
+				
+				var obj = jQuery.parseJSON(data);
+			
+				if(obj.status == 'invaldPhone'){
+					$.modal.alert(strings['script.user.phone']);
+					stepBack(1);					
+					unblockUI();
+				} else if(obj.status == 'Success') {
+				   	if (validateSecurityQuestion()){
+						formObj.submit();
+					}else{
+						$.modal.alert(strings['script.parent.question']);
+						unblockUI();
+					}
+						
+				} else {
+					$.modal.alert(strings['script.user.saveError']);
+					stepBack(1);
+					unblockUI();
+				}
+			},
+			error : function(data){
+				unblockUI();
+				$.modal.alert(strings['script.common.error1']);
+				
+			}
+		});
+	
+}
+	
 	
 	function stepBack(step) {
 		$.each( $('.wizard-previous'), function(index, value) { 

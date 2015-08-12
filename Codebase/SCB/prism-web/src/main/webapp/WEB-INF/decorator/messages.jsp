@@ -182,4 +182,6 @@
 	
 	strings['prism.theme'] = "<spring:theme code='theme.name' javaScriptEscape='true' />";
 	
+	strings['script.user.phone'] = "<spring:message code='script.user.phone' javaScriptEscape='true' />";
+	
 </script>
