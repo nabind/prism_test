@@ -23,6 +23,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.MultipleFileUpload;
+import com.amazonaws.services.s3.transfer.TransferManager;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -233,4 +235,29 @@ public class RepositoryServiceImpl implements IRepositoryService {
 		// Delete Files from Mount Location
 		//FileUtil.deleteFile(file);
 	}
+	
+	//upload files from root directory including subdirectories
+	public void uploadBulkAssest(String key,File directory){
+		TransferManager tm = new TransferManager(s3client);
+		key = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + key;
+		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
+		logger.log(IAppLogger.INFO, "Uploading an Asset: " + key);
+
+	    MultipleFileUpload upload = tm.uploadDirectory(bucket,key,directory, true);
+	    logger.log(IAppLogger.INFO, "Assets uploaded successfully");
+	}
+	//upload list of files from a root directory 
+	public void uploadBulkAssest(String key,File directory,List<File> files){
+		TransferManager tm = new TransferManager(s3client);
+		key = propertyLookup.get(IApplicationConstants.ENV_POSTFIX).toUpperCase() + FOLDER_SUFFIX + key;
+		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
+		logger.log(IAppLogger.INFO, "Uploading an Asset: " + key);
+	    MultipleFileUpload upload = tm.uploadFileList(bucket,key,directory, files);
+	    logger.log(IAppLogger.INFO, "Assets uploaded successfully");
+	}
+	
+
+	
 }
