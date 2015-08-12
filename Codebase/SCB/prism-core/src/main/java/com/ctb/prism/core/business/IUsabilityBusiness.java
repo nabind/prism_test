@@ -108,5 +108,7 @@ public interface IUsabilityBusiness {
 	public boolean createRoster(StudentListTO studentListTO) throws Exception;
 	
 	public void removeRoster(StudentListTO studentListTO) throws Exception;
+	
+	public void storeWebserviceLog(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO);
 
 }

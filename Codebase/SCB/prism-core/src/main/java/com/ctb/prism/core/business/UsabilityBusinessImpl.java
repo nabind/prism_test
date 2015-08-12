@@ -170,4 +170,9 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 			} catch (Exception ex) {}
 		}
 	}
+	
+	public void storeWebserviceLog(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) {
+		usabilityDAO.storeWebserviceLog(studentListTO, studentDataLoadTO);
+	}
+	
 }

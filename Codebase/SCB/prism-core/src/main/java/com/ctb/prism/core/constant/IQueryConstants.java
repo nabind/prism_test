@@ -1187,6 +1187,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_CUSTOMER_STD_EXTRACT_ONLINE = "{CALL PKG_STUDENTDATA_EXTRACT.SP_CUSTOMER_STD_EXTRACT_ONLINE(?, ?, ?, ?)}";
 		
 		public static final String GET_CLOB_XML_FILE = "PKG_STUDENTDATA_EXTRACT.SP_GET_CLOB_XML_FILE(?,?,?,?)";
+		
+		public static final String STORE_WS_LOG = "INSERT INTO OAS_WS_LOG (processid, rosterid, state, uuid, status, summary, message, datetimestamp) VALUES (?,?,?,?,?,?,?,sysdate)";
 
 }
 

@@ -1293,6 +1293,32 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		}
 		return studentDataExtractTO;
 	}
+	
+	public void storeWebserviceLog(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) {
+		if(studentListTO.getRosterDetailsTO() != null) {
+			for(RosterDetailsTO rosterDetailsTO : studentListTO.getRosterDetailsTO() ) {
+				StudentDetailsTO studentDetailsTO = rosterDetailsTO.getStudentDetailsTO();
+				StudentBioTO studentBioTO = (studentDetailsTO != null)? studentDetailsTO.getStudentBioTO() : null;
+				CustHierarchyDetailsTO custHierarchyDetailsTO = rosterDetailsTO.getCustHierarchyDetailsTO();
+				
+				String listString = "";
+				for (String msg : studentDataLoadTO.getErrorMessages()) {
+				    listString += msg + "\n";
+				}
+				
+				getJdbcTemplatePrism().update(IQueryConstants.STORE_WS_LOG, 
+						studentDataLoadTO.getProcessId(), 
+						rosterDetailsTO.getRosterId(),
+						(custHierarchyDetailsTO.getCollOrgDetailsTO() != null && !custHierarchyDetailsTO.getCollOrgDetailsTO().isEmpty())? custHierarchyDetailsTO.getCollOrgDetailsTO().get(0).getOrgCode() : "",
+						(studentBioTO != null) ? studentBioTO.getExamineeId() : "",
+						studentDataLoadTO.getStatus(),
+						studentDataLoadTO.getStatusCode(),
+						studentDataLoadTO.getSummary(),
+						listString);
+			}
+		}
+		
+	}
 
 	
 }

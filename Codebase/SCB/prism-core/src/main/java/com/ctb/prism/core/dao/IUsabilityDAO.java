@@ -164,4 +164,6 @@ public interface IUsabilityDAO {
 	public boolean createRoster(String rosterId) throws Exception;
 	
 	public void removeRoster(String rosterId) throws Exception;
+	
+	public void storeWebserviceLog(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO);
 }
