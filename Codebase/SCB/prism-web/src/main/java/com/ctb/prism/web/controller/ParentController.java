@@ -334,7 +334,15 @@ public class ParentController {
 					return null;
 				}
 			}
-		}
+		}  
+		
+		//Added for Ph number validation
+		if(mobile != null && mobile.trim().length() > 20) { 
+			res.setContentType("text/plain");
+			status="invalidPhone";
+			res.getWriter().write("{\"status\":\"" + status + "\"}");
+			return null;
+	    }
 		
 		parentTO.setUserId(Long.parseLong(userId));
 		parentTO.setFirstName(firstName);
@@ -657,8 +665,8 @@ public class ParentController {
 			String status = "Success";
 			
 			if(phone!=null) {				
-				if(phone.length() > 20) {
-					status="invaldPhone";
+				if(phone.trim().length() > 20) {
+					status="invalidPhone";
 					res.getWriter().write("{\"status\":\"" + status + "\"}");
 					return null;
 				}

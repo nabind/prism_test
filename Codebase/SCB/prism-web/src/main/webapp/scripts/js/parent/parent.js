@@ -410,6 +410,9 @@ $(document).ready(function() {
 				else if(obj.status == 'invalidPwdHistory') {
 					$.modal.alert(strings['script.user.passwordPolicyHistory']);
 				}
+				else if(obj.status == 'invalidPhone') {
+					$.modal.alert(strings['script.user.phone']);
+				}
 				else if(obj.status == 'LDAP_ERROR') {
 					$.modal.alert(obj.message);
 				}
@@ -628,7 +631,7 @@ function validatePh (phObj,formObj)
 				
 				var obj = jQuery.parseJSON(data);
 			
-				if(obj.status == 'invaldPhone'){
+				if(obj.status == 'invalidPhone'){
 					$.modal.alert(strings['script.user.phone']);
 					stepBack(1);					
 					unblockUI();
