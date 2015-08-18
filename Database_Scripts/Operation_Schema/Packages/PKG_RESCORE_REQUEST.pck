@@ -355,57 +355,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RESCORE_REQUEST AS
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
   BEGIN
-    /*OPEN P_OUT_CUR FOR
-    SELECT DISTINCT RRF.RRF_ID RRF_ID,
-                    RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
-                    RRF.STUDENT_LAST_NAME || ', ' ||
-                    RRF.STUDENT_FIRST_NAME || ' ' ||
-                    SUBSTR(RRF.STUDENT_MIDDLE_NAME, 1, 1) STUDENT_FULL_NAME,
-                    NVL((SELECT DISTINCT REQUESTED_DATE
-                          FROM RESCORE_REQUEST_FORM A
-                         WHERE A.STUDENT_BIO_ID = RRF.STUDENT_BIO_ID
-                           AND A.UPDATED_DATE_TIME =
-                               (SELECT MAX(UPDATED_DATE_TIME)
-                                  FROM RESCORE_REQUEST_FORM
-                                 WHERE STUDENT_BIO_ID = RRF.STUDENT_BIO_ID)
-                           AND A.REQUESTED_DATE IS NOT NULL),
-                        -1) REQUESTED_DATE,
-                    RRF.SUBTESTID SUBTESTID,
-                    SD.SUBTEST_CODE SUBTEST_CODE,
-                    SD.SUBTEST_SEQ SUBTEST_SEQ,
-                    ISD.SESSION_ID SESSION_ID,
-                    ISD.MODEULEID MODEULEID,
-                    RRF.ITEMSETID ITEMSETID,
-                    ISD.ITEM_NUMBER ITEM_NUMBER,
-                    ISD.ITEM_PART ITEM_PART,
-                    RRF.ORIGINAL_SCORE ITEM_SCORE,
-                    ISD.POINT_POSSIBLE POINT_POSSIBLE,
-                    RRF.ORIGINAL_PERFORMANCE_LEVEL PERFORMANCE_LEVEL,
-                    NVL(RRF.IS_REQUESTED, 'N') IS_REQUESTED,
-                    RRF.REQUESTED_USERID USERID,
-                    NVL((SELECT S.FILENAME
-                          FROM STUDENT_PDF_FILES S, PDF_REPORTS P
-                         WHERE P.REPORT_NAME = 'IP'
-                           AND P.CUST_PROD_ID = RRF.CUST_PROD_ID
-                           AND P.PDF_REPORTID = S.PDF_REPORTID
-                           AND S.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID),
-                        -99) IP
-      FROM RESCORE_REQUEST_FORM RRF,
-           ITEMSET_DIM          ISD,
-           SUBTEST_DIM          SD,
-           CUST_PRODUCT_LINK    CPL,
-           ORG_NODE_DIM         OND
-     WHERE RRF.ORG_NODEID = OND.ORG_NODEID
-       AND RRF.CUST_PROD_ID = CPL.CUST_PROD_ID
-       AND RRF.ITEMSETID = ISD.ITEMSETID
-       AND RRF.SUBTESTID = SD.SUBTESTID
-       AND RRF.STUDENT_BIO_ID = P_IN_STUDENT_BIO_ID
-     ORDER BY STUDENT_FULL_NAME,
-              SUBTEST_SEQ,
-              SESSION_ID,
-              ITEM_NUMBER,
-              ITEM_PART;*/
-  
     OPEN P_OUT_CUR FOR
       SELECT DISTINCT RRF.RRF_ID RRF_ID,
                       RRF.STUDENT_BIO_ID STUDENT_BIO_ID,
