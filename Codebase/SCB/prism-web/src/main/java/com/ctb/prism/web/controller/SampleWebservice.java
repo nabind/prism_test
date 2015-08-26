@@ -153,7 +153,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 		    			// create process
 		    			studentDataLoadTO = usabilityService.createProces(studentListTO, studentDataLoadTO);
 		    			processId = studentDataLoadTO.getProcessId();
-		    			usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
+		    			usabilityService.storeOASWSObject(studentListTO, studentDataLoadTO, processId, true, "OAS");
 		    			storedLog = true;
 		    			logger.log(logger.INFO, "    >> process id : " + studentDataLoadTO.getProcessId());
 		    			System.out.println("    >> process id : " + studentDataLoadTO.getProcessId());
@@ -287,7 +287,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 			}
 			try {
 				if(!storedLog) {
-					usabilityService.storeOASWSObject(studentListTO, processId, true, "OAS");
+					usabilityService.storeOASWSObject(studentListTO, studentDataLoadTO, processId, true, "OAS");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

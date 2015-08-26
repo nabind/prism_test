@@ -115,6 +115,7 @@ public interface IUsabilityService {
 
 	@Async
 	public void storeOASWSObject(StudentListTO studentListTO, long processId, boolean requestObj, String source);
+	public void storeOASWSObject(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source);
 	
 	@Async
 	public void storeWSResponse(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source);
