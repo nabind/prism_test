@@ -230,7 +230,7 @@ $(document).ready(function() {
 								clickMe(e);	
 									 if($("#addNewUser").validationEngine('validate') && ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
 										$('#addNewUser').validationEngine('hide');
-										$('#imgHolder').empty();
+										//$('#imgHolder').empty();
 										if($("input[rel^='userStatusCheck']").closest("span").hasClass("checked")){
 											if ($("input[rel^='userStatusCheck']").val()=='on')
 											$("input[rel^='userStatus']").val($("input[rel^='userStatusCheck']").val());
