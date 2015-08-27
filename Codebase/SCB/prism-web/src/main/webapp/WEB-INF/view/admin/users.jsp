@@ -165,7 +165,7 @@
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="password"><spring:message code="table.label.createPassword"/></label>
-					<input type="password" rel="editPwd" name="password" id="password" style="width:200px" class="input full-width newReportName validate[maxSize[15],minSize[8]]"/>
+					<input type="password" rel="editPwd" name="password" id="password" style="width:200px" class="input full-width newReportName validate[required,custom[validatePassword]]"/>
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="confPassword"><spring:message code="table.label.verifyPassword"/></label>
@@ -207,7 +207,7 @@
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="password"><spring:message code="table.label.createPassword"/><span class="icon-star icon-size1 red"></span></label>
-					<input autocomplete="off" type="password" name="password" id="password1" style="width:200px" class="input full-width newReportName validate[required,maxSize[15],minSize[8]]" />
+					<input autocomplete="off" type="password" name="password" id="password1" style="width:200px" class="input full-width newReportName validate[required,custom[validatePassword]]" />
 				</p>
 				<p class="button-height inline-label">
 					<label class="label" for="confPassword"><spring:message code="table.label.verifyPassword"/><span class="icon-star icon-size1 red"></span></label>
