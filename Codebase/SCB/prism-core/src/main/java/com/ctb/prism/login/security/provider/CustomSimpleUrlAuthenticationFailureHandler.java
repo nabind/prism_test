@@ -89,7 +89,10 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
 
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed: " + exception.getMessage());
         } else {
-        	String faliureUrlTheme = failureUrl + "&theme=" + contractName;
+        	String faliureUrlTheme = failureUrl;
+        	if(!IApplicationConstants.CONTRACT_NAME_INORS.equals(contractName)) {
+        		faliureUrlTheme = failureUrl + "&theme=" + contractName;
+        	}
             saveException(request, exception);
 
             if (forwardToDestination) {

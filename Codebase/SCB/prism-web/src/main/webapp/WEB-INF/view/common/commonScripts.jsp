@@ -60,7 +60,7 @@
 	<script src="scripts/js/libs/glDatePicker/glDatePicker.min.js"></script>
 	<script src="scripts/js/libs/jsTree/jquery.jstree.js"></script>
 	<script src="scripts/js/libs/formValidator/jquery.validationEngine.js"></script>
-	<script src="scripts/js/libs/formValidator/languages/jquery.validationEngine-en.js"></script>
+	<script src="scripts/js/libs/formValidator/languages/jquery.validationEngine-en.js?v=2"></script>
 	<script src="scripts/js/libs/formValidator/other-validations.js"></script>
 	<script src="scripts/js/libs/jquery.smoothDivScroll-1.3.js"></script>
 	
