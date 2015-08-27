@@ -176,15 +176,18 @@
                 },
                 //Fix for TD 77936 - By Joy
                 "validatePassword": {
-                	//"regex": /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$/,
-                	"regex": /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-                    "alertText": "* Invalid Password"
+                	//"regex": /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                	"regex": /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$/,
+                	"alertText": "* Invalid Password"
                     /**
                      	^                 #start-of-string
 						(?=.*\d)          #should contain at least one digit
+						(?=.*[0-9])       #a digit must occur at least once
 						(?=.*[a-z])       #should contain at least one lower case
 						(?=.*[A-Z])       #should contain at least one upper case
 						[a-zA-Z0-9]{8,}   #should contain at least 8 from the mentioned characters
+						(?=\S+$)          #no whitespace allowed in the entire string
+						.{8,}             #anything, at least eight places though
 						$				  #end-of-string
                      */
                 }
