@@ -19,7 +19,8 @@
 	<http pattern="/themes/**" security="none" />
 	<http pattern="/styles/**" security="none" />
 	<http pattern="/loadJSPView*" security="none" />
-	<http pattern="/validatePwd*" security="none" />   
+	<http pattern="/validatePwd*" security="none" />
+	<http pattern="/validatePhone*" security="none" />   
 	<http pattern="/showError.do" security="none" />
 	<http pattern="/clearAllCache.do" security="none" />
 	<http pattern="/clearContractCache.do" security="none" />
