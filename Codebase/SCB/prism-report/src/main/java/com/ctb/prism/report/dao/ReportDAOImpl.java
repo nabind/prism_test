@@ -1679,7 +1679,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					cs.setLong(2, Long.parseLong(schoolId));
 					cs.setLong(3, Long.parseLong(gradeId));
 					cs.setString(4, subtestCommaSep);
-					cs.setLong(5, Long.parseLong(studentGroups));
+					cs.setString(5, studentGroups);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
