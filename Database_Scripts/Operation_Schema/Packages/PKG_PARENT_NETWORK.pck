@@ -274,13 +274,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_PARENT_NETWORK IS
 
       SELECT DISTINCT DIM.SUBTESTID     VALUE,
                       DIM.SUBTEST_NAME  NAME,
-                      FACT.CUST_PROD_ID OTHER
+                      FACT.CUST_PROD_ID OTHER,
+                      prod.PRODUCT_code CODE
         FROM STUDENT_BIO_DIM    BIO_DIM,
              SUBTEST_SCORE_FACT FACT,
-             SUBTEST_DIM        DIM
+             SUBTEST_DIM        DIM,
+             product            prod,
+             cust_product_link  cust
        WHERE BIO_DIM.TEST_ELEMENT_ID = P_IN_TESTELEMENTID
          AND BIO_DIM.STUDENT_BIO_ID = FACT.STUDENT_BIO_ID
          AND FACT.SUBTESTID = DIM.SUBTESTID
+         and prod.productid = cust.productid
+         and fact.cust_prod_id = cust.CUST_PROD_ID
        ORDER BY DIM.SUBTEST_NAME;
 
   EXCEPTION

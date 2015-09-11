@@ -2386,7 +2386,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 							objectValueTO.setValue(rs.getString("VALUE"));
 							objectValueTO.setName(rs.getString("NAME"));
-							objectValueTO.setOther(rs.getString("OTHER"));
+							objectValueTO.setOther(rs.getString("OTHER")); // cust prod id
+							objectValueTO.setRowIndentifier(rs.getString("CODE")); // product code
 							objectValueTOResult.add(objectValueTO);
 						}
 					} catch (SQLException e) {

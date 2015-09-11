@@ -49,14 +49,23 @@ $(document).ready(function() {
 	// ============================ GET STUDENT REPORT ==========================================
 	var tabReportObj;
 	$('.studResult').on('click', function() {
-		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		var product = $(this).attr('product');
+		if(product == 'ISTEPS15') {
+			getStudentReport('/public/PN/Report/INORS_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		} else {
+			getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		}
 		
 		tabReportObj = $(this);
 	});
 	// tab 2
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
-			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+			if(product == 'ISTEPS15') {
+				getStudentReport('/public/PN/Report/INORS_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+			} else {
+				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+			}
 		}
 	});
 });
