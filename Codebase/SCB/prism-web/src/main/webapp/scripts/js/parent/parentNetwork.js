@@ -61,8 +61,9 @@ $(document).ready(function() {
 	// tab 2
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
+			var product = $(tabReportObj).attr('product');
 			if(product == 'ISTEPS15') {
-				getStudentReport('/public/PN/Report/PN_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+				getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
 			} else {
 				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
 			}
