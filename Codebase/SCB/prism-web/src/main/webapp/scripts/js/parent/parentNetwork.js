@@ -51,7 +51,7 @@ $(document).ready(function() {
 	$('.studResult').on('click', function() {
 		var product = $(this).attr('product');
 		if(product == 'ISTEPS15') {
-			getStudentReport('/public/PN/Report/INORS_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+			getStudentReport('/public/PN/Report/PN_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
 		} else {
 			getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
 		}
@@ -62,7 +62,7 @@ $(document).ready(function() {
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
 			if(product == 'ISTEPS15') {
-				getStudentReport('/public/PN/Report/INORS_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+				getStudentReport('/public/PN/Report/PN_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
 			} else {
 				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
 			}
