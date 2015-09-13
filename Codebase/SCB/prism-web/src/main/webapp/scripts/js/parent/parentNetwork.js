@@ -46,6 +46,11 @@ $(document).ready(function() {
 		getGenericPage('historyBack', $(this));
 	});
 	
+	//==============Rescore request from Parent===========
+	$('#studRescore').live('click', function() {
+		getGenericPage('rescoreRequestFormParent', $(this));
+	});
+	
 	// ============================ GET STUDENT REPORT ==========================================
 	var tabReportObj;
 	$('.studResult').on('click', function() {
@@ -237,6 +242,10 @@ function getDataUrl(action, obj, typ){
 					+'&studentName='+studentName
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
 					+'&studentGradeId='+studentGradeId;
+	}else if(action == 'rescoreRequestFormParent'){
+		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+		
+		dataUrl = 'p_student='+studentBioId+'&p_test_administration=3023&reportUrl=/public/INORS/Report/INORS_2015/Rescore_Request_Form_files';
 	}
 	return dataUrl;
 }

@@ -72,6 +72,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	// query to retrieve education center id for a particular username
 	public static final String GET_EDU_TENANT_ID = "SELECT EDU.EDU_CENTERID FROM USERS USERS, EDU_CENTER_USER_LINK EDU  WHERE UPPER(USERNAME) = UPPER(?) AND EDU.USERID = USERS.USERID AND ROWNUM = 1";
+	
+	public static final String GET_REPORT_ID = "select db_reportid from DASH_REPORTS where report_folder_uri like ? AND ROWNUM = 1";
 
 	
 	// get all organization list based on tenantId

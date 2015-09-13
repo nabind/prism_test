@@ -1302,17 +1302,18 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 				CustHierarchyDetailsTO custHierarchyDetailsTO = rosterDetailsTO.getCustHierarchyDetailsTO();
 				
 				String listString = "";
-				for (String msg : studentDataLoadTO.getErrorMessages()) {
-				    listString += msg + "\n";
+				if(studentDataLoadTO.getErrorMessages() != null) {
+					for (String msg : studentDataLoadTO.getErrorMessages()) {
+					    listString += msg + "\n";
+					}
 				}
 				
-				getJdbcTemplatePrism().update(IQueryConstants.STORE_WS_LOG, 
+				getJdbcTemplatePrism("tasc").update(IQueryConstants.STORE_WS_LOG, 
 						studentDataLoadTO.getProcessId(), 
 						rosterDetailsTO.getRosterId(),
 						(custHierarchyDetailsTO.getCollOrgDetailsTO() != null && !custHierarchyDetailsTO.getCollOrgDetailsTO().isEmpty())? custHierarchyDetailsTO.getCollOrgDetailsTO().get(0).getOrgCode() : "",
 						(studentBioTO != null) ? studentBioTO.getExamineeId() : "",
 						studentDataLoadTO.getStatus(),
-						studentDataLoadTO.getStatusCode(),
 						studentDataLoadTO.getSummary(),
 						listString);
 			}

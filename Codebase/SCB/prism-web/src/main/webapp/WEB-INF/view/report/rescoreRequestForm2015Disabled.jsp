@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="secc" uri="http://www.springframework.org/security/tags" %>
 <style>
 .itemBox {
 	margin-bottom: 4px;
@@ -11,6 +12,7 @@
 }
 </style>
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
+	<secc:authorize ifAnyGranted="ROLE_PARENT"><h1>Rescore Request Form for ${studentFullName}</h1></secc:authorize>
 	<form:form method="POST" id="rescoreRequestForm2015" modelAttribute="rescoreRequestForm2015">
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none"><spring:message code="label.success" /></p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display: none"><spring:message code="title.page.error" /></p>
@@ -26,6 +28,7 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
+		<secc:authorize ifNotGranted="ROLE_PARENT">
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -42,6 +45,25 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
+		</secc:authorize>
+		<secc:authorize ifAnyGranted="ROLE_PARENT">
+		<c:if test="${not empty reportMessages}">
+			<c:forEach var="reportMessage" items="${reportMessages}">
+				<c:if test="${reportMessage.displayFlag=='Y'}">
+					<c:if test="${reportMessage.messageType == 'RP'}"><%-- Report Purpose --%>
+						<dl class="download-instructions accordion same-height">
+							<dt class="closed accordion-header">
+								<b>Par Instructions</b>
+								<dd style="height: auto; display: none;" class="accordion-body with-padding">		
+									${ reportMessage.message }
+								</dd>
+							</dt>
+						</dl>
+					</c:if>
+				</c:if>
+			</c:forEach>
+		</c:if>
+		</secc:authorize>
 		
 		<div class="columns" style="margin-top:20px">
 			<div class="new-row six-columns with-small-padding vertical-center">
@@ -58,12 +80,14 @@
 		    		</c:otherwise>
 		    	</c:choose>	
 			</div>
+			<secc:authorize ifNotGranted="ROLE_PARENT">
 			<div class="six-columns with-small-padding vertical-center">
 				<a href="#nogo" class="button" id="" >
 				<span class="button-icon icon-download blue-gradient report-btn"></span>
 				<spring:message code="button.download.ip" />
 			</a>
 			</div>
+			</secc:authorize>
 		</div>
 		
 		<div id="" class="" role="grid" style="margin-top: 10px; margin-bottom: 15px;">

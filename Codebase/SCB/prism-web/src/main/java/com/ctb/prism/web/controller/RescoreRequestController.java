@@ -163,6 +163,20 @@ public class RescoreRequestController {
 		return modelAndView;
 	}
 	
+	/**
+	 * Rescore request for parent users
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws BusinessException
+	 */
+	@RequestMapping(value = "/rescoreRequestFormParent", method = RequestMethod.GET)
+	public ModelAndView rescoreRequestFormParent(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException,BusinessException {
+		return rescoreRequestForm2015(request, response);
+	}
 	
 	/**
 	 * Opens the Rescore Request Form and populate required data for ISTEP+ Spring 2015.
@@ -293,6 +307,7 @@ public class RescoreRequestController {
 		logger.log(IAppLogger.INFO, "orgNodeLevel=" + orgNodeLevel);
 		Map<String, Object> messageParamMap = new HashMap<String, Object>();
 		messageParamMap.put("REPORT_ID", reportId);
+		messageParamMap.put("REPORT_URL", (String) request.getParameter("reportUrl"));
 		messageParamMap.put("PRODUCT_ID", productId);
 		messageParamMap.put("CUSTOMER_ID", customerId);
 		messageParamMap.put("ORG_NODE_LEVEL", orgNodeLevel);

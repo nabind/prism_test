@@ -140,10 +140,19 @@
 															<spring:message code="menuName.stud.result"/>
 														</a>
 													</li>	
+													
+													
 											</ul>
 							   </li>
 							</c:forEach>
 							<c:if test="${not empty childDataMap}">
+								<li class="menu-second-level">
+									<a href="#" id="studRescore"
+										studentBioId="${childDataMap.studentBioId}" 
+										id="">
+										Rescore Request Form <small class="tag red-bg">NEW</small>
+									</a>
+								</li>	
 								<li class="menu-second-level">
 									<a class="grade-link" action="getArticleDescription" studentGradeId="${childDataMap.studentGradeId}" 
 												studentGradeName="${childDataMap.studentGradeName}" studentBioId="${childDataMap.studentBioId}"  

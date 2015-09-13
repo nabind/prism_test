@@ -52,6 +52,7 @@
 		<pattern>/getBrowseContent*</pattern>
 		<pattern>/getStandardMatters*</pattern>
 		<pattern>/historyBack*</pattern>
+		<pattern>/rescoreRequestFormParent*</pattern>
     </decorator>
 	
 	<decorator name="report" page="reporttemplate.jsp">

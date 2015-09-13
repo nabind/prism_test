@@ -193,11 +193,6 @@ public class UsabilityServiceImpl implements IUsabilityService {
 
 	public void storeOASWSObject(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO, long processId, boolean requestObj, String source) {
 		try {
-			if(studentDataLoadTO != null) usabilityBuisness.storeWebserviceLog(studentListTO, studentDataLoadTO);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		try {
 			String rosterId = getRosterId(studentListTO);
     		JAXBContext jc = JAXBContext.newInstance( StudentListTO.class );
     		Marshaller mc = jc.createMarshaller();
@@ -207,6 +202,14 @@ public class UsabilityServiceImpl implements IUsabilityService {
     		storeWsObject(result.getWriter().toString(), processId, requestObj, source, rosterId);
 		} catch (JAXBException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void storeOASWSLog(StudentListTO studentListTO, StudentDataLoadTO studentDataLoadTO) {
+		try {
+			if(studentDataLoadTO != null) usabilityBuisness.storeWebserviceLog(studentListTO, studentDataLoadTO);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 	

@@ -286,6 +286,7 @@ public class SampleWebservice extends SpringBeanAutowiringSupport {
 				e.printStackTrace();
 			}
 			try {
+				usabilityService.storeOASWSLog(studentListTO, studentDataLoadTO);
 				if(!storedLog) {
 					usabilityService.storeOASWSObject(studentListTO, studentDataLoadTO, processId, true, "OAS");
 				}

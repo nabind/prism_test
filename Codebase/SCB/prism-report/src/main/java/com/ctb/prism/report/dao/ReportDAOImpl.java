@@ -496,6 +496,19 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			});
 		}
 	}
+	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportUrl)).concat('getReportId') )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportUrl)).concat('getReportId') )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#reportUrl)).concat('getReportId') )")
+	} )
+	public String getReportId(String reportUrl) {
+		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_REPORT_ID, new Object[] { reportUrl + "%" }, new RowMapper<String>() {
+			public String mapRow(ResultSet rs, int col) throws SQLException {
+				return ((BigDecimal) rs.getObject(1)).toString();
+			}
+		});
+	}
 
 	/**@author Joy
 	 * Move the queries to package
@@ -2446,6 +2459,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "Enter: getAllReportMessages()");
 		List<ReportMessageTO> reportMessageList = new ArrayList<ReportMessageTO>();
 		String reportId = (String) paramMap.get("REPORT_ID");
+		if(reportId == null) {
+			try {
+				reportId = getReportId((String) paramMap.get("REPORT_URL"));
+			} catch (Exception ex) {}
+		}
 		String productId = (String) paramMap.get("PRODUCT_ID");
 		String customerId = (String) paramMap.get("CUSTOMER_ID");
 		String orgNodeLevel = (String) paramMap.get("ORG_NODE_LEVEL");

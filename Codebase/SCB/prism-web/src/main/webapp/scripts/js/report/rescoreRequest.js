@@ -90,6 +90,16 @@ $(document).ready(function() {
 		addStudent();
 	});
 	
+	// put sysdate into parent date picker
+	var d = new Date();
+	var month = d.getMonth()+1;
+	var day = d.getDate();
+	var output = ((''+month).length<2 ? '0' : '') + month + '/' +
+	    ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear();
+	$(".parent-rescore").val(output);
+	$(".parent-rescore-txt").text(output);
+	$(".parent-rescore").change();
+	
 	
 });
 //=====document.ready End=========================================
@@ -242,11 +252,11 @@ function submitRescoreRequest(containerId,obj){
 							$(containerId+' #'+elementId +' .item-tag').addClass('blue-gradient');
 						}
 					}
-					notify('Saved!', 'Changes saved successfully.',{
+					/*notify('Saved!', 'Changes saved successfully.',{
 						hPos: 'center',
 						closeDelay: 2000,
 						rotate: true
-					});
+					});*/
 				}else{
 					$.modal.alert(ERROR_MESSAGE);
 				}
