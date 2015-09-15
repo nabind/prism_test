@@ -13,7 +13,7 @@
 }
 </style>
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
-	<secc:authorize ifAnyGranted="ROLE_PARENT"><h1>Rescore Request Form for ${studentFullName}</h1></secc:authorize>
+	<secc:authorize ifAnyGranted="ROLE_PARENT"><h1>Rescore Request Form for ${studentName}</h1></secc:authorize>
 	<form:form method="POST" id="rescoreRequestForm2015" modelAttribute="rescoreRequestForm2015">
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none"><spring:message code="label.success" /></p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display: none"><spring:message code="title.page.error" /></p>

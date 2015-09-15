@@ -245,7 +245,7 @@ function getDataUrl(action, obj, typ){
 	}else if(action == 'rescoreRequestFormParent'){
 		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
 		
-		dataUrl = 'p_student='+studentBioId+'&p_test_administration=3023&reportUrl=/public/INORS/Report/INORS_2015/Rescore_Request_Form_files';
+		dataUrl = 'p_student='+studentBioId+'&p_test_administration=3023&reportUrl=/public/INORS/Report/INORS_2015/Rescore_Request_Form_files&studentName='+$(obj).attr('studentName');
 	}
 	return dataUrl;
 }
