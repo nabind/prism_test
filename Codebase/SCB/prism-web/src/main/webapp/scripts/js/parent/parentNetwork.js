@@ -68,7 +68,12 @@ $(document).ready(function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
 			var product = $(tabReportObj).attr('product');
 			if(product == 'ISTEPS15') {
-				getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+				//getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+				var msg = '<p class="wrapped left-icon icon-info-round red">\
+								<b>Results by Standard</b><br>\
+								Performance by Standard information will be available after the final ISTEP+ results are released in December.\
+							</p>'
+				getEmptyStudentReport(msg);
 			} else {
 				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
 			}
@@ -108,6 +113,11 @@ function getFileName(studentBioId, custProdId, type) {
 		}
 	});
 	return fileName;
+}
+
+function getEmptyStudentReport(data) {
+	// show not available message for 'results by standards' in first release
+	$("#new-tab1").html(data);
 }
 
 function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {

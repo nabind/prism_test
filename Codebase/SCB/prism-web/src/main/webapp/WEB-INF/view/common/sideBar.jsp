@@ -147,7 +147,7 @@
 							</c:forEach>
 							<c:if test="${not empty childDataMap}">
 								<li class="menu-second-level">
-									<a href="#" id="studRescore"
+									<a href="#" id="studRescore" studentName="${childDataMap.studentName}"
 										studentBioId="${childDataMap.studentBioId}" 
 										id="">
 										Rescore Request Form <small class="tag red-bg">NEW</small>
@@ -234,6 +234,12 @@
 										 </li>
 										 
 										 <li class="menu-second-level"> 
+										 	<a href="resourcepdf.do?pdfFileName=/Static_PDF/Parent_Guide_RRF.pdf"  target="_blank">
+										 		Guide to the Rescore Request Form <small class="tag red-bg">NEW</small>
+										 	</a>
+										 </li>
+										 
+										 <li class="menu-second-level"> 
 										 	<a href="resourcepdf.do?pdfFileName=/Static_PDF/ISTEP_Translation_Guide_ENGLISH.PDF"  target="_blank">
 										 		<spring:message code="menuName.second.egsr"/>
 										 	</a>
@@ -250,6 +256,8 @@
 										 		<spring:message code="menuName.user.guide"/>
 										 	</a>
 										 </li>
+										 
+										 
 										  
 									</ul>
 							</li>

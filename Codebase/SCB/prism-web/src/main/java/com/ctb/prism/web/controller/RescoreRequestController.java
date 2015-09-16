@@ -203,6 +203,7 @@ public class RescoreRequestController {
 		String school = (String) request.getParameter("p_school");
 		String grade = (String) request.getParameter("p_grade");
 		String studentBioId = (String) request.getParameter("p_student");
+		String studentName = (String) request.getParameter("studentName");
 		
 		logger.log(IAppLogger.INFO, "reportUrl=" + reportUrl);
 		logger.log(IAppLogger.INFO, "testAdministration=" + testAdministrationVal);
@@ -278,6 +279,7 @@ public class RescoreRequestController {
 			modelAndView.addObject("rescoreElaTO", rescoreElaTO);
 			modelAndView.addObject("rescoreMathTO", rescoreMathTO);
 			modelAndView.addObject("rescoreScienceTO", rescoreScienceTO);
+			modelAndView.addObject("studentName", studentName); // this name is used in parent network title
 			
 			List<ReportMessageTO> reportMessages = getAllReportMessages(request, testAdministrationVal);
 			modelAndView.addObject("reportMessages", reportMessages);
