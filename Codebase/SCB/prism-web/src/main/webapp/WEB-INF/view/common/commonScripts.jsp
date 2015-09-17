@@ -68,7 +68,7 @@
 	<script src="scripts/js/libs/ckeditor/ckeditor.js"></script>
 	
 	<!-- Custom functions -->
-	<script src="scripts/js/custom.all.js?v=10"></script>
+	<script src="scripts/js/custom.all.js?v=11"></script>
 	<!-- <script src="scripts/js/report/report.js"></script>
 	<script src="scripts/js/report/manageReport.js"></script>
 	<script src="scripts/js/report/manageMessage.js"></script>
