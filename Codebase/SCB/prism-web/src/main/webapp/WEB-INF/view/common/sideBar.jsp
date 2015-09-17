@@ -150,7 +150,7 @@
 									<a href="#" id="studRescore" studentName="${childDataMap.studentName}"
 										studentBioId="${childDataMap.studentBioId}" 
 										id="">
-										Rescore Request Form <small class="tag red-bg">NEW</small>
+										Open-Ended Items Rescore Request Form <small class="tag red-bg">NEW</small>
 									</a>
 								</li>	
 								<li class="menu-second-level">

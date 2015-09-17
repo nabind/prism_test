@@ -52,7 +52,7 @@
 				<c:if test="${reportMessage.displayFlag=='Y'}">
 					<c:if test="${reportMessage.messageType == 'RP'}"><%-- Report Purpose --%>
 						<dl class="download-instructions accordion same-height">
-							<dt class="closed accordion-header">
+							<dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span>
 								<b>Par Instructions</b>
 								<dd style="height: auto; display: none;" class="accordion-body with-padding">		
 									${ reportMessage.message }

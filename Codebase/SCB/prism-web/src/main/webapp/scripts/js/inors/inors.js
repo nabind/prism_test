@@ -58,7 +58,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$(".accordion-header").on("click", function() {
+	$(".accordion-header").live("click", function() {
 		$(".accordion-body").slideToggle(500);
 		$(".icon-plus-round").toggle();
 		$(".icon-minus-round").toggle();
