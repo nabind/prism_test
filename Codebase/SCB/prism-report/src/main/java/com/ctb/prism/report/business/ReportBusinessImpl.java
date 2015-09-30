@@ -376,11 +376,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 					 * But we need to make sure for the first time load -99 value should not be replaced
 					*/
 					if( "/public/Missouri/Report/Student_Roster_files".equals(reportUrl) 
-							&& (labelId.equals("p_grade") || labelId.equals("p_subtest")) 
+							&& (( sessionParams.get("p_grade")== null && labelId.equals("p_grade"))
+									|| ( sessionParams.get("p_subtest")== null && labelId.equals("p_subtest"))) 
 							&& sessionParams.get("p_district_Id")!= null) 	{
 						String[] listValues = new String[list.size()];
 						for (int s=0; s < list.size(); s++){
-							listValues[s] =  list.get(0).getValue();
+							listValues[s] =  list.get(s).getValue();
 						}
 					  sessionParams.put(labelId, listValues);
 					}
