@@ -268,19 +268,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                MENU_SEQ,
                REPORT_SEQ,
                MENUNAME
-          FROM (SELECT RE.DB_REPORTID       ID,
+          FROM (SELECT RE.DB_REPORTID         ID,
                        RE.REPORT_DESC,
                        RE.REPORT_TYPE,
                        DMRA.CUST_PROD_ID,
                        RE.REPORT_NAME,
                        RE.REPORT_FOLDER_URI,
-                       RE.ACTIVATION_STATUS STATUS,
+                       DMRA.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        ORG_LABEL,
-                       DMRA.DB_MENUID       MENUID,
+                       DMRA.DB_MENUID         MENUID,
                        DMENU.MENU_SEQ,
                        DMRA.REPORT_SEQ,
-                       DMENU.MENU_NAME      MENUNAME
+                       DMENU.MENU_NAME        MENUNAME
                   FROM DASH_REPORTS         RE,
                        DASH_MENU_RPT_ACCESS DMRA,
                        DASH_MENUS           DMENU,
@@ -301,7 +301,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        DMRA.CUST_PROD_ID,
                        RE.REPORT_NAME,
                        RE.REPORT_FOLDER_URI,
-                       RE.ACTIVATION_STATUS STATUS,
+                       DMRA.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        'Education Center' ORG_LABEL,
                        DMRA.DB_MENUID MENUID,
@@ -330,7 +330,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                   MENUID,
                   MENU_SEQ,
                   REPORT_SEQ,
-                  MENUNAME;
+                  MENUNAME
+         ORDER BY REPORT_DESC;
     ELSE
       OPEN P_OUT_CUR_REPORT FOR
         SELECT ID,
@@ -355,19 +356,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                MENU_SEQ,
                REPORT_SEQ,
                MENUNAME
-          FROM (SELECT RE.DB_REPORTID       ID,
+          FROM (SELECT RE.DB_REPORTID         ID,
                        RE.REPORT_DESC,
                        RE.REPORT_TYPE,
                        DMRA.CUST_PROD_ID,
                        RE.REPORT_NAME,
                        RE.REPORT_FOLDER_URI,
-                       RE.ACTIVATION_STATUS STATUS,
+                       DMRA.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        ORG_LABEL,
-                       DMRA.DB_MENUID       MENUID,
+                       DMRA.DB_MENUID         MENUID,
                        DMENU.MENU_SEQ,
                        DMRA.REPORT_SEQ,
-                       DMENU.MENU_NAME      MENUNAME
+                       DMENU.MENU_NAME        MENUNAME
                   FROM DASH_REPORTS         RE,
                        DASH_MENU_RPT_ACCESS DMRA,
                        DASH_MENUS           DMENU,
@@ -388,7 +389,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                        DMRA.CUST_PROD_ID,
                        RE.REPORT_NAME,
                        RE.REPORT_FOLDER_URI,
-                       RE.ACTIVATION_STATUS STATUS,
+                       DMRA.ACTIVATION_STATUS STATUS,
                        ROLE_NAME,
                        'Education Center' ORG_LABEL,
                        DMRA.DB_MENUID MENUID,
@@ -507,7 +508,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
          P_IN_REPORT_DESC,
          P_IN_REPORT_TYPE,
          P_IN_REPORT_FOLDER_URI,
-         P_IN_ACTIVATION_STATUS,
+         'AC',
          SYSDATE);
     
     END IF;
@@ -554,7 +555,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
              REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL,
              REC_CUST_PROD_ID.CUST_PROD_ID,
              V_DB_REPORTID,
-             'AC',
+             P_IN_ACTIVATION_STATUS,
              SYSDATE);
         
         END LOOP;
@@ -628,7 +629,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
        SET REPORT_NAME       = P_IN_REPORT_NAME,
            REPORT_DESC       = P_IN_REPORT_DESC,
            REPORT_FOLDER_URI = P_IN_REPORT_FOLDER_URI,
-           ACTIVATION_STATUS = P_IN_ACTIVATION_STATUS,
            REPORT_TYPE       = P_IN_REPORT_TYPE,
            UPDATED_DATE_TIME = SYSDATE
      WHERE DB_REPORTID = P_IN_DB_REPORTID;
@@ -673,14 +673,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                  FROM T
                                CONNECT BY LEVEL <=
                                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-    
-      /*DELETE FROM DASH_MENU_RPT_ACCESS
-       WHERE DB_REPORTID = P_IN_DB_REPORTID
-         AND CUST_PROD_ID = REC_CUST_PROD_ID.CUST_PROD_ID;
-      
-      DELETE FROM DASH_ACTION_ACCESS
-       WHERE DB_REPORTID = P_IN_DB_REPORTID
-         AND CUST_PROD_ID = REC_CUST_PROD_ID.CUST_PROD_ID;*/
     
       FOR REC_ROLE IN (WITH T AS
                           (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)
