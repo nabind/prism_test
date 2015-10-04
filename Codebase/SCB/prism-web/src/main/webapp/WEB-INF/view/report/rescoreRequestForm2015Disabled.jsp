@@ -24,6 +24,7 @@
 						<div class="big-message">
 							<span>${ reportMessage.message }</span>
 						</div>
+						<br/>
 					</c:if>
 				</c:if>
 			</c:forEach>
@@ -52,8 +53,8 @@
 				<c:if test="${reportMessage.displayFlag=='Y'}">
 					<c:if test="${reportMessage.messageType == 'RP'}"><%-- Report Purpose --%>
 						<dl class="download-instructions accordion same-height">
-							<dt class="closed accordion-header"><span class="icon-plus-round tracked"></span><span class="icon-minus-round tracked" style="display: none;"></span>
-								<b>Par Instructions</b>
+							<dt class="closed accordion-header"><span class="icon-plus-round tracked" style="display: none;"></span><span class="icon-minus-round tracked"></span>
+								<b>Instructions</b>
 								<dd style="height: auto; display: none;" class="accordion-body with-padding">		
 									${ reportMessage.message }
 								</dd>
@@ -66,19 +67,55 @@
 		</secc:authorize>
 		
 		<div class="columns" style="margin-top:20px">
-			<div class="new-row six-columns with-small-padding vertical-center">
+			<secc:authorize ifNotGranted="ROLE_PARENT">
+			<div class="new-row six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<b><spring:message code="label.student" /> <span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${studentFullName}</span></b>
 			</div>
-			<div class="new-row four-columns with-small-padding vertical-center">
+			</secc:authorize>
+			<secc:authorize ifNotGranted="ROLE_PARENT">
+			<div class="new-row four-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
+			</secc:authorize>
+			<secc:authorize ifAnyGranted="ROLE_PARENT">
+			<div class="new-row four-columns with-small-padding vertical-center" style="margin-bottom: 5px;display:none">
+			</secc:authorize>
 				<b><spring:message code="label.parentRescoreDate" /></b>
+				
+				<secc:authorize ifNotGranted="ROLE_PARENT">
 				<c:choose>
 		    		<c:when test="${requestedDate =='-1'}">
-			    		<span style="padding-left: 5px; " class="tag orange-bg with-small-padding">NA</span>
+			    		<span class="input" style="width: 100px;">
+			    			<input type="text" readonly="true"
+			    				class="rescore-date-2015 input-unstyled"
+			    				studentBioId="${studentBioId}" 
+				    			id="rescoreDate_${studentBioId}" 
+				    			value="" /> 
+				    	</span>
 		    		</c:when>
 		    		<c:otherwise>
-			    		<span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${requestedDate}</span>
+			    		<span class="input" style="width: 100px;">
+			    			<input type="text" readonly="true"
+			    				class="rescore-date-2015 input-unstyled"
+								studentBioId="${studentBioId}" 
+			    				id="rescoreDate_${studentBioId}" 
+			    				value="${requestedDate}" /> 
+			    		</span>
 		    		</c:otherwise>
 		    	</c:choose>	
+		    	</secc:authorize>
+				
+				<!-- this section added for parent rescore --> 
+		    	<secc:authorize ifAnyGranted="ROLE_PARENT">
+		    		
+			    		<span class="input" style="width: 100px;display:none">
+		    			<input type="hidden" readonly="true"
+			    				class="rescore-date-2015 parent-rescore input-unstyled"
+			    				studentBioId="${studentBioId}" 
+				    			id="rescoreDate_${studentBioId}" 
+				    			value='' /> 
+				    	</span>
+						<span style="padding-left: 5px; " class="tag orange-bg parent-rescore-txt with-small-padding"></span>
+		    		
+		    	</secc:authorize>
 			</div>
 			<secc:authorize ifNotGranted="ROLE_PARENT">
 			<div class="six-columns with-small-padding vertical-center">
