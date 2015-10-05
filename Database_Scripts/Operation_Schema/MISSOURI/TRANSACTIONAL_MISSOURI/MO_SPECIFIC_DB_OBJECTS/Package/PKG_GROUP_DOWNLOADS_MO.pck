@@ -6,9 +6,10 @@ CREATE OR REPLACE PACKAGE PKG_GROUP_DOWNLOADS_MO IS
                             P_IN_ORG_NODE_ID_SCHOOL IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                             P_IN_GRADEID            IN NUMBER,
                             P_IN_SUBTESTIDS         IN VARCHAR2,
-                            P_IN_STUDENT_GROUPS     IN VARCHAR2,
-                            P_OUT_CUR_STUDENTS      OUT GET_REFCURSOR,
-                            P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2);
+                            --P_IN_STUDENT_GROUPS     IN VARCHAR2,
+                            P_IN_STUDENT_GROUPS IN NUMBER,
+                            P_OUT_CUR_STUDENTS  OUT GET_REFCURSOR,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
   PROCEDURE SP_GET_CODE(P_IN_ORG_NODE_ID_DISTRICT IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                         P_IN_ORG_NODE_ID_SCHOOL   IN ORG_NODE_DIM.ORG_NODEID%TYPE,
@@ -27,9 +28,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS_MO IS
                             P_IN_ORG_NODE_ID_SCHOOL IN ORG_NODE_DIM.ORG_NODEID%TYPE,
                             P_IN_GRADEID            IN NUMBER,
                             P_IN_SUBTESTIDS         IN VARCHAR2,
-                            P_IN_STUDENT_GROUPS     IN VARCHAR2,
-                            P_OUT_CUR_STUDENTS      OUT GET_REFCURSOR,
-                            P_OUT_EXCEP_ERR_MSG     OUT VARCHAR2) IS
+                            --P_IN_STUDENT_GROUPS     IN VARCHAR2,
+                            P_IN_STUDENT_GROUPS IN NUMBER,
+                            P_OUT_CUR_STUDENTS  OUT GET_REFCURSOR,
+                            P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
   BEGIN
     OPEN P_OUT_CUR_STUDENTS FOR
@@ -58,14 +60,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS_MO IS
                        CONNECT BY LEVEL <=
                                   LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
                       )
-                 AND MRSD.HOME_SCHOOL IN
-                     (WITH T AS
-                      (SELECT P_IN_STUDENT_GROUPS AS TXT FROM DUAL)
-                       SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS STUDENT_GROUPS
-                         FROM T
-                       CONNECT BY LEVEL <=
-                                  LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
-                      ))
+                 AND (MRSD.HOME_SCHOOL = P_IN_STUDENT_GROUPS)
+              /*MRSD.HOME_SCHOOL IN
+              (WITH T AS
+               (SELECT P_IN_STUDENT_GROUPS AS TXT FROM DUAL)
+                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS STUDENT_GROUPS
+                  FROM T
+                CONNECT BY LEVEL <=
+                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
+               )*/
+              )
        GROUP BY STUDENT_NAME, STUDENT_BIO_ID, SCHOOL_NAME, GRADE_NAME
        ORDER BY STUDENT_NAME;
   
