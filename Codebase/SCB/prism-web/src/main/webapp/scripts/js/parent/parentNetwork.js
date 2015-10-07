@@ -91,6 +91,9 @@ var parentContainer_1 = '<div class="right-column">\
 var parentContainer_2 = '</ul>\
 								<div class="tabs-content" style="padding-bottom: 50px !important;">\
 									<div id="new-tab0" class="with-padding relative">';
+var parentContainer_3 = '</ul>\
+								<div class="tabs-content" style="padding: 50px !important;">\
+									<div id="new-tab0" class="with-padding relative">';
 var parentContainerEnd = 			'</div>\
 								<div id="new-tab1" class="with-padding relative">\
 									<div style="width:100%; text-align: center;">Loading ...</div>\
@@ -156,6 +159,13 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 		cache:false,
 		success : function(data) {
 			unblockUI();
+			if(data.indexOf('The report is empty.') != -1) {
+				var msg = '<p class="wrapped left-icon icon-info-round">\
+					<b>Overall Results</b><br>\
+					The report is empty.\
+				</p>'
+					$(".main-section").html( parentContainer_1 + linkContainer + parentContainer_3 +  msg  + parentContainerEnd);
+			} else {
 			if(tabCount == 0) {
 				$(".main-section").html(parentContainer_1 + linkContainer + parentContainer_2 + data + parentContainerEnd);
 				
@@ -170,6 +180,7 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 				
 				var foundHigh = $('span:contains("DMD_IMG")');
 				$(foundHigh).html('<span class="icon-tick black icon-size2"></span>');
+			}
 			}
 		},
 		error : function(data) {						
