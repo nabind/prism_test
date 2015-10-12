@@ -1186,7 +1186,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		
 		public static final String GET_GENERIC_SYSTEM_CONFIGURATION_MESSAGES = "{CALL PKG_MANAGE_REPORT.GET_GENERIC_MESSAGES(?, ?, ?)}";
 		
-		public static final String SP_CUSTOMER_STD_EXTRACT_ONLINE = "{CALL PKG_STUDENTDATA_EXTRACT.SP_CUSTOMER_STD_EXTRACT_ONLINE(?, ?, ?, ?)}";
+		public static final String SP_CUSTOMER_STD_EXTRACT_ONLINE = "{CALL PKG_STUDENTDATA_EXTRACT.SP_CUSTOMER_STD_EXTRACT_ONLINE(?, ?, ?, ?, ?)}";
 		
 		public static final String GET_CLOB_XML_FILE = "PKG_STUDENTDATA_EXTRACT.SP_GET_CLOB_XML_FILE(?,?,?,?)";
 		

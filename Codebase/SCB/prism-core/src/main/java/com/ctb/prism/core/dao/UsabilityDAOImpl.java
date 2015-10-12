@@ -1203,6 +1203,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		final String startDate = ((String)paramMap.get("startDate")).replaceAll("/", "");
 		final String endDate = ((String)paramMap.get("endDate")).replaceAll("/", "");
 		final String contractName  = (String)paramMap.get("contractName");
+		final Long userId =  Long.parseLong((String)paramMap.get("userId"));
 		logger.log(IAppLogger.INFO, "generateStudentXMLExtract() is being called" );
 		logger.log(IAppLogger.INFO,"customerId : "+customerId);
 		logger.log(IAppLogger.INFO,"startDate : "+startDate);
@@ -1219,6 +1220,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 					cs.setLong(2,  startDate.length()>0 || endDate.length()>0 ? -1L : 30L);
 					cs.setString(3, startDate.length()>0 ? startDate.replaceAll("/", ""):"NA");
 					cs.setString(4, endDate.length()>0 ? endDate.replaceAll("/", ""): "NA");
+					cs.setLong(5, userId);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
