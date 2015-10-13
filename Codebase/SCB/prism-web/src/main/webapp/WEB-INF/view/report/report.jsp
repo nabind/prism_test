@@ -128,6 +128,13 @@
 									PDF
 									</a>
 								</c:when>
+								<c:when test ="${homeReport.reportUrl == '/public/INORS/Report/INORS_2015/Proficiency_Roster_files' }">
+									<a href="#nogo" class="button download-button-pdf margin-left glossy compact with-tooltip" 
+									title="Download report as PDF" reportid="${homeReport.reportId}" param="/public/INORS/Report/Pdfs/Proficiency_Roster_files"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
+									<span class="button-icon blue-gradient report-btn"><span class="icon-pages"></span></span>
+									PDF
+									</a>
+								</c:when>
 								<c:otherwise>
 									<a href="#nogo" class="button download-button-pdf margin-left glossy compact with-tooltip" 
 									title="Download report as PDF" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
