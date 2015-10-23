@@ -266,7 +266,7 @@ public class TascDAOImpl {
 	 * @throws Exception
 	 * @Deprecated - Don't use this
 	 */
-	public List<StudentDetailsTO> getProcessEr(SearchProcess searchProcess) throws Exception {
+	/*public List<StudentDetailsTO> getProcessEr(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getProcessEr()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
@@ -788,7 +788,7 @@ public class TascDAOImpl {
 			System.out.println("Exit: getProcessEr() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return studentDetailsTOList;
-	}
+	}*/
 	
 	/**
 	 * @author Joy
@@ -1030,13 +1030,14 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
 			System.out.println("DATA query: "+query);
 			cs = conn.prepareCall(query);
 			
+			cs.setString(++count, searchProcess.getProcessStatus());
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				cs.setString(++count, searchProcess.getProcessedDateFrom());
 			}else{
@@ -1228,13 +1229,14 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_ER(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
 			System.out.println("COUNT query: "+query);
 			cs = conn.prepareCall(query);
 			
+			cs.setString(++count, searchProcess.getProcessStatus());
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
 				cs.setString(++count, searchProcess.getProcessedDateFrom());
 			}else{

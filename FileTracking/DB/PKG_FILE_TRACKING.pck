@@ -2,7 +2,8 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
 
   TYPE GET_REFCURSOR IS REF CURSOR;
 
-  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM              IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_ER(P_PROCESS_STATUS         IN VARCHAR2,
+                           P_DATE_FROM              IN VARCHAR2,
                            P_DATE_TO                IN VARCHAR2,
                            P_UUID                   IN VARCHAR2,
                            P_LAST_NAME              IN VARCHAR2,
@@ -23,7 +24,8 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                            P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
-  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM              IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_OL_PP(P_PROCESS_STATUS         IN VARCHAR2,
+                              P_DATE_FROM              IN VARCHAR2,
                               P_DATE_TO                IN VARCHAR2,
                               P_UUID                   IN VARCHAR2,
                               P_LAST_NAME              IN VARCHAR2,
@@ -48,7 +50,8 @@ END PKG_FILE_TRACKING;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
 
-  PROCEDURE SP_GET_DATA_ER(P_DATE_FROM              IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_ER(P_PROCESS_STATUS         IN VARCHAR2,
+                           P_DATE_FROM              IN VARCHAR2,
                            P_DATE_TO                IN VARCHAR2,
                            P_UUID                   IN VARCHAR2,
                            P_LAST_NAME              IN VARCHAR2,
@@ -139,6 +142,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       LEFT OUTER JOIN ER_EXCEPTION_DATA EED
         ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID
      WHERE 1 = 1';
+  
+    IF P_PROCESS_STATUS <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.EXCEPTION_STATUS =  ''' ||
+                        P_PROCESS_STATUS || '''';
+    END IF;
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
@@ -348,7 +356,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_ER;
 
-  PROCEDURE SP_GET_DATA_OL_PP(P_DATE_FROM              IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_OL_PP(P_PROCESS_STATUS         IN VARCHAR2,
+                              P_DATE_FROM              IN VARCHAR2,
                               P_DATE_TO                IN VARCHAR2,
                               P_UUID                   IN VARCHAR2,
                               P_LAST_NAME              IN VARCHAR2,
@@ -383,7 +392,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                       ' SELECT NVL((SELECT ESD.LASTNAME || '','' || ESD.FIRSTNAME || '' '' || ESD.MIDDLENAME
           FROM ER_STUDENT_DEMO ESD
          WHERE ESD.UUID = EED.ER_UUID
-           AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = ESD.STATE_CODE)),EED.LAST_NAME) STUDENTNAME,
+           AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = ESD.STATE_CODE) AND ROWNUM = 1),EED.LAST_NAME) STUDENTNAME,
        EED.ER_UUID UUID,
        EED.TEST_ELEMENT_ID TEST_ELEMENT_ID,
        EED.PROCESS_ID PROCESS_ID,
@@ -409,6 +418,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
        FROM ER_EXCEPTION_DATA EED
        WHERE EED.SOURCE_SYSTEM =  ''' ||
                       P_SOURCE_SYSTEM || '''';
+  
+    IF P_PROCESS_STATUS <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.EXCEPTION_STATUS =  ''' ||
+                        P_PROCESS_STATUS || '''';
+    END IF;
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||

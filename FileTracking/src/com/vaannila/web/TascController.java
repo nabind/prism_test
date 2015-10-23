@@ -325,7 +325,7 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/process/searchTascEr.htm")
+	/*@RequestMapping("/process/searchTascEr.htm")
 	public ModelAndView searchTascEr(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("Enter: searchTascEr()");
@@ -363,7 +363,7 @@ public class TascController {
 			e.printStackTrace();
 		}
 		return new ModelAndView("tascProcessEr", "message", jsonStr);
-	}
+	}*/
 	
 	/**
 	 * This method is to show searched records page wise for eResource and normal for other
@@ -381,6 +381,7 @@ public class TascController {
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;
 			SearchProcess process = new SearchProcess();
+			process.setProcessStatus(request.getParameter("processStatus"));
 			process.setProcessedDateFrom(request.getParameter("processedDateFrom"));
 			process.setProcessedDateTo(request.getParameter("processedDateTo"));
 			process.setUuid(request.getParameter("uuid"));
