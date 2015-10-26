@@ -318,6 +318,7 @@
 						<th>&nbsp;</th>
 						<th>Source</th>
 						<th>L Name</th>
+						<th>Test Element Id</th>
 						<th>Subtest</th>
 						<th>Form</th>
 						<th>Barcode</th>
@@ -337,6 +338,7 @@
 						
 						<td><%=error.getSourceSystem() %></td>
 						<td><%=error.getStudentName() %></td>
+						<td><%=error.getTestElementId() %></td>
 						<td><%=error.getContantArea() %></td>
 						<td><%=error.getForm() %></td>
 						<td><%=error.getBarcode() %></td>
