@@ -16,7 +16,7 @@
 			$('#processedDateFrom').datepicker({maxDate: '0',onSelect: function(date) {
 				date = $(this).datepicker('getDate');
 		        var maxDate = new Date(date.getTime());
-		        maxDate.setDate(maxDate.getDate() + 180);
+		        maxDate.setDate(maxDate.getDate() + 365);
 		        $('#processedDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
 		    }});
 			
