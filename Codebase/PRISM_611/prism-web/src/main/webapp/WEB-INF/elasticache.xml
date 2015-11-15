@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+           http://www.springframework.org/schema/cache
+           http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
+
+    <cache:annotation-driven cache-manager="memcacheManager"/>
+
+    <bean name="memcacheManager" class="com.google.code.ssm.spring.SSMCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="inorsAdminCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="tascAdminCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="usmoAdminCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="inorsDefaultCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="tascDefaultCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="usmoDefaultCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                
+				<bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="inorsConfigCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="tascConfigCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="usmoConfigCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="inorsUserCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="tascUserCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="usmoUserCache"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+                    <constructor-arg name="allowClear" index="2" value="true"/>
+                </bean>
+            </set>
+        </property>
+
+    </bean>
+    
+	<!-- config -->
+    <bean name="awsAddressProviderInors" class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="${server.url.inors}"/>
+    </bean>
+	<bean name="awsAddressProviderTasc" class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="${server.url.tasc}"/>
+    </bean>
+    <bean name="awsAddressProviderUsmo" class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="${server.url.usmo}"/>
+    </bean>
+    <bean name="cacheConfiguration" class="com.google.code.ssm.providers.CacheConfiguration">
+        <property name="consistentHashing" value="true"/>
+    </bean>
+    <bean name="cacheClientFactory" class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl"/>
+
+	<!-- cache factory -->
+	<bean name="inorsAdminCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="inorsAdminCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderInors"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="tascAdminCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="tascAdminCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderTasc"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="usmoAdminCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="usmoAdminCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderUsmo"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    
+	<bean name="inorsDefaultCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="inorsDefaultCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderInors"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="tascDefaultCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="tascDefaultCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderTasc"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="usmoDefaultCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="usmoDefaultCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderUsmo"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    
+	<bean name="inorsConfigCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="inorsConfigCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderInors"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="tascConfigCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="tascConfigCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderTasc"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="usmoConfigCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="usmoConfigCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderUsmo"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    
+    <bean name="inorsUserCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="inorsUserCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderInors"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="tascUserCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="tascUserCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderTasc"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+    <bean name="usmoUserCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="usmoUserCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProviderUsmo"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+
+</beans>

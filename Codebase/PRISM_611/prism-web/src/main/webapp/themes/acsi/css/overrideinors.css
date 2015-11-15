@@ -1,0 +1,242 @@
+.inline-label > .label {
+	width: 165px !important;
+	font-weight: normal !important;
+}
+.accordion {
+	margin-top: 10px;
+	margin-left:0px;
+}
+.rounded-border {
+	border-radius: 5px 5px 5px 5px !important;	
+}
+.rounded-border-bottom {
+	border-radius: 0px 0px 8px 8px !important;	
+}
+
+/****** LIGHT NAVY GRADIENT ***********/
+.navy-bg,
+.navy-gradient > .drop-down {
+	background: #f1f3f4;
+	color: #666666;
+	border-color: #5f80ab;
+	}
+	a.navy-bg:hover {
+		color: #666666;
+		background: #f3f5f6;
+	}
+.navy-gradient, .navy-gradient:visited,
+.navy-gradient > .select-value, .navy-gradient > .select-arrow {
+	color: #00001F;
+	background: #5f80ab url(../img/old-browsers/colors/bg_navy-gradient.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab));
+	background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -moz-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -ms-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: -o-linear-gradient(top, #e7f3ff, #5f80ab);
+	background: linear-gradient(top, #e7f3ff, #5f80ab);
+	border-color: #5f80ab;
+	}
+	a.navy-gradient:hover, button.navy-gradient:hover,
+	:hover > .button-icon.navy-gradient,
+	.navy-gradient > a.select-value:hover, .navy-gradient > .select-arrow:hover {
+		color: #666666;
+		background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_hover.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab));
+		background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -moz-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -ms-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: -o-linear-gradient(top, #e7f3ff, #5f80ab);
+		background: linear-gradient(top, #e7f3ff, #5f80ab);
+		border-color: #5f80ab;
+	}
+	.navy-gradient.glossy,
+	.glossy > .button-icon.navy-gradient, .button-icon.glossy.navy-gradient,
+	.navy-gradient.glossy > .select-value, .navy-gradient.glossy > .select-arrow {
+		background: #5f80ab url(../img/old-browsers/colors/bg_navy-gradient_glossy.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab), color-stop(0.5, #ededf0), color-stop(0.5, #e3e3e5));
+		background: -webkit-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -moz-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -ms-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: -o-linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		background: linear-gradient(top, #e7f3ff, #ededf0 50%, #e3e3e5 50%, #5f80ab);
+		}
+		a.navy-gradient.glossy:hover, button.navy-gradient.glossy:hover,
+		.glossy:hover > .button-icon.navy-gradient, :hover > .button-icon.glossy.navy-gradient,
+		.navy-gradient.glossy > a.select-value:hover, .navy-gradient.glossy > .select-arrow:hover {
+			background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_glossy_hover.png) repeat-x;
+			-webkit-background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+			-o-background-size: 100% 100%;
+			background-size: 100% 100%;
+			background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab), color-stop(0.5, #5f80ab), color-stop(0.5, #efeff1));
+			background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -moz-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -ms-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: -o-linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+			background: linear-gradient(top, #e7f3ff, #5f80ab 50%, #efeff1 50%, #5f80ab);
+		}
+	a.navy-gradient:active, button.navy-gradient:active, .button.navy-gradient:active, .navy-gradient.active,
+	:active > .button-icon.navy-gradient, .active > .button-icon.navy-gradient,
+	.switch-off {
+		background: #5f80ab url(../img/old-browsers/colors/bg_a_navy-gradient_active.png) repeat-x !important;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab)) !important;
+		background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -moz-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -ms-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: -o-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		background: linear-gradient(top, #e7f3ff, #5f80ab) !important;
+		border-color: #5f80ab;
+	}
+	
+.button.navy-gradient:disabled, .button.navy-gradient.disabled, .disabled .button.navy-gradient,
+.button.glossy.navy-gradient:disabled, .button.glossy.navy-gradient.disabled, .disabled .button.glossy.navy-gradient,
+.navy-gradient.disabled > .select-value, .navy-gradient.disabled > .select-arrow,
+.disabled .navy-gradient > .select-value, .disabled .navy-gradient > .select-arrow {
+	color: #666666 !important;
+	border-color: #5f80ab !important;
+	background: #5f80ab url(../img/old-browsers/colors/bg_button_navy-gradient_disabled.png) repeat-x !important;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e7f3ff), to(#5f80ab)) !important;
+	background: -webkit-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -moz-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -ms-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: -o-linear-gradient(top, #e7f3ff, #5f80ab) !important;
+	background: linear-gradient(top, #e7f3ff, #5f80ab) !important;
+}
+
+/****** END : LIGHT NAVY GRADIENT ***********/
+/****** LIGHT CYAN GRADIENT ***********/
+.cyan-bg,
+.cyan-gradient > .drop-down {
+	background: #f1f3f4;
+	color: #666666;
+	border-color: #cccccc;
+	}
+	a.white-bg:hover {
+		color: #666666;
+		background: #f3f5f6;
+	}
+.cyan-gradient, .cyan-gradient:visited,
+.cyan-gradient > .select-value, .cyan-gradient > .select-arrow {
+	color: #666666;
+	background: #e7f3ff url(../img/old-browsers/colors/bg_cyan-gradient.png) repeat-x;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f7f7fa), to(#e7f3ff));
+	background: -webkit-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -moz-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -ms-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: -o-linear-gradient(top, #f7f7fa, #e7f3ff);
+	background: linear-gradient(top, #f7f7fa, #e7f3ff);
+	border-color: #cccccc;
+	}
+	a.cyan-gradient:hover, button.cyan-gradient:hover,
+	:hover > .button-icon.cyan-gradient,
+	.cyan-gradient > a.select-value:hover, .cyan-gradient > .select-arrow:hover {
+		color: #666666;
+		background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_hover.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#e7f3ff));
+		background: -webkit-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -moz-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -ms-linear-gradient(top, #fefefe, #e7f3ff);
+		background: -o-linear-gradient(top, #fefefe, #e7f3ff);
+		background: linear-gradient(top, #fefefe, #e7f3ff);
+		border-color: #cccccc;
+	}
+	.cyan-gradient.glossy,
+	.glossy > .button-icon.cyan-gradient, .button-icon.glossy.cyan-gradient,
+	.cyan-gradient.glossy > .select-value, .cyan-gradient.glossy > .select-arrow {
+		background: #e7f3ff url(../img/old-browsers/colors/bg_cyan-gradient_glossy.png) repeat-x;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fafafc), to(#e7f3ff), color-stop(0.5, #ededf0), color-stop(0.5, #e3e3e5));
+		background: -webkit-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -moz-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -ms-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: -o-linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		background: linear-gradient(top, #fafafc, #ededf0 50%, #e3e3e5 50%, #e7f3ff);
+		}
+		a.cyan-gradient.glossy:hover, button.cyan-gradient.glossy:hover,
+		.glossy:hover > .button-icon.cyan-gradient, :hover > .button-icon.glossy.cyan-gradient,
+		.cyan-gradient.glossy > a.select-value:hover, .cyan-gradient.glossy > .select-arrow:hover {
+			background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_glossy_hover.png) repeat-x;
+			-webkit-background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+			-o-background-size: 100% 100%;
+			background-size: 100% 100%;
+			background: -webkit-gradient(linear, left top, left bottom, from(#fefeff), to(#e7f3ff), color-stop(0.5, #e7f3ff), color-stop(0.5, #efeff1));
+			background: -webkit-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -moz-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -ms-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: -o-linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+			background: linear-gradient(top, #fefeff, #e7f3ff 50%, #efeff1 50%, #e7f3ff);
+		}
+	a.cyan-gradient:active, button.cyan-gradient:active, .button.cyan-gradient:active, .cyan-gradient.active,
+	:active > .button-icon.cyan-gradient, .active > .button-icon.cyan-gradient,
+	.switch-off {
+		background: #e7f3ff url(../img/old-browsers/colors/bg_a_cyan-gradient_active.png) repeat-x !important;
+		-webkit-background-size: 100% 100%;
+		-moz-background-size: 100% 100%;
+		-o-background-size: 100% 100%;
+		background-size: 100% 100%;
+		background: -webkit-gradient(linear, left top, left bottom, from(#5f80ab), to(#e7f3ff)) !important;
+		background: -webkit-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -moz-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -ms-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: -o-linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		background: linear-gradient(top, #5f80ab, #e7f3ff) !important;
+		border-color: #cccccc;
+	}
+	
+.button.cyan-gradient:disabled, .button.cyan-gradient.disabled, .disabled .button.cyan-gradient,
+.button.glossy.cyan-gradient:disabled, .button.glossy.cyan-gradient.disabled, .disabled .button.glossy.cyan-gradient,
+.cyan-gradient.disabled > .select-value, .cyan-gradient.disabled > .select-arrow,
+.disabled .cyan-gradient > .select-value, .disabled .cyan-gradient > .select-arrow {
+	color: #666666 !important;
+	border-color: #5f80ab !important;
+	background: #e7f3ff url(../img/old-browsers/colors/bg_button_cyan-gradient_disabled.png) repeat-x !important;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e7f3ff)) !important;
+	background: -webkit-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -moz-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -ms-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: -o-linear-gradient(top, #ffffff, #e7f3ff) !important;
+	background: linear-gradient(top, #ffffff, #e7f3ff) !important;
+}
+
+/****** END : LIGHT CYAN GRADIENT ***********/
+
+.align-row{
+	float: left;
+	margin-left: 2px;
+}

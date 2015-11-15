@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="amazonDynamoDBClient" class="com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient">
+    	<constructor-arg ref="amazonAWSCredentials" />
+    	<property name="endpoint" value="https://dynamodb.us-east-1.amazonaws.com" />
+  </bean>
+
+  <bean id="amazonAWSCredentials" class="com.amazonaws.auth.BasicAWSCredentials">
+    	<constructor-arg value="${aws.accessKey}"/>
+		<constructor-arg value="${aws.secretKey}"/>
+  </bean>
+  
+  <bean id="amazonDynamoDB" class="com.amazonaws.services.dynamodbv2.document.DynamoDB">
+	<constructor-arg ref="amazonDynamoDBClient" />
+  </bean>
+
+  <!-- <dynamodb:repositories base-package="com.acme.repositories" amazon-dynamodb-ref="amazonDynamoDB" /> -->
+
+</beans>

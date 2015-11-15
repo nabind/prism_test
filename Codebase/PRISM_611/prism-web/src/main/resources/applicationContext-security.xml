@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:s="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd
+    	http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+		http://www.springframework.org/schema/data/mongo
+          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!-- Mongo DB -->
+	<mongo:mongo id="mongo" host="localhost" port="27017"/>
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+	    <constructor-arg ref="mongo" />
+	    <constructor-arg name="databaseName" value="jasper" />
+	    <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
+	</bean>
+	
+	<!-- <bean id="mongoCredentials" class="org.springframework.data.authentication.UserCredentials">
+        <property name="username" value="#{mongoURI.username}" />
+        <property name="password" value="#{new java.lang.String(mongoURI.password)}" />
+    </bean> -->
+
+	<!-- Enabling method level security -->
+	<s:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+	</s:global-method-security>
+	
+	<!-- JDBC Connection configuration
+	<context:property-placeholder location="/WEB-INF/classes/jdbc.properties" />
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${app.jdbc.driverClassName}" />
+		<property name="url" value="${app.jdbc.url}" />
+		<property name="username" value="${app.jdbc.username}" />
+		<property name="password" value="${app.jdbc.password}" />
+	</bean> 
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	   <constructor-arg index="0" ref="dataSource"/>
+	   <constructor-arg index="1" value="false"/>
+	</bean>
+	-->
+
+	<tx:annotation-driven transaction-manager="txManager"/>
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceInors" />
+	</bean>
+	
+	<!-- JNDI Connection Configuration -->
+	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/jasperServer"/>
+  	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	<jee:jndi-lookup id="dataSourceInors" jndi-name="java:comp/env/jdbc/inors"/>
+  	<bean id="jdbcTemplateInors" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceInors" />
+	</bean>
+	<jee:jndi-lookup id="dataSourceTasc" jndi-name="java:comp/env/jdbc/tasc"/>
+  	<bean id="jdbcTemplateTasc" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceTasc" />
+	</bean>
+	<jee:jndi-lookup id="dataSourceUsmo" jndi-name="java:comp/env/jdbc/usmo"/>
+  	<bean id="jdbcTemplateUsmo" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceUsmo" />
+	</bean>
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+    	<constructor-arg ref="contextSource" />
+    </bean>	
+	
+	
+	<!-- Authentication manager  -->
+	<s:authentication-manager alias="defaultAuthenticationManager">
+		<s:authentication-provider ref='restDaoAuthenticationProvider' />
+		<!-- <s:authentication-provider ref='daoAuthenticationProvider' /> -->
+		<!-- <s:authentication-provider ref='secondLdapProvider' />  -->
+	    <!-- <s:authentication-provider>
+	      <s:user-service>
+	        <s:user name="ctbadmin" password="ctbadmin" authorities="ROLE_USER, ROLE_ACSI, ROLE_ADMIN, ROLE_CTB" />
+	        <s:user name="devadmin" password="devadmin" authorities="ROLE_USER, ROLE_ADMIN, ROLE_ACSI" />
+	      </s:user-service>
+	    </s:authentication-provider> -->
+        <s:authentication-provider ref='anonymousAuthenticationProvider' />
+    </s:authentication-manager>
+    
+    <!-- DAO Authentication Provider -->
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService"/>
+	  	<property name="saltSource" ref="saltSource"/>
+	  	<property name="passwordEncoder" ref="hmacPasswordEncoder"/>
+	</bean>
+	<bean id="restDaoAuthenticationProvider" class="com.ctb.prism.login.security.provider.RESTDaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService"/>
+	  	<property name="saltSource" ref="saltSource"/>
+	  	<property name="passwordEncoder" ref="hmacPasswordEncoder"/>
+	</bean>
+	<bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" /> 
+	<bean id="shaPasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256"/>
+	</bean>
+	<bean id="hmacPasswordEncoder" class="com.ctb.prism.login.security.encoder.HMacShaEncoder">
+        <constructor-arg name="strength" value="256"/>
+        <constructor-arg name="encodeHashAsBase64" value="true"/>
+    </bean>
+	<bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<property name="userPropertyToUse" value="getSalt"/>
+	</bean>
+
+    <!-- Anonymous Authentication -->
+    <bean id="anonymousAuthenticationProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+        <property name="key"><value>foobar</value></property>
+    </bean>
+    
+    <!-- LDAP  -->
+    <!-- context:property-placeholder location="/WEB-INF/classes/ldap.properties" /-->
+    <bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <constructor-arg value="${app.ldap.url}"/>
+		<property name="userDn" value="${app.ldap.username}" />
+		<property name="password" value="${app.ldap.password}" />
+    </bean>
+	
+	<!-- <bean id="secondLdapProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg>
+            <bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <constructor-arg ref="contextSource" />
+                <property name="userSearch">
+                    <bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+                      <constructor-arg index="0" value="ou=users,ou=system"/>
+                      <constructor-arg index="1" value="(cn={0})"/>
+                      <constructor-arg index="2" ref="contextSource" />
+                    </bean>
+                </property>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean id="authorityManager" class="com.ctb.prism.web.manager.CustomLdapAuthorityManager">
+			</bean>
+        </constructor-arg>
+    </bean> -->
+    
+    <bean id="secondLdapProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg>
+            <bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <constructor-arg ref="contextSource" />
+                <property name="userSearch" ref="userSearch" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="authorityManager">
+            <!-- <bean id="authorityManager" class="com.ctb.prism.web.manager.CustomLdapAuthorityManager">
+			</bean> -->
+        </constructor-arg>
+    </bean>
+    
+    <bean id="authorityManager" class="com.ctb.prism.web.manager.CustomLdapAuthorityManager"/>
+    
+    <bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+       <constructor-arg index="0" value="${app.ldap.userdn}"/>
+       <constructor-arg index="1" value="(uid={0})"/>
+       <constructor-arg index="2" ref="contextSource" />
+    </bean>
+	
+    <bean id="ldapUserDetailsService" class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
+	  <constructor-arg><ref bean="userSearch"/></constructor-arg>
+	  <constructor-arg><ref bean="authorityManager"/></constructor-arg>
+	  <!-- <property name="userDetailsMapper" ref="customUserDetailsContextMapper" /> -->
+	</bean>
+	<!--  END LDAP CONFIG --> 
+	
+	<!-- Login as feature -->
+	<bean id="switchUserProcessingFilter" class="com.ctb.prism.web.controller.CustomSwitchUserFilter">
+		<property name="userDetailsService" ref="customUserDetailsService" />
+		<property name="switchUserUrl" value="/j_spring_security_switch_user" />
+		<property name="exitUserUrl" value="/j_spring_security_exit_user" />
+		<property name="targetUrl" value="/validateUser.do" />
+	</bean>
+	<!-- End : Login as feature -->
+    
+    <!-- firsttime login check filter -->
+	<bean id="firsttimeLoginCheckFilter" class="com.ctb.prism.web.util.FirstTimeUserFilter"></bean>
+	
+    <!-- WITH LDAP Authorization -->
+    <!-- <bean id="secondLdapProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg>
+            <bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <constructor-arg ref="contextSource" />
+                <property name="userSearch">
+                    <bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+                      <constructor-arg index="0" value="ou=users,ou=system"/>
+                      <constructor-arg index="1" value="(cn={0})"/>
+                      <constructor-arg index="2" ref="contextSource" />
+                    </bean>
+                </property>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+                <constructor-arg ref="contextSource" />
+                <constructor-arg value="ou=groups,ou=system" />
+                <property name="groupSearchFilter" value="(member={0})"/>
+                <property name="rolePrefix" value="ROLE_"/>
+                <property name="searchSubtree" value="true"/>
+                <property name="convertToUpperCase" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean> -->
+	
+	<!-- Authentication through LOCAL LDIF file -->
+	<!-- 
+	<s:ldap-server root="dc=springframework,dc=org" ldif="classpath:users.ldif" port="33389"/>
+	
+	<bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <constructor-arg value="ldap://localhost:33389/dc=springframework,dc=org"/>
+    </bean>
+	
+	<bean id="secondLdapProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg>
+            <bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <constructor-arg ref="contextSource" />
+                <property name="userSearch">
+                    <bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+                      <constructor-arg index="0" value="ou=people"/>
+                      <constructor-arg index="1" value="(uid={0})"/>
+                      <constructor-arg index="2" ref="contextSource" />
+                    </bean>
+                </property>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+                <constructor-arg ref="contextSource" />
+                <constructor-arg value="ou=groups" />
+                <property name="groupSearchFilter" value="(member={0})"/>
+                <property name="rolePrefix" value="ROLE_"/>
+                <property name="searchSubtree" value="true"/>
+                <property name="convertToUpperCase" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean> -->
+	
+	<!-- LDAP End -->
+  
+</beans>

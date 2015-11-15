@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:s="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd
+    	http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+		http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<tx:annotation-driven transaction-manager="txManager" />
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceInors" />
+		<!-- <property name="dataSource" ref="dataSourceTasc" /> -->
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa" />
+		<property name="username" value="jasper55" />
+		<property name="password" value="jasper55" />
+	</bean>
+	
+	<bean id="dataSourceInors" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa" />
+		<property name="username" value="Istep" />
+		<property name="password" value="istep14qa" />
+	</bean>
+	
+	<bean id="dataSourceTasc" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa" />
+		<property name="username" value="Tasc" />
+		<property name="password" value="tasc14qa" />
+	</bean>
+	
+	<bean id="dataSourceUsmo" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa" />
+		<property name="username" value="missouri" />
+		<property name="password" value="missouri14qa" />
+	</bean>
+	
+  	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+  	<bean id="jdbcTemplateInors" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceInors" />
+	</bean>
+
+  	<bean id="jdbcTemplateTasc" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceTasc" />
+	</bean>
+	
+  	<bean id="jdbcTemplateUsmo" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceUsmo" />
+	</bean>
+	
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+    	<constructor-arg ref="contextSource" />
+    </bean>
+    
+    <bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <constructor-arg value="ldap://10.160.23.130:10389"/>
+		<property name="userDn" value="uid=admin,ou=system" />
+		<property name="password" value="Adm!n321" />
+    </bean>
+    
+    <!-- DAO Authentication Provider -->
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService"/>
+	  	<property name="saltSource" ref="saltSource"/>
+	  	<property name="passwordEncoder" ref="hmacPasswordEncoder"/>
+	</bean>
+	<bean id="restDaoAuthenticationProvider" class="com.ctb.prism.login.security.provider.RESTDaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserDetailsService"/>
+	  	<property name="saltSource" ref="saltSource"/>
+	  	<property name="passwordEncoder" ref="hmacPasswordEncoder"/>
+	</bean>
+	<bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" /> 
+	<bean id="shaPasswordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg value="256"/>
+	</bean>
+	<bean id="hmacPasswordEncoder" class="com.ctb.prism.login.security.encoder.HMacShaEncoder">
+        <constructor-arg name="strength" value="256"/>
+        <constructor-arg name="encodeHashAsBase64" value="true"/>
+    </bean>
+	<bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<property name="userPropertyToUse" value="getSalt"/>
+	</bean>
+
+    <!-- Anonymous Authentication -->
+    <bean id="anonymousAuthenticationProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+        <property name="key"><value>foobar</value></property>
+    </bean>
+	
+	<bean id="hmacEncoder" class="com.ctb.prism.login.security.encoder.DigitalMeasuresHMACQueryStringBuilder">
+    	<constructor-arg index="0" value="BTCguSF49hYaPmAfe9Q29LtsQ2X"/>
+    	<constructor-arg index="1" type="int" value="30"/>
+    	<constructor-arg index="2" value="HmacSHA1"/>
+    	<property name="timeZone" value="GMT" />
+    	<property name="URL_ENCODING" value="UTF-8" />
+    </bean>
+</beans>
