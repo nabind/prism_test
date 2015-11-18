@@ -51,14 +51,14 @@
 		<c:if test="${empty reportMessages}">
 			<div class="message small-margin-bottom orange-gradient dataload-message">
 				<c:if test="${groupFile=='ISR'}">
-					ISTEP+ and IMAST Student Report (ISR) are available for the three most recent administrations. IREAD-3 Student Report (ISR) are available for the 2013 and 2014 administrations (Spring and Summer).
+					ISTEP+ and IMAST Student Report (ISR) are available for the three most recent administrations. IREAD-3 Student Report (ISR) are available for the 2013, 2014 and 2015 administrations (Spring and Summer).
 				</c:if>
 				<c:if test="${groupFile=='IPR'}">
-					Image of student responses (IP) to Applied Skills test are available for the three most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)<br /><br />
+					Image of student responses (IP) to Applied Skills test are available for the 2014 and 2013 ISTEP+ administrations. (Not available for ISTEP+ 2015, IMAST or IREAD-3)<br /><br />
 				</c:if>
 				<c:if test="${groupFile=='BOTH'}">
 					Invitation Code Letters (IC) are available for the current ISTEP+ administration only.<br /><br />
-					Image of student responses (IP) to Applied Skills test are available for three two most recent ISTEP+ administrations. (Not available for IMAST or IREAD-3)<br /><br />
+					Image of student responses (IP) to Applied Skills test are available for the 2014 and 2013 ISTEP+ administrations. (Not available for ISTEP+ 2015, IMAST or IREAD-3)<br /><br />
 				</c:if>
 				<c:if test="${groupFile=='ICL'}">
 					Invitation Code Letters (IC) are available for the current ISTEP+ administration only.<br /><br />
