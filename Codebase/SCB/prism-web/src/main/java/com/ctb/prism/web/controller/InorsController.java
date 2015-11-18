@@ -1570,6 +1570,9 @@ public class InorsController {
 		} else {
 			logger.log(IAppLogger.ERROR, "Invalid Product Name");
 		}
+		if(productName.contains("ISTEP+ Spring 2015")){
+			showIcDiv = "N";
+		}
 		logger.log(IAppLogger.INFO, "showGrtDiv=" + showGrtDiv);
 		logger.log(IAppLogger.INFO, "showIcDiv=" + showIcDiv);
 		modelAndView.addObject("showGrtDiv", showGrtDiv);

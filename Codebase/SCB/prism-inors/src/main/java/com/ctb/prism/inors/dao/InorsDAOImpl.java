@@ -602,6 +602,17 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			to.setL_OPIIPICut38(wrap(rs.getString("OPIIPI_CUT_38"), '"'));
 			to.setL_OPIIPICut39(wrap(rs.getString("OPIIPI_CUT_39"), '"'));
 			to.setL_OPIIPICut40(wrap(rs.getString("OPIIPI_CUT_40"), '"'));
+			to.setL_Form(wrap(rs.getString("FACT.FORM"), '"'));
+			to.setL_Filler(wrap(rs.getString("FILLER"), '"'));
+			to.setL_FinalFormUsedforScoring(wrap(rs.getString("FORM_FOR_SCORING"), '"'));
+			to.setL_TextReaderIndicatorPart1(wrap(rs.getString("FACT.TEXT_READER_INDICATOR_PART_1"), '"'));
+			to.setL_TextReaderIndicatorPart2(wrap(rs.getString("FACT.TEXT_READER_INDICATOR_PART_2"), '"'));
+			to.setL_ElaCrSession3(wrap(rs.getString("FACT.ELA_CR_SESSION_3"), '"'));
+			to.setL_ElaCrSession4bItemResp(wrap(rs.getString("FACT.ELA_CR_SESSION_4B_ITEM_RESP"), '"'));
+			to.setL_ElaCrSession5ItemResp(wrap(rs.getString("FACT.ELA_CR_SESSION_5_ITEM_RESP"), '"'));
+			to.setL_ElaCrSession6bItemResp(wrap(rs.getString("FACT.ELA_CR_SESSION_6B_ITEM_RESP"), '"'));
+			to.setL_MathCrSession2ItemResp(wrap(rs.getString("FACT.MATH_CR_SESSION_2_ITEM_RESP"), '"'));
+			to.setL_SciCrSession7ItemResp(wrap(rs.getString("FACT.SCI_CR_SESSION_7_ITEM_RESP"), '"'));
 			grtTOResult.add(to);
 		}
 		return grtTOResult;
