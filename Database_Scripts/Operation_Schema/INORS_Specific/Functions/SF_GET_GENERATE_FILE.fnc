@@ -21,6 +21,7 @@ CREATE OR REPLACE FUNCTION SF_GET_GENERATE_FILE(p_test_administration IN PRODUCT
   t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ PRS_COLL_PGT_GLOBAL_TEMP_OBJ := PRS_COLL_PGT_GLOBAL_TEMP_OBJ();
   -- v_CustomerId CONSTANT  NUMBER :=1000;
   v_ProductCode PRODUCT.PRODUCT_CODE%TYPE;
+  v_ProductId PRODUCT.PRODUCTID%TYPE;
 
   CURSOR c_Get_File_Type(ip_product_type VARCHAR) IS
     SELECT COLUMN_VALUE FILE_CODE,
@@ -33,7 +34,15 @@ CREATE OR REPLACE FUNCTION SF_GET_GENERATE_FILE(p_test_administration IN PRODUCT
                   'Both (ISR and Image Print)',
                   'Invitation Letter') AS FILE_NAME
       FROM TABLE(dyn_attr_dtls('ISR', 'IPR', 'BOTH', 'ICL'))
-     WHERE 'ISTEP' = ip_product_type
+     WHERE 'ISTEP' = ip_product_type and v_ProductId != 3023
+    UNION ALL
+    SELECT COLUMN_VALUE FILE_CODE,
+           DECODE(COLUMN_VALUE,
+                  'ISR',
+                  'Individual Student Report (ISR)',
+                  'Invitation Letter') AS FILE_NAME
+      FROM TABLE(dyn_attr_dtls('ISR', 'ICL'))
+     WHERE 'ISTEP' = ip_product_type and v_ProductId = 3023
     UNION ALL
     SELECT COLUMN_VALUE FILE_CODE,
            DECODE(COLUMN_VALUE,
@@ -43,10 +52,11 @@ CREATE OR REPLACE FUNCTION SF_GET_GENERATE_FILE(p_test_administration IN PRODUCT
      WHERE 'ISTEP' <> ip_product_type;
 
   CURSOR c_Get_ProductCode_Default IS
-    SELECT B.PRODUCT_CODE
+    SELECT B.PRODUCT_CODE, B.productid
       FROM (SELECT SUBSTR(PDT.PRODUCT_CODE, 1, 5) AS PRODUCT_CODE,
                    PDT.PRODUCT_NAME,
-                   PDT.PRODUCT_SEQ
+                   PDT.PRODUCT_SEQ,
+                   PDT.productid
               FROM PRODUCT PDT,
                    ADMIN_DIM ADM,
                    (SELECT DISTINCT ADMIN_YEAR, IS_CURRENT_ADMIN
@@ -70,10 +80,12 @@ BEGIN
   IF p_test_administration = -99 OR p_test_administration IS NULL THEN
     FOR r_Get_ProductCode_Default IN c_Get_ProductCode_Default LOOP
       v_ProductCode := r_Get_ProductCode_Default.PRODUCT_CODE;
+      v_ProductId := r_Get_ProductCode_Default.PRODUCTID;
     END LOOP;
   ELSE
     FOR r_Get_ProductCode_Cascade IN c_Get_ProductCode_Cascade(p_test_administration) LOOP
       v_ProductCode := r_Get_ProductCode_Cascade.PRODUCT_CODE;
+      v_ProductId := p_test_administration;
     END LOOP;
   END IF;
 
@@ -92,4 +104,3 @@ EXCEPTION
   WHEN OTHERS THEN
     RETURN NULL;
 END SF_GET_GENERATE_FILE;
-/
