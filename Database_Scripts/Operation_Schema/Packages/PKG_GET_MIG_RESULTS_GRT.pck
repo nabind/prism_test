@@ -132,6 +132,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GET_MIG_RESULTS_GRT IS
                       FACT.ISTEP_TEST_NAME,
                       FACT.ISTEP_BOOK_NUM,
                       FACT.ISTEP_FORM,
+                      FACT.FORM,
                       FACT.TEST_DATE,
                       FACT.STUDENT_LAST_NAME,
                       FACT.STUDENT_FIRST_NAME,
@@ -146,6 +147,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GET_MIG_RESULTS_GRT IS
                       FACT.RACE_PACIFIC_ISLANDER,
                       FACT.RACE_WHITE,
                       '' FILLER_1, -- TODO -- NF
+                      '' FILLER,
                       FACT.STUDENT_TEST_AI,
                       FACT.LOCAL_USE_J SPECIAL_CODE_J,
                       FACT.ETHNICITY_K,
@@ -440,6 +442,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GET_MIG_RESULTS_GRT IS
                       FACT.ISTEP_TEST_NAME,
                       FACT.ISTEP_BOOK_NUM,
                       FACT.ISTEP_FORM,
+                      FACT.FORM,
                       FACT.TEST_DATE,
                       FACT.STUDENT_LAST_NAME,
                       FACT.STUDENT_FIRST_NAME,
@@ -454,6 +457,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_GET_MIG_RESULTS_GRT IS
                       FACT.RACE_PACIFIC_ISLANDER,
                       FACT.RACE_WHITE,
                       '' FILLER_1, -- TODO -- NF
+                      '' FILLER,
                       FACT.STUDENT_TEST_AI,
                       FACT.LOCAL_USE_J SPECIAL_CODE_J,
                       FACT.ETHNICITY_K,
