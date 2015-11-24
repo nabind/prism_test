@@ -232,6 +232,7 @@ public interface IApplicationConstants {
 	public static final String PARENT_LOGIN_OUTAGE_CONTENT = "Parent Login Outage Content";
 	public static final String TEACHER_HOME_FOOTER = "Teacher Home Footer";
 	public static final String PARENT_HOME_FOOTER = "Parent Home Footer";
+	public static final String BLOCK_LOGIN = "Block Login";
 	
 	public static final String MESSAGE_MAP_SESSION = "messageMapSession";
 	public static final String CHILDREN_OVERVIEW = "Children Overview";
