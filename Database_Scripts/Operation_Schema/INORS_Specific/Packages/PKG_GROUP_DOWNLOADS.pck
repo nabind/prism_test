@@ -133,14 +133,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
       -- Main WHERE, Previous lines of the query are same for all 4 queries
        WHERE SBD.ORG_NODEID IN
              (SELECT VC1 AS ORG_NODEID
-                FROM TABLE (SELECT SF_GET_CLASS(P_IN_ORG_NODE_ID_LOGGEDIN,
-                                                P_TEST_ADMINISTRATION,
-                                                P_IN_ORG_NODE_ID_DISTRICT,
-                                                P_IN_ORG_NODE_ID_SCHOOL,
-                                                '-1',
-                                                P_IN_TEST_PROGRAM,
-                                                P_IN_CUSTOMERID,
-                                                'ADD_ALL')
+                FROM TABLE (SELECT SF_GET_CLASS_GRP_DWNLD(P_IN_ORG_NODE_ID_LOGGEDIN,
+                                                          P_TEST_ADMINISTRATION,
+                                                          P_IN_ORG_NODE_ID_DISTRICT,
+                                                          P_IN_ORG_NODE_ID_SCHOOL,
+                                                          '-1',
+                                                          P_IN_TEST_PROGRAM,
+                                                          P_IN_CUSTOMERID,
+                                                          'ADD_ALL')
                               FROM DUAL))
          AND SBD.GRADEID IN (SELECT VC1 AS GRADEID
                                FROM TABLE (SELECT SF_GET_GRADE_DWNLD(P_IN_ORG_NODE_ID_LOGGEDIN,
@@ -254,14 +254,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS IS
       -- Main WHERE, Previous lines of the query are same for all 4 queries
        WHERE SBD.ORG_NODEID IN
              (SELECT VC1 AS ORG_NODEID
-                FROM TABLE (SELECT SF_GET_CLASS(P_IN_ORG_NODE_ID_LOGGEDIN,
-                                                P_TEST_ADMINISTRATION,
-                                                P_IN_ORG_NODE_ID_DISTRICT,
-                                                P_IN_ORG_NODE_ID_SCHOOL,
-                                                P_IN_GRADE_ID,
-                                                P_IN_TEST_PROGRAM,
-                                                P_IN_CUSTOMERID,
-                                                'ADD_ALL')
+                FROM TABLE (SELECT SF_GET_CLASS_GRP_DWNLD(P_IN_ORG_NODE_ID_LOGGEDIN,
+                                                          P_TEST_ADMINISTRATION,
+                                                          P_IN_ORG_NODE_ID_DISTRICT,
+                                                          P_IN_ORG_NODE_ID_SCHOOL,
+                                                          P_IN_GRADE_ID,
+                                                          P_IN_TEST_PROGRAM,
+                                                          P_IN_CUSTOMERID,
+                                                          'ADD_ALL')
                               FROM DUAL))
          AND SBD.GRADEID = P_IN_GRADE_ID
          AND SBD.CUST_PROD_ID = CUSTPRODID
