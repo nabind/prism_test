@@ -558,7 +558,14 @@ public class ReportServiceImpl implements IReportService {
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
 					/***NEW***/
-					String[] valueFromSession = getFromSession(req, label);
+					String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+					boolean isSwitchUser = false;
+					// check if user logs-in first time
+					if (switchUser != null && switchUser.trim().length() > 0) {
+						isSwitchUser = true;
+					}
+					
+					String[] valueFromSession = isSwitchUser==false? getFromSession(req, label) : null ;
 					/***NEW***/
 					
 					Map<String, Object> sessionParameters = null;
