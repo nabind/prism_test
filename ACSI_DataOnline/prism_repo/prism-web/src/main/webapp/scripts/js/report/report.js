@@ -809,8 +809,15 @@ function closeProgress(reportUrl, id, firstCall) {
 	if(id == '_FRAME_ID_') $('#_LOAD_ID_').hide(100);
 	
 	else $('#loading'+id+'').hide(100);
-	
-	if(reportUrl != null && !firstCall) checkpagination(reportUrl, id);
+	// open i/p control by default
+	if(reportUrl != null && !firstCall) {
+		checkpagination(reportUrl, id);
+		if( 'none' == $(".icholder-"+id+"").css("display") )
+			$(".report-filter-"+id+"").click();
+	} else {
+		if( 'none' == $(".icholder-0").css("display") )
+			$(".report-filter-0").click();
+	}
 	
 	unblockUI();
 	unblockUI('new-tab'+id+'');
