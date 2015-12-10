@@ -187,7 +187,7 @@
 		</div>
 	</section>
 	
-	<footer class="margin-top">Copyright &copy; by CTB/McGraw-Hill LLC. All rights reserved. <br/>TerraNova is a trademark of The McGraw-Hill Companies. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>
+	<footer class="margin-top">Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. <br/><i>TerraNova</i> is a registered trademark of Data Recognition Corporation. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>
   
   
 	<%@ include	file="../common/commonScripts.jsp"%>	
