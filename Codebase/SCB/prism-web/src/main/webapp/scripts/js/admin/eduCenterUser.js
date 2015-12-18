@@ -1,5 +1,5 @@
 	/**
-	 * This js file is to manage user module
+	 * This js file is to manage user module 
 	 * Author: Tata Consultancy Services Ltd.
 	 * Version: 1
 	 */
