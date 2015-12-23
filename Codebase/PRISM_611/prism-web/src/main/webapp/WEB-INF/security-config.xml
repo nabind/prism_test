@@ -35,6 +35,9 @@
 	    
    	<http auto-config="false" use-expressions="false" entry-point-ref="loginUrlAuthenticationEntryPoint">
    		<csrf disabled="true"/>
+   		<headers>
+			<frame-options policy="SAMEORIGIN" />
+		</headers>
 		<custom-filter ref="restAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
 		<intercept-url pattern="/landing.do" access="ROLE_ANONYMOUS,ROLE_USER" />
 		<intercept-url pattern="/userlogin.do" access="ROLE_ANONYMOUS,ROLE_USER" />
