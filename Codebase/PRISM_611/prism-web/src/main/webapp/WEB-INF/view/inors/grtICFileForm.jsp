@@ -34,10 +34,10 @@
 		</c:forEach>
 	</c:if>
 
-	<sec:authorize ifAnyGranted="ROLE_CTB">
+	<sec:authorize access="hasAnyRole('ROLE_CTB')">
 		<%@ include file="grtIcOptions.jsp" %>
 	</sec:authorize>
-	<sec:authorize ifNotGranted="ROLE_CTB">
+	<sec:authorize access="!hasAnyRole('ROLE_CTB')">
 		<c:if test="${empty dataloadMessage}">
 			<%@ include file="grtIcOptions.jsp" %>
 		</c:if>

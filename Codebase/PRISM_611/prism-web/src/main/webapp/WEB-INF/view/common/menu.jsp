@@ -8,7 +8,7 @@
 	<c:set var="product" value="<%=request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME) %>"/>
 	<ul id="shortcuts" role="complementary" class="children-tooltip" style="margin-top: 34px; top: 35px">
 		<li class="current"><a href="dashboards.do" class="shortcut-messages" title="Dashboard"><spring:message code="label.dashboard" /></a></li>
-		<sec:authorize ifNotGranted="ROLE_SSO">
+		<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 			<li><a href="myAccount.do" class="shortcut-stats" title="My Account"><spring:message code="label.myAccount" /></a></li>
 		</sec:authorize>
 		<c:forEach var="menuSet" items="${menuSet}" >

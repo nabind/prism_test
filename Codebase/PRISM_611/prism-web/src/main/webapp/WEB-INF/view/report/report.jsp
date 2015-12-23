@@ -143,7 +143,7 @@
 									</a>
 								</c:otherwise>
 							</c:choose>	
-							<sec:authorize ifAnyGranted="ROLE_GRW">
+							<sec:authorize access="hasAnyRole('ROLE_GRW')">
 								<a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
 									title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
 									<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>

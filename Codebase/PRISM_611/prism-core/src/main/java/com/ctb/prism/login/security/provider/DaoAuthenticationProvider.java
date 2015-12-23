@@ -63,7 +63,7 @@ public class DaoAuthenticationProvider extends AbstractUserDetailsAuthentication
             logger.debug("Authentication failed: no credentials provided");
 
             throw new BadCredentialsException(messages.getMessage(
-                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
         String presentedPassword = authentication.getCredentials().toString();
@@ -72,7 +72,7 @@ public class DaoAuthenticationProvider extends AbstractUserDetailsAuthentication
             logger.debug("Authentication failed: password does not match stored value");
 
             throw new BadCredentialsException(messages.getMessage(
-                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
     }
 

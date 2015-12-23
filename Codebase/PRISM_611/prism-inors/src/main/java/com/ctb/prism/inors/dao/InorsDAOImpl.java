@@ -51,7 +51,7 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	 * @see com.ctb.prism.inors.dao.IInorsDAO#createJob(com.ctb.prism.inors. transferobject.BulkDownloadTO)
 	 */
 	public BulkDownloadTO createJob(BulkDownloadTO bulkDownloadTO) {
-		long jobId = getJdbcTemplatePrism().queryForLong(IQueryConstants.JOB_SEQ_ID);
+		long jobId = getJdbcTemplatePrism().queryForObject(IQueryConstants.JOB_SEQ_ID, Long.class);
 		getJdbcTemplatePrism().update(IQueryConstants.CREATE_JOB, jobId, bulkDownloadTO.getFileName(), bulkDownloadTO.getQuerysheetFile(), bulkDownloadTO.getUdatedBy(),
 				bulkDownloadTO.getSelectedNodes(), bulkDownloadTO.getStudentCount(), bulkDownloadTO.getEmail(), bulkDownloadTO.getReportUrl(), bulkDownloadTO.getTestAdministration(),
 				bulkDownloadTO.getCustomerId(), bulkDownloadTO.getGrade(), bulkDownloadTO.getRequestType(), bulkDownloadTO.getGroupFile(), bulkDownloadTO.getCollationHierarchy(),

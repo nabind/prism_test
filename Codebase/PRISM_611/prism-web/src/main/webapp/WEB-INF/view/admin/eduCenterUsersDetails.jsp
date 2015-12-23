@@ -17,7 +17,7 @@
 			</c:if>
 		 
 		
-		<sec:authorize ifNotGranted="ROLE_SSO">
+		<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 			<fmt:message var="MANAGE_EDU_USERS_ADD" key="manage.edu.center.users.add.user"  />
 			<c:if test="${not empty actionMap[MANAGE_EDU_USERS_ADD]}">
 				<a id="addUser" 

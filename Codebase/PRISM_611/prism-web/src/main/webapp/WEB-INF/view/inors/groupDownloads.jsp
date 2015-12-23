@@ -67,7 +67,7 @@
 		</c:if>
 	</c:if>
 	
-	<sec:authorize ifAnyGranted="ROLE_CTB">
+	<sec:authorize access="hasAnyRole('ROLE_CTB')">
 		<c:choose>
 			<c:when test="${fn:contains(themeName, 'usmo')}" >
 				<%@ include file="groupDownloadOptionsMO.jsp" %>
@@ -78,7 +78,7 @@
 		</c:choose>
 	</sec:authorize>
 	
-	<sec:authorize ifNotGranted="ROLE_CTB">
+	<sec:authorize access="!hasAnyRole('ROLE_CTB')">
 		<c:if test="${empty dataloadMessage}">
 			<c:if test="${hideContentFlag=='N'}">
 				<c:choose>

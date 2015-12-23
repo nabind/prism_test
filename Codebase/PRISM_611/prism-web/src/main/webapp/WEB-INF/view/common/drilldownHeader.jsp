@@ -21,10 +21,10 @@
 		<% if(request.getSession().getAttribute(IApplicationConstants.CURRUSER) != null) { %>
 		<div id="" class="" style="text-align:right;margin: -26px 64px 0 0; z-index:101;position: relative;">
 			<h5><span class="logo-title blue"><spring:message code="label.welcome" />:</span>
-				<sec:authorize ifNotGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="!hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')">
 					<span class="name"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')">
 					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME) %></span>
 					as <span class="name black"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 				</sec:authorize>

@@ -447,7 +447,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	 */
 	private boolean savePasswordHistAnswer(long userid, List<QuestionTO> questionToList) {
 		int count = 0;
-		long answerCount = getJdbcTemplatePrism().queryForLong(IQueryConstants.CHECK_FOR_EXISTING_ANSWER, userid);
+		long answerCount = getJdbcTemplatePrism().queryForObject(IQueryConstants.CHECK_FOR_EXISTING_ANSWER, Long.class, userid);
 		logger.log(IAppLogger.DEBUG, "answerCount................" + answerCount);
 		if (answerCount == 0) {
 			// Inserting answers if there no existing answers
@@ -1349,7 +1349,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		Boolean status = false;
 		Boolean ldapStatus = false;
 		try {
-			Long userID = getJdbcTemplatePrism().queryForLong(IQueryConstants.CHECK_EXISTING_USER, parentTO.getUserName());
+			Long userID = getJdbcTemplatePrism().queryForObject(IQueryConstants.CHECK_EXISTING_USER, Long.class, parentTO.getUserName());
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapStatus = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
 			} else {
@@ -1550,8 +1550,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			questionTOs.getQuestionId();
 		}*/
 		try {
-			validUser = getJdbcTemplatePrism(contractName).queryForLong(
-					IQueryConstants.VALIDATE_SECURITY_ANSWERS, 
+			validUser = getJdbcTemplatePrism(contractName).queryForObject(
+					IQueryConstants.VALIDATE_SECURITY_ANSWERS, Long.class,
 					username, questionToList.get(0).getQuestionId(), questionToList.get(0).getAnswer(),
 					username, questionToList.get(1).getQuestionId(), questionToList.get(1).getAnswer(), 
 					questionToList.get(2).getQuestionId(), questionToList.get(2).getAnswer());

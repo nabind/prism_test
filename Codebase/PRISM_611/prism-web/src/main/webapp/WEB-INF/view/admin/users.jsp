@@ -125,14 +125,14 @@
 										</td>
 									<td class="vertical-center">
 										<span class="button-group compact"> 
-											<sec:authorize ifNotGranted="ROLE_SSO">
+											<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 												<a id="${users.userId}" parentId = ${users.parentId} tenantId = ${users.tenantId} href="#" class="button icon-pencil with-tooltip edit-User" title="Edit"></a>
 											</sec:authorize>
 											
 											<spring:theme code="theme.name" var="themeName"/>
 											<a id="${users.userId}" param="${users.userName}" themeName="${themeName}" href="#" class="button icon-users icon with-tooltip login-as" title="Login as User"></a>
 											
-											<sec:authorize ifNotGranted="ROLE_SSO">
+											<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 												<a id="${users.userId}" userName = ${users.userName} tenantId = ${users.tenantId} href="#" class="button icon-trash with-tooltip confirm delete-User" title="Delete"></a>
 											</sec:authorize> 
 											

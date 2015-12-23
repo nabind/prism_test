@@ -19,8 +19,8 @@
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<springframework.version>3.1.0.RELEASE</springframework.version>
-		<spring-security.version>3.1.0.RELEASE</spring-security.version>
+		<springframework.version>4.2.4.RELEASE</springframework.version>
+		<spring-security.version>4.0.3.RELEASE</spring-security.version>
 		<jasper-reports-version>6.1.1</jasper-reports-version>
 		<version-findbugs>2.5.5</version-findbugs>
 		<version-checkstyle>2.9.1</version-checkstyle>
@@ -693,7 +693,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.2.0.RELEASE</version>
+			<version>1.8.1.RELEASE</version>
 		</dependency>
 
 		<!-- SPRING DATA SOURCE -->

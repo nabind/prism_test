@@ -215,7 +215,7 @@
 						</div>
 						<div class="panel-content linen">
 							<div class="panel-control align-right">
-								<sec:authorize ifNotGranted="ROLE_SSO">
+								<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 									
 									<fmt:message var="MANAGE_CONTENT_ADD" key="manage.content.add"  />
 									<c:if test="${not empty actionMap[MANAGE_CONTENT_ADD]}">

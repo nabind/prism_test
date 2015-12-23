@@ -2006,7 +2006,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 		logger.log(IAppLogger.INFO, "studentSelection = " + studentSelection);
 
-		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
+		Long job_id = getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_PROCESS_SEQ, Long.class);
 		String job_name = groupFile;
 		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
 		String extract_filetype = groupFile;

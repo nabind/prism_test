@@ -191,7 +191,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 */
 	private long getStagingSeq() {
 		logger.log(IAppLogger.INFO, "Return: UsabilityDAOImpl - getStagingSeq");
-		return getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_STAGING_SEQ);
+		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_STAGING_SEQ, Long.class);
 	}
 
 	
@@ -980,7 +980,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	 */
 	public JobTrackingTO insertIntoJobTracking(JobTrackingTO jobTrackingTO) throws Exception {
 
-		long jobId = getJdbcTemplatePrism().queryForLong(IQueryConstants.JOB_SEQ_ID);
+		long jobId = getJdbcTemplatePrism().queryForObject(IQueryConstants.JOB_SEQ_ID, Long.class);
 		
 		String job_name = jobTrackingTO.getJobName();
 		String extract_enddate = jobTrackingTO.getExtractEnddate();

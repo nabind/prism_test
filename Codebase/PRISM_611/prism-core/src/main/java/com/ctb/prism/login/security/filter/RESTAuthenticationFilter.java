@@ -76,6 +76,8 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
     public static String RANDOM_STRING = "9rc^wH7KRg[B";
     String RANDOM_PASSWD = "8rc^wK6HRg[C";
     
+    private String filterProcessesUrl;
+    
 	@Autowired
     DigitalMeasuresHMACQueryStringBuilder hmac;
     
@@ -91,6 +93,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	 */
     protected RESTAuthenticationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
+        filterProcessesUrl = defaultFilterProcessesUrl;
     }
 
     @Override
@@ -443,12 +446,12 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
         }
 
         if ("".equals(request.getContextPath())) {
-            if(uri.endsWith(super.getFilterProcessesUrl())) return true;
+            if(uri.endsWith(filterProcessesUrl)) return true;
             //else if(queryStr != null && queryStr.endsWith("wsdl")) return false;
             else return isAuthenticationNeeded(uri);
         }
 
-        if(uri.endsWith(request.getContextPath() + super.getFilterProcessesUrl())) return true;
+        if(uri.endsWith(request.getContextPath() + filterProcessesUrl)) return true;
         //else if(queryStr != null && queryStr.endsWith("wsdl")) return false;
         else return isAuthenticationNeeded(uri);
     }
@@ -508,7 +511,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 			chain.doFilter(request, response);
 		}
 
-		successfulAuthentication(request, response, authResult);
+		successfulAuthentication(request, response, chain, authResult);
 		
 		// if webservice call - then continue with current request
 		if(isWebServiceCall) chain.doFilter(request, response);
@@ -537,7 +540,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 			HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		super.successfulAuthentication(request, response, chain, authResult);
-		chain.doFilter(request, response);
+		//chain.doFilter(request, response);
 	}
 
     

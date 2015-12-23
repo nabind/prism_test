@@ -463,7 +463,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			} else {
 				contractName = Utils.getContractName();
 			}
-			Query searchUserQuery = new Query(Criteria.where("userName").is("ctbadmin"));
+			Query searchUserQuery = new Query(Criteria.where("userName").is(username));
 			MUserTO savedUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
 			System.out.println("    >> User from MongoDB : " + savedUser.getUserName() + " " + savedUser.getPassword());
 			

@@ -13,7 +13,7 @@
 }
 </style>
 <div class="content-panel" style="padding-left: 0px; padding-right: 10px; border: none">
-	<secc:authorize ifAnyGranted="ROLE_PARENT"><h1>Rescore Request Form for ${studentName}</h1></secc:authorize>
+	<secc:authorize access="hasAnyRole('ROLE_PARENT')"><h1>Rescore Request Form for ${studentName}</h1></secc:authorize>
 	<form:form method="POST" id="rescoreRequestForm2015" modelAttribute="rescoreRequestForm2015">
 		<p class="success-message message small-margin-bottom green-gradient" style="display: none"><spring:message code="label.success" /></p>
 		<p class="error-message message small-margin-bottom red-gradient" style="display: none"><spring:message code="title.page.error" /></p>
@@ -29,7 +29,7 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
-		<secc:authorize ifNotGranted="ROLE_PARENT">
+		<secc:authorize access="!hasAnyRole('ROLE_PARENT')">
 		<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -47,7 +47,7 @@
 			</c:forEach>
 		</c:if>
 		</secc:authorize>
-		<secc:authorize ifAnyGranted="ROLE_PARENT">
+		<secc:authorize access="hasAnyRole('ROLE_PARENT')">
 			<c:if test="${not empty reportMessages}">
 			<c:forEach var="reportMessage" items="${reportMessages}">
 				<c:if test="${reportMessage.displayFlag=='Y'}">
@@ -67,20 +67,20 @@
 		</secc:authorize>
 		
 		<div class="columns" style="margin-top:20px">
-			<secc:authorize ifNotGranted="ROLE_PARENT">
+			<secc:authorize access="!hasAnyRole('ROLE_PARENT')">
 			<div class="new-row six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<b><spring:message code="label.student" /> <span style="padding-left: 5px; " class="tag orange-bg with-small-padding">${studentFullName}</span></b>
 			</div>
 			</secc:authorize>
-			<secc:authorize ifNotGranted="ROLE_PARENT">
+			<secc:authorize access="!hasAnyRole('ROLE_PARENT')">
 			<div class="new-row four-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 			</secc:authorize>
-			<secc:authorize ifAnyGranted="ROLE_PARENT">
+			<secc:authorize access="hasAnyRole('ROLE_PARENT')">
 			<div class="new-row four-columns with-small-padding vertical-center" style="margin-bottom: 5px;display:none">
 			</secc:authorize>
 				<b><spring:message code="label.parentRescoreDate" /></b>
 				
-				<secc:authorize ifNotGranted="ROLE_PARENT">
+				<secc:authorize access="!hasAnyRole('ROLE_PARENT')">
 				<c:choose>
 		    		<c:when test="${requestedDate =='-1'}">
 			    		<span class="input" style="width: 100px;">
@@ -104,7 +104,7 @@
 		    	</secc:authorize>
 				
 				<!-- this section added for parent rescore --> 
-		    	<secc:authorize ifAnyGranted="ROLE_PARENT">
+		    	<secc:authorize access="hasAnyRole('ROLE_PARENT')">
 		    		
 			    		<span class="input" style="width: 100px;display:none">
 		    			<input type="hidden" readonly="true"
@@ -117,7 +117,7 @@
 		    		
 		    	</secc:authorize>
 			</div>
-			<secc:authorize ifNotGranted="ROLE_PARENT">
+			<secc:authorize access="!hasAnyRole('ROLE_PARENT')">
 			<div class="six-columns with-small-padding vertical-center" style="margin-bottom: 5px;">
 				<a href="downloadZippedPdf.do?fileName=${ipFileName}&fileType=Image_Print" class="button" id="" target="_blank">
 					<span class="button-icon icon-download blue-gradient report-btn"></span>

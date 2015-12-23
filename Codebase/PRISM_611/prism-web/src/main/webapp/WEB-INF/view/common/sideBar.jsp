@@ -13,23 +13,23 @@
 		<div id="menu-content">
 
 			<header class="blue-gradient glossy">
-				<sec:authorize ifAnyGranted="ROLE_ADMIN">
+				<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 					<spring:message code="label.administrator" />
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_ACSI">
-					<sec:authorize ifNotGranted="ROLE_ADMIN">
+				<sec:authorize access="hasAnyRole('ROLE_ACSI')" >
+					<sec:authorize access="!hasAnyRole('ROLE_ADMIN')" >
 						<spring:message code="label.state" />
 					</sec:authorize>
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_SCHOOL">
-					<sec:authorize ifNotGranted="ROLE_ADMIN">
+				<sec:authorize access="hasAnyRole('ROLE_SCHOOL')" >
+					<sec:authorize access="!hasAnyRole('ROLE_ADMIN')" >
 						<spring:message code="label.school" />
 					</sec:authorize>
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_CLASS">
+				<sec:authorize access="hasAnyRole('ROLE_CLASS')" >
 					<spring:message code="label.group" />
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_PARENT">
+				<sec:authorize access="hasAnyRole('ROLE_PARENT')" >
 					<spring:message code="label.parent" />
 				</sec:authorize>
 			</header>
@@ -37,10 +37,10 @@
 			<div id="profile">
 				<img src='<spring:theme code="user.png" />' width="38" height="38" alt="User name" class="user-icon">
 				<spring:message code="label.welcome" />
-				<sec:authorize ifNotGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="!hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')" >
 					<span class="name"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')" >
 					<span class="name"><%=request.getSession().getAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME) %></span>
 					<span style="color:#FFF">as </span> <span class="name"  style="padding-left: 45px;"><b><%=request.getSession().getAttribute(IApplicationConstants.CURR_USER_DISPLAY) %></b></span>
 				</sec:authorize>
@@ -49,17 +49,17 @@
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
 			<ul id="access" class="children-tooltip">
 				<li><a href="dashboards.do" title="Home"><span class="icon-home"></span></a></li>
-				<sec:authorize ifNotGranted="ROLE_SSO">
+				<sec:authorize access="!hasAnyRole('ROLE_SSO')">
 				<li>
 					<a href="myAccount.do" title="My Account">
 						<span class="icon-user"></span>
 					</a>
 				</li>
 				</sec:authorize>
-				<sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')" >
 					<li><a href="j_spring_security_exit_user" title="Logout"><span class="icon-extract"></span></a></li>
 				</sec:authorize>
-				<sec:authorize ifNotGranted="ROLE_PREVIOUS_ADMINISTRATOR">
+				<sec:authorize access="!hasAnyRole('ROLE_PREVIOUS_ADMINISTRATOR')" >
 					<li><a href="j_spring_security_logout" title="Logout"><span class="icon-extract"></span></a></li>
 				</sec:authorize>
 			</ul>
@@ -67,7 +67,7 @@
 		<div id="adminMenuContainer">
 			<c:choose>
 				<c:when test="${themeName == 'inorsparent'}">
-					<sec:authorize ifAnyGranted="ROLE_PARENT">
+					<sec:authorize access="hasAnyRole('ROLE_PARENT')" >
 						<ul class="big-menu blue-gradient collapsible" id="parentMenu">
 							
 							<li class="with-right-arrow" id="select-tooltip-1">
@@ -265,7 +265,7 @@
 							
 							<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
 								<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
-									<sec:authorize ifAnyGranted="${report.allRoles}">
+									<sec:authorize access="hasAnyRole('${report.allRoles}')">
 										<c:set var="parentReport" value="true"/>
 									</sec:authorize>
 								</c:forEach>
@@ -292,7 +292,7 @@
 			</c:choose>
 		</div>
 
-			<sec:authorize ifNotGranted="ROLE_PARENT">
+			<sec:authorize access="!hasAnyRole('ROLE_PARENT')">
 			<div class="" id="prismMenu">
 				<ul class="big-menu blue-gradient collapsible display-none" id="tempMenu">
 					<li class="with-right-arrow">

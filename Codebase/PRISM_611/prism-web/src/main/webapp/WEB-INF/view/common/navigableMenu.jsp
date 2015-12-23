@@ -8,7 +8,7 @@
 		<c:forEach var="assessments" items="${assessmentList}" varStatus="loop">
 			<c:set var="count" value="0" />
 			<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
-				<sec:authorize ifAnyGranted="${report.allRoles}">
+				<sec:authorize access="hasAnyRole('${report.allRoles}')">
 					<c:set var="currLevel" value="<%=request.getSession().getAttribute(com.ctb.prism.core.constant.IApplicationConstants.CURRORGLVL)%>" />
 					<c:if test="${report.orgLevel == currLevel}">
 						<c:set var="count" value="${count + 1}" />
@@ -21,7 +21,7 @@
 			
 			<ul class="big-menu white-gradient">
 				<c:forEach var="report" items="${assessments.reports}" varStatus="innerloop">
-					<sec:authorize ifAnyGranted="${report.allRoles}">
+					<sec:authorize access="hasAnyRole('${report.allRoles}')">
 					<c:set var="currLevel" value="<%=request.getSession().getAttribute(com.ctb.prism.core.constant.IApplicationConstants.CURRORGLVL)%>" />
 					<c:if test="${report.orgLevel == currLevel}">
 						<li style="padding: 8px 25px !important; font-size: 12px !important; font-weight: normal !important; text-shadow: none !important" id="select-tooltip-${loop.count}">

@@ -914,7 +914,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		ResourceBundle b = ResourceBundle.getBundle("messages");
 		if ("user".equals(argType)) {
 			try {
-				user_org_level = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_USER_ORG_LEVEL, userid);
+				user_org_level = getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_USER_ORG_LEVEL, Long.class, userid);
 			} catch (DataAccessException e) {
 				logger.log(IAppLogger.INFO, "No data found for userid: " + userid);
 			}
