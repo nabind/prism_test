@@ -21,21 +21,27 @@
 		http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<!-- Mongo DB -->
-	<mongo:mongo id="mongo" host="${mongo.db.url}" port="${mongo.db.port}"/>
+	<!-- Mongo DB 
+	<mongo:mongo id="mongo" host="${mongo.db.url}" port="${mongo.db.port}"/>-->
+	
+	<bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
+    	<property name="host" value="${mongo.db.url}" />
+    	<property name="port" value="${mongo.db.port}" />
+	</bean>
+	
 	
 	<bean id="mongoTemplateTasc" class="org.springframework.data.mongodb.core.MongoTemplate">
-	    <constructor-arg ref="mongo" />
+	    <constructor-arg name="mongo" ref="mongo" />
 	    <constructor-arg name="databaseName" value="tasc" />
-	    <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
+	     <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
 	</bean>
 	<bean id="mongoTemplateInors" class="org.springframework.data.mongodb.core.MongoTemplate">
-	    <constructor-arg ref="mongo" />
+	    <constructor-arg name="mongo" ref="mongo" />
 	    <constructor-arg name="databaseName" value="inors" />
 	    <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
 	</bean>
 	<bean id="mongoTemplateUsmo" class="org.springframework.data.mongodb.core.MongoTemplate">
-	    <constructor-arg ref="mongo" />
+	    <constructor-arg name="mongo" ref="mongo" />
 	    <constructor-arg name="databaseName" value="usmo" />
 	    <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
 	</bean>
