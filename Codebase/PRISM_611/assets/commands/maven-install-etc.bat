@@ -1,5 +1,5 @@
 @ECHO off
-SET lib_dir=%PRISM_HOME%\jars\etc
+SET lib_dir=%PRISM611_HOME%\jars\etc
 
 
 set #=%lib_dir%

@@ -1,5 +1,5 @@
 @ECHO off
-SET lib_dir=%PRISM_HOME%\jars\jasper
+SET lib_dir=%PRISM611_HOME%\jars\jasper
 
 
 set #=%lib_dir%
@@ -17,6 +17,6 @@ set jar_p=%%A
 set jar_n=!jar_p:~%length%,-4!
 ::set wq=!wq:\=.!
 ECHO ******************Installing Jar !jar_n! *************************
-call mvn install:install-file -DgroupId=net.jasper -DartifactId=!jar_n! -Dfile=!jar_p! -Dversion=5.5.0 -Dpackaging=jar
+call mvn install:install-file -DgroupId=net.jasper -DartifactId=!jar_n! -Dfile=!jar_p! -Dversion=6.1.1 -Dpackaging=jar
 )
 
