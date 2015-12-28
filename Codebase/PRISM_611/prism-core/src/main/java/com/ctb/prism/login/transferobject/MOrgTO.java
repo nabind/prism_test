@@ -10,6 +10,7 @@ public class MOrgTO extends BaseTO {
 	private String OrgNodePath;
 	private String orgNodeid;
 	private String IsActive;
+	private long defultCustProdId;
 	
 	public String getAdminId() {
 		return AdminId;
@@ -35,5 +36,10 @@ public class MOrgTO extends BaseTO {
 	public void setIsActive(String isActive) {
 		IsActive = isActive;
 	}
-	
+	public long getDefultCustProdId() {
+		return defultCustProdId;
+	}
+	public void setDefultCustProdId(long defultCustProdId) {
+		this.defultCustProdId = defultCustProdId;
+	}
 }

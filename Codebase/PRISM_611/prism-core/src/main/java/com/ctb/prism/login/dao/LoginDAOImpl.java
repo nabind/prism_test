@@ -476,6 +476,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setIsPasswordExpired("FALSE");
 				user.setIsPasswordWarning("FALSE");
 				user.setOrgId(savedUser.getOrgNodes().get(0).getOrgNodeid());
+				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgNodeCategory().getOrgNodeLevel()));
 				user.setOrgMode(savedUser.getOrgMode());
 				user.setPassword(savedUser.getPassword());
 				List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
@@ -489,6 +490,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setUserEmail(savedUser.getUserEmail());
 				user.setUserStatus(savedUser.getUserStatus());
 				user.setUserType("O"/*savedUser.getUserType()*/);
+				user.setDefultCustProdId(savedUser.getOrgNodes().get(0).getDefultCustProdId());
 			}
 			return user;
 		} else {

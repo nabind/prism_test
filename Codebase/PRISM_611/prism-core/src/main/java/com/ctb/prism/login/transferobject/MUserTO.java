@@ -40,10 +40,16 @@ public class MUserTO extends BaseTO{
 	private String adminId;
 	private String orgMode;
 	private String contractName;
-	private long defultCustProdId;
 	private String isPasswordExpired;
 	private String isPasswordWarning;
+	private MOrgNodeCategory OrgNodeCategory;
 	
+	public MOrgNodeCategory getOrgNodeCategory() {
+		return OrgNodeCategory;
+	}
+	public void setOrgNodeCategory(MOrgNodeCategory orgNodeCategory) {
+		OrgNodeCategory = orgNodeCategory;
+	}
 	public List<MOrgTO> getOrgNodes() {
 		return OrgNodes;
 	}
@@ -56,12 +62,7 @@ public class MUserTO extends BaseTO{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public long getDefultCustProdId() {
-		return defultCustProdId;
-	}
-	public void setDefultCustProdId(long defultCustProdId) {
-		this.defultCustProdId = defultCustProdId;
-	}
+	
 	public String getContractName() {
 		return contractName;
 	}
