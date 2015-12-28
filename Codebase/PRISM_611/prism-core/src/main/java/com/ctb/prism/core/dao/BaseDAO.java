@@ -6,6 +6,8 @@ package com.ctb.prism.core.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.enterprise.inject.Produces;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,9 @@ public abstract class BaseDAO {
 	
 	@Autowired
 	private MongoTemplate mongoTemplateInors;
+	@Autowired
 	private MongoTemplate mongoTemplateTasc;
+	@Autowired
 	private MongoTemplate mongoTemplateUsmo;
 	public MongoOperations getMongoTemplatePrism() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
@@ -41,6 +45,7 @@ public abstract class BaseDAO {
 		return null;
 	}
 	
+	//@Produces
 	public MongoOperations getMongoTemplatePrism(String contractName) {
 		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
 		if("inors".equals(contractName)) return mongoTemplateInors;
