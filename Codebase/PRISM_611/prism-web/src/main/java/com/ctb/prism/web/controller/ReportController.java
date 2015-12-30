@@ -1868,6 +1868,11 @@ public class ReportController{
 			contractName = Utils.getContractNameNoLogin(req.getParameter("theme"));
 		}
 		paramMap.put("contractName", contractName);
+		
+		//To Check mongo report
+		if(loggedinUserTO.getUserName().equals("mdadmin"))
+			paramMap.put("database","MongoDB");
+		
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {
 			List<AssessmentTO> assessmentList = reportService.getAssessments(paramMap);

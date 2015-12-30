@@ -722,6 +722,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 		menuMap.put("roles", roles.toString());
 		//paramMap.put("custProdId", loggedinUserTO.getDefultCustProdId());
 		menuMap.put("custProdId", defaultCustProdId);
+		menuMap.put("database",paramMap.get("database"));
+		menuMap.put("contractName",paramMap.get("contractName"));
 		return reportDAO.getAssessments(menuMap);
 	}
 

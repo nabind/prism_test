@@ -1,7 +1,6 @@
 package com.ctb.prism.report.dao;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -32,6 +31,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -54,6 +59,8 @@ import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.MReportTO;
+import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -700,25 +707,68 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String roles = (String) paramMap.get("roles");
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
+		String contractName = (String) paramMap.get("contractName");
 		/*logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);*/
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "roles = " + roles);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+					
 		List<AssessmentTO> assessments = null;
-		if (roles.indexOf("ROLE_PARENT") != -1) {
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel, custProdId, paramMap);
-		} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
-		} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
-			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId, paramMap);
-		} else if (roles.indexOf("ROLE_RESCORE") != -1) {/* For rescore user */
-			assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_RESCORE_ID, orgNodeLevel, custProdId, paramMap);
-		} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
-			assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
-		} else { /* For All users other than growth user */
-			assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
+		
+		if(paramMap.get("database").equals("MongoDB")){
+			Aggregation agg = newAggregation(
+					unwind("reportAccess"),
+					match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
+							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
+										 Criteria.where("reportType").is("API"),
+										 Criteria.where("reportAccess.custProdId").is(String.valueOf(custProdId))))
+				);
+
+			//Convert the aggregation result into a List
+			AggregationResults<MResultTO> groupResults 
+					= getMongoTemplatePrism(contractName)
+					.aggregate(agg, MReportTO.class, MResultTO.class);
+			
+			List<MResultTO> reportDetails = groupResults.getMappedResults();
+			System.out.println("    >> User from MongoDB : "
+					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFoderURI());
+			
+			AssessmentTO assessmentTO = null;
+			assessments = new ArrayList<AssessmentTO>();
+			for(int i=0; i < reportDetails.size(); i++) {
+				assessmentTO = new AssessmentTO();
+				assessmentTO.setAssessmentId(1000); //Hard coded for the time
+				assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
+								
+				ReportTO reportTO = new ReportTO();
+				reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
+				reportTO.setReportName(reportDetails.get(i).getReportName());
+				reportTO.setReportUrl(reportDetails.get(i).getReportFoderURI());
+				reportTO.setEnabled(reportDetails.get(i).getActivationStatus().equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
+				reportTO.setAllRoles("ROLE_CTB,ROLE_EDU_ADMIN,ROLE_USER,ROLE_ADMIN");//Hard coded for the time
+				reportTO.setReportType(reportDetails.get(i).getReportType());
+				reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
+						? reportDetails.get(i).getReportAccess().getOrg_level() : "");
+				assessmentTO.addReport(reportTO);
+				assessments.add(assessmentTO);
+			}
+			
+		} else{
+			if (roles.indexOf("ROLE_PARENT") != -1) {
+				assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel, custProdId, paramMap);
+			} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
+				assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
+			} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
+				assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId, paramMap);
+			} else if (roles.indexOf("ROLE_RESCORE") != -1) {/* For rescore user */
+				assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_RESCORE_ID, orgNodeLevel, custProdId, paramMap);
+			} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
+				assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
+			} else { /* For All users other than growth user */
+				assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
+			}
 		}
 		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;

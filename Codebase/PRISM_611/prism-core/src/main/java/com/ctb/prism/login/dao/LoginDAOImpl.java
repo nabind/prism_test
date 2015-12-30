@@ -1,5 +1,9 @@
 package com.ctb.prism.login.dao;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
+
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -19,6 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -40,11 +46,11 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.MReportTO;
+import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
-//import com.googlecode.ehcache.annotations.Cacheable;
-//import com.googlecode.ehcache.annotations.TriggersRemove;
 
 @Repository
 public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
@@ -1010,45 +1016,77 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
-		return (Set<MenuTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
-				cs.setString(1, roles);
-				cs.setLong(2, orgNodeLevel);
-				cs.setLong(3, custProdId);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet rs = null;
-				Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
-				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(4);
-					while (rs.next()) {
-						MenuTO to = new MenuTO();
-						String menuName = rs.getString("MENU_NAME");
-						String key = rs.getString("KEY");
-						String value = rs.getString("VALUE");
-						String menuSeq = rs.getString("MENU_SEQ");
-						String reportSeq = rs.getString("REPORT_SEQ");
-						to.setMenuName(menuName);
-						to.setReportName(key);
-						to.setReportFolderUri(value);
-						to.setMenuSequence(menuSeq);
-						to.setReportSequence(reportSeq);
-						menuSet.add(to);
-					}
-					Utils.logError(cs.getString(5));
-				} catch (SQLException e) {
-					e.printStackTrace();
+		if(paramMap.get("database").equals("MongoDB")){
+			Aggregation agg = newAggregation(
+					unwind("reportAccess"),
+					match(Criteria.where("reportAccess.roleid").is("1")
+							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
+				);
+
+			//Convert the aggregation result into a List
+			AggregationResults<MResultTO> groupResults 
+					= getMongoTemplatePrism(contractName)
+					.aggregate(agg, MReportTO.class, MResultTO.class);
+			
+			List<MResultTO> reportDetails = groupResults.getMappedResults();
+			
+			System.out.println("    >> User from MongoDB : "
+					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFoderURI());
+			
+			Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
+			for(int i=0; i < reportDetails.size(); i++) {
+				MenuTO to = new MenuTO();
+				to.setMenuName(reportDetails.get(i).getMenu());
+				to.setReportName(reportDetails.get(i).getReportName());
+				to.setReportFolderUri(reportDetails.get(i).getReportFoderURI());
+				to.setMenuSequence("1"); // Hard coded for the time
+				to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
+				menuSet.add(to);
+			}			
+			return menuSet;
+		} else {
+			return (Set<MenuTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
+					cs.setString(1, roles);
+					cs.setLong(2, orgNodeLevel);
+					cs.setLong(3, custProdId);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
 				}
-				logger.log(IAppLogger.INFO, "menuSet = " + menuSet);
-				return menuSet;
-			}
-		});
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(4);
+						while (rs.next()) {
+							MenuTO to = new MenuTO();
+							String menuName = rs.getString("MENU_NAME");
+							String key = rs.getString("KEY");
+							String value = rs.getString("VALUE");
+							String menuSeq = rs.getString("MENU_SEQ");
+							String reportSeq = rs.getString("REPORT_SEQ");
+							to.setMenuName(menuName);
+							to.setReportName(key);
+							to.setReportFolderUri(value);
+							to.setMenuSequence(menuSeq);
+							to.setReportSequence(reportSeq);
+							menuSet.add(to);
+						}
+						Utils.logError(cs.getString(5));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					logger.log(IAppLogger.INFO, "menuSet = " + menuSet);
+					return menuSet;
+				}
+			});
+		}
+		
+		
 	}
 	
 	
