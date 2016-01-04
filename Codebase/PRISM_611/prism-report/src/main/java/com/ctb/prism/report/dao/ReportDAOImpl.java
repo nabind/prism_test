@@ -116,10 +116,14 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
 		try {
-			if (contractName != null && !contractName.isEmpty()) {
-				conn = getPrismConnection(contractName);
+			if(parameters.get("LoggedInUserName").equals("mdadmin")) {
+				conn =get
 			} else {
-				conn = getPrismConnection();
+				if (contractName != null && !contractName.isEmpty()) {
+					conn = getPrismConnection(contractName);
+				} else {
+					conn = getPrismConnection();
+				}
 			}
 			return JasperFillManager.fillReport(jasperReport, parameters, conn);
 		} catch (SQLException e) {

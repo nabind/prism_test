@@ -477,6 +477,8 @@ public class LoginController {
 				//To Check mongo report
 				if(username.equals("mdadmin"))
 					paramMap.put("database","MongoDB");
+				else
+					paramMap.put("database","Oracle");
 				
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);

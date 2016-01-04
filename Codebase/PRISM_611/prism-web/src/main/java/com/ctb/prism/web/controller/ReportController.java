@@ -1872,6 +1872,8 @@ public class ReportController{
 		//To Check mongo report
 		if(loggedinUserTO.getUserName().equals("mdadmin"))
 			paramMap.put("database","MongoDB");
+		else
+			paramMap.put("database","Oracle");
 		
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {

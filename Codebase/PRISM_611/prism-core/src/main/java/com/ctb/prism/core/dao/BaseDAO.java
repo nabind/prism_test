@@ -6,11 +6,10 @@ package com.ctb.prism.core.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.enterprise.inject.Produces;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,6 +28,10 @@ public abstract class BaseDAO {
 	 * logger available to subclasses
 	 */
 	protected final Log logger = LogFactory.getLog(getClass());
+	
+	@SuppressWarnings("deprecation")
+	@Autowired
+	private MongoFactoryBean mongo;
 	
 	@Autowired
 	private MongoTemplate mongoTemplateInors;
@@ -53,6 +56,17 @@ public abstract class BaseDAO {
 		if("usmo".equals(contractName)) return mongoTemplateUsmo;
 		else return null;
 	}
+	
+	/**
+	 * @return the connection object for prism DB
+	 * @throws SQLException
+	 */
+	/*public MongoDbConnection getPrismMongoConnection(String contractName){
+		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
+		if("inors".equals(contractName)) return new MongoDbConnection(mongo, "inors");
+		if("tasc".equals(contractName)) return new MongoDbConnection(mongo, "tasc");
+		if("usmo".equals(contractName)) return new MongoDbConnection(mongo, "usmo");		
+	}*/
 
 	/**
 	 * JDBC template points to jasper server database
