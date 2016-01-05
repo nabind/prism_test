@@ -55,10 +55,16 @@ $(document).ready(function() {
 		try {
 			$(this).parents('.icholder').siblings('.reportFilterCriteria').find('.download-button').hide(100);
 			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
-			// show tooltip on refresh button
-			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
 			if($('#BulkCandidateReport').is(':visible')) $('#BulkCandidateReport').hide(100);
 			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
+		} catch (e) {}
+	});
+	$(".input").live('blur', function() {
+		try {
+			// change refresh button color
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
+			// show tooltip on refresh button
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
 		} catch (e) {}
 	});
 	$("input[name='p_Last_Name']").live('keydown', function() {
