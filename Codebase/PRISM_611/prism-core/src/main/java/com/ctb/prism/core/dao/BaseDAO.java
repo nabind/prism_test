@@ -6,6 +6,8 @@ package com.ctb.prism.core.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import net.sf.jasperreports.engine.JRException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.ctb.prism.login.security.provider.AuthenticatedUser;
+import com.jaspersoft.mongodb.connection.MongoDbConnection;
+import com.jaspersoft.mongodb.connection.MongoDbConnectionManager;
+
+
 
 /**
  * @author TCS-1
@@ -61,12 +67,31 @@ public abstract class BaseDAO {
 	 * @return the connection object for prism DB
 	 * @throws SQLException
 	 */
-	/*public MongoDbConnection getPrismMongoConnection(String contractName){
+	public MongoDbConnection getPrismMongoConnection(String contractName){
 		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
-		if("inors".equals(contractName)) return new MongoDbConnection(mongo, "inors");
+		/*if("inors".equals(contractName)) return new MongoDbConnection(mongo, "inors");
 		if("tasc".equals(contractName)) return new MongoDbConnection(mongo, "tasc");
-		if("usmo".equals(contractName)) return new MongoDbConnection(mongo, "usmo");		
-	}*/
+		if("usmo".equals(contractName)) return new MongoDbConnection(mongo, "usmo");*/
+		
+		MongoDbConnection connection = null;
+		try {		
+		String mongoURI = mongo.getObject().getAddress().toString();
+		
+		if("inors".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/inors";
+        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc";
+        if("usmo".equals(contractName)) mongoURI = "mongodb://"+ mongoURI  +"/usmo";
+        
+        
+        	connection = new MongoDbConnection(mongoURI, null, null);
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return connection;
+     }
 
 	/**
 	 * JDBC template points to jasper server database
