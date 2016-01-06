@@ -187,7 +187,7 @@
 		</div>
 	</section>
 	
-	<footer class="margin-top">Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" target="_blank">Privacy Policy</a>.<br/><i>TerraNova</i> is a registered trademark of Data Recognition Corporation. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>
+	<footer class="margin-top">Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" target="_blank" style="text-decoration: underline;">Privacy Policy</a>.<br/><i>TerraNova</i> is a registered trademark of Data Recognition Corporation. The ACSI logo is a registered trademark of the Association of Christian Schools International.</footer>
   
   
 	<%@ include	file="../common/commonScripts.jsp"%>	
