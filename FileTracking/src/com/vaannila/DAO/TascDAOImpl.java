@@ -1021,8 +1021,9 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> studentDetailsTOList = new ArrayList<StudentDetailsTO>();
 		
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			//driver = TASCConnectionProvider.getDriver();
+			//conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			int placeHolderTotalRecCount = 0;
 			int placeHolderDataOnline = 0;
@@ -1221,8 +1222,9 @@ public class TascDAOImpl {
 		long totalRecordCount = 0;
 		
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			//driver = TASCConnectionProvider.getDriver();
+			//conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			int placeHolderTotalRecCount = 0;
 			int placeHolderData = 0;

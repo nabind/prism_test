@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <!-- Specify a JDBC datasource -->
+		
+	<Resource name="jdbc/tasc" 
+		auth="Container"
+        type="javax.sql.DataSource" 
+		username="Tasc" 
+		password="tasc14qa"
+        driverClassName="oracle.jdbc.driver.OracleDriver"
+        url="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa"
+        maxActive="10" 
+		maxIdle="4" />
+		
+    <!--<Resource name="jdbc/tasc" 
+		auth="Container"
+        type="javax.sql.DataSource" 
+		username="tasc" 
+		password="tasc14prod"
+        driverClassName="oracle.jdbc.driver.OracleDriver"
+        url="jdbc:oracle:thin:@//10.160.18.38:1521/INDPROD"
+        maxActive="10" 
+		maxIdle="4" />-->
+		
+	<Resource name="jdbc/usmo" 
+		auth="Container"
+        type="javax.sql.DataSource" 
+		username="missouri" 
+		password="missouri14prod"
+        driverClassName="oracle.jdbc.driver.OracleDriver"
+        url="jdbc:oracle:thin:@//10.160.18.38:1521/INDPROD"
+        maxActive="10" 
+		maxIdle="4" />		
+ 
+</Context>
