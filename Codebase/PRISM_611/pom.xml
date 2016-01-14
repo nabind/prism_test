@@ -373,6 +373,11 @@
 			<artifactId>ji-license-5.0.1</artifactId>
 			<version>5.0</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>net.jasper</groupId>
+			<artifactId>ji-license-6.1.1</artifactId>
+			<version>${jasper-reports-version}</version>
+		</dependency>-->
 		<dependency>
 			<groupId>net.jasper</groupId>
 			<artifactId>jasperreports-pro-6.0.0</artifactId>
@@ -571,11 +576,11 @@
 		</dependency>
 		
 		<!-- MongoDB dependencies -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>2.12.3</version>
-		</dependency>
+		</dependency> -->
 
 	
 		<dependency>
@@ -714,12 +719,23 @@
 		<!-- END: JASPER REPORT -->
 		
 		<!-- mongodb java driver -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>3.1.1</version>
-		</dependency>
-		
+		</dependency> -->
+	    <dependency>
+	        <groupId>org.mongodb</groupId>
+	        <artifactId>mongo-java-driver</artifactId>
+	        <version>3.2.0</version>
+	    </dependency>	
+		<!-- mongodb driver -->
+	    <dependency>
+	        <groupId>org.mongodb</groupId>
+	        <artifactId>mongodb-driver</artifactId>
+	        <version>3.2.0</version>
+	    </dependency>
+
 		<!-- Spring data mongodb -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
