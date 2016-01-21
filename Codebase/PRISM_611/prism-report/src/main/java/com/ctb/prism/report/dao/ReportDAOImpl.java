@@ -116,7 +116,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
 		try {
-			if(parameters.get("LoggedInUserName").equals("mdadmin")) {
+			if(parameters.get("LoggedInUserName") !=null && parameters.get("LoggedInUserName").equals("mdadmin")) {
 				conn =getPrismMongoConnection(contractName);
 			} else {
 				if (contractName != null && !contractName.isEmpty()) {
