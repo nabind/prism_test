@@ -44,3 +44,18 @@ E = Education Center Id
 Arg_2 to End
 -------------------------------------
 Space separated list of org_node_ids
+
+*************************************
+MO
+*************************************
+Arg_0
+-------------------------------------
+M = MO
+
+Arg_1
+-------------------------------------
+Cust prod Id
+
+Arg_2 to End
+-------------------------------------
+Space separated list of org_node_ids (school)
