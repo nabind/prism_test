@@ -46,6 +46,8 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.MIcClaims;
+import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MReportTO;
 import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MUserTO;
@@ -481,7 +483,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setIsAdminFlag("Y");
 				user.setIsPasswordExpired("FALSE");
 				user.setIsPasswordWarning("FALSE");
-				user.setOrgId(savedUser.getOrgNodes().get(0).getOrgNodeid());
+				for(MOrgTO org : savedUser.getOrgNodes()){
+					if (org.getIsActive().equals("Y")){
+						user.setOrgId(org.getOrgNodeid());
+						user.setDefultCustProdId(org.getDefultCustProdId());
+						break;
+					}
+				}				
 				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgNodeCategory().getOrgNodeLevel()));
 				user.setOrgMode(savedUser.getOrgMode());
 				user.setPassword(savedUser.getPassword());
@@ -496,7 +504,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setUserEmail(savedUser.getUserEmail());
 				user.setUserStatus(savedUser.getUserStatus());
 				user.setUserType("O"/*savedUser.getUserType()*/);
-				user.setDefultCustProdId(savedUser.getOrgNodes().get(0).getDefultCustProdId());
+				
+				//For Parent
+				if(savedUser.getIcClaims() != null) {
+					for(MIcClaims icClaim : savedUser.getIcClaims()) {
+						//To Do
+					}
+				}
 			}
 			return user;
 		} else {
@@ -1031,14 +1045,14 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			List<MResultTO> reportDetails = groupResults.getMappedResults();
 			
 			System.out.println("    >> User from MongoDB : "
-					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFoderURI());
+					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
 			
 			Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
 			for(int i=0; i < reportDetails.size(); i++) {
 				MenuTO to = new MenuTO();
 				to.setMenuName(reportDetails.get(i).getMenu());
 				to.setReportName(reportDetails.get(i).getReportName());
-				to.setReportFolderUri(reportDetails.get(i).getReportFoderURI());
+				to.setReportFolderUri(reportDetails.get(i).getReportFolderURI());
 				to.setMenuSequence("1"); // Hard coded for the time
 				to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
 				menuSet.add(to);

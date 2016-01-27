@@ -32,7 +32,8 @@
 	
 	<bean id="mongoTemplateTasc" class="org.springframework.data.mongodb.core.MongoTemplate">
 	    <constructor-arg name="mongo" ref="mongo" />
-	    <constructor-arg name="databaseName" value="tasc" />
+	    <!--<constructor-arg name="databaseName" value="tasc" />-->
+	    <constructor-arg name="databaseName" value="drc_mongo" />
 	     <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
 	</bean>
 	<bean id="mongoTemplateInors" class="org.springframework.data.mongodb.core.MongoTemplate">

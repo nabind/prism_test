@@ -737,7 +737,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			
 			List<MResultTO> reportDetails = groupResults.getMappedResults();
 			System.out.println("    >> User from MongoDB : "
-					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFoderURI());
+					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
 			
 			AssessmentTO assessmentTO = null;
 			assessments = new ArrayList<AssessmentTO>();
@@ -749,7 +749,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				ReportTO reportTO = new ReportTO();
 				reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
 				reportTO.setReportName(reportDetails.get(i).getReportName());
-				reportTO.setReportUrl(reportDetails.get(i).getReportFoderURI());
+				reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
 				reportTO.setEnabled(reportDetails.get(i).getActivationStatus().equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
 				reportTO.setAllRoles("ROLE_CTB,ROLE_EDU_ADMIN,ROLE_USER,ROLE_ADMIN");//Hard coded for the time
 				reportTO.setReportType(reportDetails.get(i).getReportType());

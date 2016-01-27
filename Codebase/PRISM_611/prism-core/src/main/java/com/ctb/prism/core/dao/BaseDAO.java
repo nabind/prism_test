@@ -78,7 +78,8 @@ public abstract class BaseDAO {
 		String mongoURI = mongo.getObject().getAddress().toString();
 		
 		if("inors".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/inors";
-        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc";
+        //if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc"; 
+        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
         if("usmo".equals(contractName)) mongoURI = "mongodb://"+ mongoURI  +"/usmo";
         
         

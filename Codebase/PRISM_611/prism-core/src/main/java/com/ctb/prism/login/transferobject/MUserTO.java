@@ -43,6 +43,7 @@ public class MUserTO extends BaseTO{
 	private String isPasswordExpired;
 	private String isPasswordWarning;
 	private MOrgNodeCategory OrgNodeCategory;
+	private List<MIcClaims>  icClaims;
 	
 	public MOrgNodeCategory getOrgNodeCategory() {
 		return OrgNodeCategory;
@@ -225,4 +226,12 @@ public class MUserTO extends BaseTO{
 	public void setIsPasswordWarning(String isPasswordWarning) {
 		this.isPasswordWarning = isPasswordWarning;
 	}
+	
+	public List<MIcClaims> getIcClaims() {
+		return icClaims;
+	}
+	public void setIcClaims(List<MIcClaims> claims) {
+		this.icClaims = claims;
+	}
+	
 }

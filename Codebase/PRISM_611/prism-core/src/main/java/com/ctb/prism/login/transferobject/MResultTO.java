@@ -11,7 +11,7 @@ public class MResultTO  extends BaseTO{
 	@Id
 	private String _id;
 	private String reportName;
-	private String reportFoderURI;
+	private String reportFolderURI;
 	private String reportType;
 	private String activationStatus;
 	private String menu;
@@ -30,11 +30,11 @@ public class MResultTO  extends BaseTO{
 	public void setReportName(String reportName) {
 		this.reportName = reportName;
 	}
-	public String getReportFoderURI() {
-		return reportFoderURI;
+	public String getReportFolderURI() {
+		return reportFolderURI;
 	}
-	public void setReportFoderURI(String reportFoderURI) {
-		this.reportFoderURI = reportFoderURI;
+	public void setReportFolderURI(String reportFolderURI) {
+		this.reportFolderURI = reportFolderURI;
 	}
 	public String getReportType() {
 		return reportType;
