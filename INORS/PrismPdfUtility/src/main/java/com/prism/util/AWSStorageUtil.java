@@ -21,6 +21,8 @@ import com.amazonaws.services.s3.model.MultiObjectDeleteException;
 import com.amazonaws.services.s3.model.MultiObjectDeleteException.DeleteError;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.MultipleFileUpload;
+import com.amazonaws.services.s3.transfer.TransferManager;
 
 public class AWSStorageUtil {
 	private final Logger logger = Logger.getLogger(AWSStorageUtil.class);
@@ -87,6 +89,45 @@ public class AWSStorageUtil {
 		logger.debug( "Asset(" + key + ") uploaded successfully");
 	}
 
+	//upload files from root directory including subdirectories
+	public void uploadBulkAssest(String key,File directory){
+		TransferManager tm = new TransferManager(s3);
+		Properties prop = PropertyFile.loadProperties(Constants.INORS_PROPERTIES_FILE);
+		key = prop.getProperty("environment.postfix").toUpperCase()  + "/" + key;
+		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
+		logger.debug("Uploading an Asset: " + key);
+		try{
+			MultipleFileUpload upload = tm.uploadDirectory(this.bucketName,key,directory, true);
+			System.out.println(upload.getProgress().getPercentTransfered());
+			if(upload.isDone())	{
+				System.out.println(upload.getProgress().getPercentTransfered());
+				logger.debug( "Assets uploaded successfully");
+			}			
+			
+		} catch(Exception e){
+			logger.debug( "Exception occured while uploading assets");
+			e.printStackTrace();
+		} finally{
+			logger.debug( "End of uploadBulkAssest");
+		}
+	    
+	    
+	}
+	//upload list of files from a root directory 
+	public void uploadBulkAssest(String key,File directory,List<File> files){
+		TransferManager tm = new TransferManager(s3);
+		Properties prop = PropertyFile.loadProperties(Constants.INORS_PROPERTIES_FILE);
+		key = prop.getProperty("environment.postfix").toUpperCase()  + "/" + key;
+		key = key.replace("//", "/");
+		key = key.replaceAll("\\\\", "/");
+		logger.debug("Uploading an Asset: " + key);
+	    MultipleFileUpload upload = tm.uploadFileList(this.bucketName,key,directory, files);
+	    logger.debug( "Assets uploaded successfully");
+	}	
+	
+
+	
 	/**
 	 * List available assets on s3
 	 */
