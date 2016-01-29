@@ -67,13 +67,15 @@ public class MapDao extends CommonDao {
 			/*String query = CustomStringUtil.appendString("select student_bio_id, gradeid, subtestid  from subtest_score_fact ",
 					" where org_nodeid = ? order by gradeid");*/
 			
-			String query = CustomStringUtil.appendString("select ssf.student_bio_id,",
-					" ssf.gradeid,ssf.subtestid,upper(sbd.last_name),",
-			        " REGEXP_REPLACE(upper(sbd.last_name), '[^[:alnum:]'' '']', NULL)",
-			        " from student_bio_dim sbd, subtest_score_fact ssf",
-			        " where sbd.student_bio_id = ssf.student_bio_id",
-			        " and ssf.org_nodeid = ?",
-			        " order by ssf.gradeid");
+			String query = CustomStringUtil.appendString(
+					" SELECT SSF.STUDENT_BIO_ID,",
+					" GRD.GRADE_CODE,SSF.SUBTESTID,SBD.EXT_STUDENT_ID,",
+			        " UPPER(SBD.LAST_NAME),REGEXP_REPLACE(UPPER(SBD.LAST_NAME), '[^[:alnum:]'' '']', NULL)",
+			        " FROM STUDENT_BIO_DIM SBD, SUBTEST_SCORE_FACT SSF,GRADE_DIM GRD",
+			        " WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID",
+			        " AND SSF.GRADEID = GRD.GRADEID",
+			        " AND SSF.ORG_NODEID = ?",
+			        " ORDER BY SSF.GRADEID");
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, schoolOrgNodeId);
 			rs = pstmt.executeQuery();
@@ -83,7 +85,8 @@ public class MapDao extends CommonDao {
 				student.setStudentBioId(rs.getString(1));
 				student.setGradeId(rs.getString(2));
 				student.setSubtest(rs.getString(3));
-				student.setLastNameCap(rs.getString(4));
+				student.setMosisId(rs.getString(4));
+				student.setLastNameCap(rs.getString(6));
 				students.add(student);
 			}
 		} catch (SQLException e) {
@@ -127,6 +130,37 @@ public class MapDao extends CommonDao {
 	}
 
 
+	 
+	 /**
+		 * Fetch Education Center information
+		 * 
+		 * @param eduCenterId
+		 * @return
+		 * @throws Exception
+		 */
+		public String getCurrentAdmin() throws Exception {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String adminYear = null;
+			try {
+				conn = driver.connect(DATA_SOURCE, null);
+				String query = CustomStringUtil.appendString(" SELECT SUBSTR( ADMIN_YEAR,3,2) AS CURYEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN='Y'");
+				pstmt = conn.prepareCall(query);
+				
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					adminYear=rs.getString(1);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new Exception(e.getMessage());
+			} finally {
+				releaseResources(conn, pstmt, rs);
+			}
+			return adminYear;
+		}
+	
 	public OrgTO getParentOrgNodeId(String orgNodeId) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

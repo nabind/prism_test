@@ -45,6 +45,21 @@ public class GroupDownloadTO extends BaseTO {
 	private String districtCode;
 	private String schoolCode;
 	private String studentSelection = "";
+	private String currentAdmin;
+
+	/**
+	 * @return the currentAdmin
+	 */
+	public String getCurrentAdmin() {
+		return currentAdmin;
+	}
+
+	/**
+	 * @param currentAdmin the currentAdmin to set
+	 */
+	public void setCurrentAdmin(String currentAdmin) {
+		this.currentAdmin = currentAdmin;
+	}
 
 	/**
 	 * @return the button

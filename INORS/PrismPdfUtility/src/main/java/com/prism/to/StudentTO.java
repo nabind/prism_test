@@ -9,7 +9,20 @@ public class StudentTO {
 	private String studentName;
 	private String subtest;
 	private String lastNameCap;
+	private String mosisId;
 	
+	/**
+	 * @return the mosisId
+	 */
+	public String getMosisId() {
+		return mosisId;
+	}
+	/**
+	 * @param mosisId the mosisId to set
+	 */
+	public void setMosisId(String mosisId) {
+		this.mosisId = mosisId;
+	}
 	public String getSubtest() {
 		return subtest;
 	}

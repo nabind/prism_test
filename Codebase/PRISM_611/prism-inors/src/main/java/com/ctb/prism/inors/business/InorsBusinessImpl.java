@@ -939,6 +939,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String subtest = (String) paramMap.get("subtest");
 		String contractName = (String) paramMap.get("contractName");
 		String customer = (String) paramMap.get("customer");
+		String mosisId = (String)paramMap.get("mosisId");
+		String lastName = (String)paramMap.get("lastName");
+		String currentAdmin = (String)paramMap.get("currentAdmin");
+		
 		boolean isBulk = false;
 		if(paramMap.get("isBulk") != null) isBulk = (Boolean) paramMap.get("isBulk");
 		
@@ -950,9 +954,14 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String districtCode = (String) codeMap.get("districtCode");
 		String schoolCode = (String) codeMap.get("schoolCode");
 		
-		String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
+		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+				district, "_", school, "_", 
+				gradeId, "_", lastName,"_", mosisId!=null?mosisId:"",
+				"_",studentId,"_",/*String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+		
+		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
 				districtCode, "_", schoolCode, "_", 
-				gradeId, "_", subtest,"_", studentId, ".pdf");
+				gradeId, "_", subtest,"_", studentId, ".pdf");*/
 		
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		String compFileName = "";
@@ -1118,7 +1127,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			
 			String[] subtests = groupDownloadTO.getSubtest();
 			String students = groupDownloadTO.getStudents();
-			String[] studentIds = (students != null) ? students.split(",") : null;
+			//String[] studentIds = (students != null) ? students.split(",") : null;
+			String[] studentDetails = (students != null) ? students.split(",") : null;
+			
+			
 			String mode = groupDownloadTO.getButton();
 			String reqFileName = groupDownloadTO.getFileName();
 			boolean isBulk = false;
@@ -1129,6 +1141,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				startTime = System.currentTimeMillis();
 			}
 			
+			String currentAdmin = groupDownloadTO.getCurrentAdmin();
+			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
 					File.separator, "MAP", File.separator, "GDF", File.separator);
 			folderLoc = folderLoc.replace("//", "/");
@@ -1138,29 +1152,35 @@ public class InorsBusinessImpl implements IInorsBusiness {
 			List<String> fileForStudent = null;
 			List<String> allIsr = new LinkedList<String>();;
 			
-			for(String studentId : studentIds) {
+			for(String studentDetail : studentDetails) {
 				fileForStudent = new LinkedList<String>();
+				String[] student = studentDetail.split(":");
 				for(String subtest : subtests) {
 					Map<String,Object> paramMap = new HashMap<String,Object>(); 
 					paramMap.put("custProdId", groupDownloadTO.getTestAdministrationVal());
 					paramMap.put("district", groupDownloadTO.getDistrict());
 					paramMap.put("school", groupDownloadTO.getSchool());
-					paramMap.put("studentId", studentId);
+					paramMap.put("studentId", student[0]);
+					paramMap.put("mosisId",student[1]);
+					paramMap.put("lastName",student[2]);
 					paramMap.put("gradeId", groupDownloadTO.getGrade());
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
 					paramMap.put("contractName", contractName);
 					paramMap.put("customer", groupDownloadTO.getCustomerId());
 					paramMap.put("isBulk", isBulk);
+					paramMap.put("currentAdmin", currentAdmin);
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);
 						allIsr.add(fileName);
 						try {
+							
 							/*Code added to keep the student PDF log*/
-							String tempFileName = CustomStringUtil.appendString("MAP_ISR_",  groupDownloadTO.getTestAdministrationVal(), "_", 
+							String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
-									groupDownloadTO.getGrade(), "_", subtest,"_", studentId, ".pdf");
+									groupDownloadTO.getGrade(), "_", student[2],"_", student[1]!=null?student[1]:"",
+									"_",student[0],"_",/*String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
 							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
 									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGrade(),File.separator);
@@ -1168,20 +1188,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
 							
 							StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
-							studentPDFLogTO.setStudentBioId(Long.valueOf(studentId));
+							studentPDFLogTO.setStudentBioId(Long.valueOf(student[0]));
 							studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
 							studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
 							studentPDFLogTO.setFileName(fullFileNameS3);
 							inorsDAO.auditPDFUtiity(studentPDFLogTO,contractName);
 						} catch (Exception ex) {}
 					} else {
-						job.append(",NO PDF std:").append(studentId).append("|subtst:").append(subtest) ;
+						job.append(",NO PDF std:").append(student[0]).append("|subtst:").append(subtest) ;
 					}
 				}
 				if(!isBulk) {
 					// combine student's PDF
 					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", studentId, "_", System.currentTimeMillis()+""/*Utils.getDateTime(true)*/, ".pdf");
+							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
+									"_",student[0], "_", System.currentTimeMillis()+""/*Utils.getDateTime(true)*/, ".pdf");
 					OutputStream os = new FileOutputStream(mergedFileName);
 					PdfGenerator.concatPDFs(fileForStudent, os, false);
 					IOUtils.closeQuietly(os);

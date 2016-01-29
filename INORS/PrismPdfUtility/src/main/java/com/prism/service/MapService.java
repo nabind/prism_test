@@ -91,6 +91,8 @@ public class MapService implements PrismPdfService {
 				String districtCode = orgNodeCodes[2];
 				String schoolCode =  orgNodeCodes[3];
 				
+				String curAdmin = dao.getCurrentAdmin();
+				
 				List<StudentTO> students = dao.getStudents(schoolOrgNodeId);
 				if(students != null && students.size() == 0) {
 					logger.info("There is no student present for school " + schoolOrgNodeId);
@@ -108,16 +110,16 @@ public class MapService implements PrismPdfService {
 					subtest.add(studentTO.getSubtest());
 
 					if(oldGrade.equals(newGrade)) {
-						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
+						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
 					} else {
 						if("".equals(oldGrade)) {
 							oldGrade = newGrade;
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
 						} else {
 							//studentIds.delete(studentIds.length()-1, studentIds.length());
 							map.put(oldGrade, studentIds.toString());
 							studentIds = new StringBuffer();
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
 							oldGrade = newGrade;
 						}
 					}
@@ -171,9 +173,10 @@ public class MapService implements PrismPdfService {
 						for(String subtestId : subtest) {
 							String[] stduentDetails = StudentIdArr[i].split(":");
 							if(stduentDetails[0].equals(subtestId))
-								keys.add(new KeyVersion(CustomStringUtil.appendString("/QA",rootLocForS3,  
-									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId
-									,"_",stduentDetails[1],"_",stduentDetails[2],".pdf")));
+								keys.add(new KeyVersion(CustomStringUtil.appendString(
+									mapProperties.getProperty("s3.environment")	,rootLocForS3,  
+									"MAP",curAdmin,"_ISR_",districtCode,"_",schoolCode,"_",gradeid,"_",stduentDetails[3]
+									,"_",stduentDetails[2]!=null?stduentDetails[2]:"","_",stduentDetails[1],"_",/*String.valueOf(System.currentTimeMillis()),*/".pdf")));
 						}
 					}					
 					
@@ -187,7 +190,12 @@ public class MapService implements PrismPdfService {
 							for (int j=0; j <studentList.length ; j++) {
 								String[] stduentDetails = studentList[j].split(":");
 								if(subtestId.equals(stduentDetails[0])) {
-									chunkBuff.append(stduentDetails[1]).append(",");
+									chunkBuff.append(stduentDetails[1])
+									.append(":")
+									.append(stduentDetails[1])
+									.append(":")
+									.append(stduentDetails[1])
+									.append(",");
 								}
 							}
 							String newChunks = chunkBuff.toString();
@@ -198,7 +206,7 @@ public class MapService implements PrismPdfService {
 							if (newChunks != null && newChunks.length() >  0) {
 								String urlParameters = CustomStringUtil.appendString("p_test_administration=", custProdId, "&p_school=", schoolOrgNodeId, "&p_district_Id=", districtOrgNodeId,
 										"&p_grade=", gradeid, "&studentId=", newChunks, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
-										"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId);
+										"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId,"&p_curAdmin=",curAdmin);
 								
 								sendPost(mapProperties, urlParameters);
 								chunkBuff = new StringBuffer(); //reset buffer
