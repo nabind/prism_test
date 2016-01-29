@@ -62,7 +62,7 @@ public class MapService implements PrismPdfService {
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
-		map.mainMethod(new String[]{"5035", /*"576"*/ "7391"});
+		map.mainMethod(new String[]{"5097","48132","48220"});
 	}
 
 	/**
@@ -108,16 +108,16 @@ public class MapService implements PrismPdfService {
 					subtest.add(studentTO.getSubtest());
 
 					if(oldGrade.equals(newGrade)) {
-						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
+						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
 					} else {
 						if("".equals(oldGrade)) {
 							oldGrade = newGrade;
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
 						} else {
 							//studentIds.delete(studentIds.length()-1, studentIds.length());
 							map.put(oldGrade, studentIds.toString());
 							studentIds = new StringBuffer();
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getLastNameCap()).append(",");
 							oldGrade = newGrade;
 						}
 					}
@@ -172,7 +172,8 @@ public class MapService implements PrismPdfService {
 							String[] stduentDetails = StudentIdArr[i].split(":");
 							if(stduentDetails[0].equals(subtestId))
 								keys.add(new KeyVersion(CustomStringUtil.appendString("/QA",rootLocForS3,  
-									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId,"_",stduentDetails[1],".pdf")));
+									"MAP_ISR_",custProdId,"_",districtCode,"_",schoolCode,"_",gradeid,"_",subtestId
+									,"_",stduentDetails[1],"_",stduentDetails[2],".pdf")));
 						}
 					}					
 					

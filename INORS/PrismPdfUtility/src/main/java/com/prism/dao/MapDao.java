@@ -64,8 +64,16 @@ public class MapDao extends CommonDao {
 		List<StudentTO> students = null;
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = CustomStringUtil.appendString("select student_bio_id, gradeid, subtestid  from subtest_score_fact ",
-					" where org_nodeid = ? order by gradeid");
+			/*String query = CustomStringUtil.appendString("select student_bio_id, gradeid, subtestid  from subtest_score_fact ",
+					" where org_nodeid = ? order by gradeid");*/
+			
+			String query = CustomStringUtil.appendString("select ssf.student_bio_id,",
+					" ssf.gradeid,ssf.subtestid,upper(sbd.last_name),",
+			        " REGEXP_REPLACE(upper(sbd.last_name), '[^[:alnum:]'' '']', NULL)",
+			        " from student_bio_dim sbd, subtest_score_fact ssf",
+			        " where sbd.student_bio_id = ssf.student_bio_id",
+			        " and ssf.org_nodeid = ?",
+			        " order by ssf.gradeid");
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, schoolOrgNodeId);
 			rs = pstmt.executeQuery();
@@ -75,6 +83,7 @@ public class MapDao extends CommonDao {
 				student.setStudentBioId(rs.getString(1));
 				student.setGradeId(rs.getString(2));
 				student.setSubtest(rs.getString(3));
+				student.setLastNameCap(rs.getString(4));
 				students.add(student);
 			}
 		} catch (SQLException e) {

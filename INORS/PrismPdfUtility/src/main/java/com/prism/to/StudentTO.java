@@ -8,6 +8,7 @@ public class StudentTO {
 	private String customerId;
 	private String studentName;
 	private String subtest;
+	private String lastNameCap;
 	
 	public String getSubtest() {
 		return subtest;
@@ -38,6 +39,12 @@ public class StudentTO {
 	}
 	public void setStudentName(String studentName) {
 		this.studentName = studentName;
+	}
+	public String getLastNameCap() {
+		return lastNameCap;
+	}
+	public void setLastNameCap(String lastNameCap) {
+		this.lastNameCap = lastNameCap;
 	}
 	
 
