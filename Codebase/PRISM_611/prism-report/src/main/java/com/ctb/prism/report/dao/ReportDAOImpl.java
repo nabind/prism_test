@@ -116,7 +116,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
 		try {
-			if(parameters.get("LoggedInUserName") !=null && parameters.get("LoggedInUserName").equals("mdadmin")) {
+			if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
 				conn =getPrismMongoConnection(contractName);
 			} else {
 				if (contractName != null && !contractName.isEmpty()) {
@@ -170,7 +170,16 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String contractName = (String)parameters.get("contractName");
 		try {
 			try{
-				conn = getPrismConnection();
+				// temp for Mongo
+				if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
+					conn =getPrismMongoConnection(contractName);
+				} else {
+					if (contractName != null && !contractName.isEmpty()) {
+						conn = getPrismConnection(contractName);
+					} else {
+						conn = getPrismConnection();
+					}
+				}
 			}catch(Exception e){
 				conn = getPrismConnection(contractName);
 			}
@@ -739,10 +748,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			System.out.println("    >> User from MongoDB : "
 					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
 			
-			AssessmentTO assessmentTO = null;
+			AssessmentTO assessmentTO = new AssessmentTO();
 			assessments = new ArrayList<AssessmentTO>();
 			for(int i=0; i < reportDetails.size(); i++) {
-				assessmentTO = new AssessmentTO();
+				//assessmentTO = new AssessmentTO();
 				assessmentTO.setAssessmentId(1000); //Hard coded for the time
 				assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
 								
@@ -756,8 +765,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
 						? reportDetails.get(i).getReportAccess().getOrg_level() : "");
 				assessmentTO.addReport(reportTO);
-				assessments.add(assessmentTO);
 			}
+			assessments.add(assessmentTO);
 			
 		} else{
 			if (roles.indexOf("ROLE_PARENT") != -1) {

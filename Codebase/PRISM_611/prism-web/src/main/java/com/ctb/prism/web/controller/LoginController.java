@@ -475,7 +475,7 @@ public class LoginController {
 				paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 				
 				//To Check mongo report
-				if(username.equals("mdadmin"))
+				if(username !=null && username.startsWith("mdadmin"))
 					paramMap.put("database","MongoDB");
 				else
 					paramMap.put("database","Oracle");

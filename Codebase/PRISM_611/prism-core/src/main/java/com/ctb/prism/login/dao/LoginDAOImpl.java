@@ -461,7 +461,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		getMongoTemplate().save(user);*/
 		
 		String username = (String)paramMap.get("username");
-		if("mdadmin".equals(username)) {
+		if(username !=null && username.startsWith("mdadmin")) {
 			/**
 			 * This section is to check if user from mongo db is working
 			 */

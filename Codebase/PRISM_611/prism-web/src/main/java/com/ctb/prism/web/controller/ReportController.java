@@ -1870,7 +1870,7 @@ public class ReportController{
 		paramMap.put("contractName", contractName);
 		
 		//To Check mongo report
-		if(loggedinUserTO.getUserName().equals("mdadmin"))
+		if(loggedinUserTO.getUserName() !=null && loggedinUserTO.getUserName().startsWith("mdadmin"))
 			paramMap.put("database","MongoDB");
 		else
 			paramMap.put("database","Oracle");
