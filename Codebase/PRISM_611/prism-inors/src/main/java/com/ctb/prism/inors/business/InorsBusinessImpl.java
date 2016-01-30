@@ -957,7 +957,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 				district, "_", school, "_", 
 				gradeId, "_", lastName,"_", mosisId!=null?mosisId:"",
-				"_",studentId,"_",/*String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+				"_",studentId,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 		
 		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
 				districtCode, "_", schoolCode, "_", 
@@ -1180,7 +1180,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 							String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
 									groupDownloadTO.getGrade(), "_", student[2],"_", student[1]!=null?student[1]:"",
-									"_",student[0],"_",/*String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
 							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
 									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGrade(),File.separator);

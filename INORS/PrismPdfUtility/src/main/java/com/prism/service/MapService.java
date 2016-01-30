@@ -176,7 +176,7 @@ public class MapService implements PrismPdfService {
 								keys.add(new KeyVersion(CustomStringUtil.appendString(
 									mapProperties.getProperty("s3.environment")	,rootLocForS3,  
 									"MAP",curAdmin,"_ISR_",districtCode,"_",schoolCode,"_",gradeid,"_",stduentDetails[3]
-									,"_",stduentDetails[2]!=null?stduentDetails[2]:"","_",stduentDetails[1],"_",/*String.valueOf(System.currentTimeMillis()),*/".pdf")));
+									,"_",stduentDetails[2]!=null?stduentDetails[2]:"","_",stduentDetails[1],/*"_",String.valueOf(System.currentTimeMillis()),*/".pdf")));
 						}
 					}					
 					
@@ -192,9 +192,9 @@ public class MapService implements PrismPdfService {
 								if(subtestId.equals(stduentDetails[0])) {
 									chunkBuff.append(stduentDetails[1])
 									.append(":")
-									.append(stduentDetails[1])
+									.append(stduentDetails[2])
 									.append(":")
-									.append(stduentDetails[1])
+									.append(stduentDetails[3])
 									.append(",");
 								}
 							}
