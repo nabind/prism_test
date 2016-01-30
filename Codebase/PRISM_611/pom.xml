@@ -371,7 +371,7 @@
 		<dependency>
 			<groupId>net.jasper</groupId>
 			<artifactId>ji-license-5.0.1</artifactId>
-			<version>5.0</version>
+			<version>${jasper-reports-version}</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>net.jasper</groupId>
@@ -549,7 +549,7 @@
 		<dependency>
 			<groupId>net.jasper</groupId>
 			<artifactId>JasperImageRenderer</artifactId>
-			<version>5.5.0</version>
+			<version>${jasper-reports-version}</version>
 		</dependency>
 		
 		<dependency>
