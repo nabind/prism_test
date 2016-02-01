@@ -68,9 +68,13 @@ public class MapDao extends CommonDao {
 					" where org_nodeid = ? order by gradeid");*/
 			
 			String query = CustomStringUtil.appendString(
-					" SELECT SSF.STUDENT_BIO_ID,",
-					" GRD.GRADE_CODE,SSF.SUBTESTID,SBD.EXT_STUDENT_ID,",
-			        " UPPER(SBD.LAST_NAME),REGEXP_REPLACE(UPPER(SBD.LAST_NAME), '[^[:alnum:]'' '']', NULL)",
+					" SELECT SSF.STUDENT_BIO_ID," ,//1
+					" GRD.GRADEID,",//2
+					" GRD.GRADE_CODE,",//3
+					" SSF.SUBTESTID," ,//4
+					" SBD.EXT_STUDENT_ID,",//5
+			        " UPPER(SBD.LAST_NAME)," ,//6
+			        " REGEXP_REPLACE(UPPER(SBD.LAST_NAME), '[^[:alnum:]'' '']', NULL)",//7
 			        " FROM STUDENT_BIO_DIM SBD, SUBTEST_SCORE_FACT SSF,GRADE_DIM GRD",
 			        " WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID",
 			        " AND SSF.GRADEID = GRD.GRADEID",
@@ -83,10 +87,10 @@ public class MapDao extends CommonDao {
 			while (rs.next()) {
 				student = new StudentTO();
 				student.setStudentBioId(rs.getString(1));
-				student.setGradeId(rs.getString(2));
-				student.setSubtest(rs.getString(3));
-				student.setMosisId(rs.getString(4));
-				student.setLastNameCap(rs.getString(6));
+				student.setGradeId(rs.getString(2)+":"+rs.getString(3));
+				student.setSubtest(rs.getString(4));
+				student.setMosisId(rs.getString(5));
+				student.setLastNameCap(rs.getString(7));
 				students.add(student);
 			}
 		} catch (SQLException e) {

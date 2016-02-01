@@ -62,7 +62,7 @@ public class MapService implements PrismPdfService {
 	
 	public static void main(String[] args) {
 		MapService map = new MapService();
-		map.mainMethod(new String[]{"5097","48132","48220"});
+		map.mainMethod(new String[]{"5089","37500","36187"});
 	}
 
 	/**
@@ -132,7 +132,9 @@ public class MapService implements PrismPdfService {
 				Iterator itr = map.entrySet().iterator();
 				while (itr.hasNext()) {
 					Map.Entry mapEntry = (Map.Entry) itr.next();
-					String gradeid = (String) mapEntry.getKey();
+					String[] gradDetails = ((String) mapEntry.getKey()).split(":");
+					String gradeid = gradDetails[0];
+					String gradeCode = gradDetails[1];
 					String allStudents = (String) mapEntry.getValue();
 					if(allStudents != null && allStudents.length() > 1) allStudents = allStudents.substring(0, allStudents.length()-1);
 					
@@ -175,7 +177,7 @@ public class MapService implements PrismPdfService {
 							if(stduentDetails[0].equals(subtestId))
 								keys.add(new KeyVersion(CustomStringUtil.appendString(
 									mapProperties.getProperty("s3.environment")	,rootLocForS3,  
-									"MAP",curAdmin,"_ISR_",districtCode,"_",schoolCode,"_",gradeid,"_",stduentDetails[3]
+									"MAP",curAdmin,"_ISR_",districtCode,"_",schoolCode,"_",gradeCode,"_",stduentDetails[3]
 									,"_",stduentDetails[2]!=null?stduentDetails[2]:"","_",stduentDetails[1],/*"_",String.valueOf(System.currentTimeMillis()),*/".pdf")));
 						}
 					}					
@@ -205,7 +207,7 @@ public class MapService implements PrismPdfService {
 							if(curStudentSchoolId != null && curStudentSchoolId.equals(schoolOrgNodeId)) {*/
 							if (newChunks != null && newChunks.length() >  0) {
 								String urlParameters = CustomStringUtil.appendString("p_test_administration=", custProdId, "&p_school=", schoolOrgNodeId, "&p_district_Id=", districtOrgNodeId,
-										"&p_grade=", gradeid, "&studentId=", newChunks, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
+										"&p_grade=", gradeid,"&p_gradeCode=", gradeCode, "&studentId=", newChunks, "&p_subtest=", subtestId, "&fileName=", "BULK&j_contract=usmo&theme=usmo&mode=SP", "&email=BULK",
 										"&customerid=", customerId, "&username=dummyssouser", "", "&userid=", userId,"&p_curAdmin=",curAdmin);
 								
 								sendPost(mapProperties, urlParameters);
