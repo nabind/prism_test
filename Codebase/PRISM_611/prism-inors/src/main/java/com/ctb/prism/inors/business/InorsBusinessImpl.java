@@ -935,6 +935,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String school = (String) paramMap.get("school");
 		String studentId = (String) paramMap.get("studentId");
 		String gradeId = (String) paramMap.get("gradeId");
+		String gradeCode = (String) paramMap.get("gradeCode");
 		String folderLoc = (String) paramMap.get("folderLoc");
 		String subtest = (String) paramMap.get("subtest");
 		String contractName = (String) paramMap.get("contractName");
@@ -956,7 +957,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		
 		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 				district, "_", school, "_", 
-				gradeId, "_", lastName,"_", mosisId!=null?mosisId:"",
+				gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
 				"_",studentId,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 		
 		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
@@ -1164,6 +1165,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					paramMap.put("mosisId",student[1]);
 					paramMap.put("lastName",student[2]);
 					paramMap.put("gradeId", groupDownloadTO.getGrade());
+					paramMap.put("gradeCode", groupDownloadTO.getGradeCode());
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
 					paramMap.put("contractName", contractName);
@@ -1179,11 +1181,11 @@ public class InorsBusinessImpl implements IInorsBusiness {
 							/*Code added to keep the student PDF log*/
 							String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
-									groupDownloadTO.getGrade(), "_", student[2],"_", student[1]!=null?student[1]:"",
+									groupDownloadTO.getGradeCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
 									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
 							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGrade(),File.separator);
+									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGradeCode(),File.separator);
 							
 							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
 							

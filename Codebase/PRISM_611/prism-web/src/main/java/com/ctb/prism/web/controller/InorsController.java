@@ -1894,6 +1894,7 @@ public class InorsController {
 			groupDownloadTO.setSchool(request.getParameter("p_school"));
 			groupDownloadTO.setDistrict(request.getParameter("p_district_Id"));
 			groupDownloadTO.setGrade(request.getParameter("p_grade"));
+			groupDownloadTO.setGradeCode(request.getParameter("p_gradeCode")); 
 			groupDownloadTO.setCustomerId(customer);
 			groupDownloadTO.setButton(request.getParameter("mode"));
 			groupDownloadTO.setStudents(request.getParameter("studentId"));
