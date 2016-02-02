@@ -1910,6 +1910,9 @@ public class InorsController {
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
 			
+			if(request.getParameter("p_curAdmin")!=null)
+				groupDownloadTO.setCurrentAdmin(request.getParameter("p_curAdmin"));
+			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");

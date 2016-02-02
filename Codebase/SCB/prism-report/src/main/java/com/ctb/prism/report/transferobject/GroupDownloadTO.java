@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ctb.prism.report.transferobject;
 
 import com.ctb.prism.core.transferobject.BaseTO;
@@ -20,6 +17,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String school;
 	private String klass;
 	private String grade;
+	private String gradeCode;
 	private String students;
 	private String groupFile;
 	private String collationHierarchy;
@@ -45,6 +43,21 @@ public class GroupDownloadTO extends BaseTO {
 	private String districtCode;
 	private String schoolCode;
 	private String studentSelection = "";
+	private String currentAdmin;
+
+	/**
+	 * @return the currentAdmin
+	 */
+	public String getCurrentAdmin() {
+		return currentAdmin;
+	}
+
+	/**
+	 * @param currentAdmin the currentAdmin to set
+	 */
+	public void setCurrentAdmin(String currentAdmin) {
+		this.currentAdmin = currentAdmin;
+	}
 
 	/**
 	 * @return the button
@@ -164,6 +177,14 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+
+	public String getGradeCode() {
+		return gradeCode;
+	}
+
+	public void setGradeCode(String gradeCode) {
+		this.gradeCode = gradeCode;
 	}
 
 	/**
