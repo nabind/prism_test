@@ -17,6 +17,7 @@ public class GroupDownloadTO extends BaseTO {
 	private String school;
 	private String klass;
 	private String grade;
+	private String[] grades;
 	private String gradeCode;
 	private String students;
 	private String groupFile;
@@ -506,6 +507,14 @@ public class GroupDownloadTO extends BaseTO {
 
 	public void setStudentSelection(String studentSelection) {
 		this.studentSelection = studentSelection;
+	}
+
+	public String[] getGrades() {
+		return grades;
+	}
+
+	public void setGrades(String[] grades) {
+		this.grades = grades;
 	}
 
 	@Override

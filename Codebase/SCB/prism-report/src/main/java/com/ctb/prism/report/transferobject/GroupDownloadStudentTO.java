@@ -24,6 +24,11 @@ public class GroupDownloadStudentTO extends BaseTO implements Comparable<GroupDo
 	private String isrFlag;
 	private String ipFlag;
 	private String school;
+	private String gradeId;
+	private String gradeCode;
+	private String extStudentId;
+	private String lastNameCap;
+	private String curYear;
 
 	/**
 	 * @return the rowNum
@@ -250,6 +255,46 @@ public class GroupDownloadStudentTO extends BaseTO implements Comparable<GroupDo
 
 	public void setSchool(String school) {
 		this.school = school;
+	}
+
+	public String getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(String gradeId) {
+		this.gradeId = gradeId;
+	}
+
+	public String getGradeCode() {
+		return gradeCode;
+	}
+
+	public void setGradeCode(String gradeCode) {
+		this.gradeCode = gradeCode;
+	}
+
+	public String getExtStudentId() {
+		return extStudentId;
+	}
+
+	public void setExtStudentId(String extStudentId) {
+		this.extStudentId = extStudentId;
+	}
+
+	public String getLastNameCap() {
+		return lastNameCap;
+	}
+
+	public void setLastNameCap(String lastNameCap) {
+		this.lastNameCap = lastNameCap;
+	}
+
+	public String getCurYear() {
+		return curYear;
+	}
+
+	public void setCurYear(String curYear) {
+		this.curYear = curYear;
 	}
 
 }

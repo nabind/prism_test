@@ -1653,6 +1653,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String schoolId = to.getSchool();
 		final String classId = to.getKlass();
 		final String gradeId = to.getGrade();
+		final String gradeIdCommaSep = Utils.arrayToSeparatedString(to.getGrades(), ',') ;
 		final String testProgram = to.getTestProgram();
 		final String collationHierarchy = to.getCollationHierarchy();
 		final String groupFile = to.getGroupFile();
@@ -1681,8 +1682,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "loggedInOrgNodeId = " + loggedInOrgNodeId);
 		logger.log(IAppLogger.INFO, "userName = " + userName);
 		logger.log(IAppLogger.INFO, "subtestCommaSep = " + subtestCommaSep);
+		logger.log(IAppLogger.INFO, "gradeIdCommaSep = " + gradeIdCommaSep);
 		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		logger.log(IAppLogger.INFO, "studentGroups = " + studentGroups);
 		
 		if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
 			studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1690,7 +1693,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_G_MO);
 					cs.setLong(1, Long.parseLong(testAdministrationVal));
 					cs.setLong(2, Long.parseLong(schoolId));
-					cs.setLong(3, Long.parseLong(gradeId));
+					//cs.setLong(3, Long.parseLong(gradeId));
+					cs.setString(3, gradeIdCommaSep);
 					cs.setString(4, subtestCommaSep);
 					//cs.setString(5, studentGroups);
 					cs.setLong(5, Long.parseLong(studentGroups));
@@ -1712,6 +1716,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 							student.setName(rs.getString("STUDENT_NAME"));
 							student.setGrade(rs.getString("GRADE_NAME"));
 							student.setSchool(rs.getString("SCHOOL_NAME"));
+							student.setGradeId(rs.getString("GRADEID"));
+							student.setGradeCode(rs.getString("GRADE_CODE"));
+							student.setExtStudentId(rs.getString("EXT_STUDENT_ID"));
+							student.setLastNameCap(rs.getString("LAST_NAME_CAP"));
+							student.setCurYear(rs.getString("CURYEAR"));
 							studentList.add(student);
 						}
 						return studentList;

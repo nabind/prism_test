@@ -679,7 +679,8 @@ public class InorsController {
 		String corpDiocese = (String) request.getParameter("p_corpdiocese");
 		String school = (String) request.getParameter("p_school");
 		String klass = (String) request.getParameter("p_class");
-		String grade = (String) request.getParameter("p_grade");
+		//String grade = (String) request.getParameter("p_grade");
+		String[] grade = request.getParameterValues("p_grade");
 		String groupFile = (String) request.getParameter("p_generate_file");
 		String collationHierarchy = (String) request.getParameter("p_collation");
 		String[] subtest = request.getParameterValues("p_subtest");
@@ -690,7 +691,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(grade,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -712,7 +713,11 @@ public class InorsController {
 				corpDiocese = CustomStringUtil.getNotNullString(parameters.get("p_corpdiocese"));
 				school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
 				klass = CustomStringUtil.getNotNullString(parameters.get("p_class"));
-				grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
+				//grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
+				if(parameters.get("p_grade") != null){
+					ArrayList<String> list = (ArrayList<String>)parameters.get("p_grade");
+					grade = list.toArray(new String[list.size()]);
+				}
 				groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
 				collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
 				if(parameters.get("p_subtest") != null){
@@ -739,7 +744,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(grade,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -814,7 +819,8 @@ public class InorsController {
 					GroupDownloadTO to = new GroupDownloadTO();
 					to.setSchool(school);
 					to.setKlass(klass);
-					to.setGrade(grade);
+					//to.setGrade(grade);
+					to.setGrades(grade);
 					to.setTestProgram(testProgram);
 					to.setTestAdministrationVal(testAdministrationVal);
 					to.setDistrict(corpDiocese);
@@ -1813,9 +1819,15 @@ public class InorsController {
 		String[] subtests = request.getParameterValues("p_subtest");
 		String studentId = request.getParameter("studentId");
 		String custProdId = request.getParameter("p_test_administration");
-		String gradeId = request.getParameter("p_grade");
 		String district = request.getParameter("p_district_Id");
 		String school = request.getParameter("p_school");
+		
+		String gradeId = request.getParameter("gradeId");
+		String gradeCode = request.getParameter("gradeCode");
+		String mosisId = request.getParameter("extStudentId");
+		String lastName = request.getParameter("lastNameCap");
+		String currentAdmin = request.getParameter("curYear");
+		
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String mergedFileName = "";
 		OutputStream os = null;
@@ -1832,6 +1844,10 @@ public class InorsController {
 				paramMap.put("school", school);
 				paramMap.put("studentId", studentId);
 				paramMap.put("gradeId", gradeId);
+				paramMap.put("gradeCode", gradeCode);
+				paramMap.put("mosisId", mosisId);
+				paramMap.put("lastName", lastName);
+				paramMap.put("currentAdmin", currentAdmin);
 				paramMap.put("folderLoc", folderLoc);
 				paramMap.put("subtest", subtest);
 				paramMap.put("customer", customer);
@@ -1841,7 +1857,19 @@ public class InorsController {
 			}
 			
 			// create a merged PDF from archieveFileNames
-			mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", studentId, "_", Utils.getDateTime(true), ".pdf");
+			//mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", studentId, "_", Utils.getDateTime(true), ".pdf");
+			Map<String,Object> paramMapCode = new HashMap<String, Object>();
+			paramMapCode.put("district", district);
+			paramMapCode.put("school",school);
+			paramMapCode.put("contractName", IApplicationConstants.CONTRACT_NAME.usmo.toString());
+			Map<String,Object> codeMap = inorsService.getCode(paramMapCode);
+			String districtCode = (String) codeMap.get("districtCode");
+			String schoolCode = (String) codeMap.get("schoolCode");
+			
+			mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP",currentAdmin,"_ISR_", 
+					districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
+					"_",studentId,"_",String.valueOf(System.currentTimeMillis()), ".pdf");
+			
 			mergedFile = new File(mergedFileName);
 			os = new FileOutputStream(mergedFile);
 			PdfGenerator.concatPDFs(archieveFileNames, os, false);
@@ -1888,6 +1916,7 @@ public class InorsController {
 				themeResolver.setThemeName(request, response, theme);
 			}
 			GroupDownloadTO groupDownloadTO = new GroupDownloadTO(); 
+			
 			groupDownloadTO.setUdatedBy((currentUserId == null) ? 0 : Long.parseLong(currentUserId));
 			groupDownloadTO.setUserName(currentUser);
 			groupDownloadTO.setTestAdministrationVal(request.getParameter("p_test_administration"));
@@ -1896,11 +1925,24 @@ public class InorsController {
 			groupDownloadTO.setGrade(request.getParameter("p_grade"));
 			groupDownloadTO.setCustomerId(customer);
 			groupDownloadTO.setButton(request.getParameter("mode"));
+			groupDownloadTO.setFileName(request.getParameter("fileName"));
 			groupDownloadTO.setStudents(request.getParameter("studentId"));
 			groupDownloadTO.setSubtest(request.getParameterValues("p_subtest"));
 			groupDownloadTO.setGroupFile("ISR");
-			groupDownloadTO.setFileName(request.getParameter("fileName"));
 			groupDownloadTO.setEmail(request.getParameter("email"));
+			groupDownloadTO.setGradeCode(request.getParameter("p_gradeCode"));
+			if(request.getParameter("p_curAdmin")!=null)
+				groupDownloadTO.setCurrentAdmin(request.getParameter("p_curAdmin"));
+			
+			//To check the call from PDF Utility
+			if("BULK".equals(groupDownloadTO.getFileName()) && "BULK".equals(groupDownloadTO.getEmail())){
+				String studentDetails = groupDownloadTO.getStudents();
+				studentDetails = studentDetails + ":"+groupDownloadTO.getGradeCode()
+						+":"+groupDownloadTO.getGrade()+":"+groupDownloadTO.getCurrentAdmin();
+				groupDownloadTO.setStudents(studentDetails);
+			}
+			
+			
 			
 			Map<String,Object> paramMapCode = new HashMap<String, Object>();
 			paramMapCode.put("district", request.getParameter("p_district_Id"));
@@ -1910,14 +1952,13 @@ public class InorsController {
 			groupDownloadTO.setDistrictCode((String) codeMap.get("districtCode"));
 			groupDownloadTO.setSchoolCode((String) codeMap.get("schoolCode"));
 			
-			if(request.getParameter("p_curAdmin")!=null)
-				groupDownloadTO.setCurrentAdmin(request.getParameter("p_curAdmin"));
+			
 			
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId, theme);
-			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			//messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 
 			String status = "Success";
 

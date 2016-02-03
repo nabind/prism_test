@@ -955,14 +955,18 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String districtCode = (String) codeMap.get("districtCode");
 		String schoolCode = (String) codeMap.get("schoolCode");
 		
-		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+		/*String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 				district, "_", school, "_", 
 				gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
-				"_",studentId,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+				"_",studentId,"_",String.valueOf(System.currentTimeMillis()), ".pdf");*/
 		
 		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
 				districtCode, "_", schoolCode, "_", 
 				gradeId, "_", subtest,"_", studentId, ".pdf");*/
+		
+		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+				districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
+				"_",studentId,"_",subtest, ".pdf");
 		
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		String compFileName = "";
@@ -997,7 +1001,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
 			
-			compFileName = CustomStringUtil.appendString(fileName, ".", ""+System.currentTimeMillis(), ".pdf");
+			//compFileName = CustomStringUtil.appendString(fileName, ".", ""+System.currentTimeMillis(), ".pdf");
+			compFileName = fileName;
 			if(assetBytes.length != 0){
 				FileUtil.createFile(compFileName, assetBytes);
 			}else{
@@ -1142,7 +1147,6 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				startTime = System.currentTimeMillis();
 			}
 			
-			String currentAdmin = groupDownloadTO.getCurrentAdmin();
 			
 			String folderLoc = CustomStringUtil.appendString(propertyLookup.get("pdfGenPathIC"), 
 					File.separator, "MAP", File.separator, "GDF", File.separator);
@@ -1164,14 +1168,15 @@ public class InorsBusinessImpl implements IInorsBusiness {
 					paramMap.put("studentId", student[0]);
 					paramMap.put("mosisId",student[1]);
 					paramMap.put("lastName",student[2]);
-					paramMap.put("gradeId", groupDownloadTO.getGrade());
-					paramMap.put("gradeCode", groupDownloadTO.getGradeCode());
+					paramMap.put("gradeCode", student[3]);
+					paramMap.put("gradeId", student[4]);
+					paramMap.put("currentAdmin", student[5]);
 					paramMap.put("folderLoc", folderLoc);
 					paramMap.put("subtest", subtest);
 					paramMap.put("contractName", contractName);
 					paramMap.put("customer", groupDownloadTO.getCustomerId());
 					paramMap.put("isBulk", isBulk);
-					paramMap.put("currentAdmin", currentAdmin);
+					
 					String fileName = downloadISR(paramMap);
 					if(fileName != null) {
 						fileForStudent.add(fileName);
@@ -1179,13 +1184,13 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						try {
 							
 							/*Code added to keep the student PDF log*/
-							String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+							String tempFileName = CustomStringUtil.appendString("MAP",student[5],"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
-									groupDownloadTO.getGradeCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
+									student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
 									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
 							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGradeCode(),File.separator);
+									groupDownloadTO.getDistrictCode(),File.separator,student[3],File.separator);
 							
 							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
 							
@@ -1202,9 +1207,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				if(!isBulk) {
 					// combine student's PDF
-					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
-									"_",student[0], "_", System.currentTimeMillis()+""/*Utils.getDateTime(true)*/, ".pdf");
+					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP",student[5],"_ISR_", 
+							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_",
+							student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
+							"_",student[0], "_", Utils.getDateTime(true), ".pdf");
 					OutputStream os = new FileOutputStream(mergedFileName);
 					PdfGenerator.concatPDFs(fileForStudent, os, false);
 					IOUtils.closeQuietly(os);

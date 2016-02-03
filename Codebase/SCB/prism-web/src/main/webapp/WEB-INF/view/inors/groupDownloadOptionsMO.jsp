@@ -17,13 +17,27 @@
 				<tbody aria-relevant="all" aria-live="polite" role="alert" id="studentListGD">
 					<c:forEach var="student" items="${studentList}">
 						<tr id="">
-						    <td scope="row" class="checkbox-cell  sorting_1 vertical-center"><input name="checked[]" id="check-student-${student.id}" value="0" type="checkbox" /></td>
+						    <td scope="row" class="checkbox-cell  sorting_1 vertical-center">
+						    	<input name="checked[]" 
+						    		id="check-student-${student.id}" 
+						    		studentBioId="${student.id}" 
+						    		gradeId="${student.gradeId}" 
+						    		gradeCode="${student.gradeCode}" 
+						    		extStudentId="${student.extStudentId}" 
+						    		lastNameCap="${student.lastNameCap}" 
+						    		curYear="${student.curYear}" 
+						    		value="0" 
+						    		type="checkbox"  />
+						    </td>
 						    <td class="vertical-center">${student.name}</td>
 						    <td class="vertical-center">${student.school}</td>
 						    <td class="vertical-center">${student.grade}</td>
 						    <td aria-label="Text: activate to sort column ascending" style="width: 25px; text-align: center; cursor: default;" colspan="1" rowspan="1" aria-controls="sorting-advanced" tabindex="0" role="columnheader" class="sorting vertical-center" scope="col">
 						    	<span class="button-group compact">
-						    		<a class="button compact icon-download blue glossy with-tooltip" href="#nogo" title="Individual Student Report" onClick="downloadMapIsr('${student.id}')"></a>
+						    		<a class="button compact icon-download blue glossy with-tooltip" 
+						    			href="#nogo" 
+						    			title="Individual Student Report" 
+						    			onClick="downloadMapIsr('${student.id}','${student.gradeId}','${student.gradeCode}','${student.extStudentId}','${student.lastNameCap}','${student.curYear}')"></a>
 								</span>
 							</td>
 						</tr>
