@@ -1957,8 +1957,8 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			//messageProducer.sendJobForProcessing(jobTrackingId, theme);
-			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 
 			String status = "Success";
 
