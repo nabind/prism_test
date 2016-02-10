@@ -655,17 +655,11 @@ public class InorsController {
 		String reportId = (String) request.getParameter("reportId");
 		logger.log(IAppLogger.INFO, "reportId=" + reportId);
 		
-		//Move "Group Download Instruction" message to GSCM
-		/*paramMap.put("REPORT_ID", reportId);
-		paramMap.put("MESSAGE_TYPE", IApplicationConstants.DASH_MESSAGE_TYPE.RSCM.toString());
-		paramMap.put("MESSAGE_NAME", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
-		String groupDownloadInstructionMessage = reportService.getSystemConfigurationMessage(paramMap);*/
 		paramMap.put("messageNames", IApplicationConstants.GROUP_DOWNLOAD_INSTRUCTION);
 		Map<String, String> messageMap = reportService.getGenericSystemConfigurationMessages(paramMap);
 		String groupDownloadInstructionMessage = messageMap.get("Group Download Instruction");
 		String customerId = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String orgNodeLevel = ((Long) request.getSession().getAttribute(IApplicationConstants.CURRORGLVL)).toString();
-		// String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
 		String currentUserName = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String loggedInOrgNodeId = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		if ("true".equals((String) request.getAttribute("icDownload"))) {

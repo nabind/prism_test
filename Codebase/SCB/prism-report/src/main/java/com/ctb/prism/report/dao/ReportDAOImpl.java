@@ -1662,7 +1662,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String subtestCommaSep = Utils.arrayToSeparatedString(to.getSubtest(), ',') ;
 		final String testAdministrationVal = to.getTestAdministrationVal();
 		final String districtId = to.getDistrict();
-		final String studentGroups = to.getStudentGroups();
+		final String studentGroupsCommaSep = to.getStudentGroups();
 		String userName = to.getUserName();
 		String contractName = to.getContractName();
 		
@@ -1685,7 +1685,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "gradeIdCommaSep = " + gradeIdCommaSep);
 		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
-		logger.log(IAppLogger.INFO, "studentGroups = " + studentGroups);
+		logger.log(IAppLogger.INFO, "studentGroupsCommaSep = " + studentGroupsCommaSep);
 		
 		if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
 			studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1696,8 +1696,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					//cs.setLong(3, Long.parseLong(gradeId));
 					cs.setString(3, gradeIdCommaSep);
 					cs.setString(4, subtestCommaSep);
-					//cs.setString(5, studentGroups);
-					cs.setLong(5, Long.parseLong(studentGroups));
+					cs.setString(5, studentGroupsCommaSep);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
