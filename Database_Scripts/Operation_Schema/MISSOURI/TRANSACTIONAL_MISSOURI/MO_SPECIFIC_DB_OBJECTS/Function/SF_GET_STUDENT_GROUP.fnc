@@ -1,15 +1,16 @@
-CREATE OR REPLACE FUNCTION SF_GET_SUBTEST_GD(LoggedInUserJasperOrgId IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                             p_test_administration   IN PRODUCT.PRODUCTID%TYPE,
-                                             p_district              IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                             p_school                IN ORG_NODE_DIM.ORG_NODEID%TYPE,
-                                             p_grade                 IN VARCHAR2,
-                                             p_customerid            IN CUSTOMER_INFO.CUSTOMERID%TYPE)
+CREATE OR REPLACE FUNCTION SF_GET_STUDENT_GROUP(LoggedInUserJasperOrgId IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                                p_test_administration   IN PRODUCT.PRODUCTID%TYPE,
+                                                p_district              IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                                p_school                IN ORG_NODE_DIM.ORG_NODEID%TYPE,
+                                                p_grade                 IN VARCHAR2,
+                                                p_subtestid             IN VARCHAR2,
+                                                p_customerid            IN CUSTOMER_INFO.CUSTOMERID%TYPE)
   RETURN PRS_COLL_PGT_GLOBAL_TEMP_OBJ IS
 
   /*******************************************************************************
-  * FUNCTION:  SF_GET_SUBTEST_GD
-  * PURPOSE:   To GET different subtests
-  * CREATED:   TCS  02-FEB-2016
+  * FUNCTION:  SF_GET_STUDENT_GROUP
+  * PURPOSE:   TO GET HOME SCHOOL IDS FOR DIFFERENT SUBTESTS
+  * CREATED:   TCS  10-FEB-2016
   * NOTE:
   *
   * MODIFIED :
@@ -27,29 +28,52 @@ CREATE OR REPLACE FUNCTION SF_GET_SUBTEST_GD(LoggedInUserJasperOrgId IN ORG_NODE
   v_OrgNodeLevel   ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE;
   v_district       ORG_NODE_DIM.ORG_NODEID%TYPE;
   v_school         ORG_NODE_DIM.ORG_NODEID%TYPE;
-  v_grade          VARCHAR2(10);
+  v_grade          GRADE_DIM.GRADEID%TYPE;
+  v_subtest        SUBTEST_DIM.SUBTESTID%TYPE;
 
-  CURSOR c_Get_Subtest(p_Cust_Product_Id_3 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
-                       p_gradeid           VARCHAR2) IS
-    SELECT DISTINCT SUB.SUBTESTID, SUB.SUBTEST_NAME, SUB.SUBTEST_SEQ
-      FROM SUBTEST_OBJECTIVE_MAP SOM,
-           GRADE_LEVEL_MAP       GLM,
-           CUST_PRODUCT_LINK     CUST,
-           ASSESSMENT_DIM        ASES,
-           SUBTEST_DIM           SUB
-     WHERE GLM.GRADEID IN
-           (WITH T AS (SELECT p_gradeid AS TXT FROM DUAL)
-             SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS GRADEID
+  CURSOR c_Get_Student_Group(subtestIdComma VARCHAR2) IS
+    SELECT LISTAGG(DEMVAL.DEMO_VALID, ',') WITHIN GROUP(ORDER BY DEMVAL.DEMO_VALID) DEMO_VALID,
+           DECODE(DEMVAL.DEMO_VALUE_NAME,
+                  'Y',
+                  'Home School Only',
+                  'Public School (Default)') DEMO_VALUE_NAME
+      FROM DEMOGRAPHIC DEM, DEMOGRAPHIC_VALUES DEMVAL
+     WHERE DEM.CUSTOMERID = p_customerid
+       AND UPPER(DEM.DEMO_CODE) LIKE UPPER('Home_Sch%')
+       AND DEM.DEMOID = DEMVAL.DEMOID
+       AND DEM.SUBTESTID IN
+           (WITH T AS (SELECT subtestIdComma AS TXT FROM DUAL)
+             SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS SUBTESTID
                FROM T
              CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
             )
-       AND GLM.LEVEL_MAPID = SOM.LEVEL_MAPID
-       AND SOM.ASSESSMENTID = ASES.ASSESSMENTID
-       AND CUST.CUSTOMERID = p_customerid
-       AND CUST.PRODUCTID = ASES.PRODUCTID
-       AND CUST.CUST_PROD_ID = p_Cust_Product_Id_3
-       AND SOM.SUBTESTID = SUB.SUBTESTID
-     ORDER BY SUB.SUBTEST_SEQ;
+     GROUP BY DEMO_VALUE_NAME
+     ORDER BY 2 DESC;
+
+  CURSOR c_Get_Subtest(p_Cust_Product_Id_3 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                       p_gradeid           VARCHAR2) IS
+    SELECT A.SUBTESTID
+      FROM (SELECT DISTINCT SUB.SUBTESTID, SUB.SUBTEST_NAME, SUB.SUBTEST_SEQ
+              FROM SUBTEST_OBJECTIVE_MAP SOM,
+                   GRADE_LEVEL_MAP       GLM,
+                   CUST_PRODUCT_LINK     CUST,
+                   ASSESSMENT_DIM        ASES,
+                   SUBTEST_DIM           SUB
+             WHERE GLM.GRADEID IN
+                   (WITH T AS (SELECT p_gradeid AS TXT FROM DUAL)
+                     SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS GRADEID
+                       FROM T
+                     CONNECT BY LEVEL <=
+                                LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
+                    )
+               AND GLM.LEVEL_MAPID = SOM.LEVEL_MAPID
+               AND SOM.ASSESSMENTID = ASES.ASSESSMENTID
+               AND CUST.CUSTOMERID = p_customerid
+               AND CUST.PRODUCTID = ASES.PRODUCTID
+               AND CUST.CUST_PROD_ID = p_Cust_Product_Id_3
+               AND SOM.SUBTESTID = SUB.SUBTESTID
+             ORDER BY SUB.SUBTEST_SEQ) A
+     WHERE ROWNUM = 1;
 
   CURSOR c_Get_Grade(p_Cust_Product_Id_2 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                      org_id              ORG_NODE_DIM.ORG_NODEID%TYPE) IS
@@ -154,7 +178,7 @@ BEGIN
     v_OrgNodeLevel := r_Get_Org_Node_Level.ORG_NODE_LEVEL;
   END LOOP;
 
-  IF (p_grade = '-99') OR (p_grade IS NULL) THEN
+  IF (p_subtestid = '-99') OR (p_subtestid IS NULL) THEN
     -----get  default product
     FOR r_Get_Product_Specific IN c_Get_Product_Specific LOOP
       v_Cust_ProductId := r_Get_Product_Specific.CUST_PROD_ID;
@@ -168,33 +192,31 @@ BEGIN
       v_school := r_Get_School.ORG_NODEID;
     END LOOP;
     -----get default grade
-  
-    --UNCOMMENT THE BELOW IF-FOR CONDITION IF THERE IS A "ALL" OPTION IN THE SCHOOL DROP DOWN
-    /*IF (v_district IS NOT NULL) AND (v_school IS NOT NULL) THEN
-    FOR r_Get_Grade IN c_Get_Grade (v_Cust_ProductId,v_district)*/ ---in default case send disrtict id since school will show "All(-1)" option
-  
     FOR r_Get_Grade IN c_Get_Grade(v_Cust_ProductId, v_school) LOOP
       v_grade := r_Get_Grade.GRADEID;
     END LOOP;
-    --END IF;
     -----get default subtest
     FOR r_Get_Subtest IN c_Get_Subtest(v_Cust_ProductId, v_grade) LOOP
+      v_subtest := r_Get_Subtest.SUBTESTID;
+    END LOOP;
+  
+    -----get default Student Group
+    FOR r_Get_Student_Group IN c_Get_Student_Group(v_subtest) LOOP
       t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
     
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Subtest.SUBTESTID;
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Subtest.SUBTEST_NAME;
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := r_Get_Subtest.SUBTEST_SEQ;
+      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Student_Group.DEMO_VALID;
+      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Student_Group.DEMO_VALUE_NAME;
     
       t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
       t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT) := t_PRS_PGT_GLOBAL_TEMP_OBJ;
     END LOOP;
+  
   ELSE
-    FOR r_Get_Subtest IN c_Get_Subtest(p_test_administration, p_grade) LOOP
+    FOR r_Get_Student_Group IN c_Get_Student_Group(p_subtestid) LOOP
       t_PRS_PGT_GLOBAL_TEMP_OBJ := PRS_PGT_GLOBAL_TEMP_OBJ();
     
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Subtest.SUBTESTID;
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Subtest.SUBTEST_NAME;
-      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := r_Get_Subtest.SUBTEST_SEQ;
+      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := r_Get_Student_Group.DEMO_VALID;
+      t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := r_Get_Student_Group.DEMO_VALUE_NAME;
     
       t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
       t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT) := t_PRS_PGT_GLOBAL_TEMP_OBJ;
@@ -206,7 +228,6 @@ BEGIN
     t_PRS_PGT_GLOBAL_TEMP_OBJ     := PRS_PGT_GLOBAL_TEMP_OBJ();
     t_PRS_PGT_GLOBAL_TEMP_OBJ.vc1 := -2;
     t_PRS_PGT_GLOBAL_TEMP_OBJ.vc2 := 'None Available';
-    t_PRS_PGT_GLOBAL_TEMP_OBJ.vc3 := -2;
   
     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.EXTEND(1);
     t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ(t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ.COUNT) := t_PRS_PGT_GLOBAL_TEMP_OBJ;
@@ -215,6 +236,6 @@ BEGIN
   RETURN t_PRS_COLL_PGT_GLOBAL_TEMP_OBJ;
 EXCEPTION
   WHEN OTHERS THEN
-    RETURN NULL;
-END SF_GET_SUBTEST_GD;
+    RAISE; -- RETURN NULL;
+END SF_GET_STUDENT_GROUP;
 /
