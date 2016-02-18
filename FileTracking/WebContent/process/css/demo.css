@@ -60,6 +60,10 @@ div.content {
 	line-height:1.5em;
 	font-family:"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
+div.commentContent {
+	background:#f0f0f0;
+	margin: 1;
+}
 div.content ul, div.content p {
 	padding:0;
 	margin:0;

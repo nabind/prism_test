@@ -76,15 +76,57 @@
 								  { "bVisible": false, "aTargets": [ 0 ] }
 								]
 			});
+			
+			$("#saveComment").click(function(){
+				var comments = $("textarea#comments").val();
+				var stateCode = $("#stateCode").val();
+				var UUID = $("#uuid").val();
+				
+				if(stateCode.length != 0) {
+					$("#commentErrorLog").text("");
+					if(comments.length == 0) {
+						$("#commentErrorLog").text("No comment");
+					} else {
+						var dataString = "comments="+comments+"&stateCode="+stateCode+"&uuId="+UUID;
+						$.ajax({
+						      type: "POST",
+						      url: "saveComments.htm",
+						      data: dataString,
+						      success: function(data) {
+						    	  if(data.indexOf("sucessfully") > 0) {
+						    		  $("#commentErrorLog").css("color","green");
+						    	  } else {
+						    		  $("#commentErrorLog").css("color","red"); 
+						    	  }						    	  
+								  $("#commentErrorLog").text(data);
+						      },
+							  error: function(data) {
+								  $("#commentErrorLog").css("color","red");
+								  $("#commentErrorLog").text(data);
+							  }
+					    });
+						
+					}
+				} else {
+					$("#commentErrorLog").text("Please enter a State Code in the search box and click Save again.");
+				}
+			});
 	    });
 		
-		
+		window.onbeforeunload = function() {
+			var comments = $("textarea#comments").val();
+			if(comments.length > 0) {
+				return "If you do not click \"Save\" the comments will not be saved. Do you want to continue without saving?";
+			} 
+		}
 		
 	</script>
 	
 <div id="heromaskarticle">
-				
-				<div class="container" style="margin-left:25px">
+ <table>
+ 	<tr>
+ 		<td>
+ 			<div class="container" style="margin-left:25px">
 					<h1>Search a single student</h1>
 					<div class="content">
 						<%
@@ -116,6 +158,26 @@
 						<p id="errorLog" style='font-size:13px; font-weight:bold; color:red;'>${message}<p>
 					</div>
 				</div>
+ 		</td>
+ 		<td>
+ 			<div class="container" style="margin-left:25px">
+ 				<div>
+ 					<div class="commentContent">
+ 					<label>Comments</label> <button id="saveComment" >Save</button>
+ 					</div>
+ 				</div>
+ 				<div>
+ 					<textarea rows="10" cols="40" id="comments"></textarea>
+ 				</div> 				
+ 			</div>
+ 			<div id='errorLogDialog' title='Loading'>
+						<p id="commentErrorLog" style='font-size:13px; font-weight:bold; color:red;'></p>
+			</div>
+ 		</td>
+ 	</tr>
+ </table>
+				
+				
 				
 		<div id="articlecontent">
 			<div id="accordion" style="margin-top:25px">

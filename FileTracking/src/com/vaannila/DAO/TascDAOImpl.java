@@ -1630,4 +1630,36 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
+	public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
+		
+		System.out.println("Enter: saveComment()");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int updatedRows = 0;
+		
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("UPDATE ER_STUDENT_DEMO SET COMMENTS = ? WHERE UUID = ? AND STATENAME = ?");
+		
+		String query = queryBuff.toString();
+		System.out.println(query);
+		try {
+			driver = TASCConnectionProvider.getDriver();
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, studentDetailsTO.getComments());
+			pstmt.setString(2, studentDetailsTO.getUuid());
+			pstmt.setString(3, studentDetailsTO.getStateName());
+			
+			updatedRows = pstmt.executeUpdate();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
+		
+		
+		System.out.println("Exit: saveComment()");
+		return updatedRows;
+	}
+	
 }

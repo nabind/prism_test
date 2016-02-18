@@ -683,4 +683,51 @@ public class TascController {
 		}
 		return new ModelAndView("combined", "message", jsonStr);
 	}
+	
+	/**
+	 * @author Abir
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/saveComments.htm")
+	public @ResponseBody String saveComments (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: saveComments()");
+		String comments = request.getParameter("comments");
+		String uuid = request.getParameter("uuId");
+		String stateCode = request.getParameter("stateCode");
+		System.out.println("comments=" + comments);
+		System.out.println("uuId=" + uuid);
+		System.out.println("stateCode=" + stateCode);
+		try {
+			TascDAOImpl stageDao = new TascDAOImpl();
+			StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
+			studentDetailsTO.setComments(comments);
+			studentDetailsTO.setUuid(uuid);
+			studentDetailsTO.setStateName(stateCode);
+			
+			int updatedCount = stageDao.saveComments(studentDetailsTO);
+			
+			String status = null;
+			if(updatedCount > 0) {
+				status = "comments added sucessfully";
+			} else {
+				status = "comments save failed as no match found";
+			}
+			System.out.println("Json = " + status);
+			response.setContentType("text/plain");
+			response.getWriter().write(status);
+		} catch (Exception e) {
+			System.out.println("Failed to save comments=" + comments);
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
+			e.printStackTrace();
+		}
+		System.out.println("Exit: saveComments()");
+		return null;
+	}
+	
+		
+	
 }

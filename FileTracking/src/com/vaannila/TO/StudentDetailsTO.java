@@ -78,7 +78,14 @@ public class StudentDetailsTO implements Serializable {
 	private String StudentBioId = "";
 	private String updatedDate = "";
 	private String createdDate;
+	private String comments;
 	
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 	public String getSs() {
 		return ss==null? "" : ss;
 	}
