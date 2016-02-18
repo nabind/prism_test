@@ -1588,9 +1588,18 @@ public class ReportController{
 							replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), (String) pairs.getValue());
 						}
 					}
-					// Update replacable params with request parameters -- TODO need to check for multiselect values
+					// Update replacable params with request parameters -- TODO need to check for multiselect values -- this is addressed
 					for (InputControlTO inputTO : allInputControls) {
-						String param = req.getParameter(inputTO.getLabelId());
+						String param = "";
+						if (IApplicationConstants.DATA_TYPE_COLLECTION.equals(inputTO.getType())) {
+							// multi select
+							param = org.apache.commons.lang.StringUtils.join(req.getParameterValues(inputTO.getLabelId()), ",");
+						} else {
+							param = req.getParameter(inputTO.getLabelId());
+						}
+						if(inputTO.getLabelId() != null && inputTO.getLabelId().equals(changedObj)) {
+							param = changedValue;
+						}
 						replacableParams.put(CustomStringUtil.getJasperParameterString(inputTO.getLabelId()), param);
 					}
 				} catch (Exception e) {

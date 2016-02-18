@@ -1171,7 +1171,8 @@ function getCascading(selectedObj) {
 			|| 'p_Inview_Subtest'  == inputId /* Class - InView roster subtest */
 			|| 'p_Inview_Comb_Subtest_Multiselect'  == inputId || 'p_Inview_Comb_Score' == inputId /* Class - InView combination roster & summary dashboard */
 			|| 'p_Subtest_Class_MultiSelect'  == inputId /* Class LONGITUDINAL Roster*/
-			|| 'p_Bible_Roster_Score_Type'  == inputId ) { /* Class BIBLE Roster*/
+			|| 'p_Bible_Roster_Score_Type'  == inputId /* Class BIBLE Roster*/
+			|| 'p_grade'  == inputId ) { /* MO Student roster */
 		$(document).click(); // this code is to close multiselect dropdown
 	}
 	// code for bulk download button
