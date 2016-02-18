@@ -15,6 +15,8 @@ public interface IDomObject {
 	public static final String SELECT_MULTIPLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
 	public static final String SELECT_MULTIPLE_EXPANDABLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
 	
+	public static final String SELECT_ALL = "<span onClick='selectAll($(this), %s, %s)' typ='ON' class='select-all button with-tooltip compact icon-tick title' title='Select/Deselect All'></span>";
+	
 	public static final String IC_TITLE = "<h6 class='margin-bottom-small'>%s</h6>";
 	
 	public static final String IC_CONTAINER = "<div class='three-columns report-inputs'>";

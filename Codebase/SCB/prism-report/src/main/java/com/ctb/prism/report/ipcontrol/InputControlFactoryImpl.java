@@ -121,6 +121,9 @@ public class InputControlFactoryImpl implements InputControlFactory {
 			}
 		}
 		str.append( IDomObject.SELECT_END );
+		if(isMultiselect) {
+			str.append( String.format(IDomObject.SELECT_ALL, name, tabCount) );
+		}
 		if(seperated) str.append( getInputControlContainerSeparated(false) );
 		else str.append( getInputControlContainer(false) );
 		return str.toString();

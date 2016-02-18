@@ -1155,6 +1155,32 @@ $("select#p_Roster_Rank_Order option").each(function(index){
 $("select#p_Roster_Rank_Order").html(rankOrderDom);
 }
 
+//============================= SELECT / DESELECT MULTI-SELECT INPUTS =============================
+function selectAll(selectedObj, inputId, tabCount) {
+	
+	var type = $(selectedObj).attr('typ');
+	
+	var formObj = $(".report-form-"+tabCount);
+	var select = $(formObj).find( $(inputId) );
+	
+	// Use one of these lines
+	if(type == 'OFF' ||
+			select.find('option:selected').length == select.find('option').length) {
+		if(select.find('option').length > 0) select.find('option').prop('selected', false); // Uncheck all
+		if(select.find('option').length > 0) select.find('option:first').prop('selected', true); // Check first
+		$(selectedObj).attr('typ', 'ON');
+		$(selectedObj).removeClass('icon-cross');
+		$(selectedObj).addClass('icon-tick');
+	} else {
+		select.find('option').prop('selected', true); // Check all
+		$(selectedObj).attr('typ', 'OFF');
+		$(selectedObj).removeClass('icon-tick');
+		$(selectedObj).addClass('icon-cross');
+	}
+	
+	// Refresh styling
+	select.trigger('update-select-list').change();
+}
 //============================= Populate cascading input control values =============================
 function getCascading(selectedObj) {
 	//$(document).click(); // this code is to close multiselect dropdown
