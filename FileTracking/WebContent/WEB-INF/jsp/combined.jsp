@@ -84,9 +84,9 @@
 				
 				if(stateCode.length != 0) {
 					$("#commentErrorLog").text("");
-					if(comments.length == 0) {
-						$("#commentErrorLog").text("No comment");
-					} else {
+					//if(comments.length == 0) {
+					//	$("#commentErrorLog").text("No comment");
+					//} else {
 						var dataString = "comments="+comments+"&stateCode="+stateCode+"&uuId="+UUID;
 						$.ajax({
 						      type: "POST",
@@ -106,16 +106,21 @@
 							  }
 					    });
 						
-					}
+				//	}
 				} else {
 					$("#commentErrorLog").text("Please enter a State Code in the search box and click Save again.");
 				}
 			});
+			
+			var saveComments = $("#savedComments").val();
+			if(saveComments != "null")
+				$("textarea#comments").val(saveComments);
 	    });
 		
 		window.onbeforeunload = function() {
 			var comments = $("textarea#comments").val();
-			if(comments.length > 0) {
+			var statusMsg = $("#commentErrorLog").text();
+			if(comments.length > 0 && statusMsg.length == 0) {
 				return "If you do not click \"Save\" the comments will not be saved. Do you want to continue without saving?";
 			} 
 		}
@@ -252,14 +257,16 @@
 						<td><%=process.getStudentName() %></td>
 						<td><%=process.getUuid() %></td>
 					</tr>
-				
-				
+					  
 				<%}
-				}
+				}				
 				%>
 				</tbody>
 				</table>
 				<br><br>
+				
+				<% String savedComments = (String)request.getAttribute("savedComments"); %>
+				<input type="hidden" value="<%=savedComments%>" id="savedComments"/>
 				
 				<h4> ER Bucket: </h4>
 				<table id="erbucket" width="100%">

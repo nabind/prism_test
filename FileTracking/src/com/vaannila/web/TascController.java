@@ -663,6 +663,13 @@ public class TascController {
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
 				
+			if(studentDetailsTOList != null && studentDetailsTOList.size() > 0 && 
+						(process.getUuid() != null && process.getUuid().length() > 0) && 
+						(process.getStateCode() != null && process.getStateCode().length() > 0))
+				request.setAttribute("savedComments", studentDetailsTOList.get(0).getComments());
+			else
+				request.setAttribute("savedComments", "");
+				
 				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
 				request.setAttribute("erBucket", erBucket);
 				
@@ -705,13 +712,16 @@ public class TascController {
 			StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
 			studentDetailsTO.setComments(comments);
 			studentDetailsTO.setUuid(uuid);
-			studentDetailsTO.setStateName(stateCode);
+			studentDetailsTO.setStateCode(stateCode);
 			
 			int updatedCount = stageDao.saveComments(studentDetailsTO);
 			
 			String status = null;
 			if(updatedCount > 0) {
-				status = "comments added sucessfully";
+				if (comments.length() > 0)
+					status = "comments added sucessfully";
+				else
+					status = "comments removed sucessfully";
 			} else {
 				status = "comments save failed as no match found";
 			}
