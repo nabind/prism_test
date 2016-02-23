@@ -20,7 +20,11 @@ public interface IApplicationConstants {
 	};
 
 	public static enum PATCH_FOR_SUBTEST {
-		p_PTCS_Subtest_MultiSelect, p_Subtest_Multiselect_School, p_Inview_Subtest_MultiSelect, p_Subtest_MultiSelect, p_Longitudinal_Roster_Subtest_MultiSelect, p_Subtest_MultiSelect_School_Longitudinal_Summary, p_Subtest_Class_MultiSelect, p_Roster_Subtest_MultiSelect, p_Roster_Score_List, p_Score_Type_List, p_PTCS_Roster_Score_School, p_Inview_Roster_Score_School, p_Inview_Comb_Score, p_PTCS_Comb_Score, p_PTCS_Comb_Subtest_MultiSelect, p_Inview_Comb_Subtest_Multiselect, /*p_Ethnicities,*/ p_Local_Use_Field1, p_Local_Use_Field2, p_Local_Use_Field3, p_Local_Use_Field4, p_Local_Use_Field5, p_Subtest, p_grade, p_subtest, p_examiner
+		p_PTCS_Subtest_MultiSelect, p_Subtest_Multiselect_School, p_Inview_Subtest_MultiSelect, p_Subtest_MultiSelect, 
+		p_Longitudinal_Roster_Subtest_MultiSelect, p_Subtest_MultiSelect_School_Longitudinal_Summary, p_Subtest_Class_MultiSelect, 
+		p_Roster_Subtest_MultiSelect, p_Roster_Score_List, p_Score_Type_List, p_PTCS_Roster_Score_School, p_Inview_Roster_Score_School, 
+		p_Inview_Comb_Score, p_PTCS_Comb_Score, p_PTCS_Comb_Subtest_MultiSelect, p_Inview_Comb_Subtest_Multiselect, /*p_Ethnicities,*/ 
+		p_Local_Use_Field1, p_Local_Use_Field2, p_Local_Use_Field3, p_Local_Use_Field4, p_Local_Use_Field5, p_Subtest/*, p_grade, p_subtest, p_examiner*/
 	};
 
 	public static enum EXTRACT_CATEGORY {

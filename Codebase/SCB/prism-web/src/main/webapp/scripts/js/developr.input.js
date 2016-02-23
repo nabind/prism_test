@@ -1340,7 +1340,7 @@
 				}
 				// added by Amit for "Select/Deselect option"
 				if(customCount == 0 && select.hasClass('check-list')) {
-					$('<'+node+((classes.length > 0) ? ' class="'+classes.join(' ')+'"' : '')+' onClick="selectAllOption(event, '+$(this).attr('tgt')+');">Select All/One</'+node+'>')
+					$('<'+node+((classes.length > 0) ? ' class="all-option '+classes.join(' ')+'"' : '')+' onClick="selectAllOption(event, '+$(this).attr('tgt')+');"><b>Select All</b></'+node+'>')
 						.appendTo(list)
 						.data('select-value', this);
 				}
