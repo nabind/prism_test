@@ -79,6 +79,13 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_CONTENT AS
                                       P_OUT_STATUS_NUMBER OUT NUMBER,
                                       P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
+  PROCEDURE SP_COPY_CONTENT(P_IN_OLD_CUST_PROD_ID IN NUMBER,
+                            P_IN_NEW_CUST_PROD_ID IN NUMBER,
+                            P_IN_CATEGORY_TYPE    IN VARCHAR,
+                            P_OUT_DATA_COUNT      OUT NUMBER,
+                            P_OUT_STATUS_NUMBER   OUT NUMBER,
+                            P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2);
+
 END PKG_MANAGE_CONTENT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
@@ -95,7 +102,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
         FROM (SELECT DISTINCT CUST.CUST_PROD_ID VALUE,
                               P.PRODUCT_NAME    NAME,
                               P.PRODUCT_SEQ /*,
-                                                                                                                                                                          DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
                 FROM CUST_PRODUCT_LINK CUST,
                      PRODUCT P,
                      ORG_PRODUCT_LINK OPL,
@@ -1225,6 +1232,292 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
       ROLLBACK;
     
   END SP_DELETE_CONTENT_DETAILS;
+
+  /* PROCEDURE TO COPY CONTENT INTO ARTICLE_CONTENT & ARTICLE_METADATA TABLE.
+     NOW IT IS APPLICABLE ONLY FOR MO SPL
+     THIS PROCEDURE WILL CREATE NEW CONTENT AND NEW METADATA AND LINK THOSE ACCORDINGLY
+  */
+  PROCEDURE SP_COPY_CONTENT(P_IN_OLD_CUST_PROD_ID IN NUMBER,
+                            P_IN_NEW_CUST_PROD_ID IN NUMBER,
+                            P_IN_CATEGORY_TYPE    IN VARCHAR,
+                            P_OUT_DATA_COUNT      OUT NUMBER,
+                            P_OUT_STATUS_NUMBER   OUT NUMBER,
+                            P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
+  
+    V_NUM            NUMBER := 0;
+    STATUS_NO        NUMBER := 0;
+    V_OLD_ADMIN_YEAR ADMIN_DIM.ADMIN_YEAR%TYPE;
+    V_NEW_ADMIN_YEAR ADMIN_DIM.ADMIN_YEAR%TYPE;
+    --MAPID     SUBTEST_OBJECTIVE_MAP.SUBT_OBJ_MAPID%TYPE;
+    --G_ID      GRADE_DIM.GRADEID%TYPE;
+    --CON_ID    ARTICLE_CONTENT.ARTICLE_CONTENT_ID%TYPE;
+    V_COUNT NUMBER := 0;
+    --V_DEMO_CUSTOMER VARCHAR2(32) DEFAULT 'Missouri_MAP_Demo_Customer';
+  BEGIN
+  
+    SELECT ADMIN_YEAR
+      INTO V_OLD_ADMIN_YEAR
+      FROM ADMIN_DIM AD, CUST_PRODUCT_LINK CPL
+     WHERE AD.ADMINID = CPL.ADMINID
+       AND CUST_PROD_ID = P_IN_OLD_CUST_PROD_ID;
+  
+    SELECT ADMIN_YEAR
+      INTO V_NEW_ADMIN_YEAR
+      FROM ADMIN_DIM AD, CUST_PRODUCT_LINK CPL
+     WHERE AD.ADMINID = CPL.ADMINID
+       AND CUST_PROD_ID = P_IN_NEW_CUST_PROD_ID;
+  
+    IF P_IN_CATEGORY_TYPE = 'SPL' THEN
+    
+      DELETE FROM ARTICLE_METADATA
+       WHERE CUST_PROD_ID = P_IN_NEW_CUST_PROD_ID
+         AND CATEGORY_TYPE = P_IN_CATEGORY_TYPE;
+    
+      FOR REC IN (SELECT (SELECT ARTICLE_CONTENT
+                            FROM ARTICLE_CONTENT
+                           WHERE ARTICLE_CONTENT_ID = AM.ARTICLE_CONTENT_ID) AS ARTICLE_CONTENT,
+                         AM.ARTICLEID,
+                         AM.ARTICLE_NAME,
+                         AM.CUST_PROD_ID,
+                         AM.SUBTESTID,
+                         AM.ARTICLE_CONTENT_ID,
+                         AM.CATEGORY,
+                         AM.CATEGORY_TYPE,
+                         AM.CATEGORY_SEQ,
+                         AM.SUB_HEADER,
+                         AM.DESCRIPTION,
+                         AM.GRADEID,
+                         AM.PROFICIENCY_LEVEL,
+                         AM.RESOLVED_RPRT_STATUS
+                    FROM ARTICLE_METADATA AM
+                   WHERE AM.CUST_PROD_ID = P_IN_OLD_CUST_PROD_ID
+                     AND AM.CATEGORY_TYPE = P_IN_CATEGORY_TYPE) LOOP
+      
+        IF V_OLD_ADMIN_YEAR <> V_NEW_ADMIN_YEAR THEN
+          -- INSERT RECORD INTO ARTICLE_CONTENT TABLE.
+          INSERT INTO ARTICLE_CONTENT
+            (ARTICLE_CONTENT_ID, ARTICLE_CONTENT, CREATED_DATE_TIME)
+          VALUES
+            (ARTICLE_CONTENT_SEQ.NEXTVAL, REC.ARTICLE_CONTENT, SYSDATE)
+          RETURNING ARTICLE_CONTENT_ID INTO V_NUM;
+        ELSE
+          V_NUM := REC.ARTICLE_CONTENT_ID;
+        END IF;
+      
+        -- INSERT RECORD INTO ARTICLE_METADATA TABLE.
+        IF V_OLD_ADMIN_YEAR = 2015 AND V_NEW_ADMIN_YEAR = 2016 THEN
+          INSERT INTO ARTICLE_METADATA
+            (ARTICLEID,
+             ARTICLE_NAME,
+             CUST_PROD_ID,
+             SUBTESTID,
+             ARTICLE_CONTENT_ID,
+             CATEGORY,
+             CATEGORY_TYPE,
+             CATEGORY_SEQ,
+             SUB_HEADER,
+             DESCRIPTION,
+             GRADEID,
+             PROFICIENCY_LEVEL,
+             RESOLVED_RPRT_STATUS,
+             CREATED_DATE_TIME)
+          VALUES
+            (ARTICLE_METADATA_SEQ.NEXTVAL,
+             REC.ARTICLE_NAME,
+             P_IN_NEW_CUST_PROD_ID,
+             (SELECT SD.SUBTESTID
+                FROM MO_SUBTEST_CONFIG MSC,
+                     SUBTEST_DIM       SD,
+                     CUST_PRODUCT_LINK CPL
+               WHERE MSC.SUBTESTID = SD.SUBTESTID
+                 AND MSC.PRODUCTID = CPL.PRODUCTID
+                 AND CPL.CUST_PROD_ID = P_IN_NEW_CUST_PROD_ID
+                 AND SD.SUBTEST_CODE =
+                     (SELECT SUBTEST_CODE
+                        FROM SUBTEST_DIM
+                       WHERE SUBTESTID = REC.SUBTESTID)),
+             V_NUM,
+             METADATA_CATEGORY_SEQ.NEXTVAL,
+             REC.CATEGORY_TYPE,
+             REC.CATEGORY_SEQ,
+             REC.SUB_HEADER,
+             REC.DESCRIPTION,
+             REC.GRADEID,
+             DECODE(REC.PROFICIENCY_LEVEL,
+                    '0',
+                    '0',
+                    TO_NUMBER(REC.PROFICIENCY_LEVEL) + 1),
+             REC.RESOLVED_RPRT_STATUS,
+             SYSDATE);
+        ELSE
+          INSERT INTO ARTICLE_METADATA
+            (ARTICLEID,
+             ARTICLE_NAME,
+             CUST_PROD_ID,
+             SUBTESTID,
+             ARTICLE_CONTENT_ID,
+             CATEGORY,
+             CATEGORY_TYPE,
+             CATEGORY_SEQ,
+             SUB_HEADER,
+             DESCRIPTION,
+             GRADEID,
+             PROFICIENCY_LEVEL,
+             RESOLVED_RPRT_STATUS,
+             CREATED_DATE_TIME)
+          VALUES
+            (ARTICLE_METADATA_SEQ.NEXTVAL,
+             REC.ARTICLE_NAME,
+             P_IN_NEW_CUST_PROD_ID,
+             (SELECT SD.SUBTESTID
+                FROM MO_SUBTEST_CONFIG MSC,
+                     SUBTEST_DIM       SD,
+                     CUST_PRODUCT_LINK CPL
+               WHERE MSC.SUBTESTID = SD.SUBTESTID
+                 AND MSC.PRODUCTID = CPL.PRODUCTID
+                 AND CPL.CUST_PROD_ID = P_IN_NEW_CUST_PROD_ID
+                 AND SD.SUBTEST_CODE =
+                     (SELECT SUBTEST_CODE
+                        FROM SUBTEST_DIM
+                       WHERE SUBTESTID = REC.SUBTESTID)),
+             V_NUM,
+             METADATA_CATEGORY_SEQ.NEXTVAL,
+             REC.CATEGORY_TYPE,
+             REC.CATEGORY_SEQ,
+             REC.SUB_HEADER,
+             REC.DESCRIPTION,
+             REC.GRADEID,
+             REC.PROFICIENCY_LEVEL,
+             REC.RESOLVED_RPRT_STATUS,
+             SYSDATE);
+        END IF;
+      
+        V_COUNT := V_COUNT + 1;
+      
+      END LOOP;
+    
+      /* ELSIF P_IN_CATEGORY_TYPE = 'OPL' THEN
+      SELECT 1 FROM DUAL;
+      --TODO
+      FORM A IS HARD CODED FOR MO */
+    
+      /*SELECT SUBT_OBJ_MAPID
+        INTO MAPID
+        FROM SUBTEST_OBJECTIVE_MAP SOM,
+             GRADE_LEVEL_MAP       GLM,
+             LEVEL_MAP             LM,
+             FORM_DIM              FD
+       WHERE SOM.LEVEL_MAPID = GLM.LEVEL_MAPID
+         AND GLM.LEVEL_MAPID = LM.LEVEL_MAPID
+         AND LM.FORMID = FD.FORMID
+         AND FD.FORM_NAME = 'A'
+         AND SUBTESTID = P_IN_SUBTESTID
+         AND OBJECTIVEID = P_IN_OBJECTIVEID
+         AND GLM.GRADEID = P_IN_GRADEID;
+      
+      SELECT COUNT(1)
+        INTO V_COUNT
+        FROM ARTICLE_METADATA
+       WHERE GRADEID = P_IN_GRADEID
+         AND SUBTESTID = P_IN_SUBTESTID
+         AND CATEGORY_TYPE = P_IN_CATEGORY_TYPE
+         AND CUST_PROD_ID = P_IN_CUST_PROD_ID
+         AND PROFICIENCY_LEVEL = P_IN_PROF_LEVEL
+         AND SUBT_OBJ_MAPID = MAPID;
+      
+      IF V_COUNT = 0 THEN
+        INSERT INTO ARTICLE_CONTENT
+          (ARTICLE_CONTENT_ID,
+           ARTICLE_CONTENT,
+           DESCRIPTION,
+           OBJECTIVEID,
+           CREATED_DATE_TIME)
+        VALUES
+          (ARTICLE_CONTENT_SEQ.NEXTVAL,
+           P_IN_CONTENT_DESCRIPTION,
+           NULL,
+           P_IN_OBJECTIVEID,
+           SYSDATE)
+        RETURNING ARTICLE_CONTENT_ID INTO V_NUM;
+      
+        -- INSERT RECORD INTO ARTICLE_METADATA TABLE.
+        INSERT INTO ARTICLE_METADATA
+          (ARTICLEID,
+           ARTICLE_NAME,
+           CUST_PROD_ID,
+           SUBT_OBJ_MAPID,
+           SUBTESTID,
+           ARTICLE_CONTENT_ID,
+           CATEGORY,
+           CATEGORY_TYPE,
+           CATEGORY_SEQ,
+           SUB_HEADER,
+           DESCRIPTION,
+           GRADEID,
+           PROFICIENCY_LEVEL,
+           RESOLVED_RPRT_STATUS,
+           CREATED_DATE_TIME)
+        VALUES
+          (ARTICLE_METADATA_SEQ.NEXTVAL,
+           P_IN_ARTICLE_NAME,
+           P_IN_CUST_PROD_ID,
+           MAPID,
+           P_IN_SUBTESTID,
+           V_NUM,
+           P_IN_CATEGORY,
+           P_IN_CATEGORY_TYPE,
+           METADATA_CATEGORY_SEQ.NEXTVAL,
+           P_IN_SUB_HEADER,
+           NULL,
+           P_IN_GRADEID,
+           P_IN_PROF_LEVEL,
+           P_IN_STATUS_CODE,
+           SYSDATE);
+      
+      ELSE
+      
+        SELECT ARTICLE_CONTENT_ID
+          INTO CON_ID
+          FROM ARTICLE_METADATA
+         WHERE GRADEID = P_IN_GRADEID
+           AND SUBTESTID = P_IN_SUBTESTID
+           AND CATEGORY_TYPE = P_IN_CATEGORY_TYPE
+           AND CUST_PROD_ID = P_IN_CUST_PROD_ID
+           AND PROFICIENCY_LEVEL = P_IN_PROF_LEVEL
+           AND SUBT_OBJ_MAPID = MAPID;
+      
+        UPDATE ARTICLE_CONTENT
+           SET ARTICLE_CONTENT   = P_IN_CONTENT_DESCRIPTION,
+               UPDATED_DATE_TIME = SYSDATE
+         WHERE ARTICLE_CONTENT_ID = CON_ID;
+      
+      END IF;*/
+    
+    END IF;
+  
+    STATUS_NO           := 1;
+    P_OUT_STATUS_NUMBER := STATUS_NO;
+    P_OUT_DATA_COUNT    := V_COUNT;
+  
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      P_OUT_STATUS_NUMBER := STATUS_NO;
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      ROLLBACK;
+    WHEN TOO_MANY_ROWS THEN
+      P_OUT_STATUS_NUMBER := STATUS_NO;
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      ROLLBACK;
+    WHEN DUP_VAL_ON_INDEX THEN
+      P_OUT_STATUS_NUMBER := STATUS_NO;
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      ROLLBACK;
+    WHEN OTHERS THEN
+      P_OUT_STATUS_NUMBER := STATUS_NO;
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+      ROLLBACK;
+    
+  END SP_COPY_CONTENT;
 
 END PKG_MANAGE_CONTENT; --END OF PACKAGE
 /
