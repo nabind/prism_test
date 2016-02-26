@@ -81,6 +81,7 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_CONTENT AS
 
   PROCEDURE SP_COPY_CONTENT(P_IN_OLD_CUST_PROD_ID IN NUMBER,
                             P_IN_NEW_CUST_PROD_ID IN NUMBER,
+                            P_IN_SUBTEST_CODE     IN VARCHAR,
                             P_IN_CATEGORY_TYPE    IN VARCHAR,
                             P_OUT_DATA_COUNT      OUT NUMBER,
                             P_OUT_STATUS_NUMBER   OUT NUMBER,
@@ -102,7 +103,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
         FROM (SELECT DISTINCT CUST.CUST_PROD_ID VALUE,
                               P.PRODUCT_NAME    NAME,
                               P.PRODUCT_SEQ /*,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
                 FROM CUST_PRODUCT_LINK CUST,
                      PRODUCT P,
                      ORG_PRODUCT_LINK OPL,
@@ -1239,6 +1240,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
   */
   PROCEDURE SP_COPY_CONTENT(P_IN_OLD_CUST_PROD_ID IN NUMBER,
                             P_IN_NEW_CUST_PROD_ID IN NUMBER,
+                            P_IN_SUBTEST_CODE     IN VARCHAR,
                             P_IN_CATEGORY_TYPE    IN VARCHAR,
                             P_OUT_DATA_COUNT      OUT NUMBER,
                             P_OUT_STATUS_NUMBER   OUT NUMBER,
@@ -1271,7 +1273,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
     
       DELETE FROM ARTICLE_METADATA
        WHERE CUST_PROD_ID = P_IN_NEW_CUST_PROD_ID
-         AND CATEGORY_TYPE = P_IN_CATEGORY_TYPE;
+         AND CATEGORY_TYPE = P_IN_CATEGORY_TYPE
+         AND (P_IN_SUBTEST_CODE = '-1' OR
+             SUBTESTID IN
+             (SELECT SUBTESTID
+                 FROM SUBTEST_DIM
+                WHERE SUBTEST_CODE IN
+                      (WITH T AS (SELECT P_IN_SUBTEST_CODE AS TXT FROM DUAL)
+                        SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS SUBTEST_CODE
+                          FROM T
+                        CONNECT BY LEVEL <=
+                                   LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
+                       )));
     
       FOR REC IN (SELECT (SELECT ARTICLE_CONTENT
                             FROM ARTICLE_CONTENT
@@ -1291,7 +1304,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
                          AM.RESOLVED_RPRT_STATUS
                     FROM ARTICLE_METADATA AM
                    WHERE AM.CUST_PROD_ID = P_IN_OLD_CUST_PROD_ID
-                     AND AM.CATEGORY_TYPE = P_IN_CATEGORY_TYPE) LOOP
+                     AND AM.CATEGORY_TYPE = P_IN_CATEGORY_TYPE
+                     AND (P_IN_SUBTEST_CODE = '-1' OR
+                         SUBTESTID IN
+                         (SELECT SUBTESTID
+                             FROM SUBTEST_DIM
+                            WHERE SUBTEST_CODE IN (WITH T AS (SELECT P_IN_SUBTEST_CODE AS TXT
+                                                      FROM DUAL)
+                                                    SELECT REGEXP_SUBSTR(TXT,
+                                                                         '[^,]+',
+                                                                         1,
+                                                                         LEVEL) AS SUBTEST_CODE
+                                                      FROM T
+                                                    CONNECT BY LEVEL <=
+                                                               LENGTH(REGEXP_REPLACE(TXT,
+                                                                                     '[^,]*')) + 1
+                                                   )))) LOOP
       
         IF V_OLD_ADMIN_YEAR <> V_NEW_ADMIN_YEAR THEN
           -- INSERT RECORD INTO ARTICLE_CONTENT TABLE.
