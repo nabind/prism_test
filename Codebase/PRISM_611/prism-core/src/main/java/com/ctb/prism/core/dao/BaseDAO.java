@@ -45,6 +45,11 @@ public abstract class BaseDAO {
 	private MongoTemplate mongoTemplateTasc;
 	@Autowired
 	private MongoTemplate mongoTemplateUsmo;
+	
+	MongoDbConnection tascConnection = null;
+	MongoDbConnection inorsConnection = null;
+	MongoDbConnection usmoConnection = null;
+	
 	public MongoOperations getMongoTemplatePrism() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 		if(currentAuth != null) {
@@ -73,17 +78,43 @@ public abstract class BaseDAO {
 		if("tasc".equals(contractName)) return new MongoDbConnection(mongo, "tasc");
 		if("usmo".equals(contractName)) return new MongoDbConnection(mongo, "usmo");*/
 		
-		MongoDbConnection connection = null;
+		//MongoDbConnection connection = null;
 		try {		
-		String mongoURI = mongo.getObject().getAddress().toString();
-		
-		if("inors".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/inors";
-        //if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc"; 
-        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
-        if("usmo".equals(contractName)) mongoURI = "mongodb://"+ mongoURI  +"/usmo";
+			/*String mongoURI = mongo.getObject().getAddress().toString();
+			
+			if("inors".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/inors";
+	        //if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc"; 
+	        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+	        if("usmo".equals(contractName)) mongoURI = "mongodb://"+ mongoURI  +"/usmo";*/
         
+	        if("tasc".equals(contractName)) {
+	        	if(tascConnection == null) {
+	        		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
+	        		String mongoURI = mongo.getObject().getAddress().toString();
+	        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+	        		tascConnection = new MongoDbConnection(mongoURI, null, null);
+	        	} else {
+	        		return tascConnection;
+	        	}
+	        } else if("inors".equals(contractName)) {
+	        	if(inorsConnection == null) {
+	        		String mongoURI = mongo.getObject().getAddress().toString();
+	        		mongoURI = "mongodb://"+ mongoURI +"/inors";
+	        		inorsConnection = new MongoDbConnection(mongoURI, null, null);
+	        	} else {
+	        		return inorsConnection;
+	        	}
+	        } else if("usmo".equals(contractName)) {
+	        	if(usmoConnection == null) {
+	        		String mongoURI = mongo.getObject().getAddress().toString();
+	        		mongoURI = "mongodb://"+ mongoURI +"/usmo";
+	        		usmoConnection = new MongoDbConnection(mongoURI, null, null);
+	        	} else {
+	        		return usmoConnection;
+	        	}
+	        }
         
-        	connection = new MongoDbConnection(mongoURI, null, null);
+        	//connection = new MongoDbConnection(mongoURI, null, null);
 		} catch (JRException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,7 +122,7 @@ public abstract class BaseDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return connection;
+		return null;
      }
 
 	/**

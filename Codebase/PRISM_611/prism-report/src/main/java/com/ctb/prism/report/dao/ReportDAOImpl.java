@@ -89,11 +89,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
-	} )
+	
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -115,9 +111,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 		}
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
+		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
 		try {
 			if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
-				conn =getPrismMongoConnection(contractName);
+				mdconn =getPrismMongoConnection(contractName);
+				return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
 			} else {
 				if (contractName != null && !contractName.isEmpty()) {
 					conn = getPrismConnection(contractName);
@@ -134,6 +132,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					conn.close();
 				} catch (SQLException e) {
 				}
+			if (mdconn != null)
+				try {
+					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
+				} catch (Exception e) {
+				}
 		}
 	}
 
@@ -142,11 +145,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReportNoCache(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
-	} )
+	
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -166,13 +165,15 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
+		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------IC PDF-----------------------------", jasperReport.getName()));
 		String contractName = (String)parameters.get("contractName");
 		try {
 			try{
 				// temp for Mongo
 				if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
-					conn =getPrismMongoConnection(contractName);
+					mdconn = getPrismMongoConnection(contractName);
+					return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
 				} else {
 					if (contractName != null && !contractName.isEmpty()) {
 						conn = getPrismConnection(contractName);
@@ -192,6 +193,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				try {
 					conn.close();
 				} catch (SQLException e) {
+				}
+			if (mdconn != null)
+				try {
+					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
+				} catch (Exception e) {
 				}
 		}
 	}

@@ -17,23 +17,40 @@
     	http://www.springframework.org/schema/jee
 		http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
 		http://www.springframework.org/schema/data/mongo
-          http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+          http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
 		http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 	<!-- Mongo DB 
 	<mongo:mongo id="mongo" host="${mongo.db.url}" port="${mongo.db.port}"/>-->
 	
+	<!-- Mongo DB Advance Option -->
+	
+
 	<bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
     	<property name="host" value="${mongo.db.url}" />
     	<property name="port" value="${mongo.db.port}" />
 	</bean>
+
+	
+	<mongo:mongo-client id="mongoClient" host="${mongo.db.url}" port="${mongo.db.port}">
+		<mongo:client-options write-concern="NORMAL" 
+			 connections-per-host="10000"
+			 connect-timeout="5000"
+			 max-wait-time="5000"
+			 socket-keep-alive="true"
+			 socket-timeout="1500"	/>
+    </mongo:mongo-client>
+	
+	<!--threads-allowed-to-block-for-connection-multiplier="5" -->
+	
+	<mongo:db-factory dbname="drc_mongo" mongo-ref="mongoClient"/>
 	
 	
 	<bean id="mongoTemplateTasc" class="org.springframework.data.mongodb.core.MongoTemplate">
-	    <constructor-arg name="mongo" ref="mongo" />
+	    <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	    <!--<constructor-arg name="databaseName" value="tasc" />-->
-	    <constructor-arg name="databaseName" value="drc_mongo" />
+	    <!--<constructor-arg name="databaseName" value="drc_mongo" /> -->
 	     <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
 	</bean>
 	<bean id="mongoTemplateInors" class="org.springframework.data.mongodb.core.MongoTemplate">
