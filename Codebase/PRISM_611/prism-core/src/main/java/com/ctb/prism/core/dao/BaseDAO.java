@@ -100,6 +100,7 @@ public abstract class BaseDAO {
 	        		String mongoURI = mongo.getObject().getAddress().toString();
 	        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
 	        		tascConnection = new MongoDbConnection(mongoURI, null, null);
+	        		return tascConnection;
 	        	} else {
 	        		return tascConnection;
 	        	}
@@ -108,6 +109,7 @@ public abstract class BaseDAO {
 	        		String mongoURI = mongo.getObject().getAddress().toString();
 	        		mongoURI = "mongodb://"+ mongoURI +"/inors";
 	        		inorsConnection = new MongoDbConnection(mongoURI, null, null);
+	        		return inorsConnection;
 	        	} else {
 	        		return inorsConnection;
 	        	}
@@ -116,6 +118,7 @@ public abstract class BaseDAO {
 	        		String mongoURI = mongo.getObject().getAddress().toString();
 	        		mongoURI = "mongodb://"+ mongoURI +"/usmo";
 	        		usmoConnection = new MongoDbConnection(mongoURI, null, null);
+	        		return usmoConnection;
 	        	} else {
 	        		return usmoConnection;
 	        	}
