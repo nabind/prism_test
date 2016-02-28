@@ -46,6 +46,21 @@ public class GroupDownloadTO extends BaseTO {
 	private String schoolCode;
 	private String studentSelection = "";
 	private String currentAdmin;
+	private String gradeCode;
+
+	/**
+	 * @return the gradeCode
+	 */
+	public String getGradeCode() {
+		return gradeCode;
+	}
+
+	/**
+	 * @param gradeCode the gradeCode to set
+	 */
+	public void setGradeCode(String gradeCode) {
+		this.gradeCode = gradeCode;
+	}
 
 	/**
 	 * @return the currentAdmin
