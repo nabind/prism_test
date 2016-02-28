@@ -11,6 +11,8 @@ import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -72,6 +74,11 @@ public abstract class BaseDAO {
 	 * @return the connection object for prism DB
 	 * @throws SQLException
 	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )")
+	} )
 	public MongoDbConnection getPrismMongoConnection(String contractName){
 		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
 		/*if("inors".equals(contractName)) return new MongoDbConnection(mongo, "inors");
