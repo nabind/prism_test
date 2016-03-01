@@ -74,7 +74,7 @@ public class MapDao extends CommonDao {
 					" SSF.SUBTESTID," ,//4
 					" SBD.EXT_STUDENT_ID,",//5
 			        " UPPER(SBD.LAST_NAME)," ,//6
-			        " REGEXP_REPLACE(UPPER(REPLACE(SBD.LAST_NAME, '''', '')), '[^[:alnum:]'' '']', NULL)",//7
+			        " REGEXP_REPLACE(REGEXP_REPLACE(UPPER(REPLACE(SBD.LAST_NAME, '''', '')), '[^[:alnum:]'' '']', NULL),'[[:space:]]*','')",//7
 			        " FROM STUDENT_BIO_DIM SBD, SUBTEST_SCORE_FACT SSF,GRADE_DIM GRD",
 			        " WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID",
 			        " AND SSF.GRADEID = GRD.GRADEID",
