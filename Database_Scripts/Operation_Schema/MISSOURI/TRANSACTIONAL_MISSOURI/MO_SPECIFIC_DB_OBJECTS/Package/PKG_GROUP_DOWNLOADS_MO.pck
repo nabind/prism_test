@@ -54,9 +54,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_GROUP_DOWNLOADS_MO IS
                      GD.GRADEID GRADEID,
                      GD.GRADE_CODE GRADE_CODE,
                      MRSD.EXT_STUDENT_ID EXT_STUDENT_ID,
-                     REGEXP_REPLACE(UPPER(REPLACE(LAST_NAME, '''', '')),
-                                    '[^[:alnum:]'' '']',
-                                    NULL) LAST_NAME_CAP,
+                     REGEXP_REPLACE(REGEXP_REPLACE(UPPER(REPLACE(LAST_NAME,
+                                                                 '''',
+                                                                 '')),
+                                                   '[^[:alnum:]'' '']',
+                                                   NULL),
+                                    '[[:space:]]*',
+                                    '') LAST_NAME_CAP,
                      (SELECT SUBSTR(ADMIN_YEAR, 3, 2)
                         FROM ADMIN_DIM
                        WHERE IS_CURRENT_ADMIN = 'Y') CURYEAR
