@@ -64,6 +64,8 @@ public interface IReportDAO {
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
 
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
+	
+	public JasperPrint getFilledReportMongo(JasperReport jasperReport, Map<String, Object> parameters) throws Exception;
 
 	/**
 	 * Returns {@link JasperReport} object of a particular report by compiling

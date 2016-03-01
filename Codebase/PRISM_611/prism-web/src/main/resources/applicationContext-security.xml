@@ -37,9 +37,7 @@
 		<mongo:client-options write-concern="NORMAL" 
 			 connections-per-host="10000"
 			 connect-timeout="5000"
-			 max-wait-time="5000"
-			 socket-keep-alive="true"
-			 socket-timeout="1500"	/>
+			 max-wait-time="5000"	/>
     </mongo:mongo-client>
 	
 	<!--threads-allowed-to-block-for-connection-multiplier="5" -->

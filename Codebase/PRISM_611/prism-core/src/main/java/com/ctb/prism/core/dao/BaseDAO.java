@@ -52,6 +52,11 @@ public abstract class BaseDAO {
 	MongoDbConnection inorsConnection = null;
 	MongoDbConnection usmoConnection = null;
 	
+	public MongoDbConnection getMongoTascConnection() {
+		if(tascConnection == null) tascConnection = getPrismMongoConnection("tasc");
+		return tascConnection;
+	}
+	
 	public MongoOperations getMongoTemplatePrism() {
 		Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 		if(currentAuth != null) {
@@ -74,11 +79,6 @@ public abstract class BaseDAO {
 	 * @return the connection object for prism DB
 	 * @throws SQLException
 	 */
-	@Caching( cacheable = {
-			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
-			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )")
-	} )
 	public MongoDbConnection getPrismMongoConnection(String contractName){
 		logger.info("BaseDAO.getJdbcTemplatePrism(), contractName = " + contractName);
 		/*if("inors".equals(contractName)) return new MongoDbConnection(mongo, "inors");
@@ -93,8 +93,18 @@ public abstract class BaseDAO {
 	        //if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/tasc"; 
 	        if("tasc".equals(contractName))  mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
 	        if("usmo".equals(contractName)) mongoURI = "mongodb://"+ mongoURI  +"/usmo";*/
+			
+			if(tascConnection == null) {
+        		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
+        		String mongoURI = mongo.getObject().getAddress().toString();
+        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+        		tascConnection = new MongoDbConnection(mongoURI, null, null);
+        		return tascConnection;
+        	} else {
+        		return tascConnection;
+        	}
         
-	        if("tasc".equals(contractName)) {
+	        /*if("tasc".equals(contractName)) {
 	        	if(tascConnection == null) {
 	        		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
 	        		String mongoURI = mongo.getObject().getAddress().toString();
@@ -122,7 +132,7 @@ public abstract class BaseDAO {
 	        	} else {
 	        		return usmoConnection;
 	        	}
-	        }
+	        }*/
         
         	//connection = new MongoDbConnection(mongoURI, null, null);
 		} catch (JRException e) {

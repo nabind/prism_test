@@ -163,6 +163,24 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		}
 	}
 	
+	public JasperPrint getFilledReportMongo(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
+		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
+		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------Mongo report-----------------------------", jasperReport.getName()));
+		String contractName = (String)parameters.get("contractName");
+		try {
+			mdconn = getPrismMongoConnection(contractName);
+			return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		} finally {
+			if (mdconn != null)
+				try {
+					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
+				} catch (Exception e) {
+				}
+		}
+	}
+	
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;

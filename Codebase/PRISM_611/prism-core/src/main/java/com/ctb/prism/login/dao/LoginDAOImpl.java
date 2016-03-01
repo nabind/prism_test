@@ -19,10 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.jasperreports.engine.JRException;
+
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -53,12 +57,78 @@ import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
 @Repository
 public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 	private static final IAppLogger logger = LogFactory
 			.getLoggerInstance(LoginDAOImpl.class.getName());
+	
+	
+	@SuppressWarnings("deprecation")
+	@Autowired
+	private MongoFactoryBean mongo;
+	
+	MongoDbConnection tascConnection = null;
+	
+	
+	
+	/**
+	 * @return the connection object for prism DB
+	 * @throws SQLException
+	 */
+	@Caching( cacheable = {
+			@Cacheable(value = "tascMongoCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
+	} )
+	public MongoDbConnection getPrismMongoConnectionCached(String contractName){
+		try {
+        
+	        if("tasc".equals(contractName)) {
+	        	if(tascConnection == null) {
+	        		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
+	        		String mongoURI = mongo.getObject().getAddress().toString();
+	        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+	        		tascConnection = new MongoDbConnection(mongoURI, null, null);
+	        	} else {
+	        		return tascConnection;
+	        	}
+	        } 
+        
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+     }
+	
+	@CacheEvict(value = { "tascMongoCache" }, allEntries = true)
+	public MongoDbConnection getPrismMongoConnection(String contractName){
+		try {
+        
+	        if("tasc".equals(contractName)) {
+	        	if(tascConnection == null) {
+	        		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
+	        		String mongoURI = mongo.getObject().getAddress().toString();
+	        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+	        		tascConnection = new MongoDbConnection(mongoURI, null, null);
+	        	} else {
+	        		return tascConnection;
+	        	}
+	        } 
+        
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+     }
 	
 	/**
 	 * This method is used to return user authorities

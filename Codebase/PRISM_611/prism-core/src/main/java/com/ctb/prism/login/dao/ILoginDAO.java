@@ -10,10 +10,13 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
+import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
 
 public interface ILoginDAO {
 
+	public MongoDbConnection getPrismMongoConnectionCached(String contractName);
+	public MongoDbConnection getPrismMongoConnection(String contractName);
 	public boolean selectTest();
 //	public UserTO getUserByEmail(String userEmail) throws SystemException;
 	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
