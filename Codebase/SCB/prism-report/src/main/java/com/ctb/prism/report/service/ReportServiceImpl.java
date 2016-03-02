@@ -652,11 +652,18 @@ public class ReportServiceImpl implements IReportService {
 							if(valueFromSession != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
 								List<String> selectInputNames = new ArrayList<String>();
-								if(reportUrl.equals("/public/Missouri/Report/Student_Roster_files") && valueFromSession.length > 1){ 
+								
+								/*As discussed with Amit Da, commented the bellow code. - By Joy on 02-MAR-2016 
+								 * Student Label will not being used so commented the code  
+								 */
+								/*if(reportUrl.equals("/public/Missouri/Report/Student_Roster_files") && valueFromSession.length > 1){ 
 								} else {	
 									selectInputValues.put(label, valueFromSession);
 									selectInputNames.add(label);
-								}
+								}*/
+								
+								selectInputValues.put(label, valueFromSession);
+								selectInputNames.add(label);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
 							}
