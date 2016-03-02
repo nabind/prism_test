@@ -1121,3 +1121,7 @@ div#nav ul li a {
 	color: white;
 }
 .select-all{margin-left: 4px}
+.bold {font-weight: bold}
+.check-list>.drop-down>span.all-option:hover {
+	background-color: lightsteelblue;
+}
