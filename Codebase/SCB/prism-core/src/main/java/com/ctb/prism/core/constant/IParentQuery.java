@@ -169,8 +169,10 @@ public interface IParentQuery {
 	public static final String GET_SUBTEST = "PKG_MANAGE_CONTENT.SP_GET_SUBTEST_DETAILS(?,?,?,?)";
 
 	public static final String GET_OBJECTIVE = "PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS(?,?,?,?)";
+	
+	public static final String GET_PERFORMANCE_LEVEL = "PKG_MANAGE_CONTENT.SP_GET_PERFORMANCE_LEVEL(?,?,?,?)";
 
-	public static final String ADD_NEW_CONTENT = "PKG_MANAGE_CONTENT.SP_ADD_NEW_CONTENT(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String ADD_NEW_CONTENT = "PKG_MANAGE_CONTENT.SP_ADD_NEW_CONTENT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public static final String GET_MANAGE_CONTENT_LIST = "{CALL PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS(?, ?, ?, ?, ?, ?, ?)}";
 

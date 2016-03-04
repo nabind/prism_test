@@ -270,6 +270,10 @@ public class ParentServiceImpl implements IParentService {
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.populateObjective(paramMap);
 	}
+	
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populatePerformanceLevel(final Map<String, Object> paramMap) throws BusinessException {
+		return parentBusiness.populatePerformanceLevel(paramMap);
+	}
 
 	public com.ctb.prism.core.transferobject.ObjectValueTO addNewContent(final Map<String, Object> paramMap) throws BusinessException {
 		return parentBusiness.addNewContent(paramMap);

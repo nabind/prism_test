@@ -106,7 +106,7 @@
 																<c:choose>
   																	<c:when test="${fn:contains(themeName, 'usmo')}" >
   																		<option value='<spring:message code="val.contentType.spl"/>'><spring:message code="name.contentType.spl"/></option>
-  																		<option value='<spring:message code="val.contentType.opl"/>'><spring:message code="name.contentType.opl"/></option> 
+  																		<option value='<spring:message code="val.contentType.opl"/>'><spring:message code="name.contentType.opl"/></option>
   																	</c:when>
   																	<c:otherwise>
 																		<option value='<spring:message code="val.contentType.act"/>'><spring:message code="name.contentType.act"/></option>
@@ -135,14 +135,10 @@
 																class="select navy-gradient expandable-list"
 																style="width: 150px;">
 																<c:choose>
-  																	<c:when test="${fn:contains(themeName, 'usmo')}" >
-  																		<option value='<spring:message code="val.pl.adv"/>'><spring:message code="name.pl.adv"/></option>
-  																		<option value='<spring:message code="val.pl.prf"/>'><spring:message code="name.pl.prf"/></option>
-  																		<option value='<spring:message code="val.pl.bsc"/>'><spring:message code="name.pl.bsc"/></option>
-  																		<option value='<spring:message code="val.pl.blb"/>'><spring:message code="name.pl.blb"/></option>
-  																		<option value='<spring:message code="val.pl.lnd"/>'><spring:message code="name.pl.lnd"/></option>
-  																	</c:when>
-  																	<c:otherwise>
+																	<c:when test="${fn:contains(themeName, 'usmo')}" >
+																		<option value='-1'><spring:message code="dropDown.default.text"/></option>
+																	</c:when>
+																	<c:otherwise>
 																		<option value='<spring:message code="val.pl.psp"/>'><spring:message code="name.pl.psp"/></option>
 																		<option value='<spring:message code="val.pl.pas"/>'><spring:message code="name.pl.pas"/></option>
 																		<option value='<spring:message code="val.pl.dnp"/>'><spring:message code="name.pl.dnp"/></option>
@@ -150,7 +146,7 @@
 																		<option value='<spring:message code="val.pl.pri"/>'><spring:message code="name.pl.pri"/></option>
 																		<option value='<spring:message code="val.pl.dnr"/>'><spring:message code="name.pl.dnr"/></option>
 																	</c:otherwise>
-																</c:choose>
+																</c:choose> 
 															</select>
 														</p>
 													</div>

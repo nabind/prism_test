@@ -20,6 +20,11 @@ CREATE OR REPLACE PACKAGE PKG_MANAGE_CONTENT AS
                                      P_OUT_CUR_OBJECTIVE_DETAILS OUT GET_REFCURSOR,
                                      P_OUT_EXCEP_ERR_MSG         OUT VARCHAR2);
 
+  PROCEDURE SP_GET_PERFORMANCE_LEVEL(P_IN_CUST_PROD_ID           IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                     P_IN_CONTENT_TYPE_ID        IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+                                     P_OUT_CUR_OBJECTIVE_DETAILS OUT GET_REFCURSOR,
+                                     P_OUT_EXCEP_ERR_MSG         OUT VARCHAR2);
+
   PROCEDURE SP_ADD_NEW_CONTENT(P_IN_CONTENT_DESCRIPTION IN VARCHAR2,
                                P_IN_ARTICLE_NAME        IN ARTICLE_METADATA.ARTICLE_NAME%TYPE,
                                P_IN_CUST_PROD_ID        IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
@@ -103,7 +108,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
         FROM (SELECT DISTINCT CUST.CUST_PROD_ID VALUE,
                               P.PRODUCT_NAME    NAME,
                               P.PRODUCT_SEQ /*,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  DENSE_RANK() OVER(PARTITION BY CUST.CUSTOMERID ORDER BY ADMIN.ADMIN_YEAR DESC NULLS LAST) AS SEQ*/
                 FROM CUST_PRODUCT_LINK CUST,
                      PRODUCT P,
                      ORG_PRODUCT_LINK OPL,
@@ -217,6 +222,28 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_CONTENT AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_OBJECTIVE_DETAILS;
+
+  --THIS PROCEDURE TAKES CUST_PROD_ID,CATEGORY_TYPE AS INPUT & RETURN SCORE_VALUE & SCORE_VALUE_NAME
+  PROCEDURE SP_GET_PERFORMANCE_LEVEL(P_IN_CUST_PROD_ID           IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                                     P_IN_CONTENT_TYPE_ID        IN ARTICLE_METADATA.CATEGORY_TYPE%TYPE,
+                                     P_OUT_CUR_OBJECTIVE_DETAILS OUT GET_REFCURSOR,
+                                     P_OUT_EXCEP_ERR_MSG         OUT VARCHAR2) IS
+  
+  BEGIN
+  
+    IF P_IN_CONTENT_TYPE_ID = 'SPL' THEN
+      OPEN P_OUT_CUR_OBJECTIVE_DETAILS FOR
+        SELECT VALUE, NAME
+          FROM (SELECT SCORE_VALUE VALUE, SCORE_VALUE_NAME NAME
+                  FROM SCORE_TYPE_LOOKUP
+                 WHERE CUST_PROD_ID = P_IN_CUST_PROD_ID
+                   AND CATEGORY = 'SUBTEST'
+                 ORDER BY SCORE_VALUE DESC);
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_PERFORMANCE_LEVEL;
 
   --PROCEDURE TO INSERT DATA INTO ARTICLE_CONTENT & ARTICLE_METADATA TABLE.
   PROCEDURE SP_ADD_NEW_CONTENT(P_IN_CONTENT_DESCRIPTION IN VARCHAR2,

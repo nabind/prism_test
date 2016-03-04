@@ -275,6 +275,16 @@ public interface IParentDAO {
 	 * @throws BusinessException
 	 */
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateObjective(final Map<String, Object> paramMap) throws BusinessException;
+	
+	/**
+	 * To populate Objective.
+	 * 
+	 * @author Joy
+	 * @param paramMap
+	 * @return
+	 * @throws BusinessException
+	 */
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populatePerformanceLevel(final Map<String, Object> paramMap) throws BusinessException;
 
 	/**
 	 * Insert content/article along with metadata

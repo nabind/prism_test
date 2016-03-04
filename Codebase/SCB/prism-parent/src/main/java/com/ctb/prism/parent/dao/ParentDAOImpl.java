@@ -1984,6 +1984,59 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return objectValueTOList;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ctb.prism.parent.dao.IParentDAO#populatePerformanceLevel(java.util.Map)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populatePerformanceLevel(final Map<String, Object> paramMap) throws BusinessException {
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - populatePerformanceLevel()");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
+		long t1 = System.currentTimeMillis();
+		final long custProdId = ((Long) paramMap.get("custProdId")).longValue();
+		final String contentTypeId = (String) paramMap.get("contentTypeId");
+		try {
+			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_PERFORMANCE_LEVEL + "}");
+					cs.setLong(1, custProdId);
+					cs.setString(2, contentTypeId);
+					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					ResultSet rs = null;
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOResult = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+					try {
+						cs.execute();
+						rs = (ResultSet) cs.getObject(3);
+						com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+
+						while (rs.next()) {
+							objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+							objectValueTO.setValue(rs.getString("VALUE"));
+							objectValueTO.setName(Utils.convertSpecialCharToHtmlChar(rs.getString("NAME")));
+							objectValueTOResult.add(objectValueTO);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return objectValueTOResult;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - populatePerformanceLevel() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return objectValueTOList;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -2011,9 +2064,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(9, manageContentTO.getGradeId());
 					cs.setString(10, manageContentTO.getPerformanceLevel());
 					cs.setString(11, manageContentTO.getStatusCode());
-					cs.setString(12, manageContentTO.getObjectiveDesc());
-					cs.registerOutParameter(13, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(14, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(12, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2022,10 +2074,10 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(13);
+						executionStatus = cs.getLong(12);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
-						Utils.logError(cs.getString(14));
+						Utils.logError(cs.getString(13));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
