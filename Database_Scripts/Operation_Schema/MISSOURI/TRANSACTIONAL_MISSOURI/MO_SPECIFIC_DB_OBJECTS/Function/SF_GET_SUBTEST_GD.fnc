@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION SF_GET_SUBTEST_GD(LoggedInUserJasperOrgId IN ORG_NODE
   v_OrgNodeLevel   ORG_NODE_DIM.ORG_NODE_LEVEL%TYPE;
   v_district       ORG_NODE_DIM.ORG_NODEID%TYPE;
   v_school         ORG_NODE_DIM.ORG_NODEID%TYPE;
-  v_grade          VARCHAR2(10);
+  v_grade          VARCHAR2(1000);
 
   CURSOR c_Get_Subtest(p_Cust_Product_Id_3 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                        p_gradeid           VARCHAR2) IS
@@ -51,9 +51,33 @@ CREATE OR REPLACE FUNCTION SF_GET_SUBTEST_GD(LoggedInUserJasperOrgId IN ORG_NODE
        AND SOM.SUBTESTID = SUB.SUBTESTID
      ORDER BY SUB.SUBTEST_SEQ;
 
+  /*CURSOR c_Get_Grade(p_Cust_Product_Id_2 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
+                   org_id              ORG_NODE_DIM.ORG_NODEID%TYPE) IS
+  SELECT A.GRADEID
+    FROM (SELECT DISTINCT GRD.GRADEID, GRD.GRADE_NAME, GRD.GRADE_SEQ
+            FROM GRADE_SELECTION_LOOKUP GSL,
+                 CUST_PRODUCT_LINK      CUST,
+                 ASSESSMENT_DIM         ASSD,
+                 GRADE_DIM              GRD,
+                 ORG_PRODUCT_LINK       OLNK
+           WHERE GSL.ADMINID = CUST.ADMINID
+             AND GSL.ORG_NODEID = org_id
+             AND CUST.CUSTOMERID = p_customerid
+             AND CUST.CUST_PROD_ID = OLNK.CUST_PROD_ID
+             AND GSL.ORG_NODEID = OLNK.ORG_NODEID
+             AND cust.productid = assd.productid
+             AND ASSD.ASSESSMENTID = GSL.ASSESSMENTID
+             AND CUST.CUST_PROD_ID = p_Cust_Product_Id_2
+             AND GRD.GRADEID = GSL.GRADEID
+           ORDER BY GRD.GRADE_SEQ) A
+   WHERE ROWNUM = 1;*/
+
   CURSOR c_Get_Grade(p_Cust_Product_Id_2 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                      org_id              ORG_NODE_DIM.ORG_NODEID%TYPE) IS
-    SELECT A.GRADEID
+    SELECT REGEXP_REPLACE(LISTAGG(A.GRADEID, ',') WITHIN
+                          GROUP(ORDER BY A.GRADE_SEQ),
+                          '([^,]*)(,\1)+($|,)',
+                          '\1\3') AS GRADEID
       FROM (SELECT DISTINCT GRD.GRADEID, GRD.GRADE_NAME, GRD.GRADE_SEQ
               FROM GRADE_SELECTION_LOOKUP GSL,
                    CUST_PRODUCT_LINK      CUST,
@@ -68,9 +92,7 @@ CREATE OR REPLACE FUNCTION SF_GET_SUBTEST_GD(LoggedInUserJasperOrgId IN ORG_NODE
                AND cust.productid = assd.productid
                AND ASSD.ASSESSMENTID = GSL.ASSESSMENTID
                AND CUST.CUST_PROD_ID = p_Cust_Product_Id_2
-               AND GRD.GRADEID = GSL.GRADEID
-             ORDER BY GRD.GRADE_SEQ) A
-     WHERE ROWNUM = 1;
+               AND GRD.GRADEID = GSL.GRADEID) A;
 
   CURSOR c_Get_School(p_Cust_Product_Id_1 CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                       p_District_Id       ORG_NODE_DIM.ORG_NODEID%TYPE) IS
