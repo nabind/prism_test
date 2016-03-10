@@ -104,5 +104,16 @@
 	<input type="hidden" id="q_groupFile" value="${groupFile}" />
 	<input type="hidden" id="q_collationHierarchy" value="${collationHierarchy}" />
 	<input type="hidden" id="klassOptionsString" />
-	<c:forEach var="student" items="${studentList}"><input type="hidden" id="check-status-${student.id}" name="check-status-${student.rowNum - 1}" value="0" /></c:forEach>
+	<c:forEach var="student" items="${studentList}">
+		<input type="hidden" 
+			id="check-status-${student.id}" 
+			name="check-status-${student.rowNum - 1}" 
+			studentBioId="${student.id}" 
+    		gradeId="${student.gradeId}" 
+    		gradeCode="${student.gradeCode}" 
+    		extStudentId="${student.extStudentId}" 
+    		lastNameCap="${student.lastNameCap}" 
+    		curYear="${student.curYear}" 
+			value="0" />
+	</c:forEach>
 </div>

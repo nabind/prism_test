@@ -1370,20 +1370,21 @@ function getGroupDownloadTO() {
 
 function getSelectedStudentIdsAsCommaString() {
 	var students = "";
-	$("input[id^=check-student-]").each(function() {
+	$('input[id^=check-status-]').each(function() {
+		var id = this.id;
+		var studentId = id.substring(13);
 		if (this.value == "1") {
-			if(typeof $(this).attr('gradeCode') !== 'undefined'){
-				var studentBioId = $(this).attr('studentBioId'); 
-				var gradeCode =  $(this).attr('gradeCode');
-				var gradeId =  $(this).attr('gradeId');
-				var extStudentId =  $(this).attr('extStudentId'); 
-				var lastNameCap =  $(this).attr('lastNameCap');
-				var curYear =  $(this).attr('curYear');  
+			var elementObj = $('#check-status-'+studentId);
+			if(typeof elementObj.attr('gradeCode') !== 'undefined'){
+				var studentBioId = elementObj.attr('studentBioId'); 
+				var gradeCode =  elementObj.attr('gradeCode');
+				var gradeId =  elementObj.attr('gradeId');
+				var extStudentId =  elementObj.attr('extStudentId'); 
+				var lastNameCap =  elementObj.attr('lastNameCap');
+				var curYear =  elementObj.attr('curYear');  
 				var studentDetails = studentBioId+":"+extStudentId+":"+lastNameCap+":"+gradeCode+":"+gradeId+":"+curYear;
 				students = students + "," + studentDetails;
 			}else{
-				var id = this.id;
-				var studentId = id.substring(13);
 				students = students + "," + studentId;
 			}
 		}

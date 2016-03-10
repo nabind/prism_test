@@ -20,12 +20,6 @@
 						    <td scope="row" class="checkbox-cell  sorting_1 vertical-center">
 						    	<input name="checked[]" 
 						    		id="check-student-${student.id}" 
-						    		studentBioId="${student.id}" 
-						    		gradeId="${student.gradeId}" 
-						    		gradeCode="${student.gradeCode}" 
-						    		extStudentId="${student.extStudentId}" 
-						    		lastNameCap="${student.lastNameCap}" 
-						    		curYear="${student.curYear}" 
 						    		value="0" 
 						    		type="checkbox"  />
 						    </td>
