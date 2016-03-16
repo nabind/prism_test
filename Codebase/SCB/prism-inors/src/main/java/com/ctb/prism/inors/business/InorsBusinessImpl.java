@@ -1207,7 +1207,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				if(!isBulk) {
 					// combine student's PDF
-					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP",student[5],"_ISR_", 
+					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP"/*,student[5]*/,"_ISR_", 
 							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_",
 							student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
 							"_",student[0], "_", String.valueOf(System.currentTimeMillis()), ".pdf");
