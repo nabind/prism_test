@@ -1860,7 +1860,7 @@ public class InorsController {
 			String districtCode = (String) codeMap.get("districtCode");
 			String schoolCode = (String) codeMap.get("schoolCode");
 			
-			mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP",currentAdmin,"_ISR_", 
+			mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP"/*,currentAdmin*/,"_ISR_", 
 					districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
 					"_",studentId,"_",String.valueOf(System.currentTimeMillis()), ".pdf");
 			
