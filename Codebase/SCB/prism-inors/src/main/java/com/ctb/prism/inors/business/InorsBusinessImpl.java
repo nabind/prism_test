@@ -964,7 +964,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				districtCode, "_", schoolCode, "_", 
 				gradeId, "_", subtest,"_", studentId, ".pdf");*/
 		
-		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+		String tempFileName = CustomStringUtil.appendString("MAP"/*,currentAdmin*/,"_ISR_", 
 				districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
 				"_",studentId,"_",subtest, ".pdf");
 		
@@ -1184,7 +1184,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						try {
 							
 							/*Code added to keep the student PDF log*/
-							String tempFileName = CustomStringUtil.appendString("MAP",student[5],"_ISR_", 
+							String tempFileName = CustomStringUtil.appendString("MAP"/*,student[5]*/,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
 									student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
 									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
