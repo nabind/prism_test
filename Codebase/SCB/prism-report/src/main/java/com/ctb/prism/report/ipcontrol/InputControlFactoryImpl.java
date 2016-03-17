@@ -70,18 +70,34 @@ public class InputControlFactoryImpl implements InputControlFactory {
 		// End : patch for Longitudinal
 		int optionCount = 0; 
 		boolean customSelect = false;
+		boolean isSubset = false;
 		for (ObjectValueTO objectValueTo : objectValueToList) {
 			if(isMultiselect) {
 				if(selectValues != null && selectValues.get(name) != null) selectValueList = Arrays.asList(selectValues.get(name));
 				// this input control has default value ... we need to check selected object based on this default value
 				if(selectValueList != null && !selectValueList.isEmpty()) {
 					optionCount++;
-					if(selectValueList.contains(objectValueTo.getValue())) {
+					if(!isSubset && "p_examiner".equals(name)) {
+						// apply this patch for TD 83266
+						for (ObjectValueTO objVal : objectValueToList) {
+							if(selectValueList.contains(objVal.getValue())) {
+								isSubset = true;
+								break;
+							}
+						}
+					}
+					
+					if(!isSubset && "p_examiner".equals(name)) {
 						str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
-							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
+								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 					} else {
-						str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
-								objectValueTo.getValue(), "", objectValueTo.getName()) );
+						if(selectValueList.contains(objectValueTo.getValue())) {
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
+								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
+						} else {
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
+									objectValueTo.getValue(), "", objectValueTo.getName()) );
+						}
 					}
 				} else {
 					if(defaultInputNames != null && defaultInputNames.contains(name)) {

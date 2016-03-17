@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -716,7 +717,14 @@ public class ReportServiceImpl implements IReportService {
 											: inputCollection);
 							/***NEW***/
 							if(valueFromSession != null) {
-								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+								if("p_examiner".equals(label)) {
+									// apply this patch for TD 83266
+									if(Collections.indexOfSubList(inputCollection, new ArrayList<String>(Arrays.asList(valueFromSession))) != -1) {
+										parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+									}
+								} else {
+									parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+								}
 							} else {
 								parameters.put(inputControlTO.getLabelId(), inputCollection);
 							}
