@@ -47,6 +47,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -1990,14 +1991,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public String createJobTracking(GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: createJobTracking()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - createJobTracking()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		
 		String button = to.getButton();
 		String testAdministrationVal = to.getTestAdministrationVal();
 		String fileName = to.getFileName();
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
-		String currUserName = to.getUserName();
+		final String currUserName = to.getUserName();
 		String currAdminId = to.getAdminId();
 		String currCustomerId = to.getCustomerId();
 		String studentSelection = IApplicationConstants.FLAG_N.equals(to.getStudentSelection()) ? "NO" : "YES";
@@ -2014,10 +2018,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 		logger.log(IAppLogger.INFO, "studentSelection = " + studentSelection);
 
-		Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
-		String job_name = groupFile;
-		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
-		String extract_filetype = groupFile;
+		final Long job_id = getJdbcTemplatePrism().queryForLong(IQueryConstants.GET_PROCESS_SEQ);
+		final String job_name = groupFile;
+		final String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
+		final String extract_filetype = groupFile;
 		
 		String request_type = "";
 		String request_summary = "";
@@ -2035,16 +2039,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			request_summary = "Group Download - " + groupFile + ": In Progress";
 			job_status = IApplicationConstants.JOB_STATUS.IP.toString();
 		}
+		final String request_type_final = request_type;
+		final String request_summary_final = request_summary;
+		final String request_filename_final = request_filename;
+		final String otherRequestParams_final = otherRequestParams;
+		final String job_status_final = job_status;
 		
-		String request_details_str = Utils.objectToJson(to);
+		final String request_details_str = Utils.objectToJson(to);
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
 		LobHandler lobHandler = new DefaultLobHandler();
-		String request_email = to.getEmail();
-		String job_log = null;
+		final String request_email = to.getEmail();
+		final String job_log = null;
 		
-		Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
-		Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
+		final Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
+		final Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
 
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
 		logger.log(IAppLogger.INFO, "job_name = " + job_name);
@@ -2060,15 +2069,61 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "customerid = " + customerid);
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 
-		int count = getJdbcTemplatePrism().update(
+		/*TD - 83278: Oracle error occurred if more than 90 students are selected.
+		 *  Move the JOB_TRACKING insertion into store procedure. 
+		 *  Use request_details_str variable as a simple string
+		 */
+		/*int count = getJdbcTemplatePrism().update(
 					IQueryConstants.INSERT_JOB_TRACKING,
 					new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
 							request_filename, request_email, job_log, job_status, customerid, productId, customerid, otherRequestParams },
 					new int[] { Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
-							Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR });
-		
-		logger.log(IAppLogger.INFO, "count = " + count);
-		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
+							Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR });*/
+		try {
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.INSERT_JOB_TRACKING);
+					cs.setLong(1, job_id);
+					cs.setString(2, currUserName);
+					cs.setString(3, job_name);
+					cs.setString(4, extract_category);
+					cs.setString(5, extract_filetype);
+					cs.setString(6, request_type_final);
+					cs.setString(7, request_summary_final);
+					cs.setString(8, request_details_str);
+					cs.setString(9, request_filename_final);
+					cs.setString(10, request_email);
+					cs.setString(11, job_log);
+					cs.setString(12, job_status_final);
+					cs.setLong(13, customerid);
+					cs.setLong(14, productId);
+					cs.setString(15, otherRequestParams_final);
+					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(16);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setName("");
+						Utils.logError(cs.getString(17));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - createJobTracking() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
 		return job_id.toString();
 	}
 
