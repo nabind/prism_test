@@ -959,15 +959,16 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				district, "_", school, "_", 
 				gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
 				"_",studentId,"_",String.valueOf(System.currentTimeMillis()), ".pdf");*/
-		
-		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
+		String tempFileName = "";
+		if("5037".equals(custProdId) || "5038".equals(custProdId)) {
+			tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
 				districtCode, "_", schoolCode, "_", 
-				gradeId, "_", subtest,"_", studentId, ".pdf");*/
-		
-		String tempFileName = CustomStringUtil.appendString("MAP"/*,currentAdmin*/,"_ISR_", 
+				gradeId, "_", subtest,"_", studentId, ".pdf");
+		} else {
+			tempFileName = CustomStringUtil.appendString("MAP"/*,currentAdmin*/,"_ISR_", 
 				districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
 				"_",studentId,"_",subtest, ".pdf");
-		
+		}
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		String compFileName = "";
 		fileName = fileName.replaceAll("\\\\", "/");
