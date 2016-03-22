@@ -69,10 +69,10 @@ public class MapDao extends CommonDao {
 			
 			String query = CustomStringUtil.appendString(
 					" SELECT SSF.STUDENT_BIO_ID," ,//1
-					" GRD.GRADEID,",//2
-					" GRD.GRADE_CODE,",//3
+					" GRD.GRADE_CODE,",//2
+					" GRD.GRADEID,",//3
 					" SSF.SUBTESTID," ,//4
-					" SBD.EXT_STUDENT_ID,",//5
+					" nvl(SBD.EXT_STUDENT_ID,''),",//5
 			        " UPPER(SBD.LAST_NAME)," ,//6
 			        " REGEXP_REPLACE(REGEXP_REPLACE(UPPER(REPLACE(SBD.LAST_NAME, '''', '')), '[^[:alnum:]'' '']', NULL),'[[:space:]]*','')",//7
 			        " FROM STUDENT_BIO_DIM SBD, SUBTEST_SCORE_FACT SSF,GRADE_DIM GRD",

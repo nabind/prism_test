@@ -110,16 +110,22 @@ public class MapService implements PrismPdfService {
 					subtest.add(studentTO.getSubtest());
 
 					if(oldGrade.equals(newGrade)) {
-						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
+						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()
+								+ ":" +studentTO.getLastNameCap() + ":" +studentTO.getGradeId()
+								+ ":" + curAdmin).append(",");
 					} else {
 						if("".equals(oldGrade)) {
 							oldGrade = newGrade;
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()
+								+ ":" +studentTO.getLastNameCap() + ":" +studentTO.getGradeId()
+								+ ":" + curAdmin).append(",");
 						} else {
 							//studentIds.delete(studentIds.length()-1, studentIds.length());
 							map.put(oldGrade, studentIds.toString());
 							studentIds = new StringBuffer();
-							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()+ ":" +studentTO.getLastNameCap()).append(",");
+							studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()
+								+ ":" +studentTO.getLastNameCap() + ":" +studentTO.getGradeId()
+								+ ":" + curAdmin).append(",");
 							oldGrade = newGrade;
 						}
 					}
@@ -177,7 +183,7 @@ public class MapService implements PrismPdfService {
 							if(stduentDetails[0].equals(subtestId))
 								keys.add(new KeyVersion(CustomStringUtil.appendString(
 									mapProperties.getProperty("s3.environment")	,rootLocForS3,  
-									"MAP",curAdmin,"_ISR_",districtCode,"_",schoolCode,"_",gradeCode,"_",stduentDetails[3]
+									"MAP"/*,curAdmin*/,"_ISR_",districtCode,"_",schoolCode,"_",gradeCode,"_",stduentDetails[3]
 									,"_",stduentDetails[2]!=null?stduentDetails[2]:"","_",stduentDetails[1],/*"_",String.valueOf(System.currentTimeMillis()),*/".pdf")));
 						}
 					}					
@@ -190,13 +196,19 @@ public class MapService implements PrismPdfService {
 						for(String subtestId : subtest) {
 							String[] studentList = chunkStud.split(",");
 							for (int j=0; j <studentList.length ; j++) {
-								String[] stduentDetails = studentList[j].split(":");
+							   String[] stduentDetails = studentList[j].split(":");
 								if(subtestId.equals(stduentDetails[0])) {
 									chunkBuff.append(stduentDetails[1])
 									.append(":")
 									.append(stduentDetails[2])
 									.append(":")
 									.append(stduentDetails[3])
+									.append(":")
+									.append(stduentDetails[4])
+									.append(":")
+									.append(stduentDetails[5])
+									.append(":")
+									.append(stduentDetails[6])
 									.append(",");
 								}
 							}
