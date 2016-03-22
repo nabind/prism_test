@@ -1191,7 +1191,7 @@ public class InorsBusinessImpl implements IInorsBusiness {
 									"_",student[0],"_",subtest,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
 							String locForS3_log = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-									groupDownloadTO.getDistrictCode(),File.separator,student[3],File.separator);
+									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getSchoolCode(),File.separator);
 							
 							String fullFileNameS3_log = CustomStringUtil.appendString(locForS3_log, tempFileName_log);
 							
