@@ -1185,21 +1185,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						try {
 							
 							/*Code added to keep the student PDF log*/
-							String tempFileName = CustomStringUtil.appendString("MAP"/*,student[5]*/,"_ISR_", 
+							String tempFileName_log = CustomStringUtil.appendString("MAP"/*,student[5]*/,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
 									student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
-									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+									"_",student[0],"_",subtest,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
-							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
+							String locForS3_log = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
 									groupDownloadTO.getDistrictCode(),File.separator,student[3],File.separator);
 							
-							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
+							String fullFileNameS3_log = CustomStringUtil.appendString(locForS3_log, tempFileName_log);
 							
 							StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
 							studentPDFLogTO.setStudentBioId(Long.valueOf(student[0]));
 							studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
 							studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
-							studentPDFLogTO.setFileName(fullFileNameS3);
+							studentPDFLogTO.setFileName(fullFileNameS3_log);
 							inorsDAO.auditPDFUtiity(studentPDFLogTO,contractName);
 						} catch (Exception ex) {}
 					} else {
