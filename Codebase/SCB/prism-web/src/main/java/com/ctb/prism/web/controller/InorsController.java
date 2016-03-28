@@ -685,7 +685,8 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(gradeArr,','));
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "gradeArr=" + Utils.arrayToSeparatedString(gradeArr,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -742,7 +743,8 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(gradeArr,','));
+		logger.log(IAppLogger.INFO, "grade=" + grade);
+		logger.log(IAppLogger.INFO, "gradeArr=" + Utils.arrayToSeparatedString(gradeArr,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -753,10 +755,11 @@ public class InorsController {
 		modelAndView.addObject("corpDiocese", corpDiocese);
 		modelAndView.addObject("school", school);
 		modelAndView.addObject("klass", klass);
-		if(grade != null) {
-			modelAndView.addObject("grade", grade);
-		} else {
+		
+		if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
 			modelAndView.addObject("grade", gradeArr);
+		} else {
+			modelAndView.addObject("grade", grade);
 		}
 		modelAndView.addObject("groupFile", groupFile);
 		modelAndView.addObject("collationHierarchy", collationHierarchy);
@@ -1074,8 +1077,8 @@ public class InorsController {
 			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
-			// inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			//messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
+			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
 			logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
@@ -1966,12 +1969,9 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(theme)){
-				messageProducer.sendJobForProcessing(jobTrackingId, theme);
-			} else {
-				inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
-			}
-
+			//messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			
 			String status = "Success";
 
 			response.setContentType("application/json");
