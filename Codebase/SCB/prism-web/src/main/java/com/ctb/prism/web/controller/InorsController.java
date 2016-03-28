@@ -673,8 +673,8 @@ public class InorsController {
 		String corpDiocese = (String) request.getParameter("p_corpdiocese");
 		String school = (String) request.getParameter("p_school");
 		String klass = (String) request.getParameter("p_class");
-		//String grade = (String) request.getParameter("p_grade");
-		String[] grade = request.getParameterValues("p_grade");
+		String grade = (String) request.getParameter("p_grade");
+		String[] gradeArr = request.getParameterValues("p_grade");
 		String groupFile = (String) request.getParameter("p_generate_file");
 		String collationHierarchy = (String) request.getParameter("p_collation");
 		String[] subtest = request.getParameterValues("p_subtest");
@@ -685,7 +685,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(grade,','));
+		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(gradeArr,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -708,9 +708,13 @@ public class InorsController {
 				school = CustomStringUtil.getNotNullString(parameters.get("p_school"));
 				klass = CustomStringUtil.getNotNullString(parameters.get("p_class"));
 				//grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
-				if(parameters.get("p_grade") != null){
-					ArrayList<String> list = (ArrayList<String>)parameters.get("p_grade");
-					grade = list.toArray(new String[list.size()]);
+				if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
+					if(parameters.get("p_grade") != null){
+						ArrayList<String> list = (ArrayList<String>)parameters.get("p_grade");
+						gradeArr = list.toArray(new String[list.size()]);
+					}
+				} else {
+					grade = CustomStringUtil.getNotNullString(parameters.get("p_grade"));
 				}
 				groupFile = CustomStringUtil.getNotNullString(parameters.get("p_generate_file"));
 				collationHierarchy = CustomStringUtil.getNotNullString(parameters.get("p_collation"));
@@ -738,7 +742,7 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "corpDiocese=" + corpDiocese);
 		logger.log(IAppLogger.INFO, "school=" + school);
 		logger.log(IAppLogger.INFO, "klass=" + klass);
-		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(grade,','));
+		logger.log(IAppLogger.INFO, "grade=" + Utils.arrayToSeparatedString(gradeArr,','));
 		logger.log(IAppLogger.INFO, "groupFile=" + groupFile);
 		logger.log(IAppLogger.INFO, "collationHierarchy=" + collationHierarchy);
 		logger.log(IAppLogger.INFO, "subtest=" + Utils.arrayToSeparatedString(subtest,','));
@@ -749,7 +753,11 @@ public class InorsController {
 		modelAndView.addObject("corpDiocese", corpDiocese);
 		modelAndView.addObject("school", school);
 		modelAndView.addObject("klass", klass);
-		modelAndView.addObject("grade", grade);
+		if(grade != null) {
+			modelAndView.addObject("grade", grade);
+		} else {
+			modelAndView.addObject("grade", gradeArr);
+		}
 		modelAndView.addObject("groupFile", groupFile);
 		modelAndView.addObject("collationHierarchy", collationHierarchy);
 		modelAndView.addObject("subtest", subtest);
@@ -813,8 +821,8 @@ public class InorsController {
 					GroupDownloadTO to = new GroupDownloadTO();
 					to.setSchool(school);
 					to.setKlass(klass);
-					//to.setGrade(grade);
-					to.setGrades(grade);
+					to.setGrade(grade);
+					to.setGrades(gradeArr);
 					to.setTestProgram(testProgram);
 					to.setTestAdministrationVal(testAdministrationVal);
 					to.setDistrict(corpDiocese);
@@ -1020,6 +1028,13 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "Enter: groupDownloadFunction()");
 		String json = (String) request.getParameter("json");
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
+		
+		String contractName = Utils.getContractName();
+		if(IApplicationConstants.CONTRACT_NAME.inors.toString().equals(contractName)){
+			String students = to.getStudents().replaceAll(":", "");
+			to.setStudents(students);
+		}
+		
 		@SuppressWarnings("unchecked")
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
 		if(propertyMap == null){
@@ -1951,8 +1966,11 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			messageProducer.sendJobForProcessing(jobTrackingId, theme);
-			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(theme)){
+				messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			} else {
+				inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			}
 
 			String status = "Success";
 

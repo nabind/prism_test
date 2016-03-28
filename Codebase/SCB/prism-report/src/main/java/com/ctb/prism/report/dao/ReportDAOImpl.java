@@ -438,6 +438,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		if (query == null)
 			return null;
 		logger.log(IAppLogger.DEBUG, query);
+		String contractName = Utils.getContractName();
+		if(IApplicationConstants.CONTRACT_NAME.inors.toString().equals(contractName)){
+			query = query.replaceAll("''", "'");
+		}
 		List<ObjectValueTO> list = getJdbcTemplatePrism().query(query, new RowMapper<ObjectValueTO>() {
 			public ObjectValueTO mapRow(ResultSet rs, int col) throws SQLException {
 				ObjectValueTO to = new ObjectValueTO();
@@ -1665,7 +1669,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String districtId = to.getDistrict();
 		final String studentGroupsCommaSep = to.getStudentGroups();
 		String userName = to.getUserName();
-		String contractName = to.getContractName();
+		final String contractName = to.getContractName();
 		
 		if (testAdministrationVal == null || testAdministrationVal.isEmpty()) {
 			logger.log(IAppLogger.ERROR, "testAdministrationVal cannot be null or empty: " + testAdministrationVal);
@@ -1694,8 +1698,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_G_MO);
 					cs.setLong(1, Long.parseLong(testAdministrationVal));
 					cs.setLong(2, Long.parseLong(schoolId));
-					//cs.setLong(3, Long.parseLong(gradeId));
-					cs.setString(3, gradeIdCommaSep);
+					if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)) {
+						cs.setString(3, gradeIdCommaSep);
+					} else {
+						cs.setLong(3, Long.parseLong(gradeId));
+					}
 					cs.setString(4, subtestCommaSep);
 					cs.setString(5, studentGroupsCommaSep);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
