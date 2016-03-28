@@ -327,14 +327,20 @@ public class ReportBusinessImpl implements IReportBusiness {
 								 * current I/P control is multi-select
 								 */
 								if (matched) {
-									if(((String[]) pairs.getValue()).length > 1) {
+									if("p_generate_file".equals((String) pairs.getKey())){
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));
+									} else if(((String[]) pairs.getValue()).length > 1) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "'"));
 									} else {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
 									}
 								} else {
-									if(((String[]) tempObj.toArray()).length > 1) {
+									if("p_generate_file".equals((String) pairs.getKey())){
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));
+									} else if(((String[]) tempObj.toArray()).length > 1) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "'"));
 									} else {

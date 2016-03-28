@@ -1077,8 +1077,8 @@ public class InorsController {
 			
 			// TODO : JMS Integration for processGroupDownload() method
 			logger.log(IAppLogger.INFO, "sending messsage --------------- ");
-			//messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
-			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			messageProducer.sendJobForProcessing(jobTrackingId, Utils.getContractName());
+			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 			
 			String jsonString = CustomStringUtil.appendString("{\"handler\": \"", handler, "\", \"type\": \"", type, "\", \"downloadFileName\": \"", downloadFileName, "\", \"jobTrackingId\": \"", jobTrackingId, "\"}");
 			logger.log(IAppLogger.INFO, "groupDownloadFunction(): " + jsonString);
@@ -1969,8 +1969,8 @@ public class InorsController {
 			String jobTrackingId = reportService.createJobTracking(groupDownloadTO);
 
 			logger.log(IAppLogger.INFO, "sending messsage to JMS --------------- ");
-			//messageProducer.sendJobForProcessing(jobTrackingId, theme);
-			inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
+			messageProducer.sendJobForProcessing(jobTrackingId, theme);
+			//inorsService.asyncPDFDownload(jobTrackingId, Utils.getContractName());
 			
 			String status = "Success";
 

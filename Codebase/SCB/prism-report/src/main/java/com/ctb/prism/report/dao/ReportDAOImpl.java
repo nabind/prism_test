@@ -1698,11 +1698,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_G_MO);
 					cs.setLong(1, Long.parseLong(testAdministrationVal));
 					cs.setLong(2, Long.parseLong(schoolId));
-					if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)) {
-						cs.setString(3, gradeIdCommaSep);
-					} else {
-						cs.setLong(3, Long.parseLong(gradeId));
-					}
+					cs.setString(3, gradeIdCommaSep);
 					cs.setString(4, subtestCommaSep);
 					cs.setString(5, studentGroupsCommaSep);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
