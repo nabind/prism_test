@@ -1375,7 +1375,7 @@ function getSelectedStudentIdsAsCommaString() {
 		var studentId = id.substring(13);
 		if (this.value == "1") {
 			var elementObj = $('#check-status-'+studentId);
-			if(typeof elementObj.attr('gradeCode') !== 'undefined'){
+			if((typeof elementObj.attr('gradeCode') !== 'undefined') && elementObj.attr('gradeCode') != ''){
 				var studentBioId = elementObj.attr('studentBioId'); 
 				var gradeCode =  elementObj.attr('gradeCode');
 				var gradeId =  elementObj.attr('gradeId');

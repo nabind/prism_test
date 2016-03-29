@@ -1032,12 +1032,6 @@ public class InorsController {
 		String json = (String) request.getParameter("json");
 		GroupDownloadTO to = Utils.jsonToObject(json, GroupDownloadTO.class);
 		
-		String contractName = Utils.getContractName();
-		if(IApplicationConstants.CONTRACT_NAME.inors.toString().equals(contractName)){
-			String students = to.getStudents().replaceAll(":", "");
-			to.setStudents(students);
-		}
-		
 		@SuppressWarnings("unchecked")
 		Map<String, Object> propertyMap = (Map<String, Object>) request.getSession().getAttribute("propertyMap");
 		if(propertyMap == null){
