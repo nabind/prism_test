@@ -33,7 +33,7 @@
 		position: relative;
 		z-index: 88;
 	}
-	td {
+	.no-border {
 		border: 0;
 		padding: 6px
 	}
@@ -163,7 +163,7 @@
 				<table width="100%">
 					<thead>
 						<tr>
-							<td colspan="2">
+							<td class="no-border" colspan="2">
                             	<div id="errorLogDialog" title="Loading" style="float: left;position: absolute;">
 									<p id="errorLog" style="font-size:13px; font-weight:bold; color:red;">${message}</p>
 								</div>
@@ -172,30 +172,30 @@
 					</thead>
 					 <tbody>
 					 	<tr>
-                           	<td>&nbsp;</td>
-                           	<td>&nbsp;</td>
+                           	<td class="no-border">&nbsp;</td>
+                           	<td class="no-border">&nbsp;</td>
                         </tr>
 						<tr>
-							<td>UUID:</td>
-							<td><input type="text" name="uuid" id="uuid" value="<% if(searchProcess.getUuid() != null) out.print( searchProcess.getUuid());  %>"></td>
+							<td class="no-border">UUID:</td>
+							<td class="no-border"><input type="text" name="uuid" id="uuid" value="<% if(searchProcess.getUuid() != null) out.print( searchProcess.getUuid());  %>"></td>
 						</tr>
 						<tr>
-							<td>Test Element ID:</td>
-							<td><input type="text" name="testElementId" id="testElementId" value="<% if(searchProcess.getTestElementId() != null) out.print(searchProcess.getTestElementId()); %>"></td>
+							<td class="no-border">Test Element ID:</td>
+							<td class="no-border"><input type="text" name="testElementId" id="testElementId" value="<% if(searchProcess.getTestElementId() != null) out.print(searchProcess.getTestElementId()); %>"></td>
 						</tr>
 						<tr>
-							<td>State Code:</td>
-							<td><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
+							<td class="no-border">State Code:</td>
+							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
 						</tr>
 						<tr>
-							<td></td>
-							<td><input type="Submit" value="Search"></td>
+							<td class="no-border"></td>
+							<td class="no-border"><input type="Submit" value="Search"></td>
 						</tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 172px;float: right;">
+		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 167px;float: right;">
 			<% if("false".equals(showCommentFlag)){ %>
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments </h3>
 				<div style="padding: 20px;color: red;">
@@ -205,7 +205,7 @@
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments for UUID: ${uuid} and State Code: ${stateCode}
 					<a id="showComments" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Add/Edit</a>
 				</h3>
-				<div style="padding: 10px;font-weight: normal;">
+				<div style="padding: 10px;font-weight:normal;height: 105px;overflow:auto;">
 					${savedComments}
 				</div>
 			<%}%>
