@@ -649,7 +649,11 @@ public class TascController {
 	@RequestMapping("/process/combined.htm")
 	public ModelAndView searchCombined(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchTascEr()");
+		System.out.println("Enter: searchCombined()");
+		String showCommentFlag = "false"; 
+		String savedComments = ""; 
+		String uuid = "";
+		String stateCode = "";
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			SearchProcess process = new SearchProcess();
@@ -663,12 +667,16 @@ public class TascController {
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
 				
-			if(studentDetailsTOList != null && studentDetailsTOList.size() > 0 && 
-						(process.getUuid() != null && process.getUuid().length() > 0) && 
-						(process.getStateCode() != null && process.getStateCode().length() > 0))
-				request.setAttribute("savedComments", studentDetailsTOList.get(0).getComments());
-			else
-				request.setAttribute("savedComments", "");
+				if(studentDetailsTOList != null && studentDetailsTOList.size() > 0
+						&& (process.getUuid() != null && process.getUuid().equals(studentDetailsTOList.get(0).getUuid()))
+						&& (process.getStateCode() != null && process.getStateCode().length() > 0)){
+					savedComments = (studentDetailsTOList.get(0).getComments()==null?"":studentDetailsTOList.get(0).getComments());
+					showCommentFlag = "true";
+					uuid = process.getUuid();
+					stateCode = process.getStateCode();
+				} else{
+					savedComments = "";
+				}
 				
 				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
 				request.setAttribute("erBucket", erBucket);
@@ -687,6 +695,11 @@ public class TascController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally{
+			request.setAttribute("showCommentFlag", showCommentFlag);
+			request.setAttribute("uuid", uuid);
+			request.setAttribute("stateCode", stateCode);
+			request.setAttribute("savedComments", savedComments);
 		}
 		return new ModelAndView("combined", "message", jsonStr);
 	}
@@ -719,11 +732,11 @@ public class TascController {
 			String status = null;
 			if(updatedCount > 0) {
 				if (comments.length() > 0)
-					status = "comments added sucessfully";
+					status = "Comments added sucessfully";
 				else
-					status = "comments removed sucessfully";
+					status = "Comments removed sucessfully";
 			} else {
-				status = "comments save failed as no match found";
+				status = "Comments save failed as no match found";
 			}
 			System.out.println("Json = " + status);
 			response.setContentType("text/plain");

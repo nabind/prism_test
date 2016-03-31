@@ -1218,12 +1218,9 @@ public class TascDAOImpl {
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
-		//ResultSet rs = null;
 		long totalRecordCount = 0;
 		
 		try {
-			//driver = TASCConnectionProvider.getDriver();
-			//conn = driver.connect(DATA_SOURCE, null);
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			int placeHolderTotalRecCount = 0;
@@ -1330,7 +1327,6 @@ public class TascDAOImpl {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		} finally {
-			//try {rs.close();} catch (Exception e2) {}
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
@@ -1385,8 +1381,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			pstmt = conn.prepareCall(query);
 			if(searchProcess != null && searchProcess.getTestElementId() != null && searchProcess.getTestElementId().length() > 0) {
@@ -1464,8 +1459,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			pstmt = conn.prepareCall(query);
 			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
@@ -1532,8 +1526,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			pstmt = conn.prepareCall(query);
 			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
@@ -1598,8 +1591,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			pstmt = conn.prepareCall(query);
 			if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
@@ -1653,8 +1645,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, studentDetailsTO.getComments());
 			pstmt.setString(2, studentDetailsTO.getUuid());
