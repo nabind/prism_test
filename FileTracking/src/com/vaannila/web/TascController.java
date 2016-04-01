@@ -667,7 +667,7 @@ public class TascController {
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
 				
-				if(studentDetailsTOList != null && studentDetailsTOList.size() > 0
+				/*if(studentDetailsTOList != null && studentDetailsTOList.size() > 0
 						&& (process.getUuid() != null && process.getUuid().equals(studentDetailsTOList.get(0).getUuid()))
 						&& (process.getStateCode() != null && process.getStateCode().length() > 0)){
 					savedComments = (studentDetailsTOList.get(0).getComments()==null?"":studentDetailsTOList.get(0).getComments());
@@ -676,10 +676,21 @@ public class TascController {
 					stateCode = process.getStateCode();
 				} else{
 					savedComments = "";
-				}
+				}*/
 				
 				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
 				request.setAttribute("erBucket", erBucket);
+				
+				if(erBucket != null && erBucket.size() > 0
+						&& (process.getUuid() != null && process.getUuid().equals(erBucket.get(0).getUuid()))
+						&& (process.getStateCode() != null && process.getStateCode().length() == 2)){
+					savedComments = (erBucket.get(0).getComments()==null?"":erBucket.get(0).getComments());
+					showCommentFlag = "true";
+					uuid = process.getUuid();
+					stateCode = process.getStateCode();
+				} else{
+					savedComments = "";
+				}
 				
 				List<StudentDetailsTO> erError = stageDao.getERError(process);
 				request.setAttribute("erError", erError);
