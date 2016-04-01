@@ -1656,6 +1656,9 @@ public class TascDAOImpl {
 		} catch(SQLException e) {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
+		} finally {
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
 		}
 		
 		

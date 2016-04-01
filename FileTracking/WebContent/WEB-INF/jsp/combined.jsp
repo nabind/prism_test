@@ -88,19 +88,47 @@
     });
 	
 	function showComments() {
+		$("#commentErrorLog").hide();
+		$("textarea#comments").val( $("textarea#hiddenComments").val() );
 		jQuery("#showCommentsDialog").dialog({
 			title: 'Comments: ',
 			width: 510,
-			height: 250,
-			modal: true
+			height: 300,
+			modal: true,
+			closeOnEscape: false,
+			beforeClose: function( event, ui ) {
+				if( $("#hiddenComments").text() != $("textarea#comments").val() ) {
+					var $dlg = $(this);
+			        if($dlg.data('can-close')) {
+			            $dlg.removeData('can-close');
+			            return true;
+			        }
+			        $("#confirm").dialog({
+			            width: 500,
+			            modal: true,
+			            closeOnEscape: false,
+			            buttons: {
+			                Confirm: function() {
+			                    $(this).dialog('close');
+			                    $dlg.data('can-close', true);
+			                    $dlg.dialog('close');
+			                },
+			                Cancel: function() {
+			                    $(this).dialog('close');
+			                }
+			            }
+			        });
+			        return false;
+				}
+			}
 		});
 		return false;
 	}
 	
 	function saveComment(){
 		var comments = $("textarea#comments").val();
-		var stateCode = $("#stateCode").val();
-		var uuid = $("#uuid").val();
+		var stateCode = $("#commentStateCode").val();
+		var uuid = $("#commentUuid").val();
 		if(comments.length > 4000){
 			$("#commentErrorLog").css("color","red");
 			$("#commentErrorLog").text("Maximum length is 4000. Please summarize your comment");
@@ -111,14 +139,20 @@
 			      url: "saveComments.htm",
 			      data: dataString,
 			      success: function(data) {
+			    	  $("#commentErrorLog").show();
 			    	  if(data.indexOf("sucessfully") > 0) {
 			    		  $("#commentErrorLog").css("color","green");
+			    		  
+			    		  // resetting page hidden values
+			    		  $("#comment-div").html("<br/>" + comments);
+			    		  $("#hiddenComments").text(comments)
 			    	  } else {
 			    		  $("#commentErrorLog").css("color","red"); 
 			    	  }						    	  
 					  $("#commentErrorLog").text(data);
 			      },
 				  error: function(data) {
+					  $("#commentErrorLog").show();
 					  $("#commentErrorLog").css("color","red"); 
 					  $("#commentErrorLog").text(data);
 				  }
@@ -133,7 +167,11 @@
 		<div class="commentContent" style="text-align: center">
 			<input type="hidden" value="${uuid}" id="commentUuid"/>
 			<input type="hidden" value="${stateCode}" id="commentStateCode"/>
-			<div>
+			<div style="display:none">
+				<textarea rows="10" cols="60" id="hiddenComments">${savedComments}</textarea>
+			</div>
+			
+			<div style="padding: 10px;">
 				<label style='font-size:13px; font-weight:bold; color:black;'>
 					Enter Comments for UUID: ${uuid} and State Code: ${stateCode}
 				</label>
@@ -148,6 +186,9 @@
 		<div id='errorLogDialog' style="text-align: center">
 			<p id="commentErrorLog" style='font-size:13px; font-weight:bold;'></p>
 		</div>
+	</div>
+	<div id="confirm" title="Confirm" style="display:none;">
+	    Comments have changed. Do you want to continue without saving?
 	</div>
 		
 	<div class="container" style="margin-left:25px;width: 900px !important;">
@@ -195,7 +236,7 @@
 				</table>
 			</form>
 		</div>
-		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 167px;float: right;">
+		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 172px;float: right;">
 			<% if("false".equals(showCommentFlag)){ %>
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments </h3>
 				<div style="padding: 20px;color: red;">
@@ -205,7 +246,7 @@
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments for UUID: ${uuid} and State Code: ${stateCode}
 					<a id="showComments" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Add/Edit</a>
 				</h3>
-				<div style="padding: 10px;font-weight:normal;height: 105px;overflow:auto;">
+				<div id="comment-div" style="padding: 0px 10px;font-weight:normal;height: 141px;overflow:auto;white-space: pre-line">
 					${savedComments}
 				</div>
 			<%}%>
