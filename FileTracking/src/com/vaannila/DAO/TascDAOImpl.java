@@ -52,8 +52,7 @@ public class TascDAOImpl {
 		String query = queryBuff.toString();
 		// System.out.println(query);
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			pstmt = conn.prepareCall(query);
 			if(searchProcess != null) {
@@ -108,9 +107,7 @@ public class TascDAOImpl {
 		ResultSet rs = null;
 		String processLog = "";
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
-			
+			conn = BaseDAO.connect(DATA_SOURCE);
 			String query = "SELECT U.PROCESS_LOG FROM STG_PROCESS_STATUS U WHERE U.PROCESS_ID = ?";
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, processId);
@@ -143,8 +140,7 @@ public class TascDAOImpl {
 		String processLog = "";
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			TASCProcessTO processTO = null;
 			String query = "SELECT BB.D, NVL(PP.COUN, 0) AS COUN, NVL(OL.COUN, 0) AS COUN2, BB.c, NVL(ERR_COUNT.E, 0), NVL(COM_COUNT.S, 0) FROM "+
 							" (SELECT TO_CHAR(DATETIMESTAMP, 'MM-DD-YYYY') AS D, COUNT(1) AS COUN FROM STG_PROCESS_STATUS where source_system = 'PP' GROUP BY TO_CHAR(DATETIMESTAMP, 'MM-DD-YYYY')) PP, "+ 
@@ -185,10 +181,8 @@ public class TascDAOImpl {
 		ResultSet rs = null;
 		List<TASCProcessTO> testElementIdList = new ArrayList<TASCProcessTO>();
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			TASCProcessTO process = null;
-			
 			String query = "SELECT TEST_ELEMENT_ID, description FROM ER_EXCEPTION_DATA WHERE PROCESS_ID = ?";
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, processId);
@@ -216,8 +210,7 @@ public class TascDAOImpl {
 		ResultSet rs = null;
 		Map<String, String> studentDetails = new HashMap<String, String>();
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			
 			String query = "SELECT DISTINCT TRIM(SSBD.LAST_NAME || ', ' || SSBD.FIRST_NAME || ' ' || SSBD.MIDDLE_NAME) STUDENT_NAME,"
 							+ " SSBD.BIRTHDATE DOB, SSBD.GENDER, SSBD.GRADE, SSBD.BARCODE, SSBD.STRUC_ELEMENT, SSBD.EXT_STUDENT_ID,"
@@ -259,536 +252,6 @@ public class TascDAOImpl {
 		}
 		return studentDetails;
 	}
-	
-	/**
-	 * @author Joy
-	 * Get Searched records
-	 * @throws Exception
-	 * @Deprecated - Don't use this
-	 */
-	/*public List<StudentDetailsTO> getProcessEr(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getProcessEr()");
-		long t1 = System.currentTimeMillis();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StudentDetailsTO studentDetailsTO = null;
-		List<StudentDetailsTO> studentDetailsTOList = new ArrayList<StudentDetailsTO>();
-		StringBuffer queryBuff = new StringBuffer();
-		
-		if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-			//temporary patch needed for production
-			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				getERQueryForDate(queryBuff);
-			} else {
-				queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,");
-				queryBuff.append(" ESSH.UUID UUID,");
-				queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
-				queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
-				queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
-				queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'ERESOURCE') SOURCE_SYSTEM,");
-				queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'CO') EXCEPTION_STATUS,");
-				queryBuff.append(" ESSH.ER_SS_HISTID ER_SS_HISTID,");
-				queryBuff.append(" ESSH.BARCODE BARCODE,");
-				queryBuff.append(" ESSH.DATE_SCHEDULED DATE_SCHEDULED,");
-				queryBuff.append(" ESSH.STATE_CODE STATE_CODE,");
-				queryBuff.append(" ESSH.FORM FORM,");
-				queryBuff.append(" ESSH.DATETIMESTAMP,");
-				queryBuff.append(" NVL(EED.ER_EXCDID, 0) ER_EXCDID,");
-				queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,");
-				queryBuff.append(" ESSH.TESTCENTERCODE TESTING_SITE_CODE,");
-				queryBuff.append(" ESSH.TESTCENTERNAME TESTING_SITE_NAME,");
-				queryBuff.append(" ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID,");
-				queryBuff.append(" ESSH.STATENAME STATENAME,");
-				queryBuff.append(" ESSH.DATEOFBIRTH DATEOFBIRTH,");
-				queryBuff.append(" ESSH.GENDER GENDER,");
-				queryBuff.append(" ESSH.GOVERNMENTID GOVERNMENTID,");
-				queryBuff.append(" ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE,");
-				queryBuff.append(" ESSH.ADDRESS1 ADDRESS1,");
-				queryBuff.append(" ESSH.CITY CITY,");
-				queryBuff.append(" ESSH.COUNTY COUNTY,");
-				queryBuff.append(" ESSH.STATE STATE,");
-				queryBuff.append(" ESSH.ZIP ZIP,");
-				queryBuff.append(" ESSH.EMAIL EMAIL,");
-				queryBuff.append(" ESSH.ALTERNATEEMAIL ALTERNATEEMAIL,");
-				queryBuff.append(" ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,");
-				queryBuff.append(" ESSH.CELLPHONENUMBER CELLPHONENUMBER,");
-				queryBuff.append(" ESSH.ALTERNATENUMBER ALTERNATENUMBER,");
-				queryBuff.append(" ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE,");
-				queryBuff.append(" ESSH.HOMELANGUAGE HOMELANGUAGE,");
-				queryBuff.append(" ESSH.EDUCATIONLEVEL EDUCATIONLEVEL,");
-				queryBuff.append(" ESSH.ATTENDCOLLEGE ATTENDCOLLEGE,");
-				queryBuff.append(" ESSH.CONTACT CONTACT,");
-				queryBuff.append(" ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,");
-				queryBuff.append(" ESSH.REGISTEREDON REGISTEREDON,");
-				queryBuff.append(" ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER,");
-				queryBuff.append(" ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE,");
-				queryBuff.append(" ESSH.SCHEDULE_ID SCHEDULE_ID,");
-				queryBuff.append(" ESSH.TIMEOFDAY TIMEOFDAY,");
-				queryBuff.append(" ESSH.DATECHECKEDIN DATECHECKEDIN,");
-				queryBuff.append(" ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE,");
-				queryBuff.append(" ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE,");
-				queryBuff.append(" ESSH.TASCREADINESS TASCREADINESS,");
-				queryBuff.append(" ESSH.ECC ECC,");
-				queryBuff.append(" ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE,");
-				queryBuff.append(" ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,");
-				queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
-				queryBuff.append(" TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY HH:mm:ss') PROCESSED_DATE");
-				queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH");
-				queryBuff.append(" LEFT OUTER JOIN ER_EXCEPTION_DATA EED");
-				queryBuff.append(" ON ESSH.ER_SS_HISTID = EED.ER_SS_HISTID");
-				queryBuff.append(" WHERE 1 = 1");
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')");
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					queryBuff.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')");
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					queryBuff.append(" AND ESSH.UUID LIKE ?");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					queryBuff.append(" AND UPPER(ESSH.LASTNAME) LIKE UPPER(?)");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
-				}
-				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
-					queryBuff.append(" AND ESSH.ER_SS_HISTID = ?");
-				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					queryBuff.append(" AND EED.PROCESS_ID = ?");
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					queryBuff.append(" AND ESSH.STATE_CODE = ?");
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					queryBuff.append(" AND ESSH.FORM = ?");
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					queryBuff.append(" AND ESSH.BARCODE = ?");
-				}
-				queryBuff.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
-			}
-			
-		} else{
-			queryBuff.append("SELECT nvl(EED.LAST_NAME,ESD.lastname) || ', ' || ESD.FIRSTNAME || ' ' || ESD.MIDDLENAME STUDENTNAME,");
-			queryBuff.append(" EED.ER_UUID UUID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
-			queryBuff.append(" NVL(TO_CHAR(EED.PROCESS_ID), 'NA') PROCESS_ID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
-			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
-			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS,");
-			queryBuff.append(" 0 ER_SS_HISTID,");
-			queryBuff.append(" EED.BARCODE BARCODE,");
-			queryBuff.append(" TO_CHAR(EED.TEST_DATE, 'MM/DD/YYYY') DATE_SCHEDULED,");
-			queryBuff.append(" EED.STATE_CODE STATE_CODE,");
-			queryBuff.append(" EED.FORM FORM,");
-			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
-			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = EED.CONTENT_CODE) SUBTEST,");
-			queryBuff.append(" EED.TESTING_SITE_CODE TESTING_SITE_CODE,");
-			queryBuff.append(" EED.TESTING_SITE_NAME TESTING_SITE_NAME,");
-			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0), 0, '', 'ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION,");
-			queryBuff.append(" TO_CHAR(EED.CREATED_DATE_TIME, 'MM/DD/YYYY HH:mm:ss') PROCESSED_DATE");
-			queryBuff.append(" FROM ER_EXCEPTION_DATA EED,");
-			queryBuff.append(" ER_STUDENT_DEMO   ESD");
-			queryBuff.append(" WHERE EED.ER_UUID = ESD.UUID");
-			queryBuff.append(" and (eed.state_code is null or eed.state_code = esd.state_code)");
-			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
-			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
-			}
-			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(?, 'MM/DD/YYYY')");
-			}
-			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				queryBuff.append(" AND EED.ER_UUID LIKE ?");
-			}
-			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-				queryBuff.append(" AND UPPER(EED.LAST_NAME) LIKE UPPER(?)");
-			}
-			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
-			}
-			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-				queryBuff.append(" AND EED.PROCESS_ID = ?");
-			}
-			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-				queryBuff.append(" AND EED.STATE_CODE = ?");
-			}
-			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-				queryBuff.append(" AND EED.FORM = ?");
-			}
-			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-				queryBuff.append(" AND EED.TEST_ELEMENT_ID = ?");
-			}
-			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-				queryBuff.append(" AND EED.BARCODE = ?");
-			}
-
-			queryBuff.append(" UNION");
-			
-			queryBuff.append(" SELECT SSBD.LAST_NAME || ', ' || SSBD.FIRST_NAME || ' ' || SSBD.MIDDLE_NAME STUDENTNAME,");
-			queryBuff.append(" SSBD.EXT_STUDENT_ID UUID,");
-			queryBuff.append(" TO_CHAR(NVL(SSBD.TEST_ELEMENT_ID, 'NA')) TEST_ELEMENT_ID,");
-			queryBuff.append(" NVL(TO_CHAR(SPS.PROCESS_ID), 'NA') PROCESS_ID,");
-			queryBuff.append(" TO_CHAR(NVL(EED.EXCEPTION_CODE, 'NA')) EXCEPTION_CODE,");
-			queryBuff.append(" NVL(EED.SOURCE_SYSTEM, 'NA') SOURCE_SYSTEM,");
-			queryBuff.append(" NVL(EED.EXCEPTION_STATUS, 'NA') EXCEPTION_STATUS, ");
-			queryBuff.append(" 0 ER_SS_HISTID,");
-			queryBuff.append(" SSBD.BARCODE BARCODE,");
-			queryBuff.append(" TO_CHAR(SSSD.DATE_TEST_TAKEN, 'MM/DD/YYYY') DATE_SCHEDULED,");
-			queryBuff.append(" EED.state_code STATE_CODE,");
-			queryBuff.append(" SSSD.TEST_FORM FORM,");
-			queryBuff.append(" EED.CREATED_DATE_TIME DATETIMESTAMP,");
-			queryBuff.append(" NVL(EED.ER_EXCDID,0) ER_EXCDID,");
-			queryBuff.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = SSSD.CONTENT_NAME) SUBTEST,");
-			queryBuff.append(" EED.TESTING_SITE_CODE TESTING_SITE_CODE,");
-			queryBuff.append(" EED.TESTING_SITE_NAME TESTING_SITE_NAME,");
-			queryBuff.append(" DECODE(NVL(EED.ER_EXCDID, 0),0,'','ERROR CODE-' || EED.EXCEPTION_CODE || ': ' || EED.DESCRIPTION) ERROR_DESCRIPTION, ");
-			queryBuff.append(" TO_CHAR(EED.CREATED_DATE_TIME, 'MM/DD/YYYY HH:mm:ss') PROCESSED_DATE");
-			queryBuff.append(" FROM STG_STD_BIO_DETAILS     SSBD,");
-			queryBuff.append(" STG_STD_SUBTEST_DETAILS SSSD,");
-			queryBuff.append(" STG_HIER_DETAILS        SHD,");
-			queryBuff.append(" STG_PROCESS_STATUS      SPS,");
-			queryBuff.append(" ER_EXCEPTION_DATA EED ");
-			queryBuff.append(" WHERE ssbd.wkf_partition_name = 'ER_EXCP' AND SSSD.WKF_PARTITION_NAME = 'ER_EXCP' ");
-			queryBuff.append(" AND SSBD.STUDENT_BIO_DETAILS_ID = SSSD.STUDENT_BIO_DETAILS_ID");
-			queryBuff.append(" and SSBD.TEST_ELEMENT_ID = EED.TEST_ELEMENT_ID");
-			queryBuff.append(" AND EED.PROCESS_ID = SPS.PROCESS_ID");
-			queryBuff.append(" AND SSSD.CONTENT_NAME = EED.CONTENT_CODE ");
-			queryBuff.append(" AND (EED.STATE_CODE IS NULL OR EED.STATE_CODE = SHD.ORG_CODE) ");
-			queryBuff.append(" AND EED.SOURCE_SYSTEM = ?");
-			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(?, 'MM/DD/YYYY')");
-			}
-			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				queryBuff.append(" AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(?, 'MM/DD/YYYY')");
-			}
-			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				queryBuff.append(" AND SSBD.EXT_STUDENT_ID LIKE ?");
-			}
-			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-				queryBuff.append(" AND UPPER(SSBD.LAST_NAME) LIKE UPPER(?)");
-			}
-			if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-				queryBuff.append(" AND EED.EXCEPTION_CODE = ?");
-			}
-			if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-				queryBuff.append(" AND SPS.PROCESS_ID = ?");
-			}
-			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-				queryBuff.append(" AND SHD.ORG_CODE = ?");
-			}
-			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-				queryBuff.append(" AND SSSD.TEST_FORM = ?");
-			}
-			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-				queryBuff.append(" AND SSBD.TEST_ELEMENT_ID = ?");
-			}
-			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-				queryBuff.append(" AND SSBD.BARCODE = ?");
-			}
-			queryBuff.append(" ORDER BY DATETIMESTAMP DESC, STUDENTNAME");
-		}
-			
-		String query = queryBuff.toString();
-		System.out.println(query);
-		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
-			int count = 0;
-			pstmt = conn.prepareCall(query);
-			
-			if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateTo());
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getUuid()+"%");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
-				}
-				if(searchProcess.getRecordId() != null && searchProcess.getRecordId().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getRecordId()));
-				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getStateCode());
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getForm());
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getTestElementId());
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getBarcode());
-				}
-			}else{
-				pstmt.setString(++count, searchProcess.getSourceSystem());
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateTo());
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getUuid()+"%");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
-				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getStateCode());
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getForm());
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getTestElementId());
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getBarcode());
-				}
-				pstmt.setString(++count, searchProcess.getSourceSystem());
-				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
-				}
-				if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getProcessedDateTo());
-				}
-				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getUuid()+"%");
-				}
-				if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-					pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
-				}
-				if(searchProcess.getExceptionCode() != null && searchProcess.getExceptionCode().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getExceptionCode()));
-				}
-				if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-					pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-				}
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getStateCode());
-				}
-				if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getForm());
-				}
-				if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getTestElementId());
-				}
-				if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-					pstmt.setString(++count, searchProcess.getBarcode());
-				}
-			}
-			
-			rs = pstmt.executeQuery();
-			boolean hasData = false;
-			while(rs.next()) {
-				hasData = true;
-				studentDetailsTO = new StudentDetailsTO();
-				studentDetailsTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
-				studentDetailsTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
-				studentDetailsTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
-				studentDetailsTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
-				studentDetailsTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
-				studentDetailsTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
-				studentDetailsTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
-				studentDetailsTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
-				studentDetailsTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
-				studentDetailsTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
-				studentDetailsTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
-				studentDetailsTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
-				studentDetailsTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
-				studentDetailsTO.setSubtestName(rs.getString("SUBTEST") != null ? rs.getString("SUBTEST") : "");
-				studentDetailsTO.setTestCenterCode(rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
-				studentDetailsTO.setTestCenterName(rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
-				studentDetailsTO.setSourceSystemDesc(searchProcess.getSourceSystemDesc());
-				studentDetailsTO.setProcessedDateFrom(searchProcess.getProcessedDateFrom());
-				studentDetailsTO.setProcessedDateTo(searchProcess.getProcessedDateTo());
-				studentDetailsTO.setErrorLog(rs.getString("ERROR_DESCRIPTION") != null ? rs.getString("ERROR_DESCRIPTION") : "");
-				studentDetailsTO.setProcessedDate(rs.getString("PROCESSED_DATE") != null ? rs.getString("PROCESSED_DATE") : "");
-				
-				if("ERESOURCE".equals(searchProcess.getSourceSystem())){
-					studentDetailsTO.setCtbCustomerId(rs.getString("CTB_CUSTOMER_ID") != null ? rs.getString("CTB_CUSTOMER_ID") : "");
-					studentDetailsTO.setStateName(rs.getString("STATENAME") != null ? rs.getString("STATENAME") : "");
-					studentDetailsTO.setDob(rs.getString("DATEOFBIRTH") !=null ? rs.getString("DATEOFBIRTH") : "");
-					studentDetailsTO.setGender(rs.getString("GENDER") != null ? rs.getString("GENDER") : "");
-					studentDetailsTO.setGovermentId(rs.getString("GOVERNMENTID") != null ? rs.getString("GOVERNMENTID") : "");
-					studentDetailsTO.setGovermentIdType(rs.getString("GOVERNMENTIDTYPE") != null ? rs.getString("GOVERNMENTIDTYPE") : "");
-					studentDetailsTO.setAddress(rs.getString("ADDRESS1") != null ? rs.getString("ADDRESS1") : "");
-					studentDetailsTO.setCity(rs.getString("CITY") != null ? rs.getString("CITY") : "");
-					studentDetailsTO.setCounty(rs.getString("COUNTY") != null ? rs.getString("COUNTY") : "");
-					studentDetailsTO.setState(rs.getString("STATE") != null ? rs.getString("STATE") : "");
-					studentDetailsTO.setZip(rs.getString("ZIP") != null ? rs.getString("ZIP") : "");
-					studentDetailsTO.setEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
-					studentDetailsTO.setAlternateEmail(rs.getString("ALTERNATEEMAIL") != null ? rs.getString("ALTERNATEEMAIL") : "");
-					studentDetailsTO.setPrimaryPhoneNumber(rs.getString("PRIMARYPHONENUMBER") != null ? rs.getString("PRIMARYPHONENUMBER") : "");
-					studentDetailsTO.setCellPhoneNumber(rs.getString("CELLPHONENUMBER") != null ? rs.getString("CELLPHONENUMBER") : "");
-					studentDetailsTO.setAlternatePhoneNumber(rs.getString("ALTERNATENUMBER") != null ? rs.getString("ALTERNATENUMBER") : "");
-					studentDetailsTO.setResolvedEthnicityRace(rs.getString("RESOLVED_ETHNICITY_RACE") != null ? rs.getString("RESOLVED_ETHNICITY_RACE") : "");
-					studentDetailsTO.setHomeLanguage(rs.getString("HOMELANGUAGE") != null ? rs.getString("HOMELANGUAGE") : "");
-					studentDetailsTO.setEducationLevel(rs.getString("EDUCATIONLEVEL") != null ? rs.getString("EDUCATIONLEVEL") : "");
-					studentDetailsTO.setAttendCollege(rs.getString("ATTENDCOLLEGE") != null ? rs.getString("ATTENDCOLLEGE") : "");
-					studentDetailsTO.setContact(rs.getString("CONTACT") != null ? rs.getString("CONTACT") : "");
-					studentDetailsTO.setExamineeCountyParishCode(rs.getString("EXAMINEECOUNTYPARISHCODE") != null ? rs.getString("EXAMINEECOUNTYPARISHCODE") : "");
-					studentDetailsTO.setRegisteredOn(rs.getString("REGISTEREDON") != null ? rs.getString("REGISTEREDON") : "");
-					studentDetailsTO.setRegisteredTestCenter(rs.getString("REGISTEREDATTESTCENTER") != null ? rs.getString("REGISTEREDATTESTCENTER") : "");
-					studentDetailsTO.setRegisteredTestCenterCode(rs.getString("REGISTEREDATTESTCENTERCODE") !=null ? rs.getString("REGISTEREDATTESTCENTERCODE") : "");
-					studentDetailsTO.setScheduleId(rs.getString("SCHEDULE_ID") != null ? rs.getString("SCHEDULE_ID") : "");
-					studentDetailsTO.setTimeOfDay(rs.getString("TIMEOFDAY") != null ? rs.getString("TIMEOFDAY") : "");
-					studentDetailsTO.setCheckedInDate(rs.getString("DATECHECKEDIN") != null ? rs.getString("DATECHECKEDIN") : "");
-					studentDetailsTO.setContentTestType(rs.getString("CONTENT_TEST_TYPE") != null ? rs.getString("CONTENT_TEST_TYPE") : "");
-					studentDetailsTO.setContentTestCode(rs.getString("CONTENT_TEST_CODE") != null ? rs.getString("CONTENT_TEST_CODE") : "");
-					studentDetailsTO.setTascRadiness(rs.getString("TASCREADINESS") != null ? rs.getString("TASCREADINESS") : "");
-					studentDetailsTO.setEcc(rs.getString("ECC") != null ? rs.getString("ECC") : "");
-					studentDetailsTO.setRegstTcCountyParishCode(rs.getString("REGST_TC_COUNTYPARISHCODE") != null ? rs.getString("REGST_TC_COUNTYPARISHCODE") : "");
-					studentDetailsTO.setSchedTcCountyParishCode(rs.getString("SCHED_TC_COUNTYPARISHCODE") != null ? rs.getString("SCHED_TC_COUNTYPARISHCODE") : "");
-				}
-				studentDetailsTOList.add(studentDetailsTO);
-			} 
-			
-			if(!hasData) {
-				// this section is added for which we don't have any data in staging table
-				if(!"ERESOURCE".equals(searchProcess.getSourceSystem())){
-					try {pstmt.close();} catch (Exception e2) {}
-					try {rs.close();} catch (Exception e2) {}
-					
-					queryBuff = new StringBuffer();
-					queryBuff.append("select ex.last_name STUDENTNAME, ex.er_uuid UUID, ex.test_element_id TEST_ELEMENT_ID, " );
-					queryBuff.append(" ex.process_id PROCESS_ID, ex.exception_code EXCEPTION_CODE, ex.source_system SOURCE_SYSTEM, " );
-					queryBuff.append(" ex.exception_status EXCEPTION_STATUS, 0 ER_SS_HISTID, ex.barcode BARCODE, ex.test_date DATE_SCHEDULED, " );
-					queryBuff.append(" ex.state_code STATE_CODE, ex.form FORM, ex.created_date_time DATETIMESTAMP, ex.er_excdid ER_EXCDID, " );
-					queryBuff.append(" ex.content_code SUBTEST, 'NA' TESTING_SITE_CODE, 'NA' TESTING_SITE_NAME, ex.description ERROR_DESCRIPTION, " );
-					queryBuff.append(" ex.created_date_time PROCESSED_DATE " );
-					queryBuff.append(" from er_exception_data ex" );
-					queryBuff.append(" where ex.source_system = ? ");
-					if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-						queryBuff.append(" AND TRUNC(ex.created_date_time) >= TO_DATE(?, 'MM/DD/YYYY')");
-					}
-					if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-						queryBuff.append(" AND TRUNC(ex.created_date_time) <= TO_DATE(?, 'MM/DD/YYYY')");
-					}
-					if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-						queryBuff.append(" AND ex.er_uuid LIKE ?");
-					}
-					if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-						queryBuff.append(" AND UPPER(ex.last_name) LIKE UPPER(?)");
-					}
-					if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-						queryBuff.append(" AND ex.process_id = ?");
-					}
-					if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-						queryBuff.append(" AND ex.state_code = ?");
-					}
-					if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-						queryBuff.append(" AND ex.form = ?");
-					}
-					if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-						queryBuff.append(" AND ex.test_element_id = ?");
-					}
-					if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-						queryBuff.append(" AND ex.barcode = ?");
-					}
-					queryBuff.append(" ORDER BY ex.created_date_time DESC, ex.last_name");
-					
-					query = queryBuff.toString();
-					System.out.println(query);
-					count = 0;
-					pstmt = conn.prepareCall(query);
-					pstmt.setString(++count, searchProcess.getSourceSystem());
-					if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getProcessedDateFrom());
-					}
-					if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getProcessedDateTo());
-					}
-					if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-						pstmt.setString(++count, "%"+searchProcess.getUuid()+"%");
-					}
-					if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
-						pstmt.setString(++count, "%"+searchProcess.getLastName()+"%");
-					}
-					if(searchProcess.getProcessId() != null && searchProcess.getProcessId().trim().length() > 0){
-						pstmt.setLong(++count, Long.parseLong(searchProcess.getProcessId()));
-					}
-					if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getStateCode());
-					}
-					if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getForm());
-					}
-					if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getTestElementId());
-					}
-					if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
-						pstmt.setString(++count, searchProcess.getBarcode());
-					}
-					
-					rs = pstmt.executeQuery();
-					while(rs.next()) {
-						hasData = true;
-						studentDetailsTO = new StudentDetailsTO();
-						studentDetailsTO.setStudentName(rs.getString("STUDENTNAME")!=null ? rs.getString("STUDENTNAME") : "");
-						studentDetailsTO.setUuid(rs.getString("UUID")!=null ? rs.getString("UUID") : "");
-						studentDetailsTO.setTestElementId(rs.getString("TEST_ELEMENT_ID") != null ? rs.getString("TEST_ELEMENT_ID") : "");
-						studentDetailsTO.setProcessId(rs.getString("PROCESS_ID") != null ? rs.getString("PROCESS_ID") : "");
-						studentDetailsTO.setExceptionCode(rs.getString("EXCEPTION_CODE") != null ? rs.getString("EXCEPTION_CODE") : "");
-						studentDetailsTO.setSourceSystem(rs.getString("SOURCE_SYSTEM") !=null ? rs.getString("SOURCE_SYSTEM") : "");
-						studentDetailsTO.setOverallStatus(rs.getString("EXCEPTION_STATUS") != null ? rs.getString("EXCEPTION_STATUS") : "");
-						studentDetailsTO.setErSsHistId(rs.getString("ER_SS_HISTID") != null ? rs.getString("ER_SS_HISTID") : "");
-						studentDetailsTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
-						studentDetailsTO.setDateScheduled(rs.getString("DATE_SCHEDULED") != null ? rs.getString("DATE_SCHEDULED") : "");
-						studentDetailsTO.setStateCode(rs.getString("STATE_CODE") != null ? rs.getString("STATE_CODE") : "");
-						studentDetailsTO.setForm(rs.getString("FORM") != null ? rs.getString("FORM") : "");
-						studentDetailsTO.setErExcdId(rs.getString("ER_EXCDID") != null ? rs.getString("ER_EXCDID") : "");
-						studentDetailsTO.setSubtestName(rs.getString("SUBTEST") != null ? rs.getString("SUBTEST") : "");
-						studentDetailsTO.setTestCenterCode(rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
-						studentDetailsTO.setTestCenterName(rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
-						studentDetailsTO.setSourceSystemDesc(searchProcess.getSourceSystemDesc());
-						studentDetailsTO.setProcessedDateFrom(searchProcess.getProcessedDateFrom());
-						studentDetailsTO.setProcessedDateTo(searchProcess.getProcessedDateTo());
-						studentDetailsTO.setErrorLog(rs.getString("ERROR_DESCRIPTION") != null ? rs.getString("ERROR_DESCRIPTION") : "");
-						studentDetailsTO.setProcessedDate(rs.getString("PROCESSED_DATE") != null ? rs.getString("PROCESSED_DATE") : "");
-						studentDetailsTOList.add(studentDetailsTO);
-					}
-				
-				}
-				
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new Exception(e.getMessage());
-		} finally {
-			try {rs.close();} catch (Exception e2) {}
-			try {pstmt.close();} catch (Exception e2) {}
-			try {conn.close();} catch (Exception e2) {}
-			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getProcessEr() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
-		return studentDetailsTOList;
-	}*/
 	
 	/**
 	 * @author Joy
@@ -844,8 +307,7 @@ public class TascDAOImpl {
 		System.out.println(query);
 		
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1,Long.parseLong(erSsHistId));
 			rs = pstmt.executeQuery();
@@ -911,21 +373,42 @@ public class TascDAOImpl {
 		Map<String, String> moreInfoMap = new HashMap<String, String>();
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("SELECT TESTING_SITE_CODE,");
-		queryBuff.append("TESTING_SITE_NAME");
+		queryBuff.append("TESTING_SITE_NAME,");
+		queryBuff.append("TEST_LANGUAGE,");
+		queryBuff.append("LITHOCODE,");
+		queryBuff.append("TO_CHAR(SCORING_DATE,'MM/DD/YYYY') SCORING_DATE,");
+		queryBuff.append("TO_CHAR(SCANNED_DATE,'MM/DD/YYYY') SCANNED_DATE,");
+		queryBuff.append("LAST_NAME,");
+		queryBuff.append("NCR_SCORE,");
+		queryBuff.append("CONTENT_STATUS_CODE,");
+		queryBuff.append("SCAN_BATCH,");
+		queryBuff.append("SCAN_STACK,");
+		queryBuff.append("SCAN_SEQUENCE,");
+		queryBuff.append("BIO_IMAGES");
 		queryBuff.append(" FROM ER_EXCEPTION_DATA");
 		queryBuff.append(" WHERE ER_EXCDID = ?");
 		String query = queryBuff.toString();
 		System.out.println(query);
 		
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1,Long.parseLong(erExcdId));
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				moreInfoMap.put("TESTING_SITE_CODE", rs.getString("TESTING_SITE_CODE") != null ? rs.getString("TESTING_SITE_CODE") : "");
 				moreInfoMap.put("TESTING_SITE_NAME", rs.getString("TESTING_SITE_NAME") != null ? rs.getString("TESTING_SITE_NAME") : "");
+				moreInfoMap.put("TEST_LANGUAGE", rs.getString("TEST_LANGUAGE") != null ? rs.getString("TEST_LANGUAGE") : "");
+				moreInfoMap.put("LITHOCODE", rs.getString("LITHOCODE") != null ? rs.getString("LITHOCODE") : "");
+				moreInfoMap.put("SCORING_DATE", rs.getString("SCORING_DATE") != null ? rs.getString("SCORING_DATE") : "");
+				moreInfoMap.put("SCANNED_DATE", rs.getString("SCANNED_DATE") != null ? rs.getString("SCANNED_DATE") : "");
+				moreInfoMap.put("LAST_NAME", rs.getString("LAST_NAME") != null ? rs.getString("LAST_NAME") : "");
+				moreInfoMap.put("NCR_SCORE", rs.getString("NCR_SCORE") != null ? rs.getString("NCR_SCORE") : "");
+				moreInfoMap.put("CONTENT_STATUS_CODE", rs.getString("CONTENT_STATUS_CODE") != null ? rs.getString("CONTENT_STATUS_CODE") : "");
+				moreInfoMap.put("SCAN_BATCH", rs.getString("SCAN_BATCH") != null ? rs.getString("SCAN_BATCH") : "");
+				moreInfoMap.put("SCAN_STACK", rs.getString("SCAN_STACK") != null ? rs.getString("SCAN_STACK") : "");
+				moreInfoMap.put("SCAN_SEQUENCE", rs.getString("SCAN_SEQUENCE") != null ? rs.getString("SCAN_SEQUENCE") : "");
+				moreInfoMap.put("BIO_IMAGES", rs.getString("BIO_IMAGES") != null ? rs.getString("BIO_IMAGES") : "");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -958,8 +441,7 @@ public class TascDAOImpl {
 		System.out.println(query);
 		
 		try {
-			driver = TASCConnectionProvider.getDriver();
-			conn = driver.connect(DATA_SOURCE, null);
+			conn = BaseDAO.connect(DATA_SOURCE);
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.parseLong(erExcdId));
 			rs = pstmt.executeQuery();
@@ -975,34 +457,6 @@ public class TascDAOImpl {
 			try {conn.close();} catch (Exception e2) {}
 		}
 		return errorLog;
-	}
-	
-	private StringBuffer getERQueryForDate(StringBuffer queryBuff){
-		queryBuff.append("SELECT DISTINCT ESSH.LASTNAME || ', ' || ESSH.FIRSTNAME || ' ' || ESSH.MIDDLENAME STUDENTNAME,")
-		.append(" ESSH.UUID UUID,")
-		.append(" TO_CHAR(NVL((SELECT EED.TEST_ELEMENT_ID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'NA')) TEST_ELEMENT_ID,")
-		.append(" NVL(TO_CHAR((SELECT EED.PROCESS_ID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID)), 'NA') PROCESS_ID,")
-		.append(" TO_CHAR(NVL((SELECT EED.EXCEPTION_CODE FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'NA')) EXCEPTION_CODE,")
-		.append(" NVL((SELECT EED.SOURCE_SYSTEM FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'ERESOURCE') SOURCE_SYSTEM,")
-		.append(" NVL((SELECT EED.EXCEPTION_STATUS FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 'CO') EXCEPTION_STATUS,")
-		.append(" ESSH.ER_SS_HISTID ER_SS_HISTID, ESSH.BARCODE BARCODE, ESSH.DATE_SCHEDULED DATE_SCHEDULED, ESSH.STATE_CODE STATE_CODE, ESSH.FORM FORM,ESSH.DATETIMESTAMP,")
-		.append(" NVL((SELECT EED.ER_EXCDID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 0) ER_EXCDID,")
-		.append(" (SELECT SUBTEST_NAME FROM SUBTEST_DIM WHERE SUBTEST_CODE = ESSH.CONTENT_AREA_CODE) SUBTEST,")
-		.append(" ESSH.TESTCENTERCODE TESTING_SITE_CODE, ESSH.TESTCENTERNAME TESTING_SITE_NAME, ESSH.CTB_CUSTOMER_ID CTB_CUSTOMER_ID, ESSH.STATENAME STATENAME,")
-		.append(" ESSH.DATEOFBIRTH DATEOFBIRTH, ESSH.GENDER GENDER, ESSH.GOVERNMENTID GOVERNMENTID, ESSH.GOVERNMENTIDTYPE GOVERNMENTIDTYPE, ESSH.ADDRESS1 ADDRESS1,")
-		.append(" ESSH.CITY CITY, ESSH.COUNTY COUNTY, ESSH.STATE STATE, ESSH.ZIP ZIP, ESSH.EMAIL EMAIL, ESSH.ALTERNATEEMAIL ALTERNATEEMAIL, ESSH.PRIMARYPHONENUMBER PRIMARYPHONENUMBER,")
-		.append(" ESSH.CELLPHONENUMBER CELLPHONENUMBER, ESSH.ALTERNATENUMBER ALTERNATENUMBER, ESSH.RESOLVED_ETHNICITY_RACE RESOLVED_ETHNICITY_RACE, ESSH.HOMELANGUAGE HOMELANGUAGE,")
-		.append(" ESSH.EDUCATIONLEVEL EDUCATIONLEVEL, ESSH.ATTENDCOLLEGE ATTENDCOLLEGE, ESSH.CONTACT CONTACT, ESSH.EXAMINEECOUNTYPARISHCODE EXAMINEECOUNTYPARISHCODE,")
-		.append(" ESSH.REGISTEREDON REGISTEREDON, ESSH.REGISTEREDATTESTCENTER REGISTEREDATTESTCENTER, ESSH.REGISTEREDATTESTCENTERCODE REGISTEREDATTESTCENTERCODE, ESSH.SCHEDULE_ID SCHEDULE_ID,")
-		.append(" ESSH.TIMEOFDAY TIMEOFDAY, ESSH.DATECHECKEDIN DATECHECKEDIN, ESSH.CONTENT_TEST_TYPE CONTENT_TEST_TYPE, ESSH.CONTENT_TEST_CODE CONTENT_TEST_CODE, ESSH.TASCREADINESS TASCREADINESS,")
-		.append(" ESSH.ECC ECC, ESSH.REGST_TC_COUNTYPARISHCODE REGST_TC_COUNTYPARISHCODE, ESSH.SCHED_TC_COUNTYPARISHCODE SCHED_TC_COUNTYPARISHCODE,")
-		.append(" DECODE(NVL((SELECT EED.ER_EXCDID FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID), 0),0,'', 'ERROR CODE-' || (SELECT EED.EXCEPTION_CODE FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID) || ': ' ||")
-		.append(" (SELECT EED.DESCRIPTION FROM ER_EXCEPTION_DATA EED WHERE EED.ER_SS_HISTID = ESSH.ER_SS_HISTID)) ERROR_DESCRIPTION, TO_CHAR(ESSH.DATETIMESTAMP, 'MM/DD/YYYY  HH:mm:ss') PROCESSED_DATE")
-		.append(" FROM ER_STUDENT_SCHED_HISTORY ESSH")
-		.append(" WHERE TRUNC(ESSH.DATETIMESTAMP) >= TO_DATE(?, 'MM/DD/YYYY')")
-		.append(" AND TRUNC(ESSH.DATETIMESTAMP) <= TO_DATE(?, 'MM/DD/YYYY')")
-		.append(" ORDER BY ESSH.DATETIMESTAMP DESC, STUDENTNAME");
-		return queryBuff;
 	}
 	
 	/**
@@ -1021,8 +475,6 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> studentDetailsTOList = new ArrayList<StudentDetailsTO>();
 		
 		try {
-			//driver = TASCConnectionProvider.getDriver();
-			//conn = driver.connect(DATA_SOURCE, null);
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			int placeHolderTotalRecCount = 0;
@@ -1187,6 +639,17 @@ public class TascDAOImpl {
 						studentDetailsTO.setEcc(rs.getString("ECC") != null ? rs.getString("ECC") : "");
 						studentDetailsTO.setRegstTcCountyParishCode(rs.getString("REGST_TC_COUNTYPARISHCODE") != null ? rs.getString("REGST_TC_COUNTYPARISHCODE") : "");
 						studentDetailsTO.setSchedTcCountyParishCode(rs.getString("SCHED_TC_COUNTYPARISHCODE") != null ? rs.getString("SCHED_TC_COUNTYPARISHCODE") : "");
+					}else{
+						studentDetailsTO.setTestLanguage(rs.getString("TEST_LANGUAGE") != null ? rs.getString("TEST_LANGUAGE") : "");
+						studentDetailsTO.setLithocode(rs.getString("LITHOCODE") != null ? rs.getString("LITHOCODE") : "");
+						studentDetailsTO.setScoringDate(rs.getString("SCORING_DATE") != null ? rs.getString("SCORING_DATE") : "");
+						studentDetailsTO.setScannedDate(rs.getString("SCANNED_DATE") != null ? rs.getString("SCANNED_DATE") : "");
+						studentDetailsTO.setNcrScore(rs.getString("NCR_SCORE") != null ? rs.getString("NCR_SCORE") : "");
+						studentDetailsTO.setContentStatusCode(rs.getString("CONTENT_STATUS_CODE") != null ? rs.getString("CONTENT_STATUS_CODE") : "");
+						studentDetailsTO.setScanBatch(rs.getString("SCAN_BATCH") != null ? rs.getString("SCAN_BATCH") : "");
+						studentDetailsTO.setScanStack(rs.getString("SCAN_STACK") != null ? rs.getString("SCAN_STACK") : "");
+						studentDetailsTO.setScanSequence(rs.getString("SCAN_SEQUENCE") != null ? rs.getString("SCAN_SEQUENCE") : "");
+						studentDetailsTO.setBioImages(rs.getString("BIO_IMAGES") != null ? rs.getString("BIO_IMAGES") : "");
 					}
 					studentDetailsTOList.add(studentDetailsTO);
 				}

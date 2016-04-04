@@ -105,7 +105,7 @@
 	    	}).dataTable( {
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
-			"order": [[ 1, "desc" ]],
+			"order": [[ 12, "desc" ]],
 	        "bProcessing": true,
 	        "bServerSide": true,
 	        "sort": "position",
@@ -159,17 +159,16 @@
 				{ "mData": "studentName" },
 				{ "mData": "uuid" },
 				{ "mData": "testElementId" },
-				{ "mData": "processId" },
 				{ "mData": "exceptionCode" },
 				{ 
 					"mData": "overallStatus",
 					"mRender": function (oObj) {
 						if(oObj == 'CO'){
-	                		return "Completed";
+	                		return "CO";
 	                	}else if(oObj == 'ER'){
-	                		return "Error";
+	                		return "ER";
 	                	}else if(oObj == 'IN'){
-	                		return "Invalidated";
+	                		return "IN";
 	                	}else{
 	                		return "In Progress";
 	                	}
@@ -180,6 +179,7 @@
 				{ "mData": "stateCode"},
 				{ "mData": "form"},
 				{ "mData": "subtestName"},
+				{ "mData": "processedDate"},
 				{
 					"mRender": function ( data, type, row ) {
 						var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='";
@@ -237,8 +237,19 @@
 	}
 	
 	function clearMoreInfoTableRows() {
-		$("#testCenterCode").html('');
-		$("#testCenterName").html('');
+		$("#testCenterCode_mi").html('');
+		$("#testCenterName_mi").html('');
+		$("#testLanguage_mi").html('');
+		$("#lithoCode_mi").html('');
+		$("#scoringDate_mi").html('');
+		$("#scannedDate_mi").html('');
+		$("#studentName_mi").html('');
+		$("#numberCorrect_mi").html('');
+		$("#statusCode_mi").html('');
+		$("#scanBatch_mi").html('');
+		$("#scanStack_mi").html('');
+		$("#scanSequence_mi").html('');
+		$("#bioImages_mi").html('');
 	}
 	
 	function clearStudentDetailsTableWhenError(errMsg) {
@@ -259,7 +270,8 @@
 		jQuery("#stuHistDialog").dialog({
 			title: dialogTitle,
 			width: 510,
-			height: 448
+			height: 448,
+			draggable: false
 		});
 		$.ajax({
 		      type: "POST",
@@ -324,8 +336,9 @@
 		$("#moreInfo").html( '<img src="css/ajax-loader.gif"></img>' );
 		jQuery("#moreInfoDialog").dialog({
 			title: 'More Info: ',
-			width: 510,
-			height: 448
+			width: 675,
+			height: 410,
+			draggable: false
 		});
 		$.ajax({
 		      type: "POST",
@@ -336,12 +349,23 @@
 		    		  clearMoreInfoTableWhenError('Failed to get Data');
 		    	  } else if(data.length == 2) {
 		    		  clearMoreInfoTableWhenError('Data Not Found');
-			      } else {
+		          } else {
 		    		  $("#moreInfo").html('');
 			    	  var obj = JSON.parse(data);
 			    	  $("#testCenterCode_mi").html( obj.TESTING_SITE_CODE );
 			    	  $("#testCenterName_mi").html( obj.TESTING_SITE_NAME );
-		    	  }
+			    	  $("#testLanguage_mi").html( obj.TEST_LANGUAGE );
+			    	  $("#lithoCode_mi").html( obj.LITHOCODE );
+			    	  $("#scoringDate_mi").html( obj.SCORING_DATE );
+			    	  $("#scannedDate_mi").html( obj.SCANNED_DATE );
+			    	  $("#studentName_mi").html( obj.LAST_NAME );
+			    	  $("#numberCorrect_mi").html( obj.NCR_SCORE );
+			    	  $("#statusCode_mi").html( obj.CONTENT_STATUS_CODE );
+			    	  $("#scanBatch_mi").html( obj.SCAN_BATCH );
+			    	  $("#scanStack_mi").html( obj.SCAN_STACK );
+			    	  $("#scanSequence_mi").html( obj.SCAN_SEQUENCE );
+			    	  $("#bioImages_mi").html( obj.BIO_IMAGES );
+			     }
 		      },
 			  error: function(data) {
 				  clearMoreInfoTableWhenError('Failed to get Data');
@@ -356,7 +380,8 @@
 		jQuery("#errorLogDialog").dialog({
 			title: 'Error Log',
 			width: 510,
-			height: 448
+			height: 448,
+			draggable: false
 		});
 		$.ajax({
 		      type: "POST",
@@ -433,14 +458,14 @@
 							<th>Student Name</th>
 							<th>UUID</th>
 							<th>Test Element Id</th>
-							<th>Process Id</th>
 							<th>Ex. Code</th>
 							<th>Status</th>
 							<th>Bar Code</th>
-							<th>Scheduled Date</th>
+							<th>Test/Schedule Date</th>
 							<th>State Code</th>
 							<th>Form</th>
 							<th>Subtest</th>
+							<th>Prism Process Date</th>
 							<th>More Info</th>
 						</tr>
 					</thead>
@@ -451,9 +476,9 @@
 				</p>
 				<p>
 					<b>Overall Status:</b><br/>
-					<span class="completed legend" title="Completed"></span> = Completed/Success <br/>
-					<span class="progress legend legend2" title="Completed" style="margin-left: -34px;"></span> = Invalidated<br/>
-					<span class="error legend legend2 legend3" title="Completed" style="margin-left: -34px;"></span> = Error
+					<span class="completed legend" title="Completed"></span> = Completed/Success =(CO) <br/>
+					<span class="progress legend legend2" title="Completed" style="margin-left: -34px;"></span> = Invalidated =(IN)<br/>
+					<span class="error legend legend2 legend3" title="Completed" style="margin-left: -34px;"></span> = Error =(ER)
 				</p>
 				
 				<div id="stuHistDialog" title="Loading ..." style='display:none; font-size:11px;'>
@@ -580,10 +605,43 @@
 							<td colspan="2"><span id="_error_message" style="display:none;color:red"></span></td>
 						</tr>
 						<tr>
-							<td width="44%"><b>Test Center Code :</b></td><td width="56%"><span id="testCenterCode_mi"><img src="css/ajax-loader.gif"></img></span></td>
+							<td width="44%"><b>Test Center Code :</b></td><td width="56%"><span id="testCenterCode_mi"></span></td>
 						</tr>
 						<tr>
-							<td><b>Test Center Name :</b></td><td><span id="testCenterName_mi"><img src="css/ajax-loader.gif"></img></span></td>
+							<td><b>Test Center Name :</b></td><td><span id="testCenterName_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Test Language :</b></td><td><span id="testLanguage_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Litho Code :</b></td><td><span id="lithoCode_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Scoring Date :</b></td><td><span id="scoringDate_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Scanned/Processed Date :</b></td><td><span id="scannedDate_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Student Name (CBT/PBT) :</b></td><td><span id="studentName_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Number Correct :</b></td><td><span id="numberCorrect_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Status Code :</b></td><td><span id="statusCode_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Scan Batch=OrgTP_Struc-Lvl-Elm_Opunit :</b></td><td><span id="scanBatch_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Scan Stack :</b></td><td><span id="scanStack_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Scan Sequence :</b></td><td><span id="scanSequence_mi"></span></td>
+						</tr>
+						<tr>
+							<td><b>Bio Image(s) :</b></td><td><span id="bioImages_mi"></span></td>
 						</tr>
 					</table>
 				</div>

@@ -579,11 +579,10 @@ public class TascController {
 			.append(",").append("Student Name")
 			.append(",").append("UUID")
 			.append(",").append("Test Element Id")
-			.append(",").append("Process Id")
 			.append(",").append("Ex. Code")
 			.append(",").append("Status")
 			.append(",").append("Bar Code")
-			.append(",").append("Scheduled Date")
+			.append(",").append("Test/Schedule Date")
 			.append(",").append("State Code")
 			.append(",").append("Form")
 			.append(",").append("Subtest")
@@ -625,11 +624,20 @@ public class TascController {
 				.append(",").append("ECC")
 				.append(",").append("Regst TC County Parish Code")
 				.append(",").append("Sched TC County Parish Code");
+			}else{
+				buffer.append(",").append("Test Language")
+				.append(",").append("Litho Code")
+				.append(",").append("Scoring Date")
+				.append(",").append("Scanned/Processed Date")
+				.append(",").append("Number Correct")
+				.append(",").append("Status Code")
+				.append(",").append("Scan Batch=OrgTP_Struc-Lvl-Elm_Opunit")
+				.append(",").append("Scan Stack")
+				.append(",").append("Scan Sequence")
+				.append(",").append("Bio Image(s)");
 			}
 			buffer.append(",").append("Source System")
-			/*.append(",").append("Processed Date From")
-			.append(",").append("Processed Date To")*/
-			.append(",").append("Processed Date")
+			.append(",").append("Prism Process Date")
 			.append(",").append("Error Log")
 			.append("\n");
 			

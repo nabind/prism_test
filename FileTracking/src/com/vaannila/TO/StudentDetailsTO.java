@@ -77,8 +77,20 @@ public class StudentDetailsTO implements Serializable {
 	private String ss;
 	private String StudentBioId = "";
 	private String updatedDate = "";
-	private String createdDate;
-	private String comments;
+	private String createdDate = "";
+	private String comments = "";
+	private String testLanguage = "";
+	private String lithocode = "";
+	private String scoringDate = "";
+	private String scannedDate = "";
+	private String ncrScore = "";
+	private String contentStatusCode = "";
+	private String scanBatch = "";
+	private String scanStack = "";
+	private String scanSequence = "";
+	private String bioImages = "";
+	
+	
 	
 	public String getComments() {
 		return comments;
@@ -526,6 +538,66 @@ public class StudentDetailsTO implements Serializable {
 	public void setProcessedDate(String processedDate) {
 		this.processedDate = processedDate;
 	}
+	public String getTestLanguage() {
+		return testLanguage;
+	}
+	public void setTestLanguage(String testLanguage) {
+		this.testLanguage = testLanguage;
+	}
+	public String getLithocode() {
+		return lithocode;
+	}
+	public void setLithocode(String lithocode) {
+		this.lithocode = lithocode;
+	}
+	public String getScoringDate() {
+		return scoringDate;
+	}
+	public void setScoringDate(String scoringDate) {
+		this.scoringDate = scoringDate;
+	}
+	public String getScannedDate() {
+		return scannedDate;
+	}
+	public void setScannedDate(String scannedDate) {
+		this.scannedDate = scannedDate;
+	}
+	public String getNcrScore() {
+		return ncrScore;
+	}
+	public void setNcrScore(String ncrScore) {
+		this.ncrScore = ncrScore;
+	}
+	public String getContentStatusCode() {
+		return contentStatusCode;
+	}
+	public void setContentStatusCode(String contentStatusCode) {
+		this.contentStatusCode = contentStatusCode;
+	}
+	public String getScanBatch() {
+		return scanBatch;
+	}
+	public void setScanBatch(String scanBatch) {
+		this.scanBatch = scanBatch;
+	}
+	public String getScanStack() {
+		return scanStack;
+	}
+	public void setScanStack(String scanStack) {
+		this.scanStack = scanStack;
+	}
+	public String getScanSequence() {
+		return scanSequence;
+	}
+	public void setScanSequence(String scanSequence) {
+		this.scanSequence = scanSequence;
+	}
+	public String getBioImages() {
+		return bioImages;
+	}
+	public void setBioImages(String bioImages) {
+		this.bioImages = bioImages;
+	}
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -538,7 +610,6 @@ public class StudentDetailsTO implements Serializable {
 		buffer.append(",").append("\"").append(studentName).append("\"")
 		.append(",").append("\"").append(uuid).append("\"")
 		.append(",").append("\"").append(testElementId).append("\"")
-		.append(",").append("\"").append(processId).append("\"")
 		.append(",").append("\"").append(exceptionCode).append("\"");
 		if("CO".equals(overallStatus)) {
 			buffer.append(",").append("\"").append("Completed").append("\"");
@@ -591,10 +662,19 @@ public class StudentDetailsTO implements Serializable {
 			.append(",").append("\"").append(ecc).append("\"")
 			.append(",").append("\"").append(regstTcCountyParishCode).append("\"")
 			.append(",").append("\"").append(schedTcCountyParishCode).append("\"");
+		}else{
+			buffer.append(",").append("\"").append(testLanguage).append("\"")
+			.append(",").append("\"").append(lithocode).append("\"")
+			.append(",").append("\"").append(scoringDate).append("\"")
+			.append(",").append("\"").append(scannedDate).append("\"")
+			.append(",").append("\"").append(ncrScore).append("\"")
+			.append(",").append("\"").append(contentStatusCode).append("\"")
+			.append(",").append("\"").append(scanBatch).append("\"")
+			.append(",").append("\"").append(scanStack).append("\"")
+			.append(",").append("\"").append(scanSequence).append("\"")
+			.append(",").append("\"").append(bioImages).append("\"");
 		}
 		buffer.append(",").append("\"").append(sourceSystemDesc).append("\"")
-		/*.append(",").append("\"").append(processedDateFrom).append("\"")
-		.append(",").append("\"").append(processedDateTo).append("\"")*/
 		.append(",").append("\"").append(processedDate).append("\"")
 		.append(",").append("\"").append(errorLog).append("\"");
 		return buffer.toString();
