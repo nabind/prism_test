@@ -134,7 +134,6 @@
 			$("#commentErrorLog").css("color","red");
 			$("#commentErrorLog").text("Maximum length is 4000. Please summarize your comment");
 		}else{
-			alert("else");
 			var dataString = "comments="+comments+"&stateCode="+stateCode+"&uuId="+uuid;
 			$.ajax({
 			      type: "POST",
