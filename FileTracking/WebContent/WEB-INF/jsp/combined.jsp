@@ -130,9 +130,11 @@
 		var stateCode = $("#commentStateCode").val();
 		var uuid = $("#commentUuid").val();
 		if(comments.length > 4000){
+			$("#commentErrorLog").show();
 			$("#commentErrorLog").css("color","red");
 			$("#commentErrorLog").text("Maximum length is 4000. Please summarize your comment");
 		}else{
+			alert("else");
 			var dataString = "comments="+comments+"&stateCode="+stateCode+"&uuId="+uuid;
 			$.ajax({
 			      type: "POST",
