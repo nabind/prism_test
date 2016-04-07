@@ -92,4 +92,9 @@
       <put-attribute name="body"   value="/WEB-INF/jsp/combined.jsp"/>      
   </definition>
   
+  <definition name="supportPage" extends="baseLayout">
+      <put-attribute name="title"  value="Support Page"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/supportPage.jsp"/>      
+  </definition>
+  
 </tiles-definitions>

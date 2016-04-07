@@ -60,32 +60,40 @@ public class UserController extends MultiActionController {
 		String j_username_1 = prop.getProperty("j_username_1");
 		String j_password_1 = prop.getProperty("j_password_1");
 		
+		String j_username_3 = prop.getProperty("j_username_3");
+		
+		
 		String givenUsername = request.getParameter("j_username");
 		String givenPassword = request.getParameter("j_password");
 		
 		String encPwd = PasswordCipherer.getEncryptedString(givenPassword);
-    	boolean tascuser = false, mapuser = false;
+    	boolean tascuser = false, mapuser = false, supportuser = false;
 		if(givenUsername != null && givenUsername.equals(j_username_1)) {
 			password = j_password_1;
 			username = j_username_1;
 		}
 		if(givenUsername != null && givenUsername.equals(j_username_0)) {
-			password = password;
+			//password = password;
 			username = j_username_0;
 			tascuser = true;
 		}
 		if(givenUsername != null && givenUsername.equals(j_username_2)) {
-			password = password;
+			//password = password;
 			username = j_username_2;
-			tascuser = true;
 			mapuser = true;
 		}
+		if(givenUsername != null && givenUsername.equals(j_username_3)) {
+			//password = password;
+			username = j_username_3;
+			supportuser = true;
+		}
+		
     	if(encPwd != null && encPwd.equals(password)) {
     		if(username != null && username.equals(givenUsername)) {
     			request.getSession().setAttribute("validUser", "true");
     			request.getSession().setAttribute("userName", givenUsername);
     			
-    			if(!tascuser) {
+    			if(!tascuser && !mapuser && !supportuser) {
 	    			CommonDAOImpl commonDao = new CommonDAOImpl();
 	    			List<AdminTO> adminList = commonDao.getAllAdminYear();
 	    			request.getSession().setAttribute("adminList", adminList);
@@ -97,7 +105,8 @@ public class UserController extends MultiActionController {
 	    			}
     			} else {
     				if(mapuser) return new ModelAndView("mapSearch", "message", "");
-    				else return new ModelAndView("tascSearch", "message", "");
+    				else if(tascuser) return new ModelAndView("tascSearch", "message", "");
+    				else return new ModelAndView("supportPage", "message", "");
     			}
     			
 //    			StageDAOImpl stageDao = new StageDAOImpl();
