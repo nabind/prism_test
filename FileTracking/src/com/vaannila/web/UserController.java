@@ -106,7 +106,7 @@ public class UserController extends MultiActionController {
     			} else {
     				if(mapuser) return new ModelAndView("mapSearch", "message", "");
     				else if(tascuser) return new ModelAndView("tascSearch", "message", "");
-    				else return new ModelAndView("supportPage", "message", "");
+    				else return new ModelAndView("supportPageTASC", "message", "");
     			}
     			
 //    			StageDAOImpl stageDao = new StageDAOImpl();

@@ -615,6 +615,7 @@ public class TascController {
 		String savedComments = ""; 
 		String uuid = "";
 		String stateCode = "";
+		String userName = (String)request.getSession().getAttribute("userName");
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			SearchProcess process = new SearchProcess();
@@ -622,9 +623,33 @@ public class TascController {
 			process.setTestElementId(request.getParameter("testElementId"));
 			process.setStateCode(request.getParameter("stateCode"));
 			request.getSession().setAttribute("combinedRequestTO", process);
+					
 			
 			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getTestElementId() != null && process.getTestElementId().length() > 0) ) {
 				TascDAOImpl stageDao = new TascDAOImpl();
+				
+				String action = request.getParameter("action");
+				
+				if(action!=null && action.equals("delete")){
+					String studentBiodId = request.getParameter("bioId");
+					//Delete student code goes here with bio id
+					System.out.println("Student "+studentBiodId+ " has been deleted");
+				}
+				if(action!=null && action.equals("invalidate")){
+					//Invalidate student code goes here with uuid
+					System.out.println("Student "+process.getUuid()+ " has been invalidate");
+				}
+				if(action!=null && action.equals("invalidateSch")){
+					String schId = request.getParameter("schId");
+					//Invalidate schedule code goes here with uuid
+					System.out.println("Student "+process.getUuid()+ " with schedule " +schId+" has been invalidate");
+				}
+				if(action!=null && action.equals("unlock")){
+					String schId = request.getParameter("schId");
+					//Unlock student code goes here with uuid
+					System.out.println("Student "+process.getUuid()+ " with schedule " +schId+" has been unlocked");
+				}
+				
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
 				
@@ -649,9 +674,15 @@ public class TascController {
 				request.setAttribute("oasPpError", oasPpError);
 				
 				convertProcessToJson(studentDetailsTOList);
-				return new ModelAndView("combined", "message", "");
+				if (userName.equals("Support"))
+					return new ModelAndView("supportPageTASC", "message", "");
+				else
+					return new ModelAndView("combined", "message", "");
 			} else {
-				return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
+				if (userName.equals("Support"))
+					return new ModelAndView("supportPageTASC", "message", "Please provide UUID or TEST-ELEMENT-ID");
+				else	
+					return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
 			}
 			
 		} catch (Exception e) {
@@ -662,7 +693,10 @@ public class TascController {
 			request.setAttribute("stateCode", stateCode);
 			request.setAttribute("savedComments", savedComments);
 		}
-		return new ModelAndView("combined", "message", jsonStr);
+		if (userName.equals("Support"))
+			return new ModelAndView("supportPageTASC", "message", jsonStr);
+		else
+			return new ModelAndView("combined", "message", jsonStr);
 	}
 	
 	/**
