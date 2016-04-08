@@ -3,6 +3,8 @@
 <html xml:lang="en" dir="ltr" xmlns="http://www.w3.org/1999/xhtml"
 	lang="en">
 <head>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link rel="shortcut icon" href="favicon.ico" mce_href="favicon.ico"/>
 <title>Process Tracking</title>

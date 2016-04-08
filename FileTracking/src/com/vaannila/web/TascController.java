@@ -318,54 +318,6 @@ public class TascController {
 	}
 	
 	/**
-	 * This method is to show searched records
-	 * @author Joy
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	/*@RequestMapping("/process/searchTascEr.htm")
-	public ModelAndView searchTascEr(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchTascEr()");
-		try {
-			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
-			SearchProcess process = new SearchProcess();
-			process.setProcessedDateFrom(request.getParameter("processedDateFrom"));
-			process.setProcessedDateTo(request.getParameter("processedDateTo"));
-			process.setUuid(request.getParameter("uuid"));
-			process.setRecordId(request.getParameter("recordId"));
-			process.setLastName(request.getParameter("lastName"));
-			process.setExceptionCode(request.getParameter("exceptionCode"));
-			process.setSubjectCa(request.getParameter("subjectCa"));
-			process.setSourceSystem(request.getParameter("sourceSystem"));
-			process.setStateCode(request.getParameter("stateCode"));
-			process.setForm(request.getParameter("form"));
-			process.setTestElementId(request.getParameter("testElementId"));
-			process.setBarcode(request.getParameter("barcode"));
-			process.setProcessId(request.getParameter("processId"));
-			if("OAS".equals(process.getSourceSystem())){
-				process.setSourceSystemDesc("Online");
-			}else if("PP".equals(process.getSourceSystem())){
-				process.setSourceSystemDesc("Paper Pencil");
-			}else if("ERESOURCE".equals(process.getSourceSystem())){
-				process.setSourceSystemDesc("eResources");
-			}
-			
-			request.getSession().setAttribute("tascRequestTO", process);
-			TascDAOImpl stageDao = new TascDAOImpl();
-			List<StudentDetailsTO> studentDetailsTOList = stageDao.getProcessEr(process);
-			request.getSession().setAttribute("studentDetailsTOList", studentDetailsTOList);
-			convertProcessToJson(studentDetailsTOList);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new ModelAndView("tascProcessEr", "message", jsonStr);
-	}*/
-	
-	/**
 	 * This method is to show searched records page wise for eResource and normal for other
 	 * @author Joy
 	 * @param request
@@ -511,6 +463,7 @@ public class TascController {
 			System.out.println("Json = " + moreInfoJson);
 			response.setContentType("text/plain");
 			response.getWriter().write(moreInfoJson);
+			
 		} catch (Exception e) {
 			System.out.println("Failed to get More Info, erExcdId=" + erExcdId);
 			response.setContentType("text/plain");
@@ -675,17 +628,6 @@ public class TascController {
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 				request.setAttribute("combinedList", studentDetailsTOList);
 				
-				/*if(studentDetailsTOList != null && studentDetailsTOList.size() > 0
-						&& (process.getUuid() != null && process.getUuid().equals(studentDetailsTOList.get(0).getUuid()))
-						&& (process.getStateCode() != null && process.getStateCode().length() > 0)){
-					savedComments = (studentDetailsTOList.get(0).getComments()==null?"":studentDetailsTOList.get(0).getComments());
-					showCommentFlag = "true";
-					uuid = process.getUuid();
-					stateCode = process.getStateCode();
-				} else{
-					savedComments = "";
-				}*/
-				
 				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
 				request.setAttribute("erBucket", erBucket);
 				
@@ -770,6 +712,48 @@ public class TascController {
 		return null;
 	}
 	
-		
+	/**
+	 * This method is to collect search criteria
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/completenessCheckSearch.htm")
+	public ModelAndView completenessCheckSearch(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: completenessCheckSearch()");
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		return new ModelAndView("completenessCheckSearch", "message", "");
+	}
 	
+	/**
+	 * This method is to show searched records page wise
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/searchCompletenessCheck.htm")
+	public ModelAndView searchCompletenessCheck(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchCompletenessCheck()");
+		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+		try {
+			if(!UserController.checkLogin(request)) return modelAndView;
+			SearchProcess process = new SearchProcess();
+			process.setProcessStatus(request.getParameter("coCheckStatus"));
+			process.setProcessedDateFrom(request.getParameter("coCheckDateFrom"));
+			process.setProcessedDateTo(request.getParameter("coCheckDateTo"));
+			process.setImagingId(request.getParameter("imagingId"));
+			process.setBarcode(request.getParameter("barcode"));
+			request.getSession().setAttribute("coCheckTO", process);
+			modelAndView = new ModelAndView("completenessCheckResult", "message", jsonStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 }
