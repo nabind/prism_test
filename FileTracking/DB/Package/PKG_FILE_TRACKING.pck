@@ -24,7 +24,7 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                            P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
-  PROCEDURE SP_GET_DATA_OL_PP(P_PROCESS_STATUS         IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_WINSCORE(P_PROCESS_STATUS         IN VARCHAR2,
                               P_DATE_FROM              IN VARCHAR2,
                               P_DATE_TO                IN VARCHAR2,
                               P_UUID                   IN VARCHAR2,
@@ -631,6 +631,191 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_OL_PP;
+  
+  PROCEDURE SP_GET_DATA_WINSCORE(P_PROCESS_STATUS         IN VARCHAR2,
+                              P_DATE_FROM              IN VARCHAR2,
+                              P_DATE_TO                IN VARCHAR2,
+                              P_IMAGING_ID         IN VARCHAR2,
+                              P_BARCODE           IN VARCHAR2,
+                              P_SEARCH_PARAM           IN VARCHAR2,
+                              P_ORDERED_COLUMN         IN VARCHAR2,
+                              P_ORDER                  IN VARCHAR2,
+                              P_ROWNUM_FROM            IN NUMBER,
+                              P_ROWNUM_TO              IN NUMBER,
+                              P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                              P_OUT_CUR_DATA        OUT GET_REFCURSOR,
+                              P_OUT_CUR_DATA_CSV    OUT GET_REFCURSOR,
+                              P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
+  
+    V_QUERY_PAGING             CLOB := '';
+    V_QUERY_ACTUAL             CLOB := '';
+    V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
+    V_EXCEPTION_STATUS         VARCHAR2(100) := '';
+    V_SEARCH_PARAM             VARCHAR2(100);
+    V_SEARCH_PARAM_COUNT       NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
+  
+  BEGIN
+  
+    V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                      ' SELECT SCAN_BATCH,
+                           DISTRICT_NUMBER,
+                           SCHOOL_NUMBER,
+                           UUID,
+                           BARCODE,
+                           TEST_FORM,
+                           BRAILLE,
+                           LARGE_PRINT,
+                           DATE_TEST_TAKEN,
+                           LOGINDATE,
+                           SCAN_DATE,
+                           WINS_EXPORT_DATE,
+                           IMAGING_ID,
+                           ORGTP_NAME,
+                           LAST_NAME,
+                           FIRST_NAME,
+                           MIDDLE_INITIAL,
+                           LITHOCODE,
+                           SCAN_STACK,
+                           SCAN_SEQ,
+                           WINS_DOCID,
+                           COMMODITY_CODE,
+                           WINSTATUS,
+                           PRISM_PROCESS_STATUS
+                      FROM WINS_DOC_INFO
+                     WHERE ';
+                     
+    IF P_PROCESS_STATUS <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PRISM_PROCESS_STATUS =  ''' ||
+                        P_PROCESS_STATUS || '''';
+    END IF;
+  
+    IF P_DATE_FROM <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                        ' AND TRUNC(WINS_EXPORT_DATE) >= TO_DATE(''' ||
+                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_DATE_TO <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                        ' AND TRUNC(WINS_EXPORT_DATE) <= TO_DATE(''' ||
+                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_IMAGING_ID <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND IMAGING_ID ''%' ||
+                        P_IMAGING_ID || '%''';
+    END IF;
+  
+    IF P_BARCODE <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND BARCODE =  ''' ||
+                        P_BARCODE || '''';
+    END IF;
+  
+    IF P_SEARCH_PARAM <> '-1' THEN
+      V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
+                        ') TAB_SEARCH WHERE UPPER(SCAN_BATCH) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DISTRICT_NUMBER) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SCHOOL_NUMBER) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_FORM) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(BRAILLE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(LARGE_PRINT) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DATE_TEST_TAKEN) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(LOGINDATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SCAN_DATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(WINS_EXPORT_DATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM || '%'')';
+    
+      V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
+    END IF;
+  
+    V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
+                                  'SELECT COUNT(1) FROM (' ||
+                                  V_QUERY_ACTUAL || ') TAB';
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
+    V_QUERY_TOTAL_RECORD_COUNT);*/
+  
+    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+      LOOP
+        FETCH V_CUR_TOTAL_RECORD_COUNT
+          INTO P_OUT_TOTAL_RECORD_COUNT;
+        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+        /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+        P_OUT_TOTAL_RECORD_COUNT);*/
+      END LOOP;
+      CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
+  
+    IF P_ORDERED_COLUMN <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORDER BY ';
+    END IF;
+  
+    IF P_ORDERED_COLUMN = '1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SCAN_BATCH ';
+    ELSIF P_ORDERED_COLUMN = '2' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' STUDENTNAME ';
+    ELSIF P_ORDERED_COLUMN = '3' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' UUID ';
+    ELSIF P_ORDERED_COLUMN = '4' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TEST_ELEMENT_ID ';
+    ELSIF P_ORDERED_COLUMN = '5' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PROCESS_ID ';
+    ELSIF P_ORDERED_COLUMN = '6' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' EXCEPTION_CODE ';
+    ELSIF P_ORDERED_COLUMN = '7' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' EXCEPTION_STATUS ';
+    ELSIF P_ORDERED_COLUMN = '8' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' BARCODE ';
+    ELSIF P_ORDERED_COLUMN = '9' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DATE_SCHEDULED ';
+    ELSIF P_ORDERED_COLUMN = '10' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' STATE_CODE ';
+    ELSIF P_ORDERED_COLUMN = '11' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FORM ';
+    ELSIF P_ORDERED_COLUMN = '12' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SUBTEST ';
+    ELSIF P_ORDERED_COLUMN = '13' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PROCESSED_DATE ';
+    END IF;
+  
+    IF P_ORDER = 'asc' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ASC ';
+    ELSIF P_ORDER = 'desc' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DESC ';
+    END IF;
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
+    OPEN P_OUT_CUR_ER_DATA_CSV FOR V_QUERY_ACTUAL;
+  
+    V_QUERY_PAGING := V_QUERY_PAGING ||
+                      'SELECT *
+        FROM (SELECT ROWNUM RNUM, A.* FROM (' ||
+                      V_QUERY_ACTUAL || ') A WHERE ROWNUM <= ' ||
+                      P_ROWNUM_TO || ')
+       WHERE RNUM >= ' || P_ROWNUM_FROM;
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
+    OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_DATA_WINSCORE;
 
 END PKG_FILE_TRACKING; --END OF PACKAGE
 /
