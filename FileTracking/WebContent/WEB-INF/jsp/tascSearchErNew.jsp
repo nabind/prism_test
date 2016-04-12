@@ -118,7 +118,7 @@
 								<td>Processed Date From:</td>
 								<td>
 									<input type="text" name="processedDateFrom" id="processedDateFrom">
-									<span style="color:red;">* Date range should be 180 days or less.</span>
+									<span style="color:red;">* Date range should be 365 days or less.</span>
 								</td>
 							</tr>
 							<tr>
