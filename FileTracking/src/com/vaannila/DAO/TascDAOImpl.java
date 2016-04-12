@@ -378,7 +378,7 @@ public class TascDAOImpl {
 		queryBuff.append("LITHOCODE,");
 		queryBuff.append("TO_CHAR(SCORING_DATE,'MM/DD/YYYY') SCORING_DATE,");
 		queryBuff.append("TO_CHAR(SCANNED_DATE,'MM/DD/YYYY') SCANNED_DATE,");
-		queryBuff.append("LAST_NAME,");
+		queryBuff.append("SRC_STUDENT_NAME,");
 		queryBuff.append("NCR_SCORE,");
 		queryBuff.append("CONTENT_STATUS_CODE,");
 		queryBuff.append("SCAN_BATCH,");
@@ -402,7 +402,7 @@ public class TascDAOImpl {
 				moreInfoMap.put("LITHOCODE", rs.getString("LITHOCODE") != null ? rs.getString("LITHOCODE") : "");
 				moreInfoMap.put("SCORING_DATE", rs.getString("SCORING_DATE") != null ? rs.getString("SCORING_DATE") : "");
 				moreInfoMap.put("SCANNED_DATE", rs.getString("SCANNED_DATE") != null ? rs.getString("SCANNED_DATE") : "");
-				moreInfoMap.put("LAST_NAME", rs.getString("LAST_NAME") != null ? rs.getString("LAST_NAME") : "");
+				moreInfoMap.put("LAST_NAME", rs.getString("SRC_STUDENT_NAME") != null ? rs.getString("SRC_STUDENT_NAME") : "");
 				moreInfoMap.put("NCR_SCORE", rs.getString("NCR_SCORE") != null ? rs.getString("NCR_SCORE") : "");
 				moreInfoMap.put("CONTENT_STATUS_CODE", rs.getString("CONTENT_STATUS_CODE") != null ? rs.getString("CONTENT_STATUS_CODE") : "");
 				moreInfoMap.put("SCAN_BATCH", rs.getString("SCAN_BATCH") != null ? rs.getString("SCAN_BATCH") : "");
