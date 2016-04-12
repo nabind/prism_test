@@ -1370,11 +1370,23 @@ function getGroupDownloadTO() {
 
 function getSelectedStudentIdsAsCommaString() {
 	var students = "";
-	$("input[id^=check-status-]").each(function() {
+	$('input[id^=check-status-]').each(function() {
+		var id = this.id;
+		var studentId = id.substring(13);
 		if (this.value == "1") {
-			var id = this.id;
-			var studentId = id.substring(13);
-			students = students + "," + studentId;
+			var elementObj = $('#check-status-'+studentId);
+			if(typeof elementObj.attr('gradeCode') !== 'undefined'){
+				var studentBioId = elementObj.attr('studentBioId'); 
+				var gradeCode =  elementObj.attr('gradeCode');
+				var gradeId =  elementObj.attr('gradeId');
+				var extStudentId =  elementObj.attr('extStudentId'); 
+				var lastNameCap =  elementObj.attr('lastNameCap');
+				var curYear =  elementObj.attr('curYear');  
+				var studentDetails = studentBioId+":"+extStudentId+":"+lastNameCap+":"+gradeCode+":"+gradeId+":"+curYear;
+				students = students + "," + studentDetails;
+			}else{
+				students = students + "," + studentId;
+			}
 		}
 	});
 	if (students.length > 0) {
@@ -1387,13 +1399,15 @@ function getSelectedStudentIdsAsCommaString() {
  * Download MAP GLA ISR PDF based on selected student and subtest
  * @param studentId
  */
-function downloadMapIsr(studentId) {
+function downloadMapIsr(studentId,gradeId,gradeCode,extStudentId,lastNameCap,curYear) {
 	blockUI();
 	var subtest = $("#p_subtest", window.parent.document); 
 	var tab = $("li.active", window.parent.document).attr("param");
 	tab = tab.replace(/new-tab/g, "report-form-");
 	var formObj = $('.'+tab, window.parent.document);
-	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId;
+	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId+ '&gradeId=' + gradeId
+					+ '&gradeCode=' + gradeCode+ '&extStudentId=' + extStudentId
+					+ '&lastNameCap=' + lastNameCap+ '&curYear=' + curYear;
 	
 	location.href = 'downloadMapIsr.do?' + dataUrl;
 	unblockUI();

@@ -32,7 +32,7 @@ public class InputControlFactoryImpl implements InputControlFactory {
 		StringBuilder str = new StringBuilder();
 		if(seperated) str.append( getInputControlContainerSeparated(true) );
 		else str.append( getInputControlContainer(true) );
-		str.append( getSelectBoxLabel(title) );
+		str.append( getSelectBoxLabel(title/*, isMultiselect, name, tabCount*/) );
 		if(isMultiselect) {
 			str.append( String.format(IDomObject.SELECT_MULTIPLE_EXPANDABLE, name, name, reportUrl, tabCount, assessmentId, name) );
 		} else {
@@ -68,35 +68,60 @@ public class InputControlFactoryImpl implements InputControlFactory {
 			isLongitudinal = true;
 		}
 		// End : patch for Longitudinal
+		int optionCount = 0; 
+		boolean customSelect = false;
+		boolean isSubset = false;
 		for (ObjectValueTO objectValueTo : objectValueToList) {
 			if(isMultiselect) {
 				if(selectValues != null && selectValues.get(name) != null) selectValueList = Arrays.asList(selectValues.get(name));
 				// this input control has default value ... we need to check selected object based on this default value
 				if(selectValueList != null && !selectValueList.isEmpty()) {
-					if(selectValueList.contains(objectValueTo.getValue())) {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
-							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
+					optionCount++;
+					if(!isSubset && "p_examiner".equals(name)) {
+						// apply this patch for TD 83266
+						for (ObjectValueTO objVal : objectValueToList) {
+							if(selectValueList.contains(objVal.getValue())) {
+								isSubset = true;
+								break;
+							}
+						}
+					}
+					
+					if(!isSubset && "p_examiner".equals(name)) {
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
+								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 					} else {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
-								objectValueTo.getValue(), "", objectValueTo.getName()) );
+						if(selectValueList.contains(objectValueTo.getValue())) {
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
+								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
+						} else {
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
+									objectValueTo.getValue(), "", objectValueTo.getName()) );
+						}
 					}
 				} else {
 					if(defaultInputNames != null && defaultInputNames.contains(name)) {
 						if(defaultValues.get(name) != null) defaultValueList = Arrays.asList(defaultValues.get(name));
 						// this input control has default value ... we need to check selected object based on this default value
 						if(defaultValueList != null && defaultValueList.contains(objectValueTo.getValue())) {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							optionCount++;
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 									objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 						} else {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							optionCount++;
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 									objectValueTo.getValue(), "", objectValueTo.getName()) );
 						}
 					} else {
 						if(isLongitudinal && isFirstSelected) {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							optionCount++;
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 									objectValueTo.getValue(), "", objectValueTo.getName()) );
 						} else {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							// adding new code
+							/*str.append( String.format(IDomObject.SELECT_OPTION, 
+									objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );*/
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name,
 									objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 						}
 						if(isLongitudinal && !isFirstSelected) {
@@ -108,14 +133,14 @@ public class InputControlFactoryImpl implements InputControlFactory {
 				if(selectValues != null && selectValues.get(name) != null) selectValueList = Arrays.asList(selectValues.get(name));
 				// this input control has default value ... we need to check selected object based on this default value
 				if(selectValueList != null && selectValueList.contains(objectValueTo.getValue())) {
-					str.append( String.format(IDomObject.SELECT_OPTION, 
+					str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 				} else if(selectValueList != null && selectValueList.isEmpty() && objectValueTo.getName() != null && objectValueTo.getName().indexOf("Default") != -1) {
 					// this block is for form/level
-					str.append( String.format(IDomObject.SELECT_OPTION, 
+					str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 				} else {
-					str.append( String.format(IDomObject.SELECT_OPTION, 
+					str.append( String.format(IDomObject.SELECT_OPTION_ALL, tabCount, name, 
 							objectValueTo.getValue(), "", objectValueTo.getName()) );
 				}
 			}
@@ -213,18 +238,18 @@ public class InputControlFactoryImpl implements InputControlFactory {
 				if(defaultInputNames != null && defaultInputNames.contains(name)) {
 					if(defaultValues.get(name) != null) defaultValueList = Arrays.asList(defaultValues.get(name));
 					if(defaultValueList != null && defaultValueList.contains(objectValueTo.getValue())) {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 					} else {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 								objectValueTo.getValue(), "", objectValueTo.getName()) );
 					}
 				} else {
 					if(isLongitudinal && isFirstSelected) {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 								objectValueTo.getValue(), "", objectValueTo.getName()) );
 					} else {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 								objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 					}
 					if(isLongitudinal && !isFirstSelected) {
@@ -234,20 +259,20 @@ public class InputControlFactoryImpl implements InputControlFactory {
 			} else {
 				if(objectValueTo.getName() != null && objectValueTo.getName().indexOf("Default") != -1) {
 					// this block is for form/level
-					str.append( String.format(IDomObject.SELECT_OPTION, 
+					str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 							objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 				} else {
 					if(sessionParams != null && sessionParams.get(name) != null) {
 						String[] sessionVal = sessionParams.get(name);
 						if(sessionVal.length > 0 && objectValueTo.getValue().equals(sessionVal[0])) {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 									objectValueTo.getValue(), IDomObject.OPTION_SELECTED, objectValueTo.getName()) );
 						} else {
-							str.append( String.format(IDomObject.SELECT_OPTION, 
+							str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 									objectValueTo.getValue(), "", objectValueTo.getName()) );
 						}
 					} else {
-						str.append( String.format(IDomObject.SELECT_OPTION, 
+						str.append( String.format(IDomObject.SELECT_OPTION_ALL, -1, name, 
 								objectValueTo.getValue(), "", objectValueTo.getName()) );
 					}
 				}
@@ -264,6 +289,14 @@ public class InputControlFactoryImpl implements InputControlFactory {
 	private String getSelectBoxLabel(String title) {
 		return  String.format(IDomObject.IC_TITLE, title);
 	}
+	
+	/*private String getSelectBoxLabel(String title, boolean isMultiselect, String name, String tabCount) {
+		if(isMultiselect) {
+			return String.format(IDomObject.IC_TITLE_WITH_SELECT_ALL, title, name, tabCount);
+		} else {
+			return  String.format(IDomObject.IC_TITLE, title);
+		}
+	}*/
 	
 	/**
 	 * This box returns select box container

@@ -1,6 +1,7 @@
 package com.ctb.prism.report.dao;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -89,7 +91,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	} )
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -145,7 +151,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * 
 	 * @see com.ctb.prism.report.dao.IReportDAO#getFilledReportNoCache(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
-	
+	@Caching( cacheable = {
+			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )"),
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
+	} )
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
@@ -1740,6 +1750,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String schoolId = to.getSchool();
 		final String classId = to.getKlass();
 		final String gradeId = to.getGrade();
+		final String gradeIdCommaSep = Utils.arrayToSeparatedString(to.getGrades(), ',') ;
 		final String testProgram = to.getTestProgram();
 		final String collationHierarchy = to.getCollationHierarchy();
 		final String groupFile = to.getGroupFile();
@@ -1748,9 +1759,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		final String subtestCommaSep = Utils.arrayToSeparatedString(to.getSubtest(), ',') ;
 		final String testAdministrationVal = to.getTestAdministrationVal();
 		final String districtId = to.getDistrict();
-		final String studentGroups = to.getStudentGroups();
+		final String studentGroupsCommaSep = to.getStudentGroups();
 		String userName = to.getUserName();
-		String contractName = to.getContractName();
+		final String contractName = to.getContractName();
 		
 		if (testAdministrationVal == null || testAdministrationVal.isEmpty()) {
 			logger.log(IAppLogger.ERROR, "testAdministrationVal cannot be null or empty: " + testAdministrationVal);
@@ -1768,8 +1779,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "loggedInOrgNodeId = " + loggedInOrgNodeId);
 		logger.log(IAppLogger.INFO, "userName = " + userName);
 		logger.log(IAppLogger.INFO, "subtestCommaSep = " + subtestCommaSep);
+		logger.log(IAppLogger.INFO, "gradeIdCommaSep = " + gradeIdCommaSep);
 		logger.log(IAppLogger.INFO, "testAdministrationVal = " + testAdministrationVal);
 		logger.log(IAppLogger.INFO, "districtId = " + districtId);
+		logger.log(IAppLogger.INFO, "studentGroupsCommaSep = " + studentGroupsCommaSep);
 		
 		if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)){
 			studentList = (List<GroupDownloadStudentTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
@@ -1777,10 +1790,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_STUDENTS_G_MO);
 					cs.setLong(1, Long.parseLong(testAdministrationVal));
 					cs.setLong(2, Long.parseLong(schoolId));
-					cs.setLong(3, Long.parseLong(gradeId));
+					if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)) {
+						cs.setString(3, gradeIdCommaSep);
+					} else {
+						cs.setLong(3, Long.parseLong(gradeId));
+					}
 					cs.setString(4, subtestCommaSep);
-					//cs.setString(5, studentGroups);
-					cs.setLong(5, Long.parseLong(studentGroups));
+					cs.setString(5, studentGroupsCommaSep);
 					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
@@ -1799,6 +1815,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 							student.setName(rs.getString("STUDENT_NAME"));
 							student.setGrade(rs.getString("GRADE_NAME"));
 							student.setSchool(rs.getString("SCHOOL_NAME"));
+							student.setGradeId(rs.getString("GRADEID"));
+							student.setGradeCode(rs.getString("GRADE_CODE"));
+							student.setExtStudentId(rs.getString("EXT_STUDENT_ID"));
+							student.setLastNameCap(rs.getString("LAST_NAME_CAP"));
+							student.setCurYear(rs.getString("CURYEAR"));
 							studentList.add(student);
 						}
 						return studentList;
@@ -2069,14 +2090,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 * @see com.ctb.prism.report.dao.IReportDAO#createJobTracking(com.ctb.prism.report.transferobject.GroupDownloadTO)
 	 */
 	public String createJobTracking(GroupDownloadTO to) {
-		logger.log(IAppLogger.INFO, "Enter: createJobTracking()");
+		logger.log(IAppLogger.INFO, "Enter: ReportDAOImpl - createJobTracking()");
+		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+		long t1 = System.currentTimeMillis();
+		
 		String button = to.getButton();
 		String testAdministrationVal = to.getTestAdministrationVal();
 		String fileName = to.getFileName();
 		String groupFile = to.getGroupFile();
 		String students = to.getStudents();
 		String orgNodeId = to.getSchool();
-		String currUserName = to.getUserName();
+		final String currUserName = to.getUserName();
 		String currAdminId = to.getAdminId();
 		String currCustomerId = to.getCustomerId();
 		String studentSelection = IApplicationConstants.FLAG_N.equals(to.getStudentSelection()) ? "NO" : "YES";
@@ -2093,10 +2117,10 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "currCustomerId = " + currCustomerId);
 		logger.log(IAppLogger.INFO, "studentSelection = " + studentSelection);
 
-		Long job_id = getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_PROCESS_SEQ, Long.class);
-		String job_name = groupFile;
-		String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
-		String extract_filetype = groupFile;
+		final Long job_id = getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_PROCESS_SEQ, Long.class);
+		final String job_name = groupFile;
+		final String extract_category = IApplicationConstants.EXTRACT_CATEGORY.AE.toString(); // As per requirement email
+		final String extract_filetype = groupFile;
 		
 		String request_type = "";
 		String request_summary = "";
@@ -2114,16 +2138,21 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			request_summary = "Group Download - " + groupFile + ": In Progress";
 			job_status = IApplicationConstants.JOB_STATUS.IP.toString();
 		}
+		final String request_type_final = request_type;
+		final String request_summary_final = request_summary;
+		final String request_filename_final = request_filename;
+		final String otherRequestParams_final = otherRequestParams;
+		final String job_status_final = job_status;
 		
-		String request_details_str = Utils.objectToJson(to);
+		final String request_details_str = Utils.objectToJson(to);
 		InputStream is = null;
 		is = new ByteArrayInputStream(request_details_str.getBytes());
 		LobHandler lobHandler = new DefaultLobHandler();
-		String request_email = to.getEmail();
-		String job_log = null;
+		final String request_email = to.getEmail();
+		final String job_log = null;
 		
-		Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
-		Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
+		final Long customerid = (currCustomerId != null) ? Long.valueOf(currCustomerId) : 0;
+		final Long productId = (testAdministrationVal != null) ? Long.valueOf(testAdministrationVal) : 0;
 
 		logger.log(IAppLogger.INFO, "job_id = " + job_id);
 		logger.log(IAppLogger.INFO, "job_name = " + job_name);
@@ -2139,15 +2168,61 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "customerid = " + customerid);
 		logger.log(IAppLogger.INFO, "productId = " + productId);
 
-		int count = getJdbcTemplatePrism().update(
+		/*TD - 83278: Oracle error occurred if more than 90 students are selected.
+		 *  Move the JOB_TRACKING insertion into store procedure. 
+		 *  Use request_details_str variable as a simple string
+		 */
+		/*int count = getJdbcTemplatePrism().update(
 					IQueryConstants.INSERT_JOB_TRACKING,
 					new Object[] { job_id, currUserName, job_name, extract_category, extract_filetype, request_type, request_summary, new SqlLobValue(is, request_details_str.length(), lobHandler),
 							request_filename, request_email, job_log, job_status, customerid, productId, customerid, otherRequestParams },
 					new int[] { Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.CLOB, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
-							Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR });
-		
-		logger.log(IAppLogger.INFO, "count = " + count);
-		logger.log(IAppLogger.INFO, "Exit: createJobTracking()");
+							Types.VARCHAR, Types.NUMERIC, Types.NUMERIC, Types.NUMERIC, Types.VARCHAR });*/
+		try {
+			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					CallableStatement cs = con.prepareCall(IQueryConstants.INSERT_JOB_TRACKING);
+					cs.setLong(1, job_id);
+					cs.setString(2, currUserName);
+					cs.setString(3, job_name);
+					cs.setString(4, extract_category);
+					cs.setString(5, extract_filetype);
+					cs.setString(6, request_type_final);
+					cs.setString(7, request_summary_final);
+					cs.setString(8, request_details_str);
+					cs.setString(9, request_filename_final);
+					cs.setString(10, request_email);
+					cs.setString(11, job_log);
+					cs.setString(12, job_status_final);
+					cs.setLong(13, customerid);
+					cs.setLong(14, productId);
+					cs.setString(15, otherRequestParams_final);
+					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.NUMBER);
+					cs.registerOutParameter(17, oracle.jdbc.OracleTypes.VARCHAR);
+					return cs;
+				}
+			}, new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(CallableStatement cs) {
+					long executionStatus = 0;
+					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+					try {
+						cs.execute();
+						executionStatus = cs.getLong(16);
+						statusTO.setValue(Long.toString(executionStatus));
+						statusTO.setName("");
+						Utils.logError(cs.getString(17));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					return statusTO;
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ReportDAOImpl - createJobTracking() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
 		return job_id.toString();
 	}
 

@@ -59,6 +59,14 @@ $(document).ready(function() {
 			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
 		} catch (e) {}
 	});
+	$(".input").live('blur', function() {
+		try {
+			// change refresh button color
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
+			// show tooltip on refresh button
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
+		} catch (e) {}
+	});
 	$("input[name='p_Last_Name']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
@@ -1147,6 +1155,22 @@ $("select#p_Roster_Rank_Order option").each(function(index){
 $("select#p_Roster_Rank_Order").html(rankOrderDom);
 }
 
+//============================= SELECT / DESELECT MULTI-SELECT INPUTS =============================
+function selectAllOption(event, select) {
+	event.preventDefault();
+	event.stopPropagation();
+	var inputId = $(select).attr('id');
+	//var val = $("#"+inputId+" option:first:selected").text();
+	var selectedCount = $("option:selected", select).length;
+	var optionCount = $("option", select).length;
+	if(selectedCount < optionCount) {
+		$(select).find('option').prop('selected', true);
+	} else {
+		$(select).find('option').prop('selected', false);
+		$(select).find('option:first').prop('selected', true);
+	}
+	$(select).trigger('update-select-list').change();
+}
 //============================= Populate cascading input control values =============================
 function getCascading(selectedObj) {
 	//$(document).click(); // this code is to close multiselect dropdown
@@ -1163,7 +1187,8 @@ function getCascading(selectedObj) {
 			|| 'p_Inview_Subtest'  == inputId /* Class - InView roster subtest */
 			|| 'p_Inview_Comb_Subtest_Multiselect'  == inputId || 'p_Inview_Comb_Score' == inputId /* Class - InView combination roster & summary dashboard */
 			|| 'p_Subtest_Class_MultiSelect'  == inputId /* Class LONGITUDINAL Roster*/
-			|| 'p_Bible_Roster_Score_Type'  == inputId ) { /* Class BIBLE Roster*/
+			|| 'p_Bible_Roster_Score_Type'  == inputId /* Class BIBLE Roster*/
+			|| 'p_grade'  == inputId ) { /* MO Student roster */
 		$(document).click(); // this code is to close multiselect dropdown
 	}
 	// code for bulk download button

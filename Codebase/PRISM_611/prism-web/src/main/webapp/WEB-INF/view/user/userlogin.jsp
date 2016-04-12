@@ -157,6 +157,8 @@
 		<span class="description"> </span></h1>
 	</div>
 	<input type="hidden" id="userLogin" value="userLogin">
+	<% String dev = request.getParameter("dev"); %>
+	<c:set var="dev" scope="page" value="<%=dev%>"/>
 	<c:choose>
 		<c:when test="${fn:contains(themeName, 'parent')}" >
 		<!-- Parent page -->
@@ -169,6 +171,7 @@
 				<div class="">
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
+							<c:if test="${empty messageMap.blockLogin || dev == 'true'}">
 							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
 								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 								<ul class="inputs large">
@@ -190,6 +193,12 @@
 									<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
 								</p>
 							</form:form>
+							</c:if>
+							<c:if test="${not empty messageMap.blockLogin}">
+								<div class="wrapped relative white-gradient custom-p with-padding red" style="min-height: 100px">
+									${messageMap.blockLogin}
+								</div>
+							</c:if>
 						</div>
 					</div>
 					<div class="margin-top">
@@ -197,6 +206,7 @@
 							${messageMap.parentOutageContent}
 						</div>
 					</div>
+					<c:if test="${empty messageMap.blockLogin || dev == 'true'}">
 					<div class="margin-bottom-medium margin-top">
 						<div class="boxshade" style="height: auto">
 							
@@ -212,6 +222,7 @@
 							
 						</div>
 					</div>
+					</c:if>
 				</div>
 			</section>	  
 		</c:when>
@@ -227,6 +238,7 @@
 				<div class="">
 					<div id="form-block" class="boxfshaxde">
 						<div id="form-viewport">
+							<c:if test="${empty messageMap.blockLogin || dev == 'true'}">
 							<form:form action="j_spring_security_check" method="post" id="form-login" class="input-wrapper blue-gradient glossy">
 								<div class="loginTitle"><spring:message code="title.dpp.welcome"/></div>
 								<ul class="inputs large">
@@ -248,7 +260,7 @@
 								<p class="button-height">
 									<c:choose>
   										<c:when test="${fn:contains(themeName, 'usmo')}" >
-											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /> <span class="red">(For CTB System Administrators Only)</span></button>
+											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /> <span class="red">(For DRC System Administrators Only)</span></button>
 										</c:when>
 										<c:otherwise>
 											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
@@ -256,6 +268,12 @@
 									</c:choose>
 								</p>
 							</form:form>
+							</c:if>
+							<c:if test="${not empty messageMap.blockLogin}">
+								<div class="wrapped relative white-gradient custom-p with-padding red" style="min-height: 100px">
+									${messageMap.blockLogin}
+								</div>
+							</c:if>
 						</div>
 					</div>
 					<div class="margin-top">

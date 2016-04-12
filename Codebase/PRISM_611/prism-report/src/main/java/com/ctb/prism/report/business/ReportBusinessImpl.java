@@ -328,7 +328,26 @@ public class ReportBusinessImpl implements IReportBusiness {
 										break;
 									}
 								}
+								/*Fix for TD 83237 - By Joy
+								 * Problem: Next I/P control is not populated properly if 
+								 * current I/P control is multi-select
+								 */
 								if (matched) {
+									if(((String[]) pairs.getValue()).length > 1) {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "'"));
+									} else {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+									}
+								} else {
+									if(((String[]) tempObj.toArray()).length > 1) {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "'"));
+									} else {
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+									}
+								}
+								/*if (matched) {
 									if("p_generate_file".equals((String) pairs.getKey())) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));
@@ -344,7 +363,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
 									}
 									//query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
-								}
+								}*/
 							}
 						} catch (Exception e) {
 							/** Nothing to do here 
@@ -360,7 +379,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
 				query = replaceSpecial(query, clazz, obj);
-				logger.log(IAppLogger.DEBUG, query);
+				//logger.log(IAppLogger.DEBUG, query);
+				logger.log(IAppLogger.INFO, query);
 				
 				//System.out.println("Query for default filter:" +query);
 				
@@ -380,8 +400,11 @@ public class ReportBusinessImpl implements IReportBusiness {
 					 * Number of filter increasing in roster, hence default value -99 is getting replaced
 					 * for subtest and grade, resulting incorrect input query value 
 					 * But we need to make sure for the first time load -99 value should not be replaced
+					 * 
+					 * As discussed with Amit Da, commented the bellow code. - By Joy on 02-MAR-2016 
+					 * Student Label will not being used so commented the code 
 					*/
-					if( "/public/Missouri/Report/Student_Roster_files".equals(reportUrl) 
+					/*if(("/public/Missouri/Report/Student_Roster_files".equals(reportUrl)) 
 							&& (( sessionParams.get("p_grade")== null && labelId.equals("p_grade"))
 									|| ( sessionParams.get("p_subtest")== null && labelId.equals("p_subtest"))) 
 							&& sessionParams.get("p_district_Id")!= null) 	{
@@ -390,7 +413,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 							listValues[s] =  list.get(s).getValue();
 						}
 					  sessionParams.put(labelId, listValues);
-					}
+					}*/
 				} catch (Exception e) {
 					logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Could not invoke method ", methodName, "on ReportFilterTO"), e);
 				}

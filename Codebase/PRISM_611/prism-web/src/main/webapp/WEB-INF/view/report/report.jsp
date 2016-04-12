@@ -150,6 +150,21 @@
 									Excel
 								</a>
 							</sec:authorize>
+						<%--	<c:if test="${homeReport.reportUrl == '/public/Missouri/Report/Student_Roster_files'}">
+								<a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
+									title="Download report as Excel" reportid="${homeReport.reportId}" param="/public/Missouri/Report/Student_Roster_Xlsx_files"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
+									<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
+									Excel
+								</a>
+							</c:if>--%>
+							<c:set var="reportName" value="${homeReport.reportName} Excel"></c:set>
+							<c:if test="${not empty actionMap[reportName]}">
+								<a href="#nogo" class="button download-button-xls margin-left glossy compact with-tooltip" 
+									title="Download report as Excel" reportid="${homeReport.reportId}" param="${homeReport.reportUrl}"  tabCount="${homeReport.currentTabNumber}" count="${homeReport.tabCount}" assessment="${homeReport.assessmentName}">
+									<span class="button-icon blue-gradient report-btn"><span class="icon-page-list"></span></span>
+									Excel
+								</a>
+							</c:if>
 							<c:if test="${not fn:containsIgnoreCase(themeName, 'TASC') &&
 											not fn:containsIgnoreCase(themeName, 'USMO')}">
 							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">

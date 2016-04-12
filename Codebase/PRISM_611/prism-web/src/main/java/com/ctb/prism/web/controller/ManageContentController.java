@@ -159,6 +159,34 @@ public class ManageContentController {
 		}
     }
 	
+	@RequestMapping(value = "/populatePerformanceLevel", method = RequestMethod.GET)
+	public void populatePerformanceLevel(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException,BusinessException {
+		
+		logger.log(IAppLogger.INFO, "Enter: ManageContentController - populatePerformanceLevel()");
+		long t1 = System.currentTimeMillis();
+		response.setContentType("text/plain");
+		long custProdId = Long.parseLong(request.getParameter("custProdId"));
+		String contentTypeId = request.getParameter("contentTypeId");
+		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectiveList = null;
+		String jsonString = "";
+		Map<String,Object> paramMap = new HashMap<String,Object>(); 
+		paramMap.put("custProdId", custProdId);
+		paramMap.put("contentTypeId", contentTypeId);
+		try{
+			objectiveList =  parentService.populatePerformanceLevel(paramMap);
+			jsonString = JsonUtil.convertToJsonAdmin(objectiveList);
+			logger.log(IAppLogger.INFO, "jsonString for contentTypeId: "+contentTypeId);
+			logger.log(IAppLogger.INFO, jsonString);
+			response.getWriter().write(jsonString);
+	    }catch(Exception e){
+			logger.log(IAppLogger.ERROR, "", e);
+		}finally{
+			long t2 = System.currentTimeMillis();
+			logger.log(IAppLogger.INFO, "Exit: ManageContentController - populatePerformanceLevel() took time: "+String.valueOf(t2 - t1)+"ms");
+		}
+    }
+	
 	/**
 	 * To add a content
 	 * @return

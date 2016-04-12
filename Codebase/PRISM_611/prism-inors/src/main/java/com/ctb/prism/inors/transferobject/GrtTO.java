@@ -233,6 +233,18 @@ public class GrtTO extends BaseTO {
 	private String l_OPIIPICut38;
 	private String l_OPIIPICut39;
 	private String l_OPIIPICut40;
+	private String l_Form;
+	private String l_Filler;
+	private String l_FinalFormUsedforScoring;
+	private String l_TextReaderIndicatorPart1;
+	private String l_TextReaderIndicatorPart2;
+	private String l_ElaCrSession3;
+	private String l_ElaCrSession4bItemResp;
+	private String l_ElaCrSession5ItemResp;
+	private String l_ElaCrSession6bItemResp;
+	private String l_MathCrSession2ItemResp;
+	private String l_SciCrSession7ItemResp;
+	
 
 	/**
 	 * @return the l_TapeMode
@@ -3578,5 +3590,93 @@ public class GrtTO extends BaseTO {
 	 */
 	public void setL_OPIIPICut40(String l_OPIIPICut40) {
 		this.l_OPIIPICut40 = l_OPIIPICut40;
+	}
+
+	public String getL_Form() {
+		return l_Form;
+	}
+
+	public void setL_Form(String l_Form) {
+		this.l_Form = l_Form;
+	}
+
+	public String getL_Filler() {
+		return l_Filler;
+	}
+
+	public void setL_Filler(String l_Filler) {
+		this.l_Filler = l_Filler;
+	}
+
+	public String getL_FinalFormUsedforScoring() {
+		return l_FinalFormUsedforScoring;
+	}
+
+	public void setL_FinalFormUsedforScoring(String l_FinalFormUsedforScoring) {
+		this.l_FinalFormUsedforScoring = l_FinalFormUsedforScoring;
+	}
+
+	public String getL_TextReaderIndicatorPart1() {
+		return l_TextReaderIndicatorPart1;
+	}
+
+	public void setL_TextReaderIndicatorPart1(String l_TextReaderIndicatorPart1) {
+		this.l_TextReaderIndicatorPart1 = l_TextReaderIndicatorPart1;
+	}
+
+	public String getL_TextReaderIndicatorPart2() {
+		return l_TextReaderIndicatorPart2;
+	}
+
+	public void setL_TextReaderIndicatorPart2(String l_TextReaderIndicatorPart2) {
+		this.l_TextReaderIndicatorPart2 = l_TextReaderIndicatorPart2;
+	}
+
+	public String getL_ElaCrSession3() {
+		return l_ElaCrSession3;
+	}
+
+	public void setL_ElaCrSession3(String l_ElaCrSession3) {
+		this.l_ElaCrSession3 = l_ElaCrSession3;
+	}
+
+	public String getL_ElaCrSession4bItemResp() {
+		return l_ElaCrSession4bItemResp;
+	}
+
+	public void setL_ElaCrSession4bItemResp(String l_ElaCrSession4bItemResp) {
+		this.l_ElaCrSession4bItemResp = l_ElaCrSession4bItemResp;
+	}
+
+	public String getL_ElaCrSession5ItemResp() {
+		return l_ElaCrSession5ItemResp;
+	}
+
+	public void setL_ElaCrSession5ItemResp(String l_ElaCrSession5ItemResp) {
+		this.l_ElaCrSession5ItemResp = l_ElaCrSession5ItemResp;
+	}
+
+	public String getL_ElaCrSession6bItemResp() {
+		return l_ElaCrSession6bItemResp;
+	}
+
+	public void setL_ElaCrSession6bItemResp(String l_ElaCrSession6bItemResp) {
+		this.l_ElaCrSession6bItemResp = l_ElaCrSession6bItemResp;
+	}
+
+	public String getL_MathCrSession2ItemResp() {
+		return l_MathCrSession2ItemResp;
+	}
+
+	public void setL_MathCrSession2ItemResp(String l_MathCrSession2ItemResp) {
+		this.l_MathCrSession2ItemResp = l_MathCrSession2ItemResp;
+	}
+
+	public String getL_SciCrSession7ItemResp() {
+		return l_SciCrSession7ItemResp;
+	}
+
+	public void setL_SciCrSession7ItemResp(String l_SciCrSession7ItemResp) {
+		this.l_SciCrSession7ItemResp = l_SciCrSession7ItemResp;
 	}
 }

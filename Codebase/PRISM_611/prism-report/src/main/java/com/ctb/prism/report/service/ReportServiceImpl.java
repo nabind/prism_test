@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -558,7 +559,14 @@ public class ReportServiceImpl implements IReportService {
 					/** END : PATCH FOR DEFAULT SUBTEST AND SCORE TYPE POPULATION (Multiselect) */
 
 					/***NEW***/
-					String[] valueFromSession = getFromSession(req, label);
+					String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
+					boolean isSwitchUser = false;
+					// check if user logs-in first time
+					if (switchUser != null && switchUser.trim().length() > 0) {
+						isSwitchUser = true;
+					}
+					
+					String[] valueFromSession = isSwitchUser==false? getFromSession(req, label) : null ;
 					/***NEW***/
 					
 					Map<String, Object> sessionParameters = null;
@@ -645,11 +653,18 @@ public class ReportServiceImpl implements IReportService {
 							if(valueFromSession != null) {
 								Map<String, String[]> selectInputValues = new HashMap<String, String[]>();
 								List<String> selectInputNames = new ArrayList<String>();
-								if(reportUrl.equals("/public/Missouri/Report/Student_Roster_files") && valueFromSession.length > 1){ 
+								
+								/*As discussed with Amit Da, commented the bellow code. - By Joy on 02-MAR-2016 
+								 * Student Label will not being used so commented the code  
+								 */
+								/*if(reportUrl.equals("/public/Missouri/Report/Student_Roster_files") && valueFromSession.length > 1){ 
 								} else {	
 									selectInputValues.put(label, valueFromSession);
 									selectInputNames.add(label);
-								}
+								}*/
+								
+								selectInputValues.put(label, valueFromSession);
+								selectInputNames.add(label);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED, label), selectInputValues);
 								parameters.put(CustomStringUtil.appendString(IApplicationConstants.CHECK_SELECTED_NAME, label), selectInputNames);
 							}
@@ -702,7 +717,14 @@ public class ReportServiceImpl implements IReportService {
 											: inputCollection);
 							/***NEW***/
 							if(valueFromSession != null) {
-								parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+								if("p_examiner".equals(label)) {
+									// apply this patch for TD 83266
+									if(Collections.indexOfSubList(inputCollection, new ArrayList<String>(Arrays.asList(valueFromSession))) != -1) {
+										parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+									}
+								} else {
+									parameters.put(inputControlTO.getLabelId(), new ArrayList<String>(Arrays.asList(valueFromSession)));
+								}
 							} else {
 								parameters.put(inputControlTO.getLabelId(), inputCollection);
 							}

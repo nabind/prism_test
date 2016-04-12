@@ -108,7 +108,7 @@ public interface IReportQuery {
 
 	public static final String GET_PROCESS_SEQ = "SELECT SEQ_ISTEP_PROCESS_ID.NEXTVAL STAGING_SEQ FROM DUAL";
 	
-	public static final String INSERT_JOB_TRACKING = CustomStringUtil.appendString(
+	/*public static final String INSERT_JOB_TRACKING = CustomStringUtil.appendString(
 					"INSERT INTO JOB_TRACKING",
 					" (JOB_ID, USERID,",
 					" JOB_NAME, EXTRACT_STARTDATE, EXTRACT_CATEGORY, EXTRACT_FILETYPE, REQUEST_TYPE, REQUEST_SUMMARY,",
@@ -117,7 +117,9 @@ public interface IReportQuery {
 					" ADMINID, CUSTOMERID, CREATED_DATE_TIME, OTHER_REQUEST_PARAMS) VALUES ",
 					"(?, (SELECT USERID FROM USERS WHERE UPPER(USERNAME) = UPPER(?) ), ?, SYSDATE,",
 					"?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID=? AND PRODUCTID=? AND ROWNUM=1),",
-					" ?, SYSDATE, ?)");
+					" ?, SYSDATE, ?)");*/
+	
+	public static final String INSERT_JOB_TRACKING = "{ CALL PKG_GROUP_DOWNLOADS_MO.SP_ADD_JOB_TRACKING(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 	
 	public static final String INSERT_JOB_TRACKING_DATE = CustomStringUtil.appendString(
 			" insert into JOB_TRACKING(job_id,userid,",

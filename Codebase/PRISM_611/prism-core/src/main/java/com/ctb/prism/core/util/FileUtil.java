@@ -465,13 +465,17 @@ public class FileUtil {
 	 */
 	public static String getDirFromFilePath(String filePath) {
 		String dir = filePath;
+		boolean flag = false;
 		int index = filePath.lastIndexOf('\\');
 		if (index != -1) {
 			dir = filePath.substring(0, index + 1);
+			flag = true;
 		}
-		index = filePath.lastIndexOf('/');
-		if (index != -1) {
-			dir = filePath.substring(0, index + 1);
+		if(!flag){
+			index = filePath.lastIndexOf('/');
+			if (index != -1) {
+				dir = filePath.substring(0, index + 1);
+			}
 		}
 		return dir.replace('\\', '/').replace("//", "/");
 	}

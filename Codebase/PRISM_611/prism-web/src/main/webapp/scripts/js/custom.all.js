@@ -59,6 +59,14 @@ $(document).ready(function() {
 			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
 		} catch (e) {}
 	});
+	$(".input").live('blur', function() {
+		try {
+			// change refresh button color
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
+			// show tooltip on refresh button
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
+		} catch (e) {}
+	});
 	$("input[name='p_Last_Name']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
@@ -1147,6 +1155,22 @@ $("select#p_Roster_Rank_Order option").each(function(index){
 $("select#p_Roster_Rank_Order").html(rankOrderDom);
 }
 
+//============================= SELECT / DESELECT MULTI-SELECT INPUTS =============================
+function selectAllOption(event, select) {
+	event.preventDefault();
+	event.stopPropagation();
+	var inputId = $(select).attr('id');
+	//var val = $("#"+inputId+" option:first:selected").text();
+	var selectedCount = $("option:selected", select).length;
+	var optionCount = $("option", select).length;
+	if(selectedCount < optionCount) {
+		$(select).find('option').prop('selected', true);
+	} else {
+		$(select).find('option').prop('selected', false);
+		$(select).find('option:first').prop('selected', true);
+	}
+	$(select).trigger('update-select-list').change();
+}
 //============================= Populate cascading input control values =============================
 function getCascading(selectedObj) {
 	//$(document).click(); // this code is to close multiselect dropdown
@@ -1163,7 +1187,8 @@ function getCascading(selectedObj) {
 			|| 'p_Inview_Subtest'  == inputId /* Class - InView roster subtest */
 			|| 'p_Inview_Comb_Subtest_Multiselect'  == inputId || 'p_Inview_Comb_Score' == inputId /* Class - InView combination roster & summary dashboard */
 			|| 'p_Subtest_Class_MultiSelect'  == inputId /* Class LONGITUDINAL Roster*/
-			|| 'p_Bible_Roster_Score_Type'  == inputId ) { /* Class BIBLE Roster*/
+			|| 'p_Bible_Roster_Score_Type'  == inputId /* Class BIBLE Roster*/
+			|| 'p_grade'  == inputId ) { /* MO Student roster */
 		$(document).click(); // this code is to close multiselect dropdown
 	}
 	// code for bulk download button
@@ -7340,6 +7365,8 @@ $(document).ready(function() {
 		hideContentElements();
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateObjective();
+		populatePerformanceLevel();
+		showContentElements();
 	});
 	
 	$('#objectiveIdManageContent').live('change',function(){
@@ -7349,6 +7376,7 @@ $(document).ready(function() {
 	
 	$('#contentTypeIdManageContent').live('change',function(){
 		hideContentElements();
+		populatePerformanceLevel();
 		showContentElements();
 	});
 	
@@ -8234,6 +8262,34 @@ function populateObjective(){
 				unblockUI();
 			}
 		});
+	}
+}
+
+//============Load score_value, score_value_name depending upon contentTypeId ===============
+function populatePerformanceLevel(){
+	var custProdId = $('#custProdIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
+	var contentTypeId = $('#contentTypeIdManageContent').val();
+	if(custProdId != -1 ){
+		if(subtestId != -1){
+			var dataUrl = 'contentTypeId='+contentTypeId+'&custProdId='+custProdId;
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : 'populatePerformanceLevel.do',
+				data : dataUrl,
+				dataType: 'json',
+				cache:false,
+				success : function(data) {
+					populateDropdownByJson($('#performanceLevelIdManageContent'),data);
+					unblockUI();
+				},
+				error : function(data) {
+					$.modal.alert(strings['script.common.error']);
+					unblockUI();
+				}
+			});
+		}
 	}
 }
 
@@ -9886,11 +9942,23 @@ function getGroupDownloadTO() {
 
 function getSelectedStudentIdsAsCommaString() {
 	var students = "";
-	$("input[id^=check-status-]").each(function() {
+	$('input[id^=check-status-]').each(function() {
+		var id = this.id;
+		var studentId = id.substring(13);
 		if (this.value == "1") {
-			var id = this.id;
-			var studentId = id.substring(13);
-			students = students + "," + studentId;
+			var elementObj = $('#check-status-'+studentId);
+			if(typeof elementObj.attr('gradeCode') !== 'undefined'){
+				var studentBioId = elementObj.attr('studentBioId'); 
+				var gradeCode =  elementObj.attr('gradeCode');
+				var gradeId =  elementObj.attr('gradeId');
+				var extStudentId =  elementObj.attr('extStudentId'); 
+				var lastNameCap =  elementObj.attr('lastNameCap');
+				var curYear =  elementObj.attr('curYear');  
+				var studentDetails = studentBioId+":"+extStudentId+":"+lastNameCap+":"+gradeCode+":"+gradeId+":"+curYear;
+				students = students + "," + studentDetails;
+			}else{
+				students = students + "," + studentId;
+			}
 		}
 	});
 	if (students.length > 0) {
@@ -9903,13 +9971,15 @@ function getSelectedStudentIdsAsCommaString() {
  * Download MAP GLA ISR PDF based on selected student and subtest
  * @param studentId
  */
-function downloadMapIsr(studentId) {
+function downloadMapIsr(studentId,gradeId,gradeCode,extStudentId,lastNameCap,curYear) {
 	blockUI();
 	var subtest = $("#p_subtest", window.parent.document); 
 	var tab = $("li.active", window.parent.document).attr("param");
 	tab = tab.replace(/new-tab/g, "report-form-");
 	var formObj = $('.'+tab, window.parent.document);
-	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId;
+	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId+ '&gradeId=' + gradeId
+					+ '&gradeCode=' + gradeCode+ '&extStudentId=' + extStudentId
+					+ '&lastNameCap=' + lastNameCap+ '&curYear=' + curYear;
 	
 	location.href = 'downloadMapIsr.do?' + dataUrl;
 	unblockUI();
@@ -10381,11 +10451,11 @@ $(document).ready(function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
 			var product = $(tabReportObj).attr('product');
 			if(product == 'ISTEPS15') {
-				//getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
-				var msg = '<p class="wrapped left-icon icon-info-round red">\
+				getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+				/*var msg = '<p class="wrapped left-icon icon-info-round red">\
 								<b>Results by Standard</b><br>\
 								Performance by Standard information will be available after the final ISTEP+ results are released in December.\
-							</p>'
+							</p>'*/
 				getEmptyStudentReport(msg);
 			} else {
 				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);

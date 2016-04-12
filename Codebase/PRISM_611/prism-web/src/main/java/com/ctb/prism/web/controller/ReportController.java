@@ -478,7 +478,7 @@ public class ReportController{
 				req.setAttribute("nextPage", Integer.parseInt(pageStr) + 1);
 				req.setAttribute("prevPage", Integer.parseInt(pageStr) - 1);
 			}
-
+			
 			if (noOfPages == 0) {
 				ModelAndView modelAndView = new ModelAndView("report/emptyReport");
 				modelAndView.addObject("reportName", jasperPrint.getName());
@@ -499,8 +499,12 @@ public class ReportController{
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_HEIGHT), jasperPrint.getPageHeight());
 				req.getSession().setAttribute(CustomStringUtil.appendString(reportUrl, IApplicationConstants.REPORT_WIDTH), jasperPrint.getPageWidth());
 				req.getSession().setAttribute("dataPresent_"+reportUrl, IApplicationConstants.TRUE); //Added by Abir
-			}
-
+			}	
+			
+			@SuppressWarnings("unchecked")
+			Map<String, String> actionMap = (Map<String, String>)req.getSession().getAttribute(IApplicationConstants.ACTION_MAP_SESSION);
+			String actionJson = Utils.objectToJson(actionMap);
+			
 			exporter.exportReport();
 		} catch (JRException exception) {
 			ModelAndView modelAndView = new ModelAndView("report/emptyReport");
@@ -1584,9 +1588,18 @@ public class ReportController{
 							replacableParams.put(CustomStringUtil.getJasperParameterString((String) pairs.getKey()), (String) pairs.getValue());
 						}
 					}
-					// Update replacable params with request parameters -- TODO need to check for multiselect values
+					// Update replacable params with request parameters -- TODO need to check for multiselect values -- this is addressed
 					for (InputControlTO inputTO : allInputControls) {
-						String param = req.getParameter(inputTO.getLabelId());
+						String param = "";
+						if (IApplicationConstants.DATA_TYPE_COLLECTION.equals(inputTO.getType())) {
+							// multi select
+							param = org.apache.commons.lang.StringUtils.join(req.getParameterValues(inputTO.getLabelId()), ",");
+						} else {
+							param = req.getParameter(inputTO.getLabelId());
+						}
+						if(inputTO.getLabelId() != null && inputTO.getLabelId().equals(changedObj)) {
+							param = changedValue;
+						}
 						replacableParams.put(CustomStringUtil.getJasperParameterString(inputTO.getLabelId()), param);
 					}
 				} catch (Exception e) {
@@ -1904,6 +1917,12 @@ public class ReportController{
 		String assessmentId = req.getParameter("assessmentId");
 		String filter = req.getParameter("filter");
 		String printerFriendly = req.getParameter("printerFriendly");
+		
+		// for generic xls genration from report url
+		if (type != null && type.equals("xls")) {
+			reportUrl =reportUrl.replace("_files", "_Xlsx_files");
+		}
+		
 		logger.log(IAppLogger.INFO, "type = " + type);
 		logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
 		logger.log(IAppLogger.INFO, "token = " + token);

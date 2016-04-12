@@ -43,6 +43,8 @@ $(document).ready(function() {
 		hideContentElements();
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateObjective();
+		populatePerformanceLevel();
+		showContentElements();
 	});
 	
 	$('#objectiveIdManageContent').live('change',function(){
@@ -52,6 +54,7 @@ $(document).ready(function() {
 	
 	$('#contentTypeIdManageContent').live('change',function(){
 		hideContentElements();
+		populatePerformanceLevel();
 		showContentElements();
 	});
 	
@@ -937,6 +940,34 @@ function populateObjective(){
 				unblockUI();
 			}
 		});
+	}
+}
+
+//============Load score_value, score_value_name depending upon contentTypeId ===============
+function populatePerformanceLevel(){
+	var custProdId = $('#custProdIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
+	var contentTypeId = $('#contentTypeIdManageContent').val();
+	if(custProdId != -1 ){
+		if(subtestId != -1){
+			var dataUrl = 'contentTypeId='+contentTypeId+'&custProdId='+custProdId;
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : 'populatePerformanceLevel.do',
+				data : dataUrl,
+				dataType: 'json',
+				cache:false,
+				success : function(data) {
+					populateDropdownByJson($('#performanceLevelIdManageContent'),data);
+					unblockUI();
+				},
+				error : function(data) {
+					$.modal.alert(strings['script.common.error']);
+					unblockUI();
+				}
+			});
+		}
 	}
 }
 

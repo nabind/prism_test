@@ -87,6 +87,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("teacherOutageContent", systemMessage);
 			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.BLOCK_LOGIN);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("blockLogin", systemMessage);
+			
 		} else if(IApplicationConstants.PURPOSE_PARENT_LOGIN_PAGE
 				.equals((String)paramMap.get(IApplicationConstants.PURPOSE_PRISM))){
 			
@@ -105,6 +109,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			paramMap.put("MESSAGE_NAME", IApplicationConstants.PARENT_LOGIN_OUTAGE_CONTENT);
 			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
 			messageMap.put("parentOutageContent", systemMessage);
+			
+			paramMap.put("MESSAGE_NAME", IApplicationConstants.BLOCK_LOGIN);
+			systemMessage = loginDAO.getSystemConfigurationMessage(paramMap);
+			messageMap.put("blockLogin", systemMessage);
 			
 		}else if(IApplicationConstants.PURPOSE_TEACHER_HOME_PAGE
 				.equals((String)paramMap.get(IApplicationConstants.PURPOSE_PRISM))){

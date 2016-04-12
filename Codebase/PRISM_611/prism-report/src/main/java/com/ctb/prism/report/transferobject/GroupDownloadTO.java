@@ -20,6 +20,8 @@ public class GroupDownloadTO extends BaseTO {
 	private String school;
 	private String klass;
 	private String grade;
+	private String[] grades;
+	private String gradeCode;
 	private String students;
 	private String groupFile;
 	private String collationHierarchy;
@@ -46,21 +48,6 @@ public class GroupDownloadTO extends BaseTO {
 	private String schoolCode;
 	private String studentSelection = "";
 	private String currentAdmin;
-	private String gradeCode;
-
-	/**
-	 * @return the gradeCode
-	 */
-	public String getGradeCode() {
-		return gradeCode;
-	}
-
-	/**
-	 * @param gradeCode the gradeCode to set
-	 */
-	public void setGradeCode(String gradeCode) {
-		this.gradeCode = gradeCode;
-	}
 
 	/**
 	 * @return the currentAdmin
@@ -194,6 +181,14 @@ public class GroupDownloadTO extends BaseTO {
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+
+	public String getGradeCode() {
+		return gradeCode;
+	}
+
+	public void setGradeCode(String gradeCode) {
+		this.gradeCode = gradeCode;
 	}
 
 	/**
@@ -515,6 +510,14 @@ public class GroupDownloadTO extends BaseTO {
 
 	public void setStudentSelection(String studentSelection) {
 		this.studentSelection = studentSelection;
+	}
+
+	public String[] getGrades() {
+		return grades;
+	}
+
+	public void setGrades(String[] grades) {
+		this.grades = grades;
 	}
 
 	@Override

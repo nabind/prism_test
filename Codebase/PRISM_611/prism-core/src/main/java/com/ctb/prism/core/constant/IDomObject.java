@@ -11,11 +11,16 @@ public interface IDomObject {
 	public static final String SELECT_SINGLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact' onChange='getCascading($(this))'>";
 	public static final String SELECT_SINGLE_EXPANDABLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list' onChange='getCascading($(this))'>";
 	public static final String SELECT_OPTION = "<option value='%s' %s>%s</option>";
+	public static final String SELECT_OPTION_ALL = "<option tabCount='%s' tgt='%s' value='%s' %s>%s</option>";
+	
 	public static final String SELECT_END = "</select>";
 	public static final String SELECT_MULTIPLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
 	public static final String SELECT_MULTIPLE_EXPANDABLE = "<select name='%s' id='%s' param='%s' count='%s' assessment='%s' rel='%s' class='select navy-gradient compact expandable-list multiple-as-single easy-multiple-selection check-list' onChange='getCascading($(this))' multiple>";
 	
+	public static final String SELECT_ALL = "<span onClick='selectAll($(this), %s, %s)' typ='ON' class='select-all tag with-tooltip icon-tick title' title='Select/Deselect All'></span>";
+	
 	public static final String IC_TITLE = "<h6 class='margin-bottom-small'>%s</h6>";
+	public static final String IC_TITLE_WITH_SELECT_ALL = "<h6 class='margin-bottom-small'>%s "+ SELECT_ALL +"</h6>";
 	
 	public static final String IC_CONTAINER = "<div class='three-columns report-inputs'>";
 	public static final String IC_CONTAINER_NEW = "<div class='six-columns report-inputs'>";

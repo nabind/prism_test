@@ -3,6 +3,7 @@ package com.ctb.prism.web.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +160,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 				if(ssoOrg != null && ssoOrg.length() > 0) {
 					request.getSession().setAttribute(IApplicationConstants.SSO_PREV_ADMIN, ssoOrg);
 				}
+				
+				// remove all remembered i/p control values from session
+				clearRememberedInputs(request);
 
 				// update the current context to the new target user
 				SecurityContextHolder.getContext()
@@ -185,6 +189,9 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 			// Added for story(defect) 76956 by Abir
 			request.getSession().removeAttribute(IApplicationConstants.PREV_ADMIN_DISPNAME);
 			request.getSession().removeAttribute(IApplicationConstants.SSO_PREV_ADMIN);
+			
+			// remove all remembered i/p control values from session
+			clearRememberedInputs(request);
 			
 			// get the original authentication object (if exists)
 			Authentication originalUser = attemptExitUser(request);
@@ -216,6 +223,22 @@ public class CustomSwitchUserFilter extends GenericFilterBean implements
 
 		chain.doFilter(request, response);
 	}
+	
+	/**
+	 *  remove all remembered i/p control values from session
+	 */
+	private void clearRememberedInputs(HttpServletRequest request) {
+		request.getSession().removeAttribute("_REMEMBER_ME_ALL_");
+		Enumeration<?> enumm = request.getSession().getAttributeNames();
+		while (enumm.hasMoreElements()) {
+		    String name = (String) enumm.nextElement();
+		    System.out.println(name);
+		    if(name != null && name.startsWith("_REMEMBER_ME_")) {
+		    	request.getSession().removeAttribute(name);
+		    }
+		}
+	}
+	
 
 	/**
 	 * Attempt to switch to another user. If the user does not exist or is not

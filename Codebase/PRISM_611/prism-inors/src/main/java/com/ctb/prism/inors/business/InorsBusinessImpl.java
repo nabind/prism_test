@@ -955,15 +955,20 @@ public class InorsBusinessImpl implements IInorsBusiness {
 		String districtCode = (String) codeMap.get("districtCode");
 		String schoolCode = (String) codeMap.get("schoolCode");
 		
-		String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+		/*String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
 				district, "_", school, "_", 
 				gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
-				"_",studentId,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
-		
-		/*String tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
+				"_",studentId,"_",String.valueOf(System.currentTimeMillis()), ".pdf");*/
+		String tempFileName = "";
+		if("5037".equals(custProdId) || "5038".equals(custProdId)) {
+			tempFileName = CustomStringUtil.appendString("MAP_ISR_", custProdId, "_", 
 				districtCode, "_", schoolCode, "_", 
-				gradeId, "_", subtest,"_", studentId, ".pdf");*/
-		
+				gradeId, "_", subtest,"_", studentId, ".pdf");
+		} else {
+			tempFileName = CustomStringUtil.appendString("MAP"/*,currentAdmin*/,"_ISR_", 
+				districtCode, "_", schoolCode, "_", gradeCode, "_", lastName,"_", mosisId!=null?mosisId:"",
+				"_",studentId,"_",subtest, ".pdf");
+		}
 		String fileName = CustomStringUtil.appendString(folderLoc, tempFileName);
 		String compFileName = "";
 		fileName = fileName.replaceAll("\\\\", "/");
@@ -997,7 +1002,8 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				logger.log(IAppLogger.INFO, "Specified file does not exists in S3: " + fullFileNameS3);
 			}
 			
-			compFileName = CustomStringUtil.appendString(fileName, ".", ""+System.currentTimeMillis(), ".pdf");
+			//compFileName = CustomStringUtil.appendString(fileName, ".", ""+System.currentTimeMillis(), ".pdf");
+			compFileName = fileName;
 			if(assetBytes.length != 0){
 				FileUtil.createFile(compFileName, assetBytes);
 			}else{
@@ -1179,21 +1185,21 @@ public class InorsBusinessImpl implements IInorsBusiness {
 						try {
 							
 							/*Code added to keep the student PDF log*/
-							String tempFileName = CustomStringUtil.appendString("MAP",currentAdmin,"_ISR_", 
+							String tempFileName_log = CustomStringUtil.appendString("MAP"/*,student[5]*/,"_ISR_", 
 									groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", 
-									groupDownloadTO.getGradeCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
-									"_",student[0],/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
+									student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
+									"_",student[0],"_",subtest,/*"_",String.valueOf(System.currentTimeMillis()),*/ ".pdf");
 						
-							String locForS3 = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
-									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getGradeCode(),File.separator);
+							String locForS3_log = CustomStringUtil.appendString(rootPath, File.separator,IApplicationConstants.EXTRACT_FILETYPE.ISR.toString(), File.separator,
+									groupDownloadTO.getDistrictCode(),File.separator,groupDownloadTO.getSchoolCode(),File.separator);
 							
-							String fullFileNameS3 = CustomStringUtil.appendString(locForS3, tempFileName);
+							String fullFileNameS3_log = CustomStringUtil.appendString(locForS3_log, tempFileName_log);
 							
 							StudentPDFLogTO studentPDFLogTO = new StudentPDFLogTO();
 							studentPDFLogTO.setStudentBioId(Long.valueOf(student[0]));
 							studentPDFLogTO.setSubtestId(Long.valueOf(subtest));
 							studentPDFLogTO.setOrgNodeId(Long.valueOf(groupDownloadTO.getSchool()));
-							studentPDFLogTO.setFileName(fullFileNameS3);
+							studentPDFLogTO.setFileName(fullFileNameS3_log);
 							inorsDAO.auditPDFUtiity(studentPDFLogTO,contractName);
 						} catch (Exception ex) {}
 					} else {
@@ -1202,9 +1208,10 @@ public class InorsBusinessImpl implements IInorsBusiness {
 				}
 				if(!isBulk) {
 					// combine student's PDF
-					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP_ISR_", 
-							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_", student[2],"_", student[1]!=null?student[1]:"",
-									"_",student[0], "_", System.currentTimeMillis()+""/*Utils.getDateTime(true)*/, ".pdf");
+					String mergedFileName = CustomStringUtil.appendString(folderLoc, "MAP"/*,student[5]*/,"_ISR_", 
+							groupDownloadTO.getDistrictCode(), "_", groupDownloadTO.getSchoolCode(), "_",
+							student[3], "_", student[2],"_", student[1]!=null?student[1]:"",
+							"_",student[0], "_", String.valueOf(System.currentTimeMillis()), ".pdf");
 					OutputStream os = new FileOutputStream(mergedFileName);
 					PdfGenerator.concatPDFs(fileForStudent, os, false);
 					IOUtils.closeQuietly(os);
