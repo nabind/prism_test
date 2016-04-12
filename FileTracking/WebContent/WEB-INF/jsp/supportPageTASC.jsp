@@ -217,20 +217,34 @@
 	}
 	
 	function unlock(schId){
-		var stateCode = $("#stateCode").val();
-		var uuid = $("#uuid").val();
+		var unStateCode = $("#commentStateCode").val();
+		var unUuid = $("#commentUuid").val();
 		
-		if (confirm('Are you sure you want to unlock this student (uuid :'+uuid+')?')) {
-			var dataString = "uuid="+uuid+"&stateCode="+stateCode+"&schId="+schId+"&action=unlock";
-			$.ajax({
-			      type: "POST",
-			      url: "combined.htm",
-			      data: dataString,
-			      success: function(data) {
-			    	     },
-				  error: function(data) {
-					  }
-		    });
+		if (confirm('Are you sure you want to unlock this student (uuid :'+unUuid+')?')) {
+
+			/*
+			  var dataString = "uuid="+uuid+"&stateCode="+stateCode+"&schId="+schId+"&action=unlock";
+			  $.ajax({
+		      type: "POST",
+		      //async: false,
+		      url: "combined.htm",
+		      data: dataString,
+		      success: function(data) {
+		    	  $("#supportTascForm").submit();
+		    	     },
+			  error: function(data) {
+				  }
+	   			 }); 
+			  */
+			  
+			  $('#supportTascForm')
+			  		.append('<input type="hidden" name="unUuid" value="'+unUuid+'" />')
+			  		.append('<input type="hidden" name="unStateCode" value="'+unStateCode+'" />') 
+			  		.append('<input type="hidden" name="schId" value="'+schId+'" />')
+			  		.append('<input type="hidden" name="action" value="unlock" />');
+			  $("#supportTascForm").submit();
+			
+			
 		}		
 	}
 </script>
@@ -471,9 +485,11 @@
 						<div>
 							<a id="invalidateSchedule" onclick="invalidateSchedule(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Inv-Schd</a>
 						</div>
-						<div>
-							<a id="unlock" onclick="unlock(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Unlock</a>
-						</div>
+						<%if(bucket.getPpOaslinkedId() != null && bucket.getPpOaslinkedId().length() > 0) { %>
+							<div>
+								<a id="unlock" onclick="unlock(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Unlock</a>
+							</div>
+						<%}%>
 					</td>
 				</tr>
 			

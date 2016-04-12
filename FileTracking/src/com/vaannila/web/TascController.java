@@ -1,7 +1,6 @@
 package com.vaannila.web;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -17,16 +16,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.vaannila.DAO.SupportDAOImpl;
 import com.vaannila.DAO.TascDAOImpl;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
 import com.vaannila.TO.StudentJsonObject;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.Utils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @Controller
 public class TascController {
@@ -630,6 +630,8 @@ public class TascController {
 				
 				String action = request.getParameter("action");
 				
+				SupportDAOImpl supportDao = new SupportDAOImpl();
+				
 				if(action!=null && action.equals("delete")){
 					String studentBiodId = request.getParameter("bioId");
 					//Delete student code goes here with bio id
@@ -645,9 +647,16 @@ public class TascController {
 					System.out.println("Student "+process.getUuid()+ " with schedule " +schId+" has been invalidate");
 				}
 				if(action!=null && action.equals("unlock")){
-					String schId = request.getParameter("schId");
+					String unUuid = request.getParameter("unUuid");
+					String unStateCode = request.getParameter("unStateCode");
+					String scheduleId = request.getParameter("schId");	
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(unUuid);
+					studentTO.setStateCode(unStateCode);
+					studentTO.setScheduleId(scheduleId);
 					//Unlock student code goes here with uuid
-					System.out.println("Student "+process.getUuid()+ " with schedule " +schId+" has been unlocked");
+					jsonStr = supportDao.unlockStudnet(studentTO);
+					System.out.println("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
 				}
 				
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
