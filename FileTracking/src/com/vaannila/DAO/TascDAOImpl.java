@@ -13,6 +13,7 @@ import java.util.Map;
 import oracle.jdbc.OracleTypes;
 
 import com.vaannila.TO.SearchProcess;
+import com.vaannila.TO.StudentDetailsWinTO;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.JDCConnectionDriver;
 import com.vaannila.TO.StudentDetailsTO;
@@ -137,7 +138,6 @@ public class TascDAOImpl {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String processLog = "";
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -402,7 +402,7 @@ public class TascDAOImpl {
 				moreInfoMap.put("LITHOCODE", rs.getString("LITHOCODE") != null ? rs.getString("LITHOCODE") : "");
 				moreInfoMap.put("SCORING_DATE", rs.getString("SCORING_DATE") != null ? rs.getString("SCORING_DATE") : "");
 				moreInfoMap.put("SCANNED_DATE", rs.getString("SCANNED_DATE") != null ? rs.getString("SCANNED_DATE") : "");
-				moreInfoMap.put("LAST_NAME", rs.getString("SRC_STUDENT_NAME") != null ? rs.getString("SRC_STUDENT_NAME") : "");
+				moreInfoMap.put("LAST_NAME", rs.getString("LAST_NAME") != null ? rs.getString("LAST_NAME") : "");
 				moreInfoMap.put("NCR_SCORE", rs.getString("NCR_SCORE") != null ? rs.getString("NCR_SCORE") : "");
 				moreInfoMap.put("CONTENT_STATUS_CODE", rs.getString("CONTENT_STATUS_CODE") != null ? rs.getString("CONTENT_STATUS_CODE") : "");
 				moreInfoMap.put("SCAN_BATCH", rs.getString("SCAN_BATCH") != null ? rs.getString("SCAN_BATCH") : "");
@@ -794,6 +794,212 @@ public class TascDAOImpl {
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
 			System.out.println("Exit: getTotalRecord() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return totalRecordCount;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get Searched records page wise
+	 * @throws Exception
+	 */
+	public List<StudentDetailsWinTO> getResultWin(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getResultWin()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		StudentDetailsWinTO studentDetailsTO = null;
+		List<StudentDetailsWinTO> studentDetailsTOList = new ArrayList<StudentDetailsWinTO>();
+		
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderDataCsv = 0;
+			int placeHolderErrorMsg = 0;
+			String query = "{call PKG_FILE_TRACKING.SP_GET_DATA_WINSCORE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			System.out.println("query: "+query);
+			cs = conn.prepareCall(query);
+			
+			cs.setString(++count, searchProcess.getProcessStatus());
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getImagingId() != null && searchProcess.getImagingId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getImagingId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, searchProcess.getSortCol());
+			cs.setString(++count, searchProcess.getSortDir());
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderDataCsv = ++count;
+			cs.registerOutParameter(placeHolderDataCsv, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			
+			cs.execute();
+			String errorMessage = cs.getString(placeHolderErrorMsg);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				if("CSV".equals(searchProcess.getMode())){
+					System.out.println("Fetching data for CSV");
+					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
+				}else{
+					rs = (ResultSet) cs.getObject(placeHolderData);
+					System.out.println("Fetching data for Online Display");
+				}
+				while(rs.next()) {
+					studentDetailsTO = new StudentDetailsWinTO();
+					studentDetailsTO.setScanBatch(rs.getString("SCAN_BATCH")!=null ? rs.getString("SCAN_BATCH") : "");
+					studentDetailsTO.setDistrictNumber(rs.getString("DISTRICT_NUMBER")!=null ? rs.getString("DISTRICT_NUMBER") : "");
+					studentDetailsTO.setSchoolNumber(rs.getString("SCHOOL_NUMBER") != null ? rs.getString("SCHOOL_NUMBER") : "");
+					studentDetailsTO.setUuid(rs.getString("UUID") != null ? rs.getString("UUID") : "");
+					studentDetailsTO.setBarcode(rs.getString("BARCODE") != null ? rs.getString("BARCODE") : "");
+					studentDetailsTO.setForm(rs.getString("TEST_FORM") != null ? rs.getString("TEST_FORM") : "");
+					studentDetailsTO.setBraille(rs.getString("BRAILLE")!=null ? rs.getString("BRAILLE") : "");
+					studentDetailsTO.setLargePrint(rs.getString("LARGE_PRINT")!=null ? rs.getString("LARGE_PRINT") : "");
+					studentDetailsTO.setDateTestTaken(rs.getString("DATE_TEST_TAKEN") != null ? rs.getString("DATE_TEST_TAKEN") : "");
+					studentDetailsTO.setLoginDate(rs.getString("LOGINDATE") != null ? rs.getString("LOGINDATE") : "");
+					studentDetailsTO.setScanDate(rs.getString("SCAN_DATE") != null ? rs.getString("SCAN_DATE") : "");
+					studentDetailsTO.setWinsExportDate(rs.getString("WINS_EXPORT_DATE") != null ? rs.getString("WINS_EXPORT_DATE") : "");
+					studentDetailsTO.setImagingId(rs.getString("IMAGING_ID")!=null ? rs.getString("IMAGING_ID") : "");
+					studentDetailsTO.setOrgTpName(rs.getString("ORGTP_NAME")!=null ? rs.getString("ORGTP_NAME") : "");
+					studentDetailsTO.setLastName(rs.getString("LAST_NAME") != null ? rs.getString("LAST_NAME") : "");
+					studentDetailsTO.setFirstName(rs.getString("FIRST_NAME") != null ? rs.getString("FIRST_NAME") : "");
+					studentDetailsTO.setMiddleInitial(rs.getString("MIDDLE_INITIAL") != null ? rs.getString("MIDDLE_INITIAL") : "");
+					studentDetailsTO.setLithoCode(rs.getString("LITHOCODE") != null ? rs.getString("LITHOCODE") : "");
+					studentDetailsTO.setScanStack(rs.getString("SCAN_STACK")!=null ? rs.getString("SCAN_STACK") : "");
+					studentDetailsTO.setScanSequence(rs.getString("SCAN_SEQ")!=null ? rs.getString("SCAN_SEQ") : "");
+					studentDetailsTO.setWinsDocId(rs.getString("WINS_DOCID") != null ? rs.getString("WINS_DOCID") : "");
+					studentDetailsTO.setComodityCode(rs.getString("COMMODITY_CODE") != null ? rs.getString("COMMODITY_CODE") : "");
+					studentDetailsTO.setWinStatus(rs.getString("WINSTATUS") != null ? rs.getString("WINSTATUS") : "");
+					studentDetailsTO.setPrismProcessStatus(rs.getString("PRISM_PROCESS_STATUS") != null ? rs.getString("PRISM_PROCESS_STATUS") : "");
+					studentDetailsTO.setImageFilePath(rs.getString("IMAGE_FILEPATH") != null ? rs.getString("IMAGE_FILEPATH") : "");
+					studentDetailsTO.setImageFileName(rs.getString("IMAGE_FILENAMES") != null ? rs.getString("IMAGE_FILENAMES") : "");
+					
+					studentDetailsTOList.add(studentDetailsTO);
+				}
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getResultWin() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return studentDetailsTOList;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get total record count for given search criteria
+	 * @throws Exception
+	 */
+	public long getTotalRecordCountWin(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getTotalRecordCountWin()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		long totalRecordCount = 0;
+		
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderDataCsv = 0;
+			int placeHolderErrorMsg = 0;
+			String query = "";
+			query = "{call PKG_FILE_TRACKING.SP_GET_DATA_WINSCORE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			System.out.println("COUNT query: "+query);
+			cs = conn.prepareCall(query);
+			
+			cs.setString(++count, searchProcess.getProcessStatus());
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getImagingId() != null && searchProcess.getImagingId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getImagingId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, "-1");
+			cs.setString(++count, "-1");
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderDataCsv = ++count;
+			cs.registerOutParameter(placeHolderDataCsv, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			
+			cs.execute();
+			String errorMessage = cs.getString(placeHolderErrorMsg);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
+				System.out.println("totalRecordCount: "+totalRecordCount);
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getTotalRecordCountWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return totalRecordCount;
 	}
