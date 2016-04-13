@@ -17,6 +17,7 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String targetStatus = "";
 	private String targerEmailStatus = "";
 	private String processStatus = "";
+	private String processStatusDesc = "";
 	private String processLog = "";
 	private String sourceFileName = "";
 	private String createdDate = "";
@@ -140,6 +141,12 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	}
 	public void setProcessStatus(String processStatus) {
 		this.processStatus = processStatus;
+	}
+	public String getProcessStatusDesc() {
+		return processStatusDesc;
+	}
+	public void setProcessStatusDesc(String processStatusDesc) {
+		this.processStatusDesc = processStatusDesc;
 	}
 	public String getProcessLog() {
 		return processLog;

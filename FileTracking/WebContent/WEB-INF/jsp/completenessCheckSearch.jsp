@@ -25,10 +25,10 @@
 									<td>
 										<select name="coCheckStatus" id="coCheckStatus">
 											<option value="-1">All</option>
-											<option value="ER">Error</option>
-											<option selected value="NR">Not Received</option>
-											<option value="CO">Completed</option>
-											<option value="IN">Invalidated</option>
+											<option value="ER">Error (record received from MF, but there is an error)</option>
+											<option selected value="NR">Not Received (record not received from MF)</option>
+											<option value="CO">Completed (processed successfully to Prism)</option>
+											<option value="IN">Invalidated (IN)</option>
 										</select>
 									</td>
 								</tr>

@@ -824,6 +824,19 @@ public class TascController {
 			process.setProcessedDateTo(request.getParameter("coCheckDateTo"));
 			process.setImagingId(request.getParameter("imagingId"));
 			process.setBarcode(request.getParameter("barcode"));
+			
+			if("-1".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("All");
+			}else if("ER".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Error (record received from MF, but there is an error)");
+			}else if("NR".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Not Received (record not received from MF)");
+			}else if("CO".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Completed (processed successfully to Prism)");
+			}else if("IN".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Invalidated (IN)");
+			}
+			
 			request.getSession().setAttribute("coCheckTO", process);
 			modelAndView = new ModelAndView("completenessCheckResult", "message", jsonStr);
 		} catch (Exception e) {

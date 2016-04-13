@@ -28,12 +28,7 @@
 					</a>
 				</div>
 				<div class="search-criteria">
-				<b>Showing search results for</b> Status:
-				<%if("-1".equals(searchProcess.getProcessStatus())){%>
-					All
-				<%}else if(!"-1".equals(searchProcess.getProcessStatus())){%>
-					<%=searchProcess.getProcessStatus()%>
-				<%}%>
+				<b>Showing search results for</b> Status: <%=searchProcess.getProcessStatusDesc()%>
 				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
 					, Winscore Export Date From: <%=searchProcess.getProcessedDateFrom()%>
 				<%}%>
