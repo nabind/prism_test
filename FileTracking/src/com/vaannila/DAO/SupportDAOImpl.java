@@ -20,7 +20,7 @@ public class SupportDAOImpl {
 	 * @throws Exception
 	 */
 	//TODO: Need to implement cache
-	public String unlockStudnet(StudentDetailsTO studentTO) throws Exception {
+	public String unlockStudnet(StudentDetailsTO studentTO, boolean undo) throws Exception {
 		System.out.println("Enter: unlockStudnet()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
@@ -31,7 +31,10 @@ public class SupportDAOImpl {
 			int count = 0;
 	
 			String query = "";
-			query = "{call PKG_FILE_TRACKING_SUPPORT.SP_UNLOCK_STUDENT_SCHEDULE(?,?,?,?)}";
+			if(!undo)
+				query = "{call PKG_FILE_TRACKING_SUPPORT.SP_UNLOCK_STUDENT_SCHEDULE(?,?,?,?)}";
+			else
+				query = "{call PKG_FILE_TRACKING_SUPPORT.SP_UNLOCK_STUDENT_SCHE_UNDO(?,?,?,?)}";
 			
 			System.out.println("unlock query: "+query);
 			cs = conn.prepareCall(query);

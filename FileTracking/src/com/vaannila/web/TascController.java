@@ -642,9 +642,15 @@ public class TascController {
 					System.out.println("Student "+process.getUuid()+ " has been invalidate");
 				}
 				if(action!=null && action.equals("invalidateSch")){
-					String schId = request.getParameter("schId");
+					String insUuid = request.getParameter("insUuid");
+					String insStateCode = request.getParameter("insStateCode");
+					String scheduleId = request.getParameter("schId");
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(insUuid);
+					studentTO.setStateCode(insStateCode);
+					studentTO.setScheduleId(scheduleId);
 					//Invalidate schedule code goes here with uuid
-					System.out.println("Student "+process.getUuid()+ " with schedule " +schId+" has been invalidate");
+					System.out.println("Student "+insUuid+ " with schedule " +scheduleId+" has been invalidate");
 				}
 				if(action!=null && action.equals("unlock")){
 					String unUuid = request.getParameter("unUuid");
@@ -655,8 +661,20 @@ public class TascController {
 					studentTO.setStateCode(unStateCode);
 					studentTO.setScheduleId(scheduleId);
 					//Unlock student code goes here with uuid
-					jsonStr = supportDao.unlockStudnet(studentTO);
+					jsonStr = supportDao.unlockStudnet(studentTO,false);
 					System.out.println("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
+				}
+				if(action!=null && action.equals("undoUnlock")){
+					String unUuid = request.getParameter("unUuid");
+					String unStateCode = request.getParameter("unStateCode");
+					String scheduleId = request.getParameter("schId");	
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(unUuid);
+					studentTO.setStateCode(unStateCode);
+					studentTO.setScheduleId(scheduleId);
+					//Unlock student code goes here with uuid
+					jsonStr = supportDao.unlockStudnet(studentTO,true);
+					System.out.println("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
 				}
 				
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
