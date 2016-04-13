@@ -88,13 +88,24 @@
   </definition>
   
   <definition name="combined" extends="baseLayout">
-      <put-attribute name="title"  value="MAP Process"/>
+      <put-attribute name="title"  value="TASC Process"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/combined.jsp"/>      
+  </definition>
+  
+  <definition name="completenessCheckSearch" extends="baseLayout">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/completenessCheckSearch.jsp"/>      
+  </definition>
+  
+  <definition name="completenessCheckResult" extends="baseLayoutNew">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/completenessCheckResult.jsp"/>      
   </definition>
   
   <definition name="supportPageTASC" extends="baseLayout">
       <put-attribute name="title"  value="TASC Support Page"/>
       <put-attribute name="body"   value="/WEB-INF/jsp/supportPageTASC.jsp"/>      
   </definition>
+  
   
 </tiles-definitions>
