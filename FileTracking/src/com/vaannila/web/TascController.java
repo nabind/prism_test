@@ -16,17 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-import com.vaannila.DAO.SupportDAOImpl;
 import com.vaannila.DAO.TascDAOImpl;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
+import com.vaannila.TO.StudentDetailsWinTO;
 import com.vaannila.TO.StudentJsonObject;
+import com.vaannila.TO.StudentWinJsonObject;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.Utils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vaannila.DAO.SupportDAOImpl;
 
 @Controller
 public class TascController {
@@ -506,7 +508,6 @@ public class TascController {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("/process/downloadCsv.htm")
 	public void downloadCsv(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -829,5 +830,161 @@ public class TascController {
 			e.printStackTrace();
 		}
 		return modelAndView;
+	}
+	
+	/**
+	 * This method is for paging
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/process/coCheckResult.htm", method = RequestMethod.GET)
+	public @ResponseBody String coCheckResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: coCheckResult()");
+		TascDAOImpl stageDao = new TascDAOImpl();
+    	SearchProcess process = (SearchProcess)request.getSession().getAttribute("coCheckTO");
+    	String searchParameter = request.getParameter("sSearch");
+    	if(searchParameter != null){
+    		process.setSearchParam(searchParameter);
+    	}
+    	long totalRecordCount = stageDao.getTotalRecordCountWin(process);
+    	
+    	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
+    	long pageNumber = 0;
+    	if (null != request.getParameter("iDisplayStart")){
+    		pageNumber = (Long.parseLong(request.getParameter("iDisplayStart"))/pageDisplayLength)+1;
+    	}
+    	
+    	process.setPageNumber(pageNumber);
+    	process.setPageDisplayLength(pageDisplayLength);
+    	
+    	String sortEcho = request.getParameter("sEcho");
+        String sortCol = request.getParameter("iSortCol_0");
+        String sortDir = request.getParameter("sSortDir_0");
+        process.setSortCol(sortCol);
+        process.setSortDir(sortDir);
+		
+		List<StudentDetailsWinTO> studentDetailsTOList = stageDao.getResultWin(process);
+    	
+		StudentWinJsonObject studentJsonObject = new StudentWinJsonObject();
+		studentJsonObject.setiTotalDisplayRecords(totalRecordCount);
+		studentJsonObject.setiTotalRecords(totalRecordCount);
+		studentJsonObject.setAaData(studentDetailsTOList);
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String jsonStr = gson.toJson(studentJsonObject);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonStr);
+		System.out.println("Exit: coCheckResult()");
+		return null;			
+	}
+	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/downloadCsvWin.htm")
+	public void downloadCsvWin(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: downloadCsv()");
+		long t1 = System.currentTimeMillis();
+		String fileName = "dataWin.csv";
+		String contentType = "application/octet-stream";
+		SearchProcess process = new SearchProcess();
+		List<StudentDetailsTO> studentDetailsTOList = null;
+		try {
+			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
+			process.setMode("CSV");
+			process.setSortCol("13");
+			process.setSortDir("desc");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			studentDetailsTOList = stageDao.getProcessErPaging(process);
+			process.setMode("");
+			process.setSortCol("");
+			process.setSortDir("");
+			
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("Record Id")
+			.append(",").append("Student Name")
+			.append(",").append("UUID")
+			.append(",").append("Test Element Id")
+			.append(",").append("Ex. Code")
+			.append(",").append("Status")
+			.append(",").append("Bar Code")
+			.append(",").append("Test/Schedule Date")
+			.append(",").append("State Code")
+			.append(",").append("Form")
+			.append(",").append("Subtest")
+			.append(",").append("Test Center Code")
+			.append(",").append("Test Center Name");
+			
+			if("ERESOURCE".equals(process.getSourceSystem())){
+				buffer.append(",").append("CTB Customer ID")
+				.append(",").append("State Name")
+				.append(",").append("DOB")
+				.append(",").append("Gender")
+				.append(",").append("Government ID")
+				.append(",").append("Government ID Type")
+				.append(",").append("Address")
+				.append(",").append("City")
+				.append(",").append("County")
+				.append(",").append("State")
+				.append(",").append("Zip")
+				.append(",").append("Email")
+				.append(",").append("Alternate Email")
+				.append(",").append("Primary Phone Number")
+				.append(",").append("Cell Phone Number")
+				.append(",").append("Alternate Phone Number")
+				.append(",").append("Resolved Ethnicity Race")
+				.append(",").append("Home Language")
+				.append(",").append("Education Level")
+				.append(",").append("Attend College")
+				.append(",").append("Contact")
+				.append(",").append("Examinee County Parish Code")
+				.append(",").append("Registered On")
+				.append(",").append("Registered Test Center")
+				.append(",").append("Registered Test Center Code")
+				.append(",").append("Schedule ID")
+				.append(",").append("Time of Day")
+				.append(",").append("Checked in Date")
+				.append(",").append("Content Test Type")
+				.append(",").append("Content Test Code")
+				.append(",").append("TASC Radiness")
+				.append(",").append("ECC")
+				.append(",").append("Regst TC County Parish Code")
+				.append(",").append("Sched TC County Parish Code");
+			}else{
+				buffer.append(",").append("Test Language")
+				.append(",").append("Litho Code")
+				.append(",").append("Scoring Date")
+				.append(",").append("Scanned/Processed Date")
+				.append(",").append("Number Correct")
+				.append(",").append("Status Code")
+				.append(",").append("Scan Batch=OrgTP_Struc-Lvl-Elm_Opunit")
+				.append(",").append("Scan Stack")
+				.append(",").append("Scan Sequence")
+				.append(",").append("Bio Image(s)");
+			}
+			buffer.append(",").append("Source System")
+			.append(",").append("Prism Process Date")
+			.append(",").append("Error Log")
+			.append("\n");
+			
+			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
+			buffer.append(data);
+			System.out.println("buffer: "+buffer);
+			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
+		} catch (Exception e) {
+			System.out.println("Failed to download the file");
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: downloadCsv() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
 	}
 }
