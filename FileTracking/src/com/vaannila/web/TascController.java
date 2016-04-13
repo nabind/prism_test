@@ -650,6 +650,19 @@ public class TascController {
 					studentTO.setStateCode(insStateCode);
 					studentTO.setScheduleId(scheduleId);
 					//Invalidate schedule code goes here with uuid
+					jsonStr = supportDao.invalidateSch(studentTO,false);
+					System.out.println("Student "+insUuid+ " with schedule " +scheduleId+" has been invalidate");
+				}
+				if(action!=null && action.equals("undoInvalidateSch")){
+					String insUuid = request.getParameter("insUuid");
+					String insStateCode = request.getParameter("insStateCode");
+					String scheduleId = request.getParameter("schId");
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(insUuid);
+					studentTO.setStateCode(insStateCode);
+					studentTO.setScheduleId(scheduleId);
+					//Invalidate schedule code goes here with uuid
+					jsonStr = supportDao.invalidateSch(studentTO,true);
 					System.out.println("Student "+insUuid+ " with schedule " +scheduleId+" has been invalidate");
 				}
 				if(action!=null && action.equals("unlock")){

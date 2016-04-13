@@ -211,76 +211,44 @@
 		}		
 	}
 	
-	function invalidateSchedule(schId){
+	function invalidateSchedule(schId,undo){
 		var insStateCode = $("#commentStateCode").val();
 		var insUuid = $("#commentUuid").val();
-		
+
 		if (confirm('Are you sure you want to invalidate this student (uuid :'+insUuid+')?')) {
-			/* var dataString = "uuid="+uuid+"&stateCode="+stateCode+"&schId="+schId+"&action=invalidateSch";
-			$.ajax({
-			      type: "POST",
-			      url: "combined.htm",
-			      data: dataString,
-			      success: function(data) {
-			    	     },
-				  error: function(data) {
-					  }
-		    }) */;
-			
+						
 		    $('#supportTascForm')
 	  		.append('<input type="hidden" name="insUuid" value="'+insUuid+'" />')
 	  		.append('<input type="hidden" name="insStateCode" value="'+insStateCode+'" />') 
-	  		.append('<input type="hidden" name="schId" value="'+schId+'" />')
-	  		.append('<input type="hidden" name="action" value="invalidateSch" />');
+	  		.append('<input type="hidden" name="schId" value="'+schId+'" />');
+		    if(!undo) {
+		    	$('#supportTascForm').append('<input type="hidden" name="action" value="invalidateSch" />');
+		    }
+		    else {
+		    	$('#supportTascForm').append('<input type="hidden" name="action" value="undoInvalidateSch" />');
+		    }
+	  		
 	  		$("#supportTascForm").submit();
 		}		
-	}
+	}	
 	
-	function unlock(schId){
+	
+	function unlock(schId,undo){
 		var unStateCode = $("#commentStateCode").val();
 		var unUuid = $("#commentUuid").val();
 		
 		if (confirm('Are you sure you want to unlock this student (uuid :'+unUuid+')?')) {
-
-			/*
-			  var dataString = "uuid="+uuid+"&stateCode="+stateCode+"&schId="+schId+"&action=unlock";
-			  $.ajax({
-		      type: "POST",
-		      //async: false,
-		      url: "combined.htm",
-		      data: dataString,
-		      success: function(data) {
-		    	  $("#supportTascForm").submit();
-		    	     },
-			  error: function(data) {
-				  }
-	   			 }); 
-			  */
-			  
-			  $('#supportTascForm')
+  			  $('#supportTascForm')
 			  		.append('<input type="hidden" name="unUuid" value="'+unUuid+'" />')
 			  		.append('<input type="hidden" name="unStateCode" value="'+unStateCode+'" />') 
-			  		.append('<input type="hidden" name="schId" value="'+schId+'" />')
-			  		.append('<input type="hidden" name="action" value="unlock" />');
+			  		.append('<input type="hidden" name="schId" value="'+schId+'" />');
+			  if(!undo) {
+				  $('#supportTascForm').append('<input type="hidden" name="action" value="unlock" />');
+			  } else {
+				  $('#supportTascForm').append('<input type="hidden" name="action" value="undoUnlock" />');
+			  }
+			  		
 			  $("#supportTascForm").submit();
-			
-			
-		}		
-	}
-	
-	function undoUnlock(schId){
-		var unStateCode = $("#commentStateCode").val();
-		var unUuid = $("#commentUuid").val();
-		
-		if (confirm('Are you sure you want to lock this student (uuid :'+unUuid+')?')) {
-			  $('#supportTascForm')
-			  		.append('<input type="hidden" name="unUuid" value="'+unUuid+'" />')
-			  		.append('<input type="hidden" name="unStateCode" value="'+unStateCode+'" />') 
-			  		.append('<input type="hidden" name="schId" value="'+schId+'" />')
-			  		.append('<input type="hidden" name="action" value="undoUnlock" />');
-			  $("#supportTascForm").submit();
-			
-			
 		}		
 	}
 	
@@ -520,17 +488,19 @@
 							<a id="invalidateStudent" onclick="invalidateStudent()" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Invalidate</a>
 						</div>
 						<div>
-							<a id="invalidateSchedule" onclick="invalidateSchedule(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Inv-Schd</a>
-						</div>
-						<%if(bucket.getPpOaslinkedId() != null && bucket.getPpOaslinkedId().length() > 0) { %>
-							<div>
-								<a id="unlock" onclick="unlock(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Unlock</a>
-							</div>
+						<%if(!bucket.getScheduleId().equals("99")){%>
+							<a id="invalidateSchedule" onclick="invalidateSchedule(<%=bucket.getScheduleId() %>,false)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Inv-Schd</a>
 						<%} else {%>
-							<div>
-								<a id="unlock" onclick="undoUnlock(<%=bucket.getScheduleId() %>)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Undo</a>
-							</div>
+							<a id="invalidateSchedule" onclick="invalidateSchedule(<%=bucket.getScheduleId() %>,true)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Undo-Inv-Schd</a>
 						<% } %>
+						</div>
+						<div>
+						<%if(bucket.getPpOaslinkedId() != null && bucket.getPpOaslinkedId().length() > 0) { %>
+							<a id="unlock" onclick="unlock(<%=bucket.getScheduleId() %>,false)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Unlock</a>
+						<%} else {%>
+							<a id="unlock" onclick="unlock(<%=bucket.getScheduleId() %>,true)" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Undo-Unlock</a>
+						<% } %>
+						</div>
 					</td>
 				</tr>
 			
