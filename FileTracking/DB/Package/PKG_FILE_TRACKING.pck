@@ -24,7 +24,7 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                            P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
-  PROCEDURE SP_GET_DATA_WINSCORE(P_PROCESS_STATUS         IN VARCHAR2,
+  PROCEDURE SP_GET_DATA_OL_PP(P_PROCESS_STATUS         IN VARCHAR2,
                               P_DATE_FROM              IN VARCHAR2,
                               P_DATE_TO                IN VARCHAR2,
                               P_UUID                   IN VARCHAR2,
@@ -46,6 +46,20 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                               P_OUT_CUR_ER_DATA_CSV    OUT GET_REFCURSOR,
                               P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 
+  PROCEDURE SP_GET_DATA_WINSCORE(P_PROCESS_STATUS         IN VARCHAR2,
+                                 P_DATE_FROM              IN VARCHAR2,
+                                 P_DATE_TO                IN VARCHAR2,
+                                 P_IMAGING_ID             IN VARCHAR2,
+                                 P_BARCODE                IN VARCHAR2,
+                                 P_SEARCH_PARAM           IN VARCHAR2,
+                                 P_ORDERED_COLUMN         IN VARCHAR2,
+                                 P_ORDER                  IN VARCHAR2,
+                                 P_ROWNUM_FROM            IN NUMBER,
+                                 P_ROWNUM_TO              IN NUMBER,
+                                 P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                                 P_OUT_CUR_DATA           OUT GET_REFCURSOR,
+                                 P_OUT_CUR_DATA_CSV       OUT GET_REFCURSOR,
+                                 P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 END PKG_FILE_TRACKING;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
@@ -631,34 +645,30 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_OL_PP;
-  
+
   PROCEDURE SP_GET_DATA_WINSCORE(P_PROCESS_STATUS         IN VARCHAR2,
-                              P_DATE_FROM              IN VARCHAR2,
-                              P_DATE_TO                IN VARCHAR2,
-                              P_IMAGING_ID         IN VARCHAR2,
-                              P_BARCODE           IN VARCHAR2,
-                              P_SEARCH_PARAM           IN VARCHAR2,
-                              P_ORDERED_COLUMN         IN VARCHAR2,
-                              P_ORDER                  IN VARCHAR2,
-                              P_ROWNUM_FROM            IN NUMBER,
-                              P_ROWNUM_TO              IN NUMBER,
-                              P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
-                              P_OUT_CUR_DATA        OUT GET_REFCURSOR,
-                              P_OUT_CUR_DATA_CSV    OUT GET_REFCURSOR,
-                              P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
+                                 P_DATE_FROM              IN VARCHAR2,
+                                 P_DATE_TO                IN VARCHAR2,
+                                 P_IMAGING_ID             IN VARCHAR2,
+                                 P_BARCODE                IN VARCHAR2,
+                                 P_SEARCH_PARAM           IN VARCHAR2,
+                                 P_ORDERED_COLUMN         IN VARCHAR2,
+                                 P_ORDER                  IN VARCHAR2,
+                                 P_ROWNUM_FROM            IN NUMBER,
+                                 P_ROWNUM_TO              IN NUMBER,
+                                 P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                                 P_OUT_CUR_DATA           OUT GET_REFCURSOR,
+                                 P_OUT_CUR_DATA_CSV       OUT GET_REFCURSOR,
+                                 P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
   
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
     V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
-    V_EXCEPTION_STATUS         VARCHAR2(100) := '';
-    V_SEARCH_PARAM             VARCHAR2(100);
-    V_SEARCH_PARAM_COUNT       NUMBER := 0;
     V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
   
   BEGIN
   
-    V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                      ' SELECT SCAN_BATCH,
+    V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SELECT SCAN_BATCH,
                            DISTRICT_NUMBER,
                            SCHOOL_NUMBER,
                            UUID,
@@ -681,12 +691,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            WINS_DOCID,
                            COMMODITY_CODE,
                            WINSTATUS,
-                           PRISM_PROCESS_STATUS
+                           PRISM_PROCESS_STATUS,
+                           IMAGE_FILEPATH,
+                           IMAGE_FILENAMES
                       FROM WINS_DOC_INFO
-                     WHERE ';
-                     
+                     WHERE 1=1 ';
+  
     IF P_PROCESS_STATUS <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PRISM_PROCESS_STATUS =  ''' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND PRISM_PROCESS_STATUS =  ''' ||
                         P_PROCESS_STATUS || '''';
     END IF;
   
@@ -703,13 +715,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     END IF;
   
     IF P_IMAGING_ID <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND IMAGING_ID ''%' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND IMAGING_ID LIKE ''%' ||
                         P_IMAGING_ID || '%''';
     END IF;
   
     IF P_BARCODE <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND BARCODE =  ''' ||
-                        P_BARCODE || '''';
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND BARCODE LIKE ''%' ||
+                        P_BARCODE || '%''';
     END IF;
   
     IF P_SEARCH_PARAM <> '-1' THEN
@@ -738,8 +750,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                         P_SEARCH_PARAM ||
                         '%'') OR UPPER(WINS_EXPORT_DATE) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM || '%'')';
-    
-      V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
     END IF;
   
     V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
@@ -800,7 +810,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     END IF;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
-    OPEN P_OUT_CUR_ER_DATA_CSV FOR V_QUERY_ACTUAL;
+    OPEN P_OUT_CUR_DATA_CSV FOR V_QUERY_ACTUAL;
   
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
@@ -810,7 +820,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
        WHERE RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
-    OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
+    OPEN P_OUT_CUR_DATA FOR V_QUERY_PAGING;
   
   EXCEPTION
     WHEN OTHERS THEN
