@@ -73,7 +73,7 @@
 				</p>
 				
 				<div id="moreInfoDialog" title="Loading ..." style='display:none; font-size:11px'>
-					<p id="moreInfo"><p>
+					<p id="moreInfo"><p><p>
 					<table width="100%" class="process_details">
 						<tr>
 							<td width="44%"><b>Imaging ID :</b></td><td width="56%"><span id="imagingId"></span></td>
@@ -122,9 +122,7 @@
 				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
 				</div>
-				
 			</div>
-
 	</div>
 </div>
 </div>

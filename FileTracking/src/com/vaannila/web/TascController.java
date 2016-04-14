@@ -856,6 +856,7 @@ public class TascController {
 	@RequestMapping(value = "/process/coCheckResult.htm", method = RequestMethod.GET)
 	public @ResponseBody String coCheckResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		System.out.println("Enter: coCheckResult()");
+		long t1 = System.currentTimeMillis();
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("coCheckTO");
     	String searchParameter = request.getParameter("sSearch");
@@ -890,7 +891,8 @@ public class TascController {
 		String jsonStr = gson.toJson(studentJsonObject);
 		response.setContentType("application/json");
 		response.getWriter().write(jsonStr);
-		System.out.println("Exit: coCheckResult()");
+		long t2 = System.currentTimeMillis();
+		System.out.println("Exit: coCheckResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		return null;			
 	}
 	

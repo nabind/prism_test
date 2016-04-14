@@ -38,7 +38,7 @@ $(document).ready(function(){
         "iDisplayLength": 10,
         "iDisplayStart": 0,
         "fnDrawCallback": function () {
-        	update_rows();
+        	dataTableCallBack();
         },         
         "sAjaxSource": "coCheckResult.htm",
         "aoColumnDefs": [ 
@@ -74,8 +74,15 @@ $(document).ready(function(){
 			{ "mData": "winsExportDate"},
 			{
 				"mRender": function ( data, type, row ) {
-					var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='";
-					html = html + "getMoreInfo(" +row+ ");'>";
+					var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline'";
+					html = html + " imagingId='"+row.imagingId+"' orgTpName='"+row.orgTpName+"'"
+								+ " lastName='"+row.lastName+"' firstName='"+row.firstName+"'"
+								+ " middleInitial='"+row.middleInitial+"' lithoCode='"+row.lithoCode+"'"
+								+ " scanStack='"+row.scanStack+"' scanSequence='"+row.scanSequence+"'"
+								+ " winsDocId='"+row.winsDocId+"' comodityCode='"+row.comodityCode+"'"
+								+ " winStatus='"+row.winStatus+"' prismProcessStatus='"+row.prismProcessStatus+"'"
+								+ " imageFilePath='"+row.imageFilePath+"' imageFileName='"+row.imageFileName+"'"
+								+ ">";
 					html += "More Info</a>";
 					return html;
 				}
@@ -83,7 +90,39 @@ $(document).ready(function(){
         ]
     });
 	
+	
+	
 });
+
+function getMoreInfoWin(htmlElement) {
+	jQuery("#moreInfoDialog").dialog({
+		title: 'More Info: ',
+		width: 675,
+		height: 410,
+		draggable: false
+	});
+	$("#imagingId").html(htmlElement.attr('imagingId'));
+	$("#orgTpName").html(htmlElement.attr('orgTpName'));
+	$("#lastName").html(htmlElement.attr('lastName'));
+	$("#firstName").html(htmlElement.attr('firstName'));
+	$("#middleInitial").html(htmlElement.attr('middleInitial'));
+	$("#lithoCode").html(htmlElement.attr('lithoCode'));
+	$("#scanStack").html(htmlElement.attr('scanStack'));
+	$("#scanSequence").html(htmlElement.attr('scanSequence'));
+	$("#winsDocId").html(htmlElement.attr('winsDocId'));
+	$("#comodityCode").html(htmlElement.attr('comodityCode'));
+	$("#winStatus").html(htmlElement.attr('winStatus'));
+	$("#prismProcessStatus").html(htmlElement.attr('prismProcessStatus'));
+	$("#imageFilePath").html(htmlElement.attr('imageFilePath'));
+	$("#imageFileName").html(htmlElement.attr('imageFileName'));
+}
+
+function dataTableCallBack(){
+	update_rows();
+	$('.noteLink').on("click", function(){
+		getMoreInfoWin($(this));
+	});
+}
 
 function update_rows(){
     $(".process_details tr:even").css("background-color", "#fff");
@@ -110,52 +149,6 @@ function clearMoreInfoTableRows() {
 	$("#prismProcessStatus").html('');
 	$("#imageFilePath").html('');
 	$("#imageFileName").html('');
-}
-
-
-function getMoreInfo(rowObj) {
-	alert(rowObj.imagingId);
-	clearMoreInfoTableRows();
-	var dataString = "erExcdId="+erExcdId;
-	$("#moreInfo").html( '<img src="css/ajax-loader.gif"></img>' );
-	jQuery("#moreInfoDialog").dialog({
-		title: 'More Info: ',
-		width: 675,
-		height: 410,
-		draggable: false
-	});
-	$.ajax({
-	      type: "POST",
-	      url: "getMoreInfo.htm",
-	      data: dataString,
-	      success: function(data) {
-	    	  if(data == "Error") {
-	    		  clearMoreInfoTableWhenError('Failed to get Data');
-	    	  } else if(data.length == 2) {
-	    		  clearMoreInfoTableWhenError('Data Not Found');
-	          } else {
-	    		  $("#moreInfo").html('');
-		    	  var obj = JSON.parse(data);
-		    	  $("#imagingId").html( obj.TESTING_SITE_CODE );
-		    	  $("#testCenterName_mi").html( obj.TESTING_SITE_NAME );
-		    	  $("#testLanguage_mi").html( obj.TEST_LANGUAGE );
-		    	  $("#lithoCode_mi").html( obj.LITHOCODE );
-		    	  $("#scoringDate_mi").html( obj.SCORING_DATE );
-		    	  $("#scannedDate_mi").html( obj.SCANNED_DATE );
-		    	  $("#studentName_mi").html( obj.LAST_NAME );
-		    	  $("#numberCorrect_mi").html( obj.NCR_SCORE );
-		    	  $("#statusCode_mi").html( obj.CONTENT_STATUS_CODE );
-		    	  $("#scanBatch_mi").html( obj.SCAN_BATCH );
-		    	  $("#scanStack_mi").html( obj.SCAN_STACK );
-		    	  $("#scanSequence_mi").html( obj.SCAN_SEQUENCE );
-		    	  $("#bioImages_mi").html( obj.BIO_IMAGES );
-		     }
-	      },
-		  error: function(data) {
-			  clearMoreInfoTableWhenError('Failed to get Data');
-		  }
-    });
-    return false;
 }
 
 function getErrorLog(erExcdId) {
