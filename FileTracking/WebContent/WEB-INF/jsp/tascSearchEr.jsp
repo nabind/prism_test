@@ -16,7 +16,7 @@
 			$('#processedDateFrom').datepicker({maxDate: '0',onSelect: function(date) {
 				date = $(this).datepicker('getDate');
 		        var maxDate = new Date(date.getTime());
-		        maxDate.setDate(maxDate.getDate() + 30);
+		        maxDate.setDate(maxDate.getDate() + 365);
 		        $('#processedDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
 		    }});
 			
@@ -107,7 +107,7 @@
 								<td>Processed Date From:</td>
 								<td>
 									<input type="text" name="processedDateFrom" id="processedDateFrom">
-									<span style="color:red;">* Date range should be 30 days or less.</span>
+									<span style="color:red;">* Date range should be 365 days or less.</span>
 								</td>
 							</tr>
 							<tr>
