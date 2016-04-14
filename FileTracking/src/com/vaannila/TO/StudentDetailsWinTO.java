@@ -30,6 +30,7 @@ public class StudentDetailsWinTO implements Serializable {
 	private String comodityCode = "";
 	private String winStatus = "";
 	private String prismProcessStatus = "";
+	private String prismProcessStatusDesc = "";
 	private String imageFilePath = "";
 	private String imageFileName = "";
 	
@@ -177,6 +178,24 @@ public class StudentDetailsWinTO implements Serializable {
 	public void setPrismProcessStatus(String prismProcessStatus) {
 		this.prismProcessStatus = prismProcessStatus;
 	}
+	public String getPrismProcessStatusDesc() {
+		return this.prismProcessStatusDesc;
+	}
+	public void setPrismProcessStatusDesc(String prismProcessStatusDesc) {
+		String  temp = "";
+		if("-1".equals(prismProcessStatusDesc)){
+			temp = "All";
+		}else if("ER".equals(prismProcessStatusDesc)){
+			temp = "Error (record received from MF, but there is an error)";
+		}else if("NR".equals(prismProcessStatusDesc)){
+			temp = "Not Received (record not received from MF)";
+		}else if("CO".equals(prismProcessStatusDesc)){
+			temp = "Completed (processed successfully to Prism)";
+		}else if("IN".equals(prismProcessStatusDesc)){
+			temp = "Invalidated (IN)";
+		}
+		this.prismProcessStatusDesc = temp;
+	}
 	public String getImageFilePath() {
 		return imageFilePath;
 	}
@@ -216,7 +235,7 @@ public class StudentDetailsWinTO implements Serializable {
 		.append(",").append("\"").append(winsDocId).append("\"")
 		.append(",").append("\"").append(comodityCode).append("\"")
 		.append(",").append("\"").append(winStatus).append("\"")
-		.append(",").append("\"").append(prismProcessStatus).append("\"")
+		.append(",").append("\"").append(prismProcessStatusDesc).append("\"")
 		.append(",").append("\"").append(imageFilePath).append("\"")
 		.append(",").append("\"").append(imageFileName).append("\"");
 		return buffer.toString();

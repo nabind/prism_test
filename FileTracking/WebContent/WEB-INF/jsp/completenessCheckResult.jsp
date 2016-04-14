@@ -22,7 +22,7 @@
 				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("coCheckTO");
 				%>
 				<div style="float: right">
-					<a href='downloadCsv.htm' class='noteLink ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover' 
+					<a href='downloadCsvWin.htm' class='noteLink ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover' 
 						style='padding:5px;top:5px;color:#00329B;text-decoration:underline' target="_blank">
 						Download CSV
 					</a>
@@ -109,7 +109,7 @@
 							<td><b>WinscoreStatus :</b></td><td><span id="winStatus"></span></td>
 						</tr>
 						<tr>
-							<td><b>Prism Status :</b></td><td><span id="prismProcessStatus"></span></td>
+							<td><b>Prism Status :</b></td><td><span id="prismProcessStatusDesc"></span></td>
 						</tr>
 						<tr>
 							<td><b>Image File Path(s) :</b></td><td><span id="imageFilePath"></span></td>

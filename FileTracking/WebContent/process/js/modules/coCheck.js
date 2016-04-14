@@ -74,13 +74,13 @@ $(document).ready(function(){
 			{ "mData": "winsExportDate"},
 			{
 				"mRender": function ( data, type, row ) {
-					var html = "<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline'";
+					var html = "<a href='#note' class='noteLink moreInfoWin' style='color:#00329B;text-decoration:underline'";
 					html = html + " imagingId='"+row.imagingId+"' orgTpName='"+row.orgTpName+"'"
 								+ " lastName='"+row.lastName+"' firstName='"+row.firstName+"'"
 								+ " middleInitial='"+row.middleInitial+"' lithoCode='"+row.lithoCode+"'"
 								+ " scanStack='"+row.scanStack+"' scanSequence='"+row.scanSequence+"'"
 								+ " winsDocId='"+row.winsDocId+"' comodityCode='"+row.comodityCode+"'"
-								+ " winStatus='"+row.winStatus+"' prismProcessStatus='"+row.prismProcessStatus+"'"
+								+ " winStatus='"+row.winStatus+"' prismProcessStatusDesc='"+row.prismProcessStatusDesc+"'"
 								+ " imageFilePath='"+row.imageFilePath+"' imageFileName='"+row.imageFileName+"'"
 								+ ">";
 					html += "More Info</a>";
@@ -112,14 +112,14 @@ function getMoreInfoWin(htmlElement) {
 	$("#winsDocId").html(htmlElement.attr('winsDocId'));
 	$("#comodityCode").html(htmlElement.attr('comodityCode'));
 	$("#winStatus").html(htmlElement.attr('winStatus'));
-	$("#prismProcessStatus").html(htmlElement.attr('prismProcessStatus'));
+	$("#prismProcessStatusDesc").html(htmlElement.attr('prismProcessStatusDesc'));
 	$("#imageFilePath").html(htmlElement.attr('imageFilePath'));
 	$("#imageFileName").html(htmlElement.attr('imageFileName'));
 }
 
 function dataTableCallBack(){
 	update_rows();
-	$('.noteLink').on("click", function(){
+	$('.moreInfoWin').on("click", function(){
 		getMoreInfoWin($(this));
 	});
 }

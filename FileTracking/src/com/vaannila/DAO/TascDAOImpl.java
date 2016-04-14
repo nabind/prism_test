@@ -898,6 +898,7 @@ public class TascDAOImpl {
 					studentDetailsTO.setComodityCode(rs.getString("COMMODITY_CODE") != null ? rs.getString("COMMODITY_CODE") : "");
 					studentDetailsTO.setWinStatus(rs.getString("WINSTATUS") != null ? rs.getString("WINSTATUS") : "");
 					studentDetailsTO.setPrismProcessStatus(rs.getString("PRISM_PROCESS_STATUS") != null ? rs.getString("PRISM_PROCESS_STATUS") : "");
+					studentDetailsTO.setPrismProcessStatusDesc(rs.getString("PRISM_PROCESS_STATUS") != null ? rs.getString("PRISM_PROCESS_STATUS") : "");
 					studentDetailsTO.setImageFilePath(rs.getString("IMAGE_FILEPATH") != null ? rs.getString("IMAGE_FILEPATH") : "");
 					studentDetailsTO.setImageFileName(rs.getString("IMAGE_FILENAMES") != null ? rs.getString("IMAGE_FILENAMES") : "");
 					

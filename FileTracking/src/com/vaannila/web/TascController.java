@@ -906,88 +906,50 @@ public class TascController {
 	@RequestMapping("/process/downloadCsvWin.htm")
 	public void downloadCsvWin(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: downloadCsv()");
+		System.out.println("Enter: downloadCsvWin()");
 		long t1 = System.currentTimeMillis();
 		String fileName = "dataWin.csv";
 		String contentType = "application/octet-stream";
 		SearchProcess process = new SearchProcess();
-		List<StudentDetailsTO> studentDetailsTOList = null;
+		List<StudentDetailsWinTO> studentDetailsTOList = null;
 		try {
-			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
+			process = (SearchProcess)request.getSession().getAttribute("coCheckTO");
 			process.setMode("CSV");
-			process.setSortCol("13");
+			process.setSortCol("12");
 			process.setSortDir("desc");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			studentDetailsTOList = stageDao.getProcessErPaging(process);
+			studentDetailsTOList = stageDao.getResultWin(process);
 			process.setMode("");
 			process.setSortCol("");
 			process.setSortDir("");
 			
 			StringBuffer buffer = new StringBuffer();
-			buffer.append("Record Id")
-			.append(",").append("Student Name")
+			buffer.append("Scan Batch")
+			.append(",").append("District Number")
+			.append(",").append("School Number")
 			.append(",").append("UUID")
-			.append(",").append("Test Element Id")
-			.append(",").append("Ex. Code")
-			.append(",").append("Status")
 			.append(",").append("Bar Code")
-			.append(",").append("Test/Schedule Date")
-			.append(",").append("State Code")
 			.append(",").append("Form")
-			.append(",").append("Subtest")
-			.append(",").append("Test Center Code")
-			.append(",").append("Test Center Name");
-			
-			if("ERESOURCE".equals(process.getSourceSystem())){
-				buffer.append(",").append("CTB Customer ID")
-				.append(",").append("State Name")
-				.append(",").append("DOB")
-				.append(",").append("Gender")
-				.append(",").append("Government ID")
-				.append(",").append("Government ID Type")
-				.append(",").append("Address")
-				.append(",").append("City")
-				.append(",").append("County")
-				.append(",").append("State")
-				.append(",").append("Zip")
-				.append(",").append("Email")
-				.append(",").append("Alternate Email")
-				.append(",").append("Primary Phone Number")
-				.append(",").append("Cell Phone Number")
-				.append(",").append("Alternate Phone Number")
-				.append(",").append("Resolved Ethnicity Race")
-				.append(",").append("Home Language")
-				.append(",").append("Education Level")
-				.append(",").append("Attend College")
-				.append(",").append("Contact")
-				.append(",").append("Examinee County Parish Code")
-				.append(",").append("Registered On")
-				.append(",").append("Registered Test Center")
-				.append(",").append("Registered Test Center Code")
-				.append(",").append("Schedule ID")
-				.append(",").append("Time of Day")
-				.append(",").append("Checked in Date")
-				.append(",").append("Content Test Type")
-				.append(",").append("Content Test Code")
-				.append(",").append("TASC Radiness")
-				.append(",").append("ECC")
-				.append(",").append("Regst TC County Parish Code")
-				.append(",").append("Sched TC County Parish Code");
-			}else{
-				buffer.append(",").append("Test Language")
-				.append(",").append("Litho Code")
-				.append(",").append("Scoring Date")
-				.append(",").append("Scanned/Processed Date")
-				.append(",").append("Number Correct")
-				.append(",").append("Status Code")
-				.append(",").append("Scan Batch=OrgTP_Struc-Lvl-Elm_Opunit")
-				.append(",").append("Scan Stack")
-				.append(",").append("Scan Sequence")
-				.append(",").append("Bio Image(s)");
-			}
-			buffer.append(",").append("Source System")
-			.append(",").append("Prism Process Date")
-			.append(",").append("Error Log")
+			.append(",").append("Braille")
+			.append(",").append("Large Print")
+			.append(",").append("Date Test Taken")
+			.append(",").append("LogIn Date")
+			.append(",").append("Scan Date")
+			.append(",").append("Winscore Export Date")
+			.append(",").append("Imaging ID")
+			.append(",").append("OrgTPName")
+			.append(",").append("LastName")
+			.append(",").append("FirstName")
+			.append(",").append("MiddleInitial")
+			.append(",").append("LithoCode")
+			.append(",").append("StudentScanStk")
+			.append(",").append("StudentScanSeq")
+			.append(",").append("WinscoreDocId")
+			.append(",").append("Commodity Code")
+			.append(",").append("WinscoreStatus")
+			.append(",").append("Prism Status")
+			.append(",").append("Image File Path(s)")
+			.append(",").append("Image File Name(s)")
 			.append("\n");
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
@@ -999,7 +961,7 @@ public class TascController {
 			e.printStackTrace();
 		}finally{
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: downloadCsv() took time: " + String.valueOf(t2 - t1) + "ms");
+			System.out.println("Exit: downloadCsvWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 }
