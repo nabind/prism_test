@@ -635,36 +635,59 @@ public class TascController {
 				
 				if(action!=null && action.equals("delete")){
 					String studentBiodId = request.getParameter("bioId");
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setStudentBioId(studentBiodId);
 					//Delete student code goes here with bio id
+					jsonStr = supportDao.deleteStudent(studentTO);
 					System.out.println("Student "+studentBiodId+ " has been deleted");
 				}
 				if(action!=null && action.equals("invalidate")){
+					String inUuid = request.getParameter("inUuid");
+					String inStateCode = request.getParameter("inStateCode");
+					String erTestSchId = request.getParameter("erTestSchId");
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(inUuid);
+					studentTO.setStateCode(inStateCode);
+					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate student code goes here with uuid
+					jsonStr = supportDao.invalidate(studentTO,false);
+					System.out.println("Student "+process.getUuid()+ " has been invalidate");
+				}
+				if(action!=null && action.equals("undoInvalidate")){
+					String inUuid = request.getParameter("inUuid");
+					String inStateCode = request.getParameter("inStateCode");
+					String erTestSchId = request.getParameter("erTestSchId");
+					StudentDetailsTO studentTO = new StudentDetailsTO();
+					studentTO.setUuid(inUuid);
+					studentTO.setStateCode(inStateCode);
+					studentTO.setErTestSchId(erTestSchId);
+					//Invalidate student code goes here with uuid
+					jsonStr = supportDao.invalidate(studentTO,true);
 					System.out.println("Student "+process.getUuid()+ " has been invalidate");
 				}
 				if(action!=null && action.equals("invalidateSch")){
 					String insUuid = request.getParameter("insUuid");
 					String insStateCode = request.getParameter("insStateCode");
-					String scheduleId = request.getParameter("schId");
+					String erTestSchId = request.getParameter("erTestSchId");
 					StudentDetailsTO studentTO = new StudentDetailsTO();
 					studentTO.setUuid(insUuid);
 					studentTO.setStateCode(insStateCode);
-					studentTO.setScheduleId(scheduleId);
+					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate schedule code goes here with uuid
 					jsonStr = supportDao.invalidateSch(studentTO,false);
-					System.out.println("Student "+insUuid+ " with schedule " +scheduleId+" has been invalidate");
+					System.out.println("Student "+insUuid+ " with erTestSchId " +erTestSchId+" has been invalidate");
 				}
 				if(action!=null && action.equals("undoInvalidateSch")){
 					String insUuid = request.getParameter("insUuid");
 					String insStateCode = request.getParameter("insStateCode");
-					String scheduleId = request.getParameter("schId");
+					String erTestSchId = request.getParameter("erTestSchId");
 					StudentDetailsTO studentTO = new StudentDetailsTO();
 					studentTO.setUuid(insUuid);
 					studentTO.setStateCode(insStateCode);
-					studentTO.setScheduleId(scheduleId);
+					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate schedule code goes here with uuid
 					jsonStr = supportDao.invalidateSch(studentTO,true);
-					System.out.println("Student "+insUuid+ " with schedule " +scheduleId+" has been invalidate");
+					System.out.println("Student "+insUuid+ " with schedule " +erTestSchId+" has been invalidate");
 				}
 				if(action!=null && action.equals("unlock")){
 					String unUuid = request.getParameter("unUuid");

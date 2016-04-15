@@ -1114,7 +1114,7 @@ public class TascDAOImpl {
 		List<StudentDetailsTO> processList = new ArrayList<StudentDetailsTO>();
 		StringBuffer queryBuff = new StringBuffer();
 				
-		queryBuff.append("select schedule_id, content_area_code, content_test_code, decode(content_test_type,0,'OL','PP') type, pp_oas_linkedid, barcode, form,  testcentername, s.created_date_time, s.updated_date_time, uuid, state_code, lastname || ', ' || firstname || ' ' || middlename name, s.date_scheduled, d.COMMENTS from er_test_schedule s, er_student_demo d  where d.er_studid = s.er_studid ");
+		queryBuff.append("select schedule_id, content_area_code, content_test_code, decode(content_test_type,0,'OL','PP') type, pp_oas_linkedid, barcode, form,  testcentername, s.created_date_time, s.updated_date_time, uuid, state_code, lastname || ', ' || firstname || ' ' || middlename name, s.date_scheduled, d.COMMENTS,s.er_test_schedid  from er_test_schedule s, er_student_demo d  where d.er_studid = s.er_studid ");
 		if(searchProcess != null && searchProcess.getUuid() != null && searchProcess.getUuid().length() > 0) {
 			queryBuff.append(" and uuid like ? ");
 		}
@@ -1159,6 +1159,7 @@ public class TascDAOImpl {
 				processTO.setStudentName(rs.getString(13));
 				processTO.setDateScheduled(rs.getString(14));
 				processTO.setComments(rs.getString(15));
+				processTO.setErTestSchId(rs.getString(16));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

@@ -79,6 +79,7 @@ public class StudentDetailsTO implements Serializable {
 	private String updatedDate = "";
 	private String createdDate = "";
 	private String comments = "";
+	private String erTestSchId = "";
 	private String testLanguage = "";
 	private String lithocode = "";
 	private String scoringDate = "";
@@ -92,6 +93,12 @@ public class StudentDetailsTO implements Serializable {
 	
 	
 	
+	public String getErTestSchId() {
+		return erTestSchId;
+	}
+	public void setErTestSchId(String erTestSchId) {
+		this.erTestSchId = erTestSchId;
+	}
 	public String getComments() {
 		return comments;
 	}
