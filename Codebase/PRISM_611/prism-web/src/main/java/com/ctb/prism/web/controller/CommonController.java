@@ -125,7 +125,7 @@ public class CommonController extends BaseDAO {
 	public ModelAndView loadJSPView(HttpServletRequest req, HttpServletResponse res) {
 		String assessmentId = req.getParameter("assessmentId");
 		String studentBioId = req.getParameter("studentId");
-		if(studentBioId != null && studentBioId.length() == 0) {
+		if("undefined".equals(studentBioId) || (studentBioId != null && studentBioId.length() == 0)) {
 			studentBioId = null;
 		}
 		ReportTO report = new ReportTO();

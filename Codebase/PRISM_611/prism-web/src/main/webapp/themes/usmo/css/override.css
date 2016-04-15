@@ -17,9 +17,9 @@ html {
 }*/
 .iframeWrapper {
 	width:100%;height:100%;
-	padding-top:20px; 
+	/*padding-top:20px; 
 	background:url('../../acsi/img/textures/grid.png') repeat-x;
-	cursor: col-resize;	
+	cursor: col-resize;	*/
 }
 .icon-butterfly {
 	position: relative;

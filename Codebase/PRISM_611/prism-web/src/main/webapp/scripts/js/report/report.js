@@ -426,7 +426,30 @@ $(document).ready(function() {
 				
 				var obj = $('.report-frame-'+count);
 				//var obj = reportFrame.get(tabCount); 
-				$(obj).attr('src', apiUrl+'.do?reportUrl='+dataURL);
+				
+				// for Non API reports we are getting rid of iFRAME
+				if(apiUrl == "openReportHtml") {
+					
+					$.ajax({
+						type : "POST",
+						url : 'getReportHtmlAjax.do',
+						data : 'reportUrl='+dataURL,
+						dataType: 'html',
+						cache:false,
+						success : function(data) {
+							$(".iframeWrapper-"+count+"").html(data);
+							//unblockUI('new-tab'+count+'');
+							closeProgress(reportUrl, count, '');
+						},
+						error : function(data) {
+							$.modal.alert(strings['script.common.error']);
+							unblockUI('new-tab'+count+'');
+						}
+					});
+					
+				} else {
+					$(obj).attr('src', apiUrl+'.do?reportUrl='+dataURL);
+				}
 				
 				// reset pagination
 				var currentObj = $('.pagination-'+count);
@@ -495,7 +518,28 @@ $(document).ready(function() {
 			var obj = $('.report-frame-'+tabCount); //reportFrame.get(tabCount); 
 			
 			var page=parseInt($(this).attr('page'));
-			$(obj).attr('src','openReportHtml.do?reportId='+reportid+'&reportUrl='+reportUrl+'&page='+page);
+			
+			// If report in in iframe
+			//$(obj).attr('src','openReportHtml.do?reportId='+reportid+'&reportUrl='+reportUrl+'&page='+page);
+			
+			// report is not in iframe
+			var dataURL = 'reportId='+reportid+'&reportUrl='+reportUrl+'&page='+page;
+			$.ajax({
+				type : "POST",
+				url : 'getReportHtmlAjax.do',
+				data : dataURL,
+				dataType: 'html',
+				cache:false,
+				success : function(data) {
+					$(".iframeWrapper-"+tabCount+"").html(data);
+					//unblockUI('new-tab'+tabCount+'');
+					closeProgress(reportUrl, tabCount, '', true);
+				},
+				error : function(data) {
+					$.modal.alert(strings['script.common.error']);
+					unblockUI('new-tab'+tabCount+'');
+				}
+			});
 			
 			$(this).parent().find(".pageCurrent").html(page+1);
 		}
@@ -1066,21 +1110,72 @@ function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId
 			//$(".tabs a[href^='#"+tabId+"']").click();
 			$("#"+tabId+"_"+tabId).click();
 			
-			$("#"+tabId+"").html(data);
-			
-			unblockUI();
-			$("#"+tabId+"").css('position', 'relative');
-			blockUI(tabId);
-			
-			//alert(reportContent);
-			if($.browser.msie) {
-				$('.icon-page-list').html('');
-				$('.icon-leaf').html('');
-				if($.template.ie7) {
-					$('.download-button').addClass('download-button-ie');
-					$(".report-btn").css("margin-right", "10px");
+			// for Non API reports we are getting rid of iFRAME
+			if(data != null && data.indexOf("openReportHtml.do") != -1) {
+				var progressDiv = '<div class="report-panel-contenta linen linen-custom" style="min-height:630px">\
+										<div class="panel-control panel-control-report align-right padding-right"></div>\
+										<div style="width:100%; text-align: center;padding-top:40px"><img src="themes/acsi/img/standard/loaders/loading64.gif"></div>\
+								   </div>';
+				$("#"+tabId+"").html( progressDiv );
+				var reportJspTemplate = data;
+				var reportJspTemplate_part1 = reportJspTemplate.substring(0, reportJspTemplate.indexOf("<iframe"));
+				var reportJspTemplate_part2 = reportJspTemplate.substring(reportJspTemplate.indexOf("</iframe>")+9);
+				
+				var iframeSrc = data.substring( data.indexOf("openReportHtml.do?"), data.indexOf("reportType=API")+14 );
+				var reportParam = iframeSrc.substring(iframeSrc.indexOf(".do?")+4);
+				
+				$.ajax({
+					type : "POST",
+					url : 'getReportHtmlAjax.do',
+					data : reportParam,
+					dataType: 'html',
+					cache:false,
+					success : function(data) {
+						
+						$("#"+tabId+"").html(reportJspTemplate_part1 + data + reportJspTemplate_part2);
+						$(".iframeWrapper-"+tabCount+"").css("min-height", "800px");
+						
+						unblockUI();
+						$("#"+tabId+"").css('position', 'relative');
+						//blockUI(tabId);
+						
+						//alert(reportContent);
+						if($.browser.msie) {
+							$('.icon-page-list').html('');
+							$('.icon-leaf').html('');
+							if($.template.ie7) {
+								$('.download-button').addClass('download-button-ie');
+								$(".report-btn").css("margin-right", "10px");
+							}
+						}
+						// open filter options
+						//$(".report-filter-"+tabCount+"").click();
+						closeProgress(reportUrl, tabCount, '');
+					},
+					error : function(data) {
+						$.modal.alert(strings['script.common.error']);
+						unblockUI();
+					}
+				});
+			} else {
+				// this is the OLD section for API report type
+				$("#"+tabId+"").html(data);
+				
+				unblockUI();
+				$("#"+tabId+"").css('position', 'relative');
+				blockUI(tabId);
+				
+				//alert(reportContent);
+				if($.browser.msie) {
+					$('.icon-page-list').html('');
+					$('.icon-leaf').html('');
+					if($.template.ie7) {
+						$('.download-button').addClass('download-button-ie');
+						$(".report-btn").css("margin-right", "10px");
+					}
 				}
 			}
+			
 		},
 		error : function(data) {
 			$.modal.alert(strings['script.common.error']);
@@ -1089,7 +1184,7 @@ function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId
 	});
 }
 
-function closeProgress(reportUrl, id, firstCall) {
+function closeProgress(reportUrl, id, firstCall, nopage) {
 	if(id == '_FRAME_ID_') $('#_LOAD_ID_').hide(100);
 	
 	else $('#loading'+id+'').hide(100);
@@ -1102,7 +1197,7 @@ function closeProgress(reportUrl, id, firstCall) {
 	$(".reportButton").removeTooltip();
 	
 	if(reportUrl != null && !firstCall) {
-		checkpagination(reportUrl, id);
+		if(!nopage) checkpagination(reportUrl, id);
 		if( 'none' == $(".icholder-"+id+"").css("display") )
 			$(".report-filter-"+id+"").click();
 	} else {

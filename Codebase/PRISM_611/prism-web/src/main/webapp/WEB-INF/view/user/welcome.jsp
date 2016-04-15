@@ -7,8 +7,45 @@
 					</ul>
 					<div class="tabs-content">
 						<div id="new-tab0" class="with-padding relative">
-							<%@ include file="../report/report.jsp"%>
+							<%-- <%@ include file="../report/report.jsp"%> --%>
+							<div class="report-panel-contenta linen linen-custom">
+								<div class="panel-control panel-control-report align-right padding-right"></div>
+							</div>
+							<div class="report-frame" style="min-height:630px">
+								<textarea id="taContent" style="display:none;"></textarea>
+								<div id="inorsHome" class="relative with-padding" style="height: auto; text-align: justify">
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 		</div>
+<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>		
+<script>
+openHomePage();
+function openHomePage() {
+	if($('#inorsHome').length) {
+		$.ajax({
+			type : "GET",
+			url : "loadHomePageMsg.do",
+			data : 'homeMessage=inors',
+			dataType : 'json',
+			async : false,
+			cache: false,
+			success : function(data) {
+				$('#taContent').val(data.value);
+				$('#inorsHome').html($('#taContent').val());
+			},
+			error : function(data) {
+			if (data.status == "200") {
+				$('#taContent').val(data.responseText);
+				$('#inorsHome').html($('#taContent').val());
+			} else {
+				$('#inorsHome').html("<p class='big-message icon-warning red-gradient'>"+strings['msg.err.homePageContent']+"</p>");
+			}				
+		  }
+		});
+	}
+	return false;
+}
+</script>

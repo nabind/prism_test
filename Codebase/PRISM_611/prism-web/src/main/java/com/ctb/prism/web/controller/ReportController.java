@@ -341,6 +341,10 @@ public class ReportController{
 	public ModelAndView openReportHtmlAjax(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		return openReportHtml(req, res);
 	}
+	@RequestMapping(value = "/getReportHtmlAjax", method = RequestMethod.POST)
+	public ModelAndView getReportHtmlAjax(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		return openReportHtml(req, res);
+	}
 	/**
 	 * This method is responsible for rendering report in html format with default input controls.
 	 * 

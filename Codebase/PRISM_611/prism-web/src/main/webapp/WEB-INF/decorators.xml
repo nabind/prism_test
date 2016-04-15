@@ -34,6 +34,7 @@
 		<pattern>/servlets/resource*</pattern>
 		<pattern>/openReportHtmlApi*</pattern>
 		<pattern>/openReportHtmlAjax*</pattern>
+		<pattern>/getReportHtmlAjax*</pattern>
 		<pattern>/jquery/*</pattern>
 		<pattern>/ajaxJSP/*</pattern>
 		<pattern>/StudentDataloadService*</pattern>
