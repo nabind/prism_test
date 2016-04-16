@@ -56,6 +56,7 @@ import com.ctb.prism.login.transferobject.MReportTO;
 import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
+import com.ctb.prism.login.transferobject.OrgUser;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
@@ -541,46 +542,40 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			} else {
 				contractName = Utils.getContractName();
 			}
-			Query searchUserQuery = new Query(Criteria.where("userName").is(username));
+			Query searchUserQuery = new Query(Criteria.where("_id").is(username));
 			MUserTO savedUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
-			System.out.println("    >> User from MongoDB : " + savedUser.getUserName() + " " + savedUser.getPassword());
+			System.out.println("    >> User from MongoDB : " + savedUser.get_id() + " " + savedUser.getPassword());
 			
 			UserTO user = new UserTO();
 			if(savedUser != null) {
-				user.setCustomerId(savedUser.getCustomerId());
+				//user.setCustomerId(savedUser.getCustomerId());
 				user.setDisplayName(savedUser.getDisplayName());
-				user.setFirstTimeLogin(savedUser.getFirstTimeLogin());
+				user.setFirstTimeLogin(savedUser.getIsFirstTimeLogin());
 				user.setIsAdminFlag("Y");
 				user.setIsPasswordExpired("FALSE");
 				user.setIsPasswordWarning("FALSE");
-				for(MOrgTO org : savedUser.getOrgNodes()){
+				for(OrgUser org : savedUser.getOrgUser()){
 					if (org.getIsActive().equals("Y")){
-						user.setOrgId(org.getOrgNodeid());
-						user.setDefultCustProdId(org.getDefultCustProdId());
+						user.setOrgId(org.getOrg_id());
+						//user.setDefultCustProdId(org.getDefultCustProdId());
 						break;
 					}
 				}				
-				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgNodeCategory().getOrgNodeLevel()));
-				user.setOrgMode(savedUser.getOrgMode());
+				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
+				user.setOrgMode(savedUser.getOrgCategory().getCategory());
 				user.setPassword(savedUser.getPassword());
 				List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-				for(String role : savedUser.getRoles()) {
+				for(String role : savedUser.getUserRoles()) {
 					auth.add(new SimpleGrantedAuthority(role));
 				}
 				user.setRoles(auth);
-				user.setSalt(Utils.getSaltWithUser(savedUser.getUserName(), savedUser.getSalt()));
-				user.setUserId(savedUser.getId());
-				user.setUserName(savedUser.getUserName());
-				user.setUserEmail(savedUser.getUserEmail());
-				user.setUserStatus(savedUser.getUserStatus());
-				user.setUserType("O"/*savedUser.getUserType()*/);
-				
-				//For Parent
-				if(savedUser.getIcClaims() != null) {
-					for(MIcClaims icClaim : savedUser.getIcClaims()) {
-						//To Do
-					}
-				}
+				user.setSalt(Utils.getSaltWithUser(savedUser.get_id(), savedUser.getSalt()));
+				//user.setUserId(savedUser.getId());
+				user.setUserName(savedUser.get_id());
+				user.setUserEmail(savedUser.getEmail());
+				user.setUserStatus(savedUser.getIsActive());
+				user.setUserType("O");
+				user.setCustomerId(savedUser.getCustomerCode());
 			}
 			return user;
 		} else {

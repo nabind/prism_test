@@ -97,7 +97,7 @@ public abstract class BaseDAO {
 			if(tascConnection == null) {
         		System.out.println(" ------------------------ CREATING new MONGO Connection ------------------------- ");
         		String mongoURI = mongo.getObject().getAddress().toString();
-        		mongoURI = "mongodb://"+ mongoURI +"/drc_mongo";
+        		mongoURI = "mongodb://"+ mongoURI +"/"+contractName;
         		tascConnection = new MongoDbConnection(mongoURI, null, null);
         		return tascConnection;
         	} else {
