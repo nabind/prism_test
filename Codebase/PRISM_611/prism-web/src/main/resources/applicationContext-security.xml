@@ -42,7 +42,7 @@
 	
 	<!--threads-allowed-to-block-for-connection-multiplier="5" -->
 	
-	<mongo:db-factory dbname="drc_mongo" mongo-ref="mongoClient"/>
+	<mongo:db-factory dbname="tasc" mongo-ref="mongoClient"/>
 	
 	
 	<bean id="mongoTemplateTasc" class="org.springframework.data.mongodb.core.MongoTemplate">

@@ -755,6 +755,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		String contractName = (String) paramMap.get("contractName");
+		String customerCode = (String) paramMap.get("customerCode");
 		/*logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);*/
@@ -770,7 +771,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
 							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
 										 Criteria.where("reportType").is("API"),
-										 Criteria.where("reportAccess.custProdId").is(String.valueOf(custProdId))))
+										 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
 				);
 
 			//Convert the aggregation result into a List

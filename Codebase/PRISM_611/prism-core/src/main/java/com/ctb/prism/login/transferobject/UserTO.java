@@ -75,7 +75,9 @@ public class UserTO extends BaseTO{
 		this.salt = salt;
 	}
 	public boolean isActive() {
-		return (IApplicationConstants.ACTIVE_FLAG.equals(getUserStatus()) || IApplicationConstants.SS_FLAG.equals(getUserStatus()))? true : false;
+		return (IApplicationConstants.FLAG_Y.equals(getUserStatus()) || 
+				IApplicationConstants.ACTIVE_FLAG.equals(getUserStatus()) || 
+				IApplicationConstants.SS_FLAG.equals(getUserStatus()))? true : false;
 	}
 	public void setActive(boolean active) {
 		this.active = active;

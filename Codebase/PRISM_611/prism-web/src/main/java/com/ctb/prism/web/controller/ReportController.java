@@ -1880,6 +1880,7 @@ public class ReportController{
 		paramMap.put("parentReports", parentReports);
 		paramMap.put("orgNodeLevel", orgNodeLevel);
 		paramMap.put("defaultCustProdId",loggedinUserTO.getDefultCustProdId());
+		paramMap.put("customerCode",loggedinUserTO.getCustomerId());
 		String contractName = loggedinUserTO.getContractName();
 		if(contractName != null && contractName.trim().length() == 0) {
 			contractName = Utils.getContractNameNoLogin(req.getParameter("theme"));
