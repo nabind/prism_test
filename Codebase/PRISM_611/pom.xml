@@ -980,6 +980,18 @@
 			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Spring 4 pagination -->
+		<dependency>
+		    <groupId>com.github.paginationspring</groupId>
+		    <artifactId>pagination</artifactId>
+		    <version>1.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.paginationspring</groupId>
+		    <artifactId>pagination-taglibs</artifactId>
+		    <version>1.0.3</version>
+		</dependency>
+		
 	</dependencies>
 	<!-- <repositories>
         <repository>
