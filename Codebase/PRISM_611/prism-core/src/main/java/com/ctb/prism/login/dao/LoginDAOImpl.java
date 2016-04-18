@@ -80,7 +80,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @throws SQLException
 	 */
 	@Caching( cacheable = {
-			@Cacheable(value = "tascMongoCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )"),
+			@Cacheable(value = "tascMongoCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#contractName)).concat(#root.method.name) )")
 	} )
 	public MongoDbConnection getPrismMongoConnectionCached(String contractName){
 		try {
