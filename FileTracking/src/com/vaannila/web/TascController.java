@@ -520,7 +520,7 @@ public class TascController {
 		try {
 			process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
 			process.setMode("CSV");
-			process.setSortCol("13");
+			process.setSortCol("12");
 			process.setSortDir("desc");
 			TascDAOImpl stageDao = new TascDAOImpl();
 			studentDetailsTOList = stageDao.getProcessErPaging(process);
