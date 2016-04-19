@@ -1,6 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-public class OrgUser
+import com.ctb.prism.core.transferobject.BaseTO;
+
+public class OrgUser extends BaseTO 
 {
     private String IsActive;
 

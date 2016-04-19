@@ -1,6 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-public class Address
+import com.ctb.prism.core.transferobject.BaseTO;
+
+public class Address extends BaseTO 
 {
     private String Street;
 

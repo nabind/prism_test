@@ -14,5 +14,4 @@
 		</div>
 	</body>
 	<script src="scripts/js/report/rescoreRequest.js?v=2"></script>
-	<script src="scripts/js/report/rescoreRequest.js?v=2"></script>
 </html>

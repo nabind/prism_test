@@ -11,7 +11,7 @@ public class OrgTreeTO extends BaseTO {
 	private String data;
 	// private String orgMode;
 	//private String orgNodeLevel;
-	private long orgTreeId;
+	private String orgTreeId;
 	private OrgTO metadata;
 	private OrgTO attr;
 
@@ -90,15 +90,18 @@ public class OrgTreeTO extends BaseTO {
 	/**
 	 * @return
 	 */
-	public long getOrgTreeId() {
+	public String getOrgTreeId() {
 		return orgTreeId;
 	}
 
 	/**
 	 * @param orgTreeId
 	 */
-	public void setOrgTreeId(long orgTreeId) {
+	public void setOrgTreeId(String orgTreeId) {
 		this.orgTreeId = orgTreeId;
+	}
+	public void setOrgTreeId(long orgTreeId) {
+		this.orgTreeId = String.valueOf(orgTreeId);
 	}
 
 }

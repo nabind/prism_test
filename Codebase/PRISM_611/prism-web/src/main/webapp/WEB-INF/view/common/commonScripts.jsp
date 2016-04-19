@@ -5,8 +5,8 @@
 	<script>
 		// ========================== CODE FOR MODAL PROGRESSBAR ==========================
 	    function blockUI(obj) {
-			//if(obj != null) NProgress.configure({ parent: '#'+obj });
-			//NProgress.start();
+			if(obj != null) NProgress.configure({ parent: '#'+obj });
+			NProgress.start();
 			if ($("#blockDiv").length > 0) {
 				$("#blockDiv").show();
 				$("#blockDiv").css("cursor", "wait");
@@ -29,7 +29,7 @@
 	    blockUI();
 		// code for removing progressbar
 		function unblockUI(obj) {
-			//NProgress.done();
+			NProgress.done();
 			if(obj == '' || obj == null) {
 				$("#blockDiv").css("cursor", "normal");
 				$("#blockDiv").remove();

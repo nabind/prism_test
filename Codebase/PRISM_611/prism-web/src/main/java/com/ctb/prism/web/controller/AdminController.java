@@ -364,6 +364,69 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/userModule", method = RequestMethod.GET)
+	public ModelAndView userModule(HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("admin/users");
+		List<OrgTreeTO> OrgTreeTOs = null;
+		try {
+			String currentOrg = (String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
+			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
+			
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			Map<String,Object> paramMap = new HashMap<String,Object>(); 
+			paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
+			paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+			paramMap.put("project",loggedinUserTO.getProject());
+			paramMap.put("contractName", Utils.getContractName());
+			
+			// get list of test admin for the customer for which user is logged in
+			List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+			modelAndView.addObject("adminList", customerProductList);
+			
+			String adminYear = (String) request.getParameter("AdminYear");
+			if(adminYear == null) {
+				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+				if(adminYear == null) {
+					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
+						adminYear = object.getValue();
+						break;
+					}
+				}
+			} else{
+				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
+			}
+			
+			if (currentOrg != null) {
+				OrgTreeTOs = new ArrayList<OrgTreeTO>();
+				Map<String,Object> paramMapA = new HashMap<String,Object>(); 
+				paramMapA.put("nodeid", currentOrg);
+				paramMapA.put("currOrg", currentOrg);
+				paramMapA.put("isFirstLoad", true);
+				paramMapA.put("adminYear", adminYear);
+				paramMapA.put("customerId", customer);
+				paramMapA.put("orgMode", orgMode);
+				
+				// get org hierarchy
+				OrgTreeTOs = adminService.getOrganizationTree(paramMapA);
+				modelAndView.addObject("organizationTreeList", OrgTreeTOs);
+				modelAndView.addObject("treeSturcture", "Yes");
+				modelAndView.addObject("orgName", OrgTreeTOs.get(0).getData());
+				modelAndView.addObject("rootOrgId", OrgTreeTOs.get(0).getMetadata().getParentTenantId());
+				modelAndView.addObject("rootOrgLevel", OrgTreeTOs.get(0).getMetadata().getOrgLevel());
+			}
+		
+		} catch (Exception exception) {
+			logger.log(IAppLogger.ERROR, exception.getMessage(), exception);
+		} 
+		
+		return modelAndView;
+	}
+	
+	/**
+	 * This is for old oracle method 
+	 * TODO - remove after replacing with mongo*/
+	@Deprecated
 	public ModelAndView manageUser(HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
 		request.getSession().setAttribute(IApplicationConstants.LOGIN_AS, IApplicationConstants.ACTIVE_FLAG);
@@ -408,7 +471,7 @@ public class AdminController {
 					paramMapA.put("currOrg", currentOrg);
 					paramMapA.put("isFirstLoad", true);
 					paramMapA.put("adminYear", adminYear);
-					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("customerId", customer);
 					paramMapA.put("orgMode", orgMode);
 					OrgTreeTOs = adminService.getOrganizationTree(paramMapA);
 					/*OrgTreeTOs =adminService.getOrganizationTree(currentOrg,currentOrg,true,adminYear,currCustomer, "");*/
@@ -424,7 +487,7 @@ public class AdminController {
 				else
 				{	Map<String,Object> paramMapB = new HashMap<String,Object>(); 
 					paramMapB.put("nodeid", currentOrg);
-					paramMapB.put("customerId", currCustomer);
+					paramMapB.put("customerId", customer);
 					OrgTOs = adminService.getOrganizationDetailsOnFirstLoad(paramMapB);
 					modelAndView.addObject("organizationList", OrgTOs);
 					modelAndView.addObject("treeSturcture", "No");
@@ -537,6 +600,8 @@ public class AdminController {
 		//paramMap.put("loggedinUserTO", loggedinUserTO);
 		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
 		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+		paramMap.put("project",loggedinUserTO.getProject());
+		paramMap.put("contractName", Utils.getContractName());
 		
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		String moreCount = propertyLookup.get("count.results.button.more");
@@ -550,15 +615,15 @@ public class AdminController {
 			String adminYear = (String) request.getParameter("AdminYear");
 			
 			if(nodeId != null && adminYear == null){				
-				   	adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-					if(adminYear == null) {
-						//adminList = adminService.getAllAdmin();	
-						List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
-						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
-							adminYear = object.getValue();
-							break;
-						}
+			   	adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
+				if(adminYear == null) {
+					//adminList = adminService.getAllAdmin();	
+					List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
+					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
+						adminYear = object.getValue();
+						break;
 					}
+				}
 			}else{
 				request.getSession().setAttribute(IApplicationConstants.ADMIN_YEAR, adminYear);
 			}

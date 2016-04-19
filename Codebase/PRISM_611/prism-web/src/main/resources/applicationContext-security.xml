@@ -42,14 +42,14 @@
 	
 	<!--threads-allowed-to-block-for-connection-multiplier="5" -->
 	
-	<mongo:db-factory dbname="tasc" mongo-ref="mongoClient"/>
+	<mongo:db-factory id="tascMongoDbFactory" dbname="tasc" mongo-ref="mongoClient"/>
+	<mongo:db-factory id="globalMongoDbFactory" dbname="global" mongo-ref="mongoClient"/>
 	
-	
+	<bean id="mongoTemplateGlobal" class="org.springframework.data.mongodb.core.MongoTemplate">
+	    <constructor-arg name="mongoDbFactory" ref="globalMongoDbFactory" />
+	</bean>
 	<bean id="mongoTemplateTasc" class="org.springframework.data.mongodb.core.MongoTemplate">
-	    <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
-	    <!--<constructor-arg name="databaseName" value="tasc" />-->
-	    <!--<constructor-arg name="databaseName" value="drc_mongo" /> -->
-	     <!-- <constructor-arg name="userCredentials" ref="mongoCredentials"/> -->
+	    <constructor-arg name="mongoDbFactory" ref="tascMongoDbFactory" />
 	</bean>
 	<bean id="mongoTemplateInors" class="org.springframework.data.mongodb.core.MongoTemplate">
 	    <constructor-arg name="mongo" ref="mongo" />

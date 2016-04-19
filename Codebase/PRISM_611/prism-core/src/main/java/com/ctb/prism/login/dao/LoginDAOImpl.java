@@ -3,6 +3,7 @@ package com.ctb.prism.login.dao;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -26,9 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -50,6 +54,9 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.Admins;
+import com.ctb.prism.login.transferobject.CustProdAdmin;
+import com.ctb.prism.login.transferobject.Customers;
 import com.ctb.prism.login.transferobject.MIcClaims;
 import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MReportTO;
@@ -563,6 +570,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				}				
 				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
 				user.setOrgMode(savedUser.getOrgCategory().getCategory());
+				user.setOrgId(savedUser.getOrgUser()[0].getOrg_id()); // assuming for non parent users only one org will be there
 				user.setPassword(savedUser.getPassword());
 				List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
 				for(String role : savedUser.getUserRoles()) {
@@ -576,6 +584,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setUserStatus(savedUser.getIsActive());
 				user.setUserType("O");
 				user.setCustomerId(savedUser.getCustomerCode());
+				user.setProject(savedUser.getProject_id());
 			}
 			return user;
 		} else {
@@ -703,23 +712,48 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getCustomerProduct') )"),
 			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getCustomerProduct') )")
 	} )
-	@SuppressWarnings("unchecked")
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> getCustomerProduct(final Map<String,Object> paramMap)
 			throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: getCustomerProduct()");
 		List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueTOList = null;
-		long t1 = System.currentTimeMillis();
-		final long loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
-		final String loggedInOrgId = (String) paramMap.get("loggedInOrgId");
-	//	final UserTO loggedinUserTO = (UserTO) paramMap.get("loggedinUserTO");
-	//	if(paramMap.get("loggedInCustomer") != null) {
-	//	loggedInCustomer = Long.valueOf( paramMap.get("loggedInCustomer").toString());
-	//	loggedInOrgId = (String) paramMap.get("loggedInOrgId");
-		/*} else {
-			loggedInCustomer = Long.valueOf(loggedinUserTO.getCustomerId());
-			loggedInOrgId = loggedinUserTO.getOrgId();
-		}*/
+		String project = (String) paramMap.get("project");
+		String contractName = (String) paramMap.get("contractName");
 		
+		try {
+			TypedAggregation<CustProdAdmin> agg = newAggregation(CustProdAdmin.class, 
+					match(Criteria.where("_id").is(project)),	
+					unwind("Customers"),
+					unwind("Customers.Admins"),
+					sort(Sort.Direction.DESC, "Customers.Admins.Seq")
+				);
+			
+			AggregationResults<CustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class);
+			List<CustProdAdmin> reportDetails = groupResults.getMappedResults();
+			
+			// get all products
+			objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
+			for(CustProdAdmin custProdAdmin : reportDetails) {
+				objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+				objectValueTO.setValue(custProdAdmin.getCustomers()[0].getAdmins()[0].getCode()); // getting first element of each array because the collection is unwinded
+				objectValueTO.setName (custProdAdmin.getCustomers()[0].getAdmins()[0].getName());
+				objectValueTOList.add(objectValueTO);
+			}
+			
+			// get the unique list of products
+			Set<com.ctb.prism.core.transferobject.ObjectValueTO> uniqueProducts = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>(objectValueTOList);
+
+			//move unique set to mail list
+			objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			objectValueTOList.addAll(uniqueProducts);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new BusinessException(ex.getMessage());
+		}
+		return objectValueTOList;
+		
+		/*
 		try{
 			objectValueTOList = (List<com.ctb.prism.core.transferobject.ObjectValueTO>) getJdbcTemplatePrism().execute(
 				    new CallableStatementCreator() {
@@ -762,7 +796,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: getCustomerProduct() took time: "+String.valueOf(t2 - t1)+"ms");
 		}
-		return objectValueTOList;
+		return objectValueTOList;*/
 	}
 	
 	/**
@@ -1104,7 +1138,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 			//Convert the aggregation result into a List
 			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism(contractName)
+					= getMongoTemplatePrism("global")
 					.aggregate(agg, MReportTO.class, MResultTO.class);
 			
 			List<MResultTO> reportDetails = groupResults.getMappedResults();

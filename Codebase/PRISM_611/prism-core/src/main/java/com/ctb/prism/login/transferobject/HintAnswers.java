@@ -1,7 +1,9 @@
 
 package com.ctb.prism.login.transferobject;
 
-public class HintAnswers
+import com.ctb.prism.core.transferobject.BaseTO;
+
+public class HintAnswers extends BaseTO 
 {
     private String AnsValue;
 

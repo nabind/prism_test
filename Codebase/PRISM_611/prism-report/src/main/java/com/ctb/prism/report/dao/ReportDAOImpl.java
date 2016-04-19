@@ -776,7 +776,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 
 			//Convert the aggregation result into a List
 			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism(contractName)
+					= getMongoTemplatePrism("global")
 					.aggregate(agg, MReportTO.class, MResultTO.class);
 			
 			List<MResultTO> reportDetails = groupResults.getMappedResults();

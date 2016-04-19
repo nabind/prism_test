@@ -197,7 +197,7 @@
 						</div>
 						<div class="with-mid-padding mid-margin-bottom icholderinner icholderinner-${homeReport.tabCount}" style="min-width:200px;overflow-x:auto !important">
 							<div class="columns margin-bottom-medium margin-bottom-medium-ve inputControlContailer inputControlContailer-${homeReport.tabCount}" style="line-height:6px;min-width:720px">
-								<div style="width:100%; text-align: center;"><img src="themes/acsi/img/standard/loaders/loading64.gif" /></div>
+								<div style="width:98%; text-align: center;height: 53px;"><span class="loader huge waiting"></span></div>
 							</div>
 						</div>
 					</div>

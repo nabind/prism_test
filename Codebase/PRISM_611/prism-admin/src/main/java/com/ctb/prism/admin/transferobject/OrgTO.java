@@ -14,11 +14,11 @@ public class OrgTO extends BaseTO {
 	private String parentNameAlias;
 	private String selectedOrgId;
 	private String adminName;
-	private long parentTenantId;
+	private String parentTenantId;
 	private long noOfChildOrgs;
 	private long noOfUsers;
-	private long orgLevel;
-	private long id;
+	private String orgLevel;
+	private String id;
 	private long customerId;
 	private long adminId;
 	private String className;
@@ -40,15 +40,18 @@ public class OrgTO extends BaseTO {
 	/**
 	 * @return
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
+	}
+	public void setId(Long id) {
+		this.id = String.valueOf(id);
 	}
 
 	/**
@@ -96,15 +99,18 @@ public class OrgTO extends BaseTO {
 	/**
 	 * @return
 	 */
-	public long getParentTenantId() {
+	public String getParentTenantId() {
 		return parentTenantId;
 	}
 
 	/**
 	 * @param parentTenantId
 	 */
-	public void setParentTenantId(long parentTenantId) {
+	public void setParentTenantId(String parentTenantId) {
 		this.parentTenantId = parentTenantId;
+	}
+	public void setParentTenantId(long parentTenantId) {
+		this.parentTenantId = String.valueOf(parentTenantId);
 	}
 
 	/**
@@ -138,15 +144,18 @@ public class OrgTO extends BaseTO {
 	/**
 	 * @return
 	 */
-	public long getOrgLevel() {
+	public String getOrgLevel() {
 		return orgLevel;
 	}
 
 	/**
 	 * @param orgLevel
 	 */
-	public void setOrgLevel(long orgLevel) {
+	public void setOrgLevel(String orgLevel) {
 		this.orgLevel = orgLevel;
+	}
+	public void setOrgLevel(long orgLevel) {
+		this.orgLevel = String.valueOf(orgLevel);
 	}
 
 	/**

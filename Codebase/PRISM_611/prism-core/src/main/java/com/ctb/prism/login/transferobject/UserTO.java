@@ -37,7 +37,14 @@ public class UserTO extends BaseTO{
 	private long defultCustProdId;
 	private String isPasswordExpired;
 	private String isPasswordWarning;
+	private String project;
 	
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
+	}
 	public long getDefultCustProdId() {
 		return defultCustProdId;
 	}

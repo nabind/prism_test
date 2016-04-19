@@ -245,7 +245,7 @@ $(document).ready(function() {
 		var containerObj = $('.inputControlContailer-'+count);
 		var reportUrl = $(this).attr("param");
 		var dataURL = "reportUrl="+reportUrl+"&count="+count+'&assessmentId='+assessmentId;
-		if($(containerObj).html() && $(containerObj).html().indexOf('loading64.gif') != -1) {
+		if($(containerObj).html() && $(containerObj).html().indexOf('loader huge waiting') != -1) {
 			$.ajax({
 				type : "GET",
 				url : 'populateInputControls.do',
@@ -1112,6 +1112,7 @@ function getmodel(reportUrl, reportId, reportName, tabId, tabCount, assessmentId
 			
 			// for Non API reports we are getting rid of iFRAME
 			if(data != null && data.indexOf("openReportHtml.do") != -1) {
+				blockUI(tabId);
 				var progressDiv = '<div class="report-panel-contenta linen linen-custom" style="min-height:630px">\
 										<div class="panel-control panel-control-report align-right padding-right"></div>\
 										<div style="width:100%; text-align: center;padding-top:40px"><img src="themes/acsi/img/standard/loaders/loading64.gif"></div>\
@@ -1220,14 +1221,16 @@ function closeProgress(reportUrl, id, firstCall, nopage) {
 //============================= Populate input controls =============================
 function setInputControl(data, containerObj) {
 	if (data && data != null) {
-	$(containerObj).html(data.inputDom);
-	// initialize date picker
-	//$(containerObj).find('.datepicker').glDatePicker();
-	$(containerObj).find('.jqdatepicker').datepicker({
-		changeMonth: true,
-	    changeYear: true
-    });
-	//$('.select').trigger();
+		$(containerObj).html(data.inputDom);
+		// initialize date picker
+		//$(containerObj).find('.datepicker').glDatePicker();
+		$(containerObj).find('.jqdatepicker').datepicker({
+			changeMonth: true,
+		    changeYear: true
+	    });
+		//$('.select').trigger();
+	} else {
+		$(containerObj).html('<div style="width: 98%;height: 28px;text-align: center;margin-top: 20px;"><span class="icon-warning icon-size5 black large-text-shadow"></span></div>');
 	}
 }
 function setInputControlForStudentRoster(data, containerObj){

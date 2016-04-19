@@ -1,6 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-public class OrgCategory
+import com.ctb.prism.core.transferobject.BaseTO;
+
+public class OrgCategory extends BaseTO 
 {
     private String Category;
 

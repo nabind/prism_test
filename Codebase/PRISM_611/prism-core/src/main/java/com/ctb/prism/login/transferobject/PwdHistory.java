@@ -1,6 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-public class PwdHistory
+import com.ctb.prism.core.transferobject.BaseTO;
+
+public class PwdHistory extends BaseTO 
 {
     private String Date;
 

@@ -12,12 +12,12 @@ import com.ctb.prism.core.transferobject.BaseTO;
 public class UserTO extends BaseTO {
 
 	private static final long serialVersionUID = 1L;
-	private long userId;
+	private String userId;
 	private String userName;
 	private String userDisplayName;
-	private long tenantId;
+	private String tenantId;
 	private long parentId;
-	private long loggedInOrgId;
+	private String loggedInOrgId;
 	private String tenantName;
 	private String firstName;
 	private String middleName;
@@ -49,7 +49,7 @@ public class UserTO extends BaseTO {
 	/**
 	 * @return the userId
 	 */
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -57,8 +57,11 @@ public class UserTO extends BaseTO {
 	 * @param userId
 	 *            the userId to set
 	 */
-	public void setUserId(long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = String.valueOf(userId);
 	}
 
 	/**
@@ -94,7 +97,7 @@ public class UserTO extends BaseTO {
 	/**
 	 * @return the tenantId
 	 */
-	public long getTenantId() {
+	public String getTenantId() {
 		return tenantId;
 	}
 
@@ -102,8 +105,11 @@ public class UserTO extends BaseTO {
 	 * @param tenantId
 	 *            the tenantId to set
 	 */
-	public void setTenantId(long tenantId) {
+	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
+	}
+	public void setTenantId(long tenantId) {
+		this.tenantId = String.valueOf(tenantId);
 	}
 
 	/**
@@ -124,7 +130,7 @@ public class UserTO extends BaseTO {
 	/**
 	 * @return the loggedInOrgId
 	 */
-	public long getLoggedInOrgId() {
+	public String getLoggedInOrgId() {
 		return loggedInOrgId;
 	}
 
@@ -132,8 +138,11 @@ public class UserTO extends BaseTO {
 	 * @param loggedInOrgId
 	 *            the loggedInOrgId to set
 	 */
-	public void setLoggedInOrgId(long loggedInOrgId) {
+	public void setLoggedInOrgId(String loggedInOrgId) {
 		this.loggedInOrgId = loggedInOrgId;
+	}
+	public void setLoggedInOrgId(long loggedInOrgId) {
+		this.loggedInOrgId = String.valueOf(loggedInOrgId);
 	}
 
 	/**

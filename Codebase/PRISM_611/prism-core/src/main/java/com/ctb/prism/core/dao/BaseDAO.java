@@ -41,12 +41,10 @@ public abstract class BaseDAO {
 	@Autowired
 	private MongoFactoryBean mongo;
 	
-	@Autowired
-	private MongoTemplate mongoTemplateInors;
-	@Autowired
-	private MongoTemplate mongoTemplateTasc;
-	@Autowired
-	private MongoTemplate mongoTemplateUsmo;
+	@Autowired private MongoTemplate mongoTemplateGlobal;
+	@Autowired private MongoTemplate mongoTemplateInors;
+	@Autowired private MongoTemplate mongoTemplateTasc;
+	@Autowired private MongoTemplate mongoTemplateUsmo;
 	
 	MongoDbConnection tascConnection = null;
 	MongoDbConnection inorsConnection = null;
@@ -72,6 +70,7 @@ public abstract class BaseDAO {
 		if("inors".equals(contractName)) return mongoTemplateInors;
 		if("tasc".equals(contractName)) return mongoTemplateTasc;
 		if("usmo".equals(contractName)) return mongoTemplateUsmo;
+		if("global".equals(contractName)) return mongoTemplateGlobal;
 		else return null;
 	}
 	

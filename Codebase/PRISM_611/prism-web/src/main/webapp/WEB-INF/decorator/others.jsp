@@ -25,8 +25,8 @@
 		<!-- Microsoft clear type rendering -->
 		<meta http-equiv="cleartype" content="on">
 		
-		<!-- <script src='scripts/js/nprogress.min.js'></script>
-		<link rel='stylesheet' href='themes/acsi/css/nprogress.css'/> -->
+		<script src='scripts/js/nprogress.min.js'></script>
+		<link rel='stylesheet' href='themes/acsi/css/nprogress.css'/>
 
 	</head>
 	
