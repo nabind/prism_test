@@ -358,9 +358,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
         FROM (SELECT ROWNUM RNUM, A.* FROM (' ||
-                      V_QUERY_ACTUAL || ') A WHERE ROWNUM <= ' ||
-                      P_ROWNUM_TO || ')
-       WHERE RNUM >= ' || P_ROWNUM_FROM;
+                      V_QUERY_ACTUAL || ') A) WHERE RNUM <= ' ||
+                      P_ROWNUM_TO || '
+       AND RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
@@ -634,9 +634,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
         FROM (SELECT ROWNUM RNUM, A.* FROM (' ||
-                      V_QUERY_ACTUAL || ') A WHERE ROWNUM <= ' ||
-                      P_ROWNUM_TO || ')
-       WHERE RNUM >= ' || P_ROWNUM_FROM;
+                      V_QUERY_ACTUAL || ') A) WHERE RNUM <= ' ||
+                      P_ROWNUM_TO || '
+       AND RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
     OPEN P_OUT_CUR_ER_DATA FOR V_QUERY_PAGING;
@@ -813,9 +813,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING := V_QUERY_PAGING ||
                       'SELECT *
         FROM (SELECT ROWNUM RNUM, A.* FROM (' ||
-                      V_QUERY_ACTUAL || ') A WHERE ROWNUM <= ' ||
-                      P_ROWNUM_TO || ')
-       WHERE RNUM >= ' || P_ROWNUM_FROM;
+                      V_QUERY_ACTUAL || ') A) WHERE RNUM <= ' ||
+                      P_ROWNUM_TO || '
+       AND RNUM >= ' || P_ROWNUM_FROM;
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
     OPEN P_OUT_CUR_DATA FOR V_QUERY_PAGING;
