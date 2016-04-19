@@ -7,6 +7,8 @@ public class OrgUser extends BaseTO
     private String IsActive;
 
     private String Org_id;
+    
+    private String OrgName;
 
     public String getIsActive ()
     {
@@ -28,9 +30,17 @@ public class OrgUser extends BaseTO
         this.Org_id = Org_id;
     }
 
-    @Override
+    public String getOrgName() {
+		return OrgName;
+	}
+
+	public void setOrgName(String orgName) {
+		OrgName = orgName;
+	}
+
+	@Override
     public String toString()
     {
-        return "ClassPojo [IsActive = "+IsActive+", Org_id = "+Org_id+"]";
+        return "ClassPojo [IsActive = "+IsActive+", Org_id = "+Org_id+", OrgName = "+OrgName+"]";
     }
 }

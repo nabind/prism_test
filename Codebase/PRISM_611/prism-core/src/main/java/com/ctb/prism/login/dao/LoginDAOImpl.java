@@ -727,7 +727,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					sort(Sort.Direction.DESC, "Customers.Admins.Seq")
 				);
 			
-			AggregationResults<CustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class);
+			/*AggregationResults<CustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class);
 			List<CustProdAdmin> reportDetails = groupResults.getMappedResults();
 			
 			// get all products
@@ -738,7 +738,13 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				objectValueTO.setValue(custProdAdmin.getCustomers()[0].getAdmins()[0].getCode()); // getting first element of each array because the collection is unwinded
 				objectValueTO.setName (custProdAdmin.getCustomers()[0].getAdmins()[0].getName());
 				objectValueTOList.add(objectValueTO);
-			}
+			}*/
+			//temp code
+			objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
+			objectValueTO.setValue("2015");
+			objectValueTO.setName("TASC 2015");
+			objectValueTOList.add(objectValueTO);
 			
 			// get the unique list of products
 			Set<com.ctb.prism.core.transferobject.ObjectValueTO> uniqueProducts = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>(objectValueTOList);

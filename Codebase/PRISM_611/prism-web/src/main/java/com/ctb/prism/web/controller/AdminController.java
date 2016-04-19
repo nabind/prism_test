@@ -526,7 +526,7 @@ public class AdminController {
 		String currentOrg = (String) request.getSession().getAttribute(
 				IApplicationConstants.CURRORG);
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+		//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		
 		try {
@@ -540,20 +540,25 @@ public class AdminController {
 			paramMap.put("currOrg", currentOrg);
 			paramMap.put("isFirstLoad", false);
 			paramMap.put("adminYear", adminYear);
-			paramMap.put("customerId", currCustomer);
+			paramMap.put("customerId", customer);
 			paramMap.put("orgMode", orgMode);
 			
-			if(isTree)
+			if (nodeid != null) {
+				OrgTreeTOs = adminService.getOrganizationTree(paramMap);
+			}
+			 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
+			
+			/*if(isTree)
 			{
 				if (nodeid != null) {
 					OrgTreeTOs = adminService.getOrganizationTree(paramMap);
-					/*for (OrgTreeTO to : OrgTreeTOs) {
+					for (OrgTreeTO to : OrgTreeTOs) {
 						String orgNodeLevel = to.getOrgNodeLevel();
 						String organizationMode = to.getOrgMode();
 						if (orgNodeLevel.equals("2")) {
 							request.getSession().setAttribute(IApplicationConstants.ORG_MODE, organizationMode);
 						}
-					}*/
+					}
 				}
 				 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
 			}
@@ -564,7 +569,7 @@ public class AdminController {
 				}
 				 orgJsonString = JsonUtil.convertToJsonAdmin(OrgTOs);
 			}
-			
+			*/
 
 			
 			logger.log(IAppLogger.DEBUG, "TREE STURCTURE.................");
@@ -614,7 +619,7 @@ public class AdminController {
 			String nodeId = (String) request.getParameter("tenantId");
 			String adminYear = (String) request.getParameter("AdminYear");
 			
-			if(nodeId != null && adminYear == null){				
+			if(nodeId != null && (adminYear == null || "undefined".equals(adminYear))){				
 			   	adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
 				if(adminYear == null) {
 					//adminList = adminService.getAllAdmin();	

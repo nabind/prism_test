@@ -208,12 +208,13 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public ArrayList<OrgTreeTO> getOrganizationTree(Map<String, Object> paramMap) throws Exception {
 		final boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
 		final String currOrg = (String) paramMap.get("currOrg");
+		final String nodeId = (String) paramMap.get("nodeid");
 		
 		ArrayList<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		OrgTO orgTO = null;
 		OrgTreeTO treeTO = null;
 		
-		if (isFirstLoad) {
+		if (isFirstLoad || nodeId.indexOf("0_1.0") != -1) {
 			Query searchOrgQuery = new Query(Criteria.where("_id").is(currOrg));
 			MOrgTO orgList = getMongoTemplatePrism().findOne(searchOrgQuery, MOrgTO.class);
 			if(orgList != null) {
@@ -228,6 +229,24 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				treeTO.setMetadata(orgTO);
 				treeTO.setAttr(orgTO);
 				orgTreeTOs.add(treeTO);		
+			}
+		} else {
+			Query searchOrgQuery = new Query(Criteria.where("Parent_id").is(nodeId));
+			List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
+			if(orgList != null) {
+				for(MOrgTO org : orgList) {
+					orgTO = new OrgTO();
+					treeTO = new OrgTreeTO();
+					orgTO.setId(org.get_id());
+					orgTO.setParentTenantId(org.getParent_id());
+					orgTO.setOrgLevel(org.getLevel());
+					treeTO.setState("closed");
+					treeTO.setOrgTreeId(org.get_id());
+					treeTO.setData(org.getName());
+					treeTO.setMetadata(orgTO);
+					treeTO.setAttr(orgTO);
+					orgTreeTOs.add(treeTO);		
+				}
 			}
 		}
 		
@@ -601,7 +620,40 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String userName = "";
 		String tenantId = "";
 		List<Map<String, Object>> lstData = new ArrayList<Map<String, Object>>();
-		if (nodeId.indexOf("_") > 0) {
+		
+		Query searchUserQuery = null;
+		if (nodeId.indexOf("0_1.0") != -1) {
+			searchUserQuery = new Query(Criteria.where("OrgUser.Org_id").regex(currorg));
+		} else {
+			searchUserQuery = new Query(Criteria.where("OrgUser.Org_id").regex(nodeId));
+		}
+		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
+		if( savedUser != null ) {
+			userList = new ArrayList<UserTO>();
+			for(MUserTO user : savedUser) {
+				UserTO to = new UserTO();
+				to.setUserId(user.get_id());
+				
+				List<RoleTO> roleList = new ArrayList<RoleTO>();
+				for(String role : user.getUserRoles()) {
+					RoleTO roleTO = new RoleTO();
+					roleTO.setRoleName(role);
+					roleTO.setLabel(user.getOrgCategory().getCategory());
+					roleList.add(roleTO);
+				}
+				
+				to.setUserName(user.get_id());
+				to.setUserDisplayName(user.getDisplayName());
+				to.setStatus("AC");
+				to.setTenantId(user.getOrgUser()[0].getOrg_id()); // assuming org user is associated with one org
+				//to.setParentId(0);
+				to.setLoggedInOrgId(currorg);
+				to.setTenantName(user.getOrgUser()[0].getOrgName());
+				userList.add(to);
+			}
+		}
+		
+		/*if (nodeId.indexOf("0_1.0") != -1) {
 			userName = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
 			tenantId = nodeId.substring(0, nodeId.indexOf("_"));
 			logger.log(IAppLogger.INFO, "userName=" + userName);
@@ -621,7 +673,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			if(!"undefined".equals(tenantId)) {
 				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
 			}
-		}
+		}*/
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		logger.log(IAppLogger.INFO, "Users: " + userList.size());
 		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnClick()");
@@ -811,7 +863,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			to.setTenantId(user.getOrgUser()[0].getOrg_id()); // assuming org user is associated with one org
 			//to.setParentId(0);
 			to.setLoggedInOrgId(currorg);
-			to.setTenantName("where to display?");
+			to.setTenantName(user.getOrgUser()[0].getOrgName());
 			userList.add(to);
 		}
 		return userList;

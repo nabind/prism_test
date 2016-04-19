@@ -150,11 +150,11 @@
 							"complete" : function() { 
 									$("#treeViewForOrg ul:first").css("float", "left");
 									$("#treeViewForOrg ul:first").css("min-width", "100%");
-									$("#treeViewForOrg [id="+clickedNode+"]").removeClass("jstree-closed").addClass("jstree-open");
+									$("#treeViewForOrg [id='"+clickedNode+"']").removeClass("jstree-closed").addClass("jstree-open");
 									if(tempNodes != null)
 									{
 										if(tempNodes.length > maxNodeLimit) {
-											var moreIndex = parseInt($(".no-click").index($("[id="+clickedNode+"] .no-click")));
+											var moreIndex = parseInt($(".no-click").index($("[id='"+clickedNode+"'] .no-click")));
 											//alert(moreIndex);
 											var tempObj = new Object();													
 											tempObj.indexCount = maxNodeLimit;
@@ -337,9 +337,10 @@
 		//Function to select the first node of the tree
 		var isFirstTime=true;
 		function selectTheFirstNodeOfTree(nodeId){
-		 if (isFirstTime){
-			$("#"+nodeId+" "+"a").click();
-			  isFirstTime = false;
+			if (isFirstTime){
+				//$("#"+nodeId+" "+"a").click();
+				$("#treeViewForOrg [id='"+nodeId+"'] a").click();
+				isFirstTime = false;
 			}
 		}
 		

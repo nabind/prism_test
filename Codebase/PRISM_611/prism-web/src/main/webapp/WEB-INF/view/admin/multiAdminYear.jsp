@@ -35,7 +35,7 @@ String currentOrg = (String) request.getSession().getAttribute(IApplicationConst
 	<input type="hidden" value="<%=currentOrg %>" name="CurrentOrg" id="CurrentOrg">
 	<div class="" style="margin-left:32px">
 		<fmt:message var="MANAGE_ORG_SELECT_ADMIN" key="manage.orgs.admin"  />
-		<c:if test="${not empty actionMap[MANAGE_ORG_SELECT_ADMIN]}">
+		<%-- <c:if test="${not empty actionMap[MANAGE_ORG_SELECT_ADMIN]}"> --%> <!-- Commenting temporary until action map is defined -->
 			<select style="width: 190px;" name="AdminYear" id="AdminYear" 
 				title='Select administration to refresh the hierarchy.'
 				class="select silver-gradient glossy with-tooltip expandable-list" 
@@ -50,7 +50,7 @@ String currentOrg = (String) request.getSession().getAttribute(IApplicationConst
 					</c:if>
 				</c:forEach>
 			</select>
-		</c:if>
+		<%-- </c:if> --%>
 		<c:if test="${not empty actionMap[MANAGE_ORG_SELECT_MODE]}">
 			<select style="width: 190px;" name="orgMode" id="orgMode" 
 				title='Select organization mode to refresh the hierarchy.'
