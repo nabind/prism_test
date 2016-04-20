@@ -7,7 +7,7 @@ Open "Environment Variable" window (My Computer > Properties > Advanced)
 Add new variable as follows:
 
 Variable 1
-	Variable Name: PRISM_HOME
+	Variable Name: PRISM611_HOME
 	Variable Value: <<provide your prism source code path>> (e.q. C:\workspace\istep_prism)
 	
 Variable 2
