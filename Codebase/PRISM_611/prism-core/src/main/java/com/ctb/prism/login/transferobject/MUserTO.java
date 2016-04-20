@@ -31,12 +31,14 @@ public class MUserTO extends BaseTO
     private String Salt;
 
     private String LastName;
+    private String lastName;
 
     private String IsActive;
 
     private String Project_id;
 
     private String FirstName;
+    private String firstName;
 
     private HintAnswers[] HintAnswers;
 
@@ -142,6 +144,7 @@ public class MUserTO extends BaseTO
     public void setLastName (String LastName)
     {
         this.LastName = LastName;
+        this.lastName = LastName;
     }
 
     public String get_id ()
@@ -182,6 +185,7 @@ public class MUserTO extends BaseTO
     public void setFirstName (String FirstName)
     {
         this.FirstName = FirstName;
+        this.firstName = FirstName;
     }
 
     public HintAnswers[] getHintAnswers ()

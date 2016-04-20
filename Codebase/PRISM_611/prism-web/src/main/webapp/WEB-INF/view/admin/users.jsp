@@ -37,12 +37,12 @@
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameUser"><c:if test='${not empty userList}'><spring:message code="title.page.manageUser"/> ${orgName}</c:if> </span></b></div>
 				
 				<fmt:message var="MANAGE_USERS_SEARCH" key="manage.users.search"  />
-				<c:if test="${not empty actionMap[MANAGE_USERS_SEARCH]}">
+				<%-- <c:if test="${not empty actionMap[MANAGE_USERS_SEARCH]}"> --%> <!-- Commenting temporary until actionMap is implemented -->
 				<span class="input search-input">
 					<input type="text" name="searchUser" id="searchUser" class="input-unstyled with-tooltip" title="<spring:message code='message.search.help'/>" placeholder="Search">
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>
 				</span>
-				</c:if>
+				<%-- </c:if> --%>
 				
 				<fmt:message var="MANAGE_USERS_ADD" key="manage.users.add"  />
 				<c:if test="${not empty actionMap[MANAGE_USERS_ADD]}">
