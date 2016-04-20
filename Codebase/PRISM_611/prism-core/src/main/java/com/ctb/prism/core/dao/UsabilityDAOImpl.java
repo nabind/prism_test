@@ -34,13 +34,12 @@ import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IQueryConstants;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
-import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.webservice.transferobject.ContentDetailsTO;
@@ -78,13 +77,24 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
-	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
+	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - saveUsabilityData");
 		logger.log(IAppLogger.INFO, usability.toString());
+		
+		String userName =usability.getUserName_id();
+		int count = 0;
+		
 		try {
-			int count = getJdbcTemplatePrism().update((usability.isLoginAs())? IQueryConstants.INSERT_LoginAsACTIVITY_LOG : IQueryConstants.INSERT_ACTIVITY_LOG, 
-				usability.getUserId(),usability.getCustomerId(),usability.getActivityTypeId(),
-				usability.getReportUrl(),usability.getIpAddress());
+			if(userName !=null && userName.startsWith("mdadmin")) {
+				String contractName = Utils.getContractName();
+				getMongoTemplatePrism(contractName).save(usability, "User_Activity_History");
+			}
+			/*else{
+				count = getJdbcTemplatePrism().update((usability.isLoginAs())? IQueryConstants.INSERT_LoginAsACTIVITY_LOG : IQueryConstants.INSERT_ACTIVITY_LOG, 
+						usability.getUserId(),usability.getCustomerId(),usability.getActivityTypeId(),
+						usability.getReportUrl(),usability.getIpAddress());
+			}*/
+				
 			logger.log(IAppLogger.INFO, "saveUsabilityData - count = " + count);
 			logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - saveUsabilityData");
 			return true;

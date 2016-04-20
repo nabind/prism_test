@@ -9,10 +9,19 @@ public class UsabilityTO extends BaseTO {
 
 	private String reportUrl;
 	private String userId;
+	private String userName;
 	private String customerId;
 	private String ipAddress;
 	private Long activityTypeId;
 	private boolean loginAs;
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public boolean isLoginAs() {
 		return loginAs;

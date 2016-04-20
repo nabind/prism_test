@@ -3,32 +3,22 @@
  */
 package com.ctb.prism.core.business;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.exception.SystemException;
-import com.ctb.prism.core.transferobject.UsabilityTO;
-import com.ctb.prism.login.transferobject.MenuTO;
-import com.ctb.prism.login.transferobject.UserTO;
-import com.ctb.prism.test.LoginTestHelper;
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 import com.ctb.prism.test.UsabilityTestHelper;
@@ -74,7 +64,7 @@ public class UsabilityBusinessImplTest extends AbstractJUnit4SpringContextTests 
 	 */
 	@Test
 	public final void testSaveUsabilityData() throws Exception {
-		UsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData(testParams);
+		MUsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData(testParams);
 		assertNotNull(usabilityBusiness.saveUsabilityData(usability));		
 	}
 

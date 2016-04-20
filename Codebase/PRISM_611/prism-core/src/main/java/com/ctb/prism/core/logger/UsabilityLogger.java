@@ -1,5 +1,7 @@
 package com.ctb.prism.core.logger;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.ctb.prism.core.Service.IUsabilityService;
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.transferobject.UsabilityTO;
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.util.CustomStringUtil;
 
 @Aspect
@@ -31,7 +33,7 @@ public class UsabilityLogger {
 	 */
 	@Before("execution(* com.ctb.prism.web.controller.ReportController.openReportHtml(..)) && args(req, res)")
 	public void logReportURL(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 2;
+		String activityLogType = "Reports";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 
 	}
@@ -43,7 +45,7 @@ public class UsabilityLogger {
 	 */
 	@Before("execution(* com.ctb.prism.web.controller.ReportController.openReportApiHtml(..)) && args(req, res)")
 	public void logReportURLApi(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 2;
+		String activityLogType = "Reports";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 
 	}
@@ -56,7 +58,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.LoginController.validateUser(..)) && args(req, res)")
 	public void logLogin(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 1;
+		String activityLogType = "Login";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -73,7 +75,7 @@ public class UsabilityLogger {
 
 	@After(" execution(* com.ctb.prism.web.controller.ParentController.updateProfile(..)) && args(req, res)")
 	public void logUserProfile(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -84,7 +86,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.AdminController.updateUser(..))  && args(req, res)")
 	public void logupdateUser(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -95,7 +97,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.AdminController.deleteUser(..))  && args(req, res)")
 	public void logdeleteUser(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -106,7 +108,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.AdminController.addNewUser(..))  && args(req, res)")
 	public void logaddNewUser(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -117,7 +119,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.ReportController.updateReportNew(..))  && args(req, res)")
 	public void logupdateReportNew(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -128,7 +130,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.ReportController.deleteReport(..))  && args(req, res)")
 	public void logdeleteReport(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -139,7 +141,7 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.AdminController.updateRole(..))  && args(req, res)")
 	public void logupdateRole(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
@@ -150,18 +152,20 @@ public class UsabilityLogger {
 	 */
 	@After("execution(* com.ctb.prism.web.controller.AdminController.dissociateUser(..))  && args(req, res)")
 	public void logdissociateUser(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res) {
-		long activityLogType = 3;
+		String activityLogType = "Admin";
 		captureActivityLog(joinPoint, req, res, activityLogType);
 	}
 
-	private void captureActivityLog(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res, Long activityType) {
-		UsabilityTO usability = new UsabilityTO();
+	private void captureActivityLog(JoinPoint joinPoint, HttpServletRequest req, HttpServletResponse res, String activityType) {
+		MUsabilityTO usability = new MUsabilityTO();
 		String userId = null;
+		String userName =  null;
 		try {
 			String reportUrl = null;
 			logMessage(joinPoint, "Usability logger : ", IAppLogger.INFO);
 			if (req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN) == null) {
 				userId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+				userName = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			} else {
 				usability.setLoginAs(true);
 				userId = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
@@ -169,8 +173,8 @@ public class UsabilityLogger {
 			// String currentOrg = (String)
 			// req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String customerId = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long activityTypeId = activityType;
-			if (activityType == 2) {
+			//long activityTypeId = activityType;
+			if (activityType.equals("Reports")) {
 				reportUrl = req.getParameter("reportUrl");
 			} else {
 				reportUrl = req.getRequestURI();
@@ -184,11 +188,13 @@ public class UsabilityLogger {
 			// String ipAddress = (String)
 			// req.getSession().getAttribute(IApplicationConstants.ipAddress);
 			// String ipAddress = "";
-			usability.setUserId(userId);
-			usability.setCustomerId(customerId);
-			usability.setActivityTypeId(activityTypeId);
-			usability.setReportUrl(reportUrl);
-			usability.setIpAddress(ipAddress);
+			//usability.setUserId(userId);
+			usability.setUserName_id(userName);
+			usability.setCustomerCode(customerId);
+			usability.setActivity(activityType);
+			usability.setActivity_Details(reportUrl);
+			usability.setActivity_Date(new Date());
+			usability.setIp_Address(ipAddress);
 			logger.log(IAppLogger.INFO, usability.toString());
 			// usabilityService.saveUsabilityData(usability);
 

@@ -1,6 +1,7 @@
 package com.ctb.prism.core.Service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +18,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
-import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 import com.ctb.prism.test.UsabilityTestHelper;
@@ -49,7 +50,7 @@ public class UsabilityServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSaveUsabilityData() throws Exception {
-		UsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData(testParams);
+		MUsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData(testParams);
 		assertNotNull(usabilityService.saveUsabilityData(usability));		
 	}
 

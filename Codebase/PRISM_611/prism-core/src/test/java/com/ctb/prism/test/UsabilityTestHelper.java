@@ -1,17 +1,20 @@
 package com.ctb.prism.test;
 
-import com.ctb.prism.core.transferobject.UsabilityTO;
+import java.util.Date;
+
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 
 public class UsabilityTestHelper {
 	
-	public static UsabilityTO helpSaveUsabilityData(TestParams testParams) {
-		UsabilityTO usability = new UsabilityTO();
-		usability.setLoginAs(true);
-		usability.setUserId("4075095");
-		usability.setCustomerId("1013");
-		usability.setActivityTypeId(1L);
-		usability.setReportUrl("/public/Missouri/Report/Student_Roster_files");
-		usability.setIpAddress("192.0.0.1");
+	public static MUsabilityTO helpSaveUsabilityData(TestParams testParams) {
+		MUsabilityTO usability = new MUsabilityTO();
+		usability.setActivity("login");
+		usability.setActivity_Date(new Date());
+		usability.setActivity_Details("Login");
+		usability.setCreated("mdadmin");
+		usability.setCustomerCode("FL");
+		usability.setIp_Address("10.160.23.50");
+		usability.setUserName_id("mdadmin");
 		return usability;
 	}
 }
