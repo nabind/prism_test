@@ -52,6 +52,9 @@ public class UserTO extends BaseTO {
 	public String getUserId() {
 		return userId;
 	}
+	public long getUserIdLong() {
+		return Long.valueOf(userId);
+	}
 
 	/**
 	 * @param userId

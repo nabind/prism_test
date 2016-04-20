@@ -9,6 +9,7 @@ import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -30,6 +31,8 @@ public interface IUsabilityDAO {
 	 * @throws Exception
 	 */
 	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception;
+	
+	public boolean saveUsabilityData(UsabilityTO usability) throws Exception;
 
 	/**
 	 * @param studentListTO

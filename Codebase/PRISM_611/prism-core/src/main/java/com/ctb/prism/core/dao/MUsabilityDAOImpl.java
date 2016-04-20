@@ -38,6 +38,7 @@ import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
+import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
 import com.ctb.prism.core.transferobject.UsabilityTO;
@@ -70,14 +71,35 @@ import com.thoughtworks.xstream.XStream;
  * @author Amitabha Roy
  *
  */
-//@Repository
-public class UsabilityDAOImpl extends BaseDAO /*implements IUsabilityDAO*/ {
+@Repository
+public class MUsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityDAOImpl.class.getName());
 	//private String TEST_FORM = "";
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.core.dao.IUsabilityDAO#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
+	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception {
+		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - saveUsabilityData");
+		logger.log(IAppLogger.INFO, usability.toString());
+		
+		String userName =usability.getUserName_id();
+		int count = 0;
+		
+		try {
+			String contractName = Utils.getContractName();
+			getMongoTemplatePrism(contractName).save(usability, "User_Activity_History");
+				
+			logger.log(IAppLogger.INFO, "saveUsabilityData - count = " + count);
+			logger.log(IAppLogger.INFO, "Exit: UsabilityDAOImpl - saveUsabilityData");
+			return true;
+		} catch (Exception e) {
+			logger.log(IAppLogger.ERROR, "Error occurred while updating user details.", e);
+			return false;
+		}
+	}
+	
+	
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: UsabilityDAOImpl - saveUsabilityData");
 		logger.log(IAppLogger.INFO, usability.toString());

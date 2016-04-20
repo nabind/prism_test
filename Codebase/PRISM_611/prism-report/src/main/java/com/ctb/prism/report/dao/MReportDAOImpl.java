@@ -1,10 +1,7 @@
 package com.ctb.prism.report.dao;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
-
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -38,19 +35,25 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
+import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
+import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -79,8 +82,8 @@ import com.ctb.prism.webservice.transferobject.ReportActionTO;
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
  */
-//@Repository("reportDAO")
-public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
+@Repository("reportDAO")
+public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportDAOImpl.class.getName());
 
 	/*
@@ -752,6 +755,7 @@ public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		String contractName = (String) paramMap.get("contractName");
+		String customerCode = (String) paramMap.get("customerCode");
 		/*logger.log(IAppLogger.INFO, "isSuperUser = " + isSuperUser);
 		logger.log(IAppLogger.INFO, "isGrowthUser = " + isGrowthUser);
 		logger.log(IAppLogger.INFO, "isEduUser = " + isEduUser);*/
@@ -767,12 +771,12 @@ public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 					match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
 							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
 										 Criteria.where("reportType").is("API"),
-										 Criteria.where("reportAccess.custProdId").is(String.valueOf(custProdId))))
+										 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
 				);
 
 			//Convert the aggregation result into a List
 			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism(contractName)
+					= getMongoTemplatePrism("global")
 					.aggregate(agg, MReportTO.class, MResultTO.class);
 			
 			List<MResultTO> reportDetails = groupResults.getMappedResults();
