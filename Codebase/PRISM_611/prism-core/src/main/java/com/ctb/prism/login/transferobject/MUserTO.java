@@ -47,6 +47,7 @@ public class MUserTO extends BaseTO
     private String IsNewUser;
 
     private String DisplayName;
+    private String displayName;
 
     private String SignedUserAgrmt;
 
@@ -226,6 +227,7 @@ public class MUserTO extends BaseTO
     public void setDisplayName (String DisplayName)
     {
         this.DisplayName = DisplayName;
+        this.displayName = DisplayName;
     }
 
     public String getSignedUserAgrmt ()

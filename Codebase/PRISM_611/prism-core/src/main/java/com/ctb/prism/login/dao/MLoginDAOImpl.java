@@ -57,6 +57,7 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.Admins;
 import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.Customers;
+import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
 import com.ctb.prism.login.transferobject.MIcClaims;
 import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MReportTO;
@@ -720,31 +721,37 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		String contractName = (String) paramMap.get("contractName");
 		
 		try {
-			TypedAggregation<CustProdAdmin> agg = newAggregation(CustProdAdmin.class, 
+			/*TypedAggregation<CustProdAdmin> agg = newAggregation(CustProdAdmin.class, 
+					match(Criteria.where("_id").is(project)),	
+					unwind("Customers"),
+					unwind("Customers.Admins"),
+					sort(Sort.Direction.DESC, "Customers.Admins.Seq")
+				);*/
+			Aggregation agg = newAggregation(
 					match(Criteria.where("_id").is(project)),	
 					unwind("Customers"),
 					unwind("Customers.Admins"),
 					sort(Sort.Direction.DESC, "Customers.Admins.Seq")
 				);
 			
-			/*AggregationResults<CustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class);
-			List<CustProdAdmin> reportDetails = groupResults.getMappedResults();
+			AggregationResults<FlatCustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class, FlatCustProdAdmin.class);
+			List<FlatCustProdAdmin> reportDetails = groupResults.getMappedResults();
 			
 			// get all products
 			objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
-			for(CustProdAdmin custProdAdmin : reportDetails) {
+			for(FlatCustProdAdmin custProdAdmin : reportDetails) {
 				objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
-				objectValueTO.setValue(custProdAdmin.getCustomers()[0].getAdmins()[0].getCode()); // getting first element of each array because the collection is unwinded
-				objectValueTO.setName (custProdAdmin.getCustomers()[0].getAdmins()[0].getName());
+				objectValueTO.setValue(custProdAdmin.getCustomers().getAdmins().getCode()); // getting first element of each array because the collection is unwinded
+				objectValueTO.setName (custProdAdmin.getCustomers().getAdmins().getName());
 				objectValueTOList.add(objectValueTO);
-			}*/
+			}
 			//temp code
-			objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
+			/*objectValueTOList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 			com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 			objectValueTO.setValue("2015");
 			objectValueTO.setName("TASC 2015");
-			objectValueTOList.add(objectValueTO);
+			objectValueTOList.add(objectValueTO);*/
 			
 			// get the unique list of products
 			Set<com.ctb.prism.core.transferobject.ObjectValueTO> uniqueProducts = new HashSet<com.ctb.prism.core.transferobject.ObjectValueTO>(objectValueTOList);

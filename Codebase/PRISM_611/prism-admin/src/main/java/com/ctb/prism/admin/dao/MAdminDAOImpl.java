@@ -669,6 +669,11 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				for(String role : user.getUserRoles()) {
 					RoleTO roleTO = new RoleTO();
 					roleTO.setRoleName(role);
+					if(role.indexOf("ADMIN") != -1) {
+						roleTO.setRoleDescription("Admin User");
+					} else {
+						roleTO.setRoleDescription("User");
+					}
 					roleTO.setLabel(user.getOrgCategory().getCategory());
 					roleList.add(roleTO);
 				}
@@ -680,6 +685,9 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				//to.setParentId(0);
 				to.setLoggedInOrgId(currorg);
 				to.setTenantName(user.getOrgUser()[0].getOrgName());
+				to.setFirstName(user.getFirstName());
+				to.setLastName(user.getLastName());
+				to.setMiddleName(user.getMiddleName());
 				userList.add(to);
 			}
 		}
@@ -1474,9 +1482,6 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			@Cacheable(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	} )
 	public ArrayList<UserTO> searchUser(String userName, String tenantId, String adminYear, String isExactSearch, String orgMode) {
-		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
-		ArrayList<RoleTO> RoleTOs = new ArrayList<RoleTO>();
-		//List<Map<String, Object>> userslist = null;
 		List<UserTO> userList = null;
 		Query searchUserQuery = null;
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
@@ -1486,9 +1491,6 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 					Criteria.where("FirstName").regex(userName), 
 					Criteria.where("OrgUser.Org_id").regex(userName))
 					);
-			//userName = CustomStringUtil.appendString("%", userName, "%");
-			// List<OrgTO> orgList = null;
-			//userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER,orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		} else {
 			searchUserQuery = new Query(Criteria.where("_id").is(true).orOperator(
 					Criteria.where("_id").is(userName),
@@ -1496,56 +1498,12 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 					Criteria.where("FirstName").is(userName), 
 					Criteria.where("OrgUser.Org_id").is(userName))
 					);
-			//userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,orgMode, tenantId, tenantId, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
 		}
 		
 		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
 		userList = getUserList(savedUser, tenantId);
 		
-		/*if (userslist.size() > 0) {
-			UserTOs = new ArrayList<UserTO>();
-			for (Map<String, Object> fieldDetails : userslist) {
-
-				UserTO to = new UserTO();
-				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
-				to.setUserId(userId);
-				
-				 * to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")) .longValue());
-				 
-				to.setUserName((String) (fieldDetails.get("USERNAME")));
-				to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
-				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setTenantId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-				to.setParentId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
-				to.setTenantName((String) (fieldDetails.get("ORG_NAME")));
-				// to.setUserType((String) (fieldDetails.get("USER_TYPE")));
-				try {
-					to.setLoggedInOrgId(Long.parseLong(tenantId));
-				} catch (NumberFormatException e) {
-					// TODO : ??
-				}
-				// fetching role for each users
-				if ((String.valueOf(userId) != null) && ((String) (fieldDetails.get("USERNAME")) != null)) {
-					List<Map<String, Object>> roleList = null;
-					roleList = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_ROLE, userId);
-					if (roleList.size() > 0) {
-						RoleTOs = new ArrayList<RoleTO>();
-						for (Map<String, Object> roleDetails : roleList) {
-
-							RoleTO rleTo = new RoleTO();
-							rleTo.setRoleId(((BigDecimal) roleDetails.get("ROLEID")).longValue());
-							rleTo.setRoleName((String) (roleDetails.get("ROLE_NAME")));
-							rleTo.setRoleDescription((String) (roleDetails.get("DESCRIPTION")));
-							rleTo.setLabel((String) (roleDetails.get("ORG_LABEL")));
-							RoleTOs.add(rleTo);
-						}
-						to.setAvailableRoleList(RoleTOs);
-					}
-				}
-				UserTOs.add(to);
-			}
-		}*/
-		return UserTOs;
+		return new ArrayList<UserTO>(userList);
 	}
 
 	/**
@@ -1615,6 +1573,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				Criteria.where("_id").regex(userName),
 				Criteria.where("LastName").regex(userName), 
 				Criteria.where("FirstName").regex(userName), 
+				Criteria.where("DisplayName").regex(userName), 
 				Criteria.where("OrgUser.Org_id").regex(userName))
 				);
 		
