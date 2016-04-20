@@ -45,12 +45,12 @@
 				<%-- </c:if> --%>
 				
 				<fmt:message var="MANAGE_USERS_ADD" key="manage.users.add"  />
-				<c:if test="${not empty actionMap[MANAGE_USERS_ADD]}">
+				<%-- <c:if test="${not empty actionMap[MANAGE_USERS_ADD]}"> --%> <!-- Commenting temporary until actionMap is implemented -->
 				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left with-tooltip" title="<spring:message code='title.page.addUser'/>">
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					<spring:message code="title.page.addUser"/>
 				</a>
-				</c:if>
+				<%-- </c:if> --%>
 				<fmt:message var="MANAGE_USERS_DOWNLOAD_USERS" key="manage.users.download"  />
 				<c:if test="${not empty actionMap[MANAGE_USERS_DOWNLOAD_USERS]}">
 					<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
