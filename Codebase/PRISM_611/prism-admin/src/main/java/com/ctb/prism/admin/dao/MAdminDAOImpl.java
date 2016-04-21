@@ -57,6 +57,8 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MUserTO;
+import com.ctb.prism.login.transferobject.OrgCategory;
+import com.ctb.prism.login.transferobject.OrgUser;
 
 @Repository("adminDAO")
 @SuppressWarnings("unchecked")
@@ -1014,6 +1016,21 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			@Cacheable(value = "usmoConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#userParamMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#userParamMap)).concat('getMasterRoleList'))")
 	} )
 	private List<RoleTO> getMasterRoleList(Map<String,Object> userParamMap) throws SQLException {
+		// TODO need to discuss about master role list
+		List<RoleTO> roles = new ArrayList<RoleTO>();
+		RoleTO role = new RoleTO();
+		role.setRoleName("ROLE_USER");
+		role.setRoleDescription("User");
+		roles.add(role);
+		role = new RoleTO();
+		role.setRoleName("ROLE_ADMIN");
+		role.setRoleDescription("Admin User");
+		roles.add(role);
+		
+		return roles;
+	}
+	
+	private List<RoleTO> getMasterRoleListOld(Map<String,Object> userParamMap) throws SQLException {
 		final String argType = (String) userParamMap.get("argType");
 		final String userid = (String) userParamMap.get("userid");
 		final String customerId = (String) userParamMap.get("customerId");
@@ -1355,112 +1372,48 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String purpose = (String) paramMap.get("purpose");
 		final String eduCenterId = (String) paramMap.get("eduCenterId");
 		final String contractName = (String) paramMap.get("contractName");
+		String project = (String) paramMap.get("project");
+		String orgMode = (String) paramMap.get("orgMode");
+		String orgName = (String) paramMap.get("orgName");
+		
 		String[] userRoles = (String[]) paramMap.get("userRoles");
 		final StringBuilder roles = new StringBuilder();
-		if (userRoles != null) {
-			/*
-			 * getJdbcTemplatePrism().update( IQueryConstants.INSERT_USER_ROLE, IApplicationConstants.DEFAULT_USER_ROLE, user_seq_id);
-			 */
-			for (String role : userRoles) {
-				roles.append(role).append(",");
-			}
-			
-			roles.replace(roles.lastIndexOf(","), roles.lastIndexOf(",")+1, "");
-			
-		}
-		 	
-		
-		//String purpose = (String) paramMap.get("purpose");
-		
 		try {
-		logger.log(IAppLogger.INFO, "Add User");
-		
-		userTo = (UserTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			String salt = PasswordGenerator.getNextSalt();
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.CREATE_USER);
-				cs.setString(1, userName);
-				cs.setString(2, userDisplayName);
-				cs.setString(3, emailId);
-				cs.setString(4, userStatus);
-				cs.setString(5, IApplicationConstants.FLAG_Y);
-				cs.setString(6, SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)));
-				cs.setString(7, salt);
-				cs.setString(8, IApplicationConstants.FLAG_N);
-				cs.setLong(9, Long.valueOf(customerId));
-				//10
-				cs.setLong(11, Long.valueOf(orgLevel));
-				cs.setLong(12, Long.valueOf(adminYear));
-				cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
-				cs.setString(14, roles.toString());
-				//15
-				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(18, oracle.jdbc.OracleTypes.VARCHAR);
-				if (IApplicationConstants.PURPOSE.equals(purpose)) {
-					cs.setLong(10, Long.valueOf(eduCenterId));
-					cs.setString(15, IApplicationConstants.FLAG_Y);
-				} else {
-					cs.setLong(10, Long.valueOf(tenantId));
-					cs.setString(15, IApplicationConstants.FLAG_N);
-					
-				}
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet userRs = null;
-				ResultSet roleRs = null;
-				UserTO to = new UserTO();
-				List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
-				List<RoleTO> masterRoleList = new ArrayList<RoleTO>();;
-				RoleTO roleTO = null;
-				try {
-					cs.execute();
-					Utils.logError(cs.getString(18));
-					if(cs.getString(18) != null && cs.getString(18).length() > 0) {
-						throw new BusinessException("Exception occured while getting Organization " + cs.getString(18));
-					}
-					userRs = (ResultSet) cs.getObject(16);
-					while(userRs.next()){
-						to.setUserId(userRs.getLong("ID"));
-						to.setUserName(userRs.getString("USERID"));
-						to.setUserDisplayName(userRs.getString("USERNAME"));
-						to.setEmailId(userRs.getString("EMAIL"));
-						to.setStatus(userRs.getString("STATUS"));
-					}
-					
-					roleRs= (ResultSet) cs.getObject(17);
-					while(roleRs.next()){
-						roleTO = new RoleTO();
-						roleTO.setRoleName(roleRs.getString("ROLENAME"));
-						roleTO.setRoleDescription(roleRs.getString("DESCRIPTION"));
-						availableRoleList.add(roleTO);
-					}
-					
-					to.setAvailableRoleList(availableRoleList);
-					Map<String,Object> paramMap = new HashMap<String,Object>(); 
-					paramMap.put("contractName", contractName);
-					paramMap.put("argType", "user");
-					paramMap.put("userid", String.valueOf(to.getUserId()));
-					paramMap.put("customerId", customerId);
-					paramMap.put("purpose", purpose);
-					//masterRoleList = getMasterRoleList("user", String.valueOf(to.getUserId()), customerId,purpose);
-					masterRoleList = getMasterRoleList(paramMap);
-					to.setMasterRoleList(masterRoleList);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (BusinessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return to;
-			}
-		});
+			
+			MUserTO user = new MUserTO();
+			user.set_id(userName);
+			user.setPassword( SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userName, salt)) );
+			user.setSalt(salt);
+			user.setDisplayName(userDisplayName);
+			user.setFirstName("");
+			user.setCustomerCode(customerId);
+			user.setProject_id(project);
+			user.setUserRoles(userRoles);
+			OrgCategory OrgCategory = new OrgCategory();
+			OrgCategory.setCategory(orgMode);
+			OrgCategory.setLevel( (orgLevel.indexOf(".") != -1) ? orgLevel.substring(0, (orgLevel.indexOf("."))) : orgLevel );
+			user.setOrgCategory(OrgCategory);
+			OrgUser orgUser = new OrgUser();
+			orgUser.setIsActive( IApplicationConstants.ACTIVE_FLAG.equals(userStatus) ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N );
+			orgUser.setOrg_id(tenantId);
+			orgUser.setOrgName(orgName);
+			OrgUser[] orgUserArr = new OrgUser[1];
+			orgUserArr[0] = orgUser;
+			user.setOrgUser(orgUserArr);
+			user.setIsFirstTimeLogin(IApplicationConstants.FLAG_Y);
+			user.setIsNewUser(IApplicationConstants.FLAG_Y);
+			user.setIsActive(userStatus);
+			
+			getMongoTemplatePrism().save(user);
+			
+			userTo = new UserTO();
+			userTo.setUserName(userName);
+			logger.log(IAppLogger.INFO, "User added : " + userTo.getUserName());
 		
-		logger.log(IAppLogger.INFO, "User added : " + userTo.getUserName());
-		
-		}finally {
+		} catch (Exception bex) {
+			throw new Exception(bex);
+		} finally {
 			logger.log(IAppLogger.INFO, "Exit: addNewUser()");
 		}
 
@@ -1583,7 +1536,10 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (userList != null && userList.size() > 0) {
 			userListJsonString = "[";
 			for(UserTO user : userList) {
-				userListJsonString = CustomStringUtil.appendString(userListJsonString, "\"", user.getUserId(), "<br/>", user.getLastName(), ", ", user.getFirstName(), " ", user.getMiddleName(), "\",");
+				userListJsonString = CustomStringUtil.appendString(userListJsonString, "\"", user.getUserId(), "<br/>", 
+						(user.getLastName() == null)? "" : user.getLastName(), ", ", 
+						(user.getFirstName() == null)? "" : user.getFirstName(), " ", 
+						(user.getMiddleName() == null)? "" : user.getMiddleName(), "\",");
 			}
 			userListJsonString = CustomStringUtil.appendString(userListJsonString.substring(0, userListJsonString.length() - 1), "]");
 		}

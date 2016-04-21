@@ -38,7 +38,14 @@ public class UserTO extends BaseTO{
 	private String isPasswordExpired;
 	private String isPasswordWarning;
 	private String project;
+	private String orgName;
 	
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 	public String getProject() {
 		return project;
 	}

@@ -928,6 +928,7 @@ public class AdminController {
 			String purpose = (String) req.getParameter("purpose")!= null ? (String) req.getParameter("purpose") : "";
 			String eduCenterId = (String) req.getParameter("eduCenterId")!= null ? (String) req.getParameter("eduCenterId") : "";
 			
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			//userId stands for username in DB and userName stands for display_username in DB
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("adminYear", adminYear);
@@ -939,6 +940,9 @@ public class AdminController {
 			paramMap.put("orgLevel", orgLevel);
 			paramMap.put("purpose", purpose);
 			paramMap.put("eduCenterId", eduCenterId);
+			paramMap.put("project",loggedinUserTO.getProject());
+			paramMap.put("orgMode",loggedinUserTO.getOrgMode());
+			paramMap.put("orgName",loggedinUserTO.getOrgName());
 			
 			if (IApplicationConstants.CHECKED_CHECKBOX_VALUE.equals(userStatus)) {
 				userStatus = IApplicationConstants.ACTIVE_FLAG;

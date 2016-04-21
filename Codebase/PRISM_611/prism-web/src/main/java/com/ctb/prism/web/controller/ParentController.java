@@ -462,11 +462,14 @@ public class ParentController {
 		logger.log(IAppLogger.INFO, "Validating Invitation Code");
 
 		try {
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			
 			String username = req.getParameter("username");
 			String contractName = Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req));
 			Map<String,Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("contractName", contractName);
 			paramMap.put("username", username);
+			paramMap.put("project",loggedinUserTO.getProject());
 			
 			// check username availability
 			if(parentService.checkUserAvailability(paramMap)) {

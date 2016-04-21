@@ -586,6 +586,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				user.setUserType("O");
 				user.setCustomerId(savedUser.getCustomerCode());
 				user.setProject(savedUser.getProject_id());
+				user.setOrgName(savedUser.getOrgUser()[0].getOrgName());
 			}
 			return user;
 		} else {

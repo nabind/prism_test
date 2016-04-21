@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,6 +35,7 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
+import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -119,53 +122,22 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 	 * @see com.ctb.prism.parent.dao.IParentDAO#checkUserAvailability(java.lang.String)
 	 */
 	public boolean checkUserAvailability(final Map<String,Object> paramMap) {
-		logger.log(IAppLogger.INFO, "Enter: checkUserAvailability()");
-		long t1 = System.currentTimeMillis();
-		final String username = (String)paramMap.get("username");
+		String username = (String)paramMap.get("username");
 		String contractName = (String) paramMap.get("contractName");
+		String project = (String) paramMap.get("project");
 		if(contractName == null) {
 			contractName = Utils.getContractName();
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(project));
+		List<MUserTO> savedUser = getMongoTemplatePrism(contractName).find(searchUserQuery, MUserTO.class);
 
-		String tempUsername = "";
-		try{
-			tempUsername = (String) getJdbcTemplatePrism(contractName).execute(
-				    new CallableStatementCreator() {
-				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
-				            cs.setString(1, username);
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-				            return cs;				      			            
-				        }
-				    } ,   new CallableStatementCallback<Object>()  {
-			        		public Object doInCallableStatement(CallableStatement cs) {
-			        			ResultSet rsUsername = null;
-			        			String usernameResult = "";
-			        			try {
-									cs.execute();
-									rsUsername = (ResultSet) cs.getObject(2);
-									if(rsUsername.next()){
-										usernameResult = rsUsername.getString("USERNAME");
-									}
-									
-			        			} catch (SQLException e) {
-			        				e.printStackTrace();
-			        			}
-			        			return usernameResult;
-				        }
-				    });
-			if("".equals(tempUsername)){
-				return Boolean.TRUE;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: checkUserAvailability() took time: "+String.valueOf(t2 - t1)+"ms");
+		if(savedUser != null && savedUser.size() > 0) {
+			return Boolean.FALSE;
+		} else {
+			return Boolean.TRUE;
 		}
-		return Boolean.FALSE;
 	}
 
 	/*
