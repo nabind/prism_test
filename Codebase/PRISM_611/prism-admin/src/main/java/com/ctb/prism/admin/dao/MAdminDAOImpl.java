@@ -659,6 +659,12 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return new ArrayList<UserTO>(userList);
 	}
 	
+	private List<UserTO> getUserList(MUserTO savedUser, String currorg) {
+		List<MUserTO> userList = new ArrayList<MUserTO>();
+		userList.add(savedUser);
+		return getUserList(savedUser, currorg);
+	}
+	
 	private List<UserTO> getUserList(List<MUserTO> savedUser, String currorg) {
 		List<UserTO> userList = null;
 		if( savedUser != null ) {
@@ -917,70 +923,16 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 	public UserTO getEditUserData(Map<String, Object> paramMap) throws Exception{
-		final long userId = Long.valueOf((String)paramMap.get("userId"));
-		final String customerId = (String) paramMap.get("customer");		
+		final String username = (String) paramMap.get("userId");
+		final String customerId = (String) paramMap.get("customer");
+		final String project = (String) paramMap.get("project");
+		final String currorg = (String) paramMap.get("loggedInOrgId");
 		final String purpose = "edit";
-				
-		return (UserTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DETAILS_ON_EDIT);
-				cs.setLong(1, userId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet userRs = null;
-				ResultSet roleRs = null;
-				UserTO to = new UserTO();
-				List<RoleTO> availableRoleList = new ArrayList<RoleTO>();
-				List<RoleTO> masterRoleList = new ArrayList<RoleTO>();;
-				RoleTO roleTO = null;
-				try {
-					cs.execute();
-					Utils.logError(cs.getString(4));
-					if(cs.getString(4) != null && cs.getString(4).length() > 0) {
-						throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
-					}
-					userRs = (ResultSet) cs.getObject(2);
-					while(userRs.next()){
-						to.setUserId(userRs.getLong("ID"));
-						to.setUserName(userRs.getString("USERID"));
-						to.setUserDisplayName(userRs.getString("USERNAME"));
-						to.setEmailId(userRs.getString("EMAIL"));
-						to.setStatus(userRs.getString("STATUS"));
-					}
-					
-					roleRs= (ResultSet) cs.getObject(3);
-					while(roleRs.next()){
-						roleTO = new RoleTO();
-						roleTO.setRoleName(roleRs.getString("ROLENAME"));
-						roleTO.setRoleDescription(roleRs.getString("DESCRIPTION"));
-						availableRoleList.add(roleTO);
-					}
-					
-					to.setAvailableRoleList(availableRoleList);
-					Map<String,Object> paramMap = new HashMap<String,Object>(); 
-					paramMap.put("contractName", Utils.getContractName());
-					paramMap.put("argType", "user");
-					paramMap.put("userid", String.valueOf(to.getUserId()));
-					paramMap.put("customerId", customerId);
-					paramMap.put("purpose", purpose);
-					//masterRoleList = getMasterRoleList("user", String.valueOf(to.getUserId()), customerId,purpose);
-					masterRoleList = getMasterRoleList(paramMap);
-					to.setMasterRoleList(masterRoleList);					
-				
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (BusinessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return to;
-			}
-		});	
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(project));
+		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+		List<UserTO> userList = getUserList(savedUser, currorg);
+		return userList.get(0); // as we are fetching exactly one user
 	}
 
 	/**
@@ -1204,6 +1156,10 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String userStatus = (String)paramMap.get("userStatus");
 		String[] userRoles = (String[])paramMap.get("userRoles");
 		String salt = (String)paramMap.get("salt");
+		String project = (String)paramMap.get("project");
+		// get the user which needs modification
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(project));
+		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		
 		try {
 			boolean ldapFlag = true;
@@ -1213,39 +1169,18 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				if (password.equalsIgnoreCase(userName) || password.toLowerCase().indexOf(userName.toLowerCase()) != -1 || userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
 					throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
 				}
-
-				if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-					ldapFlag = ldapManager.updateUser(userId, userId, userId, password);
-				} else {
-					if(salt == null) salt = PasswordGenerator.getNextSalt();
-					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
-							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userId, salt)), salt, userId);
-					
-					// add to password history
-					getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_HISTORY, 
-							SaltedPasswordEncoder.encryptPassword(password, Utils.getSaltWithUser(userId, salt)), userId);
-					
-					ldapFlag = true;
-				}
+				
+				// update parameters
+				if(salt == null) salt = PasswordGenerator.getNextSalt();
+				savedUser.setSalt(salt);
+				savedUser.setPassword(password);
+				savedUser.setEmail(emailId);
+				savedUser.setIsActive( IApplicationConstants.ACTIVE_FLAG.equals(userStatus) ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N );
+				savedUser.setUserRoles(userRoles);
+				//save
+				getMongoTemplatePrism().save(savedUser);
 			}
-			if (ldapFlag) {
-				// update user table
-				getJdbcTemplatePrism().update(IQueryConstants.UPDATE_USER, userId, userName, emailId, userStatus, Id);
-				// delete from userRole table
-				getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ROLE, Id);
-
-				if (userRoles != null) {
-					logger.log(IAppLogger.DEBUG, IApplicationConstants.DEFAULT_USER_ROLE);
-					// getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE,
-					// IApplicationConstants.DEFAULT_USER_ROLE, Id);
-					for (String role : userRoles) {
-						logger.log(IAppLogger.DEBUG, role);
-						getJdbcTemplatePrism().update(IQueryConstants.INSERT_USER_ROLE, role, Id);
-					}
-				}
-			} else {
-				return false;
-			}
+			return true;
 
 		} catch (BusinessException bex) {
 			throw new BusinessException(bex.getCustomExceptionMessage());
@@ -1253,7 +1188,6 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating user details.", e);
 			throw new Exception(e);
 		}
-		return true;
 	}
 
 	/**
@@ -1271,73 +1205,14 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	} )
 	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		logger.log(IAppLogger.INFO, "Enter: deleteUser()");
-		//try {
-			// if (ldapManager.deleteUser(userName, userName, userName)) {
-			// delete the security answers from pwd_hint_answers table
-			final String Id = (String) paramMap.get("Id");
-			final String userName = (String) paramMap.get("userName");
-			final String purpose = (String) paramMap.get("purpose");
-			
-			return	(Boolean)getJdbcTemplatePrism().execute(	new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-									CallableStatement cs = con.prepareCall(IQueryConstants.SP_DELETE_USER);
-									cs.setLong(1, Long.valueOf(Id));
-									cs.setString(2, purpose);
-									cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-									return cs;
-									}
-								}, new CallableStatementCallback<Object>() {
-									public Object doInCallableStatement(CallableStatement cs) {
-										try {
-											cs.execute();
-											Utils.logError(cs.getString(3));
-											if(cs.getString(3) != null && cs.getString(3).length() > 0) {
-												throw new BusinessException("Exception occured while deleting user " + cs.getString(3));
-											} 
-										} catch(Exception e){
-											e.printStackTrace();
-											return false;
-										}
-										
-										return true;
-									}
-								
-					       });
-			
-			/*getJdbcTemplatePrism().update(IQueryConstants.DELETE_ANSWER_DATA, Id);
-
-			// delete the roles assigned to the user from user_role table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ROLE, Id);
-
-			if (IApplicationConstants.PURPOSE.equals(purpose)) {
-				// delete from edu_center_user_link
-				getJdbcTemplatePrism().update(IQueryConstants.DELETE_EDU_USER, Id);
-			} else {
-				// delete from org_users table
-				getJdbcTemplatePrism().update(IQueryConstants.DELETE_ORG_USER, Id);
-			}
-			
-			//delete from user activity
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER_ACTIVITY, Id);
-
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_PASSWORD_HISTORY, Id);
-			
-			// delete the user from users table
-			getJdbcTemplatePrism().update(IQueryConstants.DELETE_USER, Id);*/
-			
+		final String Id = (String) paramMap.get("Id");
+		final String userName = (String) paramMap.get("userName");
+		final String purpose = (String) paramMap.get("purpose");
+		final String project = (String) paramMap.get("project");
 		
-			// delete user from LDAP
-			/*if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
-				ldapManager.deleteUser(userName, userName, userName);
-			}*/
-			// } else {
-			// return false;
-			// }
-		/*} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while deleting user details.", e);
-			throw new Exception(e);
-		}*/
-		//return true;
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(project));
+		MUserTO savedUser = getMongoTemplatePrism().findAndRemove(searchUserQuery, MUserTO.class);
+		return Boolean.TRUE;
 	}
 
 	/*

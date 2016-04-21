@@ -97,7 +97,6 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#parameters) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
 	} )
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		Connection conn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
 		String contractName = (String) parameters.get("contractName");
 		Object obj = parameters.get("p_Ethnicities");
@@ -119,25 +118,12 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		logger.log(IAppLogger.INFO, "contractName = " + contractName);
 		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
 		try {
-			if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
-				mdconn =getPrismMongoConnection(contractName);
-				return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
-			} else {
-				if (contractName != null && !contractName.isEmpty()) {
-					conn = getPrismConnection(contractName);
-				} else {
-					conn = getPrismConnection();
-				}
-			}
-			return JasperFillManager.fillReport(jasperReport, parameters, conn);
-		} catch (SQLException e) {
+			mdconn =getPrismMongoConnection(contractName);
+			return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
+			
+		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		} finally {
-			if (conn != null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-				}
 			if (mdconn != null)
 				try {
 					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
@@ -157,22 +143,23 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#jasperReport.name)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#parameters)) )")
 	} )
 	public JasperPrint getFilledReportNoCache(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		Connection conn = null;
+		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
+		String contractName = (String) parameters.get("contractName");
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------JASPER--PRINT-----------------------------", jasperReport.getName()));
 		try {
-			conn = getPrismConnection();
-			return JasperFillManager.fillReport(jasperReport, parameters, conn);
+			mdconn = getPrismMongoConnection(contractName);
+			return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
 		} catch (SQLException e) {
 			throw new Exception(e.getMessage());
 		} finally {
-			if (conn != null)
+			if (mdconn != null)
 				try {
-					conn.close();
-				} catch (SQLException e) {
+					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
+				} catch (Exception e) {
 				}
 		}
 	}
-	
+	@Deprecated
 	public JasperPrint getFilledReportMongo(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
 		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------Mongo report-----------------------------", jasperReport.getName()));
@@ -192,36 +179,15 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 	}
 	
 	public JasperPrint getFilledReportIC(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		Connection conn = null;
 		com.jaspersoft.mongodb.connection.MongoDbConnection mdconn = null;
 		logger.log(IAppLogger.INFO, CustomStringUtil.appendString("####----------------------------IC PDF-----------------------------", jasperReport.getName()));
 		String contractName = (String)parameters.get("contractName");
 		try {
-			try{
-				// temp for Mongo
-				if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
-					mdconn = getPrismMongoConnection(contractName);
-					return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
-				} else {
-					if (contractName != null && !contractName.isEmpty()) {
-						conn = getPrismConnection(contractName);
-					} else {
-						conn = getPrismConnection();
-					}
-				}
-			}catch(Exception e){
-				conn = getPrismConnection(contractName);
-			}
-			
-			return JasperFillManager.fillReport(jasperReport, parameters, conn);
-		} catch (SQLException e) {
+			mdconn = getPrismMongoConnection(contractName);
+			return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
+		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		} finally {
-			if (conn != null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-				}
 			if (mdconn != null)
 				try {
 					//mdconn.close(); // not closing -- reusing connection is defined in base DAO
@@ -765,59 +731,43 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 					
 		List<AssessmentTO> assessments = null;
 		
-		if(paramMap.get("database").equals("MongoDB")){
-			Aggregation agg = newAggregation(
-					unwind("reportAccess"),
-					match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
-							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
-										 Criteria.where("reportType").is("API"),
-										 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
-				);
+		Aggregation agg = newAggregation(
+				unwind("reportAccess"),
+				match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
+						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
+									 Criteria.where("reportType").is("API"),
+									 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
+			);
 
-			//Convert the aggregation result into a List
-			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism("global")
-					.aggregate(agg, MReportTO.class, MResultTO.class);
-			
-			List<MResultTO> reportDetails = groupResults.getMappedResults();
-			System.out.println("    >> User from MongoDB : "
-					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
-			
-			AssessmentTO assessmentTO = new AssessmentTO();
-			assessments = new ArrayList<AssessmentTO>();
-			for(int i=0; i < reportDetails.size(); i++) {
-				//assessmentTO = new AssessmentTO();
-				assessmentTO.setAssessmentId(1000); //Hard coded for the time
-				assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
-								
-				ReportTO reportTO = new ReportTO();
-				reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
-				reportTO.setReportName(reportDetails.get(i).getReportName());
-				reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
-				reportTO.setEnabled(reportDetails.get(i).getActivationStatus().equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-				reportTO.setAllRoles("ROLE_CTB,ROLE_EDU_ADMIN,ROLE_USER,ROLE_ADMIN");//Hard coded for the time
-				reportTO.setReportType(reportDetails.get(i).getReportType());
-				reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
-						? reportDetails.get(i).getReportAccess().getOrg_level() : "");
-				assessmentTO.addReport(reportTO);
-			}
-			assessments.add(assessmentTO);
-			
-		} else{
-			if (roles.indexOf("ROLE_PARENT") != -1) {
-				assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel, custProdId, paramMap);
-			} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
-				assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
-			} else if (roles.indexOf("ROLE_GRW") != -1) {/* For growth user */
-				assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_GROWTH_ID, orgNodeLevel, custProdId, paramMap);
-			} else if (roles.indexOf("ROLE_RESCORE") != -1) {/* For rescore user */
-				assessments = getAssessmentList(IQueryConstants.GET_GROWTH_ASSESSMENT_LIST, "API%", IApplicationConstants.ROLE_RESCORE_ID, orgNodeLevel, custProdId, paramMap);
-			} else if (orgNodeLevel== IApplicationConstants.DEFAULT_LEVELID_VALUE) {/* For education center user */
-				assessments = getAssessmentList(IQueryConstants.GET_EDU_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
-			} else { /* For All users other than growth user */
-				assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
-			}
+		//Convert the aggregation result into a List
+		AggregationResults<MResultTO> groupResults 
+				= getMongoTemplatePrism("global")
+				.aggregate(agg, MReportTO.class, MResultTO.class);
+		
+		List<MResultTO> reportDetails = groupResults.getMappedResults();
+		System.out.println("    >> User from MongoDB : "
+				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
+		
+		AssessmentTO assessmentTO = new AssessmentTO();
+		assessments = new ArrayList<AssessmentTO>();
+		for(int i=0; i < reportDetails.size(); i++) {
+			//assessmentTO = new AssessmentTO();
+			assessmentTO.setAssessmentId(1000); //Hard coded for the time
+			assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
+							
+			ReportTO reportTO = new ReportTO();
+			reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
+			reportTO.setReportName(reportDetails.get(i).getReportName());
+			reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
+			reportTO.setEnabled(reportDetails.get(i).getActivationStatus().equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
+			reportTO.setAllRoles("ROLE_CTB,ROLE_EDU_ADMIN,ROLE_USER,ROLE_ADMIN");//Hard coded for the time
+			reportTO.setReportType(reportDetails.get(i).getReportType());
+			reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
+					? reportDetails.get(i).getReportAccess().getOrg_level() : "");
+			assessmentTO.addReport(reportTO);
 		}
+		assessments.add(assessmentTO);
+			
 		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;
 	}

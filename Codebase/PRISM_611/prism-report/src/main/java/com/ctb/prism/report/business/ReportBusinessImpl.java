@@ -74,11 +74,6 @@ public class ReportBusinessImpl implements IReportBusiness {
 	 * @see com.ctb.prism.report.business.IReportBusiness#getFilledReport(net.sf.jasperreports.engine.JasperReport, java.util.Map)
 	 */
 	public JasperPrint getFilledReport(JasperReport jasperReport, Map<String, Object> parameters) throws Exception {
-		// temp for Mongo
-		if(parameters.get("LoggedInUserName") !=null && ((String) parameters.get("LoggedInUserName")).startsWith("mdadmin")) {
-			return reportDAO.getFilledReportMongo(jasperReport, parameters);
-		}
-		// end: temp for Mongo
 		if (jasperReport != null 
 				&& ( jasperReport.getName() != null && 
 						(jasperReport.getName().trim().startsWith("Rescore_review") 

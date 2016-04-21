@@ -527,71 +527,56 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		return true;
 	}
 	
-	/*public UserTO getUserByEmail(String userEmail) throws SystemException {
-		return getUserDetails(userEmail);
-	}*/
+	/**
+	 * Check if user present in DB
+	 */
 	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException {
 		logger.log(IAppLogger.INFO,	"Enter: LoginDAOImpl - getUserByEmail");
 		
-		/*MUserTO user = new MUserTO();
-		user.setUserName("ctbadmin");
-		user.setPassword("3b3f38da65df4190b84d5611d39f61e19c7677fada8b9806ce0ed7f60567eb45");
-		user.setSalt("TRPDXWRykIwXVE4vECwS");
-		getMongoTemplate().save(user);*/
-		
 		String username = (String)paramMap.get("username");
-		if(username !=null && username.startsWith("mdadmin")) {
-			/**
-			 * This section is to check if user from mongo db is working
-			 */
-			String contractName = "";
-			if(paramMap.get("contractName") != null && !paramMap.get("contractName").equals("")) {
-				contractName = (String)paramMap.get("contractName");
-			} else {
-				contractName = Utils.getContractName();
-			}
-			Query searchUserQuery = new Query(Criteria.where("_id").is(username));
-			MUserTO savedUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
-			System.out.println("    >> User from MongoDB : " + savedUser.get_id() + " " + savedUser.getPassword());
-			
-			UserTO user = new UserTO();
-			if(savedUser != null) {
-				//user.setCustomerId(savedUser.getCustomerId());
-				user.setDisplayName(savedUser.getDisplayName());
-				user.setFirstTimeLogin(savedUser.getIsFirstTimeLogin());
-				user.setIsAdminFlag("Y");
-				user.setIsPasswordExpired("FALSE");
-				user.setIsPasswordWarning("FALSE");
-				for(OrgUser org : savedUser.getOrgUser()){
-					if (org.getIsActive().equals("Y")){
-						user.setOrgId(org.getOrg_id());
-						//user.setDefultCustProdId(org.getDefultCustProdId());
-						break;
-					}
-				}				
-				user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
-				user.setOrgMode(savedUser.getOrgCategory().getCategory());
-				user.setOrgId(savedUser.getOrgUser()[0].getOrg_id()); // assuming for non parent users only one org will be there
-				user.setPassword(savedUser.getPassword());
-				List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-				for(String role : savedUser.getUserRoles()) {
-					auth.add(new SimpleGrantedAuthority(role));
-				}
-				user.setRoles(auth);
-				user.setSalt(Utils.getSaltWithUser(savedUser.get_id(), savedUser.getSalt()));
-				//user.setUserId(savedUser.getId());
-				user.setUserName(savedUser.get_id());
-				user.setUserEmail(savedUser.getEmail());
-				user.setUserStatus(savedUser.getIsActive());
-				user.setUserType("O");
-				user.setCustomerId(savedUser.getCustomerCode());
-				user.setProject(savedUser.getProject_id());
-				user.setOrgName(savedUser.getOrgUser()[0].getOrgName());
-			}
-			return user;
+		String contractName = "";
+		if(paramMap.get("contractName") != null && !paramMap.get("contractName").equals("")) {
+			contractName = (String)paramMap.get("contractName");
 		} else {
-			return getUserDetails(paramMap);
+			contractName = Utils.getContractName();
 		}
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username));
+		MUserTO savedUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
+		//System.out.println("    >> User from MongoDB : " + savedUser.get_id() + " " + savedUser.getPassword());
+		
+		UserTO user = new UserTO();
+		if(savedUser != null) {
+			user.setDisplayName(savedUser.getDisplayName());
+			user.setFirstTimeLogin(savedUser.getIsFirstTimeLogin());
+			user.setIsAdminFlag("Y");
+			user.setIsPasswordExpired("FALSE");
+			user.setIsPasswordWarning("FALSE");
+			for(OrgUser org : savedUser.getOrgUser()){
+				if (org.getIsActive().equals("Y")){
+					user.setOrgId(org.getOrg_id());
+					break;
+				}
+			}				
+			user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
+			user.setOrgMode(savedUser.getOrgCategory().getCategory());
+			user.setOrgId(savedUser.getOrgUser()[0].getOrg_id()); // assuming for non parent users only one org will be there
+			user.setPassword(savedUser.getPassword());
+			List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+			for(String role : savedUser.getUserRoles()) {
+				auth.add(new SimpleGrantedAuthority(role));
+			}
+			user.setRoles(auth);
+			user.setSalt(Utils.getSaltWithUser(savedUser.get_id(), savedUser.getSalt()));
+			user.setUserId(savedUser.get_id());
+			user.setUserName(savedUser.get_id());
+			user.setUserEmail(savedUser.getEmail());
+			user.setUserStatus(savedUser.getIsActive());
+			user.setUserType("O");
+			user.setCustomerId(savedUser.getCustomerCode());
+			user.setProject(savedUser.getProject_id());
+			user.setOrgName(savedUser.getOrgUser()[0].getOrgName());
+		}
+		return user;
 	}
 	
 	/**
@@ -1143,76 +1128,33 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
-		if(paramMap.get("database").equals("MongoDB")){
-			Aggregation agg = newAggregation(
-					unwind("reportAccess"),
-					match(Criteria.where("reportAccess.roleid").is("1")
-							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
-				);
+		Aggregation agg = newAggregation(
+				unwind("reportAccess"),
+				match(Criteria.where("reportAccess.roleid").is("1")
+						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
+			);
 
-			//Convert the aggregation result into a List
-			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism("global")
-					.aggregate(agg, MReportTO.class, MResultTO.class);
-			
-			List<MResultTO> reportDetails = groupResults.getMappedResults();
-			
-			System.out.println("    >> User from MongoDB : "
-					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
-			
-			Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
-			for(int i=0; i < reportDetails.size(); i++) {
-				MenuTO to = new MenuTO();
-				to.setMenuName(reportDetails.get(i).getMenu());
-				to.setReportName(reportDetails.get(i).getReportName());
-				to.setReportFolderUri(reportDetails.get(i).getReportFolderURI());
-				to.setMenuSequence("1"); // Hard coded for the time
-				to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
-				menuSet.add(to);
-			}			
-			return menuSet;
-		} else {
-			return (Set<MenuTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
-					cs.setString(1, roles);
-					cs.setLong(2, orgNodeLevel);
-					cs.setLong(3, custProdId);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					ResultSet rs = null;
-					Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
-					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(4);
-						while (rs.next()) {
-							MenuTO to = new MenuTO();
-							String menuName = rs.getString("MENU_NAME");
-							String key = rs.getString("KEY");
-							String value = rs.getString("VALUE");
-							String menuSeq = rs.getString("MENU_SEQ");
-							String reportSeq = rs.getString("REPORT_SEQ");
-							to.setMenuName(menuName);
-							to.setReportName(key);
-							to.setReportFolderUri(value);
-							to.setMenuSequence(menuSeq);
-							to.setReportSequence(reportSeq);
-							menuSet.add(to);
-						}
-						Utils.logError(cs.getString(5));
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					logger.log(IAppLogger.INFO, "menuSet = " + menuSet);
-					return menuSet;
-				}
-			});
-		}
+		//Convert the aggregation result into a List
+		AggregationResults<MResultTO> groupResults 
+				= getMongoTemplatePrism("global")
+				.aggregate(agg, MReportTO.class, MResultTO.class);
 		
+		List<MResultTO> reportDetails = groupResults.getMappedResults();
+		
+		System.out.println("    >> User from MongoDB : "
+				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
+		
+		Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
+		for(int i=0; i < reportDetails.size(); i++) {
+			MenuTO to = new MenuTO();
+			to.setMenuName(reportDetails.get(i).getMenu());
+			to.setReportName(reportDetails.get(i).getReportName());
+			to.setReportFolderUri(reportDetails.get(i).getReportFolderURI());
+			to.setMenuSequence("1"); // Hard coded for the time
+			to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
+			menuSet.add(to);
+		}			
+		return menuSet;
 		
 	}
 	
