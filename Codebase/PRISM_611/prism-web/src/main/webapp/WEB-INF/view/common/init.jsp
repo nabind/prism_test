@@ -459,7 +459,7 @@
 			$(".headerSortDown").removeClass("headerSortDown");
 			$(".headerSortUp").removeClass("headerSortUp");
 			setLastRowId ($("#last_user_tenant"));
-			showHideJspElements();
+			// showHideJspElements(); // temporary commenting out until user action is defined
 		}
 		
 		// ======================== CLOSE ALL OPEN MENUS - WHILE OPENING NEW =====================

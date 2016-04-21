@@ -607,6 +607,7 @@ public class AdminController {
 		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		paramMap.put("project",loggedinUserTO.getProject());
 		paramMap.put("contractName", Utils.getContractName());
+		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
 		
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		String moreCount = propertyLookup.get("count.results.button.more");
@@ -694,7 +695,8 @@ public class AdminController {
 			String userId = (String) request.getParameter("userId");
 			String purpose = (String) request.getParameter("purpose");
 			String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			paramMap.put("project",loggedinUserTO.getProject());
 			paramMap.put("userId", userId);
 			paramMap.put("customer", customer);
 			paramMap.put("purpose", purpose);
@@ -755,6 +757,7 @@ public class AdminController {
 			String[] userRoles = req.getParameterValues("userRole");
 			String status = "Fail";
 			String salt = null;//PasswordGenerator.getNextSalt();
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 			
 			if(password!=null && password.trim().length() > 0) {
 				if (password.equals(userId)) {
@@ -772,6 +775,7 @@ public class AdminController {
 					Map<String, Object> paramMap = new HashMap<String, Object>();
 					paramMap.put("contractName", Utils.getContractName());
 					paramMap.put("userName", userName);
+					paramMap.put("project",loggedinUserTO.getProject());
 					List<String> pwdList = loginService.getPasswordHistory(paramMap);
 					if(pwdList != null && !pwdList.isEmpty()) {
 						salt = pwdList.get(0);					
@@ -785,7 +789,7 @@ public class AdminController {
 					}
 				}
 			}	
-			
+
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("Id", Id);
 			paramMap.put("userId", userId);
@@ -796,6 +800,7 @@ public class AdminController {
 			paramMap.put("userRoles", userRoles);
 			paramMap.put("salt", salt);
 			paramMap.put("contractName", Utils.getContractName());
+			paramMap.put("project",loggedinUserTO.getProject());
 			
 			boolean isSaved = adminService.updateUser(paramMap);
 			res.setContentType("text/plain");
@@ -1038,11 +1043,14 @@ public class AdminController {
 			String password = (String)req.getParameter("password");
 			String purpose = (String)req.getParameter("purpose");		
 			
+			com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) req.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
+			
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
 			paramMap.put("userName", userName);
 			paramMap.put("password", password);
 			paramMap.put("Id", Id);
 			paramMap.put("purpose", purpose);
+			paramMap.put("project",loggedinUserTO.getProject());
 			boolean isDeleted = adminService.deleteUser(paramMap);
 			//Arunava
 			res.setContentType("text/plain");

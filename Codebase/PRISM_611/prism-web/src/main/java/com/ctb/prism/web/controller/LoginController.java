@@ -475,10 +475,10 @@ public class LoginController {
 				paramMap.put("contractName", Utils.getContractNameNoLogin(themeResolver.resolveThemeName(req)));
 				
 				//To Check mongo report
-				if(username !=null && username.startsWith("mdadmin"))
+				/*if(username !=null && username.startsWith("mdadmin"))
 					paramMap.put("database","MongoDB");
 				else
-					paramMap.put("database","Oracle");
+					paramMap.put("database","Oracle");*/
 				
 				Set<MenuTO> menuSet = loginService.getMenuMap(paramMap);
 				menuSet = Utils.attachCSSClassToMenuSet(menuSet, propertyLookup);

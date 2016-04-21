@@ -1888,10 +1888,10 @@ public class ReportController{
 		paramMap.put("contractName", contractName);
 		
 		//To Check mongo report
-		if(loggedinUserTO.getUserName() !=null && loggedinUserTO.getUserName().startsWith("mdadmin"))
+		/*if(loggedinUserTO.getUserName() !=null && loggedinUserTO.getUserName().startsWith("mdadmin"))
 			paramMap.put("database","MongoDB");
 		else
-			paramMap.put("database","Oracle");
+			paramMap.put("database","Oracle");*/
 		
 		ModelAndView modelAndView = new ModelAndView("common/navigableMenu");
 		if (!parentReports) {

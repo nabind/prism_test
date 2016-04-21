@@ -149,7 +149,7 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		try {
 			mdconn = getPrismMongoConnection(contractName);
 			return JasperFillManager.fillReport(jasperReport, parameters, mdconn);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		} finally {
 			if (mdconn != null)
