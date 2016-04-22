@@ -1,7 +1,10 @@
 package com.ctb.prism.report.dao;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
+
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -35,14 +38,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
@@ -53,7 +52,6 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -61,8 +59,9 @@ import com.ctb.prism.core.transferobject.ObjectValueTOMapper;
 import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
+import com.ctb.prism.login.transferobject.MFlatReportsTO;
 import com.ctb.prism.login.transferobject.MReportTO;
-import com.ctb.prism.login.transferobject.MResultTO;
+import com.ctb.prism.login.transferobject.MReportsTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -718,6 +717,10 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		boolean isEduUser = ((Boolean) paramMap.get("isEduUser")).booleanValue();
 		boolean parentReports = ((Boolean) paramMap.get("parentReports")).booleanValue();*/
 		String roles = (String) paramMap.get("roles");
+		Object rolesArr[] = roles.split(",");
+		
+		
+	
 		Long orgNodeLevel = (Long) paramMap.get("orgNodeLevel");
 		long custProdId = ((Long) paramMap.get("custProdId")).longValue();
 		String contractName = (String) paramMap.get("contractName");
@@ -732,19 +735,20 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<AssessmentTO> assessments = null;
 		
 		Aggregation agg = newAggregation(
+				match(Criteria.where("CustProdAdmin_Info_Id").is(Utils.getContractName().toUpperCase())),
 				unwind("reportAccess"),
-				match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
+				match(Criteria.where("reportAccess.role").in(rolesArr) //Hard coded for the time
 						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
-									 Criteria.where("reportType").is("API"),
+									 Criteria.where("reportType").regex("API_"),
 									 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
 			);
-
-		//Convert the aggregation result into a List
-		AggregationResults<MResultTO> groupResults 
-				= getMongoTemplatePrism("global")
-				.aggregate(agg, MReportTO.class, MResultTO.class);
 		
-		List<MResultTO> reportDetails = groupResults.getMappedResults();
+		//Convert the aggregation result into a List
+		AggregationResults<MFlatReportsTO> groupResults 
+				= getMongoTemplatePrism("global")
+				.aggregate(agg, MReportsTO.class, MFlatReportsTO.class);
+		
+		List<MFlatReportsTO> reportDetails = groupResults.getMappedResults();
 		System.out.println("    >> User from MongoDB : "
 				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
 		
@@ -759,8 +763,7 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
 			reportTO.setReportName(reportDetails.get(i).getReportName());
 			reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
-			reportTO.setEnabled(reportDetails.get(i).getActivationStatus().equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-			reportTO.setAllRoles("ROLE_CTB,ROLE_EDU_ADMIN,ROLE_USER,ROLE_ADMIN");//Hard coded for the time
+			reportTO.setAllRoles(reportDetails.get(i).getReportAccess().getRole());//Hard coded for the time
 			reportTO.setReportType(reportDetails.get(i).getReportType());
 			reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
 					? reportDetails.get(i).getReportAccess().getOrg_level() : "");

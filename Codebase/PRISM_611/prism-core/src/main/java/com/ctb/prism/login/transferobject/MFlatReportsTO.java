@@ -21,9 +21,9 @@ public class MFlatReportsTO  extends BaseTO{
 	private String reportName;
 	private String reportFolderURI;
 	private String reportType;
-	private String activationStatus;
 	private String menu;
 	private String menuSequence;
+	private MReportAccessTO reportAccess;
 	
 	public String getMenuSequence() {
 		return menuSequence;
@@ -31,7 +31,6 @@ public class MFlatReportsTO  extends BaseTO{
 	public void setMenuSequence(String menuSequence) {
 		this.menuSequence = menuSequence;
 	}
-	private MReportAccess reportAccess;
 	
 	
 	public String get_id() {
@@ -58,22 +57,16 @@ public class MFlatReportsTO  extends BaseTO{
 	public void setReportType(String reportType) {
 		this.reportType = reportType;
 	}
-	public String getActivationStatus() {
-		return activationStatus;
-	}
-	public void setActivationStatus(String activationStatus) {
-		this.activationStatus = activationStatus;
-	}
 	public String getMenu() {
 		return menu;
 	}
 	public void setMenu(String menu) {
 		this.menu = menu;
 	}
-	public MReportAccess getReportAccess() {
+	public MReportAccessTO getReportAccess() {
 		return reportAccess;
 	}
-	public void setReportAccess(MReportAccess reportAccess) {
+	public void setReportAccess(MReportAccessTO reportAccess) {
 		this.reportAccess = reportAccess;
 	}
 	

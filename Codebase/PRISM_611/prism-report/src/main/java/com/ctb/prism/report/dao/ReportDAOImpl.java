@@ -59,7 +59,6 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.MReportTO;
-import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -761,7 +760,7 @@ public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 					
 		List<AssessmentTO> assessments = null;
 		
-		if(paramMap.get("database").equals("MongoDB")){
+		/*if(paramMap.get("database").equals("MongoDB")){
 			Aggregation agg = newAggregation(
 					unwind("reportAccess"),
 					match(Criteria.where("reportAccess.roleid").is("1") //Hard coded for the time
@@ -799,7 +798,7 @@ public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 			}
 			assessments.add(assessmentTO);
 			
-		} else{
+		} else{*/
 			if (roles.indexOf("ROLE_PARENT") != -1) {
 				assessments = getAssessmentList(IQueryConstants.GET_ALL_ASSESSMENT_LIST, "PN%", roles, orgNodeLevel, custProdId, paramMap);
 			} else if (roles.indexOf("ROLE_SUPER") != -1) { /* For super user */
@@ -813,7 +812,7 @@ public class ReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 			} else { /* For All users other than growth user */
 				assessments = getAssessmentList(IQueryConstants.GET_ALL_BUT_GROWTH_ASSESSMENT_LIST, "API%", roles, orgNodeLevel, custProdId, paramMap);
 			}
-		}
+		//}
 		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;
 	}

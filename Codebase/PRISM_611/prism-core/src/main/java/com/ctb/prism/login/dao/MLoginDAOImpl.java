@@ -55,14 +55,13 @@ import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
-import com.ctb.prism.login.transferobject.MReportTO;
-import com.ctb.prism.login.transferobject.MResultTO;
+import com.ctb.prism.login.transferobject.MFlatReportsTO;
+import com.ctb.prism.login.transferobject.MReportsTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.OrgUser;
 import com.ctb.prism.login.transferobject.ProjectProp;
 import com.ctb.prism.login.transferobject.PwdHistory;
-import com.ctb.prism.login.transferobject.SSOProperties;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
@@ -1118,6 +1117,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		//final Long userId = Long.parseLong((paramMap.get("userId") == null) ? "0" : paramMap.get("userId").toString());
 		//logger.log(IAppLogger.INFO, "userId = " + userId);
 		final String roles = (String) paramMap.get("roles");
+		Object rolesArr[] = roles.split(",");
 		final long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
 		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
 		String contractName = paramMap.get("contractName").toString();
@@ -1127,17 +1127,18 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
 		Aggregation agg = newAggregation(
+				match(Criteria.where("CustProdAdmin_Info_Id").is(Utils.getContractName().toUpperCase())),
 				unwind("reportAccess"),
-				match(Criteria.where("reportAccess.roleid").is("1")
+				match(Criteria.where("reportAccess.role").in(rolesArr)
 						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
 			);
 
 		//Convert the aggregation result into a List
-		AggregationResults<MResultTO> groupResults 
+		AggregationResults<MFlatReportsTO> groupResults 
 				= getMongoTemplatePrism("global")
-				.aggregate(agg, MReportTO.class, MResultTO.class);
+				.aggregate(agg, MReportsTO.class, MFlatReportsTO.class);
 		
-		List<MResultTO> reportDetails = groupResults.getMappedResults();
+		List<MFlatReportsTO> reportDetails = groupResults.getMappedResults();
 		
 		System.out.println("    >> User from MongoDB : "
 				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
@@ -1148,7 +1149,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 			to.setMenuName(reportDetails.get(i).getMenu());
 			to.setReportName(reportDetails.get(i).getReportName());
 			to.setReportFolderUri(reportDetails.get(i).getReportFolderURI());
-			to.setMenuSequence("1"); // Hard coded for the time
+			to.setMenuSequence(reportDetails.get(i).getMenuSequence()); 
 			to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
 			menuSet.add(to);
 		}			
