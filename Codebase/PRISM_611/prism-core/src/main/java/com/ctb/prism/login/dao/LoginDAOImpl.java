@@ -48,7 +48,6 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.MReportTO;
-import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
@@ -974,35 +973,7 @@ public class LoginDAOImpl extends BaseDAO /*implements ILoginDAO*/{
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
-		if(paramMap.get("database").equals("MongoDB")){
-			Aggregation agg = newAggregation(
-					unwind("reportAccess"),
-					match(Criteria.where("reportAccess.roleid").is("1")
-							.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
-				);
-
-			//Convert the aggregation result into a List
-			AggregationResults<MResultTO> groupResults 
-					= getMongoTemplatePrism(contractName)
-					.aggregate(agg, MReportTO.class, MResultTO.class);
-			
-			List<MResultTO> reportDetails = groupResults.getMappedResults();
-			
-			System.out.println("    >> User from MongoDB : "
-					+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
-			
-			Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
-			for(int i=0; i < reportDetails.size(); i++) {
-				MenuTO to = new MenuTO();
-				to.setMenuName(reportDetails.get(i).getMenu());
-				to.setReportName(reportDetails.get(i).getReportName());
-				to.setReportFolderUri(reportDetails.get(i).getReportFolderURI());
-				to.setMenuSequence("1"); // Hard coded for the time
-				to.setReportSequence(reportDetails.get(i).getReportAccess().getReportSequence());
-				menuSet.add(to);
-			}			
-			return menuSet;
-		} else {
+		
 			return (Set<MenuTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_MENU_MAP);
@@ -1042,7 +1013,7 @@ public class LoginDAOImpl extends BaseDAO /*implements ILoginDAO*/{
 					return menuSet;
 				}
 			});
-		}
+		
 		
 		
 	}
