@@ -195,7 +195,7 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 		String parentTenantId = "9889";
 		String adminYear = "5074";
 		String searchParam = "";
-		long customerId = 1057L;
+		String customerId = "1057";
 		String orgMode = "PUBLIC";
 		String moreCount = "15";
 		List<OrgTO> orgList = adminDAO.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
@@ -206,7 +206,7 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 	public void testGetTotalUserCount() {
 		String tenantId = "10195";
 		String adminYear = "5074";
-		long customerId = 1057L;
+		String customerId = "1057";
 		String orgMode = "PUBLIC";
 		OrgTO to = adminDAO.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 		assertNotNull(to);

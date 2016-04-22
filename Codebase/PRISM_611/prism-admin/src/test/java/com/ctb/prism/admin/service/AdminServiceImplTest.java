@@ -186,7 +186,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 		String parentTenantId = "0";
 		String adminYear = "0";
 		String searchParam = "";
-		long customerId = 0L;
+		String customerId = "0";
 		String orgMode = "";
 		String moreCount = "15";
 		List<OrgTO> orgList = adminService.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
@@ -197,7 +197,7 @@ public class AdminServiceImplTest extends AbstractJUnit4SpringContextTests {
 	public void testGetTotalUserCount() {
 		String tenantId = "0";
 		String adminYear = "0";
-		long customerId = 0L;
+		String customerId = "0";
 		String orgMode = "PUBLIC";
 		OrgTO to = adminService.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 		assertNotNull(to);
