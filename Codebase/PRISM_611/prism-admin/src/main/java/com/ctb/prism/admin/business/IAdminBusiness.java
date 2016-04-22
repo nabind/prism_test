@@ -113,7 +113,7 @@ public interface IAdminBusiness {
 	 * @param customerId
 	 * @return
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount);
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, String customerId, String orgMode, String moreCount);
 
 	/**
 	 * @param tenantId
@@ -122,7 +122,7 @@ public interface IAdminBusiness {
 	 * @param orgMode
 	 * @return
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode);
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode);
 
 	/**
 	 * @param paramMap

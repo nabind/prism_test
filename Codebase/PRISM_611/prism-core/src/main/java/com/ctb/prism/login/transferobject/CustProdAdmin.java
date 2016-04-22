@@ -12,6 +12,8 @@ public class CustProdAdmin extends BaseTO
     private String _id;
 	
     private Customers[] Customers;
+    
+    private ProjectProp ProjectProp;
 
     private String ProjectName;
 
@@ -27,7 +29,15 @@ public class CustProdAdmin extends BaseTO
         this.Customers = Customers;
     }
 
-    public String getProjectName ()
+    public ProjectProp getProjectProp() {
+		return ProjectProp;
+	}
+
+	public void setProjectProp(ProjectProp projectProp) {
+		ProjectProp = projectProp;
+	}
+
+	public String getProjectName ()
     {
         return ProjectName;
     }

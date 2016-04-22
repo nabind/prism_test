@@ -9,7 +9,7 @@ import com.ctb.prism.core.transferobject.BaseTO;
 public class OrgTO extends BaseTO {
 
 	private static final long serialVersionUID = 53818111201133053L;
-	private long tenantId;
+	private String tenantId;
 	private String tenantName;
 	private String parentNameAlias;
 	private String selectedOrgId;
@@ -57,15 +57,19 @@ public class OrgTO extends BaseTO {
 	/**
 	 * @return
 	 */
-	public long getTenantId() {
+	public String getTenantId() {
 		return tenantId;
 	}
 
 	/**
 	 * @param tenantId
 	 */
-	public void setTenantId(long tenantId) {
+	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
+	}
+	
+	public void setTenantId(long tenantId) {
+		this.tenantId = String.valueOf(tenantId);
 	}
 
 	/**

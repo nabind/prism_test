@@ -55,6 +55,7 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
+import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.OrgCategory;
@@ -517,78 +518,34 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public ArrayList<OrgTreeTO> getOrgTree(Map<String, Object> paramMap) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: getOrgTree()");
 		
-		final long nodeId = Long.valueOf(paramMap.get("nodeid").toString());
+		final String nodeId = paramMap.get("nodeid").toString();
 		final boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
-		final long custProdId =  Long.valueOf(paramMap.get("adminYear").toString());
-		final long customerId = Long.valueOf(paramMap.get("customerId").toString());
+		final String custProdId =  paramMap.get("adminYear").toString();
+		final String customerId = paramMap.get("customerId").toString();
 		final String orgMode = (String) paramMap.get("orgMode");
 
+		Query searchOrgQuery = new Query(Criteria.where("_id").regex("^"+nodeId).and("Project_id").is(Utils.getProject()));
+		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 		
-			return (ArrayList<OrgTreeTO>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					if (isFirstLoad) {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ORGANIZATION_LIST);
-						cs.setLong(1, nodeId);
-						cs.setLong(2, customerId);
-						cs.setString(3, orgMode);
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					} else {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ORG_CHILDREN_LIST);
-						cs.setLong(1, nodeId);
-						cs.setLong(2, customerId);
-						cs.setString(3, orgMode);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					ResultSet rs = null;
-					OrgTO to = new OrgTO();
-					OrgTreeTO treeTo = new OrgTreeTO();
-					List<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
-					
-					try {
-						cs.execute();
-						if (isFirstLoad){
-							rs = (ResultSet) cs.getObject(4);
-							Utils.logError(cs.getString(5));
-							if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
-							}
-						} else {
-							rs = (ResultSet) cs.getObject(5);
-							Utils.logError(cs.getString(6));
-							if(cs.getString(6) != null && cs.getString(6).length() > 0) {
-								throw new SQLException();
-							}
-						}
-						
-						while(rs.next()){
-							to.setId(rs.getLong("SELECTED_ORG_ID"));
-							to.setParentTenantId(rs.getLong("PARENT_ORG_NODEID"));
-							to.setOrgLevel(rs.getLong("ORG_NODE_LEVEL"));
-							treeTo.setState("closed");
-							treeTo.setOrgTreeId(rs.getLong("SELECTED_ORG_ID"));
-							treeTo.setData(rs.getString("ORG_NODE_NAME"));
-							treeTo.setMetadata(to);
-							treeTo.setAttr(to);
-							orgTreeTOs.add(treeTo);
-						}
-					} catch (SQLException e) {
-						e.printStackTrace();
-					} catch (BusinessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	
-					logger.log(IAppLogger.INFO, "Exit: getOrgTree()");
-					return orgTreeTOs;
-				}
-			});
+		ArrayList<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
+		OrgTO orgTO = null;
+		OrgTreeTO treeTO = null;
+		if(orgList != null) {
+			for(MOrgTO org : orgList) {
+				orgTO = new OrgTO();
+				treeTO = new OrgTreeTO();
+				orgTO.setId(org.get_id());
+				orgTO.setParentTenantId(org.getParent_id());
+				orgTO.setOrgLevel(org.getLevel());
+				treeTO.setState("closed");
+				treeTO.setOrgTreeId(org.get_id());
+				treeTO.setData(org.getName());
+				treeTO.setMetadata(orgTO);
+				treeTO.setAttr(orgTO);
+				orgTreeTOs.add(treeTO);		
+			}
+		}
+		return orgTreeTOs;
 	}
 
 	/*
@@ -662,7 +619,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	private List<UserTO> getUserList(MUserTO savedUser, String currorg) {
 		List<MUserTO> userList = new ArrayList<MUserTO>();
 		userList.add(savedUser);
-		return getUserList(savedUser, currorg);
+		return getUserList(userList, currorg);
 	}
 	
 	private List<UserTO> getUserList(List<MUserTO> savedUser, String currorg) {
@@ -1462,7 +1419,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return list of orgTO
 	 */
 	// @Cacheable(value = {"inorsDefaultCache", "tascDefaultCache"}, key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey( #p0, #p1, #p2, #p3, #p4, #root.method.name )")
-	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
+	public List<OrgTO> getOrganizationChildren(String nodeId, String adminYear, String searchParam, String customerId, String orgMode, String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: getOrganizationChildren()");
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
 		logger.log(IAppLogger.INFO, "searchParam = " + searchParam);
@@ -1472,28 +1429,47 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "moreCount = " + moreCount);
 		String parentTenantId = "";
 		String orgId = "";
-		List<OrgTO> orgList = new ArrayList<OrgTO>();
-		List<Map<String, Object>> lstData = null;
-		if (nodeId.indexOf("_") > 0) {
-			orgId = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
-			logger.log(IAppLogger.INFO, "orgId=" + orgId);
-			parentTenantId = nodeId.substring(0, nodeId.indexOf("_"));			
-			logger.log(IAppLogger.INFO, "parentTenantId=" + parentTenantId);
-			if (searchParam != null && searchParam.trim().length() > 0) {
-				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear, moreCount);
-			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear, parentTenantId, moreCount);
+		
+		
+		ArrayList<OrgTO> orgTreeTOs = new ArrayList<OrgTO>();
+		OrgTO orgTO = null;
+		
+		if (nodeId.indexOf("0_1.0") != -1) {
+			Query searchOrgQuery = new Query(Criteria.where("_id").is(nodeId).and("Project_id").is(Utils.getProject()));
+			MOrgTO orgList = getMongoTemplatePrism().findOne(searchOrgQuery, MOrgTO.class);
+			if(orgList != null) {
+				orgTO = new OrgTO();
+				orgTO.setId(orgList.get_id());
+				orgTO.setOrgLevel(orgList.getLevel());
+				orgTO.setTenantId(orgList.get_id());
+				orgTO.setTenantName(orgList.getName());
+				orgTO.setNoOfChildOrgs(-99); // need to correct
+				orgTO.setParentTenantId(orgList.getParent_id());
+				orgTO.setSelectedOrgId(nodeId);
+				
+				orgTreeTOs.add(orgTO);		
 			}
-			orgList = getOrgList(lstData, adminYear);
 		} else {
-			parentTenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, adminYear, parentTenantId, orgMode, customerId,adminYear, parentTenantId, moreCount);
-			orgList = getOrgList(lstData, adminYear);
-			logger.log(IAppLogger.DEBUG, lstData.size() + "");
+			Query searchOrgQuery = new Query(Criteria.where("Parent_id").is(nodeId).and("Project_id").is(Utils.getProject()));
+			List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
+			if(orgList != null) {
+				for(MOrgTO org : orgList) {
+					orgTO = new OrgTO();
+					orgTO.setId(org.get_id());
+					orgTO.setOrgLevel(org.getLevel());
+					orgTO.setTenantId(org.get_id());
+					orgTO.setTenantName(org.getName());
+					orgTO.setNoOfChildOrgs(-99); // need to correct
+					orgTO.setParentTenantId(org.getParent_id());
+					orgTO.setSelectedOrgId(nodeId);
+					
+					orgTreeTOs.add(orgTO);
+				}
+			}
 		}
-		logger.log(IAppLogger.INFO, "Exit: getOrganizationChildren()");
-		return orgList;
+		
+		return orgTreeTOs;
+		
 	}
 
 	/**
@@ -1531,14 +1507,15 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	 * @return
 	 */
 
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
-		OrgTO orgTO = null;
-		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, customerId, orgMode, adminYear, tenantId, customerId, tenantId, adminYear, adminYear);
-		if (userCount != null && userCount.size() > 0) {
-			orgTO = new OrgTO();
-			orgTO.setNoOfUsers(((BigDecimal) userCount.get("USER_NO")).longValue());
-			orgTO.setAdminName((String) userCount.get("ADMIN_NAME"));
-		}
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
+		
+		Query searchUserQuery = new Query(Criteria.where("OrgUser").is(tenantId).and("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId));
+		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
+		
+		OrgTO orgTO = new OrgTO();
+		orgTO.setNoOfUsers(savedUser.size());
+		orgTO.setAdminName(adminYear);
+		
 		return orgTO;
 	}
 
@@ -1554,53 +1531,29 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public List<OrgTO> searchOrganization(Map<String, Object> paramMap) throws Exception{
 		
 		logger.log(IAppLogger.INFO, "Enter: searchOrganization()");
-		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
-		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
-		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
-		final long customerId = (Long)paramMap.get("customerId");
+		final String orgName = (String) paramMap.get("orgName");
+		final String tenantId = (String) paramMap.get("tenantId");
+		final String custProdId = (String) paramMap.get("custProdId");
+		final String customerId = (String) paramMap.get("customerId");
 		final String orgMode = (String)paramMap.get("orgMode");
 		
-		return (List<OrgTO>) getJdbcTemplatePrism().execute(
-				new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_SEARCH_ORGANNIZATION);
-						cs.setLong(1, customerId);
-						cs.setLong(2, custProdId);
-						cs.setString(3, orgName);
-						cs.setString(4, orgMode);
-						cs.setLong(5, tenantId);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						ResultSet rs = null;
-						List<OrgTO> orgList = new ArrayList<OrgTO>();
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(6);
-							Utils.logError(cs.getString(7));
-							if(cs.getString(7) != null && cs.getString(7).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
-							}
-							while (rs.next()) {
-								OrgTO orgTO = new OrgTO();
-								orgTO.setTenantId(rs.getLong("ORG_NODEID"));
-								orgTO.setTenantName(rs.getString("ORG_NODE_NAME"));
-								orgTO.setNoOfChildOrgs(rs.getLong("CHILD_ORG_NO"));
-								orgList.add(orgTO);
-							}
-							Utils.logError(cs.getString(7));
-						} catch (SQLException e) {
-							e.printStackTrace();
-						} catch (BusinessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return orgList;
-					}
-				});
+		Query searchOrgQuery = new Query(Criteria.where("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId).and("AdminCodes").in(custProdId).orOperator(
+				Criteria.where("_id").regex(orgName),
+				Criteria.where("Name").regex(orgName))
+				);
+		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
+		
+		List<OrgTO> orgRetList = new ArrayList<OrgTO>();
+		if(orgList != null) {
+			for(MOrgTO org : orgList) {
+				OrgTO orgTO = new OrgTO();
+				orgTO.setTenantId(org.get_id());
+				orgTO.setTenantName(org.getName());
+				orgTO.setNoOfChildOrgs(-99); // need to correct
+				orgRetList.add(orgTO);
+			}
+		}
+		return orgRetList;
 	}
 
 	/**
@@ -1614,52 +1567,27 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public String searchOrgAutoComplete(Map<String, Object> paramMap) throws Exception{
 		
 		logger.log(IAppLogger.INFO, "Enter: searchOrgAutoComplete()");
-		final String orgName = CustomStringUtil.appendString("%",(String)paramMap.get("orgName"), "%");
-		final long tenantId = Long.valueOf(paramMap.get("tenantId").toString());
-		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
-		final long customerId = (Long)paramMap.get("customerId");
+		final String orgName = (String) paramMap.get("orgName");
+		final String tenantId = (String) paramMap.get("tenantId");
+		final String custProdId = (String) paramMap.get("custProdId");
+		final String customerId = (String) paramMap.get("customerId");
 		final String orgMode = (String)paramMap.get("orgMode");
 		
-		return (String) getJdbcTemplatePrism().execute(
-				new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_SEARCH_ORG_AUTO_COMPLETE);
-						cs.setLong(1, customerId);
-						cs.setLong(2, custProdId);
-						cs.setString(3, orgName);
-						cs.setString(4, orgMode);
-						cs.setLong(5, tenantId);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						ResultSet rs = null;
-						String orgListJsonString = null;
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(6);
-							Utils.logError(cs.getString(7));
-							if(cs.getString(7) != null && cs.getString(7).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
-							}
-							orgListJsonString = "[";
-							while (rs.next()) {
-								String orgNameStr = rs.getString("ORG_NODE_NAME");
-								orgListJsonString = CustomStringUtil.appendString(orgListJsonString, "\"", orgNameStr, "\",");
-							}
-							orgListJsonString = CustomStringUtil.appendString(orgListJsonString.substring(0, orgListJsonString.length() - 1), "]");
-	
-						} catch (SQLException e) {
-							e.printStackTrace();
-						} catch (BusinessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return orgListJsonString;
-					}
-				});
+		Query searchOrgQuery = new Query(Criteria.where("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId).and("AdminCodes").in(custProdId).orOperator(
+				Criteria.where("_id").regex(orgName),
+				Criteria.where("Name").regex(orgName))
+				);
+		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
+		
+		String orgListJsonString = null;
+		if(orgList != null) {
+			orgListJsonString = "[";
+			for(MOrgTO org : orgList) {
+				orgListJsonString = CustomStringUtil.appendString(orgListJsonString, "\"", org.getName(), " (", org.get_id().substring(org.get_id().lastIndexOf("~")),")", "\",");
+			}
+			orgListJsonString = CustomStringUtil.appendString(orgListJsonString.substring(0, orgListJsonString.length() - 1), "]");
+		}
+		return orgListJsonString;
 	}
 
 	/**

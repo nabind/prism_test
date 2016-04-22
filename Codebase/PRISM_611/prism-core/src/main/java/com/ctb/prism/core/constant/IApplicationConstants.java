@@ -9,6 +9,9 @@ public interface IApplicationConstants {
 	public static enum CONTRACT_NAME {
 		inors,tasc,usmo
 	};
+	public static enum PROJECT_NAME {
+		TASC,MISSOURI
+	};
 
 	// different kind of users
 	public static enum USER_TYPE {

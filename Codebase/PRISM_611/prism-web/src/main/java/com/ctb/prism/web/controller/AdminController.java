@@ -109,7 +109,7 @@ public class AdminController {
 		String currentOrg =(String) request.getSession().getAttribute(IApplicationConstants.CURRORG);
 		String orgJsonString;
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+		//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -137,27 +137,19 @@ public class AdminController {
 				paramMap.put("currOrg", currentOrg);
 				paramMap.put("isFirstLoad", true);
 				paramMap.put("adminYear", adminYear);
-				paramMap.put("customerId", currCustomer);
+				paramMap.put("customerId", customer);
 				paramMap.put("orgMode", orgMode);
-				if(isTree){
-					OrgTreeTOs =adminService.getOrgTree(paramMap);
-					//organizationList= adminService.getOrganizationList(currentOrg,adminYear);
-					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
-					modelAndView.addObject("organizationList", organizationList);
-					modelAndView.addObject("treeSturcture", "Yes");
-					orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
-					modelAndView.addObject("orgName", OrgTreeTOs.get(0).getData());
-					modelAndView.addObject("rootOrgId", OrgTreeTOs.get(0).getMetadata().getParentTenantId());
-					modelAndView.addObject("rootOrgLevel", OrgTreeTOs.get(0).getMetadata().getOrgLevel());
-					logger.log(IAppLogger.DEBUG, "MANAGE ORGANIZATION TREE STRUCTURE ON LOAD...................");
-					logger.log(IAppLogger.DEBUG, orgJsonString);
-				}
-				else{
-						organizationList= adminService.getOrganizationList(currentOrg, adminYear, currCustomer);
-						modelAndView.addObject("organizationList", organizationList);
-						modelAndView.addObject("orgName", organizationList.get(0).getTenantName());	
-					
-				}
+				
+				OrgTreeTOs =adminService.getOrgTree(paramMap);
+				//organizationList= adminService.getOrganizationList(currentOrg,adminYear);
+				modelAndView.addObject("organizationTreeList", OrgTreeTOs);
+				modelAndView.addObject("organizationList", organizationList);
+				modelAndView.addObject("treeSturcture", "Yes");
+				//orgJsonString = JsonUtil.convertToJsonAdmin(OrgTreeTOs);
+				modelAndView.addObject("orgName", OrgTreeTOs.get(0).getData());
+				modelAndView.addObject("rootOrgId", OrgTreeTOs.get(0).getMetadata().getParentTenantId());
+				modelAndView.addObject("rootOrgLevel", OrgTreeTOs.get(0).getMetadata().getOrgLevel());
+				
 				modelAndView.addObject("adminList", customerProductList);
 			}
 					
@@ -192,7 +184,7 @@ public class AdminController {
 		if("Search".equals(searchParam)) searchParam = "";
 		
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+		//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		try {
 			if (nodeid != null)	{
 				String adminYear = (String) request.getParameter("AdminYear");
@@ -205,7 +197,7 @@ public class AdminController {
 					}
 				else{*/
 				String moreCount = propertyLookup.get("count.results.button.more");
-					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode,moreCount);
+					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, customer,orgMode,moreCount);
 					if ( children != null )	{
 						jsonString = JsonUtil.convertToJsonAdmin(children);
 					}
@@ -239,11 +231,11 @@ public class AdminController {
 		String tenantId = request.getParameter("tenantId");
 		String adminYear = request.getParameter("adminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
+		//long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		try {
 			if (tenantId != null && adminYear != null) {
-				orguser = adminService.getTotalUserCount(tenantId, adminYear, currCustomer, orgMode);
+				orguser = adminService.getTotalUserCount(tenantId, adminYear, customer, orgMode);
 				if (orguser != null) {
 					orgUserCount.add(orguser);
 					jsonString = JsonUtil.convertToJsonAdmin(orgUserCount);
@@ -275,7 +267,7 @@ public class AdminController {
 		try {
 			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+			//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -286,7 +278,7 @@ public class AdminController {
 				paramMap.put("orgName", req.getParameter("searchString"));
 				paramMap.put("tenantId",selectedOrg);
 				paramMap.put("custProdId",custProdId);
-				paramMap.put("customerId",currCustomer);
+				paramMap.put("customerId",customer);
 				paramMap.put("orgMode",orgMode);
 				
 				orgs = adminService.searchOrganization(paramMap);
@@ -325,7 +317,7 @@ public class AdminController {
 		try {
 			String custProdId = (String) req.getParameter("AdminYear");
 			String customer = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+			//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 			String orgMode = (String) req.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 			String selectedOrg = (String) req.getParameter("selectedOrg");
 			String orgs = null;
@@ -335,7 +327,7 @@ public class AdminController {
 				paramMap.put("orgName", req.getParameter("term"));
 				paramMap.put("tenantId",selectedOrg);
 				paramMap.put("custProdId",custProdId);
-				paramMap.put("customerId",currCustomer);
+				paramMap.put("customerId",customer);
 				paramMap.put("orgMode",orgMode);
 				orgs = adminService.searchOrgAutoComplete(paramMap);
 			} else {

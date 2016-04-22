@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.HtmlUtils;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
+import com.ctb.prism.core.constant.IApplicationConstants.PROJECT_NAME;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IApplicationConstants.USER_TYPE;
 import com.ctb.prism.core.logger.IAppLogger;
@@ -70,6 +71,25 @@ public final class Utils {
 		String contractName = getContractName();
 		if(contractName != null && contractName.length() > 0) return contractName;
 		else return getContractNameNoLogin(themeName);
+	}
+	
+	/**
+	 * Get project name
+	 * @param themeName
+	 * @return
+	 */
+	public static String getProject() {
+		return getProject(getContractName());
+	}
+	public static String getProject(String contractName) {
+		if(contractName != null && contractName.length() == 0) contractName = getContractName();
+		if(IApplicationConstants.CONTRACT_NAME.tasc.toString().equals(contractName)) {
+			return PROJECT_NAME.TASC.toString();
+		}
+		else if(IApplicationConstants.CONTRACT_NAME.usmo.toString().equals(contractName)) {
+			return PROJECT_NAME.MISSOURI.toString();
+		}
+		else return "";
 	}
 
 	/**

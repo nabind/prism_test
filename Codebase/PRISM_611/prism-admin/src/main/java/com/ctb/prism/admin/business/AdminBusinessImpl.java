@@ -156,7 +156,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationChildren(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, String customerId, String orgMode, String moreCount) {
 		return adminDAO.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
 	}
 
@@ -174,7 +174,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getTotalUserCount(java.lang.String, java.lang.String, long, String orgMode)
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
 		return adminDAO.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 	}
 

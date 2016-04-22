@@ -7,6 +7,8 @@ public class FlatCustProdAdmin extends BaseTO
     private String _id;
 	
     private FlatCustomers Customers;
+    
+    private ProjectProp ProjectProp;
 
     private String ProjectName;
 
@@ -17,7 +19,15 @@ public class FlatCustProdAdmin extends BaseTO
         return Customers;
     }
 
-    public void setCustomers (FlatCustomers Customers)
+    public ProjectProp getProjectProp() {
+		return ProjectProp;
+	}
+
+	public void setProjectProp(ProjectProp projectProp) {
+		ProjectProp = projectProp;
+	}
+
+	public void setCustomers (FlatCustomers Customers)
     {
         this.Customers = Customers;
     }

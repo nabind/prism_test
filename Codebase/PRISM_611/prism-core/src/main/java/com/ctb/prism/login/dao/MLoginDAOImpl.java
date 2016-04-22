@@ -2,8 +2,8 @@ package com.ctb.prism.login.dao;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -32,7 +32,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoFactoryBean;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -54,17 +53,16 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.login.transferobject.Admins;
 import com.ctb.prism.login.transferobject.CustProdAdmin;
-import com.ctb.prism.login.transferobject.Customers;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
-import com.ctb.prism.login.transferobject.MIcClaims;
-import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MReportTO;
 import com.ctb.prism.login.transferobject.MResultTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.OrgUser;
+import com.ctb.prism.login.transferobject.ProjectProp;
+import com.ctb.prism.login.transferobject.PwdHistory;
+import com.ctb.prism.login.transferobject.SSOProperties;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
@@ -1220,37 +1218,18 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 	} )
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		String contractName = (String) paramMap.get("contractName");
-		if(contractName == null) {
-			contractName = Utils.getContractName();
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(Utils.getProject(contractName)));
+		CustProdAdmin custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, CustProdAdmin.class);
+		
+		// get all products
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
+		if(custProdAdmin != null) {
+			ProjectProp projectProp = custProdAdmin.getProjectProp();
+			propertyMap = projectProp.getProperties();
 		}
-		logger.log(IAppLogger.INFO, "getContractProerty for contract= " + contractName);
-		return (Map<String, Object>) getJdbcTemplatePrism(contractName).execute(
-			new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
-					cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					Map<String, Object> propertyMap = new HashMap<String, Object>();
-					ResultSet rs = null;
-					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(1);
-						while (rs.next()) {
-							propertyMap.put(rs.getString("PROPERY_NAME"), rs.getString("PROPERY_VALUE"));
-						}
-						Utils.logError(cs.getString(2));
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					logger.log(IAppLogger.INFO, "getContractProerty().propertyMap size =" + propertyMap.size());
-					return propertyMap;
-				}
-			}
-		);
+		
+		return propertyMap;
 	}
 	
 	/**
@@ -1258,55 +1237,31 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<String> getPasswordHistory(Map<String, Object> paramMap) {		
 		
-		final String username = (String)paramMap.get("userName");
-		
+		String username = (String)paramMap.get("userName");
 		String contractName = (String) paramMap.get("contractName");
 		if(contractName == null) {
 			contractName = Utils.getContractName();
 		}
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(Utils.getProject(contractName)));
+		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		
 		paramMap.remove("userName"); //This is required so that cache will get data based on single parameter (contract) only  
 		Map<String, Object> propertyMap = getContractProerty(paramMap);
 		final int pwdHistoryDay =
 			propertyMap.get("password.history.day")!= null ? Integer.parseInt((String)propertyMap.get("password.history.day")): 0;
 		
-		return (List<String>) getJdbcTemplatePrism(contractName).execute(
-				new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PASSWORD_HISTORY);
-						cs.setString(1, username);
-						cs.setInt(2 ,pwdHistoryDay);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						List<String> pwsString = new LinkedList<String>();
-						int count = 0;
-						ResultSet rs = null;
-						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(3);
-							while (rs.next()) {
-								count++;
-								if(count == 1) {
-									pwsString.add(rs.getString("SALT"));
-								}
-								pwsString.add(rs.getString("PASSWORD"));
-							}
-							Utils.logError(cs.getString(4));
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						logger.log(IAppLogger.INFO, "getPasswordHistory().pwsString size =" + pwsString.size());
-						return pwsString;
-					}
-				}
-			);
+		List<String> pwsString = new LinkedList<String>();
+		if(savedUser != null) {
+			pwsString.add(savedUser.getPassword());
+			PwdHistory[] hist = savedUser.getPwdHistory();
+			for(int i=0; i< pwdHistoryDay; i++) {
+				pwsString.add(hist[i].getPwd());
+			}
+		}
+		return pwsString;	
 	}
 	
 
@@ -1314,33 +1269,18 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public UserTO getUserEmail(Map<String,Object> paramUserMap) {
 		final String userName = (String)paramUserMap.get("username"); 
 		String contractName  = (String)paramUserMap.get("contractName"); 
-		return (UserTO) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
-				cs.setString(1, userName);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-				return cs;
-			}
-		}, new CallableStatementCallback<Object>() {
-			public Object doInCallableStatement(CallableStatement cs) {
-				ResultSet rs = null;
-				com.ctb.prism.login.transferobject.UserTO userDetails = new com.ctb.prism.login.transferobject.UserTO();
-				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
-					if (rs.next()) {
-						userDetails.setUserEmail(rs.getString("EMAIL"));
-						userDetails.setSalt(rs.getString("SALT"));
-					}
-					Utils.logError(cs.getString(3));
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				logger.log(IAppLogger.INFO, "getUserEmail().email = " + userDetails.getUserEmail());
-				return userDetails;
-			}
-		});
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(Utils.getProject(contractName)));
+		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+		
+		UserTO userDetails = new UserTO();
+		if( savedUser != null ) {
+			userDetails.setUserId(savedUser.get_id());
+			userDetails.setUserEmail(savedUser.getEmail());
+			userDetails.setSalt(savedUser.getSalt());
+		}
+		
+		return userDetails;
 	}
 	
 	public boolean checkOrgHierarchy(Map<String, Object> paramMap){
