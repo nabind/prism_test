@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.transferobject.BaseTO;
 
-public class UserTO extends BaseTO{
+public class UserTO extends BaseTO {
 
 	private String userName;
 	private String firstName;

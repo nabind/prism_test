@@ -1,8 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-import com.ctb.prism.core.transferobject.BaseTO;
+import java.io.Serializable;
 
-public class PwdHistory extends BaseTO 
+public class PwdHistory implements Serializable 
 {
     private String Date;
 

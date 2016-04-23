@@ -1,14 +1,13 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.ctb.prism.core.transferobject.BaseTO;
-
 @Document(collection="reports")
-public class MReportTO extends BaseTO {
+public class MReportTO implements Serializable {
 	
 	@Id
 	private String _id;

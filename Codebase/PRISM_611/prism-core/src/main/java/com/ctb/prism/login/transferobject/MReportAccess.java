@@ -1,10 +1,11 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.Document;
-import com.ctb.prism.core.transferobject.BaseTO;
 
 @Document
-public class MReportAccess extends BaseTO{
+public class MReportAccess implements Serializable {
 	private String roleid;
 	private String org_level;
 	private String custProdId;

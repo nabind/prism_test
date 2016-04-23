@@ -1,8 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-import com.ctb.prism.core.transferobject.BaseTO;
+import java.io.Serializable;
 
-public class Address extends BaseTO 
+public class Address implements Serializable
 {
     private String Street;
 

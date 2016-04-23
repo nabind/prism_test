@@ -1,11 +1,11 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.ctb.prism.core.transferobject.BaseTO;
-
 @Document
-public class MOrgNodeCategory extends BaseTO {
+public class MOrgNodeCategory implements Serializable {
 	
 	private String orgCategory;
 	private String orgNodeLevel;

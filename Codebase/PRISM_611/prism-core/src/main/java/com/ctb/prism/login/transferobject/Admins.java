@@ -1,8 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-import com.ctb.prism.core.transferobject.BaseTO;
+import java.io.Serializable;
 
-public class Admins extends BaseTO 
+public class Admins implements Serializable
 {
     private String Name;
 

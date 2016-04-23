@@ -1,9 +1,11 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class MIcClaims {
+public class MIcClaims implements Serializable {
 	private String Student_id;
 	private String ClaimDate;
 	private String IsActive;

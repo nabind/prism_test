@@ -1,17 +1,14 @@
 package com.ctb.prism.login.transferobject;
 
-import java.sql.Timestamp;
-import java.util.List;
+import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
-import com.ctb.prism.core.transferobject.BaseTO;
 
 @Document(collection = "User")
-public class MUserTO extends BaseTO
+public class MUserTO implements Serializable
 {
 	@Id
     private String _id;

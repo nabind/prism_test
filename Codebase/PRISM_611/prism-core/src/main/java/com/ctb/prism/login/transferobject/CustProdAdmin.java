@@ -1,12 +1,12 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.ctb.prism.core.transferobject.BaseTO;
-
 @Document(collection = "CustProdAdmin_Info")
-public class CustProdAdmin extends BaseTO
+public class CustProdAdmin implements Serializable
 {
 	@Id
     private String _id;

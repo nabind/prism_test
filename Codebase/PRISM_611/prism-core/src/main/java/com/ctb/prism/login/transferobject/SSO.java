@@ -1,6 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-public class SSO
+import java.io.Serializable;
+
+public class SSO implements Serializable
 {
     private SSOProperties ERESOURCE;
 

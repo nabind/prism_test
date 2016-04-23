@@ -1,10 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.io.Serializable;
 
-import com.ctb.prism.core.transferobject.BaseTO;
-
-public class FlatCustomers extends BaseTO 
+public class FlatCustomers implements Serializable
 {
     private String Name;
 

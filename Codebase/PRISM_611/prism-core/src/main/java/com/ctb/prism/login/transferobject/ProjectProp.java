@@ -1,9 +1,10 @@
 package com.ctb.prism.login.transferobject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectProp
+public class ProjectProp implements Serializable
 {
     private String StaticPdfLocation;
 

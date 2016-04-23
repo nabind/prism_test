@@ -1,8 +1,8 @@
 package com.ctb.prism.login.transferobject;
 
-import com.ctb.prism.core.transferobject.BaseTO;
+import java.io.Serializable;
 
-public class FlatCustProdAdmin extends BaseTO
+public class FlatCustProdAdmin implements Serializable
 {
     private String _id;
 	
