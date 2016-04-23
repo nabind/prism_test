@@ -739,7 +739,7 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 				unwind("reportAccess"),
 				match(Criteria.where("reportAccess.role").in(rolesArr) //Hard coded for the time
 						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
-									 Criteria.where("reportType").regex("API_"),
+									// Criteria.where("reportType").regex("API_"),
 									 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
 			);
 		
@@ -752,12 +752,21 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		System.out.println("    >> User from MongoDB : "
 				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getReportFolderURI());
 		
-		AssessmentTO assessmentTO = new AssessmentTO();
+		AssessmentTO assessmentTO = null;
+		long oldAssessmentId = -1;
+		
 		assessments = new ArrayList<AssessmentTO>();
 		for(int i=0; i < reportDetails.size(); i++) {
 			//assessmentTO = new AssessmentTO();
-			assessmentTO.setAssessmentId(1000); //Hard coded for the time
-			assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
+			long assessmentId = Long.valueOf(reportDetails.get(i).getMenuSequence());
+			if (oldAssessmentId != assessmentId) {
+				oldAssessmentId = assessmentId;
+				assessmentTO = new AssessmentTO();
+				assessmentTO.setAssessmentId(assessmentId); 
+				assessmentTO.setAssessmentName(reportDetails.get(i).getMenu());
+				assessments.add(assessmentTO);
+			}
+			
 							
 			ReportTO reportTO = new ReportTO();
 			reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
@@ -769,7 +778,7 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 					? reportDetails.get(i).getReportAccess().getOrg_level() : "");
 			assessmentTO.addReport(reportTO);
 		}
-		assessments.add(assessmentTO);
+		//assessments.add(assessmentTO);
 			
 		logger.log(IAppLogger.INFO, "Exit: getAssessments()");
 		return assessments;
