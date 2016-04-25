@@ -56,6 +56,7 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
+import com.ctb.prism.login.transferobject.MFlatUserTO;
 import com.ctb.prism.login.transferobject.MReportsTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
@@ -1294,42 +1295,32 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String prevOrgId = (String)paramMap.get("prevOrgId");
 		String contractName = (String)paramMap.get("contractName"); 
 		if(contractName == null) contractName = Utils.getContractName();
-		BigDecimal existFlag;
+		long existFlag;
 		boolean returnFlag = Boolean.FALSE;
-		try{
-			existFlag = (BigDecimal)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_ORG_HIERARCHY);
-					cs.setString(1, userName);
-					cs.setLong(2, Long.parseLong(custProdId));
-					cs.setLong(3, Long.parseLong(prevOrgId));
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					BigDecimal existFlag = null;
-					try {
-						cs.execute();
-						existFlag = (BigDecimal)cs.getObject(4);
-						Utils.logError(cs.getString(5));
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					return existFlag;
-				}
-			});
+		Object orgArray[] = new Object[1];
+		orgArray[0] = "0";
+		
+		Aggregation agg = newAggregation(
+				match(Criteria.where("Project_id").is(contractName.toUpperCase())
+						.andOperator(Criteria.where("_id").is(userName),Criteria.where("OrgCategory.Level").nin(orgArray))),
+				unwind("OrgUser"),
+				match(Criteria.where("OrgUser.Org_id").regex("/^0~TASCCA/i")));
+		
+		//Convert the aggregation result into a List
+		AggregationResults<MFlatUserTO> groupResults 
+				= getMongoTemplatePrism(contractName)
+				.aggregate(agg, MUserTO.class, MFlatUserTO.class);
+		
+		List<MFlatUserTO> usersDetails = groupResults.getMappedResults();
+		System.out.println("    >> User from MongoDB : "
+				+ usersDetails.get(0).get_id() );
+
+		existFlag = usersDetails.size();
 			
-			if(existFlag.intValue() > 0 ){
+			if(existFlag > 0 ){
 				returnFlag = Boolean.TRUE;
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - checkOrgHierarchy() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
+		
 		return returnFlag;
 	}
 	
