@@ -772,7 +772,20 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			reportTO.setReportId(Long.valueOf(reportDetails.get(i).get_id()));
 			reportTO.setReportName(reportDetails.get(i).getReportName());
 			reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
-			reportTO.setAllRoles(reportDetails.get(i).getReportAccess().getRole());//Hard coded for the time
+			
+			String strRoles =reportDetails.get(i).getReportAccess().getRole();
+			reportTO.setAllRoles(strRoles);
+			
+			if (strRoles != null && strRoles.length() > 0) {
+				String[] strRolesArr = strRoles.split(",");
+				for (String role : strRolesArr) {
+					ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
+					if (user_TYPE != null) {
+						reportTO.addRole(user_TYPE);
+					}
+				}
+			}
+			
 			reportTO.setReportType(reportDetails.get(i).getReportType());
 			reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
 					? reportDetails.get(i).getReportAccess().getOrg_level() : "");
