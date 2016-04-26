@@ -4,27 +4,29 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 public class ProjectProp implements Serializable
 {
-    private String StaticPdfLocation;
+    private String staticPdfLocation;
 
-    private String PasswordHistoryDay;
+    private String passwordHistoryDay;
 
-    private String OrglvlUserNotAdded;
+    private String orglvlUserNotAdded;
 
-    private String PasswordExpiryWarning;
+    private String passwordExpiryWarning;
 
-    private String RoleNotAdded;
+    private String[] roleNotAdded;
 
-    private String OrglvlAdminNotAdded;
+    private String orglvlAdminNotAdded;
 
-    private String TitleTabHomeApplication;
+    private String titleTabHomeApplication;
 
-    private String PasswordExpiry;
+    private String passwordExpiry;
 
-    private String TitleTabApplication;
+    private String titleTabApplication;
     
-    private SSO SSO;
+    private SSO sso;
     
     public Map<String, Object> getProperties() {
     	Map<String, Object> propertyMap = new HashMap<String, Object>();
@@ -33,138 +35,114 @@ public class ProjectProp implements Serializable
 		propertyMap.put("password.history.day", getPasswordHistoryDay());
 		propertyMap.put("orglvl.user.not.added", getOrglvlUserNotAdded());
 		propertyMap.put("password.expiry.warning", getPasswordExpiryWarning());
-		propertyMap.put("role.not.added", getRoleNotAdded());
+		propertyMap.put("role.not.added", StringUtils.join(getRoleNotAdded(), ','));
 		propertyMap.put("orglvl.admin.not.added", getOrglvlAdminNotAdded());
 		propertyMap.put("title.tab.home.application", getTitleTabHomeApplication());
 		propertyMap.put("password.expiry", getPasswordExpiry());
 		propertyMap.put("title.tab.application", getTitleTabApplication());
 		
 		//OAS SSO
-		SSOProperties ssoPropOAS = getSSO().getOAS();
+		SSOProperties ssoPropOAS = getSso().getOas();
 		if(ssoPropOAS != null) {
-			propertyMap.put("sso.redirect.loginfail~"+ssoPropOAS.getSSOSource(), ssoPropOAS.getSsoRedirectLoginfail());
-			propertyMap.put("sso.redirect.logout~"+ssoPropOAS.getSSOSource(), ssoPropOAS.getSsoRedirectLogout());
-			propertyMap.put("hmac.secret.key~"+ssoPropOAS.getSSOSource(), ssoPropOAS.getHmacSecretKey());
+			propertyMap.put("sso.redirect.loginfail~"+ssoPropOAS.getSsoSource(), ssoPropOAS.getSsoRedirectLoginfail());
+			propertyMap.put("sso.redirect.logout~"+ssoPropOAS.getSsoSource(), ssoPropOAS.getSsoRedirectLogout());
+			propertyMap.put("hmac.secret.key~"+ssoPropOAS.getSsoSource(), ssoPropOAS.getHmacSecretKey());
 		}
 		//ER Web service
-		SSOProperties ssoPropER = getSSO().getERESOURCE();
+		SSOProperties ssoPropER = getSso().getEresource();
 		if(ssoPropER != null) {
-			propertyMap.put("hmac.secret.key~"+ssoPropER.getSSOSource(), ssoPropER.getHmacSecretKey());
+			propertyMap.put("hmac.secret.key~"+ssoPropER.getSsoSource(), ssoPropER.getHmacSecretKey());
 		}
 		//DRC SSO
-		SSOProperties ssoPropDRC = getSSO().getDRC();
+		SSOProperties ssoPropDRC = getSso().getDrc();
 		if(ssoPropDRC != null) {
-			propertyMap.put("sso.redirect.loginfail~"+ssoPropDRC.getSSOSource(), ssoPropDRC.getSsoRedirectLoginfail());
-			propertyMap.put("sso.redirect.logout~"+ssoPropDRC.getSSOSource(), ssoPropDRC.getSsoRedirectLogout());
-			propertyMap.put("hmac.secret.key~"+ssoPropDRC.getSSOSource(), ssoPropDRC.getHmacSecretKey());
+			propertyMap.put("sso.redirect.loginfail~"+ssoPropDRC.getSsoSource(), ssoPropDRC.getSsoRedirectLoginfail());
+			propertyMap.put("sso.redirect.logout~"+ssoPropDRC.getSsoSource(), ssoPropDRC.getSsoRedirectLogout());
+			propertyMap.put("hmac.secret.key~"+ssoPropDRC.getSsoSource(), ssoPropDRC.getHmacSecretKey());
 		}
 		
 		return propertyMap;
     }
+
+	public String getStaticPdfLocation() {
+		return staticPdfLocation;
+	}
+
+	public void setStaticPdfLocation(String staticPdfLocation) {
+		this.staticPdfLocation = staticPdfLocation;
+	}
+
+	public String getPasswordHistoryDay() {
+		return passwordHistoryDay;
+	}
+
+	public void setPasswordHistoryDay(String passwordHistoryDay) {
+		this.passwordHistoryDay = passwordHistoryDay;
+	}
+
+	public String getOrglvlUserNotAdded() {
+		return orglvlUserNotAdded;
+	}
+
+	public void setOrglvlUserNotAdded(String orglvlUserNotAdded) {
+		this.orglvlUserNotAdded = orglvlUserNotAdded;
+	}
+
+	public String getPasswordExpiryWarning() {
+		return passwordExpiryWarning;
+	}
+
+	public void setPasswordExpiryWarning(String passwordExpiryWarning) {
+		this.passwordExpiryWarning = passwordExpiryWarning;
+	}
+
+	public String[] getRoleNotAdded() {
+		return roleNotAdded;
+	}
+
+	public void setRoleNotAdded(String[] roleNotAdded) {
+		this.roleNotAdded = roleNotAdded;
+	}
+
+	public String getOrglvlAdminNotAdded() {
+		return orglvlAdminNotAdded;
+	}
+
+	public void setOrglvlAdminNotAdded(String orglvlAdminNotAdded) {
+		this.orglvlAdminNotAdded = orglvlAdminNotAdded;
+	}
+
+	public String getTitleTabHomeApplication() {
+		return titleTabHomeApplication;
+	}
+
+	public void setTitleTabHomeApplication(String titleTabHomeApplication) {
+		this.titleTabHomeApplication = titleTabHomeApplication;
+	}
+
+	public String getPasswordExpiry() {
+		return passwordExpiry;
+	}
+
+	public void setPasswordExpiry(String passwordExpiry) {
+		this.passwordExpiry = passwordExpiry;
+	}
+
+	public String getTitleTabApplication() {
+		return titleTabApplication;
+	}
+
+	public void setTitleTabApplication(String titleTabApplication) {
+		this.titleTabApplication = titleTabApplication;
+	}
+
+	public SSO getSso() {
+		return sso;
+	}
+
+	public void setSso(SSO sso) {
+		this.sso = sso;
+	}
     
-    public String getStaticPdfLocation ()
-    {
-        return StaticPdfLocation;
-    }
-
-    public void setStaticPdfLocation (String StaticPdfLocation)
-    {
-        this.StaticPdfLocation = StaticPdfLocation;
-    }
-
-    public String getPasswordHistoryDay ()
-    {
-        return PasswordHistoryDay;
-    }
-
-    public void setPasswordHistoryDay (String PasswordHistoryDay)
-    {
-        this.PasswordHistoryDay = PasswordHistoryDay;
-    }
-
-    public String getOrglvlUserNotAdded ()
-    {
-        return OrglvlUserNotAdded;
-    }
-
-    public void setOrglvlUserNotAdded (String OrglvlUserNotAdded)
-    {
-        this.OrglvlUserNotAdded = OrglvlUserNotAdded;
-    }
-
-    public String getPasswordExpiryWarning ()
-    {
-        return PasswordExpiryWarning;
-    }
-
-    public void setPasswordExpiryWarning (String PasswordExpiryWarning)
-    {
-        this.PasswordExpiryWarning = PasswordExpiryWarning;
-    }
-
-    public SSO getSSO ()
-    {
-        return SSO;
-    }
-
-    public void setSSO (SSO SSO)
-    {
-        this.SSO = SSO;
-    }
-
-    public String getRoleNotAdded ()
-    {
-        return RoleNotAdded;
-    }
-
-    public void setRoleNotAdded (String RoleNotAdded)
-    {
-        this.RoleNotAdded = RoleNotAdded;
-    }
-
-    public String getOrglvlAdminNotAdded ()
-    {
-        return OrglvlAdminNotAdded;
-    }
-
-    public void setOrglvlAdminNotAdded (String OrglvlAdminNotAdded)
-    {
-        this.OrglvlAdminNotAdded = OrglvlAdminNotAdded;
-    }
-
-    public String getTitleTabHomeApplication ()
-    {
-        return TitleTabHomeApplication;
-    }
-
-    public void setTitleTabHomeApplication (String TitleTabHomeApplication)
-    {
-        this.TitleTabHomeApplication = TitleTabHomeApplication;
-    }
-
-    public String getPasswordExpiry ()
-    {
-        return PasswordExpiry;
-    }
-
-    public void setPasswordExpiry (String PasswordExpiry)
-    {
-        this.PasswordExpiry = PasswordExpiry;
-    }
-
-    public String getTitleTabApplication ()
-    {
-        return TitleTabApplication;
-    }
-
-    public void setTitleTabApplication (String TitleTabApplication)
-    {
-        this.TitleTabApplication = TitleTabApplication;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [StaticPdfLocation = "+StaticPdfLocation+", PasswordHistoryDay = "+PasswordHistoryDay+", OrglvlUserNotAdded = "+OrglvlUserNotAdded+", PasswordExpiryWarning = "+PasswordExpiryWarning+", SSO = "+SSO+", RoleNotAdded = "+RoleNotAdded+", OrglvlAdminNotAdded = "+OrglvlAdminNotAdded+", TitleTabHomeApplication = "+TitleTabHomeApplication+", PasswordExpiry = "+PasswordExpiry+", TitleTabApplication = "+TitleTabApplication+"]";
-    }
+   
 }

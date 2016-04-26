@@ -4,57 +4,45 @@ import java.io.Serializable;
 
 public class Products implements Serializable
 {
-    private String Name;
+    private String name;
 
-    private String Seq;
+    private String seq;
 
-    private String FileLoc;
+    private String fileLoc;
 
-    private String Code;
+    private String code;
 
-    public String getName ()
-    {
-        return Name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName (String Name)
-    {
-        this.Name = Name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getSeq ()
-    {
-        return Seq;
-    }
+	public String getSeq() {
+		return seq;
+	}
 
-    public void setSeq (String Seq)
-    {
-        this.Seq = Seq;
-    }
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
 
-    public String getFileLoc ()
-    {
-        return FileLoc;
-    }
+	public String getFileLoc() {
+		return fileLoc;
+	}
 
-    public void setFileLoc (String FileLoc)
-    {
-        this.FileLoc = FileLoc;
-    }
+	public void setFileLoc(String fileLoc) {
+		this.fileLoc = fileLoc;
+	}
 
-    public String getCode ()
-    {
-        return Code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode (String Code)
-    {
-        this.Code = Code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Name = "+Name+", Seq = "+Seq+", FileLoc = "+FileLoc+", Code = "+Code+"]";
-    }
+    
 }

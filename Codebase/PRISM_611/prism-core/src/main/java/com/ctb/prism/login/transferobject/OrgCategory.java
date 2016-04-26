@@ -4,33 +4,33 @@ import java.io.Serializable;
 
 public class OrgCategory implements Serializable
 {
-    private String Category;
+    private String category;
 
-    private String Level;
+    private String level;
 
     public String getCategory ()
     {
-        return Category;
+        return category;
     }
 
     public void setCategory (String Category)
     {
-        this.Category = Category;
+        this.category = Category;
     }
 
     public String getLevel ()
     {
-        return Level;
+        return level;
     }
 
     public void setLevel (String Level)
     {
-        this.Level = Level;
+        this.level = Level;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [Category = "+Category+", Level = "+Level+"]";
+        return "ClassPojo [Category = "+category+", Level = "+level+"]";
     }
 }

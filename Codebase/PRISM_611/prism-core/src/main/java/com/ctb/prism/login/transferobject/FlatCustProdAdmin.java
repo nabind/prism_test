@@ -6,65 +6,73 @@ public class FlatCustProdAdmin implements Serializable
 {
     private String _id;
 	
-    private FlatCustomers Customers;
+    private FlatCustomers customers;
     
-    private ProjectProp ProjectProp;
+    private ProjectProp projectProp;
 
-    private String ProjectName;
+    private String projectName;
 
-    private String CreatedDate;
+    private String createdDate;
+    
+    private HintQuestions[] hintQuestions;
 
-    public FlatCustomers getCustomers ()
-    {
-        return Customers;
-    }
+    private Roles[] roles;
 
-    public ProjectProp getProjectProp() {
-		return ProjectProp;
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public FlatCustomers getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(FlatCustomers customers) {
+		this.customers = customers;
+	}
+
+	public ProjectProp getProjectProp() {
+		return projectProp;
 	}
 
 	public void setProjectProp(ProjectProp projectProp) {
-		ProjectProp = projectProp;
+		this.projectProp = projectProp;
 	}
 
-	public void setCustomers (FlatCustomers Customers)
-    {
-        this.Customers = Customers;
-    }
+	public String getProjectName() {
+		return projectName;
+	}
 
-    public String getProjectName ()
-    {
-        return ProjectName;
-    }
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
-    public void setProjectName (String ProjectName)
-    {
-        this.ProjectName = ProjectName;
-    }
+	public String getCreatedDate() {
+		return createdDate;
+	}
 
-    public String get_id ()
-    {
-        return _id;
-    }
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
 
-    public void set_id (String _id)
-    {
-        this._id = _id;
-    }
+	public HintQuestions[] getHintQuestions() {
+		return hintQuestions;
+	}
 
-    public String getCreatedDate ()
-    {
-        return CreatedDate;
-    }
+	public void setHintQuestions(HintQuestions[] hintQuestions) {
+		this.hintQuestions = hintQuestions;
+	}
 
-    public void setCreatedDate (String CreatedDate)
-    {
-        this.CreatedDate = CreatedDate;
-    }
+	public Roles[] getRoles() {
+		return roles;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Customers = "+Customers+", ProjectName = "+ProjectName+", _id = "+_id+", CreatedDate = "+CreatedDate+"]";
-    }
+	public void setRoles(Roles[] roles) {
+		this.roles = roles;
+	}
+
+    
 }

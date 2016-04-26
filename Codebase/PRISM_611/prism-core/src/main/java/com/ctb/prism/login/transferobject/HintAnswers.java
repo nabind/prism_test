@@ -5,33 +5,33 @@ import java.io.Serializable;
 
 public class HintAnswers implements Serializable
 {
-    private String AnsValue;
+    private String ansValue;
 
-    private String QID;
+    private String qid;
 
     public String getAnsValue ()
     {
-        return AnsValue;
+        return ansValue;
     }
 
     public void setAnsValue (String AnsValue)
     {
-        this.AnsValue = AnsValue;
+        this.ansValue = AnsValue;
     }
 
     public String getQID ()
     {
-        return QID;
+        return qid;
     }
 
     public void setQID (String QID)
     {
-        this.QID = QID;
+        this.qid = QID;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [AnsValue = "+AnsValue+", QID = "+QID+"]";
+        return "ClassPojo [AnsValue = "+ansValue+", QID = "+qid+"]";
     }
 }

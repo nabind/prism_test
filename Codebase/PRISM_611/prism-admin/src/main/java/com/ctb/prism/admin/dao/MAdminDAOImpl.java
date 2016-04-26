@@ -60,6 +60,7 @@ import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.OrgCategory;
 import com.ctb.prism.login.transferobject.OrgUser;
+import com.ctb.prism.login.transferobject.Roles;
 
 @Repository("adminDAO")
 @SuppressWarnings("unchecked")
@@ -212,12 +213,13 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
 		final String currOrg = (String) paramMap.get("currOrg");
 		final String nodeId = (String) paramMap.get("nodeid");
+		String adminYear = (String) paramMap.get("adminYear");
 		
 		ArrayList<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
 		OrgTO orgTO = null;
 		OrgTreeTO treeTO = null;
 		
-		if (isFirstLoad || nodeId.indexOf("0_1.0") != -1) {
+		if (isFirstLoad || nodeId.indexOf(".0") != -1 || nodeId.indexOf("0_1") != -1) {
 			Query searchOrgQuery = new Query(Criteria.where("_id").is(currOrg));
 			MOrgTO orgList = getMongoTemplatePrism().findOne(searchOrgQuery, MOrgTO.class);
 			if(orgList != null) {
@@ -234,7 +236,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				orgTreeTOs.add(treeTO);		
 			}
 		} else {
-			Query searchOrgQuery = new Query(Criteria.where("Parent_id").is(nodeId));
+			Query searchOrgQuery = new Query(Criteria.where("parent_id").is(nodeId).and("adminCodes").in(adminYear));
 			List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 			if(orgList != null) {
 				for(MOrgTO org : orgList) {
@@ -520,11 +522,11 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		
 		final String nodeId = paramMap.get("nodeid").toString();
 		final boolean isFirstLoad = (Boolean) paramMap.get("isFirstLoad");
-		final String custProdId =  paramMap.get("adminYear").toString();
+		final String adminYear =  paramMap.get("adminYear").toString();
 		final String customerId = paramMap.get("customerId").toString();
 		final String orgMode = (String) paramMap.get("orgMode");
 
-		Query searchOrgQuery = new Query(Criteria.where("_id").regex("^"+nodeId).and("Project_id").is(Utils.getProject()));
+		Query searchOrgQuery = new Query(Criteria.where("_id").regex("^"+nodeId).and("project_id").is(Utils.getProject()).and("adminCodes").in(adminYear));
 		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 		
 		ArrayList<OrgTreeTO> orgTreeTOs = new ArrayList<OrgTreeTO>();
@@ -582,34 +584,13 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		
 		Query searchUserQuery = null;
 		if (nodeId.indexOf("0_1.0") != -1) {
-			searchUserQuery = new Query(Criteria.where("OrgUser.Org_id").regex(currorg));
+			searchUserQuery = new Query(Criteria.where("orgUser.org_id").regex(currorg).and("project_id").is(Utils.getProject()));
 		} else {
-			searchUserQuery = new Query(Criteria.where("OrgUser.Org_id").regex(nodeId));
+			searchUserQuery = new Query(Criteria.where("orgUser.org_id").regex("^"+nodeId).and("project_id").is(Utils.getProject()));
 		}
 		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
 		userList = getUserList(savedUser, currorg);
 		
-		/*if (nodeId.indexOf("0_1.0") != -1) {
-			userName = nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length());
-			tenantId = nodeId.substring(0, nodeId.indexOf("_"));
-			logger.log(IAppLogger.INFO, "userName=" + userName);
-			logger.log(IAppLogger.INFO, "tenantId=" + tenantId);
-			if (searchParam != null && searchParam.trim().length() > 0) {
-				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
-				logger.log(IAppLogger.INFO, "searchParam=" + searchParam);
-				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL_WITH_SRCH_PARAM");
-				userList = getUserDetailsOnScrollWithSrchParam(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, searchParam, moreCount);
-			} else {
-				logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_SCROLL");
-				userList = getUserDetailsOnScroll(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, userName, moreCount);
-			}
-		} else {
-			logger.log(IAppLogger.DEBUG, "GET_USER_DETAILS_ON_FIRST_LOAD");
-			tenantId = nodeId;
-			if(!"undefined".equals(tenantId)) {
-				userList = getUserDetailsOnFirstLoad(currorg, customerId, orgMode, tenantId, IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
-			}
-		}*/
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		logger.log(IAppLogger.INFO, "Users: " + userList.size());
 		logger.log(IAppLogger.INFO, "Exit: getUserDetailsOnClick()");
@@ -820,7 +801,8 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	private List<UserTO> getUserDetailsOnFirstLoad(final String currorg, final String customerId, final String orgMode,
 			final String tenantId, final Long roleId, final String custProdId, final String moreCount) throws Exception {
 		
-		Query searchUserQuery = new Query(Criteria.where("CustomerCode").is(customerId).and("OrgUser.Org_id").regex("^"+currorg));
+		Query searchUserQuery = new Query(Criteria.where("customerCode").is(customerId).and("orgUser.org_id").regex("^"+currorg)
+				.and("Project_id").is(Utils.getProject()).and("customerCode").is(customerId));
 		List<MUserTO> users = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
 
 		List<UserTO> userList = getUserList(users, currorg);
@@ -828,51 +810,6 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		return userList;
 	}
 	
-	@Deprecated
-	// TODO remove after mongo migration
-	private List<UserTO> getUserDetailsOnFirstLoadOld(final String currorg, final String customerId, final String orgMode,
-			final String tenantId, final Long roleId, final String custProdId, final String moreCount) throws Exception {
-		logger.log(IAppLogger.INFO, "getUserDetailsOnFirstLoad().moreCount = " + moreCount);
-		return (List<UserTO>) getJdbcTemplatePrism().execute(
-			new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USERS_ON_FIRST_LOAD);
-					cs.setLong(1, Long.parseLong(customerId));
-					cs.setString(2, orgMode);
-					cs.setLong(3, Long.parseLong(tenantId));
-					cs.setLong(4, roleId);
-					cs.setLong(5, Long.parseLong(custProdId));
-					cs.setLong(6, Long.parseLong(moreCount));
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					ResultSet rs = null;
-					List<UserTO> userList = new ArrayList<UserTO>();
-					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(7);
-						Utils.logError(cs.getString(8));
-						if(cs.getString(8) != null && cs.getString(8).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(8));
-						}
-						userList = getUserListFromResultSet(currorg, rs);
-					
-					} catch (SQLException e) {
-						e.printStackTrace();
-					} catch (BusinessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					logger.log(IAppLogger.INFO, "getUserDetailsOnFirstLoad().userList.size()=" + userList.size());
-					return userList;
-				}
-			}
-		);
-	}
-
 	/**
 	 * Returns the userTO on Edit.
 	 * 
@@ -886,7 +823,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String currorg = (String) paramMap.get("loggedInOrgId");
 		final String purpose = "edit";
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(project));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(project));
 		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		List<UserTO> userList = getUserList(savedUser, currorg);
 		return userList.get(0); // as we are fetching exactly one user
@@ -925,18 +862,25 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			@Cacheable(value = "usmoConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#userParamMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#userParamMap)).concat('getMasterRoleList'))")
 	} )
 	private List<RoleTO> getMasterRoleList(Map<String,Object> userParamMap) throws SQLException {
-		// TODO need to discuss about master role list
-		List<RoleTO> roles = new ArrayList<RoleTO>();
-		RoleTO role = new RoleTO();
-		role.setRoleName("ROLE_USER");
-		role.setRoleDescription("User");
-		roles.add(role);
-		role = new RoleTO();
-		role.setRoleName("ROLE_ADMIN");
-		role.setRoleDescription("Admin User");
-		roles.add(role);
+		Map<String, Object> paramMap = new HashMap<String, Object>(); 
+		paramMap.put("contractName", Utils.getContractName());
+		Map<String, Object> propertyMap = loginDAO.getContractProerty(paramMap);
+		String roleNotAdded = (String)propertyMap.get(IApplicationConstants.ROLE_NOT_ADDED);
 		
-		return roles;
+		Query searchUserQuery = new Query(Criteria.where("_id").is(Utils.getProject()));
+		CustProdAdmin custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, CustProdAdmin.class);
+		
+		List<RoleTO> roleTos = new ArrayList<RoleTO>();
+		if(custProdAdmin != null) {
+			Roles[] roles = custProdAdmin.getRoles();
+			for(Roles role : roles) {
+				RoleTO roleTo = new RoleTO();
+				roleTo.setRoleName(role.getName());
+				roleTo.setRoleDescription(role.getDescription());
+				roleTos.add(roleTo);
+			}
+		}
+		return roleTos;
 	}
 	
 	private List<RoleTO> getMasterRoleListOld(Map<String,Object> userParamMap) throws SQLException {
@@ -1107,7 +1051,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		
 		String Id = (String)paramMap.get("Id");
 		String userId = (String)paramMap.get("userId");
-		String userName = (String)paramMap.get("userName");
+		String displayName = (String)paramMap.get("userName");
 		String emailId = (String)paramMap.get("emailId");
 		String password = (String)paramMap.get("password");
 		String userStatus = (String)paramMap.get("userStatus");
@@ -1115,29 +1059,34 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String salt = (String)paramMap.get("salt");
 		String project = (String)paramMap.get("project");
 		// get the user which needs modification
-		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(project));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userId).and("project_id").is(project));
 		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		
 		try {
-			boolean ldapFlag = true;
-			if (password != null && !"".equals(password)) {
-
-				// Check if password contains part of user name
-				if (password.equalsIgnoreCase(userName) || password.toLowerCase().indexOf(userName.toLowerCase()) != -1 || userName.toLowerCase().indexOf(password.toLowerCase()) != -1) {
-					throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
+			if(savedUser != null) {
+				if (password != null && !"".equals(password)) {
+	
+					// Check if password contains part of user name
+					if (password.equalsIgnoreCase(userId) || password.toLowerCase().indexOf(userId.toLowerCase()) != -1 || userId.toLowerCase().indexOf(password.toLowerCase()) != -1) {
+						throw new BusinessException(propertyLookup.get("script.user.passwordPartUsername"));
+					}
+					
+					// update parameters
+					if(salt == null) salt = PasswordGenerator.getNextSalt();
+					savedUser.setSalt(salt);
+					savedUser.setPassword(password);
 				}
-				
-				// update parameters
-				if(salt == null) salt = PasswordGenerator.getNextSalt();
-				savedUser.setSalt(salt);
-				savedUser.setPassword(password);
 				savedUser.setEmail(emailId);
-				savedUser.setIsActive( IApplicationConstants.ACTIVE_FLAG.equals(userStatus) ? IApplicationConstants.FLAG_Y : IApplicationConstants.FLAG_N );
+				savedUser.setDisplayName(displayName);
+				savedUser.setStatus( userStatus );
 				savedUser.setUserRoles(userRoles);
 				//save
 				getMongoTemplatePrism().save(savedUser);
+				
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 
 		} catch (BusinessException bex) {
 			throw new BusinessException(bex.getCustomExceptionMessage());
@@ -1167,7 +1116,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String purpose = (String) paramMap.get("purpose");
 		final String project = (String) paramMap.get("project");
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(project));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("project_id").is(project));
 		MUserTO savedUser = getMongoTemplatePrism().findAndRemove(searchUserQuery, MUserTO.class);
 		return Boolean.TRUE;
 	}
@@ -1235,7 +1184,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			user.setOrgUser(orgUserArr);
 			user.setIsFirstTimeLogin(IApplicationConstants.FLAG_Y);
 			user.setIsNewUser(IApplicationConstants.FLAG_Y);
-			user.setIsActive(userStatus);
+			user.setStatus(userStatus);
 			
 			getMongoTemplatePrism().save(user);
 			
@@ -1270,19 +1219,14 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		List<UserTO> userList = null;
 		Query searchUserQuery = null;
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
-			searchUserQuery = new Query(Criteria.where("_id").exists(true).orOperator(
+			searchUserQuery = new Query(Criteria.where("_id").exists(true).and("orgUser.org_id").regex("^"+tenantId).orOperator(
 					Criteria.where("_id").regex(userName),
-					Criteria.where("LastName").regex(userName), 
-					Criteria.where("FirstName").regex(userName), 
-					Criteria.where("OrgUser.Org_id").regex(userName))
+					Criteria.where("lastName").regex(userName), 
+					Criteria.where("firstName").regex(userName), 
+					Criteria.where("orgUser.org_id").regex(userName))
 					);
 		} else {
-			searchUserQuery = new Query(Criteria.where("_id").is(true).orOperator(
-					Criteria.where("_id").is(userName),
-					Criteria.where("LastName").is(userName), 
-					Criteria.where("FirstName").is(userName), 
-					Criteria.where("OrgUser.Org_id").is(userName))
-					);
+			searchUserQuery = new Query(Criteria.where("_id").is(userName));
 		}
 		
 		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
@@ -1354,12 +1298,12 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String userListJsonString = null;
 		
 		List<UserTO> userList = null;
-		Query searchUserQuery = new Query(Criteria.where("_id").exists(true).orOperator(
+		Query searchUserQuery = new Query(Criteria.where("_id").exists(true).and("orgUser.org_id").regex("^"+tenantId).orOperator(
 				Criteria.where("_id").regex(userName),
-				Criteria.where("LastName").regex(userName), 
-				Criteria.where("FirstName").regex(userName), 
-				Criteria.where("DisplayName").regex(userName), 
-				Criteria.where("OrgUser.Org_id").regex(userName))
+				Criteria.where("lastName").regex(userName), 
+				Criteria.where("firstName").regex(userName), 
+				Criteria.where("displayName").regex(userName), 
+				Criteria.where("orgUser.org_id").regex(userName))
 				);
 		
 		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
@@ -1369,28 +1313,14 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 			userListJsonString = "[";
 			for(UserTO user : userList) {
 				userListJsonString = CustomStringUtil.appendString(userListJsonString, "\"", user.getUserId(), "<br/>", 
-						(user.getLastName() == null)? "" : user.getLastName(), ", ", 
-						(user.getFirstName() == null)? "" : user.getFirstName(), " ", 
-						(user.getMiddleName() == null)? "" : user.getMiddleName(), "\",");
+						(user.getLastName() == null)? "" : (user.getLastName() + ", "), 
+						(user.getFirstName() == null)? "" : (user.getFirstName() + " "), 
+						(user.getMiddleName() == null)? "" : user.getMiddleName(), 
+						"\",");
 			}
 			userListJsonString = CustomStringUtil.appendString(userListJsonString.substring(0, userListJsonString.length() - 1), "]");
 		}
-		/*List<Map<String, Object>> listOfUser = null;
-		if (tenantId != null && !"null".equals(tenantId)) {
-			if (IApplicationConstants.PURPOSE.equals(purpose)) {
-				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, moreCount);
-			} else {
-				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName,
-						IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
-			}
-		}
-		if (listOfUser != null && listOfUser.size() > 0) {
-			userListJsonString = "[";
-			for (Map<String, Object> data : listOfUser) {
-				userListJsonString = CustomStringUtil.appendString(userListJsonString, "\"", (String) data.get("USERNAME"), "<br/>", (String) data.get("FULLNAME"), "\",");
-			}
-			userListJsonString = CustomStringUtil.appendString(userListJsonString.substring(0, userListJsonString.length() - 1), "]");
-		}*/
+		
 		logger.log(IAppLogger.DEBUG, userListJsonString);
 		logger.log(IAppLogger.INFO, "Exit: searchUserAutoComplete()");
 		return userListJsonString;
@@ -1435,7 +1365,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		OrgTO orgTO = null;
 		
 		if (nodeId.indexOf("0_1.0") != -1) {
-			Query searchOrgQuery = new Query(Criteria.where("_id").is(nodeId).and("Project_id").is(Utils.getProject()));
+			Query searchOrgQuery = new Query(Criteria.where("_id").is(nodeId).and("project_id").is(Utils.getProject()));
 			MOrgTO orgList = getMongoTemplatePrism().findOne(searchOrgQuery, MOrgTO.class);
 			if(orgList != null) {
 				orgTO = new OrgTO();
@@ -1450,7 +1380,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				orgTreeTOs.add(orgTO);		
 			}
 		} else {
-			Query searchOrgQuery = new Query(Criteria.where("Parent_id").is(nodeId).and("Project_id").is(Utils.getProject()));
+			Query searchOrgQuery = new Query(Criteria.where("parent_id").is(nodeId).and("project_id").is(Utils.getProject()).and("adminCodes").in(adminYear));
 			List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 			if(orgList != null) {
 				for(MOrgTO org : orgList) {
@@ -1509,7 +1439,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
 		
-		Query searchUserQuery = new Query(Criteria.where("OrgUser").is(tenantId).and("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId));
+		Query searchUserQuery = new Query(Criteria.where("orgUser").is(tenantId).and("project_id").is(Utils.getProject()));
 		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
 		
 		OrgTO orgTO = new OrgTO();
@@ -1533,13 +1463,13 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "Enter: searchOrganization()");
 		final String orgName = (String) paramMap.get("orgName");
 		final String tenantId = (String) paramMap.get("tenantId");
-		final String custProdId = (String) paramMap.get("custProdId");
+		final String adminYear = (String) paramMap.get("custProdId");
 		final String customerId = (String) paramMap.get("customerId");
 		final String orgMode = (String)paramMap.get("orgMode");
 		
-		Query searchOrgQuery = new Query(Criteria.where("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId).and("AdminCodes").in(custProdId).orOperator(
+		Query searchOrgQuery = new Query(Criteria.where("project_id").is(Utils.getProject()).and("adminCodes").in(adminYear).orOperator(
 				Criteria.where("_id").regex(orgName),
-				Criteria.where("Name").regex(orgName))
+				Criteria.where("name").regex(orgName))
 				);
 		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 		
@@ -1573,9 +1503,9 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		final String customerId = (String) paramMap.get("customerId");
 		final String orgMode = (String)paramMap.get("orgMode");
 		
-		Query searchOrgQuery = new Query(Criteria.where("Project_id").is(Utils.getProject()).and("CustomerCode").is(customerId).and("AdminCodes").in(custProdId).orOperator(
+		Query searchOrgQuery = new Query(Criteria.where("project_id").is(Utils.getProject()).and("adminCodes").in(custProdId).orOperator(
 				Criteria.where("_id").regex(orgName),
-				Criteria.where("Name").regex(orgName))
+				Criteria.where("name").regex(orgName))
 				);
 		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
 		

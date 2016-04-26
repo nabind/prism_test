@@ -5,62 +5,62 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "Org")
+@Document(collection = "Organization")
 public class MOrgTO implements Serializable
 {
 	@Id
 	private String _id;
 	 
-    private String Name;
+    private String name;
 
-    private String Category;
+    private String category;
 
-    private String[] AdminCodes;
+    private String[] adminCodes;
 
-    private String UpdatedDate;
+    private String updatedDate;
 
-    private String Parent_id;
+    private String parent_id;
 
-    private String SpCodes;
+    private String spCodes;
 
-    private String Project_id;
+    private String project_id;
 
-    private String CustomerCode;
+    private String customerCode;
 
-    private String CreatedDate;
+    private String createdDate;
 
-    private String Level;
+    private String level;
 
-    private String StrucElement;
+    private String strucElement;
 
     public String getName ()
     {
-        return Name;
+        return name;
     }
 
     public void setName (String Name)
     {
-        this.Name = Name;
+        this.name = Name;
     }
 
     public String getCategory ()
     {
-        return Category;
+        return category;
     }
 
     public void setCategory (String Category)
     {
-        this.Category = Category;
+        this.category = Category;
     }
 
     public String[] getAdminCodes ()
     {
-        return AdminCodes;
+        return adminCodes;
     }
 
     public void setAdminCodes (String[] AdminCodes)
     {
-        this.AdminCodes = AdminCodes;
+        this.adminCodes = AdminCodes;
     }
 
     public String get_id ()
@@ -75,87 +75,87 @@ public class MOrgTO implements Serializable
 
     public String getUpdatedDate ()
     {
-        return UpdatedDate;
+        return updatedDate;
     }
 
     public void setUpdatedDate (String UpdatedDate)
     {
-        this.UpdatedDate = UpdatedDate;
+        this.updatedDate = UpdatedDate;
     }
 
     public String getParent_id ()
     {
-        return Parent_id;
+        return parent_id;
     }
 
     public void setParent_id (String Parent_id)
     {
-        this.Parent_id = Parent_id;
+        this.parent_id = Parent_id;
     }
 
     public String getSpCodes ()
     {
-        return SpCodes;
+        return spCodes;
     }
 
     public void setSpCodes (String SpCodes)
     {
-        this.SpCodes = SpCodes;
+        this.spCodes = SpCodes;
     }
 
     public String getProject_id ()
     {
-        return Project_id;
+        return project_id;
     }
 
     public void setProject_id (String Project_id)
     {
-        this.Project_id = Project_id;
+        this.project_id = Project_id;
     }
 
     public String getCustomerCode ()
     {
-        return CustomerCode;
+        return customerCode;
     }
 
     public void setCustomerCode (String CustomerCode)
     {
-        this.CustomerCode = CustomerCode;
+        this.customerCode = CustomerCode;
     }
 
     public String getCreatedDate ()
     {
-        return CreatedDate;
+        return createdDate;
     }
 
     public void setCreatedDate (String CreatedDate)
     {
-        this.CreatedDate = CreatedDate;
+        this.createdDate = CreatedDate;
     }
 
     public String getLevel ()
     {
-        return Level;
+        return level;
     }
 
     public void setLevel (String Level)
     {
-        this.Level = Level;
+        this.level = Level;
     }
 
     public String getStrucElement ()
     {
-        return StrucElement;
+        return strucElement;
     }
 
     public void setStrucElement (String StrucElement)
     {
-        this.StrucElement = StrucElement;
+        this.strucElement = StrucElement;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [Name = "+Name+", Category = "+Category+", AdminCodes = "+AdminCodes+", _id = "+_id+", UpdatedDate = "+UpdatedDate+", Parent_id = "+Parent_id+", SpCodes = "+SpCodes+", Project_id = "+Project_id+", CustomerCode = "+CustomerCode+", CreatedDate = "+CreatedDate+", Level = "+Level+", StrucElement = "+StrucElement+"]";
+        return "ClassPojo [Name = "+name+", Category = "+category+", AdminCodes = "+adminCodes+", _id = "+_id+", UpdatedDate = "+updatedDate+", Parent_id = "+parent_id+", SpCodes = "+spCodes+", Project_id = "+project_id+", CustomerCode = "+customerCode+", CreatedDate = "+createdDate+", Level = "+level+", StrucElement = "+strucElement+"]";
     }
 }

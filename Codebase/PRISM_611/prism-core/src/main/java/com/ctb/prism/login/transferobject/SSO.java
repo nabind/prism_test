@@ -4,38 +4,36 @@ import java.io.Serializable;
 
 public class SSO implements Serializable
 {
-    private SSOProperties ERESOURCE;
+    private SSOProperties eresource;
 
-    private SSOProperties OAS;
+    private SSOProperties oas;
     
-    private SSOProperties DRC;
+    private SSOProperties drc;
 
-    public SSOProperties getERESOURCE ()
-    {
-        return ERESOURCE;
-    }
-
-    public void setERESOURCE (SSOProperties ERESOURCE)
-    {
-        this.ERESOURCE = ERESOURCE;
-    }
-
-    public SSOProperties getOAS ()
-    {
-        return OAS;
-    }
-
-    public void setOAS (SSOProperties OAS)
-    {
-        this.OAS = OAS;
-    }
-
-    public SSOProperties getDRC() {
-		return DRC;
+	public SSOProperties getEresource() {
+		return eresource;
 	}
 
-	public void setDRC(SSOProperties dRC) {
-		DRC = dRC;
+	public void setEresource(SSOProperties eresource) {
+		this.eresource = eresource;
 	}
+
+	public SSOProperties getOas() {
+		return oas;
+	}
+
+	public void setOas(SSOProperties oas) {
+		this.oas = oas;
+	}
+
+	public SSOProperties getDrc() {
+		return drc;
+	}
+
+	public void setDrc(SSOProperties drc) {
+		this.drc = drc;
+	}
+
+    
 
 }

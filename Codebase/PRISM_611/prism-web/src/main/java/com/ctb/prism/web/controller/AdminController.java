@@ -116,14 +116,15 @@ public class AdminController {
 		//paramMap.put("loggedinUserTO", loggedinUserTO);
 		paramMap.put("loggedInCustomer",loggedinUserTO.getCustomerId());
 		paramMap.put("loggedInOrgId",loggedinUserTO.getOrgId());
+		paramMap.put("project",loggedinUserTO.getProject());
 		
 		try {
 			String adminYear = (String) request.getParameter("AdminYear");
 			if (currentOrg != null) {
 				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
-				if(adminYear == null) {
+				if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-					if(adminYear == null) {
+					if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;
@@ -377,9 +378,9 @@ public class AdminController {
 			modelAndView.addObject("adminList", customerProductList);
 			
 			String adminYear = (String) request.getParameter("AdminYear");
-			if(adminYear == null) {
+			if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-				if(adminYear == null) {
+				if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 						adminYear = object.getValue();
 						break;
@@ -444,9 +445,9 @@ public class AdminController {
 			String adminYear = (String) request.getParameter("AdminYear");
 			//List<ObjectValueTO> adminList = adminService.getAllAdmin();
 			List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
-			if(adminYear == null) {
+			if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 				adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-				if(adminYear == null) {
+				if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 						adminYear = object.getValue();
 						break;
@@ -614,7 +615,7 @@ public class AdminController {
 			
 			if(nodeId != null && (adminYear == null || "undefined".equals(adminYear))){				
 			   	adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-				if(adminYear == null) {
+			   	if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 					//adminList = adminService.getAllAdmin();	
 					List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
 					for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
@@ -1510,9 +1511,9 @@ public class AdminController {
 				modelAndView = new ModelAndView("admin/users");
 				/*List<ObjectValueTO> adminList = adminService.getAllAdmin();*/
 				List<com.ctb.prism.core.transferobject.ObjectValueTO> customerProductList = adminService.getCustomerProduct(paramMap);
-				if(adminYear == null) {
+				if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 					adminYear = (String) request.getSession().getAttribute(IApplicationConstants.ADMIN_YEAR);
-					if(adminYear == null) {
+					if(adminYear == null || "".equals(adminYear) || "0".equals(adminYear)) {
 						for(com.ctb.prism.core.transferobject.ObjectValueTO object : customerProductList) {
 							adminYear = object.getValue();
 							break;

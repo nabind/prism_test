@@ -4,81 +4,65 @@ import java.io.Serializable;
 
 public class Admins implements Serializable
 {
-    private String Name;
+    private String name;
 
-    private String Seq;
+    private String seq;
 
-    private Products[] Products;
+    private Products[] products;
 
-    private String FileLoc;
+    private String fileLoc;
 
-    private String IsCurrentAdmin;
+    private String isCurrentAdmin;
 
-    private String Code;
+    private String code;
 
-    public String getName ()
-    {
-        return Name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName (String Name)
-    {
-        this.Name = Name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getSeq ()
-    {
-        return Seq;
-    }
+	public String getSeq() {
+		return seq;
+	}
 
-    public void setSeq (String Seq)
-    {
-        this.Seq = Seq;
-    }
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
 
-    public Products[] getProducts ()
-    {
-        return Products;
-    }
+	public Products[] getProducts() {
+		return products;
+	}
 
-    public void setProducts (Products[] Products)
-    {
-        this.Products = Products;
-    }
+	public void setProducts(Products[] products) {
+		this.products = products;
+	}
 
-    public String getFileLoc ()
-    {
-        return FileLoc;
-    }
+	public String getFileLoc() {
+		return fileLoc;
+	}
 
-    public void setFileLoc (String FileLoc)
-    {
-        this.FileLoc = FileLoc;
-    }
+	public void setFileLoc(String fileLoc) {
+		this.fileLoc = fileLoc;
+	}
 
-    public String getIsCurrentAdmin ()
-    {
-        return IsCurrentAdmin;
-    }
+	public String getIsCurrentAdmin() {
+		return isCurrentAdmin;
+	}
 
-    public void setIsCurrentAdmin (String IsCurrentAdmin)
-    {
-        this.IsCurrentAdmin = IsCurrentAdmin;
-    }
+	public void setIsCurrentAdmin(String isCurrentAdmin) {
+		this.isCurrentAdmin = isCurrentAdmin;
+	}
 
-    public String getCode ()
-    {
-        return Code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode (String Code)
-    {
-        this.Code = Code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Name = "+Name+", Seq = "+Seq+", Products = "+Products+", FileLoc = "+FileLoc+", IsCurrentAdmin = "+IsCurrentAdmin+", Code = "+Code+"]";
-    }
+    
 }

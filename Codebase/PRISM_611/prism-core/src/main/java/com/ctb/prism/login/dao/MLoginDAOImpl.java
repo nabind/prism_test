@@ -546,11 +546,11 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if(savedUser != null) {
 			user.setDisplayName(savedUser.getDisplayName());
 			user.setFirstTimeLogin(savedUser.getIsFirstTimeLogin());
-			user.setIsAdminFlag("Y");
+			user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
 			user.setIsPasswordExpired("FALSE");
 			user.setIsPasswordWarning("FALSE");
 			for(OrgUser org : savedUser.getOrgUser()){
-				if (org.getIsActive().equals("Y")){
+				if (org.getIsActive().equals(IApplicationConstants.FLAG_Y)){
 					user.setOrgId(org.getOrg_id());
 					break;
 				}
@@ -568,8 +568,8 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 			user.setUserId(savedUser.get_id());
 			user.setUserName(savedUser.get_id());
 			user.setUserEmail(savedUser.getEmail());
-			user.setUserStatus(savedUser.getIsActive());
-			user.setUserType("O");
+			user.setUserStatus(savedUser.getStatus());
+			user.setUserType(savedUser.getUserType());
 			user.setCustomerId(savedUser.getCustomerCode());
 			user.setProject(savedUser.getProject_id());
 			user.setOrgName(savedUser.getOrgUser()[0].getOrgName());
@@ -713,9 +713,9 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				);*/
 			Aggregation agg = newAggregation(
 					match(Criteria.where("_id").is(project)),	
-					unwind("Customers"),
-					unwind("Customers.Admins"),
-					sort(Sort.Direction.DESC, "Customers.Admins.Seq")
+					unwind("customers"),
+					unwind("customers.admins"),
+					sort(Sort.Direction.DESC, "customers.admins.seq")
 				);
 			
 			AggregationResults<FlatCustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class, FlatCustProdAdmin.class);
@@ -1247,7 +1247,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 			contractName = Utils.getContractName();
 		}
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(Utils.getProject(contractName)));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(Utils.getProject(contractName)));
 		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		
 		paramMap.remove("userName"); //This is required so that cache will get data based on single parameter (contract) only  
@@ -1259,8 +1259,10 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if(savedUser != null) {
 			pwsString.add(savedUser.getPassword());
 			PwdHistory[] hist = savedUser.getPwdHistory();
-			for(int i=0; i< pwdHistoryDay; i++) {
-				pwsString.add(hist[i].getPwd());
+			if(hist != null && hist.length > 0) {
+				for(int i=0; i< pwdHistoryDay; i++) {
+					pwsString.add(hist[i].getPwd());
+				}
 			}
 		}
 		return pwsString;	
@@ -1272,7 +1274,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String userName = (String)paramUserMap.get("username"); 
 		String contractName  = (String)paramUserMap.get("contractName"); 
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("Project_id").is(Utils.getProject(contractName)));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("project_id").is(Utils.getProject(contractName)));
 		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 		
 		UserTO userDetails = new UserTO();
@@ -1301,10 +1303,10 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		orgArray[0] = "0";
 		
 		Aggregation agg = newAggregation(
-				match(Criteria.where("Project_id").is(contractName.toUpperCase())
-						.andOperator(Criteria.where("_id").is(userName),Criteria.where("OrgCategory.Level").nin(orgArray))),
-				unwind("OrgUser"),
-				match(Criteria.where("OrgUser.Org_id").regex("/^0~TASCCA/i")));
+				match(Criteria.where("project_id").is(contractName.toUpperCase())
+						.andOperator(Criteria.where("_id").is(userName),Criteria.where("orgCategory.level").nin(orgArray))),
+				unwind("orgUser"),
+				match(Criteria.where("orgUser.org_id").regex("/^0~TASCCA/i")));
 		
 		//Convert the aggregation result into a List
 		AggregationResults<MFlatUserTO> groupResults 

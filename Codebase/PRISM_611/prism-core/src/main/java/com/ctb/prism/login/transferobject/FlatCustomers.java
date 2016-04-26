@@ -4,93 +4,74 @@ import java.io.Serializable;
 
 public class FlatCustomers implements Serializable
 {
-    private String Name;
+    private String name;
 
-    private String FileLoc;
+    private String fileLoc;
 
-    private String CreatedDate;
+    private String createdDate;
 
-    private String SupportEmail;
+    private String supportEmail;
 
-    private Admins Admins;
+    private Admins admins;
 
-    private String SendLoginPdf;
+    private String sendLoginPdf;
 
-    private String Code;
+    private String code;
 
-    public String getName ()
-    {
-        return Name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName (String Name)
-    {
-        this.Name = Name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getFileLoc ()
-    {
-        return FileLoc;
-    }
+	public String getFileLoc() {
+		return fileLoc;
+	}
 
-    public void setFileLoc (String FileLoc)
-    {
-        this.FileLoc = FileLoc;
-    }
+	public void setFileLoc(String fileLoc) {
+		this.fileLoc = fileLoc;
+	}
 
-    public String getCreatedDate ()
-    {
-        return CreatedDate;
-    }
+	public String getCreatedDate() {
+		return createdDate;
+	}
 
-    public void setCreatedDate (String CreatedDate)
-    {
-        this.CreatedDate = CreatedDate;
-    }
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
 
-    public String getSupportEmail ()
-    {
-        return SupportEmail;
-    }
+	public String getSupportEmail() {
+		return supportEmail;
+	}
 
-    public void setSupportEmail (String SupportEmail)
-    {
-        this.SupportEmail = SupportEmail;
-    }
+	public void setSupportEmail(String supportEmail) {
+		this.supportEmail = supportEmail;
+	}
 
-    public Admins getAdmins ()
-    {
-        return Admins;
-    }
+	public Admins getAdmins() {
+		return admins;
+	}
 
-    public void setAdmins (Admins Admins)
-    {
-        this.Admins = Admins;
-    }
+	public void setAdmins(Admins admins) {
+		this.admins = admins;
+	}
 
-    public String getSendLoginPdf ()
-    {
-        return SendLoginPdf;
-    }
+	public String getSendLoginPdf() {
+		return sendLoginPdf;
+	}
 
-    public void setSendLoginPdf (String SendLoginPdf)
-    {
-        this.SendLoginPdf = SendLoginPdf;
-    }
+	public void setSendLoginPdf(String sendLoginPdf) {
+		this.sendLoginPdf = sendLoginPdf;
+	}
 
-    public String getCode ()
-    {
-        return Code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode (String Code)
-    {
-        this.Code = Code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Name = "+Name+", FileLoc = "+FileLoc+", CreatedDate = "+CreatedDate+", SupportEmail = "+SupportEmail+", Admins = "+Admins+", SendLoginPdf = "+SendLoginPdf+", Code = "+Code+"]";
-    }
 }

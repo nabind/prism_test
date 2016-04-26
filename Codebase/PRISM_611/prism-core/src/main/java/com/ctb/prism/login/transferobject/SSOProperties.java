@@ -4,55 +4,45 @@ import java.io.Serializable;
 
 public class SSOProperties implements Serializable
 {
-	private String SSOSource;
+	private String ssoSource;
 	
-	private String HmacSecretKey;
+	private String hmacSecretKey;
 
-    private String SsoRedirectLogout;
+    private String ssoRedirectLogout;
 
-    private String SsoRedirectLoginfail;
+    private String ssoRedirectLoginfail;
 
-    public String getSSOSource() {
-		return SSOSource;
+	public String getSsoSource() {
+		return ssoSource;
 	}
 
-	public void setSSOSource(String sSOSource) {
-		SSOSource = sSOSource;
+	public void setSsoSource(String ssoSource) {
+		this.ssoSource = ssoSource;
 	}
 
-	public String getHmacSecretKey ()
-    {
-        return HmacSecretKey;
-    }
+	public String getHmacSecretKey() {
+		return hmacSecretKey;
+	}
 
-    public void setHmacSecretKey (String HmacSecretKey)
-    {
-        this.HmacSecretKey = HmacSecretKey;
-    }
+	public void setHmacSecretKey(String hmacSecretKey) {
+		this.hmacSecretKey = hmacSecretKey;
+	}
 
-    public String getSsoRedirectLogout ()
-    {
-        return SsoRedirectLogout;
-    }
+	public String getSsoRedirectLogout() {
+		return ssoRedirectLogout;
+	}
 
-    public void setSsoRedirectLogout (String SsoRedirectLogout)
-    {
-        this.SsoRedirectLogout = SsoRedirectLogout;
-    }
+	public void setSsoRedirectLogout(String ssoRedirectLogout) {
+		this.ssoRedirectLogout = ssoRedirectLogout;
+	}
 
-    public String getSsoRedirectLoginfail ()
-    {
-        return SsoRedirectLoginfail;
-    }
+	public String getSsoRedirectLoginfail() {
+		return ssoRedirectLoginfail;
+	}
 
-    public void setSsoRedirectLoginfail (String SsoRedirectLoginfail)
-    {
-        this.SsoRedirectLoginfail = SsoRedirectLoginfail;
-    }
+	public void setSsoRedirectLoginfail(String ssoRedirectLoginfail) {
+		this.ssoRedirectLoginfail = ssoRedirectLoginfail;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [HmacSecretKey = "+HmacSecretKey+", SsoRedirectLogout = "+SsoRedirectLogout+", SsoRedirectLoginfail = "+SsoRedirectLoginfail+"]";
-    }
+    
 }

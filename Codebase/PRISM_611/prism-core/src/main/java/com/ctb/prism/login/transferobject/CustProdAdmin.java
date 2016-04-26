@@ -5,71 +5,79 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "CustProdAdmin_Info")
+@Document(collection = "ProjectCustAdminProd")
 public class CustProdAdmin implements Serializable
 {
 	@Id
     private String _id;
 	
-    private Customers[] Customers;
+    private Customers[] customers;
     
-    private ProjectProp ProjectProp;
+    private ProjectProp projectProp;
 
-    private String ProjectName;
+    private String projectName;
 
-    private String CreatedDate;
+    private String createdDate;
+    
+    private HintQuestions[] hintQuestions;
 
-    public Customers[] getCustomers ()
-    {
-        return Customers;
-    }
+    private Roles[] roles;
 
-    public void setCustomers (Customers[] Customers)
-    {
-        this.Customers = Customers;
-    }
+	public String get_id() {
+		return _id;
+	}
 
-    public ProjectProp getProjectProp() {
-		return ProjectProp;
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public Customers[] getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(Customers[] customers) {
+		this.customers = customers;
+	}
+
+	public ProjectProp getProjectProp() {
+		return projectProp;
 	}
 
 	public void setProjectProp(ProjectProp projectProp) {
-		ProjectProp = projectProp;
+		this.projectProp = projectProp;
 	}
 
-	public String getProjectName ()
-    {
-        return ProjectName;
-    }
+	public String getProjectName() {
+		return projectName;
+	}
 
-    public void setProjectName (String ProjectName)
-    {
-        this.ProjectName = ProjectName;
-    }
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
-    public String get_id ()
-    {
-        return _id;
-    }
+	public String getCreatedDate() {
+		return createdDate;
+	}
 
-    public void set_id (String _id)
-    {
-        this._id = _id;
-    }
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
 
-    public String getCreatedDate ()
-    {
-        return CreatedDate;
-    }
+	public HintQuestions[] getHintQuestions() {
+		return hintQuestions;
+	}
 
-    public void setCreatedDate (String CreatedDate)
-    {
-        this.CreatedDate = CreatedDate;
-    }
+	public void setHintQuestions(HintQuestions[] hintQuestions) {
+		this.hintQuestions = hintQuestions;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [Customers = "+Customers+", ProjectName = "+ProjectName+", _id = "+_id+", CreatedDate = "+CreatedDate+"]";
-    }
+	public Roles[] getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Roles[] roles) {
+		this.roles = roles;
+	}
+
+    
 }

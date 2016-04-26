@@ -4,33 +4,33 @@ import java.io.Serializable;
 
 public class PwdHistory implements Serializable 
 {
-    private String Date;
+    private String date;
 
-    private String Pwd;
+    private String pwd;
 
     public String getDate ()
     {
-        return Date;
+        return date;
     }
 
     public void setDate (String Date)
     {
-        this.Date = Date;
+        this.date = Date;
     }
 
     public String getPwd ()
     {
-        return Pwd;
+        return pwd;
     }
 
     public void setPwd (String Pwd)
     {
-        this.Pwd = Pwd;
+        this.pwd = Pwd;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [Date = "+Date+", Pwd = "+Pwd+"]";
+        return "ClassPojo [Date = "+date+", Pwd = "+pwd+"]";
     }
 }
