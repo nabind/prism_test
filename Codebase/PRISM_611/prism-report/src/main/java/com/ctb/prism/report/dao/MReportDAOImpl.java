@@ -60,8 +60,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
-import com.ctb.prism.login.transferobject.MReportTO;
-import com.ctb.prism.login.transferobject.MReportsTO;
+import com.ctb.prism.login.transferobject.MReportConfigTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
 import com.ctb.prism.report.transferobject.GroupDownloadStudentTO;
@@ -735,18 +734,19 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<AssessmentTO> assessments = null;
 		
 		Aggregation agg = newAggregation(
-				match(Criteria.where("CustProdAdmin_Info_Id").is(Utils.getContractName().toUpperCase())),
+				match(Criteria.where("project_Id").is(Utils.getContractName().toUpperCase())),
 				unwind("reportAccess"),
-				match(Criteria.where("reportAccess.role").in(rolesArr) //Hard coded for the time
-						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel)),
-									// Criteria.where("reportType").regex("API_"),
-									 Criteria.where("reportAccess.CustomerCode").is(String.valueOf(customerCode))))
+				match(Criteria.where("reportAccess.roles").in(rolesArr) //Hard coded for the time
+						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel)),
+									 Criteria.where("reportType").regex("^API"),
+									 Criteria.where("reportAccess.customerCode").is(String.valueOf(customerCode))))
 			);
 		
+				
 		//Convert the aggregation result into a List
 		AggregationResults<MFlatReportsTO> groupResults 
 				= getMongoTemplatePrism("global")
-				.aggregate(agg, MReportsTO.class, MFlatReportsTO.class);
+				.aggregate(agg, MReportConfigTO.class, MFlatReportsTO.class);
 		
 		List<MFlatReportsTO> reportDetails = groupResults.getMappedResults();
 		System.out.println("    >> User from MongoDB : "
@@ -773,12 +773,13 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			reportTO.setReportName(reportDetails.get(i).getReportName());
 			reportTO.setReportUrl(reportDetails.get(i).getReportFolderURI());
 			
-			String strRoles =reportDetails.get(i).getReportAccess().getRole();
-			reportTO.setAllRoles(strRoles);
+			String[] strRoles =reportDetails.get(i).getReportAccess().getRoles();
+			reportTO.setAllRoles(Arrays.toString(strRoles).replace("[", "").replace("]", ""));
 			
-			if (strRoles != null && strRoles.length() > 0) {
-				String[] strRolesArr = strRoles.split(",");
-				for (String role : strRolesArr) {
+			if (strRoles != null && strRoles.length > 0) {
+				//String[] strRolesArr = strRoles.split(",");
+				for (String role : strRoles) {
+					
 					ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
 					if (user_TYPE != null) {
 						reportTO.addRole(user_TYPE);
@@ -787,8 +788,8 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			}
 			
 			reportTO.setReportType(reportDetails.get(i).getReportType());
-			reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrg_level() != null 
-					? reportDetails.get(i).getReportAccess().getOrg_level() : "");
+			reportTO.setOrgLevel(reportDetails.get(i).getReportAccess().getOrgLevel() != null 
+					? reportDetails.get(i).getReportAccess().getOrgLevel() : "");
 			assessmentTO.addReport(reportTO);
 		}
 		//assessments.add(assessmentTO);

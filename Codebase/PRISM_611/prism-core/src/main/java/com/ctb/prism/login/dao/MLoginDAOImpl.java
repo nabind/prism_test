@@ -57,7 +57,7 @@ import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
 import com.ctb.prism.login.transferobject.MFlatUserTO;
-import com.ctb.prism.login.transferobject.MReportsTO;
+import com.ctb.prism.login.transferobject.MReportConfigTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.OrgUser;
@@ -1128,16 +1128,16 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
 		
 		Aggregation agg = newAggregation(
-				match(Criteria.where("CustProdAdmin_Info_Id").is(Utils.getContractName().toUpperCase())),
+				match(Criteria.where("project_Id").is(Utils.getContractName().toUpperCase())),
 				unwind("reportAccess"),
-				match(Criteria.where("reportAccess.role").in(rolesArr)
-						.andOperator(Criteria.where("reportAccess.org_level").is(String.valueOf(orgNodeLevel))))
+				match(Criteria.where("reportAccess.roles").in(rolesArr)
+						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel))))
 			);
 
 		//Convert the aggregation result into a List
 		AggregationResults<MFlatReportsTO> groupResults 
 				= getMongoTemplatePrism("global")
-				.aggregate(agg, MReportsTO.class, MFlatReportsTO.class);
+				.aggregate(agg, MReportConfigTO.class, MFlatReportsTO.class);
 		
 		List<MFlatReportsTO> reportDetails = groupResults.getMappedResults();
 		
@@ -1306,7 +1306,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				match(Criteria.where("project_id").is(contractName.toUpperCase())
 						.andOperator(Criteria.where("_id").is(userName),Criteria.where("orgCategory.level").nin(orgArray))),
 				unwind("orgUser"),
-				match(Criteria.where("orgUser.org_id").regex("/^0~TASCCA/i")));
+				match(Criteria.where("orgUser.org_id").regex("^"+prevOrgId))); //("/^0~TASCCA/i")));
 		
 		//Convert the aggregation result into a List
 		AggregationResults<MFlatUserTO> groupResults 
