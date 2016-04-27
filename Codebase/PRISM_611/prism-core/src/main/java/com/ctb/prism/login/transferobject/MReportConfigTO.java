@@ -28,7 +28,7 @@ public class MReportConfigTO implements Serializable {
 
     private String reportName;
 
-    private MReportAccess[] reportAccess;
+    private MReportAccessTO[] reportAccess;
 
     public String getReportType ()
     {
@@ -110,12 +110,12 @@ public class MReportConfigTO implements Serializable {
         this.reportName = reportName;
     }
 
-    public MReportAccess[] getReportAccess ()
+    public MReportAccessTO[] getReportAccess ()
     {
         return reportAccess;
     }
 
-    public void setReportAccess (MReportAccess[] reportAccess)
+    public void setReportAccess (MReportAccessTO[] reportAccess)
     {
         this.reportAccess = reportAccess;
     }
