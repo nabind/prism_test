@@ -3,6 +3,7 @@ package com.ctb.prism.report.dao;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -739,7 +741,8 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 				match(Criteria.where("reportAccess.roles").in(rolesArr) //Hard coded for the time
 						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel)),
 									 Criteria.where("reportType").regex("^API"),
-									 Criteria.where("reportAccess.customerCode").is(String.valueOf(customerCode))))
+									 Criteria.where("reportAccess.customerCode").is(String.valueOf(customerCode)))),
+				sort(Sort.Direction.ASC,"menuSequence")
 			);
 		
 				
