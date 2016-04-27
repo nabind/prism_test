@@ -1,9 +1,9 @@
 package com.ctb.prism.login.transferobject;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -56,11 +56,11 @@ public class MUserTO implements Serializable
 
     private String email;
 
-    private String updatedDate;
+    private Date updatedDate;
 
     private Address address;
 
-    private String createdDate;
+    private Date createdDate;
 
 	public String get_id() {
 		return _id;
@@ -238,11 +238,11 @@ public class MUserTO implements Serializable
 		this.email = email;
 	}
 
-	public String getUpdatedDate() {
+	public Date getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(String updatedDate) {
+	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -254,11 +254,11 @@ public class MUserTO implements Serializable
 		this.address = address;
 	}
 
-	public String getCreatedDate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(String createdDate) {
+	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 	
