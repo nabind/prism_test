@@ -44,7 +44,84 @@ public class TASCProcessTO implements Serializable {
 	private String grade;
 	private String subtest;
 	private String caseCount;
+	private String dateFrom;
+	private String dateTo;
+	private String state;
+	private String nc;
+	private String ss;
+	private String hse;
+	private String status;
+	private String customerCode;
+	private String studentBioId;
+	private String comments;
+	private String isActive;
 	
+	public String getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	public String getStudentBioId() {
+		return studentBioId;
+	}
+	public void setStudentBioId(String studentBioId) {
+		this.studentBioId = studentBioId;
+	}
+	public String getCustomerCode() {
+		return customerCode;
+	}
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getNc() {
+		return nc;
+	}
+	public void setNc(String nc) {
+		this.nc = nc;
+	}
+	public String getSs() {
+		return ss;
+	}
+	public void setSs(String ss) {
+		this.ss = ss;
+	}
+	public String getHse() {
+		return hse;
+	}
+	public void setHse(String hse) {
+		this.hse = hse;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getDateFrom() {
+		return dateFrom;
+	}
+	public void setDateFrom(String dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+	public String getDateTo() {
+		return dateTo;
+	}
+	public void setDateTo(String dateTo) {
+		this.dateTo = dateTo;
+	}
 	public String getDistrict() {
 		return district==null ? "" : district;
 	}

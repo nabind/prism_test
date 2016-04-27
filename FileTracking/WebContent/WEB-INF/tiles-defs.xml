@@ -107,5 +107,15 @@
       <put-attribute name="body"   value="/WEB-INF/jsp/supportPageTASC.jsp"/>      
   </definition>
   
+  <definition name="scoreReviewSearch" extends="baseLayout">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/scoreReviewSearch.jsp"/>      
+  </definition>
+  
+  <definition name="scoreReviewResult" extends="baseLayoutNew">
+      <put-attribute name="title"  value="TASC Process"/>
+      <put-attribute name="body"   value="/WEB-INF/jsp/scoreReviewResult.jsp"/>      
+  </definition>
+  
   
 </tiles-definitions>

@@ -987,4 +987,77 @@ public class TascController {
 			System.out.println("Exit: downloadCsvWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
+	
+	/**
+	 * Search review screen
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/scoreReview.htm")
+	public ModelAndView scoreReview(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		return new ModelAndView("scoreReviewSearch", "message", "");
+	}
+	
+	/**
+	 * fetch review result
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/scoreReviewResult.htm")
+	public ModelAndView scoreReviewResult(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+		try {
+			if(!UserController.checkLogin(request)) return modelAndView;
+			SearchProcess process = new SearchProcess();
+			process.setSourceSystem(request.getParameter("sourceSystem"));
+			process.setProcessedDateFrom(request.getParameter("dateFrom"));
+			process.setProcessedDateTo(request.getParameter("dateTo"));
+			process.setUuid(request.getParameter("uuid"));
+			process.setStateCode(request.getParameter("stateCode"));
+			process.setStatus(request.getParameter("scrStatus"));
+			
+			if("-1".equals(process.getProcessStatus())){
+				process.setSourceSystemDesc("All");
+			}else if("OL".equals(process.getProcessStatus())){
+				process.setSourceSystemDesc("Online");
+			}else if("PP".equals(process.getProcessStatus())){
+				process.setSourceSystemDesc("Peper Pencil");
+			}
+			
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> reviewProcess = stageDao.getScoreReview(process);
+			request.getSession().setAttribute("reviewProcess", reviewProcess);
+			request.getSession().setAttribute("reviewTO", process);
+			modelAndView = new ModelAndView("scoreReviewResult", "message", jsonStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping("/process/getReviewResult.htm")
+	public @ResponseBody String getReviewResult(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		try {
+			SearchProcess process = new SearchProcess();
+			process.setStudentBioId(request.getParameter("studentBioId"));
+			process.setSubtestId(request.getParameter("subtestId"));
+			
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> reviewProcess = stageDao.getReviewResult(process);
+
+			response.setContentType("application/json");
+			response.getWriter().write(convertToJson(reviewProcess));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

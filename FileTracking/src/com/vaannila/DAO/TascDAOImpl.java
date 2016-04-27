@@ -1338,4 +1338,127 @@ public class TascDAOImpl {
 		return updatedRows;
 	}
 	
+	
+	public List<TASCProcessTO> getScoreReview(SearchProcess searchProcess) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		TASCProcessTO processTO = null;
+		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, max(f.created_date_time) datetimestamp, s.student_bio_id ");
+		queryBuff.append(" from SCR_STUDENT_BIO_DIM s, SCR_SUBTEST_SCORE_FACT f, customer_info c, form_dim fr, subtest_dim sub ");
+		queryBuff.append(" where s.student_bio_id = f.student_bio_id and s.customerid = c.customerid and fr.formid = f.formid and sub.subtestid = f.subtestid ");
+		if(searchProcess != null) {
+			//queryBuff.append(" WHERE 1 = 1 ");
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0
+					&& searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0) {
+				queryBuff.append("AND (f.created_date_time between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
+			}
+			if(searchProcess.getSourceSystem() != null && searchProcess.getSourceSystem().trim().length() > 0
+					&& !"-1".equals(searchProcess.getSourceSystem())) 
+				queryBuff.append("AND s.student_mode = ? ");
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
+				queryBuff.append("AND f.scr_status = ? ");
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0) 
+				queryBuff.append("AND s.ext_student_id = ? ");
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
+				queryBuff.append("AND c.customer_code = ? ");
+			if(searchProcess.getStatus() != null && searchProcess.getStatus().trim().length() > 0) 
+				queryBuff.append("AND f.scr_status = ? ");
+		}
+		queryBuff.append(" group by s.last_name || ', ' || s.first_name || ' ' || s.middle_name , s.ext_student_id , c.customer_code, sub.subtest_name, f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, s.student_bio_id order by datetimestamp ");
+		String query = queryBuff.toString();
+		 System.out.println(query);
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			if(searchProcess != null) {
+				if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0
+						&& searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0) {
+					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
+					pstmt.setString(++count, searchProcess.getProcessedDateTo());
+				}
+				if(searchProcess.getSourceSystem() != null && searchProcess.getSourceSystem().trim().length() > 0 
+						&& !"-1".equals(searchProcess.getSourceSystem())) 
+					pstmt.setString(++count, searchProcess.getSourceSystem());
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getStateCode());
+				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getUuid());
+				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getStateCode());
+				if(searchProcess.getStatus() != null && searchProcess.getStatus().trim().length() > 0) 
+					pstmt.setString(++count, searchProcess.getStatus());
+			}
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new TASCProcessTO();
+				processTO.setStudentName(rs.getString(1));
+				processTO.setUuid(rs.getString(2));
+				processTO.setStateCode(rs.getString(3));
+				processTO.setSubtestName(rs.getString(4));
+				processTO.setNc(rs.getString(5));
+				processTO.setSs(rs.getString(6));
+				processTO.setHse(rs.getString(7));
+				processTO.setSubtest(rs.getString(8));
+				processTO.setDateTimestamp(rs.getString(9));
+				processTO.setStudentBioId(rs.getString(10));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return processList;
+	}
+	
+	public List<TASCProcessTO> getReviewResult(SearchProcess searchProcess) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		TASCProcessTO processTO = null;
+		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append(" select s.formid, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" from scr_subtest_score_fact s ");
+		queryBuff.append(" where student_bio_id = ? and subtestid = ? ");
+		queryBuff.append(" order by created_date_time ");
+		String query = queryBuff.toString();
+		 System.out.println(query);
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(++count, searchProcess.getStudentBioId());
+			pstmt.setString(++count, searchProcess.getSubtestId());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				processTO = new TASCProcessTO();
+				processTO.setForm(rs.getString(1));
+				processTO.setSs(rs.getString(2));
+				processTO.setNc(rs.getString(3));
+				processTO.setHse(rs.getString(4));
+				processTO.setDateTimestamp(rs.getString(5));
+				processTO.setComments(rs.getString(6));
+				processTO.setStatus(rs.getString(7));
+				processTO.setIsActive(rs.getString(8));
+				processList.add(processTO);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return processList;
+	}
+	
 }

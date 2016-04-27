@@ -51,7 +51,28 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String sortDir = "";
 	private String mode = "";
 	private String imagingId = "";
+	private String status;
+	private String studentBioId;
+	private String subtestId;
 	
+	public String getStudentBioId() {
+		return studentBioId;
+	}
+	public void setStudentBioId(String studentBioId) {
+		this.studentBioId = studentBioId;
+	}
+	public String getSubtestId() {
+		return subtestId;
+	}
+	public void setSubtestId(String subtestId) {
+		this.subtestId = subtestId;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getDistrict() {
 		return district;
 	}
