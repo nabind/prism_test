@@ -497,6 +497,7 @@ public class LoginController {
 					actionParamMap.put("orgNodeLevel", user.getOrgNodeLevel());
 				}
 				actionParamMap.put("custProdId", String.valueOf(user.getDefultCustProdId()));
+				actionParamMap.put("customerCode",user.getCustomerId());
 				
 				try {
 					//this Map is now need to add in Modelview
