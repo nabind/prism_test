@@ -32,6 +32,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -39,6 +43,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -62,6 +67,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.FileUtil;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
+import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MReportConfigTO;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.report.transferobject.AssessmentTO;
@@ -76,6 +82,7 @@ import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.webservice.transferobject.ReportActionTO;
+import com.mongodb.CommandResult;
 //import com.googlecode.ehcache.annotations.Cacheable;
 //import com.googlecode.ehcache.annotations.TriggersRemove;
 
@@ -454,6 +461,29 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
 			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).string(#query)).concat(#root.method.name) )")
 	} )
 	public List<ObjectValueTO> getValuesOfSingleInput(String query) {
+		try {
+			CommandResult result = getMongoTemplatePrism("global").executeCommand(query);
+			
+			JsonFactory f = new JsonFactory();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonParser jp = f.createJsonParser(result.get("result").toString());
+            jp.nextToken();
+            List<ObjectValueTO> list = new ArrayList<ObjectValueTO>();
+            while (jp.nextToken() == JsonToken.START_OBJECT) {
+                Map<String,Object> inputData = mapper.readValue(jp, Map.class);
+                ObjectValueTO to = new ObjectValueTO();
+                to.setValue((String) inputData.get("VALUE"));
+				to.setName((String) inputData.get("NAME"));
+				list.add(to);
+            }
+            return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	@Deprecated
+	public List<ObjectValueTO> getValuesOfSingleInputOld(String query) {
 		if (query == null)
 			return null;
 		logger.log(IAppLogger.DEBUG, query);

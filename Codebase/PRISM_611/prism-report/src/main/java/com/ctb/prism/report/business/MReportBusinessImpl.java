@@ -48,8 +48,8 @@ import com.ctb.prism.webservice.transferobject.ReportActionTO;
 import com.ctb.prism.core.Service.ISimpleDBService;
 
 import java.beans.Introspector;
-//@Component("reportBusiness")
-public class ReportBusinessImpl /*implements IReportBusiness*/ {
+@Component("reportBusiness")
+public class MReportBusinessImpl implements IReportBusiness {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportBusinessImpl.class.getName());
 
@@ -266,8 +266,6 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 		}
 		String userName = (String) paramMap.get("userName");
 		String customerId = (String)paramMap.get("customerId");	
-		//String assessmentId = (String) paramMap.get("assessmentId");
-		//String combAssessmentId = (String) paramMap.get("combAssessmentId");	
 		String reportUrl = (String) paramMap.get("reportUrl");
 		@SuppressWarnings("unchecked")
 		Map<String, Object> sessionParams = (Map<String, Object>) paramMap.get("sessionParams");
@@ -276,9 +274,6 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 			
 		Class<?> clazz = null;
 		Object obj = null;
-		//String tenantId = null;
-		// ReportFilterTO to = new ReportFilterTO();
-		//tenantId = reportDAO.getTenantId(userName);
 		try {
 			clazz = reportFilterFactory.getReportFilterTO();
 			obj = clazz.newInstance();
@@ -287,8 +282,6 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 				clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
 			}
 			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
-			//clazz.getMethod("setLoggedInUserName", String.class).invoke(obj, userName);
-			//clazz.getMethod("setLoggedInUserId", String.class).invoke(obj, userId);
 			clazz.getMethod("setP_customerid", String.class).invoke(obj, customerId);
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -302,13 +295,11 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));	
 				}
-				//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
-				//query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));				
 				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
 
 				/*** NEW ***/
-				if (sessionParams != null) {
+				/*if (sessionParams != null) {
 					Iterator it = sessionParams.entrySet().iterator();
 					while (it.hasNext()) {
 						Map.Entry pairs = (Map.Entry) it.next();
@@ -323,10 +314,10 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 										break;
 									}
 								}
-								/*Fix for TD 83237 - By Joy
+								Fix for TD 83237 - By Joy
 								 * Problem: Next I/P control is not populated properly if 
 								 * current I/P control is multi-select
-								 */
+								 
 								if (matched) {
 									if(((String[]) pairs.getValue()).length > 1) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
@@ -342,73 +333,29 @@ public class ReportBusinessImpl /*implements IReportBusiness*/ {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
 									}
 								}
-								/*if (matched) {
-									if("p_generate_file".equals((String) pairs.getKey())) {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-												CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));
-									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
-									}
-									//query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
-								} else {
-									if("p_generate_file".equals((String) pairs.getKey())) {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-												CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));
-									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
-									}
-									//query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
-								}*/
 							}
 						} catch (Exception e) {
-							/** Nothing to do here 
-							 * - this block will get lots of java.lang.NoSuchMethodException
-							 * - which is expected and known
-							 * - as the ReportFilterTO (dynamic) class contains only report filter setters/getters **/
-							//e.printStackTrace();
+							
 						}
 					}
-				}
+				}*/
 				/*** NEW ***/
 
-				query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
+				//query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
-				query = replaceSpecial(query, clazz, obj);
+				//query = replaceSpecial(query, clazz, obj);
 				//logger.log(IAppLogger.DEBUG, query);
 				logger.log(IAppLogger.INFO, query);
 				
 				//System.out.println("Query for default filter:" +query);
 				
 				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
-				/*
-				 * if(list != null && list.size() == 0) { // patch for form level if(IApplicationConstants.IC_FORM_LEVEL.equals(ito.getLabel())) { ObjectValueTO formObj = new ObjectValueTO();
-				 * formObj.setName(""); formObj.setValue("0_0-0"); list.add(formObj); } }
-				 */
+
 				String methodName = null;
 				try {
 					methodName = CustomStringUtil.appendString("set", labelId.substring(0, 1).toUpperCase(), labelId.substring(1));
 					Method setterMethod = clazz.getMethod(methodName, new Class[] { List.class });
 					setterMethod.invoke(obj, list);
-					
-					/*Defect 82735
-					 * Patch for missouri from student label to roster report 
-					 * Number of filter increasing in roster, hence default value -99 is getting replaced
-					 * for subtest and grade, resulting incorrect input query value 
-					 * But we need to make sure for the first time load -99 value should not be replaced
-					 * 
-					 * As discussed with Amit Da, commented the bellow code. - By Joy on 02-MAR-2016 
-					 * Student Label will not being used so commented the code 
-					*/
-					/*if(("/public/Missouri/Report/Student_Roster_files".equals(reportUrl)) 
-							&& (( sessionParams.get("p_grade")== null && labelId.equals("p_grade"))
-									|| ( sessionParams.get("p_subtest")== null && labelId.equals("p_subtest"))) 
-							&& sessionParams.get("p_district_Id")!= null) 	{
-						String[] listValues = new String[list.size()];
-						for (int s=0; s < list.size(); s++){
-							listValues[s] =  list.get(s).getValue();
-						}
-					  sessionParams.put(labelId, listValues);
-					}*/
 				} catch (Exception e) {
 					logger.log(IAppLogger.WARN, CustomStringUtil.appendString("Could not invoke method ", methodName, "on ReportFilterTO"), e);
 				}
