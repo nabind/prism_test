@@ -2,6 +2,7 @@ package com.ctb.prism.login.dao;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
@@ -55,6 +56,7 @@ import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
+import com.ctb.prism.login.transferobject.MFlatActionAccessTO;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
 import com.ctb.prism.login.transferobject.MFlatUserTO;
 import com.ctb.prism.login.transferobject.MReportConfigTO;
@@ -1131,7 +1133,8 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				match(Criteria.where("project_Id").is(Utils.getContractName().toUpperCase())),
 				unwind("reportAccess"),
 				match(Criteria.where("reportAccess.roles").in(rolesArr)
-						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel))))
+						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel)))),
+				sort(Sort.Direction.ASC,"menuSequence")
 			);
 
 		//Convert the aggregation result into a List
@@ -1170,15 +1173,49 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		
 		/*final Long userId = paramMap.get("userId") == null ? 0 : Long.parseLong((String)paramMap.get("userId"));
 		final Long custProdId = paramMap.get("custProdId") == null ? 0: Long.parseLong((String)paramMap.get("custProdId"));*/
-		final String roles = (String) paramMap.get("roles");
-		final long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
-		final long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		String roles = (String) paramMap.get("roles");
+		Object rolesArr[] = roles.split(",");
+		long orgNodeLevel = Long.valueOf(paramMap.get("orgNodeLevel").toString());
+		long custProdId = Long.valueOf(paramMap.get("custProdId").toString());
+		String customerCode = (String)paramMap.get("customerCode");
 		
 		logger.log(IAppLogger.INFO, "roles = " + roles);
 		logger.log(IAppLogger.INFO, "orgNodeLevel = " + orgNodeLevel);
 		logger.log(IAppLogger.INFO, "custProdId = " + custProdId);
+		logger.log(IAppLogger.INFO, "customerCode = " + customerCode);
 		
-		return (Map<String,String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
+		Aggregation agg = newAggregation(
+				match(Criteria.where("project_Id").is(Utils.getContractName().toUpperCase())),
+				unwind("reportAccess"),
+				match(Criteria.where("reportAccess.roles").in(rolesArr)
+						.andOperator(Criteria.where("reportAccess.orgLevel").is(String.valueOf(orgNodeLevel)),
+									 Criteria.where("reportAccess.customerCode").regex(customerCode),
+									 Criteria.where("reportAccess.customerCode").is(String.valueOf(customerCode)))),
+				unwind("reportAccess.actionAccess"),
+				match(Criteria.where("reportAccess.actionAccess.status").is(IApplicationConstants.ACTIVE_FLAG)),
+				project("reportName","reportAccess.actionAccess.action")
+		);
+
+		//Convert the aggregation result into a List
+		AggregationResults<MFlatActionAccessTO> groupResults 
+				= getMongoTemplatePrism("global")
+				.aggregate(agg, MReportConfigTO.class, MFlatActionAccessTO.class);
+		
+		List<MFlatActionAccessTO> reportDetails = groupResults.getMappedResults();
+		
+		System.out.println("    >> User from MongoDB : "
+				+ reportDetails.get(0).getReportName() + " " + reportDetails.get(0).getActionAccess().getAction());
+		
+		Map<String,String> actionMap = new LinkedHashMap<String,String>();
+		for(int i=0; i < reportDetails.size(); i++) {
+			actionMap.put(reportDetails.get(i).getReportName()+ " " + reportDetails.get(i).getActionAccess().getAction(), 
+					reportDetails.get(i).getReportName()+ " " + reportDetails.get(i).getActionAccess().getAction());
+
+		}
+						
+		return actionMap;
+		
+		/*return (Map<String,String>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ACTION_MAP);
 				cs.setString(1, roles);
@@ -1205,7 +1242,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				logger.log(IAppLogger.INFO, "actionMap = " + actionMap);
 				return actionMap;
 			}
-		});
+		});*/
 	}
 	
 	
