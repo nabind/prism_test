@@ -1,0 +1,1 @@
+xcopy /s %PRISM611_HOME%\prism-admin\target\prism-admin-0.0.1-SNAPSHOT.jar %PRISM611_HOME%\prism-web\target\prism\WEB-INF\lib
