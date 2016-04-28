@@ -35,7 +35,7 @@ public class OrgUser implements Serializable
 	}
 
 	public void setOrgName(String orgName) {
-		orgName = orgName;
+		 this.orgName = orgName;
 	}
 
 	@Override

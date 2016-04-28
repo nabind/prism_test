@@ -1141,24 +1141,25 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 	public UserTO addNewUser(Map<String, Object> paramMap) throws Exception{
 		logger.log(IAppLogger.INFO, "Enter: addNewUser(): " + paramMap);
 		UserTO userTo = null;
-		final String userName = (String) paramMap.get("userName");
-		final String password = (String) paramMap.get("password");
-		final String userDisplayName = (String) paramMap.get("userDisplayName");
-		final String emailId = (String) paramMap.get("emailId");
-		final String userStatus = (String) paramMap.get("userStatus");
-		final String customerId = (String) paramMap.get("customer");
-		final String tenantId = (String) paramMap.get("tenantId");
-		final String orgLevel = (String) paramMap.get("orgLevel");
-		final String adminYear = (String) paramMap.get("adminYear");
-		final String purpose = (String) paramMap.get("purpose");
-		final String eduCenterId = (String) paramMap.get("eduCenterId");
-		final String contractName = (String) paramMap.get("contractName");
+		String userName = (String) paramMap.get("userName");
+		String password = (String) paramMap.get("password");
+		String userDisplayName = (String) paramMap.get("userDisplayName");
+		String emailId = (String) paramMap.get("emailId");
+		String userStatus = (String) paramMap.get("userStatus");
+		String customerId = (String) paramMap.get("customer");
+		String tenantId = (String) paramMap.get("tenantId");
+		String orgLevel = (String) paramMap.get("orgLevel");
+		String adminYear = (String) paramMap.get("adminYear");
+		String purpose = (String) paramMap.get("purpose");
+		String eduCenterId = (String) paramMap.get("eduCenterId");
+		String contractName = (String) paramMap.get("contractName");
 		String project = (String) paramMap.get("project");
 		String orgMode = (String) paramMap.get("orgMode");
 		String orgName = (String) paramMap.get("orgName");
 		
 		String[] userRoles = (String[]) paramMap.get("userRoles");
-		final StringBuilder roles = new StringBuilder();
+		
+		
 		try {
 			String salt = PasswordGenerator.getNextSalt();
 			
@@ -1381,7 +1382,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				orgTO.setOrgLevel(orgList.getLevel());
 				orgTO.setTenantId(orgList.get_id());
 				orgTO.setTenantName(orgList.getName());
-				orgTO.setNoOfChildOrgs(-99); // need to correct
+				orgTO.setNoOfChildOrgs(getChildOrgsCount(orgList.get_id(),adminYear)); // need to correct
 				orgTO.setParentTenantId(orgList.getParent_id());
 				orgTO.setSelectedOrgId(nodeId);
 				
@@ -1397,7 +1398,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 					orgTO.setOrgLevel(org.getLevel());
 					orgTO.setTenantId(org.get_id());
 					orgTO.setTenantName(org.getName());
-					orgTO.setNoOfChildOrgs(-99); // need to correct
+					orgTO.setNoOfChildOrgs(getChildOrgsCount(org.get_id(),adminYear)); // need to correct
 					orgTO.setParentTenantId(org.getParent_id());
 					orgTO.setSelectedOrgId(nodeId);
 					
@@ -1487,13 +1488,36 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 				OrgTO orgTO = new OrgTO();
 				orgTO.setTenantId(org.get_id());
 				orgTO.setTenantName(org.getName());
-				orgTO.setNoOfChildOrgs(-99); // need to correct
+				orgTO.setNoOfChildOrgs(getChildOrgsCount(org.get_id(),adminYear)); // need to correct
 				orgRetList.add(orgTO);
 			}
 		}
 		return orgRetList;
 	}
 
+	
+	private long getChildOrgsCount(String tenantId,String adminYear){
+		long count = 0;
+		long countInner = 0;
+		Query searchOrgQuery = new Query(Criteria.where("project_id").is(Utils.getProject()).and("adminCodes").in(adminYear).orOperator(
+				Criteria.where("_id").regex(tenantId))
+				);
+		
+		List<MOrgTO> orgList = getMongoTemplatePrism().find(searchOrgQuery, MOrgTO.class);
+		
+		if(orgList != null) {
+			for(MOrgTO org : orgList) {
+				searchOrgQuery = new Query(Criteria.where("project_id").is(Utils.getProject()).and("adminCodes").in(adminYear).orOperator(
+						Criteria.where("parent_id").is(org.get_id()))
+						);
+				countInner = getMongoTemplatePrism().count(searchOrgQuery,MOrgTO.class);
+				count = count + countInner;
+			}
+		}
+		
+		return count;
+	}
+	
 	/**
 	 * Searches and returns the organization names(use like operator) as a JSON string. Performs case insensitive searching. This method is used to perform auto complete in search box.
 	 * 
