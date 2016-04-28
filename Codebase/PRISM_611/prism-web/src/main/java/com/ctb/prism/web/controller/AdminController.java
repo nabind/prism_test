@@ -2314,6 +2314,7 @@ public class AdminController {
 			String custProdId = req.getParameter("AdminYear").equals("0")
 					?String.valueOf((Long)req.getSession().getAttribute(IApplicationConstants.DEFAULT_CUST_PROD_ID))
 					:req.getParameter("AdminYear");
+			String customerCode = (String)req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 					
 			Map<String,Object> actionParamMap = new HashMap<String,Object>();
 			actionParamMap.put("roles", roles.toString());
@@ -2324,6 +2325,7 @@ public class AdminController {
 			}*/
 			actionParamMap.put("orgNodeLevel", orgNodeLevel);
 			actionParamMap.put("custProdId", custProdId);
+			actionParamMap.put("customerCode",customerCode);
 			
 			
 			Map<String, String> actionMap= loginService.getActionMap(actionParamMap);

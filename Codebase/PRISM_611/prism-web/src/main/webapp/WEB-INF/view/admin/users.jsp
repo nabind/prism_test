@@ -37,20 +37,20 @@
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip" style="display:none" title="Show Hierarchy"></a> <span id="showOrgNameUser"><c:if test='${not empty userList}'><spring:message code="title.page.manageUser"/> ${orgName}</c:if> </span></b></div>
 				
 				<fmt:message var="MANAGE_USERS_SEARCH" key="manage.users.search"  />
-				<%-- <c:if test="${not empty actionMap[MANAGE_USERS_SEARCH]}"> --%> <!-- Commenting temporary until actionMap is implemented -->
+				<c:if test="${not empty actionMap[MANAGE_USERS_SEARCH]}"> 
 				<span class="input search-input">
 					<input type="text" name="searchUser" id="searchUser" class="input-unstyled with-tooltip" title="<spring:message code='message.search.help'/>" placeholder="Search">
 					<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_user"></a>
 				</span>
-				<%-- </c:if> --%>
+				</c:if>
 				
 				<fmt:message var="MANAGE_USERS_ADD" key="manage.users.add"  />
-				<%-- <c:if test="${not empty actionMap[MANAGE_USERS_ADD]}"> --%> <!-- Commenting temporary until actionMap is implemented -->
+				<c:if test="${not empty actionMap[MANAGE_USERS_ADD]}">
 				<a id="addUser" tenantName="" tenantId="" orgLevel=""  href="#" class="button glossy margin-left with-tooltip" title="<spring:message code='title.page.addUser'/>">
 					<span class="button-icon blue-gradient manage-btn"><span class="icon-add-user" ></span></span>
 					<spring:message code="title.page.addUser"/>
 				</a>
-				<%-- </c:if> --%>
+				</c:if>
 				<fmt:message var="MANAGE_USERS_DOWNLOAD_USERS" key="manage.users.download"  />
 				<c:if test="${not empty actionMap[MANAGE_USERS_DOWNLOAD_USERS]}">
 					<a class="button float-right with-tooltip" title="<spring:message code='title.page.downloadUser'/>" id="downloadUsers" style="cursor: pointer; margin-left: 10px;"><span class="button-icon icon-download blue-gradient report-btn">XLSX</span> <spring:message code="title.page.downloadUser"/></a>
