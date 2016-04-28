@@ -97,6 +97,9 @@ public interface IApplicationConstants {
 	public static final String LOGGED_IN_USERNAME = "\\$[P][{][LoggedInUserName]+[}]";
 	public static final String LOGGED_IN_USER_ID = "\\$[P][{][LoggedInUserId]+[}]";
 	public static final String LOGGED_IN_CUSTOMER = "\\$[P][{]p_[customerid]+[}]"; // "\\$[P][{][p_customerid]+[}]";
+	public static final String LOGGED_IN_USER_ORG_LEVEL = "\\$[P][{][LoggedInUserOrgLevel]+[}]";
+	public static final String LOGGED_IN_USER_ORG_NAME = "\\$[P][{][LoggedInUserOrgName]+[}]";
+	public static final String LOGGED_IN_USER_CUSTOMER_CODE = "\\$[P][{][LoggedInUserCustomerCode]+[}]";
 
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
@@ -119,6 +122,8 @@ public interface IApplicationConstants {
 	public static final String CURR_USER_DISPLAY = "CURRUSERDISPLAY";
 	public static final String CURRORG = "CURRORG";
 	public static final String CURRORGLVL = "CURRORGLVL";
+	public static final String CURRORGLVLSTR = "CURRORGLVLSTR";
+	public static final String CURRORGNAME = "CURRORGNAME";
 	public static final String AUTHORITIES = "AUTHORITIES";
 	public static final String PREV_ADMIN = "PREV_ADMIN";
 	public static final String PREV_ADMIN_DISPNAME ="PREV_ADMIN_DISPNAME";

@@ -627,6 +627,8 @@ public class InorsController {
 		logger.log(IAppLogger.INFO, "reportUrl = " + reportUrl);
 		String currentUser = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSER);
 		String currentUserId = (String) request.getSession().getAttribute(IApplicationConstants.CURRUSERID);
+		String orgLevel = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGLVLSTR);
+		String orgName = (String) request.getSession().getAttribute(IApplicationConstants.CURRORGNAME);
 		String assessmentId = request.getParameter("assessmentId");
 		Map<String, Object> inputControls = (Map<String, Object>) request.getSession().getAttribute("_REMEMBER_ME_ALL_");
 		List<InputControlTO> allInputControls = reportController.getInputControlList(reportUrl);
@@ -634,7 +636,8 @@ public class InorsController {
 		
 		// get default parameters for logged-in user
 		Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser, customerId, assessmentId, "", 
-				reportUrl, inputControls, currentUserId, (String) request.getSession().getAttribute(IApplicationConstants.CURRORG));
+				reportUrl, inputControls, currentUserId, (String) request.getSession().getAttribute(IApplicationConstants.CURRORG),
+				orgLevel, orgName);
 		return reportController.getReportParameter(allInputControls, reportFilterTO, false, request, reportUrl);
 	}
 

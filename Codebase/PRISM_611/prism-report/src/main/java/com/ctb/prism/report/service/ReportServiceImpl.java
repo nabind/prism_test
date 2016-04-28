@@ -200,7 +200,7 @@ public class ReportServiceImpl implements IReportService {
 	 * @see com.ctb.prism.report.service.IReportService#getDefaultFilter(java.util .List, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
-			Map<String, Object> sessionParams, String userId, String currentOrg) {
+			Map<String, Object> sessionParams, String userId, String currentOrg, String orgLevel, String orgName) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		if(Utils.usernameNeeded(reportUrl)) {
@@ -217,6 +217,8 @@ public class ReportServiceImpl implements IReportService {
 		paramMap.put("sessionParams", sessionParams);
 		//paramMap.put("userId", userId);
 		paramMap.put("currentOrg", currentOrg);
+		paramMap.put("orgLevel", orgLevel);
+		paramMap.put("orgName", orgName);
 		
 		//return reportBusiness.getDefaultFilter(tos,userName,customerId,assessmentId,combAssessmentId,reportUrl,sessionParams,userId,currentOrg);
 		return reportBusiness.getDefaultFilter(paramMap);

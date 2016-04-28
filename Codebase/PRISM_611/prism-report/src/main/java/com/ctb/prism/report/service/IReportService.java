@@ -96,7 +96,7 @@ public interface IReportService {
 	 * @return
 	 */
 	public Object getDefaultFilter(List<InputControlTO> tos, String userName, String customerId, String assessmentId, String combAssessmentId, String reportUrl, 
-			Map<String, Object> sessionParams, String userId, String currentOrg);
+			Map<String, Object> sessionParams, String userId, String currentOrg, String orgLevel, String OrgName);
 
 	/**
 	 * @param query

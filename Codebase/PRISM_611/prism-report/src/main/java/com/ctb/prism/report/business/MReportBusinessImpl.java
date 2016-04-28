@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -271,6 +272,8 @@ public class MReportBusinessImpl implements IReportBusiness {
 		Map<String, Object> sessionParams = (Map<String, Object>) paramMap.get("sessionParams");
 		String userId = (String) paramMap.get("userId");
 		String tenantId = (String)paramMap.get("currentOrg");
+		String orgLevel = (String) paramMap.get("orgLevel");
+		String orgName = (String)paramMap.get("orgName");
 			
 		Class<?> clazz = null;
 		Object obj = null;
@@ -283,23 +286,33 @@ public class MReportBusinessImpl implements IReportBusiness {
 			}
 			clazz.getMethod("setLoggedInUserJasperOrgId", String.class).invoke(obj, tenantId);
 			clazz.getMethod("setP_customerid", String.class).invoke(obj, customerId);
+			
+			clazz.getMethod("setLoggedInUserOrgLevel", String.class).invoke(obj, orgLevel);
+			clazz.getMethod("setLoggedInUserOrgName", String.class).invoke(obj, orgName);
+			clazz.getMethod("setLoggedInUserCustomerCode", String.class).invoke(obj, customerId);
+			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
+		Map<String, Object> cascadingValues = new HashMap<String, Object>();
 		for (InputControlTO ito : tos) {
 			String labelId = ito.getLabelId();
 			String query = ito.getQuery();
+			//System.out.println("Query for default filter: " +query);
 			if (query != null) {
 				if(Utils.usernameNeeded(reportUrl)) {
-					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, userId);
-					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("'", userName, "'"));	
+					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ID, CustomStringUtil.appendString("\"", userId, "\""));
+					query = query.replaceAll(IApplicationConstants.LOGGED_IN_USERNAME, CustomStringUtil.appendString("\"", userName, "\""));	
 				}
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, tenantId);
-				query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_JASPER_ORG_ID, CustomStringUtil.appendString("\"", tenantId, "\""));
+				//query = query.replaceAll(IApplicationConstants.LOGGED_IN_CUSTOMER, customerId);
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ORG_LEVEL, CustomStringUtil.appendString("\"", orgLevel, "\""));
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_ORG_NAME, CustomStringUtil.appendString("\"", orgName, "\""));
+				query = query.replaceAll(IApplicationConstants.LOGGED_IN_USER_CUSTOMER_CODE, CustomStringUtil.appendString("\"", customerId, "\""));
 
 				/*** NEW ***/
-				/*if (sessionParams != null) {
+				if (sessionParams != null) {
 					Iterator it = sessionParams.entrySet().iterator();
 					while (it.hasNext()) {
 						Map.Entry pairs = (Map.Entry) it.next();
@@ -314,23 +327,25 @@ public class MReportBusinessImpl implements IReportBusiness {
 										break;
 									}
 								}
-								Fix for TD 83237 - By Joy
+								/*Fix for TD 83237 - By Joy
 								 * Problem: Next I/P control is not populated properly if 
-								 * current I/P control is multi-select
+								 * current I/P control is multi-select*/
 								 
 								if (matched) {
 									if(((String[]) pairs.getValue()).length > 1) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "'"));
+												CustomStringUtil.appendString("\"",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "\""));
 									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("\"",((String[]) pairs.getValue())[0], "\""));
 									}
 								} else {
 									if(((String[]) tempObj.toArray()).length > 1) {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "'"));
+												CustomStringUtil.appendString("\"",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "\""));
 									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+												CustomStringUtil.appendString("\"",tempObj.get(0).getValue(), "\""));
 									}
 								}
 							}
@@ -338,8 +353,15 @@ public class MReportBusinessImpl implements IReportBusiness {
 							
 						}
 					}
-				}*/
+				}
 				/*** NEW ***/
+				
+				// Replace cascading values -- that already fetched from old input controls
+				Iterator it = cascadingValues.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry pairs = (Map.Entry) it.next();
+					query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey())	, CustomStringUtil.appendString("\"",(String) pairs.getValue(), "\""));
+				}
 
 				//query = query.replaceAll("\\$[P][{]\\w+[}]", "-99");
 				// handle special i/p controls
@@ -347,10 +369,13 @@ public class MReportBusinessImpl implements IReportBusiness {
 				//logger.log(IAppLogger.DEBUG, query);
 				logger.log(IAppLogger.INFO, query);
 				
-				//System.out.println("Query for default filter:" +query);
+				//System.out.println("Query for default filter: " +query);
+				//System.out.println("--------------------------------------------------------");
 				
 				List<ObjectValueTO> list = reportDAO.getValuesOfSingleInput(query);
-
+				if(list != null && list.size() > 0) {
+					cascadingValues.put(list.get(0).getRowIndentifier(), list.get(0).getValue());
+				}
 				String methodName = null;
 				try {
 					methodName = CustomStringUtil.appendString("set", labelId.substring(0, 1).toUpperCase(), labelId.substring(1));

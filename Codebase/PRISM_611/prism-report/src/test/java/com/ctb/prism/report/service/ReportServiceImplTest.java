@@ -155,7 +155,7 @@ public class ReportServiceImplTest extends AbstractJUnit4SpringContextTests {
 		Map<String, Object> sessionParams = new HashMap<String, Object>();
 		String userId = "0";
 		String currentOrg = "0";
-		Object obj = reportService.getDefaultFilter(tos, userName, customerId, assessmentId, combAssessmentId, reportUrl, sessionParams, userId, currentOrg);
+		Object obj = reportService.getDefaultFilter(tos, userName, customerId, assessmentId, combAssessmentId, reportUrl, sessionParams, userId, currentOrg, "", "");
 		assertNotNull(obj);
 	}
 

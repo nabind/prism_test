@@ -558,6 +558,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				}
 			}				
 			user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
+			user.setOrgNodeLevelStr(savedUser.getOrgCategory().getLevel());
 			user.setOrgMode(savedUser.getOrgCategory().getCategory());
 			user.setOrgId(savedUser.getOrgUser()[0].getOrg_id()); // assuming for non parent users only one org will be there
 			user.setPassword(savedUser.getPassword());

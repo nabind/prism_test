@@ -228,9 +228,12 @@ public class ReportController{
 			} else {
 				// get default parameters for logged-in user
 				//long start = System.currentTimeMillis();
+				String orgLevel = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGLVLSTR);
+				String orgName = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGNAME);
 				Object reportFilterTO = reportService
 						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
-								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg,
+								orgLevel, orgName);
 				parameters = getReportParameter(allInputControls, reportFilterTO, jasperReport, req, reportUrl);
 			}
 			
@@ -600,7 +603,8 @@ public class ReportController{
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 			String customerId=(String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-			
+			String orgLevel = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGLVLSTR);
+			String orgName = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGNAME);
 			//Added by Joy
 			String contractName = req.getParameter("contractName") != null 
 					? req.getParameter("contractName") : Utils.getContractName();
@@ -648,7 +652,8 @@ public class ReportController{
 				//long start = System.currentTimeMillis();
 				Object reportFilterTO = reportService
 						.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
-								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+								(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg,
+								orgLevel, orgName);
 				
 				//long end = System.currentTimeMillis();
 			//	//System.out.println("<<<<Time Taken: ReportController getDefaultFilter >>>> " + CustomStringUtil.getHMSTimeFormat(end - start));
@@ -1329,14 +1334,15 @@ public class ReportController{
 			String currentUserId = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSERID);// Added by Abir
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String customerId = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-
+			String orgLevel = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGLVLSTR);
+			String orgName = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGNAME);
 
 			// get all input controls for report
 			List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 
 			// get default parameters for logged-in user
 			Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
-					(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+					(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg, orgLevel, orgName);
 
 			// get current JasperReport object
 			JasperReport jasperReport = (JasperReport) //req.getSession().getAttribute(CustomStringUtil.appendString(reportUrl, "_", assessmentId));
@@ -1499,6 +1505,8 @@ public class ReportController{
 			String currentUser = (String) req.getSession().getAttribute(IApplicationConstants.CURRUSER);
 			String currentOrg = (String) req.getSession().getAttribute(IApplicationConstants.CURRORG);
 			String customerId = (String) req.getSession().getAttribute(IApplicationConstants.CUSTOMER);
+			String orgLevel = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGLVLSTR);
+			String orgName = (String) req.getSession().getAttribute(IApplicationConstants.CURRORGNAME);
 			String reportUrl = req.getParameter("reportUrl");
 			String changedObj = req.getParameter("changedObj");
 			String changedValue = req.getParameter("changedValue");
@@ -1511,7 +1519,7 @@ public class ReportController{
 			if(reportUrl!=null) {
 				List<InputControlTO> allInputControls = getInputControlList(reportUrl);
 				Object reportFilterTO = reportService.getDefaultFilter(allInputControls, currentUser,customerId, assessmentId, "", reportUrl, 
-						(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg);
+						(Map<String, Object>) req.getSession().getAttribute("_REMEMBER_ME_ALL_"), currentUserId, currentOrg, orgLevel, orgName);
 				// get default parameters for logged-in user
 				/*
 				 * Map<String, Object> parameters = getReportParametersFromRequest(req, allInputControls, reportFilterFactory.getReportFilterTO(), currentOrg, null);

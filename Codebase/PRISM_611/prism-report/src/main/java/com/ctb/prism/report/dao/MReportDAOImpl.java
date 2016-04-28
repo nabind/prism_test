@@ -474,6 +474,7 @@ public class MReportDAOImpl extends BaseDAO implements IReportDAO {
                 ObjectValueTO to = new ObjectValueTO();
                 to.setValue((String) inputData.get("VALUE"));
 				to.setName((String) inputData.get("NAME"));
+				to.setRowIndentifier((String) inputData.get("OBJ"));
 				list.add(to);
             }
             return list;
