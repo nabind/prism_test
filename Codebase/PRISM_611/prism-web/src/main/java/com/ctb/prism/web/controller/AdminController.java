@@ -1669,7 +1669,6 @@ public class AdminController {
 		String adminYear = (String) request.getParameter("AdminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
 		String product = (String) request.getSession().getAttribute(IApplicationConstants.PRODUCT_NAME);
-		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		com.ctb.prism.login.transferobject.UserTO loggedinUserTO = (com.ctb.prism.login.transferobject.UserTO) request.getSession().getAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS);
 		Map<String,Object> paramMap = new HashMap<String,Object>(); 
@@ -1704,7 +1703,7 @@ public class AdminController {
 					paramMapA.put("currOrg", currentOrg);
 					paramMapA.put("isFirstLoad", true);
 					paramMapA.put("adminYear", adminYear);
-					paramMapA.put("customerId", currCustomer);
+					paramMapA.put("customerId", customer);
 					paramMapA.put("orgMode", orgMode);
 					OrgTreeTOs =adminService.getOrganizationTree(paramMapA);
 					modelAndView.addObject("organizationTreeList", OrgTreeTOs);
