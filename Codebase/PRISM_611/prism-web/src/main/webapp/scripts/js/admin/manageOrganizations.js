@@ -604,9 +604,9 @@ function buildOrgDOM(checkFirstLoad, data) {
 						+'<td>' + this.tenantName +'</td>'
 						+'<td>'+this.noOfChildOrgs+'</td>'
 						//+ buildRedirectToUserLink(this.tenantId,this.parentTenantId,this.noOfUsers)
-		//if($("#MANAGE_ORGS_USER_COUNT").val() == strings['manage.orgs.usercount']) { //Commenting until the actionMap is designed
+		if($("#MANAGE_ORGS_USER_COUNT").val() == strings['manage.orgs.usercount']) { 
 			orgContent += '<td><span class="button-group compact"><a tenantId="'+this.tenantId+'" id="count_'+this.tenantId+'" orgname="'+this.tenantName+'" parentTenantId="'+this.parentTenantId+'" href="#nogo" class="button with-tooltip view-UserNumber" title="'+strings['title.viewUserNumber']+'">' +strings['label.userCount']+'</a></span></td>';
-		//}
+		}
 		showHideJspElements();
 		orgContent += '</tr>';
 	});

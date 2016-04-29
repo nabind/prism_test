@@ -25,12 +25,12 @@
 				<div class = "align-left" style="float:left"><b>
 					<a href="#nogo" id="showHierarchy" class="button icon-forward with-tooltip"  style="display:none" title="Show Hierarchy"></a><span id="showOrgName"> </span></b></div>
 				<fmt:message var="MANAGE_ORGS_SEARCH" key="manage.orgs.search"  />
-				<%-- <c:if test="${not empty actionMap[MANAGE_ORGS_SEARCH]}"> --%> <!-- Commenting until the actionMap is designed -->
+				 <c:if test="${not empty actionMap[MANAGE_ORGS_SEARCH]}"> 
 					<span class="input search-input">
 						<input type="text" name="searchOrg" id="searchOrg" class="input-unstyled with-tooltip" title="Search Organizations by Name" placeholder="Search">
 						<a href="javascript:void(0)" class="button icon-search compact" id="search_icon" param="search_icon_org"></a>
 					</span>
-				<%-- </c:if> --%>				
+				 </c:if>				
 			</div>
 			<div class="panel-load-target with-padding margin10 height-mid padding-none">
 				<fmt:message var="MANAGE_ORGS_MORE" key="manage.orgs.more"  />

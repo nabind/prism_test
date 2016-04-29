@@ -1448,11 +1448,13 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
 		
-		Query searchUserQuery = new Query(Criteria.where("orgUser").is(tenantId).and("project_id").is(Utils.getProject()));
-		List<MUserTO> savedUser = getMongoTemplatePrism().find(searchUserQuery, MUserTO.class);
+		Query searchUserQuery = new Query(Criteria.where("orgUser.org_id").is(tenantId)
+				.and("customerCode").is(customerId)
+				.and("project_id").is(Utils.getProject()));
+		long userCount = getMongoTemplatePrism().count(searchUserQuery, MUserTO.class);
 		
 		OrgTO orgTO = new OrgTO();
-		orgTO.setNoOfUsers(savedUser.size());
+		orgTO.setNoOfUsers(userCount);
 		orgTO.setAdminName(adminYear);
 		
 		return orgTO;
@@ -1545,7 +1547,16 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if(orgList != null) {
 			orgListJsonString = "[";
 			for(MOrgTO org : orgList) {
-				orgListJsonString = CustomStringUtil.appendString(orgListJsonString, "\"", org.getName(), " (", org.get_id().substring(org.get_id().lastIndexOf("~")),")", "\",");
+				
+				/* Blocked this logic to show org code along with org name as this was not existing behavior
+				 * Also based on this auto complete text search functionality should work as well. this appended text is breaking the logic 
+				 
+				  orgListJsonString = CustomStringUtil.appendString(orgListJsonString,
+						"\"", org.getName(), " (", org.get_id().substring(org.get_id().lastIndexOf("~")),")", "\",");*/
+				
+				orgListJsonString = CustomStringUtil.appendString(orgListJsonString,
+						"\"", org.getName(), "\",");
+				
 			}
 			orgListJsonString = CustomStringUtil.appendString(orgListJsonString.substring(0, orgListJsonString.length() - 1), "]");
 		}
