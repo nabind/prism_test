@@ -23,7 +23,7 @@
 				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("reviewTO");
 				%>
 				<div class="search-criteria">
-				<b>Showing search results for</b> Source Syatem: <%=searchProcess.getProcessStatusDesc()%>
+				<b>Showing search results for</b> Source System: <%=searchProcess.getProcessStatusDesc()%>
 				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
 					, Processed Date From: <%=searchProcess.getProcessedDateFrom()%>
 				<%}%>
@@ -70,58 +70,57 @@
 							<td><%=process.getNc() %></td>
 							<td><%=process.getSs() %></td>
 							<td><%=process.getHse() %></td>
-							<td><a href="#">Review</a></td>
+							<td><a href="#" onclick="studentDetails('<%=process.getTestElementId()%>','<%=process.getSubtestName()%>')">Review</a></td>
 						</tr>
 						<%} %>
 					</tbody>
 				</table>
-			
-				<div id="moreInfoDialog" title="Loading ..." style='display:none; font-size:11px'>
-					<p id="moreInfo"><p><p>
-					<table width="100%" class="process_details">
+				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
+					<p id="review"><p><p>
+					<table id="scoreResultTable" width="100%">
+					<thead>
 						<tr>
-							<td width="44%"><b>Imaging ID :</b></td><td width="56%"><span id="imagingId"></span></td>
+							<th >&nbsp;</th>
+							<th style="min-width: 60px;">Student Test ID</th>
+							<th>Form Name</th>
+							<th>New NC</th>
+							<th>New SS</th>
+							<th>New HSE</th>
+							<th>Processed Date</th>
+							<th>IsApprove</th>
 						</tr>
+					</thead>
+					<tbody>
+						<% 
+						java.util.List<TASCProcessTO> scoreList = (ArrayList) request.getSession().getAttribute("reviewProcess");
+						int cnt=0;
+						for(TASCProcessTO scores : scoreList) {
+							cnt++;
+						%>
 						<tr>
-							<td><b>OrgTPName :</b></td><td><span id="orgTpName"></span></td>
+							<td >&nbsp;</td>
+							<td style="min-width: 60px;"><%=scores.getTestElementId() %></td>
+							<td><%=scores.getForm() %></td>
+							<td><%=scores.getNc() %></td>
+							<td><%=scores.getSs() %></td>
+							<td><%=scores.getHse() %></td>
+							<td><%=scores.getDateTimestamp() %></td>
+							<td><input type="checkbox" name="isApprove" id="<%=cnt %>" onclick="rejectOther(<%=cnt %>)"></td>
 						</tr>
-						<tr>
-							<td><b>LastName :</b></td><td><span id="lastName"></span></td>
-						</tr>
-						<tr>
-							<td><b>FirstName :</b></td><td><span id="firstName"></span></td>
-						</tr>
-						<tr>
-							<td><b>MiddleInitial :</b></td><td><span id="middleInitial"></span></td>
-						</tr>
-						<tr>
-							<td><b>LithoCode :</b></td><td><span id="lithoCode"></span></td>
-						</tr>
-						<tr>
-							<td><b>StudentScanStk :</b></td><td><span id="scanStack"></span></td>
-						</tr>
-						<tr>
-							<td><b>StudentScanSeq :</b></td><td><span id="scanSequence"></span></td>
-						</tr>
-						<tr>
-							<td><b>WinscoreDocId :</b></td><td><span id="winsDocId"></span></td>
-						</tr>
-						<tr>
-							<td><b>Commodity Code :</b></td><td><span id="comodityCode"></span></td>
-						</tr>
-						<tr>
-							<td><b>WinscoreStatus :</b></td><td><span id="winStatus"></span></td>
-						</tr>
-						<tr>
-							<td><b>Prism Status :</b></td><td><span id="prismProcessStatusDesc"></span></td>
-						</tr>
-						<tr>
-							<td><b>Image File Path(s) :</b></td><td><span id="imageFilePath"></span></td>
-						</tr>
-						<tr>
-							<td><b>Image File Name(s) :</b></td><td><span id="imageFileName"></span></td>
-						</tr>
-					</table>
+						<%} %>
+					</tbody>
+					
+				</table>
+				<table id="commentSection" width="100%">
+					<tr>
+					
+					<td><b>Comment</b></td>
+					<td><textarea rows="5" cols="50" id="commentArea"></textarea></td>
+					</tr>
+					<tr>
+						<td><input type="button" value="Save" id="saveReview" onclick="saveReview()"></td>
+					</tr>
+				</table>
 				</div>
 				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
