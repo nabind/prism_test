@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,11 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
+import com.ctb.prism.login.transferobject.Address;
+import com.ctb.prism.login.transferobject.HintAnswers;
+import com.ctb.prism.login.transferobject.MPasswordHintQuestion;
 import com.ctb.prism.login.transferobject.MUserTO;
+import com.ctb.prism.login.transferobject.PwdHistory;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.ctb.prism.parent.transferobject.ManageContentTO;
 import com.ctb.prism.parent.transferobject.ParentTO;
@@ -76,43 +81,21 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
-		try {
-			questionList = (List<QuestionTO>) getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SECRET_QUESTION + "}");
-					cs.setString(1, "0");
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					ResultSet rsQuestion = null;
-					List<QuestionTO> questionList = new ArrayList<QuestionTO>();
-					try {
-						cs.execute();
-						rsQuestion = (ResultSet) cs.getObject(2);
-						QuestionTO questionTO = null;
-						while(rsQuestion.next()){
-							questionTO = new QuestionTO();
-							questionTO.setQuestionId(rsQuestion.getLong("QUESTION_ID"));
-							questionTO.setQuestion(rsQuestion.getString("QUESTION"));
-							questionTO.setSno(rsQuestion.getLong("SNO"));
-							questionList.add(questionTO);
-						}
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					return questionList;
-				}
-			});
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getSecretQuestions() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
+		
+		Query searchQuestionQuery = new Query(Criteria.where("project_id").is(contractName.toUpperCase()));
+		
+		List<MPasswordHintQuestion> pwdHintQuestionList = getMongoTemplatePrism("global").find(searchQuestionQuery, MPasswordHintQuestion.class);
+		
+		QuestionTO questionTO = null;
+		for (MPasswordHintQuestion question : pwdHintQuestionList) {
+			questionTO = new QuestionTO();
+			questionTO.setQuestionId(Long.valueOf(question.get_id()));
+			questionTO.setQuestion(question.getQuestion());
+			questionTO.setSno(Long.valueOf(question.getQuestionSeq()));
+			questionList.add(questionTO);
+		}		
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getSecretQuestions() took time: " + String.valueOf(t2 - t1) + "ms");
 		return questionList;
 	}
 
@@ -1400,76 +1383,51 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		long t1 = System.currentTimeMillis();
 		ParentTO parentTO = null;
 		Map<String,Object> resultMap = null;
-		try {
-			resultMap = (HashMap<String,Object>) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ACCOUNT_DETAILS + "}");
-					cs.setString(1, username);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					Map<String,Object> resultMap = null;
-					ResultSet rsUser = null;
-					ResultSet rsQuestion = null;
-					try {
-						cs.execute();
-						rsUser = (ResultSet) cs.getObject(2);
-						rsQuestion = (ResultSet) cs.getObject(3);
-						
-						ParentTO parentTO = null;
-						while (rsUser.next()) {
-							parentTO = new ParentTO();
-							parentTO.setUserId(rsUser.getLong("USERID"));
-							parentTO.setUserName(rsUser.getString("USERNAME"));
-							parentTO.setDisplayName(rsUser.getString("DISPLAY_USERNAME"));
-							parentTO.setLastName(rsUser.getString("LAST_NAME"));
-							parentTO.setFirstName(rsUser.getString("FIRST_NAME"));
-							parentTO.setMail(rsUser.getString("EMAIL_ADDRESS"));
-							parentTO.setMobile(rsUser.getString("PHONE_NO"));
-							parentTO.setCountry(rsUser.getString("COUNTRY"));
-							parentTO.setZipCode(rsUser.getString("ZIPCODE"));
-							parentTO.setCity(rsUser.getString("CITY"));
-							parentTO.setState(rsUser.getString("STATE"));
-							parentTO.setStreet(rsUser.getString("STREET"));
-							parentTO.setSalt(rsUser.getString("SALT"));
-						}
-						
-						List<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
+		List<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
+		
+		Query searchUserQuery = new Query(Criteria.where("project_id").is(Utils.getProject())
+				.and("_id").is(username));
+		
+		MUserTO user = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+		
+		if(user != null){
+			parentTO = new ParentTO();
+			parentTO.setUserName(user.get_id());
+			parentTO.setDisplayName(user.getDisplayName());
+			parentTO.setLastName(user.getLastName());
+			parentTO.setFirstName(user.getFirstName());
+			parentTO.setMail(user.getEmail());
+			parentTO.setMobile(user.getPhoneNum());
+			if(user.getAddress() != null) {
+				parentTO.setCountry(user.getAddress().getCounty());
+				parentTO.setZipCode(user.getAddress().getZipCode());
+				parentTO.setCity(user.getAddress().getCity());
+				parentTO.setState(user.getAddress().getState());
+				parentTO.setStreet(user.getAddress().getStreet());
+			}			
+			parentTO.setSalt(user.getSalt());
+		
+			if(user.getHintAnswers() != null) {
+				for (int count =0; count < user.getHintAnswers().length ; count++) {
+					Query searchQuestionQuery = new Query(Criteria.where("project_id").is(Utils.getProject().toUpperCase())
+							.and("_id").is(user.getHintAnswers()[count].getQID()));
+					
+					MPasswordHintQuestion pwdHintQuestion = getMongoTemplatePrism("global").findOne(searchQuestionQuery, MPasswordHintQuestion.class);
+					
+					if(pwdHintQuestion != null) {
 						QuestionTO questionTo = null;
-						while (rsQuestion.next()) {
-							questionTo = new QuestionTO();
-							questionTo.setSno(rsQuestion.getLong("SNO"));
-							questionTo.setQuestionId(rsQuestion.getLong("QUESTION_ID"));
-							questionTo.setQuestion(rsQuestion.getString("QUESTION"));
-							questionTo.setAnswerId(rsQuestion.getLong("ANSWER_ID"));
-							questionTo.setAnswer(rsQuestion.getString("ANSWER"));
-							questionTOs.add(questionTo);
-						}
-						
-						resultMap = new HashMap<String,Object>();
-						resultMap.put("parentTO", parentTO);
-						resultMap.put("questionTOs", questionTOs);
-					} catch (SQLException e) {
-						e.printStackTrace();
-						logger.log(IAppLogger.ERROR, "Error occurred while retrieving user details for manage.", e);
-					}
-					return resultMap;
+						questionTo = new QuestionTO();
+						questionTo.setSno(Long.valueOf(pwdHintQuestion.getQuestionSeq()));
+						questionTo.setQuestionId(Long.valueOf(pwdHintQuestion.get_id()));
+						questionTo.setQuestion(pwdHintQuestion.getQuestion());
+						//questionTo.setAnswerId(rsQuestion.getLong("ANSWER_ID")); --Blocked
+						questionTo.setAnswer(user.getHintAnswers()[count].getAnsValue());
+						questionTOs.add(questionTo);
+						parentTO.setQuestionToList(questionTOs);
+					}				
 				}
-			});
-			
-			parentTO = (ParentTO)resultMap.get("parentTO");
-			parentTO.setQuestionToList((List<QuestionTO>)resultMap.get("questionTOs"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.log(IAppLogger.ERROR, "Error occurred while retrieving user details for manage.", e);
-		}finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - manageParentAccountDetails() took time: " + String.valueOf(t2 - t1) + "ms");
-		}
+			}			
+		}		
 		return parentTO;
 	}
 
@@ -1481,6 +1439,9 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 	//TODO - Need to move in store proc. Use PKG_MY_ACCOUNT.SP_GET_SECURITY_QUESTIONS() then delete GET_PARENT_SECURITY_QUESTION
 	public ArrayList<QuestionTO> getSecurityQuestionForUser(Map<String, Object> paramMap) {
 
+		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getSecurityQuestionForUser()");
+		long t1 = System.currentTimeMillis();
+		
 		String contractName = (String) paramMap.get("contractName"); 
 		String username = (String) paramMap.get("username"); 
 		
@@ -1496,12 +1457,11 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 				questionTo.setSno(((BigDecimal) fieldDetails.get("SNO")).longValue());
 				questionTo.setQuestionId(((BigDecimal) fieldDetails.get("QUESTION_ID")).longValue());
 				questionTo.setQuestion((String) fieldDetails.get("QUESTION"));
-				// questionTo.setAnswerId(((BigDecimal) fieldDetails.get("ANSWER_ID")).longValue());
-				// questionTo.setAnswer((String)fieldDetails.get("ANSWER"));
-
 				questionTOs.add(questionTo);
 			}
 		}
+		long t2 = System.currentTimeMillis();
+		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getSecurityQuestionForUser() took time: " + String.valueOf(t2 - t1) + "ms");
 		return questionTOs;
 	}
 
@@ -1600,73 +1560,77 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 			}else{
 				parentTO.setPassword(String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 			}
-			final String[] questionIdArr = new String[parentTO.getQuestionToList().size()];
-			final String[] answerIdArr = new String[parentTO.getQuestionToList().size()];
-			final String[] ansValArr = new String[parentTO.getQuestionToList().size()];
-			int index = 0;
-			for (QuestionTO questionTo : parentTO.getQuestionToList()) {
-				questionIdArr[index] = String.valueOf(questionTo.getQuestionId());
-				answerIdArr[index] = String.valueOf(questionTo.getAnswerId());
-				ansValArr[index] = String.valueOf(questionTo.getAnswer());
-				index++;
-			}
 			
-			objectValueTO = (com.ctb.prism.core.transferobject.ObjectValueTO) getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					int count =1;
-					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.UPDATE_USER_DATA + "}");
-					cs.setLong(count++, parentTO.getUserId());
-					cs.setString(count++, parentTO.getPassword());
-					cs.setString(count++, parentTO.getSalt());
-					cs.setString(count++, parentTO.getFirstName());
-					cs.setString(count++, parentTO.getLastName());
-					cs.setString(count++, parentTO.getMail());
-					cs.setString(count++, parentTO.getMobile());
-					cs.setString(count++, parentTO.getCountry());
-					cs.setString(count++, parentTO.getZipCode());
-					cs.setString(count++, parentTO.getState());
-					cs.setString(count++, parentTO.getStreet());
-					cs.setString(count++, parentTO.getCity());
-					cs.setString(count++, parentTO.getDisplayName());
-					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
-					cs.setString(count++, Utils.arrayToSeparatedString(answerIdArr, '~'));
-					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
-					return cs;
-				}
-			}, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(CallableStatement cs) {
-					long executionStatus = 0;
-					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
-					try {
-						cs.execute();
-						executionStatus = cs.getLong(17);
-						statusTO.setValue(Long.toString(executionStatus));
-						statusTO.setErrorMsg(cs.getString(18));
-						Utils.logError(statusTO.getErrorMsg());
-					} catch (SQLException e) {
-						e.printStackTrace();
+			
+			// get the user which needs modification
+			Query searchUserQuery = new Query(Criteria.where("_id").is(parentTO.getUserName()).and("project_id").is(Utils.getProject()));
+			MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+			
+			try {
+				if(savedUser != null) {
+					if(!savedUser.getPassword().equals(IApplicationConstants.DEFAULT_PRISM_VALUE)) {
+						
+						savedUser.setIsFirstTimeLogin("N");
+						savedUser.setPassword(parentTO.getPassword());
+						savedUser.setSalt(parentTO.getSalt());
+						
+						PwdHistory[] pwdHistoryArr = savedUser.getPwdHistory();
+						pwdHistoryArr[savedUser.getPwdHistory().length].setPwd(parentTO.getPassword());
+						pwdHistoryArr[savedUser.getPwdHistory().length].setDate(new Date());
+												
+						savedUser.setPwdHistory(pwdHistoryArr);
+						
 					}
-					return statusTO;
+					
+					savedUser.setLastName(parentTO.getLastName());
+					savedUser.setFirstName(parentTO.getFirstName());
+					savedUser.setEmail(parentTO.getMail());
+					savedUser.setPhoneNum(parentTO.getMobile());
+					savedUser.setDisplayName(parentTO.getDisplayName());
+					
+					Address address = new Address();
+					address.setCounty(parentTO.getCountry());
+					address.setZipCode(parentTO.getZipCode());
+					address.setState(parentTO.getState());
+					address.setStreet(parentTO.getStreet());
+					address.setCity(parentTO.getCity());
+					
+					savedUser.setAddress(address);
+					savedUser.setUpdatedDate(new Date());
+					
+					
+					HintAnswers[]  hintAnswers = new HintAnswers[parentTO.getQuestionToList().size()];
+					
+					int index = 0;
+					for (QuestionTO questionTo : parentTO.getQuestionToList()) {
+						hintAnswers[index].setQID(String.valueOf(questionTo.getQuestionId()));
+						hintAnswers[index].setAnsValue(questionTo.getAnswer());
+						index++;
+					}
+					
+					savedUser.setHintAnswers(hintAnswers);
+					
+					//save
+					getMongoTemplatePrism().save(savedUser);
+					
+					long t2 = System.currentTimeMillis();
+					logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
+					
+					return true;
+				} else {
+					return false;
 				}
-			});
 			
-			if(Long.parseLong(objectValueTO.getValue()) > 0){
-				returnFlag = Boolean.TRUE;
+			} catch (Exception e) {
+				logger.log(IAppLogger.ERROR, "Error occurred while updating user details.", e);
+				throw new Exception(e);
 			}
 			
-		} catch (BusinessException bex) {
-			throw new BusinessException(bex.getCustomExceptionMessage());
-		} catch (Exception e) {
-			logger.log(IAppLogger.ERROR, "Error occurred while updating user profile details.", e);
-			return Boolean.FALSE;
-		} finally {
-			long t2 = System.currentTimeMillis();
-			logger.log(IAppLogger.ERROR, "ParentDAOImpl - updateUserProfile() with error: " + objectValueTO.getErrorMsg());
-			logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
+		} catch(Exception e) {
+			logger.log(IAppLogger.ERROR, "Error occurred while updating user details.", e);
+			
 		}
-		return returnFlag;
+		return false;
 	}
 
 	

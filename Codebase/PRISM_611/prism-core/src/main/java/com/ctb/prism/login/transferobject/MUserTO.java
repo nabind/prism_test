@@ -11,6 +11,11 @@ import com.ctb.prism.core.constant.IApplicationConstants;
 @Document(collection = "Users")
 public class MUserTO implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
     private String _id;
 	

@@ -1,21 +1,27 @@
 package com.ctb.prism.login.transferobject;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class PwdHistory implements Serializable 
 {
-    private String date;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Date date;
 
     private String pwd;
 
-    public String getDate ()
+    public Date getDate ()
     {
         return date;
     }
 
-    public void setDate (String Date)
+    public void setDate (Date date)
     {
-        this.date = Date;
+        this.date = date;
     }
 
     public String getPwd ()
