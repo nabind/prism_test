@@ -1346,7 +1346,7 @@ public class TascDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, max(f.created_date_time) datetimestamp, s.student_bio_id ");
+		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, max(f.created_date_time) datetimestamp, s.student_bio_id, s.test_element_id ");
 		queryBuff.append(" from SCR_STUDENT_BIO_DIM s, SCR_SUBTEST_SCORE_FACT f, customer_info c, form_dim fr, subtest_dim sub ");
 		queryBuff.append(" where s.student_bio_id = f.student_bio_id and s.customerid = c.customerid and fr.formid = f.formid and sub.subtestid = f.subtestid ");
 		if(searchProcess != null) {
@@ -1367,7 +1367,7 @@ public class TascDAOImpl {
 			if(searchProcess.getStatus() != null && searchProcess.getStatus().trim().length() > 0) 
 				queryBuff.append("AND f.scr_status = ? ");
 		}
-		queryBuff.append(" group by s.last_name || ', ' || s.first_name || ' ' || s.middle_name , s.ext_student_id , c.customer_code, sub.subtest_name, f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, s.student_bio_id order by datetimestamp ");
+		queryBuff.append(" group by s.last_name || ', ' || s.first_name || ' ' || s.middle_name , s.ext_student_id , c.customer_code, sub.subtest_name, f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, s.student_bio_id, s.test_element_id order by datetimestamp ");
 		String query = queryBuff.toString();
 		 System.out.println(query);
 		try {
@@ -1405,6 +1405,7 @@ public class TascDAOImpl {
 				processTO.setSubtest(rs.getString(8));
 				processTO.setDateTimestamp(rs.getString(9));
 				processTO.setStudentBioId(rs.getString(10));
+				processTO.setTestElementId(rs.getString(11));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {
@@ -1461,4 +1462,52 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
+	public List<TASCProcessTO> getStudentScoreInfo(String studentTestEventId,String subTestName) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		TASCProcessTO processTO = null;
+		List<TASCProcessTO> scoreList = new ArrayList<TASCProcessTO>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("SELECT s.test_element_id,");
+		queryBuff.append("fr.form_name,");
+		queryBuff.append("f.nce,");
+		queryBuff.append("f.ss,");
+		queryBuff.append("f.hse,");
+		queryBuff.append("f.updated_date_time");
+		queryBuff.append(" from SCR_SUBTEST_SCORE_FACT f, SCR_STUDENT_BIO_DIM s, form_dim fr, subtest_dim sub");
+		queryBuff.append(" where s.student_bio_id = f.student_bio_id");
+		queryBuff.append(" and fr.formid = f.formid");
+		queryBuff.append(" and sub.subtestid = f.subtestid");
+		queryBuff.append(" and s.test_element_id = ?");		
+		queryBuff.append(" and sub.subtest_name = ?");
+		String query = queryBuff.toString();
+		System.out.println(query);
+		
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, studentTestEventId);
+			pstmt.setString(2, subTestName);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				processTO = new TASCProcessTO();
+				processTO.setTestElementId(rs.getString(1));
+				processTO.setForm(rs.getString(2));
+				processTO.setNc(rs.getString(3));
+				processTO.setSs(rs.getString(4));
+				processTO.setHse(rs.getString(5));
+				processTO.setDateTimestamp(rs.getString(6));
+				scoreList.add(processTO);
+				}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {pstmt.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+		}
+		return scoreList;
+	}
 }

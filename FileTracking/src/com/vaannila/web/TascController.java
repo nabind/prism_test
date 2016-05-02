@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.digester.Substitutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -1059,5 +1060,31 @@ public class TascController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@RequestMapping("/process/getStudentScoreInfo.htm")
+	public ModelAndView getStudentScoreInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: getStudentScoreInfo()");
+		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+		try {
+			if(!UserController.checkLogin(request)) return modelAndView;
+			SearchProcess process = new SearchProcess();
+			String studentTestEventId = request.getParameter("studentTestEventId");
+			String subTestName = request.getParameter("subTestName");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<TASCProcessTO> reviewProcess = stageDao.getStudentScoreInfo(studentTestEventId,subTestName);
+			System.out.println("List = " + reviewProcess);
+			
+			request.getSession().setAttribute("studentScoreInfoList", reviewProcess);
+			modelAndView = new ModelAndView("scoreReviewResult", "message", jsonStr);
+			
+			
+		} catch (Exception e) {
+			response.setContentType("text/plain");
+			response.getWriter().write("Error");
+			e.printStackTrace();
+		}
+		System.out.println("Exit: getMoreInfo()");
+		return modelAndView;
 	}
 }
