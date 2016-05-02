@@ -1,7 +1,9 @@
 package com.vaannila.web;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.digester.Substitutor;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -1052,14 +1057,34 @@ public class TascController {
 			process.setSubtestId(request.getParameter("subtestId"));
 			
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> reviewProcess = stageDao.getReviewResult(process);
-
+			List<Map<String, String>> reviewProcess = stageDao.getReviewResult(process);
+			System.out.println("result size: " + reviewProcess!=null? reviewProcess.size() : "null");
+			System.out.println(listmapToJsonString(reviewProcess, process));
 			response.setContentType("application/json");
-			response.getWriter().write(convertToJson(reviewProcess));
+			response.getWriter().write(listmapToJsonString(reviewProcess, process));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String listmapToJsonString(List<Map<String, String>> list, SearchProcess process) {
+		JSONArray json_arr = new JSONArray();
+		for (Map<String, String> map : list) {
+			JSONObject json_obj = new JSONObject();
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				String key = entry.getKey();
+				Object value = entry.getValue();
+				try {
+					json_obj.put(key, value);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			json_arr.put(json_obj);
+		}
+		return "{\"draw\":" + process.getStudentBioId()+process.getSubtestId() + ",\"data\":" + json_arr.toString() + "}";
 	}
 	
 	@RequestMapping("/process/getStudentScoreInfo.htm")

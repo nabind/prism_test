@@ -1419,19 +1419,20 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
-	public List<TASCProcessTO> getReviewResult(SearchProcess searchProcess) throws Exception {
+	public List<Map<String, String>> getReviewResult(SearchProcess searchProcess) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		TASCProcessTO processTO = null;
-		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
+		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
+		Map<String, String> processMap = new HashMap<String, String>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.formid, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
-		queryBuff.append(" from scr_subtest_score_fact s ");
-		queryBuff.append(" where student_bio_id = ? and subtestid = ? ");
+		queryBuff.append(" select s.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
+		queryBuff.append(" where f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by created_date_time ");
 		String query = queryBuff.toString();
-		 System.out.println(query);
+		System.out.println(query + " bio:" + searchProcess.getStudentBioId() + " subtest:" + searchProcess.getSubtestId());
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1441,15 +1442,15 @@ public class TascDAOImpl {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processTO = new TASCProcessTO();
-				processTO.setForm(rs.getString(1));
-				processTO.setSs(rs.getString(2));
-				processTO.setNc(rs.getString(3));
-				processTO.setHse(rs.getString(4));
-				processTO.setDateTimestamp(rs.getString(5));
-				processTO.setComments(rs.getString(6));
-				processTO.setStatus(rs.getString(7));
-				processTO.setIsActive(rs.getString(8));
-				processList.add(processTO);
+				processMap.put("form", rs.getString(1));
+				processMap.put("ss", rs.getString(2));
+				processMap.put("nc", rs.getString(3));
+				processMap.put("hse", rs.getString(4));
+				processMap.put("date", rs.getString(5));
+				processMap.put("comments", rs.getString(6));
+				processMap.put("status", rs.getString(7));
+				processMap.put("isActive", rs.getString(8));
+				processList.add(processMap);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

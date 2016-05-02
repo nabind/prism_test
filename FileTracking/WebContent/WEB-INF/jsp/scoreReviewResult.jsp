@@ -10,9 +10,10 @@
 <%@page import="com.vaannila.util.PropertyFile" %>
 
 <link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
-
+<link rel="stylesheet" href="css/jquery.checkbox.css" type="text/css"/>
 <script type="text/javascript" src="js/modules/scoreReview.js"></script>
 <script src="css/jquery.validate.js"></script>	
+<script type="text/javascript" src="js/jquery.checkbox.js"></script>
 	
 <div id="heromaskarticle">
 	<div id="articlecontent">
@@ -70,18 +71,16 @@
 							<td><%=process.getNc() %></td>
 							<td><%=process.getSs() %></td>
 							<td><%=process.getHse() %></td>
-							<td><a href="#" onclick="studentDetails('<%=process.getTestElementId()%>','<%=process.getSubtestName()%>')">Review</a></td>
+							<td><a href="#" onclick="getMoreInfoWin('<%=process.getStudentBioId()%>','<%=process.getSubtest()%>', '<%=process.getStudentName() %>','<%=process.getSubtestName() %>')">Review</a></td>
 						</tr>
 						<%} %>
 					</tbody>
 				</table>
 				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="review"><p><p>
-					<table id="scoreResultTable" width="100%">
+					<table id="scoreReviewTable" width="100%">
 					<thead>
 						<tr>
-							<th >&nbsp;</th>
-							<th style="min-width: 60px;">Student Test ID</th>
 							<th>Form Name</th>
 							<th>New NC</th>
 							<th>New SS</th>
@@ -91,36 +90,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<% 
-						java.util.List<TASCProcessTO> scoreList = (ArrayList) request.getSession().getAttribute("reviewProcess");
-						int cnt=0;
-						for(TASCProcessTO scores : scoreList) {
-							cnt++;
-						%>
-						<tr>
-							<td >&nbsp;</td>
-							<td style="min-width: 60px;"><%=scores.getTestElementId() %></td>
-							<td><%=scores.getForm() %></td>
-							<td><%=scores.getNc() %></td>
-							<td><%=scores.getSs() %></td>
-							<td><%=scores.getHse() %></td>
-							<td><%=scores.getDateTimestamp() %></td>
-							<td><input type="checkbox" name="isApprove" id="<%=cnt %>" onclick="rejectOther(this)"></td>
-						</tr>
-						<%} %>
+						
 					</tbody>
 					
 				</table>
-				<table id="commentSection" width="100%">
-					<tr>
-					
-					<td><b>Comment</b></td>
-					<td><textarea rows="5" cols="50" id="commentArea"></textarea></td>
-					</tr>
-					<tr>
-						<td><input type="button" value="Save" id="saveReview" onclick="saveReview()"></td>
-					</tr>
-				</table>
+				
 				</div>
 				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>

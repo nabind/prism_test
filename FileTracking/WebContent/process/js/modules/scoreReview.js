@@ -34,32 +34,53 @@ $(document).ready(function(){
 	
 });
 
-function getMoreInfoWin(studentBioId, subtestId) {
-	jQuery("#searchScoreReview").dialog({
-		title: 'Review pending scores: ',
+function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
+	jQuery("#reviewDialog").dialog({
+		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
-		height: 500,
-		draggable: false
+		height: "auto",
+		draggable: true
 	});
-	var dataString = "studentBioId="+studentBioId+"subtestId="+subtestId;
+	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
+
+	var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
+
 	$.ajax({
-	      type: "POST",
-	      url: "getReviewResult.htm",
-	      data: dataString,
-	      success: function(data) {
-	    	  if(data == "Error") {
-	    		  clearStudentDetailsTableWhenError('Failed to get review records');
-	    	  } else {
-	    		  $("#_stu_log").html( '' );
-		    	  var obj = JSON.parse(data);
-		    	  
-	    	  }
+		type: "POST",
+	    url: "getReviewResult.htm",
+	    data: dataString,
+	    success: function(data) {
+	    	table.destroy();
+	    	table = $('#scoreReviewTable').dataTable({
+				bJQueryUI : true,
+				bPaginate : false,
+				bFilter : false,
+				bInfo : false,
+				bSort : false,
+				data : data.data,
+		        columns: [
+		            { data: "form" },
+		            { data: "nc" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "" }
+		        ],
+				"columnDefs" : [ {
+					"targets" : -1,
+					"data" : null,
+					"defaultContent" : "<input type='radio' name='name' value='1'  />"
+					} ]
+			});
+			$('input:radio').checkbox();
 	      },
 		  error: function(data) {
-			  clearStudentDetailsTableWhenError('Failed to get Student Details');
+			  alert('Failed to get Student Details');
 		  }
 	});
+
 }
+
 
 function dataTableCallBack(){
 	update_rows();
