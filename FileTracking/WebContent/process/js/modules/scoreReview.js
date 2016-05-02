@@ -127,14 +127,36 @@ function studentDetails(studentTestEventId,subTestName){
 }
 
 function rejectOther(id){
-	var elem = document.getElementsByName("isApprove");
-	for(var i=1;i<=elem.length;i++){
-	if(i==id){
-		document.getElementById(i).disabled = false;
-    }
-    else 
-    {	
-    	document.getElementById(i).disabled = true;
-    }
-    }
+	var inputs = document.getElementsByName("isApprove");
+	for(var i=0;i<inputs.length;i++){
+		var input = inputs[i];
+		input.onclick = function (evt) {
+		    if (this.checked) {
+		    disableInputs(this, inputs);
+		    }
+		    else {
+		    enableInputs(this, inputs);
+		    }
+		    return true;
+		    };
+	}
+	
+function disableInputs (input, inputs) {
+	    for (var i = 0; i < inputs.length; i++) {
+	    var currentInput = inputs[i];
+	    if (currentInput != input) {
+	    currentInput.disabled = true;
+	    }
+	    }
+	    }
+
+function enableInputs (input, inputs) {
+	    for (var i = 0; i < inputs.length; i++) {
+	    var currentInput = inputs[i];
+	    if (currentInput != input) {
+	    currentInput.disabled = false;
+	    }
+	    }
+	    }
+
 }

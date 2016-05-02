@@ -105,7 +105,7 @@
 							<td><%=scores.getSs() %></td>
 							<td><%=scores.getHse() %></td>
 							<td><%=scores.getDateTimestamp() %></td>
-							<td><input type="checkbox" name="isApprove" id="<%=cnt %>" onclick="rejectOther(<%=cnt %>)"></td>
+							<td><input type="checkbox" name="isApprove" id="<%=cnt %>" onclick="rejectOther(this)"></td>
 						</tr>
 						<%} %>
 					</tbody>
