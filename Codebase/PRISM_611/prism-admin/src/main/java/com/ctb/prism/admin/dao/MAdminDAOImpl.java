@@ -55,7 +55,7 @@ import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
-import com.ctb.prism.login.transferobject.CustProdAdmin;
+import com.ctb.prism.login.transferobject.MCustProdAdminTO;
 import com.ctb.prism.login.transferobject.MOrgTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.OrgCategory;
@@ -868,7 +868,7 @@ public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
 		String roleNotAdded = (String)propertyMap.get(IApplicationConstants.ROLE_NOT_ADDED);
 		
 		Query searchUserQuery = new Query(Criteria.where("_id").is(Utils.getProject()));
-		CustProdAdmin custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, CustProdAdmin.class);
+		MCustProdAdminTO custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, MCustProdAdminTO.class);
 		
 		List<RoleTO> roleTos = new ArrayList<RoleTO>();
 		if(custProdAdmin != null) {

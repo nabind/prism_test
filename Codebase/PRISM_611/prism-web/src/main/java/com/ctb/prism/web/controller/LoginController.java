@@ -92,6 +92,7 @@ public class LoginController {
 		UserTO user = null;
 		try {
 			paramMap.put("username", req.getParameter("loginAsUsername"));
+			paramMap.put("propertyMap" ,req.getSession().getAttribute("propertyMap"));
 			user = loginService.getUserDetails(paramMap);
 
 			res.setContentType("plain/text");
@@ -332,6 +333,7 @@ public class LoginController {
 					req.getSession().setAttribute(IApplicationConstants.CURRUSER, userDetails.getUsername());
 					req.getSession().setAttribute(IApplicationConstants.AUTHORITIES, userDetails.getAuthorities());
 					paramMap.put("username", userDetails.getUsername());
+					paramMap.put("propertyMap" ,req.getSession().getAttribute("propertyMap"));
 					user = loginService.getUserDetails(paramMap);
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
@@ -343,6 +345,7 @@ public class LoginController {
 					req.getSession().setAttribute(IApplicationConstants.CURRUSER, userDetails.getUsername());
 					req.getSession().setAttribute(IApplicationConstants.AUTHORITIES, userDetails.getAuthorities());
 					paramMap.put("username", userDetails.getUsername());
+					paramMap.put("propertyMap" ,req.getSession().getAttribute("propertyMap"));
 					user = loginService.getUserDetails(paramMap);
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());
 					req.getSession().setAttribute(IApplicationConstants.CURRORGLVL, user.getOrgNodeLevel());
@@ -366,6 +369,7 @@ public class LoginController {
 					if ((IApplicationConstants.TRUE.equals(reloadUserRequestScope)) || (IApplicationConstants.TRUE.equals(reloadUserSessionScope))) {
 						paramMap.put("username", user.getUserName());
 						// system reloading user after first-time change password
+						paramMap.put("propertyMap" ,req.getSession().getAttribute("propertyMap"));
 						user = loginService.getUserDetails(paramMap);
 					}
 					req.getSession().setAttribute(IApplicationConstants.CURRORG, user.getOrgId());

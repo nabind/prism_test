@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -54,8 +56,8 @@ import com.ctb.prism.core.util.CustomStringUtil;
 import com.ctb.prism.core.util.PasswordGenerator;
 import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
-import com.ctb.prism.login.transferobject.CustProdAdmin;
 import com.ctb.prism.login.transferobject.FlatCustProdAdmin;
+import com.ctb.prism.login.transferobject.MCustProdAdminTO;
 import com.ctb.prism.login.transferobject.MFlatActionAccessTO;
 import com.ctb.prism.login.transferobject.MFlatReportsTO;
 import com.ctb.prism.login.transferobject.MFlatUserTO;
@@ -396,6 +398,11 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		} else {
 			contractName = Utils.getContractName();
 		}
+		
+		Map<String,Object> propertyMap = (Map<String,Object>)paramMap.get("propertyMap");
+		String passwordExp = (String) propertyMap.get("password.expiry");
+		String passwordWar = (String) propertyMap.get("password.expiry.warning");
+		
 		final String resolvedContractName = contractName;
 		final String userType = getUserType(username, contractName);
 		
@@ -405,7 +412,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
 						
-			return (UserTO) getJdbcTemplatePrism(contractName).execute(
+			/*return (UserTO) getJdbcTemplatePrism(contractName).execute(
 					new CallableStatementCreator() {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_EDU_USER_DETAILS);
@@ -452,57 +459,57 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 							return user;
 						}
 					}
-				);
+				);*/
+			
+			return user;
 			
 		} else {
-			return (UserTO) getJdbcTemplatePrism(contractName).execute(
-					new CallableStatementCreator() {
-						public CallableStatement createCallableStatement(Connection con) throws SQLException {
-							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS);
-							cs.setString(1, username);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-							return cs;
-						}
-					}, new CallableStatementCallback<Object>() {
-						public Object doInCallableStatement(CallableStatement cs) {
-							ResultSet rs = null;
-							UserTO user = new UserTO();
-							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(2);
-								while (rs.next()) {
-									user.setFirstTimeLogin(rs.getString("IS_FIRSTTIME_LOGIN"));
-									user.setUserId(String.valueOf(rs.getLong("USERID")));
-									user.setOrgId(String.valueOf(rs.getLong("ORG_NODEID")));
-									user.setOrgNodeLevel(rs.getLong("ORG_NODE_LEVEL"));
-									user.setDisplayName(rs.getString("DISPLAY_USERNAME") != null ? rs.getString("DISPLAY_USERNAME") : "Anonymous");
-									user.setUserStatus(rs.getString("ACTIVATION_STATUS"));
-									user.setUserName(username);
+			
+			Query searchUserQuery = new Query(Criteria.where("_id").is(username));
+			MUserTO savedUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
+			
+			user = new UserTO();
+			user.setFirstTimeLogin(savedUser.getIsFirstTimeLogin());
+			//user.setUserId(String.valueOf(rs.getLong("USERID")));
+			for(OrgUser org : savedUser.getOrgUser()){
+				if (org.getIsActive().equals(IApplicationConstants.FLAG_Y)){
+					user.setOrgId(org.getOrg_id());
+					break;
+				}
+			}	
+			user.setOrgNodeLevel(Long.valueOf(savedUser.getOrgCategory().getLevel()));
+			user.setDisplayName(savedUser.getDisplayName() != null ? savedUser.getDisplayName() : "Anonymous");
+			user.setUserStatus(savedUser.getStatus());
+			user.setUserName(savedUser.get_id());
 
-									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
-									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
-									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
-									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
-									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
-									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
-									user.setUserType(userType);
-									user.setOrgMode(rs.getString("ORG_MODE"));
-									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
-								}
-								user.setIsPasswordExpired(cs.getString(3));
-								user.setIsPasswordWarning(cs.getString(4));
-								Utils.logError(cs.getString(5));
-								
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-							return user;
-						}
-					}
-				);
+			user.setPassword(savedUser.getPassword() != null ? savedUser.getPassword() : "");
+			user.setSalt(Utils.getSaltWithUser(username, (savedUser.getSalt() != null) ? savedUser.getSalt() : ""));
+			user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
+			user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
+			user.setCustomerId(savedUser.getCustomerCode());
+			user.setUserEmail(savedUser.getEmail() != null ? savedUser.getEmail()  : "");
+			user.setUserType(userType);
+			user.setOrgMode(savedUser.getOrgCategory().getCategory());
+			//user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+			
+			PwdHistory[] pwdHistoryArr = savedUser.getPwdHistory(); 			
+			List<Date> pwdDates = new ArrayList<Date>();
+			for(PwdHistory pwdHistory: pwdHistoryArr){
+				pwdDates.add(pwdHistory.getDate());
+			}
+						
+			/****need to implement this password exp and warning section
+			Date mostRecent = Collections.max(pwdDates);
+			if (mostRecent + passwordExp)
+		
+			
+			user.setIsPasswordExpired(cs.getString(3));
+			user.setIsPasswordWarning(cs.getString(4));'
+			
+			***/
+			
+			return user;
+			
 		}	
 	
 	}
@@ -721,7 +728,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 					sort(Sort.Direction.DESC, "customers.admins.seq")
 				);
 			
-			AggregationResults<FlatCustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, CustProdAdmin.class, FlatCustProdAdmin.class);
+			AggregationResults<FlatCustProdAdmin> groupResults = getMongoTemplatePrism("global").aggregate(agg, MCustProdAdminTO.class, FlatCustProdAdmin.class);
 			List<FlatCustProdAdmin> reportDetails = groupResults.getMappedResults();
 			
 			// get all products
@@ -1260,12 +1267,12 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		String contractName = (String) paramMap.get("contractName");
 		
 		Query searchUserQuery = new Query(Criteria.where("_id").is(Utils.getProject(contractName)));
-		CustProdAdmin custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, CustProdAdmin.class);
+		MCustProdAdminTO custProdAdmin = getMongoTemplatePrism("global").findOne(searchUserQuery, MCustProdAdminTO.class);
 		
 		// get all products
 		Map<String, Object> propertyMap = new HashMap<String, Object>();
 		if(custProdAdmin != null) {
-			ProjectProp projectProp = custProdAdmin.getProjectProp();
+			ProjectProp projectProp = custProdAdmin.getUiConfig();
 			propertyMap = projectProp.getProperties();
 		}
 		

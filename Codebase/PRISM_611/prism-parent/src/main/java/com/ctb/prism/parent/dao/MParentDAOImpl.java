@@ -38,7 +38,8 @@ import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
 import com.ctb.prism.login.transferobject.Address;
 import com.ctb.prism.login.transferobject.HintAnswers;
-import com.ctb.prism.login.transferobject.MPasswordHintQuestion;
+import com.ctb.prism.login.transferobject.HintQuestions;
+import com.ctb.prism.login.transferobject.MCustProdAdminTO;
 import com.ctb.prism.login.transferobject.MUserTO;
 import com.ctb.prism.login.transferobject.PwdHistory;
 import com.ctb.prism.login.transferobject.UserTO;
@@ -82,16 +83,19 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		List<QuestionTO> questionList = new ArrayList<QuestionTO>();
 		
-		Query searchQuestionQuery = new Query(Criteria.where("project_id").is(contractName.toUpperCase()));
+		Query searchQuestionQuery = new Query(Criteria.where("_id").is(Utils.getProject().toUpperCase()));
+		searchQuestionQuery.fields().include("hintQuestions");
 		
-		List<MPasswordHintQuestion> pwdHintQuestionList = getMongoTemplatePrism("global").find(searchQuestionQuery, MPasswordHintQuestion.class);
+		List<MCustProdAdminTO> custProdAdminTO = getMongoTemplatePrism("global").find(searchQuestionQuery, MCustProdAdminTO.class);
+		
+		HintQuestions[] pwdHintQuestionList =custProdAdminTO.get(0).getHintQuestions();
 		
 		QuestionTO questionTO = null;
-		for (MPasswordHintQuestion question : pwdHintQuestionList) {
+		for (HintQuestions question : pwdHintQuestionList) {
 			questionTO = new QuestionTO();
-			questionTO.setQuestionId(Long.valueOf(question.get_id()));
-			questionTO.setQuestion(question.getQuestion());
-			questionTO.setSno(Long.valueOf(question.getQuestionSeq()));
+			questionTO.setQuestionId(Long.valueOf(question.getQid()));
+			questionTO.setQuestion(question.getQues());
+			questionTO.setSno(Long.valueOf(question.getSeq()));
 			questionList.add(questionTO);
 		}		
 		long t2 = System.currentTimeMillis();
@@ -1409,17 +1413,22 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		
 			if(user.getHintAnswers() != null) {
 				for (int count =0; count < user.getHintAnswers().length ; count++) {
-					Query searchQuestionQuery = new Query(Criteria.where("project_id").is(Utils.getProject().toUpperCase())
-							.and("_id").is(user.getHintAnswers()[count].getQID()));
+					Query searchQuestionQuery = new Query(Criteria.where("_id").is(Utils.getProject().toUpperCase())
+							.and("hintQuestions.qid").is(user.getHintAnswers()[count].getQID())
+							);
+					searchQuestionQuery.fields().include("hintQuestions.$");
 					
-					MPasswordHintQuestion pwdHintQuestion = getMongoTemplatePrism("global").findOne(searchQuestionQuery, MPasswordHintQuestion.class);
+					MCustProdAdminTO custProdAdmin = getMongoTemplatePrism("global").findOne(searchQuestionQuery, MCustProdAdminTO.class);
 					
-					if(pwdHintQuestion != null) {
+					HintQuestions pwdHintQuestion = new HintQuestions();
+					 					
+					if(custProdAdmin != null) {
+						pwdHintQuestion = custProdAdmin.getHintQuestions()[0];
 						QuestionTO questionTo = null;
 						questionTo = new QuestionTO();
-						questionTo.setSno(Long.valueOf(pwdHintQuestion.getQuestionSeq()));
-						questionTo.setQuestionId(Long.valueOf(pwdHintQuestion.get_id()));
-						questionTo.setQuestion(pwdHintQuestion.getQuestion());
+						questionTo.setSno(Long.valueOf(pwdHintQuestion.getSeq()));
+						questionTo.setQuestionId(Long.valueOf(pwdHintQuestion.getQid()));
+						questionTo.setQuestion(pwdHintQuestion.getQues());
 						//questionTo.setAnswerId(rsQuestion.getLong("ANSWER_ID")); --Blocked
 						questionTo.setAnswer(user.getHintAnswers()[count].getAnsValue());
 						questionTOs.add(questionTo);
@@ -1575,11 +1584,12 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 						savedUser.setSalt(parentTO.getSalt());
 						
 						PwdHistory[] pwdHistoryArr = savedUser.getPwdHistory();
-						pwdHistoryArr[savedUser.getPwdHistory().length].setPwd(parentTO.getPassword());
-						pwdHistoryArr[savedUser.getPwdHistory().length].setDate(new Date());
+						if(pwdHistoryArr!=null){
+							pwdHistoryArr[savedUser.getPwdHistory().length].setPwd(parentTO.getPassword());
+							pwdHistoryArr[savedUser.getPwdHistory().length].setDate(new Date());
 												
-						savedUser.setPwdHistory(pwdHistoryArr);
-						
+							savedUser.setPwdHistory(pwdHistoryArr);
+						}
 					}
 					
 					savedUser.setLastName(parentTO.getLastName());
@@ -1599,16 +1609,19 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 					savedUser.setUpdatedDate(new Date());
 					
 					
-					HintAnswers[]  hintAnswers = new HintAnswers[parentTO.getQuestionToList().size()];
+					HintAnswers[]  hintAnswersArr = new HintAnswers[parentTO.getQuestionToList().size()];
+					HintAnswers hintAnswers = null;
 					
 					int index = 0;
 					for (QuestionTO questionTo : parentTO.getQuestionToList()) {
-						hintAnswers[index].setQID(String.valueOf(questionTo.getQuestionId()));
-						hintAnswers[index].setAnsValue(questionTo.getAnswer());
+						hintAnswers = new HintAnswers();
+						hintAnswers.setQID(String.valueOf(questionTo.getQuestionId()));
+						hintAnswers.setAnsValue(questionTo.getAnswer());
+						hintAnswersArr[index] = hintAnswers;
 						index++;
 					}
 					
-					savedUser.setHintAnswers(hintAnswers);
+					savedUser.setHintAnswers(hintAnswersArr);
 					
 					//save
 					getMongoTemplatePrism().save(savedUser);
