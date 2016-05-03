@@ -13,7 +13,7 @@ public class CustProdAdmin implements Serializable
 	
     private Customers[] customers;
     
-    private ProjectProp projectProp;
+    private ProjectProp uiConfig;
 
     private String projectName;
 
@@ -39,12 +39,12 @@ public class CustProdAdmin implements Serializable
 		this.customers = customers;
 	}
 
-	public ProjectProp getProjectProp() {
-		return projectProp;
+	public ProjectProp getUiConfig() {
+		return uiConfig;
 	}
 
-	public void setProjectProp(ProjectProp projectProp) {
-		this.projectProp = projectProp;
+	public void setUiConfig(ProjectProp uiConfig) {
+		this.uiConfig = uiConfig;
 	}
 
 	public String getProjectName() {

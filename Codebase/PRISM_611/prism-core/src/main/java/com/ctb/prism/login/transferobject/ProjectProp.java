@@ -28,6 +28,9 @@ public class ProjectProp implements Serializable
     
     private SSO sso;
     
+    private Messages[] messages;
+    
+    
     public Map<String, Object> getProperties() {
     	Map<String, Object> propertyMap = new HashMap<String, Object>();
 		
@@ -63,6 +66,14 @@ public class ProjectProp implements Serializable
 		
 		return propertyMap;
     }
+
+	public Messages[] getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Messages[] messages) {
+		this.messages = messages;
+	}
 
 	public String getStaticPdfLocation() {
 		return staticPdfLocation;
