@@ -1521,20 +1521,21 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 		List<Map<String, Object>> userslist = null;
-		userslist = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_ALL_USERS_BY_EMAIL, emailId);
-		if (userslist.size() > 0) {
-
-			for (Map<String, Object> fieldDetails : userslist) {
+		
+		Query searchUserQuery = new Query(Criteria.where("email").is(emailId)
+				.and("status").in(IApplicationConstants.ACTIVE_FLAG,IApplicationConstants.SS_FLAG));
+		
+		List<MUserTO> serchUsers = getMongoTemplatePrism(contractName).find(searchUserQuery, MUserTO.class);
+		
+		if(serchUsers != null && serchUsers.size() > 0) {
+			for(MUserTO mUserTO : serchUsers) {
 				UserTO to = new UserTO();
-				to.setUserName((String) (fieldDetails.get("USERNAME")));
-				to.setFirstName((String) (fieldDetails.get("FIRST_NAME")));
-				to.setLastName((String) (fieldDetails.get("LAST_NAME")));
+				to.setUserName(mUserTO.get_id());
+				to.setFirstName(mUserTO.getFirstName());
+				to.setLastName(mUserTO.getLastName());
 				UserTOs.add(to);
-
 			}
-
 		}
-
 		return UserTOs;
 	}
 
