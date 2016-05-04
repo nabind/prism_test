@@ -441,7 +441,7 @@ public class LoginController {
 					}
 				}
 				
-				if (!isSwitchUser && user.getIsPasswordExpired().equals("TRUE")) {
+				if (!isSwitchUser && ("TRUE").equals(user.getIsPasswordExpired())) {
 					// logger.log(IAppLogger.DEBUG, "calling  changePassword.do...............................");
 					return new ModelAndView("redirect:changePassword.do?username=" + username);
 				}

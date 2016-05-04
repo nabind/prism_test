@@ -7,8 +7,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -1553,7 +1555,7 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		parentTO.setLdapFlag(ldapFlag);
 		com.ctb.prism.core.transferobject.ObjectValueTO objectValueTO = null;
 		boolean returnFlag = Boolean.FALSE;
-		
+		boolean passwordChanged = Boolean.FALSE;
 		try {
 			if (parentTO.getPassword() != null && !"".equals(parentTO.getPassword())) {
 				// calling ldapManager for updating password for a username in LDAP
@@ -1566,77 +1568,78 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 					}
 					parentTO.setPassword(SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), parentTO.getSalt())));
 				}
-			}else{
+				passwordChanged = Boolean.TRUE;
+			}/*else{
 				parentTO.setPassword(String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
-			}
-			
+			}*/
 			
 			// get the user which needs modification
 			Query searchUserQuery = new Query(Criteria.where("_id").is(parentTO.getUserName()).and("project_id").is(Utils.getProject()));
 			MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
 			
-			try {
-				if(savedUser != null) {
-					if(!savedUser.getPassword().equals(IApplicationConstants.DEFAULT_PRISM_VALUE)) {
-						
-						savedUser.setIsFirstTimeLogin("N");
-						savedUser.setPassword(parentTO.getPassword());
-						savedUser.setSalt(parentTO.getSalt());
-						
-						PwdHistory[] pwdHistoryArr = savedUser.getPwdHistory();
-						if(pwdHistoryArr!=null){
-							pwdHistoryArr[savedUser.getPwdHistory().length].setPwd(parentTO.getPassword());
-							pwdHistoryArr[savedUser.getPwdHistory().length].setDate(new Date());
-												
-							savedUser.setPwdHistory(pwdHistoryArr);
-						}
+			if(savedUser != null) {
+				if(passwordChanged) {
+					
+					//savedUser.setIsFirstTimeLogin("N");
+					savedUser.setPassword(parentTO.getPassword());
+					savedUser.setSalt(parentTO.getSalt());
+					
+					PwdHistory[] pwdHistoryArr = savedUser.getPwdHistory();
+					
+					PwdHistory pwdHistory = new PwdHistory();
+					pwdHistory.setPwd(parentTO.getPassword());
+					pwdHistory.setDate(new Date());
+					if(pwdHistoryArr!=null){
+						List<PwdHistory> pwdHistoryList = new LinkedList<PwdHistory>( Arrays.asList(pwdHistoryArr) );
+						pwdHistoryList.add(pwdHistory);
+						PwdHistory[] pwdHistoryArrTemp = new PwdHistory[pwdHistoryList.size()];
+						savedUser.setPwdHistory(pwdHistoryList.toArray(pwdHistoryArrTemp));
+					} else {
+						pwdHistoryArr = new PwdHistory[]{pwdHistory};
+						savedUser.setPwdHistory(pwdHistoryArr);
 					}
-					
-					savedUser.setLastName(parentTO.getLastName());
-					savedUser.setFirstName(parentTO.getFirstName());
-					savedUser.setEmail(parentTO.getMail());
-					savedUser.setPhoneNum(parentTO.getMobile());
-					savedUser.setDisplayName(parentTO.getDisplayName());
-					
-					Address address = new Address();
-					address.setCounty(parentTO.getCountry());
-					address.setZipCode(parentTO.getZipCode());
-					address.setState(parentTO.getState());
-					address.setStreet(parentTO.getStreet());
-					address.setCity(parentTO.getCity());
-					
-					savedUser.setAddress(address);
-					savedUser.setUpdatedDate(new Date());
-					
-					
-					HintAnswers[]  hintAnswersArr = new HintAnswers[parentTO.getQuestionToList().size()];
-					HintAnswers hintAnswers = null;
-					
-					int index = 0;
-					for (QuestionTO questionTo : parentTO.getQuestionToList()) {
-						hintAnswers = new HintAnswers();
-						hintAnswers.setQID(String.valueOf(questionTo.getQuestionId()));
-						hintAnswers.setAnsValue(questionTo.getAnswer());
-						hintAnswersArr[index] = hintAnswers;
-						index++;
-					}
-					
-					savedUser.setHintAnswers(hintAnswersArr);
-					
-					//save
-					getMongoTemplatePrism().save(savedUser);
-					
-					long t2 = System.currentTimeMillis();
-					logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
-					
-					return true;
-				} else {
-					return false;
 				}
-			
-			} catch (Exception e) {
-				logger.log(IAppLogger.ERROR, "Error occurred while updating user details.", e);
-				throw new Exception(e);
+				
+				savedUser.setLastName(parentTO.getLastName());
+				savedUser.setFirstName(parentTO.getFirstName());
+				savedUser.setEmail(parentTO.getMail());
+				savedUser.setPhoneNum(parentTO.getMobile());
+				savedUser.setDisplayName(parentTO.getDisplayName());
+				
+				Address address = new Address();
+				address.setCounty(parentTO.getCountry());
+				address.setZipCode(parentTO.getZipCode());
+				address.setState(parentTO.getState());
+				address.setStreet(parentTO.getStreet());
+				address.setCity(parentTO.getCity());
+				
+				savedUser.setAddress(address);
+				savedUser.setUpdatedDate(new Date());
+				
+				
+				HintAnswers[]  hintAnswersArr = new HintAnswers[parentTO.getQuestionToList().size()];
+				HintAnswers hintAnswers = null;
+				
+				int index = 0;
+				for (QuestionTO questionTo : parentTO.getQuestionToList()) {
+					hintAnswers = new HintAnswers();
+					hintAnswers.setQID(String.valueOf(questionTo.getQuestionId()));
+					hintAnswers.setAnsValue(questionTo.getAnswer());
+					hintAnswersArr[index] = hintAnswers;
+					index++;
+				}
+				
+				savedUser.setHintAnswers(hintAnswersArr);
+				
+				//save
+				getMongoTemplatePrism().save(savedUser);
+				
+				long t2 = System.currentTimeMillis();
+				logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - updateUserProfile() took time: " + String.valueOf(t2 - t1) + "ms");
+				
+				return true;
+			} else {
+				return false;
 			}
 			
 		} catch(Exception e) {
