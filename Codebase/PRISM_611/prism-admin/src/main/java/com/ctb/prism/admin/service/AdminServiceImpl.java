@@ -69,7 +69,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#updateUser(Map<String, Object>)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean updateUser(Map<String, Object> paramMap) throws BusinessException, Exception {
 		return adminBusiness.updateUser(paramMap);
 	}
@@ -79,7 +79,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#deleteUser(java.util.Map)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean deleteUser(Map<String, Object> paramMap) /*throws Exception*/ {
 		return adminBusiness.deleteUser(paramMap);
 	}
@@ -89,7 +89,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getRoleOnAddUser(java.lang.String, java.lang.String)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<RoleTO> getRoleOnAddUser(String orgLevel, String customerId) throws Exception {
 		return adminBusiness.getRoleOnAddUser(orgLevel, customerId);
 	}
@@ -99,7 +99,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#addNewUser(java.util.Map,java.util.Map)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public UserTO  addNewUser(Map<String, Object> paramMap) throws Exception{
 		return adminBusiness.addNewUser(paramMap);
 	}
@@ -111,6 +111,10 @@ public class AdminServiceImpl implements IAdminService {
 	 */
 	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
 		return adminBusiness.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
+	}
+	
+	public ArrayList<UserTO> searchUser(Map<String, Object> paramMap) {
+		return adminBusiness.searchUser(paramMap);
 	}
 
 	/*
@@ -275,7 +279,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#resetPassword(Map<String, Object>)
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public com.ctb.prism.login.transferobject.UserTO resetPassword(Map<String, Object> paramMap) throws Exception {
 		return adminBusiness.resetPassword(paramMap);
 	}

@@ -636,9 +636,9 @@ public class AdminController {
 				
 				if (currentOrg.equals(nodeId)) {					
 					paramUserMap.put("CURRENTORG", currentOrg);	
-				} else if (nodeId.indexOf("_") > 0) {			
+				} /*else if (nodeId.indexOf("_") > 0) {			
 					paramUserMap.put("CURRENTORG", nodeId.substring(0, nodeId.indexOf("_")));
-				} else {
+				} */else {
 					paramUserMap.put("CURRENTORG", nodeId);	
 				}
 				paramUserMap.put("ADMINYEAR", adminYear);
@@ -646,6 +646,7 @@ public class AdminController {
 				paramUserMap.put("CUSTOMERID", customerid);
 				paramUserMap.put("ORGMODE", orgMode);
 				paramUserMap.put("moreCount", moreCount);
+				paramUserMap.put("page", ((String) request.getParameter("page") == null) ? "1" : (String) request.getParameter("page"));
 								
 				UserTOs = adminService.getUserDetailsOnClick(paramUserMap);
 				
@@ -939,8 +940,8 @@ public class AdminController {
 			paramMap.put("purpose", purpose);
 			paramMap.put("eduCenterId", eduCenterId);
 			paramMap.put("project",loggedinUserTO.getProject());
-			paramMap.put("orgMode",loggedinUserTO.getOrgMode());
-			paramMap.put("orgName",loggedinUserTO.getOrgName());
+			//paramMap.put("orgMode",loggedinUserTO.getOrgMode());
+			//paramMap.put("orgName",loggedinUserTO.getOrgName());
 			
 			if (IApplicationConstants.CHECKED_CHECKBOX_VALUE.equals(userStatus)) {
 				userStatus = IApplicationConstants.ACTIVE_FLAG;
@@ -1106,9 +1107,16 @@ public class AdminController {
 				String tenantId = (String)req.getParameter("selectedOrg");
 				List<UserTO> users = new ArrayList<UserTO>();
 				
+				Map<String,Object> paramMap = new HashMap<String,Object>(); 
+				paramMap.put("userName", req.getParameter("username"));
+				paramMap.put("tenantId", tenantId);
+				paramMap.put("adminYear", req.getParameter("adminYear"));
+				paramMap.put("isExactSearch",isExactSearch);
+				paramMap.put("orgMode",orgMode);
+				paramMap.put("moreCount", propertyLookup.get("count.results.button.more"));
+				
 				if(tenantId != null &&  !tenantId.equals("undefined")) {
-					 users = adminService.searchUser(req.getParameter("username"), 
-							 tenantId, adminYear,isExactSearch,orgMode);
+					 users = adminService.searchUser(paramMap);
 				} else {
 					logger.log(IAppLogger.INFO, "No org selected");
 					return null;

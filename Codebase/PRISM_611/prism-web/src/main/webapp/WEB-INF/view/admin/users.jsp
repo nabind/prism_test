@@ -63,6 +63,7 @@
 						<a href="#nogo" id="moreUser" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="<spring:message code='message.more.help'/>"><spring:message code="button.content.more"/></a>
 					</div>
 				</c:if>
+				<ul id="pagination-user" class="pagination-sm"></ul>
 				<div id="userTable"
 					class="report-container tabs-content padding-small"
 					style="height: 450px">

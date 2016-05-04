@@ -123,7 +123,9 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
 		return adminDAO.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
 	}
-
+	public ArrayList<UserTO> searchUser(Map<String, Object> paramMap) {
+		return adminDAO.searchUser(paramMap);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

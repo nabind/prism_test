@@ -43,6 +43,7 @@ public class UserTO extends BaseTO {
 	private long eduTreeId;
 	private UserTO metadata;
 	private UserTO attr;
+	private long userCount;
 
 	private List<PwdHintTO> pwdHintList = new ArrayList<PwdHintTO>();
 
@@ -56,6 +57,12 @@ public class UserTO extends BaseTO {
 		return Long.valueOf(userId);
 	}
 
+	public long getUserCount() {
+		return userCount;
+	}
+	public void setUserCount(long userCount) {
+		this.userCount = userCount;
+	}
 	/**
 	 * @param userId
 	 *            the userId to set

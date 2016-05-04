@@ -19,6 +19,33 @@ $(document).ready(function() {
 	    $(".shortcut-notes").parent().addClass("current");
 	}
 	
+	// code for pagination 
+	$("#pagination-user").pagination({
+        items: 0,
+        itemsOnPage: 1,
+        onPageClick: function(pageNumber, event) {
+        	blockUI();
+        	var param = "page="+pageNumber+"&tenantId=" +$("a.jstree-clicked").parent().attr("id")+ "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val();
+			$.ajax({
+				type : "GET",
+				url : "getUserDetails.do",
+				data : param,
+				dataType : 'json',
+				cache:false,
+				success : function(data) {
+					getUserDetails(true, data, true);
+					enableSorting(true);
+					//retainUniqueValue();
+					//setLastRowId ();
+					unblockUI();
+				},
+				error : function(data) {
+					unblockUI();
+				}
+			});
+		}
+    });
+	
 	$("#addNewUser").validationEngine({promptPosition : "centerRight", scroll: false});
 	$("#editUser").validationEngine({promptPosition : "centerRight", scroll: false});
 	 

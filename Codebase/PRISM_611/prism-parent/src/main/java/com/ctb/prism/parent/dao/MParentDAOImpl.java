@@ -119,7 +119,7 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("Project_id").is(project));
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(project));
 		List<MUserTO> savedUser = getMongoTemplatePrism(contractName).find(searchUserQuery, MUserTO.class);
 
 		if(savedUser != null && savedUser.size() > 0) {

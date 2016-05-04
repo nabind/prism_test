@@ -86,7 +86,7 @@ public interface IAdminService {
 	 * @return
 	 */
 	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode);
-
+	public ArrayList<UserTO> searchUser(Map<String, Object> paramMap);
 	/**
 	 * @param paramMap
 	 * @return
