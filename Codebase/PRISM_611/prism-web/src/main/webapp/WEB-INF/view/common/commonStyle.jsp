@@ -70,6 +70,8 @@
 
 	<!-- Themes for JsTree -->
 	<link rel="stylesheet" type="text/css" href="<spring:theme code="tree.apple.style" />" />
+	
+	<link rel="stylesheet" type="text/css" href="scripts/js/libs/simplePagination.css" />
 
 
 

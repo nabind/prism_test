@@ -381,7 +381,7 @@
 		}
 		
 		//================================ CREATE USER ROW DOM ========================================
-		function getUserDetails(checkFirstLoad, data) {
+		function getUserDetails(checkFirstLoad, data, ratainPagination) {
 			var userContent = '';
 			if (checkFirstLoad) {
 				$("#user_details").find("tr").remove();
@@ -397,7 +397,18 @@
 				}
 			</sec:authorize>
 			
+			if(data && data.length == 0) { // if no data returned, reset pagination
+				$("#pagination-user").pagination('updateItems', 0);
+				$("#pagination-user").pagination('redraw');
+			}
 			$.each(data, function (index,value) { 
+				if(index == 0) {
+					$("#pagination-user").pagination('updateItems', this.userCount);
+					if(!ratainPagination) {
+						$("#pagination-user").pagination('drawPage', 1);
+						//$("#pagination-user").pagination('redraw');
+					}
+				}
 				userContent += '<tr id ='+ this.tenantId+'_'+this.userId+' scrollid= '+ this.loggedInOrgId+'_'+this.userName +' class="abc" >'
 								+'<th scope="row">' + createStatusTag(this.status) + this.userName +'</th>'
 								+'<td class="hide-on-tablet">' + this.userDisplayName +'</td>'
