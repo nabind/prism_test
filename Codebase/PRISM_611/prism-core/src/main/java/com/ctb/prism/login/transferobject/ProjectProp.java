@@ -10,11 +10,11 @@ public class ProjectProp implements Serializable
 {
     private String staticPdfLocation;
 
-    private String passwordHistoryDay;
+    private String pwdHistoryDay;
 
     private String orglvlUserNotAdded;
 
-    private String passwordExpiryWarning;
+    private String pwdExpiryWarning;
 
     private String[] roleNotAdded;
 
@@ -22,7 +22,7 @@ public class ProjectProp implements Serializable
 
     private String titleTabHomeApplication;
 
-    private String passwordExpiry;
+    private String pwdExpiry;
 
     private String titleTabApplication;
     
@@ -35,13 +35,13 @@ public class ProjectProp implements Serializable
     	Map<String, Object> propertyMap = new HashMap<String, Object>();
 		
 		propertyMap.put("static.pdf.location", getStaticPdfLocation());
-		propertyMap.put("password.history.day", getPasswordHistoryDay());
+		propertyMap.put("password.history.day", getPwdHistoryDay());
 		propertyMap.put("orglvl.user.not.added", getOrglvlUserNotAdded());
-		propertyMap.put("password.expiry.warning", getPasswordExpiryWarning());
+		propertyMap.put("password.expiry.warning", getPwdExpiryWarning());
 		propertyMap.put("role.not.added", StringUtils.join(getRoleNotAdded(), ','));
 		propertyMap.put("orglvl.admin.not.added", getOrglvlAdminNotAdded());
 		propertyMap.put("title.tab.home.application", getTitleTabHomeApplication());
-		propertyMap.put("password.expiry", getPasswordExpiry());
+		propertyMap.put("password.expiry", getPwdExpiry());
 		propertyMap.put("title.tab.application", getTitleTabApplication());
 		
 		//OAS SSO
@@ -83,12 +83,12 @@ public class ProjectProp implements Serializable
 		this.staticPdfLocation = staticPdfLocation;
 	}
 
-	public String getPasswordHistoryDay() {
-		return passwordHistoryDay;
+	public String getPwdHistoryDay() {
+		return pwdHistoryDay;
 	}
 
-	public void setPasswordHistoryDay(String passwordHistoryDay) {
-		this.passwordHistoryDay = passwordHistoryDay;
+	public void setPwdHistoryDay(String pwdHistoryDay) {
+		this.pwdHistoryDay = pwdHistoryDay;
 	}
 
 	public String getOrglvlUserNotAdded() {
@@ -99,12 +99,12 @@ public class ProjectProp implements Serializable
 		this.orglvlUserNotAdded = orglvlUserNotAdded;
 	}
 
-	public String getPasswordExpiryWarning() {
-		return passwordExpiryWarning;
+	public String getPwdExpiryWarning() {
+		return pwdExpiryWarning;
 	}
 
-	public void setPasswordExpiryWarning(String passwordExpiryWarning) {
-		this.passwordExpiryWarning = passwordExpiryWarning;
+	public void setPwdExpiryWarning(String pwdExpiryWarning) {
+		this.pwdExpiryWarning = pwdExpiryWarning;
 	}
 
 	public String[] getRoleNotAdded() {
@@ -131,12 +131,12 @@ public class ProjectProp implements Serializable
 		this.titleTabHomeApplication = titleTabHomeApplication;
 	}
 
-	public String getPasswordExpiry() {
-		return passwordExpiry;
+	public String getPwdExpiry() {
+		return pwdExpiry;
 	}
 
-	public void setPasswordExpiry(String passwordExpiry) {
-		this.passwordExpiry = passwordExpiry;
+	public void setPwdExpiry(String pwdExpiry) {
+		this.pwdExpiry = pwdExpiry;
 	}
 
 	public String getTitleTabApplication() {

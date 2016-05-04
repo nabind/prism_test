@@ -20,7 +20,7 @@ public interface ILoginDAO {
 	public boolean selectTest();
 //	public UserTO getUserByEmail(String userEmail) throws SystemException;
 	public UserTO getUserByEmail(Map<String, Object> paramMap) throws SystemException;
-	public List<GrantedAuthority> getGrantedAuthorities(String username);
+	public List<GrantedAuthority> getGrantedAuthorities(String userName);
 	public String getTenantId( String userName );
 	public String getSystemConfigurationMessage(Map<String,Object> paramMap);
 	public String checkFirstTimeLogin(String username);

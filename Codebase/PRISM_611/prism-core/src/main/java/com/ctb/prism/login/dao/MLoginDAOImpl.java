@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -146,8 +148,17 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param username
 	 * @return
 	 */
-	public List<GrantedAuthority> getGrantedAuthorities(String username) {
-		return getGrantedAuthorities(username, 0, "O");
+	public List<GrantedAuthority> getGrantedAuthorities(String userName) {
+		
+		String contractName = Utils.getContractName();
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(userName));
+		MUserTO serchUser = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
+		if(serchUser != null)
+			return getGrantedAuthorities(serchUser.getUserRoles(), "0");
+		else {
+			return null;
+		}
 	}
 
 	/**
@@ -157,76 +168,19 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 * @param userType
 	 * @return
 	 */
-	public List<GrantedAuthority> getGrantedAuthorities(String username, long orgLevel, String userType) {
-		List<GrantedAuthority> userPerms = null;
-
-		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
-			userPerms = getJdbcTemplatePrism().query(IQueryConstants.SELECT_EDU_USER_AUTHORITIES, new String[] { username },
-					new RowMapper<GrantedAuthority>() {
-						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new SimpleGrantedAuthority(rs.getString(1));
-						}
-					});
-
-			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
+	public List<GrantedAuthority> getGrantedAuthorities(String[] userRoles, String orgLevel) {
+		List<GrantedAuthority> userPerms = new ArrayList<GrantedAuthority>();
+		for (String userRole : userRoles){
+				userPerms.add( new SimpleGrantedAuthority(userRole));
+			}
+			
+	     userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
 					IApplicationConstants.ROLE_INIT,
-					"LEVEL",
-					"" + IApplicationConstants.DEFAULT_LEVELID_VALUE
-			)));
-		} else {
-			userPerms = getJdbcTemplatePrism().query(IQueryConstants.SELECT_USER_AUTHORITIES, new String[] { username/*, String.valueOf(orgLevel)*/ },
-					new RowMapper<GrantedAuthority>() {
-						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new SimpleGrantedAuthority(rs.getString(1));
-						}
-					});
-			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
-					IApplicationConstants.ROLE_INIT,
-					"LEVEL",
-					"" + orgLevel
-			)));
-		}
+					"LEVEL","" + orgLevel)));
 		return userPerms;
 	}
 	
-	/**
-	 * 
-	 * @param username
-	 * @param orgLevel
-	 * @param userType
-	 * @return
-	 */
-	public List<GrantedAuthority> getGrantedAuthorities(String username, long orgLevel, String userType, String contractName) {
-		List<GrantedAuthority> userPerms = null;
 
-		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
-			userPerms = getJdbcTemplatePrism(contractName).query(IQueryConstants.SELECT_EDU_USER_AUTHORITIES, new String[] { username },
-					new RowMapper<GrantedAuthority>() {
-						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new SimpleGrantedAuthority(rs.getString(1));
-						}
-					});
-
-			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
-					IApplicationConstants.ROLE_INIT,
-					"LEVEL",
-					"" + IApplicationConstants.DEFAULT_LEVELID_VALUE
-			)));
-		} else {
-			userPerms = getJdbcTemplatePrism(contractName).query(IQueryConstants.SELECT_USER_AUTHORITIES, new String[] { username/*, String.valueOf(orgLevel)*/ },
-					new RowMapper<GrantedAuthority>() {
-						public GrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new SimpleGrantedAuthority(rs.getString(1));
-						}
-					});
-			userPerms.add(new SimpleGrantedAuthority(CustomStringUtil.appendString(
-					IApplicationConstants.ROLE_INIT,
-					"LEVEL",
-					"" + orgLevel
-			)));
-		}
-		return userPerms;
-	}
 	
 	/**
 	 * This method is used to return user login status (is first time login)
@@ -398,8 +352,10 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 		} else {
 			contractName = Utils.getContractName();
 		}
+		Map<String,Object> newParamMap = new HashMap<String,Object>();
+		newParamMap.put("contractName",contractName);
+		Map<String,Object> propertyMap = getContractProerty(newParamMap);
 		
-		Map<String,Object> propertyMap = (Map<String,Object>)paramMap.get("propertyMap");
 		String passwordExp = (String) propertyMap.get("password.expiry");
 		String passwordWar = (String) propertyMap.get("password.expiry.warning");
 		
@@ -484,7 +440,7 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 			user.setPassword(savedUser.getPassword() != null ? savedUser.getPassword() : "");
 			user.setSalt(Utils.getSaltWithUser(username, (savedUser.getSalt() != null) ? savedUser.getSalt() : ""));
-			user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
+			user.setRoles(getGrantedAuthorities(savedUser.getUserRoles(),savedUser.getOrgCategory().getLevel()));
 			user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
 			user.setCustomerId(savedUser.getCustomerCode());
 			user.setUserEmail(savedUser.getEmail() != null ? savedUser.getEmail()  : "");
@@ -498,16 +454,32 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 				pwdDates.add(pwdHistory.getDate());
 			}
 						
-			/****need to implement this password exp and warning section
+			TimeZone.setDefault(TimeZone.getTimeZone("EDT"));
+			
 			Date mostRecent = Collections.max(pwdDates);
-			if (mostRecent + passwordExp)
-		
+			Calendar calx = Calendar.getInstance();
+			calx.setTime(mostRecent);
+			calx.add(Calendar.DATE, Integer.valueOf(passwordExp));
 			
-			user.setIsPasswordExpired(cs.getString(3));
-			user.setIsPasswordWarning(cs.getString(4));'
+			Calendar caly = Calendar.getInstance();
+			caly.setTime(new Date());
 			
-			***/
+			/* = 1 means > :  = 0 means = :  = -1 means <  */
+			if(caly.compareTo(calx)== 1 || caly.compareTo(calx)== 0){
+				user.setIsPasswordExpired("TRUE");
+			} else {
+				user.setIsPasswordExpired("FALSE");
+			}
 			
+			Calendar calz = Calendar.getInstance();
+			calz.add(Calendar.DATE, Integer.valueOf(passwordWar));
+			
+			if(caly.compareTo(calz)== 1){
+				user.setIsPasswordWarning("TRUE");
+			} else {
+				user.setIsPasswordWarning("FALSE");
+			}
+						
 			return user;
 			
 		}	
