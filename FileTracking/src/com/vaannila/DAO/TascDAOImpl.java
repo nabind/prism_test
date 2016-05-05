@@ -1459,6 +1459,51 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
+	
+	/**
+	 * @author Abir
+	 * save score in Operational table
+	 * @throws Exception
+	 */
+	public String saveReviewScore(String studentScoreData) throws Exception {
+		System.out.println("Enter: upDateScore()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		String errorMessage = null;
+				
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			 
+			String query = "{call PKG_SCORE_REVIEW.SP_SAVE_REVIEW_SCORE(?,?)}";
+			System.out.println("save query: "+query);
+			cs = conn.prepareCall(query);
+			
+			cs.setString(++count, studentScoreData);
+			cs.registerOutParameter(count, OracleTypes.VARCHAR);
+			
+			cs.execute();
+			errorMessage = cs.getString(count);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+			  System.out.println("Sucess: ");
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: upDateScore() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return errorMessage;
+	}
+	
+	
 	public List<TASCProcessTO> getStudentScoreInfo(String studentTestEventId,String subTestName) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
