@@ -1346,7 +1346,7 @@ public class TascDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, max(f.created_date_time) datetimestamp, s.student_bio_id, s.test_element_id ");
+		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, TO_CHAR(max(f.created_date_time), 'MM/DD/YYYY') datetimestamp, s.student_bio_id, s.test_element_id ");
 		queryBuff.append(" from SCR_STUDENT_BIO_DIM s, SCR_SUBTEST_SCORE_FACT f, customer_info c, form_dim fr, subtest_dim sub ");
 		queryBuff.append(" where s.student_bio_id = f.student_bio_id and s.customerid = c.customerid and fr.formid = f.formid and sub.subtestid = f.subtestid ");
 		if(searchProcess != null) {
@@ -1424,7 +1424,7 @@ public class TascDAOImpl {
 		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
 		Map<String, String> processMap = null;
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.scr_id,f.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" select s.scr_id,f.form_name, s.ss, s.ncr, s.hse,TO_CHAR( s.created_date_time , 'MM/DD/YYYY'), s.scr_comment, s.scr_status, s.is_active ");
 		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
 		queryBuff.append(" where f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by created_date_time ");
