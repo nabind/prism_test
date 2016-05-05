@@ -1427,7 +1427,7 @@ public class TascDAOImpl {
 		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
 		Map<String, String> processMap = new HashMap<String, String>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" select f.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
 		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
 		queryBuff.append(" where f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by created_date_time ");

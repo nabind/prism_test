@@ -35,15 +35,26 @@ $(document).ready(function(){
 });
 
 function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
+	var dataStringToCont = null;
+	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
+	var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
+	
 	jQuery("#reviewDialog").dialog({
 		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
 		height: "auto",
-		draggable: true
+		draggable: true,
+		  buttons: {
+	          'Cancel' : function() {
+	              $(this).dialog('close');
+	          },
+	          'Save': function(){
+	        	  saveReviewScore(table);
+	        	  $(this).dialog('close');
+				}
+			}
 	});
-	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
-
-	var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
+	
 
 	$.ajax({
 		type: "POST",
@@ -68,19 +79,28 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		        ],
 				"columnDefs" : [ {
 					"targets" : -1,
-					"data" : null,
-					"defaultContent" : "<input type='radio' name='name' value='1'  />"
-					} ]
+					"data" : null,					
+					"defaultContent" : "<input type='radio' name='radioBtn' value='1'  />"
+					
+		            }
+				]
 			});
 			$('input:radio').checkbox();
 	      },
-		  error: function(data) {
+	      error: function(data) {
 			  alert('Failed to get Student Details');
 		  }
 	});
 
 }
 
+function saveReviewScore(table){
+	if(document.getElementsByName('radioBtn').checked) {
+	    alert('checked');
+	} else {
+		alert('not checked');
+	}
+}
 
 function dataTableCallBack(){
 	update_rows();
