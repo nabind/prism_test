@@ -1355,14 +1355,13 @@ public class TascDAOImpl {
 					&& searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0) {
 				queryBuff.append("AND (f.created_date_time between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
 			}
-			if(searchProcess.getSourceSystem() != null && searchProcess.getSourceSystem().trim().length() > 0
-					&& !"-1".equals(searchProcess.getSourceSystem())) 
+			if(searchProcess.getSourceSystem() != null && !"-1".equals(searchProcess.getSourceSystem())) 
 				queryBuff.append("AND s.student_mode = ? ");
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0) 
 				queryBuff.append("AND s.ext_student_id = ? ");
 			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
 				queryBuff.append("AND c.customer_code = ? ");
-			if(searchProcess.getStatus() != null && searchProcess.getStatus().trim().length() > 0) 
+			if(searchProcess.getStatus() != null && !"-1".equals(searchProcess.getStatus())) 
 				queryBuff.append("AND f.scr_status = ? ");
 		}
 		queryBuff.append(" group by s.last_name || ', ' || s.first_name || ' ' || s.middle_name , s.ext_student_id , c.customer_code, sub.subtest_name, f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, s.student_bio_id, s.test_element_id order by datetimestamp ");
