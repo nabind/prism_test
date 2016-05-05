@@ -58,12 +58,14 @@
 			</div>
 			<div class="panel-load-target with-padding margin10 height-mid padding-none">
 				<fmt:message var="MANAGE_USERS_MORE" key="manage.users.more"  />
-				<c:if test="${not empty actionMap[MANAGE_USERS_MORE]}">
+				<%-- <c:if test="${not empty actionMap[MANAGE_USERS_MORE]}">
 					<div class="pagination panel-control margin-bottom-small rounded-border">
 						<a href="#nogo" id="moreUser" class="page_next paginate button compact icon-forward grey-gradient glossy with-tooltip" title="<spring:message code='message.more.help'/>"><spring:message code="button.content.more"/></a>
 					</div>
-				</c:if>
-				<ul id="pagination-user" class="pagination-sm"></ul>
+				</c:if> --%>
+				<div class="pagination panel-control margin-bottom-small rounded-border">
+					<ul id="pagination-user" class="pagination-sm" style="margin-top:3px"></ul>
+				</div>
 				<div id="userTable"
 					class="report-container tabs-content padding-small"
 					style="height: 450px">

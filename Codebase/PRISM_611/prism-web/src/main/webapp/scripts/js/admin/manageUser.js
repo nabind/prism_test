@@ -22,10 +22,10 @@ $(document).ready(function() {
 	// code for pagination 
 	$("#pagination-user").pagination({
         items: 0,
-        itemsOnPage: 1,
+        itemsOnPage: moreCount,
         onPageClick: function(pageNumber, event) {
         	blockUI();
-        	var param = "page="+pageNumber+"&tenantId=" +$("a.jstree-clicked").parent().attr("id")+ "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val();
+        	var param = "page="+pageNRumber+"&tenantId=" +$("a.jstree-clicked").parent().attr("id")+ "&AdminYear=" + $("#AdminYear").val() + "&searchParam="+$("#searchUser").val();
 			$.ajax({
 				type : "GET",
 				url : "getUserDetails.do",

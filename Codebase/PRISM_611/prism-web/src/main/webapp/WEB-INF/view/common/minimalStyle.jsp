@@ -55,7 +55,7 @@
 	<link rel="apple-touch-startup-image" href="<spring:theme code="ipad-portrait.png" />" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 	<link rel="apple-touch-startup-image" href="<spring:theme code="iphone.png" />" media="screen and (max-device-width: 320px)">
 
-
+	<link rel='stylesheet' href='themes/acsi/css/nprogress.css'/>
 
 
 

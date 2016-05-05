@@ -2,6 +2,7 @@
 
 	<!-- Scripts -->
 	<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>
+	<script src='scripts/js/nprogress.min.js'></script>
 	<script>
 		// ========================== CODE FOR MODAL PROGRESSBAR ==========================
 	    function blockUI(obj) {

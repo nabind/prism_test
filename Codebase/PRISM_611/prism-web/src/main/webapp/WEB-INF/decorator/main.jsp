@@ -31,8 +31,6 @@
 		function noBack() { window.history.forward(); }
 		</script>
 		
-		<script src='scripts/js/nprogress.min.js'></script>
-		<link rel='stylesheet' href='themes/acsi/css/nprogress.css'/>
 	</head>
 	
 	<body class="clearfix with-menu with-shortcuts" onpageshow="if (event.persisted) noBack();" onunload="">
