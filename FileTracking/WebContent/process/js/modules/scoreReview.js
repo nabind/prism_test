@@ -1,11 +1,5 @@
 $(document).ready(function(){
 	
-	/*$('#coCheckDateFrom').datepicker({maxDate: '0',onSelect: function(date) {
-		date = $(this).datepicker('getDate');
-        var maxDate = new Date(date.getTime());
-        maxDate.setDate(maxDate.getDate() + 365);
-        $('#coCheckDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
-    }});*/
 	$('#dateFrom').datepicker();
 	$('#dateTo').datepicker();
 	
@@ -43,7 +37,7 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
 		height: "auto",
-		draggable: true,
+		draggable: false,
 		  buttons: {
 	          'Cancel' : function() {
 	              $(this).dialog('close');
@@ -65,6 +59,7 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 	    	table = $('#scoreReviewTable').dataTable({
 				bJQueryUI : true,
 				bPaginate : false,
+				bProcessing: true,
 				bFilter : false,
 				bInfo : false,
 				bSort : false,
@@ -75,6 +70,7 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		            { data: "ss" },
 		            { data: "hse" },
 		            { data: "date" },
+		            { data: "comments" },
 		            { data: "" }
 		        ],
 				"columnDefs" : [ {

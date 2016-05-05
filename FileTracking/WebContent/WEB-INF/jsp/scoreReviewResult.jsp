@@ -42,8 +42,7 @@
 				<table id="scoreResultTable" width="100%">
 					<thead>
 						<tr>
-							<th >&nbsp;</th>
-							<th style="min-width: 60px;">Student Name</th>
+							<th style="min-width: 100px;">Student Name</th>
 							<th>UUID</th>
 							<th>Processed Date</th>
 							<th>State Code</th>
@@ -62,8 +61,7 @@
 							count++;
 						%>
 						<tr>
-							<td >&nbsp;</td>
-							<td style="min-width: 60px;"><%=process.getStudentName() %></td>
+							<td style="min-width: 100px;"><%=process.getStudentName() %></td>
 							<td><%=process.getUuid() %></td>
 							<td><%=process.getDateTimestamp() %></td>
 							<td><%=process.getStateCode() %></td>
@@ -79,26 +77,26 @@
 				<div form="reviewDialogForm" id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="review"><p><p>
 					<table id="scoreReviewTable" width="100%">
-					<thead>
-						<tr>
-							<th>Form Name</th>
-							<th>New NC</th>
-							<th>New SS</th>
-							<th>New HSE</th>
-							<th>Processed Date</th>
-							<th>IsApprove</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
+						<thead>
+							<tr>
+								<th>Form Name</th>
+								<th>New NC</th>
+								<th>New SS</th>
+								<th>New HSE</th>
+								<th>Processed Date</th>
+								<th>Comment</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
 					
-				</table>
-				
-				</div>
-				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
-					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
-				</div>
+					</table>
+					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
+						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
+					</div>
+				</div>		
 			</div>
 	</div>
 </div>
