@@ -31,8 +31,7 @@ $(document).ready(function(){
 function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 	var dataStringToCont = null;
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
-	var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
-	
+	//var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	jQuery("#reviewDialog").dialog({
 		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
@@ -55,8 +54,9 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 	    url: "getReviewResult.htm",
 	    data: dataString,
 	    success: function(data) {
-	    	table.destroy();
-	    	table = $('#scoreReviewTable').dataTable({
+	    	//table.destroy();
+	    	//table = $('#scoreReviewTable').dataTable({
+	    	$('#scoreReviewTable').dataTable({
 				bJQueryUI : true,
 				bPaginate : false,
 				bProcessing: true,
@@ -70,7 +70,12 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		            { data: "ss" },
 		            { data: "hse" },
 		            { data: "date" },
-		            { data: "comments" },
+		            { 
+		            	"mData": "comments",
+		            	"mRender": function (oObj) {
+		            		return "<input type='text' value='"+oObj+"' maxlength='100'></input>";
+		            	}
+		            },
 		            { data: "" }
 		        ],
 				"columnDefs" : [ {
