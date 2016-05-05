@@ -1358,8 +1358,6 @@ public class TascDAOImpl {
 			if(searchProcess.getSourceSystem() != null && searchProcess.getSourceSystem().trim().length() > 0
 					&& !"-1".equals(searchProcess.getSourceSystem())) 
 				queryBuff.append("AND s.student_mode = ? ");
-			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
-				queryBuff.append("AND f.scr_status = ? ");
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0) 
 				queryBuff.append("AND s.ext_student_id = ? ");
 			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
@@ -1423,11 +1421,10 @@ public class TascDAOImpl {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		TASCProcessTO processTO = null;
 		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
-		Map<String, String> processMap = new HashMap<String, String>();
+		Map<String, String> processMap = null;
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select f.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" select s.scr_id,f.form_name, s.ss, s.ncr, s.hse, s.created_date_time, s.scr_comment, s.scr_status, s.is_active ");
 		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
 		queryBuff.append(" where f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by created_date_time ");
@@ -1441,15 +1438,16 @@ public class TascDAOImpl {
 			pstmt.setString(++count, searchProcess.getSubtestId());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				processTO = new TASCProcessTO();
-				processMap.put("form", rs.getString(1));
-				processMap.put("ss", rs.getString(2));
-				processMap.put("nc", rs.getString(3));
-				processMap.put("hse", rs.getString(4));
-				processMap.put("date", rs.getString(5));
-				processMap.put("comments", rs.getString(6));
-				processMap.put("status", rs.getString(7));
-				processMap.put("isActive", rs.getString(8));
+				processMap = new HashMap<String, String>();
+				processMap.put("scr", rs.getString(1));
+				processMap.put("form", rs.getString(2));
+				processMap.put("ss", rs.getString(3));
+				processMap.put("nc", rs.getString(4));
+				processMap.put("hse", rs.getString(5));
+				processMap.put("date", rs.getString(6));
+				processMap.put("comments", rs.getString(7));
+				processMap.put("status", rs.getString(8));
+				processMap.put("isActive", rs.getString(9));
 				processList.add(processMap);
 			}
 		} catch (SQLException e) {
