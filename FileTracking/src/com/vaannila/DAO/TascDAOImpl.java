@@ -1377,8 +1377,7 @@ public class TascDAOImpl {
 					pstmt.setString(++count, searchProcess.getProcessedDateFrom());
 					pstmt.setString(++count, searchProcess.getProcessedDateTo());
 				}
-				if(searchProcess.getSourceSystem() != null && searchProcess.getSourceSystem().trim().length() > 0 
-						&& !"-1".equals(searchProcess.getSourceSystem())) 
+				if(searchProcess.getSourceSystem() != null 	&& !"-1".equals(searchProcess.getSourceSystem())) 
 					pstmt.setString(++count, searchProcess.getSourceSystem());
 				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
 					pstmt.setString(++count, searchProcess.getStateCode());
@@ -1386,7 +1385,7 @@ public class TascDAOImpl {
 					pstmt.setString(++count, searchProcess.getUuid());
 				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
 					pstmt.setString(++count, searchProcess.getStateCode());
-				if(searchProcess.getStatus() != null && searchProcess.getStatus().trim().length() > 0) 
+				if(searchProcess.getStatus() != null && !"-1".equals(searchProcess.getStatus())) 
 					pstmt.setString(++count, searchProcess.getStatus());
 			}
 			rs = pstmt.executeQuery();
