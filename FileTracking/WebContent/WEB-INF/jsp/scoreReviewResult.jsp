@@ -91,7 +91,6 @@
 						<tbody>
 							
 						</tbody>
-					
 					</table>
 					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>

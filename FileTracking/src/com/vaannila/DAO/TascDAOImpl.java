@@ -1437,15 +1437,15 @@ public class TascDAOImpl {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				processMap = new HashMap<String, String>();
-				processMap.put("scr", rs.getString(1));
-				processMap.put("form", rs.getString(2));
-				processMap.put("ss", rs.getString(3));
-				processMap.put("nc", rs.getString(4));
-				processMap.put("hse", rs.getString(5));
-				processMap.put("date", rs.getString(6));
-				processMap.put("comments", rs.getString(7));
-				processMap.put("status", rs.getString(8));
-				processMap.put("isActive", rs.getString(9));
+				processMap.put("scr", rs.getString(1)!=null?rs.getString(1):"");
+				processMap.put("form", rs.getString(2)!=null?rs.getString(2):"");
+				processMap.put("ss", rs.getString(3)!=null?rs.getString(3):"");
+				processMap.put("nc", rs.getString(4)!=null?rs.getString(4):"");
+				processMap.put("hse", rs.getString(5)!=null?rs.getString(5):"");
+				processMap.put("date", rs.getString(6)!=null?rs.getString(6):"");
+				processMap.put("comments", rs.getString(7)!=null?rs.getString(7):"");
+				processMap.put("status", rs.getString(8)!=null?rs.getString(8):"");
+				processMap.put("isActive", rs.getString(9)!=null?rs.getString(9):"");
 				processList.add(processMap);
 			}
 		} catch (SQLException e) {
