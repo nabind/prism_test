@@ -1084,7 +1084,17 @@ public class TascController {
 			}
 			json_arr.put(json_obj);
 		}
-		return "{\"draw\":" + process.getStudentBioId()+process.getSubtestId() + ",\"data\":" + json_arr.toString() + "}";
+		
+		JSONObject json_obj = new JSONObject();
+		try {
+			json_obj.put("student_bio_id", process.getStudentBioId());
+			json_obj.put("subtestid", process.getSubtestId());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "{\"draw\":" + json_obj.toString() + ",\"data\":" + json_arr.toString() + "}";
 	}
 	
 	@RequestMapping("/process/getStudentScoreInfo.htm")
