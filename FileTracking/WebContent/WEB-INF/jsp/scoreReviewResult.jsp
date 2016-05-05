@@ -76,7 +76,7 @@
 						<%} %>
 					</tbody>
 				</table>
-				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
+				<div form="reviewDialogForm" id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="review"><p><p>
 					<table id="scoreReviewTable" width="100%">
 					<thead>
