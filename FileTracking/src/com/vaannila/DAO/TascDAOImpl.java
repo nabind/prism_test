@@ -1446,6 +1446,8 @@ public class TascDAOImpl {
 				processMap.put("comments", rs.getString(7)!=null?rs.getString(7):"");
 				processMap.put("status", rs.getString(8)!=null?rs.getString(8):"");
 				processMap.put("isActive", rs.getString(9)!=null?rs.getString(9):"");
+				processMap.put("student_bio_id", searchProcess.getStudentBioId());
+				processMap.put("subtestid", searchProcess.getSubtestId());
 				processList.add(processMap);
 			}
 		} catch (SQLException e) {

@@ -29,7 +29,6 @@ $(document).ready(function(){
 });
 
 function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
-	var dataStringToCont = null;
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
 	//var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	jQuery("#reviewDialog").dialog({
@@ -76,15 +75,16 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		            		return "<input type='text' value='"+oObj+"' maxlength='100'></input>";
 		            	}
 		            },
-		            { data: "" }
-		        ],
-				"columnDefs" : [ {
-					"targets" : -1,
-					"data" : null,					
-					"defaultContent" : "<input type='radio' name='radioBtn' value='1'  />"
-					
+		            { 
+		            	"mRender": function ( data, type, row ) {
+							var html = "<input type='radio' name='radioBtn' class='' value='1'";
+							html = html + " student_bio_id='"+row.student_bio_id+"' subtestid='"+row.subtestid+"'"
+										+ " scr_id='"+row.scr+"'"
+										+ "/>";
+							return html;
+						}
 		            }
-				]
+		        ]
 			});
 			$('input:radio').checkbox();
 	      },
