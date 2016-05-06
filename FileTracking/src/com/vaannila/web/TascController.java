@@ -1023,18 +1023,34 @@ public class TascController {
 			if(!UserController.checkLogin(request)) return modelAndView;
 			SearchProcess process = new SearchProcess();
 			process.setSourceSystem(request.getParameter("sourceSystem"));
+			process.setStatus(request.getParameter("scrStatus"));
 			process.setProcessedDateFrom(request.getParameter("dateFrom"));
 			process.setProcessedDateTo(request.getParameter("dateTo"));
 			process.setUuid(request.getParameter("uuid"));
 			process.setStateCode(request.getParameter("stateCode"));
-			process.setStatus(request.getParameter("scrStatus"));
 			
-			if("-1".equals(process.getProcessStatus())){
+			if("-1".equals(process.getSourceSystem())){
 				process.setSourceSystemDesc("All");
-			}else if("OL".equals(process.getProcessStatus())){
+			}else if("OL".equals(process.getSourceSystem())){
 				process.setSourceSystemDesc("Online");
-			}else if("PP".equals(process.getProcessStatus())){
+			}else if("PP".equals(process.getSourceSystem())){
 				process.setSourceSystemDesc("Peper Pencil");
+			}
+			
+			if("-1".equals(process.getStatus())){
+				process.setProcessStatusDesc("All");
+			}else if("RV".equals(process.getStatus())){
+				process.setProcessStatusDesc("In Review");
+			}else if("AP".equals(process.getStatus())){
+				process.setProcessStatusDesc("Approved");
+			}else if("RJ".equals(process.getStatus())){
+				process.setProcessStatusDesc("Rejected");
+			}else if("AE".equals(process.getStatus())){
+				process.setProcessStatusDesc("Approved with Error");
+			}else if("PR".equals(process.getStatus())){
+				process.setProcessStatusDesc("Processed");
+			}else if("IN".equals(process.getStatus())){
+				process.setProcessStatusDesc("Invalidated by System");
 			}
 			
 			TascDAOImpl stageDao = new TascDAOImpl();
@@ -1078,7 +1094,6 @@ public class TascController {
 				try {
 					json_obj.put(key, value);
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -1090,36 +1105,43 @@ public class TascController {
 			json_obj.put("student_bio_id", process.getStudentBioId());
 			json_obj.put("subtestid", process.getSubtestId());
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return "{\"draw\":" + json_obj.toString() + ",\"data\":" + json_arr.toString() + "}";
 	}
 	
-	@RequestMapping("/process/getStudentScoreInfo.htm")
-	public ModelAndView getStudentScoreInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: getStudentScoreInfo()");
-		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+	/**
+	 * @author Joy
+	 * save review score
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/saveReviewScore.htm")
+	public @ResponseBody String saveReviewScore(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		try {
-			if(!UserController.checkLogin(request)) return modelAndView;
-			SearchProcess process = new SearchProcess();
-			String studentTestEventId = request.getParameter("studentTestEventId");
-			String subTestName = request.getParameter("subTestName");
+			String studentBioId = request.getParameter("studentBioId");
+			String subtestId = request.getParameter("subtestId");
+			String statusStr = request.getParameter("statusStr");
+			String commentStr = request.getParameter("commentStr");
+			
+			Map<String,Object> paramMap = new HashMap<String,Object>();
+			paramMap.put("studentBioId", studentBioId);
+			paramMap.put("subtestId", subtestId);
+			paramMap.put("statusStr", statusStr);
+			paramMap.put("commentStr", commentStr);
+			
 			TascDAOImpl stageDao = new TascDAOImpl();
-			List<TASCProcessTO> reviewProcess = stageDao.getStudentScoreInfo(studentTestEventId,subTestName);
-			System.out.println("List = " + reviewProcess);
-			
-			request.getSession().setAttribute("studentScoreInfoList", reviewProcess);
-			modelAndView = new ModelAndView("scoreReviewResult", "message", jsonStr);
-			
-			
+			String message = stageDao.saveReviewScore(paramMap);
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String jsonStr = gson.toJson(message);
+			System.out.println("jsonStr:"+jsonStr);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonStr);
 		} catch (Exception e) {
-			response.setContentType("text/plain");
-			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: getMoreInfo()");
-		return modelAndView;
+		return null;
 	}
+	
 }

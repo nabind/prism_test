@@ -1304,7 +1304,7 @@ public class TascDAOImpl {
 		return processList;
 	}
 	
-	public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
+public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		
 		System.out.println("Enter: saveComment()");
 		Connection conn = null;
@@ -1338,19 +1338,19 @@ public class TascDAOImpl {
 		return updatedRows;
 	}
 	
-	
 	public List<TASCProcessTO> getScoreReview(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getScoreReview()");
+		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, TO_CHAR(max(f.created_date_time), 'MM/DD/YYYY') datetimestamp, s.student_bio_id, s.test_element_id ");
+		queryBuff.append(" select s.last_name || ', ' || s.first_name || ' ' || s.middle_name STUD_NAME, s.ext_student_id UUID,c.customer_code,sub.subtest_name,f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, TO_CHAR(max(f.created_date_time), 'MM/DD/YYYY HH24:MI:SS') datetimestamp, s.student_bio_id, s.test_element_id ");
 		queryBuff.append(" from SCR_STUDENT_BIO_DIM s, SCR_SUBTEST_SCORE_FACT f, customer_info c, form_dim fr, subtest_dim sub ");
 		queryBuff.append(" where s.student_bio_id = f.student_bio_id and s.customerid = c.customerid and fr.formid = f.formid and sub.subtestid = f.subtestid ");
 		if(searchProcess != null) {
-			//queryBuff.append(" WHERE 1 = 1 ");
 			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0
 					&& searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0) {
 				queryBuff.append("AND (f.created_date_time between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
@@ -1411,18 +1411,22 @@ public class TascDAOImpl {
 			try {rs.close();} catch (Exception e2) {}
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getScoreReview() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return processList;
 	}
 	
 	public List<Map<String, String>> getReviewResult(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getReviewResult()");
+		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
 		Map<String, String> processMap = null;
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append(" select s.scr_id,f.form_name, s.ss, s.ncr, s.hse,TO_CHAR( s.created_date_time , 'MM/DD/YYYY'), s.scr_comment, s.scr_status, s.is_active ");
+		queryBuff.append(" select s.scr_id,f.form_name, s.ss, s.ncr, s.hse,TO_CHAR( s.created_date_time , 'MM/DD/YYYY HH24:MI:SS'), s.scr_comment, s.scr_status, s.is_active ");
 		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
 		queryBuff.append(" where f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by created_date_time ");
@@ -1457,36 +1461,40 @@ public class TascDAOImpl {
 			try {rs.close();} catch (Exception e2) {}
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getReviewResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return processList;
 	}
-	
 	
 	/**
 	 * @author Abir
 	 * save score in Operational table
 	 * @throws Exception
 	 */
-	public String saveReviewScore(String studentScoreData) throws Exception {
-		System.out.println("Enter: upDateScore()");
+	public String saveReviewScore(Map<String,Object> paramMap) throws Exception {
+		System.out.println("Enter: saveReviewScore()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
-		String errorMessage = null;
+		String message = "";
 				
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
-			 
-			String query = "{call PKG_SCORE_REVIEW.SP_SAVE_REVIEW_SCORE(?,?)}";
-			System.out.println("save query: "+query);
+			String query = "{call PKG_SCORE_REVIEW.SP_SAVE_REVIEW_SCORE(?,?,?,?,?,?)}";
+			System.out.println("query: "+query);
 			cs = conn.prepareCall(query);
-			
-			cs.setString(++count, studentScoreData);
-			cs.registerOutParameter(count, OracleTypes.VARCHAR);
-			
+			cs.setLong(++count, Long.parseLong((String)paramMap.get("studentBioId")));
+			cs.setLong(++count, Long.parseLong((String)paramMap.get("subtestId")));
+			cs.setString(++count, (String)paramMap.get("statusStr"));
+			cs.setString(++count, (String)paramMap.get("commentStr"));
+			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
+			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
 			cs.execute();
-			errorMessage = cs.getString(count);
+			
+			message = cs.getString(count-1);
+			String errorMessage = cs.getString(count);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 			  System.out.println("Sucess: ");
 			}else{
@@ -1500,58 +1508,9 @@ public class TascDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: upDateScore() took time: " + String.valueOf(t2 - t1) + "ms");
+			System.out.println("Exit: saveReviewScore() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-		return errorMessage;
+		return message;
 	}
-	
-	
-	public List<TASCProcessTO> getStudentScoreInfo(String studentTestEventId,String subTestName) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		TASCProcessTO processTO = null;
-		List<TASCProcessTO> scoreList = new ArrayList<TASCProcessTO>();
-		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("SELECT s.test_element_id,");
-		queryBuff.append("fr.form_name,");
-		queryBuff.append("f.nce,");
-		queryBuff.append("f.ss,");
-		queryBuff.append("f.hse,");
-		queryBuff.append("f.updated_date_time");
-		queryBuff.append(" from SCR_SUBTEST_SCORE_FACT f, SCR_STUDENT_BIO_DIM s, form_dim fr, subtest_dim sub");
-		queryBuff.append(" where s.student_bio_id = f.student_bio_id");
-		queryBuff.append(" and fr.formid = f.formid");
-		queryBuff.append(" and sub.subtestid = f.subtestid");
-		queryBuff.append(" and s.test_element_id = ?");		
-		queryBuff.append(" and sub.subtest_name = ?");
-		String query = queryBuff.toString();
-		System.out.println(query);
-		
-		try {
-			conn = BaseDAO.connect(DATA_SOURCE);
-			pstmt = conn.prepareCall(query);
-			pstmt.setString(1, studentTestEventId);
-			pstmt.setString(2, subTestName);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				processTO = new TASCProcessTO();
-				processTO.setTestElementId(rs.getString(1));
-				processTO.setForm(rs.getString(2));
-				processTO.setNc(rs.getString(3));
-				processTO.setSs(rs.getString(4));
-				processTO.setHse(rs.getString(5));
-				processTO.setDateTimestamp(rs.getString(6));
-				scoreList.add(processTO);
-				}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new Exception(e.getMessage());
-		} finally {
-			try {rs.close();} catch (Exception e2) {}
-			try {pstmt.close();} catch (Exception e2) {}
-			try {conn.close();} catch (Exception e2) {}
-		}
-		return scoreList;
-	}
+
 }

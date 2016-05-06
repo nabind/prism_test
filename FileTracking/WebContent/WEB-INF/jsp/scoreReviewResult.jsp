@@ -24,7 +24,8 @@
 				SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("reviewTO");
 				%>
 				<div class="search-criteria">
-				<b>Showing search results for</b> Source System: <%=searchProcess.getProcessStatusDesc()%>
+				<b>Showing search results for</b> Source System: <%=searchProcess.getSourceSystemDesc()%>
+				, Status: <%=searchProcess.getProcessStatusDesc()%>
 				<%if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){%>
 					, Processed Date From: <%=searchProcess.getProcessedDateFrom()%>
 				<%}%>
@@ -50,7 +51,7 @@
 							<th>Reported NC</th>
 							<th>Reported SS</th>
 							<th>Reported HSE</th>
-							<th>Review Score(s)</th>
+							<th>Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -69,30 +70,29 @@
 							<td><%=process.getNc() %></td>
 							<td><%=process.getSs() %></td>
 							<td><%=process.getHse() %></td>
-							<td><a href="#" onclick="getMoreInfoWin('<%=process.getStudentBioId()%>','<%=process.getSubtest()%>', '<%=process.getStudentName() %>','<%=process.getSubtestName() %>')">Review</a></td>
+							<td><a href="#" onclick="getReviewInfo('<%=process.getStudentBioId()%>','<%=process.getSubtest()%>', '<%=process.getStudentName() %>','<%=process.getSubtestName() %>')">Review</a></td>
 						</tr>
 						<%} %>
 					</tbody>
 				</table>
 				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
 					<p id="review"><p><p>
-					<form action="reviewDialogForm">
-						<table id="scoreReviewTable" width="100%">
-							<thead>
-								<tr>
-									<th>Form Name</th>
-									<th>New NC</th>
-									<th>New SS</th>
-									<th>New HSE</th>
-									<th>Processed Date</th>
-									<th>Comment</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</form>
+					<table id="scoreReviewTable" width="100%">
+						<thead>
+							<tr>
+								<th>Form Name</th>
+								<th>New NC</th>
+								<th>New SS</th>
+								<th>New HSE</th>
+								<th>Processed Date</th>
+								<th>Comment</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+						</tbody>
+					</table>
 					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
 					</div>

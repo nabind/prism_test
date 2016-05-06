@@ -1,3 +1,5 @@
+var oTable;
+
 $(document).ready(function(){
 	
 	$('#dateFrom').datepicker();
@@ -24,44 +26,47 @@ $(document).ready(function(){
 		"sPaginationType": "full_numbers",
 	});
 	
-	
-	
 });
 
-function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
+function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
-	//var table = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
+	oTable = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
+	oTable.destroy();
 	jQuery("#reviewDialog").dialog({
 		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
 		height: "auto",
 		draggable: false,
 		  buttons: {
+			  'Reset' : function() {
+	              //$(this).dialog('close');
+	          },
 	          'Cancel' : function() {
 	              $(this).dialog('close');
 	          },
 	          'Save': function(){
-	        	  saveReviewScore(table);
+	        	  saveReviewScore(studentBioId,subtestId);
 	        	  $(this).dialog('close');
 				}
 			}
 	});
 	
-
 	$.ajax({
 		type: "POST",
 	    url: "getReviewResult.htm",
 	    data: dataString,
 	    success: function(data) {
-	    	//table.destroy();
-	    	//table = $('#scoreReviewTable').dataTable({
-	    	$('#scoreReviewTable').dataTable({
+	    	oTable = $('#scoreReviewTable').dataTable({
+	    	//$('#scoreReviewTable').dataTable({
 				bJQueryUI : true,
 				bPaginate : false,
 				bProcessing: true,
 				bFilter : false,
 				bInfo : false,
 				bSort : false,
+				fnDrawCallback: function () {
+		        	dataTableCallBack();
+		        }, 
 				data : data.data,
 		        columns: [
 		            { data: "form" },
@@ -70,15 +75,16 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		            { data: "hse" },
 		            { data: "date" },
 		            { 
-		            	"mData": "comments",
-		            	"mRender": function (oObj) {
-		            		return "<input type='text' value='"+oObj+"' maxlength='100'></input>";
-		            	}
+		            	"mRender": function ( data, type, row ) {
+							var html = "<input type='text' name='comment' class='' value='"+row.comment+"'"
+										+ " scr_id='"+row.scr+"'"
+										+ "/>";
+							return html;
+						}
 		            },
 		            { 
 		            	"mRender": function ( data, type, row ) {
-							var html = "<input type='radio' name='radioBtn' class='' value='1'";
-							html = html + " student_bio_id='"+row.student_bio_id+"' subtestid='"+row.subtestid+"'"
+							var html = "<input type='radio' name='radioBtn' class='' "
 										+ " scr_id='"+row.scr+"'"
 										+ "/>";
 							return html;
@@ -86,28 +92,51 @@ function getMoreInfoWin(studentBioId, subtestId, studentName, subtestName) {
 		            }
 		        ]
 			});
-			$('input:radio').checkbox();
+	    	$('input:radio').checkbox();
 	      },
 	      error: function(data) {
 			  alert('Failed to get Student Details');
 		  }
 	});
-
 }
 
-function saveReviewScore(table){
-	if(document.getElementsByName('radioBtn').checked) {
-	    alert('checked');
-	} else {
-		alert('not checked');
-	}
+function saveReviewScore(studentBioId,subtestId){
+	var commentStr = ""; 
+	$(oTable.$('input:text')).each(function (index, value){
+		var tempStr = $(this).attr('scr_id')+'~'+$(this).val();
+		commentStr = commentStr+','+tempStr;
+	}); 
+	commentStr = commentStr.substring(1);
+	
+	var statusStr = ""; 
+	$(oTable.$('input:radio')).each(function (index, value){
+		var tempStr = $(this).attr('scr_id')+'~';
+		if($(this).is(":checked")){
+			tempStr = tempStr + 'AP';
+	    }else{
+			tempStr = tempStr + 'RJ';
+		}
+		statusStr = statusStr+','+tempStr;
+	}); 
+	statusStr = statusStr.substring(1);
+	
+	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId
+						+"&commentStr="+commentStr+"&statusStr="+statusStr;
+	$.ajax({
+		type: "POST",
+	    url: "saveReviewScore.htm",
+	    data: dataString,
+	    success: function(data) {
+	    	alert('Data Saved');
+	    },
+	    error: function(data) {
+	    	alert('Failed to save Scoring Data');
+		}
+	});
 }
 
 function dataTableCallBack(){
 	update_rows();
-	$('.moreInfoWin').on("click", function(){
-		getMoreInfoWin($(this));
-	});
 }
 
 function update_rows(){
@@ -116,89 +145,8 @@ function update_rows(){
 }
 
 function validateForm(){
-	//TODO validation if needed
 	$('#scoreReviewForm').submit();
 }
 
-function clearMoreInfoTableRows() {
-	$("#studentTestId").html('');
-	$("#formName").html('');
-	$("#newNC").html('');
-	$("#newSS").html('');
-	$("#newHSE").html('');
-	$("#processedDate").html('');
-	
-}
 
-function studentDetails(studentTestEventId,subTestName){
-	clearMoreInfoTableRows();
-	var dataString = "studentTestEventId="+studentTestEventId+"&subTestName="+subTestName;
-	$("#review").html( '<img src="css/ajax-loader.gif"></img>' );
-	jQuery("#reviewDialog").dialog({
-		title: 'Student Score Info: ',
-		width: 675,
-		height: 410,
-		draggable: false
-	});
-	$.ajax({
-	      type: "POST",
-	      url: "getStudentScoreInfo.htm",
-	      cache: false,
-	      data: dataString,
-	      success: function(data) {
-	    	  if(data == "Error") {
-	    		  clearMoreInfoTableWhenError('Failed to get Data');
-	    	  } else if(data.length == 2) {
-	    		  clearMoreInfoTableWhenError('Data Not Found');
-	          } else {
-	    		  $("#review").html('');
-		    	  var obj = JSON.parse(data);
-		    	  $("#studentTestId").html( obj.TEST_ELEMENT_ID );
-		    	  $("#formName").html( obj.FORM_NAME );
-		    	  $("#newNC").html( obj.NCE );
-		    	  $("#newSS").html( obj.SS );
-		    	  $("#newHSE").html( obj.HSE );
-		    	  $("#processedDate").html(obj.UPDATED_DATE_TIME);
-		     }
-	      },
-		  error: function(data) {
-			  clearMoreInfoTableWhenError('Failed to get Data');
-		  }
-    });
 
-}
-
-function rejectOther(id){
-	var inputs = document.getElementsByName("isApprove");
-	for(var i=0;i<inputs.length;i++){
-		var input = inputs[i];
-		input.onclick = function (evt) {
-		    if (this.checked) {
-		    disableInputs(this, inputs);
-		    }
-		    else {
-		    enableInputs(this, inputs);
-		    }
-		    return true;
-		    };
-	}
-	
-function disableInputs (input, inputs) {
-	    for (var i = 0; i < inputs.length; i++) {
-	    var currentInput = inputs[i];
-	    if (currentInput != input) {
-	    currentInput.disabled = true;
-	    }
-	    }
-	    }
-
-function enableInputs (input, inputs) {
-	    for (var i = 0; i < inputs.length; i++) {
-	    var currentInput = inputs[i];
-	    if (currentInput != input) {
-	    currentInput.disabled = false;
-	    }
-	    }
-	    }
-
-}
