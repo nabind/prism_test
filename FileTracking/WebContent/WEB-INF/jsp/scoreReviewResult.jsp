@@ -51,7 +51,7 @@
 							<th>Reported NC</th>
 							<th>Reported SS</th>
 							<th>Reported HSE</th>
-							<th>Status</th>
+							<th>Review Score(s)</th>
 						</tr>
 					</thead>
 					<tbody>
