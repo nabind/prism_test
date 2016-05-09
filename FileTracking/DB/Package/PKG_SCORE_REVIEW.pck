@@ -1,21 +1,20 @@
 CREATE OR REPLACE PACKAGE PKG_SCORE_REVIEW AS
-TYPE GET_REFCURSOR IS REF CURSOR;
-PROCEDURE SP_GET_SCORES_STUDENTS(P_SOURCE_SYSTEM IN VARCHAR2,
-                              P_STATUS        IN VARCHAR2,
-                              P_PROCESSED_DATE_FROM IN VARCHAR2,
-                              P_PROCESSED_DATE_TO IN VARCHAR2,
-                              P_UUID IN VARCHAR2,
-                              P_STATE_CODE IN VARCHAR2,
-                              P_OUT_CUR_SCORE_RESULT OUT GET_REFCURSOR,
-                              P_OUT_CUR_SCORE_RESULT_MSG      OUT VARCHAR2);
-                              
-PROCEDURE SP_SAVE_REVIEW_SCORE(P_STUDENT_BIO_ID      IN NUMBER,
-                               P_SUBTEST_ID          IN NUMBER,
-                               P_STATUS_STR          IN VARCHAR2,
-                               P_COMMENT_STR         IN VARCHAR2, 
-                               P_OUTPUT_MSG          OUT VARCHAR2,                                           
-                               P_ERR_MSG             OUT VARCHAR2);    
-                                                       
+  TYPE GET_REFCURSOR IS REF CURSOR;
+  PROCEDURE SP_GET_SCORES_STUDENTS(P_SOURCE_SYSTEM            IN VARCHAR2,
+                                   P_STATUS                   IN VARCHAR2,
+                                   P_PROCESSED_DATE_FROM      IN VARCHAR2,
+                                   P_PROCESSED_DATE_TO        IN VARCHAR2,
+                                   P_UUID                     IN VARCHAR2,
+                                   P_STATE_CODE               IN VARCHAR2,
+                                   P_OUT_CUR_SCORE_RESULT     OUT GET_REFCURSOR,
+                                   P_OUT_CUR_SCORE_RESULT_MSG OUT VARCHAR2);
+
+  PROCEDURE SP_SAVE_REVIEW_SCORE(P_STUDENT_BIO_ID IN NUMBER,
+                                 P_SUBTEST_ID     IN NUMBER,
+                                 P_STATUS_STR     IN VARCHAR2,
+                                 P_COMMENT_STR    IN VARCHAR2,
+                                 P_OUTPUT_MSG     OUT VARCHAR2,
+                                 P_ERR_MSG        OUT VARCHAR2);
 
 END PKG_SCORE_REVIEW;
 /
@@ -232,10 +231,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
           END LOOP;
         
           UPDATE SCR_SUBTEST_SCORE_FACT
-             SET SCR_STATUS = 'PR', UPDATED_DATE_TIME = SYSDATE, IS_ACTIVE = 'N'
+             SET SCR_STATUS = 'PR', UPDATED_DATE_TIME = SYSDATE /*, IS_ACTIVE = 'N'*/
            WHERE SCR_ID = V_SCR_ID;
-        
-          
         
           P_OUTPUT_MSG := 'Student details updated successfully.';
         ELSE
@@ -280,10 +277,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
           END LOOP;
         
           UPDATE SCR_SUBTEST_SCORE_FACT
-             SET SCR_STATUS = 'RJ', UPDATED_DATE_TIME = SYSDATE, IS_ACTIVE = 'N'
+             SET SCR_STATUS = 'RJ', UPDATED_DATE_TIME = SYSDATE /*, IS_ACTIVE = 'N'*/
            WHERE SCR_ID = V_SCR_ID;
-        
-          
         
           P_OUTPUT_MSG := 'Student details updated successfully';
         END IF;
@@ -296,13 +291,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
         UPDATE SCR_SUBTEST_SCORE_FACT
            SET SCR_COMMENT = V_COMMENT, UPDATED_DATE_TIME = SYSDATE
          WHERE SCR_ID = V_SCR_ID;
-        
+      
       END LOOP;
     END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_ERR_MSG := UPPER(SQLERRM);
+      P_ERR_MSG    := UPPER(SQLERRM);
+      P_OUTPUT_MSG := 'Student details has been approved with Error';
       UPDATE SCR_SUBTEST_SCORE_FACT
          SET SCR_STATUS        = 'AE',
              UPDATED_DATE_TIME = SYSDATE,

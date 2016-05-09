@@ -36,6 +36,8 @@ $(document).ready(function(){
 });
 
 function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
+	$("#errorLog").hide();
+	var message = "";
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
 	oTable = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	oTable.destroy();
@@ -47,14 +49,14 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		  buttons: {
 			  'Reset' : function() {
 	              //$(this).dialog('close');
+				  $('input:radio').checkbox();
 	          },
 	          'Cancel' : function() {
 	              $(this).dialog('close');
 	          },
 	          'Save': function(){
-	        	  saveReviewScore(studentBioId,subtestId);
-	        	  $(this).dialog('close');
-				}
+	        	  message = saveReviewScore(studentBioId,subtestId);
+	          }
 			}
 	});
 	
@@ -83,17 +85,39 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            { data: "date" },
 		            { 
 		            	"mRender": function ( data, type, row ) {
-							var html = "<input type='text' name='comment' class='' value='"+row.comment+"'"
+		            		var html = "";
+		            		if(row.status == 'RV'){
+		            			html = "<input type='text' name='comment' class='rv_comment' value='"+row.comment+"'"
 										+ " scr_id='"+row.scr+"'"
-										+ "/>";
-							return html;
+										+ " />";
+		            		}else{
+		            			html = "<input type='text' name='comment' class='' value='"+row.comment+"'"
+				            			+ " scr_id='"+row.scr+"'"
+										+ " readonly/>";
+		            		}
+		        			return html;
 						}
 		            },
 		            { 
 		            	"mRender": function ( data, type, row ) {
-							var html = "<input type='radio' name='radioBtn' class='' "
-										+ " scr_id='"+row.scr+"'"
-										+ "/>";
+		            		var html = "";
+		            		if(row.status == 'RV'){
+		            			html = "<input type='radio' name='radioBtn' class='' "
+									+ " scr_id='"+row.scr+"'"
+									+ "/>";
+		            		}else{
+		            			if(row.status == 'AP'){
+		            				html = "<span>Approved</span>";
+		            			}else if(row.status == 'RJ'){
+		            				html = "<span>Rejected</span>";
+		            			}else if(row.status == 'AE'){
+		            				html = "<span>Approved with Error</span>";
+		            			}else if(row.status == 'PR'){
+		            				html = "<span>Processed</span>";
+		            			}else if(row.status == 'IN'){
+		            				html = "<span>Invalidated by System</span>";
+		            			}
+		            		}
 							return html;
 						}
 		            }
@@ -108,38 +132,63 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 }
 
 function saveReviewScore(studentBioId,subtestId){
-	var commentStr = ""; 
-	$(oTable.$('input:text')).each(function (index, value){
-		var tempStr = $(this).attr('scr_id')+'~'+$(this).val();
-		commentStr = commentStr+','+tempStr;
-	}); 
-	commentStr = commentStr.substring(1);
+	var message = "";
 	
-	var statusStr = ""; 
-	$(oTable.$('input:radio')).each(function (index, value){
-		var tempStr = $(this).attr('scr_id')+'~';
-		if($(this).is(":checked")){
-			tempStr = tempStr + 'AP';
-	    }else{
-			tempStr = tempStr + 'RJ';
-		}
-		statusStr = statusStr+','+tempStr;
-	}); 
-	statusStr = statusStr.substring(1);
-	
-	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId
-						+"&commentStr="+commentStr+"&statusStr="+statusStr;
-	$.ajax({
-		type: "POST",
-	    url: "saveReviewScore.htm",
-	    data: dataString,
-	    success: function(data) {
-	    	alert('Data Saved');
-	    },
-	    error: function(data) {
-	    	alert('Failed to save Scoring Data');
+	var messageEmptyFlag = false;
+	$(oTable.$('.rv_comment')).each(function (index, value){
+		var tempComment = $(this).val();
+		tempComment = tempComment.trim();
+		if(tempComment.length == 0){
+			messageEmptyFlag = true;
 		}
 	});
+	if(messageEmptyFlag == true){
+		message = "Please enter comment";
+		$("#errorLog").show();
+    	$("#errorLog").css("color","red");
+    	$("#errorLog").text(message);
+	}else{
+		var commentStr = ""; 
+		$(oTable.$('input:text')).each(function (index, value){
+			var tempStr = $(this).attr('scr_id')+'~'+$(this).val();
+			commentStr = commentStr+','+tempStr;
+		}); 
+		commentStr = commentStr.substring(1);
+		
+		var statusStr = ""; 
+		$(oTable.$('input:radio')).each(function (index, value){
+			var tempStr = $(this).attr('scr_id')+'~';
+			if($(this).is(":checked")){
+				tempStr = tempStr + 'AP';
+		    }else{
+				tempStr = tempStr + 'RJ';
+			}
+			statusStr = statusStr+','+tempStr;
+		}); 
+		statusStr = statusStr.substring(1);
+		
+		var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId
+							+"&commentStr="+commentStr+"&statusStr="+statusStr;
+		$.ajax({
+			type: "POST",
+		    url: "saveReviewScore.htm",
+		    data: dataString,
+		    success: function(data) {
+		    	message = data;
+		    	$("#errorLog").show();
+		    	$("#errorLog").css("color","green");
+		    	$("#errorLog").text(message);
+		    },
+		    error: function(data) {
+		    	//alert('Failed to save Scoring Data');
+		    	message = 'Failed to save Scoring Data';
+		    	$("#errorLog").show();
+		    	$("#errorLog").css("color","red");
+		    	$("#errorLog").text(message);
+			}
+		});
+	}
+	return message;
 }
 
 function dataTableCallBack(){
