@@ -2,6 +2,13 @@ var oTable;
 
 $(document).ready(function(){
 	
+	$(document).ajaxStart(function(){
+        $("#wait").css("display", "block");
+    });
+    $(document).ajaxComplete(function(){
+        $("#wait").css("display", "none");
+    });
+	
 	$('#dateFrom').datepicker();
 	$('#dateTo').datepicker();
 	

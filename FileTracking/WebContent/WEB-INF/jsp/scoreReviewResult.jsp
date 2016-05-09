@@ -93,11 +93,12 @@
 						
 						</tbody>
 					</table>
+					<div id="wait" align="center"><img src='css/ajax-loader-circle.gif' width="64" height="64" /><br>Loading..</div>
 					<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
 						<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
 					</div>
 				</div>		
 			</div>
-	</div>
+	</div>	
 </div>
-</div>
+
