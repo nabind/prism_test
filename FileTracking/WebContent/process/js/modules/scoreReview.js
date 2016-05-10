@@ -48,8 +48,10 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		draggable: false,
 		  buttons: {
 			  'Reset' : function() {
-	              //$(this).dialog('close');
-				  $('input:radio').checkbox();
+	              //$(this).dialog('reset');
+				  $('input:radio').checkbox().removeAttr('checked');
+				  $(oTable.$('.rv_comment')).val("");
+				  
 	          },
 	          'Cancel' : function() {
 	              $(this).dialog('close');
