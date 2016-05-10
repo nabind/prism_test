@@ -1483,7 +1483,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			String query = "{call PKG_SCORE_REVIEW.SP_SAVE_REVIEW_SCORE(?,?,?,?,?,?)}";
-			System.out.println("query: "+query);
+			System.out.println("query: "+query+" studentBioId:"+Long.parseLong((String)paramMap.get("studentBioId")));
+			System.out.println("subtestId: "+Long.parseLong((String)paramMap.get("subtestId"))+" statusStr:"+(String)paramMap.get("statusStr"));
+			System.out.println("commentStr: "+(String)paramMap.get("commentStr"));
 			cs = conn.prepareCall(query);
 			cs.setLong(++count, Long.parseLong((String)paramMap.get("studentBioId")));
 			cs.setLong(++count, Long.parseLong((String)paramMap.get("subtestId")));

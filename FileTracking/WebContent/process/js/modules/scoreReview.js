@@ -37,30 +37,9 @@ $(document).ready(function(){
 
 function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	$("#errorLog").hide();
-	var message = "";
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
 	oTable = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	oTable.destroy();
-	jQuery("#reviewDialog").dialog({
-		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
-		width: 900,
-		height: "auto",
-		draggable: false,
-		  buttons: {
-			  'Reset' : function() {
-	              //$(this).dialog('reset');
-				  $('input:radio').checkbox().removeAttr('checked');
-				  $(oTable.$('.rv_comment')).val("");
-				  
-	          },
-	          'Cancel' : function() {
-	              $(this).dialog('close');
-	          },
-	          'Save': function(){
-	        	  message = saveReviewScore(studentBioId,subtestId);
-	          }
-			}
-	});
 	
 	$.ajax({
 		type: "POST",
@@ -68,8 +47,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	    data: dataString,
 	    success: function(data) {
 	    	oTable = $('#scoreReviewTable').dataTable({
-	    	//$('#scoreReviewTable').dataTable({
-				bJQueryUI : true,
+	    		bJQueryUI : true,
 				bPaginate : false,
 				bProcessing: true,
 				bFilter : false,
@@ -131,9 +109,30 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 			  alert('Failed to get Student Details');
 		  }
 	});
+	
+	var reviewDialog = jQuery("#reviewDialog").dialog({
+		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
+		width: 900,
+		height: "auto",
+		draggable: false,
+		  buttons: {
+			  'Reset' : function() {
+				  $('input:radio').checkbox().removeAttr('checked');
+				  $(oTable.$('.rv_comment')).val("");
+	          },
+	          'Cancel' : function() {
+	              $(this).dialog('close');
+	          },
+	          'Save': function(){
+	        	  saveReviewScore(studentBioId,subtestId,function(){ 
+	        		  reviewDialog.dialog('close'); 
+	        	  });
+	          }
+			}
+	});
 }
 
-function saveReviewScore(studentBioId,subtestId){
+function saveReviewScore(studentBioId,subtestId,callbackFunction){
 	var message = "";
 	
 	var messageEmptyFlag = false;
@@ -177,9 +176,8 @@ function saveReviewScore(studentBioId,subtestId){
 		    data: dataString,
 		    success: function(data) {
 		    	message = data;
-		    	$("#errorLog").show();
-		    	$("#errorLog").css("color","green");
-		    	$("#errorLog").text(message);
+		    	alert(message);
+		    	callbackFunction();
 		    },
 		    error: function(data) {
 		    	//alert('Failed to save Scoring Data');
@@ -190,7 +188,6 @@ function saveReviewScore(studentBioId,subtestId){
 			}
 		});
 	}
-	return message;
 }
 
 function dataTableCallBack(){
