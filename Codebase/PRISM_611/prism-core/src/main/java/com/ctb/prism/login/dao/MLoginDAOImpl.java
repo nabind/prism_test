@@ -1264,24 +1264,27 @@ public class MLoginDAOImpl extends BaseDAO implements ILoginDAO{
 			contractName = Utils.getContractName();
 		}
 		
-		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(Utils.getProject(contractName)));
-		MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+		Query searchPasswordHisQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(Utils.getProject(contractName)));
+		
+		searchPasswordHisQuery.fields().include("pwdHistory");
 		
 		paramMap.remove("userName"); //This is required so that cache will get data based on single parameter (contract) only  
 		Map<String, Object> propertyMap = getContractProerty(paramMap);
 		final int pwdHistoryDay =
 			propertyMap.get("password.history.day")!= null ? Integer.parseInt((String)propertyMap.get("password.history.day")): 0;
 		
+		searchPasswordHisQuery.limit(pwdHistoryDay);
+		
+		searchPasswordHisQuery.with(new Sort(Sort.Direction.DESC,"date"));
+		
+		
+		List<PwdHistory> pwdHistoryList = getMongoTemplatePrism(contractName).find(searchPasswordHisQuery, PwdHistory.class);
 		List<String> pwsString = new LinkedList<String>();
-		if(savedUser != null) {
-			pwsString.add(savedUser.getPassword());
-			PwdHistory[] hist = savedUser.getPwdHistory();
-			if(hist != null && hist.length > 0) {
-				for(int i=0; i< pwdHistoryDay; i++) {
-					pwsString.add(hist[i].getPwd());
-				}
-			}
+		if(pwdHistoryList!=null && pwdHistoryList.size() > 0){
+			for(int i=0; i< pwdHistoryList.size(); i++)
+			pwsString.add(pwdHistoryList.get(i).getPwd());
 		}
+		
 		return pwsString;	
 	}
 	

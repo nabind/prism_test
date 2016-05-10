@@ -90,16 +90,20 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		
 		List<MCustProdAdminTO> custProdAdminTO = getMongoTemplatePrism("global").find(searchQuestionQuery, MCustProdAdminTO.class);
 		
-		HintQuestions[] pwdHintQuestionList =custProdAdminTO.get(0).getHintQuestions();
-		
-		QuestionTO questionTO = null;
-		for (HintQuestions question : pwdHintQuestionList) {
-			questionTO = new QuestionTO();
-			questionTO.setQuestionId(Long.valueOf(question.getQid()));
-			questionTO.setQuestion(question.getQues());
-			questionTO.setSno(Long.valueOf(question.getSeq()));
-			questionList.add(questionTO);
-		}		
+		if(custProdAdminTO != null){
+			HintQuestions[] pwdHintQuestionList =custProdAdminTO.get(0).getHintQuestions();
+			if(pwdHintQuestionList != null && pwdHintQuestionList.length > 0) {
+				QuestionTO questionTO = null;
+				for (HintQuestions question : pwdHintQuestionList) {
+					questionTO = new QuestionTO();
+					questionTO.setQuestionId(Long.valueOf(question.getQid()));
+					questionTO.setQuestion(question.getQues());
+					questionTO.setSno(Long.valueOf(question.getSeq()));
+					questionList.add(questionTO);
+				}	
+			}			
+		}
+			
 		long t2 = System.currentTimeMillis();
 		logger.log(IAppLogger.INFO, "Exit: ParentDAOImpl - getSecretQuestions() took time: " + String.valueOf(t2 - t1) + "ms");
 		return questionList;
@@ -120,9 +124,9 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		logger.log(IAppLogger.INFO, "Contract Name: "+contractName);
 		
 		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("project_id").is(project));
-		List<MUserTO> savedUser = getMongoTemplatePrism(contractName).find(searchUserQuery, MUserTO.class);
+		long searchUserCount = getMongoTemplatePrism(contractName).count(searchUserQuery, MUserTO.class);
 
-		if(savedUser != null && savedUser.size() > 0) {
+		if(searchUserCount > 0) {
 			return Boolean.FALSE;
 		} else {
 			return Boolean.TRUE;
@@ -137,8 +141,12 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 	public boolean checkActiveUserAvailability(Map<String, Object> paramMap) {
 		String contractName = (String) paramMap.get("contractName"); 
 		String username = (String) paramMap.get("username"); 
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.VALIDATE_ACTIVE_USER_NAME, username);
-		if (lstData == null || lstData.isEmpty()) {
+		
+		Query searchUserQuery = new Query(Criteria.where("_id").is(username).and("status").in("AC","SS"));
+		long searchUserCount = getMongoTemplatePrism(contractName).count(searchUserQuery, MUserTO.class);
+		
+		
+		if (searchUserCount == 0) {
 			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;
@@ -540,7 +548,6 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		}
 		return studentList;
 	}
-
 	/* (non-Javadoc)
 	 * @see com.ctb.prism.parent.dao.IParentDAO#getParentList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -1310,66 +1317,79 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		Boolean status = false;
 		Boolean ldapStatus = false;
 		try {
-			Long userID = getJdbcTemplatePrism().queryForObject(IQueryConstants.CHECK_EXISTING_USER, Long.class, parentTO.getUserName());
 			if (IApplicationConstants.APP_LDAP.equals(propertyLookup.get("app.auth"))) {
 				ldapStatus = ldapManager.updateUser(parentTO.getUserName(), parentTO.getUserName(), parentTO.getUserName(), parentTO.getPassword());
 			} else {
 				final String userName = parentTO.getUserName();
 				Map<String, Object> paramMap = new HashMap<String, Object>();
 				paramMap.put("username", userName);
-				paramMap.put("contractName", Utils.getContractName());
+				String contractName = Utils.getContractName();
+				paramMap.put("contractName",contractName);
 				UserTO userTO = loginDAO.getUserEmail(paramMap);
 				
 				final String salt =  userTO.getSalt() != null ? userTO.getSalt() : PasswordGenerator.getNextSalt();				
 				final String encryptedPass = SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(userName, salt));
-				
-				/*getJdbcTemplatePrism().update(IQueryConstants.UPDATE_PASSWORD_DATA, IApplicationConstants.FLAG_Y,
-						SaltedPasswordEncoder.encryptPassword(parentTO.getPassword(), Utils.getSaltWithUser(parentTO.getUserName(), salt)), salt, parentTO.getUserName());
-				 */				
-				ldapStatus  = (Boolean)getJdbcTemplatePrism().execute(new CallableStatementCreator() {
-					public CallableStatement createCallableStatement(Connection con) throws SQLException {
-						CallableStatement cs = con.prepareCall(IQueryConstants.SP_RESET_PASSWORD);
-						cs.setString(1, userName);
-						cs.setString(2, encryptedPass);
-						cs.setString(3, salt);
-						cs.setString(4, IApplicationConstants.FLAG_Y);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
-						return cs;
-					}
-				}, new CallableStatementCallback<Object>() {
-					public Object doInCallableStatement(CallableStatement cs) {
-						try {
-							cs.execute();
-							if(cs.getString(5) == null) {
-								return true;
-							}
-							Utils.logError(cs.getString(5));
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						logger.log(IAppLogger.INFO, "resetPassword()");
-						return false;
-					}
-				});
-			}
-			if (ldapStatus) {
-				int count = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FIRSTTIMEUSERLOGIN_DATA, parentTO.getLastName(), parentTO.getFirstName(), parentTO.getMail(), parentTO.getMobile(),
-						parentTO.getCountry(), parentTO.getZipCode(), parentTO.getState(), parentTO.getStreet(), parentTO.getCity(), userID);
 
-				logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA Done");
-				if (count > 0) {
-					boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(userID, parentTO.getQuestionToList());
-					if (isSavedPasswordHistAnswer) {
-						int count1 = getJdbcTemplatePrism().update(IQueryConstants.UPDATE_FIRSTTIMEUSERFLAG_DATA, IApplicationConstants.FLAG_N, parentTO.getUserName());
-						// logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA Done");
-						if (count1 > 0) {
-							status = true;
-						}
+				// get the user which needs modification
+				Query searchUserQuery = new Query(Criteria.where("_id").is(userName).and("project_id").is(Utils.getProject(contractName)));
+				MUserTO savedUser = getMongoTemplatePrism().findOne(searchUserQuery, MUserTO.class);
+				
+				if(savedUser != null) {
+					savedUser.setPassword(encryptedPass);
+					savedUser.setSalt(salt);
+					savedUser.setIsFirstTimeLogin(IApplicationConstants.FLAG_N);
+					savedUser.setLastName(parentTO.getLastName());
+					savedUser.setFirstName(parentTO.getFirstName());
+					savedUser.setEmail(parentTO.getMail());
+					savedUser.setPhoneNum(parentTO.getMobile());
+					
+					Address address = new Address();
+					address.setCounty(parentTO.getCountry());
+					address.setZipCode(parentTO.getZipCode());
+					address.setState(parentTO.getState());
+					address.setStreet(parentTO.getStreet());
+					address.setCity(parentTO.getCity());
+					
+					savedUser.setAddress(address);
+					
+					PwdHistory[] pwdHistories =	savedUser.getPwdHistory();
+					
+					int currentLength = pwdHistories != null ? pwdHistories.length : 0;
+					PwdHistory pwdHistory = new PwdHistory();
+					pwdHistory.setPwd(encryptedPass);
+					pwdHistory.setDate(new Date());
+					if(pwdHistories == null) {
+						pwdHistories = new PwdHistory[1];
 					}
+					pwdHistories[currentLength]	= pwdHistory;
+					
+					savedUser.setPwdHistory(pwdHistories);
+					
+					List<QuestionTO> questionTOs = parentTO.getQuestionToList();
+					if(questionTOs!= null && questionTOs.size() > 0) {
+						HintAnswers[] hintAnswerArr = new HintAnswers[questionTOs.size()];
+						HintAnswers hintAnswer = null;
+						for (int i=0; i<questionTOs.size(); i++) {
+							hintAnswer = new HintAnswers();
+							hintAnswer.setQID(String.valueOf(questionTOs.get(i).getQuestionId()));
+							hintAnswer.setAnsValue(questionTOs.get(i).getAnswer());
+							hintAnswerArr[i] = hintAnswer;
+						}
+						savedUser.setHintAnswers(hintAnswerArr);
+					}
+					
+					
+					//save
+					getMongoTemplatePrism().save(savedUser);
+					logger.log(IAppLogger.DEBUG, "INSERT_USER_DATA Done");
+					status = true;
 				}
+				
+			//	boolean isSavedPasswordHistAnswer = savePasswordHistAnswer(userID, parentTO.getQuestionToList());
+		
+
 			}
-		} catch (BusinessException bex) {
-			throw new BusinessException(bex.getCustomExceptionMessage());
+		
 		} catch (Exception e) {
 			logger.log(IAppLogger.ERROR, "Error occurred while updating frist time user details.", e);
 			throw new BusinessException(e.getMessage());
@@ -1458,17 +1478,38 @@ public class MParentDAOImpl extends BaseDAO implements IParentDAO {
 		
 		List<Map<String, Object>> lstData = null;
 		ArrayList<QuestionTO> questionTOs = new ArrayList<QuestionTO>();
+		
+		Query searchUserQuery = new Query(Criteria.where("project_id").is(contractName.toUpperCase())
+				.and("_id").is(username));
+		
+		MUserTO user = getMongoTemplatePrism(contractName).findOne(searchUserQuery, MUserTO.class);
+		
+		if(user != null){
+			if(user.getHintAnswers() != null) {
+				for (int count =0; count < user.getHintAnswers().length ; count++) {
+					// populate parent security question and answer detail
+					Query searchQuestionQuery = new Query(Criteria.where("_id").is(Utils.getProject(contractName).toUpperCase())
+							.and("hintQuestions.qid").is(user.getHintAnswers()[count].getQID())
+					);
+					searchQuestionQuery.fields().include("hintQuestions.$");
 
-		// populate parent security question and answer detail
-		lstData = getJdbcTemplatePrism(contractName).queryForList(IQueryConstants.GET_PARENT_SECURITY_QUESTION, username);
-		if (lstData.size() > 0) {
+					MCustProdAdminTO custProdAdmin = getMongoTemplatePrism("global").findOne(searchQuestionQuery, MCustProdAdminTO.class);
 
-			for (Map<String, Object> fieldDetails : lstData) {
-				QuestionTO questionTo = new QuestionTO();
-				questionTo.setSno(((BigDecimal) fieldDetails.get("SNO")).longValue());
-				questionTo.setQuestionId(((BigDecimal) fieldDetails.get("QUESTION_ID")).longValue());
-				questionTo.setQuestion((String) fieldDetails.get("QUESTION"));
-				questionTOs.add(questionTo);
+					HintQuestions pwdHintQuestion = new HintQuestions();
+
+					if(custProdAdmin != null) {
+						pwdHintQuestion = custProdAdmin.getHintQuestions()[0];
+						QuestionTO questionTo = null;
+						questionTo = new QuestionTO();
+						questionTo.setSno(Long.valueOf(pwdHintQuestion.getSeq()));
+						questionTo.setQuestionId(Long.valueOf(pwdHintQuestion.getQid()));
+						questionTo.setQuestion(pwdHintQuestion.getQues());
+						//questionTo.setAnswerId(rsQuestion.getLong("ANSWER_ID")); --Blocked
+						questionTo.setAnswer(user.getHintAnswers()[count].getAnsValue());
+						questionTOs.add(questionTo);
+
+					}				
+				}
 			}
 		}
 		long t2 = System.currentTimeMillis();
