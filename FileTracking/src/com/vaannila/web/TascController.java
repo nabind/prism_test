@@ -1133,11 +1133,9 @@ public class TascController {
 			
 			TascDAOImpl stageDao = new TascDAOImpl();
 			String message = stageDao.saveReviewScore(paramMap);
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String jsonStr = gson.toJson(message);
-			System.out.println("jsonStr:"+jsonStr);
+			System.out.println("message:"+message);
 			response.setContentType("application/json");
-			response.getWriter().write(jsonStr);
+			response.getWriter().write(message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
