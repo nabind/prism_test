@@ -20,6 +20,11 @@
 					</div>
 				</div>
 		</div>
+		<div id="notification" style="display: none;">
+					<span class="dismiss"><a title="dismiss this notification">x</a></span>
+		</div>	
+		<input type="hidden" value="${messageMapSession.lastLogin}" id="lastLogin"/>
+	
 <script src="scripts/js/libs/jquery-1.7.2.min.js"></script>		
 <script>
 openHomePage();
@@ -48,4 +53,16 @@ function openHomePage() {
 	}
 	return false;
 }
+var lastLogin = $("#lastLogin").val();
+ $("#notification").fadeIn("slow").append(lastLogin);
+$(".dismiss").click(function(){
+	 $("#notification").delay(1000).fadeOut('slow');
+}); 
+/*
+$(function () {
+	  $('#notification').fadeIn('slow', function () {
+	    $(this).delay(5000).fadeOut('slow');
+	  }).append('your message');
+	});*/
+
 </script>

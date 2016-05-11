@@ -183,6 +183,10 @@ public class LoginBusinessImpl implements ILoginBusiness{
 			messageMap.put("systemMessage", systemMessage);
 			
 		}
+		
+		String lastLogin = "Last login was on 5/11/2016 at 5:00 AM";
+		messageMap.put("lastLogin", lastLogin);
+		
 		return messageMap;
 	}
 	
