@@ -82,11 +82,11 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            	"mRender": function ( data, type, row ) {
 		            		var html = "";
 		            		if(row.status == 'RV' || row.status == 'AE'){
-		            			html = "<input type='text' name='comment' class='rv_comment' value='"+row.comment+"'"
+		            			html = "<input type='text' maxlength='100' name='comment' class='rv_comment' value='"+row.comment+"'"
 										+ " scr_id='"+row.scr+"'"
 										+ " />";
 		            		}else{
-		            			html = "<span>"+row.comment+"</span>";
+		            			html = "<span class='table-span'>"+row.comment+"</span>";
 		            		}
 		        			return html;
 						}
