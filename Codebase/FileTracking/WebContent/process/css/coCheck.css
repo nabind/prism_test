@@ -100,3 +100,8 @@
 	position: absolute;
 	z-index: 1001;
 }
+.table-span { 
+    display:block;
+    width:150px;
+    word-wrap:break-word;
+}

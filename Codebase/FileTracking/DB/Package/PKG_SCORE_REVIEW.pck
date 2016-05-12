@@ -106,18 +106,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
     V_STU_BIO_ID           NUMBER;
     V_SUBTEST_ID           NUMBER;
     V_STATUS               VARCHAR2(50);
-    V_COMMENT              VARCHAR2(50);
+    V_COMMENT              SCR_SUBTEST_SCORE_FACT.SCR_COMMENT%TYPE;
     V_TMP_MSG              VARCHAR2(50);
     V_INCOMING_SCR_ROW_CNT NUMBER;
     V_ACTUAL_SCR_ROW_CNT   NUMBER;
+    V_STATUS_FLAG          NUMBER := 0;
   
     CURSOR GET_SCR_COUNT IS
       SELECT COUNT(1) CNT
-        FROM (WITH T AS (SELECT P_STATUS_STR FROM DUAL)
-               SELECT REGEXP_SUBSTR(P_STATUS_STR, '[^,]+', 1, LEVEL)
+        FROM (WITH T AS (SELECT P_COMMENT_STR FROM DUAL)
+               SELECT REGEXP_SUBSTR(P_COMMENT_STR, '[^,]+', 1, LEVEL)
                  FROM T
                CONNECT BY LEVEL <=
-                          LENGTH(REGEXP_REPLACE(P_STATUS_STR, '[^,]*')) + 1) A;
+                          LENGTH(REGEXP_REPLACE(P_COMMENT_STR, '[^,]*')) + 1) A;
   
   
     CURSOR GET_TEMP_STR(STR IN VARCHAR2) IS
@@ -158,7 +159,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
       INTO V_ACTUAL_SCR_ROW_CNT
       FROM SCR_SUBTEST_SCORE_FACT
      WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
-       AND SUBTESTID = P_SUBTEST_ID;
+       AND SUBTESTID = P_SUBTEST_ID
+       AND SCR_STATUS IN ('RV', 'AE');
   
     IF V_ACTUAL_SCR_ROW_CNT <> V_INCOMING_SCR_ROW_CNT THEN
       P_OUTPUT_MSG := 'There is a newer record with the same score(s). Please approve the record with the latest processed date.';
@@ -172,109 +174,98 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
         UPDATE SCR_SUBTEST_SCORE_FACT
            SET SCR_STATUS = V_STATUS, UPDATED_DATE_TIME = SYSDATE
          WHERE SCR_ID = V_SCR_ID;
-        COMMIT;
+      END LOOP;
+      COMMIT;
+    
+      FOR REC5 IN GET_TEMP_STR(P_STATUS_STR) LOOP
+        V_SCR_ID := SUBSTR(REC5.COL1, 0, (INSTR(REC5.COL1, '~') - 1));
+        V_STATUS := SUBSTR(REC5.COL1, (INSTR(REC5.COL1, '~') + 1));
       
         IF V_STATUS = 'AP' THEN
+          V_STATUS_FLAG := 1;
           FOR REC6 IN GET_STUDENT_DETAILS(V_SCR_ID) LOOP
             IF ((REC6.OPR_HSE > REC6.HSE) OR (REC6.OPR_NCR > REC6.NCE) OR
                (REC6.OPR_SS > REC6.SS)) THEN
               P_OUTPUT_MSG := 'The selected score(s) are lower than other available scores.';
+            ELSE
+              UPDATE SCR_SUBTEST_SCORE_FACT
+                 SET SCR_STATUS        = 'PR',
+                     UPDATED_DATE_TIME = SYSDATE,
+                     OPR_HSE           = REC6.HSE,
+                     OPR_NCR           = REC6.NCE,
+                     OPR_SS            = REC6.SS /*, IS_ACTIVE = 'N'*/
+               WHERE SCR_ID = V_SCR_ID;
+            
+              UPDATE SUBTEST_SCORE_FACT
+                 SET HSE           = REC6.HSE,
+                     NCE           = REC6.NCE,
+                     SS            = REC6.SS,
+                     DATETIMESTAMP = SYSDATE
+               WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
+                 AND SUBTESTID = P_SUBTEST_ID;
+            
+              FOR REC1 IN (SELECT *
+                             FROM SCR_OBJECTIVE_SCORE_FACT
+                            WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+                UPDATE objective_score_fact O
+                   SET O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID,
+                       O.ORG_NODEID       = REC1.ORG_NODEID,
+                       O.CUST_PROD_ID     = REC1.CUST_PROD_ID,
+                       O.ASSESSMENTID     = REC1.ASSESSMENTID,
+                       O.CONTENTID        = REC1.CONTENTID,
+                       O.SUBTESTID        = REC1.SUBTESTID,
+                       O.OBJECTIVEID      = REC1.OBJECTIVEID,
+                       O.GENDERID         = REC1.GENDERID,
+                       O.GRADEID          = REC1.GRADEID,
+                       O.LEVELID          = REC1.LEVELID,
+                       O.FORMID           = REC1.FORMID,
+                       O.ADMINID          = REC1.ADMINID,
+                       O.NCR              = REC1.NCR,
+                       O.OS               = REC1.OS,
+                       O.OPI              = REC1.OPI,
+                       O.OPI_CUT          = REC1.OPI_CUT,
+                       O.MEAN_IPI         = REC1.MEAN_IPI,
+                       O.OPIQ             = REC1.OPIQ,
+                       O.OPIP             = REC1.OPIP,
+                       O.PC               = REC1.PC,
+                       O.PP               = REC1.PP,
+                       O.SS               = REC1.SS,
+                       O.PL               = REC1.PL,
+                       O.INRC             = REC1.INRC,
+                       O.CONDCODE_ID      = REC1.CONDCODE_ID,
+                       O.TEST_DATE        = REC1.TEST_DATE,
+                       O.DATETIMESTAMP    = SYSDATE
+                 WHERE O.STUDENT_BIO_ID = P_STUDENT_BIO_ID
+                   AND O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID;
+              END LOOP;
+            
+              FOR REC2 IN (SELECT *
+                             FROM SCR_ITEM_SCORE_FACT
+                            WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+                UPDATE ITEM_SCORE_FACT I
+                   SET I.ITEM_FACTID   = REC2.ITEM_FACTID,
+                       I.ORG_NODEID    = REC2.ORG_NODEID,
+                       I.CUST_PROD_ID  = CUST_PROD_ID,
+                       I.ASSESSMENTID  = ASSESSMENTID,
+                       I.CONTENTID     = CONTENTID,
+                       I.SUBTESTID     = SUBTESTID,
+                       I.OBJECTIVEID   = OBJECTIVEID,
+                       I.GRADEID       = GRADEID,
+                       I.LEVELID       = LEVELID,
+                       I.FORMID        = FORMID,
+                       I.ADMINID       = ADMINID,
+                       I.ITEMSETID     = ITEMSETID,
+                       I.READID        = READID,
+                       I.SCORE_VALUES  = SCORE_VALUES,
+                       I.DATETIMESTAMP = SYSDATE
+                 WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
+                   AND I.ITEM_FACTID = REC2.ITEM_FACTID;
+              END LOOP;
             END IF;
-          
-            UPDATE SUBTEST_SCORE_FACT
-               SET HSE           = REC6.HSE,
-                   NCE           = REC6.NCE,
-                   SS            = REC6.SS,
-                   DATETIMESTAMP = SYSDATE
-             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
-               AND SUBTESTID = P_SUBTEST_ID;
           END LOOP;
-        
-          FOR REC7 IN (SELECT *
-                         FROM SCR_STUDENT_BIO_DIM
-                        WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-            UPDATE STUDENT_BIO_DIM
-               SET FIRST_NAME         = REC7.FIRST_NAME,
-                   MIDDLE_NAME        = REC7.MIDDLE_NAME,
-                   LAST_NAME          = REC7.LAST_NAME,
-                   BIRTHDATE          = REC7.BIRTHDATE,
-                   TEST_ELEMENT_ID    = REC7.TEST_ELEMENT_ID,
-                   INT_STUDENT_ID     = REC7.INT_STUDENT_ID,
-                   EXT_STUDENT_ID     = REC7.EXT_STUDENT_ID,
-                   LITHOCODE          = REC7.LITHOCODE,
-                   GENDERID           = REC7.GENDERID,
-                   GRADEID            = REC7.GRADEID,
-                   EDU_CENTERID       = REC7.EDU_CENTERID,
-                   BARCODE            = REC7.BARCODE,
-                   SPECIAL_CODES      = REC7.SPECIAL_CODES,
-                   STUDENT_MODE       = REC7.STUDENT_MODE,
-                   ORG_NODEID         = REC7.ORG_NODEID,
-                   CUSTOMERID         = REC7.CUSTOMERID,
-                   ADMINID            = REC7.ADMINID,
-                   IS_BIO_UPDATE_CMPL = REC7.IS_BIO_UPDATE_CMPL,
-                   PP_IMAGING_ID      = REC7.PP_IMAGING_ID,
-                   OAS_IMAGING_ID     = REC7.OAS_IMAGING_ID,
-                   UPDATED_DATE_TIME  = SYSDATE
-             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID;
-          END LOOP;
-        
-          FOR REC8 IN (SELECT *
-                         FROM SCR_STUDENT_DEMO_VALUES
-                        WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-            UPDATE STUDENT_DEMO_VALUES
-               SET STU_DEMO_VALID = REC8.STU_DEMO_VALID,
-                   DEMOID         = REC8.DEMOID,
-                   DEMO_VALID     = REC8.DEMO_VALID,
-                   DEMO_VALUE     = REC8.DEMO_VALUE,
-                   DATETIMESTAMP  = SYSDATE
-             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID;
-          END LOOP;
-        
-          UPDATE SCR_SUBTEST_SCORE_FACT
-             SET SCR_STATUS = 'PR', UPDATED_DATE_TIME = SYSDATE /*, IS_ACTIVE = 'N'*/
-           WHERE SCR_ID = V_SCR_ID;
         
           P_OUTPUT_MSG := 'Student details updated successfully.';
-        ELSE
-          FOR REC7 IN (SELECT *
-                         FROM SCR_STUDENT_BIO_DIM
-                        WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-            UPDATE STUDENT_BIO_DIM
-               SET FIRST_NAME         = REC7.FIRST_NAME,
-                   MIDDLE_NAME        = REC7.MIDDLE_NAME,
-                   LAST_NAME          = REC7.LAST_NAME,
-                   BIRTHDATE          = REC7.BIRTHDATE,
-                   TEST_ELEMENT_ID    = REC7.TEST_ELEMENT_ID,
-                   INT_STUDENT_ID     = REC7.INT_STUDENT_ID,
-                   EXT_STUDENT_ID     = REC7.EXT_STUDENT_ID,
-                   LITHOCODE          = REC7.LITHOCODE,
-                   GENDERID           = REC7.GENDERID,
-                   GRADEID            = REC7.GRADEID,
-                   EDU_CENTERID       = REC7.EDU_CENTERID,
-                   BARCODE            = REC7.BARCODE,
-                   SPECIAL_CODES      = REC7.SPECIAL_CODES,
-                   STUDENT_MODE       = REC7.STUDENT_MODE,
-                   ORG_NODEID         = REC7.ORG_NODEID,
-                   CUSTOMERID         = REC7.CUSTOMERID,
-                   ADMINID            = REC7.ADMINID,
-                   IS_BIO_UPDATE_CMPL = REC7.IS_BIO_UPDATE_CMPL,
-                   PP_IMAGING_ID      = REC7.PP_IMAGING_ID,
-                   OAS_IMAGING_ID     = REC7.OAS_IMAGING_ID,
-                   UPDATED_DATE_TIME  = SYSDATE
-             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID;
-          END LOOP;
-        
-          FOR REC8 IN (SELECT *
-                         FROM SCR_STUDENT_DEMO_VALUES
-                        WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-            UPDATE STUDENT_DEMO_VALUES
-               SET STU_DEMO_VALID = REC8.STU_DEMO_VALID,
-                   DEMOID         = REC8.DEMOID,
-                   DEMO_VALID     = REC8.DEMO_VALID,
-                   DEMO_VALUE     = REC8.DEMO_VALUE,
-                   DATETIMESTAMP  = SYSDATE
-             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID;
-          END LOOP;
+        ELSIF V_STATUS = 'RJ' THEN
         
           UPDATE SCR_SUBTEST_SCORE_FACT
              SET SCR_STATUS = 'RJ', UPDATED_DATE_TIME = SYSDATE /*, IS_ACTIVE = 'N'*/
@@ -282,6 +273,64 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
         
           P_OUTPUT_MSG := 'Student details updated successfully';
         END IF;
+      END LOOP;
+    
+      FOR REC7 IN (SELECT *
+                     FROM SCR_STUDENT_BIO_DIM
+                    WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+        UPDATE STUDENT_BIO_DIM
+           SET FIRST_NAME         = REC7.FIRST_NAME,
+               MIDDLE_NAME        = REC7.MIDDLE_NAME,
+               LAST_NAME          = REC7.LAST_NAME,
+               BIRTHDATE          = REC7.BIRTHDATE,
+               TEST_ELEMENT_ID    = REC7.TEST_ELEMENT_ID,
+               INT_STUDENT_ID     = REC7.INT_STUDENT_ID,
+               EXT_STUDENT_ID     = REC7.EXT_STUDENT_ID,
+               LITHOCODE          = REC7.LITHOCODE,
+               GENDERID           = REC7.GENDERID,
+               GRADEID            = REC7.GRADEID,
+               EDU_CENTERID       = REC7.EDU_CENTERID,
+               BARCODE            = REC7.BARCODE,
+               SPECIAL_CODES      = REC7.SPECIAL_CODES,
+               STUDENT_MODE       = REC7.STUDENT_MODE,
+               ORG_NODEID         = REC7.ORG_NODEID,
+               CUSTOMERID         = REC7.CUSTOMERID,
+               ADMINID            = REC7.ADMINID,
+               IS_BIO_UPDATE_CMPL = REC7.IS_BIO_UPDATE_CMPL,
+               PP_IMAGING_ID      = REC7.PP_IMAGING_ID,
+               OAS_IMAGING_ID     = REC7.OAS_IMAGING_ID,
+               UPDATED_DATE_TIME  = SYSDATE
+         WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
+           AND TEST_ELEMENT_ID = REC7.TEST_ELEMENT_ID;
+      END LOOP;
+    
+      FOR REC8 IN (SELECT *
+                     FROM SCR_STUDENT_DEMO_VALUES
+                    WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+        UPDATE STUDENT_DEMO_VALUES D1
+           SET D1.STU_DEMO_VALID = REC8.STU_DEMO_VALID,
+               D1.DEMOID         = REC8.DEMOID,
+               D1.DEMO_VALID     = REC8.DEMO_VALID,
+               D1.DEMO_VALUE     = REC8.DEMO_VALUE,
+               D1.DATETIMESTAMP  = SYSDATE
+         WHERE D1.STUDENT_BIO_ID = P_STUDENT_BIO_ID
+           AND D1.STU_DEMO_VALID = REC8.STU_DEMO_VALID;
+      END LOOP;
+    
+      FOR REC9 IN (SELECT *
+                     FROM SCR_STU_SUBTEST_DEMO_VALUES
+                    WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
+                      AND SUBTESTID = P_SUBTEST_ID) LOOP
+        UPDATE STU_SUBTEST_DEMO_VALUES D2
+           SET D2.STU_TST_DEMO_VALID = REC9.STU_TST_DEMO_VALID,
+               D2.DEMOID             = REC9.DEMOID,
+               D2.DEMO_VALID         = REC9.DEMO_VALID,
+               D2.DEMO_VALUE         = REC9.DEMO_VALUE,
+               D2.DATE_TEST_TAKEN    = REC9.DATE_TEST_TAKEN,
+               D2.DATETIMESTAMP      = SYSDATE
+         WHERE D2.STUDENT_BIO_ID = P_STUDENT_BIO_ID
+           AND D2.SUBTESTID = P_SUBTEST_ID
+           AND D2.STU_TST_DEMO_VALID = REC9.STU_TST_DEMO_VALID;
       END LOOP;
     
       FOR REC5 IN GET_TEMP_STR(P_COMMENT_STR) LOOP
@@ -297,13 +346,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
   
   EXCEPTION
     WHEN OTHERS THEN
-      P_ERR_MSG    := UPPER(SQLERRM);
-      P_OUTPUT_MSG := 'Student details has been approved with Error';
-      UPDATE SCR_SUBTEST_SCORE_FACT
-         SET SCR_STATUS        = 'AE',
-             UPDATED_DATE_TIME = SYSDATE,
-             SCR_ERR_MSG       = P_ERR_MSG
-       WHERE SCR_ID = V_SCR_ID;
+      P_ERR_MSG := UPPER(SQLERRM);
+      IF V_STATUS_FLAG = 1 THEN
+        P_OUTPUT_MSG := 'Student details has been approved with Error';
+        UPDATE SCR_SUBTEST_SCORE_FACT
+           SET SCR_STATUS        = 'AE',
+               UPDATED_DATE_TIME = SYSDATE,
+               SCR_ERR_MSG       = P_ERR_MSG
+         WHERE SCR_ID = V_SCR_ID;
+      END IF;
   END SP_SAVE_REVIEW_SCORE;
 END PKG_SCORE_REVIEW;
 /
