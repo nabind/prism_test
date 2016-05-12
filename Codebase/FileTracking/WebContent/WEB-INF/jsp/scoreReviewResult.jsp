@@ -11,9 +11,7 @@
 
 <link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
 <link rel="stylesheet" href="css/jquery.checkbox.css" type="text/css"/>
-<link rel="stylesheet" href="css/media/css/jquery-confirm.min.css" type="text/css"/>
 <script type="text/javascript" src="js/modules/scoreReview.js"></script>
-<script src="css/jquery.validate.js"></script>	
 <script type="text/javascript" src="js/jquery.checkbox.js"></script>
 <script type="text/javascript" src="js/jquery/jquery-confirm.min.js"></script>
 	
@@ -50,7 +48,7 @@
 							<th>Processed Date</th>
 							<th>State Code</th>
 							<th>Subtest</th>
-							<th>Reported NC</th>
+							<th>Reported NCR</th>
 							<th>Reported SS</th>
 							<th>Reported HSE</th>
 							<th>Review Score(s)</th>
@@ -77,13 +75,13 @@
 						<%} %>
 					</tbody>
 				</table>
-				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px'>
+				<div id="reviewDialog" title="Loading ..." style='display:none; font-size:11px;'>
 					<p id="review"><p><p>
 					<table id="scoreReviewTable" width="100%">
 						<thead>
 							<tr>
 								<th>Form Name</th>
-								<th>New NC</th>
+								<th>New NCR</th>
 								<th>New SS</th>
 								<th>New HSE</th>
 								<th>Processed Date</th>
@@ -96,11 +94,14 @@
 						
 						</tbody>
 					</table>
-					<div id="wait" align="center"><img src='css/ajax-loader-circle.gif' width="64" height="64" /><br>Loading..</div>
+					<div id="wait" align="center" style='display:none;'><img src='css/ajax-loader-circle.gif' width="64" height="64" /><br>Loading..</div>
 					<div id='errorLogDialog' style="text-align: center">
 						<p id="errorLog" style='font-size:13px; font-weight:bold;'></p>
 					</div>
-				</div>		
+				</div>	
+				<div id="confirmDialog" class='confirm-dialog'>
+	  				Do you want to proceed?
+				</div>
 			</div>
 	</div>	
 </div>

@@ -16,16 +16,6 @@ $(document).ready(function(){
 		validateForm();
 	});
 	
-	$("#coCheckErrorDialog").dialog({
-		bgiframe: true, 
-		autoOpen: false, 
-		modal: true, 
-		height: 100, 
-		minWidth: 450, 
-		closeOnEscape: true, 
-		resizable: true
-	});
-	
 	$.fn.dataTable.ext.errMode = 'none';
 	
 	$("#scoreResultTable").dataTable( {
@@ -140,8 +130,9 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		width: 900,
 		height: "auto",
-		draggable: false,
-		  buttons: {
+		draggable: false,	
+		modal: true,
+		buttons: {
 			  'Reset' : function() {
 				  $('input:radio').checkbox().removeAttr('checked');
 				  $(oTable.$('.rv_comment')).val("");
@@ -150,15 +141,15 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	              $(this).dialog('close');
 	          },
 	          'Save': function(){
-	        	  saveReviewScore(studentBioId,subtestId,function(){ 
+	        	  validateReviewScore(studentBioId,subtestId,function(){ 
 	        		  reviewDialog.dialog('close'); 
 	        	  });
 	          }
-			}
+		}
 	});
 }
 
-function saveReviewScore(studentBioId,subtestId,callbackFunction){
+function validateReviewScore(studentBioId,subtestId,callbackFunction){
 	var message = "";
 	
 	var messageEmptyFlag = false;
@@ -173,12 +164,12 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
 	var scoreFlag = false;
 	$(oTable.$('input:radio')).each(function (index, value){
 		if($(this).is(":checked")){
-			var ss = $(this).attr('ss');
-			var ncr = $(this).attr('ncr');
-			var hse = $(this).attr('hse');
-			var opr_ss = $(this).attr('opr_ss');
-			var opr_ncr = $(this).attr('opr_ncr');
-			var opr_hse = $(this).attr('opr_hse');
+			var ss = $(this).attr('ss')==''?0:$(this).attr('ss');
+			var ncr = $(this).attr('ncr')==''?0:$(this).attr('ncr');
+			var hse = $(this).attr('hse')==''?0:$(this).attr('hse');
+			var opr_ss = $(this).attr('opr_ss')==''?0:$(this).attr('opr_ss');
+			var opr_ncr = $(this).attr('opr_ncr')==''?0:$(this).attr('opr_ncr');
+			var opr_hse = $(this).attr('opr_hse')==''?0:$(this).attr('opr_hse');
 			if(opr_ss>ss || opr_ncr>ncr || opr_hse>hse ){
 				scoreFlag = true;
 			}
@@ -192,60 +183,68 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
     	$("#errorLog").css("color","red");
     	$("#errorLog").text(message);
 	}else if(scoreFlag == true){
-		message = "The selected score(s) are lower than other available scores.";
-		$.confirm({
-			title: 'The selected score(s) are lower than other available scores.!',
-		    content: 'Do you want to continue?',
-		    confirm: function(){
-		        $.alert('Confirmed!');
-		    },
-		    cancel: function(){
-		        $.alert('Canceled!');
-		    }
-		});
-	}
-	
-	
-	
-	else{
-		var commentStr = ""; 
-		$(oTable.$('input:text')).each(function (index, value){
-			var tempStr = $(this).attr('scr_id')+'~'+$(this).val();
-			commentStr = commentStr+','+tempStr;
-		}); 
-		commentStr = commentStr.substring(1);
-		
-		var statusStr = ""; 
-		$(oTable.$('input:radio')).each(function (index, value){
-			var tempStr = $(this).attr('scr_id')+'~';
-			if($(this).is(":checked")){
-				tempStr = tempStr + 'AP';
-			}else{
-				tempStr = tempStr + 'RJ';
+		$("#confirmDialog").dialog({
+			title: 'The selected score(s) are lower than other available scores.',
+			width: 513,
+			height: 134,
+			resizable: false,
+			draggable: false,	
+			modal: true,
+			closeOnEscape: false,
+			buttons : {
+				"Proceed" : function(){
+					saveReviewScore(studentBioId,subtestId,callbackFunction);
+					$(this).dialog("close");
+				},
+				"Cancel" : function() {
+					$(this).dialog("close");
+				}
 			}
-			statusStr = statusStr+','+tempStr;
-		}); 
-		statusStr = statusStr.substring(1);
-		
-		var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId
-							+"&commentStr="+commentStr+"&statusStr="+statusStr;
-		$.ajax({
-			type: "POST",
-		    url: "saveReviewScore.htm",
-		    data: dataString,
-		    success: function(data) {
-		    	message = data;
-		    	alert(message);
-		    	callbackFunction();
-		    },
-		    error: function(data) {
-		    	message = 'Failed to save Scoring Data';
-		    	$("#errorLog").show();
-		    	$("#errorLog").css("color","red");
-		    	$("#errorLog").text(message);
-			}
-		});
+		});		
+	}else{
+		saveReviewScore(studentBioId,subtestId,callbackFunction);
 	}
+}
+
+function saveReviewScore(studentBioId,subtestId,callbackFunction){
+
+	var commentStr = ""; 
+	$(oTable.$('input:text')).each(function (index, value){
+		var tempStr = $(this).attr('scr_id')+'~'+$(this).val();
+		commentStr = commentStr+','+tempStr;
+	}); 
+	commentStr = commentStr.substring(1);
+	
+	var statusStr = ""; 
+	$(oTable.$('input:radio')).each(function (index, value){
+		var tempStr = $(this).attr('scr_id')+'~';
+		if($(this).is(":checked")){
+			tempStr = tempStr + 'AP';
+		}else{
+			tempStr = tempStr + 'RJ';
+		}
+		statusStr = statusStr+','+tempStr;
+	}); 
+	statusStr = statusStr.substring(1);
+	
+	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId
+						+"&commentStr="+commentStr+"&statusStr="+statusStr;
+	$.ajax({
+		type: "POST",
+	    url: "saveReviewScore.htm",
+	    data: dataString,
+	    success: function(data) {
+	    	message = data;
+	    	alert(message);
+	    	callbackFunction();
+	    },
+	    error: function(data) {
+	    	message = 'Failed to save Scoring Data';
+	    	$("#errorLog").show();
+	    	$("#errorLog").css("color","red");
+	    	$("#errorLog").text(message);
+		}
+	});
 }
 
 function dataTableCallBack(){
