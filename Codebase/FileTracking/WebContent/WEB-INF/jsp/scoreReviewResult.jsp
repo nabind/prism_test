@@ -99,8 +99,11 @@
 						<p id="errorLog" style='font-size:13px; font-weight:bold;'></p>
 					</div>
 				</div>	
-				<div id="confirmDialog" class='confirm-dialog'>
+				<div id="confirmDialog" class='dialog'>
 	  				Do you want to proceed?
+				</div>
+				<div id="messageDialog" class='dialog'>
+	  				
 				</div>
 			</div>
 	</div>	

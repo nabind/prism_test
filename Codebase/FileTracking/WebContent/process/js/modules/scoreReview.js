@@ -235,8 +235,24 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
 	    data: dataString,
 	    success: function(data) {
 	    	message = data;
-	    	alert(message);
-	    	callbackFunction();
+	    	$("#messageDialog").dialog({
+				title: 'Message',
+				width: 'auto',
+				height: 'auto',
+				resizable: false,
+				draggable: false,	
+				modal: true,
+				closeOnEscape: false,
+				open: function() {
+				      $(this).html(message);
+				    },
+				buttons : {
+					"Okay" : function() {
+						$(this).dialog("close");
+						callbackFunction();
+					}
+				}
+			});
 	    },
 	    error: function(data) {
 	    	message = 'Failed to save Scoring Data';
