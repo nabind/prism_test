@@ -1379,8 +1379,6 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				}
 				if(searchProcess.getSourceSystem() != null 	&& !"-1".equals(searchProcess.getSourceSystem())) 
 					pstmt.setString(++count, searchProcess.getSourceSystem());
-				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
-					pstmt.setString(++count, searchProcess.getStateCode());
 				if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0) 
 					pstmt.setString(++count, searchProcess.getUuid());
 				if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0) 
