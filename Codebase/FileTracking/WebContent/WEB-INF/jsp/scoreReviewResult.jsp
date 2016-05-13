@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="css/jquery.checkbox.css" type="text/css"/>
 <script type="text/javascript" src="js/modules/scoreReview.js"></script>
 <script type="text/javascript" src="js/jquery.checkbox.js"></script>
-<script type="text/javascript" src="js/jquery/jquery-confirm.min.js"></script>
 	
 <div id="heromaskarticle">
 	<div id="articlecontent">
