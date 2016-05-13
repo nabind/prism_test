@@ -101,7 +101,10 @@
 	z-index: 1001;
 }
 .table-span { 
-    display:block;
-    width:300px;
+    width:240px;
     word-wrap:break-word;
 }
+.rv_comment{
+	width:240px;
+}
+  

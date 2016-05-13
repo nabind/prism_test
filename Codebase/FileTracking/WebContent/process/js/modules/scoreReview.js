@@ -95,7 +95,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            	"mRender": function ( data, type, row ) {
 		            		var html = "";
 		            		if(row.status == 'RV' || row.status == 'AE'){
-		            			html = "<input type='radio' name='radioBtn' class='' "
+		            			html = "<input data-size='mini' type='radio' name='radioBtn' class='' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
 									+ " opr_ncr='"+row.opr_ncr+"' opr_hse='"+row.opr_hse+"'"
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
@@ -119,7 +119,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            }
 		        ]
 			});
-	    	$('input:radio').checkbox();
+	    	$('input:radio').bootstrapSwitch();
 	      },
 	      error: function(data) {
 			  alert('Failed to get Student Details');
@@ -134,7 +134,10 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		modal: true,
 		buttons: {
 			  'Reset' : function() {
-				  $('input:radio').checkbox().removeAttr('checked');
+				  $('input:radio').bootstrapSwitch('destroy', true);
+				  $('input:radio').bootstrapSwitch({
+					  'state': null
+				  }); 
 				  $(oTable.$('.rv_comment')).val("");
 	          },
 	          'Cancel' : function() {
