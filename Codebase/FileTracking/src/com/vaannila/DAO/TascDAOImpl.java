@@ -1428,7 +1428,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				+ ", s.scr_comment, s.scr_status, s.is_active,s.opr_ss,s.opr_ncr,s.opr_hse ");
 		queryBuff.append(" from scr_subtest_score_fact s, form_dim f ");
 		queryBuff.append(" where s.scr_status <> 'IN' and f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
-		queryBuff.append(" order by created_date_time ");
+		queryBuff.append(" order by is_active desc,created_date_time desc ");
 		String query = queryBuff.toString();
 		System.out.println(query + " bio:" + searchProcess.getStudentBioId() + " subtest:" + searchProcess.getSubtestId());
 		try {
