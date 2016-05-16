@@ -139,16 +139,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
   
   
     CURSOR GET_STUDENT_DETAILS(V_SCR_ID_STR IN NUMBER) IS
-      SELECT DISTINCT STUDENT_BIO_ID,
-                      SUBTESTID,
-                      HSE,
-                      NCE,
-                      SS,
-                      OPR_HSE,
-                      OPR_SS,
-                      OPR_NCR
-        FROM SCR_SUBTEST_SCORE_FACT
-       WHERE SCR_ID = V_SCR_ID_STR;
+      SELECT * FROM SCR_SUBTEST_SCORE_FACT WHERE SCR_ID = V_SCR_ID_STR;
   
   BEGIN
     FOR REC4 IN GET_SCR_COUNT LOOP
@@ -184,84 +175,134 @@ CREATE OR REPLACE PACKAGE BODY PKG_SCORE_REVIEW AS
         IF V_STATUS = 'AP' THEN
           V_STATUS_FLAG := 1;
           FOR REC6 IN GET_STUDENT_DETAILS(V_SCR_ID) LOOP
-            IF ((REC6.OPR_HSE > REC6.HSE) OR (REC6.OPR_NCR > REC6.NCE) OR
+            /*IF ((REC6.OPR_HSE > REC6.HSE) OR (REC6.OPR_NCR > REC6.NCE) OR
                (REC6.OPR_SS > REC6.SS)) THEN
               P_OUTPUT_MSG := 'The selected score(s) are lower than other available scores.';
-            ELSE
-              UPDATE SCR_SUBTEST_SCORE_FACT
-                 SET SCR_STATUS        = 'PR',
-                     UPDATED_DATE_TIME = SYSDATE,
-                     OPR_HSE           = REC6.HSE,
-                     OPR_NCR           = REC6.NCE,
-                     OPR_SS            = REC6.SS /*, IS_ACTIVE = 'N'*/
-               WHERE SCR_ID = V_SCR_ID;
-            
-              UPDATE SUBTEST_SCORE_FACT
-                 SET HSE           = REC6.HSE,
-                     NCE           = REC6.NCE,
-                     SS            = REC6.SS,
-                     DATETIMESTAMP = SYSDATE
+            ELSE*/
+            UPDATE SCR_SUBTEST_SCORE_FACT
+               SET SCR_STATUS        = 'PR',
+                   UPDATED_DATE_TIME = SYSDATE,
+                   OPR_HSE           = REC6.HSE,
+                   OPR_NCR           = REC6.NCR,
+                   OPR_SS            = REC6.SS /*, IS_ACTIVE = 'N'*/
+             WHERE SCR_ID = V_SCR_ID;
+          
+            UPDATE SUBTEST_SCORE_FACT S
+               SET S.HSE            = REC6.HSE,
+                   S.NCR            = REC6.NCR,
+                   S.SS             = REC6.SS,
+                   S.SUBTEST_FACTID = REC6.SUBTEST_FACTID,
+                   S.ORG_NODEID     = REC6.ORG_NODEID,
+                   S.CUST_PROD_ID   = REC6.CUST_PROD_ID,
+                   S.ASSESSMENTID   = REC6.ASSESSMENTID,
+                   S.CONTENTID      = REC6.CONTENTID,
+                   S.GENDERID       = REC6.GENDERID,
+                   S.GRADEID        = REC6.GRADEID,
+                   S.LEVELID        = REC6.LEVELID,
+                   S.FORMID         = REC6.FORMID,
+                   S.ADMINID        = REC6.ADMINID,
+                   S.AAGE           = REC6.AAGE,
+                   S.AANCE          = REC6.AANCE,
+                   S.AANP           = REC6.AANP,
+                   S.AANS           = REC6.AANS,
+                   S.AASS           = REC6.AASS,
+                   S.ACSIP          = REC6.ACSIP,
+                   S.ACSIS          = REC6.ACSIS,
+                   S.ACSIN          = REC6.ACSIN,
+                   S.CSI            = REC6.CSI,
+                   S.CSIL           = REC6.CSIL,
+                   S.CSIU           = REC6.CSIU,
+                   S.DIFF           = REC6.DIFF,
+                   S.GE             = REC6.GE,
+                   S.LEX            = REC6.LEX,
+                   S.LEXL           = REC6.LEXL,
+                   S.LEXU           = REC6.LEXU,
+                   S.NCE            = REC6.NCE,
+                   S.NP             = REC6.NP,
+                   S.NPA            = REC6.NPA,
+                   S.NPG            = REC6.NPG,
+                   S.NPL            = REC6.NPL,
+                   S.NPH            = REC6.NPH,
+                   S.NS             = REC6.NS,
+                   S.NSA            = REC6.NSA,
+                   S.NSG            = REC6.NSG,
+                   S.OM             = REC6.OM,
+                   S.OMS            = REC6.OMS,
+                   S.OP             = REC6.OP,
+                   S.OPM            = REC6.OPM,
+                   S.PC             = REC6.PC,
+                   S.PL             = REC6.PL,
+                   S.PP             = REC6.PP,
+                   S.PR             = REC6.PR,
+                   S.SEM            = REC6.SEM,
+                   S.SNPC           = REC6.SNPC,
+                   S.QTL            = REC6.QTL,
+                   S.QTLL           = REC6.QTLL,
+                   S.QTLU           = REC6.QTLU,
+                   S.STATUS_CODE    = REC6.STATUS_CODE,
+                   S.TEST_DATE      = REC6.TEST_DATE,
+                   S.DATETIMESTAMP  = SYSDATE
+             WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
+               AND SUBTESTID = P_SUBTEST_ID;
+          
+            FOR REC1 IN (SELECT *
+                           FROM SCR_OBJECTIVE_SCORE_FACT
+                          WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+              UPDATE objective_score_fact O
+                 SET O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID,
+                     O.ORG_NODEID       = REC1.ORG_NODEID,
+                     O.CUST_PROD_ID     = REC1.CUST_PROD_ID,
+                     O.ASSESSMENTID     = REC1.ASSESSMENTID,
+                     O.CONTENTID        = REC1.CONTENTID,
+                     O.SUBTESTID        = REC1.SUBTESTID,
+                     O.OBJECTIVEID      = REC1.OBJECTIVEID,
+                     O.GENDERID         = REC1.GENDERID,
+                     O.GRADEID          = REC1.GRADEID,
+                     O.LEVELID          = REC1.LEVELID,
+                     O.FORMID           = REC1.FORMID,
+                     O.ADMINID          = REC1.ADMINID,
+                     O.NCR              = REC1.NCR,
+                     O.OS               = REC1.OS,
+                     O.OPI              = REC1.OPI,
+                     O.OPI_CUT          = REC1.OPI_CUT,
+                     O.MEAN_IPI         = REC1.MEAN_IPI,
+                     O.OPIQ             = REC1.OPIQ,
+                     O.OPIP             = REC1.OPIP,
+                     O.PC               = REC1.PC,
+                     O.PP               = REC1.PP,
+                     O.SS               = REC1.SS,
+                     O.PL               = REC1.PL,
+                     O.INRC             = REC1.INRC,
+                     O.CONDCODE_ID      = REC1.CONDCODE_ID,
+                     O.TEST_DATE        = REC1.TEST_DATE,
+                     O.DATETIMESTAMP    = SYSDATE
+               WHERE O.STUDENT_BIO_ID = P_STUDENT_BIO_ID
+                 AND O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID;
+            END LOOP;
+          
+            FOR REC2 IN (SELECT *
+                           FROM SCR_ITEM_SCORE_FACT
+                          WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
+              UPDATE ITEM_SCORE_FACT I
+                 SET I.ITEM_FACTID   = REC2.ITEM_FACTID,
+                     I.ORG_NODEID    = REC2.ORG_NODEID,
+                     I.CUST_PROD_ID  = CUST_PROD_ID,
+                     I.ASSESSMENTID  = ASSESSMENTID,
+                     I.CONTENTID     = CONTENTID,
+                     I.SUBTESTID     = SUBTESTID,
+                     I.OBJECTIVEID   = OBJECTIVEID,
+                     I.GRADEID       = GRADEID,
+                     I.LEVELID       = LEVELID,
+                     I.FORMID        = FORMID,
+                     I.ADMINID       = ADMINID,
+                     I.ITEMSETID     = ITEMSETID,
+                     I.READID        = READID,
+                     I.SCORE_VALUES  = SCORE_VALUES,
+                     I.DATETIMESTAMP = SYSDATE
                WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
-                 AND SUBTESTID = P_SUBTEST_ID;
-            
-              FOR REC1 IN (SELECT *
-                             FROM SCR_OBJECTIVE_SCORE_FACT
-                            WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-                UPDATE objective_score_fact O
-                   SET O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID,
-                       O.ORG_NODEID       = REC1.ORG_NODEID,
-                       O.CUST_PROD_ID     = REC1.CUST_PROD_ID,
-                       O.ASSESSMENTID     = REC1.ASSESSMENTID,
-                       O.CONTENTID        = REC1.CONTENTID,
-                       O.SUBTESTID        = REC1.SUBTESTID,
-                       O.OBJECTIVEID      = REC1.OBJECTIVEID,
-                       O.GENDERID         = REC1.GENDERID,
-                       O.GRADEID          = REC1.GRADEID,
-                       O.LEVELID          = REC1.LEVELID,
-                       O.FORMID           = REC1.FORMID,
-                       O.ADMINID          = REC1.ADMINID,
-                       O.NCR              = REC1.NCR,
-                       O.OS               = REC1.OS,
-                       O.OPI              = REC1.OPI,
-                       O.OPI_CUT          = REC1.OPI_CUT,
-                       O.MEAN_IPI         = REC1.MEAN_IPI,
-                       O.OPIQ             = REC1.OPIQ,
-                       O.OPIP             = REC1.OPIP,
-                       O.PC               = REC1.PC,
-                       O.PP               = REC1.PP,
-                       O.SS               = REC1.SS,
-                       O.PL               = REC1.PL,
-                       O.INRC             = REC1.INRC,
-                       O.CONDCODE_ID      = REC1.CONDCODE_ID,
-                       O.TEST_DATE        = REC1.TEST_DATE,
-                       O.DATETIMESTAMP    = SYSDATE
-                 WHERE O.STUDENT_BIO_ID = P_STUDENT_BIO_ID
-                   AND O.OBJECTIVE_FACTID = REC1.OBJECTIVE_FACTID;
-              END LOOP;
-            
-              FOR REC2 IN (SELECT *
-                             FROM SCR_ITEM_SCORE_FACT
-                            WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID) LOOP
-                UPDATE ITEM_SCORE_FACT I
-                   SET I.ITEM_FACTID   = REC2.ITEM_FACTID,
-                       I.ORG_NODEID    = REC2.ORG_NODEID,
-                       I.CUST_PROD_ID  = CUST_PROD_ID,
-                       I.ASSESSMENTID  = ASSESSMENTID,
-                       I.CONTENTID     = CONTENTID,
-                       I.SUBTESTID     = SUBTESTID,
-                       I.OBJECTIVEID   = OBJECTIVEID,
-                       I.GRADEID       = GRADEID,
-                       I.LEVELID       = LEVELID,
-                       I.FORMID        = FORMID,
-                       I.ADMINID       = ADMINID,
-                       I.ITEMSETID     = ITEMSETID,
-                       I.READID        = READID,
-                       I.SCORE_VALUES  = SCORE_VALUES,
-                       I.DATETIMESTAMP = SYSDATE
-                 WHERE STUDENT_BIO_ID = P_STUDENT_BIO_ID
-                   AND I.ITEM_FACTID = REC2.ITEM_FACTID;
-              END LOOP;
-            END IF;
+                 AND I.ITEM_FACTID = REC2.ITEM_FACTID;
+            END LOOP;
+            /*END IF;*/
           END LOOP;
         
           P_OUTPUT_MSG := 'Student details updated successfully.';
