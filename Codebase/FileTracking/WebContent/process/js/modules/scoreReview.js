@@ -32,6 +32,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	oTable = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	oTable.destroy();
 	var reviewDialog;
+	var bCount =0;
 	
 	$.ajax({
 		type: "POST",
@@ -104,6 +105,22 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ncr='"+row.ncr+"'"
 									+ " />";
 		            			
+		            			bCount++;
+		            		}else{
+		            			if(row.status == 'AP'){
+		            				html = "<span>Approved</span>";
+		            			}else if(row.status == 'RJ'){
+		            				html = "<span>Rejected</span>";
+		            			}else if(row.status == 'AE'){
+		            				html = "<span>Approved with Error</span>";
+		            			}else if(row.status == 'PR'){
+		            				html = "<span>Processed</span>";
+		            			}else if(row.status == 'IN'){
+		            				html = "<span>Invalidated by System</span>";
+		            			}
+		            		}
+		            		
+		            		if(bCount > 0){
 		            			reviewDialog = jQuery("#reviewDialog").dialog({
 		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		            				width: 900,
@@ -128,20 +145,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			          }
 		            				}
 		            			});
-		            			
-		            		}else{
-		            			if(row.status == 'AP'){
-		            				html = "<span>Approved</span>";
-		            			}else if(row.status == 'RJ'){
-		            				html = "<span>Rejected</span>";
-		            			}else if(row.status == 'AE'){
-		            				html = "<span>Approved with Error</span>";
-		            			}else if(row.status == 'PR'){
-		            				html = "<span>Processed</span>";
-		            			}else if(row.status == 'IN'){
-		            				html = "<span>Invalidated by System</span>";
-		            			}
-		            			
+		            		} else {
 		            			reviewDialog = jQuery("#reviewDialog").dialog({
 		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		            				width: 900,
@@ -154,8 +158,8 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			          }
 		            				}
 		            			});
-		            			
 		            		}
+		            		
 							return html;
 						}
 		            }
