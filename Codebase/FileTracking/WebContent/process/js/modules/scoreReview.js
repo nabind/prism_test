@@ -25,11 +25,13 @@ $(document).ready(function(){
 	
 });
 
+
 function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	$("#errorLog").hide();
 	var dataString = "studentBioId="+studentBioId+"&subtestId="+subtestId;
 	oTable = $('#scoreReviewTable').DataTable({bJQueryUI : true});	
 	oTable.destroy();
+	var reviewDialog;
 	
 	$.ajax({
 		type: "POST",
@@ -84,9 +86,9 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            		if(row.status == 'RV' || row.status == 'AE'){
 		            			html = "<input type='text' maxlength='100' name='comment' class='rv_comment' value='"+row.comment+"'"
 										+ " scr_id='"+row.scr+"'"
-										+ " />";
+										+ " />";		            			
 		            		}else{
-		            			html = "<span class='table-span'>"+row.comment+"</span>";
+		            			html = "<span class='table-span'>"+row.comment+"</span>";		            			
 		            		}
 		        			return html;
 						}
@@ -101,6 +103,32 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />";
+		            			
+		            			reviewDialog = jQuery("#reviewDialog").dialog({
+		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
+		            				width: 900,
+		            				height: "auto",
+		            				draggable: false,	
+		            				modal: true,
+		            				buttons: {
+		            					  'Reset' : function() {
+		            						  $('input:radio').bootstrapSwitch('destroy', true);
+		            						  $('input:radio').bootstrapSwitch({
+		            							  'state': null
+		            						  }); 
+		            						  $(oTable.$('.rv_comment')).val("");
+		            			          },
+		            			          'Cancel' : function() {
+		            			              $(this).dialog('close');
+		            			          },
+		            			          'Save': function(){
+		            			        	  validateReviewScore(studentBioId,subtestId,function(){ 
+		            			        		  reviewDialog.dialog('close'); 
+		            			        	  });
+		            			          }
+		            				}
+		            			});
+		            			
 		            		}else{
 		            			if(row.status == 'AP'){
 		            				html = "<span>Approved</span>";
@@ -113,6 +141,20 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			}else if(row.status == 'IN'){
 		            				html = "<span>Invalidated by System</span>";
 		            			}
+		            			
+		            			reviewDialog = jQuery("#reviewDialog").dialog({
+		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
+		            				width: 900,
+		            				height: "auto",
+		            				draggable: false,	
+		            				modal: true,
+		            				buttons: {				 
+		            			          'Cancel' : function() {
+		            			              $(this).dialog('close');
+		            			          }
+		            				}
+		            			});
+		            			
 		            		}
 							return html;
 						}
@@ -124,32 +166,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 	      error: function(data) {
 			  alert('Failed to get Student Details');
 		  }
-	});
-	
-	var reviewDialog = jQuery("#reviewDialog").dialog({
-		title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
-		width: 900,
-		height: "auto",
-		draggable: false,	
-		modal: true,
-		buttons: {
-			  'Reset' : function() {
-				  $('input:radio').bootstrapSwitch('destroy', true);
-				  $('input:radio').bootstrapSwitch({
-					  'state': null
-				  }); 
-				  $(oTable.$('.rv_comment')).val("");
-	          },
-	          'Cancel' : function() {
-	              $(this).dialog('close');
-	          },
-	          'Save': function(){
-	        	  validateReviewScore(studentBioId,subtestId,function(){ 
-	        		  reviewDialog.dialog('close'); 
-	        	  });
-	          }
-		}
-	});
+	});	
 }
 
 function validateReviewScore(studentBioId,subtestId,callbackFunction){
