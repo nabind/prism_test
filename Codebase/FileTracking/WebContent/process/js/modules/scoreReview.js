@@ -49,6 +49,11 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 				bSort : false,
 				fnDrawCallback: function () {
 		        	dataTableCallBack();
+		        	$("input:radio[class=accepted]").click(function(){
+		        		var selectedID = ($(this).attr('id'));
+		        		var closestDivId = $(this).closest('div[id]');
+		        		alert(closestDivId);
+		        		}); 
 		        }, 
 		        fnRowCallback: function( nRow, aData) {
                     if ( aData.isActive == "N" ){
@@ -100,7 +105,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            		var html = "";
 		            		if(row.status == 'RV' || row.status == 'AE'){
 		            			html = "<div calss= 'row' >" 
-		            				+ " <div class= 'button-group' >"
+		            				+ " <div class= 'button-group' id='"+ bCount +"'>"
 		            				//+ " <label class='btn btn-default'>"
 		            				+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnAP"+ bCount + "'"+" value='Approved' class='accepted' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
@@ -108,7 +113,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />" 
-									+ " <img id= 'approveImg' src='./Approve.png' style='display:none;'>"
+									+ " <img class='approveImg' id= 'approveImg' src='./Approve.png' height='13' width='13' style='display:none;'>"
 									
 									+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
@@ -116,7 +121,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />"
-									+ " <img id= 'rejectImg' src='./Reject.png' style='display:none;'>"
+									+ " <img class='rejectImg' id= 'rejectImg' src='./Reject.png' height='15' width='15' style='display:none;'>"
 									//+ " </label>"	
 									+ " </div>"
 									+ " </div>";
