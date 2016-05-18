@@ -1054,9 +1054,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	 */
 	@SuppressWarnings("unchecked")
 	@Caching( cacheable = {
-			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )"),
-			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )"),
-			@Cacheable(value = "usmoConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getContractProerty') )")
+			@Cacheable(value = "prismConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).newEncryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).newMapKey(#paramMap)).concat('getContractProerty'),'inors' )"),
+			@Cacheable(value = "prismConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).newEncryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).newMapKey(#paramMap)).concat('getContractProerty'),'tasc' )"),
+			@Cacheable(value = "prismConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).newEncryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).newMapKey(#paramMap)).concat('getContractProerty'),'usmo' )")
 	} )
 	public Map<String, Object> getContractProerty (Map<String, Object> paramMap) {
 		String contractName = (String) paramMap.get("contractName");

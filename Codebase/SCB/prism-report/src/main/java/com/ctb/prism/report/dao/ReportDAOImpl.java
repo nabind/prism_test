@@ -241,7 +241,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	 */
 	@CacheEvict(value = { "inorsDefaultCache", "inorsAdminCache", "inorsConfigCache", "inorsUserCache",
 			"tascDefaultCache", "tascAdminCache", "tascConfigCache", "tascUserCache",
-			"usmoDefaultCache", "usmoAdminCache", "usmoConfigCache", "usmoUserCache"}, allEntries = true)
+			"usmoDefaultCache", "usmoAdminCache", "usmoConfigCache", "usmoUserCache",
+			"prismConfigCache"}, allEntries = true)
 	public void removeCache() {
 		logger.log(IAppLogger.INFO, "Removed all cache");
 	}

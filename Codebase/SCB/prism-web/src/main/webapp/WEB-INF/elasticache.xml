@@ -15,6 +15,14 @@
     <bean name="memcacheManager" class="com.google.code.ssm.spring.SSMCacheManager">
         <property name="caches">
             <set>
+                <!-- New -->
+	                <bean class="com.google.code.ssm.spring.SSMCache">
+	                    <constructor-arg name="cache" index="0" ref="prismConfigCache"/>
+	                    <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
+	                    <constructor-arg name="allowClear" index="2" value="true"/>
+	                </bean>
+                <!-- End -->
+            
                 <bean class="com.google.code.ssm.spring.SSMCache">
                     <constructor-arg name="cache" index="0" ref="inorsAdminCache"/>
                     <constructor-arg name="expiration" index="1" value="${cache.duration}"/>
@@ -84,6 +92,12 @@
     </bean>
     
 	<!-- config -->
+	 <!-- New -->
+	 <bean name="awsAddressProvider" class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="${server.url.prism}"/>
+     </bean>
+	<!-- End -->
+	
     <bean name="awsAddressProviderInors" class="com.google.code.ssm.config.DefaultAddressProvider">
         <property name="address" value="${server.url.inors}"/>
     </bean>
@@ -99,6 +113,16 @@
     <bean name="cacheClientFactory" class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl"/>
 
 	<!-- cache factory -->
+	
+	 <!-- New -->
+	<bean name="prismConfigCache" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="prismConfigCache"/>
+        <property name="cacheClientFactory" ref="cacheClientFactory"/>
+        <property name="addressProvider" ref="awsAddressProvider"/>
+        <property name="configuration" ref="cacheConfiguration"/>
+    </bean>
+	 <!-- End -->
+	 
 	<bean name="inorsAdminCache" class="com.google.code.ssm.CacheFactory">
         <property name="cacheName" value="inorsAdminCache"/>
         <property name="cacheClientFactory" ref="cacheClientFactory"/>
