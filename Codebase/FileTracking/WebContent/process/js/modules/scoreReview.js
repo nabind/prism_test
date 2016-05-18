@@ -23,6 +23,7 @@ $(document).ready(function(){
 		"sPaginationType": "full_numbers",
 	});
 	
+	 
 });
 
 
@@ -98,12 +99,27 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            	"mRender": function ( data, type, row ) {
 		            		var html = "";
 		            		if(row.status == 'RV' || row.status == 'AE'){
-		            			html = "<input data-size='mini' type='radio' name='radioBtn' class='' "
+		            			html = "<div calss= 'row' >" 
+		            				+ " <div class= 'button-group' >"
+		            				//+ " <label class='btn btn-default'>"
+		            				+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnAP"+ bCount + "'"+" value='Approved' class='accepted' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
 									+ " opr_ncr='"+row.opr_ncr+"' opr_hse='"+row.opr_hse+"'"
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
-									+ " />";
+									+ " />" 
+									+ " <img id= 'approveImg' src='./Approve.png' style='display:none;'>"
+									
+									+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
+									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
+									+ " opr_ncr='"+row.opr_ncr+"' opr_hse='"+row.opr_hse+"'"
+									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
+									+ " ncr='"+row.ncr+"'"
+									+ " />"
+									+ " <img id= 'rejectImg' src='./Reject.png' style='display:none;'>"
+									//+ " </label>"	
+									+ " </div>"
+									+ " </div>";
 		            			
 		            			bCount++;
 		            		}else{
@@ -119,6 +135,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            				html = "<span>Invalidated by System</span>";
 		            			}
 		            		}
+		            		
 		            		
 		            		if(bCount > 0){
 		            			reviewDialog = jQuery("#reviewDialog").dialog({
@@ -165,7 +182,8 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            }
 		        ]
 			});
-	    	$('input:radio').bootstrapSwitch();
+	    	//$('input:radio');
+
 	      },
 	      error: function(data) {
 			  alert('Failed to get Student Details');
@@ -187,17 +205,20 @@ function validateReviewScore(studentBioId,subtestId,callbackFunction){
 	
 	var scoreFlag = false;
 	$(oTable.$('input:radio')).each(function (index, value){
-		if($(this).is(":checked")){
-			var ss = $(this).attr('ss')==''?0:$(this).attr('ss');
-			var ncr = $(this).attr('ncr')==''?0:$(this).attr('ncr');
-			var hse = $(this).attr('hse')==''?0:$(this).attr('hse');
-			var opr_ss = $(this).attr('opr_ss')==''?0:$(this).attr('opr_ss');
-			var opr_ncr = $(this).attr('opr_ncr')==''?0:$(this).attr('opr_ncr');
-			var opr_hse = $(this).attr('opr_hse')==''?0:$(this).attr('opr_hse');
-			if(opr_ss>ss || opr_ncr>ncr || opr_hse>hse ){
-				scoreFlag = true;
+		if($(this).is(':checked')) {
+			if($(this).val()== 'Approved'){
+				var ss = $(this).attr('ss')==''?0:$(this).attr('ss');
+				var ncr = $(this).attr('ncr')==''?0:$(this).attr('ncr');
+				var hse = $(this).attr('hse')==''?0:$(this).attr('hse');
+				var opr_ss = $(this).attr('opr_ss')==''?0:$(this).attr('opr_ss');
+				var opr_ncr = $(this).attr('opr_ncr')==''?0:$(this).attr('opr_ncr');
+				var opr_hse = $(this).attr('opr_hse')==''?0:$(this).attr('opr_hse');
+				if(opr_ss>ss || opr_ncr>ncr || opr_hse>hse ){
+					scoreFlag = true;
+				}
 			}
 		}
+		
 	});
 	
 	
@@ -242,12 +263,16 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
 	var statusStr = ""; 
 	$(oTable.$('input:radio')).each(function (index, value){
 		var tempStr = $(this).attr('scr_id')+'~';
-		if($(this).is(":checked")){
-			tempStr = tempStr + 'AP';
-		}else{
-			tempStr = tempStr + 'RJ';
+		if($(this).is(':checked')) {
+			if($(this).val()== 'Approved'){
+				tempStr = tempStr + 'AP';
+			}else{
+				tempStr = tempStr + 'RJ';
+			}
+			statusStr = statusStr+','+tempStr;
 		}
-		statusStr = statusStr+','+tempStr;
+		
+		
 	}); 
 	statusStr = statusStr.substring(1);
 	
