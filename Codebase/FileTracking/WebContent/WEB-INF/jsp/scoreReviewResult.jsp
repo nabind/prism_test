@@ -106,7 +106,6 @@
 	  				Do you want to proceed?
 				</div>
 				<div id="messageDialog" class='dialog'>
-	  				
 				</div>
 			</div>
 	</div>	

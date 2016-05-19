@@ -14,12 +14,12 @@
 	<style type="text/css" title="currentStyle">
 		@import "css/media/css/demo_page.css";
 		@import "css/media/css/demo_table_jui.css";
-		@import "css/themes/ui-lightness/jquery-ui-1.8.17.custom.css";
 	</style>
-	<link rel="stylesheet" href="css/themes/base/jquery.ui.all.css">
 	
-	<script src="js/jquery/jquery-1.11.1.min.js"></script>
-	<script src="js/jquery/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  	
 	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.7/jquery.dataTables.min.js"></script>
 	<script src="css/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />

@@ -49,19 +49,6 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 				bSort : false,
 				fnDrawCallback: function () {
 		        	dataTableCallBack();
-		        	$("input:radio[class=accepted]").click(function(){
-		        		var selectedBcount = $(this).attr('bCount');
-		        		var notSelectedId = 'radioBtnRJ'+selectedBcount;
-		        		
-		        		$('input[type="radio"]:not(:checked)').each(function (index, value){
-		        			if($(this).attr('id')!=notSelectedId){
-		        				if($(this).attr('class')=='reject'){
-		        					$(this).prop("checked", true);
-		        				}
-		        			}
-		        		});
-		        		
-		        	}); 
 		        }, 
 		        fnRowCallback: function( nRow, aData) {
                     if ( aData.isActive == "N" ){
@@ -243,7 +230,7 @@ function validateReviewScore(studentBioId,subtestId,callbackFunction){
 	}else if(scoreFlag == true){
 		$("#confirmDialog").dialog({
 			title: 'The selected score(s) are lower than other available scores.',
-			width: 513,
+			width: 545,
 			height: 134,
 			resizable: false,
 			draggable: false,	
@@ -251,8 +238,8 @@ function validateReviewScore(studentBioId,subtestId,callbackFunction){
 			closeOnEscape: false,
 			buttons : {
 				"Proceed" : function(){
-					saveReviewScore(studentBioId,subtestId,callbackFunction);
 					$(this).dialog("close");
+					saveReviewScore(studentBioId,subtestId,callbackFunction);
 				},
 				"Cancel" : function() {
 					$(this).dialog("close");
@@ -298,15 +285,16 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
 	    success: function(data) {
 	    	message = data;
 	    	$("#messageDialog").dialog({
-				title: 'Message',
-				width: 'auto',
-				height: 'auto',
+	    		title: 'Message',
+				width: 545,
+				height: 134,
 				resizable: false,
 				draggable: false,	
 				modal: true,
 				closeOnEscape: false,
 				open: function() {
-				      $(this).html(message);
+				      //$(this).html("<span style='font-size: 11px;'>"+message+"</span>");
+					  $(this).html(message);
 				    },
 				buttons : {
 					"Okay" : function() {
@@ -327,6 +315,19 @@ function saveReviewScore(studentBioId,subtestId,callbackFunction){
 
 function dataTableCallBack(){
 	update_rows();
+	$("input:radio[class=accepted]").click(function(){
+		var selectedBcount = $(this).attr('bCount');
+		var notSelectedId = 'radioBtnRJ'+selectedBcount;
+		
+		$('input[type="radio"]:not(:checked)').each(function (index, value){
+			if($(this).attr('id')!=notSelectedId){
+				if($(this).attr('class')=='reject'){
+					$(this).prop("checked", true);
+				}
+			}
+		});
+		
+	}); 
 }
 
 function update_rows(){

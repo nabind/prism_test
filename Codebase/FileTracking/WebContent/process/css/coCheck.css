@@ -93,13 +93,9 @@
 }
 .dialog{
 	display:none; 
-	font-size:15px;
-	
+	font-size:12px;
 }
-.ui-dialog {	
-	position: absolute;
-	z-index: 1001;
-}
+
 .table-span { 
     width:240px;
     word-wrap:break-word;
