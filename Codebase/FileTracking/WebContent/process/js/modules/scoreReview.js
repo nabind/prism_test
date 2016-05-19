@@ -50,10 +50,18 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 				fnDrawCallback: function () {
 		        	dataTableCallBack();
 		        	$("input:radio[class=accepted]").click(function(){
-		        		var selectedID = ($(this).attr('id'));
-		        		var closestDivId = $(this).closest('div[id]');
-		        		alert(closestDivId);
-		        		}); 
+		        		var selectedBcount = $(this).attr('bCount');
+		        		var notSelectedId = 'radioBtnRJ'+selectedBcount;
+		        		
+		        		$('input[type="radio"]:not(:checked)').each(function (index, value){
+		        			if($(this).attr('id')!=notSelectedId){
+		        				if($(this).attr('class')=='reject'){
+		        					$(this).prop("checked", true);
+		        				}
+		        			}
+		        		});
+		        		
+		        	}); 
 		        }, 
 		        fnRowCallback: function( nRow, aData) {
                     if ( aData.isActive == "N" ){
@@ -107,7 +115,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			html = "<div calss= 'row' >" 
 		            				+ " <div class= 'button-group' id='"+ bCount +"'>"
 		            				//+ " <label class='btn btn-default'>"
-		            				+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnAP"+ bCount + "'"+" value='Approved' class='accepted' "
+		            				+ " <input data-size='mini' type='radio' bCount="+bCount+"  name='radioBtn"+ bCount + "'" +"id='radioBtnAP"+ bCount + "'"+" value='Approved' class='accepted' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
 									+ " opr_ncr='"+row.opr_ncr+"' opr_hse='"+row.opr_hse+"'"
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
@@ -115,7 +123,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " />" 
 									+ " <img class='approveImg' id= 'approveImg' src='./Approve.png' height='13' width='13' style='display:none;'>"
 									
-									+ " <input data-size='mini' type='radio' name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
+									+ " <input data-size='mini' type='radio' bCount="+bCount+" name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
 									+ " opr_ncr='"+row.opr_ncr+"' opr_hse='"+row.opr_hse+"'"
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
@@ -150,13 +158,13 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            				draggable: false,	
 		            				modal: true,
 		            				buttons: {
-		            					  'Reset' : function() {
+		            					  /*'Reset' : function() {
 		            						  $('input:radio').bootstrapSwitch('destroy', true);
 		            						  $('input:radio').bootstrapSwitch({
 		            							  'state': null
 		            						  }); 
 		            						  $(oTable.$('.rv_comment')).val("");
-		            			          },
+		            			          },*/
 		            			          'Cancel' : function() {
 		            			              $(this).dialog('close');
 		            			          },
