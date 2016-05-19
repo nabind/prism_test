@@ -49,6 +49,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 				bSort : false,
 				fnDrawCallback: function () {
 		        	dataTableCallBack();
+		        	
 		        }, 
 		        fnRowCallback: function( nRow, aData) {
                     if ( aData.isActive == "N" ){
@@ -108,7 +109,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />" 
-									+ " <img class='approveImg' id= 'approveImg' src='./Approve.png' height='13' width='13' style='display:none;'>"
+									+ " <img class='approveImg' id= 'imgAP"+ bCount + "'"+" src='./Approve.png' height='13' width='13' style='display:none;'>"
 									
 									+ " <input data-size='mini' type='radio' bCount="+bCount+" name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
@@ -116,7 +117,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />"
-									+ " <img class='rejectImg' id= 'rejectImg' src='./Reject.png' height='15' width='15' style='display:none;'>"
+									+ " <img class='rejectImg' id= 'imgRJ"+ bCount + "'"+" src='./Reject.png' height='15' width='15' style='display:none;'>"
 									//+ " </label>"	
 									+ " </div>"
 									+ " </div>";
@@ -203,6 +204,20 @@ function validateReviewScore(studentBioId,subtestId,callbackFunction){
 		}
 	});
 	
+	var messageEmptyAction = false;
+	var radioBtnCount = 0;
+	var radioBtnCheckedCount = 0;
+	$(oTable.$('input:radio')).each(function (index, value){
+		radioBtnCount ++;
+		if($(this).is(':checked')) {
+			radioBtnCheckedCount ++;
+		}
+	});
+	
+	if(radioBtnCheckedCount != (radioBtnCount/2)){
+		messageEmptyAction = true;
+	}
+	
 	var scoreFlag = false;
 	$(oTable.$('input:radio')).each(function (index, value){
 		if($(this).is(':checked')) {
@@ -222,7 +237,12 @@ function validateReviewScore(studentBioId,subtestId,callbackFunction){
 	});
 	
 	
-	if(messageEmptyFlag == true){
+	if(messageEmptyAction == true){
+		message = "Please provide an action for each score";
+		$("#errorLog").show();
+    	$("#errorLog").css("color","red");
+    	$("#errorLog").text(message);
+	}else if(messageEmptyFlag == true){
 		message = "Please enter comment";
 		$("#errorLog").show();
     	$("#errorLog").css("color","red");
@@ -328,6 +348,17 @@ function dataTableCallBack(){
 		});
 		
 	}); 
+	
+	/*$("input:radio[class=accepted]").click(function(){
+		        		if($(this).is(':checked')) {
+		        			var selectedBcount = $(this).attr('bCount');
+		        			$(this).hide();
+		        			$('imgAP'+selectedBcount).show();
+		        		}
+		        	});
+		        	$("input:radio[class=reject]").click(function(){
+		        		
+		        	});*/
 }
 
 function update_rows(){
