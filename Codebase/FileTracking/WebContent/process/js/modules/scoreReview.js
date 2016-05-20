@@ -109,7 +109,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />" 
-									+ " <img class='approveImg' id= 'imgAP"+ bCount + "'"+" src='./Approve.png' height='13' width='13' style='display:none;'>"
+									+ " <img class='approveImg' id= 'imgAP"+ bCount + "'"+" src='./Approve.png' height='14' width='14' style='display:none;padding: 0px 3px 0px 4px;'>"
 									
 									+ " <input data-size='mini' type='radio' bCount="+bCount+" name='radioBtn"+ bCount + "'" +"id='radioBtnRJ"+ bCount +"'"+" value='Reject' class='reject' "
 									+ " scr_id='"+row.scr+"' opr_ss='"+row.opr_ss+"'"
@@ -117,7 +117,7 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 									+ " ss='"+row.ss+"' hse='"+row.hse+"'"
 									+ " ncr='"+row.ncr+"'"
 									+ " />"
-									+ " <img class='rejectImg' id= 'imgRJ"+ bCount + "'"+" src='./Reject.png' height='15' width='15' style='display:none;'>"
+									+ " <img class='rejectImg' id= 'imgRJ"+ bCount + "'"+" src='./Reject.png' height='14' width='14' style='display:none;padding: 0px 3px 0px 4px;'>"
 									//+ " </label>"	
 									+ " </div>"
 									+ " </div>";
@@ -343,22 +343,39 @@ function dataTableCallBack(){
 			if($(this).attr('id')!=notSelectedId){
 				if($(this).attr('class')=='reject'){
 					$(this).prop("checked", true);
+					var selectedBcount = $(this).attr('bCount');
+					$(this).hide();
+					$('#imgRJ'+selectedBcount).show();
 				}
 			}
 		});
 		
 	}); 
 	
-	/*$("input:radio[class=accepted]").click(function(){
-		        		if($(this).is(':checked')) {
-		        			var selectedBcount = $(this).attr('bCount');
-		        			$(this).hide();
-		        			$('imgAP'+selectedBcount).show();
-		        		}
-		        	});
-		        	$("input:radio[class=reject]").click(function(){
-		        		
-		        	});*/
+	var previousCheckedId = "";
+	$("input:radio[class=accepted]").click(function(){
+		if($(this).is(':checked')) {
+			if(previousCheckedId != ""){
+				$('#radioBtnAP'+previousCheckedId).show();
+				$('#imgAP'+previousCheckedId).hide();
+			}
+			var selectedBcount = $(this).attr('bCount');
+			$(this).hide();
+			$('#imgAP'+selectedBcount).show();
+			$('#imgRJ'+selectedBcount).hide();
+			$('#radioBtnRJ'+selectedBcount).show();
+			previousCheckedId = $(this).attr('bCount');
+		}
+	});
+	$("input:radio[class=reject]").click(function(){
+		if($(this).is(':checked')) {
+			var selectedBcount = $(this).attr('bCount');
+			$(this).hide();
+			$('#imgRJ'+selectedBcount).show();
+			$('#imgAP'+selectedBcount).hide();
+			$('#radioBtnAP'+selectedBcount).show();
+		}
+	});
 }
 
 function update_rows(){
