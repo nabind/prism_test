@@ -61,7 +61,7 @@
 						int count=0;
 						for(TASCProcessTO process : allProcess) {
 							count++;
-							String student = process.getStudentName() + " UUID:" + process.getUuid() + " State: " + process.getStateCode();
+							String student = process.getStudentName() + " UUID: " + process.getUuid() + " State: " + process.getStateCode();
 						%>
 						<tr>
 							<td style="min-width: 100px;"><%=process.getStudentName() %></td>

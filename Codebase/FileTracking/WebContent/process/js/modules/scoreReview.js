@@ -142,8 +142,9 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			reviewDialog = jQuery("#reviewDialog").dialog({
 		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		            				width: 900,
-		            				height: "auto",
-		            				draggable: false,	
+		            				height: 300,
+		            				draggable: true,	
+		            				resizable: true,
 		            				modal: true,
 		            				buttons: {
 		            					  /*'Reset' : function() {
@@ -167,8 +168,9 @@ function getReviewInfo(studentBioId, subtestId, studentName, subtestName) {
 		            			reviewDialog = jQuery("#reviewDialog").dialog({
 		            				title: 'Review pending scores for Student: '+ studentName + ' Subtest: '+ subtestName,
 		            				width: 900,
-		            				height: "auto",
-		            				draggable: false,	
+		            				height: 300,
+		            				draggable: true,
+		            				resizable: true,
 		            				modal: true,
 		            				buttons: {				 
 		            			          'Cancel' : function() {
