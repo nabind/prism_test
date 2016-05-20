@@ -11,7 +11,11 @@
 
 <link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
 <script type="text/javascript" src="js/modules/scoreReview.js"></script>
-
+<style>
+.button-group {
+  padding-left: 41px;
+}
+</style>
 <div id="heromaskarticle">
 	<div id="articlecontent">
 	 
@@ -84,7 +88,7 @@
 								<th>Processed Date</th>
 								<th>Status</th>
 								<th>Comment</th>
-								<th>Action</th>
+								<th>Approve | Reject</th>
 							</tr>
 						</thead>
 						<tbody>
