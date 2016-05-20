@@ -16,13 +16,14 @@
 		@import "css/media/css/demo_table_jui.css";
 	</style>
 	
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  	<script src="js/jquery/jquery-1.10.2.js"></script>
-  	<script src="js/jquery/ui/1.11.4/jquery-ui.js"></script>
-  	
-	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.7/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/jquery/ui/1.11.4/jquery-ui.js"></script>
+	<link rel="stylesheet" href="js/jquery/ui/1.11.4/jquery-ui.css">
+
+  	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.7/jquery.dataTables.min.js"></script>
 	<script src="css/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+	
 
 <style>
 .buttonLink {

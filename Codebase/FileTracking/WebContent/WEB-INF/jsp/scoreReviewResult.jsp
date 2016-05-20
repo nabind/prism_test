@@ -10,13 +10,7 @@
 <%@page import="com.vaannila.util.PropertyFile" %>
 
 <link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
-<link href="plugin/radio_switch/css/bootstrap-switch.css" rel="stylesheet">
-
-
 <script type="text/javascript" src="js/modules/scoreReview.js"></script>
-<script src="plugin/radio_switch/js/bootstrap.min.js"></script>
-<script src="plugin/radio_switch/js/highlight.js"></script>
-<script src="plugin/radio_switch/js/bootstrap-switch.js"></script>
 
 <div id="heromaskarticle">
 	<div id="articlecontent">
