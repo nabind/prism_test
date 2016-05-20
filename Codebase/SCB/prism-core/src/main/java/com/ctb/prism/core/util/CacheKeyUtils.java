@@ -91,44 +91,7 @@ public final class CacheKeyUtils {
     		return "";
     	}
     }
-
-    public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
-        
-    	//String contractName = null; 
-        
-    	if (col == null) {
-            return "";
-        }
-
-        final List<K> sorted = new ArrayList<K>(col.keySet());
-    
-        if (col.size() > 1) {
-            Collections.sort(sorted);
-        }
-
-        final StringBuilder b = new StringBuilder("[");
-        for (K entry : sorted) {
-            if (entry != null 
-            		&& !"REPORT_CONTEXT".equals(entry) 
-            		&& !"net.sf.jasperreports.parameter.jasperdesign.cache".equals(entry)
-            		&& !"net.sf.jasperreports.data.cache.handler".equals(entry)) {
-                b.append(entry);
-                b.append("|");
-                b.append(col.get(entry));
-                b.append(",");
-            }
-        }
-        b.append("]");
-        
-        if(col.get("contractName")!=null && ((String)col.get("contractName")).length() > 0) {
-        	contractName = (String)col.get("contractName");
-        } else {
-        	contractName = Utils.getContractName();
-        }
-        
-        return encryptedKey(b.toString());
-    }
-    
+       
     public static String string(String col) {
 		if(col != null) return col.replaceAll(" ", "_");
     	return "";
@@ -138,29 +101,20 @@ public final class CacheKeyUtils {
     	return col+"";
     }
     
-    public static String encryptedKey(String col) {
-    	String hashKey = "";
-    	if(col != null) {
-    		//hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
-    		hashKey = DigestUtils.md5DigestAsHex((col /*+ Utils.getContractName()*/).getBytes());
-    		// store the key into queue
-    		storeCacheKey(hashKey);
-    	}
-    	return hashKey;
-    }
     
-    public static String generateKey(Object... param) {
+    
+    public static String generateKey(String contract,Object... param) {
     	StringBuffer buf = new StringBuffer();
 		for (Object n : param) {
 			if(n != null) buf.append(String.valueOf(n));
 		}
-		return encryptedKey(buf.toString());
+		return encryptedKey(buf.toString(),contract);
     }
     
     
     /* New added for generalized cache server*/
     
- public static <K extends Comparable<K>> String newMapKey(Map<K, ?> col) {
+ public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
         
     	//String contractName = null; 
         
@@ -194,10 +148,10 @@ public final class CacheKeyUtils {
         	contractName = Utils.getContractName();
         }
         
-        return newEncryptedKey(b.toString(),contractName);
+        return encryptedKey(b.toString(),contractName);
     }
     
-    public static String newEncryptedKey(String col,String contract) {
+    public static String encryptedKey(String col,String contract) {
     	String hashKey = "";
     	if(col != null) {
     		//hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
