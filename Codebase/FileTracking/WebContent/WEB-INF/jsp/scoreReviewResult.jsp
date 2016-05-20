@@ -61,6 +61,7 @@
 						int count=0;
 						for(TASCProcessTO process : allProcess) {
 							count++;
+							String student = process.getStudentName() + " UUID:" + process.getUuid() + " State: " + process.getStateCode();
 						%>
 						<tr>
 							<td style="min-width: 100px;"><%=process.getStudentName() %></td>
@@ -71,7 +72,7 @@
 							<td><%=process.getNc() %></td>
 							<td><%=process.getSs() %></td>
 							<td><%=process.getHse() %></td>
-							<td><a href="#" onclick="getReviewInfo('<%=process.getStudentBioId()%>','<%=process.getSubtest()%>', '<%=process.getStudentName() %>','<%=process.getSubtestName() %>')">Review</a></td>
+							<td><a href="#" onclick="getReviewInfo('<%=process.getStudentBioId()%>','<%=process.getSubtest()%>', '<%=student%>','<%=process.getSubtestName() %>')">Review</a></td>
 						</tr>
 						<%} %>
 					</tbody>
