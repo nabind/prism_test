@@ -17,8 +17,8 @@
 	</style>
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  	<script src="js/jquery/jquery-1.10.2.js"></script>
+  	<script src="js/jquery/ui/1.11.4/jquery-ui.js"></script>
   	
 	<script type="text/javascript" language="javascript" src="js/dataTable/1.10.7/jquery.dataTables.min.js"></script>
 	<script src="css/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
