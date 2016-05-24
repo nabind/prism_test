@@ -1,4 +1,4 @@
-
+Follow the steps
 #------------------- STEP 1 -------------------
 Download maven apache-maven-3.0.2
 
