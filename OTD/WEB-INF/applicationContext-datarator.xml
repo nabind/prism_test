@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+
+	<!-- bean that constructs WDS's using a template bean -->
+	<bean id="workingDataSetFactory" class="com.jaspersoft.commons.datarator.WorkingDataSetFactory">
+		<property name="workingDataSetBean" value="workingDataSetTemplate" />
+		<property name="columnGeneratorBean" value="groovyGenerator" />
+		<property name="dimensionDataSetBean" value="dimensionDataSetTemplate" />
+	</bean>
+
+	<bean id="keyInterceptor"
+		class="com.jaspersoft.commons.datarator.DefaultCacheKeyInterceptor">
+		<!-- ignoredParameters: parameter names to ignore in the cache key because 
+			they aren't relevant to distinguishing the cache entry (used by the default 
+			keyInterceptor).  PLEASE KEEP IN ALPHABETICAL ORDER -->
+		<property name="ignoredParameters">
+			<list>
+                <value>HTTP_SERVLET_REQUEST</value>
+                <value>LEAVE_ORIGINAL_CASE_FOR_IDS</value>
+                <!-- <value>LoggedInUser</value> <value>LoggedInUsername</value> -->
+                <value>maxQueryExecutionTimeSec</value>
+                <value>REPORT_CONNECTION</value>
+                <value>REPORT_CONTEXT</value>
+                <value>REPORT_DATA_SOURCE</value>
+                <value>REPORT_LOCALE</value>
+                <value>REPORT_MAX_COUNT</value>
+                <value>REPORT_PARAMETERS_MAP</value>
+                <value>REPORT_TEMPLATES</value>
+                <value>REPORT_TIME_ZONE</value>
+                <value>REPORT_URL_HANDLER_FACTORY</value>
+                <value>REPORT_VIRTUALIZER</value>
+                <value>slFactory</value>
+                <value>slSchema</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 
+		For 5.0, the original dataSetCache implementation is replaced by a cache
+		which wraps an EHCache instance but has the same API.
+		EHCache has its own configuration file format, so the configuration is done in a separate file.
+		The adhocCacheManager bean (below) uses the configuration file "adhoc-ehcache.xml".
+		Some of the properties previously defined in the dataSetCache bean now need to be modified
+		in adhoc-ehcache.xml. Also, times are now in seconds rather than minutes.
+		
+		old: defaultTimeoutMinutes
+		new: timeToLiveSeconds
+		
+		old: defaultUnusedTimeoutMinutes
+		new: timeToIdleSeconds
+		
+		obsolete: cleaner, cleanerInterval (EHCache has its own implementation of cache eviction)
+		
+		See adhoc-ehcache.xml for more information.
+	 -->
+
+	<bean id="dataSetCache" class="com.jaspersoft.commons.datarator.EhCacheImpl">
+		<property name="cache" ref="adhocCache"/>
+
+		<property name="keyInterceptor" ref="keyInterceptor" />
+
+		<property name="workingDataSetFactory" ref="workingDataSetFactory" />
+	</bean>
+
+
+	<bean id="adhocCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+		lazy-init="true">
+		<property name="cacheManager" ref="adhocCacheManager"/>
+		<property name="cacheName" value="adhocCache" />
+	</bean>
+
+	<bean id="adhocCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" depends-on="sysProperties">
+		<property name="configLocation">
+			<value>${resource.root}/adhoc-ehcache.xml</value>
+		</property>
+	</bean>
+
+
+	<!-- template WDS bean which allows us to init the WDS with all the stuff
+		that Groovy needs -->
+	<bean id="workingDataSetTemplate" class="com.jaspersoft.commons.datarator.WorkingDataSet"
+		scope="prototype">
+		<property name="expressionEvaluator">
+			<bean parent="dataSetExpressionEvaluator" scope="prototype" />
+		</property>
+		<property name="categorizerFactory" ref="categorizerFactory" />
+	</bean>
+	<!-- DimensionDataSet is based on WDS and is used for xtab -->
+	<bean id="dimensionDataSetTemplate" parent="workingDataSetTemplate"
+		class="com.jaspersoft.commons.dimengine.DimensionDataSetImpl" scope="prototype" />
+
+	<bean id="groovyGenerator" class="com.jaspersoft.commons.groovy.GroovyGenerator"
+		scope="prototype">
+		<property name="springyLoader" ref="groovySpringyLoader" />
+		<property name="groovyBaseColumn" value="groovy_column.BaseGroovyColumn" />
+		<property name="runtimeProperties">
+			<map>
+				<entry key="monthLength" value="30" />
+			</map>
+		</property>
+		<!-- provide access to the same vars that are available in SQLGenerator -->
+		<property name="groovyRunner" ref="groovyRunner" />
+	</bean>
+
+	<!-- A wrapper around the GroovyScriptEngine, which is a loader for Groovy 
+		classes which can reload on updates. It leverages the Spring resourceLoader 
+		to get Groovy scripts from a path under the webapp root. -->
+	<bean id="groovySpringyLoader" class="com.jaspersoft.commons.groovy.GroovySpringyLoader">
+		<property name="groovyScriptRoot" value="${resource.root}/groovy/" />
+	</bean>
+
+
+</beans>

@@ -1,0 +1,33 @@
+<beans
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util">
+
+	<!-- designer changer manages settings read and apply from and to adhoc subsystem -->
+	<bean id="designerOptionChanger" class="com.jaspersoft.ji.adhoc.util.DesignerOptionChanger">
+		<property name="semanticLayerFactory" ref="semanticLayerFactory" />
+		<property name="dataStrategyService" ref="dataStrategyService" />
+	</bean>
+
+  <!--add changers to propertiesManagementService-->
+  <bean id="addChanger" class="com.jaspersoft.jasperserver.api.common.util.spring.GenericBeanUpdaterDefinition">
+    <property name="order" value="10"/>
+    <property name="beanName" value="propertiesManagementService"/>
+    <property name="propertyName" value="changers"/>
+    <property name="operation" value="append"/>
+  </bean>
+
+	<bean id="propertiesManagementUpdater"
+		class="com.jaspersoft.jasperserver.api.common.util.spring.GenericBeanUpdater">
+		<property name="definition" ref="addChanger" />
+		<property name="value">
+			<map>
+				<entry key="adhoc"
+					value="designerOptionChanger" />
+				<entry key="ji"
+					value="globalProfilingState" />
+			</map>
+		</property>
+		<property name="valueType" value="refMap" />
+	</bean>
+</beans>

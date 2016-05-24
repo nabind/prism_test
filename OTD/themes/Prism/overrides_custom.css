@@ -1,0 +1,160 @@
+/*
+.overrides_custom css
+
+Place styles for simple UI customization in this file.
+
+This file is loaded after all other CSS, so selectors here will win in case of conflict with default rules.
+
+Using this file to customize is the method most likely to conserve your customizations even if markup changes in future product releases.
+
+Extensive customizations may be easier to implement by replacing one or more of the standard theme files in your custom theme folder.
+
+However, if future product releases place styles for new markup components into the files you have replaced, your theme will not have these new styles,
+and therefore, will not display the new components correctly.
+
+*/
+body {
+	background-color: white;
+	background: none;
+}
+#logo {
+	height: 48px;
+	top: 0 !important;
+}
+.banner {
+	height: 57px;
+	background: none;
+}
+#mainNavigation {
+	margin-top: 2px;
+}
+#frame {
+	top: 90px;
+	background-color: #DDDDDD;
+}
+.sectionLeft, #metaLinks  {
+	position: relative;
+	background: url("images/banner_bkgd.png") repeat-x scroll 0 0 #2881BB;
+	margin-left: 0px;
+	top: 58px;
+}
+.sectionLeft {
+	width: 100%;
+	position: absolute;
+	height: 31px;
+}
+#metaLinks  {
+	top: 5px;
+	background: none;
+}
+ul#metaLinks  li {
+	color: #000000;
+}
+.userName {
+	color: #DC5717;
+}
+#main_logOut_link {
+	color: #217EB5 !important;
+	font-weight: bold;
+	right: 11px;
+	position: absolute;
+	text-decoration: underline;
+	top: 28px;
+	font-family: arial;
+}
+.sectionRight {
+	margin-right: 0px;
+}
+.searchContainer, #help, #about, #main_library {
+	display: none;
+}
+#copyright {
+	text-align: center;
+	left: 30%;
+	right: 30%;
+}
+#dashboardViewerFrame {
+	top: 27px;
+}
+#dashboardViewerFrame #sizeGuide.proportional {
+	background: url("images/background.png") repeat-x scroll left -80px #FFFFFF;
+	border-bottom: 0px solid #c5c5c5;
+}
+#dashboard_viewer_header {
+	background: url("images/background.png") repeat-x scroll left -2px #FFFFFF;
+}
+
+#loginPage #copy {
+	border-radius: 10px;
+	margin: 10px;
+	border: 0px solid #000;
+	box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.296875) 0px 1px 5px 0px;
+	right: 0px;
+}
+#loginPage .login {
+	min-height: 140px;
+	border-radius: 10px;
+	margin-bottom: 10px;
+}
+#loginPage .login .header {
+	border-radius: 10px 10px 0 0;
+	box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.296875) 0px 1px 5px 0px;
+}
+#loginPage #loginForm {
+	bottom: auto;
+	border: 0px solid #000;
+	background: none;
+	margin: 10px;
+}
+#login {
+	box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.296875) 0px 1px 5px 0px;
+	margin: 10px;
+}
+
+#loginPage #rotating {
+	margin-left: 20px;
+}
+#loginPage #welcome {
+	margin-right:50%;
+	background-position: left 0px;
+	height: 255px;
+}
+
+/* floating menu */
+.componentContainer.iframe > .floatingMenu {
+	height: 33px;
+}
+.button.refresh  {
+	display: none;
+}
+.componentContainer.iframe > .floatingMenu > .button.pdf > .wrap > .icon {
+	background-image: url("images/file_extension_pdf.png");
+	background-repeat: no-repeat;
+	height: 34px;
+	width: 35px;
+	left: -4px;
+	top: 1px;
+}
+.componentContainer.iframe > .floatingMenu > .button.xls > .wrap > .icon {
+	background-image: url("images/file_extension_xls.png");
+	background-repeat: no-repeat;
+	height: 34px;
+	width: 35px;
+	left: -4px;
+	top: 1px;
+}
+.componentContainer.iframe > .floatingMenu > .button.over > .wrap > .icon {
+	background-position: left 0px;
+}
+.componentContainer.iframe > .floatingMenu > .button.open > .wrap > .icon {
+	background-position: left 0px;
+}
+
+.menu.primaryNav .node > .wrap > .icon {
+	background-position: 2px -83px;
+}
+.menu.primaryNav .node>.wrap>.icon {
+	right: 0px;
+}
+
+
