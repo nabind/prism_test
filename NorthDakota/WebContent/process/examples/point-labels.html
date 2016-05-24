@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	
+	<title>Data Point labels</title>
+
+    <link class="include" rel="stylesheet" type="text/css" href="../jquery.jqplot.min.css" />
+    <link rel="stylesheet" type="text/css" href="examples.min.css" />
+    <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shCoreDefault.min.css" />
+    <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shThemejqPlot.min.css" />
+  
+  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
+    <script class="include" type="text/javascript" src="../jquery.min.js"></script>
+    
+   
+</head>
+<body>
+    <div class="logo">
+   <div class="nav">
+   
+   </div>
+</div>
+    <div class="example-content">
+
+    <div class="example-nav">
+
+
+<!-- Example scripts go here -->
+<P>The pointLabels plugin places labels on the plot at the data point locations.  Labeles can use the series data array or a separate labels array.  If using the series data, the last value in the data point array is used as the label by default.</p>
+
+<div id="chart1" style="height:500px; width:800px;"></div>
+
+<pre class="code prettyprint brush: js"></pre>
+
+<div id="chart2" style="height:500px; width:800px;"></div>
+
+<div id="chart3" style="height:500px; width:800px;"></div>
+
+<script class="code" type="text/javascript">
+$(document).ready(function(){
+  var line1 = [[3,650], [4,670], [5,690], [6,696], [7,707], [8,714], [9,722], [10,730], [11,738]];
+  var line2 = [[3,610], [4,630], [5,645], [6,655], [7,666], [8,670], [9,680], [10,690], [11,700]];
+  var line3 = [[3,579], [4,606], [5,619], [6,632], [7,644], [8,648], [9,658], [10,668], [11,679]];
+  var line4 = [[3,638], [4,660], [5,614]];
+  var line5 = [[3,], [4,], [5,614], [6,633], [7,651], [8,670]];
+  var plot1 = $.jqplot('chart1', [line1, line2, line3, line4, line5], {
+      title: 'Chart with Point Labels', 
+	  seriesColors: [ "#9bbb59", "#be4c49", "#4f81bd", "#8064a2", "#46aac5"],
+      seriesDefaults: { 
+        showMarker:true,
+        pointLabels: { show:true } 
+      },series:[ 
+          {
+            label: 'Advanced Cut Scores',
+			lineWidth:2, 
+			pointLabels: { location: 'n' },
+            markerOptions: { style:'filledDimaond' }
+          }, 
+          {
+			label: 'Proficient Cut Scores',
+            showLine:true, 
+			pointLabels: { location: 'ew' },
+            markerOptions: { size: 7, style:"filledCircle" }
+          },
+		  {
+		    label: 'Partially Proficient Cut Scores',
+            pointLabels: { location: 's' },
+            markerOptions: { size: 7, style:"x" }
+          },
+          { 
+		    label: 'Student Score',
+			lineWidth:5,
+			pointLabels: { location: 'e' },
+            markerOptions: { style:"circle" }
+          }, 
+          {
+		    label: '3-Year Path',
+            lineWidth:5, 
+			pointLabels: { show:false },
+			linePattern: 'dashed',
+            markerOptions: { style:"filledSquare", size:10 }
+          }/*,
+		  {
+            label: '',
+			lineWidth:0, 
+			showLine:false,
+			pointLabels: { show:false },
+			showMarker:false,
+            markerOptions: { style:"filledSquare", size:1 }
+          }*/
+      ],
+	  legend: {
+        show: true,
+        location: 'se',     // compass direction, nw, n, ne, e, se, s, sw, w.
+        xoffset: 5,        // pixel offset of the legend box from the x (or x2) axis.
+        yoffset: 12,        // pixel offset of the legend box from the y (or y2) axis.
+	  },
+	  axes: {
+        xaxis: {
+            // same options as axesDefaults
+			min:1
+        },
+        yaxis: {
+            // same options as axesDefaults
+        }
+	  }
+  });
+  
+  
+  var line4_1 = [[3,],[4,599], [5,611]];
+  var line5_1 = [[3,], [4,], [5,611], [6,631], [7,650], [8,670]];
+  var plot1 = $.jqplot('chart2', [line1, line2, line3, line4_1, line5_1], {
+      title: 'Chart with Point Labels', 
+	  seriesColors: [ "#9bbb59", "#be4c49", "#4f81bd", "#8064a2", "#46aac5"],
+      seriesDefaults: { 
+        showMarker:true,
+        pointLabels: { show:true } 
+      },series:[ 
+          {
+            label: 'Advanced Cut Scores',
+			lineWidth:2, 
+			pointLabels: { location: 'n' },
+            markerOptions: { style:'filledDimaond' }
+          }, 
+          {
+			label: 'Proficient Cut Scores',
+            showLine:true, 
+			pointLabels: { location: 'w' },
+            markerOptions: { size: 7, style:"filledCircle" }
+          },
+		  {
+		    label: 'Partially Proficient Cut Scores',
+            pointLabels: { location: 's' },
+            markerOptions: { size: 7, style:"x" }
+          },
+          { 
+		    label: 'Student Score',
+			lineWidth:5,
+			pointLabels: { location: 'e' },
+            markerOptions: { style:"circle" }
+          }, 
+          {
+		    label: '3-Year Path',
+            lineWidth:5, 
+			pointLabels: { show:false },
+			linePattern: 'dashed',
+            markerOptions: { style:"filledSquare", size:10 }
+          }/*,
+		  {
+            label: '',
+			lineWidth:0, 
+			showLine:false,
+			pointLabels: { show:false },
+			showMarker:false,
+            markerOptions: { style:"filledSquare", size:1 }
+          }*/
+      ],
+	  legend: {
+        show: true,
+        location: 'se',     // compass direction, nw, n, ne, e, se, s, sw, w.
+        xoffset: 5,        // pixel offset of the legend box from the x (or x2) axis.
+        yoffset: 12,        // pixel offset of the legend box from the y (or y2) axis.
+	  },
+	  axes: {
+        xaxis: {
+            // same options as axesDefaults
+			min:1
+        },
+        yaxis: {
+            // same options as axesDefaults
+        }
+	  }
+  });
+  
+  
+  var line4_2 = [[3,633], [4,660], [5,666]];
+  var line5_2 = [[3,], [4,], [5,666], [6,667], [7,669], [8,670]];
+  var plot1 = $.jqplot('chart3', [line1, line2, line3, line4_2, line5_2], {
+      title: 'Chart with Point Labels', 
+	  seriesColors: [ "#9bbb59", "#be4c49", "#4f81bd", "#8064a2", "#46aac5"],
+      seriesDefaults: { 
+        showMarker:true,
+        pointLabels: { show:true } 
+      },series:[ 
+          {
+            label: 'Advanced Cut Scores',
+			lineWidth:2, 
+			pointLabels: { location: 'n' },
+            markerOptions: { style:'filledDimaond' }
+          }, 
+          {
+			label: 'Proficient Cut Scores',
+            showLine:true, 
+			pointLabels: { location: 'w' },
+            markerOptions: { size: 7, style:"filledCircle" }
+          },
+		  {
+		    label: 'Partially Proficient Cut Scores',
+            pointLabels: { location: 's' },
+            markerOptions: { size: 7, style:"x" }
+          },
+          { 
+		    label: 'Student Score',
+			lineWidth:5,
+			pointLabels: { location: 'e' },
+            markerOptions: { style:"circle" }
+          }, 
+          {
+		    label: '3-Year Path',
+            lineWidth:5, 
+			pointLabels: { show:false },
+			linePattern: 'dashed',
+            markerOptions: { style:"filledSquare", size:10 }
+          }/*,
+		  {
+            label: '',
+			lineWidth:0, 
+			showLine:false,
+			pointLabels: { show:false },
+			showMarker:false,
+            markerOptions: { style:"filledSquare", size:1 }
+          }*/
+      ],
+	  legend: {
+        show: true,
+        location: 'se',     // compass direction, nw, n, ne, e, se, s, sw, w.
+        xoffset: 5,        // pixel offset of the legend box from the x (or x2) axis.
+        yoffset: 12,        // pixel offset of the legend box from the y (or y2) axis.
+	  },
+	  axes: {
+        xaxis: {
+            // same options as axesDefaults
+			min:1
+        },
+        yaxis: {
+            // same options as axesDefaults
+        }
+	  }
+  });
+  
+});
+</script>
+
+
+</script>
+
+<!-- End example scripts -->
+
+<!-- Don't touch this! -->
+
+
+    <script class="include" type="text/javascript" src="../jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shCore.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shBrushXml.min.js"></script>
+<!-- End Don't touch this! -->
+
+<!-- Additional plugins go here -->
+    <script class="include" language="javascript" type="text/javascript" src="../plugins/jqplot.barRenderer.min.js"></script>
+    <script class="include" language="javascript" type="text/javascript" src="../plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script class="include" language="javascript" type="text/javascript" src="../plugins/jqplot.pointLabels.min.js"></script>
+
+<!-- End additional plugins -->
+
+
+	</div>	
+	<script type="text/javascript" src="example.min.js"></script>
+
+</body>
+
+
+</html>

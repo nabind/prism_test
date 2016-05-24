@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	
+	<title>Data Point labels</title>
+
+   
+  
+  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
+    <script class="include" type="text/javascript" src="jquery.min.js"></script>
+	
+	<script src="./highcharts.js"></script>
+    
+	<style>
+		.table {border:1px solid #CCC}
+		.table tr {border:1px solid #CCC}
+		.table tr td {border:1px solid #CCC}
+	</style>
+   
+</head>
+<body>
+    <div class="logo">
+   <div class="nav">
+   
+   </div>
+</div>
+    <div class="example-content">
+
+    <div class="example-nav">
+
+
+<!-- Example scripts go here -->
+
+
+<div id="container" style="height: 300px; width:50%"></div>
+
+
+<div  style="width:750px"><p>One year scale score growth for Kiara Aman from Grade 4 to Grade 5 is -46. To reach a level of proficiency in
+three years, the student must achieve an average scale score growth of 18.7 during each of the following three
+years. The actual one year growth rate is lower than the rate that must be maintained to achieve a level of
+proficiency.</P></div>
+<div>
+	<table>
+		<tr>
+			<td width="20%">Student:</td>
+			<td colspan="4">KIARA AMAN - 1065995966</td>
+		</tr>
+		<tr>
+			<td width="20%">Current District:</td>
+			<td colspan="4">30-001 Mandan 1 (PK-12)</td>
+		</tr>
+		<tr>
+			<td width="20%">Current School:</td>
+			<td colspan="4">30-001-8286 Mary Stark Elem School (0K05)</td>
+		</tr>
+	</table>
+	<table class="table" cellspacing="0">
+		<tr>
+			<td>Grade</td>
+			<td colspan="4">Reading</td>
+			<td colspan="2">North Dakota State Assessment Information</td>
+		</tr>
+		<tr>
+			<td></td>
+			
+			<td>Student Score</td>
+			<td>Achievement Level</td>
+			<td>Achievement Percentile</td>
+			<td>3-Year Path</td>
+			
+			<td>Date</td>
+			<td>School Attended</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			
+			<td>638</td>
+			<td>P</td>
+			<td>60</td>
+			<td></td>
+			
+			<td>Fall'08</td>
+			<td>Mary Stark Elem School</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			
+			<td>660</td>
+			<td>P</td>
+			<td>68</td>
+			<td></td>
+			
+			<td>Fall'09</td>
+			<td>Mary Stark Elem School</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			
+			<td>614</td>
+			<td>N</td>
+			<td>4</td>
+			<td>614</td>
+			
+			<td>Fall'10</td>
+			<td>Mary Stark Elem School</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>633</td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>7</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>651</td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>8</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>670</td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>9</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>10</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>11</td>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+</div>
+<div style="width:750px"><p>Growth percentile from fall 2009 to fall 2010 = 0 (low). The Growth Percentile presents the relative level of growth
+that a student has made since the previous year as compared to students within the same achievement level
+statewide.</p></div>
+<br/><br/><br/><br/><br/><br/>
+
+
+
+<script class="code" type="text/javascript">
+
+$(document).ready(function(){
+  
+  (function (Highcharts){
+        Highcharts.Renderer.prototype.symbols.arrow = function(x,y,w,h,options){
+            var angle;
+            if(options != null) angle = options.angle; // angle for arrow
+            w = w/1.2;
+            x = x + h/2 - 2*w*Math.sin(angle);
+            y = y + h/2 - 2*w*Math.cos(angle);
+            h = w * 2;
+            return ['M',x,y,
+                    'L',x + w*Math.cos(angle),y - w*Math.sin(angle),
+                    x + h*Math.sin(angle),y + h*Math.cos(angle),
+                    x - w*Math.cos(angle),y + w*Math.sin(angle),
+                    'Z'];
+
+        };
+        Highcharts.Series.prototype.drawPoints = function(){
+            // re-define Highcharts globals
+            var UNDEFINED,
+                NORMAL_STATE = '',
+                SELECT_STATE = 'select';
+            var series = this,
+                pointAttr,
+                points = series.data,
+                chart = series.chart,
+                plotX,
+                plotY,
+                i,
+                l,
+                point,
+                radius,
+                symbol,
+                isImage,
+                theta,
+                lastPoint,
+                thisPoint,
+                graphic;
+            if (series.options.marker.enabled) {
+                i = points.length;
+                l = i;
+                while (i--) {
+                    point = points[i];
+                    plotX = point.plotX;
+                    plotY = point.plotY;
+                    graphic = point.graphic;
+                    // only draw the point if y is defined
+                    if (plotY !== UNDEFINED && !isNaN(plotY)){
+                        if (i>0){ // orient the arrow in the forward direction
+                            lastPoint = points[i-1];
+                            thisPoint = points[i];
+                            theta = Math.atan( (plotX - lastPoint.plotX) / (plotY - lastPoint.plotY) );
+                            if (theta <= 0 && thisPoint.plotY < lastPoint.plotY){ // adjust if angle is negative even though series is moving up
+                                theta = theta + Math.PI;
+                            }
+                        }
+                        else if (l>1){ // orient the arrow in the backwards direction
+                            lastPoint = points[i];
+                            thisPoint = points[i+1];
+                            theta = Math.atan( (thisPoint.plotX - lastPoint.plotX) / (thisPoint.plotY - lastPoint.plotY) );
+                        }
+                        else{ // orient the arrow upwards
+                            lastPoint = points[i];
+                            thisPoint = points[i];
+                            theta = 0;
+                        }
+                        pointAttr = point.pointAttr[point.selected ? SELECT_STATE : NORMAL_STATE];
+                        radius = pointAttr.r;
+                        symbol = Highcharts.pick(point.marker && point.marker.symbol, series.symbol);
+                        isImage = symbol.indexOf('url') === 0;
+                        if (graphic && !(symbol === 'arrow')) { // update by translation. arrows must be re-rendered for angle
+                            graphic.animate({x: plotX - radius,y: plotY - radius,width: 2 * radius,height: 2 * radius});
+                        } else if (radius > 0 || isImage) {
+                            if(point.graphicElement){ // destroy the old marker
+                                point.graphicElement.destroy();
+                            }
+                            point.graphicElement = chart.renderer.symbol(
+                                    symbol,
+                                    plotX - radius,
+                                    plotY - radius,
+                                    2 * radius,
+                                    2 * radius,
+                                    {angle: theta}).attr(pointAttr);
+                            point.graphic = point.graphicElement.add(series.group);
+                        }
+                    }
+                }
+            }
+        };
+        })(Highcharts);
+
+	var line1 = [[3,650], [4,670], [5,690], [6,696], [7,707], [8,714], [9,722], [10,730], [11,738]];
+	var line2 = [[3,610], [4,630], [5,645], [6,655], [7,666], [8,670], [9,680], [10,690], [11,700]];
+	var line3 = [[3,579], [4,606], [5,619], [6,632], [7,644], [8,648], [9,658], [10,668], [11,679]];
+	var line4 = [[3,638], [4,660], [5,614]];
+	var line5 = [[5,614], [6,633], [7,651], [8,670]];
+
+var chart = new Highcharts.Chart({
+
+			chart: {
+					defaultSeriesType: 'line',
+					width: 850,
+		 			height: 610,
+		 			plotBackgroundColor:'#EEECE1',
+					borderColor: '#999999',
+					plotBorderColor: '#DDD',
+					plotBorderWidth: 1,
+					marginRight: 20,
+					spacingTop: 0,
+					renderTo: 'container'
+				},
+				credits: {
+					enabled: false
+				},
+				title: {
+					text: ' '
+				},
+				xAxis: {
+					title: {
+						text: 'Grade Level', style: {fontSize:14}
+					},
+					labels: {
+						style: {fontSize:13}
+					},
+					categories: [0,1,2,3,4,5,6,7,8,9,10,11]
+				},
+				yAxis: {
+					title: {
+						text: 'Scale Score', style: {fontSize:14}
+					},
+					labels: {
+						style: {fontSize:13}
+					},
+					min: 450,
+					max: 900,
+					tickInterval: 50,
+					plotLines: [{
+						value: 0,
+						width: 1,
+						color: '#808080'
+					}]
+				},
+				legend: {
+					layout: 'horizontal',
+					align: 'bottom',
+					verticalAlign: 'bottom',
+					x: 55,
+					y: 0,
+					width: 742,
+					itemWidth: 210,
+					borderWidth: 1,
+					backgroundColor: '#EEECE1',itemStyle: {fontSize:14}
+				},
+				plotOptions: {
+					line: {
+						dataLabels: {
+							enabled: true, color: '#000000'
+						},
+						enableMouseTracking: false,
+						shadow: false,
+						animation: false
+					}
+				},
+				series: [{
+					name: 'Advanced Cut Score',
+					color: '#4f81bd',
+					marker: {symbol: 'triangle-down'}, dataLabels: { y: -15, style: {fontSize:12}},
+					data: line1
+				}, {
+					name: 'Proficient Cut Score',
+					color: '#9bbb59',
+					marker: {symbol: 'circle'}, dataLabels: { y: 3, style: {fontSize:12}},
+					data: line2
+				}, {
+					name: 'Partially Proficient Cut Score',
+					color: '#be4c49',
+					marker: {symbol: 'triangle'}, dataLabels: { y: 20, style: {fontSize:12}},
+					data: line3
+				}, {
+					name: 'Student Score',
+					color: '#8064aF',
+					marker: {symbol: 'square', radius: 6 },
+					lineWidth: 5,
+					dataLabels: { 
+						backgroundColor: 'rgba(252, 255, 197, 0.7)',
+						borderWidth: 1,
+						borderColor: '#AAA',
+						style: {fontWeight: 'bold', fontSize:16, fontFamily: 'Vardana'}, y: 5, x:25 
+					},
+					data: line4
+				}, {
+					name: '3-Year Path',
+					color: '#46aac5',
+					marker: {symbol: 'arrow', radius: 6 },
+					lineWidth: 5,
+					dataLabels: { enabled: false },
+					dashStyle: 'longdash',
+					data: line5
+				}]
+	});
+
+});				
+		
+/*
+var chart = new Highcharts.Chart({
+
+    chart: {
+        renderTo: 'container',
+        type: 'spline'
+    },
+
+    xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+
+    series: [{
+        data: [{y:90,marker:{symbol:'arrow'}}, 71.5, 200.4, {y:129.2,marker:{symbol:'arrow',radius:6}}, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, {y:120,marker:{symbol:'arrow'}} ],
+        marker: {
+            enabled: true,
+            symbol: 'circle'
+        }
+    }]
+	
+	
+
+});
+
+
+});
+
+*/
+
+
+  
+  
+  
+
+
+</script>
+
+
+
+
+
+</body>
+
+
+</html>
