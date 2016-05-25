@@ -1,4 +1,4 @@
-Follow the steps
+Follow the steps .. checking conflict
 #------------------- STEP 1 -------------------
 Download maven apache-maven-3.0.2
 
