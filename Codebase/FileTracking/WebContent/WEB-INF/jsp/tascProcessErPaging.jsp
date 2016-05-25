@@ -351,6 +351,7 @@
 		    		  clearMoreInfoTableWhenError('Data Not Found');
 		          } else {
 		    		  $("#moreInfo").html('');
+		    		  data = data.replace(/\\/g, "/");
 			    	  var obj = JSON.parse(data);
 			    	  $("#testCenterCode_mi").html( obj.TESTING_SITE_CODE );
 			    	  $("#testCenterName_mi").html( obj.TESTING_SITE_NAME );
@@ -364,7 +365,7 @@
 			    	  $("#scanBatch_mi").html( obj.SCAN_BATCH );
 			    	  $("#scanStack_mi").html( obj.SCAN_STACK );
 			    	  $("#scanSequence_mi").html( obj.SCAN_SEQUENCE );
-			    	  $("#bioImages_mi").html( obj.BIO_IMAGES );
+			    	  $("#bioImages_mi").html( obj.BIO_IMAGES.replace(/\//g, "\\") );
 			     }
 		      },
 			  error: function(data) {
