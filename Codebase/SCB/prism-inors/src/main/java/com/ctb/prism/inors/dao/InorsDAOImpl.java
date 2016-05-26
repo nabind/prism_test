@@ -161,7 +161,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', #p0, 'getSchoolClass' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', #p0, 'getSchoolClass' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getSchoolClass' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getSchoolClass' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', #p0, 'getSchoolClass' )")
 	} )
 	public BulkDownloadTO getSchoolClass(String studentBioId) {
 		BulkDownloadTO bulkDownloadTO = null;
@@ -187,7 +188,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', #p0, 'getNodeName' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', #p0, 'getNodeName' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getNodeName' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getNodeName' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', #p0, 'getNodeName' )")
 	} )
 	public BulkDownloadTO getNodeName(String orgNodeid) {
 		BulkDownloadTO bulkDownloadTO = null;
@@ -214,7 +216,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', #p0, #p1, #p2, #p3, #p4, 'getGRTList' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', #p0, #p1, #p2, #p3, #p4, 'getGRTList' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, #p1, #p2, #p3, #p4, 'getGRTList' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, #p1, #p2, #p3, #p4, 'getGRTList' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', #p0, #p1, #p2, #p3, #p4, 'getGRTList' )")
 	} )
 	private List<GrtTO> getGRTList(final Long customerId, final String productId, final String testProgram, final String districtId, final String schoolId) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
@@ -288,7 +291,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getGRTTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'wisc' )")
 	} )
 	private ArrayList<ArrayList<String>> getGRTTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getGRTList()");
@@ -686,7 +690,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors',  #p0, #p1, #p2, #p3, 'getICList' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc',  #p0, #p1, #p2, #p3, 'getICList' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo',  #p0, #p1, #p2, #p3, 'getICList' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo',  #p0, #p1, #p2, #p3, 'getICList' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc',  #p0, #p1, #p2, #p3, 'getICList' )")
 	} )
 	private List<InvitationCodeTO> getICList(final String productId, final String testProgram, final String districtId, final String schoolId) {
 		logger.log(IAppLogger.INFO, "Enter: getICList()");
@@ -756,7 +761,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getICTableData'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).listKey(#aliasList)).concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#headerList)),'wisc' )")
 	} )
 	private ArrayList<ArrayList<String>> getICTableData(Map<String, String> paramMap, final ArrayList<String> aliasList, final ArrayList<String> headerList) {
 		logger.log(IAppLogger.INFO, "Enter: getICList()");
@@ -878,7 +884,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateDistrictGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'wisc' )")
 	} )
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateDistrictGrt(Map<String, String> paramMap) {
 		long t1 = System.currentTimeMillis();
@@ -935,7 +942,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'populateSchoolGrt'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'wisc' )")
 	} )
 	public List<com.ctb.prism.core.transferobject.ObjectValueTO> populateSchoolGrt(Map<String, String> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: populateSchoolGrt()");
@@ -991,7 +999,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', #p0, 'getProductNameById' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', #p0, 'getProductNameById' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getProductNameById' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, 'getProductNameById' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', #p0, 'getProductNameById' )")
 	} )
 	public String getProductNameById(Long productId) {
 		String productName = null;
@@ -1012,7 +1021,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', 'getCurrentAdminYear' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', 'getCurrentAdminYear' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', 'getCurrentAdminYear' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', 'getCurrentAdminYear' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', 'getCurrentAdminYear' )")
 	} )
 	public String getCurrentAdminYear() {
 		Integer year = Calendar.getInstance().get(Calendar.YEAR);
@@ -1040,7 +1050,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo')")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo')"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'wisc')")
 	} )
 	public Map<String,Object> getCode(Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: getCode()");
@@ -1098,7 +1109,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( 'getCode'.concat(T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)),'wisc' )")
 	} )
 	public Map<String,Object> getTpCode(Map<String,Object> paramMap){
 		logger.log(IAppLogger.INFO, "Enter: getTpCode()");

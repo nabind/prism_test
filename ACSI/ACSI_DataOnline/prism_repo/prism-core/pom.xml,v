@@ -1,0 +1,53 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.32;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>prism</artifactId>
+    <groupId>com.ctb.prism</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>prism-core</artifactId>
+  <name>Prism Core</name>
+  <packaging>jar</packaging>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<plugins>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>@

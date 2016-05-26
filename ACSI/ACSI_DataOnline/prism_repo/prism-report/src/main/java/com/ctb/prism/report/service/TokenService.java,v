@@ -1,0 +1,61 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.37;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@package com.ctb.prism.report.service;
+
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * Produces UUID-based tokens. </br>
+ * This is inpired by the following article 
+ * <a href="http://stackoverflow.com/questions/1106377/detect-when-browser-receives-file-download">
+ * Detect when browser receives file download</a> from stackoverflow.com. Instead of using a
+ * cookie, we use a {@@link HashMap} to store the tokens.
+ */
+@@Service
+public class TokenService {
+
+	private  HashMap<String,String> tokens = new HashMap<String, String>();
+	
+	public String check(String token) {
+		return tokens.get(token);
+	}
+	
+	public String generate() {
+		String uid = UUID.randomUUID().toString();
+		tokens.put(uid, uid);
+		return uid;
+	}
+	
+	public void remove(String token) {
+		tokens.remove(token);
+	}
+}
+@

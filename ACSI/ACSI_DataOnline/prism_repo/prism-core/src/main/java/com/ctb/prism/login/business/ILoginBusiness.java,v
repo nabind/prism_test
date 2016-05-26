@@ -1,0 +1,50 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.53;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@package com.ctb.prism.login.business;
+
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+
+import com.ctb.prism.core.exception.SystemException;
+import com.ctb.prism.login.transferobject.UserTO;
+
+public interface ILoginBusiness {
+
+	public boolean selectTest();
+	public UserTO getUserByEmail(String userEmail) throws SystemException;
+	
+	public List<GrantedAuthority> getGrantedAuthorities(String username);
+	
+	public String getTenant(String username);
+	
+	public boolean checkFirstTimeLogin(String username);
+	
+	public UserTO getUserDetails(String username);
+}
+@

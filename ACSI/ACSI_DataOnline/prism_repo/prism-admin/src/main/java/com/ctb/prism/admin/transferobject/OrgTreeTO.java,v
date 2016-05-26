@@ -1,0 +1,72 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.27;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@package com.ctb.prism.admin.transferobject;
+
+import java.util.List;
+
+public class OrgTreeTO {
+	private String state;
+	private String data;
+	private long orgTreeId;
+	private OrgTO metadata;
+	private OrgTO attr;
+	
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
+	}
+	public OrgTO getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(OrgTO metadata) {
+		this.metadata = metadata;
+	}
+	public OrgTO getAttr() {
+		return attr;
+	}
+	public void setAttr(OrgTO attr) {
+		this.attr = attr;
+	}
+	
+	public long getOrgTreeId() {
+		return orgTreeId;
+	}
+	public void setOrgTreeId(long orgTreeId) {
+		this.orgTreeId = orgTreeId;
+	}
+	
+}
+@

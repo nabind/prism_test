@@ -60,7 +60,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsConfigCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions'),'inors' )"),
 			@Cacheable(value = "tascConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions'),'tasc' )"),
-			@Cacheable(value = "usmoConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions'),'usmo' )")
+			@Cacheable(value = "usmoConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions'),'usmo' )"),
+			@Cacheable(value = "wiscConfigCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getSecretQuestions'),'wisc' )")
 	} )
 	public List<QuestionTO> getSecretQuestions(final Map<String,Object> paramMap) {
 		
@@ -331,7 +332,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( evict = { 
 			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
 			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true),
-			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true)
+			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true),
+			@CacheEvict(value = "wiscAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  allEntries = true)
 	} )
 	public boolean registerUser(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: registerUser()");
@@ -587,7 +589,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('inors', #p0, #p1, #p2, #p3, #p4, #root.method.name )"),
 			@Cacheable(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('tasc', #p0, #p1, #p2, #p3, #p4, #root.method.name )"),
-			@Cacheable(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, #p1, #p2, #p3, #p4, #root.method.name )")
+			@Cacheable(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('usmo', #p0, #p1, #p2, #p3, #p4, #root.method.name )"),
+			@Cacheable(value = "wiscAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).generateKey('wisc', #p0, #p1, #p2, #p3, #p4, #root.method.name )")
 	} )
 	public ArrayList<ParentTO> getParentList(final String orgId, final String adminYear, final String searchParam, final String orgMode, final String moreCount) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
@@ -854,7 +857,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( cacheable = {
 			@Cacheable(value="inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList'),'inors' )"),
 			@Cacheable(value="tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList'),'tasc' )"),
-			@Cacheable(value="usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList'),'usmo' )")
+			@Cacheable(value="usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList'),'usmo' )"),
+			@Cacheable(value="wiscAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getStudentList'),'wisc' )")
 	} )
 	public ArrayList<StudentTO> getStudentList(Map<String, Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - getStudentList()");
@@ -1602,7 +1606,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( evict = { 
 			@CacheEvict(value = {"inorsConfigCache","inorsAdminCache"}, condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
 			@CacheEvict(value = {"tascAdminCache","tascAdminCache"},    condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true),
-			@CacheEvict(value = {"usmoAdminCache","usmoAdminCache"},    condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true)
+			@CacheEvict(value = {"usmoAdminCache","usmoAdminCache"},    condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true),
+			@CacheEvict(value = {"wiscAdminCache","wiscAdminCache"},    condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  allEntries = true)
 	} )
 	public boolean updateUserProfile(final ParentTO parentTO) throws BusinessException {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - updateUserProfile()");
@@ -1707,7 +1712,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( evict = { 
 			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
 			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true),
-			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true)
+			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true),
+			@CacheEvict(value = "wiscAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  allEntries = true)
 	} )
 	public boolean addInvitationToAccount(final Map<String,Object> paramMap) {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - addInvitationToAccount()");
@@ -1777,7 +1783,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	@Caching( evict = { 
 			@CacheEvict(value = "inorsAdminCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", allEntries = true),
 			@CacheEvict(value = "tascAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  allEntries = true),
-			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true)
+			@CacheEvict(value = "usmoAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  allEntries = true),
+			@CacheEvict(value = "wiscAdminCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  allEntries = true)
 	} )
 	public boolean regenerateActivationCode(final StudentTO student) throws Exception {
 		logger.log(IAppLogger.INFO, "Enter: ParentDAOImpl - regenerateActivationCode()");

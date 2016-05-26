@@ -1,0 +1,33 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.30;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@	<!-- Title bar -->
+	<header role="banner" id="title-bar" style=" height:75px; padding:0 6px 0 11px; position:absolute">
+		<%@@ include file="../common/commonHeader.jsp"%>
+	</header>
+
+@

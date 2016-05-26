@@ -1,0 +1,48 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.37;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@<%@@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@@taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<c:if test="${treeSturcture != 'Yes'}">
+	<ul id="org_details" class="files-list mini open-on-panel-content org_list">
+			<c:forEach var="organization" items="${organizationList}">
+				<li id=${organization.tenantId} class="with-right-arrow grey-arrow tenantHier">
+					<span id=${organization.tenantId} class="icon grey icon-size2 icon-folder"></span> 
+						<b class="glossy with-tooltip tracked"  data-tooltip-options="{"classes":["black-gradient","glossy"]}" 	id=${organization.tenantId} 
+							title = ${organization.tenantName} tenantName = ${organization.tenantName} orgLevel = ${organization.orgLevel} ><s:eval expression="T(com.ctb.prism.core.util.CustomStringUtil).manageString(organization.tenantName)"  />
+						</b>
+				</li>
+			</c:forEach>
+		</ul>
+</c:if>	
+<c:if test="${treeSturcture == 'Yes'}">
+		<div id="treeViewForOrg" style="height: 510px;" class="jstree jstree-0 jstree-focused jstree-apple" rootid="${rootOrgId}_${rootOrgLevel}" >
+			
+		</div>
+</c:if>
+
+		@

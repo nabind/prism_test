@@ -144,6 +144,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 			if("inors".equals(contractName)) return reportDAO.removeInorsCache(contractName);
 			if("tasc".equals(contractName)) return reportDAO.removeTascCache(contractName);
 			if("usmo".equals(contractName)) return reportDAO.removeUsmoCache(contractName);
+			if("wisc".equals(contractName)) return reportDAO.removeWiscCache(contractName);
 			return false;
 		}
 		
@@ -183,6 +184,7 @@ public class ReportBusinessImpl implements IReportBusiness {
 		if("inors".equals(contract)) reportDAO.removeInorsConfig(contract);
 		if("tasc".equals(contract)) reportDAO.removeTascConfig(contract);
 		if("usmo".equals(contract)) reportDAO.removeUsmoConfig(contract);
+		if("wisc".equals(contract)) reportDAO.removeWiscConfig(contract);
 	}
 
 	/*
@@ -252,7 +254,8 @@ public class ReportBusinessImpl implements IReportBusiness {
   @Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter'),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter'),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter'),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter'),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract(#paramMap) == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat('getDefaultFilter'),'wisc' )")
 	} )
 	
   public Object getDefaultFilter(Map<String, Object> paramMap) {
@@ -524,7 +527,8 @@ public class ReportBusinessImpl implements IReportBusiness {
 	@Caching( cacheable = {
 			@Cacheable(value = "inorsDefaultCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name),'inors' )"),
 			@Cacheable(value = "tascDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name),'tasc' )"),
-			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name),'usmo' )")
+			@Cacheable(value = "usmoDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name),'usmo' )"),
+			@Cacheable(value = "wiscDefaultCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'wisc'",  key="T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (T(com.ctb.prism.core.util.CacheKeyUtils).mapKey(#paramMap)).concat(#root.method.name),'wisc' )")
 	} )
 	public List<ObjectValueTO> getValuesOfSingleInput(Map<String, Object> paramMap) throws SystemException {
 		String reportUrl = (String) paramMap.get("reportUrl");

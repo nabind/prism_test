@@ -1,0 +1,41 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.33;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@# updated
+general.css=themes/default/styles/css/general.css
+custom.css=themes/default/styles/css/smoothness/jquery-ui-1.8.17.custom.css
+contextMenu.css=themes/default/styles/css/jquery.contextMenu.css
+containers.css=themes/default/styles/css/flexigrid.css
+fullcalendar.css=themes/default/styles/css/fullcalendar.css
+chosen.css=themes/default/styles/css/chosen.css
+treeview.css=themes/default/styles/css/jquery.treeview.css
+fileupload-ui.css=themes/default/styles/css/jquery.fileupload-ui.css
+colorbox.css=themes/default/styles/css/colorbox.css
+monday.css=themes/default/styles/css/jplayer.blue.monday.css
+prism.css=themes/default/styles/css/prism.css
+pagination.css=themes/default/styles/css/pagination.css
+@

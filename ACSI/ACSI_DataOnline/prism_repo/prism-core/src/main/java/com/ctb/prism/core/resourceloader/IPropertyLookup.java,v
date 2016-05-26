@@ -1,0 +1,53 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.53;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@package com.ctb.prism.core.resourceloader;
+
+import java.util.List;
+
+/**
+ * This interface is responsible for looking up the property files.
+ * 
+ * @@author TATA CONSULTANCY SERVICES
+ * @@version 1.0
+ */
+public interface IPropertyLookup {
+
+	/**
+	 * This method retrieves the value of a specific property from the
+	 * properties file
+	 * 
+	 * @@param key - The key against which the property will be retrieved
+	 * @@return The Property value
+	 */
+	public String get(String key);
+	
+	public List<String> getList(String key);
+	
+	public String get(String key, String[] args);
+}
+@

@@ -7,7 +7,7 @@
 	<display-name>prism web</display-name>
 	<context-param>
 	    <param-name>webAppRootKey</param-name>
-	    <param-value>prism.scb.v.2</param-value>
+	    <param-value>prism.scb.v.3</param-value>
 	</context-param>
 	
 	<mime-mapping>
@@ -361,6 +361,11 @@
 	</resource-ref>
 	<resource-ref>
 		<res-ref-name>jdbc/usmo</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	<resource-ref>
+		<res-ref-name>jdbc/wisc</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>

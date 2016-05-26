@@ -38,10 +38,12 @@ public interface IReportDAO {
 	public boolean removeInorsCache(String contract);
 	public boolean removeTascCache(String contract);
 	public boolean removeUsmoCache(String contract);
+	public boolean removeWiscCache(String contract);
 	
 	public void removeInorsConfig(String contract);
 	public void removeTascConfig(String contract);
 	public void removeUsmoConfig(String contract);
+	public void removeWiscConfig(String contract);
 
 	/**
 	 * This method returns report print object filled with data.

@@ -1,0 +1,90 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.49;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@<decorators defaultdir="/WEB-INF/decorator">
+	<excludes>
+		<pattern>/login*</pattern>
+		<pattern>/userlogin*</pattern>
+        <pattern>/style/*</pattern>
+        <pattern>/themes/*</pattern>         
+        <pattern>/scripts/*</pattern>         
+        <pattern>/images/*</pattern> 
+        <pattern>/img/*</pattern> 
+        <pattern>/index.jsp</pattern>
+        <pattern>/denied.jsp</pattern>
+        <pattern>/accessDenied.jsp</pattern>
+        <pattern>/loadJSPView*</pattern>
+		<pattern>/loadReportView*</pattern>
+		<pattern>/checkCascading*</pattern>
+		<pattern>/fetchReportMenu*</pattern>
+		<pattern>/acsipdf*</pattern>
+		<pattern>/clearCache*</pattern>
+		<pattern>/showError.do</pattern>
+		<pattern>/clearAllCache.do</pattern>
+	</excludes>
+	
+	<decorator name="report" page="reporttemplate.jsp">
+		<pattern>/openReportHtml*</pattern>
+    </decorator>
+	
+	<decorator name="drilldown" page="public.jsp">
+		<pattern>/openDrilldownReport*</pattern>
+    </decorator>
+	
+	<decorator name="tiles" page="utility.jsp">
+        <pattern>/registration*</pattern>
+		<pattern>/register*</pattern>
+    </decorator>
+    
+    <decorator name="pwd" page="others.jsp">
+		<pattern>/changePassword*</pattern>
+    </decorator>
+	
+  	<decorator name="main" page="main.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>
+	
+	
+    <!--  
+    <decorator name="tiles" page="utility.jsp">
+        <pattern>/registration*</pattern>
+		<pattern>/register*</pattern>
+    </decorator>-->
+
+	<!--  
+  	<decorator name="public" page="public.jsp"> 
+		<url-pattern>/login</url-pattern>
+		<url-pattern>/register</url-pattern>
+	</decorator>
+  	<decorator name="popup" page="popup.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>
+  	<decorator name="editorial" page="editorial.jsp"> 
+		<url-pattern>*</url-pattern>
+	</decorator>	
+    -->
+</decorators>@

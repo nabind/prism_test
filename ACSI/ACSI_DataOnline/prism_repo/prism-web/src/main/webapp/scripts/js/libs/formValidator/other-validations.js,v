@@ -1,0 +1,50 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.46;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@/*
+ This file contains validations that are too specific to be part of the core
+ Please reference the file AFTER the translation file or the rules will be overwritten
+ Use at your own risk. We can't provide support for most of the validations
+*/
+(function($){
+	if($.validationEngineLanguage == undefined || $.validationEngineLanguage.allRules == undefined )
+		alert("Please include other-validations.js AFTER the translation file");
+	else {
+		$.validationEngineLanguage.allRules["postcodeUK"] = {
+		        // UK zip codes
+		        "regex": /^([A-PR-UWYZ0-9][A-HK-Y0-9][AEHMNPRTVXY0-9]?[ABEHMNPRVWXY0-9]? {1,2}[0-9][ABD-HJLN-UW-Z]{2}|GIR 0AA)$/,
+				"alertText": "* Invalid postcode"
+		};
+		$.validationEngineLanguage.allRules["onlyLetNumSpec"] = {
+				// Good for database fields
+				"regex": /^[0-9a-zA-Z_-]+$/,
+				"alertText": "* Only Letters, Numbers, hyphen(-) and underscore(_) allowed"
+		};
+	//	# more validations may be added after this point
+	}
+})(jQuery);
+@

@@ -1,0 +1,43 @@
+head	1.1;
+access;
+symbols
+	ACSI_Prod_Version_012013:1.1.0.4
+	Root_ACSI_Prod_Version_012013:1.1
+	PROD_RELEASE_08MAR2013:1.1
+	PhaseII:1.1.0.2
+	Root_PhaseII:1.1;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2013.04.17.11.02.38;	author dhara;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Production Version - Phase 2
+@
+text
+@
+# DEV LDAP properties
+app.ldap.url=ldap://10.160.23.130:10389
+app.ldap.username=uid=admin,ou=system
+app.ldap.password=Adm!n321
+app.ldap.userdn=ou=users\,ou=system
+app.ldap.dn=cn={0}+sn={1}+uid={2}\,
+
+# QA LDAP properties
+#app.ldap.url=ldap://10.160.23.130:10389
+#app.ldap.username=uid=admin,ou=system
+#app.ldap.password=Adm!n321
+#app.ldap.userdn=ou=qausers\,ou=system
+#app.ldap.dn=cn={0}+sn={1}+uid={2}\,
+
+@

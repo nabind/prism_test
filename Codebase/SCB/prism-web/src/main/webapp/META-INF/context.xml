@@ -61,6 +61,16 @@
             maxActive="10"
             maxIdle="4"/> 
             
+     <Resource name="jdbc/wisc"
+            auth="Container"
+            type="javax.sql.DataSource"
+            username="wisconsin"
+            password="wisconsin16dev"
+            driverClassName="oracle.jdbc.driver.OracleDriver"
+            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
+            maxActive="10"
+            maxIdle="4"/>
+            
    <Realm className="org.apache.catalina.realm.MemoryRealm" pathname="conf/tomcat-users.xml" />
                            
 </Context>
