@@ -52,7 +52,7 @@ import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
 //@Repository
-public class LoginDAOImpl extends BaseDAO /*implements ILoginDAO*/{
+public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 	private static final IAppLogger logger = LogFactory
 			.getLoggerInstance(LoginDAOImpl.class.getName());
