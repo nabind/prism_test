@@ -71,7 +71,7 @@ import com.thoughtworks.xstream.XStream;
  *
  */
 //@Repository
-public class UsabilityDAOImpl extends BaseDAO /*implements IUsabilityDAO*/ {
+public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(UsabilityDAOImpl.class.getName());
 	//private String TEST_FORM = "";

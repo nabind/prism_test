@@ -167,6 +167,12 @@ public abstract class BaseDAO {
 	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplateUsmo;
+	
+	/**
+	 * JDBC template points to wisconsin database
+	 */
+	@Autowired
+	private JdbcTemplate jdbcTemplateWisc;
 
 	/**
 	 * @return the jdbcTemplate to access jasper server database
@@ -192,6 +198,7 @@ public abstract class BaseDAO {
 		if("inors".equals(contractName)) return jdbcTemplateInors;
 		if("tasc".equals(contractName)) return jdbcTemplateTasc;
 		if("usmo".equals(contractName)) return jdbcTemplateUsmo;
+		if("wisc".equals(contractName)) return jdbcTemplateWisc;
 		else return null;
 	}
 	

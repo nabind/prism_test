@@ -51,7 +51,7 @@ import com.ctb.prism.parent.transferobject.QuestionTO;
 import com.ctb.prism.parent.transferobject.StudentTO;
 
 @Repository("parentDAO")
-public class MParentDAOImpl extends BaseDAO implements IParentDAO {
+public class MParentDAOImpl extends BaseDAO /*implements IParentDAO*/ {
 
 	@Autowired
 	private LdapManager ldapManager;

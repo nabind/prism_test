@@ -90,7 +90,7 @@ import com.mongodb.CommandResult;
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
  */
 @Repository("reportDAO")
-public class MReportDAOImpl extends BaseDAO implements IReportDAO {
+public class MReportDAOImpl extends BaseDAO /*implements IReportDAO*/ {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportDAOImpl.class.getName());
 
 	/*
