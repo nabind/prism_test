@@ -24,9 +24,9 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
-import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.RosterDetailsTO;
@@ -50,7 +50,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * @see com.ctb.prism.core.Service.IUsabilityService#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
 	// @Async // Async was throwing NullPointerException at com.ctb.prism.core.logger.UsabilityLogger.captureActivityLog(UsabilityLogger.java:195)
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception {
+	public boolean saveUsabilityData(UsabilityTO usability/*MUsabilityTO usability*/) throws Exception {
 		return usabilityBuisness.saveUsabilityData(usability);
 	}
 

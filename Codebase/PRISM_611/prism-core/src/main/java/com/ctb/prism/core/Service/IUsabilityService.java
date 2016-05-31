@@ -8,9 +8,9 @@ import java.util.Map;
 import org.springframework.scheduling.annotation.Async;
 
 import com.ctb.prism.core.transferobject.JobTrackingTO;
-import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -25,7 +25,7 @@ public interface IUsabilityService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception;
+	public boolean saveUsabilityData(UsabilityTO usability/*MUsabilityTO usability*/) throws Exception;
 
 	/**
 	 * @param studentListTO

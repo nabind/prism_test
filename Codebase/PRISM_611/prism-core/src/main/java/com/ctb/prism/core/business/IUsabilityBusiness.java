@@ -9,6 +9,7 @@ import com.ctb.prism.core.transferobject.JobTrackingTO;
 import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
 
@@ -22,7 +23,7 @@ public interface IUsabilityBusiness {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception;
+	public boolean saveUsabilityData(UsabilityTO usability/*MUsabilityTO usability*/) throws Exception;
 
 	/**
 	 * Update webservice data to staging.
