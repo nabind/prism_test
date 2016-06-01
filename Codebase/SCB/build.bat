@@ -1,0 +1,1 @@
+mvn -o -T 14 clean install -Dmaven.test.skip=true
