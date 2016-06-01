@@ -9,7 +9,7 @@
 		<script src="scripts/js/libs/modernizr.custom.js"></script>
 		<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>
 		<script src="scripts/js/setup.js"></script>
-		<script src="scripts/js/highchart/highcharts-2.3.2.src.js"></script>
+		<script src="scripts/js/highchart/highcharts.js"></script>
 		<script src="scripts/js/highchart/default.service.js"></script>
 		<script src="scripts/js/highchart/item.hyperlink.service.js"></script>
 		<!--[if IE 9]><link rel="stylesheet" href="themes/acsi/css/ie9.css" type="text/css" /><![endif]-->
