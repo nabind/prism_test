@@ -1,6 +1,5 @@
 package com.ctb.prism.core.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import com.ctb.prism.core.Service.IRepositoryService;
 import com.ctb.prism.core.Service.ISimpleDBService;
-import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.jms.JmsMessageProducer;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 
@@ -91,8 +88,30 @@ public final class CacheKeyUtils {
     		return "";
     	}
     }
-
-    public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
+       
+    public static String string(String col) {
+		if(col != null) return col.replaceAll(" ", "_");
+    	return "";
+    }
+    
+    public static String string(boolean col) {
+    	return col+"";
+    }
+    
+    
+    
+    public static String generateKey(String contract,Object... param) {
+    	StringBuffer buf = new StringBuffer();
+		for (Object n : param) {
+			if(n != null) buf.append(String.valueOf(n));
+		}
+		return encryptedKey(buf.toString(),contract);
+    }
+    
+    
+    /* New added for generalized cache server*/
+    
+ public static <K extends Comparable<K>> String mapKey(Map<K, ?> col) {
         
     	//String contractName = null; 
         
@@ -126,36 +145,23 @@ public final class CacheKeyUtils {
         	contractName = Utils.getContractName();
         }
         
-        return encryptedKey(b.toString());
+        return encryptedKey(b.toString(),contractName);
     }
     
-    public static String string(String col) {
-		if(col != null) return col.replaceAll(" ", "_");
-    	return "";
-    }
-    
-    public static String string(boolean col) {
-    	return col+"";
-    }
-    
-    public static String encryptedKey(String col) {
+    public static String encryptedKey(String col,String contract) {
     	String hashKey = "";
     	if(col != null) {
     		//hashKey = SaltedPasswordEncoder.encryptPassword(col + Utils.getContractName(), null, 1);
-    		hashKey = DigestUtils.md5DigestAsHex((col /*+ Utils.getContractName()*/).getBytes());
+    		hashKey = DigestUtils.md5DigestAsHex((col + contract).getBytes());
     		// store the key into queue
     		storeCacheKey(hashKey);
     	}
     	return hashKey;
     }
     
-    public static String generateKey(Object... param) {
-    	StringBuffer buf = new StringBuffer();
-		for (Object n : param) {
-			if(n != null) buf.append(String.valueOf(n));
-		}
-		return encryptedKey(buf.toString());
-    }
+    /* End */
+    
+    
     
     /*
      * Store cache key in SQS for clearing based on contract

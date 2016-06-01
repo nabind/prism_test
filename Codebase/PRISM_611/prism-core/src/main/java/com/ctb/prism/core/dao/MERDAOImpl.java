@@ -29,7 +29,7 @@ import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 
 @Repository
-public class MERDAOImpl extends BaseDAO implements IERDAO {
+public class MERDAOImpl extends BaseDAO /*implements IERDAO*/ {
 	
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ERDAOImpl.class.getName());
 

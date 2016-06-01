@@ -13,9 +13,9 @@ import com.ctb.prism.core.dao.IUsabilityDAO;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
-import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.transferobject.RosterDetailsTO;
 import com.ctb.prism.webservice.transferobject.StudentDataLoadTO;
 import com.ctb.prism.webservice.transferobject.StudentListTO;
@@ -38,7 +38,7 @@ public class UsabilityBusinessImpl implements IUsabilityBusiness {
 	 * 
 	 * @see com.ctb.prism.core.business.IUsabilityBusiness#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception {
+	public boolean saveUsabilityData(UsabilityTO usability/*MUsabilityTO usability*/) throws Exception {
 		logger.log(IAppLogger.INFO, "UsabilityBusinessImpl:saveUsabilityData");
 		return usabilityDAO.saveUsabilityData(usability);
 	}

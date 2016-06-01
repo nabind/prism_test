@@ -185,7 +185,7 @@ public class AdminController {
 		if("Search".equals(searchParam)) searchParam = "";
 		
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		//long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
+		long currCustomer = (customer == null)? 0 : Long.parseLong(customer);
 		try {
 			if (nodeid != null)	{
 				String adminYear = (String) request.getParameter("AdminYear");
@@ -198,7 +198,7 @@ public class AdminController {
 					}
 				else{*/
 				String moreCount = propertyLookup.get("count.results.button.more");
-					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, customer,orgMode,moreCount);
+					children = adminService.getOrganizationChildren(nodeid, adminYear, searchParam, currCustomer,orgMode,moreCount);
 					if ( children != null )	{
 						jsonString = JsonUtil.convertToJsonAdmin(children);
 					}
@@ -232,11 +232,11 @@ public class AdminController {
 		String tenantId = request.getParameter("tenantId");
 		String adminYear = request.getParameter("adminYear");
 		String customer = (String) request.getSession().getAttribute(IApplicationConstants.CUSTOMER);
-		//long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
+		long currCustomer = (customer == null) ? 0 : Long.parseLong(customer);
 		String orgMode = (String) request.getSession().getAttribute(IApplicationConstants.ORG_MODE);
 		try {
 			if (tenantId != null && adminYear != null) {
-				orguser = adminService.getTotalUserCount(tenantId, adminYear, customer, orgMode);
+				orguser = adminService.getTotalUserCount(tenantId, adminYear, currCustomer, orgMode);
 				if (orguser != null) {
 					orgUserCount.add(orguser);
 					jsonString = JsonUtil.convertToJsonAdmin(orgUserCount);

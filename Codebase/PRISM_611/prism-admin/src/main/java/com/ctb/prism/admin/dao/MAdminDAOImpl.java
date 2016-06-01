@@ -65,7 +65,7 @@ import com.ctb.prism.login.transferobject.Roles;
 
 @Repository("adminDAO")
 @SuppressWarnings("unchecked")
-public class MAdminDAOImpl extends BaseDAO implements IAdminDAO {
+public class MAdminDAOImpl extends BaseDAO /*implements IAdminDAO*/ {
 
 	@Autowired
 	private LdapManager ldapManager;

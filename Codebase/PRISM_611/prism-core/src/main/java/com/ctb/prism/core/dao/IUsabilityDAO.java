@@ -30,7 +30,7 @@ public interface IUsabilityDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception;
+	//public boolean saveUsabilityData(MUsabilityTO usability) throws Exception;
 	
 	public boolean saveUsabilityData(UsabilityTO usability) throws Exception;
 

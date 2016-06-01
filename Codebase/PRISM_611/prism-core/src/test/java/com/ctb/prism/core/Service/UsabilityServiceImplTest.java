@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctb.prism.core.transferobject.JobTrackingTO;
-import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.test.TestParams;
 import com.ctb.prism.test.TestUtil;
 import com.ctb.prism.test.UsabilityTestHelper;
@@ -50,7 +50,7 @@ public class UsabilityServiceImplTest extends AbstractJUnit4SpringContextTests {
 
 	@Test
 	public void testSaveUsabilityData() throws Exception {
-		MUsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData(testParams);
+		UsabilityTO usability = UsabilityTestHelper.helpSaveUsabilityData();
 		assertNotNull(usabilityService.saveUsabilityData(usability));		
 	}
 

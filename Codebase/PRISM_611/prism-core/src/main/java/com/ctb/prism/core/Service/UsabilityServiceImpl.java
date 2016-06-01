@@ -24,9 +24,9 @@ import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
 import com.ctb.prism.core.resourceloader.IPropertyLookup;
 import com.ctb.prism.core.transferobject.JobTrackingTO;
-import com.ctb.prism.core.transferobject.MUsabilityTO;
 import com.ctb.prism.core.transferobject.ProcessTO;
 import com.ctb.prism.core.transferobject.StudentDataExtractTO;
+import com.ctb.prism.core.transferobject.UsabilityTO;
 import com.ctb.prism.webservice.erTransferobject.StudentDetails;
 import com.ctb.prism.webservice.erTransferobject.StudentList;
 import com.ctb.prism.webservice.transferobject.RosterDetailsTO;
@@ -50,7 +50,7 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * @see com.ctb.prism.core.Service.IUsabilityService#saveUsabilityData(com.ctb.prism.core.transferobject.UsabilityTO)
 	 */
 	// @Async // Async was throwing NullPointerException at com.ctb.prism.core.logger.UsabilityLogger.captureActivityLog(UsabilityLogger.java:195)
-	public boolean saveUsabilityData(MUsabilityTO usability) throws Exception {
+	public boolean saveUsabilityData(UsabilityTO usability/*MUsabilityTO usability*/) throws Exception {
 		return usabilityBuisness.saveUsabilityData(usability);
 	}
 
@@ -133,13 +133,13 @@ public class UsabilityServiceImpl implements IUsabilityService {
 	 * @see com.ctb.prism.core.Service.IUsabilityService#getSetCache(java.lang.String, java.lang.String, java.lang.Object)
 	 */
 	@Caching( evict = { 
-			@CacheEvict(value = "inorsUserCache", condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors' and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", beforeInvocation = true),
-			@CacheEvict(value = "tascUserCache",  condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'  and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", beforeInvocation = true),
-			@CacheEvict(value = "usmoUserCache",  condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'  and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )", beforeInvocation = true)
+			@CacheEvict(value = "inorsUserCache", condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors' and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ),'inors' )", beforeInvocation = true),
+			@CacheEvict(value = "tascUserCache",  condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'  and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ),'tasc' )", beforeInvocation = true),
+			@CacheEvict(value = "usmoUserCache",  condition = "T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'  and #p2 != null", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ),'usmo' )", beforeInvocation = true)
 		  } , cacheable = { 
-			@Cacheable(value = "inorsUserCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )"),
-			@Cacheable(value = "tascUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )"),
-			@Cacheable(value = "usmoUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1) ) )")
+			@Cacheable(value = "inorsUserCache", condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'inors'", key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1),'inors' ),'inors' )"),
+			@Cacheable(value = "tascUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'tasc'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1),'tasc' ),'tasc' )"),
+			@Cacheable(value = "usmoUserCache",  condition="T(com.ctb.prism.core.util.CacheKeyUtils).fetchContract() == 'usmo'",  key = "T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( T(com.ctb.prism.core.util.CacheKeyUtils).encryptedKey( (#p0).concat(#p1),'usmo' ),'usmo' )")
 	} )
 	public Object getSetCache(String username, String sessionName, Object sessionParam) {
 		logger.log(IAppLogger.INFO, "********* ********** ************ putting into cache ****** " + sessionName);

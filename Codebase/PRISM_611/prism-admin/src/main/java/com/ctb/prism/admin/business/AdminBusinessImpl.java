@@ -120,9 +120,9 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#searchUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
+	/*public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
 		return adminDAO.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
-	}
+	}*/
 	public ArrayList<UserTO> searchUser(Map<String, Object> paramMap) {
 		return adminDAO.searchUser(paramMap);
 	}
@@ -158,7 +158,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getOrganizationChildren(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, String customerId, String orgMode, String moreCount) {
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
 		return adminDAO.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
 	}
 
@@ -176,7 +176,7 @@ public class AdminBusinessImpl implements IAdminBusiness {
 	 * 
 	 * @see com.ctb.prism.admin.business.IAdminBusiness#getTotalUserCount(java.lang.String, java.lang.String, long, String orgMode)
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId,  String orgMode) {
 		return adminDAO.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 	}
 

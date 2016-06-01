@@ -109,9 +109,9 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#searchUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
+	/*public ArrayList<UserTO> searchUser(String userName, String parentId, String adminYear, String isExactSearch, String orgMode) {
 		return adminBusiness.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
-	}
+	}*/
 	
 	public ArrayList<UserTO> searchUser(Map<String, Object> paramMap) {
 		return adminBusiness.searchUser(paramMap);
@@ -149,7 +149,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getOrganizationChildren(java.lang.String, java.lang.String, java.lang.String, long)
 	 */
-	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, String customerId, String orgMode, String moreCount) {
+	public List<OrgTO> getOrganizationChildren(String parentTenantId, String adminYear, String searchParam, long customerId, String orgMode, String moreCount) {
 		return adminBusiness.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
 	}
 
@@ -158,7 +158,7 @@ public class AdminServiceImpl implements IAdminService {
 	 * 
 	 * @see com.ctb.prism.admin.service.IAdminService#getTotalUserCount(java.lang.String, java.lang.String, long, String orgMode)
 	 */
-	public OrgTO getTotalUserCount(String tenantId, String adminYear, String customerId, String orgMode) {
+	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
 		return adminBusiness.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 	}
 

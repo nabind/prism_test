@@ -155,12 +155,13 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 
 	@Test
 	public void testSearchUser() {
-		String userName = "test";
-		String parentId = "0";
-		String adminYear = "5050";
-		String isExactSearch = "N";
-		String orgMode = "PUBLIC";
-		ArrayList<UserTO> userList = adminDAO.searchUser(userName, parentId, adminYear, isExactSearch, orgMode);
+		Map<String, Object>  paramMap = new HashMap<String, Object>();
+		paramMap.put("userName","test");
+		paramMap.put("tenantId","0");
+		paramMap.put("adminYear","5050");
+		paramMap.put("isExactSearch","N");
+		paramMap.put("orgMode","PUBLIC");
+		ArrayList<UserTO> userList = adminDAO.searchUser(paramMap);
 		assertNotNull(userList);
 	}
 
@@ -195,7 +196,7 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 		String parentTenantId = "9889";
 		String adminYear = "5074";
 		String searchParam = "";
-		String customerId = "1057";
+		long customerId = 1057L;
 		String orgMode = "PUBLIC";
 		String moreCount = "15";
 		List<OrgTO> orgList = adminDAO.getOrganizationChildren(parentTenantId, adminYear, searchParam, customerId, orgMode, moreCount);
@@ -206,7 +207,7 @@ public class AdminDAOImplTest extends AbstractJUnit4SpringContextTests{
 	public void testGetTotalUserCount() {
 		String tenantId = "10195";
 		String adminYear = "5074";
-		String customerId = "1057";
+		long customerId = 1057L;
 		String orgMode = "PUBLIC";
 		OrgTO to = adminDAO.getTotalUserCount(tenantId, adminYear, customerId, orgMode);
 		assertNotNull(to);
