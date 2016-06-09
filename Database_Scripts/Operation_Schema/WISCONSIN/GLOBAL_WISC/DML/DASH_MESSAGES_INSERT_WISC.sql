@@ -80,14 +80,14 @@ BEGIN
 
 <div class="boxsshade scrollable custom-scroll" style="position: relative;">
 <div class="rowTwo">
-<div class="h1style" style="margin-top:5px;margin-left: 0px; text-shadow: 0px 1px 5px rgba(0,0,0,0.25);"><b>Welcome to the Wisconsin Forward Reporting System</b></div>
+<div class="h1style" style="margin-top:5px;margin-left: 0px; text-shadow: 0px 1px 5px rgba(0,0,0,0.25);"><b>Welcome to the Wisconsin Forward Exam Reporting System</b></div>
 
 <div class="h1style" style="margin-left: 0px;">&nbsp;</div>
 
 <div class="loginMsg">
 <p>Please note: Direct login to this site is not allowed. Only authorized DRC System Administrators can access through this link. Please login through <u><a href="https://mo.drcedirect.com/"><span style="color:#0000CD;">eDIRECT</span></a></u>&nbsp;via SSO.&nbsp;</p>
 
-<p>If you do not have eDirect login or SSO access to the Wisconsin Forward Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
+<p>If you do not have eDirect login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
 </div>
 
 <div class="boxshade" style="margin-top: 10px;">
