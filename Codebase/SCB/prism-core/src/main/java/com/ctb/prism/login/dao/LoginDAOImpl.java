@@ -376,7 +376,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.DATE);
+							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -404,10 +405,12 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 									user.setUserType(userType);
 									user.setOrgMode(rs.getString("ORG_MODE"));
 									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+									user.setLastLoginTime(rs.getTimestamp("LAST_LOGIN_DATE"));
 								}
 								user.setIsPasswordExpired(cs.getString(3));
 								user.setIsPasswordWarning(cs.getString(4));
-								Utils.logError(cs.getString(5));
+								user.setPwdChangedSince(String.valueOf(cs.getDate(5)));
+								Utils.logError(cs.getString(6));
 								
 							} catch (SQLException e) {
 								e.printStackTrace();

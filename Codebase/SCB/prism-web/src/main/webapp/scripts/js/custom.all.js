@@ -59,6 +59,14 @@ $(document).ready(function() {
 			if($('#BulkCandidateReportEdu').is(':visible')) $('#BulkCandidateReportEdu').hide(100);
 		} catch (e) {}
 	});
+	$(".input").live('blur', function() {
+		try {
+			// change refresh button color
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').removeClass('blue-gradient').addClass('green-gradient');
+			// show tooltip on refresh button
+			$(this).parents('.icholderinner').siblings('.refresh-report').find('.button').tooltip('Click <strong>here</strong> to get filtered data', {delay:300, classes: ['orange-gradient', 'with-padding']});
+		} catch (e) {}
+	});
 	$("input[name='p_Last_Name']").live('keydown', function() {
 		try {
 			resetValidationInputControls($(this).parents('.icholder').siblings('.reportFilterCriteria').attr("tabcount"));
@@ -1147,6 +1155,22 @@ $("select#p_Roster_Rank_Order option").each(function(index){
 $("select#p_Roster_Rank_Order").html(rankOrderDom);
 }
 
+//============================= SELECT / DESELECT MULTI-SELECT INPUTS =============================
+function selectAllOption(event, select) {
+	event.preventDefault();
+	event.stopPropagation();
+	var inputId = $(select).attr('id');
+	//var val = $("#"+inputId+" option:first:selected").text();
+	var selectedCount = $("option:selected", select).length;
+	var optionCount = $("option", select).length;
+	if(selectedCount < optionCount) {
+		$(select).find('option').prop('selected', true);
+	} else {
+		$(select).find('option').prop('selected', false);
+		$(select).find('option:first').prop('selected', true);
+	}
+	$(select).trigger('update-select-list').change();
+}
 //============================= Populate cascading input control values =============================
 function getCascading(selectedObj) {
 	//$(document).click(); // this code is to close multiselect dropdown
@@ -1163,7 +1187,8 @@ function getCascading(selectedObj) {
 			|| 'p_Inview_Subtest'  == inputId /* Class - InView roster subtest */
 			|| 'p_Inview_Comb_Subtest_Multiselect'  == inputId || 'p_Inview_Comb_Score' == inputId /* Class - InView combination roster & summary dashboard */
 			|| 'p_Subtest_Class_MultiSelect'  == inputId /* Class LONGITUDINAL Roster*/
-			|| 'p_Bible_Roster_Score_Type'  == inputId ) { /* Class BIBLE Roster*/
+			|| 'p_Bible_Roster_Score_Type'  == inputId /* Class BIBLE Roster*/
+			|| 'p_grade'  == inputId ) { /* MO Student roster */
 		$(document).click(); // this code is to close multiselect dropdown
 	}
 	// code for bulk download button
@@ -1182,6 +1207,18 @@ function getCascading(selectedObj) {
 	// hide download buttons
 	$(".download-button-"+tabCount).hide(100);
 	$(".review-button-pdf-"+tabCount).hide(100);
+	
+	// disable download buttons
+	$('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsMAP').addClass('disabled');
+	$('#report-iframe-'+tabCount).contents().find('#downloadSeparatePdfsMAP').addClass('disabled');
+	$('#report-iframe-'+tabCount).contents().find('#downloadSeparatePdfsGD').addClass('disabled');
+	$('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsGD').addClass('disabled');
+	if($('#report-iframe-'+tabCount).contents().find('#downloadDisable').length == 0 ) {
+		$('<p class="message red icon-warning" id="downloadDisable" style="margin-top:50px"><b>Attention:</b> One of the Filter Options has been changed. Please click the <span class="green-bg">Refresh</span> button at the top of the page to see the updated student selection and enable the Generate Download File PDFs buttons.</p>').insertAfter( $('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsMAP') );
+		$('<p class="message red icon-warning" id="downloadDisable" style="margin-top:50px"><b>Attention:</b> One of the Filter Options has been changed. Please click the <span class="green-bg">Refresh</span> button at the top of the page to see the updated student selection and enable the Generate Download File PDFs buttons.</p>').insertAfter( $('#report-iframe-'+tabCount).contents().find('#downloadCombinedPdfsGD') );
+	}
+	
+	
 	// change refresh report button color
 	$(".refreh-button-"+tabCount).removeClass('blue-gradient').addClass('green-gradient');
 	// show tooltip on refresh button
@@ -2523,7 +2560,7 @@ $(document).ready(function() {
 								clickMe(e);	
 									 if($("#addNewUser").validationEngine('validate') && ($("#addNewUser #imgHolder > #validated").hasClass("validated"))){
 										$('#addNewUser').validationEngine('hide');
-										$('#imgHolder').empty();
+										//$('#imgHolder').empty();
 										if($("input[rel^='userStatusCheck']").closest("span").hasClass("checked")){
 											if ($("input[rel^='userStatusCheck']").val()=='on')
 											$("input[rel^='userStatus']").val($("input[rel^='userStatusCheck']").val());
@@ -5591,6 +5628,9 @@ $(document).ready(function() {
 				else if(obj.status == 'invalidPwdHistory') {
 					$.modal.alert(strings['script.user.passwordPolicyHistory']);
 				}
+				else if(obj.status == 'invalidPhone') {
+					$.modal.alert(strings['script.user.phone']);
+				}
 				else if(obj.status == 'LDAP_ERROR') {
 					$.modal.alert(obj.message);
 				}
@@ -5697,7 +5737,7 @@ $(document).ready(function() {
 		e.stopImmediatePropagation();
 		$("#loggedInUserName").val($("#changePasswordFrom #currUser").text());
 		//alert($("#changePasswordFrom #currUser").text());
-		validatePwd($("#changePasswordFrom input#password"),$("#changePasswordFrom input#loggedInUserName"),$("#changePasswordFrom"), '0');
+		validatePwd($("#changePasswordFrom input#password"),$("#changePasswordFrom input#loggedInUserName"),$("#changePasswordFrom"),$("#changePasswordFrom input#mobile"), '0');
 		//$("#changePasswordFrom").submit();
 	});	
 //========================REGISTRATION FORM SUBMISSION=====================	
@@ -5705,7 +5745,7 @@ $(document).ready(function() {
 		//Fix for TD 78521 - By Joy
 		if($("#usernameDiv #imgHolder > #validated").hasClass("validated") || $("#usernameDiv #imgHolder").html() == ""){
 			e.stopImmediatePropagation();
-			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"));
+			validatePwd($("#registrationForm input#password"),$("#registrationForm input#username"),$("#registrationForm"),$("#registrationForm input#mobile"));
 		}else{
 			stepBack(2);
 			e.stopImmediatePropagation();
@@ -5719,79 +5759,123 @@ $(document).ready(function() {
 		});
 		
 //=============================AJAX CALL TO VALIDATE PASSWORD===========================			
-	function validatePwd(pwdObj,useNameObj,formObj, pwdPage)
-		{
-			if(formObj.validationEngine('validate')){
-			 blockUI();
-			}
-			var patt=/^(\d+.*|-\d+.*)/g;
-			var password=pwdObj.val();
-			var username=useNameObj.val();
-			if(password.indexOf(username) != -1) {
-				unblockUI();
-				$.modal.alert(strings['script.user.passwordPartUsername']);
-			} /*else if (patt.test(username)) {
-				unblockUI();
-				$.modal.alert(strings['script.user.useridStartNumber']);
-			}*/ else {
-				$.ajax({
-					type : "GET",
-					url : 'validatePwd.do',
-					data : 'password='+password+'&username='+username,
-					contentType: "application/json",
-					dataType : 'html',
-					cache:false,
-					success : function(data) {
-						
-						var obj = jQuery.parseJSON(data);
+	function validatePwd(pwdObj,useNameObj,formObj,phObj, pwdPage)
+	{
+		if(formObj.validationEngine('validate')){
+		 blockUI();
+		}
+		
+		var password=pwdObj.val();
+		var username=useNameObj.val();
+	
+		if(password.indexOf(username) != -1) {
+			unblockUI();
+			$.modal.alert(strings['script.user.passwordPartUsername']);
+		} else {
+			$.ajax({
+				type : "POST",
+				url : 'validatePwd.do',
+				data : formObj.serialize(),
+				dataType : 'html',
+				cache:false,
+				success : function(data) {
 					
-						if (obj.status == 'equalsUserName')	{
-							$.modal.alert(strings['script.user.passwordLikeUsername']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'invalidPwd'){
-							$.modal.alert(strings['script.user.passwordPolicy']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'invalidPwdHistory') {
-							$.modal.alert(strings['script.user.passwordPolicyHistory']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'LDAP_ERROR'){
-							$.modal.alert(obj.message);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-						else if(obj.status == 'Success') {
-						   	if (validateSecurityQuestion()){
-								formObj.submit();
-							}else{
-								$.modal.alert(strings['script.parent.question']);
-								unblockUI();
-							}
-								
-						} else {
-							$.modal.alert(strings['script.user.saveError']);
-							stepBack(2);
-							if(pwdPage != null) stepBack(2);
-							unblockUI();
-						}
-					},
-					error : function(data){
+					var obj = jQuery.parseJSON(data);
+				
+					if (obj.status == 'equalsUserName')	{
+						$.modal.alert(strings['script.user.passwordLikeUsername']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
 						unblockUI();
-						$.modal.alert(strings['script.common.error1']);
-						
 					}
-				});
-			}		
-   }
+					else if(obj.status == 'invalidPwd'){
+						$.modal.alert(strings['script.user.passwordPolicy']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'invalidPwdHistory') {
+						$.modal.alert(strings['script.user.passwordPolicyHistory']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'LDAP_ERROR'){
+						$.modal.alert(obj.message);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+					else if(obj.status == 'Success') {
+						validatePh(phObj,formObj);
+					   /*	if (validateSecurityQuestion()){
+							formObj.submit();
+						}else{
+							$.modal.alert(strings['script.parent.question']);
+							unblockUI();
+						}*/
+							
+					} else {
+						$.modal.alert(strings['script.user.saveError']);
+						stepBack(2);
+						if(pwdPage != null) stepBack(2);
+						unblockUI();
+					}
+				},
+				error : function(data){
+					unblockUI();
+					$.modal.alert(strings['script.common.error1']);
+					
+				}
+			});
+		}		
+}
+
+//=============================AJAX CALL TO VALIDATE PHONE===========================	
+function validatePh (phObj,formObj)
+{
+	if(formObj.validationEngine('validate')){
+	 blockUI();
+	}
+	var phone =phObj.val();
+		$.ajax({
+			type : "GET",
+			url : 'validatePhone.do',
+			data : 'phone='+phone,
+			contentType: "application/json",
+			dataType : 'html',
+			cache:false,
+			success : function(data) {
+				
+				var obj = jQuery.parseJSON(data);
+			
+				if(obj.status == 'invalidPhone'){
+					$.modal.alert(strings['script.user.phone']);
+					stepBack(1);					
+					unblockUI();
+				} else if(obj.status == 'Success') {
+				   	if (validateSecurityQuestion()){
+						formObj.submit();
+					}else{
+						$.modal.alert(strings['script.parent.question']);
+						unblockUI();
+					}
+						
+				} else {
+					$.modal.alert(strings['script.user.saveError']);
+					stepBack(1);
+					unblockUI();
+				}
+			},
+			error : function(data){
+				unblockUI();
+				$.modal.alert(strings['script.common.error1']);
+				
+			}
+		});
+	
+}
+	
 	
 	function stepBack(step) {
 		$.each( $('.wizard-previous'), function(index, value) { 
@@ -7281,6 +7365,8 @@ $(document).ready(function() {
 		hideContentElements();
 		populateDropdownByJson($('#objectiveIdManageContent'),null,1,'clear');
 		populateObjective();
+		populatePerformanceLevel();
+		showContentElements();
 	});
 	
 	$('#objectiveIdManageContent').live('change',function(){
@@ -7290,6 +7376,7 @@ $(document).ready(function() {
 	
 	$('#contentTypeIdManageContent').live('change',function(){
 		hideContentElements();
+		populatePerformanceLevel();
 		showContentElements();
 	});
 	
@@ -8178,6 +8265,34 @@ function populateObjective(){
 	}
 }
 
+//============Load score_value, score_value_name depending upon contentTypeId ===============
+function populatePerformanceLevel(){
+	var custProdId = $('#custProdIdManageContent').val();
+	var subtestId = $('#subtestIdManageContent').val();
+	var contentTypeId = $('#contentTypeIdManageContent').val();
+	if(custProdId != -1 ){
+		if(subtestId != -1){
+			var dataUrl = 'contentTypeId='+contentTypeId+'&custProdId='+custProdId;
+			blockUI();
+			$.ajax({
+				type : "GET",
+				url : 'populatePerformanceLevel.do',
+				data : dataUrl,
+				dataType: 'json',
+				cache:false,
+				success : function(data) {
+					populateDropdownByJson($('#performanceLevelIdManageContent'),data);
+					unblockUI();
+				},
+				error : function(data) {
+					$.modal.alert(strings['script.common.error']);
+					unblockUI();
+				}
+			});
+		}
+	}
+}
+
 //============To populate any drop down ===============
 function populateDropdownByJson(elementObject,jsonDataValueName,plsSelectFlag,clearFlag){
 	elementObject.empty();
@@ -8515,7 +8630,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$(".accordion-header").on("click", function() {
+	$(".accordion-header").live("click", function() {
 		$(".accordion-body").slideToggle(500);
 		$(".icon-plus-round").toggle();
 		$(".icon-minus-round").toggle();
@@ -8696,17 +8811,21 @@ $(document).ready(function() {
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsGD").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		groupDownloadSubmit('SP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			groupDownloadSubmit('SP');
+		}
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadCombinedPdfsGD").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		groupDownloadSubmit('CP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			groupDownloadSubmit('CP');
+		}
 	});
 	// Synchronous : Immediate download
 	// $("#downloadSinglePdfsGD").on("click", function() {
@@ -8715,17 +8834,21 @@ $(document).ready(function() {
 	
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadSeparatePdfsMAP").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		downloadMapCombined('SP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			downloadMapCombined('SP');
+		}
 	});
 	// Asynchronous : Submit to Group Download Files
 	$("#downloadCombinedPdfsMAP").on("click", function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		$(document).click();
-		downloadMapCombined('CP');
+		if(!$(this).hasClass('disabled')) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(document).click();
+			downloadMapCombined('CP');
+		}
 	});
 	
 	//Submit to GRF Download
@@ -9819,11 +9942,23 @@ function getGroupDownloadTO() {
 
 function getSelectedStudentIdsAsCommaString() {
 	var students = "";
-	$("input[id^=check-status-]").each(function() {
+	$('input[id^=check-status-]').each(function() {
+		var id = this.id;
+		var studentId = id.substring(13);
 		if (this.value == "1") {
-			var id = this.id;
-			var studentId = id.substring(13);
-			students = students + "," + studentId;
+			var elementObj = $('#check-status-'+studentId);
+			if((typeof elementObj.attr('gradeCode') !== 'undefined') && elementObj.attr('gradeCode') != ''){
+				var studentBioId = elementObj.attr('studentBioId'); 
+				var gradeCode =  elementObj.attr('gradeCode');
+				var gradeId =  elementObj.attr('gradeId');
+				var extStudentId =  elementObj.attr('extStudentId'); 
+				var lastNameCap =  elementObj.attr('lastNameCap');
+				var curYear =  elementObj.attr('curYear');  
+				var studentDetails = studentBioId+":"+extStudentId+":"+lastNameCap+":"+gradeCode+":"+gradeId+":"+curYear;
+				students = students + "," + studentDetails;
+			}else{
+				students = students + "," + studentId;
+			}
 		}
 	});
 	if (students.length > 0) {
@@ -9836,13 +9971,15 @@ function getSelectedStudentIdsAsCommaString() {
  * Download MAP GLA ISR PDF based on selected student and subtest
  * @param studentId
  */
-function downloadMapIsr(studentId) {
+function downloadMapIsr(studentId,gradeId,gradeCode,extStudentId,lastNameCap,curYear) {
 	blockUI();
 	var subtest = $("#p_subtest", window.parent.document); 
 	var tab = $("li.active", window.parent.document).attr("param");
 	tab = tab.replace(/new-tab/g, "report-form-");
 	var formObj = $('.'+tab, window.parent.document);
-	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId;
+	var dataUrl = $(formObj).serialize() + '&studentId=' + studentId+ '&gradeId=' + gradeId
+					+ '&gradeCode=' + gradeCode+ '&extStudentId=' + extStudentId
+					+ '&lastNameCap=' + lastNameCap+ '&curYear=' + curYear;
 	
 	location.href = 'downloadMapIsr.do?' + dataUrl;
 	unblockUI();
@@ -10292,17 +10429,37 @@ $(document).ready(function() {
 		getGenericPage('historyBack', $(this));
 	});
 	
+	//==============Rescore request from Parent===========
+	$('#studRescore').live('click', function() {
+		getGenericPage('rescoreRequestFormParent', $(this));
+	});
+	
 	// ============================ GET STUDENT REPORT ==========================================
 	var tabReportObj;
 	$('.studResult').on('click', function() {
-		getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		var product = $(this).attr('product');
+		if(product == 'ISTEPS15') {
+			getStudentReport('/public/PN/Report/PN_2015/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		} else {
+			getStudentReport('/public/PN/Report/Overall_Results_files', 1220, strings['label.overallResults'], $(this), 0);
+		}
 		
 		tabReportObj = $(this);
 	});
 	// tab 2
 	$('.reporttabs > li > a#new-tab1_new-tab1').live('click', function() {
 		if($("#new-tab1").html() && $("#new-tab1").html().indexOf('Loading ...') != -1) {
-			getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+			var product = $(tabReportObj).attr('product');
+			if(product == 'ISTEPS15') {
+				getStudentReport('/public/PN/Report/PN_2015/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+				/*var msg = '<p class="wrapped left-icon icon-info-round red">\
+								<b>Results by Standard</b><br>\
+								Performance by Standard information will be available after the final ISTEP+ results are released in December.\
+							</p>'*/
+				getEmptyStudentReport(msg);
+			} else {
+				getStudentReport('/public/PN/Report/resultsByStandard_files', 1221, strings['label.resultsByStandard'], $(tabReportObj), 1);
+			}
 		}
 	});
 });
@@ -10316,6 +10473,9 @@ var parentContainer_1 = '<div class="right-column">\
 									<li><a href="#new-tab1" id="new-tab1_new-tab1">'+strings['label.resultsByStandard']+'</a></li>';
 var parentContainer_2 = '</ul>\
 								<div class="tabs-content" style="padding-bottom: 50px !important;">\
+									<div id="new-tab0" class="with-padding relative">';
+var parentContainer_3 = '</ul>\
+								<div class="tabs-content" style="padding: 50px !important;">\
 									<div id="new-tab0" class="with-padding relative">';
 var parentContainerEnd = 			'</div>\
 								<div id="new-tab1" class="with-padding relative">\
@@ -10339,6 +10499,11 @@ function getFileName(studentBioId, custProdId, type) {
 		}
 	});
 	return fileName;
+}
+
+function getEmptyStudentReport(data) {
+	// show not available message for 'results by standards' in first release
+	$("#new-tab1").html(data);
 }
 
 function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
@@ -10377,6 +10542,13 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 		cache:false,
 		success : function(data) {
 			unblockUI();
+			if(data.indexOf('The report is empty.') != -1) {
+				var msg = '<p class="wrapped left-icon icon-info-round">\
+					<b>Overall Results</b><br>\
+					The report is empty.\
+				</p>'
+					$(".main-section").html( parentContainer_1 + linkContainer + parentContainer_3 +  msg  + parentContainerEnd);
+			} else {
 			if(tabCount == 0) {
 				$(".main-section").html(parentContainer_1 + linkContainer + parentContainer_2 + data + parentContainerEnd);
 				
@@ -10391,6 +10563,7 @@ function getStudentReport(reportUrl, reportId, reportName, obj, tabCount) {
 				
 				var foundHigh = $('span:contains("DMD_IMG")');
 				$(foundHigh).html('<span class="icon-tick black icon-size2"></span>');
+			}
 			}
 		},
 		error : function(data) {						
@@ -10473,6 +10646,10 @@ function getDataUrl(action, obj, typ){
 					+'&studentName='+studentName
 					+'&studentGradeName='+$(obj).attr('studentGradeName')
 					+'&studentGradeId='+studentGradeId;
+	}else if(action == 'rescoreRequestFormParent'){
+		var studentBioId = (typeof $(obj).attr('studentBioId') !== 'undefined') ? $(obj).attr('studentBioId') : 0;
+		
+		dataUrl = 'p_student='+studentBioId+'&p_test_administration=3023&reportUrl=/public/INORS/Report/INORS_2015/Rescore_Request_Form_files&studentName='+$(obj).attr('studentName')+'&p_grade='+$(obj).attr('grade');
 	}
 	return dataUrl;
 }

@@ -19,7 +19,7 @@ public interface IUserQuery {
 			" WHERE UPPER(USERS.USERNAME) = UPPER(?)",
 			" AND USERS.USERID = ORG.USERID AND ORG.ORG_NODEID = OND.ORG_NODEID");
 	
-	public static final String SP_GET_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_USER_DETAILS(?, ?, ?, ?, ?)}";
+	public static final String SP_GET_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_USER_DETAILS(?, ?, ?, ?, ?, ?)}";
 
 	public static final String SP_GET_USER_EMAIL = "{CALL PKG_MANAGE_USERS.SP_GET_USER_EMAIL(?, ?, ?)}";
 	public static final String SP_CHECK_ORG_HIERARCHY = "{CALL PKG_ADMIN_MODULE.SP_CHECK_ORG_HIERARCHY(?,?,?,?,?)}";

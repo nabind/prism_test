@@ -1340,7 +1340,7 @@
 				}
 				// added by Amit for "Select/Deselect option"
 				if(customCount == 0 && select.hasClass('check-list')) {
-					$('<'+node+((classes.length > 0) ? ' class="all-option '+classes.join(' ')+'"' : '')+' onClick="selectAllOption(event, '+$(this).attr('tgt')+');"><b class="tag compact icon icon-right" style="padding: 5px 10px;margin-left:-28px"><span class="list-count" style="display:inline; position: relative; margin-left:13px"> Select All / Deselect</span></b></'+node+'>')
+					$('<'+node+((classes.length > 0) ? ' class="all-option '+classes.join(' ')+'"' : '')+' onClick="selectAllOption(event, '+$(this).attr('tgt')+');"><b class="tag compact icon icon-right" style="padding: 5px 10px;margin-left:-28px;"><span class="list-count" style="display:inline; position: relative; margin-left:8px">Select All / Deselect</span></b></'+node+'>')
 						.appendTo(list)
 						.data('select-value', this);
 				}

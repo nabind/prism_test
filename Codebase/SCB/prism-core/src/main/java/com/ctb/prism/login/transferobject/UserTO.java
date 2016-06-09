@@ -37,7 +37,14 @@ public class UserTO extends BaseTO{
 	private long defultCustProdId;
 	private String isPasswordExpired;
 	private String isPasswordWarning;
+	private String pwdChangedSince;
 	
+	public String getPwdChangedSince() {
+		return pwdChangedSince;
+	}
+	public void setPwdChangedSince(String pwdChangedSince) {
+		this.pwdChangedSince = pwdChangedSince;
+	}
 	public long getDefultCustProdId() {
 		return defultCustProdId;
 	}

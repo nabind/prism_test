@@ -573,6 +573,12 @@ public class LoginController {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");
 						modelAndView.addObject("homeReport", homeReport);
+						if(!isSwitchUser) {
+							StringBuffer notificationMsg = new StringBuffer();							
+							notificationMsg.append("Last Login :: ").append(user.getLastLoginTime())
+								.append(" <p> Password Changed Since :: ").append(user.getPwdChangedSince());							
+							modelAndView.addObject("lastLogin", notificationMsg.toString());
+						}						
 						themeResolver.setThemeName(req, res, user.getContractName());
 					}
 				} else if (homeReport.isAccessDenied()) {
@@ -584,6 +590,12 @@ public class LoginController {
 					homeReport.setReportApiUrl(homeReport.getOtherUrl());
 					homeReport.setReportName("Home");
 					modelAndView.addObject("homeReport", homeReport);
+					if(!isSwitchUser) {
+						StringBuffer notificationMsg = new StringBuffer();							
+						notificationMsg.append("Last Login :: ").append(user.getLastLoginTime())
+							.append(" <p> Password Changed Since :: ").append(user.getPwdChangedSince());							
+						modelAndView.addObject("lastLogin", notificationMsg.toString());
+					}
 				}
 				req.getSession().setAttribute(IApplicationConstants.LOGGEDIN_USER_DETAILS, user);
 				
