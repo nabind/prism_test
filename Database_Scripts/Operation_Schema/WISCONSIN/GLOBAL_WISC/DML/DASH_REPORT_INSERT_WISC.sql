@@ -1,4 +1,5 @@
 --FOR WISC
+SET DEFINE OFF;
 DECLARE
   V_PROJECTID            PROJECT_DIM.PROJECTID%TYPE;
   V_DEFAULT_CUST_PROD_ID CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE := 0;
@@ -89,13 +90,32 @@ BEGIN
      PROJECTID)
   VALUES
     (DB_REPORT_ID_SEQ.NEXTVAL,
-     'User Guide',
+     'User''s Guide to Interpreting Reports',
      'User Guide for WISC',
      'API_NFCUSTOM',
-     'resourcepdf|resourcepdf.do?pdfFileName=/Static_PDF/User_Guide.pdf',
+     'resourcepdf|resourcepdf.do?pdfFileName=/Static_PDF/Users_Guide_to_Interpreting_Reports.pdf',
      'AC',
      SYSDATE,
-     V_PROJECTID);
+     V_PROJECTID);   
+     
+  INSERT INTO DASH_REPORTS
+    (DB_REPORTID,
+     REPORT_NAME,
+     REPORT_DESC,
+     REPORT_TYPE,
+     REPORT_FOLDER_URI,
+     ACTIVATION_STATUS,
+     CREATED_DATE_TIME,
+     PROJECTID)
+  VALUES
+    (DB_REPORT_ID_SEQ.NEXTVAL,
+     'http://dpi.wi.gov/assessment/forward',
+     'External Link',
+     'API_NFCUSTOM',
+     'extLinks|http://dpi.wi.gov/assessment/forward',
+     'AC',
+     SYSDATE,
+     V_PROJECTID);   
 
   INSERT INTO DASH_REPORTS
     (DB_REPORTID,
@@ -139,3 +159,4 @@ BEGIN
 
 END;
 /
+SET DEFINE ON;

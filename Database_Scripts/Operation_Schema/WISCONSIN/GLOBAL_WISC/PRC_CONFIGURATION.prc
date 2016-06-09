@@ -70,11 +70,9 @@ BEGIN
      AND PROJECTID = V_PROJECTID;
 
   DELETE FROM DASH_MENU_RPT_ACCESS
-   WHERE DB_MENUID IN (V_DB_MANAGE_MENUID,
-                       V_DB_REPORTS_MENUID,
-                       V_DB_DOWNLOADS_MENUID,
-                       V_DB_RESOURCES_MENUID,
-                       V_DB_UL_MENUID)
+   WHERE DB_MENUID IN
+         (V_DB_MANAGE_MENUID, V_DB_REPORTS_MENUID, V_DB_DOWNLOADS_MENUID,
+          V_DB_RESOURCES_MENUID, V_DB_UL_MENUID)
      AND PROJECTID = V_PROJECTID;
 
   --INSERT INTO DASH_MENU_RPT_ACCESS START
@@ -296,6 +294,90 @@ BEGIN
            WHERE UPPER(REPORT_NAME) = 'SUMMARY DASHBOARD'
              AND PROJECTID = V_PROJECTID),
          V_PROJECTID,
+         V_DMRA_ACTIVATION_STATUS,
+         SYSDATE);
+    
+    END LOOP;
+  
+    --USER''S GUIDE TO INTERPRETING REPORTS  STATE DISTRICT SCHOOL  - ROLE USER
+    SELECT ACTIVATION_STATUS
+      INTO V_DMRA_ACTIVATION_STATUS
+      FROM DASH_REPORTS
+     WHERE UPPER(REPORT_NAME) = 'USER''S GUIDE TO INTERPRETING REPORTS'
+       AND PROJECTID = V_PROJECTID;
+  
+    FOR REC_ORG_LEVEL IN (SELECT DISTINCT ORG_LEVEL
+                            FROM ORG_TP_STRUCTURE OTS,
+                                 TEST_PROGRAM     TP,
+                                 CUSTOMER_INFO    CI
+                           WHERE OTS.TP_ID = TP.TP_ID
+                             AND TP.CUSTOMERID = CI.CUSTOMERID
+                             AND PROJECTID = V_PROJECTID) LOOP
+    
+      INSERT INTO DASH_MENU_RPT_ACCESS
+        (DB_MENUID,
+         DB_REPORTID,
+         ROLEID,
+         ORG_LEVEL,
+         CUST_PROD_ID,
+         REPORT_SEQ,
+         PROJECTID,
+         ACTIVATION_STATUS,
+         CREATED_DATE_TIME)
+      VALUES
+        (V_DB_RESOURCES_MENUID,
+         (SELECT DB_REPORTID
+            FROM DASH_REPORTS
+           WHERE UPPER(REPORT_NAME) =
+                 'USER''S GUIDE TO INTERPRETING REPORTS'
+                 AND PROJECTID = V_PROJECTID),
+         V_ROLEID_USER,
+         REC_ORG_LEVEL.ORG_LEVEL,
+         V_DEFAULT_CUST_PROD_ID,
+         (SELECT DB_REPORTID
+            FROM DASH_REPORTS
+           WHERE UPPER(REPORT_NAME) =
+                 'USER''S GUIDE TO INTERPRETING REPORTS'
+                 AND PROJECTID = V_PROJECTID),
+                  V_PROJECTID,
+         V_DMRA_ACTIVATION_STATUS,
+         SYSDATE);
+    
+    END LOOP;
+  
+    --http://dpi.wi.gov/assessment/forward  STATE DISTRICT SCHOOL  - ROLE USER
+    SELECT ACTIVATION_STATUS
+      INTO V_DMRA_ACTIVATION_STATUS
+      FROM DASH_REPORTS
+     WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
+     AND PROJECTID = V_PROJECTID;
+  
+    FOR REC_ORG_LEVEL IN (SELECT DISTINCT ORG_LEVEL FROM ORG_TP_STRUCTURE) LOOP
+    
+      INSERT INTO DASH_MENU_RPT_ACCESS
+        (DB_MENUID,
+         DB_REPORTID,
+         ROLEID,
+         ORG_LEVEL,
+         CUST_PROD_ID,
+         REPORT_SEQ,
+         PROJECTID,
+         ACTIVATION_STATUS,
+         CREATED_DATE_TIME)
+      VALUES
+        (V_DB_UL_MENUID,
+         (SELECT DB_REPORTID
+            FROM DASH_REPORTS
+           WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
+           AND PROJECTID = V_PROJECTID),
+         V_ROLEID_USER,
+         REC_ORG_LEVEL.ORG_LEVEL,
+         V_DEFAULT_CUST_PROD_ID,
+         (SELECT DB_REPORTID
+            FROM DASH_REPORTS
+           WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
+           AND PROJECTID = V_PROJECTID),
+           V_PROJECTID,
          V_DMRA_ACTIVATION_STATUS,
          SYSDATE);
     

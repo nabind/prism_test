@@ -52,7 +52,8 @@ BEGIN
       WHERE UPPER(REPORT_NAME) = 'GENERIC SYSTEM CONFIGURATION'
         AND PROJECTID = V_PROJECTID),
      1089,
-     q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>]',
+     q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: WIHelpdesk@datarecognitioncorp.com</p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
@@ -79,14 +80,14 @@ BEGIN
 
 <div class="boxsshade scrollable custom-scroll" style="position: relative;">
 <div class="rowTwo">
-<div class="h1style" style="margin-top:5px;margin-left: 0px; text-shadow: 0px 1px 5px rgba(0,0,0,0.25);"><b>Welcome to the MAP Grade-Level Assessments Reporting System</b></div>
+<div class="h1style" style="margin-top:5px;margin-left: 0px; text-shadow: 0px 1px 5px rgba(0,0,0,0.25);"><b>Welcome to the Wisconsin Forward Exam Reporting System</b></div>
 
 <div class="h1style" style="margin-left: 0px;">&nbsp;</div>
 
 <div class="loginMsg">
 <p>Please note: Direct login to this site is not allowed. Only authorized DRC System Administrators can access through this link. Please login through <u><a href="https://mo.drcedirect.com/"><span style="color:#0000CD;">eDIRECT</span></a></u>&nbsp;via SSO.&nbsp;</p>
 
-<p>If you do not have eDirect login or SSO access to the MAP Grade-Level Assessments Reporting System, please contact at <u><a href="mailto:maphelpdesk@ctb.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">MAPHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-544-9868</p>
+<p>If you do not have eDirect login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
 </div>
 
 <div class="boxshade" style="margin-top: 10px;">
@@ -97,7 +98,7 @@ BEGIN
 <div class="relative" style="height: auto; text-align: justify;">
 <p><b>Test Data Availability</b></p>
 
-<p><span style="font-size: 13px;">The Spring 2016 MAP Grade-Level Assessments student results, for the Science content area, will be available 10 business days from your district&rsquo;s testing completion date. English Language Arts and Mathematics reports will be available September 01, 2016.</span></p>
+<p><span style="font-size: 13px;">The Spring 2016 Wisconsin Forward Exam student results, for the Science content area, will be available 10 business days from your district&rsquo;s testing completion date. English Language Arts and Mathematics reports will be available September 01, 2016.</span></p>
 
 <p><b>About Your Privacy</b></p>
 
@@ -182,7 +183,8 @@ BEGIN
       WHERE UPPER(REPORT_NAME) = 'GENERIC SYSTEM CONFIGURATION'
         AND PROJECTID = V_PROJECTID),
      1099,
-     q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>]',
+     q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: WIHelpdesk@datarecognitioncorp.com</p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
