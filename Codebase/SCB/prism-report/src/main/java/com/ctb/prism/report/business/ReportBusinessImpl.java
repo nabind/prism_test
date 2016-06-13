@@ -338,7 +338,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "'"));
 									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+										if(((Object[]) pairs.getValue())[0] instanceof String ) {
+											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+													CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));											
+										} else {
+											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+										}										
 									}
 								} else {
 									if("p_generate_file".equals((String) pairs.getKey())){
@@ -348,7 +353,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "'"));
 									} else {
-										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+										if(tempObj.get(0).getValue() instanceof String ) {
+											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+													CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));									
+										} else {
+											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
+										}										
 									}
 								}
 								/*if (matched) {

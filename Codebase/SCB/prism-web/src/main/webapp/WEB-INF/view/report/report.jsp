@@ -165,8 +165,7 @@
 									Excel
 								</a>
 							</c:if>
-							<c:if test="${not fn:containsIgnoreCase(themeName, 'TASC') &&
-											not fn:containsIgnoreCase(themeName, 'USMO')}">
+							<c:if test="${fn:containsIgnoreCase(themeName, 'INORS')}">
 							<a class="button margin-left margin-left glossy compact with-tooltip moreinfo-button-xls"  reportId="${homeReport.reportId}" href="#nogo">
                                <span class="button-icon blue-gradient report-btn"><span class="icon-new-tab"></span></span>More Info
                             </a>
