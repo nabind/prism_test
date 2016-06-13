@@ -303,7 +303,7 @@ BEGIN
     SELECT ACTIVATION_STATUS
       INTO V_DMRA_ACTIVATION_STATUS
       FROM DASH_REPORTS
-     WHERE UPPER(REPORT_NAME) = 'USER''S GUIDE TO INTERPRETING REPORTS'
+     WHERE REPORT_NAME = 'User&#39;s Guide to Interpreting Reports'
        AND PROJECTID = V_PROJECTID;
   
     FOR REC_ORG_LEVEL IN (SELECT DISTINCT ORG_LEVEL
@@ -328,16 +328,14 @@ BEGIN
         (V_DB_RESOURCES_MENUID,
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
-           WHERE UPPER(REPORT_NAME) =
-                 'USER''S GUIDE TO INTERPRETING REPORTS'
+           WHERE REPORT_NAME = 'User&#39;s Guide to Interpreting Reports'
                  AND PROJECTID = V_PROJECTID),
          V_ROLEID_USER,
          REC_ORG_LEVEL.ORG_LEVEL,
          V_DEFAULT_CUST_PROD_ID,
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
-           WHERE UPPER(REPORT_NAME) =
-                 'USER''S GUIDE TO INTERPRETING REPORTS'
+           WHERE REPORT_NAME = 'User&#39;s Guide to Interpreting Reports'
                  AND PROJECTID = V_PROJECTID),
                   V_PROJECTID,
          V_DMRA_ACTIVATION_STATUS,
